@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<access component="com_componentbuilder">
+	<section name="component">
+		<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />
+		<action name="core.options" title="JACTION_OPTIONS" description="JACTION_OPTIONS_COMPONENT_DESC" />
+		<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />
+		<action name="core.export" title="COM_COMPONENTBUILDER_EXPORT_DATA" description="COM_COMPONENTBUILDER_EXPORT_DATA_DESC" />
+		<action name="core.import" title="COM_COMPONENTBUILDER_IMPORT_DATA" description="COM_COMPONENTBUILDER_IMPORT_DATA_DESC" />
+		<action name="core.batch" title="COM_COMPONENTBUILDER_USE_BATCH" description="COM_COMPONENTBUILDER_USE_BATCH_DESC" />
+		<action name="core.version" title="COM_COMPONENTBUILDER_EDIT_VERSIONS" description="COM_COMPONENTBUILDER_EDIT_VERSIONS_DESC" />
+		<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />
+		<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />
+		<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />
+		<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_ACCESS_EDITSTATE_DESC" />
+		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
+		<action name="core.edit.created_by" title="COM_COMPONENTBUILDER_EDIT_CREATED_BY" description="COM_COMPONENTBUILDER_EDIT_CREATED_BY_DESC" />
+		<action name="core.edit.created" title="COM_COMPONENTBUILDER_EDIT_CREATED_DATE" description="COM_COMPONENTBUILDER_EDIT_CREATED_DATE_DESC" />
+		<action name="admin_view.access" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_ACCESS" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_ACCESS_DESC" />
+		<action name="admin_view.batch" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_BATCH_USE" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_BATCH_USE_DESC" />
+		<action name="admin_view.dashboard_add" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_DASHBOARD_ADD_DESC" />
+		<action name="admin_view.dashboard_list" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_DASHBOARD_LIST_DESC" />
+		<action name="admin_view.version" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_VERSION" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_VERSION_DESC" />
+		<action name="admin_view.export" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_EXPORT" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_EXPORT_DESC" />
+		<action name="admin_view.import" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_IMPORT" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_IMPORT_DESC" />
+		<action name="admin_view.submenu" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_SUBMENU" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_SUBMENU_DESC" />
+		<action name="custom_admin_view.access" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_ACCESS" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_ACCESS_DESC" />
+		<action name="custom_admin_view.batch" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_BATCH_USE" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_BATCH_USE_DESC" />
+		<action name="custom_admin_view.dashboard_add" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_DASHBOARD_ADD_DESC" />
+		<action name="custom_admin_view.dashboard_list" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_DASHBOARD_LIST_DESC" />
+		<action name="custom_admin_view.version" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_VERSION" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_VERSION_DESC" />
+		<action name="custom_admin_view.export" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EXPORT" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EXPORT_DESC" />
+		<action name="custom_admin_view.import" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_IMPORT" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_IMPORT_DESC" />
+		<action name="custom_admin_view.submenu" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_SUBMENU" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_SUBMENU_DESC" />
+		<action name="dynamic_get.access" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_ACCESS" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_ACCESS_DESC" />
+		<action name="dynamic_get.batch" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_BATCH_USE" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_BATCH_USE_DESC" />
+		<action name="dynamic_get.create" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_CREATE" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_CREATE_DESC" />
+		<action name="dynamic_get.dashboard_add" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_DASHBOARD_ADD_DESC" />
+		<action name="dynamic_get.dashboard_list" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_DASHBOARD_LIST_DESC" />
+		<action name="dynamic_get.delete" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_DELETE" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_DELETE_DESC" />
+		<action name="dynamic_get.edit" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_DESC" />
+		<action name="dynamic_get.edit.own" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_OWN" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_OWN_DESC" />
+		<action name="dynamic_get.edit.state" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_STATE" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_STATE_DESC" />
+		<action name="dynamic_get.version" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_VERSION" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_VERSION_DESC" />
+		<action name="dynamic_get.export" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EXPORT" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EXPORT_DESC" />
+		<action name="dynamic_get.import" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_IMPORT" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_IMPORT_DESC" />
+		<action name="dynamic_get.submenu" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_SUBMENU" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_SUBMENU_DESC" />
+		<action name="field.access" title="COM_COMPONENTBUILDER_FIELDS_ACCESS" description="COM_COMPONENTBUILDER_FIELDS_ACCESS_DESC" />
+		<action name="field.batch" title="COM_COMPONENTBUILDER_FIELDS_BATCH_USE" description="COM_COMPONENTBUILDER_FIELDS_BATCH_USE_DESC" />
+		<action name="field.create" title="COM_COMPONENTBUILDER_FIELDS_CREATE" description="COM_COMPONENTBUILDER_FIELDS_CREATE_DESC" />
+		<action name="field.dashboard_add" title="COM_COMPONENTBUILDER_FIELDS_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_FIELDS_DASHBOARD_ADD_DESC" />
+		<action name="field.dashboard_list" title="COM_COMPONENTBUILDER_FIELDS_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_FIELDS_DASHBOARD_LIST_DESC" />
+		<action name="field.delete" title="COM_COMPONENTBUILDER_FIELDS_DELETE" description="COM_COMPONENTBUILDER_FIELDS_DELETE_DESC" />
+		<action name="field.edit" title="COM_COMPONENTBUILDER_FIELDS_EDIT" description="COM_COMPONENTBUILDER_FIELDS_EDIT_DESC" />
+		<action name="field.edit.own" title="COM_COMPONENTBUILDER_FIELDS_EDIT_OWN" description="COM_COMPONENTBUILDER_FIELDS_EDIT_OWN_DESC" />
+		<action name="field.edit.state" title="COM_COMPONENTBUILDER_FIELDS_EDIT_STATE" description="COM_COMPONENTBUILDER_FIELDS_EDIT_STATE_DESC" />
+		<action name="field.version" title="COM_COMPONENTBUILDER_FIELDS_EDIT_VERSION" description="COM_COMPONENTBUILDER_FIELDS_EDIT_VERSION_DESC" />
+		<action name="field.export" title="COM_COMPONENTBUILDER_FIELDS_EXPORT" description="COM_COMPONENTBUILDER_FIELDS_EXPORT_DESC" />
+		<action name="field.import" title="COM_COMPONENTBUILDER_FIELDS_IMPORT" description="COM_COMPONENTBUILDER_FIELDS_IMPORT_DESC" />
+		<action name="field.submenu" title="COM_COMPONENTBUILDER_FIELDS_SUBMENU" description="COM_COMPONENTBUILDER_FIELDS_SUBMENU_DESC" />
+		<action name="fieldtype.access" title="COM_COMPONENTBUILDER_FIELDTYPES_ACCESS" description="COM_COMPONENTBUILDER_FIELDTYPES_ACCESS_DESC" />
+		<action name="fieldtype.batch" title="COM_COMPONENTBUILDER_FIELDTYPES_BATCH_USE" description="COM_COMPONENTBUILDER_FIELDTYPES_BATCH_USE_DESC" />
+		<action name="fieldtype.create" title="COM_COMPONENTBUILDER_FIELDTYPES_CREATE" description="COM_COMPONENTBUILDER_FIELDTYPES_CREATE_DESC" />
+		<action name="fieldtype.dashboard_add" title="COM_COMPONENTBUILDER_FIELDTYPES_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_FIELDTYPES_DASHBOARD_ADD_DESC" />
+		<action name="fieldtype.dashboard_list" title="COM_COMPONENTBUILDER_FIELDTYPES_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_FIELDTYPES_DASHBOARD_LIST_DESC" />
+		<action name="fieldtype.delete" title="COM_COMPONENTBUILDER_FIELDTYPES_DELETE" description="COM_COMPONENTBUILDER_FIELDTYPES_DELETE_DESC" />
+		<action name="fieldtype.edit" title="COM_COMPONENTBUILDER_FIELDTYPES_EDIT" description="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_DESC" />
+		<action name="fieldtype.edit.own" title="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_OWN" description="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_OWN_DESC" />
+		<action name="fieldtype.edit.state" title="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_STATE" description="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_STATE_DESC" />
+		<action name="fieldtype.version" title="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_VERSION" description="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_VERSION_DESC" />
+		<action name="fieldtype.export" title="COM_COMPONENTBUILDER_FIELDTYPES_EXPORT" description="COM_COMPONENTBUILDER_FIELDTYPES_EXPORT_DESC" />
+		<action name="fieldtype.import" title="COM_COMPONENTBUILDER_FIELDTYPES_IMPORT" description="COM_COMPONENTBUILDER_FIELDTYPES_IMPORT_DESC" />
+		<action name="fieldtype.submenu" title="COM_COMPONENTBUILDER_FIELDTYPES_SUBMENU" description="COM_COMPONENTBUILDER_FIELDTYPES_SUBMENU_DESC" />
+		<action name="help_document.access" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_ACCESS" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_ACCESS_DESC" />
+		<action name="help_document.batch" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_BATCH_USE" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_BATCH_USE_DESC" />
+		<action name="help_document.create" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_CREATE" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_CREATE_DESC" />
+		<action name="help_document.dashboard_add" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_DASHBOARD_ADD_DESC" />
+		<action name="help_document.dashboard_list" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_DASHBOARD_LIST_DESC" />
+		<action name="help_document.delete" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_DELETE" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_DELETE_DESC" />
+		<action name="help_document.edit" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_DESC" />
+		<action name="help_document.edit.own" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_OWN" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_OWN_DESC" />
+		<action name="help_document.edit.state" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_STATE" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_STATE_DESC" />
+		<action name="help_document.version" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_VERSION" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_VERSION_DESC" />
+		<action name="help_document.export" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EXPORT" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EXPORT_DESC" />
+		<action name="help_document.import" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_IMPORT" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_IMPORT_DESC" />
+		<action name="help_document.submenu" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_SUBMENU" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_SUBMENU_DESC" />
+		<action name="layout.access" title="COM_COMPONENTBUILDER_LAYOUTS_ACCESS" description="COM_COMPONENTBUILDER_LAYOUTS_ACCESS_DESC" />
+		<action name="layout.batch" title="COM_COMPONENTBUILDER_LAYOUTS_BATCH_USE" description="COM_COMPONENTBUILDER_LAYOUTS_BATCH_USE_DESC" />
+		<action name="layout.dashboard_add" title="COM_COMPONENTBUILDER_LAYOUTS_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_LAYOUTS_DASHBOARD_ADD_DESC" />
+		<action name="layout.dashboard_list" title="COM_COMPONENTBUILDER_LAYOUTS_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_LAYOUTS_DASHBOARD_LIST_DESC" />
+		<action name="layout.version" title="COM_COMPONENTBUILDER_LAYOUTS_EDIT_VERSION" description="COM_COMPONENTBUILDER_LAYOUTS_EDIT_VERSION_DESC" />
+		<action name="layout.export" title="COM_COMPONENTBUILDER_LAYOUTS_EXPORT" description="COM_COMPONENTBUILDER_LAYOUTS_EXPORT_DESC" />
+		<action name="layout.import" title="COM_COMPONENTBUILDER_LAYOUTS_IMPORT" description="COM_COMPONENTBUILDER_LAYOUTS_IMPORT_DESC" />
+		<action name="layout.submenu" title="COM_COMPONENTBUILDER_LAYOUTS_SUBMENU" description="COM_COMPONENTBUILDER_LAYOUTS_SUBMENU_DESC" />
+		<action name="site_view.access" title="COM_COMPONENTBUILDER_SITE_VIEWS_ACCESS" description="COM_COMPONENTBUILDER_SITE_VIEWS_ACCESS_DESC" />
+		<action name="site_view.batch" title="COM_COMPONENTBUILDER_SITE_VIEWS_BATCH_USE" description="COM_COMPONENTBUILDER_SITE_VIEWS_BATCH_USE_DESC" />
+		<action name="site_view.dashboard_add" title="COM_COMPONENTBUILDER_SITE_VIEWS_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_SITE_VIEWS_DASHBOARD_ADD_DESC" />
+		<action name="site_view.dashboard_list" title="COM_COMPONENTBUILDER_SITE_VIEWS_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_SITE_VIEWS_DASHBOARD_LIST_DESC" />
+		<action name="site_view.version" title="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_VERSION" description="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_VERSION_DESC" />
+		<action name="site_view.export" title="COM_COMPONENTBUILDER_SITE_VIEWS_EXPORT" description="COM_COMPONENTBUILDER_SITE_VIEWS_EXPORT_DESC" />
+		<action name="site_view.import" title="COM_COMPONENTBUILDER_SITE_VIEWS_IMPORT" description="COM_COMPONENTBUILDER_SITE_VIEWS_IMPORT_DESC" />
+		<action name="site_view.submenu" title="COM_COMPONENTBUILDER_SITE_VIEWS_SUBMENU" description="COM_COMPONENTBUILDER_SITE_VIEWS_SUBMENU_DESC" />
+		<action name="snippet.access" title="COM_COMPONENTBUILDER_SNIPPETS_ACCESS" description="COM_COMPONENTBUILDER_SNIPPETS_ACCESS_DESC" />
+		<action name="snippet.batch" title="COM_COMPONENTBUILDER_SNIPPETS_BATCH_USE" description="COM_COMPONENTBUILDER_SNIPPETS_BATCH_USE_DESC" />
+		<action name="snippet.dashboard_add" title="COM_COMPONENTBUILDER_SNIPPETS_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_SNIPPETS_DASHBOARD_ADD_DESC" />
+		<action name="snippet.dashboard_list" title="COM_COMPONENTBUILDER_SNIPPETS_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_SNIPPETS_DASHBOARD_LIST_DESC" />
+		<action name="snippet.version" title="COM_COMPONENTBUILDER_SNIPPETS_EDIT_VERSION" description="COM_COMPONENTBUILDER_SNIPPETS_EDIT_VERSION_DESC" />
+		<action name="snippet.export" title="COM_COMPONENTBUILDER_SNIPPETS_EXPORT" description="COM_COMPONENTBUILDER_SNIPPETS_EXPORT_DESC" />
+		<action name="snippet.import" title="COM_COMPONENTBUILDER_SNIPPETS_IMPORT" description="COM_COMPONENTBUILDER_SNIPPETS_IMPORT_DESC" />
+		<action name="snippet.submenu" title="COM_COMPONENTBUILDER_SNIPPETS_SUBMENU" description="COM_COMPONENTBUILDER_SNIPPETS_SUBMENU_DESC" />
+		<action name="template.access" title="COM_COMPONENTBUILDER_TEMPLATES_ACCESS" description="COM_COMPONENTBUILDER_TEMPLATES_ACCESS_DESC" />
+		<action name="template.batch" title="COM_COMPONENTBUILDER_TEMPLATES_BATCH_USE" description="COM_COMPONENTBUILDER_TEMPLATES_BATCH_USE_DESC" />
+		<action name="template.dashboard_add" title="COM_COMPONENTBUILDER_TEMPLATES_DASHBOARD_ADD" description="COM_COMPONENTBUILDER_TEMPLATES_DASHBOARD_ADD_DESC" />
+		<action name="template.dashboard_list" title="COM_COMPONENTBUILDER_TEMPLATES_DASHBOARD_LIST" description="COM_COMPONENTBUILDER_TEMPLATES_DASHBOARD_LIST_DESC" />
+		<action name="template.version" title="COM_COMPONENTBUILDER_TEMPLATES_EDIT_VERSION" description="COM_COMPONENTBUILDER_TEMPLATES_EDIT_VERSION_DESC" />
+		<action name="template.export" title="COM_COMPONENTBUILDER_TEMPLATES_EXPORT" description="COM_COMPONENTBUILDER_TEMPLATES_EXPORT_DESC" />
+		<action name="template.import" title="COM_COMPONENTBUILDER_TEMPLATES_IMPORT" description="COM_COMPONENTBUILDER_TEMPLATES_IMPORT_DESC" />
+		<action name="template.submenu" title="COM_COMPONENTBUILDER_TEMPLATES_SUBMENU" description="COM_COMPONENTBUILDER_TEMPLATES_SUBMENU_DESC" />
+	</section>
+	<section name="admin_view">
+		<action name="core.edit" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_DESC" />
+		<action name="core.edit.state" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_STATE" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_STATE_DESC" />
+		<action name="core.edit.own" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_OWN" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_OWN_DESC" />
+		<action name="core.create" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_CREATE" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_CREATE_DESC" />
+		<action name="core.delete" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_DELETE" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_DELETE_DESC" />
+		<action name="admin_view.access" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_ACCESS" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_ACCESS_DESC" />
+		<action name="admin_view.version" title="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_VERSION" description="COM_COMPONENTBUILDER_ADMIN_VIEWS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="custom_admin_view">
+		<action name="core.edit" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_DESC" />
+		<action name="core.edit.state" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_STATE" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_STATE_DESC" />
+		<action name="core.edit.own" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_OWN" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_OWN_DESC" />
+		<action name="core.create" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_CREATE" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_CREATE_DESC" />
+		<action name="core.delete" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_DELETE" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_DELETE_DESC" />
+		<action name="custom_admin_view.access" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_ACCESS" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_ACCESS_DESC" />
+		<action name="custom_admin_view.version" title="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_VERSION" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="site_view">
+		<action name="core.edit" title="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT" description="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_DESC" />
+		<action name="core.edit.state" title="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_STATE" description="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_STATE_DESC" />
+		<action name="core.edit.own" title="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_OWN" description="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_OWN_DESC" />
+		<action name="core.create" title="COM_COMPONENTBUILDER_SITE_VIEWS_CREATE" description="COM_COMPONENTBUILDER_SITE_VIEWS_CREATE_DESC" />
+		<action name="core.delete" title="COM_COMPONENTBUILDER_SITE_VIEWS_DELETE" description="COM_COMPONENTBUILDER_SITE_VIEWS_DELETE_DESC" />
+		<action name="site_view.access" title="COM_COMPONENTBUILDER_SITE_VIEWS_ACCESS" description="COM_COMPONENTBUILDER_SITE_VIEWS_ACCESS_DESC" />
+		<action name="site_view.version" title="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_VERSION" description="COM_COMPONENTBUILDER_SITE_VIEWS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="template">
+		<action name="core.edit" title="COM_COMPONENTBUILDER_TEMPLATES_EDIT" description="COM_COMPONENTBUILDER_TEMPLATES_EDIT_DESC" />
+		<action name="core.edit.state" title="COM_COMPONENTBUILDER_TEMPLATES_EDIT_STATE" description="COM_COMPONENTBUILDER_TEMPLATES_EDIT_STATE_DESC" />
+		<action name="core.edit.own" title="COM_COMPONENTBUILDER_TEMPLATES_EDIT_OWN" description="COM_COMPONENTBUILDER_TEMPLATES_EDIT_OWN_DESC" />
+		<action name="core.create" title="COM_COMPONENTBUILDER_TEMPLATES_CREATE" description="COM_COMPONENTBUILDER_TEMPLATES_CREATE_DESC" />
+		<action name="core.delete" title="COM_COMPONENTBUILDER_TEMPLATES_DELETE" description="COM_COMPONENTBUILDER_TEMPLATES_DELETE_DESC" />
+		<action name="template.access" title="COM_COMPONENTBUILDER_TEMPLATES_ACCESS" description="COM_COMPONENTBUILDER_TEMPLATES_ACCESS_DESC" />
+		<action name="template.version" title="COM_COMPONENTBUILDER_TEMPLATES_EDIT_VERSION" description="COM_COMPONENTBUILDER_TEMPLATES_EDIT_VERSION_DESC" />
+	</section>
+	<section name="layout">
+		<action name="core.edit" title="COM_COMPONENTBUILDER_LAYOUTS_EDIT" description="COM_COMPONENTBUILDER_LAYOUTS_EDIT_DESC" />
+		<action name="core.edit.state" title="COM_COMPONENTBUILDER_LAYOUTS_EDIT_STATE" description="COM_COMPONENTBUILDER_LAYOUTS_EDIT_STATE_DESC" />
+		<action name="core.edit.own" title="COM_COMPONENTBUILDER_LAYOUTS_EDIT_OWN" description="COM_COMPONENTBUILDER_LAYOUTS_EDIT_OWN_DESC" />
+		<action name="core.create" title="COM_COMPONENTBUILDER_LAYOUTS_CREATE" description="COM_COMPONENTBUILDER_LAYOUTS_CREATE_DESC" />
+		<action name="core.delete" title="COM_COMPONENTBUILDER_LAYOUTS_DELETE" description="COM_COMPONENTBUILDER_LAYOUTS_DELETE_DESC" />
+		<action name="layout.access" title="COM_COMPONENTBUILDER_LAYOUTS_ACCESS" description="COM_COMPONENTBUILDER_LAYOUTS_ACCESS_DESC" />
+		<action name="layout.version" title="COM_COMPONENTBUILDER_LAYOUTS_EDIT_VERSION" description="COM_COMPONENTBUILDER_LAYOUTS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="dynamic_get">
+		<action name="dynamic_get.edit" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_DESC" />
+		<action name="dynamic_get.edit.own" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_OWN" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_OWN_DESC" />
+		<action name="dynamic_get.edit.state" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_STATE" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_STATE_DESC" />
+		<action name="dynamic_get.create" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_CREATE" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_CREATE_DESC" />
+		<action name="dynamic_get.delete" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_DELETE" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_DELETE_DESC" />
+		<action name="dynamic_get.access" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_ACCESS" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_ACCESS_DESC" />
+		<action name="dynamic_get.version" title="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_VERSION" description="COM_COMPONENTBUILDER_DYNAMIC_GETS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="snippet">
+		<action name="core.edit" title="COM_COMPONENTBUILDER_SNIPPETS_EDIT" description="COM_COMPONENTBUILDER_SNIPPETS_EDIT_DESC" />
+		<action name="core.edit.state" title="COM_COMPONENTBUILDER_SNIPPETS_EDIT_STATE" description="COM_COMPONENTBUILDER_SNIPPETS_EDIT_STATE_DESC" />
+		<action name="core.edit.own" title="COM_COMPONENTBUILDER_SNIPPETS_EDIT_OWN" description="COM_COMPONENTBUILDER_SNIPPETS_EDIT_OWN_DESC" />
+		<action name="core.create" title="COM_COMPONENTBUILDER_SNIPPETS_CREATE" description="COM_COMPONENTBUILDER_SNIPPETS_CREATE_DESC" />
+		<action name="core.delete" title="COM_COMPONENTBUILDER_SNIPPETS_DELETE" description="COM_COMPONENTBUILDER_SNIPPETS_DELETE_DESC" />
+		<action name="snippet.access" title="COM_COMPONENTBUILDER_SNIPPETS_ACCESS" description="COM_COMPONENTBUILDER_SNIPPETS_ACCESS_DESC" />
+		<action name="snippet.version" title="COM_COMPONENTBUILDER_SNIPPETS_EDIT_VERSION" description="COM_COMPONENTBUILDER_SNIPPETS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="field">
+		<action name="field.edit" title="COM_COMPONENTBUILDER_FIELDS_EDIT" description="COM_COMPONENTBUILDER_FIELDS_EDIT_DESC" />
+		<action name="field.edit.state" title="COM_COMPONENTBUILDER_FIELDS_EDIT_STATE" description="COM_COMPONENTBUILDER_FIELDS_EDIT_STATE_DESC" />
+		<action name="field.edit.own" title="COM_COMPONENTBUILDER_FIELDS_EDIT_OWN" description="COM_COMPONENTBUILDER_FIELDS_EDIT_OWN_DESC" />
+		<action name="field.create" title="COM_COMPONENTBUILDER_FIELDS_CREATE" description="COM_COMPONENTBUILDER_FIELDS_CREATE_DESC" />
+		<action name="field.delete" title="COM_COMPONENTBUILDER_FIELDS_DELETE" description="COM_COMPONENTBUILDER_FIELDS_DELETE_DESC" />
+		<action name="field.access" title="COM_COMPONENTBUILDER_FIELDS_ACCESS" description="COM_COMPONENTBUILDER_FIELDS_ACCESS_DESC" />
+		<action name="field.version" title="COM_COMPONENTBUILDER_FIELDS_EDIT_VERSION" description="COM_COMPONENTBUILDER_FIELDS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="fieldtype">
+		<action name="fieldtype.edit" title="COM_COMPONENTBUILDER_FIELDTYPES_EDIT" description="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_DESC" />
+		<action name="fieldtype.edit.own" title="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_OWN" description="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_OWN_DESC" />
+		<action name="fieldtype.edit.state" title="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_STATE" description="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_STATE_DESC" />
+		<action name="fieldtype.create" title="COM_COMPONENTBUILDER_FIELDTYPES_CREATE" description="COM_COMPONENTBUILDER_FIELDTYPES_CREATE_DESC" />
+		<action name="fieldtype.delete" title="COM_COMPONENTBUILDER_FIELDTYPES_DELETE" description="COM_COMPONENTBUILDER_FIELDTYPES_DELETE_DESC" />
+		<action name="fieldtype.access" title="COM_COMPONENTBUILDER_FIELDTYPES_ACCESS" description="COM_COMPONENTBUILDER_FIELDTYPES_ACCESS_DESC" />
+		<action name="fieldtype.version" title="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_VERSION" description="COM_COMPONENTBUILDER_FIELDTYPES_EDIT_VERSION_DESC" />
+	</section>
+	<section name="help_document">
+		<action name="help_document.edit" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_DESC" />
+		<action name="help_document.edit.own" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_OWN" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_OWN_DESC" />
+		<action name="help_document.edit.state" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_STATE" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_STATE_DESC" />
+		<action name="help_document.create" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_CREATE" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_CREATE_DESC" />
+		<action name="help_document.delete" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_DELETE" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_DELETE_DESC" />
+		<action name="help_document.access" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_ACCESS" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_ACCESS_DESC" />
+		<action name="help_document.version" title="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_VERSION" description="COM_COMPONENTBUILDER_HELP_DOCUMENTS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="category.fields">
+		<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />
+		<action name="core.delete" title="JACTION_DELETE" description="COM_CATEGORIES_ACCESS_DELETE_DESC" />
+		<action name="core.edit" title="JACTION_EDIT" description="COM_CATEGORIES_ACCESS_EDIT_DESC" />
+		<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORIES_ACCESS_EDITSTATE_DESC" />
+		<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />
+	</section>
+	<section name="category.fieldtypes">
+		<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />
+		<action name="core.delete" title="JACTION_DELETE" description="COM_CATEGORIES_ACCESS_DELETE_DESC" />
+		<action name="core.edit" title="JACTION_EDIT" description="COM_CATEGORIES_ACCESS_EDIT_DESC" />
+		<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORIES_ACCESS_EDITSTATE_DESC" />
+		<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />
+	</section>
+</access>

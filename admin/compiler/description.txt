@@ -1,0 +1,16 @@
+/*----------------------------------------------------------------------------------|  www.vdm.io  |----/
+				###COMPANYNAME### 
+/-------------------------------------------------------------------------------------------------------/
+
+	@version		###VERSION###
+	@build			###BUILDDATE###
+	@created		###CREATIONDATE###
+	@package		###Component_name###
+	@subpackage		###FILENAME###
+	@author			###AUTHOR### <###AUTHORWEBSITE###>###CONTRIBUTORS###	
+	@copyright		###COPYRIGHT###
+	@license		###LICENSE###
+	
+	###SHORT_DESCRIPTION###
+	
+/------------------------------------------------------------------------------------------------------*/
