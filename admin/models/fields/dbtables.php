@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.8
-	@build			30th January, 2016
+	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		dbtables.php

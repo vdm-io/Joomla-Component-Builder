@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.8
-	@build			30th January, 2016
+	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -124,406 +124,406 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_gettype listeners for gettype_TTozUNE function
+// #jform_gettype listeners for gettype_kIxqawN function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var gettype_TTozUNE = jQuery("#jform_gettype").val();
-	TTozUNE(gettype_TTozUNE);
+	var gettype_kIxqawN = jQuery("#jform_gettype").val();
+	kIxqawN(gettype_kIxqawN);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var gettype_TTozUNE = jQuery("#jform_gettype").val();
-	TTozUNE(gettype_TTozUNE);
+	var gettype_kIxqawN = jQuery("#jform_gettype").val();
+	kIxqawN(gettype_kIxqawN);
 
 });
 
-// #jform_main_source listeners for main_source_OabpNGm function
+// #jform_main_source listeners for main_source_KOzpbDU function
 jQuery('#jform_main_source').on('keyup',function()
 {
-	var main_source_OabpNGm = jQuery("#jform_main_source").val();
-	OabpNGm(main_source_OabpNGm);
+	var main_source_KOzpbDU = jQuery("#jform_main_source").val();
+	KOzpbDU(main_source_KOzpbDU);
 
 });
 jQuery('#adminForm').on('change', '#jform_main_source',function (e)
 {
 	e.preventDefault();
-	var main_source_OabpNGm = jQuery("#jform_main_source").val();
-	OabpNGm(main_source_OabpNGm);
+	var main_source_KOzpbDU = jQuery("#jform_main_source").val();
+	KOzpbDU(main_source_KOzpbDU);
 
 });
 
-// #jform_main_source listeners for main_source_aZEjPke function
+// #jform_main_source listeners for main_source_XHdfPdM function
 jQuery('#jform_main_source').on('keyup',function()
 {
-	var main_source_aZEjPke = jQuery("#jform_main_source").val();
-	aZEjPke(main_source_aZEjPke);
+	var main_source_XHdfPdM = jQuery("#jform_main_source").val();
+	XHdfPdM(main_source_XHdfPdM);
 
 });
 jQuery('#adminForm').on('change', '#jform_main_source',function (e)
 {
 	e.preventDefault();
-	var main_source_aZEjPke = jQuery("#jform_main_source").val();
-	aZEjPke(main_source_aZEjPke);
+	var main_source_XHdfPdM = jQuery("#jform_main_source").val();
+	XHdfPdM(main_source_XHdfPdM);
 
 });
 
-// #jform_main_source listeners for main_source_liYHBQw function
+// #jform_main_source listeners for main_source_CqBhCBw function
 jQuery('#jform_main_source').on('keyup',function()
 {
-	var main_source_liYHBQw = jQuery("#jform_main_source").val();
-	liYHBQw(main_source_liYHBQw);
+	var main_source_CqBhCBw = jQuery("#jform_main_source").val();
+	CqBhCBw(main_source_CqBhCBw);
 
 });
 jQuery('#adminForm').on('change', '#jform_main_source',function (e)
 {
 	e.preventDefault();
-	var main_source_liYHBQw = jQuery("#jform_main_source").val();
-	liYHBQw(main_source_liYHBQw);
+	var main_source_CqBhCBw = jQuery("#jform_main_source").val();
+	CqBhCBw(main_source_CqBhCBw);
 
 });
 
-// #jform_main_source listeners for main_source_ihvkrmN function
+// #jform_main_source listeners for main_source_gxMyNJb function
 jQuery('#jform_main_source').on('keyup',function()
 {
-	var main_source_ihvkrmN = jQuery("#jform_main_source").val();
-	ihvkrmN(main_source_ihvkrmN);
+	var main_source_gxMyNJb = jQuery("#jform_main_source").val();
+	gxMyNJb(main_source_gxMyNJb);
 
 });
 jQuery('#adminForm').on('change', '#jform_main_source',function (e)
 {
 	e.preventDefault();
-	var main_source_ihvkrmN = jQuery("#jform_main_source").val();
-	ihvkrmN(main_source_ihvkrmN);
+	var main_source_gxMyNJb = jQuery("#jform_main_source").val();
+	gxMyNJb(main_source_gxMyNJb);
 
 });
 
-// #jform_addcalculation listeners for addcalculation_qgcUmUf function
+// #jform_addcalculation listeners for addcalculation_aFHdKxk function
 jQuery('#jform_addcalculation').on('keyup',function()
 {
-	var addcalculation_qgcUmUf = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	qgcUmUf(addcalculation_qgcUmUf);
+	var addcalculation_aFHdKxk = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	aFHdKxk(addcalculation_aFHdKxk);
 
 });
 jQuery('#adminForm').on('change', '#jform_addcalculation',function (e)
 {
 	e.preventDefault();
-	var addcalculation_qgcUmUf = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	qgcUmUf(addcalculation_qgcUmUf);
+	var addcalculation_aFHdKxk = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	aFHdKxk(addcalculation_aFHdKxk);
 
 });
 
-// #jform_addcalculation listeners for addcalculation_vEABeis function
+// #jform_addcalculation listeners for addcalculation_xtDYvhA function
 jQuery('#jform_addcalculation').on('keyup',function()
 {
-	var addcalculation_vEABeis = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	var gettype_vEABeis = jQuery("#jform_gettype").val();
-	vEABeis(addcalculation_vEABeis,gettype_vEABeis);
+	var addcalculation_xtDYvhA = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	var gettype_xtDYvhA = jQuery("#jform_gettype").val();
+	xtDYvhA(addcalculation_xtDYvhA,gettype_xtDYvhA);
 
 });
 jQuery('#adminForm').on('change', '#jform_addcalculation',function (e)
 {
 	e.preventDefault();
-	var addcalculation_vEABeis = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	var gettype_vEABeis = jQuery("#jform_gettype").val();
-	vEABeis(addcalculation_vEABeis,gettype_vEABeis);
+	var addcalculation_xtDYvhA = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	var gettype_xtDYvhA = jQuery("#jform_gettype").val();
+	xtDYvhA(addcalculation_xtDYvhA,gettype_xtDYvhA);
 
 });
 
-// #jform_gettype listeners for gettype_vEABeis function
+// #jform_gettype listeners for gettype_xtDYvhA function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var addcalculation_vEABeis = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	var gettype_vEABeis = jQuery("#jform_gettype").val();
-	vEABeis(addcalculation_vEABeis,gettype_vEABeis);
+	var addcalculation_xtDYvhA = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	var gettype_xtDYvhA = jQuery("#jform_gettype").val();
+	xtDYvhA(addcalculation_xtDYvhA,gettype_xtDYvhA);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var addcalculation_vEABeis = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	var gettype_vEABeis = jQuery("#jform_gettype").val();
-	vEABeis(addcalculation_vEABeis,gettype_vEABeis);
+	var addcalculation_xtDYvhA = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	var gettype_xtDYvhA = jQuery("#jform_gettype").val();
+	xtDYvhA(addcalculation_xtDYvhA,gettype_xtDYvhA);
 
 });
 
-// #jform_addcalculation listeners for addcalculation_vzEXGQt function
+// #jform_addcalculation listeners for addcalculation_ZDpXEUF function
 jQuery('#jform_addcalculation').on('keyup',function()
 {
-	var addcalculation_vzEXGQt = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	var gettype_vzEXGQt = jQuery("#jform_gettype").val();
-	vzEXGQt(addcalculation_vzEXGQt,gettype_vzEXGQt);
+	var addcalculation_ZDpXEUF = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	var gettype_ZDpXEUF = jQuery("#jform_gettype").val();
+	ZDpXEUF(addcalculation_ZDpXEUF,gettype_ZDpXEUF);
 
 });
 jQuery('#adminForm').on('change', '#jform_addcalculation',function (e)
 {
 	e.preventDefault();
-	var addcalculation_vzEXGQt = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	var gettype_vzEXGQt = jQuery("#jform_gettype").val();
-	vzEXGQt(addcalculation_vzEXGQt,gettype_vzEXGQt);
+	var addcalculation_ZDpXEUF = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	var gettype_ZDpXEUF = jQuery("#jform_gettype").val();
+	ZDpXEUF(addcalculation_ZDpXEUF,gettype_ZDpXEUF);
 
 });
 
-// #jform_gettype listeners for gettype_vzEXGQt function
+// #jform_gettype listeners for gettype_ZDpXEUF function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var addcalculation_vzEXGQt = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	var gettype_vzEXGQt = jQuery("#jform_gettype").val();
-	vzEXGQt(addcalculation_vzEXGQt,gettype_vzEXGQt);
+	var addcalculation_ZDpXEUF = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	var gettype_ZDpXEUF = jQuery("#jform_gettype").val();
+	ZDpXEUF(addcalculation_ZDpXEUF,gettype_ZDpXEUF);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var addcalculation_vzEXGQt = jQuery("#jform_addcalculation input[type='radio']:checked").val();
-	var gettype_vzEXGQt = jQuery("#jform_gettype").val();
-	vzEXGQt(addcalculation_vzEXGQt,gettype_vzEXGQt);
+	var addcalculation_ZDpXEUF = jQuery("#jform_addcalculation input[type='radio']:checked").val();
+	var gettype_ZDpXEUF = jQuery("#jform_gettype").val();
+	ZDpXEUF(addcalculation_ZDpXEUF,gettype_ZDpXEUF);
 
 });
 
-// #jform_main_source listeners for main_source_LKzirhH function
+// #jform_main_source listeners for main_source_AtRXJnW function
 jQuery('#jform_main_source').on('keyup',function()
 {
-	var main_source_LKzirhH = jQuery("#jform_main_source").val();
-	LKzirhH(main_source_LKzirhH);
+	var main_source_AtRXJnW = jQuery("#jform_main_source").val();
+	AtRXJnW(main_source_AtRXJnW);
 
 });
 jQuery('#adminForm').on('change', '#jform_main_source',function (e)
 {
 	e.preventDefault();
-	var main_source_LKzirhH = jQuery("#jform_main_source").val();
-	LKzirhH(main_source_LKzirhH);
+	var main_source_AtRXJnW = jQuery("#jform_main_source").val();
+	AtRXJnW(main_source_AtRXJnW);
 
 });
 
-// #jform_main_source listeners for main_source_TOFQooo function
+// #jform_main_source listeners for main_source_dXTbBIH function
 jQuery('#jform_main_source').on('keyup',function()
 {
-	var main_source_TOFQooo = jQuery("#jform_main_source").val();
-	TOFQooo(main_source_TOFQooo);
+	var main_source_dXTbBIH = jQuery("#jform_main_source").val();
+	dXTbBIH(main_source_dXTbBIH);
 
 });
 jQuery('#adminForm').on('change', '#jform_main_source',function (e)
 {
 	e.preventDefault();
-	var main_source_TOFQooo = jQuery("#jform_main_source").val();
-	TOFQooo(main_source_TOFQooo);
+	var main_source_dXTbBIH = jQuery("#jform_main_source").val();
+	dXTbBIH(main_source_dXTbBIH);
 
 });
 
-// #jform_add_php_before_getitem listeners for add_php_before_getitem_fyWzBNh function
+// #jform_add_php_before_getitem listeners for add_php_before_getitem_RxeeGhA function
 jQuery('#jform_add_php_before_getitem').on('keyup',function()
 {
-	var add_php_before_getitem_fyWzBNh = jQuery("#jform_add_php_before_getitem input[type='radio']:checked").val();
-	var gettype_fyWzBNh = jQuery("#jform_gettype").val();
-	fyWzBNh(add_php_before_getitem_fyWzBNh,gettype_fyWzBNh);
+	var add_php_before_getitem_RxeeGhA = jQuery("#jform_add_php_before_getitem input[type='radio']:checked").val();
+	var gettype_RxeeGhA = jQuery("#jform_gettype").val();
+	RxeeGhA(add_php_before_getitem_RxeeGhA,gettype_RxeeGhA);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_before_getitem',function (e)
 {
 	e.preventDefault();
-	var add_php_before_getitem_fyWzBNh = jQuery("#jform_add_php_before_getitem input[type='radio']:checked").val();
-	var gettype_fyWzBNh = jQuery("#jform_gettype").val();
-	fyWzBNh(add_php_before_getitem_fyWzBNh,gettype_fyWzBNh);
+	var add_php_before_getitem_RxeeGhA = jQuery("#jform_add_php_before_getitem input[type='radio']:checked").val();
+	var gettype_RxeeGhA = jQuery("#jform_gettype").val();
+	RxeeGhA(add_php_before_getitem_RxeeGhA,gettype_RxeeGhA);
 
 });
 
-// #jform_gettype listeners for gettype_fyWzBNh function
+// #jform_gettype listeners for gettype_RxeeGhA function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var add_php_before_getitem_fyWzBNh = jQuery("#jform_add_php_before_getitem input[type='radio']:checked").val();
-	var gettype_fyWzBNh = jQuery("#jform_gettype").val();
-	fyWzBNh(add_php_before_getitem_fyWzBNh,gettype_fyWzBNh);
+	var add_php_before_getitem_RxeeGhA = jQuery("#jform_add_php_before_getitem input[type='radio']:checked").val();
+	var gettype_RxeeGhA = jQuery("#jform_gettype").val();
+	RxeeGhA(add_php_before_getitem_RxeeGhA,gettype_RxeeGhA);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var add_php_before_getitem_fyWzBNh = jQuery("#jform_add_php_before_getitem input[type='radio']:checked").val();
-	var gettype_fyWzBNh = jQuery("#jform_gettype").val();
-	fyWzBNh(add_php_before_getitem_fyWzBNh,gettype_fyWzBNh);
+	var add_php_before_getitem_RxeeGhA = jQuery("#jform_add_php_before_getitem input[type='radio']:checked").val();
+	var gettype_RxeeGhA = jQuery("#jform_gettype").val();
+	RxeeGhA(add_php_before_getitem_RxeeGhA,gettype_RxeeGhA);
 
 });
 
-// #jform_add_php_after_getitem listeners for add_php_after_getitem_McnRHXs function
+// #jform_add_php_after_getitem listeners for add_php_after_getitem_rUiYvBP function
 jQuery('#jform_add_php_after_getitem').on('keyup',function()
 {
-	var add_php_after_getitem_McnRHXs = jQuery("#jform_add_php_after_getitem input[type='radio']:checked").val();
-	var gettype_McnRHXs = jQuery("#jform_gettype").val();
-	McnRHXs(add_php_after_getitem_McnRHXs,gettype_McnRHXs);
+	var add_php_after_getitem_rUiYvBP = jQuery("#jform_add_php_after_getitem input[type='radio']:checked").val();
+	var gettype_rUiYvBP = jQuery("#jform_gettype").val();
+	rUiYvBP(add_php_after_getitem_rUiYvBP,gettype_rUiYvBP);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_after_getitem',function (e)
 {
 	e.preventDefault();
-	var add_php_after_getitem_McnRHXs = jQuery("#jform_add_php_after_getitem input[type='radio']:checked").val();
-	var gettype_McnRHXs = jQuery("#jform_gettype").val();
-	McnRHXs(add_php_after_getitem_McnRHXs,gettype_McnRHXs);
+	var add_php_after_getitem_rUiYvBP = jQuery("#jform_add_php_after_getitem input[type='radio']:checked").val();
+	var gettype_rUiYvBP = jQuery("#jform_gettype").val();
+	rUiYvBP(add_php_after_getitem_rUiYvBP,gettype_rUiYvBP);
 
 });
 
-// #jform_gettype listeners for gettype_McnRHXs function
+// #jform_gettype listeners for gettype_rUiYvBP function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var add_php_after_getitem_McnRHXs = jQuery("#jform_add_php_after_getitem input[type='radio']:checked").val();
-	var gettype_McnRHXs = jQuery("#jform_gettype").val();
-	McnRHXs(add_php_after_getitem_McnRHXs,gettype_McnRHXs);
+	var add_php_after_getitem_rUiYvBP = jQuery("#jform_add_php_after_getitem input[type='radio']:checked").val();
+	var gettype_rUiYvBP = jQuery("#jform_gettype").val();
+	rUiYvBP(add_php_after_getitem_rUiYvBP,gettype_rUiYvBP);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var add_php_after_getitem_McnRHXs = jQuery("#jform_add_php_after_getitem input[type='radio']:checked").val();
-	var gettype_McnRHXs = jQuery("#jform_gettype").val();
-	McnRHXs(add_php_after_getitem_McnRHXs,gettype_McnRHXs);
+	var add_php_after_getitem_rUiYvBP = jQuery("#jform_add_php_after_getitem input[type='radio']:checked").val();
+	var gettype_rUiYvBP = jQuery("#jform_gettype").val();
+	rUiYvBP(add_php_after_getitem_rUiYvBP,gettype_rUiYvBP);
 
 });
 
-// #jform_gettype listeners for gettype_lajvdOy function
+// #jform_gettype listeners for gettype_tdubUQf function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var gettype_lajvdOy = jQuery("#jform_gettype").val();
-	lajvdOy(gettype_lajvdOy);
+	var gettype_tdubUQf = jQuery("#jform_gettype").val();
+	tdubUQf(gettype_tdubUQf);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var gettype_lajvdOy = jQuery("#jform_gettype").val();
-	lajvdOy(gettype_lajvdOy);
+	var gettype_tdubUQf = jQuery("#jform_gettype").val();
+	tdubUQf(gettype_tdubUQf);
 
 });
 
-// #jform_add_php_getlistquery listeners for add_php_getlistquery_DxYMqLK function
+// #jform_add_php_getlistquery listeners for add_php_getlistquery_WUTdSww function
 jQuery('#jform_add_php_getlistquery').on('keyup',function()
 {
-	var add_php_getlistquery_DxYMqLK = jQuery("#jform_add_php_getlistquery input[type='radio']:checked").val();
-	var gettype_DxYMqLK = jQuery("#jform_gettype").val();
-	DxYMqLK(add_php_getlistquery_DxYMqLK,gettype_DxYMqLK);
+	var add_php_getlistquery_WUTdSww = jQuery("#jform_add_php_getlistquery input[type='radio']:checked").val();
+	var gettype_WUTdSww = jQuery("#jform_gettype").val();
+	WUTdSww(add_php_getlistquery_WUTdSww,gettype_WUTdSww);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_getlistquery',function (e)
 {
 	e.preventDefault();
-	var add_php_getlistquery_DxYMqLK = jQuery("#jform_add_php_getlistquery input[type='radio']:checked").val();
-	var gettype_DxYMqLK = jQuery("#jform_gettype").val();
-	DxYMqLK(add_php_getlistquery_DxYMqLK,gettype_DxYMqLK);
+	var add_php_getlistquery_WUTdSww = jQuery("#jform_add_php_getlistquery input[type='radio']:checked").val();
+	var gettype_WUTdSww = jQuery("#jform_gettype").val();
+	WUTdSww(add_php_getlistquery_WUTdSww,gettype_WUTdSww);
 
 });
 
-// #jform_gettype listeners for gettype_DxYMqLK function
+// #jform_gettype listeners for gettype_WUTdSww function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var add_php_getlistquery_DxYMqLK = jQuery("#jform_add_php_getlistquery input[type='radio']:checked").val();
-	var gettype_DxYMqLK = jQuery("#jform_gettype").val();
-	DxYMqLK(add_php_getlistquery_DxYMqLK,gettype_DxYMqLK);
+	var add_php_getlistquery_WUTdSww = jQuery("#jform_add_php_getlistquery input[type='radio']:checked").val();
+	var gettype_WUTdSww = jQuery("#jform_gettype").val();
+	WUTdSww(add_php_getlistquery_WUTdSww,gettype_WUTdSww);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var add_php_getlistquery_DxYMqLK = jQuery("#jform_add_php_getlistquery input[type='radio']:checked").val();
-	var gettype_DxYMqLK = jQuery("#jform_gettype").val();
-	DxYMqLK(add_php_getlistquery_DxYMqLK,gettype_DxYMqLK);
+	var add_php_getlistquery_WUTdSww = jQuery("#jform_add_php_getlistquery input[type='radio']:checked").val();
+	var gettype_WUTdSww = jQuery("#jform_gettype").val();
+	WUTdSww(add_php_getlistquery_WUTdSww,gettype_WUTdSww);
 
 });
 
-// #jform_add_php_before_getitems listeners for add_php_before_getitems_qXDrqWY function
+// #jform_add_php_before_getitems listeners for add_php_before_getitems_OjNsfeN function
 jQuery('#jform_add_php_before_getitems').on('keyup',function()
 {
-	var add_php_before_getitems_qXDrqWY = jQuery("#jform_add_php_before_getitems input[type='radio']:checked").val();
-	var gettype_qXDrqWY = jQuery("#jform_gettype").val();
-	qXDrqWY(add_php_before_getitems_qXDrqWY,gettype_qXDrqWY);
+	var add_php_before_getitems_OjNsfeN = jQuery("#jform_add_php_before_getitems input[type='radio']:checked").val();
+	var gettype_OjNsfeN = jQuery("#jform_gettype").val();
+	OjNsfeN(add_php_before_getitems_OjNsfeN,gettype_OjNsfeN);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_before_getitems',function (e)
 {
 	e.preventDefault();
-	var add_php_before_getitems_qXDrqWY = jQuery("#jform_add_php_before_getitems input[type='radio']:checked").val();
-	var gettype_qXDrqWY = jQuery("#jform_gettype").val();
-	qXDrqWY(add_php_before_getitems_qXDrqWY,gettype_qXDrqWY);
+	var add_php_before_getitems_OjNsfeN = jQuery("#jform_add_php_before_getitems input[type='radio']:checked").val();
+	var gettype_OjNsfeN = jQuery("#jform_gettype").val();
+	OjNsfeN(add_php_before_getitems_OjNsfeN,gettype_OjNsfeN);
 
 });
 
-// #jform_gettype listeners for gettype_qXDrqWY function
+// #jform_gettype listeners for gettype_OjNsfeN function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var add_php_before_getitems_qXDrqWY = jQuery("#jform_add_php_before_getitems input[type='radio']:checked").val();
-	var gettype_qXDrqWY = jQuery("#jform_gettype").val();
-	qXDrqWY(add_php_before_getitems_qXDrqWY,gettype_qXDrqWY);
+	var add_php_before_getitems_OjNsfeN = jQuery("#jform_add_php_before_getitems input[type='radio']:checked").val();
+	var gettype_OjNsfeN = jQuery("#jform_gettype").val();
+	OjNsfeN(add_php_before_getitems_OjNsfeN,gettype_OjNsfeN);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var add_php_before_getitems_qXDrqWY = jQuery("#jform_add_php_before_getitems input[type='radio']:checked").val();
-	var gettype_qXDrqWY = jQuery("#jform_gettype").val();
-	qXDrqWY(add_php_before_getitems_qXDrqWY,gettype_qXDrqWY);
+	var add_php_before_getitems_OjNsfeN = jQuery("#jform_add_php_before_getitems input[type='radio']:checked").val();
+	var gettype_OjNsfeN = jQuery("#jform_gettype").val();
+	OjNsfeN(add_php_before_getitems_OjNsfeN,gettype_OjNsfeN);
 
 });
 
-// #jform_add_php_after_getitems listeners for add_php_after_getitems_oEefcMm function
+// #jform_add_php_after_getitems listeners for add_php_after_getitems_mzPeyNJ function
 jQuery('#jform_add_php_after_getitems').on('keyup',function()
 {
-	var add_php_after_getitems_oEefcMm = jQuery("#jform_add_php_after_getitems input[type='radio']:checked").val();
-	var gettype_oEefcMm = jQuery("#jform_gettype").val();
-	oEefcMm(add_php_after_getitems_oEefcMm,gettype_oEefcMm);
+	var add_php_after_getitems_mzPeyNJ = jQuery("#jform_add_php_after_getitems input[type='radio']:checked").val();
+	var gettype_mzPeyNJ = jQuery("#jform_gettype").val();
+	mzPeyNJ(add_php_after_getitems_mzPeyNJ,gettype_mzPeyNJ);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_after_getitems',function (e)
 {
 	e.preventDefault();
-	var add_php_after_getitems_oEefcMm = jQuery("#jform_add_php_after_getitems input[type='radio']:checked").val();
-	var gettype_oEefcMm = jQuery("#jform_gettype").val();
-	oEefcMm(add_php_after_getitems_oEefcMm,gettype_oEefcMm);
+	var add_php_after_getitems_mzPeyNJ = jQuery("#jform_add_php_after_getitems input[type='radio']:checked").val();
+	var gettype_mzPeyNJ = jQuery("#jform_gettype").val();
+	mzPeyNJ(add_php_after_getitems_mzPeyNJ,gettype_mzPeyNJ);
 
 });
 
-// #jform_gettype listeners for gettype_oEefcMm function
+// #jform_gettype listeners for gettype_mzPeyNJ function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var add_php_after_getitems_oEefcMm = jQuery("#jform_add_php_after_getitems input[type='radio']:checked").val();
-	var gettype_oEefcMm = jQuery("#jform_gettype").val();
-	oEefcMm(add_php_after_getitems_oEefcMm,gettype_oEefcMm);
+	var add_php_after_getitems_mzPeyNJ = jQuery("#jform_add_php_after_getitems input[type='radio']:checked").val();
+	var gettype_mzPeyNJ = jQuery("#jform_gettype").val();
+	mzPeyNJ(add_php_after_getitems_mzPeyNJ,gettype_mzPeyNJ);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var add_php_after_getitems_oEefcMm = jQuery("#jform_add_php_after_getitems input[type='radio']:checked").val();
-	var gettype_oEefcMm = jQuery("#jform_gettype").val();
-	oEefcMm(add_php_after_getitems_oEefcMm,gettype_oEefcMm);
+	var add_php_after_getitems_mzPeyNJ = jQuery("#jform_add_php_after_getitems input[type='radio']:checked").val();
+	var gettype_mzPeyNJ = jQuery("#jform_gettype").val();
+	mzPeyNJ(add_php_after_getitems_mzPeyNJ,gettype_mzPeyNJ);
 
 });
 
-// #jform_gettype listeners for gettype_pQuokmM function
+// #jform_gettype listeners for gettype_LAQluZc function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var gettype_pQuokmM = jQuery("#jform_gettype").val();
-	pQuokmM(gettype_pQuokmM);
+	var gettype_LAQluZc = jQuery("#jform_gettype").val();
+	LAQluZc(gettype_LAQluZc);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var gettype_pQuokmM = jQuery("#jform_gettype").val();
-	pQuokmM(gettype_pQuokmM);
+	var gettype_LAQluZc = jQuery("#jform_gettype").val();
+	LAQluZc(gettype_LAQluZc);
 
 });
 
-// #jform_gettype listeners for gettype_DexlzKN function
+// #jform_gettype listeners for gettype_eqvQVqX function
 jQuery('#jform_gettype').on('keyup',function()
 {
-	var gettype_DexlzKN = jQuery("#jform_gettype").val();
-	DexlzKN(gettype_DexlzKN);
+	var gettype_eqvQVqX = jQuery("#jform_gettype").val();
+	eqvQVqX(gettype_eqvQVqX);
 
 });
 jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 {
 	e.preventDefault();
-	var gettype_DexlzKN = jQuery("#jform_gettype").val();
-	DexlzKN(gettype_DexlzKN);
+	var gettype_eqvQVqX = jQuery("#jform_gettype").val();
+	eqvQVqX(gettype_eqvQVqX);
 
 });
 

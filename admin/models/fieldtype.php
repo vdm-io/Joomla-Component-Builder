@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.8
-	@build			30th January, 2016
+	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typevoox = $item->id;
+		$this->typetixf = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getPbsfields()
+	public function getQxefields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typevoox global.
-		$typevoox = $this->typevoox;
-		if (is_numeric($typevoox ))
+		// Filter by typetixf global.
+		$typetixf = $this->typetixf;
+		if (is_numeric($typetixf ))
 		{
-			$query->where('a.type = ' . (int) $typevoox );
+			$query->where('a.type = ' . (int) $typetixf );
 		}
-		elseif (is_string($typevoox))
+		elseif (is_string($typetixf))
 		{
-			$query->where('a.type = ' . $db->quote($typevoox));
+			$query->where('a.type = ' . $db->quote($typetixf));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationPbsfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationQxefields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationPbsfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationQxefields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationPbsfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationQxefields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationPbsfields($item->store, 'store');
+					$item->store = $this->selectionTranslationQxefields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationPbsfields($value,$name)
+	public function selectionTranslationQxefields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

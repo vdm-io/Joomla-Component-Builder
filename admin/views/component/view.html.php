@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.8
-	@build			30th January, 2016
+	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -72,10 +72,10 @@ class ComponentbuilderViewComponent extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->mdyadmin_views		= $this->get('Mdyadmin_views');
+		$this->raoadmin_views		= $this->get('Raoadmin_views');
 
 		// Get Linked view data
-		$this->ibusite_views		= $this->get('Ibusite_views');
+		$this->mbksite_views		= $this->get('Mbksite_views');
 
 		// Set the toolbar
 		$this->addToolBar();

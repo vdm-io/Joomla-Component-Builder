@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.8
-	@build			30th January, 2016
+	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1425,14 +1425,14 @@ class com_componentbuilderInstallerScript
 			$db->setQuery($query);
 			$allDone = $db->execute();
 			echo '<a target="_blank" href="https://www.vdm.io/joomla-component-builder" title="Component Builder">
-				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
+				<img src="components/com_componentbuilder/assets/images/component-300.png"/>
 				</a>';
 		}
 		// do any updates needed
 		if ($type == 'update')
 		{
 			echo '<a target="_blank" href="https://www.vdm.io/joomla-component-builder" title="Component Builder">
-				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
+				<img src="components/com_componentbuilder/assets/images/component-300.png"/>
 				</a>
 				<h3>Upgrade to Version 2.0.8 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}

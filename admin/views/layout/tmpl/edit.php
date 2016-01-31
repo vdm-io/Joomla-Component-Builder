@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.8
-	@build			30th January, 2016
+	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -112,18 +112,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_GfhPETH function
+// #jform_add_php_view listeners for add_php_view_vHgkaKp function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_GfhPETH = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	GfhPETH(add_php_view_GfhPETH);
+	var add_php_view_vHgkaKp = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vHgkaKp(add_php_view_vHgkaKp);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_GfhPETH = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	GfhPETH(add_php_view_GfhPETH);
+	var add_php_view_vHgkaKp = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vHgkaKp(add_php_view_vHgkaKp);
 
 });
 

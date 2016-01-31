@@ -12737,9 +12737,12 @@ class Compiler
 			$imagePath = $this->componentPath.'/admin/assets/images';
 			// move the image to its place
 			JFile::copy(JPATH_SITE.'/'.$path, $imagePath.'/component-300.'.$type,'',true);
+			// now set the type to global for re-use
+			$this->componentImageType = $type;
 			// return image type
 			return $type;
 		}
+		$this->componentImageType = 'jpg';
 		return 'jpg';
 	}
 
@@ -15608,6 +15611,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 						{
 							$id_array[] = trim($ids);
 						}
+						$id_array_new = array();
 						// check for ranges
 						foreach ($id_array as $key => $id)
 						{
@@ -15619,9 +15623,13 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 								if (count($id_range) == 2)
 								{
 									$range = range($id_range[0],$id_range[1]);
-									$id_array = array_merge($id_array,$range);
+									$id_array_new = array_merge($id_array_new,$range);
 								}
 							}
+						}
+						if (ComponentbuilderHelper::checkArray($id_array_new))
+						{
+							$id_array = array_merge($id_array_new, $id_array);
 						}
 						// final fixing to array
 						if (ComponentbuilderHelper::checkArray($id_array))
