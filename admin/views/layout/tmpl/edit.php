@@ -112,18 +112,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_vHgkaKp function
+// #jform_add_php_view listeners for add_php_view_ASKXMoc function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_vHgkaKp = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vHgkaKp(add_php_view_vHgkaKp);
+	var add_php_view_ASKXMoc = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	ASKXMoc(add_php_view_ASKXMoc);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_vHgkaKp = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vHgkaKp(add_php_view_vHgkaKp);
+	var add_php_view_ASKXMoc = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	ASKXMoc(add_php_view_ASKXMoc);
 
 });
 

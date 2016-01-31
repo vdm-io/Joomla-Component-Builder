@@ -53,7 +53,7 @@ due to [Automated Component Builder] (https://www.vdm.io/joomla-component-builde
 
 + *Line count*: **79339**
 + *File count*: **489**
-+ *Folder count*: **95**
++ *Folder count*: **96**
 
 **146 Hours** or **18 Eight Hour Days** (the actual time the author spent)
 

@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typetixf = $item->id;
+		$this->typewnbl = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getQxefields()
+	public function getYomfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typetixf global.
-		$typetixf = $this->typetixf;
-		if (is_numeric($typetixf ))
+		// Filter by typewnbl global.
+		$typewnbl = $this->typewnbl;
+		if (is_numeric($typewnbl ))
 		{
-			$query->where('a.type = ' . (int) $typetixf );
+			$query->where('a.type = ' . (int) $typewnbl );
 		}
-		elseif (is_string($typetixf))
+		elseif (is_string($typewnbl))
 		{
-			$query->where('a.type = ' . $db->quote($typetixf));
+			$query->where('a.type = ' . $db->quote($typewnbl));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationQxefields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationYomfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationQxefields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationYomfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationQxefields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationYomfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationQxefields($item->store, 'store');
+					$item->store = $this->selectionTranslationYomfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationQxefields($value,$name)
+	public function selectionTranslationYomfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

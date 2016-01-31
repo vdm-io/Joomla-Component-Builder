@@ -4997,7 +4997,7 @@ class Compiler
 		if (ComponentbuilderHelper::checkString($script))
 		{
 			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
-			$script .= "\n\t\t\t\t".'<img src="components/com_'.$component.'/assets/images/component-300.jpg"/>';
+			$script .= "\n\t\t\t\t".'<img src="components/com_'.$component.'/assets/images/component-300.'.$this->componentImageType.'"/>';
 			$script .= "\n\t\t\t\t".'</a>\';';
 			
 			return $script;
@@ -5012,7 +5012,7 @@ class Compiler
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
 			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
-			$script .= "\n\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/component-300.jpg"/>';
+			$script .= "\n\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/component-300.'.$this->componentImageType.'"/>';
 			$script .= "\n\t\t\t\t".'</a>';
 			$script .= "\n\t\t\t\t<h3>Upgrade to Version ".$this->fileContentStatic['###VERSION###']." Was Successful! Let us know if anything is not working as expected.</h3>';";
 		}
