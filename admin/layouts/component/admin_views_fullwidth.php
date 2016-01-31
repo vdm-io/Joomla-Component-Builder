@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
+	@version		2.0.9
 	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -29,7 +29,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->guqadmin_views;
+$items	= $displayData->qbbadmin_views;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit	= "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.edit";

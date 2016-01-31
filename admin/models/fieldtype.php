@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
+	@version		2.0.9
 	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typewnbl = $item->id;
+		$this->typevppu = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getYomfields()
+	public function getEayfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typewnbl global.
-		$typewnbl = $this->typewnbl;
-		if (is_numeric($typewnbl ))
+		// Filter by typevppu global.
+		$typevppu = $this->typevppu;
+		if (is_numeric($typevppu ))
 		{
-			$query->where('a.type = ' . (int) $typewnbl );
+			$query->where('a.type = ' . (int) $typevppu );
 		}
-		elseif (is_string($typewnbl))
+		elseif (is_string($typevppu))
 		{
-			$query->where('a.type = ' . $db->quote($typewnbl));
+			$query->where('a.type = ' . $db->quote($typevppu));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationYomfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationEayfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationYomfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationEayfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationYomfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationEayfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationYomfields($item->store, 'store');
+					$item->store = $this->selectionTranslationEayfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationYomfields($value,$name)
+	public function selectionTranslationEayfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

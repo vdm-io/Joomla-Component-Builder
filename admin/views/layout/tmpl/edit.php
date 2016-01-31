@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
+	@version		2.0.9
 	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -112,18 +112,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_ASKXMoc function
+// #jform_add_php_view listeners for add_php_view_QMYVTRN function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_ASKXMoc = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	ASKXMoc(add_php_view_ASKXMoc);
+	var add_php_view_QMYVTRN = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	QMYVTRN(add_php_view_QMYVTRN);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_ASKXMoc = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	ASKXMoc(add_php_view_ASKXMoc);
+	var add_php_view_QMYVTRN = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	QMYVTRN(add_php_view_QMYVTRN);
 
 });
 

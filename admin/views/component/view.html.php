@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
+	@version		2.0.9
 	@build			31st January, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -72,10 +72,10 @@ class ComponentbuilderViewComponent extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->guqadmin_views		= $this->get('Guqadmin_views');
+		$this->qbbadmin_views		= $this->get('Qbbadmin_views');
 
 		// Get Linked view data
-		$this->eiesite_views		= $this->get('Eiesite_views');
+		$this->qjisite_views		= $this->get('Qjisite_views');
 
 		// Set the toolbar
 		$this->addToolBar();
