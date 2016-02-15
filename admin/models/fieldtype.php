@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.9
-	@build			31st January, 2016
+	@build			15th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typevppu = $item->id;
+		$this->typesahs = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getEayfields()
+	public function getWtvfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typevppu global.
-		$typevppu = $this->typevppu;
-		if (is_numeric($typevppu ))
+		// Filter by typesahs global.
+		$typesahs = $this->typesahs;
+		if (is_numeric($typesahs ))
 		{
-			$query->where('a.type = ' . (int) $typevppu );
+			$query->where('a.type = ' . (int) $typesahs );
 		}
-		elseif (is_string($typevppu))
+		elseif (is_string($typesahs))
 		{
-			$query->where('a.type = ' . $db->quote($typevppu));
+			$query->where('a.type = ' . $db->quote($typesahs));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationEayfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationWtvfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationEayfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationWtvfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationEayfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationWtvfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationEayfields($item->store, 'store');
+					$item->store = $this->selectionTranslationWtvfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationEayfields($value,$name)
+	public function selectionTranslationWtvfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -276,7 +276,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				1 => 'COM_COMPONENTBUILDER_FIELD_JSON',
 				2 => 'COM_COMPONENTBUILDER_FIELD_BASESIXTY_FOUR',
 				3 => 'COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALKEY',
-				4 => 'COM_COMPONENTBUILDER_FIELD_ADVANCE_ENCRYPTION_VDMKEY'
+				4 => 'COM_COMPONENTBUILDER_FIELD_ADVANCE_ENCRYPTION_WHMCSKEY'
 			);
 			// Now check if value is found in this array
 			if (isset($storeArray[$value]) && ComponentbuilderHelper::checkString($storeArray[$value]))

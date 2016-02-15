@@ -252,7 +252,7 @@ abstract class ###Component###Helper
 		foreach ($actions as $action)
                 {
 			// set to use component default
-			$allow = true;
+			$fallback= true;
 			if (self::checkObject($record) && isset($record->id) && $record->id > 0 && !in_array($action->name,$componentActions))
 			{
 				// The record has been set. Check the record permissions.
@@ -268,13 +268,13 @@ abstract class ###Component###Helper
 							{
 								$result->set($action->name, true);
 								// set not to use component default
-								$allow = false;
+								$fallback= false;
 							}
 							else
 							{
 								$result->set($action->name, false);
 								// set not to use component default
-								$allow = false;
+								$fallback= false;
 							}
 						}
 						elseif ($user->authorise($view.'edit.own', 'com_###component###.'.$view.'.' . (int) $record->id))
@@ -284,13 +284,13 @@ abstract class ###Component###Helper
 							{
 								$result->set($action->name, true);
 								// set not to use component default
-								$allow = false;
+								$fallback= false;
 							}
 							else
 							{
 								$result->set($action->name, false);
 								// set not to use component default
-								$allow = false;
+								$fallback= false;
 							}
 						}
 						elseif ($user->authorise('core.edit.own', 'com_###component###'))
@@ -300,13 +300,13 @@ abstract class ###Component###Helper
 							{
 								$result->set($action->name, true);
 								// set not to use component default
-								$allow = false;
+								$fallback= false;
 							}
 							else
 							{
 								$result->set($action->name, false);
 								// set not to use component default
-								$allow = false;
+								$fallback= false;
 							}
 						}
 						elseif ($user->authorise($view.'edit.own', 'com_###component###'))
@@ -316,13 +316,13 @@ abstract class ###Component###Helper
 							{
 								$result->set($action->name, true);
 								// set not to use component default
-								$allow = false;
+								$fallback= false;
 							}
 							else
 							{
 								$result->set($action->name, false);
 								// set not to use component default
-								$allow = false;
+								$fallback= false;
 							}
 						}
 					}
@@ -352,13 +352,13 @@ abstract class ###Component###Helper
 								{
 									$result->set($action->name, true);
 									// set not to use component default
-									$allow = false;
+									$fallback= false;
 								}
 								else
 								{
 									$result->set($action->name, false);
 									// set not to use component default
-									$allow = false;
+									$fallback= false;
 								}
 							}
 							elseif ($user->authorise($view.'edit.own', 'com_###component###.'.$views.'.category.' . (int) $record->catid))
@@ -368,13 +368,13 @@ abstract class ###Component###Helper
 								{
 									$result->set($action->name, true);
 									// set not to use component default
-									$allow = false;
+									$fallback= false;
 								}
 								else
 								{
 									$result->set($action->name, false);
 									// set not to use component default
-									$allow = false;
+									$fallback= false;
 								}
 							}
 							elseif ($user->authorise('core.edit.own', 'com_###component###'))
@@ -384,13 +384,13 @@ abstract class ###Component###Helper
 								{
 									$result->set($action->name, true);
 									// set not to use component default
-									$allow = false;
+									$fallback= false;
 								}
 								else
 								{
 									$result->set($action->name, false);
 									// set not to use component default
-									$allow = false;
+									$fallback= false;
 								}
 							}
 							elseif ($user->authorise($view.'edit.own', 'com_###component###'))
@@ -400,21 +400,21 @@ abstract class ###Component###Helper
 								{
 									$result->set($action->name, true);
 									// set not to use component default
-									$allow = false;
+									$fallback= false;
 								}
 								else
 								{
 									$result->set($action->name, false);
 									// set not to use component default
-									$allow = false;
+									$fallback= false;
 								}
 							}
 						}
 					}
 				}
 			}
-			// if allowed then fall back on component global settings
-			if ($allow)
+			// if allowed then fallback on component global settings
+			if ($fallback)
 			{
 				$result->set($action->name, $user->authorise($action->name, 'com_###component###'));
 			}

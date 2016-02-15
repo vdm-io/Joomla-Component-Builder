@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.9
-	@build			31st January, 2016
+	@build			15th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -155,8 +155,8 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.component');
 			}
 		}
-		$this->idggbd = $item->addadmin_views;
-		$this->idknco = $item->addsite_views;
+		$this->idvndq = $item->addadmin_views;
+		$this->idfodn = $item->addsite_views;
 
 		return $item;
 	}
@@ -166,7 +166,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getQbbadmin_views()
+	public function getQudadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -223,14 +223,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idggbd = json_decode($this->idggbd,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idggbd) && ComponentbuilderHelper::checkArray($idggbd))
+			$idvndq = json_decode($this->idvndq,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idvndq) && ComponentbuilderHelper::checkArray($idvndq))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idggbd['adminview']) && ComponentbuilderHelper::checkArray($idggbd['adminview']))
+					if ($item->id && isset($idvndq['adminview']) && ComponentbuilderHelper::checkArray($idvndq['adminview']))
 					{
-						if (!in_array($item->id,$idggbd['adminview']))
+						if (!in_array($item->id,$idvndq['adminview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -252,7 +252,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getQjisite_views()
+	public function getUpjsite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -313,14 +313,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idknco = json_decode($this->idknco,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idknco) && ComponentbuilderHelper::checkArray($idknco))
+			$idfodn = json_decode($this->idfodn,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idfodn) && ComponentbuilderHelper::checkArray($idfodn))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idknco['siteview']) && ComponentbuilderHelper::checkArray($idknco['siteview']))
+					if ($item->id && isset($idfodn['siteview']) && ComponentbuilderHelper::checkArray($idfodn['siteview']))
 					{
-						if (!in_array($item->id,$idknco['siteview']))
+						if (!in_array($item->id,$idfodn['siteview']))
 						{
 							unset($items[$nr]);
 							continue;

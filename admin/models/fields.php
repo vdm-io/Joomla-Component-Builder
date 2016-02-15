@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.9
-	@build			31st January, 2016
+	@build			15th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields.php
@@ -240,7 +240,7 @@ class ComponentbuilderModelFields extends JModelList
 				1 => 'COM_COMPONENTBUILDER_FIELD_JSON',
 				2 => 'COM_COMPONENTBUILDER_FIELD_BASESIXTY_FOUR',
 				3 => 'COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALKEY',
-				4 => 'COM_COMPONENTBUILDER_FIELD_ADVANCE_ENCRYPTION_VDMKEY'
+				4 => 'COM_COMPONENTBUILDER_FIELD_ADVANCE_ENCRYPTION_WHMCSKEY'
 			);
 			// Now check if value is found in this array
 			if (isset($storeArray[$value]) && ComponentbuilderHelper::checkString($storeArray[$value]))

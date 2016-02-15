@@ -700,7 +700,7 @@
           "type": "template"
         },
         "layout_custom_admin.php": {
-          "path": "c0mp0n3nt/admin/layouts/VIEW",
+          "path": "c0mp0n3nt/admin/layouts",
           "rename": "layout_custom_admin",
           "type": "layout"
         }

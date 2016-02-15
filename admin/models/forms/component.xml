@@ -710,12 +710,14 @@
 			required="true"
 			default="1">
 			<!-- Option Set. -->
-			<option value="0">
-				COM_COMPONENTBUILDER_COMPONENT_CUSTOM_USED_IN_CUSTOM_CODE</option>
 			<option value="1">
-				COM_COMPONENTBUILDER_COMPONENT_UPDATES_USED_IN_JOOMLA_UPDATER</option>
+				COM_COMPONENTBUILDER_COMPONENT_ADVANCED_ENCRYPTION_ONLY_TO_LOCK_DATA</option>
 			<option value="2">
+				COM_COMPONENTBUILDER_COMPONENT_UPDATES_USED_IN_JOOMLA_UPDATER</option>
+			<option value="3">
 				COM_COMPONENTBUILDER_COMPONENT_LOCK_DOWN_USE_USED_TO_VERIFY_OWNERSHIP</option>
+			<option value="4">
+				COM_COMPONENTBUILDER_COMPONENT_CUSTOM_USED_IN_CUSTOM_CODE</option>
 		</field>
 		<!-- Note_on_contributors Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_on_contributors" label="COM_COMPONENTBUILDER_COMPONENT_NOTE_ON_CONTRIBUTORS_LABEL" description="COM_COMPONENTBUILDER_COMPONENT_NOTE_ON_CONTRIBUTORS_DESCRIPTION" heading="h4" class="alert alert-info note_on_contributors" close="false" />

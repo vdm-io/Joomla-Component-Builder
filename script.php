@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.9
-	@build			31st January, 2016
+	@build			15th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1248,7 +1248,6 @@ class com_componentbuilderInstallerScript
 		{
 
 			// Get The Database object
-
 			$db = JFactory::getDbo();
 
 			// Create the component content type object.
@@ -1260,8 +1259,8 @@ class com_componentbuilderInstallerScript
 			$component->router = 'ComponentbuilderHelperRoute::getComponentRoute';
 			$component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","debug_linenr","add_css","add_admin_event","number","add_site_event","addreadme","adduikit","add_php_helper_admin","add_php_helper_site","add_sql","add_license","license_type","emptycontributors","creatuserhelper","addfootable","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$componentInserted = $db->insertObject('#__content_types', $component);
+			// Set the object into the content types table.
+			$component_Inserted = $db->insertObject('#__content_types', $component);
 
 			// Create the admin_view content type object.
 			$admin_view = new stdClass();
@@ -1272,8 +1271,8 @@ class com_componentbuilderInstallerScript
 			$admin_view->router = 'ComponentbuilderHelperRoute::getAdmin_viewRoute';
 			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","add_php_ajax","source","add_php_getitem","add_php_getitems","add_css_view","add_php_getlistquery","add_php_save","add_css_views","add_php_postsavehook","add_php_allowedit","add_javascript_view_file","add_php_batchcopy","add_php_batchmove","add_javascript_view_footer","add_php_before_delete","add_php_after_delete","add_javascript_views_file","add_sql","add_javascript_views_footer","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$admin_viewInserted = $db->insertObject('#__content_types', $admin_view);
+			// Set the object into the content types table.
+			$admin_view_Inserted = $db->insertObject('#__content_types', $admin_view);
 
 			// Create the custom_admin_view content type object.
 			$custom_admin_view = new stdClass();
@@ -1284,8 +1283,8 @@ class com_componentbuilderInstallerScript
 			$custom_admin_view->router = 'ComponentbuilderHelperRoute::getCustom_admin_viewRoute';
 			$custom_admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","snippet","main_get","add_php_document","dynamic_get","add_php_view","add_php_jview_display","add_php_jview","add_js_document","add_custom_button","add_css_document","add_css","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$custom_admin_viewInserted = $db->insertObject('#__content_types', $custom_admin_view);
+			// Set the object into the content types table.
+			$custom_admin_view_Inserted = $db->insertObject('#__content_types', $custom_admin_view);
 
 			// Create the site_view content type object.
 			$site_view = new stdClass();
@@ -1296,8 +1295,8 @@ class com_componentbuilderInstallerScript
 			$site_view->router = 'ComponentbuilderHelperRoute::getSite_viewRoute';
 			$site_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/site_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","snippet","add_php_ajax","main_get","dynamic_get","add_php_document","add_php_view","add_php_jview_display","add_custom_button","add_php_jview","add_js_document","button_position","add_css_document","add_css","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$site_viewInserted = $db->insertObject('#__content_types', $site_view);
+			// Set the object into the content types table.
+			$site_view_Inserted = $db->insertObject('#__content_types', $site_view);
 
 			// Create the template content type object.
 			$template = new stdClass();
@@ -1308,8 +1307,8 @@ class com_componentbuilderInstallerScript
 			$template->router = 'ComponentbuilderHelperRoute::getTemplateRoute';
 			$template->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/template.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","snippet","add_php_view","dynamic_get","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$templateInserted = $db->insertObject('#__content_types', $template);
+			// Set the object into the content types table.
+			$template_Inserted = $db->insertObject('#__content_types', $template);
 
 			// Create the layout content type object.
 			$layout = new stdClass();
@@ -1320,8 +1319,8 @@ class com_componentbuilderInstallerScript
 			$layout->router = 'ComponentbuilderHelperRoute::getLayoutRoute';
 			$layout->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/layout.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","dynamic_get","snippet","add_php_view","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$layoutInserted = $db->insertObject('#__content_types', $layout);
+			// Set the object into the content types table.
+			$layout_Inserted = $db->insertObject('#__content_types', $layout);
 
 			// Create the dynamic_get content type object.
 			$dynamic_get = new stdClass();
@@ -1332,8 +1331,8 @@ class com_componentbuilderInstallerScript
 			$dynamic_get->router = 'ComponentbuilderHelperRoute::getDynamic_getRoute';
 			$dynamic_get->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","main_source","gettype","pagination","view_table_main","add_php_before_getitem","add_php_after_getitem","add_php_getlistquery","add_php_before_getitems","add_php_after_getitems","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "db_table_main","targetTable": "","targetColumn": "","displayColumn": ""}]}';
 
-			// Insert the object into the content types table.
-			$dynamic_getInserted = $db->insertObject('#__content_types', $dynamic_get);
+			// Set the object into the content types table.
+			$dynamic_get_Inserted = $db->insertObject('#__content_types', $dynamic_get);
 
 			// Create the snippet content type object.
 			$snippet = new stdClass();
@@ -1344,8 +1343,8 @@ class com_componentbuilderInstallerScript
 			$snippet->router = 'ComponentbuilderHelperRoute::getSnippetRoute';
 			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$snippetInserted = $db->insertObject('#__content_types', $snippet);
+			// Set the object into the content types table.
+			$snippet_Inserted = $db->insertObject('#__content_types', $snippet);
 
 			// Create the field content type object.
 			$field = new stdClass();
@@ -1356,8 +1355,8 @@ class com_componentbuilderInstallerScript
 			$field->router = 'ComponentbuilderHelperRoute::getFieldRoute';
 			$field->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/field.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","add_css_view","catid","add_css_views","add_javascript_view_footer","store","add_javascript_views_footer","not_required"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_fieldtype","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$fieldInserted = $db->insertObject('#__content_types', $field);
+			// Set the object into the content types table.
+			$field_Inserted = $db->insertObject('#__content_types', $field);
 
 			// Create the field catagory content type object.
 			$field_catagory = new stdClass();
@@ -1368,8 +1367,8 @@ class com_componentbuilderInstallerScript
 			$field_catagory->router = 'ComponentbuilderHelperRoute::getCategoryRoute';
 			$field_catagory->content_history_options = '{"formFile":"administrator\/components\/com_categories\/models\/forms\/category.xml", "hideFields":["asset_id","checked_out","checked_out_time","version","lft","rgt","level","path","extension"], "ignoreChanges":["modified_user_id", "modified_time", "checked_out", "checked_out_time", "version", "hits", "path"],"convertToInt":["publish_up", "publish_down"], "displayLookup":[{"sourceColumn":"created_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"access","targetTable":"#__viewlevels","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"modified_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"parent_id","targetTable":"#__categories","targetColumn":"id","displayColumn":"title"}]}';
 
-			// Insert the object into the content types table.
-			$field_catagoryInserted = $db->insertObject('#__content_types', $field_catagory);
+			// Set the object into the content types table.
+			$field_catagory_Inserted = $db->insertObject('#__content_types', $field_catagory);
 
 			// Create the fieldtype content type object.
 			$fieldtype = new stdClass();
@@ -1380,8 +1379,8 @@ class com_componentbuilderInstallerScript
 			$fieldtype->router = 'ComponentbuilderHelperRoute::getFieldtypeRoute';
 			$fieldtype->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/fieldtype.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","catid"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Insert the object into the content types table.
-			$fieldtypeInserted = $db->insertObject('#__content_types', $fieldtype);
+			// Set the object into the content types table.
+			$fieldtype_Inserted = $db->insertObject('#__content_types', $fieldtype);
 
 			// Create the fieldtype catagory content type object.
 			$fieldtype_catagory = new stdClass();
@@ -1392,8 +1391,8 @@ class com_componentbuilderInstallerScript
 			$fieldtype_catagory->router = 'ComponentbuilderHelperRoute::getCategoryRoute';
 			$fieldtype_catagory->content_history_options = '{"formFile":"administrator\/components\/com_categories\/models\/forms\/category.xml", "hideFields":["asset_id","checked_out","checked_out_time","version","lft","rgt","level","path","extension"], "ignoreChanges":["modified_user_id", "modified_time", "checked_out", "checked_out_time", "version", "hits", "path"],"convertToInt":["publish_up", "publish_down"], "displayLookup":[{"sourceColumn":"created_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"access","targetTable":"#__viewlevels","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"modified_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"parent_id","targetTable":"#__categories","targetColumn":"id","displayColumn":"title"}]}';
 
-			// Insert the object into the content types table.
-			$fieldtype_catagoryInserted = $db->insertObject('#__content_types', $fieldtype_catagory);
+			// Set the object into the content types table.
+			$fieldtype_catagory_Inserted = $db->insertObject('#__content_types', $fieldtype_catagory);
 
 			// Create the help_document content type object.
 			$help_document = new stdClass();
@@ -1404,8 +1403,8 @@ class com_componentbuilderInstallerScript
 			$help_document->router = 'ComponentbuilderHelperRoute::getHelp_documentRoute';
 			$help_document->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","target","article","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
 
-			// Insert the object into the content types table.
-			$help_documentInserted = $db->insertObject('#__content_types', $help_document);
+			// Set the object into the content types table.
+			$help_document_Inserted = $db->insertObject('#__content_types', $help_document);
 
 
 			// Install the global extenstion params.
@@ -1418,19 +1417,401 @@ class com_componentbuilderInstallerScript
 
 			// Condition.
 			$conditions = array(
-				$db->quoteName('element') . ' = ' . $db->quote('com_componentbuilder')
+				$db->quoteName('element') . ' = ' . $db->quote('com_')
 			);
 
 			$query->update($db->quoteName('#__extensions'))->set($fields)->where($conditions);
 			$db->setQuery($query);
 			$allDone = $db->execute();
 			echo '<a target="_blank" href="https://www.vdm.io/joomla-component-builder" title="Component Builder">
-				<img src="components/com_componentbuilder/assets/images/component-300.png"/>
+				<img src="components/com_/assets/images/component-300.png"/>
 				</a>';
 		}
 		// do any updates needed
 		if ($type == 'update')
 		{
+
+			// Get The Database object
+			$db = JFactory::getDbo();
+
+			// Create the component content type object.
+			$component = new stdClass();
+			$component->type_title = 'Componentbuilder Component';
+			$component->type_alias = 'com_componentbuilder.component';
+			$component->table = '{"special": {"dbtable": "#__componentbuilder_component","key": "id","type": "Component","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "readme","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","component_version":"component_version","short_description":"short_description","companyname":"companyname","author":"author","description":"description","debug_linenr":"debug_linenr","bom":"bom","image":"image","add_css":"add_css","add_admin_event":"add_admin_event","number":"number","add_site_event":"add_site_event","addreadme":"addreadme","adduikit":"adduikit","name":"name","add_php_helper_admin":"add_php_helper_admin","email":"email","add_php_helper_site":"add_php_helper_site","website":"website","add_sql":"add_sql","copyright":"copyright","add_license":"add_license","license_type":"license_type","emptycontributors":"emptycontributors","whmcs_key":"whmcs_key","whmcs_url":"whmcs_url","license":"license","creatuserhelper":"creatuserhelper","addfootable":"addfootable","css":"css","php_helper_admin":"php_helper_admin","php_admin_event":"php_admin_event","php_helper_site":"php_helper_site","php_site_event":"php_site_event","sql":"sql","readme":"readme","not_required":"not_required"}}';
+			$component->router = 'ComponentbuilderHelperRoute::getComponentRoute';
+			$component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","debug_linenr","add_css","add_admin_event","number","add_site_event","addreadme","adduikit","add_php_helper_admin","add_php_helper_site","add_sql","add_license","license_type","emptycontributors","creatuserhelper","addfootable","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if component type is already in content_type DB.
+			$component_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component->type_id = $db->loadResult();
+				$component_Updated = $db->updateObject('#__content_types', $component, 'type_id');
+			}
+			else
+			{
+				$component_Inserted = $db->insertObject('#__content_types', $component);
+			}
+
+			// Create the admin_view content type object.
+			$admin_view = new stdClass();
+			$admin_view->type_title = 'Componentbuilder Admin_view';
+			$admin_view->type_alias = 'com_componentbuilder.admin_view';
+			$admin_view->table = '{"special": {"dbtable": "#__componentbuilder_admin_view","key": "id","type": "Admin_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "null","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_single":"name_single","name_list":"name_list","short_description":"short_description","php_getitem":"php_getitem","php_before_delete":"php_before_delete","php_postsavehook":"php_postsavehook","type":"type","php_getlistquery":"php_getlistquery","description":"description","php_batchcopy":"php_batchcopy","add_php_ajax":"add_php_ajax","source":"source","icon":"icon","icon_add":"icon_add","icon_category":"icon_category","php_getitems":"php_getitems","php_save":"php_save","php_allowedit":"php_allowedit","php_batchmove":"php_batchmove","php_after_delete":"php_after_delete","sql":"sql","javascript_views_footer":"javascript_views_footer","php_ajaxmethod":"php_ajaxmethod","add_php_getitem":"add_php_getitem","add_php_getitems":"add_php_getitems","add_css_view":"add_css_view","add_php_getlistquery":"add_php_getlistquery","css_view":"css_view","add_php_save":"add_php_save","add_css_views":"add_css_views","add_php_postsavehook":"add_php_postsavehook","css_views":"css_views","add_php_allowedit":"add_php_allowedit","add_javascript_view_file":"add_javascript_view_file","add_php_batchcopy":"add_php_batchcopy","javascript_view_file":"javascript_view_file","add_php_batchmove":"add_php_batchmove","add_javascript_view_footer":"add_javascript_view_footer","add_php_before_delete":"add_php_before_delete","javascript_view_footer":"javascript_view_footer","add_php_after_delete":"add_php_after_delete","add_javascript_views_file":"add_javascript_views_file","add_sql":"add_sql","javascript_views_file":"javascript_views_file","add_javascript_views_footer":"add_javascript_views_footer","not_required":"not_required"}}';
+			$admin_view->router = 'ComponentbuilderHelperRoute::getAdmin_viewRoute';
+			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","add_php_ajax","source","add_php_getitem","add_php_getitems","add_css_view","add_php_getlistquery","add_php_save","add_css_views","add_php_postsavehook","add_php_allowedit","add_javascript_view_file","add_php_batchcopy","add_php_batchmove","add_javascript_view_footer","add_php_before_delete","add_php_after_delete","add_javascript_views_file","add_sql","add_javascript_views_footer","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if admin_view type is already in content_type DB.
+			$admin_view_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($admin_view->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$admin_view->type_id = $db->loadResult();
+				$admin_view_Updated = $db->updateObject('#__content_types', $admin_view, 'type_id');
+			}
+			else
+			{
+				$admin_view_Inserted = $db->insertObject('#__content_types', $admin_view);
+			}
+
+			// Create the custom_admin_view content type object.
+			$custom_admin_view = new stdClass();
+			$custom_admin_view->type_title = 'Componentbuilder Custom_admin_view';
+			$custom_admin_view->type_alias = 'com_componentbuilder.custom_admin_view';
+			$custom_admin_view->table = '{"special": {"dbtable": "#__componentbuilder_custom_admin_view","key": "id","type": "Custom_admin_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$custom_admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name":"name","alias":"alias","description":"description","snippet":"snippet","php_view":"php_view","php_jview":"php_jview","css_document":"css_document","php_document":"php_document","php_jview_display":"php_jview_display","js_document":"js_document","php_model":"php_model","css":"css","custom_get":"custom_get","main_get":"main_get","add_php_document":"add_php_document","dynamic_get":"dynamic_get","add_php_view":"add_php_view","add_php_jview_display":"add_php_jview_display","add_php_jview":"add_php_jview","default":"default","add_js_document":"add_js_document","add_custom_button":"add_custom_button","add_css_document":"add_css_document","add_css":"add_css","php_controller":"php_controller","not_required":"not_required"}}';
+			$custom_admin_view->router = 'ComponentbuilderHelperRoute::getCustom_admin_viewRoute';
+			$custom_admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","snippet","main_get","add_php_document","dynamic_get","add_php_view","add_php_jview_display","add_php_jview","add_js_document","add_custom_button","add_css_document","add_css","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if custom_admin_view type is already in content_type DB.
+			$custom_admin_view_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($custom_admin_view->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$custom_admin_view->type_id = $db->loadResult();
+				$custom_admin_view_Updated = $db->updateObject('#__content_types', $custom_admin_view, 'type_id');
+			}
+			else
+			{
+				$custom_admin_view_Inserted = $db->insertObject('#__content_types', $custom_admin_view);
+			}
+
+			// Create the site_view content type object.
+			$site_view = new stdClass();
+			$site_view->type_title = 'Componentbuilder Site_view';
+			$site_view->type_alias = 'com_componentbuilder.site_view';
+			$site_view->table = '{"special": {"dbtable": "#__componentbuilder_site_view","key": "id","type": "Site_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$site_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name":"name","alias":"alias","description":"description","snippet":"snippet","css_document":"css_document","php_view":"php_view","php_jview":"php_jview","php_document":"php_document","php_jview_display":"php_jview_display","custom_get":"custom_get","js_document":"js_document","add_php_ajax":"add_php_ajax","css":"css","main_get":"main_get","dynamic_get":"dynamic_get","php_ajaxmethod":"php_ajaxmethod","add_php_document":"add_php_document","add_php_view":"add_php_view","default":"default","add_php_jview_display":"add_php_jview_display","add_custom_button":"add_custom_button","add_php_jview":"add_php_jview","add_js_document":"add_js_document","button_position":"button_position","add_css_document":"add_css_document","php_controller":"php_controller","add_css":"add_css","php_model":"php_model","not_required":"not_required"}}';
+			$site_view->router = 'ComponentbuilderHelperRoute::getSite_viewRoute';
+			$site_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/site_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","snippet","add_php_ajax","main_get","dynamic_get","add_php_document","add_php_view","add_php_jview_display","add_custom_button","add_php_jview","add_js_document","button_position","add_css_document","add_css","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if site_view type is already in content_type DB.
+			$site_view_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($site_view->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$site_view->type_id = $db->loadResult();
+				$site_view_Updated = $db->updateObject('#__content_types', $site_view, 'type_id');
+			}
+			else
+			{
+				$site_view_Inserted = $db->insertObject('#__content_types', $site_view);
+			}
+
+			// Create the template content type object.
+			$template = new stdClass();
+			$template->type_title = 'Componentbuilder Template';
+			$template->type_alias = 'com_componentbuilder.template';
+			$template->table = '{"special": {"dbtable": "#__componentbuilder_template","key": "id","type": "Template","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$template->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","alias":"alias","description":"description","snippet":"snippet","template":"template","php_view":"php_view","add_php_view":"add_php_view","dynamic_get":"dynamic_get","not_required":"not_required"}}';
+			$template->router = 'ComponentbuilderHelperRoute::getTemplateRoute';
+			$template->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/template.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","snippet","add_php_view","dynamic_get","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if template type is already in content_type DB.
+			$template_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($template->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$template->type_id = $db->loadResult();
+				$template_Updated = $db->updateObject('#__content_types', $template, 'type_id');
+			}
+			else
+			{
+				$template_Inserted = $db->insertObject('#__content_types', $template);
+			}
+
+			// Create the layout content type object.
+			$layout = new stdClass();
+			$layout->type_title = 'Componentbuilder Layout';
+			$layout->type_alias = 'com_componentbuilder.layout';
+			$layout->table = '{"special": {"dbtable": "#__componentbuilder_layout","key": "id","type": "Layout","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$layout->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","alias":"alias","description":"description","dynamic_get":"dynamic_get","snippet":"snippet","php_view":"php_view","layout":"layout","add_php_view":"add_php_view","not_required":"not_required"}}';
+			$layout->router = 'ComponentbuilderHelperRoute::getLayoutRoute';
+			$layout->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/layout.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","dynamic_get","snippet","add_php_view","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if layout type is already in content_type DB.
+			$layout_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($layout->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$layout->type_id = $db->loadResult();
+				$layout_Updated = $db->updateObject('#__content_types', $layout, 'type_id');
+			}
+			else
+			{
+				$layout_Inserted = $db->insertObject('#__content_types', $layout);
+			}
+
+			// Create the dynamic_get content type object.
+			$dynamic_get = new stdClass();
+			$dynamic_get->type_title = 'Componentbuilder Dynamic_get';
+			$dynamic_get->type_alias = 'com_componentbuilder.dynamic_get';
+			$dynamic_get->table = '{"special": {"dbtable": "#__componentbuilder_dynamic_get","key": "id","type": "Dynamic_get","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$dynamic_get->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","main_source":"main_source","gettype":"gettype","getcustom":"getcustom","pagination":"pagination","php_after_getitem":"php_after_getitem","php_before_getitems":"php_before_getitems","php_before_getitem":"php_before_getitem","view_table_main":"view_table_main","php_getlistquery":"php_getlistquery","view_selection":"view_selection","php_after_getitems":"php_after_getitems","db_table_main":"db_table_main","php_calculation":"php_calculation","db_selection":"db_selection","add_php_before_getitem":"add_php_before_getitem","add_php_after_getitem":"add_php_after_getitem","add_php_getlistquery":"add_php_getlistquery","add_php_before_getitems":"add_php_before_getitems","add_php_after_getitems":"add_php_after_getitems","addcalculation":"addcalculation","php_custom_get":"php_custom_get","not_required":"not_required"}}';
+			$dynamic_get->router = 'ComponentbuilderHelperRoute::getDynamic_getRoute';
+			$dynamic_get->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","main_source","gettype","pagination","view_table_main","add_php_before_getitem","add_php_after_getitem","add_php_getlistquery","add_php_before_getitems","add_php_after_getitems","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "db_table_main","targetTable": "","targetColumn": "","displayColumn": ""}]}';
+
+			// Check if dynamic_get type is already in content_type DB.
+			$dynamic_get_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($dynamic_get->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$dynamic_get->type_id = $db->loadResult();
+				$dynamic_get_Updated = $db->updateObject('#__content_types', $dynamic_get, 'type_id');
+			}
+			else
+			{
+				$dynamic_get_Inserted = $db->insertObject('#__content_types', $dynamic_get);
+			}
+
+			// Create the snippet content type object.
+			$snippet = new stdClass();
+			$snippet->type_title = 'Componentbuilder Snippet';
+			$snippet->type_alias = 'com_componentbuilder.snippet';
+			$snippet->table = '{"special": {"dbtable": "#__componentbuilder_snippet","key": "id","type": "Snippet","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","description":"description","usage":"usage","snippet":"snippet"}}';
+			$snippet->router = 'ComponentbuilderHelperRoute::getSnippetRoute';
+			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if snippet type is already in content_type DB.
+			$snippet_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($snippet->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$snippet->type_id = $db->loadResult();
+				$snippet_Updated = $db->updateObject('#__content_types', $snippet, 'type_id');
+			}
+			else
+			{
+				$snippet_Inserted = $db->insertObject('#__content_types', $snippet);
+			}
+
+			// Create the field content type object.
+			$field = new stdClass();
+			$field->type_title = 'Componentbuilder Field';
+			$field->type_alias = 'com_componentbuilder.field';
+			$field->table = '{"special": {"dbtable": "#__componentbuilder_field","key": "id","type": "Field","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$field->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","type":"type","datatype":"datatype","indexes":"indexes","null_switch":"null_switch","datalenght_other":"datalenght_other","datadefault":"datadefault","css_view":"css_view","datadefault_other":"datadefault_other","datalenght":"datalenght","css_views":"css_views","javascript_view_footer":"javascript_view_footer","xml":"xml","javascript_views_footer":"javascript_views_footer","add_css_view":"add_css_view","add_css_views":"add_css_views","add_javascript_view_footer":"add_javascript_view_footer","store":"store","add_javascript_views_footer":"add_javascript_views_footer","not_required":"not_required"}}';
+			$field->router = 'ComponentbuilderHelperRoute::getFieldRoute';
+			$field->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/field.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","add_css_view","catid","add_css_views","add_javascript_view_footer","store","add_javascript_views_footer","not_required"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_fieldtype","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if field type is already in content_type DB.
+			$field_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($field->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$field->type_id = $db->loadResult();
+				$field_Updated = $db->updateObject('#__content_types', $field, 'type_id');
+			}
+			else
+			{
+				$field_Inserted = $db->insertObject('#__content_types', $field);
+			}
+
+			// Create the field catagory content type object.
+			$field_catagory = new stdClass();
+			$field_catagory->type_title = 'Componentbuilder Field Catid';
+			$field_catagory->type_alias = 'com_componentbuilder.fields.category';
+			$field_catagory->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
+			$field_catagory->field_mappings = '{"common":{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"description", "core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access", "core_params":"params", "core_featured":"null", "core_metadata":"metadata", "core_language":"language", "core_images":"null", "core_urls":"null", "core_version":"version", "core_ordering":"null", "core_metakey":"metakey", "core_metadesc":"metadesc", "core_catid":"parent_id", "core_xreference":"null", "asset_id":"asset_id"}, "special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}';
+			$field_catagory->router = 'ComponentbuilderHelperRoute::getCategoryRoute';
+			$field_catagory->content_history_options = '{"formFile":"administrator\/components\/com_categories\/models\/forms\/category.xml", "hideFields":["asset_id","checked_out","checked_out_time","version","lft","rgt","level","path","extension"], "ignoreChanges":["modified_user_id", "modified_time", "checked_out", "checked_out_time", "version", "hits", "path"],"convertToInt":["publish_up", "publish_down"], "displayLookup":[{"sourceColumn":"created_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"access","targetTable":"#__viewlevels","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"modified_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"parent_id","targetTable":"#__categories","targetColumn":"id","displayColumn":"title"}]}';
+
+			// Check if field catagory type is already in content_type DB.
+			$field_catagory_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($field_catagory->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$field_catagory->type_id = $db->loadResult();
+				$field_catagory_Updated = $db->updateObject('#__content_types', $field_catagory, 'type_id');
+			}
+			else
+			{
+				$field_catagory_Inserted = $db->insertObject('#__content_types', $field_catagory);
+			}
+
+			// Create the fieldtype content type object.
+			$fieldtype = new stdClass();
+			$fieldtype->type_title = 'Componentbuilder Fieldtype';
+			$fieldtype->type_alias = 'com_componentbuilder.fieldtype';
+			$fieldtype->table = '{"special": {"dbtable": "#__componentbuilder_fieldtype","key": "id","type": "Fieldtype","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$fieldtype->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description","short_description":"short_description"}}';
+			$fieldtype->router = 'ComponentbuilderHelperRoute::getFieldtypeRoute';
+			$fieldtype->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/fieldtype.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","catid"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if fieldtype type is already in content_type DB.
+			$fieldtype_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($fieldtype->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$fieldtype->type_id = $db->loadResult();
+				$fieldtype_Updated = $db->updateObject('#__content_types', $fieldtype, 'type_id');
+			}
+			else
+			{
+				$fieldtype_Inserted = $db->insertObject('#__content_types', $fieldtype);
+			}
+
+			// Create the fieldtype catagory content type object.
+			$fieldtype_catagory = new stdClass();
+			$fieldtype_catagory->type_title = 'Componentbuilder Fieldtype Catid';
+			$fieldtype_catagory->type_alias = 'com_componentbuilder.fieldtypes.category';
+			$fieldtype_catagory->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
+			$fieldtype_catagory->field_mappings = '{"common":{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"description", "core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access", "core_params":"params", "core_featured":"null", "core_metadata":"metadata", "core_language":"language", "core_images":"null", "core_urls":"null", "core_version":"version", "core_ordering":"null", "core_metakey":"metakey", "core_metadesc":"metadesc", "core_catid":"parent_id", "core_xreference":"null", "asset_id":"asset_id"}, "special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}';
+			$fieldtype_catagory->router = 'ComponentbuilderHelperRoute::getCategoryRoute';
+			$fieldtype_catagory->content_history_options = '{"formFile":"administrator\/components\/com_categories\/models\/forms\/category.xml", "hideFields":["asset_id","checked_out","checked_out_time","version","lft","rgt","level","path","extension"], "ignoreChanges":["modified_user_id", "modified_time", "checked_out", "checked_out_time", "version", "hits", "path"],"convertToInt":["publish_up", "publish_down"], "displayLookup":[{"sourceColumn":"created_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"access","targetTable":"#__viewlevels","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"modified_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"parent_id","targetTable":"#__categories","targetColumn":"id","displayColumn":"title"}]}';
+
+			// Check if fieldtype catagory type is already in content_type DB.
+			$fieldtype_catagory_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($fieldtype_catagory->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$fieldtype_catagory->type_id = $db->loadResult();
+				$fieldtype_catagory_Updated = $db->updateObject('#__content_types', $fieldtype_catagory, 'type_id');
+			}
+			else
+			{
+				$fieldtype_catagory_Inserted = $db->insertObject('#__content_types', $fieldtype_catagory);
+			}
+
+			// Create the help_document content type object.
+			$help_document = new stdClass();
+			$help_document->type_title = 'Componentbuilder Help_document';
+			$help_document->type_alias = 'com_componentbuilder.help_document';
+			$help_document->table = '{"special": {"dbtable": "#__componentbuilder_help_document","key": "id","type": "Help_document","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "null","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","target":"target","content":"content","alias":"alias","article":"article","url":"url","not_required":"not_required"}}';
+			$help_document->router = 'ComponentbuilderHelperRoute::getHelp_documentRoute';
+			$help_document->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","target","article","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
+
+			// Check if help_document type is already in content_type DB.
+			$help_document_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($help_document->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$help_document->type_id = $db->loadResult();
+				$help_document_Updated = $db->updateObject('#__content_types', $help_document, 'type_id');
+			}
+			else
+			{
+				$help_document_Inserted = $db->insertObject('#__content_types', $help_document);
+			}
+
+
 			echo '<a target="_blank" href="https://www.vdm.io/joomla-component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/component-300.png"/>
 				</a>

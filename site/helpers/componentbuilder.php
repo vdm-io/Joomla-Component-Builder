@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.0.9
-	@build			31st January, 2016
+	@build			15th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -527,7 +527,7 @@ abstract class ComponentbuilderHelper
 		foreach ($actions as $action)
                 {
 			// set to use component default
-			$allow = true;
+			$fallback = true;
 			if (self::checkObject($record) && isset($record->id) && $record->id > 0 && !in_array($action->name,$componentActions))
 			{
 				// The record has been set. Check the record permissions.
@@ -543,13 +543,13 @@ abstract class ComponentbuilderHelper
 							{
 								$result->set($action->name, true);
 								// set not to use component default
-								$allow = false;
+								$fallback = false;
 							}
 							else
 							{
 								$result->set($action->name, false);
 								// set not to use component default
-								$allow = false;
+								$fallback = false;
 							}
 						}
 						elseif ($user->authorise($view.'edit.own', 'com_componentbuilder.'.$view.'.' . (int) $record->id))
@@ -559,13 +559,13 @@ abstract class ComponentbuilderHelper
 							{
 								$result->set($action->name, true);
 								// set not to use component default
-								$allow = false;
+								$fallback = false;
 							}
 							else
 							{
 								$result->set($action->name, false);
 								// set not to use component default
-								$allow = false;
+								$fallback = false;
 							}
 						}
 						elseif ($user->authorise('core.edit.own', 'com_componentbuilder'))
@@ -575,13 +575,13 @@ abstract class ComponentbuilderHelper
 							{
 								$result->set($action->name, true);
 								// set not to use component default
-								$allow = false;
+								$fallback = false;
 							}
 							else
 							{
 								$result->set($action->name, false);
 								// set not to use component default
-								$allow = false;
+								$fallback = false;
 							}
 						}
 						elseif ($user->authorise($view.'edit.own', 'com_componentbuilder'))
@@ -591,13 +591,13 @@ abstract class ComponentbuilderHelper
 							{
 								$result->set($action->name, true);
 								// set not to use component default
-								$allow = false;
+								$fallback = false;
 							}
 							else
 							{
 								$result->set($action->name, false);
 								// set not to use component default
-								$allow = false;
+								$fallback = false;
 							}
 						}
 					}
@@ -627,13 +627,13 @@ abstract class ComponentbuilderHelper
 								{
 									$result->set($action->name, true);
 									// set not to use component default
-									$allow = false;
+									$fallback = false;
 								}
 								else
 								{
 									$result->set($action->name, false);
 									// set not to use component default
-									$allow = false;
+									$fallback = false;
 								}
 							}
 							elseif ($user->authorise($view.'edit.own', 'com_componentbuilder.'.$views.'.category.' . (int) $record->catid))
@@ -643,13 +643,13 @@ abstract class ComponentbuilderHelper
 								{
 									$result->set($action->name, true);
 									// set not to use component default
-									$allow = false;
+									$fallback = false;
 								}
 								else
 								{
 									$result->set($action->name, false);
 									// set not to use component default
-									$allow = false;
+									$fallback = false;
 								}
 							}
 							elseif ($user->authorise('core.edit.own', 'com_componentbuilder'))
@@ -659,13 +659,13 @@ abstract class ComponentbuilderHelper
 								{
 									$result->set($action->name, true);
 									// set not to use component default
-									$allow = false;
+									$fallback = false;
 								}
 								else
 								{
 									$result->set($action->name, false);
 									// set not to use component default
-									$allow = false;
+									$fallback = false;
 								}
 							}
 							elseif ($user->authorise($view.'edit.own', 'com_componentbuilder'))
@@ -675,21 +675,21 @@ abstract class ComponentbuilderHelper
 								{
 									$result->set($action->name, true);
 									// set not to use component default
-									$allow = false;
+									$fallback = false;
 								}
 								else
 								{
 									$result->set($action->name, false);
 									// set not to use component default
-									$allow = false;
+									$fallback = false;
 								}
 							}
 						}
 					}
 				}
 			}
-			// if allowed then fall back on component global settings
-			if ($allow)
+			// if allowed then fallback on component global settings
+			if ($fallback)
 			{
 				$result->set($action->name, $user->authorise($action->name, 'com_componentbuilder'));
 			}

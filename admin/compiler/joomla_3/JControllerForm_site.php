@@ -264,7 +264,7 @@ class ###Component###Controller###View### extends JControllerForm
 	 *
 	 * @since   11.1
 	 */
-	protected function postSaveHook(JModelLegacy &$model, $validData = array())
+	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{###POSTSAVEHOOK###
 	}
 

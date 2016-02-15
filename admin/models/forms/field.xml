@@ -409,7 +409,7 @@
 			<option value="3">
 				COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALKEY</option>
 			<option value="4">
-				COM_COMPONENTBUILDER_FIELD_ADVANCE_ENCRYPTION_VDMKEY</option>
+				COM_COMPONENTBUILDER_FIELD_ADVANCE_ENCRYPTION_WHMCSKEY</option>
 		</field>
 		<!-- Add_javascript_views_footer Field. Type: Radio. (joomla) -->
 		<field

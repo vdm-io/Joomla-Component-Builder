@@ -132,6 +132,8 @@ class Compiler
 	protected $layoutData						= array();
 	protected $getAsLookup						= array();
 	protected $otherWhere						= array();
+	protected $target;
+	protected $_adminViewData;
 
 	/**
 	 * Constructor
@@ -323,6 +325,11 @@ class Compiler
 			$this->fileContentStatic['###HELP_SITE###'] = $this->noHelp();
 			// ###UPDATE_VERSION_MYSQL###
 			$this->setVersionController();
+
+			// build route parse switch
+			$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] = '';
+			// build route views
+			$this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] = '';
 
 			// setup back-views and all needed stuff for the admin
 			if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
@@ -628,6 +635,13 @@ class Compiler
 						$this->fileContentStatic['###ROUTEHELPER###'] = '';
 					}
 					$this->fileContentStatic['###ROUTEHELPER###'] .= $this->setRouterHelp($viewName_single, $viewName_list);
+					
+					if ($view['edit_create_site_view'])
+					{
+						// add needed router stuff for front edit views
+						$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($viewName_single);
+						$this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] .= $this->routerBuildViews($viewName_single);
+					}
 
 					// ###ACCESS_SECTIONS###
 					if (!isset($this->fileContentStatic['###ACCESS_SECTIONS###']))
@@ -891,16 +905,11 @@ class Compiler
 				$this->setConfigFieldsets(2);
 				$this->lang = $keepLang;
 			}
-
-			// build route parse switch
-			$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] = '';
 			
 			// setup front-views and all needed stuff for the site
 			if (isset($this->componentData->site_views) && ComponentbuilderHelper::checkArray($this->componentData->site_views))
 			{
 				$this->target = 'site';
-				// build route views
-				$this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] = '';
 				// var_dump($this->componentData->site_views);exit;
 				// start dynamic build
 				foreach ($this->componentData->site_views as $view)
@@ -944,7 +953,7 @@ class Compiler
 					// insure the needed route helper is loaded
 					$this->fileContentStatic['###ROUTEHELPER###'] .= $this->setRouterHelp($view['settings']->code,$view['settings']->code, true);
 					// build route details 
-					$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($view['settings']->code,1);
+					$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($view['settings']->code);
 					$this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] .= $this->routerBuildViews($view['settings']->code);
 					
 					if ($view['settings']->main_get->gettype == 1)
@@ -1135,7 +1144,7 @@ class Compiler
 
 	protected function setLockLicense()
 	{
-		if ($this->componentData->add_license && $this->componentData->license_type == 2)
+		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
 			$_VDM = '_'.ComponentbuilderHelper::safeString(ComponentbuilderHelper::randomkey(10),'U');
 			// add it to the system
@@ -1156,7 +1165,7 @@ class Compiler
 	
 	protected function setLockLicensePer($view)
 	{
-		if ($this->componentData->add_license && $this->componentData->license_type == 2)
+		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
 			$boolMethod	= 'isHonest';
 			$globalbool	= ComponentbuilderHelper::safeString(ComponentbuilderHelper::randomkey(4));
@@ -1283,15 +1292,15 @@ class Compiler
 				$encrypt[] = "\t\t\$session = JFactory::getSession();";
 				$encrypt[] = "\t\t\$V2uekt2wcgwk = \$session->get(\$Vk5smi0wjnjb, null);";
 				$encrypt[] = "\t\t\$h4sgrGsqq = \$this->get(\$Vk5smi0wjnjb,\$V2uekt2wcgwk);";
-				$encrypt[] = "\t\tif (isset(\$h4sgrGsqq['nuut']) && \$h4sgrGsqq['nuut'] && \$h4sgrGsqq['status'] == 'Active' && isset(\$h4sgrGsqq['eiegrendel']) && strlen(\$h4sgrGsqq['eiegrendel']) > 300)";
+				$encrypt[] = "\t\tif (isset(\$h4sgrGsqq['nuut']) && \$h4sgrGsqq['nuut'] && (isset(\$h4sgrGsqq['status']) && 'Active' == \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['eiegrendel']) && strlen(\$h4sgrGsqq['eiegrendel']) > 300)";
 				$encrypt[] = "\t\t{";
 				$encrypt[] = "\t\t\t\$session->set(\$Vk5smi0wjnjb, \$h4sgrGsqq['eiegrendel']);";
 				$encrypt[] = "\t\t}";
-				$encrypt[] = "\t\tif (\$h4sgrGsqq['status'] == 'Active' && isset(\$h4sgrGsqq['md5hash']) && strlen(\$h4sgrGsqq['md5hash']) == 32 && isset(\$h4sgrGsqq['customfields']) && strlen(\$h4sgrGsqq['customfields']) > 4)";
+				$encrypt[] = "\t\tif ((isset(\$h4sgrGsqq['status']) && 'Active' == \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['md5hash']) && strlen(\$h4sgrGsqq['md5hash']) == 32 && isset(\$h4sgrGsqq['customfields']) && strlen(\$h4sgrGsqq['customfields']) > 4)";
 				$encrypt[] = "\t\t{";
 				$encrypt[] = "\t\t\t\$this->_key = md5(\$h4sgrGsqq['customfields']);";
 				$encrypt[] = "\t\t}";
-				$encrypt[] = "\t\tif (\$h4sgrGsqq['status'] == 'Active' && isset(\$h4sgrGsqq['md5hash']) && strlen(\$h4sgrGsqq['md5hash']) == 32 )";
+				$encrypt[] = "\t\tif ((isset(\$h4sgrGsqq['status']) && 'Active' == \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['md5hash']) && strlen(\$h4sgrGsqq['md5hash']) == 32 )";
 				$encrypt[] = "\t\t{";
 				$encrypt[] = "\t\t\t\$this->_is = true;";
 				$encrypt[] = "\t\t}";
@@ -1398,7 +1407,7 @@ class Compiler
 				$encrypt[] = "\t\t\t\t\treturn \$Vwasqoybpyed;";
 				$encrypt[] = "\t\t\t\t}";
 				$encrypt[] = "\t\t\t} else {";
-				$encrypt[] = "\t\t\t\tpreg_match_all('/<(.*?)>([^<]+)<\/\1>/i', \$Vqojefyeohg5, \$V1ot20wob03f);";
+				$encrypt[] = "\t\t\t\tpreg_match_all('".'/<(.*?)>([^<]+)<\/\\1>/i'."', \$Vqojefyeohg5, \$V1ot20wob03f);";
 				$encrypt[] = "\t\t\t\t\$Vwasqoybpyed = array();";
 				$encrypt[] = "\t\t\t\tforeach (\$V1ot20wob03f[1] AS \$V2sgyscukmgi=>\$V1u00zkzmb1d) {";
 				$encrypt[] = "\t\t\t\t\t\$Vwasqoybpyed[\$V1u00zkzmb1d] = \$V1ot20wob03f[2][\$V2sgyscukmgi];";
@@ -1571,6 +1580,10 @@ class Compiler
 					$updateXML[] = "\t\t<version>".$update['version']."</version>";
 					$updateXML[] = "\t\t".'<infourl title="'.$this->fileContentStatic['###Component_name###'].'!">'.$this->fileContentStatic['###AUTHORWEBSITE###'].'</infourl>';
 					$updateXML[] = "\t\t<downloads>";
+					if (!isset($update['url']))
+					{
+						$update['url'] = 'http://domain.com/demo.xml';
+					}
 					$updateXML[] = "\t\t\t".'<downloadurl type="full" format="zip">'.$update['url'].'</downloadurl>';
 					$updateXML[] = "\t\t</downloads>";
 					$updateXML[] = "\t\t<tags>";
@@ -3477,7 +3490,7 @@ class Compiler
 	
 	protected function setGetModules($view,$TARGET)
 	{
-		if ($this->getModule[$this->target][$view['settings']->code])
+		if (isset($this->getModule[$this->target][$view['settings']->code]) && $this->getModule[$this->target][$view['settings']->code])
 		{
 			$addModule = array();
 			$addModule[] = "\n\n\t/**";
@@ -4912,10 +4925,9 @@ class Compiler
 		}
 		return $script;
 	}
-
-	protected function setInstallScript()
+	
+	protected function setComponentToContentTypes($action)
 	{
-		// reset script
 		$script = '';
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
@@ -4948,26 +4960,64 @@ class Compiler
 			// build the db insert query
 			if (ComponentbuilderHelper::checkArray($dbStuff))
 			{
+				$taabb = '';
+				if ($action == 'update')
+				{
+					$taabb = "\t";
+				}
 				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Get The Database object";
-				$script .= "\n\n\t\t\t\$db = JFactory::getDbo();";
+				$script .= "\n\t\t\t\$db = JFactory::getDbo();";
 				foreach ($dbStuff as $name => $tables)
 				{
 					if (ComponentbuilderHelper::checkArray($tables))
 					{
 						$code = ComponentbuilderHelper::safeString($name);
 						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Create the ".$name." content type object.";
-						$script .= "\n\t\t\t\$".$code." = new stdClass();";
+						$script .= "\n\t\t\t\$".$code." = new stdClass();";						
 						foreach ($tables as $table => $data)
 						{
 							$script .= "\n\t\t\t\$".$code."->".$table." = '".$data."';";
 						}
-						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Insert the object into the content types table.";
-						$script .= "\n\t\t\t\$".$code."Inserted = \$db->insertObject('#__content_types', \$".$code.");";
+						if ($action == 'update')
+						{
+							// we first load script to check if data exist
+							$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Check if ".$name." type is already in content_type DB.";
+							$script .= "\n\t\t\t\$".$code."_id = null;";
+							$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
+							$script .= "\n\t\t\t\$query->select(\$db->quoteName(array('type_id')));";
+							$script .= "\n\t\t\t\$query->from(\$db->quoteName('#__content_types'));";
+							$script .= "\n\t\t\t\$query->where(\$db->quoteName('type_alias') . ' LIKE '. \$db->quote($".$code."->type_alias));";
+							$script .= "\n\t\t\t\$db->setQuery(\$query);";
+							$script .= "\n\t\t\t\$db->execute();";
+						}
+						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Set the object into the content types table.";
+						if ($action == 'update')
+						{
+							$script .= "\n\t\t\tif (\$db->getNumRows())";
+							$script .= "\n\t\t\t{";
+							$script .= "\n\t\t\t\t\$".$code."->type_id = \$db->loadResult();";
+							$script .= "\n\t\t\t\t\$".$code."_Updated = \$db->updateObject('#__content_types', \$".$code.", 'type_id');";
+							$script .= "\n\t\t\t}";
+							$script .= "\n\t\t\telse";
+							$script .= "\n\t\t\t{";
+						}
+						$script .= "\n\t\t\t".$taabb."\$".$code."_Inserted = \$db->insertObject('#__content_types', \$".$code.");";
+						if ($action == 'update')
+						{
+							$script .= "\n\t\t\t}";
+						}
 					}
 				}
 				$script .= "\n\n";
 			}
 		}
+		return $script;
+	}
+
+	protected function setInstallScript()
+	{
+		// reset script
+		$script = $this->setComponentToContentTypes('install');
 
 		if (isset($this->paramsBuilder) && ComponentbuilderHelper::checkString($this->paramsBuilder))
 		{
@@ -5008,7 +5058,7 @@ class Compiler
 	protected function setUpdateScript()
 	{
 		// reset script
-		$script = '';
+		$script = $this->setComponentToContentTypes('update');
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
 			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
@@ -5993,7 +6043,7 @@ class Compiler
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_STATE']           = "- Keep Original State -";
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_ACCESS']          = "- Keep Original Access -";
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_CATEGORY']        = "- Keep Original Category -";
-		if ($this->componentData->add_license && $this->componentData->license_type == 2)
+		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
 			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>Lincense not set for ".$this->componentData->name.".</h1><p>Notify your administrator!<br />The lincense can be obtained from ".$this->componentData->companyname.".</p></center>";
 		}
@@ -6615,6 +6665,13 @@ class Compiler
 			// set the linked view tabs
 			$linkedTab = array();
 			$keys = array();
+			// setup correct core target
+			$coreLoad = false;
+			if (isset($this->permissionCore[$viewName_single]))
+			{
+				$core = $this->permissionCore[$viewName_single];
+				$coreLoad = true;
+			}
 			if (isset($this->linkedAdminViews[$viewName_single]) && ComponentbuilderHelper::checkArray($this->linkedAdminViews[$viewName_single]))
 			{
 				foreach ($this->linkedAdminViews[$viewName_single] as $linkedView)
@@ -6761,6 +6818,8 @@ class Compiler
 				{
 					// set layout code name
 					$layoutCodeName = $tabCodeName.'_fullwidth';
+					// set identifiers
+					$linkedViewIdentifier[$linkedViewId] = $tabCodeName;
 					//set function name
 					$codeName = ComponentbuilderHelper::safeString(ComponentbuilderHelper::randomkey(3).$tabCodeName);
 					// set as items layout
@@ -6856,8 +6915,40 @@ class Compiler
 				{
 					$body .= "\n\n\t<?php echo JHtml::_('bootstrap.startTabSet', '".$viewName_single."Tab', array('active' => '".$tabCodeName."')); ?>";
 				}
+				// if this is a linked view set permissions
+				$closeIT = false;
+				if(in_array($tabCodeName,$linkedViewIdentifier))
+				{
+					// get view name
+					$linkedViewId = array_search($tabCodeName,$linkedViewIdentifier);
+					$linkedViewData = $this->getAdminViewData($linkedViewId);
+					$linkedCodeName = ComponentbuilderHelper::safeString($linkedViewData->name_single);
+					// setup correct core target
+					$coreLoadLinked = false;
+					if (isset($this->permissionCore[$linkedCodeName]))
+					{
+						$coreLinked = $this->permissionCore[$linkedCodeName];
+						$coreLoadLinked = true;
+					}
+					// check if the item has permissions.
+					if ($coreLoadLinked && isset($coreLinked['core.access']) && isset($this->permissionBuilder['global'][$coreLinked['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$coreLinked['core.access']]) && in_array($linkedCodeName,$this->permissionBuilder['global'][$coreLinked['core.access']]))
+					{
+						$body .= "\n\n\t<?php if (\$this->canDo->get('".$coreLinked['core.access']."')) : ?>";
+						$closeIT = true;
+					}
+					else
+					{
+						$body .= "\n";
+					}
+					// insure clear
+					unset($coreLoadLinked,$coreLinked,$linkedViewData);
+				}
+				else
+				{
+					$body .= "\n";
+				}
 				// start tab
-				$body .= "\n\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeName."', JText::_('".$tabLangName."', true)); ?>";
+				$body .= "\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeName."', JText::_('".$tabLangName."', true)); ?>";
 				// add the main
 				$body .= "\n\t\t".'<div class="row-fluid form-horizontal-desktop">';
 				$body .= $main;
@@ -6870,6 +6961,10 @@ class Compiler
 					$body .= "\n\t\t</div>";
 				}
 				$body .= "\n\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				if($closeIT)
+				{
+					$body .= "\n\t<?php endif; ?>";
+				}
 				// set counter
 				$tabCounter++;
 			}
@@ -6913,8 +7008,25 @@ class Compiler
 				$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
 				$this->setLayout($viewName_single, $tabCodeNameRight, $items_two, 'layoutpublished');
 			}
+			// check if the item has permissions.
+			$publishingPer = array();
+			$allToBeChekced = array('core.delete','core.edit.created_by','core.edit.state','core.edit.created');
+			foreach ($allToBeChekced as $core_permission)
+			{
+				if ($coreLoad && isset($core[$core_permission]) && isset($this->permissionBuilder['global'][$core[$core_permission]]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core[$core_permission]]) && in_array($viewName_single,$this->permissionBuilder['global'][$core[$core_permission]]))
+				{
+					// set permissions.
+					$publishingPer[] = "\$this->canDo->get('".$core[$core_permission]."')";
+				}
+				else
+				{
+					// set permissions.
+					$publishingPer[] = "\$this->canDo->get('".$core_permission."')";
+				}
+			}
+			$body .= "\n\n\t<?php if (".implode(' || ', $publishingPer).") : ?>";
 			// set the default publishing tab
-			$body .= "\n\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeNameLeft."', JText::_('".$tabLangName."', true)); ?>";
+			$body .= "\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeNameLeft."', JText::_('".$tabLangName."', true)); ?>";
 			$body .= "\n\t\t".'<div class="row-fluid form-horizontal-desktop">';
 			$body .= "\n\t\t\t".'<div class="span6">';
 			$body .= "\n\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameLeft."', \$this); ?>";
@@ -6924,6 +7036,7 @@ class Compiler
 			$body .= "\n\t\t\t</div>";
 			$body .= "\n\t\t</div>";
 			$body .= "\n\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
+			$body .= "\n\t<?php endif; ?>";
 			// make sure we dont load it to a view with the name component
 			if ($viewName_single != 'component')
 			{
@@ -13476,19 +13589,19 @@ class Compiler
 		$this->configFieldSets[] = "\t\t".'label="'.$lang.'_GLOBAL_LABEL"';
 		$this->configFieldSets[] = "\t\t".'description="'.$lang.'_GLOBAL_DESC">';
 		// set application update License Key
-		if ($this->componentData->add_license)
+		if ($this->componentData->add_license && 1 != $this->componentData->license_type)
 		{
 			// set licence type switch
 			switch ($this->componentData->license_type)
 			{
-				case 1:
+				case 2:
 					// for updates
 					$this->langContent[$this->lang][$lang.'_LICENSE_KEY_NOTE_LABEL']= "Your License Key";
 					$this->langContent[$this->lang][$lang.'_LICENSE_KEY_NOTE_DESC']	= "To get updates you must add the license key here that you recieved from ".$this->componentData->companyname;
 					// set the field
 					$this->configFieldSets[] = "\t\t".'<field type="note" name="license_key_note" class="alert alert-info" label="'.$lang.'_LICENSE_KEY_NOTE_LABEL" description="'.$lang.'_LICENSE_KEY_NOTE_DESC"  />';
 					break;
-				case 2:
+				case 3:
 					// with vdm to lock down ownership
 					$this->langContent[$this->lang][$lang.'_LICENSE_KEY_NOTE_LABEL']= "Your License Key";
 					$this->langContent[$this->lang][$lang.'_LICENSE_KEY_NOTE_DESC']	= "To use this component you must add the license key here that you recieved from ".$this->componentData->companyname;
@@ -14214,10 +14327,10 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			if (isset($this->advancedEncryption) && $this->advancedEncryption)
 			{
 				// set field lang
-				$this->langContent[$this->lang][$lang.'_VDM_KEY_LABEL']		= "VDM Key <small>(advanced encryption)</small>";
-				$this->langContent[$this->lang][$lang.'_VDM_KEY_DESC']		= "Add the VDM public key here.";
+				$this->langContent[$this->lang][$lang.'_VDM_KEY_LABEL']		= "Advanced Key <small>(advanced encryption)</small>";
+				$this->langContent[$this->lang][$lang.'_VDM_KEY_DESC']		= "Add the advanced key here.";
 				$this->langContent[$this->lang][$lang.'_VDM_KEY_NOTE_LABEL']	= "Advanced Encryption";
-				$this->langContent[$this->lang][$lang.'_VDM_KEY_NOTE_DESC']	= "When using the advanced encryption you need to get a VDM public key from https://www.vdm.io/encryption/<br />Never change this public key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+				$this->langContent[$this->lang][$lang.'_VDM_KEY_NOTE_DESC']	= "When using the advanced encryption you need to get an advanced key from ".$this->componentData->companyname.".<br />Never change this advanced key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
 				// set the field
 				$this->configFieldSets[] = "\t\t".'<field type="note" name="vdm_key_note" class="alert alert-info" label="'.$lang.'_VDM_KEY_NOTE_LABEL" description="'.$lang.'_VDM_KEY_NOTE_DESC"  />';
 				$this->configFieldSets[] = "\t\t".'<field name="advanced_key"';
@@ -15655,329 +15768,333 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 
 	protected function getAdminViewData($id)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
+		if (!isset($this->_adminViewData[$id]))
+		{
+			// Get a db connection.
+			$db = JFactory::getDbo();
 
-		// Create a new query object.
-		$query = $db->getQuery(true);
+			// Create a new query object.
+			$query = $db->getQuery(true);
 
-		$query->select('a.*');
-		$query->from('#__componentbuilder_admin_view AS a');
-		$query->where($db->quoteName('a.id') . ' = '. (int) $id);
+			$query->select('a.*');
+			$query->from('#__componentbuilder_admin_view AS a');
+			$query->where($db->quoteName('a.id') . ' = '. (int) $id);
 
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
+			// Reset the query using our newly populated query object.
+			$db->setQuery($query);
 
-		// Load the results as a list of stdClass objects (see later for more options on retrieving data).
-		$view = $db->loadObject();
-		// reset fields
-		$view->fields = array();
-		// setup view name to use in storing the data
-		$name_single = ComponentbuilderHelper::safeString($view->name_single);
-		$name_list = ComponentbuilderHelper::safeString($view->name_list);
-		// setup token check
-		$this->customScriptBuilder['token'][$name_single] = false;
-		$this->customScriptBuilder['token'][$name_list] = false;
-		// load the values form params
-		$permissions	= json_decode($view->addpermissions,true);
-		unset($view->addpermissions);
-		$tabs			= json_decode($view->addtabs,true);
-		unset($view->addtabs);
-		$fields			= json_decode($view->addfields,true);
-		unset($view->addfields);
-		$conditions		= json_decode($view->addconditions,true);
-		unset($view->addconditions);
-		$linked_views	= json_decode($view->addlinked_views,true);
-		unset($view->addlinked_views);
-		$tables	= json_decode($view->addtables,true);
-		unset($view->addtables);
-		// sort the values
-		if (ComponentbuilderHelper::checkArray($tables))
-		{
-			foreach ($tables as $option => $values)
+			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
+			$view = $db->loadObject();
+			// reset fields
+			$view->fields = array();
+			// setup view name to use in storing the data
+			$name_single = ComponentbuilderHelper::safeString($view->name_single);
+			$name_list = ComponentbuilderHelper::safeString($view->name_list);
+			// setup token check
+			$this->customScriptBuilder['token'][$name_single] = false;
+			$this->customScriptBuilder['token'][$name_list] = false;
+			// load the values form params
+			$permissions	= json_decode($view->addpermissions,true);
+			unset($view->addpermissions);
+			$tabs			= json_decode($view->addtabs,true);
+			unset($view->addtabs);
+			$fields			= json_decode($view->addfields,true);
+			unset($view->addfields);
+			$conditions		= json_decode($view->addconditions,true);
+			unset($view->addconditions);
+			$linked_views	= json_decode($view->addlinked_views,true);
+			unset($view->addlinked_views);
+			$tables	= json_decode($view->addtables,true);
+			unset($view->addtables);
+			// sort the values
+			if (ComponentbuilderHelper::checkArray($tables))
 			{
-				foreach ($values as $nr => $value)
+				foreach ($tables as $option => $values)
 				{
-					$view->tables[$nr][$option] = $value;
-				}
-			}
-		}
-		if (ComponentbuilderHelper::checkArray($tabs))
-		{
-			foreach ($tabs as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$fix = $nr+1;
-					$view->tabs[$fix] = $value;
-				}
-			}
-		}
-		if (ComponentbuilderHelper::checkArray($permissions))
-		{
-			foreach ($permissions as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$view->permissions[$nr][$option] = $value;
-				}
-			}
-		}
-		if (ComponentbuilderHelper::checkArray($fields))
-		{
-			foreach ($fields as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$view->fields[$nr][$option] = (int) $value;
-				}
-			}
-			// sort the fields acording to order
-			usort($view->fields, function($a, $b)
-			{
-				if ($a['order_list'] != 0 && $b['order_list'] != 0)
-				{
-					return $a['order_list'] - $b['order_list'];
-				}
-				elseif ($b['order_list'] != 0 && $a['order_list'] == 0)
-				{
-					return 1;
-				}
-				elseif ($a['order_list'] != 0 && $b['order_list'] == 0)
-				{
-					return 0;
-				}
-				return 1;
-			});
-			// load the field data
-			foreach ($view->fields as $key => &$field)
-			{
-				$field['settings'] = $this->getFieldData($field['field'],$name_single,$name_list);
-			}
-		}
-		if (ComponentbuilderHelper::checkArray($conditions))
-		{
-			foreach ($conditions as $condition => $conditionValues)
-			{
-				foreach ($conditionValues as $nr => $conditionValue)
-				{
-					if ($condition == 'target_field')
+					foreach ($values as $nr => $value)
 					{
-						if (ComponentbuilderHelper::checkArray($conditionValue) && ComponentbuilderHelper::checkArray($view->fields))
+						$view->tables[$nr][$option] = $value;
+					}
+				}
+			}
+			if (ComponentbuilderHelper::checkArray($tabs))
+			{
+				foreach ($tabs as $option => $values)
+				{
+					foreach ($values as $nr => $value)
+					{
+						$fix = $nr+1;
+						$view->tabs[$fix] = $value;
+					}
+				}
+			}
+			if (ComponentbuilderHelper::checkArray($permissions))
+			{
+				foreach ($permissions as $option => $values)
+				{
+					foreach ($values as $nr => $value)
+					{
+						$view->permissions[$nr][$option] = $value;
+					}
+				}
+			}
+			if (ComponentbuilderHelper::checkArray($fields))
+			{
+				foreach ($fields as $option => $values)
+				{
+					foreach ($values as $nr => $value)
+					{
+						$view->fields[$nr][$option] = (int) $value;
+					}
+				}
+				// sort the fields acording to order
+				usort($view->fields, function($a, $b)
+				{
+					if ($a['order_list'] != 0 && $b['order_list'] != 0)
+					{
+						return $a['order_list'] - $b['order_list'];
+					}
+					elseif ($b['order_list'] != 0 && $a['order_list'] == 0)
+					{
+						return 1;
+					}
+					elseif ($a['order_list'] != 0 && $b['order_list'] == 0)
+					{
+						return 0;
+					}
+					return 1;
+				});
+				// load the field data
+				foreach ($view->fields as $key => &$field)
+				{
+					$field['settings'] = $this->getFieldData($field['field'],$name_single,$name_list);
+				}
+			}
+			if (ComponentbuilderHelper::checkArray($conditions))
+			{
+				foreach ($conditions as $condition => $conditionValues)
+				{
+					foreach ($conditionValues as $nr => $conditionValue)
+					{
+						if ($condition == 'target_field')
 						{
-							foreach ($conditionValue as $fieldKey => $fieldId)
+							if (ComponentbuilderHelper::checkArray($conditionValue) && ComponentbuilderHelper::checkArray($view->fields))
 							{
-								foreach ($view->fields as $fieldValues)
+								foreach ($conditionValue as $fieldKey => $fieldId)
 								{
-									if ((int) $fieldValues['field'] == (int) $fieldId)
+									foreach ($view->fields as $fieldValues)
 									{
-										// load the field details
-										$required	= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'required="','"');
-										$required	= ($required == true) ? 'yes' : 'no';
-										$filter		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'filter="','"');
-										$filter		= ComponentbuilderHelper::checkString($filter) ? $filter : 'none';
-										// get name
-										$name		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'name="','"');
-										$name		= ComponentbuilderHelper::checkString($name) ? $name : $fieldValues['settings']->name;
-										// get type
-										$type		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'type="','"');
-										$type		= ComponentbuilderHelper::checkString($type) ? $type : $fieldValues['settings']->type_name;
-										// set the field name
-										$conditionValue[$fieldKey] = array(
-											'name' => ComponentbuilderHelper::safeString($name),
-											'type' => ComponentbuilderHelper::safeString($type),
-											'required' => $required,
-											'filter' => $filter
-											);
-										break;
+										if ((int) $fieldValues['field'] == (int) $fieldId)
+										{
+											// load the field details
+											$required	= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'required="','"');
+											$required	= ($required == true) ? 'yes' : 'no';
+											$filter		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'filter="','"');
+											$filter		= ComponentbuilderHelper::checkString($filter) ? $filter : 'none';
+											// get name
+											$name		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'name="','"');
+											$name		= ComponentbuilderHelper::checkString($name) ? $name : $fieldValues['settings']->name;
+											// get type
+											$type		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'type="','"');
+											$type		= ComponentbuilderHelper::checkString($type) ? $type : $fieldValues['settings']->type_name;
+											// set the field name
+											$conditionValue[$fieldKey] = array(
+												'name' => ComponentbuilderHelper::safeString($name),
+												'type' => ComponentbuilderHelper::safeString($type),
+												'required' => $required,
+												'filter' => $filter
+												);
+											break;
+										}
 									}
 								}
 							}
 						}
-					}
-					if ($condition == 'match_field')
-					{
-						foreach ($view->fields as $fieldValue)
+						if ($condition == 'match_field')
 						{
-							if ((int) $fieldValue['field'] == (int) $conditionValue)
+							foreach ($view->fields as $fieldValue)
 							{
-								// get name
-								$name = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'name="','"');
-								$name = ComponentbuilderHelper::checkString($name) ? $name : $fieldValue['settings']->name;
-								// get type
-								$type = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'type="','"');
-								$type = ComponentbuilderHelper::checkString($type) ? $type : $fieldValue['settings']->type_name;
-								// set the field details
-								$view->conditions[$nr]['match_name']	= ComponentbuilderHelper::safeString($name);
-								$view->conditions[$nr]['match_type']	= ComponentbuilderHelper::safeString($type);
-								$view->conditions[$nr]['match_xml']		= $fieldValue['settings']->xml;
-								break;
+								if ((int) $fieldValue['field'] == (int) $conditionValue)
+								{
+									// get name
+									$name = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'name="','"');
+									$name = ComponentbuilderHelper::checkString($name) ? $name : $fieldValue['settings']->name;
+									// get type
+									$type = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'type="','"');
+									$type = ComponentbuilderHelper::checkString($type) ? $type : $fieldValue['settings']->type_name;
+									// set the field details
+									$view->conditions[$nr]['match_name']	= ComponentbuilderHelper::safeString($name);
+									$view->conditions[$nr]['match_type']	= ComponentbuilderHelper::safeString($type);
+									$view->conditions[$nr]['match_xml']		= $fieldValue['settings']->xml;
+									break;
+								}
 							}
 						}
+						// set condition values
+						$view->conditions[$nr][$condition] = $conditionValue;
 					}
-					// set condition values
-					$view->conditions[$nr][$condition] = $conditionValue;
 				}
 			}
-		}
-		// set linked views
-		$linked_views_sorted = null;
-		if (ComponentbuilderHelper::checkArray($linked_views))
-		{
-			$linked_views_sorted = array();
-			foreach ($linked_views as $option => $values)
+			// set linked views
+			$linked_views_sorted = null;
+			if (ComponentbuilderHelper::checkArray($linked_views))
 			{
-				foreach ($values as $nr => $value)
-				{
-					$linked_views_sorted[$nr][$option] = $value;
-				}
-			}
-		}
-		unset($linked_views);
-		// setup linked views to global data sets
-		$this->linkedAdminViews[$name_single] = $linked_views_sorted;
-		unset($linked_views_sorted);
-		// add_javascript_view_file
-		if ($view->add_javascript_view_file == 1)
-		{
-			$view->javascript_view_file = base64_decode($view->javascript_view_file);
-			$this->customScriptBuilder['view_file'][$name_single] = $view->javascript_view_file;
-			if (strpos($view->javascript_view_file,"token") !== false && strpos($view->javascript_view_file,"task=ajax") !== false)
-			{
-				if (!$this->customScriptBuilder['token'][$name_single])
-				{
-					$this->customScriptBuilder['token'][$name_single] = true;
-				}
-			}
-			unset($view->javascript_view_file);
-		}
-		// add_javascript_view_footer
-		if ($view->add_javascript_view_footer == 1)
-		{
-			$view->javascript_view_footer = base64_decode($view->javascript_view_footer);
-			if (!isset($this->customScriptBuilder['view_footer'][$name_single]))
-			{
-				$this->customScriptBuilder['view_footer'][$name_single] = '';
-			}
-			$this->customScriptBuilder['view_footer'][$name_single] .= $view->javascript_view_footer;
-			if (strpos($view->javascript_view_footer,"token") !== false && strpos($view->javascript_view_footer,"task=ajax") !== false)
-			{
-				if (!$this->customScriptBuilder['token'][$name_single])
-				{
-					$this->customScriptBuilder['token'][$name_single] = true;
-				}
-			}
-			unset($view->javascript_view_footer);
-		}
-		// add_javascript_view_file
-		if ($view->add_javascript_views_file == 1)
-		{
-			$view->javascript_views_file = base64_decode($view->javascript_views_file);
-			$this->customScriptBuilder['views_file'][$name_list] = $view->javascript_views_file;
-			if (strpos($view->javascript_views_file,"token") !== false && strpos($view->javascript_views_file,"task=ajax") !== false)
-			{
-				if (!$this->customScriptBuilder['token'][$name_list])
-				{
-					$this->customScriptBuilder['token'][$name_list] = true;
-				}
-			}
-			unset($view->javascript_views_file);
-		}
-		// add_javascript_views_footer
-		if ($view->add_javascript_views_footer == 1)
-		{
-			$view->javascript_views_footer = base64_decode($view->javascript_views_footer);
-			$this->customScriptBuilder['views_footer'][$name_list] .= $view->javascript_views_footer;
-			if (strpos($view->javascript_views_footer,"token") !== false && strpos($view->javascript_views_footer,"task=ajax") !== false)
-			{
-				if (!$this->customScriptBuilder['token'][$name_list])
-				{
-					$this->customScriptBuilder['token'][$name_list] = true;
-				}
-			}
-			unset($view->javascript_views_footer);
-		}
-		// add_css_view
-		if ($view->add_css_view == 1)
-		{
-			$this->customScriptBuilder['css_view'][$name_single] .= base64_decode($view->css_view);
-			unset($view->css_view);
-		}
-		// add_css_views
-		if ($view->add_css_views == 1)
-		{
-			$this->customScriptBuilder['css_views'][$name_list] .= base64_decode($view->css_views);
-			unset($view->css_views);
-		}
-		
-		$this->lang = 'admin';
-		$addArray = array('php_getitem','php_save','php_postsavehook','php_getitems','php_getlistquery','php_allowedit','php_before_delete','php_after_delete','php_batchcopy','php_batchmove');
-		foreach ($addArray as $scripter)
-		{
-			if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
-			{
-				$this->customScriptBuilder[$scripter][$name_single] = $this->setCustomContentLang(base64_decode($view->$scripter));
-				unset($view->$scripter);
-			}
-		}
-		
-		// add_Ajax for this view
-		if ($view->add_php_ajax == 1)
-		{
-			$addAjaxSite = false;
-			if (isset($this->siteEditView[$id]) && $this->siteEditView[$id])
-			{
-				// we should add this site ajax to fron ajax
-				$addAjaxSite = true;
-				if (!isset($this->addSiteAjax) || !$this->addSiteAjax)
-				{
-					$this->addSiteAjax = true;
-				}
-			}
-			// check if controller input as been set
-			$ajax_input = json_decode($view->ajax_input,true);
-			if (ComponentbuilderHelper::checkArray($ajax_input))
-			{
-				foreach ($ajax_input as $option => $values)
+				$linked_views_sorted = array();
+				foreach ($linked_views as $option => $values)
 				{
 					foreach ($values as $nr => $value)
 					{
-						if ($addAjaxSite)
-						{
-							$this->customScriptBuilder['site']['ajax_controller'][$name_single][$nr][$option] = $value;
-						}
-						$this->customScriptBuilder['admin']['ajax_controller'][$name_single][$nr][$option] = $value;
+						$linked_views_sorted[$nr][$option] = $value;
 					}
 				}
-				if ($addAjaxSite)
+			}
+			unset($linked_views);
+			// setup linked views to global data sets
+			$this->linkedAdminViews[$name_single] = $linked_views_sorted;
+			unset($linked_views_sorted);
+			// add_javascript_view_file
+			if ($view->add_javascript_view_file == 1)
+			{
+				$view->javascript_view_file = base64_decode($view->javascript_view_file);
+				$this->customScriptBuilder['view_file'][$name_single] = $view->javascript_view_file;
+				if (strpos($view->javascript_view_file,"token") !== false && strpos($view->javascript_view_file,"task=ajax") !== false)
 				{
-					$this->customScriptBuilder['site']['ajax_model'][$name_single] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
+					if (!$this->customScriptBuilder['token'][$name_single])
+					{
+						$this->customScriptBuilder['token'][$name_single] = true;
+					}
 				}
-				$this->customScriptBuilder['admin']['ajax_model'][$name_single] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
-				$this->addAjax = true;
-				unset($view->ajax_input);
+				unset($view->javascript_view_file);
 			}
-			// unset anyway
-			unset($view->php_ajaxmethod);
-		}
-		// add_sql
-		if ($view->add_sql == 1)
-		{
-			if ($view->source == 1)
+			// add_javascript_view_footer
+			if ($view->add_javascript_view_footer == 1)
 			{
-				// build and add the SQL dump
-				$this->customScriptBuilder['sql'][$name_single] = $this->buildSqlDump($view->tables,$name_single, $id);
-				unset($view->tables);
+				$view->javascript_view_footer = base64_decode($view->javascript_view_footer);
+				if (!isset($this->customScriptBuilder['view_footer'][$name_single]))
+				{
+					$this->customScriptBuilder['view_footer'][$name_single] = '';
+				}
+				$this->customScriptBuilder['view_footer'][$name_single] .= $view->javascript_view_footer;
+				if (strpos($view->javascript_view_footer,"token") !== false && strpos($view->javascript_view_footer,"task=ajax") !== false)
+				{
+					if (!$this->customScriptBuilder['token'][$name_single])
+					{
+						$this->customScriptBuilder['token'][$name_single] = true;
+					}
+				}
+				unset($view->javascript_view_footer);
 			}
-			elseif ($view->source == 2)
+			// add_javascript_view_file
+			if ($view->add_javascript_views_file == 1)
 			{
-				// add the SQL dump string
-				$this->customScriptBuilder['sql'][$name_single] = base64_decode($view->sql);
-				unset($view->sql);
+				$view->javascript_views_file = base64_decode($view->javascript_views_file);
+				$this->customScriptBuilder['views_file'][$name_list] = $view->javascript_views_file;
+				if (strpos($view->javascript_views_file,"token") !== false && strpos($view->javascript_views_file,"task=ajax") !== false)
+				{
+					if (!$this->customScriptBuilder['token'][$name_list])
+					{
+						$this->customScriptBuilder['token'][$name_list] = true;
+					}
+				}
+				unset($view->javascript_views_file);
 			}
+			// add_javascript_views_footer
+			if ($view->add_javascript_views_footer == 1)
+			{
+				$view->javascript_views_footer = base64_decode($view->javascript_views_footer);
+				$this->customScriptBuilder['views_footer'][$name_list] .= $view->javascript_views_footer;
+				if (strpos($view->javascript_views_footer,"token") !== false && strpos($view->javascript_views_footer,"task=ajax") !== false)
+				{
+					if (!$this->customScriptBuilder['token'][$name_list])
+					{
+						$this->customScriptBuilder['token'][$name_list] = true;
+					}
+				}
+				unset($view->javascript_views_footer);
+			}
+			// add_css_view
+			if ($view->add_css_view == 1)
+			{
+				$this->customScriptBuilder['css_view'][$name_single] .= base64_decode($view->css_view);
+				unset($view->css_view);
+			}
+			// add_css_views
+			if ($view->add_css_views == 1)
+			{
+				$this->customScriptBuilder['css_views'][$name_list] .= base64_decode($view->css_views);
+				unset($view->css_views);
+			}
+
+			$this->lang = 'admin';
+			$addArray = array('php_getitem','php_save','php_postsavehook','php_getitems','php_getlistquery','php_allowedit','php_before_delete','php_after_delete','php_batchcopy','php_batchmove');
+			foreach ($addArray as $scripter)
+			{
+				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
+				{
+					$this->customScriptBuilder[$scripter][$name_single] = $this->setCustomContentLang(base64_decode($view->$scripter));
+					unset($view->$scripter);
+				}
+			}
+
+			// add_Ajax for this view
+			if ($view->add_php_ajax == 1)
+			{
+				$addAjaxSite = false;
+				if (isset($this->siteEditView[$id]) && $this->siteEditView[$id])
+				{
+					// we should add this site ajax to fron ajax
+					$addAjaxSite = true;
+					if (!isset($this->addSiteAjax) || !$this->addSiteAjax)
+					{
+						$this->addSiteAjax = true;
+					}
+				}
+				// check if controller input as been set
+				$ajax_input = json_decode($view->ajax_input,true);
+				if (ComponentbuilderHelper::checkArray($ajax_input))
+				{
+					foreach ($ajax_input as $option => $values)
+					{
+						foreach ($values as $nr => $value)
+						{
+							if ($addAjaxSite)
+							{
+								$this->customScriptBuilder['site']['ajax_controller'][$name_single][$nr][$option] = $value;
+							}
+							$this->customScriptBuilder['admin']['ajax_controller'][$name_single][$nr][$option] = $value;
+						}
+					}
+					if ($addAjaxSite)
+					{
+						$this->customScriptBuilder['site']['ajax_model'][$name_single] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
+					}
+					$this->customScriptBuilder['admin']['ajax_model'][$name_single] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
+					$this->addAjax = true;
+					unset($view->ajax_input);
+				}
+				// unset anyway
+				unset($view->php_ajaxmethod);
+			}
+			// add_sql
+			if ($view->add_sql == 1)
+			{
+				if ($view->source == 1)
+				{
+					// build and add the SQL dump
+					$this->customScriptBuilder['sql'][$name_single] = $this->buildSqlDump($view->tables,$name_single, $id);
+					unset($view->tables);
+				}
+				elseif ($view->source == 2)
+				{
+					// add the SQL dump string
+					$this->customScriptBuilder['sql'][$name_single] = base64_decode($view->sql);
+					unset($view->sql);
+				}
+			}
+			$this->_adminViewData[$id] = $view;
 		}
 		// return the found view data
-		return $view;
+		return $this->_adminViewData[$id];
 	}
 
 	protected function uniqueCode($code)
