@@ -51,7 +51,7 @@ class ###Component###View###Component### extends JViewLegacy
 		};
 		// Assign data to the view
 		$this->icons			= $this->get('Icons');
-		$this->contributors		= ###Component###Helper::getContributors();
+		$this->contributors		= ###Component###Helper::getContributors();###DASH_GET_CUSTOM_DATA###
 
 		// Set the toolbar
 		$this->addToolBar();

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.9
-	@build			15th February, 2016
+	@version		2.1.0
+	@build			18th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		components.php
@@ -258,23 +258,25 @@ class ComponentbuilderModelComponents extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
+						// decode php_helper_admin
+						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode php_helper_site
+						$item->php_helper_site = base64_decode($item->php_helper_site);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
+						// decode css
+						$item->css = base64_decode($item->css);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
+						// decode php_site_event
+						$item->php_site_event = base64_decode($item->php_site_event);
+						// decode php_dashboard_methods
+						$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
-						// decode css
-						$item->css = base64_decode($item->css);
-						// decode php_helper_admin
-						$item->php_helper_admin = base64_decode($item->php_helper_admin);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
-						// decode php_helper_site
-						$item->php_helper_site = base64_decode($item->php_helper_site);
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
 						// decode readme
 						$item->readme = base64_decode($item->readme);
 						// unset the values we don't want exported.

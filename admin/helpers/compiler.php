@@ -845,6 +845,15 @@ class Compiler
 				// ###DASHBOARDICONACCESS###
 				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASHBOARDICONACCESS###'] = $this->setDashboardIconAccess();
 
+				// ###DASH_MODEL_METHODS###
+				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_MODEL_METHODS###'] = $this->setDashboardModelMethods();
+
+				// ###DASH_GET_CUSTOM_DATA###
+				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_GET_CUSTOM_DATA###'] = $this->setDashboardGetCustomData();
+
+				// ###DASH_DISPLAY_DATA###
+				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_DISPLAY_DATA###'] = $this->setDashboardDisplayData();
+				
 				// add import
 				if (isset($this->addEximport) && $this->addEximport)
 				{
@@ -12869,6 +12878,7 @@ class Compiler
 		return '';
 
 	}
+	
 	protected function setDashboardIcons()
 	{
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
@@ -13026,6 +13036,62 @@ class Compiler
 			return $icons;
 		}
 		return false;
+	}
+	
+	protected function setDashboardModelMethods()
+	{
+		if (0)
+		{
+			// methods array reset
+			$methods = array();
+			// set dashboard methods
+
+			// return the methods
+			return "\n\t".implode("\n\t",$methods);
+		}
+		return '';
+	}
+	
+	protected function setDashboardGetCustomData()
+	{
+		if (0)
+		{
+			// gets array reset
+			$gets = array();
+			// set dashboard gets
+
+			// return the gets
+			return "\n\t\t".implode("\n\t\t",$gets);
+		}
+		return '';
+	}
+	
+	protected function setDashboardDisplayData()
+	{
+		// display array reset
+		$display = array();
+		// set dashboard display
+		$display[] = '<div id="j-main-container" class="span9">';
+		$display[] = "<?php  echo JHtml::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>";
+
+		$display[] = "\n<?php  echo JHtml::_('bootstrap.addSlide', 'dashboard_left', 'cPanel', 'main'); ?>";
+		$display[] = "<?php echo \$this->loadTemplate('main');?>";
+		$display[] = "<?php  echo JHtml::_('bootstrap.endSlide'); ?>";
+
+		$display[] = "\n<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
+		$display[] = "</div>";
+		$display[] = '<div id="j-main-container" class="span3">';
+		$display[] = "<?php  echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
+
+		$display[] = "\n<?php  echo JHtml::_('bootstrap.addSlide', 'dashboard_right', '".$this->fileContentStatic['###COMPANYNAME###']."', 'vdm'); ?>";
+		$display[] = "<?php echo \$this->loadTemplate('vdm');?>";
+		$display[] = "<?php  echo JHtml::_('bootstrap.endSlide'); ?>";
+
+		$display[] = "\n<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
+		$display[] = "</div>";
+		
+		// return the display
+		return "\n".implode("\n",$display);
 	}
 
 	protected function addCustomDashboardIcons(&$view,&$counter)

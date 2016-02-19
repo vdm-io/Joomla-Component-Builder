@@ -206,5 +206,5 @@ class ###Component###Model###Component### extends JModelList
 			}
 		}
 		return $icons;
-	}
+	}###DASH_MODEL_METHODS###
 }

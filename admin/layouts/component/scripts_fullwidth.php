@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.9
-	@build			15th February, 2016
+	@version		2.1.0
+	@build			18th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		scripts_fullwidth.php
@@ -45,7 +45,10 @@ $fields = $displayData->get('fields') ?: array(
 	'add_site_event',
 	'php_site_event',
 	'add_sql',
-	'sql'
+	'sql',
+	'add_php_dashboard_methods',
+	'php_dashboard_methods',
+	'dashboard_tab'
 );
 
 ?>

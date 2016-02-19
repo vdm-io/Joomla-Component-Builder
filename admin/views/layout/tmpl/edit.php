@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.9
-	@build			15th February, 2016
+	@version		2.1.0
+	@build			18th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -114,18 +114,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_fUPcPNL function
+// #jform_add_php_view listeners for add_php_view_ocTnmmb function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_fUPcPNL = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	fUPcPNL(add_php_view_fUPcPNL);
+	var add_php_view_ocTnmmb = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	ocTnmmb(add_php_view_ocTnmmb);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_fUPcPNL = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	fUPcPNL(add_php_view_fUPcPNL);
+	var add_php_view_ocTnmmb = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	ocTnmmb(add_php_view_ocTnmmb);
 
 });
 

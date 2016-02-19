@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.9
-	@build			15th February, 2016
+	@version		2.1.0
+	@build			18th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -96,22 +96,10 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->css))
-			{
-				// base64 Decode css.
-				$item->css = base64_decode($item->css);
-			}
-
 			if (!empty($item->php_helper_admin))
 			{
 				// base64 Decode php_helper_admin.
 				$item->php_helper_admin = base64_decode($item->php_helper_admin);
-			}
-
-			if (!empty($item->php_admin_event))
-			{
-				// base64 Decode php_admin_event.
-				$item->php_admin_event = base64_decode($item->php_admin_event);
 			}
 
 			if (!empty($item->php_helper_site))
@@ -120,16 +108,34 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->php_helper_site = base64_decode($item->php_helper_site);
 			}
 
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
+			}
+
+			if (!empty($item->css))
+			{
+				// base64 Decode css.
+				$item->css = base64_decode($item->css);
+			}
+
+			if (!empty($item->php_admin_event))
+			{
+				// base64 Decode php_admin_event.
+				$item->php_admin_event = base64_decode($item->php_admin_event);
+			}
+
 			if (!empty($item->php_site_event))
 			{
 				// base64 Decode php_site_event.
 				$item->php_site_event = base64_decode($item->php_site_event);
 			}
 
-			if (!empty($item->sql))
+			if (!empty($item->php_dashboard_methods))
 			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
+				// base64 Decode php_dashboard_methods.
+				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
 			}
 
 			if (!empty($item->readme))
@@ -155,8 +161,8 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.component');
 			}
 		}
-		$this->idvndq = $item->addadmin_views;
-		$this->idfodn = $item->addsite_views;
+		$this->idqbsm = $item->addadmin_views;
+		$this->idypxk = $item->addsite_views;
 
 		return $item;
 	}
@@ -166,7 +172,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getQudadmin_views()
+	public function getXnyadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -223,14 +229,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idvndq = json_decode($this->idvndq,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idvndq) && ComponentbuilderHelper::checkArray($idvndq))
+			$idqbsm = json_decode($this->idqbsm,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idqbsm) && ComponentbuilderHelper::checkArray($idqbsm))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idvndq['adminview']) && ComponentbuilderHelper::checkArray($idvndq['adminview']))
+					if ($item->id && isset($idqbsm['adminview']) && ComponentbuilderHelper::checkArray($idqbsm['adminview']))
 					{
-						if (!in_array($item->id,$idvndq['adminview']))
+						if (!in_array($item->id,$idqbsm['adminview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -252,7 +258,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getUpjsite_views()
+	public function getNjksite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -313,14 +319,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idfodn = json_decode($this->idfodn,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idfodn) && ComponentbuilderHelper::checkArray($idfodn))
+			$idypxk = json_decode($this->idypxk,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idypxk) && ComponentbuilderHelper::checkArray($idypxk))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idfodn['siteview']) && ComponentbuilderHelper::checkArray($idfodn['siteview']))
+					if ($item->id && isset($idypxk['siteview']) && ComponentbuilderHelper::checkArray($idypxk['siteview']))
 					{
-						if (!in_array($item->id,$idfodn['siteview']))
+						if (!in_array($item->id,$idypxk['siteview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -1009,22 +1015,10 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the css string to base64 string.
-		if (isset($data['css']))
-		{
-			$data['css'] = base64_encode($data['css']);
-		}
-
 		// Set the php_helper_admin string to base64 string.
 		if (isset($data['php_helper_admin']))
 		{
 			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
-		}
-
-		// Set the php_admin_event string to base64 string.
-		if (isset($data['php_admin_event']))
-		{
-			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
 		}
 
 		// Set the php_helper_site string to base64 string.
@@ -1033,16 +1027,34 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
 		}
 
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
+		}
+
+		// Set the css string to base64 string.
+		if (isset($data['css']))
+		{
+			$data['css'] = base64_encode($data['css']);
+		}
+
+		// Set the php_admin_event string to base64 string.
+		if (isset($data['php_admin_event']))
+		{
+			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
+		}
+
 		// Set the php_site_event string to base64 string.
 		if (isset($data['php_site_event']))
 		{
 			$data['php_site_event'] = base64_encode($data['php_site_event']);
 		}
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
+		// Set the php_dashboard_methods string to base64 string.
+		if (isset($data['php_dashboard_methods']))
 		{
-			$data['sql'] = base64_encode($data['sql']);
+			$data['php_dashboard_methods'] = base64_encode($data['php_dashboard_methods']);
 		}
 
 		// Set the readme string to base64 string.

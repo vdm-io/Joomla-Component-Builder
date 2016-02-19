@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.9
-	@build			15th February, 2016
+	@version		2.1.0
+	@build			18th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typesahs = $item->id;
+		$this->typelwcf = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWtvfields()
+	public function getCghfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typesahs global.
-		$typesahs = $this->typesahs;
-		if (is_numeric($typesahs ))
+		// Filter by typelwcf global.
+		$typelwcf = $this->typelwcf;
+		if (is_numeric($typelwcf ))
 		{
-			$query->where('a.type = ' . (int) $typesahs );
+			$query->where('a.type = ' . (int) $typelwcf );
 		}
-		elseif (is_string($typesahs))
+		elseif (is_string($typelwcf))
 		{
-			$query->where('a.type = ' . $db->quote($typesahs));
+			$query->where('a.type = ' . $db->quote($typelwcf));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationWtvfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationCghfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationWtvfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationCghfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationWtvfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationCghfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationWtvfields($item->store, 'store');
+					$item->store = $this->selectionTranslationCghfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationWtvfields($value,$name)
+	public function selectionTranslationCghfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

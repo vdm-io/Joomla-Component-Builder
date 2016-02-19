@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.9
-	@build			15th February, 2016
+	@version		2.1.0
+	@build			18th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -135,138 +135,138 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_uyuPjlC function
+// #jform_add_php_view listeners for add_php_view_jvPCqaJ function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_uyuPjlC = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	uyuPjlC(add_php_view_uyuPjlC);
+	var add_php_view_jvPCqaJ = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	jvPCqaJ(add_php_view_jvPCqaJ);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_uyuPjlC = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	uyuPjlC(add_php_view_uyuPjlC);
+	var add_php_view_jvPCqaJ = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	jvPCqaJ(add_php_view_jvPCqaJ);
 
 });
 
-// #jform_add_php_jview_display listeners for add_php_jview_display_BypcZLC function
+// #jform_add_php_jview_display listeners for add_php_jview_display_BpXYXOm function
 jQuery('#jform_add_php_jview_display').on('keyup',function()
 {
-	var add_php_jview_display_BypcZLC = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
-	BypcZLC(add_php_jview_display_BypcZLC);
+	var add_php_jview_display_BpXYXOm = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
+	BpXYXOm(add_php_jview_display_BpXYXOm);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_jview_display',function (e)
 {
 	e.preventDefault();
-	var add_php_jview_display_BypcZLC = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
-	BypcZLC(add_php_jview_display_BypcZLC);
+	var add_php_jview_display_BpXYXOm = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
+	BpXYXOm(add_php_jview_display_BpXYXOm);
 
 });
 
-// #jform_add_php_jview listeners for add_php_jview_YitqFju function
+// #jform_add_php_jview listeners for add_php_jview_dWNbWRx function
 jQuery('#jform_add_php_jview').on('keyup',function()
 {
-	var add_php_jview_YitqFju = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
-	YitqFju(add_php_jview_YitqFju);
+	var add_php_jview_dWNbWRx = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
+	dWNbWRx(add_php_jview_dWNbWRx);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_jview',function (e)
 {
 	e.preventDefault();
-	var add_php_jview_YitqFju = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
-	YitqFju(add_php_jview_YitqFju);
+	var add_php_jview_dWNbWRx = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
+	dWNbWRx(add_php_jview_dWNbWRx);
 
 });
 
-// #jform_add_php_document listeners for add_php_document_hnxzfNR function
+// #jform_add_php_document listeners for add_php_document_jUnXyzY function
 jQuery('#jform_add_php_document').on('keyup',function()
 {
-	var add_php_document_hnxzfNR = jQuery("#jform_add_php_document input[type='radio']:checked").val();
-	hnxzfNR(add_php_document_hnxzfNR);
+	var add_php_document_jUnXyzY = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	jUnXyzY(add_php_document_jUnXyzY);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_document',function (e)
 {
 	e.preventDefault();
-	var add_php_document_hnxzfNR = jQuery("#jform_add_php_document input[type='radio']:checked").val();
-	hnxzfNR(add_php_document_hnxzfNR);
+	var add_php_document_jUnXyzY = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	jUnXyzY(add_php_document_jUnXyzY);
 
 });
 
-// #jform_add_css_document listeners for add_css_document_Zkswksa function
+// #jform_add_css_document listeners for add_css_document_LBjKzfA function
 jQuery('#jform_add_css_document').on('keyup',function()
 {
-	var add_css_document_Zkswksa = jQuery("#jform_add_css_document input[type='radio']:checked").val();
-	Zkswksa(add_css_document_Zkswksa);
+	var add_css_document_LBjKzfA = jQuery("#jform_add_css_document input[type='radio']:checked").val();
+	LBjKzfA(add_css_document_LBjKzfA);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_css_document',function (e)
 {
 	e.preventDefault();
-	var add_css_document_Zkswksa = jQuery("#jform_add_css_document input[type='radio']:checked").val();
-	Zkswksa(add_css_document_Zkswksa);
+	var add_css_document_LBjKzfA = jQuery("#jform_add_css_document input[type='radio']:checked").val();
+	LBjKzfA(add_css_document_LBjKzfA);
 
 });
 
-// #jform_add_js_document listeners for add_js_document_KbKimsy function
+// #jform_add_js_document listeners for add_js_document_YjxHjCz function
 jQuery('#jform_add_js_document').on('keyup',function()
 {
-	var add_js_document_KbKimsy = jQuery("#jform_add_js_document input[type='radio']:checked").val();
-	KbKimsy(add_js_document_KbKimsy);
+	var add_js_document_YjxHjCz = jQuery("#jform_add_js_document input[type='radio']:checked").val();
+	YjxHjCz(add_js_document_YjxHjCz);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_js_document',function (e)
 {
 	e.preventDefault();
-	var add_js_document_KbKimsy = jQuery("#jform_add_js_document input[type='radio']:checked").val();
-	KbKimsy(add_js_document_KbKimsy);
+	var add_js_document_YjxHjCz = jQuery("#jform_add_js_document input[type='radio']:checked").val();
+	YjxHjCz(add_js_document_YjxHjCz);
 
 });
 
-// #jform_add_css listeners for add_css_MjLoIOY function
+// #jform_add_css listeners for add_css_rdnMbHr function
 jQuery('#jform_add_css').on('keyup',function()
 {
-	var add_css_MjLoIOY = jQuery("#jform_add_css input[type='radio']:checked").val();
-	MjLoIOY(add_css_MjLoIOY);
+	var add_css_rdnMbHr = jQuery("#jform_add_css input[type='radio']:checked").val();
+	rdnMbHr(add_css_rdnMbHr);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_css',function (e)
 {
 	e.preventDefault();
-	var add_css_MjLoIOY = jQuery("#jform_add_css input[type='radio']:checked").val();
-	MjLoIOY(add_css_MjLoIOY);
+	var add_css_rdnMbHr = jQuery("#jform_add_css input[type='radio']:checked").val();
+	rdnMbHr(add_css_rdnMbHr);
 
 });
 
-// #jform_add_php_ajax listeners for add_php_ajax_myHAUWT function
+// #jform_add_php_ajax listeners for add_php_ajax_WtzeXZo function
 jQuery('#jform_add_php_ajax').on('keyup',function()
 {
-	var add_php_ajax_myHAUWT = jQuery("#jform_add_php_ajax input[type='radio']:checked").val();
-	myHAUWT(add_php_ajax_myHAUWT);
+	var add_php_ajax_WtzeXZo = jQuery("#jform_add_php_ajax input[type='radio']:checked").val();
+	WtzeXZo(add_php_ajax_WtzeXZo);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_ajax',function (e)
 {
 	e.preventDefault();
-	var add_php_ajax_myHAUWT = jQuery("#jform_add_php_ajax input[type='radio']:checked").val();
-	myHAUWT(add_php_ajax_myHAUWT);
+	var add_php_ajax_WtzeXZo = jQuery("#jform_add_php_ajax input[type='radio']:checked").val();
+	WtzeXZo(add_php_ajax_WtzeXZo);
 
 });
 
-// #jform_add_custom_button listeners for add_custom_button_vxYkzlx function
+// #jform_add_custom_button listeners for add_custom_button_ZLvxxLa function
 jQuery('#jform_add_custom_button').on('keyup',function()
 {
-	var add_custom_button_vxYkzlx = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vxYkzlx(add_custom_button_vxYkzlx);
+	var add_custom_button_ZLvxxLa = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	ZLvxxLa(add_custom_button_ZLvxxLa);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_custom_button',function (e)
 {
 	e.preventDefault();
-	var add_custom_button_vxYkzlx = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vxYkzlx(add_custom_button_vxYkzlx);
+	var add_custom_button_ZLvxxLa = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	ZLvxxLa(add_custom_button_ZLvxxLa);
 
 });
 
