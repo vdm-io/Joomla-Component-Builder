@@ -161,8 +161,8 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.component');
 			}
 		}
-		$this->idnfcc = $item->addadmin_views;
-		$this->idbhzo = $item->addsite_views;
+		$this->idumur = $item->addadmin_views;
+		$this->idmgww = $item->addsite_views;
 
 		return $item;
 	}
@@ -172,7 +172,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getBqoadmin_views()
+	public function getKqhadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -229,14 +229,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idnfcc = json_decode($this->idnfcc,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idnfcc) && ComponentbuilderHelper::checkArray($idnfcc))
+			$idumur = json_decode($this->idumur,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idumur) && ComponentbuilderHelper::checkArray($idumur))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idnfcc['adminview']) && ComponentbuilderHelper::checkArray($idnfcc['adminview']))
+					if ($item->id && isset($idumur['adminview']) && ComponentbuilderHelper::checkArray($idumur['adminview']))
 					{
-						if (!in_array($item->id,$idnfcc['adminview']))
+						if (!in_array($item->id,$idumur['adminview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -258,7 +258,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getGygsite_views()
+	public function getVewsite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -319,14 +319,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idbhzo = json_decode($this->idbhzo,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idbhzo) && ComponentbuilderHelper::checkArray($idbhzo))
+			$idmgww = json_decode($this->idmgww,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idmgww) && ComponentbuilderHelper::checkArray($idmgww))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idbhzo['siteview']) && ComponentbuilderHelper::checkArray($idbhzo['siteview']))
+					if ($item->id && isset($idmgww['siteview']) && ComponentbuilderHelper::checkArray($idmgww['siteview']))
 					{
-						if (!in_array($item->id,$idbhzo['siteview']))
+						if (!in_array($item->id,$idmgww['siteview']))
 						{
 							unset($items[$nr]);
 							continue;

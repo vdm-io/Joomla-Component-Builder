@@ -210,7 +210,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_view');
 			}
 		}
-		$this->idmpkw = $item->addfields;
+		$this->idnayz = $item->addfields;
 
 		return $item;
 	}
@@ -220,7 +220,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getFlcfields()
+	public function getNwbfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -288,26 +288,26 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationFlcfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationNwbfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationFlcfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationNwbfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationFlcfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationNwbfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationFlcfields($item->store, 'store');
+					$item->store = $this->selectionTranslationNwbfields($item->store, 'store');
 				}
 			}
 
 
 			// Filter by id Repetable Field
-			$idmpkw = json_decode($this->idmpkw,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idmpkw) && ComponentbuilderHelper::checkArray($idmpkw))
+			$idnayz = json_decode($this->idnayz,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idnayz) && ComponentbuilderHelper::checkArray($idnayz))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idmpkw['field']) && ComponentbuilderHelper::checkArray($idmpkw['field']))
+					if ($item->id && isset($idnayz['field']) && ComponentbuilderHelper::checkArray($idnayz['field']))
 					{
-						if (!in_array($item->id,$idmpkw['field']))
+						if (!in_array($item->id,$idnayz['field']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -329,7 +329,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationFlcfields($value,$name)
+	public function selectionTranslationNwbfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

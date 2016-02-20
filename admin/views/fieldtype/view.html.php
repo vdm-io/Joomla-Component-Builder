@@ -72,7 +72,7 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->xosfields		= $this->get('Xosfields');
+		$this->murfields		= $this->get('Murfields');
 
 		// Set the toolbar
 		$this->addToolBar();

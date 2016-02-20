@@ -72,10 +72,10 @@ class ComponentbuilderViewComponent extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->bqoadmin_views		= $this->get('Bqoadmin_views');
+		$this->kqhadmin_views		= $this->get('Kqhadmin_views');
 
 		// Get Linked view data
-		$this->gygsite_views		= $this->get('Gygsite_views');
+		$this->vewsite_views		= $this->get('Vewsite_views');
 
 		// Set the toolbar
 		$this->addToolBar();
