@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<fieldset
+		name="global_config"
+		label="COM_COMPONENTBUILDER_CONFIG_GLOBAL_LABEL"
+		description="COM_COMPONENTBUILDER_CONFIG_GLOBAL_DESC">
+		<field
+			name="check_in"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CHECK_TIMER_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CHECK_TIMER_DESC">
+			<option
+				value="-5 hours">COM_COMPONENTBUILDER_CONFIG_CHECK_TIMER_OPTION_ONE</option>
+			<option
+				value="-12 hours">COM_COMPONENTBUILDER_CONFIG_CHECK_TIMER_OPTION_TWO</option>
+			<option
+				value="-1 day">COM_COMPONENTBUILDER_CONFIG_CHECK_TIMER_OPTION_THREE</option>
+			<option
+				value="-2 day">COM_COMPONENTBUILDER_CONFIG_CHECK_TIMER_OPTION_FOUR</option>
+			<option
+				value="-1 week">COM_COMPONENTBUILDER_CONFIG_CHECK_TIMER_OPTION_FIVE</option>
+			<option
+				value="0">COM_COMPONENTBUILDER_CONFIG_CHECK_TIMER_OPTION_SIX</option>
+		</field>
+		<field type="spacer" name="spacerAuthor" hr="true" />
+		<field
+			name="save_history"
+			type="radio"
+			class="btn-group btn-group-yesno"
+			default="0"
+			label="JGLOBAL_SAVE_HISTORY_OPTIONS_LABEL"
+			description="JGLOBAL_SAVE_HISTORY_OPTIONS_DESC"
+			>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
+			name="history_limit"
+			type="text"
+			filter="integer"
+			label="JGLOBAL_HISTORY_LIMIT_OPTIONS_LABEL"
+			description="JGLOBAL_HISTORY_LIMIT_OPTIONS_DESC"
+			default="10"
+		/>
+		<field type="spacer" name="spacerHistory" hr="true" />
+
+		<!-- Minify Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="minify"
+			label="COM_COMPONENTBUILDER_CONFIG_MINIFY_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_MINIFY_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
+		</field>		
+		<!-- Spacer_hr_a Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_a" hr="true" class="spacer_hr_a" />
+		<field name="autorTitle"
+			type="spacer"
+			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR"
+		/>
+		<field name="autorName"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR_NAME_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_AUTHOR_NAME_DESC"
+			size="60"
+			default="Llewellyn van der Merwe"
+			readonly="true"
+			class="readonly"
+		/>
+		<field name="autorEmail"
+			type="email"
+			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR_EMAIL_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_AUTHOR_EMAIL_DESC"
+			size="60"
+			default="info@vdm.io"
+			readonly="true"
+			class="readonly"
+		/>
+		<field type="spacer" name="spacerContributor1" hr="true" />
+		<field name="contributor1"
+			type="spacer"
+			class="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_ONE"
+		/>
+		<field name="titleContributor1"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_DESC"
+			size="60"
+			default="My Wife"
+		/>
+		<field name="nameContributor1"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_DESC"
+			size="60"
+			default="Roline van der Merwe"
+		/>
+		<field name="emailContributor1"
+			type="email"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_DESC"
+			size="60"
+			default="info@vdm.io"
+		/>
+		<field name="linkContributor1"
+			type="url"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_DESC"
+			size="60"
+			default="http://www.vdm.io/"
+		/>
+		<field name="useContributor1"
+			type="list"
+			default="2"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_EMAIL</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_WWW</option>
+		</field>
+		<field name="showContributor1"
+			type="list"
+			default="3"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_BACK</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_FRONT</option>
+			<option value="3">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_ALL</option>
+		</field>
+		<field type="spacer" name="spacerContributor2" hr="true" />
+		<field name="contributor2"
+			type="spacer"
+			class="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TWO"
+		/>
+		<field name="titleContributor2"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="nameContributor2"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="emailContributor2"
+			type="email"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="linkContributor2"
+			type="url"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="useContributor2"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_EMAIL</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_WWW</option>
+		</field>
+		<field name="showContributor2"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_BACK</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_FRONT</option>
+			<option value="3">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_ALL</option>
+		</field>
+		<field type="spacer" name="spacerContributor3" hr="true" />
+		<field name="contributor3"
+			type="spacer"
+			class="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_THREE"
+		/>
+		<field name="titleContributor3"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="nameContributor3"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="emailContributor3"
+			type="email"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="linkContributor3"
+			type="url"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="useContributor3"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_EMAIL</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_WWW</option>
+		</field>
+		<field name="showContributor3"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_BACK</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_FRONT</option>
+			<option value="3">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_ALL</option>
+		</field>
+		<field type="spacer" name="spacerContributor4" hr="true" />
+		<field name="contributor4"
+			type="spacer"
+			class="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_FOUR"
+		/>
+		<field name="titleContributor4"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="nameContributor4"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="emailContributor4"
+			type="email"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="linkContributor4"
+			type="url"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="useContributor4"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_EMAIL</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_WWW</option>
+		</field>
+		<field name="showContributor4"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_BACK</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_FRONT</option>
+			<option value="3">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_ALL</option>
+		</field>
+		<field type="spacer" name="spacerContributor5" hr="true" />
+		<field name="contributor5"
+			type="spacer"
+			class="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_FIVE"
+		/>
+		<field name="titleContributor5"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_TITLE_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="nameContributor5"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_NAME_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="emailContributor5"
+			type="email"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_EMAIL_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="linkContributor5"
+			type="url"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_LINK_DESC"
+			size="60"
+			default=""
+		/>
+		<field name="useContributor5"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_EMAIL</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_USE_WWW</option>
+		</field>
+		<field name="showContributor5"
+			type="list"
+			default="0"
+			label="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_DESC">
+			<option value="0">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_NONE</option>
+			<option value="1">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_BACK</option>
+			<option value="2">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_FRONT</option>
+			<option value="3">COM_COMPONENTBUILDER_CONFIG_CONTRIBUTOR_SHOW_ALL</option>
+		</field>
+	</fieldset>
+	<fieldset
+		name="uikit_config"
+		label="COM_COMPONENTBUILDER_CONFIG_UIKIT_LABEL"
+		description="COM_COMPONENTBUILDER_CONFIG_UIKIT_DESC">
+		<field name="uikit_load"
+			type="radio"
+			label="COM_COMPONENTBUILDER_CONFIG_UIKIT_LOAD_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_UIKIT_LOAD_DESC"
+			class="btn-group btn-group-yesno"
+			default="">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_CONFIG_AUTO_LOAD</option>"
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_FORCE_LOAD</option>"
+			<option value="3">
+				COM_COMPONENTBUILDER_CONFIG_ONLY_EXTRA</option>"
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_DONT_LOAD</option>"
+		</field>
+		<field name="uikit_min"
+			type="radio"
+			label="COM_COMPONENTBUILDER_CONFIG_UIKIT_MIN_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_UIKIT_MIN_DESC"
+			class="btn-group btn-group-yesno"
+			default="">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>"
+			<option value=".min">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>"
+		</field>
+		<field name="uikit_style"
+			type="radio"
+			label="COM_COMPONENTBUILDER_CONFIG_UIKIT_STYLE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_UIKIT_STYLE_DESC"
+			class="btn-group btn-group-yesno"
+			default="">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_CONFIG_FLAT_LOAD</option>"
+			<option value=".almost-flat">
+				COM_COMPONENTBUILDER_CONFIG_ALMOST_FLAT_LOAD</option>"
+			<option value=".gradient">
+				COM_COMPONENTBUILDER_CONFIG_GRADIANT_LOAD</option>"
+		</field>
+	</fieldset>
+	<fieldset
+		name="encryption_config"
+		label="COM_COMPONENTBUILDER_CONFIG_ENCRYPTION_LABEL"
+		description="COM_COMPONENTBUILDER_CONFIG_ENCRYPTION_DESC">
+		<field type="note" name="basic_key_note" class="alert alert-info" label="COM_COMPONENTBUILDER_CONFIG_BASIC_KEY_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_BASIC_KEY_NOTE_DESC"  />
+		<field name="basic_key"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_BASIC_KEY_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_BASIC_KEY_DESC"
+			size="60"
+			default=""
+		/>
+	</fieldset>
+	<fieldset
+		name="folder_paths_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_FOLDER_PATHS">
+
+		<!-- Note_compiler_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_compiler_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_COMPILER_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_COMPILER_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_compiler_folder_path" />		
+		<!-- Compiler_folder_path Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="compiler_folder_path"
+			label="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_LABEL"
+			size="70"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="false"
+			filter="PATH"
+			message="Error! Please add some text here."
+			hint="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_HINT"
+		/>		
+		<!-- Note_custom_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_custom_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_CUSTOM_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_CUSTOM_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_custom_folder_path" />		
+		<!-- Custom_folder_path Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="custom_folder_path"
+			label="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_LABEL"
+			size="70"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="false"
+			filter="PATH"
+			message="Error! Please add folder path here."
+			hint="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_HINT"
+		/>		
+		<!-- Note_backup_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_backup_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_BACKUP_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_BACKUP_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_backup_folder_path" />		
+		<!-- Backup_folder_path Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="backup_folder_path"
+			label="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_LABEL"
+			size="70"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="false"
+			filter="PATH"
+			message="Error! Please add folder path here."
+			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_HINT"
+		/>		
+		<!-- Note_git_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_git_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_GIT_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_GIT_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_git_folder_path" />		
+		<!-- Git_folder_path Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="git_folder_path"
+			label="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_LABEL"
+			size="70"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="false"
+			filter="PATH"
+			message="Error! Please add folder path here."
+			hint="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_HINT"
+		/>
+	</fieldset>
+	<fieldset
+		name="permissions"
+		label="JCONFIG_PERMISSIONS_LABEL"
+		description="JCONFIG_PERMISSIONS_DESC">
+		<field
+			name="rules"
+			type="rules"
+			label="JCONFIG_PERMISSIONS_LABEL"
+			class="inputbox"
+			validate="rules"
+			filter="rules"
+			component="com_componentbuilder"
+			section="component"
+		/>
+	</fieldset>
+</config>

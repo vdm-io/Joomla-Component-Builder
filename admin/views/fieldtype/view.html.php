@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			18th February, 2016
+	@build			20th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -72,7 +72,7 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->cghfields		= $this->get('Cghfields');
+		$this->xosfields		= $this->get('Xosfields');
 
 		// Set the toolbar
 		$this->addToolBar();

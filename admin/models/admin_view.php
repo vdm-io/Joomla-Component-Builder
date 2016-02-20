@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			18th February, 2016
+	@build			20th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -210,7 +210,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_view');
 			}
 		}
-		$this->idmrpx = $item->addfields;
+		$this->idmpkw = $item->addfields;
 
 		return $item;
 	}
@@ -220,7 +220,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWyzfields()
+	public function getFlcfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -288,26 +288,26 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationWyzfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationFlcfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationWyzfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationFlcfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationWyzfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationFlcfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationWyzfields($item->store, 'store');
+					$item->store = $this->selectionTranslationFlcfields($item->store, 'store');
 				}
 			}
 
 
 			// Filter by id Repetable Field
-			$idmrpx = json_decode($this->idmrpx,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idmrpx) && ComponentbuilderHelper::checkArray($idmrpx))
+			$idmpkw = json_decode($this->idmpkw,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idmpkw) && ComponentbuilderHelper::checkArray($idmpkw))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idmrpx['field']) && ComponentbuilderHelper::checkArray($idmrpx['field']))
+					if ($item->id && isset($idmpkw['field']) && ComponentbuilderHelper::checkArray($idmpkw['field']))
 					{
-						if (!in_array($item->id,$idmrpx['field']))
+						if (!in_array($item->id,$idmpkw['field']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -329,7 +329,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationWyzfields($value,$name)
+	public function selectionTranslationFlcfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -447,6 +447,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$form->setFieldAttribute('ordering', 'filter', 'unset');
 			$form->setFieldAttribute('published', 'filter', 'unset');
 		}
+		// If this is a new item insure the greated by is set.
+		if (0 == $id)
+		{
+			// Set the created_by to this user
+			$form->setValue('created_by', null, $user->id);
+		}
 		// Modify the form based on Edit Creaded By access controls.
 		if (!$user->authorise('core.edit.created_by', 'com_componentbuilder'))
 		{
@@ -464,6 +470,19 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$form->setFieldAttribute('created', 'disabled', 'true');
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
+		}
+		// Only load these values if no id is found
+		if (0 == $id)
+		{
+			// Set redirected field name
+			$redirectedField = $jinput->get('ref', null, 'STRING');
+			// Set redirected field value
+			$redirectedValue = $jinput->get('refid', 0, 'INT');
+			if (0 != $redirectedValue && $redirectedField)
+			{
+				// Now set the local-redirected field default value
+				$form->setValue($redirectedField, null, $redirectedValue);
+			}
 		}
 
 		return $form;
@@ -576,7 +595,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		{
 			$table->created = $date->toSql();
 			// set the user
-			if ($table->created_by == 0)
+			if ($table->created_by == 0 || empty($table->created_by))
 			{
 				$table->created_by = $user->id;
 			}

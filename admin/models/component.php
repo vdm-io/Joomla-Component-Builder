@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			18th February, 2016
+	@build			20th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -161,8 +161,8 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.component');
 			}
 		}
-		$this->idqbsm = $item->addadmin_views;
-		$this->idypxk = $item->addsite_views;
+		$this->idnfcc = $item->addadmin_views;
+		$this->idbhzo = $item->addsite_views;
 
 		return $item;
 	}
@@ -172,7 +172,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getXnyadmin_views()
+	public function getBqoadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -229,14 +229,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idqbsm = json_decode($this->idqbsm,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idqbsm) && ComponentbuilderHelper::checkArray($idqbsm))
+			$idnfcc = json_decode($this->idnfcc,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idnfcc) && ComponentbuilderHelper::checkArray($idnfcc))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idqbsm['adminview']) && ComponentbuilderHelper::checkArray($idqbsm['adminview']))
+					if ($item->id && isset($idnfcc['adminview']) && ComponentbuilderHelper::checkArray($idnfcc['adminview']))
 					{
-						if (!in_array($item->id,$idqbsm['adminview']))
+						if (!in_array($item->id,$idnfcc['adminview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -258,7 +258,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getNjksite_views()
+	public function getGygsite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -319,14 +319,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idypxk = json_decode($this->idypxk,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idypxk) && ComponentbuilderHelper::checkArray($idypxk))
+			$idbhzo = json_decode($this->idbhzo,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idbhzo) && ComponentbuilderHelper::checkArray($idbhzo))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idypxk['siteview']) && ComponentbuilderHelper::checkArray($idypxk['siteview']))
+					if ($item->id && isset($idbhzo['siteview']) && ComponentbuilderHelper::checkArray($idbhzo['siteview']))
 					{
-						if (!in_array($item->id,$idypxk['siteview']))
+						if (!in_array($item->id,$idbhzo['siteview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -389,6 +389,12 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$form->setFieldAttribute('ordering', 'filter', 'unset');
 			$form->setFieldAttribute('published', 'filter', 'unset');
 		}
+		// If this is a new item insure the greated by is set.
+		if (0 == $id)
+		{
+			// Set the created_by to this user
+			$form->setValue('created_by', null, $user->id);
+		}
 		// Modify the form based on Edit Creaded By access controls.
 		if (!$user->authorise('core.edit.created_by', 'com_componentbuilder'))
 		{
@@ -406,6 +412,19 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$form->setFieldAttribute('created', 'disabled', 'true');
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
+		}
+		// Only load these values if no id is found
+		if (0 == $id)
+		{
+			// Set redirected field name
+			$redirectedField = $jinput->get('ref', null, 'STRING');
+			// Set redirected field value
+			$redirectedValue = $jinput->get('refid', 0, 'INT');
+			if (0 != $redirectedValue && $redirectedField)
+			{
+				// Now set the local-redirected field default value
+				$form->setValue($redirectedField, null, $redirectedValue);
+			}
 		}
 
 		return $form;
@@ -517,7 +536,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 		{
 			$table->created = $date->toSql();
 			// set the user
-			if ($table->created_by == 0)
+			if ($table->created_by == 0 || empty($table->created_by))
 			{
 				$table->created_by = $user->id;
 			}

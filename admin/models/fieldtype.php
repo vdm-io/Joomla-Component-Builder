@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			18th February, 2016
+	@build			20th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typelwcf = $item->id;
+		$this->typenomq = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getCghfields()
+	public function getXosfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typelwcf global.
-		$typelwcf = $this->typelwcf;
-		if (is_numeric($typelwcf ))
+		// Filter by typenomq global.
+		$typenomq = $this->typenomq;
+		if (is_numeric($typenomq ))
 		{
-			$query->where('a.type = ' . (int) $typelwcf );
+			$query->where('a.type = ' . (int) $typenomq );
 		}
-		elseif (is_string($typelwcf))
+		elseif (is_string($typenomq))
 		{
-			$query->where('a.type = ' . $db->quote($typelwcf));
+			$query->where('a.type = ' . $db->quote($typenomq));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationCghfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationXosfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationCghfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationXosfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationCghfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationXosfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationCghfields($item->store, 'store');
+					$item->store = $this->selectionTranslationXosfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationCghfields($value,$name)
+	public function selectionTranslationXosfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -358,6 +358,12 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$form->setFieldAttribute('ordering', 'filter', 'unset');
 			$form->setFieldAttribute('published', 'filter', 'unset');
 		}
+		// If this is a new item insure the greated by is set.
+		if (0 == $id)
+		{
+			// Set the created_by to this user
+			$form->setValue('created_by', null, $user->id);
+		}
 		// Modify the form based on Edit Creaded By access controls.
 		if (!$user->authorise('core.edit.created_by', 'com_componentbuilder'))
 		{
@@ -375,6 +381,19 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$form->setFieldAttribute('created', 'disabled', 'true');
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
+		}
+		// Only load these values if no id is found
+		if (0 == $id)
+		{
+			// Set redirected field name
+			$redirectedField = $jinput->get('ref', null, 'STRING');
+			// Set redirected field value
+			$redirectedValue = $jinput->get('refid', 0, 'INT');
+			if (0 != $redirectedValue && $redirectedField)
+			{
+				// Now set the local-redirected field default value
+				$form->setValue($redirectedField, null, $redirectedValue);
+			}
 		}
 
 		return $form;
@@ -502,7 +521,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		{
 			$table->created = $date->toSql();
 			// set the user
-			if ($table->created_by == 0)
+			if ($table->created_by == 0 || empty($table->created_by))
 			{
 				$table->created_by = $user->id;
 			}

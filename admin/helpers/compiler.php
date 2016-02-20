@@ -134,6 +134,7 @@ class Compiler
 	protected $otherWhere						= array();
 	protected $target;
 	protected $_adminViewData;
+	protected $DashboardGetCustomData				= array();
 
 	/**
 	 * Constructor
@@ -6926,7 +6927,7 @@ class Compiler
 				}
 				// if this is a linked view set permissions
 				$closeIT = false;
-				if(in_array($tabCodeName,$linkedViewIdentifier))
+				if(isset($linkedViewIdentifier) && ComponentbuilderHelper::checkArray($linkedViewIdentifier) && in_array($tabCodeName,$linkedViewIdentifier))
 				{
 					// get view name
 					$linkedViewId = array_search($tabCodeName,$linkedViewIdentifier);
@@ -10367,7 +10368,13 @@ class Compiler
 			$allow[] = "\t\t\t\$form->setFieldAttribute('ordering', 'filter', 'unset');";
 			$allow[] = "\t\t\t\$form->setFieldAttribute('published', 'filter', 'unset');";
 			$allow[] = "\t\t}";
-		}
+		}		
+		$allow[] = "\t\t//".$this->setLine(__LINE__)." If this is a new item insure the greated by is set.";
+		$allow[] = "\t\tif (0 == \$id)";
+		$allow[] = "\t\t{";
+		$allow[] = "\t\t\t//".$this->setLine(__LINE__)." Set the created_by to this user";
+		$allow[] = "\t\t\t\$form->setValue('created_by', null, \$user->id);";
+		$allow[] = "\t\t}";
 		$allow[] = "\t\t//".$this->setLine(__LINE__)." Modify the form based on Edit Creaded By access controls.";
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit.created_by']) && isset($this->permissionBuilder[$core['core.edit.created_by']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.created_by']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.edit.created_by']]))
@@ -10433,6 +10440,20 @@ class Compiler
 				$allow[] = "\t\t}";
 			}
 		}
+		// add the redirect trick to set the field of origin		
+		$allow[] = "\t\t//".$this->setLine(__LINE__)." Only load these values if no id is found";
+		$allow[] = "\t\tif (0 == \$id)";
+		$allow[] = "\t\t{";		
+		$allow[] = "\t\t\t//".$this->setLine(__LINE__)." Set redirected field name";
+		$allow[] = "\t\t\t\$redirectedField = \$jinput->get('ref', null, 'STRING');";
+		$allow[] = "\t\t\t//".$this->setLine(__LINE__)." Set redirected field value";
+		$allow[] = "\t\t\t\$redirectedValue = \$jinput->get('refid', 0, 'INT');";
+		$allow[] = "\t\t\tif (0 != \$redirectedValue && \$redirectedField)";
+		$allow[] = "\t\t\t{";
+		$allow[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now set the local-redirected field default value";
+		$allow[] = "\t\t\t\t\$form->setValue(\$redirectedField, null, \$redirectedValue);";
+		$allow[] = "\t\t\t}";
+		$allow[] = "\t\t}";
 		// setup the default script
 		$allow[] = "\n\t\treturn \$form;";
 
@@ -13040,26 +13061,30 @@ class Compiler
 	
 	protected function setDashboardModelMethods()
 	{
-		if (0)
+		if ($this->componentData->add_php_dashboard_methods)
 		{
-			// methods array reset
-			$methods = array();
-			// set dashboard methods
+			// get all the mothods that should load date to the view
+			$this->DashboardGetCustomData = ComponentbuilderHelper::getAllBetween($this->componentData->php_dashboard_methods,'public function get','()');
 
 			// return the methods
-			return "\n\t".implode("\n\t",$methods);
+			return "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->componentData->php_dashboard_methods);
 		}
 		return '';
 	}
 	
 	protected function setDashboardGetCustomData()
 	{
-		if (0)
+		if (ComponentbuilderHelper::checkArray($this->DashboardGetCustomData))
 		{
 			// gets array reset
 			$gets = array();
 			// set dashboard gets
-
+			foreach($this->DashboardGetCustomData as $get)
+			{
+				$string = ComponentbuilderHelper::safeString($get);
+				$tabs = (\strlen($string) < 8) ? "\t\t\t" : (\strlen($string) < 16) ? "\t\t" : (\strlen($string) < 24) ? "\t" : ' ';
+				$gets[] = "\$this->".$string.$tabs."= \$this->get('".$get."');";
+			}
 			// return the gets
 			return "\n\t\t".implode("\n\t\t",$gets);
 		}
@@ -13070,26 +13095,92 @@ class Compiler
 	{
 		// display array reset
 		$display = array();
+		$mainAccordianName = 'cPanel';
+		$builder = array();
+		$tab = "\t";
+		$loadTabs = false;
+		// check if we have custom tabs
+		if ($this->componentData->add_php_dashboard_methods && ComponentbuilderHelper::checkArray($this->componentData->dashboard_tab))
+		{
+			// build the tabs and accordians
+			foreach ($this->componentData->dashboard_tab as $data)
+			{
+				$builder[$data['name']][$data['header']] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$data['html']);
+			}
+			// since we have custom tabs we must load the tab structure around the cpanel
+			$display[] = '<div id="j-main-container" class="span12">';
+			$display[] = "\t".'<div class="form-horizontal">';
+			$display[] = "\t<?php echo JHtml::_('bootstrap.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
+			$display[] = "\n\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'cpanel', JText::_('cPanel', true)); ?>";
+			$display[] = "\t\t".'<div class="row-fluid">';
+			// set the tab to insure correct spacing
+			$tab = "\t\t\t";
+			// change the name of the main tab
+			$mainAccordianName = 'Control Panel';
+			$loadTabs = true;
+		}
+		else
+		{
+			$display[] = '<div id="j-main-container">';
+		}
 		// set dashboard display
-		$display[] = '<div id="j-main-container" class="span9">';
-		$display[] = "<?php  echo JHtml::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>";
-
-		$display[] = "\n<?php  echo JHtml::_('bootstrap.addSlide', 'dashboard_left', 'cPanel', 'main'); ?>";
-		$display[] = "<?php echo \$this->loadTemplate('main');?>";
-		$display[] = "<?php  echo JHtml::_('bootstrap.endSlide'); ?>";
-
-		$display[] = "\n<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
-		$display[] = "</div>";
-		$display[] = '<div id="j-main-container" class="span3">';
-		$display[] = "<?php  echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
-
-		$display[] = "\n<?php  echo JHtml::_('bootstrap.addSlide', 'dashboard_right', '".$this->fileContentStatic['###COMPANYNAME###']."', 'vdm'); ?>";
-		$display[] = "<?php echo \$this->loadTemplate('vdm');?>";
-		$display[] = "<?php  echo JHtml::_('bootstrap.endSlide'); ?>";
-
-		$display[] = "\n<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
-		$display[] = "</div>";
+		$display[] = $tab.'<div class="span9">';
+		$display[] = $tab."\t<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>";
+		$display[] = $tab."\t\t<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_left', '".$mainAccordianName."', 'main'); ?>";
+		$display[] = $tab."\t\t\t<?php echo \$this->loadTemplate('main');?>";
+		$display[] = $tab."\t\t<?php echo JHtml::_('bootstrap.endSlide'); ?>";
+		$display[] = $tab."\t<?php echo JHtml::_('bootstrap.endAccordion'); ?>";
+		$display[] = $tab."</div>";
+		$display[] = $tab.'<div class="span3">';
+		$display[] = $tab."\t<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
+		$display[] = $tab."\t\t<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', '".$this->fileContentStatic['###COMPANYNAME###']."', 'vdm'); ?>";
+		$display[] = $tab."\t\t\t<?php echo \$this->loadTemplate('vdm');?>";
+		$display[] = $tab."\t\t<?php echo JHtml::_('bootstrap.endSlide'); ?>";
+		$display[] = $tab."\t<?php echo JHtml::_('bootstrap.endAccordion'); ?>";
+		$display[] = $tab."</div>";
 		
+		if ($loadTabs)
+		{
+			$display[] = "\t\t</div>";
+			$display[] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>";  
+			// load the new tabs
+			foreach($builder as $tabname => $accordians)
+			{
+				$alias = ComponentbuilderHelper::safeString($tabname);
+				$display[] = "\n\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', '".$alias."', JText::_('".$tabname."', true)); ?>";
+				$display[] = "\t\t".'<div class="row-fluid">';
+				$display[] = $tab.'<div class="span12">';
+				$display[] = $tab."\t<?php  echo JHtml::_('bootstrap.startAccordion', '".$alias."_accordian', array('active' => 'one')); ?>";
+				$slidecounter = 1;
+				foreach($accordians as $accordianname => $html)
+				{
+					$ac_alias = ComponentbuilderHelper::safeString($accordianname);
+					$counterName = ComponentbuilderHelper::safeString($slidecounter);
+					$tempName = $alias.'_'.$ac_alias;
+					$display[] = $tab."\t\t<?php  echo JHtml::_('bootstrap.addSlide', '".$alias."_accordian', '".$accordianname."', '".$counterName."'); ?>";
+					$display[] = $tab."\t\t\t<?php echo \$this->loadTemplate('".$tempName."');?>";
+					$display[] = $tab."\t\t<?php  echo JHtml::_('bootstrap.endSlide'); ?>";
+					$slidecounter++;
+					// build the template file
+					$target = array('custom_admin' => $this->fileContentStatic['###component###']);
+					$this->buildDynamique($target,'template',$tempName);
+					// set the file data
+					$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
+					// ###SITE_TEMPLATE_BODY### <<<DYNAMIC>>>
+					$this->fileContentDynamic[$this->fileContentStatic['###component###'].'_'.$tempName]['###CUSTOM_ADMIN_TEMPLATE_BODY###'] = "\n".$html;
+					// ###SITE_TEMPLATE_CODE_BODY### <<<DYNAMIC>>>
+					$this->fileContentDynamic[$this->fileContentStatic['###component###'].'_'.$tempName]['###CUSTOM_ADMIN_TEMPLATE_CODE_BODY###'] = '';
+				}
+				$display[] = $tab."\t<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
+				$display[] = $tab."</div>";
+				$display[] = "\t\t</div>";
+				$display[] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>"; 
+			}
+			
+			$display[] = "\n\t<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
+			$display[] = "\t</div>";
+		}
+		$display[] = "</div>";
 		// return the display
 		return "\n".implode("\n",$display);
 	}
@@ -15759,6 +15850,42 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 		else
 		{
 			$component->readme = '';
+		}
+		
+		// dashboard methods
+		if ($component->add_php_dashboard_methods)
+		{
+			// load the php for the dashboard model
+			$component->php_dashboard_methods = base64_decode($component->php_dashboard_methods);
+			// check if dashboard_tab is set
+			$dashboard_tab = json_decode($component->dashboard_tab,true);
+			if (ComponentbuilderHelper::checkArray($dashboard_tab))
+			{
+				$component->dashboard_tab = array();
+				$nowLang = $this->lang;
+				$this->lang = 'admin';
+				foreach ($dashboard_tab as $option => $values)
+				{
+					foreach ($values as $nr => $value)
+					{
+						if ('html' == $option)
+						{	
+							$value = $this->setCustomContentLang($value);
+						}
+						$component->dashboard_tab[$nr][$option] = $value;
+					}
+				}
+				$this->lang = $nowLang;
+			}
+			else
+			{
+				$component->dashboard_tab = '';
+			}
+		}
+		else
+		{
+			$component->php_dashboard_methods = '';
+			$component->dashboard_tab = '';
 		}
 
 		// return the found component data

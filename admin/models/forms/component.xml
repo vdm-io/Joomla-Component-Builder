@@ -2331,7 +2331,8 @@
 			class="dashboard_tabs"
 			select="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_TAB_SELECT"
 			icon="list"
-			maximum="5">
+			maximum="5"
+			filter="raw">
 			<fields name="dashboard_tab_fields" label="">
 				<fieldset hidden="true" name="dashboard_tab_modal" repeat="true">
 					<!-- Name Field. Type: Text. (joomla) -->

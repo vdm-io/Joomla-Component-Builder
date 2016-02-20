@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_###component###/models/rules"
+	addfieldpath="/administrator/components/com_###component###/models/fields"
+>
+	###FIELDSETS###
+	
+	###ACCESSCONTROL###
+</form>
