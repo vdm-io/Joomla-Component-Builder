@@ -179,7 +179,7 @@ class ComponentbuilderModelFields extends JModelList
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslation($value,$name)
+	protected function selectionTranslation($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -515,7 +515,7 @@ class ComponentbuilderModelFields extends JModelList
 	* @return  a bool
 	*
 	*/
-	public function checkInNow()
+	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');

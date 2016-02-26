@@ -72,7 +72,7 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->lohfields		= $this->get('Lohfields');
+		$this->rwqfields		= $this->get('Rwqfields');
 
 		// Set the toolbar
 		$this->addToolBar();

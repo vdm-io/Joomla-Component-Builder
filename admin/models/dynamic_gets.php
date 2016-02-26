@@ -151,7 +151,7 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslation($value,$name)
+	protected function selectionTranslation($value,$name)
 	{
 		// Array of main_source language strings
 		if ($name == 'main_source')
@@ -407,7 +407,7 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 	* @return  a bool
 	*
 	*/
-	public function checkInNow()
+	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');

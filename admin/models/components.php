@@ -355,7 +355,7 @@ class ComponentbuilderModelComponents extends JModelList
 	* @return  a bool
 	*
 	*/
-	public function checkInNow()
+	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');

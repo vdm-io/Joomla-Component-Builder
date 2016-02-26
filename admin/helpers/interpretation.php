@@ -42,54 +42,54 @@ class Interpretation extends Structure
 	 */
 	public $loadLineNr			= false;
 	
-	public $theContributors		= '';
+	public $theContributors			= '';
 	public $placeholders			= array();
 	public $queryBuilder			= array();
 	public $dbUniqueKeys			= array();
-	public $dbKeys			= array();
+	public $dbKeys				= array();
 	public $uninstallBuilder		= array();
 	public $listBuilder			= array();
 	public $listColnrBuilder		= array();
 	public $sortBuilder			= array();
-	public $searchBuilder		= array();
-	public $filterBuilder		= array();
-	public $layoutBuilder		= array();
-	public $permissionBuilder            = array();
-	public $permissionDashboard          = array();
-	public $permissionCore		= array();
-	public $customFieldBuilder           = array();
+	public $searchBuilder			= array();
+	public $filterBuilder			= array();
+	public $layoutBuilder			= array();
+	public $permissionBuilder		= array();
+	public $permissionDashboard		= array();
+	public $permissionCore			= array();
+	public $customFieldBuilder		= array();
 	public $aliasBuilder			= array();
-	public $catCodeBuilder		= array();
+	public $catCodeBuilder			= array();
 	public $titleBuilder			= array();
-	public $buildCategories		= array();
+	public $buildCategories			= array();
 	public $iconBuilder			= array();
-	public $hiddenFieldsBuilder          = array();
-	public $dynamicfieldsBuilder         = array();
+	public $hiddenFieldsBuilder		= array();
+	public $dynamicfieldsBuilder		= array();
 	public $intFieldsBuilder		= array();
-	public $customFieldLinksBuilder      = array();
+	public $customFieldLinksBuilder		= array();
 	public $tabCounter			= array();
 	public $tagsBuilder			= array();
-	public $historyBuilder		= array();
-	public $checkboxBuilder		= array();
-	public $jsonItemBuilder		= array();
-	public $jsonStringBuilder            = array();
-	public $base64Builder		= array();
-	public $basicEncryptionBuilder       = array();
-	public $advancedEncryptionBuilder    = array();
-	public $customBuilder		= array();
-	public $selectionTranslationFixBuilder = array();
+	public $historyBuilder			= array();
+	public $checkboxBuilder			= array();
+	public $jsonItemBuilder			= array();
+	public $jsonStringBuilder		= array();
+	public $base64Builder			= array();
+	public $basicEncryptionBuilder		= array();
+	public $advancedEncryptionBuilder	= array();
+	public $customBuilder			= array();
+	public $selectionTranslationFixBuilder	= array();
 	public $validationFixBuilder		= array();
-	public $customBuilderList            = array();
-	public $editBodyViewScriptBuilder    = array();
-	public $targetRelationControl        = array();
-	public $targetControlsScriptChecker  = array();
-	public $setScriptUserSwitch          = array();
-	public $setScriptMediaSwitch         = array();
-	public $setGroupControl		= array();
+	public $customBuilderList		= array();
+	public $editBodyViewScriptBuilder	= array();
+	public $targetRelationControl		= array();
+	public $targetControlsScriptChecker	= array();
+	public $setScriptUserSwitch		= array();
+	public $setScriptMediaSwitch		= array();
+	public $setGroupControl			= array();
 	public $doNotEscape			= array();
 	public $setRouterHelpDone		= array();
 	public $otherWhere			= array();
-	public $DashboardGetCustomData	= array();
+	public $DashboardGetCustomData		= array();
 	
 	/**
 	 * Constructor
@@ -99,7 +99,7 @@ class Interpretation extends Structure
 		// first we run the perent constructor
 		if (parent::__construct($config))
 		{
-			// set if line numbers suld be added to comments
+			// set if line numbers should be added to comments
 			$this->loadLineNr = ($this->componentData->debug_linenr) ? true:false;
 			return true;
 		}
@@ -118,7 +118,7 @@ class Interpretation extends Structure
 	{
 		if ($this->loadLineNr)
 		{
-			return ' ['.get_class($this).' '.$nr.']';	
+			return ' ['.__CLASS__.' '.$nr.']';	
 		}
 		return '';
 	}
@@ -287,7 +287,7 @@ class Interpretation extends Structure
 				$encrypt[] = "\t\t}";
 				$encrypt[] = "\t}";
 				$encrypt[] = "\t";
-				$encrypt[] = "\tpublic function get(\$Vk5smi0wjnjb,\$V2uekt2wcgwk)";
+				$encrypt[] = "\tprivate function get(\$Vk5smi0wjnjb,\$V2uekt2wcgwk)";
 				$encrypt[] = "\t{";
 				$encrypt[] = "\t\t\$Viioj50xuqu2 = unserialize(base64_decode('".$theKey."'));";
 				$encrypt[] = "\t\t\$Visqfrd1caus = time() . md5(mt_rand(1000000000, 9999999999) . \$Vk5smi0wjnjb);";
@@ -3977,7 +3977,7 @@ class Interpretation extends Structure
 		$batchmove[] = "\t *";
 		$batchmove[] = "\t * @since\t12.2";
 		$batchmove[] = "\t */";
-		$batchmove[] = "\tpublic function batchMove(\$values, \$pks, \$contexts)";
+		$batchmove[] = "\tprotected function batchMove(\$values, \$pks, \$contexts)";
 		$batchmove[] = "\t{";
 		$batchmove[] = "\t\tif (empty(\$this->batchSet))";
 		$batchmove[] = "\t\t{";
@@ -4174,7 +4174,7 @@ class Interpretation extends Structure
 		$batchcopy[] = "\t *";
 		$batchcopy[] = "\t * @since\t12.2";
 		$batchcopy[] = "\t */";
-		$batchcopy[] = "\tpublic function batchCopy(\$values, \$pks, \$contexts)";
+		$batchcopy[] = "\tprotected function batchCopy(\$values, \$pks, \$contexts)";
 		$batchcopy[] = "\t{";
 
 		$batchcopy[] = "\t\tif (empty(\$this->batchSet))";
@@ -4491,7 +4491,7 @@ class Interpretation extends Structure
 	 		$newFunction[] = "\t* @return	array  Contains the modified title and alias.";
 	 		$newFunction[] = "\t*";
 			$newFunction[] = "\t*/";
-			$newFunction[] = "\tpublic function _generateNewTitle(\$alias, \$title)";
+			$newFunction[] = "\tprotected function _generateNewTitle(\$alias, \$title)";
 			$newFunction[] = "\t{";
 			$newFunction[] = "\n\t\t//".$this->setLine(__LINE__)." Alter the title & alias";
 			$newFunction[] = "\t\t\$table = \$this->getTable();";
@@ -4515,7 +4515,7 @@ class Interpretation extends Structure
 	 		$newFunction[] = "\t* @return	array  Contains the modified title and alias.";
 	 		$newFunction[] = "\t*";
 			$newFunction[] = "\t*/";
-			$newFunction[] = "\tpublic function _generateNewTitle(\$title)";
+			$newFunction[] = "\tprotected function _generateNewTitle(\$title)";
 			$newFunction[] = "\t{";
 			$newFunction[] = "\n\t\t//".$this->setLine(__LINE__)." Alter the title";
 			$newFunction[] = "\t\t\$table = \$this->getTable();";
@@ -7004,7 +7004,7 @@ class Interpretation extends Structure
 		$addButton[] = "\t *";
 		$addButton[] = "\t * @since   3.2";
 		$addButton[] = "\t */";
-		$addButton[] = "\tpublic function getInput()";
+		$addButton[] = "\tprotected function getInput()";
 		$addButton[] = "\t{";
 		$addButton[] = "\t\t//".$this->setLine(__LINE__)." see if we should add buttons";
 		$addButton[] = "\t\t\$setButton = \$this->getAttribute('button');";
@@ -8250,7 +8250,7 @@ class Interpretation extends Structure
 			{
 				if ($filter['type'] != 'category' && ComponentbuilderHelper::checkArray($filter['custom']) && $filter['custom']['extends'] == 'user')
 				{
-					$function[] = "\n\tpublic function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
+					$function[] = "\n\tprotected function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
 					$function[] = "\t{";
 					$function[] = "\t\t//".$this->setLine(__LINE__)." Get a db connection.";
 					$function[] = "\t\t\$db = JFactory::getDbo();";
@@ -8285,7 +8285,7 @@ class Interpretation extends Structure
 
 					/* else
 					{
-						$function[] = "\n\tpublic function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
+						$function[] = "\n\tprotected function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
 						$function[] = "\t{";
 						$function[] = "\t\t//".$this->setLine(__LINE__)." Get a db connection.";
 						$function[] = "\t\t\$db = JFactory::getDbo();";
@@ -8395,7 +8395,7 @@ class Interpretation extends Structure
 		$fields[] = "\t *";
 		$fields[] = "\t * @since   3.0";
 		$fields[] = "\t */";
-		$fields[] = "\tpublic function getUniqeFields()";
+		$fields[] = "\tprotected function getUniqeFields()";
 		$fields[] = "\t{";
 		if (isset($this->dbUniqueKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbUniqueKeys[$view]))
 		{
@@ -9889,7 +9889,7 @@ class Interpretation extends Structure
 		$checkin .= "\n\t* @return  a bool";
 		$checkin .= "\n\t*";
 		$checkin .= "\n\t*/";
-		$checkin .= "\n\tpublic function checkInNow()";
+		$checkin .= "\n\tprotected function checkInNow()";
 		$checkin .= "\n\t{";
 		$checkin .= "\n\t\t//".$this->setLine(__LINE__)." Get set check in time";
 		$checkin .= "\n\t\t\$time = JComponentHelper::getParams('com_".$component."')->get('check_in');";
@@ -10243,7 +10243,7 @@ class Interpretation extends Structure
 			$fix .= "\n\t*";
 			$fix .= "\n\t* @return translatable string";
 			$fix .= "\n\t*/";
-			$fix .= "\n\tpublic function selectionTranslation(\$value,\$name)";
+			$fix .= "\n\tprotected function selectionTranslation(\$value,\$name)";
 			$fix .= "\n\t{";
 			foreach ($this->selectionTranslationFixBuilder[$views] as $name => $values)
 			{

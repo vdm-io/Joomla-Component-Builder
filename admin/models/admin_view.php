@@ -210,7 +210,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_view');
 			}
 		}
-		$this->idxopb = $item->addfields;
+		$this->idfazo = $item->addfields;
 
 		return $item;
 	}
@@ -220,7 +220,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getLohfields()
+	public function getRwqfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -288,26 +288,26 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationLohfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationRwqfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationLohfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationRwqfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationLohfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationRwqfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationLohfields($item->store, 'store');
+					$item->store = $this->selectionTranslationRwqfields($item->store, 'store');
 				}
 			}
 
 
 			// Filter by id Repetable Field
-			$idxopb = json_decode($this->idxopb,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idxopb) && ComponentbuilderHelper::checkArray($idxopb))
+			$idfazo = json_decode($this->idfazo,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idfazo) && ComponentbuilderHelper::checkArray($idfazo))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idxopb['field']) && ComponentbuilderHelper::checkArray($idxopb['field']))
+					if ($item->id && isset($idfazo['field']) && ComponentbuilderHelper::checkArray($idfazo['field']))
 					{
-						if (!in_array($item->id,$idxopb['field']))
+						if (!in_array($item->id,$idfazo['field']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -329,7 +329,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationLohfields($value,$name)
+	protected function selectionTranslationRwqfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -688,7 +688,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	public function getUniqeFields()
+	protected function getUniqeFields()
 	{
 		return false;
 	}
@@ -819,7 +819,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	public function batchCopy($values, $pks, $contexts)
+	protected function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -966,7 +966,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	public function batchMove($values, $pks, $contexts)
+	protected function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{

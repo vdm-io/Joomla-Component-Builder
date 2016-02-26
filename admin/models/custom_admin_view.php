@@ -461,7 +461,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	public function getUniqeFields()
+	protected function getUniqeFields()
 	{
 		return false;
 	}
@@ -592,7 +592,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	public function batchCopy($values, $pks, $contexts)
+	protected function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -741,7 +741,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	public function batchMove($values, $pks, $contexts)
+	protected function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -1055,7 +1055,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	public function _generateNewTitle($alias, $title)
+	protected function _generateNewTitle($alias, $title)
 	{
 
 		// Alter the title & alias

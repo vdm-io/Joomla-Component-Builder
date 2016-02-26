@@ -49,7 +49,7 @@ class JFormFieldCustomfilelist extends JFormFieldList
 	 *
 	 * @since   3.2
 	 */
-	public function getInput()
+	protected function getInput()
 	{
 		// see if we should add buttons
 		$setButton = $this->getAttribute('button');

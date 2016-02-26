@@ -161,8 +161,8 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.component');
 			}
 		}
-		$this->idtfax = $item->addadmin_views;
-		$this->idoyif = $item->addsite_views;
+		$this->idfwlm = $item->addadmin_views;
+		$this->idjdbz = $item->addsite_views;
 
 		return $item;
 	}
@@ -172,7 +172,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getBevadmin_views()
+	public function getZifadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -229,14 +229,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idtfax = json_decode($this->idtfax,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idtfax) && ComponentbuilderHelper::checkArray($idtfax))
+			$idfwlm = json_decode($this->idfwlm,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idfwlm) && ComponentbuilderHelper::checkArray($idfwlm))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idtfax['adminview']) && ComponentbuilderHelper::checkArray($idtfax['adminview']))
+					if ($item->id && isset($idfwlm['adminview']) && ComponentbuilderHelper::checkArray($idfwlm['adminview']))
 					{
-						if (!in_array($item->id,$idtfax['adminview']))
+						if (!in_array($item->id,$idfwlm['adminview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -258,7 +258,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getSchsite_views()
+	public function getHdssite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -319,14 +319,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idoyif = json_decode($this->idoyif,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idoyif) && ComponentbuilderHelper::checkArray($idoyif))
+			$idjdbz = json_decode($this->idjdbz,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idjdbz) && ComponentbuilderHelper::checkArray($idjdbz))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idoyif['siteview']) && ComponentbuilderHelper::checkArray($idoyif['siteview']))
+					if ($item->id && isset($idjdbz['siteview']) && ComponentbuilderHelper::checkArray($idjdbz['siteview']))
 					{
-						if (!in_array($item->id,$idoyif['siteview']))
+						if (!in_array($item->id,$idjdbz['siteview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -629,7 +629,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	public function getUniqeFields()
+	protected function getUniqeFields()
 	{
 		return false;
 	}
@@ -760,7 +760,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	public function batchCopy($values, $pks, $contexts)
+	protected function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -909,7 +909,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	public function batchMove($values, $pks, $contexts)
+	protected function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -1154,7 +1154,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	public function _generateNewTitle($title)
+	protected function _generateNewTitle($title)
 	{
 
 		// Alter the title

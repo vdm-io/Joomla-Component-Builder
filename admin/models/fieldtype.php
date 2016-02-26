@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typemqqn = $item->id;
+		$this->typelblq = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getGznfields()
+	public function getJglfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typemqqn global.
-		$typemqqn = $this->typemqqn;
-		if (is_numeric($typemqqn ))
+		// Filter by typelblq global.
+		$typelblq = $this->typelblq;
+		if (is_numeric($typelblq ))
 		{
-			$query->where('a.type = ' . (int) $typemqqn );
+			$query->where('a.type = ' . (int) $typelblq );
 		}
-		elseif (is_string($typemqqn))
+		elseif (is_string($typelblq))
 		{
-			$query->where('a.type = ' . $db->quote($typemqqn));
+			$query->where('a.type = ' . $db->quote($typelblq));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationGznfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationJglfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationGznfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationJglfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationGznfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationJglfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationGznfields($item->store, 'store');
+					$item->store = $this->selectionTranslationJglfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationGznfields($value,$name)
+	protected function selectionTranslationJglfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -578,7 +578,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	public function getUniqeFields()
+	protected function getUniqeFields()
 	{
 		return false;
 	}
@@ -709,7 +709,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	public function batchCopy($values, $pks, $contexts)
+	protected function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -871,7 +871,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	public function batchMove($values, $pks, $contexts)
+	protected function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -1073,7 +1073,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	public function _generateNewTitle($title)
+	protected function _generateNewTitle($title)
 	{
 
 		// Alter the title
