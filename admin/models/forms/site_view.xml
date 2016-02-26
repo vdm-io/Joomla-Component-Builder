@@ -108,7 +108,6 @@
 			class="text_area"
 			readonly="false"
 			disabled="false"
-			required="true"
 			filter="STRING"
 			message="Error! Please add name here."
 			hint="COM_COMPONENTBUILDER_SITE_VIEW_NAME_HINT"

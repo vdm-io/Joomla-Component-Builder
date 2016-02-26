@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -128,123 +128,123 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_EGQllEp function
+// #jform_add_php_view listeners for add_php_view_nCSLUzG function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_EGQllEp = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	EGQllEp(add_php_view_EGQllEp);
+	var add_php_view_nCSLUzG = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	nCSLUzG(add_php_view_nCSLUzG);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_EGQllEp = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	EGQllEp(add_php_view_EGQllEp);
+	var add_php_view_nCSLUzG = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	nCSLUzG(add_php_view_nCSLUzG);
 
 });
 
-// #jform_add_php_jview_display listeners for add_php_jview_display_waMXqfv function
+// #jform_add_php_jview_display listeners for add_php_jview_display_VssoeDj function
 jQuery('#jform_add_php_jview_display').on('keyup',function()
 {
-	var add_php_jview_display_waMXqfv = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
-	waMXqfv(add_php_jview_display_waMXqfv);
+	var add_php_jview_display_VssoeDj = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
+	VssoeDj(add_php_jview_display_VssoeDj);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_jview_display',function (e)
 {
 	e.preventDefault();
-	var add_php_jview_display_waMXqfv = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
-	waMXqfv(add_php_jview_display_waMXqfv);
+	var add_php_jview_display_VssoeDj = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
+	VssoeDj(add_php_jview_display_VssoeDj);
 
 });
 
-// #jform_add_php_jview listeners for add_php_jview_IcKqGQI function
+// #jform_add_php_jview listeners for add_php_jview_DydXTjk function
 jQuery('#jform_add_php_jview').on('keyup',function()
 {
-	var add_php_jview_IcKqGQI = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
-	IcKqGQI(add_php_jview_IcKqGQI);
+	var add_php_jview_DydXTjk = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
+	DydXTjk(add_php_jview_DydXTjk);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_jview',function (e)
 {
 	e.preventDefault();
-	var add_php_jview_IcKqGQI = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
-	IcKqGQI(add_php_jview_IcKqGQI);
+	var add_php_jview_DydXTjk = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
+	DydXTjk(add_php_jview_DydXTjk);
 
 });
 
-// #jform_add_php_document listeners for add_php_document_zoVwujU function
+// #jform_add_php_document listeners for add_php_document_LiAFRwh function
 jQuery('#jform_add_php_document').on('keyup',function()
 {
-	var add_php_document_zoVwujU = jQuery("#jform_add_php_document input[type='radio']:checked").val();
-	zoVwujU(add_php_document_zoVwujU);
+	var add_php_document_LiAFRwh = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	LiAFRwh(add_php_document_LiAFRwh);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_document',function (e)
 {
 	e.preventDefault();
-	var add_php_document_zoVwujU = jQuery("#jform_add_php_document input[type='radio']:checked").val();
-	zoVwujU(add_php_document_zoVwujU);
+	var add_php_document_LiAFRwh = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	LiAFRwh(add_php_document_LiAFRwh);
 
 });
 
-// #jform_add_css_document listeners for add_css_document_pPaWJrb function
+// #jform_add_css_document listeners for add_css_document_oOCEZNc function
 jQuery('#jform_add_css_document').on('keyup',function()
 {
-	var add_css_document_pPaWJrb = jQuery("#jform_add_css_document input[type='radio']:checked").val();
-	pPaWJrb(add_css_document_pPaWJrb);
+	var add_css_document_oOCEZNc = jQuery("#jform_add_css_document input[type='radio']:checked").val();
+	oOCEZNc(add_css_document_oOCEZNc);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_css_document',function (e)
 {
 	e.preventDefault();
-	var add_css_document_pPaWJrb = jQuery("#jform_add_css_document input[type='radio']:checked").val();
-	pPaWJrb(add_css_document_pPaWJrb);
+	var add_css_document_oOCEZNc = jQuery("#jform_add_css_document input[type='radio']:checked").val();
+	oOCEZNc(add_css_document_oOCEZNc);
 
 });
 
-// #jform_add_js_document listeners for add_js_document_JlUwwus function
+// #jform_add_js_document listeners for add_js_document_zkkKicQ function
 jQuery('#jform_add_js_document').on('keyup',function()
 {
-	var add_js_document_JlUwwus = jQuery("#jform_add_js_document input[type='radio']:checked").val();
-	JlUwwus(add_js_document_JlUwwus);
+	var add_js_document_zkkKicQ = jQuery("#jform_add_js_document input[type='radio']:checked").val();
+	zkkKicQ(add_js_document_zkkKicQ);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_js_document',function (e)
 {
 	e.preventDefault();
-	var add_js_document_JlUwwus = jQuery("#jform_add_js_document input[type='radio']:checked").val();
-	JlUwwus(add_js_document_JlUwwus);
+	var add_js_document_zkkKicQ = jQuery("#jform_add_js_document input[type='radio']:checked").val();
+	zkkKicQ(add_js_document_zkkKicQ);
 
 });
 
-// #jform_add_custom_button listeners for add_custom_button_CZdqoEy function
+// #jform_add_custom_button listeners for add_custom_button_ojUWKMB function
 jQuery('#jform_add_custom_button').on('keyup',function()
 {
-	var add_custom_button_CZdqoEy = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	CZdqoEy(add_custom_button_CZdqoEy);
+	var add_custom_button_ojUWKMB = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	ojUWKMB(add_custom_button_ojUWKMB);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_custom_button',function (e)
 {
 	e.preventDefault();
-	var add_custom_button_CZdqoEy = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	CZdqoEy(add_custom_button_CZdqoEy);
+	var add_custom_button_ojUWKMB = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	ojUWKMB(add_custom_button_ojUWKMB);
 
 });
 
-// #jform_add_css listeners for add_css_pEDEzHr function
+// #jform_add_css listeners for add_css_SUeAXqs function
 jQuery('#jform_add_css').on('keyup',function()
 {
-	var add_css_pEDEzHr = jQuery("#jform_add_css input[type='radio']:checked").val();
-	pEDEzHr(add_css_pEDEzHr);
+	var add_css_SUeAXqs = jQuery("#jform_add_css input[type='radio']:checked").val();
+	SUeAXqs(add_css_SUeAXqs);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_css',function (e)
 {
 	e.preventDefault();
-	var add_css_pEDEzHr = jQuery("#jform_add_css input[type='radio']:checked").val();
-	pEDEzHr(add_css_pEDEzHr);
+	var add_css_SUeAXqs = jQuery("#jform_add_css input[type='radio']:checked").val();
+	SUeAXqs(add_css_SUeAXqs);
 
 });
 
@@ -307,33 +307,4 @@ jQuery(document).ready(function() {
 	getTemplateDetails(9999);
 	getDynamicFormDetails(9999);
 });
-<?php $fieldNrs = range(1,10,1); ?>
-<?php foreach($fieldNrs as $nr): ?>jQuery('body').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
-	// update the icon if changed
-	var val_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
-	var key_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"]').attr('id').split('-');
-	var target_<?php echo $nr; ?> = key_<?php echo $nr; ?>[0]+'_'+key_<?php echo $nr; ?>[1]+'_chzn';
-	var div_<?php echo $nr; ?> = jQuery('#'+target_<?php echo $nr; ?>);
-	// build new span
-	var span = '<span id="icon_'+target_<?php echo $nr; ?>+'" class="icon-'+val_<?php echo $nr; ?>+'"></span>';
-	// remove old one 
-	jQuery('#icon_'+target_<?php echo $nr; ?>).remove();
-	// add the new icon
-	div_<?php echo $nr; ?>.closest("td").append(span);
-});
-
-jQuery(document).ready(function() {
-	// get type value
-	var val_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
-	var key_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"]').attr('id').split('-');
-	var target_<?php echo $nr; ?> = key_<?php echo $nr; ?>[0]+'_'+key_<?php echo $nr; ?>[1]+'_chzn';
-	var div_<?php echo $nr; ?> = jQuery('#'+target_<?php echo $nr; ?>);
-	// build new span
-	var span = '<span id="icon_'+target_<?php echo $nr; ?>+'" class="icon-'+val_<?php echo $nr; ?>+'"></span>';
-	// remove old one 
-	jQuery('#icon_'+target_<?php echo $nr; ?>).remove();
-	// add the new icon
-	div_<?php echo $nr; ?>.closest("td").append(span);
-});
-<?php endforeach; ?>
 </script>

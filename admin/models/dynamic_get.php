@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		dynamic_get.php
@@ -435,7 +435,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function getUniqeFields()
+	public function getUniqeFields()
 	{
 		return false;
 	}
@@ -566,7 +566,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchCopy($values, $pks, $contexts)
+	public function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -715,7 +715,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchMove($values, $pks, $contexts)
+	public function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -943,7 +943,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	protected function _generateNewTitle($title)
+	public function _generateNewTitle($title)
 	{
 
 		// Alter the title

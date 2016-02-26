@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -382,7 +382,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		);
 	} 
 
-	protected function getTheDatatypeSelections()
+	public function getTheDatatypeSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -418,7 +418,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheIndexesSelections()
+	public function getTheIndexesSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -454,7 +454,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheNull_switchSelections()
+	public function getTheNull_switchSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -490,7 +490,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheStoreSelections()
+	public function getTheStoreSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();

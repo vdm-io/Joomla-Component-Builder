@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		help_document.php
@@ -399,7 +399,7 @@ class ComponentbuilderModelHelp_document extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function getUniqeFields()
+	public function getUniqeFields()
 	{
 		return false;
 	}
@@ -530,7 +530,7 @@ class ComponentbuilderModelHelp_document extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchCopy($values, $pks, $contexts)
+	public function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -679,7 +679,7 @@ class ComponentbuilderModelHelp_document extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchMove($values, $pks, $contexts)
+	public function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -926,7 +926,7 @@ class ComponentbuilderModelHelp_document extends JModelAdmin
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	protected function _generateNewTitle($alias, $title)
+	public function _generateNewTitle($alias, $title)
 	{
 
 		// Alter the title & alias

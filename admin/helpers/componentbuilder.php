@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -33,7 +33,19 @@ defined('_JEXEC') or die('Restricted access');
 abstract class ComponentbuilderHelper
 { 
 
-	/**
+	/*
+	 * Compiler autoloader
+	 */
+	public static function autoLoader()
+	{
+		// load the compiler classes
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/get.php';
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/structure.php';
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/interpretation.php';
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/infusion.php';
+	}
+
+	 /**
 	 *	indent HTML
 	 */
 	public static function indent($html)

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtypes.php
@@ -364,7 +364,7 @@ class ComponentbuilderModelFieldtypes extends JModelList
 	* @return  a bool
 	*
 	*/
-	protected function checkInNow()
+	public function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');

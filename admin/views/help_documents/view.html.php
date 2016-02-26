@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -341,7 +341,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		);
 	} 
 
-	protected function getTheTypeSelections()
+	public function getTheTypeSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -377,7 +377,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheLocationSelections()
+	public function getTheLocationSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -413,7 +413,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheAdmin_viewSelections()
+	public function getTheAdmin_viewSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -445,7 +445,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheSite_viewSelections()
+	public function getTheSite_viewSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();

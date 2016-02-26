@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -298,7 +298,7 @@ class ComponentbuilderViewComponents extends JViewLegacy
 		);
 	} 
 
-	protected function getTheCompanynameSelections()
+	public function getTheCompanynameSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -330,7 +330,7 @@ class ComponentbuilderViewComponents extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheAuthorSelections()
+	public function getTheAuthorSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();

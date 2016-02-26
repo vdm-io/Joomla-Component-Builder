@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typertvp = $item->id;
+		$this->typemqqn = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getMurfields()
+	public function getGznfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typertvp global.
-		$typertvp = $this->typertvp;
-		if (is_numeric($typertvp ))
+		// Filter by typemqqn global.
+		$typemqqn = $this->typemqqn;
+		if (is_numeric($typemqqn ))
 		{
-			$query->where('a.type = ' . (int) $typertvp );
+			$query->where('a.type = ' . (int) $typemqqn );
 		}
-		elseif (is_string($typertvp))
+		elseif (is_string($typemqqn))
 		{
-			$query->where('a.type = ' . $db->quote($typertvp));
+			$query->where('a.type = ' . $db->quote($typemqqn));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationMurfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationGznfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationMurfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationGznfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationMurfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationGznfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationMurfields($item->store, 'store');
+					$item->store = $this->selectionTranslationGznfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationMurfields($value,$name)
+	public function selectionTranslationGznfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -578,7 +578,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function getUniqeFields()
+	public function getUniqeFields()
 	{
 		return false;
 	}
@@ -709,7 +709,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchCopy($values, $pks, $contexts)
+	public function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -871,7 +871,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchMove($values, $pks, $contexts)
+	public function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -1073,7 +1073,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	protected function _generateNewTitle($title)
+	public function _generateNewTitle($title)
 	{
 
 		// Alter the title

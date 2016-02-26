@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -114,18 +114,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_VndZSVz function
+// #jform_add_php_view listeners for add_php_view_CGkCBIK function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_VndZSVz = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	VndZSVz(add_php_view_VndZSVz);
+	var add_php_view_CGkCBIK = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	CGkCBIK(add_php_view_CGkCBIK);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_VndZSVz = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	VndZSVz(add_php_view_VndZSVz);
+	var add_php_view_CGkCBIK = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	CGkCBIK(add_php_view_CGkCBIK);
 
 });
 

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -161,8 +161,8 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.component');
 			}
 		}
-		$this->idumur = $item->addadmin_views;
-		$this->idmgww = $item->addsite_views;
+		$this->idtfax = $item->addadmin_views;
+		$this->idoyif = $item->addsite_views;
 
 		return $item;
 	}
@@ -172,7 +172,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getKqhadmin_views()
+	public function getBevadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -229,14 +229,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idumur = json_decode($this->idumur,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idumur) && ComponentbuilderHelper::checkArray($idumur))
+			$idtfax = json_decode($this->idtfax,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idtfax) && ComponentbuilderHelper::checkArray($idtfax))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idumur['adminview']) && ComponentbuilderHelper::checkArray($idumur['adminview']))
+					if ($item->id && isset($idtfax['adminview']) && ComponentbuilderHelper::checkArray($idtfax['adminview']))
 					{
-						if (!in_array($item->id,$idumur['adminview']))
+						if (!in_array($item->id,$idtfax['adminview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -258,7 +258,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVewsite_views()
+	public function getSchsite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -319,14 +319,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idmgww = json_decode($this->idmgww,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idmgww) && ComponentbuilderHelper::checkArray($idmgww))
+			$idoyif = json_decode($this->idoyif,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idoyif) && ComponentbuilderHelper::checkArray($idoyif))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idmgww['siteview']) && ComponentbuilderHelper::checkArray($idmgww['siteview']))
+					if ($item->id && isset($idoyif['siteview']) && ComponentbuilderHelper::checkArray($idoyif['siteview']))
 					{
-						if (!in_array($item->id,$idmgww['siteview']))
+						if (!in_array($item->id,$idoyif['siteview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -629,7 +629,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function getUniqeFields()
+	public function getUniqeFields()
 	{
 		return false;
 	}
@@ -760,7 +760,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchCopy($values, $pks, $contexts)
+	public function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -909,7 +909,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchMove($values, $pks, $contexts)
+	public function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -1154,7 +1154,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	protected function _generateNewTitle($title)
+	public function _generateNewTitle($title)
 	{
 
 		// Alter the title

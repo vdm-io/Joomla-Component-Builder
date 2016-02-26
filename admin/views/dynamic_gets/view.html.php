@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -295,7 +295,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		);
 	} 
 
-	protected function getTheMain_sourceSelections()
+	public function getTheMain_sourceSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -331,7 +331,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheGettypeSelections()
+	public function getTheGettypeSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();

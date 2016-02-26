@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -210,7 +210,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_view');
 			}
 		}
-		$this->idnayz = $item->addfields;
+		$this->idxopb = $item->addfields;
 
 		return $item;
 	}
@@ -220,7 +220,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getNwbfields()
+	public function getLohfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -288,26 +288,26 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationNwbfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationLohfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationNwbfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationLohfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationNwbfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationLohfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationNwbfields($item->store, 'store');
+					$item->store = $this->selectionTranslationLohfields($item->store, 'store');
 				}
 			}
 
 
 			// Filter by id Repetable Field
-			$idnayz = json_decode($this->idnayz,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idnayz) && ComponentbuilderHelper::checkArray($idnayz))
+			$idxopb = json_decode($this->idxopb,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idxopb) && ComponentbuilderHelper::checkArray($idxopb))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idnayz['field']) && ComponentbuilderHelper::checkArray($idnayz['field']))
+					if ($item->id && isset($idxopb['field']) && ComponentbuilderHelper::checkArray($idxopb['field']))
 					{
-						if (!in_array($item->id,$idnayz['field']))
+						if (!in_array($item->id,$idxopb['field']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -329,7 +329,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationNwbfields($value,$name)
+	public function selectionTranslationLohfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -688,7 +688,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function getUniqeFields()
+	public function getUniqeFields()
 	{
 		return false;
 	}
@@ -819,7 +819,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchCopy($values, $pks, $contexts)
+	public function batchCopy($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{
@@ -966,7 +966,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 *
 	 * @since	12.2
 	 */
-	protected function batchMove($values, $pks, $contexts)
+	public function batchMove($values, $pks, $contexts)
 	{
 		if (empty($this->batchSet))
 		{

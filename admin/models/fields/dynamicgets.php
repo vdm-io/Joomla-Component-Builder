@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			20th February, 2016
+	@build			26th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		dynamicgets.php
@@ -49,7 +49,7 @@ class JFormFieldDynamicgets extends JFormFieldList
 	 *
 	 * @since   3.2
 	 */
-	protected function getInput()
+	public function getInput()
 	{
 		// see if we should add buttons
 		$setButton = $this->getAttribute('button');
