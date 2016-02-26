@@ -341,7 +341,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		);
 	} 
 
-	public function getTheTypeSelections()
+	protected function getTheTypeSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -377,7 +377,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		return false;
 	}
 
-	public function getTheLocationSelections()
+	protected function getTheLocationSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -413,7 +413,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		return false;
 	}
 
-	public function getTheAdmin_viewSelections()
+	protected function getTheAdmin_viewSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -445,7 +445,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		return false;
 	}
 
-	public function getTheSite_viewSelections()
+	protected function getTheSite_viewSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();

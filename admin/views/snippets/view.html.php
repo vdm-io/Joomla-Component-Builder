@@ -274,7 +274,7 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		);
 	} 
 
-	public function getTheTypeSelections()
+	protected function getTheTypeSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();

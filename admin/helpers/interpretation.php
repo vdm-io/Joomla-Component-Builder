@@ -127,7 +127,7 @@ class Interpretation extends Structure
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$_VDM = '_'.ComponentbuilderHelper::safeString(ComponentbuilderHelper::randomkey(10),'U');
+			$_VDM = '_'.ComponentbuilderHelper::safeString($this->uniquekey(10),'U');
 			// add it to the system
 			$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'site');
 			$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'admin');
@@ -149,7 +149,7 @@ class Interpretation extends Structure
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
 			$boolMethod	= 'isHonest';
-			$globalbool	= ComponentbuilderHelper::safeString(ComponentbuilderHelper::randomkey(4));
+			$globalbool	= ComponentbuilderHelper::safeString($this->uniquekey(4));
 			// add it to the system
 			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###']	= $this->setBoolLincenseLock($boolMethod,$globalbool);
 			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###']		= $this->checkStatmentLicenseLocked();
@@ -5461,7 +5461,7 @@ class Interpretation extends Structure
 					// set identifiers
 					$linkedViewIdentifier[$linkedViewId] = $tabCodeName;
 					//set function name
-					$codeName = ComponentbuilderHelper::safeString(ComponentbuilderHelper::randomkey(3).$tabCodeName);
+					$codeName = ComponentbuilderHelper::safeString($this->uniquekey(3).$tabCodeName);
 					// set as items layout
 					$this->setLayout($viewName_single,$layoutCodeName,$codeName,'layoutlinkedview');
 					// set the lang to tab
@@ -5814,7 +5814,7 @@ class Interpretation extends Structure
 				$_key = $key;
 			}
 			// set the global key
-			$globalKey = ComponentbuilderHelper::safeString($_key.ComponentbuilderHelper::randomkey(4));
+			$globalKey = ComponentbuilderHelper::safeString($_key.$this->uniquekey(4));
 			// ###LINKEDVIEWGLOBAL### <<<DYNAMIC>>>
 			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWGLOBAL###'] .= "\n\t\t\$this->".$globalKey." = \$item->".$parent_key.";";
 			// ###LINKEDVIEWMETHODS### <<<DYNAMIC>>>
@@ -7108,7 +7108,7 @@ class Interpretation extends Structure
 			{
 				if (isset($condition['match_name']) && ComponentbuilderHelper::checkString($condition['match_name']))
 				{
-					$uniqueVar		= ComponentbuilderHelper::randomkey(7);
+					$uniqueVar		= $this->uniquekey(7);
 					$matchName 		= $condition['match_name'].'_'.$uniqueVar;
 					$targetBehavior		= ($condition['target_behavior'] == 1) ? 'show' : 'hide';
 					$targetDefault		= ($condition['target_behavior'] == 1) ? 'hide' : 'show';
@@ -7592,7 +7592,7 @@ class Interpretation extends Structure
 					// set the required var
 					if($target['required'] == 'yes')
 					{
-						$unique = $uniqueVar.ComponentbuilderHelper::randomkey(3);
+						$unique = $uniqueVar.$this->uniquekey(3);
 						$bucket[$target['name']]['requiredVar'] = "jform_".$unique."_required = false;\n";
 					}
 					else
@@ -8330,7 +8330,7 @@ class Interpretation extends Structure
 					{
 						$translation = true;
 					}
-					$function[] = "\n\tpublic function getThe".$filter['function']."Selections()";
+					$function[] = "\n\tprotected function getThe".$filter['function']."Selections()";
 					$function[] = "\t{";
 					$function[] = "\t\t//".$this->setLine(__LINE__)." Get a db connection.";
 					$function[] = "\t\t\$db = JFactory::getDbo();";

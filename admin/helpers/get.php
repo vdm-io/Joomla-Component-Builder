@@ -160,7 +160,14 @@ class Get
 	 * 
 	 * @var     array
 	 */
-	public $codes = array();
+	public $uniquecodes = array();
+	
+	/*
+	 * The unique keys
+	 * 
+	 * @var     array
+	 */
+	public $uniquekeys = array();
 	
 	/*
 	 * The Ad contributors Switch
@@ -2319,13 +2326,47 @@ class Get
 	 */
 	public function uniqueCode($code)
 	{
-		if (!isset($this->codes[$this->target]) || !in_array($code,$this->codes[$this->target]))
+		if (!isset($this->uniquecodes[$this->target]) || !in_array($code,$this->uniquecodes[$this->target]))
 		{
-			$this->codes[$this->target][] = $code;
+			$this->uniquecodes[$this->target][] = $code;
 			return $code;
 		}
 		// make sure it is unique
-		return $this->uniqueCode($code.ComponentbuilderHelper::randomkey(1));
+		return $this->uniqueCode($code.$this->uniquekey(1));
+	}
+	
+	/*
+	 * Creating an unique local key
+	 * 
+	 * @param   int   $size The key size
+	 *
+	 * @return  string The unique localkey
+	 * 
+	 */
+	public function uniquekey($size, $random = false)
+	{
+		if ($random)
+		{
+			$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";
+		}
+		else
+		{
+			$bag = "vvvvvvvvvvvvvvvvvvv";
+		}
+		$key = array();
+		$bagsize = strlen($bag) - 1;
+		for ($i = 0; $i < $size; $i++)
+		{
+			$get = rand(0, $bagsize);
+			$key[] = $bag[$get];
+		}
+		$key = implode($key);
+		while (in_array($key, $this->uniquekeys))
+		{
+			$key++;
+		}
+		$this->uniquekeys[] = $key;
+		return $key;
 	}
 	
 	/*

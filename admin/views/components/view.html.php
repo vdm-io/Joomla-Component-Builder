@@ -298,7 +298,7 @@ class ComponentbuilderViewComponents extends JViewLegacy
 		);
 	} 
 
-	public function getTheCompanynameSelections()
+	protected function getTheCompanynameSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -330,7 +330,7 @@ class ComponentbuilderViewComponents extends JViewLegacy
 		return false;
 	}
 
-	public function getTheAuthorSelections()
+	protected function getTheAuthorSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();

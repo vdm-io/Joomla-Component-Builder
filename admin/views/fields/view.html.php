@@ -382,7 +382,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		);
 	} 
 
-	public function getTheDatatypeSelections()
+	protected function getTheDatatypeSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -418,7 +418,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		return false;
 	}
 
-	public function getTheIndexesSelections()
+	protected function getTheIndexesSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -454,7 +454,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		return false;
 	}
 
-	public function getTheNull_switchSelections()
+	protected function getTheNull_switchSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -490,7 +490,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		return false;
 	}
 
-	public function getTheStoreSelections()
+	protected function getTheStoreSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();

@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typelblq = $item->id;
+		$this->typevvvy = $item->id;
 
 		return $item;
 	}
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getJglfields()
+	public function getVyufields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -132,15 +132,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','type_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typelblq global.
-		$typelblq = $this->typelblq;
-		if (is_numeric($typelblq ))
+		// Filter by typevvvy global.
+		$typevvvy = $this->typevvvy;
+		if (is_numeric($typevvvy ))
 		{
-			$query->where('a.type = ' . (int) $typelblq );
+			$query->where('a.type = ' . (int) $typevvvy );
 		}
-		elseif (is_string($typelblq))
+		elseif (is_string($typevvvy))
 		{
-			$query->where('a.type = ' . $db->quote($typelblq));
+			$query->where('a.type = ' . $db->quote($typevvvy));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationJglfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVyufields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationJglfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVyufields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationJglfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVyufields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationJglfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVyufields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	protected function selectionTranslationJglfields($value,$name)
+	protected function selectionTranslationVyufields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

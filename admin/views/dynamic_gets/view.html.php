@@ -295,7 +295,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		);
 	} 
 
-	public function getTheMain_sourceSelections()
+	protected function getTheMain_sourceSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -331,7 +331,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		return false;
 	}
 
-	public function getTheGettypeSelections()
+	protected function getTheGettypeSelections()
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
