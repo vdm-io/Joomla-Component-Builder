@@ -27,10 +27,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// import the Joomla librarys
-jimport('joomla.application.component.modellist');
-jimport('joomla.application');
-
 /**
  * Get class as the main compilers class
  */
@@ -2226,7 +2222,6 @@ class Get
 			{
 				// get the data
 				$data = $db->loadObjectList();
-				// echo'<pre>';var_dump($data);exit;
 				// start building the MySql dump
 				$dump = "--";
 				$dump .= "\n-- Dumping data for table `#__[[[component]]]_".$view."`";

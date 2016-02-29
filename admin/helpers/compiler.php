@@ -27,7 +27,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// Use the Autoloader
+// Use the component builder autoloader
 ComponentbuilderHelper::autoLoader();
 
 /**

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			26th February, 2016
+	@build			29th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	protected function selectionTranslationVyufields($value,$name)
+	public function selectionTranslationVyufields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

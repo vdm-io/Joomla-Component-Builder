@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			26th February, 2016
+	@build			29th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -43,6 +43,14 @@ abstract class ComponentbuilderHelper
 		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/structure.php';
 		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/interpretation.php';
 		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/infusion.php';
+		// import the Joomla librarys
+		jimport('joomla.filesystem.file');
+		jimport('joomla.filesystem.folder');
+		jimport('joomla.filesystem.archive');
+		jimport('joomla.application.component.modellist');
+		jimport('joomla.application');
+		// include class to minify js
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
 	}
 
 	 /**

@@ -27,9 +27,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// include class to minify js
-require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
-
 /**
  * Compiler class
  */
@@ -10243,7 +10240,7 @@ class Interpretation extends Structure
 			$fix .= "\n\t*";
 			$fix .= "\n\t* @return translatable string";
 			$fix .= "\n\t*/";
-			$fix .= "\n\tprotected function selectionTranslation(\$value,\$name)";
+			$fix .= "\n\tpublic function selectionTranslation(\$value,\$name)";
 			$fix .= "\n\t{";
 			foreach ($this->selectionTranslationFixBuilder[$views] as $name => $values)
 			{

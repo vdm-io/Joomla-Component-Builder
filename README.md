@@ -8,25 +8,21 @@ The Component Builder for Joomla that is highly advanced, truly able to build ex
 
 > **You can purchase Component Builder with the following components as demo setup inside Component Builder:**
 
-+ **Basic Version** ([get this demo set](https://www.vdm.io/joomla-component-builder))
++ **Development Version** ([get this demo set](https://www.vdm.io/joomla-component-builder))
 
     *Help View Integration*
 
-+ **Medium Version** ([get this demo set](https://www.vdm.io/joomla-component-builder))
+    *Demo Component* see the build on [github] (https://github.com/namibia/demo-joomla-3-component)
+
++ **Dev + Howtos Version** ([get this demo set](https://www.vdm.io/joomla-component-builder))
 
     *Demo Component* see the build on [github] (https://github.com/namibia/demo-joomla-3-component)
 
-    *Sermon Distributor* see the build on [github] (https://github.com/SermonDistributor/Joomla-3-Component)
-
-+ **Advanced Version** ([get this demo set](https://www.vdm.io/joomla-component-builder))
-
     *All the above*
 
-    *Component Builder* see the build on [github] (https://github.com/vdm-io/Joomla-Component-Builder)
+    *Sermon Distributor* see the build on [github] (https://github.com/SermonDistributor/Joomla-3-Component)
 
-## Training & Help Videos
-
-The Medium and Advanced Versions come with video tutorials in the component included.
+    *Training & Help Videos* tutorials in the component included.
 
 # Extra Support
 
@@ -38,7 +34,7 @@ Would you require more help VDM.io has a number of support plans available [visi
 + *Author*: [Llewellyn van der Merwe] (mailto:info@vdm.io)
 + *Name*: [Component Builder] (https://www.vdm.io/joomla-component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 26th February, 2016
++ *Last Build*: 29th February, 2016
 + *Version*: 2.1.0
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
@@ -51,7 +47,7 @@ due to [Automated Component Builder] (https://www.vdm.io/joomla-component-builde
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
 > never making one mistake or taking any coffee break.)
 
-+ *Line count*: **80116**
++ *Line count*: **80120**
 + *File count*: **495**
 + *Folder count*: **96**
 

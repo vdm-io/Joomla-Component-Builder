@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.0
-	@build			26th February, 2016
+	@build			29th February, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -329,7 +329,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	protected function selectionTranslationVwzfields($value,$name)
+	public function selectionTranslationVwzfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
