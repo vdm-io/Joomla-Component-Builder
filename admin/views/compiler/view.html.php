@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.0
-	@build			29th February, 2016
+	@version		2.1.1
+	@build			1st March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -119,7 +119,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			$xml = '<field label="Components" description="" name="component" type="list" class="btn-group" required="true">';
 			$xml .= '<option value="">- Select Component -</option>';
 			foreach($this->Components as $componet){
-				$xml .= '<option value="'.$componet->id.'">'.$componet->name.'</option>';
+				$xml .= '<option value="'.$componet->id.'">'.$this->escape($componet->name).'</option>';
 			}
 			$xml .= "</field>";
 			// prepare the xml
@@ -143,5 +143,23 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		$document = JFactory::getDocument();
 		
 		$document->setTitle(JText::_('The Compiler'));
+	}
+
+        /**
+	 * Escapes a value for output in a view script.
+	 *
+	 * @param   mixed  $var  The output to escape.
+	 *
+	 * @return  mixed  The escaped value.
+	 */
+	public function escape($var)
+	{
+		if(strlen($var) > 50)
+		{
+                        // use the helper htmlEscape method instead and shorten the string
+			return ComponentbuilderHelper::htmlEscape($var, $this->_charset, true);
+		}
+                // use the helper htmlEscape method instead.
+		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
 	}
 }

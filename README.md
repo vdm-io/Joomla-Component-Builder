@@ -1,4 +1,4 @@
-# Component Builder (2.1.0)
+# Component Builder (2.1.1)
 
 This is a [Joomla 3.x] (http://www.joomla.org/) component.
 
@@ -16,8 +16,6 @@ The Component Builder for Joomla that is highly advanced, truly able to build ex
 
 + **Dev + Howtos Version** ([get this demo set](https://www.vdm.io/joomla-component-builder))
 
-    *Demo Component* see the build on [github] (https://github.com/namibia/demo-joomla-3-component)
-
     *All the above*
 
     *Sermon Distributor* see the build on [github] (https://github.com/SermonDistributor/Joomla-3-Component)
@@ -34,8 +32,8 @@ Would you require more help VDM.io has a number of support plans available [visi
 + *Author*: [Llewellyn van der Merwe] (mailto:info@vdm.io)
 + *Name*: [Component Builder] (https://www.vdm.io/joomla-component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 29th February, 2016
-+ *Version*: 2.1.0
++ *Last Build*: 1st March, 2016
++ *Version*: 2.1.1
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,9 +45,9 @@ due to [Automated Component Builder] (https://www.vdm.io/joomla-component-builde
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
 > never making one mistake or taking any coffee break.)
 
-+ *Line count*: **80120**
-+ *File count*: **495**
-+ *Folder count*: **96**
++ *Line count*: **80154**
++ *File count*: **492**
++ *Folder count*: **97**
 
 **148 Hours** or **18 Eight Hour Days** (the actual time the author spent)
 

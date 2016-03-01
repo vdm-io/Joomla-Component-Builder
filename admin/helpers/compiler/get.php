@@ -1141,7 +1141,7 @@ class Get
 	/*
 	 * Get all Custom View Data
 	 * 
-	 * @param   int   $id  The view ID
+	 * @param   int      $id  The view ID
 	 * @param   string   $table  The view table
 	 *
 	 * @return  oject The view data
@@ -1319,7 +1319,7 @@ class Get
 	/*
 	 * Get all Field Data
 	 * 
-	 * @param   int   $id  The field ID
+	 * @param   int      $id  The field ID
 	 * @param   string   $name_single The view edit or single name
 	 * @param   string   $name_list  The view list name
 	 *
@@ -1470,7 +1470,7 @@ class Get
 	/*
 	 * Set get Data
 	 * 
-	 * @param   array   $ids  The ids of the dynamic get
+	 * @param   array    $ids  The ids of the dynamic get
 	 * @param   string   $view_code  The view code name
 	 *
 	 * @return  oject the get dynamicGet data
@@ -2012,13 +2012,13 @@ class Get
 	/*
 	 * Set Data Selection of the dynamic get
 	 * 
-	 * @param   string   $method_key  The method unique key
-	 * @param   string   $view_code  The code name of the view
-	 * @param   string   $string  The data string
-	 * @param   string || INT   $asset  The asset in question
-	 * @param   string   $as  The as string
-	 * @param   int   $row_type  The row type
-	 * @param   string   $type  The target type (db||view)
+	 * @param   string         $method_key  The method unique key
+	 * @param   string         $view_code  The code name of the view
+	 * @param   string         $string  The data string
+	 * @param   string || INT  $asset  The asset in question
+	 * @param   string         $as  The as string
+	 * @param   int            $row_type  The row type
+	 * @param   string         $type  The target type (db||view)
 	 *
 	 * @return  array the select query
 	 * 
@@ -2127,7 +2127,7 @@ class Get
 	 * 
 	 * @param   string   $tables  The tables to use in build
 	 * @param   string   $view  The target view/table to dump in
-	 * @param   int   $view_id  The id of the target view
+	 * @param   int      $view_id  The id of the target view
 	 *
 	 * @return  string on success with the Dump SQL
 	 * 

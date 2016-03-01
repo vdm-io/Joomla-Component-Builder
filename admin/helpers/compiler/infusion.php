@@ -47,6 +47,13 @@ class Infusion extends Interpretation
 		return false;
 	}
 	
+	/*
+	 * Build the content for the structure
+	 * 
+	 *
+	 * @return  boolean  on success
+	 * 
+	 */
 	protected function buildFileContent()
 	{
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
