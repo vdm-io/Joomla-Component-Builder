@@ -39,10 +39,10 @@ abstract class ComponentbuilderHelper
 	public static function autoLoader()
 	{
 		// load the compiler classes
-		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/get.php';
-		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/structure.php';
-		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/interpretation.php';
-		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/infusion.php';
+		foreach (glob(JPATH_ADMINISTRATOR."/components/com_componentbuilder/helpers/compiler/*.php") as $compilerFile)
+		{
+			require_once $compilerFile;
+		}
 		// import the Joomla librarys
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');
