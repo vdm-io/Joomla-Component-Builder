@@ -1,5 +1,5 @@
 <?php
-/*--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
+/**--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
     __      __       _     _____                 _                                  _     __  __      _   _               _
     \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
      \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
@@ -32,112 +32,112 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Structure extends Get
 {		
-	/*
+	/**
 	 * The foulder counter
 	 * 
 	 * @var     int
 	 */
 	public $folderCount = 0;
 	
-	/*
+	/**
 	 * The foulder counter
 	 * 
 	 * @var     int
 	 */
 	public $fileCount = 0;
 	
-	/*
+	/**
 	 * The line counter
 	 * 
 	 * @var     int
 	 */
 	public $lineCount = 0;
 	
-	/*
+	/**
 	 * The Joomla Version
 	 * 
 	 * @var     string
 	 */
 	public $joomlaVersion;
 	
-	/*
+	/**
 	 * The template path
 	 * 
 	 * @var     string
 	 */
 	public $templatePath;
 	
-	/*
+	/**
 	 * The custom template path
 	 * 
 	 * @var     string
 	 */
 	public $templatePathCustom;
 	
-	/*
+	/**
 	 * The Joomla Version Data
 	 * 
 	 * @var      object
 	 */
 	public $joomlaVersionData;
 	
-	/*
+	/**
 	 * Static File Content
 	 * 
 	 * @var      array
 	 */
 	public $fileContentStatic = array();
 	
-	/*
+	/**
 	 * Dynamic File Content
 	 * 
 	 * @var      array
 	 */
 	public $fileContentDynamic = array();
 	
-	/*
+	/**
 	 * The Component Sales name
 	 * 
 	 * @var      string
 	 */
 	public $componentSalesName;
 	
-	/*
+	/**
 	 * The Component Backup name
 	 * 
 	 * @var      string
 	 */
 	public $componentBackupName;
 	
-	/*
+	/**
 	 * The Component Folder name
 	 * 
 	 * @var      string
 	 */
 	public $componentFolderName;
 	
-	/*
+	/**
 	 * The Component path
 	 * 
 	 * @var      string
 	 */
 	public $componentPath;
 	
-	/*
+	/**
 	 * The not new static items
 	 * 
 	 * @var      array
 	 */
 	public $notNew = array();
 	
-	/*
+	/**
 	 * The new files
 	 * 
 	 * @var     array
 	 */
 	public $newFiles = array();
 	
-	/*
+	/**
 	 * The Checkin Switch
 	 * 
 	 * @var     boolean
@@ -189,7 +189,7 @@ class Structure extends Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Build the Initial Folders
 	 * 
 	 * @return  void
@@ -315,7 +315,7 @@ class Structure extends Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Set the Static File & Folder
 	 *  
 	 * @return  boolean
@@ -405,7 +405,7 @@ class Structure extends Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Set the Dynamic File & Folder
 	 *  
 	 * @return  boolean
@@ -498,7 +498,7 @@ class Structure extends Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Set the Static File & Folder
 	 *  
 	 * @param   array   $target  The main target and name
@@ -580,7 +580,7 @@ class Structure extends Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * set the Joomla Version Data
 	 * 
 	 *
@@ -750,7 +750,7 @@ class Structure extends Get
 		return $versionData;
 	}
 	
-	/*
+	/**
 	 * set the index.html file in a folder path
 	 * 
 	 * @param   string   $path  The path to place the index.html file in
@@ -774,7 +774,7 @@ class Structure extends Get
 		}
 	}
 	
-	/*
+	/**
 	 * Remove folders with files
 	 * 
 	 * @param   string   $dir  The path to folder to remove

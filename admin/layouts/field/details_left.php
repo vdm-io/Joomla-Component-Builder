@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_left.php
@@ -31,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'type',
+	'fieldtype',
 	'name',
 	'catid',
 	'datatype',

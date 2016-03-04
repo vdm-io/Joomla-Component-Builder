@@ -1,5 +1,5 @@
 <?php
-/*--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
+/**--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
     __      __       _     _____                 _                                  _     __  __      _   _               _
     \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
      \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
@@ -32,273 +32,273 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Get
 {
-	/*
+	/**
 	 * The Params
 	 * 
 	 * @var     object
 	 */
 	public $params;
 	
-	/*
+	/**
 	 * The Compiler Path
 	 * 
 	 * @var     object
 	 */
 	public $compilerPath;
 	
-	/*
+	/**
 	 * The Component data
 	 * 
 	 * @var      object
 	 */
 	public $componentData;
 	
-	/*
+	/**
 	 * The Language prefix
 	 * 
 	 * @var      string
 	 */
 	public $langPrefix = 'COM_';
 	
-	/*
+	/**
 	 * The Language content
 	 * 
 	 * @var      array
 	 */
 	public $langContent = array();
 	
-	/*
+	/**
 	 * The Component Code Name
 	 * 
 	 * @var      string
 	 */
 	public $componentCodeName;
 	
-	/*
+	/**
 	 * The Component version
 	 * 
 	 * @var      string
 	 */
 	public $component_version;
 	
-	/*
+	/**
 	 * The UIKIT Switch
 	 * 
 	 * @var	boolean
 	 */
 	public $uikit = false;
 	
-	/*
+	/**
 	 * The UIKIT component checker
 	 * 
 	 * @var     array
 	 */
 	public $uikitComp = array();
 	
-	/*
+	/**
 	 * The FOOTABLE Switch
 	 * 
 	 * @var      boolean
 	 */
 	public $footable = false;
 	
-	/*
+	/**
 	 * The Google Chart Switch per view
 	 * 
 	 * @var     array
 	 */
 	public $googleChart = array();
 	
-	/*
+	/**
 	 * The Google Chart Switch
 	 * 
 	 * @var     boolean
 	 */
 	public $googlechart = false;
 	
-	/*
+	/**
 	 * The Import & Export Switch
 	 * 
 	 * @var      boolean
 	 */
 	public $addEximport = false;
 	
-	/*
+	/**
 	 * The Tag & History Switch
 	 * 
 	 * @var      boolean
 	 */
 	public $setTagHistory = false;
 	
-	/*
+	/**
 	 * The site edit views
 	 * 
 	 * @var     array
 	 */
 	public $siteEditView = array();
 	
-	/*
+	/**
 	 * The Language target
 	 * 
 	 * @var     string
 	 */
 	public $lang = 'admin';
 	
-	/*
+	/**
 	 * The Build target Switch
 	 * 
 	 * @var     string
 	 */
 	public $target;
 	
-	/*
+	/**
 	 * The unique codes
 	 * 
 	 * @var     array
 	 */
 	public $uniquecodes = array();
 	
-	/*
+	/**
 	 * The unique keys
 	 * 
 	 * @var     array
 	 */
 	public $uniquekeys = array();
 	
-	/*
+	/**
 	 * The Ad contributors Switch
 	 * 
 	 * @var     boolean
 	 */
 	public $addContributors = false;
 	
-	/*
+	/**
 	 * The Custom Script Builder
 	 * 
 	 * @var     array
 	 */
 	public $customScriptBuilder = array();
 	
-	/*
+	/**
 	 * The Footable Script Builder
 	 * 
 	 * @var     array
 	 */
 	public $footableScripts = array();
 	
-	/*
+	/**
 	 * The pathe to the bom file to be used
 	 * 
 	 * @var     string
 	 */
 	public $bomPath;
 	
-	/*
+	/**
 	 * The SQL Tweak of admin views
 	 * 
 	 * @var     array
 	 */
 	public $sqlTweak = array();
 	
-	/*
+	/**
 	 * The admin views data array
 	 * 
 	 * @var     array
 	 */
 	private $_adminViewData = array();
 	
-	/*
+	/**
 	 * The field data array
 	 * 
 	 * @var     array
 	 */
 	private $_fieldData = array();
 	
-	/*
+	/**
 	 * The linked admin view tabs
 	 * 
 	 * @var     array
 	 */
 	public $linkedAdminViews = array();
 	
-	/*
+	/**
 	 * The Add Ajax Switch
 	 * 
 	 * @var    boolean
 	 */
 	public $addAjax = false;
 	
-	/*
+	/**
 	 * The Add Site Ajax Switch
 	 * 
 	 * @var     boolean
 	 */
 	public $addSiteAjax = false;
 	
-	/*
+	/**
 	 * The get Module Script Switch
 	 * 
 	 * @var    array
 	 */
 	public $getModule = array();
 	
-	/*
+	/**
 	 * The template data
 	 * 
 	 * @var    array
 	 */
 	public $templateData = array();
 	
-	/*
+	/**
 	 * The layout data
 	 * 
 	 * @var    array
 	 */
 	public $layoutData = array();
 	
-	/*
+	/**
 	 * The Advanced Encryption Switch
 	 * 
 	 * @var    boolean
 	 */
 	public $advancedEncryption = false;
 	
-	/*
+	/**
 	 * The Basic Encryption Switch
 	 * 
 	 * @var    boolean
 	 */
 	public $basicEncryption = false;
 	
-	/*
+	/**
 	 * The Custom field Switch per view
 	 * 
 	 * @var    array
 	 */
 	public $customFieldScript = array();
 	
-	/*
+	/**
 	 * The site main get
 	 * 
 	 * @var    array
 	 */
 	public $siteMainGet = array();
 	
-	/*
+	/**
 	 * The site dynamic get
 	 * 
 	 * @var    array
 	 */
 	public $siteDynamicGet = array();
 	
-	/*
+	/**
 	 * The get AS lookup
 	 * 
 	 * @var    array
 	 */
 	public $getAsLookup = array();
 	
-	/*
+	/**
 	 * The site fields
 	 * 
 	 * @var    array
@@ -306,7 +306,7 @@ class Get
 	public $siteFields = array();
 
 
-	/**
+	/***
 	 * Constructor
 	 */
 	public function __construct($config = array ())
@@ -325,7 +325,7 @@ class Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * get all Component Data
 	 * 
 	 * @param   int   $id  The component ID
@@ -724,7 +724,7 @@ class Get
 		return $component;
 	}
 	
-	/*
+	/**
 	 * To limit the SQL Demo date build in the views
 	 * 
 	 * @param   array   $settings  Teaking array.
@@ -799,7 +799,7 @@ class Get
 		}
 	}
 	
-	/*
+	/**
 	 * Get all Admin View Data
 	 * 
 	 * @param   int   $id  The view ID
@@ -1138,7 +1138,7 @@ class Get
 		return $this->_adminViewData[$id];
 	}
 	
-	/*
+	/**
 	 * Get all Custom View Data
 	 * 
 	 * @param   int      $id  The view ID
@@ -1316,7 +1316,7 @@ class Get
 		return $view;
 	}
 	
-	/*
+	/**
 	 * Get all Field Data
 	 * 
 	 * @param   int      $id  The field ID
@@ -1340,7 +1340,7 @@ class Get
 			$query->select('a.*');
 			$query->select($db->quoteName(array('c.name', 'c.properties'),array('type_name','type_properties')));
 			$query->from('#__componentbuilder_field AS a');
-			$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('c.id') . ')');
+			$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('c.id') . ')');
 			$query->where($db->quoteName('a.id') . ' = '. $db->quote($id));
 
 			// Reset the query using our newly populated query object.
@@ -1348,6 +1348,9 @@ class Get
 
 			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
 			$field = $db->loadObject();
+			
+			// adding a fix for the changed name of type to fieldtype
+			$field->type = $field->fieldtype;
 
 			// load the values form params
 			$field->xml = json_decode($field->xml);
@@ -1467,7 +1470,7 @@ class Get
 		return $this->_fieldData[$id];
 	}
 	
-	/*
+	/**
 	 * Set get Data
 	 * 
 	 * @param   array    $ids  The ids of the dynamic get
@@ -1792,7 +1795,7 @@ class Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Set Template and Layout Data
 	 * 
 	 * @param   string   $default  The content to check
@@ -1884,7 +1887,7 @@ class Get
 		}
 	}
 	
-	/*
+	/**
 	 * Get Data With Alias
 	 * 
 	 * @param   string   $n_ame  The alias name
@@ -1964,7 +1967,7 @@ class Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Set Custom Content Language Place Holders
 	 * 
 	 * @param   string   $content  The content
@@ -2009,7 +2012,7 @@ class Get
 		return $content;
 	}
 	
-	/*
+	/**
 	 * Set Data Selection of the dynamic get
 	 * 
 	 * @param   string         $method_key  The method unique key
@@ -2100,7 +2103,7 @@ class Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Get the View Table Name
 	 * 
 	 * @param   int   $id  The admin view in
@@ -2122,7 +2125,7 @@ class Get
 
 	}
 	
-	/*
+	/**
 	 * Build the SQL dump String for a view
 	 * 
 	 * @param   string   $tables  The tables to use in build
@@ -2280,7 +2283,7 @@ class Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Escape the values for a SQL dump
 	 * 
 	 * @param   string   $value  the value to escape
@@ -2311,7 +2314,7 @@ class Get
 		return $value;
 	}
 	
-	/*
+	/**
 	 * Creating an uniqueCode
 	 * 
 	 * @param   string   $code The planed code
@@ -2330,7 +2333,7 @@ class Get
 		return $this->uniqueCode($code.$this->uniquekey(1));
 	}
 	
-	/*
+	/**
 	 * Creating an unique local key
 	 * 
 	 * @param   int   $size The key size
@@ -2364,7 +2367,7 @@ class Get
 		return $key;
 	}
 	
-	/*
+	/**
 	 * Check for footable scripts
 	 * 
 	 * @param   string   $content The content to check
@@ -2381,7 +2384,7 @@ class Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Check for getModules script
 	 * 
 	 * @param   string   $content The content to check
@@ -2398,7 +2401,7 @@ class Get
 		return false;
 	}
 	
-	/*
+	/**
 	 * Check for getModules script
 	 * 
 	 * @param   string   $content The content to check

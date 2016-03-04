@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_head.php
@@ -48,7 +48,7 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_NAME_LABEL', 'name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_TYPE_LABEL', 'type_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL', 'fieldtype_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL', 'datatype', $this->listDirn, $this->listOrder); ?>

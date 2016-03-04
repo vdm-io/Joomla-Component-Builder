@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -278,16 +278,16 @@ jQuery.fn.selText = function() {
     return this;
 }
 
-jQuery('#details').on('change', '#jform_type',function (e) {
+jQuery('#details').on('change', '#jform_fieldtype',function (e) {
 	e.preventDefault();
 	// get type value
-	var fieldId = jQuery("#jform_type option:selected").val();
+	var fieldId = jQuery("#jform_fieldtype option:selected").val();
 	getFieldOptions(fieldId,true);
 });
 
 jQuery(document).ready(function() {
 	// get type value
-	var fieldId = jQuery("#jform_type option:selected").val();
+	var fieldId = jQuery("#jform_fieldtype option:selected").val();
 	if(jQuery('#jform_xml').length == 0) {
 		getFieldOptions(fieldId,true);
 	} else {

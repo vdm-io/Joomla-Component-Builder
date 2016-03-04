@@ -11110,7 +11110,7 @@ class Interpretation extends Fields
 			$this->configFieldSets[] = "\t\t\t".'name="save_history"';
 			$this->configFieldSets[] = "\t\t\t".'type="radio"';
 			$this->configFieldSets[] = "\t\t\t".'class="btn-group btn-group-yesno"';
-			$this->configFieldSets[] = "\t\t\t".'default="0"';
+			$this->configFieldSets[] = "\t\t\t".'default="1"';
 			$this->configFieldSets[] = "\t\t\t".'label="JGLOBAL_SAVE_HISTORY_OPTIONS_LABEL"';
 			$this->configFieldSets[] = "\t\t\t".'description="JGLOBAL_SAVE_HISTORY_OPTIONS_DESC"';
 			$this->configFieldSets[] = "\t\t\t>";

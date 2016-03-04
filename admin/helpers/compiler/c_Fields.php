@@ -1,29 +1,29 @@
 <?php
 
-/* --------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
-  __      __       _     _____                 _                                  _     __  __      _   _               _
-  \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
-  \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
-  \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
-  \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
-  \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-  | |
-  |_|
-  /-------------------------------------------------------------------------------------------------------------------------------/
+/**--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
+    __      __       _     _____                 _                                  _     __  __      _   _               _
+    \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
+     \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
+      \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
+       \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
+        \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
+                                                        | |                                                                 
+                                                        |_| 				
+/-------------------------------------------------------------------------------------------------------------------------------/
 
-  @version		2.1.0
-  @build			26th February, 2016
-  @created		30th April, 2015
-  @package		Component Builder
-  @subpackage		fields.php
-  @author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-  @my wife		Roline van der Merwe <http://www.vdm.io/>
-  @copyright		Copyright (C) 2015. All Rights Reserved
-  @license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-
-  Builds Complex Joomla Components
-
-  /----------------------------------------------------------------------------------------------------------------------------- */
+	@version		2.0.8
+	@build			30th January, 2016
+	@created		30th April, 2015
+	@package		Component Builder
+	@subpackage		compiler.php
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
+	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@copyright		Copyright (C) 2015. All Rights Reserved
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
+	
+	Builds Complex Joomla Components 
+                                                             
+/-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Fields extends Structure
 {
-	/*
+	/**
 	 * Metadate Switch
 	 * 
 	 * @var    array
@@ -41,272 +41,273 @@ class Fields extends Structure
 
 	public $metadataBuilder = array();
 
-	/*
+	/**
 	 * View access Switch
 	 * 
 	 * @var    array
 	 */
 	public $accessBuilder = array();
 	
-	/*
+	/**
 	 * edit view tabs counter
 	 * 
 	 * @var    array
 	 */
 	public $tabCounter = array();
 	
-	/*
+	/**
 	 * layout builder
 	 * 
 	 * @var    array
 	 */
 	public $layoutBuilder = array();
 	
-	/*
+	/**
 	 * Site field data
 	 * 
 	 * @var    array
 	 */
 	public $siteFieldData = array();
 	
-	/*
+	/**
 	 * Category other name bucket
 	 * 
 	 * @var    array
 	 */
 	public $catOtherName = array();
 	
-	/*
+	/**
 	 * list of fields that are not being escaped
 	 * 
 	 * @var    array
 	 */
 	public $doNotEscape = array();
 	
-	/*
+	/**
 	 * tags builder
 	 * 
 	 * @var    array
 	 */
 	public $tagsBuilder = array();
 	
-	/*
+	/**
 	 * query builder
 	 * 
 	 * @var    array
 	 */
 	public $queryBuilder = array();
 	
-	/*
+	/**
 	 * unique keys for database field
 	 * 
 	 * @var    array
 	 */
 	public $dbUniqueKeys = array();
 	
-	/*
+	/**
 	 * keys for database field
 	 * 
 	 * @var    array
 	 */
 	public $dbKeys = array();
 	
-	/*
+	/**
 	 * history builder
 	 * 
 	 * @var    array
 	 */
 	public $historyBuilder = array();
 	
-	/*
+	/**
 	 * alias builder
 	 * 
 	 * @var    array
 	 */
 	public $aliasBuilder = array();
 	
-	/*
+	/**
 	 * title builder
 	 * 
 	 * @var    array
 	 */
 	public $titleBuilder = array();
 	
-	/*
+	/**
 	 * list builder
 	 * 
 	 * @var    array
 	 */
 	public $listBuilder = array();
 	
-	/*
+	/**
 	 * custom Builder List
 	 * 
 	 * @var    array
 	 */
 	public $customBuilderList = array();
 	
-	/*
+	/**
 	 * Hidden Fields Builder
 	 * 
 	 * @var    array
 	 */
 	public $hiddenFieldsBuilder = array();
 	
-	/*
+	/**
 	 * INT Field Builder
 	 * 
 	 * @var    array
 	 */
 	public $intFieldsBuilder = array();
 	
-	/*
+	/**
 	 * Dynamic Fields Builder
 	 * 
 	 * @var    array
 	 */
 	public $dynamicfieldsBuilder = array();
 	
-	/*
+	/**
 	 * Main text Builder
 	 * 
 	 * @var    array
 	 */
 	public $maintextBuilder = array();
 	
-	/*
+	/**
 	 * Custom Builder
 	 * 
 	 * @var    array
 	 */
 	public $customBuilder = array();
 	
-	/*
+	/**
 	 * Custom Field Links Builder
 	 * 
 	 * @var    array
 	 */
 	public $customFieldLinksBuilder = array();
 	
-	/*
+	/**
 	 * Set Script for User Switch
 	 * 
 	 * @var    array
 	 */
 	public $setScriptUserSwitch = array();
 	
-	/*
+	/**
 	 * Set Script for Media Switch
 	 * 
 	 * @var    array
 	 */
 	public $setScriptMediaSwitch = array();
 	
-	/*
+	/**
 	 * Category builder
 	 * 
 	 * @var    array
 	 */
 	public $categoryBuilder = array();
 	
-	/*
+	/**
 	 * Category Code builder
 	 * 
 	 * @var    array
 	 */
 	public $catCodeBuilder = array();
 	
-	/*
+	/**
 	 * Check Box builder
 	 * 
 	 * @var    array
 	 */
 	public $checkboxBuilder = array();
 	
-	/*
+	/**
 	 * Json String Builder
 	 * 
 	 * @var    array
 	 */
 	public $jsonStringBuilder = array();
 	
-	/*
+	/**
 	 * Json Item Builder
 	 * 
 	 * @var    array
 	 */
 	public $jsonItemBuilder = array();
 	
-	/*
+	/**
 	 * Base 64 Builder
 	 * 
 	 * @var    array
 	 */
 	public $base64Builder = array();
 	
-	/*
+	/**
 	 * Basic Encryption Builder
 	 * 
 	 * @var    array
 	 */
 	public $basicEncryptionBuilder = array();
 	
-	/*
+	/**
 	 * Advnaced Encryption Builder
 	 * 
 	 * @var    array
 	 */
 	public $advancedEncryptionBuilder = array();
 	
-	/*
+	/**
 	 * Get Items Method List String Fix Builder
 	 * 
 	 * @var    array
 	 */
 	public $getItemsMethodListStringFixBuilder = array();
 	
-	/*
+	/**
 	 * Get Items Method Eximport String Fix Builder
 	 * 
 	 * @var    array
 	 */
 	public $getItemsMethodEximportStringFixBuilder = array();
 	
-	/*
+	/**
 	 * Selection Translation Fix Builder
 	 * 
 	 * @var    array
 	 */
 	public $selectionTranslationFixBuilder	= array();
 	
-	/*
+	/**
 	 * Sort Builder
 	 * 
 	 * @var    array
 	 */
 	public $sortBuilder = array();
 	
-	/*
+	/**
 	 * Search Builder
 	 * 
 	 * @var    array
 	 */
 	public $searchBuilder = array();
 	
-	/*
+	/**
 	 * Filter Builder
 	 * 
 	 * @var    array
 	 */
 	public $filterBuilder = array();
 	
-	/*
+	/**
 	 * Set Group Control
 	 * 
 	 * @var    array
-	 */public $setGroupControl = array();
+	 */
+	public $setGroupControl = array();
 
-	/*
+	/**
 	 * set the Field set of a view
 	 * 
 	 * @param   array    $view  The view data
@@ -544,7 +545,7 @@ class Fields extends Structure
 		return '';
 	}
 
-	/*
+	/**
 	 * set Dynamic field
 	 * 
 	 * @param   array    $field  The field data
@@ -651,7 +652,7 @@ class Fields extends Structure
 		return $fieldSet;
 	}
 
-	/*
+	/**
 	 * set a field
 	 * 
 	 * @param   string   $setType  The set of fields type
@@ -894,7 +895,7 @@ class Fields extends Structure
 		return $fieldSet;
 	}
 
-	/*
+	/**
 	 * set the layout builder
 	 * 
 	 * @param   string   $viewName  The single edit view code name
@@ -935,7 +936,7 @@ class Fields extends Structure
 		}
 	}
 
-	/*
+	/**
 	 * build the site field data needed
 	 * 
 	 * @param   string   $view  The single edit view code name
@@ -968,7 +969,7 @@ class Fields extends Structure
 		}
 	}
 
-	/*
+	/**
 	 * set field attributes
 	 * 
 	 * @param   array    $field  The field data
@@ -1292,7 +1293,7 @@ class Fields extends Structure
 	}
 
 
-	/*
+	/**
 	 * set Builders
 	 * 
 	 * @param   string   $langLabel The language string for field label
@@ -1712,7 +1713,7 @@ class Fields extends Structure
 		}
 	}
 
-	/*
+	/**
 	 * default Fields
 	 * 
 	 * @param   string   $type The field type

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_body.php
@@ -88,12 +88,12 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 			<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($this->user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int)$item->type)): ?>
+			<?php if ($this->user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int)$item->fieldtype)): ?>
 				<div class="name">
-					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->type; ?>&ref=fields"><?php echo $this->escape($item->type_name); ?></a>
+					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype; ?>&ref=fields"><?php echo $this->escape($item->fieldtype_name); ?></a>
 				</div>
 			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->type_name); ?></div>
+				<div class="name"><?php echo $this->escape($item->fieldtype_name); ?></div>
 			<?php endif; ?>
 		</td>
 		<td class="hidden-phone">

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -237,8 +237,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		$query->join('LEFT', $db->quoteName('#__categories', 'c') . ' ON (' . $db->quoteName('a.catid') . ' = ' . $db->quoteName('c.id') . ')');
 
 		// From the componentbuilder_fieldtype table.
-		$query->select($db->quoteName('g.name','type_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName('g.name','fieldtype_name'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
 
 		// Join over the asset groups.
 		$query->select('ag.title AS access_level');

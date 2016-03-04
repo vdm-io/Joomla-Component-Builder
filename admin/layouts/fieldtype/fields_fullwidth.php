@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields_fullwidth.php
@@ -50,7 +50,7 @@ $can	= ComponentbuilderHelper::getActions('field');
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'); ?>
 		</th>
 		<th data-hide="phone">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_TYPE_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'); ?>
 		</th>
 		<th data-hide="phone">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL'); ?>
@@ -94,7 +94,7 @@ $can	= ComponentbuilderHelper::getActions('field');
 			<?php endif; ?>
 		</td>
 		<td>
-			<?php echo $displayData->escape($item->type_name); ?>
+			<?php echo $displayData->escape($item->fieldtype_name); ?>
 		</td>
 		<td>
 			<?php echo JText::_($item->datatype); ?>

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields_fullwidth.php
@@ -50,7 +50,7 @@ $can	= ComponentbuilderHelper::getActions('field');
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'); ?>
 		</th>
 		<th data-hide="phone">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_TYPE_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'); ?>
 		</th>
 		<th data-hide="phone">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL'); ?>
@@ -94,10 +94,10 @@ $can	= ComponentbuilderHelper::getActions('field');
 			<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int)$item->type)): ?>
-				<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->type; ?>&ref=admin_view&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->type_name); ?></a>
+			<?php if ($user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int)$item->fieldtype)): ?>
+				<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype; ?>&ref=admin_view&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->fieldtype_name); ?></a>
 			<?php else: ?>
-				<div class="name"><?php echo $displayData->escape($item->type_name); ?></div>
+				<div class="name"><?php echo $displayData->escape($item->fieldtype_name); ?></div>
 			<?php endif; ?>
 		</td>
 		<td>

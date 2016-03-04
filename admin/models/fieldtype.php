@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -102,7 +102,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->typevvvy = $item->id;
+		$this->fieldtypevvvy = $item->id;
 
 		return $item;
 	}
@@ -129,22 +129,22 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->join('LEFT', $db->quoteName('#__categories', 'c') . ' ON (' . $db->quoteName('a.catid') . ' = ' . $db->quoteName('c.id') . ')');
 
 		// From the componentbuilder_fieldtype table.
-		$query->select($db->quoteName('g.name','type_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName('g.name','fieldtype_name'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by typevvvy global.
-		$typevvvy = $this->typevvvy;
-		if (is_numeric($typevvvy ))
+		// Filter by fieldtypevvvy global.
+		$fieldtypevvvy = $this->fieldtypevvvy;
+		if (is_numeric($fieldtypevvvy ))
 		{
-			$query->where('a.type = ' . (int) $typevvvy );
+			$query->where('a.fieldtype = ' . (int) $fieldtypevvvy );
 		}
-		elseif (is_string($typevvvy))
+		elseif (is_string($fieldtypevvvy))
 		{
-			$query->where('a.type = ' . $db->quote($typevvvy));
+			$query->where('a.fieldtype = ' . $db->quote($fieldtypevvvy));
 		}
 		else
 		{
-			$query->where('a.type = -5');
+			$query->where('a.fieldtype = -5');
 		}
 
 		// Join over the asset groups.

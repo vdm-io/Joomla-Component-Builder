@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields.php
@@ -46,7 +46,7 @@ class ComponentbuilderModelFields extends JModelList
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.name','name',
-				'a.type','type',
+				'a.fieldtype','fieldtype',
 				'a.datatype','datatype',
 				'a.indexes','indexes',
 				'a.null_switch','null_switch',
@@ -77,8 +77,8 @@ class ComponentbuilderModelFields extends JModelList
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
 		$this->setState('filter.name', $name);
 
-		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
-		$this->setState('filter.type', $type);
+		$fieldtype = $this->getUserStateFromRequest($this->context . '.filter.fieldtype', 'filter_fieldtype');
+		$this->setState('filter.fieldtype', $fieldtype);
 
 		$datatype = $this->getUserStateFromRequest($this->context . '.filter.datatype', 'filter_datatype');
 		$this->setState('filter.datatype', $datatype);
@@ -273,8 +273,8 @@ class ComponentbuilderModelFields extends JModelList
 		$query->join('LEFT', $db->quoteName('#__categories', 'c') . ' ON (' . $db->quoteName('a.catid') . ' = ' . $db->quoteName('c.id') . ')');
 
 		// From the componentbuilder_fieldtype table.
-		$query->select($db->quoteName('g.name','type_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName('g.name','fieldtype_name'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -312,14 +312,14 @@ class ComponentbuilderModelFields extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search, true) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.type LIKE '.$search.' OR g.name LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.xml LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.store LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.fieldtype LIKE '.$search.' OR g.name LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.xml LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.store LIKE '.$search.')');
 			}
 		}
 
-		// Filter by type.
-		if ($type = $this->getState('filter.type'))
+		// Filter by fieldtype.
+		if ($fieldtype = $this->getState('filter.fieldtype'))
 		{
-			$query->where('a.type = ' . $db->quote($db->escape($type, true)));
+			$query->where('a.fieldtype = ' . $db->quote($db->escape($fieldtype, true)));
 		}
 		// Filter by Datatype.
 		if ($datatype = $this->getState('filter.datatype'))
@@ -497,7 +497,7 @@ class ComponentbuilderModelFields extends JModelList
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.name');
-		$id .= ':' . $this->getState('filter.type');
+		$id .= ':' . $this->getState('filter.fieldtype');
 		$id .= ':' . $this->getState('filter.datatype');
 		$id .= ':' . $this->getState('filter.indexes');
 		$id .= ':' . $this->getState('filter.null_switch');

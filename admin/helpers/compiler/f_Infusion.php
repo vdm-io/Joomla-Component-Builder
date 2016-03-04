@@ -47,7 +47,7 @@ class Infusion extends Interpretation
 		return false;
 	}
 	
-	/*
+	/**
 	 * Build the content for the structure
 	 * 
 	 *

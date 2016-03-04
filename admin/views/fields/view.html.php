@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -220,24 +220,24 @@ class ComponentbuilderViewFields extends JViewLegacy
 			);
 		} 
 
-		// Set Type Name Selection
-		$this->typeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->getOptions();
-		if ($this->typeNameOptions)
+		// Set Fieldtype Name Selection
+		$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->getOptions();
+		if ($this->fieldtypeNameOptions)
 		{
-			// Type Name Filter
+			// Fieldtype Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_TYPE_LABEL').' -',
-				'filter_type',
-				JHtml::_('select.options', $this->typeNameOptions, 'value', 'text', $this->state->get('filter.type'))
+				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
+				'filter_fieldtype',
+				JHtml::_('select.options', $this->fieldtypeNameOptions, 'value', 'text', $this->state->get('filter.fieldtype'))
 			);
 
 			if ($this->canBatch && $this->canCreate && $this->canEdit)
 			{
-				// Type Name Batch Selection
+				// Fieldtype Name Batch Selection
 				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_TYPE_LABEL').' -',
-					'batch[type]',
-					JHtml::_('select.options', $this->typeNameOptions, 'value', 'text')
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
+					'batch[fieldtype]',
+					JHtml::_('select.options', $this->fieldtypeNameOptions, 'value', 'text')
 				);
 			}
 		}
@@ -372,7 +372,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'),
-			'g.name' => JText::_('COM_COMPONENTBUILDER_FIELD_TYPE_LABEL'),
+			'g.name' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'),
 			'a.datatype' => JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL'),
 			'a.indexes' => JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL'),
 			'a.null_switch' => JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'),

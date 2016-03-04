@@ -99,12 +99,12 @@
 			message="Error! Please add name here."
 			hint="COM_COMPONENTBUILDER_FIELD_NAME_HINT"
 		/>
-		<!-- Type Field. Type: Fieldtypes. (custom) -->
+		<!-- Fieldtype Field. Type: Fieldtypes. (custom) -->
 		<field
 			type="fieldtypes"
-			name="type"
-			label="COM_COMPONENTBUILDER_FIELD_TYPE_LABEL"
-			description="COM_COMPONENTBUILDER_FIELD_TYPE_DESCRIPTION"
+			name="fieldtype"
+			label="COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL"
+			description="COM_COMPONENTBUILDER_FIELD_FIELDTYPE_DESCRIPTION"
 			class="btn-group"
 			multiple="false"
 			required="true"

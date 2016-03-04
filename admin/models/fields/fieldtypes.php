@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.1
-	@build			1st March, 2016
+	@version		2.1.2
+	@build			4th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtypes.php
@@ -96,7 +96,7 @@ class JFormFieldFieldtypes extends JFormFieldList
 	{
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','type_name')));
+		$query->select($db->quoteName(array('a.id','a.name'),array('id','fieldtype_name')));
 		$query->from($db->quoteName('#__componentbuilder_fieldtype', 'a'));
 		$query->where($db->quoteName('a.published') . ' = 1');
 		$query->order('a.name ASC');
@@ -108,7 +108,7 @@ class JFormFieldFieldtypes extends JFormFieldList
 			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->type_name);
+				$options[] = JHtml::_('select.option', $item->id, $item->fieldtype_name);
 			}
 		}
 		return $options;
