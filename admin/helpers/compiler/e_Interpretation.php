@@ -3624,6 +3624,9 @@ class Interpretation extends Fields
 	{
 		// reset script
 		$script = $this->setComponentToContentTypes('install');
+		
+		// set the component name
+		$component = $this->fileContentStatic['###component###'];
 
 		if (isset($this->paramsBuilder) && ComponentbuilderHelper::checkString($this->paramsBuilder))
 		{

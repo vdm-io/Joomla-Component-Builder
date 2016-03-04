@@ -1417,14 +1417,14 @@ class com_componentbuilderInstallerScript
 
 			// Condition.
 			$conditions = array(
-				$db->quoteName('element') . ' = ' . $db->quote('com_')
+				$db->quoteName('element') . ' = ' . $db->quote('com_componentbuilder')
 			);
 
 			$query->update($db->quoteName('#__extensions'))->set($fields)->where($conditions);
 			$db->setQuery($query);
 			$allDone = $db->execute();
 			echo '<a target="_blank" href="https://www.vdm.io/joomla-component-builder" title="Component Builder">
-				<img src="components/com_/assets/images/component-300.png"/>
+				<img src="components/com_componentbuilder/assets/images/component-300.png"/>
 				</a>';
 		}
 		// do any updates needed
