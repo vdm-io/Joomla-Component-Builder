@@ -466,6 +466,24 @@
 			filter="PATH"
 			message="Error! Please add folder path here."
 			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_HINT"
+		/>		
+		<!-- Note_git_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_git_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_GIT_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_GIT_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_git_folder_path" />		
+		<!-- Git_folder_path Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="git_folder_path"
+			label="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_LABEL"
+			size="70"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="false"
+			filter="PATH"
+			message="Error! Please add folder path here."
+			hint="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_HINT"
 		/>
 	</fieldset>
 	<fieldset

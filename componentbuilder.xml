@@ -108,6 +108,6 @@
 
 	</administration>
 	<updateservers>
-		<server type="extension" enabled="1" element="com_componentbuilder" name="Component Builder">https://www.vdm.io/updates/componentbuilder_free_update_server.xml</server>
+		<server type="extension" enabled="1" element="com_componentbuilder" name="Component Builder">https://www.vdm.io/updates/componentbuilder_update_server.xml</server>
 	</updateservers>
 </extension>
