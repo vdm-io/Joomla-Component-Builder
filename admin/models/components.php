@@ -258,20 +258,25 @@ class ComponentbuilderModelComponents extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
+						// decode php_site_event
+						$item->php_site_event = base64_decode($item->php_site_event);
+						// decode css
+						$item->css = base64_decode($item->css);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
+						if ($basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
+						{
+							// decrypt update_server_ftp
+							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
+						}
+						// decode php_dashboard_methods
+						$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
 						// decode php_helper_admin
 						$item->php_helper_admin = base64_decode($item->php_helper_admin);
 						// decode php_helper_site
 						$item->php_helper_site = base64_decode($item->php_helper_site);
 						// decode sql
 						$item->sql = base64_decode($item->sql);
-						// decode css
-						$item->css = base64_decode($item->css);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode php_dashboard_methods
-						$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
@@ -279,6 +284,11 @@ class ComponentbuilderModelComponents extends JModelList
 						}
 						// decode readme
 						$item->readme = base64_decode($item->readme);
+						if ($basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
+						{
+							// decrypt sales_server_ftp
+							$item->sales_server_ftp = $basic->decryptString($item->sales_server_ftp);
+						}
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

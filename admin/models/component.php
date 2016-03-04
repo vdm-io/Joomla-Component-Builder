@@ -96,6 +96,30 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->php_site_event))
+			{
+				// base64 Decode php_site_event.
+				$item->php_site_event = base64_decode($item->php_site_event);
+			}
+
+			if (!empty($item->css))
+			{
+				// base64 Decode css.
+				$item->css = base64_decode($item->css);
+			}
+
+			if (!empty($item->php_admin_event))
+			{
+				// base64 Decode php_admin_event.
+				$item->php_admin_event = base64_decode($item->php_admin_event);
+			}
+
+			if (!empty($item->php_dashboard_methods))
+			{
+				// base64 Decode php_dashboard_methods.
+				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
+			}
+
 			if (!empty($item->php_helper_admin))
 			{
 				// base64 Decode php_helper_admin.
@@ -114,30 +138,6 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->sql = base64_decode($item->sql);
 			}
 
-			if (!empty($item->css))
-			{
-				// base64 Decode css.
-				$item->css = base64_decode($item->css);
-			}
-
-			if (!empty($item->php_admin_event))
-			{
-				// base64 Decode php_admin_event.
-				$item->php_admin_event = base64_decode($item->php_admin_event);
-			}
-
-			if (!empty($item->php_site_event))
-			{
-				// base64 Decode php_site_event.
-				$item->php_site_event = base64_decode($item->php_site_event);
-			}
-
-			if (!empty($item->php_dashboard_methods))
-			{
-				// base64 Decode php_dashboard_methods.
-				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
-			}
-
 			if (!empty($item->readme))
 			{
 				// base64 Decode readme.
@@ -149,10 +149,22 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			// Get the encription object.
 			$basic = new FOFEncryptAes($basickey, 128);
 
+			if (!empty($item->update_server_ftp) && $basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
+			{
+				// basic decript data update_server_ftp.
+				$item->update_server_ftp = rtrim($basic->decryptString($item->update_server_ftp), "\0");
+			}
+
 			if (!empty($item->whmcs_key) && $basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 			{
 				// basic decript data whmcs_key.
 				$item->whmcs_key = rtrim($basic->decryptString($item->whmcs_key), "\0");
+			}
+
+			if (!empty($item->sales_server_ftp) && $basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
+			{
+				// basic decript data sales_server_ftp.
+				$item->sales_server_ftp = rtrim($basic->decryptString($item->sales_server_ftp), "\0");
 			}
 			
 			if (!empty($item->id))
@@ -1034,6 +1046,30 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
+		// Set the php_site_event string to base64 string.
+		if (isset($data['php_site_event']))
+		{
+			$data['php_site_event'] = base64_encode($data['php_site_event']);
+		}
+
+		// Set the css string to base64 string.
+		if (isset($data['css']))
+		{
+			$data['css'] = base64_encode($data['css']);
+		}
+
+		// Set the php_admin_event string to base64 string.
+		if (isset($data['php_admin_event']))
+		{
+			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
+		}
+
+		// Set the php_dashboard_methods string to base64 string.
+		if (isset($data['php_dashboard_methods']))
+		{
+			$data['php_dashboard_methods'] = base64_encode($data['php_dashboard_methods']);
+		}
+
 		// Set the php_helper_admin string to base64 string.
 		if (isset($data['php_helper_admin']))
 		{
@@ -1052,30 +1088,6 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['sql'] = base64_encode($data['sql']);
 		}
 
-		// Set the css string to base64 string.
-		if (isset($data['css']))
-		{
-			$data['css'] = base64_encode($data['css']);
-		}
-
-		// Set the php_admin_event string to base64 string.
-		if (isset($data['php_admin_event']))
-		{
-			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
-		}
-
-		// Set the php_site_event string to base64 string.
-		if (isset($data['php_site_event']))
-		{
-			$data['php_site_event'] = base64_encode($data['php_site_event']);
-		}
-
-		// Set the php_dashboard_methods string to base64 string.
-		if (isset($data['php_dashboard_methods']))
-		{
-			$data['php_dashboard_methods'] = base64_encode($data['php_dashboard_methods']);
-		}
-
 		// Set the readme string to base64 string.
 		if (isset($data['readme']))
 		{
@@ -1087,10 +1099,22 @@ class ComponentbuilderModelComponent extends JModelAdmin
 		// Get the encription object
 		$basic = new FOFEncryptAes($basickey, 128);
 
+		// Encript data update_server_ftp.
+		if (isset($data['update_server_ftp']) && $basickey)
+		{
+			$data['update_server_ftp'] = $basic->encryptString($data['update_server_ftp']);
+		}
+
 		// Encript data whmcs_key.
 		if (isset($data['whmcs_key']) && $basickey)
 		{
 			$data['whmcs_key'] = $basic->encryptString($data['whmcs_key']);
+		}
+
+		// Encript data sales_server_ftp.
+		if (isset($data['sales_server_ftp']) && $basickey)
+		{
+			$data['sales_server_ftp'] = $basic->encryptString($data['sales_server_ftp']);
 		}
         
 		// Set the Params Items to data

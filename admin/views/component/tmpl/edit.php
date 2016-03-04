@@ -108,6 +108,16 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
+	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'ftp_servers', JText::_('COM_COMPONENTBUILDER_COMPONENT_FTP_SERVERS', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component.ftp_servers_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
 	<?php if ($this->canDo->get('core.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.state') || $this->canDo->get('core.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'publishing', JText::_('COM_COMPONENTBUILDER_COMPONENT_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
@@ -270,33 +280,63 @@ jQuery('#adminForm').on('change', '#jform_addreadme',function (e)
 
 });
 
-// #jform_add_license listeners for add_license_vvvvvwe function
+// #jform_add_update_server listeners for add_update_server_vvvvvwe function
+jQuery('#jform_add_update_server').on('keyup',function()
+{
+	var add_update_server_vvvvvwe = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwe(add_update_server_vvvvvwe);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_update_server',function (e)
+{
+	e.preventDefault();
+	var add_update_server_vvvvvwe = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwe(add_update_server_vvvvvwe);
+
+});
+
+// #jform_add_sales_server listeners for add_sales_server_vvvvvwf function
+jQuery('#jform_add_sales_server').on('keyup',function()
+{
+	var add_sales_server_vvvvvwf = jQuery("#jform_add_sales_server input[type='radio']:checked").val();
+	vvvvvwf(add_sales_server_vvvvvwf);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_sales_server',function (e)
+{
+	e.preventDefault();
+	var add_sales_server_vvvvvwf = jQuery("#jform_add_sales_server input[type='radio']:checked").val();
+	vvvvvwf(add_sales_server_vvvvvwf);
+
+});
+
+// #jform_add_license listeners for add_license_vvvvvwg function
 jQuery('#jform_add_license').on('keyup',function()
 {
-	var add_license_vvvvvwe = jQuery("#jform_add_license input[type='radio']:checked").val();
-	vvvvvwe(add_license_vvvvvwe);
+	var add_license_vvvvvwg = jQuery("#jform_add_license input[type='radio']:checked").val();
+	vvvvvwg(add_license_vvvvvwg);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_license',function (e)
 {
 	e.preventDefault();
-	var add_license_vvvvvwe = jQuery("#jform_add_license input[type='radio']:checked").val();
-	vvvvvwe(add_license_vvvvvwe);
+	var add_license_vvvvvwg = jQuery("#jform_add_license input[type='radio']:checked").val();
+	vvvvvwg(add_license_vvvvvwg);
 
 });
 
-// #jform_add_php_dashboard_methods listeners for add_php_dashboard_methods_vvvvvwf function
+// #jform_add_php_dashboard_methods listeners for add_php_dashboard_methods_vvvvvwh function
 jQuery('#jform_add_php_dashboard_methods').on('keyup',function()
 {
-	var add_php_dashboard_methods_vvvvvwf = jQuery("#jform_add_php_dashboard_methods input[type='radio']:checked").val();
-	vvvvvwf(add_php_dashboard_methods_vvvvvwf);
+	var add_php_dashboard_methods_vvvvvwh = jQuery("#jform_add_php_dashboard_methods input[type='radio']:checked").val();
+	vvvvvwh(add_php_dashboard_methods_vvvvvwh);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_dashboard_methods',function (e)
 {
 	e.preventDefault();
-	var add_php_dashboard_methods_vvvvvwf = jQuery("#jform_add_php_dashboard_methods input[type='radio']:checked").val();
-	vvvvvwf(add_php_dashboard_methods_vvvvvwf);
+	var add_php_dashboard_methods_vvvvvwh = jQuery("#jform_add_php_dashboard_methods input[type='radio']:checked").val();
+	vvvvvwh(add_php_dashboard_methods_vvvvvwh);
 
 });
 
