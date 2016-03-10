@@ -6311,8 +6311,39 @@ class Interpretation extends Fields
 		// filter by child array field values
 		if ($key && strpos($key,'-R>') === false && strpos($key,'-A>') !== false)
 		{
-			$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Array Field";
-			$query .= "\n\t\t\$".$globalKey." = \$this->".$globalKey.";";
+			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Array Field";
+			$query .= "\n\t\t\t\$".$globalKey." = \$this->".$globalKey.";";
+			$query .= "\n\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && \$".$globalKey.")";
+			$query .= "\n\t\t\t{";
+			$query .= "\n\t\t\t\tforeach (\$items as \$nr => &\$item)";
+			$query .= "\n\t\t\t\t{";
+			list($bin,$target) = explode('-A>',$key);
+			if (ComponentbuilderHelper::checkString($target))
+			{				
+				$query .= "\n\t\t\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$target."))";
+				$query .= "\n\t\t\t\t\t{";
+				$query .= "\n\t\t\t\t\t\t\$item->".$target." = json_decode(\$item->".$target.");";
+				$query .= "\n\t\t\t\t\t}";
+				$query .= "\n\t\t\t\t\tif (!in_array(\$".$globalKey.",\$item->".$target."))";
+			}
+			else
+			{			
+				$query .= "\n\t\t\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$_key."))";
+				$query .= "\n\t\t\t\t\t{";
+				$query .= "\n\t\t\t\t\t\t\$item->".$_key." = json_decode(\$item->".$_key.");";
+				$query .= "\n\t\t\t\t\t}";
+				$query .= "\n\t\t\t\t\tif (!in_array(\$".$globalKey.",\$item->".$_key."))";
+			}
+			$query .= "\n\t\t\t\t\t{";
+			$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= "\n\t\t\t\t\t\tcontinue;";
+			$query .= "\n\t\t\t\t\t}";
+			$query .= "\n\t\t\t\t}";
+			$query .= "\n\t\t\t}";
+			$query .= "\n\t\t\telse";
+			$query .= "\n\t\t\t{";
+			$query .= "\n\t\t\t\treturn false;";
+			$query .= "\n\t\t\t}";
 
 		}
 		// filter by parent repetable field values

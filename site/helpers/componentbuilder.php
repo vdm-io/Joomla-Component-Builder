@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.2
-	@build			4th March, 2016
+	@build			10th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -695,6 +695,16 @@ abstract class ComponentbuilderHelper
 			}
 		}
 		return $result;
+	}
+	
+	public static function checkJson($string)
+	{
+		if (self::checkString($string))
+		{
+			json_decode($string);
+			return (json_last_error() === JSON_ERROR_NONE);
+		}
+		return false;
 	}
 
 	public static function checkObject($object)

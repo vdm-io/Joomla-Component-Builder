@@ -511,7 +511,6 @@ class ###Component###ModelImport extends JModelLegacy
 						// reset all buckets
 						$query 		= $db->getQuery(true);
 						$fields 	= array();
-						$version	= false;
 						// Fields to update.
 						foreach($row as $key => $cell)
 						{
@@ -534,7 +533,6 @@ class ###Component###ModelImport extends JModelLegacy
 							if ('version' == $target[$key])
 							{
 								$cell = (int) $version + 1;
-								$version = true;
 							}
 							// verify publish authority
 							if ('published' == $target[$key] && !$canState)
@@ -559,10 +557,6 @@ class ###Component###ModelImport extends JModelLegacy
 						// load the defaults
 						$fields[]	= $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
 						$fields[]	= $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
-						if (!$version)
-						{
-							$fields[] = $db->quoteName('version') . " = " . (int) $version + 1;
-						}
 						// Conditions for which records should be updated.
 						$conditions = array(
 							$db->quoteName('id') . ' = ' . $id

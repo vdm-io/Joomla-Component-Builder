@@ -524,6 +524,16 @@ abstract class ###Component###Helper
 		}
 		return $result;
 	}
+	
+	public static function checkJson($string)
+	{
+		if (self::checkString($string))
+		{
+			json_decode($string);
+			return (json_last_error() === JSON_ERROR_NONE);
+		}
+		return false;
+	}
 
 	public static function checkObject($object)
 	{

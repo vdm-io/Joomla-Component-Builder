@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.2
-	@build			4th March, 2016
+	@build			10th March, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		minify.php
