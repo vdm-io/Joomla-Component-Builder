@@ -45,7 +45,7 @@ due to [Automated Component Builder] (https://www.vdm.io/joomla-component-builde
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
 > never making one mistake or taking any coffee break.)
 
-+ *Line count*: **80459**
++ *Line count*: **80468**
 + *File count*: **494**
 + *Folder count*: **97**
 

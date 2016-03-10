@@ -70,6 +70,7 @@
 		<menu>COM_COMPONENTBUILDER_MENU</menu>
 		<submenu>
 			<!-- Instead of link you can specify individual link attributes -->
+			<menu option="com_componentbuilder" view="compiler">COM_COMPONENTBUILDER_MENU_COMPILER</menu>
 			<menu option="com_componentbuilder" view="components">COM_COMPONENTBUILDER_MENU_COMPONENTS</menu>
 			<menu option="com_componentbuilder" view="admin_views">COM_COMPONENTBUILDER_MENU_ADMIN_VIEWS</menu>
 			<menu option="com_componentbuilder" view="custom_admin_views">COM_COMPONENTBUILDER_MENU_CUSTOM_ADMIN_VIEWS</menu>
