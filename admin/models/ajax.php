@@ -698,7 +698,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$query->select($db->quoteName(array('a.name','a.xml')));
 		$query->select($db->quoteName(array('c.name'),array('type_name')));
 		$query->from('#__componentbuilder_field AS a');
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('c.id') . ')');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('c.id') . ')');
 		$query->where($db->quoteName('a.id') . ' = '. $db->quote($id));
 		 
 		// Reset the query using our newly populated query object.
@@ -752,7 +752,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$columns = $db->getTableColumns("#__".$tableName);
 		if (ComponentbuilderHelper::checkArray($columns))
 		{
-        	// build the return string
+        		// build the return string
 			$tableColumns = array();
 			foreach ($columns as $column => $type)
 			{
