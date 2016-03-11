@@ -1394,7 +1394,7 @@ class Get
 					{
 						$this->customScriptBuilder['view_footer'][$name_single] = '';
 					}
-					$this->customScriptBuilder['view_footer'][$name_single] .= "\n".base64_decode($field->javascript_view_footer);
+					$this->customScriptBuilder['view_footer'][$name_single] .= "\n".$this->setCustomContentLang(base64_decode($field->javascript_view_footer));
 					if (strpos($field->javascript_view_footer,"token") !== false && strpos($field->javascript_view_footer,"task=ajax") !== false)
 					{
 						if (!isset($this->customScriptBuilder['token'][$name_single]) || !$this->customScriptBuilder['token'][$name_single])
@@ -1435,8 +1435,7 @@ class Get
 				// add_javascript_views_footer
 				if ($field->add_javascript_views_footer == 1)
 				{
-					$field->javascript_views_footer = base64_decode($field->javascript_views_footer);
-					$this->customScriptBuilder['views_footer'][$name_list] .= $field->javascript_views_footer;
+					$this->customScriptBuilder['views_footer'][$name_list] .= $this->setCustomContentLang(base64_decode($field->javascript_views_footer));
 					if (strpos($field->javascript_views_footer,"token") !== false && strpos($field->javascript_views_footer,"task=ajax") !== false)
 					{
 						if (!$this->customScriptBuilder['token'][$name_list])
