@@ -2201,6 +2201,14 @@ class Interpretation extends Fields
 			$getItem .= "\n\t\t\$db = JFactory::getDbo();";
 			$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
 			$getItem .= "\n\t\t\$query = \$db->getQuery(true);";
+			// check if there is any custom script
+			if (isset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]))
+			{
+				$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." Filtering.";
+				$getItem .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]);
+				// clear some memory
+				unset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
+			}
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get,$code);
 			// setup filters

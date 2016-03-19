@@ -32,7 +32,7 @@ Would you require more help VDM.io has a number of support plans available [visi
 + *Author*: [Llewellyn van der Merwe] (mailto:info@vdm.io)
 + *Name*: [Component Builder] (https://www.vdm.io/joomla-component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 11th March, 2016
++ *Last Build*: 19th March, 2016
 + *Version*: 2.1.2
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html

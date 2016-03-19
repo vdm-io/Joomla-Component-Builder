@@ -845,21 +845,6 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_LIST_QUERY###'] = $this->setCustomViewListQuery($view['settings']->main_get, $view['settings']->code);
 
 						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]))
-						{
-							// ###SITE_CUSTOM_BEFORE_LIST_QUERY### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_CUSTOM_BEFORE_LIST_QUERY###']
-								= "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###SITE_CUSTOM_BEFORE_LIST_QUERY### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_CUSTOM_BEFORE_LIST_QUERY###'] = '';
-						}
-
-						// check if there is any custom script
 						if (isset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]))
 						{
 							// ###SITE_BEFORE_GET_ITEMS### <<<DYNAMIC>>>

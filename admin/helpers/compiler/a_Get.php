@@ -1553,7 +1553,7 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] .= "\n\n".base64_decode($result->php_getlistquery);
+							$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] .= "\n".base64_decode($result->php_getlistquery);
 							unset($result->php_getlistquery);
 						}
 						// set the getmethod code name

@@ -67,7 +67,7 @@ class ###Component###Model###SViews### extends JModelList
 		$this->levels		= $this->user->getAuthorisedViewLevels();
 		$this->app		= JFactory::getApplication();
 		$this->input		= $this->app->input;
-		$this->initSet		= true;###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY### ###CUSTOM_ADMIN_GET_LIST_QUERY###
+		$this->initSet		= true; ###CUSTOM_ADMIN_GET_LIST_QUERY###
 	}
 
 	/**
