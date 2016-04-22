@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.2
-	@build			19th March, 2016
+	@version		2.1.3
+	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -54,7 +54,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.xml', 'b.name')));
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'b') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('b.id') . ')');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'b') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('b.id') . ')');
 		$query->where($db->quoteName('a.published') . ' = 1');
 		$query->where($db->quoteName('a.id') . ' = '. (int) $id);
 		 

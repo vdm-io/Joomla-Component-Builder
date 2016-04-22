@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.2
-	@build			19th March, 2016
+	@version		2.1.3
+	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views_fullwidth.php
@@ -43,7 +43,7 @@ $can	= ComponentbuilderHelper::getActions('admin_view');
 	<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a><br /><br />
 <?php endif; ?>
 <?php if (ComponentbuilderHelper::checkArray($items)): ?>
-<table class="footable table data admin_views metro-blue" data-filter="#filter_admin_views" data-page-size="20">
+<table class="footable table data admin_views metro-blue" data-page-size="20" data-filter="#filter_admin_views">
 <thead>
 	<tr>
 		<th data-toggle="true">

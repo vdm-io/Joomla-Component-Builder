@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.2
-	@build			19th March, 2016
+	@version		2.1.3
+	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -70,6 +70,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'tableColumns':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$tableValue = $jinput->get('table', NULL, 'WORD');
 						if($tableValue && $user->id != 0)
 						{
@@ -82,6 +83,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -103,6 +108,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'fieldSelectOptions':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -115,6 +121,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -136,6 +146,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'layoutDetails':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', null, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -148,6 +159,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -169,6 +184,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'templateDetails':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', null, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -181,6 +197,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -202,6 +222,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'snippetDetails':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -214,6 +235,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -235,6 +260,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'dynamicValues':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$viewValue = $jinput->get('view', NULL, 'WORD');
 						if($idValue && $viewValue && $user->id != 0)
@@ -248,6 +274,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -269,6 +299,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'dynamicFormDetails':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -281,6 +312,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -302,6 +337,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'dbTableColumns':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$nameValue = $jinput->get('name', NULL, 'WORD');
 						$asValue = $jinput->get('as', NULL, 'WORD');
 						$typeValue = $jinput->get('type', NULL, 'INT');
@@ -316,6 +352,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -337,6 +377,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'viewTableColumns':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$asValue = $jinput->get('as', NULL, 'WORD');
 						$typeValue = $jinput->get('type', NULL, 'INT');
@@ -351,6 +392,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{
@@ -372,6 +417,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'fieldOptions':
 					try
 					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -384,6 +430,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if(array_key_exists('callback',$_GET))
 						{
 							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
 						}
 						else
 						{

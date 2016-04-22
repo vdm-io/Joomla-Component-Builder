@@ -225,6 +225,11 @@
           "rename": false,
           "type": "encrypt"
         },
+        "Helper_email.php": {
+          "path": "c0mp0n3nt/admin/helpers",
+          "rename": "Helper_",
+          "type": "emailer"
+        },
         "DASHJControllerAdmin.php": {
           "path": "c0mp0n3nt/admin/controllers",
           "rename": "DASHJControllerAdmin",

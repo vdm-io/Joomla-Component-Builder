@@ -332,6 +332,45 @@ abstract class ###Component###Helper
 		}
 		return false;
 	} 
+
+	public static function isPublished($id,$type)
+	{
+		if ($type == 'raw')
+                {
+			$type = 'item';
+		}
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select(array('a.published'));
+		$query->from('#__###component###_'.$type.' AS a');
+		$query->where('a.id = '. (int) $id);
+		$query->where('a.published = 1');
+		$db->setQuery($query);
+		$db->execute();
+		$found = $db->getNumRows();
+		if($found)
+                {
+			return true;
+		}
+		return false;
+	}
+
+	public static function getGroupName($id)
+	{
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select(array('a.title'));
+		$query->from('#__usergroups AS a');
+		$query->where('a.id = '. (int) $id);
+		$db->setQuery($query);
+		$db->execute();
+		$found = $db->getNumRows();
+		if($found)
+                {
+			return $db->loadResult();
+		}
+		return $id;
+	}
 	
 	/**
 	*	Get the actions permissions

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.2
-	@build			19th March, 2016
+	@version		2.1.3
+	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1815,7 +1815,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="https://www.vdm.io/joomla-component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/component-300.png"/>
 				</a>
-				<h3>Upgrade to Version 2.1.2 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.1.3 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

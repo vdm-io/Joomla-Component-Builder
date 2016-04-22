@@ -460,11 +460,13 @@
 			name="addfootable"
 			label="COM_COMPONENTBUILDER_COMPONENT_ADDFOOTABLE_LABEL"
 			class="btn-group btn-group-yesno"
-			default="1"
+			default="3"
 			required="true">
 			<!-- Option Set. -->
+			<option value="3">
+				COM_COMPONENTBUILDER_COMPONENT_VTHREE</option>
 			<option value="1">
-				COM_COMPONENTBUILDER_COMPONENT_YES</option>
+				COM_COMPONENTBUILDER_COMPONENT_VTWO</option>
 			<option value="0">
 				COM_COMPONENTBUILDER_COMPONENT_NO</option>
 		</field>

@@ -46,7 +46,7 @@ $document->addStyleSheet('components/com_###component###/assets/css/admin.css');
 $document->addScript('components/com_###component###/assets/js/admin.js');
 
 // require helper files
-JLoader::register('###Component###Helper', dirname(__FILE__) . '/helpers/###component###.php');
+JLoader::register('###Component###Helper', dirname(__FILE__) . '/helpers/###component###.php'); ###HELPER_EMAIL###
 JLoader::register('JHtmlBatch_', dirname(__FILE__) . '/helpers/html/batch_.php');###LICENSE_LOCKED_INT### ###ADMIN_GLOBAL_EVENT###
 
 // import joomla controller library

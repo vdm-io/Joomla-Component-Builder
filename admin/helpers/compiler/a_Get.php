@@ -103,6 +103,13 @@ class Get
 	public $footable = false;
 	
 	/**
+	 * The FOOTABLE Version
+	 * 
+	 * @var      int
+	 */
+	public $footableVersion;
+	
+	/**
 	 * The Google Chart Switch per view
 	 * 
 	 * @var     array
@@ -393,6 +400,8 @@ class Get
 		if ($component->addfootable)
 		{
 			$this->footable = true;
+			// add the version
+			$this->footableVersion = (1 == $component->addfootable || 2 == $component->addfootable) ? 2 : $component->addfootable;
 		}
 
 		// ser the addcustommenu data

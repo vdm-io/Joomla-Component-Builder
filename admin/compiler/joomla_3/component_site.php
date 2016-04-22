@@ -35,7 +35,7 @@ $document->addStyleSheet('components/com_###component###/assets/css/site.css');
 $document->addScript('components/com_###component###/assets/js/site.js');
 
 // Require helper files
-JLoader::register('###Component###Helper', dirname(__FILE__) . '/helpers/###component###.php');
+JLoader::register('###Component###Helper', dirname(__FILE__) . '/helpers/###component###.php'); ###HELPER_EMAIL###
 JLoader::register('###Component###HelperRoute', dirname(__FILE__) . '/helpers/route.php');###LICENSE_LOCKED_INT### ###SITE_GLOBAL_EVENT###
 
 // import joomla controller library

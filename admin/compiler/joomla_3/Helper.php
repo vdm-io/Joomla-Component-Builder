@@ -201,7 +201,7 @@ abstract class ###Component###Helper
 		$query = $db->getQuery(true);
 		$query->select(array('a.published'));
 		$query->from('#__###component###_'.$type.' AS a');
-		$query->where('a.id = '.$id);
+		$query->where('a.id = '. (int) $id);
 		$query->where('a.published = 1');
 		$db->setQuery($query);
 		$db->execute();
@@ -219,7 +219,7 @@ abstract class ###Component###Helper
 		$query = $db->getQuery(true);
 		$query->select(array('a.title'));
 		$query->from('#__usergroups AS a');
-		$query->where('a.id = '.$id);
+		$query->where('a.id = '. (int) $id);
 		$db->setQuery($query);
 		$db->execute();
 		$found = $db->getNumRows();

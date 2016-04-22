@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.2
-	@build			19th March, 2016
+	@version		2.1.3
+	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -504,6 +504,45 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	} 
+
+	public static function isPublished($id,$type)
+	{
+		if ($type == 'raw')
+                {
+			$type = 'item';
+		}
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select(array('a.published'));
+		$query->from('#__componentbuilder_'.$type.' AS a');
+		$query->where('a.id = '. (int) $id);
+		$query->where('a.published = 1');
+		$db->setQuery($query);
+		$db->execute();
+		$found = $db->getNumRows();
+		if($found)
+                {
+			return true;
+		}
+		return false;
+	}
+
+	public static function getGroupName($id)
+	{
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select(array('a.title'));
+		$query->from('#__usergroups AS a');
+		$query->where('a.id = '. (int) $id);
+		$db->setQuery($query);
+		$db->execute();
+		$found = $db->getNumRows();
+		if($found)
+                {
+			return $db->loadResult();
+		}
+		return $id;
+	}
 	
 	/**
 	*	Get the actions permissions

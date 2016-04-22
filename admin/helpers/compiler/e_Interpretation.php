@@ -56,7 +56,8 @@ class Interpretation extends Fields
 	public $setRouterHelpDone		= array();
 	public $otherWhere			= array();
 	public $DashboardGetCustomData		= array();
-	
+	public $customAdminAdded		= array();
+
 	/**
 	 * Constructor
 	 */
@@ -72,7 +73,7 @@ class Interpretation extends Fields
 		return false;
 	}
 	
-	/*
+	/**
 	 * Set the line number in comments
 	 * 
 	 * @param   int   $nr  The line number
@@ -89,6 +90,31 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	/**
+	 * add email helper
+	*/
+	public function addEmailHelper()
+	{
+		if (isset($this->componentData->add_email_helper) && $this->componentData->add_email_helper)
+		{
+			// set email helper in place with component name
+			$component = $this->fileContentStatic['###component###'];
+			$target = array('admin' => 'emailer');
+			$done = $this->buildDynamique($target,'emailer',$component);
+			if ($done)
+			{
+				// the text for the file ###BAKING###
+				$this->fileContentDynamic['emailer_'.$component]['###BAKING###'] = ''; // <<-- to insure it gets updated
+				// return the code need to load the abstract class
+				return "\nJLoader::register('".$component."Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/".$component."email.php'); ";
+			}
+		}
+		return '';
+	}
+
+	/**
+	 *
+	*/
 	public function setLockLicense()
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
@@ -109,7 +135,10 @@ class Interpretation extends Fields
 			$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = '';
 		}
 	}
-	
+
+	/**
+	 * @param $view
+	*/
 	public function setLockLicensePer($view)
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
@@ -956,6 +985,55 @@ class Interpretation extends Fields
 			$method[] = "\t\t}";
 			$method[] = "\t\treturn \$was;";
 			$method[] = "\t}";
+			
+			$method[] = "\n\t/**";
+			$method[] = "\t* Update user values";
+			$method[] = "\t*/";
+			$method[] = "\tpublic static function updateUser(\$new)";
+			$method[] = "\t{";
+			$method[] = "\t\t// load the user component language files if there is an error.";
+			$method[] = "\t\t\$lang = JFactory::getLanguage();";
+			$method[] = "\t\t\$extension = 'com_users';";
+			$method[] = "\t\t\$base_dir = JPATH_ADMINISTRATOR;";
+			$method[] = "\t\t\$language_tag = 'en-GB';";
+			$method[] = "\t\t\$reload = true;";
+			$method[] = "\t\t\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
+			$method[] = "\t\t// load the user model";
+			$method[] = "\t\t\$model = self::getModel('user', JPATH_ADMINISTRATOR . '/components/com_users', 'Users');";
+			$method[] = "\t\t// Check if password was set";
+			$method[] = "\t\tif (isset(\$new['password']) && isset(\$new['password2']) && self::checkString(\$new['password']) && self::checkString(\$new['password2']))";
+			$method[] = "\t\t{";
+			$method[] = "\t\t\t// Use the users passwords";
+			$method[] = "\t\t\t\$password = \$new['password'];";
+			$method[] = "\t\t\t\$password2 = \$new['password2'];";
+			$method[] = "\t\t}";
+			$method[] = "\t\t// set username";
+			$method[] = "\t\tif (isset(\$new['username']) && self::checkString(\$new['username']))";
+			$method[] = "\t\t{";
+			$method[] = "\t\t\t\$new['username'] = self::safeString(\$new['username']);";
+			$method[] = "\t\t}";
+			$method[] = "\t\telse";
+			$method[] = "\t\t{";
+			$method[] = "\t\t\t\$new['username'] = self::safeString(\$new['name']);\t\t\t";
+			$method[] = "\t\t}";
+			$method[] = "\t\t// linup update user data";
+			$method[] = "\t\t\$data = array(";
+			$method[] = "\t\t\t'id' => \$new['id'],";
+			$method[] = "\t\t\t'username' => \$new['username'],";
+			$method[] = "\t\t\t'name' => \$new['name'],";
+			$method[] = "\t\t\t'email' => \$new['email'],";
+			$method[] = "\t\t\t'password1' => \$password, // First password field";
+			$method[] = "\t\t\t'password2' => \$password2, // Confirm password field";
+			$method[] = "\t\t\t'block' => 0 );";
+			$method[] = "\t\t// register the new user";
+			$method[] = "\t\t\$done = \$model->save(\$data);";
+			$method[] = "\t\t// if user is updated";
+			$method[] = "\t\tif (\$done)";
+			$method[] = "\t\t{";
+			$method[] = "\t\t\treturn \$new['id'];";
+			$method[] = "\t\t}";
+			$method[] = "\t\treturn \$model->getError();";
+			$method[] = "\t}";
 
 			// return the help method
 			return implode("\n",$method);
@@ -1592,7 +1670,12 @@ class Interpretation extends Fields
 		return $globals;
 	}
 
-	public function removeAsDot($string,$type = '')
+	/**
+	 * @param $string
+	 * @param string $type
+	 * @return mixed
+     */
+	public function removeAsDot($string, $type = '')
 	{
 		if (strpos($string,'.') !== false)
 		{
@@ -1605,7 +1688,14 @@ class Interpretation extends Fields
 		return $field;
 	}
 
-	public function setCustomViewGetItem(&$get,&$code,$tab = '',$type = 'main')
+	/**
+	 * @param $get
+	 * @param $code
+	 * @param string $tab
+	 * @param string $type
+	 * @return string
+     */
+	public function setCustomViewGetItem(&$get, &$code, $tab = '', $type = 'main')
 	{
 		if (ComponentbuilderHelper::checkObject($get))
 		{
@@ -2228,7 +2318,12 @@ class Interpretation extends Fields
 		return "\n\t\t//".$this->setLine(__LINE__)."add your custom code here.";
 	}
 
-	public function setCustomViewGetItems(&$get,$code)
+	/**
+	 * @param $get
+	 * @param $code
+	 * @return string
+     */
+	public function setCustomViewGetItems(&$get, $code)
 	{
 		$getItem = '';
 		$this->siteDecrypt['basic'][$code] = false;
@@ -2900,7 +2995,7 @@ class Interpretation extends Fields
 			$setter .= "\n\t\t\t}";
 			$setter .= "\n\t\t}";
 		}
-		elseif ($this->uikit && ComponentbuilderHelper::checkArray($this->siteFieldData['uikit'][$view['settings']->code]))
+		elseif ($this->uikit && isset($this->siteFieldData['uikit'][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->siteFieldData['uikit'][$view['settings']->code]))
 		{
 			$setter .= "\n\n\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
 			$setter .= "\n\t\t\$uikitComp = \$this->get('UikitComp');";
@@ -4640,9 +4735,10 @@ class Interpretation extends Fields
 	public function setLangAdmin()
 	{
 		// add final list of needed lang strings
-		$this->langContent['adminsys'][$this->langPrefix]				= ComponentbuilderHelper::safeString($this->componentData->name,'W');
-		$this->langContent['adminsys'][$this->langPrefix.'_CONFIGURATION']		= ComponentbuilderHelper::safeString($this->componentData->name,'W').' Configuration';
-		$this->langContent[$this->lang][$this->langPrefix]				= ComponentbuilderHelper::safeString($this->componentData->name,'W');
+		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		$this->langContent['adminsys'][$this->langPrefix]				= 
+		$this->langContent['adminsys'][$this->langPrefix.'_CONFIGURATION']		= $componentName.' Configuration';
+		$this->langContent[$this->lang][$this->langPrefix]				= $componentName;
 		$this->langContent['admin'][$this->langPrefix.'_BACK']				= 'Back';
 		$this->langContent['admin'][$this->langPrefix.'_DASH']				= 'Dashboard';
 		$this->langContent['admin'][$this->langPrefix.'_VERSION']			= 'Version';
@@ -4652,7 +4748,7 @@ class Interpretation extends Fields
 		$this->langContent['admin'][$this->langPrefix.'_LICENSE']			= 'License';
 		$this->langContent['admin'][$this->langPrefix.'_CONTRIBUTORS']			= 'Contributors';
 		$this->langContent['admin'][$this->langPrefix.'_CONTRIBUTOR']			= 'Contributor';
-		$this->langContent['admin'][$this->langPrefix.'_DASHBOARD']			= ComponentbuilderHelper::safeString($this->componentData->name,'W').' Dashboard';
+		$this->langContent['admin'][$this->langPrefix.'_DASHBOARD']			= $componentName.' Dashboard';
 		$this->langContent['admin'][$this->langPrefix.'_SAVE_SUCCESS']			= "Great! Item successfully saved.";
 		$this->langContent['admin'][$this->langPrefix.'_SAVE_WARNING']			= "The value already existed so please select another.";
 		$this->langContent['admin'][$this->langPrefix.'_HELP_MANAGER']			= "Help";
@@ -4662,7 +4758,7 @@ class Interpretation extends Fields
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_CATEGORY']        = "- Keep Original Category -";
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>Lincense not set for ".$this->componentData->name.".</h1><p>Notify your administrator!<br />The lincense can be obtained from ".$this->componentData->companyname.".</p></center>";
+			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>Lincense not set for ".$componentName.".</h1><p>Notify your administrator!<br />The lincense can be obtained from ".$this->componentData->companyname.".</p></center>";
 		}
 		// add the langug files needed to import and export data
 		if ($this->addEximport)
@@ -4865,6 +4961,8 @@ class Interpretation extends Fields
 								// now load it to the global object for tool bar
 								$this->customAdminDynamicButtons[$viewName_list][] = $set;
 							}
+							// log that it has been added already
+							$this->customAdminAdded[$custom_admin_view['settings']->code] = $adminview;
 						}
 					}
 				}
@@ -5717,6 +5815,12 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	/**
+	 * @param $viewName_single
+	 * @param $layoutName
+	 * @param $items
+	 * @param $type
+     */
 	public function setLayout($viewName_single, $layoutName, $items, $type)
 	{
 		// first build the layout file
@@ -5740,8 +5844,20 @@ class Interpretation extends Fields
 		}
 	}
 
+	/**
+	 * @param $args
+     */
 	public function setLinkedView($args)
 	{
+		/**
+		 * @var $viewId
+		 * @var $viewName_single
+		 * @var $codeName
+		 * @var $layoutCodeName
+		 * @var $key
+		 * @var $parentKey
+		 * @var $addNewButon
+		 */
 		extract($args, EXTR_PREFIX_SAME, "oops");
 		$single = '';
 		$list 	= '';
@@ -5804,34 +5920,62 @@ class Interpretation extends Fields
 		}
 	}
 
+	/**
+	 * @param bool $init
+	 * @param string $document
+	 * @return string
+     */
 	public function setFootableScripts($init = true, $document = '$document')
 	{
-		$foo = "\n\n\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable.";
-		$foo .= "\n\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.core.min.css');";
-		$foo .= "\n\n\t\t//".$this->setLine(__LINE__)." Use the Metro Style";
-		$foo .= "\n\t\tif (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
-		$foo .= "\n\t\t{";
-		$foo .= "\n\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.metro.min.css');";
-		$foo .= "\n\t\t}";
-		$foo .= "\n\t\t//".$this->setLine(__LINE__)." Use the Legacy Style.";
-		$foo .= "\n\t\telseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
-		$foo .= "\n\t\t{";
-		$foo .= "\n\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
-		$foo .= "\n\t\t}";
-		$foo .= "\n\n\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable";
-		$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.js');";
-		$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.sort.js');";
-		$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.filter.js');";
-		$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.paginate.js');";
-		if ($init)
+		if (!isset($this->footableVersion) || 2 == $this->footableVersion) // loading version 2
 		{
-			$foo .= "\n\n\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable(); }); jQuery('."'.nav-tabs'".').on('."'click'".', '."'li'".', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('."'.footable'".').trigger('."'footable_resize'".'); }";';
-			$foo .= "\n\t\t\$document->addScriptDeclaration(\$footable);\n";
+			$foo = "\n\n\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable.";
+			$foo .= "\n\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.core.min.css');";
+			$foo .= "\n\n\t\t//".$this->setLine(__LINE__)." Use the Metro Style";
+			$foo .= "\n\t\tif (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
+			$foo .= "\n\t\t{";
+			$foo .= "\n\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.metro.min.css');";
+			$foo .= "\n\t\t}";
+			$foo .= "\n\t\t//".$this->setLine(__LINE__)." Use the Legacy Style.";
+			$foo .= "\n\t\telseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
+			$foo .= "\n\t\t{";
+			$foo .= "\n\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
+			$foo .= "\n\t\t}";
+			$foo .= "\n\n\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable";
+			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.js');";
+			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.sort.js');";
+			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.filter.js');";
+			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.paginate.js');";
+			if ($init)
+			{
+				$foo .= "\n\n\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable(); }); jQuery('."'.nav-tabs'".').on('."'click'".', '."'li'".', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('."'.footable'".').trigger('."'footable_resize'".'); }";';
+				$foo .= "\n\t\t\$document->addScriptDeclaration(\$footable);\n";
+			}
+		}
+		elseif (3 == $this->footableVersion) // loading version 3
+		{
+			
+			$foo = "\n\n\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable";
+			$foo .= "\n\t\t".$document."->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
+			$foo .= "\n\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
+			$foo .= "\n\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable (adding all funtions)";
+			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.min.js');";
+			if ($init)
+			{
+				$foo .= "\n\n\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable();});});";';
+				$foo .= "\n\t\t\$document->addScriptDeclaration(\$footable);\n";
+			}
 		}
 		return $foo;
 	}
 
-	public function setListBodyLinked($viewName_single,$viewName_list,$refview)
+	/**
+	 * @param $viewName_single
+	 * @param $viewName_list
+	 * @param $refview
+	 * @return string
+     */
+	public function setListBodyLinked($viewName_single, $viewName_list, $refview)
 	{
 		if (isset($this->listBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listBuilder[$viewName_list]))
 		{
@@ -6064,30 +6208,31 @@ class Interpretation extends Fields
 				}
 			}
 			$counter = $counter + 2;
+			$data_value =  (3 == $this->footableVersion) ? 'data-sort-value':'data-value';
 			// add the defaults
 			$body .= "\n\t\t<?php if (\$item->published == 1):?>";
-                        $body .= "\n\t\t\t".'<td class="center"  data-value="1">';
+                        $body .= "\n\t\t\t".'<td class="center"  '.$data_value.'="1">';
                         $body .= "\n\t\t\t\t".'<span class="status-metro status-published" title="<?php echo JText::_('."'PUBLISHED'".');  ?>">';
                         $body .= "\n\t\t\t\t\t".'<?php echo JText::_('."'PUBLISHED'".'); ?>';
                         $body .= "\n\t\t\t\t".'</span>';
                         $body .= "\n\t\t\t".'</td>';
 
 			$body .= "\n\t\t<?php elseif (\$item->published == 0):?>";
-                        $body .= "\n\t\t\t".'<td class="center"  data-value="2">';
+                        $body .= "\n\t\t\t".'<td class="center"  '.$data_value.'="2">';
                         $body .= "\n\t\t\t\t".'<span class="status-metro status-inactive" title="<?php echo JText::_('."'INACTIVE'".');  ?>">';
                         $body .= "\n\t\t\t\t\t".'<?php echo JText::_('."'INACTIVE'".'); ?>';
                         $body .= "\n\t\t\t\t".'</span>';
                         $body .= "\n\t\t\t".'</td>';
 
 			$body .= "\n\t\t<?php elseif (\$item->published == 2):?>";
-                        $body .= "\n\t\t\t".'<td class="center"  data-value="3">';
+                        $body .= "\n\t\t\t".'<td class="center"  '.$data_value.'="3">';
                         $body .= "\n\t\t\t\t".'<span class="status-metro status-archived" title="<?php echo JText::_('."'ARCHIVED'".');  ?>">';
                         $body .= "\n\t\t\t\t\t".'<?php echo JText::_('."'ARCHIVED'".'); ?>';
                         $body .= "\n\t\t\t\t".'</span>';
                         $body .= "\n\t\t\t".'</td>';
 
 			$body .= "\n\t\t<?php elseif (\$item->published == -2):?>";
-                        $body .= "\n\t\t\t".'<td class="center"  data-value="4">';
+                        $body .= "\n\t\t\t".'<td class="center"  '.$data_value.'="4">';
                         $body .= "\n\t\t\t\t".'<span class="status-metro status-trashed" title="<?php echo JText::_('."'ARCHIVED'".');  ?>">';
                         $body .= "\n\t\t\t\t\t".'<?php echo JText::_('."'ARCHIVED'".'); ?>';
                         $body .= "\n\t\t\t\t".'</span>';
@@ -6100,13 +6245,16 @@ class Interpretation extends Fields
 			$body .= "\n\t</tr>";
 			$body .= "\n<?php endforeach; ?>";
 			$body .= "\n</tbody>";
-                        $body .= "\n".'<tfoot class="hide-if-no-paging">';
-                        $body .= "\n\t".'<tr>';
-                        $body .= "\n\t\t".'<td colspan="'.$counter.'">';
-                        $body .= "\n\t\t\t".'<div class="pagination pagination-centered"></div>';
-                        $body .= "\n\t\t".'</td>';
-                        $body .= "\n\t".'</tr>';
-                        $body .= "\n".'</tfoot>';
+			if (2 == $this->footableVersion)
+			{
+				$body .= "\n".'<tfoot class="hide-if-no-paging">';
+				$body .= "\n\t".'<tr>';
+				$body .= "\n\t\t".'<td colspan="'.$counter.'">';
+				$body .= "\n\t\t\t".'<div class="pagination pagination-centered"></div>';
+				$body .= "\n\t\t".'</td>';
+				$body .= "\n\t".'</tr>';
+				$body .= "\n".'</tfoot>';
+			}
                         $body .= "\n".'</table>';
 			$body .= "\n".'<?php else: ?>';
 			$body .= "\n\t".'<div class="alert alert-no-items">';
@@ -6153,9 +6301,15 @@ class Interpretation extends Fields
 				$head .= "\n".'<?php endif; ?>'."\n";
 			}
 			$head .= '<?php if ('.$Helper.'::checkArray($items)): ?>';
-			// add some filters
-
-			$head .= "\n".'<table class="footable table data '.$viewName_list.' metro-blue" data-filter="#filter_'.$viewName_list.'" data-page-size="20">';
+			// set the style for V2
+			$metro_blue = (2 == $this->footableVersion) ? ' metro-blue':'';
+			// set the toggle for V3
+			$toggle = (3 == $this->footableVersion) ? ' data-show-toggle="true" data-toggle-column="first"':'';
+			// set paging
+			$paging = (2 == $this->footableVersion) ?' data-page-size="20" data-filter="#filter_'.$viewName_list.'"':' data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true"';
+			// add html fix for V3
+			$htmlFix = (3 == $this->footableVersion) ? ' data-type="html" data-sort-use="text"':'';
+			$head .= "\n".'<table class="footable table data '.$viewName_list.$metro_blue.'"'.$toggle.$paging.'>';
 			$head .= "\n<thead>";
 			// main lang prefix
 			$langView = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($viewName_single,'U');
@@ -6181,32 +6335,35 @@ class Interpretation extends Fields
 			// build the dynamic fields
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
-				$setin = 'data-hide="phone"';
+				$setin =  (2 == $this->footableVersion) ? ' data-hide="phone"':' data-breakpoints="xs sm"';
 				if ($controller > 3)
 				{
-					$setin = 'data-hide="phone,tablet"';
+					$setin = (2 == $this->footableVersion) ? ' data-hide="phone,tablet"' : ' data-breakpoints="xs sm md"';
 				}
 
 				if ($controller > 6)
 				{
-					$setin = 'data-hide="all"';
+					$setin = (2 == $this->footableVersion) ? ' data-hide="all"':' data-breakpoints="all"';
 				}
 
 				if ($item['link'] && $firstLink)
 				{
-					$setin = 'data-toggle="true"';
+					$setin = (2 == $this->footableVersion) ? ' data-toggle="true"':'';
 					$firstLink = false;
 				}
-				$head .= "\n\t\t<th ".$setin.">";
+				$head .= "\n\t\t<th".$setin.$htmlFix.">";
 				$head .= "\n\t\t\t<?php echo JText::_('".$item['lang']."'); ?>";
 				$head .= "\n\t\t</th>";
 				$controller++;
 			}
+			// set some V3 attr
+			$data_hide = (2 == $this->footableVersion) ? 'data-hide="phone,tablet"' : 'data-breakpoints="xs sm md"';
+			$data_type = (2 == $this->footableVersion) ? 'data-type="numeric"':'data-type="number"';
 			// set default
- 			$head .= "\n\t\t".'<th width="10" data-hide="phone,tablet">';
+ 			$head .= "\n\t\t".'<th width="10" '.$data_hide.'>';
    			$head .= "\n\t\t\t<?php echo JText::_('".$statusLangName."'); ?>";
  			$head .= "\n\t\t</th>";
- 			$head .= "\n\t\t".'<th width="5" data-type="numeric" data-hide="phone,tablet">';
+ 			$head .= "\n\t\t".'<th width="5" '.$data_type.' '.$data_hide.'>';
    			$head .= "\n\t\t\t<?php echo JText::_('".$idLangName."'); ?>";
  			$head .= "\n\t\t</th>";
  			$head .= "\n\t</tr>";
@@ -6217,6 +6374,17 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	/**
+	 * @param $viewName_single
+	 * @param $viewName_list
+	 * @param $functionName
+	 * @param $key
+	 * @param $_key
+	 * @param $parentKey
+	 * @param $parent_key
+	 * @param $globalKey
+     * @return string
+     */
 	public function setListQueryLinked($viewName_single, $viewName_list, $functionName, $key, $_key, $parentKey, $parent_key, $globalKey)
 	{
 		// check if this view has category added
@@ -6298,7 +6466,7 @@ class Interpretation extends Fields
 			$query .= "\n\t\t}";
 		}
 		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Order the results by ordering";
-		$query .= "\n\t\t\$query->order('a.ordering  ASC');";
+		$query .= "\n\t\t\$query->order('a.published  ASC');";		$query .= "\n\t\t\$query->order('a.ordering  ASC');";
 		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Load the items";
 		$query .= "\n\t\t\$db->setQuery(\$query);";
 		$query .= "\n\t\t\$db->execute();";
@@ -6427,6 +6595,10 @@ class Interpretation extends Fields
 		return $query;
 	}
 
+	/**
+	 * @param $viewName_list
+	 * @return array|string
+     */
 	public function setCustomAdminDynamicButton($viewName_list)
 	{
 		$buttons = '';
@@ -6452,7 +6624,11 @@ class Interpretation extends Fields
 		}
 		return $buttons;
 	}
-	
+
+	/**
+	 * @param $viewName_list
+	 * @return array|string
+     */
 	public function setCustomAdminDynamicButtonController($viewName_list)
 	{
 		$method = '';
@@ -6498,6 +6674,11 @@ class Interpretation extends Fields
 		return $method;
 	}
 
+	/**
+	 * @param $viewName_single
+	 * @param $viewName_list
+	 * @return string
+     */
 	public function setModelExportMethod($viewName_single, $viewName_list)
 	{
 		$query = '';
@@ -7013,35 +7194,35 @@ class Interpretation extends Fields
 						if (ComponentbuilderHelper::checkArray($relations))
 						{
 							// set behavior and default array
-							$behaviors[$matchName]	= $targetBehavior;
-							$defaults[$matchName]	= $targetDefault;
+							$behaviors[$matchName]		= $targetBehavior;
+							$defaults[$matchName]		= $targetDefault;
 							// set the type buket
-							$typeBuket[$matchName] = $condition['match_type'];
+							$typeBuket[$matchName]		= $condition['match_type'];
 							// set function array
 							$functions[$uniqueVar][0]	= $matchName;
 							$matchNames[$matchName]		= $condition['match_name'];
 							// get the select value
-							$getValue[$matchName] = $this->getValueScript($condition['match_type'],$condition['match_name'],$uniqueVar);
+							$getValue[$matchName]		= $this->getValueScript($condition['match_type'],$condition['match_name'],$uniqueVar);
 							// get the options
-							$options = $this->getOptionsScript($condition['match_type'],$condition['match_options']);
+							$options			= $this->getOptionsScript($condition['match_type'],$condition['match_options']);
 							// set the if values
-							$ifValue[$matchName] = $this->ifValueScript($matchName,$condition['match_behavior'],$condition['match_type'],$options);
+							$ifValue[$matchName]		= $this->ifValueScript($matchName,$condition['match_behavior'],$condition['match_type'],$options);
 							// set the target controls
-							$targetControls[$matchName] = $this->setTargetControlsScript($condition['target_field'],$targetBehavior,$targetDefault,$uniqueVar,$viewName);
+							$targetControls[$matchName]	= $this->setTargetControlsScript($condition['target_field'],$targetBehavior,$targetDefault,$uniqueVar,$viewName);
 
 							$firstTime = false;
 							foreach($relations as $relation)
 							{
 								if (ComponentbuilderHelper::checkString($relation['match_name']))
 								{
-									$relationName = $relation['match_name'].'_'.$uniqueVar;
+									$relationName			= $relation['match_name'].'_'.$uniqueVar;
 									// set the type buket
-									$typeBuket[$relationName] = $relation['match_type'];
+									$typeBuket[$relationName]	= $relation['match_type'];
 									// set function array
 									$functions[$uniqueVar][]	= $relationName;
 									$matchNames[$relationName]	= $relation['match_name'];
 									// get the relation option
-									$relationOptions			= $this->getOptionsScript($relation['match_type'],$relation['match_options']);
+									$relationOptions		= $this->getOptionsScript($relation['match_type'],$relation['match_options']);
 									$getValue[$relationName]	= $this->getValueScript($relation['match_type'],$relation['match_name'],$uniqueVar);
 									$ifValue[$relationName]		= $this->ifValueScript($relationName,$relation['match_behavior'],$relation['match_type'],$relationOptions);
 								}
@@ -7051,21 +7232,21 @@ class Interpretation extends Fields
 					else
 					{
 						// set behavior and default array
-						$behaviors[$matchName]	= $targetBehavior;
-						$defaults[$matchName]	= $targetDefault;
+						$behaviors[$matchName]		= $targetBehavior;
+						$defaults[$matchName]		= $targetDefault;
 						// set the type buket
-						$typeBuket[$matchName] = $condition['match_type'];
+						$typeBuket[$matchName]		= $condition['match_type'];
 						// set function array
 						$functions[$uniqueVar][0]	= $matchName;
 						$matchNames[$matchName]		= $condition['match_name'];
 						// get the select value
-						$getValue[$matchName] = $this->getValueScript($condition['match_type'],$condition['match_name'],$uniqueVar);
+						$getValue[$matchName]		= $this->getValueScript($condition['match_type'],$condition['match_name'],$uniqueVar);
 						// get the options
-						$options = $this->getOptionsScript($condition['match_type'],$condition['match_options']);
+						$options			= $this->getOptionsScript($condition['match_type'],$condition['match_options']);
 						// set the if values
-						$ifValue[$matchName] = $this->ifValueScript($matchName,$condition['match_behavior'],$condition['match_type'],$options);
+						$ifValue[$matchName]		= $this->ifValueScript($matchName,$condition['match_behavior'],$condition['match_type'],$options);
 						// set the target controls
-						$targetControls[$matchName] = $this->setTargetControlsScript($condition['target_field'],$targetBehavior,$targetDefault,$uniqueVar,$viewName);
+						$targetControls[$matchName]	= $this->setTargetControlsScript($condition['target_field'],$targetBehavior,$targetDefault,$uniqueVar,$viewName);
 					}
 				}
 			}
@@ -7094,19 +7275,21 @@ class Interpretation extends Fields
 					$funcCall = '';
 					foreach ($l_matchKeys as $l_matchKey)
 					{
-						$name			= $matchNames[$l_matchKey];
+						$name		= $matchNames[$l_matchKey];
 						$matchTypeKey	= $typeBuket[$l_matchKey];
-						$funcCall		= $this->buildFunctionCall($l_function,$l_matchKeys,$getValue);
-						if (isset($this->setScriptUserSwitch) && ComponentbuilderHelper::checkArray($this->setScriptUserSwitch) && in_array($matchTypeKey,$this->setScriptUserSwitch))
-						{
-							$modal .= $funcCall['code'];
-						}
-						elseif(isset($this->setScriptMediaSwitch) && ComponentbuilderHelper::checkArray($this->setScriptMediaSwitch) && in_array($matchTypeKey,$this->setScriptMediaSwitch))
+						$funcCall	= $this->buildFunctionCall($l_function,$l_matchKeys,$getValue);
+						
+						if(isset($this->setScriptMediaSwitch) && ComponentbuilderHelper::checkArray($this->setScriptMediaSwitch) && in_array($matchTypeKey,$this->setScriptMediaSwitch))
 						{
 							$modal .= $funcCall['code'];
 						}
 						else
 						{
+							if (isset($this->setScriptUserSwitch) && ComponentbuilderHelper::checkArray($this->setScriptUserSwitch) && in_array($matchTypeKey,$this->setScriptUserSwitch))
+							{
+								$name = $name.'_id';
+							}
+
 							$listener .= "\n// #jform_".$name." listeners for ".$l_matchKey." function";
 							$listener .= "\njQuery('#jform_".$name."').on('keyup',function()";
 							$listener .= "\n{";
@@ -7649,7 +7832,7 @@ class Interpretation extends Fields
 					if (isset($this->setScriptUserSwitch) && ComponentbuilderHelper::checkArray($this->setScriptUserSwitch) && in_array($type,$this->setScriptUserSwitch))
 					{
 						// TODO this needs a closer look, a bit buggy
-						$userFix = " && ".$value." != 'Select a User.'";
+						$userFix = " && ".$value." != 0";
 					}
 					//echo '<pre>'; var_dump($type);exit;
 					$string .= 'isSet('.$value.')'.$userFix;
@@ -7905,6 +8088,11 @@ class Interpretation extends Fields
 		{
 			$select = 'var '.$keyName.' = jQuery("#jform_'.$name.' input[type=\'radio\']:checked").val();';
 		}
+		elseif (isset($this->setScriptUserSwitch) && ComponentbuilderHelper::checkArray($this->setScriptUserSwitch) && in_array($type,$this->setScriptUserSwitch))
+		{
+			// this is only since 3.3.4
+			$select = 'var '.$keyName.' = jQuery("#jform_'.$name.'_id").val();';
+		}
 		elseif ($type == 'list' || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
 		{
 			$select = 'var '.$keyName.' = jQuery("#jform_'.$name.'").val();';
@@ -8070,6 +8258,7 @@ class Interpretation extends Fields
 					$cases .= "\n\t\t\t\tcase '".$task."':";
 					$cases .= "\n\t\t\t\t\ttry";
 					$cases .= "\n\t\t\t\t\t{";
+					$cases .= "\n\t\t\t\t\t\t\$returnRaw = \$jinput->get('raw', false, 'BOOLEAN');";
 					foreach ($input[$task] as $string)
 					{
 						$cases .= $string;
@@ -8090,6 +8279,10 @@ class Interpretation extends Fields
 					$cases .= "\n\t\t\t\t\t\tif(array_key_exists('callback',\$_GET))";
 					$cases .= "\n\t\t\t\t\t\t{";
 					$cases .= "\n\t\t\t\t\t\t\techo \$_GET['callback'] . \"(\".json_encode(\$result).\");\";";
+					$cases .= "\n\t\t\t\t\t\t}";
+					$cases .= "\n\t\t\t\t\t\telseif(\$returnRaw)";
+					$cases .= "\n\t\t\t\t\t\t{";
+					$cases .= "\n\t\t\t\t\t\t\techo json_encode(\$result);";
 					$cases .= "\n\t\t\t\t\t\t}";
 					$cases .= "\n\t\t\t\t\t\telse";
 					$cases .= "\n\t\t\t\t\t\t{";
@@ -10672,110 +10865,142 @@ class Interpretation extends Fields
 	public function addCustomSubMenu(&$view,&$codeName,&$lang)
 	{
 		// see if we should have custom menus
+		$custom = '';
+		if (isset($this->componentData->custom_admin_views) && ComponentbuilderHelper::checkArray($this->componentData->custom_admin_views))
+		{
+			foreach ($this->componentData->custom_admin_views as $nr => $menu)
+			{
+				if (!isset($this->customAdminAdded[$menu['settings']->code]))
+				{
+					if ($custom = $this->setCustomAdminSubMenu($view,$codeName,$lang,$nr,$menu,'customView'))
+					{
+						break;
+					}
+				}
+			}
+		}
 		if (isset($this->componentData->custommenus) && ComponentbuilderHelper::checkArray($this->componentData->custommenus))
 		{
 			foreach ($this->componentData->custommenus as $nr => $menu)
 			{
-				if ($menu['submenu'] == 1 && $view['adminview'] == $menu['before'])
+				if ($custom2 = $this->setCustomAdminSubMenu($view,$codeName,$lang,$nr,$menu,'customMenu'))
 				{
-					// setup access defaults
-					$tab = "";
-					$nameSingle	= ComponentbuilderHelper::safeString($menu['name']);
-					$coreLoad = false;
-					if (isset($this->permissionCore[$nameSingle]))
-					{
-						$core = $this->permissionCore[$nameSingle];
-						$coreLoad = true;
-					}
-					$custom = '';
-					// check if the item has permissions.
-					if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($nameSingle,$this->permissionBuilder['global'][$core['core.access']]))
-					{
-						$custom .= "\n\t\t//".$this->setLine(__LINE__)." Access control (".$core['core.access']." && ".$nameSingle.".submenu).";
-						$custom .= "\n\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-						$custom .= "\n\t\t{";
-						// add tab to lines to follow
-						$tab = "\t";
-					}
-					else
-					{
-						$custom .= "\n\t\t//".$this->setLine(__LINE__)." Access control (".$nameSingle.".submenu).";
-						$custom .= "\n\t\tif (\$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-						$custom .= "\n\t\t{";
-						// add tab to lines to follow
-						$tab = "\t";
-					}
-					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
-					{
-						$nameList	= ComponentbuilderHelper::safeString($menu['name']);
-						$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
-						$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $menu['name'];
-						// add custom menu
-						$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu == '".$nameList."');";
-					}
-					else
-					{
-						$nameList	= ComponentbuilderHelper::safeString($menu['name_code']);
-						$nameUpper	= ComponentbuilderHelper::safeString($menu['name_code'], 'U');
-						$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $menu['name'];
-						// add custom menu
-						$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu == '".$nameList."');";
-					}
-					// check if the item has permissions.
-					$custom .= "\n\t\t}";
-
-					return $custom;
-				}
-				elseif($menu['submenu'] == 1 && empty($menu['before']))
-				{
-					// setup access defaults
-					$tab = "";
-					$nameSingle	= ComponentbuilderHelper::safeString($menu['name']);
-					$coreLoad = false;
-					if (isset($this->permissionCore[$nameSingle]))
-					{
-						$core = $this->permissionCore[$nameSingle];
-						$coreLoad = true;
-					}
-					$this->lastCustomSubMenu[$nr] = '';
-					// check if the item has permissions.
-					if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($nameSingle,$this->permissionBuilder['global'][$core['core.access']]))
-					{
-						$this->lastCustomSubMenu[$nr] .= "\n\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-						$this->lastCustomSubMenu[$nr] .= "\n\t\t{";
-						// add tab to lines to follow
-						$tab = "\t";
-					}
-					else
-					{
-						$this->lastCustomSubMenu[$nr] .= "\n\t\tif (\$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-						$this->lastCustomSubMenu[$nr] .= "\n\t\t{";
-						// add tab to lines to follow
-						$tab = "\t";
-					}
-					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
-					{
-						$nameList	= ComponentbuilderHelper::safeString($menu['name']);
-						$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
-						$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $menu['name'];
-						// add custom menu
-						$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu == '".$nameList."');";
-					}
-					else
-					{
-						$nameList	= ComponentbuilderHelper::safeString($menu['name_code']);
-						$nameUpper	= ComponentbuilderHelper::safeString($menu['name_code'], 'U');
-						$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $menu['name'];
-						// add custom menu
-						$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu == '".$nameList."');";
-					}
-					// check if the item has permissions.
-					$this->lastCustomSubMenu[$nr] .= "\n\t\t}";
+					$custom = $custom.$custom2;
+					break;
 				}
 			}
 		}
-		return '';
+		return $custom;
 
+	}
+	
+	public function setCustomAdminSubMenu(&$view,&$codeName,&$lang,&$nr,&$menu,$type)
+	{
+		if ($type == 'customMenu')
+		{
+			$name		= $menu['name'];
+			$nameSingle	= ComponentbuilderHelper::safeString($menu['name']);
+			$nameList	= ComponentbuilderHelper::safeString($menu['name']);
+			$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
+		}
+		elseif ($type == 'customView')
+		{
+			$name		= $menu['settings']->name;
+			$nameSingle	= $menu['settings']->code;
+			$nameList	= $menu['settings']->code;
+			$nameUpper	= $menu['settings']->CODE;
+		}
+		
+		if ($menu['submenu'] == 1 && $view['adminview'] == $menu['before'])
+		{
+			// setup access defaults
+			$tab = "";
+			
+			$coreLoad = false;
+			if (isset($this->permissionCore[$nameSingle]))
+			{
+				$core = $this->permissionCore[$nameSingle];
+				$coreLoad = true;
+			}
+			$custom = '';
+			// check if the item has permissions.
+			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($nameSingle,$this->permissionBuilder['global'][$core['core.access']]))
+			{
+				$custom .= "\n\t\t//".$this->setLine(__LINE__)." Access control (".$core['core.access']." && ".$nameSingle.".submenu).";
+				$custom .= "\n\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+				$custom .= "\n\t\t{";
+				// add tab to lines to follow
+				$tab = "\t";
+			}
+			else
+			{
+				$custom .= "\n\t\t//".$this->setLine(__LINE__)." Access control (".$nameSingle.".submenu).";
+				$custom .= "\n\t\tif (\$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+				$custom .= "\n\t\t{";
+				// add tab to lines to follow
+				$tab = "\t";
+			}
+			if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
+			{
+				
+				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
+				// add custom menu
+				$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu == '".$nameList."');";
+			}
+			else
+			{
+				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
+				// add custom menu
+				$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu == '".$nameList."');";
+			}
+			// check if the item has permissions.
+			$custom .= "\n\t\t}";
+
+			return $custom;
+		}
+		elseif($menu['submenu'] == 1 && empty($menu['before']))
+		{
+			// setup access defaults
+			$tab = "";
+			$nameSingle	= ComponentbuilderHelper::safeString($name);
+			$coreLoad = false;
+			if (isset($this->permissionCore[$nameSingle]))
+			{
+				$core = $this->permissionCore[$nameSingle];
+				$coreLoad = true;
+			}
+			$this->lastCustomSubMenu[$nr] = '';
+			// check if the item has permissions.
+			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($nameSingle,$this->permissionBuilder['global'][$core['core.access']]))
+			{
+				$this->lastCustomSubMenu[$nr] .= "\n\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+				$this->lastCustomSubMenu[$nr] .= "\n\t\t{";
+				// add tab to lines to follow
+				$tab = "\t";
+			}
+			else
+			{
+				$this->lastCustomSubMenu[$nr] .= "\n\t\tif (\$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+				$this->lastCustomSubMenu[$nr] .= "\n\t\t{";
+				// add tab to lines to follow
+				$tab = "\t";
+			}
+			if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
+			{
+				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
+				// add custom menu
+				$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu == '".$nameList."');";
+			}
+			else
+			{
+				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
+				// add custom menu
+				$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu == '".$nameList."');";
+			}
+			// check if the item has permissions.
+			$this->lastCustomSubMenu[$nr] .= "\n\t\t}";
+		}
+		return false;
 	}
 
 	public function setMainMenus()
@@ -11061,15 +11286,25 @@ class Interpretation extends Fields
 				$this->configFieldSets[] = implode("\t\t",$this->configFieldSetsCustomField['Target Groups']);
 				unset($this->configFieldSetsCustomField['Target Groups']);
 			}
-			// close that fieldset
+			// close that fieldse
 			$this->configFieldSets[] = "\t</fieldset>";
 		}
 	}
-	
-	public function setGlobalConfigFieldsets($lang,$autorName,$autorEmail)
+
+	/**
+	 * @param $lang
+	 * @param $autorName
+	 * @param $autorEmail
+	 */
+	public function setGlobalConfigFieldsets($lang, $autorName, $autorEmail)
 	{
+		// set component name
+		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+	    
 		// start building field set for config
 		$this->configFieldSets[] = '<fieldset';
+		$this->configFieldSets[] = "\t\t".'addrulepath="/administrator/components/com_'.$component.'/models/rules"';
+		$this->configFieldSets[] = "\t\t".'addfieldpath="/administrator/components/com_'.$component.'/models/fields"';
 		$this->configFieldSets[] = "\t\t".'name="global_config"';
 		$this->configFieldSets[] = "\t\t".'label="'.$lang.'_GLOBAL_LABEL"';
 		$this->configFieldSets[] = "\t\t".'description="'.$lang.'_GLOBAL_DESC">';
@@ -11776,7 +12011,10 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			$this->langContent[$this->lang][$lang.'_VAXISTEXTSTYLEFONTCOLOR_LABEL']		= "vAxis Font Color";
 		}
 	}
-	
+
+	/**
+	 * @param $lang
+     */
 	public function setEncryptionConfigFieldsets($lang)
 	{
 		// Add encryption if needed
@@ -11861,58 +12099,59 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 	public function setAccessSections()
 	{
 		// set the default component access values
-		$componentHead  = array();
-		$componentHead[] = '<section name="component">';
-		$componentHead[] = "\t\t".'<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />';
-		$componentHead[] = "\t\t".'<action name="core.options" title="JACTION_OPTIONS" description="JACTION_OPTIONS_COMPONENT_DESC" />';
-		$componentHead[] = "\t\t".'<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />';
+		$this->componentHead	= array();
+		$this->componentGlobal	= array();
+		$this->permissionViews	= array();
+		
+		$this->componentHead[] = '<section name="component">';
+		$this->componentHead[] = "\t\t".'<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />';
+		$this->componentHead[] = "\t\t".'<action name="core.options" title="JACTION_OPTIONS" description="JACTION_OPTIONS_COMPONENT_DESC" />';
+		$this->componentHead[] = "\t\t".'<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />';
 		if ($this->addEximport)
 		{
 			$exportTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Export Data','U');
 			$exportDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Export Data','U').'_DESC';
 			$this->langContent['admin'][$exportTitle]	= 'Export Data';
 			$this->langContent['admin'][$exportDesc]	= ' Allows users in this group to export data.';
-			$componentHead[] = "\t\t".'<action name="core.export" title="'.$exportTitle.'" description="'.$exportDesc.'" />';
+			$this->componentHead[] = "\t\t".'<action name="core.export" title="'.$exportTitle.'" description="'.$exportDesc.'" />';
 
 			$importTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Import Data','U');
 			$importDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Import Data','U').'_DESC';
 			$this->langContent['admin'][$importTitle]	= 'Import Data';
 			$this->langContent['admin'][$importDesc]	= ' Allows users in this group to import data.';
-			$componentHead[] = "\t\t".'<action name="core.import" title="'.$importTitle.'" description="'.$importDesc.'" />';
+			$this->componentHead[] = "\t\t".'<action name="core.import" title="'.$importTitle.'" description="'.$importDesc.'" />';
 		}
 		// version permission
 		$batchTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Use Batch','U');
 		$batchDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Use Batch','U').'_DESC';
 		$this->langContent['admin'][$batchTitle]	= 'Use Batch';
 		$this->langContent['admin'][$batchDesc]	= ' Allows users in this group to use batch copy/update method.';
-		$componentHead[] = "\t\t".'<action name="core.batch" title="'.$batchTitle.'" description="'.$batchDesc.'" />';
+		$this->componentHead[] = "\t\t".'<action name="core.batch" title="'.$batchTitle.'" description="'.$batchDesc.'" />';
 		// version permission
 		$importTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Versions','U');
 		$importDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Versions','U').'_DESC';
 		$this->langContent['admin'][$importTitle]	= 'Edit Version';
 		$this->langContent['admin'][$importDesc]	= ' Allows users in this group to edit versions.';
-		$componentHead[] = "\t\t".'<action name="core.version" title="'.$importTitle.'" description="'.$importDesc.'" />';
+		$this->componentHead[] = "\t\t".'<action name="core.version" title="'.$importTitle.'" description="'.$importDesc.'" />';
 		// set the defaults
-		$componentHead[] = "\t\t".'<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
-		$componentHead[] = "\t\t".'<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />';
-		$componentHead[] = "\t\t".'<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />';
-		$componentHead[] = "\t\t".'<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_ACCESS_EDITSTATE_DESC" />';
-		$componentHead[] = "\t\t".'<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />';
+		$this->componentHead[] = "\t\t".'<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
+		$this->componentHead[] = "\t\t".'<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />';
+		$this->componentHead[] = "\t\t".'<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />';
+		$this->componentHead[] = "\t\t".'<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_ACCESS_EDITSTATE_DESC" />';
+		$this->componentHead[] = "\t\t".'<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />';
 		// new custom created by permissions
 		$created_byTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Created By','U');
 		$created_byDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Created By','U').'_DESC';
 		$this->langContent['admin'][$created_byTitle]	= 'Edit Created By';
 		$this->langContent['admin'][$created_byDesc]	= ' Allows users in this group to edit created by.';
-		$componentHead[] = "\t\t".'<action name="core.edit.created_by" title="'.$created_byTitle.'" description="'.$created_byDesc.'" />';
+		$this->componentHead[] = "\t\t".'<action name="core.edit.created_by" title="'.$created_byTitle.'" description="'.$created_byDesc.'" />';
 		// new custom created date permissions
 		$createdTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Created Date','U');
 		$createdDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Created Date','U').'_DESC';
 		$this->langContent['admin'][$createdTitle]	= 'Edit Created Date';
 		$this->langContent['admin'][$createdDesc]	= ' Allows users in this group to edit created date.';
-		$componentHead[] = "\t\t".'<action name="core.edit.created" title="'.$createdTitle.'" description="'.$createdDesc.'" />';
-		// setup the view array
-		$views = array();
-		$componentGlobal = array();
+		$this->componentHead[] = "\t\t".'<action name="core.edit.created" title="'.$createdTitle.'" description="'.$createdDesc.'" />';
+		
 		// set the menu controller lookup
 		$menuControllers = array('submenu','dashboard_list','dashboard_add');
                 // set the custom admin views permissions
@@ -11928,9 +12167,9 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
                                 $sortKey                = ComponentbuilderHelper::safeString($customAdminName.' Access');
                                 $this->langContent['admin'][$customAdminTitle]	= $customAdminName.' Access';
                                 $this->langContent['admin'][$customAdminDesc]	= ' Allows the users in this group to access '.ComponentbuilderHelper::safeString($customAdminName,'w').'.';
-                                $componentGlobal[$sortKey]                      = "\t\t".'<action name="'.$customAdminCode.'.access" title="'.$customAdminTitle.'" description="'.$customAdminDesc.'" />';
+                                $this->componentGlobal[$sortKey]                      = "\t\t".'<action name="'.$customAdminCode.'.access" title="'.$customAdminTitle.'" description="'.$customAdminDesc.'" />';
                                 // add the custom permissions to use the buttons of this view
-                                if (ComponentbuilderHelper::checkArray($custom_admin_view['settings']->custom_buttons))
+                                if (isset($custom_admin_view['settings']->custom_buttons) && ComponentbuilderHelper::checkArray($custom_admin_view['settings']->custom_buttons))
                                 {
                                        foreach ($custom_admin_view['settings']->custom_buttons as $custom_buttons)
                                        {
@@ -11941,7 +12180,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
                                                 $sortButtonKey          = ComponentbuilderHelper::safeString($customAdminName.' '.$customAdminButtonName.' Button Access');
                                                 $this->langContent['admin'][$customAdminButtonTitle]	= $customAdminName.' '.$customAdminButtonName.' Button Access';
                                                 $this->langContent['admin'][$customAdminButtonDesc]	= ' Allows the users in this group to access the '.ComponentbuilderHelper::safeString($customAdminButtonName,'w').' button.';
-                                                $componentGlobal[$sortButtonKey]  = "\t\t".'<action name="'.$customAdminCode.'.'.$customAdminButtonCode.'" title="'.$customAdminButtonTitle.'" description="'.$customAdminButtonDesc.'" />';
+                                                $this->componentGlobal[$sortButtonKey]  = "\t\t".'<action name="'.$customAdminCode.'.'.$customAdminButtonCode.'" title="'.$customAdminButtonTitle.'" description="'.$customAdminButtonDesc.'" />';
                                        }
                                 }
 				// add menu controll view that has menus options
@@ -11950,9 +12189,27 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 					// add menu controll view that has menus options
 					if (isset($custom_admin_view[$menuController]) && $custom_admin_view[$menuController])
 					{
-						// TODO for CUSTOM MENUS!!!
+						$targetView_ = 'views.';
+						if ($menuController == 'dashboard_add')
+						{
+							$targetView_ = 'view.';
+						}
+						// menucontroller
+						$menucontrollerView['action'] = $targetView_.$menuController;
+						$menucontrollerView['implementation'] = '2';
+						if (isset($custom_admin_view['settings']->permissions) && ComponentbuilderHelper::checkArray($custom_admin_view['settings']->permissions))
+						{
+							array_push($custom_admin_view['settings']->permissions,$menucontrollerView);
+						}
+						else
+						{
+							$custom_admin_view['settings']->permissions = array();
+							$custom_admin_view['settings']->permissions[] = $menucontrollerView;
+						}
+						unset($menucontrollerView);
 					}
 				}
+				$this->buildPermissions($custom_admin_view, $customAdminCode, $customAdminCode, $menuControllers, 'customAdmin');
                         }
                 }
 		// set the site views permissions
@@ -11968,7 +12225,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				$sortKey        = ComponentbuilderHelper::safeString($siteName.' Access Site');
 				$this->langContent['admin'][$siteTitle]	= $siteName.' (Site) Access';
 				$this->langContent['admin'][$siteDesc]	= ' Allows the users in this group to access site '.ComponentbuilderHelper::safeString($siteName,'w').'.';
-				$componentGlobal[$sortKey]              = "\t\t".'<action name="site.'.$siteCode.'.access" title="'.$siteTitle.'" description="'.$siteDesc.'" />';
+				$this->componentGlobal[$sortKey]              = "\t\t".'<action name="site.'.$siteCode.'.access" title="'.$siteTitle.'" description="'.$siteDesc.'" />';
                                 // add the custom permissions to use the buttons of this view
                                 /* if (ComponentbuilderHelper::checkArray($site_view['settings']->custom_buttons))
                                 {
@@ -11981,7 +12238,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
                                                 $sortButtonKey   = ComponentbuilderHelper::safeString($siteButtonTitle);
                                                 $this->langContent['admin'][$siteButtonTitle]	= $siteName.' '.$siteButtonName.' Button Access';
                                                 $this->langContent['admin'][$siteButtonDesc]	= ' Allows the users in this group to access the '.ComponentbuilderHelper::safeString($siteButtonName,'w').' button.';
-                                                $componentGlobal[$sortButtonKey]  = "\t\t".'<action name="'.$siteCode.'.'.$siteButtonCode.'" title="'.$siteButtonTitle.'" description="'.$siteButtonDesc.'" />';
+                                                $this->componentGlobal[$sortButtonKey]  = "\t\t".'<action name="'.$siteCode.'.'.$siteButtonCode.'" title="'.$siteButtonTitle.'" description="'.$siteButtonDesc.'" />';
                                        }
                                 }
 				// add menu controll view that has menus options
@@ -12070,269 +12327,13 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 							}
 						}
 					}
-					if (ComponentbuilderHelper::checkArray($view['settings']->permissions) || $view['port'] || $view['history'])
-					{
-						// add export/import permissions to each view that has export/import options
-						if ($view['port'])
-						{
-							// export
-							$exportView['action'] = 'view.export';
-							$exportView['implementation'] = '2';
-							if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
-							{
-								array_push($view['settings']->permissions,$exportView);
-							}
-							else
-							{
-								$view['settings']->permissions = array();
-								$view['settings']->permissions[] = $exportView;
-							}
-							// import
-							$importView['action'] = 'view.import';
-							$importView['implementation'] = '2';
-							if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
-							{
-								array_push($view['settings']->permissions,$importView);
-							}
-							else
-							{
-								$view['settings']->permissions = array();
-								$view['settings']->permissions[] = $importView;
-							}
-						}
-						// add version opstions to each view that has it added
-						if ($view['history'])
-						{
-							// set version control
-							$versionView['action'] = 'view.version';
-							$versionView['implementation'] = '3';
-							if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
-							{
-								array_push($view['settings']->permissions,$versionView);
-							}
-							else
-							{
-								$view['settings']->permissions = array();
-								$view['settings']->permissions[] = $versionView;
-							}
-						}
-						// set batch control
-						$batchView['action'] = 'view.batch';
-						$batchView['implementation'] = '2';
-						if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
-						{
-							array_push($view['settings']->permissions,$batchView);
-						}
-						else
-						{
-							$view['settings']->permissions = array();
-							$view['settings']->permissions[] = $batchView;
-						}
-
-						foreach ($view['settings']->permissions as $permission)
-						{
-							// set acction name
-							$arr = explode('.',trim($permission['action']));
-							if ($arr[0] != 'core' || $arr[0] == 'view')
-							{
-								array_shift($arr);
-								$actionMain = implode('.',$arr);
-								$action = $nameView.'.'.$actionMain;
-							}
-							else
-							{
-								if ($arr[0] == 'core')
-								{
-									// core is already set in global access
-									$permission['implementation'] = 1;
-								}
-								$action = $permission['action'];
-							}
-							// build action name
-							$actionNameBuilder = explode('.',trim($permission['action']));
-							array_shift($actionNameBuilder);
-							$nameBuilder = trim(implode('___',$actionNameBuilder));
-							$customName = trim(implode(' ',$actionNameBuilder));
-							$W_NameList = ComponentbuilderHelper::safeString($view['settings']->name_list, 'W');
-							$w_NameList = ComponentbuilderHelper::safeString($customName.' '.$view['settings']->name_list, 'w');
-							$w_NameSingle = ComponentbuilderHelper::safeString($view['settings']->name_single, 'w');
-							switch ($nameBuilder)
-							{
-								case 'edit':
-								// set edit title
-								$permission['title'] =  $W_NameList . ' Edit';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to edit the ' . $w_NameSingle;
-								break;
-								case 'edit___own':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Edit Own';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to edit ' . $w_NameList . ' created by them';
-								break;
-								case 'edit___state':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Edit State';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to update the state of the ' . $w_NameSingle;
-								break;
-								case 'edit___created_by':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Edit Created By';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to update the created by of the ' . $w_NameList;
-								break;
-								case 'edit___created':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Edit Created Date';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to update the created date of the ' . $w_NameList;
-								break;
-								case 'create':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Create';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to create ' . $w_NameList;
-								break;
-								case 'delete':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Delete';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to delete ' . $w_NameList;
-								break;
-								case 'access':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Access';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to access ' . $w_NameList;
-								break;
-								case 'export':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Export';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to export ' . $w_NameList;
-								break;
-								case 'import':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Import';
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to import ' . $w_NameList;
-								break;
-								case 'version':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Edit Version';
-								// set edit description
-								$permission['description'] = ' Allows users in this group to edit versions of ' . $w_NameList;
-								break;
-								case 'batch':
-								// set edit title
-								$permission['title'] = $W_NameList . ' Batch Use';
-								// set edit description
-								$permission['description'] = ' Allows users in this group to use batch copy/update method of ' . $w_NameList;
-								break;
-								default:
-								// set edit title
-								$permission['title'] = $W_NameList . ' ' . ComponentbuilderHelper::safeString($customName, 'W');
-								// set edit description
-								$permission['description'] = ' Allows the users in this group to update the ' . ComponentbuilderHelper::safeString($customName, 'w') . ' of the ' . $w_NameSingle;
-								break;
-							}
-							// if core is not used update all core strings
-							$coreCheck = explode('.',$action);
-							$coreCheck[0] = 'core';
-							$coreTarget = implode('.',$coreCheck);
-							$this->permissionCore[$nameView][$coreTarget] = $action;
-							// set array sort name
-							$sortKey = ComponentbuilderHelper::safeString($permission['title']);
-							// set title
-							$title = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($permission['title'],'U');
-							// load the actions
-							if ($permission['implementation'] == 1)
-							{
-								// only related to view
-								$views[$nameView][] = '<action name="'.$action.'" title="'.$title.'" description="'.$title.'_DESC" />';
-								// load permission to action
-								$this->permissionBuilder[$action][$nameView] = $nameView;
-							}
-							elseif ($permission['implementation'] == 2)
-							{
-								// relation to whole component
-								$componentGlobal[$sortKey] = "\t\t".'<action name="'.$action.'" title="'.$title.'" description="'.$title.'_DESC" />';
-								// build permission switch
-								$this->permissionBuilder['global'][$action][$nameView] = $nameView;
-								// dashboard icon checker
-								if ($coreTarget == 'core.access')
-								{
-									$this->permissionDashboard[] = "'" . $nameViews . ".access' => '" . $action . "'";
-									$this->permissionDashboard[] = "'" . $nameView . ".access' => '" . $action . "'";
-								}
-								if ($coreTarget == 'core.create')
-								{
-									$this->permissionDashboard[] = "'" . $nameView . ".create' => '" . $action . "'";
-								}
-								// add menu controll view that has menus options
-								foreach ($menuControllers  as $menuController)
-								{
-									if ($coreTarget == 'core.'.$menuController)
-									{
-										if ($menuController == 'dashboard_add')
-										{
-											$this->permissionDashboard[] = "'" . $nameView . ".".$menuController."' => '" . $action . "'";
-										}
-										else
-										{
-											$this->permissionDashboard[] = "'" . $nameViews . ".".$menuController."' => '" . $action . "'";
-										}
-									}
-								}
-							}
-							elseif ($permission['implementation'] == 3)
-							{
-								// only related to view
-								$views[$nameView][] = '<action name="'.$action.'" title="'.$title.'" description="'.$title.'_DESC" />';
-								// load permission to action
-								$this->permissionBuilder[$action][$nameView] = $nameView;
-								// relation to whole component
-								$componentGlobal[$sortKey] = "\t\t".'<action name="'.$action.'" title="'.$title.'" description="'.$title.'_DESC" />';
-								// build permission switch
-								$this->permissionBuilder['global'][$action][$nameView] = $nameView;
-								// dashboard icon checker
-								if ($coreTarget == 'core.access')
-								{
-									$this->permissionDashboard[] = "'" . $nameViews . ".access' => '" . $action . "'";
-									$this->permissionDashboard[] = "'" . $nameView . ".access' => '" . $action . "'";
-								}
-								if ($coreTarget == 'core.create')
-								{
-									$this->permissionDashboard[] = "'" . $nameView . ".create' => '" . $action . "'";
-								}
-								// add menu controll view that has menus options
-								foreach ($menuControllers  as $menuController)
-								{
-									if ($coreTarget == 'core.'.$menuController)
-									{
-										if ($menuController == 'dashboard_add')
-										{
-											$this->permissionDashboard[] = "'" . $nameView . ".".$menuController."' => '" . $action . "'";
-										}
-										else
-										{
-											$this->permissionDashboard[] = "'" . $nameViews . ".".$menuController."' => '" . $action . "'";
-										}
-									}
-								}
-							}
-							// set to language file
-							$this->langContent['admin'][$title]			= trim($permission['title']);
-							$this->langContent['admin'][$title.'_DESC']	= trim($permission['description']);
-						}
-					}
+					$this->buildPermissions($view, $nameView, $nameViews, $menuControllers);
 				}
 			}
 			// set the views permissions now
-			if (ComponentbuilderHelper::checkArray($views))
+			if (ComponentbuilderHelper::checkArray($this->permissionViews))
 			{
-				foreach ($views as $viewName => $actions)
+				foreach ($this->permissionViews as $viewName => $actions)
 				{
 					$componentViews[] = "\t".'<section name="'.$viewName.'">';
 					foreach ($actions as $action)
@@ -12343,17 +12344,293 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				}
 			}
 			/// now build the section
-			$component = implode("\n",$componentHead);
+			$component = implode("\n",$this->componentHead);
 			// sort the array to insure easy search
-			ksort($componentGlobal,SORT_STRING);
+			ksort($this->componentGlobal,SORT_STRING);
 			// add global to the compnent section
-			$component .= "\n".implode("\n",$componentGlobal)."\n\t</section>";
+			$component .= "\n".implode("\n",$this->componentGlobal)."\n\t</section>";
 			// add views to the compnent section
 			$component .= "\n".implode("\n",$componentViews);
+			// be sure to reset again. (memory)
+			$this->componentHead	= null;
+			$this->componentGlobal	= null;
+			$this->permissionViews	= null;
 			// return the build
 			return $component;
 		}
 		return false;
+	}
+	
+	public function buildPermissions(&$view, $nameView, $nameViews, $menuControllers, $type = 'admin')
+	{
+		if (ComponentbuilderHelper::checkArray($view['settings']->permissions) || (isset($view['port']) && $view['port']) || (isset($view['history']) && $view['history']))
+		{
+			// add export/import permissions to each view that has export/import options
+			if (isset($view['port']) && $view['port'])
+			{
+				// export
+				$exportView['action'] = 'view.export';
+				$exportView['implementation'] = '2';
+				if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
+				{
+					array_push($view['settings']->permissions,$exportView);
+				}
+				else
+				{
+					$view['settings']->permissions = array();
+					$view['settings']->permissions[] = $exportView;
+				}
+				// import
+				$importView['action'] = 'view.import';
+				$importView['implementation'] = '2';
+				if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
+				{
+					array_push($view['settings']->permissions,$importView);
+				}
+				else
+				{
+					$view['settings']->permissions = array();
+					$view['settings']->permissions[] = $importView;
+				}
+			}
+			// add version opstions to each view that has it added
+			if (isset($view['history']) && $view['history'])
+			{
+				// set version control
+				$versionView['action'] = 'view.version';
+				$versionView['implementation'] = '3';
+				if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
+				{
+					array_push($view['settings']->permissions,$versionView);
+				}
+				else
+				{
+					$view['settings']->permissions = array();
+					$view['settings']->permissions[] = $versionView;
+				}
+			}
+			if ($type == 'admin')
+			{
+				// set batch control
+				$batchView['action'] = 'view.batch';
+				$batchView['implementation'] = '2';
+				if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
+				{
+					array_push($view['settings']->permissions,$batchView);
+				}
+				else
+				{
+					$view['settings']->permissions = array();
+					$view['settings']->permissions[] = $batchView;
+				}
+			}
+			foreach ($view['settings']->permissions as $permission)
+			{
+				// set acction name
+				$arr = explode('.',trim($permission['action']));
+				if ($arr[0] != 'core' || $arr[0] == 'view')
+				{
+					array_shift($arr);
+					$actionMain = implode('.',$arr);
+					$action = $nameView.'.'.$actionMain;
+				}
+				else
+				{
+					if ($arr[0] == 'core')
+					{
+						// core is already set in global access
+						$permission['implementation'] = 1;
+					}
+					$action = $permission['action'];
+				}
+				// build action name
+				$actionNameBuilder = explode('.',trim($permission['action']));
+				array_shift($actionNameBuilder);
+				$nameBuilder = trim(implode('___',$actionNameBuilder));
+				$customName = trim(implode(' ',$actionNameBuilder));
+				if ($type == 'admin')
+				{
+					$W_NameList = ComponentbuilderHelper::safeString($view['settings']->name_list, 'W');
+					$w_NameList = ComponentbuilderHelper::safeString($customName.' '.$view['settings']->name_list, 'w');
+					$w_NameSingle = ComponentbuilderHelper::safeString($view['settings']->name_single, 'w');
+				}
+				elseif ($type == 'customAdmin')
+				{
+					$W_NameList = ComponentbuilderHelper::safeString($view['settings']->name, 'W');
+					$w_NameList =  $view['settings']->name;
+					$w_NameSingle = $view['settings']->name;
+				}
+				switch ($nameBuilder)
+				{
+					case 'edit':
+					// set edit title
+					$permission['title'] =  $W_NameList . ' Edit';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to edit the ' . $w_NameSingle;
+					break;
+					case 'edit___own':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Edit Own';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to edit ' . $w_NameList . ' created by them';
+					break;
+					case 'edit___state':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Edit State';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to update the state of the ' . $w_NameSingle;
+					break;
+					case 'edit___created_by':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Edit Created By';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to update the created by of the ' . $w_NameList;
+					break;
+					case 'edit___created':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Edit Created Date';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to update the created date of the ' . $w_NameList;
+					break;
+					case 'create':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Create';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to create ' . $w_NameList;
+					break;
+					case 'delete':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Delete';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to delete ' . $w_NameList;
+					break;
+					case 'access':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Access';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to access ' . $w_NameList;
+					break;
+					case 'export':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Export';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to export ' . $w_NameList;
+					break;
+					case 'import':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Import';
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to import ' . $w_NameList;
+					break;
+					case 'version':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Edit Version';
+					// set edit description
+					$permission['description'] = ' Allows users in this group to edit versions of ' . $w_NameList;
+					break;
+					case 'batch':
+					// set edit title
+					$permission['title'] = $W_NameList . ' Batch Use';
+					// set edit description
+					$permission['description'] = ' Allows users in this group to use batch copy/update method of ' . $w_NameList;
+					break;
+					default:
+					// set edit title
+					$permission['title'] = $W_NameList . ' ' . ComponentbuilderHelper::safeString($customName, 'W');
+					// set edit description
+					$permission['description'] = ' Allows the users in this group to update the ' . ComponentbuilderHelper::safeString($customName, 'w') . ' of the ' . $w_NameSingle;
+					break;
+				}
+				// if core is not used update all core strings
+				$coreCheck = explode('.',$action);
+				$coreCheck[0] = 'core';
+				$coreTarget = implode('.',$coreCheck);
+				$this->permissionCore[$nameView][$coreTarget] = $action;
+				// set array sort name
+				$sortKey = ComponentbuilderHelper::safeString($permission['title']);
+				// set title
+				$title = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($permission['title'],'U');
+				// load the actions
+				if ($permission['implementation'] == 1)
+				{
+					// only related to view
+					$this->permissionViews[$nameView][] = '<action name="'.$action.'" title="'.$title.'" description="'.$title.'_DESC" />';
+					// load permission to action
+					$this->permissionBuilder[$action][$nameView] = $nameView;
+				}
+				elseif ($permission['implementation'] == 2)
+				{
+					// relation to whole component
+					$this->componentGlobal[$sortKey] = "\t\t".'<action name="'.$action.'" title="'.$title.'" description="'.$title.'_DESC" />';
+					// build permission switch
+					$this->permissionBuilder['global'][$action][$nameView] = $nameView;
+					// dashboard icon checker
+					if ($coreTarget == 'core.access')
+					{
+						$this->permissionDashboard[] = "'" . $nameViews . ".access' => '" . $action . "'";
+						$this->permissionDashboard[] = "'" . $nameView . ".access' => '" . $action . "'";
+					}
+					if ($coreTarget == 'core.create')
+					{
+						$this->permissionDashboard[] = "'" . $nameView . ".create' => '" . $action . "'";
+					}
+					// add menu controll view that has menus options
+					foreach ($menuControllers  as $menuController)
+					{
+						if ($coreTarget == 'core.'.$menuController)
+						{
+							if ($menuController == 'dashboard_add')
+							{
+								$this->permissionDashboard[] = "'" . $nameView . ".".$menuController."' => '" . $action . "'";
+							}
+							else
+							{
+								$this->permissionDashboard[] = "'" . $nameViews . ".".$menuController."' => '" . $action . "'";
+							}
+						}
+					}
+				}
+				elseif ($permission['implementation'] == 3)
+				{
+					// only related to view
+					$this->permissionViews[$nameView][] = '<action name="'.$action.'" title="'.$title.'" description="'.$title.'_DESC" />';
+					// load permission to action
+					$this->permissionBuilder[$action][$nameView] = $nameView;
+					// relation to whole component
+					$this->componentGlobal[$sortKey] = "\t\t".'<action name="'.$action.'" title="'.$title.'" description="'.$title.'_DESC" />';
+					// build permission switch
+					$this->permissionBuilder['global'][$action][$nameView] = $nameView;
+					// dashboard icon checker
+					if ($coreTarget == 'core.access')
+					{
+						$this->permissionDashboard[] = "'" . $nameViews . ".access' => '" . $action . "'";
+						$this->permissionDashboard[] = "'" . $nameView . ".access' => '" . $action . "'";
+					}
+					if ($coreTarget == 'core.create')
+					{
+						$this->permissionDashboard[] = "'" . $nameView . ".create' => '" . $action . "'";
+					}
+					// add menu controll view that has menus options
+					foreach ($menuControllers  as $menuController)
+					{
+						if ($coreTarget == 'core.'.$menuController)
+						{
+							if ($menuController == 'dashboard_add')
+							{
+								$this->permissionDashboard[] = "'" . $nameView . ".".$menuController."' => '" . $action . "'";
+							}
+							else
+							{
+								$this->permissionDashboard[] = "'" . $nameViews . ".".$menuController."' => '" . $action . "'";
+							}
+						}
+					}
+				}
+				// set to language file
+				$this->langContent['admin'][$title]		= trim($permission['title']);
+				$this->langContent['admin'][$title.'_DESC']	= trim($permission['description']);
+			}
+		}
 	}
 
 	public function getFieldName($typeName,$xml,$alias)

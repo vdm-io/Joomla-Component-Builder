@@ -67,7 +67,7 @@ class ###Component###View###SView### extends JViewLegacy
 		// hide the main menu
 		$this->app->input->set('hidemainmenu', true);
 		// set the title
-		if ($this->item->name)
+		if (isset($this->item->name) && $this->item->name)
 		{
 			$title = $this->item->name;
 		}

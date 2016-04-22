@@ -609,12 +609,17 @@ class Structure extends Get
 				$uikit = array( 'folder' => 'uikit', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $uikit;
 			}
-			if ($this->footable)
+			if ($this->footable && (!isset($this->footableVersion) || 2 == $this->footableVersion))
 			{
 				// move the footable folder into place
-				$footable = array( 'folder' => 'footable', 'path' => 'media', 'rename' => 0);
+				$footable = array( 'folder' => 'footable2', 'path' => 'media/footable', 'rename' => 1);
 				$this->componentData->folders[] = $footable;
-
+			}
+			elseif ($this->footable && 3 == $this->footableVersion)
+			{
+				// move the footable folder into place
+				$footable = array( 'folder' => 'footable3', 'path' => 'media/footable', 'rename' => 1);
+				$this->componentData->folders[] = $footable;
 			}
 			
 			// pointer tracker

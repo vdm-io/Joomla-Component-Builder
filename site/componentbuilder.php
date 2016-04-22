@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.2
-	@build			19th March, 2016
+	@version		2.1.3
+	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -33,7 +33,7 @@ $document->addStyleSheet('components/com_componentbuilder/assets/css/site.css');
 $document->addScript('components/com_componentbuilder/assets/js/site.js');
 
 // Require helper files
-JLoader::register('ComponentbuilderHelper', dirname(__FILE__) . '/helpers/componentbuilder.php');
+JLoader::register('ComponentbuilderHelper', dirname(__FILE__) . '/helpers/componentbuilder.php'); 
 JLoader::register('ComponentbuilderHelperRoute', dirname(__FILE__) . '/helpers/route.php'); ###SITE_GLOBAL_EVENT###
 
 // import joomla controller library

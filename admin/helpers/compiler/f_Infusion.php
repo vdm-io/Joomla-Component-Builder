@@ -68,7 +68,7 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###component###'] = ComponentbuilderHelper::safeString($this->componentData->name_code);
 
 			// ###COMPANYNAME###
-			$this->fileContentStatic['###COMPANYNAME###'] = trim($this->componentData->companyname);
+			$this->fileContentStatic['###COMPANYNAME###'] = trim(JFilterOutput::cleanText($this->componentData->companyname));
 			
 			// ###CREATIONDATE###
 			$this->fileContentStatic['###CREATIONDATE###'] = JFactory::getDate($this->componentData->created)->format('jS F, Y');
@@ -77,7 +77,7 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###BUILDDATE###'] = JFactory::getDate()->format('jS F, Y');
 			
 			// ###AUTHOR###
-			$this->fileContentStatic['###AUTHOR###'] = trim($this->componentData->author);
+			$this->fileContentStatic['###AUTHOR###'] = trim(JFilterOutput::cleanText($this->componentData->author));
 
 			// ###AUTHOREMAIL###
 			$this->fileContentStatic['###AUTHOREMAIL###'] = trim($this->componentData->email);
@@ -95,10 +95,10 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###VERSION###'] = trim($this->componentData->component_version);
 
 			// ###Component_name###
-			$this->fileContentStatic['###Component_name###'] = ComponentbuilderHelper::safeString($this->componentData->name,'W');
+			$this->fileContentStatic['###Component_name###'] = JFilterOutput::cleanText($this->componentData->name);;
 
 			// ###SHORT_DISCRIPTION###
-			$this->fileContentStatic['###SHORT_DESCRIPTION###'] = trim($this->componentData->short_description);
+			$this->fileContentStatic['###SHORT_DESCRIPTION###'] = trim(JFilterOutput::cleanText($this->componentData->short_description));
 
 			// ###DESCRIPTION###
 			$this->fileContentStatic['###DESCRIPTION###'] = trim($this->componentData->description);
@@ -169,6 +169,9 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] = '';
 			// build route views
 			$this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] = '';
+			
+			// add the helper emailer if set
+			$this->fileContentStatic['###HELPER_EMAIL###'] = $this->addEmailHelper();
 
 			// setup back-views and all needed stuff for the admin
 			if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
