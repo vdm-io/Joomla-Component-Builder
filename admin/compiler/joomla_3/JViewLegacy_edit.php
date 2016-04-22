@@ -122,7 +122,7 @@ class ###Component###View###View### extends JViewLegacy
 		$document->setTitle(JText::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/###view###.css");###AJAXTOKE### ###LINKEDVIEWTABLESCRIPTS###
 		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_###component###/views/###view###/submitbutton.js");
+		$document->addScript(JURI::root() . "administrator/components/com_###component###/views/###view###/submitbutton.js"); ###DOCUMENT_CUSTOM_PHP###
 		JText::script('view not acceptable. Error');
 	}
 }

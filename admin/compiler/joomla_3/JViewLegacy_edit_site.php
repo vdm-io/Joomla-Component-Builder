@@ -131,7 +131,7 @@ class ###Component###View###View### extends JViewLegacy
 		$document->addStyleSheet(JURI::root()."components/com_###component###/assets/css/###view###.css");###AJAXTOKE### ###LINKEDVIEWTABLESCRIPTS###
 		// default javascript of this view
 		$document->addScript(JURI::root().$this->script);
-		$document->addScript(JURI::root(). "components/com_###component###/views/###view###/submitbutton.js");
+		$document->addScript(JURI::root(). "components/com_###component###/views/###view###/submitbutton.js"); ###DOCUMENT_CUSTOM_PHP###
 		JText::script('view not acceptable. Error');
 	}
 }

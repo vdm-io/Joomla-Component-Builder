@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.3
+	@version		2.1.4
 	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -195,7 +195,7 @@ class ComponentbuilderViewHelp_document extends JViewLegacy
 		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_HELP_DOCUMENT_NEW' : 'COM_COMPONENTBUILDER_HELP_DOCUMENT_EDIT'));
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/help_document.css"); 
 		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/help_document/submitbutton.js");
+		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/help_document/submitbutton.js"); 
 		JText::script('view not acceptable. Error');
 	}
 }

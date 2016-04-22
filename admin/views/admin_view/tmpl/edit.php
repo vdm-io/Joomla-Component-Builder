@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.3
+	@version		2.1.4
 	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -408,86 +408,101 @@ jQuery('#adminForm').on('change', '#jform_add_php_after_delete',function (e)
 
 });
 
-// #jform_add_sql listeners for add_sql_vvvvvwz function
-jQuery('#jform_add_sql').on('keyup',function()
+// #jform_add_php_document listeners for add_php_document_vvvvvwz function
+jQuery('#jform_add_php_document').on('keyup',function()
 {
-	var add_sql_vvvvvwz = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvwz(add_sql_vvvvvwz);
+	var add_php_document_vvvvvwz = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	vvvvvwz(add_php_document_vvvvvwz);
 
 });
-jQuery('#adminForm').on('change', '#jform_add_sql',function (e)
+jQuery('#adminForm').on('change', '#jform_add_php_document',function (e)
 {
 	e.preventDefault();
-	var add_sql_vvvvvwz = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvwz(add_sql_vvvvvwz);
-
-});
-
-// #jform_source listeners for source_vvvvvxa function
-jQuery('#jform_source').on('keyup',function()
-{
-	var source_vvvvvxa = jQuery("#jform_source input[type='radio']:checked").val();
-	var add_sql_vvvvvxa = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxa(source_vvvvvxa,add_sql_vvvvvxa);
-
-});
-jQuery('#adminForm').on('change', '#jform_source',function (e)
-{
-	e.preventDefault();
-	var source_vvvvvxa = jQuery("#jform_source input[type='radio']:checked").val();
-	var add_sql_vvvvvxa = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxa(source_vvvvvxa,add_sql_vvvvvxa);
+	var add_php_document_vvvvvwz = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	vvvvvwz(add_php_document_vvvvvwz);
 
 });
 
 // #jform_add_sql listeners for add_sql_vvvvvxa function
 jQuery('#jform_add_sql').on('keyup',function()
 {
-	var source_vvvvvxa = jQuery("#jform_source input[type='radio']:checked").val();
 	var add_sql_vvvvvxa = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxa(source_vvvvvxa,add_sql_vvvvvxa);
+	vvvvvxa(add_sql_vvvvvxa);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_sql',function (e)
 {
 	e.preventDefault();
-	var source_vvvvvxa = jQuery("#jform_source input[type='radio']:checked").val();
 	var add_sql_vvvvvxa = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxa(source_vvvvvxa,add_sql_vvvvvxa);
+	vvvvvxa(add_sql_vvvvvxa);
 
 });
 
-// #jform_source listeners for source_vvvvvxc function
+// #jform_source listeners for source_vvvvvxb function
 jQuery('#jform_source').on('keyup',function()
 {
-	var source_vvvvvxc = jQuery("#jform_source input[type='radio']:checked").val();
-	var add_sql_vvvvvxc = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxc(source_vvvvvxc,add_sql_vvvvvxc);
+	var source_vvvvvxb = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxb = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxb(source_vvvvvxb,add_sql_vvvvvxb);
 
 });
 jQuery('#adminForm').on('change', '#jform_source',function (e)
 {
 	e.preventDefault();
-	var source_vvvvvxc = jQuery("#jform_source input[type='radio']:checked").val();
-	var add_sql_vvvvvxc = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxc(source_vvvvvxc,add_sql_vvvvvxc);
+	var source_vvvvvxb = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxb = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxb(source_vvvvvxb,add_sql_vvvvvxb);
 
 });
 
-// #jform_add_sql listeners for add_sql_vvvvvxc function
+// #jform_add_sql listeners for add_sql_vvvvvxb function
 jQuery('#jform_add_sql').on('keyup',function()
 {
-	var source_vvvvvxc = jQuery("#jform_source input[type='radio']:checked").val();
-	var add_sql_vvvvvxc = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxc(source_vvvvvxc,add_sql_vvvvvxc);
+	var source_vvvvvxb = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxb = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxb(source_vvvvvxb,add_sql_vvvvvxb);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_sql',function (e)
 {
 	e.preventDefault();
-	var source_vvvvvxc = jQuery("#jform_source input[type='radio']:checked").val();
-	var add_sql_vvvvvxc = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxc(source_vvvvvxc,add_sql_vvvvvxc);
+	var source_vvvvvxb = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxb = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxb(source_vvvvvxb,add_sql_vvvvvxb);
+
+});
+
+// #jform_source listeners for source_vvvvvxd function
+jQuery('#jform_source').on('keyup',function()
+{
+	var source_vvvvvxd = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxd = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxd(source_vvvvvxd,add_sql_vvvvvxd);
+
+});
+jQuery('#adminForm').on('change', '#jform_source',function (e)
+{
+	e.preventDefault();
+	var source_vvvvvxd = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxd = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxd(source_vvvvvxd,add_sql_vvvvvxd);
+
+});
+
+// #jform_add_sql listeners for add_sql_vvvvvxd function
+jQuery('#jform_add_sql').on('keyup',function()
+{
+	var source_vvvvvxd = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxd = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxd(source_vvvvvxd,add_sql_vvvvvxd);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_sql',function (e)
+{
+	e.preventDefault();
+	var source_vvvvvxd = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxd = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxd(source_vvvvvxd,add_sql_vvvvvxd);
 
 });
 

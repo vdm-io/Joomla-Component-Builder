@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.3
+	@version		2.1.4
 	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -197,7 +197,7 @@ class ComponentbuilderViewDynamic_get extends JViewLegacy
 		// Add Ajax Token
 		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
 		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/dynamic_get/submitbutton.js");
+		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/dynamic_get/submitbutton.js"); 
 		JText::script('view not acceptable. Error');
 	}
 }

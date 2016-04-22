@@ -255,7 +255,20 @@ class Infusion extends Interpretation
 
 						// ###AJAXTOKE### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_single]['###AJAXTOKE###'] = $this->setAjaxToke($viewName_single);
-
+						
+						if (isset($this->customScriptBuilder['php_document'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_document'][$viewName_single]))
+						{
+							// ###DOCUMENT_CUSTOM_PHP### <<<DYNAMIC>>>
+							$this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] 
+								= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_document'][$viewName_single]);
+							// clear some memory
+							unset($this->customScriptBuilder['php_document'][$viewName_single]);
+						}
+						else
+						{
+							$this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] = '';
+						}
+						
 						// ###LINKEDVIEWTABLESCRIPTS### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWTABLESCRIPTS###'] = '';
 

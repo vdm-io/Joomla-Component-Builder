@@ -9,7 +9,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.3
+	@version		2.1.4
 	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -43,6 +43,7 @@ jform_vvvvvwxvwv_required = false;
 jform_vvvvvwyvww_required = false;
 jform_vvvvvwzvwx_required = false;
 jform_vvvvvxavwy_required = false;
+jform_vvvvvxbvwz_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -98,16 +99,19 @@ jQuery(document).ready(function()
 	var add_php_after_delete_vvvvvwy = jQuery("#jform_add_php_after_delete input[type='radio']:checked").val();
 	vvvvvwy(add_php_after_delete_vvvvvwy);
 
-	var add_sql_vvvvvwz = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvwz(add_sql_vvvvvwz);
+	var add_php_document_vvvvvwz = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	vvvvvwz(add_php_document_vvvvvwz);
 
-	var source_vvvvvxa = jQuery("#jform_source input[type='radio']:checked").val();
 	var add_sql_vvvvvxa = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxa(source_vvvvvxa,add_sql_vvvvvxa);
+	vvvvvxa(add_sql_vvvvvxa);
 
-	var source_vvvvvxc = jQuery("#jform_source input[type='radio']:checked").val();
-	var add_sql_vvvvvxc = jQuery("#jform_add_sql input[type='radio']:checked").val();
-	vvvvvxc(source_vvvvvxc,add_sql_vvvvvxc);
+	var source_vvvvvxb = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxb = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxb(source_vvvvvxb,add_sql_vvvvvxb);
+
+	var source_vvvvvxd = jQuery("#jform_source input[type='radio']:checked").val();
+	var add_sql_vvvvvxd = jQuery("#jform_add_sql input[type='radio']:checked").val();
+	vvvvvxd(source_vvvvvxd,add_sql_vvvvvxd);
 });
 
 // the vvvvvwi function
@@ -640,72 +644,103 @@ function vvvvvwy(add_php_after_delete_vvvvvwy)
 }
 
 // the vvvvvwz function
-function vvvvvwz(add_sql_vvvvvwz)
+function vvvvvwz(add_php_document_vvvvvwz)
 {
 	// set the function logic
-	if (add_sql_vvvvvwz == 1)
+	if (add_php_document_vvvvvwz == 1)
 	{
-		jQuery('#jform_source').closest('.control-group').show();
+		jQuery('#jform_php_document').closest('.control-group').show();
 		if (jform_vvvvvwzvwx_required)
 		{
-			updateFieldRequired('source',0);
-			jQuery('#jform_source').prop('required','required');
-			jQuery('#jform_source').attr('aria-required',true);
-			jQuery('#jform_source').addClass('required');
+			updateFieldRequired('php_document',0);
+			jQuery('#jform_php_document').prop('required','required');
+			jQuery('#jform_php_document').attr('aria-required',true);
+			jQuery('#jform_php_document').addClass('required');
 			jform_vvvvvwzvwx_required = false;
 		}
 
 	}
 	else
 	{
-		jQuery('#jform_source').closest('.control-group').hide();
+		jQuery('#jform_php_document').closest('.control-group').hide();
 		if (!jform_vvvvvwzvwx_required)
 		{
-			updateFieldRequired('source',1);
-			jQuery('#jform_source').removeAttr('required');
-			jQuery('#jform_source').removeAttr('aria-required');
-			jQuery('#jform_source').removeClass('required');
+			updateFieldRequired('php_document',1);
+			jQuery('#jform_php_document').removeAttr('required');
+			jQuery('#jform_php_document').removeAttr('aria-required');
+			jQuery('#jform_php_document').removeClass('required');
 			jform_vvvvvwzvwx_required = true;
 		}
 	}
 }
 
 // the vvvvvxa function
-function vvvvvxa(source_vvvvvxa,add_sql_vvvvvxa)
+function vvvvvxa(add_sql_vvvvvxa)
 {
 	// set the function logic
-	if (source_vvvvvxa == 2 && add_sql_vvvvvxa == 1)
+	if (add_sql_vvvvvxa == 1)
 	{
-		jQuery('#jform_sql').closest('.control-group').show();
+		jQuery('#jform_source').closest('.control-group').show();
 		if (jform_vvvvvxavwy_required)
 		{
-			updateFieldRequired('sql',0);
-			jQuery('#jform_sql').prop('required','required');
-			jQuery('#jform_sql').attr('aria-required',true);
-			jQuery('#jform_sql').addClass('required');
+			updateFieldRequired('source',0);
+			jQuery('#jform_source').prop('required','required');
+			jQuery('#jform_source').attr('aria-required',true);
+			jQuery('#jform_source').addClass('required');
 			jform_vvvvvxavwy_required = false;
 		}
 
 	}
 	else
 	{
-		jQuery('#jform_sql').closest('.control-group').hide();
+		jQuery('#jform_source').closest('.control-group').hide();
 		if (!jform_vvvvvxavwy_required)
 		{
-			updateFieldRequired('sql',1);
-			jQuery('#jform_sql').removeAttr('required');
-			jQuery('#jform_sql').removeAttr('aria-required');
-			jQuery('#jform_sql').removeClass('required');
+			updateFieldRequired('source',1);
+			jQuery('#jform_source').removeAttr('required');
+			jQuery('#jform_source').removeAttr('aria-required');
+			jQuery('#jform_source').removeClass('required');
 			jform_vvvvvxavwy_required = true;
 		}
 	}
 }
 
-// the vvvvvxc function
-function vvvvvxc(source_vvvvvxc,add_sql_vvvvvxc)
+// the vvvvvxb function
+function vvvvvxb(source_vvvvvxb,add_sql_vvvvvxb)
 {
 	// set the function logic
-	if (source_vvvvvxc == 1 && add_sql_vvvvvxc == 1)
+	if (source_vvvvvxb == 2 && add_sql_vvvvvxb == 1)
+	{
+		jQuery('#jform_sql').closest('.control-group').show();
+		if (jform_vvvvvxbvwz_required)
+		{
+			updateFieldRequired('sql',0);
+			jQuery('#jform_sql').prop('required','required');
+			jQuery('#jform_sql').attr('aria-required',true);
+			jQuery('#jform_sql').addClass('required');
+			jform_vvvvvxbvwz_required = false;
+		}
+
+	}
+	else
+	{
+		jQuery('#jform_sql').closest('.control-group').hide();
+		if (!jform_vvvvvxbvwz_required)
+		{
+			updateFieldRequired('sql',1);
+			jQuery('#jform_sql').removeAttr('required');
+			jQuery('#jform_sql').removeAttr('aria-required');
+			jQuery('#jform_sql').removeClass('required');
+			jform_vvvvvxbvwz_required = true;
+		}
+	}
+}
+
+// the vvvvvxd function
+function vvvvvxd(source_vvvvvxd,add_sql_vvvvvxd)
+{
+	// set the function logic
+	if (source_vvvvvxd == 1 && add_sql_vvvvvxd == 1)
 	{
 		jQuery('#jform_addtables').closest('.control-group').show();
 	}

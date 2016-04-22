@@ -112,6 +112,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`add_php_batchcopy` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_php_batchmove` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_php_before_delete` TINYINT(1) NOT NULL DEFAULT '0',
+	`add_php_document` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_php_getitem` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_php_getitems` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_php_getlistquery` TINYINT(1) NOT NULL DEFAULT '0',
@@ -144,6 +145,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`php_batchcopy` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_batchmove` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_before_delete` MEDIUMTEXT NOT NULL DEFAULT '',
+	`php_document` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_getitem` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_getitems` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_getlistquery` MEDIUMTEXT NOT NULL DEFAULT '',
@@ -175,8 +177,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_name_single` (`name_single`),
 	KEY `idx_name_list` (`name_list`),
 	KEY `idx_type` (`type`),
-	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_source` (`source`),
+	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_add_php_getitem` (`add_php_getitem`),
 	KEY `idx_add_php_getitems` (`add_php_getitems`),
 	KEY `idx_add_css_view` (`add_css_view`),
@@ -192,6 +194,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
 	KEY `idx_add_php_after_delete` (`add_php_after_delete`),
 	KEY `idx_add_javascript_views_file` (`add_javascript_views_file`),
+	KEY `idx_add_php_document` (`add_php_document`),
 	KEY `idx_add_sql` (`add_sql`),
 	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

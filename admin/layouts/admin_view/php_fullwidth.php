@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.3
+	@version		2.1.4
 	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -53,7 +53,9 @@ $fields = $displayData->get('fields') ?: array(
 	'add_php_before_delete',
 	'php_before_delete',
 	'add_php_after_delete',
-	'php_after_delete'
+	'php_after_delete',
+	'add_php_document',
+	'php_document'
 );
 
 ?>

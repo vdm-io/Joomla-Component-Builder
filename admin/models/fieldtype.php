@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.3
+	@version		2.1.4
 	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyufields()
+	public function getVyvfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -196,13 +196,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVyufields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVyvfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVyufields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVyvfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVyufields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVyvfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVyufields($item->store, 'store');
+					$item->store = $this->selectionTranslationVyvfields($item->store, 'store');
 				}
 			}
 
@@ -216,7 +216,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVyufields($value,$name)
+	public function selectionTranslationVyvfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

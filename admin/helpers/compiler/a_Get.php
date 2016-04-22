@@ -1076,7 +1076,7 @@ class Get
 			}
 
 			$this->lang = 'admin';
-			$addArray = array('php_getitem','php_save','php_postsavehook','php_getitems','php_getlistquery','php_allowedit','php_before_delete','php_after_delete','php_batchcopy','php_batchmove');
+			$addArray = array('php_getitem','php_save','php_postsavehook','php_getitems','php_getlistquery','php_allowedit','php_before_delete','php_after_delete','php_batchcopy','php_batchmove','php_document');
 			foreach ($addArray as $scripter)
 			{
 				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
@@ -1085,7 +1085,7 @@ class Get
 					unset($view->$scripter);
 				}
 			}
-
+			
 			// add_Ajax for this view
 			if ($view->add_php_ajax == 1)
 			{

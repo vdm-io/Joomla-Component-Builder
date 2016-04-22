@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.3
+	@version		2.1.4
 	@build			22nd April, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -72,7 +72,7 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vwzfields		= $this->get('Vwzfields');
+		$this->vxafields		= $this->get('Vxafields');
 
 		// Set the toolbar
 		$this->addToolBar();
@@ -224,7 +224,7 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
 		$document->addScriptDeclaration($footable);
 
 		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_view/submitbutton.js");
+		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_view/submitbutton.js"); 
 		JText::script('view not acceptable. Error');
 	}
 }
