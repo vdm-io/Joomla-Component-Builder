@@ -32,7 +32,7 @@ Would you require more help VDM.io has a number of support plans available [visi
 + *Author*: [Llewellyn van der Merwe] (mailto:info@vdm.io)
 + *Name*: [Component Builder] (https://www.vdm.io/joomla-component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 22nd April, 2016
++ *Last Build*: 2nd May, 2016
 + *Version*: 2.1.4
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
@@ -45,7 +45,7 @@ due to [Automated Component Builder] (https://www.vdm.io/joomla-component-builde
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
 > never making one mistake or taking any coffee break.)
 
-+ *Line count*: **80706**
++ *Line count*: **80712**
 + *File count*: **496**
 + *Folder count*: **98**
 

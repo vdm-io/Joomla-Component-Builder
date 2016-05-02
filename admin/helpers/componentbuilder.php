@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.4
-	@build			22nd April, 2016
+	@build			2nd May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -1389,7 +1389,7 @@ abstract class ComponentbuilderHelper
 					$w .= ' ';
 					if($r < 100)
 					{
-						$word .= 'and ';
+						$w .= 'and ';
 					}
 					$w .= self::numberToString($r);
 				}

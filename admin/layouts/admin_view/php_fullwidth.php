@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.4
-	@build			22nd April, 2016
+	@build			2nd May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		php_fullwidth.php

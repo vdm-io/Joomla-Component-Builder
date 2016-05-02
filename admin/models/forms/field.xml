@@ -134,6 +134,8 @@
 				COM_COMPONENTBUILDER_FIELD_DATETIME</option>
 			<option value="DATE">
 				COM_COMPONENTBUILDER_FIELD_DATE</option>
+			<option value="TIME">
+				COM_COMPONENTBUILDER_FIELD_TIME</option>
 			<option value="INT">
 				COM_COMPONENTBUILDER_FIELD_INT</option>
 			<option value="TINYINT">

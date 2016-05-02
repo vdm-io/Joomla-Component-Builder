@@ -841,7 +841,7 @@ abstract class ###Component###Helper
 					$w .= ' ';
 					if($r < 100)
 					{
-						$word .= 'and ';
+						$w .= 'and ';
 					}
 					$w .= self::numberToString($r);
 				}

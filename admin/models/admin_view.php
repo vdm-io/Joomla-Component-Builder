@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.4
-	@build			22nd April, 2016
+	@build			2nd May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -349,6 +349,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				'LONGTEXT' => 'COM_COMPONENTBUILDER_FIELD_LONGTEXT',
 				'DATETIME' => 'COM_COMPONENTBUILDER_FIELD_DATETIME',
 				'DATE' => 'COM_COMPONENTBUILDER_FIELD_DATE',
+				'TIME' => 'COM_COMPONENTBUILDER_FIELD_TIME',
 				'INT' => 'COM_COMPONENTBUILDER_FIELD_INT',
 				'TINYINT' => 'COM_COMPONENTBUILDER_FIELD_TINYINT',
 				'BIGINT' => 'COM_COMPONENTBUILDER_FIELD_BIGINT',

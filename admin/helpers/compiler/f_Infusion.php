@@ -260,7 +260,7 @@ class Infusion extends Interpretation
 						{
 							// ###DOCUMENT_CUSTOM_PHP### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] 
-								= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_document'][$viewName_single]);
+								= "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_document'][$viewName_single]);
 							// clear some memory
 							unset($this->customScriptBuilder['php_document'][$viewName_single]);
 						}
