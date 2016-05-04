@@ -1,4 +1,4 @@
-# Component Builder (2.1.5)
+# Component Builder (2.1.6)
 
 This is a [Joomla 3.x] (http://www.joomla.org/) component.
 
@@ -33,7 +33,7 @@ Would you require more help VDM.io has a number of support plans available [visi
 + *Name*: [Component Builder] (https://www.vdm.io/joomla-component-builder)
 + *First Build*: 30th April, 2015
 + *Last Build*: 4th May, 2016
-+ *Version*: 2.1.5
++ *Version*: 2.1.6
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,8 +45,8 @@ due to [Automated Component Builder] (https://www.vdm.io/joomla-component-builde
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
 > never making one mistake or taking any coffee break.)
 
-+ *Line count*: **81571**
-+ *File count*: **498**
++ *Line count*: **81589**
++ *File count*: **499**
 + *Folder count*: **98**
 
 **150 Hours** or **19 Eight Hour Days** (the actual time the author spent)

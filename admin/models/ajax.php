@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.5
+	@version		2.1.6
 	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -380,7 +380,7 @@ class ComponentbuilderModelAjax extends JModelList
 			$script['view'][] = "\t});";
 			$script['view'][] = "\n</script>";
 			$script['view'][] = "\n<div id=\"installer-import\" class=\"clearfix\">";
-			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo JRoute::_('index.php?option=com_###-#-#-component###&view=###-#-#-view###');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
+			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo JRoute::_('index.php?option=com_###-#-#-component###&view=import_###-#-#-views###');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
 			$script['view'][] = "\n\t<?php if (!empty( \$this->sidebar)) : ?>";
 			$script['view'][] = "\t\t<div id=\"j-sidebar-container\" class=\"span2\">";
 			$script['view'][] = "\t\t\t<?php echo \$this->sidebar; ?>";
