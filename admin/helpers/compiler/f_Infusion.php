@@ -32,7 +32,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Infusion extends Interpretation
 {
-	
+
+	public $eximportView = array();
+	public $importCustomScripts = array();
+
 	/**
 	 * Constructor
 	 */
@@ -192,15 +195,6 @@ class Infusion extends Interpretation
 						$site_edit_view_array[] = "\t\t\t\t'".$viewName_single."'";
 						$this->lang = 'both';
 					}
-					// set the export/import option
-					if ($view['port'])
-					{
-						$this->eximportView[$viewName_list] = true;
-					}
-					else
-					{
-						$this->eximportView[$viewName_list] = false;
-					}
 					// check if help is being loaded
 					$this->checkHelp($viewName_single);
 					// set custom admin view list links
@@ -227,6 +221,8 @@ class Infusion extends Interpretation
 
 						// set some place holder for the views
 						$this->placeholders['###view###'] = $viewName_single;
+						$this->placeholders['###VIEW###'] = $viewName_u;
+						$this->placeholders['###View###'] = $viewName_f;
 						
 						// set license per view if needed
 						$this->setLockLicensePer($viewName_single);
@@ -349,6 +345,24 @@ class Infusion extends Interpretation
 
 						// set some place holder for the views
 						$this->placeholders['###views###'] = $viewName_list;
+						$this->placeholders['###VIEWS###'] = $viewsName_u;
+						$this->placeholders['###Views###'] = $viewsName_f;
+						
+						// set the export/import option
+						if ($view['port'])
+						{
+							$this->eximportView[$viewName_list] = true;
+							if (1 == $view['settings']->add_custom_import)
+							{
+								// this view has custom import scripting
+								$this->importCustomScripts[$viewName_list] = true;
+								$this->setImportCustomScripts($viewName_list);
+							}
+						}
+						else
+						{
+							$this->eximportView[$viewName_list] = false;
+						}
 
 						// set Autocheckin function
 						if ($view['checkin'] == 1)

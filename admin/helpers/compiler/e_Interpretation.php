@@ -4736,7 +4736,7 @@ class Interpretation extends Fields
 	{
 		// add final list of needed lang strings
 		$componentName = JFilterOutput::cleanText($this->componentData->name);
-		$this->langContent['adminsys'][$this->langPrefix]				= 
+		$this->langContent['adminsys'][$this->langPrefix]				= $componentName;
 		$this->langContent['adminsys'][$this->langPrefix.'_CONFIGURATION']		= $componentName.' Configuration';
 		$this->langContent[$this->lang][$this->langPrefix]				= $componentName;
 		$this->langContent['admin'][$this->langPrefix.'_BACK']				= 'Back';
@@ -6830,7 +6830,15 @@ class Interpretation extends Fields
 				$this->langContent[$this->lang][$selectImportFileNote] = 'Select the file to import data to '.$viewName_list.'.';
 			}
 			$method[] = "\t\t\t\t\$message = JText::_('".$selectImportFileNote."');";
-			$method[] = "\t\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_".$this->fileContentStatic['###component###']."&view=import', false), \$message);";
+			// if this view has custom script it must have as custom import (model, veiw, controller)
+			if (isset($this->importCustomScripts[$viewName_list]) && $this->importCustomScripts[$viewName_list])
+			{
+				$method[] = "\t\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_".$this->fileContentStatic['###component###']."&view=import_".$viewName_list."', false), \$message);";
+			}
+			else
+			{
+				$method[] = "\t\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_".$this->fileContentStatic['###component###']."&view=import', false), \$message);";
+			}
 			$method[] = "\t\t\t\treturn;";
 			$method[] = "\t\t\t}";
 			$method[] = "\t\t}";
@@ -6888,6 +6896,39 @@ class Interpretation extends Fields
 		return $button;
 	}
 
+	public function setImportCustomScripts($viewName_list)
+	{
+		// setup Ajax files
+		$target = array('admin' => 'import_'.$viewName_list);
+		$this->buildDynamique($target,'customimport');
+		// load the custom script to the files
+		if (isset($this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]))
+		{
+			// ###IMPORT_SETDATE_METOD_CUSTOM### <<<DYNAMIC>>>
+			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SETDATE_METOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]);
+			unset($this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]);
+		}
+		if (isset($this->customScriptBuilder['php_import_save']['import_'.$viewName_list]))
+		{
+			// ###IMPORT_SAVE_METOD_CUSTOM### <<<DYNAMIC>>>
+			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SAVE_METOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_save']['import_'.$viewName_list]);
+			unset($this->customScriptBuilder['php_import_save']['import_'.$viewName_list]);
+		}
+		if (isset($this->customScriptBuilder['html_import_view']['import_'.$viewName_list]))
+		{
+			// ###IMPORT_DEFAULT_VIEW_CUSTOM### <<<DYNAMIC>>>
+			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DEFAULT_VIEW_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['html_import_view']['import_'.$viewName_list]);
+			unset($this->customScriptBuilder['html_import_view']['import_'.$viewName_list]);
+		}
+		// insure we have the view placeholders setup
+		$this->fileContentDynamic['import_'.$viewName_list]['###VIEW###'] = 'IMPORT_'.$this->placeholders['###VIEWS###'];
+		$this->fileContentDynamic['import_'.$viewName_list]['###View###'] = 'Import_'.$this->placeholders['###views###'];
+		$this->fileContentDynamic['import_'.$viewName_list]['###view###'] = 'import_'.$this->placeholders['###views###'];
+		$this->fileContentDynamic['import_'.$viewName_list]['###VIEWS###'] = 'IMPORT_'.$this->placeholders['###VIEWS###'];
+		$this->fileContentDynamic['import_'.$viewName_list]['###Views###'] = 'Import_'.$this->placeholders['###views###'];
+		$this->fileContentDynamic['import_'.$viewName_list]['###views###'] = 'import_'.$this->placeholders['###views###'];
+	}
+	
 	public function setListQuery($viewName_single, $viewName_list)
 	{
 		// check if this view has category added
@@ -12363,7 +12404,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 	
 	public function buildPermissions(&$view, $nameView, $nameViews, $menuControllers, $type = 'admin')
 	{
-		if (ComponentbuilderHelper::checkArray($view['settings']->permissions) || (isset($view['port']) && $view['port']) || (isset($view['history']) && $view['history']))
+		if (isset($view['settings']->permissions) && ComponentbuilderHelper::checkArray($view['settings']->permissions) || (isset($view['port']) && $view['port']) || (isset($view['history']) && $view['history']))
 		{
 			// add export/import permissions to each view that has export/import options
 			if (isset($view['port']) && $view['port'])

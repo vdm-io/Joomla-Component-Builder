@@ -465,6 +465,28 @@
           "rename": false,
           "type": "import"
         },
+        "JControllerLegacy_import_custom.php": {
+          "path": "c0mp0n3nt/admin/controllers",
+          "rename": "JControllerLegacy_import_custom",
+          "type": "customimport"
+        },
+        "JModelLegacy_import_custom.php": {
+          "path": "c0mp0n3nt/admin/models",
+          "rename": "JModelLegacy_import_custom",
+          "type": "customimport"
+        },
+        "JViewLegacy_import_custom.php": {
+          "path": "c0mp0n3nt/admin/views/VIEW",
+          "rename": "new",
+          "newName": "view.html.php",
+          "type": "customimport"
+        },
+        "default_import_custom.php": {
+          "path": "c0mp0n3nt/admin/views/VIEW/tmpl",
+          "rename": "new",
+          "newName": "default.php",
+          "type": "customimport"
+        },
         "JControllerLegacyHelp.php": {
           "path": "c0mp0n3nt/admin/controllers",
           "rename": "new",

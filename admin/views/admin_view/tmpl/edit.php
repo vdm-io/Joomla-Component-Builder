@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.4
-	@build			2nd May, 2016
+	@version		2.1.5
+	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -103,6 +103,16 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
 				<?php echo JLayoutHelper::render('admin_view.mysql_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'custom_import', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_IMPORT', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('admin_view.custom_import_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -506,6 +516,36 @@ jQuery('#adminForm').on('change', '#jform_add_sql',function (e)
 
 });
 
+// #jform_add_custom_import listeners for add_custom_import_vvvvvxf function
+jQuery('#jform_add_custom_import').on('keyup',function()
+{
+	var add_custom_import_vvvvvxf = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
+	vvvvvxf(add_custom_import_vvvvvxf);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_custom_import',function (e)
+{
+	e.preventDefault();
+	var add_custom_import_vvvvvxf = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
+	vvvvvxf(add_custom_import_vvvvvxf);
+
+});
+
+// #jform_add_custom_import listeners for add_custom_import_vvvvvxg function
+jQuery('#jform_add_custom_import').on('keyup',function()
+{
+	var add_custom_import_vvvvvxg = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
+	vvvvvxg(add_custom_import_vvvvvxg);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_custom_import',function (e)
+{
+	e.preventDefault();
+	var add_custom_import_vvvvvxg = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
+	vvvvvxg(add_custom_import_vvvvvxg);
+
+});
+
 
 <?php $fieldNrs = range(1,500,1); ?>
 jQuery('#jform_addconditions_modal').on('show.bs.modal', function (e) {
@@ -526,5 +566,11 @@ jQuery('#jform_addtables_modal').on('show.bs.modal', function (e) {
 	});
 	<?php endforeach; ?>
 });
+// #jform_add_custom_import listeners
+jQuery('#jform_add_custom_import').on('change',function()
+{
+	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
+	getImportScripts(valueSwitch);
 
+});
 </script>

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.4
-	@build			2nd May, 2016
+	@version		2.1.5
+	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -45,6 +45,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		// load the tasks 
 		$this->registerTask('tableColumns', 'ajax');
 		$this->registerTask('fieldSelectOptions', 'ajax');
+		$this->registerTask('getImportScripts', 'ajax');
 		$this->registerTask('layoutDetails', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
@@ -113,6 +114,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($idValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getFieldSelectOptions($idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if(array_key_exists('callback',$_GET))
+						{
+							echo $_GET['callback'] . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if(array_key_exists('callback',$_GET))
+						{
+							echo $_GET['callback']."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getImportScripts':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$typeValue = $jinput->get('type', NULL, 'WORD');
+						if($typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getImportScripts($typeValue);
 						}
 						else
 						{

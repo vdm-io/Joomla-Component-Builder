@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.4
-	@build			2nd May, 2016
+	@version		2.1.5
+	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		layout.js
@@ -24,42 +24,42 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // Some Global Values
-jform_vvvvvxxvxv_required = false;
+jform_vvvvvxzvxy_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvxx = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvxx(add_php_view_vvvvvxx);
+	var add_php_view_vvvvvxz = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvxz(add_php_view_vvvvvxz);
 });
 
-// the vvvvvxx function
-function vvvvvxx(add_php_view_vvvvvxx)
+// the vvvvvxz function
+function vvvvvxz(add_php_view_vvvvvxz)
 {
 	// set the function logic
-	if (add_php_view_vvvvvxx == 1)
+	if (add_php_view_vvvvvxz == 1)
 	{
 		jQuery('#jform_php_view').closest('.control-group').show();
-		if (jform_vvvvvxxvxv_required)
+		if (jform_vvvvvxzvxy_required)
 		{
 			updateFieldRequired('php_view',0);
 			jQuery('#jform_php_view').prop('required','required');
 			jQuery('#jform_php_view').attr('aria-required',true);
 			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvxxvxv_required = false;
+			jform_vvvvvxzvxy_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_view').closest('.control-group').hide();
-		if (!jform_vvvvvxxvxv_required)
+		if (!jform_vvvvvxzvxy_required)
 		{
 			updateFieldRequired('php_view',1);
 			jQuery('#jform_php_view').removeAttr('required');
 			jQuery('#jform_php_view').removeAttr('aria-required');
 			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvxxvxv_required = true;
+			jform_vvvvvxzvxy_required = true;
 		}
 	}
 }

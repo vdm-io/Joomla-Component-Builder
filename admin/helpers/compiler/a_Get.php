@@ -1086,6 +1086,20 @@ class Get
 				}
 			}
 			
+			// set custom import scripts
+			if (isset($view->add_custom_import) && $view->add_custom_import == 1)
+			{
+				$addImportArray = array('php_import_setdata','php_import_save','html_import_view');
+				foreach ($addImportArray as $importScripter)
+				{
+					if (isset($view->$importScripter) && strlen($view->$importScripter) > 0)
+					{
+						$this->customScriptBuilder[$importScripter]['import_'.$name_list] = $this->setCustomContentLang(base64_decode($view->$importScripter));
+						unset($view->$importScripter);
+					}
+				}
+			}
+			
 			// add_Ajax for this view
 			if ($view->add_php_ajax == 1)
 			{
@@ -1985,9 +1999,11 @@ class Get
 	 */
 	public function setCustomContentLang($content)
 	{
+		// insure string is not broken
+		$content = str_replace('COM_###COMPONENT###',$this->langPrefix,$content);
 		// set language data
-		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::_('","')");
-		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::_("','")');
+		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::_('","'");
+		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::_("','"');
 		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::sprintf('","'");
 		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::sprintf("','"');
 		$langHolders = array();
@@ -2003,6 +2019,7 @@ class Get
 		{
 			foreach ($lang as $string)
 			{
+				// this is there to insure we dont break already added Language strings
 				if (ComponentbuilderHelper::safeString($string,'U') == $string)
 				{
 					continue;

@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`asset_id` INT(255) UNSIGNED NOT NULL DEFAULT '0',
 	`add_css_view` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_css_views` TINYINT(1) NOT NULL DEFAULT '0',
+	`add_custom_import` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_javascript_view_file` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_javascript_view_footer` TINYINT(1) NOT NULL DEFAULT '0',
 	`add_javascript_views_file` TINYINT(1) NOT NULL DEFAULT '0',
@@ -129,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`css_view` TEXT NOT NULL DEFAULT '',
 	`css_views` TEXT NOT NULL DEFAULT '',
 	`description` TEXT NOT NULL DEFAULT '',
+	`html_import_view` MEDIUMTEXT NOT NULL DEFAULT '',
 	`icon` CHAR(64) NOT NULL DEFAULT '',
 	`icon_add` CHAR(64) NOT NULL DEFAULT '',
 	`icon_category` CHAR(64) NOT NULL DEFAULT '',
@@ -149,6 +151,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`php_getitem` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_getitems` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_getlistquery` MEDIUMTEXT NOT NULL DEFAULT '',
+	`php_import_save` MEDIUMTEXT NOT NULL DEFAULT '',
+	`php_import_setdata` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_postsavehook` MEDIUMTEXT NOT NULL DEFAULT '',
 	`php_save` MEDIUMTEXT NOT NULL DEFAULT '',
 	`short_description` VARCHAR(255) NOT NULL DEFAULT '',
@@ -178,7 +182,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_name_list` (`name_list`),
 	KEY `idx_type` (`type`),
 	KEY `idx_source` (`source`),
-	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_add_php_getitem` (`add_php_getitem`),
 	KEY `idx_add_php_getitems` (`add_php_getitems`),
 	KEY `idx_add_css_view` (`add_css_view`),
@@ -196,7 +199,9 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_add_javascript_views_file` (`add_javascript_views_file`),
 	KEY `idx_add_php_document` (`add_php_document`),
 	KEY `idx_add_sql` (`add_sql`),
-	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`)
+	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`),
+	KEY `idx_add_php_ajax` (`add_php_ajax`),
+	KEY `idx_add_custom_import` (`add_custom_import`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (

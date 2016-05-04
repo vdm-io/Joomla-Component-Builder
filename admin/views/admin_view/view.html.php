@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.4
-	@build			2nd May, 2016
+	@version		2.1.5
+	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -72,7 +72,7 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vxafields		= $this->get('Vxafields');
+		$this->vxdfields		= $this->get('Vxdfields');
 
 		// Set the toolbar
 		$this->addToolBar();

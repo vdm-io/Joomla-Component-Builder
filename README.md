@@ -1,4 +1,4 @@
-# Component Builder (2.1.4)
+# Component Builder (2.1.5)
 
 This is a [Joomla 3.x] (http://www.joomla.org/) component.
 
@@ -32,32 +32,32 @@ Would you require more help VDM.io has a number of support plans available [visi
 + *Author*: [Llewellyn van der Merwe] (mailto:info@vdm.io)
 + *Name*: [Component Builder] (https://www.vdm.io/joomla-component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 2nd May, 2016
-+ *Version*: 2.1.4
++ *Last Build*: 4th May, 2016
++ *Version*: 2.1.5
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
 
 ## Build Time
 
-**225 Hours** or **28 Eight Hour Days** (actual time the author saved -
+**227 Hours** or **28 Eight Hour Days** (actual time the author saved -
 due to [Automated Component Builder] (https://www.vdm.io/joomla-component-builder))
 
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
 > never making one mistake or taking any coffee break.)
 
-+ *Line count*: **80712**
-+ *File count*: **496**
++ *Line count*: **81571**
++ *File count*: **498**
 + *Folder count*: **98**
 
-**148 Hours** or **19 Eight Hour Days** (the actual time the author spent)
+**150 Hours** or **19 Eight Hour Days** (the actual time the author spent)
 
 > (with the following break down:
-> **debugging @56hours** = codingtime / 4;
+> **debugging @57hours** = codingtime / 4;
 > **planning @32hours** = codingtime / 7;
 > **mapping @23hours** = codingtime / 10;
 > **office @38hours** = codingtime / 6;)
 
-**373 Hours** or **47 Eight Hour Days**
+**377 Hours** or **47 Eight Hour Days**
 (a total of the realistic time frame for this project)
 
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
