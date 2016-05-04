@@ -44,7 +44,7 @@ class ###Component###Controller###View### extends JControllerLegacy
 		// Check for request forgeries
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$model = $this->getModel('import');
+		$model = $this->getModel('###View###');
 		if ($model->import())
 		{
 			$cache = JFactory::getCache('mod_menu');

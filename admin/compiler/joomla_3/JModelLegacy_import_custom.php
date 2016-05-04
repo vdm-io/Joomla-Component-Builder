@@ -49,7 +49,7 @@ class ###Component###Model###View### extends JModelLegacy
 	 *
 	 * @var        string
 	 */
-	protected $_context = 'com_###component###.import';
+	protected $_context = 'com_###component###.###view###';
 	
 	/**
 	 * Import Settings

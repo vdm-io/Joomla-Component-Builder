@@ -465,7 +465,7 @@ class ComponentbuilderModelAjax extends JModelList
 			$script['view'][] = "\n<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
 			$script['view'][] = "\t\t<input type=\"hidden\" name=\"gettype\" value=\"upload\" />";
 			$script['view'][] = "<?php endif; ?>";
-			$script['view'][] = "<input type=\"hidden\" name=\"task\" value=\"import.import\" />";
+			$script['view'][] = "<input type=\"hidden\" name=\"task\" value=\"import_###-#-#-views###.import\" />";
 			$script['view'][] = "<?php echo JHtml::_('form.token'); ?>";
 			$script['view'][] = "</form>";
 			$script['view'][] = "</div>";
