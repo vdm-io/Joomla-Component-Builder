@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.6
+	@version		2.1.7
 	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -72,7 +72,7 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vyyfields		= $this->get('Vyyfields');
+		$this->vyzfields		= $this->get('Vyzfields');
 
 		// Set the toolbar
 		$this->addToolBar();

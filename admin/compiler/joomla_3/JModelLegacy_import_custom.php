@@ -55,7 +55,7 @@ class ###Component###Model###View### extends JModelLegacy
 	 * Import Settings
 	 */
 	protected $getType 	= NULL;
-	protected $dataType = NULL;
+	protected $dataType	= NULL;
 	
 	/**
 	 * Method to auto-populate the model state.
@@ -81,117 +81,7 @@ class ###Component###Model###View### extends JModelLegacy
 		$this->safeFileOptions = array();
 		parent::populateState();
 	}
-
-	/**
-	 * Import an spreadsheet from either folder, url or upload.
-	 *
-	 * @return  boolean result of import
-	 *
-	 */
-	public function import()
-	{
-		$this->setState('action', 'import');
-		$app 		= JFactory::getApplication();
-		$session 	= JFactory::getSession();
-		$package 	= null;
-		$continue	= false;
-		// get import type
-		$this->getType = $app->input->getString('gettype', NULL);
-		// get import type
-		$this->dataType	= $session->get('dataType_VDM_IMPORTINTO', NULL);
-
-		if ($package === null)
-		{
-			switch ($this->getType)
-			{
-				case 'folder':
-					// Remember the 'Import from Directory' path.
-					$app->getUserStateFromRequest($this->_context . '.import_directory', 'import_directory');
-					$package = $this->_getPackageFromFolder();
-					break;
-
-				case 'upload':
-					$package = $this->_getPackageFromUpload();
-					break;
-
-				case 'url':
-					$package = $this->_getPackageFromUrl();
-					break;
-
-				case 'continue':
-					$continue 	= true;
-					$package	= $session->get('package', null);
-					$package	= json_decode($package, true);
-					// clear session
-					$session->clear('package');
-					$session->clear('dataType');
-					$session->clear('hasPackage');
-					break;
-
-				default:
-					$app->setUserState('com_###component###.message', JText::_('COM_###COMPONENT###_IMPORT_NO_IMPORT_TYPE_FOUND'));
-
-					return false;
-					break;
-			}
-		}
-		// Was the package valid?
-		if (!$package || !$package['type'])
-		{
-			if (in_array($this->getType, array('upload', 'url')))
-			{
-				$this->remove($package['packagename']);
-			}
-
-			$app->setUserState('com_###component###.message', JText::_('COM_###COMPONENT###_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));
-			return false;
-		}
-		
-		// first link data to table headers
-		if(!$continue){
-			$package	= json_encode($package);
-			$session->set('package', $package);
-			$session->set('dataType', $this->dataType);
-			$session->set('hasPackage', true);
-			return true;
-		}
-        
-		// set the data
-		$headerList = json_decode($session->get($this->dataType.'_VDM_IMPORTHEADERS', false), true);
-		if (!$this->setData($package,$this->dataType,$headerList))
-		{
-			// There was an error importing the package
-			$msg = JText::_('COM_###COMPONENT###_IMPORT_ERROR');
-			$back = $session->get('backto_VDM_IMPORT', NULL);
-			if ($back)
-			{
-				$app->setUserState('com_###component###.redirect_url', 'index.php?option=com_###component###&view='.$back);
-				$session->clear('backto_VDM_IMPORT');
-			}
-			$result = false;
-		}
-		else
-		{
-			// Package imported sucessfully
-			$msg = JText::sprintf('COM_###COMPONENT###_IMPORT_SUCCESS', $package['packagename']);
-			$back = $session->get('backto_VDM_IMPORT', NULL);
-			if ($back)
-			{
-			    $app->setUserState('com_###component###.redirect_url', 'index.php?option=com_###component###&view='.$back);
-			    $session->clear('backto_VDM_IMPORT');
-			}
-			$result = true;
-		}
-
-		// Set some model state values
-		$app->enqueueMessage($msg);
-
-		// remove file after import
-		$this->remove($package['packagename']);
-		$session->clear($this->getType.'_VDM_IMPORTHEADERS');
-        
-		return $result;
-	}
+	###IMPORT_METHOD_CUSTOM### 
 
 	/**
 	 * Works out an importation spreadsheet from a HTTP upload
@@ -406,30 +296,8 @@ class ###Component###Model###View### extends JModelLegacy
 			JFile::delete(JPath::clean($package));
 		}
 	}
-	
-	/**
-	* Set the data from the spreadsheet to the database
-	*
-	* @param string  $package Paths to the uploaded package file
-	*
-	* @return  boolean false on failure
-	*
-	**/
-	protected function setData($package,$table,$target_headers)
-	{###IMPORT_SETDATE_METOD_CUSTOM###
-	}
-	
-	/**
-	* Save the data from the file to the database
-	*
-	* @param string  $package Paths to the uploaded package file
-	*
-	* @return  boolean false on failure
-	*
-	**/
-	protected function save($data,$table)
-	{###IMPORT_SAVE_METOD_CUSTOM###
-	}
+	###IMPORT_SETDATE_METHOD_CUSTOM### 
+	###IMPORT_SAVE_METHOD_CUSTOM###
 	
 	protected function getAlias($name,$type = false)
 	{

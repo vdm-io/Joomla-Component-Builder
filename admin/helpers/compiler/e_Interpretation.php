@@ -6904,14 +6904,20 @@ class Interpretation extends Fields
 		// load the custom script to the files
 		if (isset($this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]))
 		{
-			// ###IMPORT_SETDATE_METOD_CUSTOM### <<<DYNAMIC>>>
-			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SETDATE_METOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]);
+			// ###IMPORT_SETDATE_METHOD_CUSTOM### <<<DYNAMIC>>>
+			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SETDATE_METHOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]);
 			unset($this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]);
+		}
+		if (isset($this->customScriptBuilder['php_import']['import_'.$viewName_list]))
+		{
+			// ###IMPORT_METHOD_CUSTOM### <<<DYNAMIC>>>
+			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_METHOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import']['import_'.$viewName_list]);
+			unset($this->customScriptBuilder['php_import']['import_'.$viewName_list]);
 		}
 		if (isset($this->customScriptBuilder['php_import_save']['import_'.$viewName_list]))
 		{
-			// ###IMPORT_SAVE_METOD_CUSTOM### <<<DYNAMIC>>>
-			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SAVE_METOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_save']['import_'.$viewName_list]);
+			// ###IMPORT_SAVE_METHOD_CUSTOM### <<<DYNAMIC>>>
+			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SAVE_METHOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_save']['import_'.$viewName_list]);
 			unset($this->customScriptBuilder['php_import_save']['import_'.$viewName_list]);
 		}
 		if (isset($this->customScriptBuilder['html_import_view']['import_'.$viewName_list]))

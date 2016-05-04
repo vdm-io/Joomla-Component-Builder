@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.6
+	@version		2.1.7
 	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -36,7 +36,8 @@ $fields = $displayData->get('fields') ?: array(
 	'add_custom_import',
 	'html_import_view',
 	'php_import_setdata',
-	'php_import_save'
+	'php_import_save',
+	'php_import'
 );
 
 ?>

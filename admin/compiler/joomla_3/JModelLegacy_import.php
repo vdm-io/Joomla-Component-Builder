@@ -55,7 +55,7 @@ class ###Component###ModelImport extends JModelLegacy
 	 * Import Settings
 	 */
 	protected $getType 	= NULL;
-	protected $dataType = NULL;
+	protected $dataType	= NULL;
 	
 	/**
 	 * Method to auto-populate the model state.

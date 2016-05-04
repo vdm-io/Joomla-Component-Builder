@@ -9,7 +9,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.6
+	@version		2.1.7
 	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -47,6 +47,7 @@ jform_vvvvvxbvwz_required = false;
 jform_vvvvvxfvxa_required = false;
 jform_vvvvvxfvxb_required = false;
 jform_vvvvvxfvxc_required = false;
+jform_vvvvvxfvxd_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -776,24 +777,34 @@ function vvvvvxf(add_custom_import_vvvvvxf)
 		}
 
 		jQuery('.note_advanced_import').closest('.control-group').show();
-		jQuery('#jform_php_import_save').closest('.control-group').show();
+		jQuery('#jform_php_import').closest('.control-group').show();
 		if (jform_vvvvvxfvxb_required)
+		{
+			updateFieldRequired('php_import',0);
+			jQuery('#jform_php_import').prop('required','required');
+			jQuery('#jform_php_import').attr('aria-required',true);
+			jQuery('#jform_php_import').addClass('required');
+			jform_vvvvvxfvxb_required = false;
+		}
+
+		jQuery('#jform_php_import_save').closest('.control-group').show();
+		if (jform_vvvvvxfvxc_required)
 		{
 			updateFieldRequired('php_import_save',0);
 			jQuery('#jform_php_import_save').prop('required','required');
 			jQuery('#jform_php_import_save').attr('aria-required',true);
 			jQuery('#jform_php_import_save').addClass('required');
-			jform_vvvvvxfvxb_required = false;
+			jform_vvvvvxfvxc_required = false;
 		}
 
 		jQuery('#jform_php_import_setdata').closest('.control-group').show();
-		if (jform_vvvvvxfvxc_required)
+		if (jform_vvvvvxfvxd_required)
 		{
 			updateFieldRequired('php_import_setdata',0);
 			jQuery('#jform_php_import_setdata').prop('required','required');
 			jQuery('#jform_php_import_setdata').attr('aria-required',true);
 			jQuery('#jform_php_import_setdata').addClass('required');
-			jform_vvvvvxfvxc_required = false;
+			jform_vvvvvxfvxd_required = false;
 		}
 
 	}
@@ -809,23 +820,32 @@ function vvvvvxf(add_custom_import_vvvvvxf)
 			jform_vvvvvxfvxa_required = true;
 		}
 		jQuery('.note_advanced_import').closest('.control-group').hide();
-		jQuery('#jform_php_import_save').closest('.control-group').hide();
+		jQuery('#jform_php_import').closest('.control-group').hide();
 		if (!jform_vvvvvxfvxb_required)
+		{
+			updateFieldRequired('php_import',1);
+			jQuery('#jform_php_import').removeAttr('required');
+			jQuery('#jform_php_import').removeAttr('aria-required');
+			jQuery('#jform_php_import').removeClass('required');
+			jform_vvvvvxfvxb_required = true;
+		}
+		jQuery('#jform_php_import_save').closest('.control-group').hide();
+		if (!jform_vvvvvxfvxc_required)
 		{
 			updateFieldRequired('php_import_save',1);
 			jQuery('#jform_php_import_save').removeAttr('required');
 			jQuery('#jform_php_import_save').removeAttr('aria-required');
 			jQuery('#jform_php_import_save').removeClass('required');
-			jform_vvvvvxfvxb_required = true;
+			jform_vvvvvxfvxc_required = true;
 		}
 		jQuery('#jform_php_import_setdata').closest('.control-group').hide();
-		if (!jform_vvvvvxfvxc_required)
+		if (!jform_vvvvvxfvxd_required)
 		{
 			updateFieldRequired('php_import_setdata',1);
 			jQuery('#jform_php_import_setdata').removeAttr('required');
 			jQuery('#jform_php_import_setdata').removeAttr('aria-required');
 			jQuery('#jform_php_import_setdata').removeClass('required');
-			jform_vvvvvxfvxc_required = true;
+			jform_vvvvvxfvxd_required = true;
 		}
 	}
 }
@@ -879,6 +899,12 @@ function isSet(val)
 	}
 	return false;
 }
+
+jQuery(document).ready(function()
+{    
+	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
+	getImportScripts(valueSwitch);
+});
 
 function getFieldSelectOptions_server(fieldId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json";
@@ -949,9 +975,18 @@ function getImportScripts_server(typpe){
 function getImportScripts(id){
 	if (1 == id) {
 		// get the current values
+		var current_import = jQuery('textarea#jform_php_import').val();
 		var current_setdata = jQuery('textarea#jform_php_import_setdata').val();
 		var current_save = jQuery('textarea#jform_php_import_save').val();
 		var current_view = jQuery('textarea#jform_html_import_view').val();
+		// set the setData method script
+		if(current_import.length == 0){
+			getImportScripts_server('import').done(function(result) {
+				if(result){
+					jQuery('textarea#jform_php_import').val(result);
+				}
+			});
+		}
 		// set the setData method script
 		if(current_setdata.length == 0){
 			getImportScripts_server('setdata').done(function(result) {

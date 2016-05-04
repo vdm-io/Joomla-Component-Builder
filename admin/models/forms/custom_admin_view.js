@@ -9,7 +9,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.6
+	@version		2.1.7
 	@build			4th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
@@ -24,15 +24,15 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // Some Global Values
-jform_vvvvvxhvxe_required = false;
-jform_vvvvvxivxf_required = false;
-jform_vvvvvxjvxg_required = false;
-jform_vvvvvxkvxh_required = false;
-jform_vvvvvxlvxi_required = false;
-jform_vvvvvxmvxj_required = false;
-jform_vvvvvxnvxk_required = false;
+jform_vvvvvxhvxf_required = false;
+jform_vvvvvxivxg_required = false;
+jform_vvvvvxjvxh_required = false;
+jform_vvvvvxkvxi_required = false;
+jform_vvvvvxlvxj_required = false;
+jform_vvvvvxmvxk_required = false;
 jform_vvvvvxnvxl_required = false;
-jform_vvvvvxovxm_required = false;
+jform_vvvvvxnvxm_required = false;
+jform_vvvvvxovxn_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -69,26 +69,26 @@ function vvvvvxh(add_php_view_vvvvvxh)
 	if (add_php_view_vvvvvxh == 1)
 	{
 		jQuery('#jform_php_view').closest('.control-group').show();
-		if (jform_vvvvvxhvxe_required)
+		if (jform_vvvvvxhvxf_required)
 		{
 			updateFieldRequired('php_view',0);
 			jQuery('#jform_php_view').prop('required','required');
 			jQuery('#jform_php_view').attr('aria-required',true);
 			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvxhvxe_required = false;
+			jform_vvvvvxhvxf_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_view').closest('.control-group').hide();
-		if (!jform_vvvvvxhvxe_required)
+		if (!jform_vvvvvxhvxf_required)
 		{
 			updateFieldRequired('php_view',1);
 			jQuery('#jform_php_view').removeAttr('required');
 			jQuery('#jform_php_view').removeAttr('aria-required');
 			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvxhvxe_required = true;
+			jform_vvvvvxhvxf_required = true;
 		}
 	}
 }
@@ -100,26 +100,26 @@ function vvvvvxi(add_php_jview_display_vvvvvxi)
 	if (add_php_jview_display_vvvvvxi == 1)
 	{
 		jQuery('#jform_php_jview_display').closest('.control-group').show();
-		if (jform_vvvvvxivxf_required)
+		if (jform_vvvvvxivxg_required)
 		{
 			updateFieldRequired('php_jview_display',0);
 			jQuery('#jform_php_jview_display').prop('required','required');
 			jQuery('#jform_php_jview_display').attr('aria-required',true);
 			jQuery('#jform_php_jview_display').addClass('required');
-			jform_vvvvvxivxf_required = false;
+			jform_vvvvvxivxg_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_jview_display').closest('.control-group').hide();
-		if (!jform_vvvvvxivxf_required)
+		if (!jform_vvvvvxivxg_required)
 		{
 			updateFieldRequired('php_jview_display',1);
 			jQuery('#jform_php_jview_display').removeAttr('required');
 			jQuery('#jform_php_jview_display').removeAttr('aria-required');
 			jQuery('#jform_php_jview_display').removeClass('required');
-			jform_vvvvvxivxf_required = true;
+			jform_vvvvvxivxg_required = true;
 		}
 	}
 }
@@ -131,26 +131,26 @@ function vvvvvxj(add_php_jview_vvvvvxj)
 	if (add_php_jview_vvvvvxj == 1)
 	{
 		jQuery('#jform_php_jview').closest('.control-group').show();
-		if (jform_vvvvvxjvxg_required)
+		if (jform_vvvvvxjvxh_required)
 		{
 			updateFieldRequired('php_jview',0);
 			jQuery('#jform_php_jview').prop('required','required');
 			jQuery('#jform_php_jview').attr('aria-required',true);
 			jQuery('#jform_php_jview').addClass('required');
-			jform_vvvvvxjvxg_required = false;
+			jform_vvvvvxjvxh_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_jview').closest('.control-group').hide();
-		if (!jform_vvvvvxjvxg_required)
+		if (!jform_vvvvvxjvxh_required)
 		{
 			updateFieldRequired('php_jview',1);
 			jQuery('#jform_php_jview').removeAttr('required');
 			jQuery('#jform_php_jview').removeAttr('aria-required');
 			jQuery('#jform_php_jview').removeClass('required');
-			jform_vvvvvxjvxg_required = true;
+			jform_vvvvvxjvxh_required = true;
 		}
 	}
 }
@@ -162,26 +162,26 @@ function vvvvvxk(add_php_document_vvvvvxk)
 	if (add_php_document_vvvvvxk == 1)
 	{
 		jQuery('#jform_php_document').closest('.control-group').show();
-		if (jform_vvvvvxkvxh_required)
+		if (jform_vvvvvxkvxi_required)
 		{
 			updateFieldRequired('php_document',0);
 			jQuery('#jform_php_document').prop('required','required');
 			jQuery('#jform_php_document').attr('aria-required',true);
 			jQuery('#jform_php_document').addClass('required');
-			jform_vvvvvxkvxh_required = false;
+			jform_vvvvvxkvxi_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_document').closest('.control-group').hide();
-		if (!jform_vvvvvxkvxh_required)
+		if (!jform_vvvvvxkvxi_required)
 		{
 			updateFieldRequired('php_document',1);
 			jQuery('#jform_php_document').removeAttr('required');
 			jQuery('#jform_php_document').removeAttr('aria-required');
 			jQuery('#jform_php_document').removeClass('required');
-			jform_vvvvvxkvxh_required = true;
+			jform_vvvvvxkvxi_required = true;
 		}
 	}
 }
@@ -193,26 +193,26 @@ function vvvvvxl(add_css_document_vvvvvxl)
 	if (add_css_document_vvvvvxl == 1)
 	{
 		jQuery('#jform_css_document').closest('.control-group').show();
-		if (jform_vvvvvxlvxi_required)
+		if (jform_vvvvvxlvxj_required)
 		{
 			updateFieldRequired('css_document',0);
 			jQuery('#jform_css_document').prop('required','required');
 			jQuery('#jform_css_document').attr('aria-required',true);
 			jQuery('#jform_css_document').addClass('required');
-			jform_vvvvvxlvxi_required = false;
+			jform_vvvvvxlvxj_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_css_document').closest('.control-group').hide();
-		if (!jform_vvvvvxlvxi_required)
+		if (!jform_vvvvvxlvxj_required)
 		{
 			updateFieldRequired('css_document',1);
 			jQuery('#jform_css_document').removeAttr('required');
 			jQuery('#jform_css_document').removeAttr('aria-required');
 			jQuery('#jform_css_document').removeClass('required');
-			jform_vvvvvxlvxi_required = true;
+			jform_vvvvvxlvxj_required = true;
 		}
 	}
 }
@@ -224,26 +224,26 @@ function vvvvvxm(add_js_document_vvvvvxm)
 	if (add_js_document_vvvvvxm == 1)
 	{
 		jQuery('#jform_js_document').closest('.control-group').show();
-		if (jform_vvvvvxmvxj_required)
+		if (jform_vvvvvxmvxk_required)
 		{
 			updateFieldRequired('js_document',0);
 			jQuery('#jform_js_document').prop('required','required');
 			jQuery('#jform_js_document').attr('aria-required',true);
 			jQuery('#jform_js_document').addClass('required');
-			jform_vvvvvxmvxj_required = false;
+			jform_vvvvvxmvxk_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_js_document').closest('.control-group').hide();
-		if (!jform_vvvvvxmvxj_required)
+		if (!jform_vvvvvxmvxk_required)
 		{
 			updateFieldRequired('js_document',1);
 			jQuery('#jform_js_document').removeAttr('required');
 			jQuery('#jform_js_document').removeAttr('aria-required');
 			jQuery('#jform_js_document').removeClass('required');
-			jform_vvvvvxmvxj_required = true;
+			jform_vvvvvxmvxk_required = true;
 		}
 	}
 }
@@ -256,23 +256,23 @@ function vvvvvxn(add_custom_button_vvvvvxn)
 	{
 		jQuery('#jform_custom_button').closest('.control-group').show();
 		jQuery('#jform_php_controller').closest('.control-group').show();
-		if (jform_vvvvvxnvxk_required)
+		if (jform_vvvvvxnvxl_required)
 		{
 			updateFieldRequired('php_controller',0);
 			jQuery('#jform_php_controller').prop('required','required');
 			jQuery('#jform_php_controller').attr('aria-required',true);
 			jQuery('#jform_php_controller').addClass('required');
-			jform_vvvvvxnvxk_required = false;
+			jform_vvvvvxnvxl_required = false;
 		}
 
 		jQuery('#jform_php_model').closest('.control-group').show();
-		if (jform_vvvvvxnvxl_required)
+		if (jform_vvvvvxnvxm_required)
 		{
 			updateFieldRequired('php_model',0);
 			jQuery('#jform_php_model').prop('required','required');
 			jQuery('#jform_php_model').attr('aria-required',true);
 			jQuery('#jform_php_model').addClass('required');
-			jform_vvvvvxnvxl_required = false;
+			jform_vvvvvxnvxm_required = false;
 		}
 
 	}
@@ -280,22 +280,22 @@ function vvvvvxn(add_custom_button_vvvvvxn)
 	{
 		jQuery('#jform_custom_button').closest('.control-group').hide();
 		jQuery('#jform_php_controller').closest('.control-group').hide();
-		if (!jform_vvvvvxnvxk_required)
+		if (!jform_vvvvvxnvxl_required)
 		{
 			updateFieldRequired('php_controller',1);
 			jQuery('#jform_php_controller').removeAttr('required');
 			jQuery('#jform_php_controller').removeAttr('aria-required');
 			jQuery('#jform_php_controller').removeClass('required');
-			jform_vvvvvxnvxk_required = true;
+			jform_vvvvvxnvxl_required = true;
 		}
 		jQuery('#jform_php_model').closest('.control-group').hide();
-		if (!jform_vvvvvxnvxl_required)
+		if (!jform_vvvvvxnvxm_required)
 		{
 			updateFieldRequired('php_model',1);
 			jQuery('#jform_php_model').removeAttr('required');
 			jQuery('#jform_php_model').removeAttr('aria-required');
 			jQuery('#jform_php_model').removeClass('required');
-			jform_vvvvvxnvxl_required = true;
+			jform_vvvvvxnvxm_required = true;
 		}
 	}
 }
@@ -307,26 +307,26 @@ function vvvvvxo(add_css_vvvvvxo)
 	if (add_css_vvvvvxo == 1)
 	{
 		jQuery('#jform_css').closest('.control-group').show();
-		if (jform_vvvvvxovxm_required)
+		if (jform_vvvvvxovxn_required)
 		{
 			updateFieldRequired('css',0);
 			jQuery('#jform_css').prop('required','required');
 			jQuery('#jform_css').attr('aria-required',true);
 			jQuery('#jform_css').addClass('required');
-			jform_vvvvvxovxm_required = false;
+			jform_vvvvvxovxn_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_css').closest('.control-group').hide();
-		if (!jform_vvvvvxovxm_required)
+		if (!jform_vvvvvxovxn_required)
 		{
 			updateFieldRequired('css',1);
 			jQuery('#jform_css').removeAttr('required');
 			jQuery('#jform_css').removeAttr('aria-required');
 			jQuery('#jform_css').removeClass('required');
-			jform_vvvvvxovxm_required = true;
+			jform_vvvvvxovxn_required = true;
 		}
 	}
 }
