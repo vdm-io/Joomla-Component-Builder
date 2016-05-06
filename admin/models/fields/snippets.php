@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.7
-	@build			4th May, 2016
+	@build			6th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		snippets.php
@@ -58,30 +58,80 @@ class JFormFieldSnippets extends JFormFieldList
 		// if true set button
 		if ($setButton === 'true')
 		{
+			$button = array();
+			$script = array();
+			$buttonName = $this->getAttribute('name');
+			// get the input from url
+			$jinput = JFactory::getApplication()->input;
+			// get the view name & id
+			$values = $jinput->getArray(array(
+				'id' => 'int',
+				'view' => 'word'
+			));
+			// check if new item
+			$ref = '';
+			$refJ = '';
+			if (!is_null($values['id']) && strlen($values['view']))
+			{
+				// only load referal if not new item.
+				$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
+				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
+			}
 			$user = JFactory::getUser();
 			// only add if user allowed to create snippet
 			if ($user->authorise('core.create', 'com_componentbuilder'))
 			{
-				// get the input from url
-				$jinput = JFactory::getApplication()->input;
-				// get the view name & id
-				$values = $jinput->getArray(array(
-					'id' => 'int',
-					'view' => 'word'
-				));
-				// check if new item
-				$ref = '';
-				if (!is_null($values['id']) && strlen($values['view']))
-				{
-					// only load referal if not new item.
-					$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
-				}
-				// build the button
-				$button = '<a class="btn btn-small btn-success"
+				// build Create button
+				$button[] = '<a id="'.$buttonName.'Create" class="btn btn-small btn-success hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($buttonName, 'W')).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
 					href="index.php?option=com_componentbuilder&amp;view=snippet&amp;layout=edit'.$ref.'" >
-					<span class="icon-new icon-white"></span>' . JText::_('COM_COMPONENTBUILDER_NEW') . '</a>';
-				// return the button attached to input field
-				return $html . $button;
+					<span class="icon-new icon-white"></span></a>';
+			}
+			// only add if user allowed to edit snippet
+			if (($buttonName == 'snippet' || $buttonName == 'snippets')  && $user->authorise('core.edit', 'com_componentbuilder'))
+			{
+				// build edit button
+				$button[] = '<a id="'.$buttonName.'Edit" class="btn btn-small hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_EDIT_S', ComponentbuilderHelper::safeString($buttonName, 'W')).'" style="display: none; padding: 4px 4px 4px 7px;" href="#" >
+					<span class="icon-edit"></span></a>';
+				// build script
+				$script[] = "
+					jQuery(document).ready(function() {
+						jQuery('#adminForm').on('change', '#jform_".$buttonName."',function (e) {
+							e.preventDefault();
+							var ".$buttonName."Value = jQuery('#jform_".$buttonName."').val();
+							".$buttonName."Button(".$buttonName."Value);
+						});
+						var ".$buttonName."Value = jQuery('#jform_".$buttonName."').val();
+						".$buttonName."Button(".$buttonName."Value);
+					});
+					function ".$buttonName."Button(value) {
+						if (value > 0) {
+							// hide the create button
+							jQuery('#".$buttonName."Create').hide();
+							// show edit button
+							jQuery('#".$buttonName."Edit').show();
+							var url = 'index.php?option=com_componentbuilder&view=snippets&task=snippet.edit&id='+value+'".$refJ."';
+							jQuery('#".$buttonName."Edit').attr('href', url);
+						} else {
+							// show the create button
+							jQuery('#".$buttonName."Create').show();
+							// hide edit button
+							jQuery('#".$buttonName."Edit').hide();
+						}
+					}";
+			}
+			// check if button was created for snippet field.
+			if (ComponentbuilderHelper::checkArray($button))
+			{
+				// Add some final script
+				$script[] = "
+					jQuery(document).ready(function() {
+						jQuery('#jform_".$buttonName."').closest('.control-group').addClass('input-append');
+					});";
+				// Load the needed script.
+				$document = JFactory::getDocument();
+				$document->addScriptDeclaration(implode(' ',$script));
+				// return the button attached to input field.
+				return $html . implode('',$button);
 			}
 		}
 		return $html;

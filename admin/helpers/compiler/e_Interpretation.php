@@ -4753,6 +4753,8 @@ class Interpretation extends Fields
 		$this->langContent['admin'][$this->langPrefix.'_SAVE_WARNING']			= "The value already existed so please select another.";
 		$this->langContent['admin'][$this->langPrefix.'_HELP_MANAGER']			= "Help";
 		$this->langContent['admin'][$this->langPrefix.'_NEW']				= "New";
+		$this->langContent['admin'][$this->langPrefix.'_CREATE_NEW_S']			= "Create New %s";
+		$this->langContent['admin'][$this->langPrefix.'_EDIT_S']			= "Edit %s";
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_STATE']           = "- Keep Original State -";
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_ACCESS']          = "- Keep Original Access -";
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_CATEGORY']        = "- Keep Original Category -";
@@ -4845,6 +4847,9 @@ class Interpretation extends Fields
 		$this->langContent['site']['COM_CONTENT_FIELD_MODIFIED_DESC']	= "The last date this item was modified.";
 		$this->langContent['site']['JGLOBAL_FIELD_MODIFIED_BY_LABEL']	= "Modified By";
 		$this->langContent['site']['JGLOBAL_FIELD_MODIFIED_BY_DESC']	= "The user who did the last modification.";
+		$this->langContent['site'][$this->langPrefix.'_NEW']		= "New";
+		$this->langContent['site'][$this->langPrefix.'_CREATE_NEW_S']	= "Create New %s";
+		$this->langContent['site'][$this->langPrefix.'_EDIT_S']		= "Edit %s";
 
 		// check if the both array is set
 		if (isset($this->langContent['both']) && ComponentbuilderHelper::checkArray($this->langContent['both']))
@@ -7112,7 +7117,7 @@ class Interpretation extends Fields
 		}
 	}
 
-	public function setAddButttonToListField($targetView)
+	public function setAddButttonToListField($targetView,$targetViews)
 	{
 		$addButton = array();
 		$addButton[] = "\n\t/**";
@@ -7131,6 +7136,25 @@ class Interpretation extends Fields
 		$addButton[] = "\t\t//".$this->setLine(__LINE__)." if true set button";
 		$addButton[] = "\t\tif (\$setButton === 'true')";
 		$addButton[] = "\t\t{";
+		$addButton[] = "\t\t\t\$button = array();";
+		$addButton[] = "\t\t\t\$script = array();";
+		$addButton[] = "\t\t\t\$buttonName = \$this->getAttribute('name');";
+		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." get the input from url";
+		$addButton[] = "\t\t\t\$jinput = JFactory::getApplication()->input;";
+		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." get the view name & id";
+		$addButton[] = "\t\t\t\$values = \$jinput->getArray(array(";
+		$addButton[] = "\t\t\t\t'id' => 'int',";
+		$addButton[] = "\t\t\t\t'view' => 'word'";
+		$addButton[] = "\t\t\t));";
+		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." check if new item";
+		$addButton[] = "\t\t\t\$ref = '';";
+		$addButton[] = "\t\t\t\$refJ = '';";
+		$addButton[] = "\t\t\tif (!is_null(\$values['id']) && strlen(\$values['view']))";
+		$addButton[] = "\t\t\t{";
+		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." only load referal if not new item.";
+		$addButton[] = "\t\t\t\t\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
+		$addButton[] = "\t\t\t\t\$refJ = '&ref=' . \$values['view'] . '&refid=' . \$values['id'];";
+		$addButton[] = "\t\t\t}";
 		$addButton[] = "\t\t\t\$user = JFactory::getUser();";
 		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." only add if user allowed to create " . $targetView;
 		// get core permissions
@@ -7150,26 +7174,65 @@ class Interpretation extends Fields
 			$addButton[] = "\t\t\tif (\$user->authorise('core.create', 'com_".$this->fileContentStatic['###component###']."'))";
 		}
 		$addButton[] = "\t\t\t{";
-		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." get the input from url";
-		$addButton[] = "\t\t\t\t\$jinput = JFactory::getApplication()->input;";
-		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." get the view name & id";
-		$addButton[] = "\t\t\t\t\$values = \$jinput->getArray(array(";
-		$addButton[] = "\t\t\t\t\t'id' => 'int',";
-		$addButton[] = "\t\t\t\t\t'view' => 'word'";
-		$addButton[] = "\t\t\t\t));";
-		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." check if new item";
-		$addButton[] = "\t\t\t\t\$ref = '';";
-		$addButton[] = "\t\t\t\tif (!is_null(\$values['id']) && strlen(\$values['view']))";
-		$addButton[] = "\t\t\t\t{";
-		$addButton[] = "\t\t\t\t\t//".$this->setLine(__LINE__)." only load referal if not new item.";
-		$addButton[] = "\t\t\t\t\t\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
-		$addButton[] = "\t\t\t\t}";
-		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build the button";
-		$addButton[] = "\t\t\t\t\$button = '<a class=\"btn btn-small btn-success\"";
+		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build Create button";
+		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText::sprintf('".$this->langPrefix."_CREATE_NEW_S', ".$this->fileContentStatic['###Component###']."Helper::safeString(\$buttonName, 'W')).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
 		$addButton[] = "\t\t\t\t\thref=\"index.php?option=com_" . $this->fileContentStatic['###component###'] . "&amp;view=" . $targetView . "&amp;layout=edit'.\$ref.'\" >";
-		$addButton[] = "\t\t\t\t\t<span class=\"icon-new icon-white\"></span>' . JText::_('COM_".$this->fileContentStatic['###COMPONENT###']."_NEW') . '</a>';";
-		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." return the button attached to input field";
-		$addButton[] = "\t\t\t\treturn \$html . \$button;";
+		$addButton[] = "\t\t\t\t\t<span class=\"icon-new icon-white\"></span></a>';";
+		$addButton[] = "\t\t\t}";
+		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." only add if user allowed to edit " . $targetView;
+		// check if the item has permissions.
+		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($targetView,$this->permissionBuilder['global'][$core['core.edit']]))
+		{
+			$addButton[] = "\t\t\tif ((\$buttonName == '".$targetView."' || \$buttonName == '".$targetViews."') && \$user->authorise('".$core['core.edit']."', 'com_".$this->fileContentStatic['###component###']."'))";
+		}
+		else
+		{
+			$addButton[] = "\t\t\tif ((\$buttonName == '".$targetView."' || \$buttonName == '".$targetViews."')  && \$user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###']."'))";
+		}
+		$addButton[] = "\t\t\t{";
+		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build edit button";
+		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText::sprintf('".$this->langPrefix."_EDIT_S', ".$this->fileContentStatic['###Component###']."Helper::safeString(\$buttonName, 'W')).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
+		$addButton[] = "\t\t\t\t\t<span class=\"icon-edit\"></span></a>';";
+		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build script";
+		$addButton[] = "\t\t\t\t\$script[] = \"";
+		$addButton[] = "\t\t\t\t\tjQuery(document).ready(function() {";
+		$addButton[] = "\t\t\t\t\t\tjQuery('#adminForm').on('change', '#jform_\".\$buttonName.\"',function (e) {";
+		$addButton[] = "\t\t\t\t\t\t\te.preventDefault();";
+		$addButton[] = "\t\t\t\t\t\t\tvar \".\$buttonName.\"Value = jQuery('#jform_\".\$buttonName.\"').val();";
+		$addButton[] = "\t\t\t\t\t\t\t\".\$buttonName.\"Button(\".\$buttonName.\"Value);";
+		$addButton[] = "\t\t\t\t\t\t});";		
+		$addButton[] = "\t\t\t\t\t\tvar \".\$buttonName.\"Value = jQuery('#jform_\".\$buttonName.\"').val();";
+		$addButton[] = "\t\t\t\t\t\t\".\$buttonName.\"Button(\".\$buttonName.\"Value);";
+		$addButton[] = "\t\t\t\t\t});";
+		$addButton[] = "\t\t\t\t\tfunction \".\$buttonName.\"Button(value) {";
+		$addButton[] = "\t\t\t\t\t\tif (value > 0) {"; // TODO not ideal since value may not be an (int)
+		$addButton[] = "\t\t\t\t\t\t\t// hide the create button";
+		$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Create').hide();";
+		$addButton[] = "\t\t\t\t\t\t\t// show edit button";
+		$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Edit').show();";
+		$addButton[] = "\t\t\t\t\t\t\tvar url = 'index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=".$targetViews."&task=" . $targetView . ".edit&id='+value+'\".\$refJ.\"';"; // TODO this value may not be the ID
+		$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Edit').attr('href', url);";
+		$addButton[] = "\t\t\t\t\t\t} else {";
+		$addButton[] = "\t\t\t\t\t\t\t// show the create button";
+		$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Create').show();";
+		$addButton[] = "\t\t\t\t\t\t\t// hide edit button";
+		$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Edit').hide();";
+		$addButton[] = "\t\t\t\t\t\t}";
+		$addButton[] = "\t\t\t\t\t}\";";
+		$addButton[] = "\t\t\t}";
+		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." check if button was created for " . $targetView ." field.";
+		$addButton[] = "\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$button))";
+		$addButton[] = "\t\t\t{";
+		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." Add some final script";
+		$addButton[] = "\t\t\t\t\$script[] = \"";
+		$addButton[] = "\t\t\t\t\tjQuery(document).ready(function() {";
+		$addButton[] = "\t\t\t\t\t\tjQuery('#jform_\".\$buttonName.\"').closest('.control-group').addClass('input-append');";
+		$addButton[] = "\t\t\t\t\t});\";";
+		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." Load the needed script.";
+		$addButton[] = "\t\t\t\t\$document = JFactory::getDocument();";
+		$addButton[] = "\t\t\t\t\$document->addScriptDeclaration(implode(' ',\$script));";
+		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." return the button attached to input field.";
+		$addButton[] = "\t\t\t\treturn \$html . implode('',\$button);";
 		$addButton[] = "\t\t\t}";
 		$addButton[] = "\t\t}";
 		$addButton[] = "\t\treturn \$html;";

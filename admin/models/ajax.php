@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.7
-	@build			4th May, 2016
+	@build			6th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -401,7 +401,7 @@ class ComponentbuilderModelAjax extends JModelList
 			$script['view'][] = "\tvar outerDiv = \$('body');";
 			$script['view'][] = "";
 			$script['view'][] = "\n\t\$('<div id=\"loading\"></div>')";
-			$script['view'][] = "\t\t.css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat\")";
+			$script['view'][] = "\t\t.css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_###-#-#-component###/assets/images/import.gif') 50% 15% no-repeat\")";
 			$script['view'][] = "\t\t.css(\"top\", outerDiv.position().top - \$(window).scrollTop())";
 			$script['view'][] = "\t\t.css(\"left\", outerDiv.position().left - \$(window).scrollLeft())";
 			$script['view'][] = "\t\t.css(\"width\", outerDiv.width())";
@@ -417,7 +417,7 @@ class ComponentbuilderModelAjax extends JModelList
 			$script['view'][] = "\n</script>";
 			$script['view'][] = "";
 			$script['view'][] = "\n<div id=\"installer-import\" class=\"clearfix\">";
-			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo JRoute::_('index.php?option=com_componentbuilder&view=import_###-#-#-views###');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
+			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo JRoute::_('index.php?option=com_###-#-#-component###&view=import_###-#-#-views###');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
 			$script['view'][] = "";
 			$script['view'][] = "\n\t<?php if (!empty( \$this->sidebar)) : ?>";
 			$script['view'][] = "\t\t<div id=\"j-sidebar-container\" class=\"span2\">";

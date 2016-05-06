@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.7
-	@build			4th May, 2016
+	@build			6th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_above.php

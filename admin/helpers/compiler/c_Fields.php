@@ -1709,7 +1709,7 @@ class Fields extends Structure
 			// ###type### <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfield_'.$data['type']]['###type###'] = $data['custom']['type'];
 			// ###type### <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_'.$data['type']]['###ADD_BUTTON###'] = $this->setAddButttonToListField($data['custom']['view']);
+			$this->fileContentDynamic['customfield_'.$data['type']]['###ADD_BUTTON###'] = $this->setAddButttonToListField($data['custom']['view'],$data['custom']['views']);
 		}
 	}
 
