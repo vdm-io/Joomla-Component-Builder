@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.7
-	@build			6th May, 2016
+	@version		2.1.8
+	@build			7th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_batch_body.php

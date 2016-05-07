@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.7
-	@build			6th May, 2016
+	@version		2.1.8
+	@build			7th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -342,33 +342,54 @@ jQuery('#adminForm').on('change', '#jform_add_php_dashboard_methods',function (e
 
 
 
-<?php $fieldNrs = range(1,10,1); ?>
-<?php foreach($fieldNrs as $nr): ?>jQuery('body').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
+<?php $fieldNrs = range(1,50,1); ?>
+<?php foreach($fieldNrs as $nr): ?>jQuery('#jform_addadmin_views_modal').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
 	// update the icon if changed
-	var val_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
-	var key_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"]').attr('id').split('-');
-	var target_<?php echo $nr; ?> = key_<?php echo $nr; ?>[0]+'_'+key_<?php echo $nr; ?>[1]+'_chzn';
-	var div_<?php echo $nr; ?> = jQuery('#'+target_<?php echo $nr; ?>);
+	var vala_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
 	// build new span
-	var span = '<span id="icon_'+target_<?php echo $nr; ?>+'" class="icon-'+val_<?php echo $nr; ?>+'"></span>';
+	var span = '<span id="icon_addadmin_views_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
 	// remove old one 
-	jQuery('#icon_'+target_<?php echo $nr; ?>).remove();
+	jQuery('#icon_addadmin_views_fields_icomoon_<?php echo $nr; ?>').remove();
 	// add the new icon
-	div_<?php echo $nr; ?>.closest("td").append(span);
+	jQuery('#jform_addadmin_views_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
 });
 
 jQuery(document).ready(function() {
-	// get type value
-	var val_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
-	var key_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"]').attr('id').split('-');
-	var target_<?php echo $nr; ?> = key_<?php echo $nr; ?>[0]+'_'+key_<?php echo $nr; ?>[1]+'_chzn';
-	var div_<?php echo $nr; ?> = jQuery('#'+target_<?php echo $nr; ?>);
+jQuery('input.form-field-repeatable').on('row-add', function (e) {
+	// show the icon if set
+	var vala_<?php echo $nr; ?> = jQuery('#jform_addadmin_views_fields_icomoon-<?php echo $nr; ?>').val();
 	// build new span
-	var span = '<span id="icon_'+target_<?php echo $nr; ?>+'" class="icon-'+val_<?php echo $nr; ?>+'"></span>';
+	var span = '<span id="icon_addadmin_views_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
 	// remove old one 
-	jQuery('#icon_'+target_<?php echo $nr; ?>).remove();
+	jQuery('#icon_addadmin_views_fields_icomoon_<?php echo $nr; ?>').remove();
 	// add the new icon
-	div_<?php echo $nr; ?>.closest("td").append(span);
+	jQuery('#jform_addadmin_views_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
+});
+});
+<?php endforeach; ?>
+<?php $fieldNrs = range(1,50,1); ?>
+<?php foreach($fieldNrs as $nr): ?>jQuery('#jform_addcustom_admin_views_modal').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
+	// update the icon if changed
+	var val_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
+	// build new span
+	var span = '<span id="icon_addcustom_admin_views_fields_icomoon_<?php echo $nr; ?>" class="icon-'+val_<?php echo $nr; ?>+'"></span>';
+	// remove old one 
+	jQuery('#icon_addcustom_admin_views_fields_icomoon_<?php echo $nr; ?>').remove();
+	// add the new icon
+	jQuery('#jform_addcustom_admin_views_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
+});
+
+jQuery(document).ready(function() {
+jQuery('input.form-field-repeatable').on('row-add', function (e) {
+	// show the icon if set
+	var val_<?php echo $nr; ?> = jQuery('#jform_addcustom_admin_views_fields_icomoon-<?php echo $nr; ?>').val();
+	// build new span
+	var span = '<span id="icon_addcustom_admin_views_fields_icomoon_<?php echo $nr; ?>" class="icon-'+val_<?php echo $nr; ?>+'"></span>';
+	// remove old one 
+	jQuery('#icon_addcustom_admin_views_fields_icomoon_<?php echo $nr; ?>').remove();
+	// add the new icon
+	jQuery('#jform_addcustom_admin_views_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
+});
 });
 <?php endforeach; ?>
 </script>

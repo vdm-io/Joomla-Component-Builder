@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.7
-	@build			6th May, 2016
+	@version		2.1.8
+	@build			7th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -196,27 +196,13 @@ class ComponentbuilderViewComponent extends JViewLegacy
 		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_EDIT'));
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component.css"); 
 
-		// Add the CSS for Footable.
-		$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.core.min.css');
+		// Add the CSS for Footable
+		$document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
+		$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.standalone.min.css');
+		// Add the JavaScript for Footable (adding all funtions)
+		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.min.js');
 
-		// Use the Metro Style
-		if (!isset($this->fooTableStyle) || 0 == $this->fooTableStyle)
-		{
-			$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.metro.min.css');
-		}
-		// Use the Legacy Style.
-		elseif (isset($this->fooTableStyle) && 1 == $this->fooTableStyle)
-		{
-			$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.standalone.min.css');
-		}
-
-		// Add the JavaScript for Footable
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.js');
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.sort.js');
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.filter.js');
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.paginate.js');
-
-		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable(); }); jQuery('.nav-tabs').on('click', 'li', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('.footable').trigger('footable_resize'); }";
+		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
 		$document->addScriptDeclaration($footable);
 
 		$document->addScript(JURI::root() . $this->script);

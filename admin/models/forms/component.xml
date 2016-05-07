@@ -954,7 +954,7 @@
 			class="addadmin_view"
 			select="COM_COMPONENTBUILDER_COMPONENT_ADDADMIN_VIEWS_SELECT"
 			icon="list"
-			maximum="500">
+			maximum="50">
 			<fields name="addadmin_views_fields" label="">
 				<fieldset hidden="true" name="addadmin_views_modal" repeat="true">
 					<!-- Adminview Field. Type: Adminviews. (custom) -->

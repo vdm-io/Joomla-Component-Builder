@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.7
-	@build			6th May, 2016
+	@version		2.1.8
+	@build			7th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -249,7 +249,32 @@ jQuery('#adminForm').on('change', '#jform_add_css',function (e)
 });
 
 
-jQuery(function() {
+
+<?php $fieldNrs = range(1,7,1); ?>
+<?php foreach($fieldNrs as $nr): ?>jQuery('#jform_custom_button_modal').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
+	// update the icon if changed
+	var vala_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
+	// build new span
+	var span = '<span id="icon_custom_button_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
+	// remove old one 
+	jQuery('#icon_custom_button_fields_icomoon_<?php echo $nr; ?>').remove();
+	// add the new icon
+	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
+});
+
+jQuery(document).ready(function() {
+jQuery('input.form-field-repeatable').on('row-add', function (e) {
+	// show the icon if set
+	var vala_<?php echo $nr; ?> = jQuery('#jform_custom_button_fields_icomoon-<?php echo $nr; ?>').val();
+	// build new span
+	var span = '<span id="icon_custom_button_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
+	// remove old one 
+	jQuery('#icon_custom_button_fields_icomoon_<?php echo $nr; ?>').remove();
+	// add the new icon
+	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
+});
+});
+<?php endforeach; ?>jQuery(function() {
     jQuery("code").click(function() {
         jQuery(this).selText().addClass("selected");
     });

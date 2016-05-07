@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.7
-	@build			6th May, 2016
+	@version		2.1.8
+	@build			7th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields_fullwidth.php
@@ -43,34 +43,34 @@ $can	= ComponentbuilderHelper::getActions('field');
 	<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a><br /><br />
 <?php endif; ?>
 <?php if (ComponentbuilderHelper::checkArray($items)): ?>
-<table class="footable table data fields metro-blue" data-page-size="20" data-filter="#filter_fields">
+<table class="footable table data fields" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
 <thead>
 	<tr>
-		<th data-toggle="true">
+		<th data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'); ?>
 		</th>
-		<th data-hide="phone">
+		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'); ?>
 		</th>
-		<th data-hide="phone">
+		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL'); ?>
 		</th>
-		<th data-hide="phone,tablet">
+		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL'); ?>
 		</th>
-		<th data-hide="phone,tablet">
+		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'); ?>
 		</th>
-		<th data-hide="phone,tablet">
+		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY'); ?>
 		</th>
-		<th data-hide="all">
+		<th data-breakpoints="all" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'); ?>
 		</th>
-		<th width="10" data-hide="phone,tablet">
+		<th width="10" data-breakpoints="xs sm md">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STATUS'); ?>
 		</th>
-		<th width="5" data-type="numeric" data-hide="phone,tablet">
+		<th width="5" data-type="number" data-breakpoints="xs sm md">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_ID'); ?>
 		</th>
 	</tr>
@@ -120,25 +120,25 @@ $can	= ComponentbuilderHelper::getActions('field');
 			<?php echo JText::_($item->store); ?>
 		</td>
 		<?php if ($item->published == 1):?>
-			<td class="center"  data-value="1">
+			<td class="center"  data-sort-value="1">
 				<span class="status-metro status-published" title="<?php echo JText::_('PUBLISHED');  ?>">
 					<?php echo JText::_('PUBLISHED'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == 0):?>
-			<td class="center"  data-value="2">
+			<td class="center"  data-sort-value="2">
 				<span class="status-metro status-inactive" title="<?php echo JText::_('INACTIVE');  ?>">
 					<?php echo JText::_('INACTIVE'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == 2):?>
-			<td class="center"  data-value="3">
+			<td class="center"  data-sort-value="3">
 				<span class="status-metro status-archived" title="<?php echo JText::_('ARCHIVED');  ?>">
 					<?php echo JText::_('ARCHIVED'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == -2):?>
-			<td class="center"  data-value="4">
+			<td class="center"  data-sort-value="4">
 				<span class="status-metro status-trashed" title="<?php echo JText::_('ARCHIVED');  ?>">
 					<?php echo JText::_('ARCHIVED'); ?>
 				</span>
@@ -150,13 +150,6 @@ $can	= ComponentbuilderHelper::getActions('field');
 	</tr>
 <?php endforeach; ?>
 </tbody>
-<tfoot class="hide-if-no-paging">
-	<tr>
-		<td colspan="9">
-			<div class="pagination pagination-centered"></div>
-		</td>
-	</tr>
-</tfoot>
 </table>
 <?php else: ?>
 	<div class="alert alert-no-items">
