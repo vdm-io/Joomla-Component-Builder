@@ -5065,7 +5065,10 @@ class Interpretation extends Fields
 				if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']))
 				{
 					$item['id'] = $item['code'];
-					$item['code'] = $item['code'].'_'.$item['custom']['text'];
+					if (!$item['multiple'])
+					{
+						$item['code'] = $item['code'].'_'.$item['custom']['text'];
+					}
 				}
 				// check if translated vlaue is used
 				if (isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list])
@@ -6019,7 +6022,10 @@ class Interpretation extends Fields
 				if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']))
 				{
 					$item['id'] = $item['code'];
-					$item['code'] = $item['code'].'_'.$item['custom']['text'];
+					if (!$item['multiple'])
+					{
+						$item['code'] = $item['code'].'_'.$item['custom']['text'];
+					}
 				}
 				// check if translated vlaue is used
 				if (isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list])
@@ -10327,11 +10333,17 @@ class Interpretation extends Fields
 							$fix .= "\n\t".$tab."\t\t\t\t}";
 							$fix .= "\n\t".$tab."\t\t\t}";
 						}
+						elseif ($item['method'] == 1 && !$export)
+						{
+							// TODO we check if this works well.
+							$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
+							$fix .= "\n\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].", ', ', '".$item['name']."');";
+						}
 						else
 						{
 							if (!$export)
 							{
-								// TODO we must add options for multi custom selection.
+								// For thos we have not cached yet.
 								$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
 								$fix .= "\n\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].");";
 							}

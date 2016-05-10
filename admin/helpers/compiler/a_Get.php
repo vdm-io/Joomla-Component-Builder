@@ -1101,7 +1101,7 @@ class Get
 			}
 			
 			// add_Ajax for this view
-			if ($view->add_php_ajax == 1)
+			if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 			{
 				$addAjaxSite = false;
 				if (isset($this->siteEditView[$id]) && $this->siteEditView[$id])
@@ -1128,16 +1128,20 @@ class Get
 							$this->customScriptBuilder['admin']['ajax_controller'][$name_single][$nr][$option] = $value;
 						}
 					}
+					$this->addAjax = true;
+					unset($view->ajax_input);
+				}
+				if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
+				{
 					if ($addAjaxSite)
 					{
 						$this->customScriptBuilder['site']['ajax_model'][$name_single] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
 					}
 					$this->customScriptBuilder['admin']['ajax_model'][$name_single] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
+					// unset anyway
+					unset($view->php_ajaxmethod);
 					$this->addAjax = true;
-					unset($view->ajax_input);
 				}
-				// unset anyway
-				unset($view->php_ajaxmethod);
 			}
 			// add_sql
 			if ($view->add_sql == 1)
@@ -1303,9 +1307,14 @@ class Get
 						$this->customScriptBuilder[$this->target]['ajax_controller'][$view->code][$nr][$option] = $value;
 					}
 				}
-				$this->customScriptBuilder[$this->target]['ajax_model'][$view->code] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
 				$this->addSiteAjax = true;
 				unset($view->ajax_input);
+			}
+			if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
+			{
+				
+				$this->customScriptBuilder[$this->target]['ajax_model'][$view->code] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
+				$this->addSiteAjax = true;
 			}
 			// unset anyway
 			unset($view->php_ajaxmethod);

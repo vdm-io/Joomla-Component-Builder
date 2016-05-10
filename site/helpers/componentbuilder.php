@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.8
-	@build			7th May, 2016
+	@build			10th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -32,34 +32,37 @@ defined('_JEXEC') or die('Restricted access');
  */
 abstract class ComponentbuilderHelper
 {###SITE_GLOBAL_EVENT_HELPER### ###SITE_CUSTOM_HELPER_SCRIPT###
-
-	public static function jsonToString($value)
+	
+	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{
-		// check if string is JSON
-		$result = json_decode($value, true);
-		if (json_last_error() === JSON_ERROR_NONE) {
+                // check if string is JSON
+                $result = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE)
+		{
 			// is JSON
-				if (self::checkArray($result))
+			if (self::checkArray($result))
+			{
+				if (self::checkString($table))
 				{
-					$value = '';
-					$counter = 0;
-					foreach ($result as $string)
+					$names = array();
+					foreach ($result as $val)
 					{
-						if ($counter)
+						if ($name = self::getVar($table, $val, 'id', 'name'))
 						{
-							$value .= ", ".$string;
+							$names[] = $name;
 						}
-						else
-						{
-							$value .= $string;
-						}
-						$counter++;
 					}
+					if (self::checkArray($names))
+					{
+						return (string) implode($sperator,$names);
+					}	
 				}
-			return json_decode($value);
-		}
-		return $value;
-	}
+				return (string) implode($sperator,$result);
+			}
+                        return (string) json_decode($value);
+                }
+                return $value;
+        }
 	
 	/**
 	*	Load the Component xml manifest.

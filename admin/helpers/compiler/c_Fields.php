@@ -1413,6 +1413,7 @@ class Fields extends Structure
 			    'link' => ($field['link']) ? true : false,
 			    'sort' => ($field['sort']) ? true : false,
 			    'custom' => $custom,
+			    'multiple' => $multiple,
 			    'options' => $options);
 
 			$this->customBuilderList[$listViewName][] = $name;

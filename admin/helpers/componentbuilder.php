@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.8
-	@build			7th May, 2016
+	@build			10th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -710,31 +710,33 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	public static function jsonToString($value, $sperator = ", ")
+	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{
                 // check if string is JSON
                 $result = json_decode($value, true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                // is JSON
+                if (json_last_error() === JSON_ERROR_NONE)
+		{
+			// is JSON
 			if (self::checkArray($result))
 			{
-				$value = '';
-				$counter = 0;
-				foreach ($result as $string)
+				if (self::checkString($table))
 				{
-					if ($counter)
+					$names = array();
+					foreach ($result as $val)
 					{
-						$value .= $sperator.$string;
+						if ($name = self::getVar($table, $val, 'id', 'name'))
+						{
+							$names[] = $name;
+						}
 					}
-					else
+					if (self::checkArray($names))
 					{
-						$value .= $string;
-					}
-					$counter++;
+						return (string) implode($sperator,$names);
+					}	
 				}
-				return $value;
+				return (string) implode($sperator,$result);
 			}
-                        return json_decode($value);
+                        return (string) json_decode($value);
                 }
                 return $value;
         }
