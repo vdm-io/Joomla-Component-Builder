@@ -1340,6 +1340,7 @@ class Fields extends Structure
 			$this->queryBuilder[$viewName][$name] = array(
 			    'type' => $field['settings']->datatype,
 			    'lenght' => $field['settings']->datalenght,
+			    'lenght_other' => $field['settings']->datalenght_other,
 			    'default' => $field['settings']->datadefault,
 			    'other' => $field['settings']->datadefault_other,
 			    'null_switch' => $field['settings']->null_switch);

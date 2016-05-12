@@ -4647,7 +4647,11 @@ class Interpretation extends Fields
 					}
 					// set the lenght
 					$lenght = '';
-					if (isset($data['lenght']) && $data['lenght'] > 0)
+					if ($data['lenght'] == 'Other' && isset($data['lenght_other']) && $data['lenght_other'] > 0)
+					{
+						$lenght = '('.$data['lenght_other'].')';
+					}
+					elseif (isset($data['lenght']) && $data['lenght'] > 0)
 					{
 						$lenght = '('.$data['lenght'].')';
 					}
