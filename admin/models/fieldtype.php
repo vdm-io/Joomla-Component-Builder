@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.8
-	@build			12th May, 2016
+	@version		2.1.9
+	@build			20th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -112,7 +112,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyzfields()
+	public function getVzafields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -196,13 +196,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVyzfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVzafields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVyzfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVzafields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVyzfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVzafields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVyzfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVzafields($item->store, 'store');
 				}
 			}
 
@@ -216,7 +216,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVyzfields($value,$name)
+	public function selectionTranslationVzafields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

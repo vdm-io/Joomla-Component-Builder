@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.8
-	@build			12th May, 2016
+	@version		2.1.9
+	@build			20th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		custom_import_fullwidth.php
@@ -34,6 +34,7 @@ $fields = $displayData->get('fields') ?: array(
 	'note_beginner_import',
 	'note_advanced_import',
 	'add_custom_import',
+	'php_import_display',
 	'html_import_view',
 	'php_import',
 	'php_import_setdata',

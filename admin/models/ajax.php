@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.8
-	@build			12th May, 2016
+	@version		2.1.9
+	@build			20th May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -48,7 +48,56 @@ class ComponentbuilderModelAjax extends JModelList
 	public function getImportScripts($type)
 	{
 		$script = array();
-		if ('setdata' == $type)
+		if ('display' == $type)
+		{
+			// set the display script
+			$script['display'][] = "\tprotected \$headerList;";
+			$script['display'][] = "\tprotected \$hasPackage = false;";
+			$script['display'][] = "\tprotected \$headers;";
+			$script['display'][] = "\tprotected \$hasHeader = 0;";
+			$script['display'][] = "\tprotected \$dataType;";
+			$script['display'][] = "\n\tpublic function display(\$tpl = null)";
+			$script['display'][] = "\t{";
+			$script['display'][] = "\t\tif (\$this->getLayout() !== 'modal')";
+			$script['display'][] = "\t\t{";
+			$script['display'][] = "\t\t\t// Include helper submenu";
+			$script['display'][] = "\t\t\t###-#-#-Component###Helper::addSubmenu('import');";
+			$script['display'][] = "\t\t}";
+			$script['display'][] = "\n\t\t// Check for errors.";
+			$script['display'][] = "\t\tif (count(\$errors = \$this->get('Errors'))){";
+			$script['display'][] = "\t\t\tJError::raiseError(500, implode('<br />', \$errors));";
+			$script['display'][] = "\t\t\treturn false;";
+			$script['display'][] = "\t\t}";
+			$script['display'][] = "\n\t\t\$paths = new stdClass;";
+			$script['display'][] = "\t\t\$paths->first = '';";
+			$script['display'][] = "\t\t\$state = \$this->get('state');";
+			$script['display'][] = "\n\t\t\$this->paths = &\$paths;";
+			$script['display'][] = "\t\t\$this->state = &\$state;";
+			$script['display'][] = "\t\t// get global action permissions";
+			$script['display'][] = "\t\t\$this->canDo = ###-#-#-Component###Helper::getActions('import');";
+			$script['display'][] = "\n\t\t// We don't need toolbar in the modal window.";
+			$script['display'][] = "\t\tif (\$this->getLayout() !== 'modal')";
+			$script['display'][] = "\t\t{";
+			$script['display'][] = "\t\t\t\$this->addToolbar();";
+			$script['display'][] = "\t\t\t\$this->sidebar = JHtmlSidebar::render();";
+			$script['display'][] = "\t\t}";
+			$script['display'][] = "\n\t\t// get the session object";
+			$script['display'][] = "\t\t\$session = JFactory::getSession();";
+			$script['display'][] = "\t\t// check if it has package";
+			$script['display'][] = "\t\t\$this->hasPackage \t= \$session->get('hasPackage', false);";
+			$script['display'][] = "\t\t\$this->dataType \t= \$session->get('dataType', false);";
+			$script['display'][] = "\t\tif(\$this->hasPackage && \$this->dataType)";
+			$script['display'][] = "\t\t{";
+			$script['display'][] = "\t\t\t\$this->headerList \t= json_decode(\$session->get(\$this->dataType.'_VDM_IMPORTHEADERS', false),true);";
+			$script['display'][] = "\t\t\t\$this->headers \t\t= ###-#-#-Component###Helper::getFileHeaders(\$this->dataType);";
+			$script['display'][] = "\t\t\t// clear the data type";
+			$script['display'][] = "\t\t\t\$session->clear('dataType');";
+			$script['display'][] = "\t\t}";
+			$script['display'][] = "\n\t\t// Display the template";
+			$script['display'][] = "\t\tparent::display(\$tpl);";
+			$script['display'][] = "\t}";
+		}
+		elseif ('setdata' == $type)
 		{
 			// set the setdata script
 			$script['setdata'] = array();

@@ -1500,7 +1500,7 @@ class Fields extends Structure
 			$this->catCodeBuilder[$viewName] = array('code' => $name, 'views' => $otherViews, 'view' => $otherView);
 		}
 		// setup checkbox for this view
-		if ($typeName == 'checkbox')
+		if ($typeName == 'checkbox' || (ComponentbuilderHelper::checkArray($custom) && isset($custom['extends']) && $custom['extends'] == 'checkboxes'))
 		{
 			$this->checkboxBuilder[$viewName][] = $name;
 		}

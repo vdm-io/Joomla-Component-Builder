@@ -6917,6 +6917,12 @@ class Interpretation extends Fields
 		$target = array('admin' => 'import_'.$viewName_list);
 		$this->buildDynamique($target,'customimport');
 		// load the custom script to the files
+		if (isset($this->customScriptBuilder['php_import_display']['import_'.$viewName_list]))
+		{
+			// ###IMPORT_DISPLAY_METHOD_CUSTOM### <<<DYNAMIC>>>
+			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DISPLAY_METHOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_display']['import_'.$viewName_list]);
+			unset($this->customScriptBuilder['php_import_display']['import_'.$viewName_list]);
+		}
 		if (isset($this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]))
 		{
 			// ###IMPORT_SETDATE_METHOD_CUSTOM### <<<DYNAMIC>>>

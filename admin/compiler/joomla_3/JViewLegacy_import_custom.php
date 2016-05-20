@@ -36,59 +36,7 @@ jimport('joomla.application.component.view');
  * ###Component### ###View### View
  */
 class ###Component###View###View### extends JViewLegacy
-{
-	protected $headerList;
-	protected $hasPackage = false;
-	protected $headers;
-	protected $hasHeader = 0;
-	protected $dataType;
-
-	public function display($tpl = null)
-	{
-		if ($this->getLayout() !== 'modal')
-		{
-			// Include helper submenu
-			###Component###Helper::addSubmenu('import');
-		}
-
-		// Check for errors.
-		if (count($errors = $this->get('Errors'))){
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
-		$paths = new stdClass;
-		$paths->first = '';
-		$state = $this->get('state');
-
-		$this->paths = &$paths;
-		$this->state = &$state;
-                // get global action permissions
-		$this->canDo = ###Component###Helper::getActions('import');
-
-		// We don't need toolbar in the modal window.
-		if ($this->getLayout() !== 'modal')
-		{
-			$this->addToolbar();
-			$this->sidebar = JHtmlSidebar::render();
-		}
-
-		// get the session object
-		$session = JFactory::getSession();
-		// check if it has package
-		$this->hasPackage 	= $session->get('hasPackage', false);
-		$this->dataType 	= $session->get('dataType', false);
-		if($this->hasPackage && $this->dataType)
-		{
-			$this->headerList 	= json_decode($session->get($this->dataType.'_VDM_IMPORTHEADERS', false),true);
-			$this->headers 		= ###Component###Helper::getFileHeaders($this->dataType);
-			// clear the data type
-			$session->clear('dataType');
-		}
-
-		// Display the template
-		parent::display($tpl);
-	}
+{###IMPORT_DISPLAY_METHOD_CUSTOM###
 
 	/**
 	 * Setting the toolbar
