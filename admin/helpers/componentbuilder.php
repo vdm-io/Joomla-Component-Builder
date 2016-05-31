@@ -75,11 +75,9 @@ abstract class ComponentbuilderHelper
 	{
 		// set image
 		$image = JPATH_SITE.'/'.$path;
-		// chack if exists
-		if (file_exists($image))
+		// check if exists
+		if (file_exists($image) && $result = @getimagesize($image))
 		{
-			// get image info
-			$result = getimagesize($image);
 			// return type request
 			switch ($request)
 			{

@@ -1074,12 +1074,20 @@ class Get
 			// add_css_view
 			if ($view->add_css_view == 1)
 			{
+				if (!isset($this->customScriptBuilder['css_view'][$name_single]))
+				{
+					$this->customScriptBuilder['css_view'][$name_single] = '';
+				}
 				$this->customScriptBuilder['css_view'][$name_single] .= base64_decode($view->css_view);
 				unset($view->css_view);
 			}
 			// add_css_views
 			if ($view->add_css_views == 1)
 			{
+				if (!isset($this->customScriptBuilder['css_views'][$name_single]))
+				{
+					$this->customScriptBuilder['css_views'][$name_single] = '';
+				}
 				$this->customScriptBuilder['css_views'][$name_list] .= base64_decode($view->css_views);
 				unset($view->css_views);
 			}

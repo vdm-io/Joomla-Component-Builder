@@ -36,7 +36,7 @@ Would you require more help please open and issue here on [gitHub today](https:/
 + *Version*: 2.1.10
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **82827**
++ *Line count*: **82957**
 + *File count*: **503**
 + *Folder count*: **99**
 

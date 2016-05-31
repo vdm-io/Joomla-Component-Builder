@@ -5838,7 +5838,8 @@ class Interpretation extends Fields
 	
 	public function setFadeInEfect(&$view)
 	{
-		if ($view->add_fadein == 1)
+		// check if we should load the fade in affect
+		if ($view['settings']->add_fadein == 1)
 		{
 			// set view name
 			$fadein[] = "<script type=\"text/javascript\">";
