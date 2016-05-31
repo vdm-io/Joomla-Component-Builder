@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.9
-	@build			20th May, 2016
+	@version		2.1.10
+	@build			31st May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldsmulti.php
@@ -82,7 +82,12 @@ class JFormFieldFieldsmulti extends JFormFieldList
 			if ($user->authorise('field.create', 'com_componentbuilder'))
 			{
 				// build Create button
-				$button[] = '<a id="'.$buttonName.'Create" class="btn btn-small btn-success hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($buttonName, 'W')).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
+				$buttonNamee = trim($buttonName);
+				$buttonNamee = preg_replace('/_+/', ' ', $buttonNamee);
+				$buttonNamee = preg_replace('/\s+/', ' ', $buttonNamee);
+				$buttonNamee = preg_replace("/[^A-Za-z ]/", '', $buttonNamee);
+				$buttonNamee = ucfirst(strtolower($buttonNamee));
+				$button[] = '<a id="'.$buttonName.'Create" class="btn btn-small btn-success hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', $buttonNamee).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
 					href="index.php?option=com_componentbuilder&amp;view=field&amp;layout=edit'.$ref.'" >
 					<span class="icon-new icon-white"></span></a>';
 			}
@@ -90,7 +95,12 @@ class JFormFieldFieldsmulti extends JFormFieldList
 			if (($buttonName == 'field' || $buttonName == 'fields') && $user->authorise('field.edit', 'com_componentbuilder'))
 			{
 				// build edit button
-				$button[] = '<a id="'.$buttonName.'Edit" class="btn btn-small hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_EDIT_S', ComponentbuilderHelper::safeString($buttonName, 'W')).'" style="display: none; padding: 4px 4px 4px 7px;" href="#" >
+				$buttonNamee = trim($buttonName);
+				$buttonNamee = preg_replace('/_+/', ' ', $buttonNamee);
+				$buttonNamee = preg_replace('/\s+/', ' ', $buttonNamee);
+				$buttonNamee = preg_replace("/[^A-Za-z ]/", '', $buttonNamee);
+				$buttonNamee = ucfirst(strtolower($buttonNamee));
+				$button[] = '<a id="'.$buttonName.'Edit" class="btn btn-small hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_EDIT_S', $buttonNamee).'" style="display: none; padding: 4px 4px 4px 7px;" href="#" >
 					<span class="icon-edit"></span></a>';
 				// build script
 				$script[] = "
@@ -120,7 +130,7 @@ class JFormFieldFieldsmulti extends JFormFieldList
 					}";
 			}
 			// check if button was created for field field.
-			if (ComponentbuilderHelper::checkArray($button))
+			if (is_array($button) && count($button) > 0)
 			{
 				// Add some final script
 				$script[] = "

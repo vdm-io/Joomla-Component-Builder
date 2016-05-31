@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.9
-	@build			20th May, 2016
+	@version		2.1.10
+	@build			31st May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views.php
@@ -273,6 +273,8 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->php_batchmove = base64_decode($item->php_batchmove);
 						// decode php_import_setdata
 						$item->php_import_setdata = base64_decode($item->php_import_setdata);
+						// decode php_getitem
+						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_getlistquery
 						$item->php_getlistquery = base64_decode($item->php_getlistquery);
 						// decode php_postsavehook
@@ -287,8 +289,6 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->sql = base64_decode($item->sql);
 						// decode php_import_display
 						$item->php_import_display = base64_decode($item->php_import_display);
-						// decode php_getitem
-						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_import
 						$item->php_import = base64_decode($item->php_import);
 						// decode css_view

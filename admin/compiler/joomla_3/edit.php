@@ -36,7 +36,8 @@ JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 $componentParams = JComponentHelper::getParams('com_###component###');
 ?>
-
+###EDITBODYFADEIN###
 <form action="<?php echo JRoute::_('index.php?option=com_###component###&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 ###EDITBODY###
-</form>###EDITBODYSCRIPT###
+</form>
+</div>###EDITBODYSCRIPT###

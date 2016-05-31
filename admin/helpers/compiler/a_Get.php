@@ -976,6 +976,15 @@ class Get
 									$view->conditions[$nr]['match_name']	= ComponentbuilderHelper::safeString($name);
 									$view->conditions[$nr]['match_type']	= ComponentbuilderHelper::safeString($type);
 									$view->conditions[$nr]['match_xml']		= $fieldValue['settings']->xml;
+									// if custom field load field being extended
+									if (!ComponentbuilderHelper::typeField($type))
+									{
+										$view->conditions[$nr]['match_extends'] = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'extends="','"');
+									}
+									else
+									{
+										$view->conditions[$nr]['match_extends'] = '';
+									}
 									break;
 								}
 							}

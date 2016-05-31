@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.9
-	@build			20th May, 2016
+	@version		2.1.10
+	@build			31st May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_left.php
@@ -36,6 +36,7 @@ $fields = $displayData->get('fields') ?: array(
 	'type',
 	'short_description',
 	'description',
+	'add_fadein',
 	'icon',
 	'icon_add',
 	'icon_category'

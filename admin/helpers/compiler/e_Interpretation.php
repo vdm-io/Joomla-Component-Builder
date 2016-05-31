@@ -854,18 +854,27 @@ class Interpretation extends Fields
 			$exel[] = "\t*/";
 			$exel[] = "\tpublic static function getFileHeaders(\$dataType)";
 			$exel[] = "\t{\t\t";
-			$exel[] = "\t\t//".$this->setLine(__LINE__)." make sure the file is loaded\t\t";
+			$exel[] = "\t\t//".$this->setLine(__LINE__)." make sure these files are loaded\t\t";
 			$exel[] = "\t\tJLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');";
+			$exel[] = "\t\tJLoader::import('ChunkReadFilter', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/PHPExcel/Reader');";
 			$exel[] = "\t\t//".$this->setLine(__LINE__)." get session object";
-			$exel[] = "\t\t\$session \t= JFactory::getSession();";
+			$exel[] = "\t\t\$session\t= JFactory::getSession();";
 			$exel[] = "\t\t\$package\t= \$session->get('package', null);";
 			$exel[] = "\t\t\$package\t= json_decode(\$package, true);";
 			$exel[] = "\t\t//".$this->setLine(__LINE__)." set the headers";
 			$exel[] = "\t\tif(isset(\$package['dir']))";
 			$exel[] = "\t\t{";
+			$exel[] = "\t\t\t\$chunkFilter = new PHPExcel_Reader_chunkReadFilter();";
+			$exel[] = "\t\t\t//".$this->setLine(__LINE__)." only load first three rows";
+			$exel[] = "\t\t\t\$chunkFilter->setRows(2,1);";
+			$exel[] = "\t\t\t//".$this->setLine(__LINE__)." identify the file type";
 			$exel[] = "\t\t\t\$inputFileType = PHPExcel_IOFactory::identify(\$package['dir']);";
+			$exel[] = "\t\t\t//".$this->setLine(__LINE__)." create the reader for this file type";
 			$exel[] = "\t\t\t\$excelReader = PHPExcel_IOFactory::createReader(\$inputFileType);";
+			$exel[] = "\t\t\t//".$this->setLine(__LINE__)." load the limiting filter";
+			$exel[] = "\t\t\t\$excelReader->setReadFilter(\$chunkFilter);";
 			$exel[] = "\t\t\t\$excelReader->setReadDataOnly(true);";
+			$exel[] = "\t\t\t//".$this->setLine(__LINE__)." load the rows (only first three)";
 			$exel[] = "\t\t\t\$excelObj = \$excelReader->load(\$package['dir']);";
 			$exel[] = "\t\t\t\$headers = array();";
 			$exel[] = "\t\t\tforeach (\$excelObj->getActiveSheet()->getRowIterator() as \$row)";
@@ -4379,7 +4388,7 @@ class Interpretation extends Fields
 		{
 			$batchcopy[] = "\n\t\t\tlist(\$this->table->".$title.", \$this->table->".$alias.") = \$this->_generateNewTitle(\$this->table->".$alias.", \$this->table->".$title.");";
 		}
-		elseif (!$category && !$alias && $title && $title != 'user')
+		elseif (!$category && !$alias && $title && $title != 'user' && $title != 'jobnumber') // TODO [jobnumber] just for one project (not ideal)
 		{
 			$batchcopy[] = "\n\t\t\t\$this->table->".$title." = \$this->generateUniqe('".$title."',\$this->table->".$title.");";
 		}
@@ -5826,13 +5835,47 @@ class Interpretation extends Fields
 		}
 		return '';
 	}
+	
+	public function setFadeInEfect(&$view)
+	{
+		if ($view->add_fadein == 1)
+		{
+			// set view name
+			$fadein[] = "<script type=\"text/javascript\">";
+			$fadein[] = "\t// waiting spinner";
+			$fadein[] = "\tvar outerDiv = jQuery('body');";
+			$fadein[] = "\tjQuery('<div id=\"loading\"></div>')";
+			$fadein[] = "\t\t.css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_".$this->fileContentStatic['###component###']."/assets/images/import.gif') 50% 15% no-repeat\")";
+			$fadein[] = "\t\t.css(\"top\", outerDiv.position().top - jQuery(window).scrollTop())";
+			$fadein[] = "\t\t.css(\"left\", outerDiv.position().left - jQuery(window).scrollLeft())";
+			$fadein[] = "\t\t.css(\"width\", outerDiv.width())";
+			$fadein[] = "\t\t.css(\"height\", outerDiv.height())";
+			$fadein[] = "\t\t.css(\"position\", \"fixed\")";
+			$fadein[] = "\t\t.css(\"opacity\", \"0.80\")";
+			$fadein[] = "\t\t.css(\"-ms-filter\", \"progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)\")";
+			$fadein[] = "\t\t.css(\"filter\", \"alpha(opacity = 80)\")";
+			$fadein[] = "\t\t.css(\"display\", \"none\")";
+			$fadein[] = "\t\t.appendTo(outerDiv);";
+			$fadein[] = "\tjQuery('#loading').show();";
+			$fadein[] = "\t// when page is ready remove and show";
+			$fadein[] = "\tjQuery(window).load(function() {";
+			$fadein[] = "\t\tjQuery('#".$this->fileContentStatic['###component###']."_loader').fadeIn('fast');";
+			$fadein[] = "\t\tjQuery('#loading').hide();";
+			$fadein[] = "\t});";
+			$fadein[] = "</script>";
+			$fadein[] = "<div id=\"".$this->fileContentStatic['###component###']."_loader\" style=\"display: none;\">";
+
+			return implode("\n", $fadein);
+		}
+		return "<div id=\"".$this->fileContentStatic['###component###']."_loader\">";
+	}
 
 	/**
 	 * @param $viewName_single
 	 * @param $layoutName
 	 * @param $items
 	 * @param $type
-     */
+	*/
 	public function setLayout($viewName_single, $layoutName, $items, $type)
 	{
 		// first build the layout file
@@ -7191,7 +7234,12 @@ class Interpretation extends Fields
 		}
 		$addButton[] = "\t\t\t{";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build Create button";
-		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText::sprintf('".$this->langPrefix."_CREATE_NEW_S', ".$this->fileContentStatic['###Component###']."Helper::safeString(\$buttonName, 'W')).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
+		$addButton[] = "\t\t\t\t\$buttonNamee = trim(\$buttonName);";
+                $addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/_+/', ' ', \$buttonNamee);";
+                $addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
+                $addButton[] = "\t\t\t\t\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
+		$addButton[] = "\t\t\t\t\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
+		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText::sprintf('".$this->langPrefix."_CREATE_NEW_S', \$buttonNamee).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
 		$addButton[] = "\t\t\t\t\thref=\"index.php?option=com_" . $this->fileContentStatic['###component###'] . "&amp;view=" . $targetView . "&amp;layout=edit'.\$ref.'\" >";
 		$addButton[] = "\t\t\t\t\t<span class=\"icon-new icon-white\"></span></a>';";
 		$addButton[] = "\t\t\t}";
@@ -7207,7 +7255,12 @@ class Interpretation extends Fields
 		}
 		$addButton[] = "\t\t\t{";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build edit button";
-		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText::sprintf('".$this->langPrefix."_EDIT_S', ".$this->fileContentStatic['###Component###']."Helper::safeString(\$buttonName, 'W')).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
+		$addButton[] = "\t\t\t\t\$buttonNamee = trim(\$buttonName);";
+                $addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/_+/', ' ', \$buttonNamee);";
+                $addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
+                $addButton[] = "\t\t\t\t\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
+		$addButton[] = "\t\t\t\t\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
+		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText::sprintf('".$this->langPrefix."_EDIT_S', \$buttonNamee).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
 		$addButton[] = "\t\t\t\t\t<span class=\"icon-edit\"></span></a>';";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build script";
 		$addButton[] = "\t\t\t\t\$script[] = \"";
@@ -7237,7 +7290,7 @@ class Interpretation extends Fields
 		$addButton[] = "\t\t\t\t\t}\";";
 		$addButton[] = "\t\t\t}";
 		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." check if button was created for " . $targetView ." field.";
-		$addButton[] = "\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$button))";
+		$addButton[] = "\t\t\tif (is_array(\$button) && count(\$button) > 0)";
 		$addButton[] = "\t\t\t{";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." Add some final script";
 		$addButton[] = "\t\t\t\t\$script[] = \"";
@@ -7328,7 +7381,7 @@ class Interpretation extends Fields
 							$functions[$uniqueVar][0]	= $matchName;
 							$matchNames[$matchName]		= $condition['match_name'];
 							// get the select value
-							$getValue[$matchName]		= $this->getValueScript($condition['match_type'],$condition['match_name'],$uniqueVar);
+							$getValue[$matchName]		= $this->getValueScript($condition['match_type'],$condition['match_name'],$condition['match_extends'],$uniqueVar);
 							// get the options
 							$options			= $this->getOptionsScript($condition['match_type'],$condition['match_options']);
 							// set the if values
@@ -7349,7 +7402,7 @@ class Interpretation extends Fields
 									$matchNames[$relationName]	= $relation['match_name'];
 									// get the relation option
 									$relationOptions		= $this->getOptionsScript($relation['match_type'],$relation['match_options']);
-									$getValue[$relationName]	= $this->getValueScript($relation['match_type'],$relation['match_name'],$uniqueVar);
+									$getValue[$relationName]	= $this->getValueScript($relation['match_type'],$relation['match_name'],$condition['match_extends'],$uniqueVar);
 									$ifValue[$relationName]		= $this->ifValueScript($relationName,$relation['match_behavior'],$relation['match_type'],$relationOptions);
 								}
 							}
@@ -7366,7 +7419,7 @@ class Interpretation extends Fields
 						$functions[$uniqueVar][0]	= $matchName;
 						$matchNames[$matchName]		= $condition['match_name'];
 						// get the select value
-						$getValue[$matchName]		= $this->getValueScript($condition['match_type'],$condition['match_name'],$uniqueVar);
+						$getValue[$matchName]		= $this->getValueScript($condition['match_type'],$condition['match_name'],$condition['match_extends'],$uniqueVar);
 						// get the options
 						$options			= $this->getOptionsScript($condition['match_type'],$condition['match_options']);
 						// set the if values
@@ -8196,12 +8249,12 @@ class Interpretation extends Fields
 		return $buket;
 	}
 
-	public function getValueScript($type,$name,$unique)
+	public function getValueScript($type,$name,$extends,$unique)
 	{
 		$select		= '';
 		$isArray	= false;
 		$keyName	= $name.'_'.$unique;
-		if ($type == 'checkboxes')
+		if ($type == 'checkboxes' || $extends == 'checkboxes')
 		{
 			$select =  "var ".$keyName." = [];\n\tjQuery('#jform_".$name." input[type=checkbox]').each(function()\n\t{\n\t\tif (jQuery(this).is(':checked'))\n\t\t{\n\t\t\t".$keyName.".push(jQuery(this).prop('value'));\n\t\t}\n\t});";
 			$isArray = true;

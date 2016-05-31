@@ -273,6 +273,9 @@ class Infusion extends Interpretation
 
 						// ###EDITBODY### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_single]['###EDITBODY###'] = $this->setEditBody($view);
+						
+						// ###EDITBODY### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$viewName_single]['###EDITBODYFADEIN###'] = $this->setFadeInEfect($view);
 
 						// ###JTABLECONSTRUCTOR### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_single]['###JTABLECONSTRUCTOR###'] = $this->setJtableConstructor($viewName_single);

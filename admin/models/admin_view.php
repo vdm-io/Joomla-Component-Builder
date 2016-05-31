@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.9
-	@build			20th May, 2016
+	@version		2.1.10
+	@build			31st May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -132,6 +132,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_setdata = base64_decode($item->php_import_setdata);
 			}
 
+			if (!empty($item->php_getitem))
+			{
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
+			}
+
 			if (!empty($item->php_getlistquery))
 			{
 				// base64 Decode php_getlistquery.
@@ -172,12 +178,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_import_display.
 				$item->php_import_display = base64_decode($item->php_import_display);
-			}
-
-			if (!empty($item->php_getitem))
-			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 			if (!empty($item->php_import))
@@ -1165,6 +1165,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
 		}
 
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
+		{
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
+		}
+
 		// Set the php_getlistquery string to base64 string.
 		if (isset($data['php_getlistquery']))
 		{
@@ -1205,12 +1211,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_import_display']))
 		{
 			$data['php_import_display'] = base64_encode($data['php_import_display']);
-		}
-
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
-		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_import string to base64 string.

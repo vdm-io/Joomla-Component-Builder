@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.9
-	@build			20th May, 2016
+	@version		2.1.10
+	@build			31st May, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		headercheck.php
