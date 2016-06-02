@@ -4627,7 +4627,11 @@ class Interpretation extends Fields
 
 				// setup the tables
 				$db .= "CREATE TABLE IF NOT EXISTS `#__".$component."_".$view."` (";
-				$db .= "\n\t`id` int(11) NOT NULL AUTO_INCREMENT,";
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['id']))
+				{
+					$db .= "\n\t`id` int(11) NOT NULL AUTO_INCREMENT,";
+				}
 				$db .= "\n\t`asset_id` INT(255) UNSIGNED NOT NULL DEFAULT '0',";
 				ksort($fields);
 				foreach ($fields as $field => $data)
@@ -4667,22 +4671,66 @@ class Interpretation extends Fields
 					// set the field to db
 					$db .= "\n\t`".$field."` ".$data['type'].$lenght." ".$default.",";
 				}
-				$db .= "\n\t`params` TEXT NOT NULL DEFAULT '',";
-				$db .= "\n\t`published` tinyint(1) NOT NULL DEFAULT '1',";
-				$db .= "\n\t`created_by` int(11) NOT NULL DEFAULT '0',";
-				$db .= "\n\t`modified_by` int(11) NOT NULL DEFAULT '0',";
-				$db .= "\n\t`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-				$db .= "\n\t`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-				$db .= "\n\t`checked_out` int(11) NOT NULL,";
-				$db .= "\n\t`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-				$db .= "\n\t`version` int(11) NOT NULL DEFAULT '1',";
-				$db .= "\n\t`hits` int(11) NOT NULL DEFAULT '0',";
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['params']))
+				{
+					$db .= "\n\t`params` TEXT NOT NULL DEFAULT '',";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['published']))
+				{
+					$db .= "\n\t`published` tinyint(1) NOT NULL DEFAULT '1',";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['created_by']))
+				{
+					$db .= "\n\t`created_by` int(11) NOT NULL DEFAULT '0',";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['modified_by']))
+				{
+					$db .= "\n\t`modified_by` int(11) NOT NULL DEFAULT '0',";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['created']))
+				{
+					$db .= "\n\t`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['modified']))
+				{
+					$db .= "\n\t`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['checked_out']))
+				{
+					$db .= "\n\t`checked_out` int(11) NOT NULL,";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['checked_out_time']))
+				{
+					$db .= "\n\t`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['version']))
+				{
+					$db .= "\n\t`version` int(11) NOT NULL DEFAULT '1',";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['hits']))
+				{
+					$db .= "\n\t`hits` int(11) NOT NULL DEFAULT '0',";
+				}
 				// check if view has access
 				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 				{
 					$db .= "\n\t`access` int(11) DEFAULT NULL,";
 				}
-				$db .= "\n\t`ordering` int(11) NOT NULL DEFAULT '0',";
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['ordering']))
+				{
+					$db .= "\n\t`ordering` int(11) NOT NULL DEFAULT '0',";
+				}
 				// check if metadata is added to this view
 				if (isset($this->metadataBuilder[$view]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view]))
 				{
@@ -4703,10 +4751,26 @@ class Interpretation extends Fields
 				{
 					$db .= ",\n\tKEY `idx_access` (`access`)";
 				}
-				$db .= ",\n\tKEY `idx_checkout` (`checked_out`)";
-				$db .= ",\n\tKEY `idx_createdby` (`created_by`)";
-				$db .= ",\n\tKEY `idx_modifiedby` (`modified_by`)";
-				$db .= ",\n\tKEY `idx_state` (`published`)";
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['checked_out']))
+				{
+					$db .= ",\n\tKEY `idx_checkout` (`checked_out`)";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['created_by']))
+				{
+					$db .= ",\n\tKEY `idx_createdby` (`created_by`)";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['modified_by']))
+				{
+					$db .= ",\n\tKEY `idx_modifiedby` (`modified_by`)";
+				}
+				// check if default field was over written
+				if (!isset($this->fieldsNames[$view]['published']))
+				{
+					$db .= ",\n\tKEY `idx_state` (`published`)";
+				}
 				if (isset($this->dbKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbKeys[$view]))
 				{
 					foreach ($this->dbKeys[$view] as $nr => $key)
@@ -5011,37 +5075,41 @@ class Interpretation extends Fields
 			$body .= "\n\t\t\$canDo = ".$Helper."::getActions('".$viewName_single."',\$item,'".$viewName_list."');";
 			$body .= "\n\t?>";
 			$body .= "\n\t".'<tr class="row<?php echo $i % 2; ?>">';
-			$body .= "\n\t\t".'<td class="order nowrap center hidden-phone">';
-			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit.state']]))
+			// only load if not over written
+			if (!isset($this->fieldsNames[$viewName_single]['ordering']))
 			{
-				$body .= "\n\t\t<?php if (\$canDo->get('".$core['core.edit.state']."')): ?>";
+				$body .= "\n\t\t".'<td class="order nowrap center hidden-phone">';
+				// check if the item has permissions.
+				if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit.state']]))
+				{
+					$body .= "\n\t\t<?php if (\$canDo->get('".$core['core.edit.state']."')): ?>";
+				}
+				else
+				{
+					$body .= "\n\t\t<?php if (\$canDo->get('core.edit.state')): ?>";
+				}
+				$body .= "\n\t\t\t<?php";
+				$body .= "\n\t\t\t\tif (\$this->saveOrder)";
+				$body .= "\n\t\t\t\t{";
+				$body .= "\n\t\t\t\t\t\$iconClass = ' inactive';";
+				$body .= "\n\t\t\t\t}";
+				$body .= "\n\t\t\t\telse";
+				$body .= "\n\t\t\t\t{";
+				$body .= "\n\t\t\t\t\t\$iconClass = ' inactive tip-top".'" hasTooltip" title="'."' . JHtml::tooltipText('JORDERINGDISABLED');";
+				$body .= "\n\t\t\t\t}";
+				$body .= "\n\t\t\t?>";
+				$body .= "\n\t\t\t".'<span class="sortable-handler<?php echo $iconClass; ?>">';
+				$body .= "\n\t\t\t\t".'<i class="icon-menu"></i>';
+				$body .= "\n\t\t\t</span>";
+				$body .= "\n\t\t\t<?php if (\$this->saveOrder) : ?>";
+				$body .= "\n\t\t\t\t".'<input type="text" style="display:none" name="order[]" size="5"';
+				$body .= "\n\t\t\t\t".'value="<?php echo $item->ordering; ?>" class="width-20 text-area-order " />';
+				$body .= "\n\t\t\t<?php endif; ?>";
+				$body .= "\n\t\t<?php else: ?>";
+				$body .= "\n\t\t\t&#8942;";
+				$body .= "\n\t\t<?php endif; ?>";
+				$body .= "\n\t\t</td>";
 			}
-			else
-			{
-				$body .= "\n\t\t<?php if (\$canDo->get('core.edit.state')): ?>";
-			}
-			$body .= "\n\t\t\t<?php";
-			$body .= "\n\t\t\t\tif (\$this->saveOrder)";
-			$body .= "\n\t\t\t\t{";
-			$body .= "\n\t\t\t\t\t\$iconClass = ' inactive';";
-			$body .= "\n\t\t\t\t}";
-			$body .= "\n\t\t\t\telse";
-			$body .= "\n\t\t\t\t{";
-			$body .= "\n\t\t\t\t\t\$iconClass = ' inactive tip-top".'" hasTooltip" title="'."' . JHtml::tooltipText('JORDERINGDISABLED');";
-			$body .= "\n\t\t\t\t}";
-			$body .= "\n\t\t\t?>";
-			$body .= "\n\t\t\t".'<span class="sortable-handler<?php echo $iconClass; ?>">';
-			$body .= "\n\t\t\t\t".'<i class="icon-menu"></i>';
-			$body .= "\n\t\t\t</span>";
-			$body .= "\n\t\t\t<?php if (\$this->saveOrder) : ?>";
-			$body .= "\n\t\t\t\t".'<input type="text" style="display:none" name="order[]" size="5"';
-			$body .= "\n\t\t\t\t".'value="<?php echo $item->ordering; ?>" class="width-20 text-area-order " />';
-			$body .= "\n\t\t\t<?php endif; ?>";
-			$body .= "\n\t\t<?php else: ?>";
-			$body .= "\n\t\t\t&#8942;";
-			$body .= "\n\t\t<?php endif; ?>";
-			$body .= "\n\t\t</td>";
 			$body .= "\n\t\t".'<td class="nowrap center">';
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit']]))
@@ -5128,12 +5196,12 @@ class Interpretation extends Fields
 					elseif ($item['type'] == 'user' && !$item['title'])
 					{
 						// user and linked
-						$body .= "\n\t\t<?php \$itemUser = JFactory::getUser(\$item->user); ?>";
+						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
 						$body .= "\n\t\t".'<td class="nowrap">';
 						$body .= "\n\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
-						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->user ?>"><?php echo $itemUser->name; ?></a>';
+						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['code'].' ?>"><?php echo $'.$item['code'].'User->name; ?></a>';
 						$body .= "\n\t\t\t<?php else: ?>";
-						$body .= "\n\t\t\t\t<?php echo \$itemUser->name; ?>";
+						$body .= "\n\t\t\t\t<?php echo \$".$item['code']."User->name; ?>";
 						$body .= "\n\t\t\t<?php endif; ?>";
 						$body .= "\n\t\t</td>";
 					}
@@ -5253,6 +5321,14 @@ class Interpretation extends Fields
 						$body .= "\n\t\t\t<?php endif; ?>";
 						$body .= "\n\t\t</td>";
 					}
+					elseif ($item['type'] == 'user')
+					{
+						// user name only
+						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
+						$body .= "\n\t\t".'<td class="nowrap">';
+						$body .= "\n\t\t\t<?php echo \$".$item['code']."User->name; ?>";
+						$body .= "\n\t\t</td>";
+					}
 					else
 					{
 						// normal not linked
@@ -5263,32 +5339,38 @@ class Interpretation extends Fields
 				}
 			}
 			// add the defaults
-			$body .= "\n\t\t".'<td class="center">';
-			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit.state']]))
+			if (!isset($this->fieldsNames[$viewName_single]['published']))
 			{
-				$body .= "\n\t\t<?php if (\$canDo->get('".$core['core.edit.state']."')) : ?>";
-			}
-			else
+				$body .= "\n\t\t".'<td class="center">';
+				// check if the item has permissions.
+				if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit.state']]))
+				{
+					$body .= "\n\t\t<?php if (\$canDo->get('".$core['core.edit.state']."')) : ?>";
+				}
+				else
+				{
+					$body .= "\n\t\t<?php if (\$canDo->get('core.edit.state')) : ?>";
+				}
+				$body .= "\n\t\t\t\t<?php if (\$item->checked_out) : ?>";
+				$body .= "\n\t\t\t\t\t<?php if (\$canCheckin) : ?>";
+				$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', true, 'cb'); ?>";
+				$body .= "\n\t\t\t\t\t<?php else: ?>";
+				$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', false, 'cb'); ?>";
+				$body .= "\n\t\t\t\t\t<?php endif; ?>";
+				$body .= "\n\t\t\t\t<?php else: ?>";
+				$body .= "\n\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', true, 'cb'); ?>";
+				$body .= "\n\t\t\t\t<?php endif; ?>";
+				$body .= "\n\t\t<?php else: ?>";
+				$body .= "\n\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', false, 'cb'); ?>";
+				$body .= "\n\t\t<?php endif; ?>";
+				$body .= "\n\t\t</td>";
+			}	
+			if (!isset($this->fieldsNames[$viewName_single]['id']))
 			{
-				$body .= "\n\t\t<?php if (\$canDo->get('core.edit.state')) : ?>";
+				$body .= "\n\t\t".'<td class="nowrap center hidden-phone">';
+				$body .= "\n\t\t\t<?php echo \$item->id; ?>";
+				$body .= "\n\t\t</td>";
 			}
-			$body .= "\n\t\t\t\t<?php if (\$item->checked_out) : ?>";
-			$body .= "\n\t\t\t\t\t<?php if (\$canCheckin) : ?>";
-			$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', true, 'cb'); ?>";
-			$body .= "\n\t\t\t\t\t<?php else: ?>";
-			$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', false, 'cb'); ?>";
-			$body .= "\n\t\t\t\t\t<?php endif; ?>";
-			$body .= "\n\t\t\t\t<?php else: ?>";
-			$body .= "\n\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', true, 'cb'); ?>";
-			$body .= "\n\t\t\t\t<?php endif; ?>";
-			$body .= "\n\t\t<?php else: ?>";
-			$body .= "\n\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', false, 'cb'); ?>";
-			$body .= "\n\t\t<?php endif; ?>";
-			$body .= "\n\t\t</td>";
-			$body .= "\n\t\t".'<td class="nowrap center hidden-phone">';
-			$body .= "\n\t\t\t<?php echo \$item->id; ?>";
-			$body .= "\n\t\t</td>";
 			$body .= "\n\t</tr>";
 			$body .= "\n<?php endforeach; ?>";
 			// return the build
@@ -5320,9 +5402,12 @@ class Interpretation extends Fields
 			// set default
 			$head = '<tr>';
 			$head .= "\n\t<?php if (\$this->canEdit&& \$this->canState): ?>";
-			$head .= "\n\t\t".'<th width="1%" class="nowrap center hidden-phone">';
-			$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".'<i class="icon-menu-2"></i>'."', 'ordering', \$this->listDirn, \$this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>";
-			$head .= "\n\t\t</th>";
+			if (!isset($this->fieldsNames[$viewName_single]['ordering']))
+			{
+				$head .= "\n\t\t".'<th width="1%" class="nowrap center hidden-phone">';
+				$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".'<i class="icon-menu-2"></i>'."', 'ordering', \$this->listDirn, \$this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>";
+				$head .= "\n\t\t</th>";
+			}
 			$head .= "\n\t\t".'<th width="20" class="nowrap center">';
 			$head .= "\n\t\t\t<?php echo JHtml::_('grid.checkall'); ?>";
 			$head .= "\n\t\t</th>";
@@ -5359,18 +5444,24 @@ class Interpretation extends Fields
 				$this->listColnrBuilder[$viewName_list]++;
 			}
 			// set default
-			$head .= "\n\t<?php if (\$this->canState): ?>";
- 			$head .= "\n\t\t".'<th width="10" class="nowrap center" >';
-   			$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".$statusLangName."', 'published', \$this->listDirn, \$this->listOrder); ?>";
- 			$head .= "\n\t\t</th>";
-			$head .= "\n\t<?php else: ?>";
- 			$head .= "\n\t\t".'<th width="10" class="nowrap center" >';
-   			$head .= "\n\t\t\t<?php echo JText::_('".$statusLangName."'); ?>";
- 			$head .= "\n\t\t</th>";
-			$head .= "\n\t<?php endif; ?>";
- 			$head .= "\n\t".'<th width="5" class="nowrap center hidden-phone" >';
- 			$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".$idLangName."', 'id', \$this->listDirn, \$this->listOrder); ?>";
- 			$head .= "\n\t</th>";
+			if (!isset($this->fieldsNames[$viewName_single]['published']))
+			{
+				$head .= "\n\t<?php if (\$this->canState): ?>";
+				$head .= "\n\t\t".'<th width="10" class="nowrap center" >';
+				$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".$statusLangName."', 'published', \$this->listDirn, \$this->listOrder); ?>";
+				$head .= "\n\t\t</th>";
+				$head .= "\n\t<?php else: ?>";
+				$head .= "\n\t\t".'<th width="10" class="nowrap center" >';
+				$head .= "\n\t\t\t<?php echo JText::_('".$statusLangName."'); ?>";
+				$head .= "\n\t\t</th>";
+				$head .= "\n\t<?php endif; ?>";
+			}
+			if (!isset($this->fieldsNames[$viewName_single]['id']))
+			{
+				$head .= "\n\t".'<th width="5" class="nowrap center hidden-phone" >';
+				$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".$idLangName."', 'id', \$this->listDirn, \$this->listOrder); ?>";
+				$head .= "\n\t</th>";
+			}
  			$head .= "\n</tr>";
 
 			return $head;
@@ -5711,14 +5802,23 @@ class Interpretation extends Fields
 			{
 				$this->langContent[$this->lang][$tabLangName] = 'Publishing';
 			}
-			// check if access is added to this view
-			if (isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
+			// TODO add new publishing fields <-- nice to have, but no time now to do this
+			// $this->newPublishingFields[$viewName_single]
+			// the default publishing items
+			$items = array();
+			foreach ($this->defaultFields as $defaultField)
 			{
-				$addAccess = ",\n\t'access'";
-			}
-			else
-			{
-				$addAccess = "";
+				if (!isset($this->movedPublishingFields[$viewName_single][$defaultField]))
+				{
+					if ($defaultField != 'access')
+					{
+						$items[] = $defaultField;
+					}
+					elseif ($defaultField == 'access' && isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
+					{
+						$items[] = $defaultField;
+					}
+				}
 			}
 			// check if metadata is added to this view
 			if (isset($this->metadataBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName_single]))
@@ -5727,10 +5827,21 @@ class Interpretation extends Fields
 				$tabCodeNameLeft = 'publishing';
 				$tabCodeNameRight = 'metadata';
 				// the default publishing tiems
-				$items = "'created',\n\t'created_by',\n\t'modified',\n\t'modified_by',\n\t'published',\n\t'ordering'".$addAccess.",\n\t'version',\n\t'hits',\n\t'id'";
-				// set the publishing layout
-				$this->setLayout($viewName_single, $tabCodeNameLeft, $items, 'layoutpublished');
-				$this->setLayout($viewName_single, $tabCodeNameRight, false, 'layoutmetadata');
+				if (ComponentbuilderHelper::checkArray($items))
+				{
+					// load all items
+					$items_one = "'". implode("',\n\t'", $items)."'";
+					// set the publishing layout
+					$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
+					$items_one = true;
+				}
+				else
+				{
+					$items_one = false;				
+				}
+				// set the metadata layout
+				$this->setLayout($viewName_single, $tabCodeNameRight, false, 'layoutmetadata');	
+				$items_two = true;
 			}
 			else
 			{
@@ -5738,41 +5849,98 @@ class Interpretation extends Fields
 				$tabCodeNameLeft = 'publishing';
 				$tabCodeNameRight = 'publlshing';
 				// the default publishing tiems
-				$items_one = "'created',\n\t'created_by',\n\t'modified',\n\t'modified_by'";
-				$items_two = "'published',\n\t'ordering'".$addAccess.",\n\t'version',\n\t'hits',\n\t'id'";
-				// set the publishing layout
-				$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
-				$this->setLayout($viewName_single, $tabCodeNameRight, $items_two, 'layoutpublished');
-			}
-			// check if the item has permissions.
-			$publishingPer = array();
-			$allToBeChekced = array('core.delete','core.edit.created_by','core.edit.state','core.edit.created');
-			foreach ($allToBeChekced as $core_permission)
-			{
-				if ($coreLoad && isset($core[$core_permission]) && isset($this->permissionBuilder['global'][$core[$core_permission]]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core[$core_permission]]) && in_array($viewName_single,$this->permissionBuilder['global'][$core[$core_permission]]))
+				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// set permissions.
-					$publishingPer[] = "\$this->canDo->get('".$core[$core_permission]."')";
+					
+					$items_one = array('created', 'created_by', 'modified', 'modified_by');
+					$items_two = array('published', 'ordering', 'access', 'version', 'hits', 'id');
+					// check all items
+					foreach ($items_one as $key_one => $item_one)
+					{
+						if (!in_array($item_one, $items))
+						{
+							unset($items_one[$key_one]);
+						}
+					}
+					foreach ($items_two as $key_two => $item_two)
+					{
+						if (!in_array($item_two, $items))
+						{
+							unset($items_two[$key_two]);
+						}
+					}
+					// load all items that remain
+					if (ComponentbuilderHelper::checkArray($items_one))
+					{
+						// load all items
+						$items_one = "'". implode("',\n\t'", $items_one)."'";
+						// set the publishing layout
+						$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
+						$items_one = true;
+					}
+					// load all items that remain
+					if (ComponentbuilderHelper::checkArray($items_two))
+					{
+						// load all items
+						$items_two = "'". implode("',\n\t'", $items_two)."'";
+						// set the publishing layout
+						$this->setLayout($viewName_single, $tabCodeNameRight, $items_two, 'layoutpublished');
+						$items_two = true;
+					}
 				}
 				else
 				{
-					// set permissions.
-					$publishingPer[] = "\$this->canDo->get('".$core_permission."')";
+					$items_one = false;
+					$items_two = false;					
 				}
 			}
-			$body .= "\n\n\t<?php if (".implode(' || ', $publishingPer).") : ?>";
-			// set the default publishing tab
-			$body .= "\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeNameLeft."', JText::_('".$tabLangName."', true)); ?>";
-			$body .= "\n\t\t".'<div class="row-fluid form-horizontal-desktop">';
-			$body .= "\n\t\t\t".'<div class="span6">';
-			$body .= "\n\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameLeft."', \$this); ?>";
-			$body .= "\n\t\t\t</div>";
-			$body .= "\n\t\t\t".'<div class="span6">';
-			$body .= "\n\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameRight."', \$this); ?>";
-			$body .= "\n\t\t\t</div>";
-			$body .= "\n\t\t</div>";
-			$body .= "\n\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
-			$body .= "\n\t<?php endif; ?>";
+			if ($items_one && $items_two)
+			{
+				$classs = "span6";
+			}
+			elseif ($items_one || $items_two)
+			{
+				$classs = "span12";
+			}
+			// only load this if needed
+			if ($items_one || $items_two)
+			{
+				// check if the item has permissions.
+				$publishingPer = array();
+				$allToBeChekced = array('core.delete','core.edit.created_by','core.edit.state','core.edit.created');
+				foreach ($allToBeChekced as $core_permission)
+				{
+					if ($coreLoad && isset($core[$core_permission]) && isset($this->permissionBuilder['global'][$core[$core_permission]]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core[$core_permission]]) && in_array($viewName_single,$this->permissionBuilder['global'][$core[$core_permission]]))
+					{
+						// set permissions.
+						$publishingPer[] = "\$this->canDo->get('".$core[$core_permission]."')";
+					}
+					else
+					{
+						// set permissions.
+						$publishingPer[] = "\$this->canDo->get('".$core_permission."')";
+					}
+				}
+				$body .= "\n\n\t<?php if (".implode(' || ', $publishingPer).") : ?>";
+				// set the default publishing tab
+				$body .= "\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeNameLeft."', JText::_('".$tabLangName."', true)); ?>";
+				$body .= "\n\t\t".'<div class="row-fluid form-horizontal-desktop">';
+				if ($items_one)
+				{
+					$body .= "\n\t\t\t".'<div class="'.$classs.'">';
+					$body .= "\n\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameLeft."', \$this); ?>";
+					$body .= "\n\t\t\t</div>";
+				}
+				if ($items_two)
+				{
+					$body .= "\n\t\t\t".'<div class="'.$classs.'">';
+					$body .= "\n\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameRight."', \$this); ?>";
+					$body .= "\n\t\t\t</div>";
+				}
+				$body .= "\n\t\t</div>";
+				$body .= "\n\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				$body .= "\n\t<?php endif; ?>";
+			}
 			// make sure we dont load it to a view with the name component
 			if ($viewName_single != 'component')
 			{
@@ -6030,7 +6198,7 @@ class Interpretation extends Fields
 	 * @param $viewName_list
 	 * @param $refview
 	 * @return string
-     */
+	*/
 	public function setListBodyLinked($viewName_single, $viewName_list, $refview)
 	{
 		if (isset($this->listBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listBuilder[$viewName_list]))
@@ -6121,12 +6289,12 @@ class Interpretation extends Fields
 					elseif ($item['type'] == 'user' && !$item['title'])
 					{
 						// user and linked
-						$body .= "\n\t\t<?php \$itemUser = JFactory::getUser(\$item->user); ?>";
+						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
 						$body .= "\n\t\t".'<td class="nowrap">';
 						$body .= "\n\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
-						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->user ?>"><?php echo $itemUser->name; ?></a>';
+						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['code'].' ?>"><?php echo $'.$item['code'].'User->name; ?></a>';
 						$body .= "\n\t\t\t<?php else: ?>";
-						$body .= "\n\t\t\t\t<?php echo \$itemUser->name; ?>";
+						$body .= "\n\t\t\t\t<?php echo \$".$item['code']."User->name; ?>";
 						$body .= "\n\t\t\t<?php endif; ?>";
 						$body .= "\n\t\t</td>";
 					}
@@ -6255,6 +6423,14 @@ class Interpretation extends Fields
 						$body .= "\n\t\t\t<?php else: ?>";
 						$body .= "\n\t\t\t\t<?php echo \$_".$item['code']."->name; ?>";
 						$body .= "\n\t\t\t<?php endif; ?>";
+						$body .= "\n\t\t</td>";
+					}
+					elseif ($item['type'] == 'user')
+					{
+						// user name only
+						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
+						$body .= "\n\t\t".'<td class="nowrap">';
+						$body .= "\n\t\t\t<?php echo \$".$item['code']."User->name; ?>";
 						$body .= "\n\t\t</td>";
 					}
 					else
@@ -8627,6 +8803,11 @@ class Interpretation extends Fields
 						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now add the ".$filter['code']." and its text to the options array";
 						$function[] = "\t\t\t\t\$filter[] = JHtml::_('select.option', \$".$filter['code'].", JText::_(\$text));";
 					}
+					elseif ($filter['type'] == 'user')
+					{
+						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now add the ".$filter['code']." and its text to the options array";
+						$function[] = "\t\t\t\t\$filter[] = JHtml::_('select.option', \$".$filter['code'].", JFactory::getUser(\$".$filter['code'].")->name);";
+					}
 					else
 					{
 						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now add the ".$filter['code']." and its text to the options array";
@@ -10106,6 +10287,8 @@ class Interpretation extends Fields
 
 	public function setSortFields($view)
 	{
+		// keep track of all fields already added
+		$donelist = array('sorting','published');
 		// set the default first
 		$fields = "return array(";
 		$fields .= "\n\t\t\t'a.sorting' => JText::_('JGRID_HEADING_ORDERING')";
@@ -10116,17 +10299,20 @@ class Interpretation extends Fields
 		{
 			foreach ($this->sortBuilder[$view] as $filter)
 			{
-				if ($filter['type'] == 'category')
+				if (!in_array($filter['code'], $donelist))
 				{
-					$fields .= ",\n\t\t\t'c.category_title' => JText::_('".$filter['lang']."')";
-				}
-				elseif (ComponentbuilderHelper::checkArray($filter['custom']))
-				{
-					$fields .= ",\n\t\t\t'".$filter['custom']['db'].".".$filter['custom']['text']."' => JText::_('".$filter['lang']."')";
-				}
-				else
-				{
-					$fields .= ",\n\t\t\t'a.".$filter['code']."' => JText::_('".$filter['lang']."')";
+					if ($filter['type'] == 'category')
+					{
+						$fields .= ",\n\t\t\t'c.category_title' => JText::_('".$filter['lang']."')";
+					}
+					elseif (ComponentbuilderHelper::checkArray($filter['custom']))
+					{
+						$fields .= ",\n\t\t\t'".$filter['custom']['db'].".".$filter['custom']['text']."' => JText::_('".$filter['lang']."')";
+					}
+					else
+					{
+						$fields .= ",\n\t\t\t'a.".$filter['code']."' => JText::_('".$filter['lang']."')";
+					}
 				}
 			}
 		}
@@ -12507,8 +12693,12 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 										$view['settings']->permissions = array();
 										$view['settings']->permissions[] = $fieldView;
 									}
-									// load to global field permission set
-									$this->permissionFields[$nameView][$fieldName] = $fieldType;
+									// insure that no default field get loaded
+									if (!in_array($fieldName, $this->defaultFields))
+									{
+										// load to global field permission set
+										$this->permissionFields[$nameView][$fieldName] = $fieldType;
+									}
 								}
 							}
 						}

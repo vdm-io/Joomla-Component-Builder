@@ -306,6 +306,34 @@ class Fields extends Structure
 	 * @var    array
 	 */
 	public $setGroupControl = array();
+	
+	/**
+	 * Set Field Names
+	 * 
+	 * @var    array
+	 */
+	public $fieldsNames = array();
+	
+	/**
+	 * Default Fields
+	 * 
+	 * @var    array
+	 */
+	public $defaultFields = array('created', 'created_by', 'modified', 'modified_by', 'published', 'ordering', 'access', 'version', 'hits', 'id');
+	
+	/**
+	 * Default Fields set to publishing
+	 * 
+	 * @var    array
+	 */
+	public $newPublishingFields = array();
+	
+	/**
+	 * Default Fields set to publishing
+	 * 
+	 * @var    array
+	 */
+	public $movedPublishingFields = array();
 
 	/**
 	 * set the Field set of a view
@@ -338,7 +366,7 @@ class Fields extends Structure
 			$readOnly = "";
 			if ($view['settings']->type == 2)
 			{
-				$readOnly = "\n\t\t\t" . 'readonly="true"' . "\n\t\t\t" . 'disabled="true"';
+				$readOnly = "\t\t\t" . 'readonly="true"' . "\n\t\t\t" . 'disabled="true"';
 			}
 			// main lang prefix
 			$langView = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($view['settings']->name_single, 'U');
@@ -370,129 +398,22 @@ class Fields extends Structure
 			$this->langContent[$this->lang][$langViews . '_BATCH_TIP'] = "All changes will be applied to all selected " . $view['settings']->name_list;
 			// set some basic defaults
 			$this->langContent[$this->lang][$langView . '_ERROR_UNIQUE_ALIAS'] = "Another " . $view['settings']->name_single . " has the same alias.";
-			$this->langContent[$this->lang][$langView . '_CREATED_DATE_LABEL'] = "Created date";
-			$this->langContent[$this->lang][$langView . '_CREATED_DATE_DESC'] = "The date " . $view['settings']->name_single . " was created.";
-			$this->langContent[$this->lang][$langView . '_CREATED_BY_LABEL'] = "Created by";
-			$this->langContent[$this->lang][$langView . '_CREATED_BY_DESC'] = "The user that created the " . $view['settings']->name_single . ".";
+			$this->langContent[$this->lang][$langView . '_CREATED_DATE_LABEL'] = "Created Date";
+			$this->langContent[$this->lang][$langView . '_CREATED_DATE_DESC'] = "The date this " . $view['settings']->name_single . " was created.";
+			$this->langContent[$this->lang][$langView . '_MODIFIED_DATE_LABEL'] = "Modified Date";
+			$this->langContent[$this->lang][$langView . '_MODIFIED_DATE_DESC'] = "The date this " . $view['settings']->name_single . " was modified.";
+			$this->langContent[$this->lang][$langView . '_CREATED_BY_LABEL'] = "Created By";
+			$this->langContent[$this->lang][$langView . '_CREATED_BY_DESC'] = "The user that created this " . $view['settings']->name_single . ".";
+			$this->langContent[$this->lang][$langView . '_MODIFIED_BY_LABEL'] = "Modified By";
+			$this->langContent[$this->lang][$langView . '_MODIFIED_BY_DESC'] = "The last user that modified this " . $view['settings']->name_single . ".";
 			$this->langContent[$this->lang][$langView . '_ORDERING_LABEL'] = "Ordering";
 			$this->langContent[$this->lang][$langView . '_VERSION_LABEL'] = "Revision";
 			$this->langContent[$this->lang][$langView . '_VERSION_DESC'] = "A count of the number of times this " . $view['settings']->name_single . " has been revised.";
 			$this->langContent[$this->lang][$langView . '_SAVE_WARNING'] = "Alias already existed so a number was added at the end. You can re-edit the " . $view['settings']->name_single . " to customise the alias.";
-			// set the defautl fields
-			$fieldSet = '<fieldset name="details">';
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Default Fields. -->";
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Id Field. Type: Text (joomla) -->";
-			$fieldSet .= "\n\t\t<field";
-			$fieldSet .= "\n\t\t\tname=" . '"id"';
-			$fieldSet .= "\n\t\t\t" . 'type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"';
-			$fieldSet .= "\n\t\t\t" . 'description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"';
-			$fieldSet .= "\n\t\t\t" . 'readonly="true"';
-			$fieldSet .= "\n\t\t/>";
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla) -->";
-			$fieldSet .= "\n\t\t<field";
-			$fieldSet .= "\n\t\t\tname=" . '"created"';
-			$fieldSet .= "\n\t\t\ttype=" . '"calendar"';
-			$fieldSet .= "\n\t\t\tlabel=" . '"' . $langView . '_CREATED_DATE_LABEL"';
-			$fieldSet .= "\n\t\t\tdescription=" . '"' . $langView . '_CREATED_DATE_DESC"';
-			$fieldSet .= "\n\t\t\tsize=" . '"22"';
-			$fieldSet .= $readOnly;
-			$fieldSet .= "\n\t\t\tformat=" . '"%Y-%m-%d %H:%M:%S"';
-			$fieldSet .= "\n\t\t\tfilter=" . '"user_utc"';
-			$fieldSet .= "\n\t\t/>";
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " User Created Field. Type: User (joomla) -->";
-			$fieldSet .= "\n\t\t<field";
-			$fieldSet .= "\n\t\t\tname=" . '"created_by"';
-			$fieldSet .= "\n\t\t\ttype=" . '"user"';
-			$fieldSet .= "\n\t\t\tlabel=" . '"' . $langView . '_CREATED_BY_LABEL"';
-			$fieldSet .= $readOnly;
-			$fieldSet .= "\n\t\t\tdescription=" . '"' . $langView . '_CREATED_BY_DESC"';
-			$fieldSet .= "\n\t\t/>";
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Published Field. Type: List (joomla) -->";
-			$fieldSet .= "\n\t\t<field name=" . '"published" type="list" label="JSTATUS"';
-			$fieldSet .= "\n\t\t\tdescription=" . '"JFIELD_PUBLISHED_DESC" class="chzn-color-state"';
-			$fieldSet .= $readOnly;
-			$fieldSet .= "\n\t\t\tfilter=" . '"intval" size="1" default="1" >';
-
-			$fieldSet .= "\n\t\t\t<option value=" . '"1">';
-			$fieldSet .= "\n\t\t\t\tJPUBLISHED</option>";
-			$fieldSet .= "\n\t\t\t<option value=" . '"0">';
-			$fieldSet .= "\n\t\t\t\tJUNPUBLISHED</option>";
-			$fieldSet .= "\n\t\t\t<option value=" . '"2">';
-			$fieldSet .= "\n\t\t\t\tJARCHIVED</option>";
-			$fieldSet .= "\n\t\t\t<option value=" . '"-2">';
-			$fieldSet .= "\n\t\t\t\tJTRASHED</option>";
-			$fieldSet .= "\n\t\t</field>";
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla) -->";
-			$fieldSet .= "\n\t\t" . '<field name="modified" type="calendar" class="readonly"';
-			$fieldSet .= "\n\t\t\t" . 'label="JGLOBAL_FIELD_MODIFIED_LABEL" description="COM_CONTENT_FIELD_MODIFIED_DESC"';
-			$fieldSet .= "\n\t\t\t" . 'size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />';
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla) -->";
-			$fieldSet .= "\n\t\t" . '<field name="modified_by" type="user"';
-			$fieldSet .= "\n\t\t\t" . 'label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"';
-			$fieldSet .= "\n\t\t\t" . 'class="readonly"';
-			$fieldSet .= "\n\t\t\t" . 'readonly="true"';
-			$fieldSet .= "\n\t\t\t" . 'filter="unset"';
-			$fieldSet .= "\n\t\t/>";
-			// check if view has access
-			if (isset($this->accessBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName]))
-			{
-				$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla) -->";
-				$fieldSet .= "\n\t\t" . '<field name="access"';
-				$fieldSet .= "\n\t\t\t" . 'type="accesslevel"';
-				$fieldSet .= "\n\t\t\t" . 'label="JFIELD_ACCESS_LABEL"';
-				$fieldSet .= "\n\t\t\t" . 'description="JFIELD_ACCESS_DESC"';
-				$fieldSet .= "\n\t\t\t" . 'default="1"';
-				$fieldSet .= $readOnly;
-				$fieldSet .= "\n\t\t\t" . 'required="false"';
-				$fieldSet .= "\n\t\t/>";
-			}
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla) -->";
-			$fieldSet .= "\n\t\t<field";
-			$fieldSet .= "\n\t\t\t" . 'name="ordering"';
-			$fieldSet .= "\n\t\t\t" . 'type="number"';
-			$fieldSet .= "\n\t\t\t" . 'class="inputbox validate-ordering"';
-			$fieldSet .= "\n\t\t\t" . 'label="' . $langView . '_ORDERING_LABEL' . '"';
-			$fieldSet .= "\n\t\t\t" . 'description=""';
-			$fieldSet .= "\n\t\t\t" . 'default="0"';
-			$fieldSet .= "\n\t\t\t" . 'size="6"';
-			$fieldSet .= $readOnly;
-			$fieldSet .= "\n\t\t\t" . 'required="false"';
-			$fieldSet .= "\n\t\t/>";
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Version Field. Type: Text (joomla) -->";
-			$fieldSet .= "\n\t\t<field";
-			$fieldSet .= "\n\t\t\t" . 'name="version"';
-			$fieldSet .= "\n\t\t\t" . 'type="text"';
-			$fieldSet .= "\n\t\t\t" . 'class="readonly"';
-			$fieldSet .= "\n\t\t\t" . 'label="' . $langView . '_VERSION_LABEL"';
-			$fieldSet .= "\n\t\t\t" . 'description="' . $langView . '_VERSION_DESC"';
-			$fieldSet .= "\n\t\t\t" . 'size="6"';
-			$fieldSet .= "\n\t\t\t" . 'readonly="true"';
-			$fieldSet .= "\n\t\t\t" . 'filter="unset"';
-			$fieldSet .= "\n\t\t/>";
-			// check if metadata is added to this view
-			if (isset($this->metadataBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName]))
-			{
-				$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla) -->";
-				$fieldSet .= "\n\t\t<field";
-				$fieldSet .= "\n\t\t\t" . 'name="metakey"';
-				$fieldSet .= "\n\t\t\t" . 'type="textarea"';
-				$fieldSet .= "\n\t\t\t" . 'label="JFIELD_META_KEYWORDS_LABEL"';
-				$fieldSet .= "\n\t\t\t" . 'description="JFIELD_META_KEYWORDS_DESC"';
-				$fieldSet .= "\n\t\t\t" . 'rows="3"';
-				$fieldSet .= "\n\t\t\t" . 'cols="30"';
-				$fieldSet .= "\n\t\t/>";
-				$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla) -->";
-				$fieldSet .= "\n\t\t<field";
-				$fieldSet .= "\n\t\t\t" . 'name="metadesc"';
-				$fieldSet .= "\n\t\t\t" . 'type="textarea"';
-				$fieldSet .= "\n\t\t\t" . 'label="JFIELD_META_DESCRIPTION_LABEL"';
-				$fieldSet .= "\n\t\t\t" . 'description="JFIELD_META_DESCRIPTION_DESC"';
-				$fieldSet .= "\n\t\t\t" . 'rows="3"';
-				$fieldSet .= "\n\t\t\t" . 'cols="30"';
-				$fieldSet .= "\n\t\t/>";
-			}
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " Dynamic Fields. -->";
+			
 			// start adding dynamc fields
+			$dynamcfields = '';
+			// place holders
 			$placeholders = array(
 			    '###component###' => $component,
 			    '###view###' => $viewName,
@@ -503,46 +424,216 @@ class Fields extends Structure
 			// TODO we should add the global and local view switch if field for front end
 			foreach ($view['settings']->fields as $field)
 			{
-				$fieldSet .= $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $spacerCounter, $placeholders, $dbkey, true);
+				$dynamcfields .= $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $spacerCounter, $placeholders, $dbkey, true);
 			}
-
-			$fieldSet .= "\n\t</fieldset>";
+			
+			// set the defautl fields
+			$fieldSet = array();
+			$fieldSet[] = '<fieldset name="details">';
+			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Default Fields. -->";
+			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Id Field. Type: Text (joomla) -->";
+			// if id is not set
+			if (!isset($this->fieldsNames[$viewName]['id']))
+			{
+				$fieldSet[] = "\t\t<field";
+				$fieldSet[] = "\t\t\tname=" . '"id"';
+				$fieldSet[] = "\t\t\t" . 'type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"';
+				$fieldSet[] = "\t\t\t" . 'description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"';
+				$fieldSet[] = "\t\t\t" . 'readonly="true"';
+				$fieldSet[] = "\t\t/>";
+			}
+			// if created is not set
+			if (!isset($this->fieldsNames[$viewName]['created']))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla) -->";
+				$fieldSet[] = "\t\t<field";
+				$fieldSet[] = "\t\t\tname=" . '"created"';
+				$fieldSet[] = "\t\t\ttype=" . '"calendar"';
+				$fieldSet[] = "\t\t\tlabel=" . '"' . $langView . '_CREATED_DATE_LABEL"';
+				$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_CREATED_DATE_DESC"';
+				$fieldSet[] = "\t\t\tsize=" . '"22"';
+				$fieldSet[] = $readOnly;
+				$fieldSet[] = "\t\t\tformat=" . '"%Y-%m-%d %H:%M:%S"';
+				$fieldSet[] = "\t\t\tfilter=" . '"user_utc"';
+				$fieldSet[] = "\t\t/>";
+			}
+			// if created_by is not set
+			if (!isset($this->fieldsNames[$viewName]['created_by']))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " User Created Field. Type: User (joomla) -->";
+				$fieldSet[] = "\t\t<field";
+				$fieldSet[] = "\t\t\tname=" . '"created_by"';
+				$fieldSet[] = "\t\t\ttype=" . '"user"';
+				$fieldSet[] = "\t\t\tlabel=" . '"' . $langView . '_CREATED_BY_LABEL"';
+				$fieldSet[] = $readOnly;
+				$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_CREATED_BY_DESC"';
+				$fieldSet[] = "\t\t/>";
+			}
+			// if published is not set
+			if (!isset($this->fieldsNames[$viewName]['published']))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Published Field. Type: List (joomla) -->";
+				$fieldSet[] = "\t\t<field name=" . '"published" type="list" label="JSTATUS"';
+				$fieldSet[] = "\t\t\tdescription=" . '"JFIELD_PUBLISHED_DESC" class="chzn-color-state"';
+				$fieldSet[] = $readOnly;
+				$fieldSet[] = "\t\t\tfilter=" . '"intval" size="1" default="1" >';
+				$fieldSet[] = "\t\t\t<option value=" . '"1">';
+				$fieldSet[] = "\t\t\t\tJPUBLISHED</option>";
+				$fieldSet[] = "\t\t\t<option value=" . '"0">';
+				$fieldSet[] = "\t\t\t\tJUNPUBLISHED</option>";
+				$fieldSet[] = "\t\t\t<option value=" . '"2">';
+				$fieldSet[] = "\t\t\t\tJARCHIVED</option>";
+				$fieldSet[] = "\t\t\t<option value=" . '"-2">';
+				$fieldSet[] = "\t\t\t\tJTRASHED</option>";
+				$fieldSet[] = "\t\t</field>";
+			}
+			// if modified is not set
+			if (!isset($this->fieldsNames[$viewName]['modified']))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla) -->";
+				$fieldSet[] = "\t\t" . '<field name="modified" type="calendar" class="readonly"';
+				$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_MODIFIED_DATE_LABEL" description="' . $langView . '_MODIFIED_DATE_DESC"';
+				$fieldSet[] = "\t\t\t" . 'size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />';
+			}
+			// if modified_by is not set
+			if (!isset($this->fieldsNames[$viewName]['modified_by']))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla) -->";
+				$fieldSet[] = "\t\t" . '<field name="modified_by" type="user"';
+				$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_MODIFIED_BY_LABEL"';
+				$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_MODIFIED_BY_DESC"';
+				$fieldSet[] = "\t\t\t" . 'class="readonly"';
+				$fieldSet[] = "\t\t\t" . 'readonly="true"';
+				$fieldSet[] = "\t\t\t" . 'filter="unset"';
+				$fieldSet[] = "\t\t/>";
+			}
+			// check if view has access
+			if (isset($this->accessBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName]) && !isset($this->fieldsNames[$viewName]['access']))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla) -->";
+				$fieldSet[] = "\t\t" . '<field name="access"';
+				$fieldSet[] = "\t\t\t" . 'type="accesslevel"';
+				$fieldSet[] = "\t\t\t" . 'label="JFIELD_ACCESS_LABEL"';
+				$fieldSet[] = "\t\t\t" . 'description="JFIELD_ACCESS_DESC"';
+				$fieldSet[] = "\t\t\t" . 'default="1"';
+				$fieldSet[] = $readOnly;
+				$fieldSet[] = "\t\t\t" . 'required="false"';
+				$fieldSet[] = "\t\t/>";
+			}
+			// if ordering is not set
+			if (!isset($this->fieldsNames[$viewName]['ordering']))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla) -->";
+				$fieldSet[] = "\t\t<field";
+				$fieldSet[] = "\t\t\t" . 'name="ordering"';
+				$fieldSet[] = "\t\t\t" . 'type="number"';
+				$fieldSet[] = "\t\t\t" . 'class="inputbox validate-ordering"';
+				$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_ORDERING_LABEL' . '"';
+				$fieldSet[] = "\t\t\t" . 'description=""';
+				$fieldSet[] = "\t\t\t" . 'default="0"';
+				$fieldSet[] = "\t\t\t" . 'size="6"';
+				$fieldSet[] = $readOnly;
+				$fieldSet[] = "\t\t\t" . 'required="false"';
+				$fieldSet[] = "\t\t/>";
+			}
+			// if version is not set
+			if (!isset($this->fieldsNames[$viewName]['version']))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Version Field. Type: Text (joomla) -->";
+				$fieldSet[] = "\t\t<field";
+				$fieldSet[] = "\t\t\t" . 'name="version"';
+				$fieldSet[] = "\t\t\t" . 'type="text"';
+				$fieldSet[] = "\t\t\t" . 'class="readonly"';
+				$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_VERSION_LABEL"';
+				$fieldSet[] = "\t\t\t" . 'description="' . $langView . '_VERSION_DESC"';
+				$fieldSet[] = "\t\t\t" . 'size="6"';
+				$fieldSet[] = "\t\t\t" . 'readonly="true"';
+				$fieldSet[] = "\t\t\t" . 'filter="unset"';
+				$fieldSet[] = "\t\t/>";
+			}
 			// check if metadata is added to this view
 			if (isset($this->metadataBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName]))
 			{
-				$fieldSet .= "\n\n\t<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
-				$fieldSet .= "\n\t<fields" . ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
-				$fieldSet .= "\n\t\t" . '<fieldset name="vdmmetadata"';
-				$fieldSet .= "\n\t\t\t" . 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
-				$fieldSet .= "\n\t\t\t<!--" . $this->setLine(__LINE__) . " Robots Field. Type: List (joomla) -->";
-				$fieldSet .= "\n\t\t\t" . '<field name="robots"';
-				$fieldSet .= "\n\t\t\t\t" . 'type="list"';
-				$fieldSet .= "\n\t\t\t\t" . 'label="JFIELD_METADATA_ROBOTS_LABEL"';
-				$fieldSet .= "\n\t\t\t\t" . 'description="JFIELD_METADATA_ROBOTS_DESC" >';
-				$fieldSet .= "\n\t\t\t\t" . '<option value="">JGLOBAL_USE_GLOBAL</option>';
-				$fieldSet .= "\n\t\t\t\t" . '<option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>';
-				$fieldSet .= "\n\t\t\t\t" . '<option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>';
-				$fieldSet .= "\n\t\t\t\t" . '<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>';
-				$fieldSet .= "\n\t\t\t\t" . '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
-				$fieldSet .= "\n\t\t\t" . '</field>';
-				$fieldSet .= "\n\t\t\t<!--" . $this->setLine(__LINE__) . " Author Field. Type: Text (joomla) -->";
-				$fieldSet .= "\n\t\t\t" . '<field name="author"';
-				$fieldSet .= "\n\t\t\t\t" . 'type="text"';
-				$fieldSet .= "\n\t\t\t\t" . 'label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"';
-				$fieldSet .= "\n\t\t\t\t" . 'size="20"';
-				$fieldSet .= "\n\t\t\t/>";
-				$fieldSet .= "\n\t\t\t<!--" . $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla) -->";
-				$fieldSet .= "\n\t\t\t" . '<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"';
-				$fieldSet .= "\n\t\t\t\t" . 'description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"';
-				$fieldSet .= "\n\t\t\t\t" . 'cols="30" rows="2"';
-				$fieldSet .= "\n\t\t\t/>";
-				$fieldSet .= "\n\t\t</fieldset>";
-				$fieldSet .= "\n\t</fields>";
+				// metakey
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla) -->";
+				$fieldSet[] = "\t\t<field";
+				$fieldSet[] = "\t\t\t" . 'name="metakey"';
+				$fieldSet[] = "\t\t\t" . 'type="textarea"';
+				$fieldSet[] = "\t\t\t" . 'label="JFIELD_META_KEYWORDS_LABEL"';
+				$fieldSet[] = "\t\t\t" . 'description="JFIELD_META_KEYWORDS_DESC"';
+				$fieldSet[] = "\t\t\t" . 'rows="3"';
+				$fieldSet[] = "\t\t\t" . 'cols="30"';
+				$fieldSet[] = "\t\t/>";
+				// metadesc
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla) -->";
+				$fieldSet[] = "\t\t<field";
+				$fieldSet[] = "\t\t\t" . 'name="metadesc"';
+				$fieldSet[] = "\t\t\t" . 'type="textarea"';
+				$fieldSet[] = "\t\t\t" . 'label="JFIELD_META_DESCRIPTION_LABEL"';
+				$fieldSet[] = "\t\t\t" . 'description="JFIELD_META_DESCRIPTION_DESC"';
+				$fieldSet[] = "\t\t\t" . 'rows="3"';
+				$fieldSet[] = "\t\t\t" . 'cols="30"';
+				$fieldSet[] = "\t\t/>";
+			}
+			// load the dynamic fields now
+			if (ComponentbuilderHelper::checkString($dynamcfields))
+			{
+				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Dynamic Fields. -->" . $dynamcfields;
+			}
+			// close fieldset
+			$fieldSet[] = "\t</fieldset>";
+			// check if metadata is added to this view
+			if (isset($this->metadataBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName]))
+			{
+				$fieldSet[] = "\n\t<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
+				$fieldSet[] = "\t<fields" . ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
+				$fieldSet[] = "\t\t" . '<fieldset name="vdmmetadata"';
+				$fieldSet[] = "\t\t\t" . 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
+				// robots
+				$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Robots Field. Type: List (joomla) -->";
+				$fieldSet[] = "\t\t\t" . '<field name="robots"';
+				$fieldSet[] = "\t\t\t\t" . 'type="list"';
+				$fieldSet[] = "\t\t\t\t" . 'label="JFIELD_METADATA_ROBOTS_LABEL"';
+				$fieldSet[] = "\t\t\t\t" . 'description="JFIELD_METADATA_ROBOTS_DESC" >';
+				$fieldSet[] = "\t\t\t\t" . '<option value="">JGLOBAL_USE_GLOBAL</option>';
+				$fieldSet[] = "\t\t\t\t" . '<option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>';
+				$fieldSet[] = "\t\t\t\t" . '<option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>';
+				$fieldSet[] = "\t\t\t\t" . '<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>';
+				$fieldSet[] = "\t\t\t\t" . '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
+				$fieldSet[] = "\t\t\t" . '</field>';
+				// author
+				$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Author Field. Type: Text (joomla) -->";
+				$fieldSet[] = "\t\t\t" . '<field name="author"';
+				$fieldSet[] = "\t\t\t\t" . 'type="text"';
+				$fieldSet[] = "\t\t\t\t" . 'label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"';
+				$fieldSet[] = "\t\t\t\t" . 'size="20"';
+				$fieldSet[] = "\t\t\t/>";
+				// rights
+				$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla) -->";
+				$fieldSet[] = "\t\t\t" . '<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"';
+				$fieldSet[] = "\t\t\t\t" . 'description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"';
+				$fieldSet[] = "\t\t\t\t" . 'cols="30" rows="2"';
+				$fieldSet[] = "\t\t\t/>";
+				$fieldSet[] = "\t\t</fieldset>";
+				$fieldSet[] = "\t</fields>";
 			}
 			// retunr the set
-			return $fieldSet;
+			return implode("\n", $fieldSet);
 		}
 		return '';
+	}
+		
+	/**
+	 * set Field Names
+	 * 
+	 * @param   string   $view    View the field belongs to
+	 * @param   string    $name    The name of the field
+	 *
+	 * 
+	 */
+	public function setFieldsNames(&$view, &$name)
+	{
+		$this->fieldsNames[$view][$name] = $name;
 	}
 
 	/**
@@ -575,6 +666,9 @@ class Fields extends Structure
 		// check if values were set
 		if (ComponentbuilderHelper::checkArray($fieldAttributes))
 		{
+			// set the array of field names
+			$this->setFieldsNames($viewName,$fieldAttributes['name']);
+			
 			if ($this->defaultField($typeName, 'option'))
 			{
 				//reset options array
@@ -606,6 +700,11 @@ class Fields extends Structure
 					if (isset($view['settings']->tabs) && isset($view['settings']->tabs[(int) $field['tab']]))
 					{
 						$tabName = $view['settings']->tabs[(int) $field['tab']];
+					}
+					elseif ((int) $field['tab'] == 15)
+					{
+						// set to publishing tab
+						$tabName = 'publishing';
 					}
 					$this->setLayoutBuilder($viewName, $tabName, $name, $field);
 				}
@@ -908,7 +1007,7 @@ class Fields extends Structure
 	 */
 	public function setLayoutBuilder(&$viewName,&$tabName,&$name,&$field)
 	{
-		if (ComponentbuilderHelper::checkString($tabName))
+		if (ComponentbuilderHelper::checkString($tabName) && $tabName != 'publishing')
 		{
 			$this->tabCounter[$viewName][(int) $field['tab']] = $tabName;
 			if (isset($this->layoutBuilder[$viewName][$tabName][(int) $field['alignment']][(int) $field['order_edit']]))
@@ -919,6 +1018,27 @@ class Fields extends Structure
 			else
 			{
 				$this->layoutBuilder[$viewName][$tabName][(int) $field['alignment']][(int) $field['order_edit']] = $name;
+			}
+			// check if publishing fields were over written
+			if (in_array($name, $this->defaultFields))
+			{
+				// just to eliminate
+				$this->movedPublishingFields[$viewName][$name] = $name;
+			}
+		}
+		elseif ($tabName == 'publishing')
+		{
+			if (!in_array($name, $this->defaultFields))
+			{
+				if (isset($this->newPublishingFields[$viewName][(int) $field['alignment']][(int) $field['order_edit']]))
+				{
+					$size = count($this->newPublishingFields[$viewName][(int) $field['alignment']][(int) $field['order_edit']]) + 1;
+					$this->newPublishingFields[$viewName][(int) $field['alignment']][$size] = $name;
+				}
+				else
+				{
+					$this->newPublishingFields[$viewName][(int) $field['alignment']][(int) $field['order_edit']] = $name;
+				}
 			}
 		}
 		else
@@ -932,6 +1052,12 @@ class Fields extends Structure
 			else
 			{
 				$this->layoutBuilder[$viewName]['Details'][(int) $field['alignment']][(int) $field['order_edit']] = $name;
+			}
+			// check if publishing fields were over written
+			if (in_array($name, $this->defaultFields))
+			{
+				// just to eliminate
+				$this->movedPublishingFields[$viewName][$name] = $name;
 			}
 		}
 	}
@@ -1438,7 +1564,7 @@ class Fields extends Structure
 			$this->intFieldsBuilder[$viewName] .= ',"' . $name . '"';
 		}
 		// set all dynamic field of this view
-		if ($typeName != 'category' && $typeName != 'repeatable')
+		if ($typeName != 'category' && $typeName != 'repeatable' && !in_array($name, $this->defaultFields))
 		{
 			if (!isset($this->dynamicfieldsBuilder[$viewName]))
 			{
@@ -1593,6 +1719,11 @@ class Fields extends Structure
 		if (isset($view['settings']->tabs) && isset($view['settings']->tabs[(int) $field['tab']]))
 		{
 			$tabName = $view['settings']->tabs[(int) $field['tab']];
+		}
+		elseif ((int) $field['tab'] == 15)
+		{
+			// set to publishing tab
+			$tabName = 'publishing';
 		}
 		$this->setLayoutBuilder($viewName, $tabName, $name, $field);
 	}

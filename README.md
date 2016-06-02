@@ -1,4 +1,4 @@
-# Component Builder (2.1.10)
+# Component Builder (2.1.11)
 
 This is a [Joomla 3.x] (http://www.joomla.org/) component.
 
@@ -32,12 +32,12 @@ Would you require more help please open and issue here on [gitHub today](https:/
 + *Author*: [Llewellyn van der Merwe] (mailto:info@vdm.io)
 + *Name*: [Component Builder] (https://www.vdm.io/joomla-component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 31st May, 2016
-+ *Version*: 2.1.10
++ *Last Build*: 2nd June, 2016
++ *Version*: 2.1.11
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **82957**
-+ *File count*: **503**
++ *Line count*: **83090**
++ *File count*: **504**
 + *Folder count*: **99**
 
 > This **component** was build with a Joomla [Automated Component Builder] (https://www.vdm.io/joomla-component-builder).
