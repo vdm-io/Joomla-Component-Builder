@@ -38,7 +38,7 @@ Would you require more help please open and issue here on [gitHub today](https:/
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
 + *Line count*: **83090**
 + *File count*: **504**
-+ *Folder count*: **99**
++ *Folder count*: **98**
 
 > This **component** was build with a Joomla [Automated Component Builder] (https://www.vdm.io/joomla-component-builder).
 > Developed by [Llewellyn van der Merwe] (mailto:joomla@vdm.io)
