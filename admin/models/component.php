@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.11
-	@build			2nd June, 2016
+	@version		2.1.12
+	@build			3rd June, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -96,22 +96,16 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_site_event))
-			{
-				// base64 Decode php_site_event.
-				$item->php_site_event = base64_decode($item->php_site_event);
-			}
-
-			if (!empty($item->css))
-			{
-				// base64 Decode css.
-				$item->css = base64_decode($item->css);
-			}
-
 			if (!empty($item->php_admin_event))
 			{
 				// base64 Decode php_admin_event.
 				$item->php_admin_event = base64_decode($item->php_admin_event);
+			}
+
+			if (!empty($item->php_site_event))
+			{
+				// base64 Decode php_site_event.
+				$item->php_site_event = base64_decode($item->php_site_event);
 			}
 
 			if (!empty($item->php_dashboard_methods))
@@ -136,6 +130,12 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			{
 				// base64 Decode sql.
 				$item->sql = base64_decode($item->sql);
+			}
+
+			if (!empty($item->css))
+			{
+				// base64 Decode css.
+				$item->css = base64_decode($item->css);
 			}
 
 			if (!empty($item->readme))
@@ -1048,22 +1048,16 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_site_event string to base64 string.
-		if (isset($data['php_site_event']))
-		{
-			$data['php_site_event'] = base64_encode($data['php_site_event']);
-		}
-
-		// Set the css string to base64 string.
-		if (isset($data['css']))
-		{
-			$data['css'] = base64_encode($data['css']);
-		}
-
 		// Set the php_admin_event string to base64 string.
 		if (isset($data['php_admin_event']))
 		{
 			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
+		}
+
+		// Set the php_site_event string to base64 string.
+		if (isset($data['php_site_event']))
+		{
+			$data['php_site_event'] = base64_encode($data['php_site_event']);
 		}
 
 		// Set the php_dashboard_methods string to base64 string.
@@ -1088,6 +1082,12 @@ class ComponentbuilderModelComponent extends JModelAdmin
 		if (isset($data['sql']))
 		{
 			$data['sql'] = base64_encode($data['sql']);
+		}
+
+		// Set the css string to base64 string.
+		if (isset($data['css']))
+		{
+			$data['css'] = base64_encode($data['css']);
 		}
 
 		// Set the readme string to base64 string.

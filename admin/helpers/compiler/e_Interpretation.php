@@ -6929,6 +6929,8 @@ class Interpretation extends Fields
 			$query .= "\n\t\t//".$this->setLine(__LINE__)." setup the query";
 			$query .= "\n\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$pks))";
 			$query .= "\n\t\t{";
+			$query .= "\n\t\t\t//".$this->setLine(__LINE__)." Set a value to know this is exporting method.";
+			$query .= "\n\t\t\t\$_export = true;";
 			$query .= "\n\t\t\t//".$this->setLine(__LINE__)." Get the user object.";
 			$query .= "\n\t\t\t\$user = JFactory::getUser();";
 			$query .= "\n\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";

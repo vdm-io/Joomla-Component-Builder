@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.11
-	@build			2nd June, 2016
+	@version		2.1.12
+	@build			3rd June, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		components.php
@@ -219,6 +219,8 @@ class ComponentbuilderModelComponents extends JModelList
 		// setup the query
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
+			// Set a value to know this is exporting method.
+			$_export = true;
 			// Get the user object.
 			$user = JFactory::getUser();
 			// Create a new query object.
@@ -258,17 +260,15 @@ class ComponentbuilderModelComponents extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode css
-						$item->css = base64_decode($item->css);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
 						if ($basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
 						{
 							// decrypt update_server_ftp
 							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
 						}
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
+						// decode php_site_event
+						$item->php_site_event = base64_decode($item->php_site_event);
 						// decode php_dashboard_methods
 						$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
 						// decode php_helper_admin
@@ -282,6 +282,8 @@ class ComponentbuilderModelComponents extends JModelList
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
+						// decode css
+						$item->css = base64_decode($item->css);
 						// decode readme
 						$item->readme = base64_decode($item->readme);
 						if ($basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))

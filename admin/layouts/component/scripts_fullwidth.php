@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.11
-	@build			2nd June, 2016
+	@version		2.1.12
+	@build			3rd June, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		scripts_fullwidth.php
@@ -36,6 +36,7 @@ $fields = $displayData->get('fields') ?: array(
 	'addfootable',
 	'add_css',
 	'css',
+	'add_email_helper',
 	'add_php_helper_admin',
 	'php_helper_admin',
 	'add_admin_event',
