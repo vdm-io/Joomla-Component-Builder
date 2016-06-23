@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.12
-	@build			3rd June, 2016
+	@version		2.1.13
+	@build			23rd June, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_batch_footer.php
@@ -29,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <!-- clear the batch values if cancel -->
-<button class="btn" type="button" onclick="###BATCH_ONCLICK_CANCEL_SCRIPT###" data-dismiss="modal">
+<button class="btn" type="button" onclick="" data-dismiss="modal">
 	<?php echo JText::_('JCANCEL'); ?>
 </button>
 <!-- post the batch values if process -->

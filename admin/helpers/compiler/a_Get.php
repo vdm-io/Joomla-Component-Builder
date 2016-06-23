@@ -1011,90 +1011,52 @@ class Get
 			// setup linked views to global data sets
 			$this->linkedAdminViews[$name_single] = $linked_views_sorted;
 			unset($linked_views_sorted);
-			// add_javascript_view_file
-			if ($view->add_javascript_view_file == 1)
-			{
-				$view->javascript_view_file = base64_decode($view->javascript_view_file);
-				$this->customScriptBuilder['view_file'][$name_single] = $view->javascript_view_file;
-				if (strpos($view->javascript_view_file,"token") !== false && strpos($view->javascript_view_file,"task=ajax") !== false)
-				{
-					if (!$this->customScriptBuilder['token'][$name_single])
-					{
-						$this->customScriptBuilder['token'][$name_single] = true;
-					}
-				}
-				unset($view->javascript_view_file);
-			}
-			// add_javascript_view_footer
-			if ($view->add_javascript_view_footer == 1)
-			{
-				$view->javascript_view_footer = base64_decode($view->javascript_view_footer);
-				if (!isset($this->customScriptBuilder['view_footer'][$name_single]))
-				{
-					$this->customScriptBuilder['view_footer'][$name_single] = '';
-				}
-				$this->customScriptBuilder['view_footer'][$name_single] .= $view->javascript_view_footer;
-				if (strpos($view->javascript_view_footer,"token") !== false && strpos($view->javascript_view_footer,"task=ajax") !== false)
-				{
-					if (!$this->customScriptBuilder['token'][$name_single])
-					{
-						$this->customScriptBuilder['token'][$name_single] = true;
-					}
-				}
-				unset($view->javascript_view_footer);
-			}
-			// add_javascript_view_file
-			if ($view->add_javascript_views_file == 1)
-			{
-				$view->javascript_views_file = base64_decode($view->javascript_views_file);
-				$this->customScriptBuilder['views_file'][$name_list] = $view->javascript_views_file;
-				if (strpos($view->javascript_views_file,"token") !== false && strpos($view->javascript_views_file,"task=ajax") !== false)
-				{
-					if (!$this->customScriptBuilder['token'][$name_list])
-					{
-						$this->customScriptBuilder['token'][$name_list] = true;
-					}
-				}
-				unset($view->javascript_views_file);
-			}
-			// add_javascript_views_footer
-			if ($view->add_javascript_views_footer == 1)
-			{
-				$view->javascript_views_footer = base64_decode($view->javascript_views_footer);
-				$this->customScriptBuilder['views_footer'][$name_list] .= $view->javascript_views_footer;
-				if (strpos($view->javascript_views_footer,"token") !== false && strpos($view->javascript_views_footer,"task=ajax") !== false)
-				{
-					if (!$this->customScriptBuilder['token'][$name_list])
-					{
-						$this->customScriptBuilder['token'][$name_list] = true;
-					}
-				}
-				unset($view->javascript_views_footer);
-			}
-			// add_css_view
-			if ($view->add_css_view == 1)
-			{
-				if (!isset($this->customScriptBuilder['css_view'][$name_single]))
-				{
-					$this->customScriptBuilder['css_view'][$name_single] = '';
-				}
-				$this->customScriptBuilder['css_view'][$name_single] .= base64_decode($view->css_view);
-				unset($view->css_view);
-			}
-			// add_css_views
-			if ($view->add_css_views == 1)
-			{
-				if (!isset($this->customScriptBuilder['css_views'][$name_single]))
-				{
-					$this->customScriptBuilder['css_views'][$name_single] = '';
-				}
-				$this->customScriptBuilder['css_views'][$name_list] .= base64_decode($view->css_views);
-				unset($view->css_views);
-			}
-
+			// set the lang target
 			$this->lang = 'admin';
-			$addArray = array('php_getitem','php_save','php_postsavehook','php_getitems','php_getlistquery','php_allowedit','php_before_delete','php_after_delete','php_batchcopy','php_batchmove','php_document');
-			foreach ($addArray as $scripter)
+			// add_javascript
+			$addArrayJ = array('javascript_view_file','javascript_view_footer','javascript_views_file','javascript_views_footer');
+			foreach ($addArrayJ as $scripter)
+			{
+				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
+				{
+					$view->$scripter = $this->setCustomContentLang(base64_decode($view->$scripter));
+					$scripter_target = str_replace('javascript_', '', $scripter);
+					if (!isset($this->customScriptBuilder[$scripter_target][$name_single]))
+					{
+						if (!isset($this->customScriptBuilder[$scripter_target]))
+						{
+							$this->customScriptBuilder[$scripter_target] = array();
+						}
+						$this->customScriptBuilder[$scripter_target][$name_single] = '';
+					}
+					$this->customScriptBuilder[$scripter_target][$name_single] .= $view->$scripter;
+					if (strpos($view->$scripter,"token") !== false && strpos($view->$scripter,"task=ajax") !== false)
+					{
+						if (!$this->customScriptBuilder['token'][$name_single])
+						{
+							$this->customScriptBuilder['token'][$name_single] = true;
+						}
+					}
+					unset($view->$scripter);
+				}
+			}
+			// add_css
+			$addArrayC = array('css_view', 'css_views');
+			foreach ($addArrayC as $scripter)
+			{
+				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
+				{
+					if (!isset($this->customScriptBuilder[$scripter][$name_single]))
+					{
+						$this->customScriptBuilder[$scripter][$name_single] = '';
+					}
+					$this->customScriptBuilder[$scripter][$name_single] .= base64_decode($view->$scripter);
+					unset($view->$scripter);
+				}
+			}
+			// add_php
+			$addArrayP = array('php_getitem','php_save','php_postsavehook','php_getitems','php_getlistquery','php_allowedit','php_before_delete','php_after_delete','php_batchcopy','php_batchmove','php_document');
+			foreach ($addArrayP as $scripter)
 			{
 				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
 				{
@@ -1394,125 +1356,132 @@ class Get
 
 			// Reset the query using our newly populated query object.
 			$db->setQuery($query);
-
-			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
-			$field = $db->loadObject();
-			
-			// adding a fix for the changed name of type to fieldtype
-			$field->type = $field->fieldtype;
-
-			// load the values form params
-			$field->xml = json_decode($field->xml);
-
-			// load the type values form type params
-			$properties = json_decode($field->type_properties,true);
-			unset($field->type_properties);
-
-			if (ComponentbuilderHelper::checkArray($properties))
+			$db->execute();
+			if ($db->getNumRows())
 			{
-				foreach ($properties as $option => $values)
+				// Load the results as a list of stdClass objects (see later for more options on retrieving data).
+				$field = $db->loadObject();
+
+				// adding a fix for the changed name of type to fieldtype
+				$field->type = $field->fieldtype;
+
+				// load the values form params
+				$field->xml = json_decode($field->xml);
+
+				// load the type values form type params
+				$properties = json_decode($field->type_properties,true);
+				unset($field->type_properties);
+
+				if (ComponentbuilderHelper::checkArray($properties))
 				{
-					foreach ($values as $nr => $value)
+					foreach ($properties as $option => $values)
 					{
-						$field->properties[$nr][$option] = $value;
-					}
-				}
-			}
-			// check if we have advanced encryption
-			if (4 == $field->store &&  (!isset($this->advancedEncryption) || !$this->advancedEncryption))
-			{
-				 $this->advancedEncryption = true;
-			}
-			// check if we have basic encryption
-			elseif (3 == $field->store &&  (!isset($this->basicEncryption) || !$this->basicEncryption))
-			{
-				 $this->basicEncryption = true;
-			}
-
-			// check if we should load scripts for single view
-			if (ComponentbuilderHelper::checkString($name_single) && !isset($this->customFieldScript[$name_single][$id]))
-			{
-				// add_javascript_view_footer
-				if ($field->add_javascript_view_footer == 1)
-				{
-					if(!isset($this->customScriptBuilder['view_footer']))
-					{
-						$this->customScriptBuilder['view_footer'] = array();
-					}
-					if (!isset($this->customScriptBuilder['view_footer'][$name_single]))
-					{
-						$this->customScriptBuilder['view_footer'][$name_single] = '';
-					}
-					$this->customScriptBuilder['view_footer'][$name_single] .= "\n".$this->setCustomContentLang(base64_decode($field->javascript_view_footer));
-					if (strpos($field->javascript_view_footer,"token") !== false && strpos($field->javascript_view_footer,"task=ajax") !== false)
-					{
-						if (!isset($this->customScriptBuilder['token'][$name_single]) || !$this->customScriptBuilder['token'][$name_single])
+						foreach ($values as $nr => $value)
 						{
-							if(!isset($this->customScriptBuilder['token']))
-							{
-								$this->customScriptBuilder['token'] = array();
-							}
-							$this->customScriptBuilder['token'][$name_single] = true;
+							$field->properties[$nr][$option] = $value;
 						}
 					}
-					unset($field->javascript_view_footer);
+				}
+				// check if we have advanced encryption
+				if (4 == $field->store &&  (!isset($this->advancedEncryption) || !$this->advancedEncryption))
+				{
+					 $this->advancedEncryption = true;
+				}
+				// check if we have basic encryption
+				elseif (3 == $field->store &&  (!isset($this->basicEncryption) || !$this->basicEncryption))
+				{
+					 $this->basicEncryption = true;
 				}
 
-				// add_css_view
-				if ($field->add_css_view == 1)
+				// check if we should load scripts for single view
+				if (ComponentbuilderHelper::checkString($name_single) && !isset($this->customFieldScript[$name_single][$id]))
 				{
-					if (!isset($this->customScriptBuilder['css_view'][$name_single]))
+					// add_javascript_view_footer
+					if ($field->add_javascript_view_footer == 1)
 					{
-						$this->customScriptBuilder['css_view'][$name_single] = '';
+						if (!isset($this->customScriptBuilder['view_footer'][$name_single]))
+						{
+							if(!isset($this->customScriptBuilder['view_footer']))
+							{
+								$this->customScriptBuilder['view_footer'] = array();
+							}
+							$this->customScriptBuilder['view_footer'][$name_single] = '';
+						}
+						$this->customScriptBuilder['view_footer'][$name_single] .= "\n".$this->setCustomContentLang(base64_decode($field->javascript_view_footer));
+						if (strpos($field->javascript_view_footer,"token") !== false && strpos($field->javascript_view_footer,"task=ajax") !== false)
+						{
+							if (!isset($this->customScriptBuilder['token'][$name_single]) || !$this->customScriptBuilder['token'][$name_single])
+							{
+								if(!isset($this->customScriptBuilder['token']))
+								{
+									$this->customScriptBuilder['token'] = array();
+								}
+								$this->customScriptBuilder['token'][$name_single] = true;
+							}
+						}
+						unset($field->javascript_view_footer);
 					}
-					$this->customScriptBuilder['css_view'][$name_single] .= "\n".base64_decode($field->css_view);
+
+					// add_css_view
+					if ($field->add_css_view == 1)
+					{
+						if (!isset($this->customScriptBuilder['css_view'][$name_single]))
+						{
+							$this->customScriptBuilder['css_view'][$name_single] = '';
+						}
+						$this->customScriptBuilder['css_view'][$name_single] .= "\n".base64_decode($field->css_view);
+						unset($field->css_view);
+					}
+
+					// add this only once to view.
+					$this->customFieldScript[$name_single][$id] = true;
+				}
+				else
+				{
+					// unset if not needed
+					unset($field->javascript_view_footer);
 					unset($field->css_view);
 				}
-
-				// add this only once to view.
-				$this->customFieldScript[$name_single][$id] = true;
-			}
-			else
-			{
-				// unset if not needed
-				unset($field->javascript_view_footer);
-				unset($field->css_view);
-			}
-			// check if we should load scripts for list views
-			if (ComponentbuilderHelper::checkString($name_list))
-			{
-				// add_javascript_views_footer
-				if ($field->add_javascript_views_footer == 1)
+				// check if we should load scripts for list views
+				if (ComponentbuilderHelper::checkString($name_list))
 				{
-					$this->customScriptBuilder['views_footer'][$name_list] .= $this->setCustomContentLang(base64_decode($field->javascript_views_footer));
-					if (strpos($field->javascript_views_footer,"token") !== false && strpos($field->javascript_views_footer,"task=ajax") !== false)
+					// add_javascript_views_footer
+					if ($field->add_javascript_views_footer == 1)
 					{
-						if (!$this->customScriptBuilder['token'][$name_list])
+						$this->customScriptBuilder['views_footer'][$name_list] .= $this->setCustomContentLang(base64_decode($field->javascript_views_footer));
+						if (strpos($field->javascript_views_footer,"token") !== false && strpos($field->javascript_views_footer,"task=ajax") !== false)
 						{
-							$this->customScriptBuilder['token'][$name_list] = true;
+							if (!$this->customScriptBuilder['token'][$name_list])
+							{
+								$this->customScriptBuilder['token'][$name_list] = true;
+							}
 						}
+						unset($field->javascript_views_footer);
 					}
-					unset($field->javascript_views_footer);
-				}
-				// add_css_views
-				if ($field->add_css_views == 1)
-				{
-					if (!isset($this->customScriptBuilder['css_views'][$name_list]))
+					// add_css_views
+					if ($field->add_css_views == 1)
 					{
-						$this->customScriptBuilder['css_views'][$name_list] = '';
+						if (!isset($this->customScriptBuilder['css_views'][$name_list]))
+						{
+							$this->customScriptBuilder['css_views'][$name_list] = '';
+						}
+						$this->customScriptBuilder['css_views'][$name_list] .= base64_decode($field->css_views);
+						unset($field->css_views);
 					}
-					$this->customScriptBuilder['css_views'][$name_list] .= base64_decode($field->css_views);
-					unset($field->css_views);
 				}
+				else
+				{
+					// unset if not needed
+					unset($field->javascript_views_footer);
+					unset($field->css_views);
+
+				}
+				$this->_fieldData[$id] = $field;
 			}
 			else
 			{
-				// unset if not needed
-				unset($field->javascript_views_footer);
-				unset($field->css_views);
-
+				return false;
 			}
-			$this->_fieldData[$id] = $field;
 		}
 		// return the found field data
 		return $this->_fieldData[$id];

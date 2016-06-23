@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.12
-	@build			3rd June, 2016
+	@version		2.1.13
+	@build			23rd June, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -50,7 +50,8 @@ class ComponentbuilderModelCompiler extends JModelList
 		$query->select($db->quoteName(array('id', 'system_name'),array('id', 'name')));
 		$query->from($db->quoteName('#__componentbuilder_component'));
 		$query->where($db->quoteName('published') . ' = 1');
-		$query->order('ordering ASC');
+		$query->order('modified DESC');
+		$query->order('created DESC');
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 		// return the result

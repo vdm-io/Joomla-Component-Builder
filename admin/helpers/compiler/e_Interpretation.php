@@ -2306,7 +2306,7 @@ class Interpretation extends Fields
 				$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." Filtering.";
 				$getItem .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]);
 				// clear some memory
-				unset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
+				unset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]);
 			}
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get,$code);
@@ -7519,12 +7519,10 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function buildTheViewScript($viewArray, $component)
+	public function buildTheViewScript($viewArray)
 	{
 		// set the view name
 		$viewName = ComponentbuilderHelper::safeString($viewArray['settings']->name_single);
-		// setup the str_replace values
-		$placeholders = array('[[[component]]]' => $component, '[[[view]]]' => $viewName);
 		// add conditions to this view
 		if (isset($viewArray['settings']->conditions) && ComponentbuilderHelper::checkArray($viewArray['settings']->conditions))
 		{
@@ -7851,12 +7849,12 @@ class Interpretation extends Fields
 			{
 				$fileScript = '';
 			}
-			$fileScript .= "\n\n".str_replace(array_keys($placeholders),array_values($placeholders),$this->customScriptBuilder['view_file'][$viewName]);
+			$fileScript .= "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['view_file'][$viewName]);
 		}
 		// add custom script to footer
 		if (isset($this->customScriptBuilder['view_footer'][$viewName]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['view_footer'][$viewName]))
 		{
-			$customFooterScript = "\n\n".str_replace(array_keys($placeholders),array_values($placeholders),$this->customScriptBuilder['view_footer'][$viewName]);
+			$customFooterScript = "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['view_footer'][$viewName]);
 			if (strpos($customFooterScript,'<?php') === false)
 			{
 				// only add now if no php is added to the footer script

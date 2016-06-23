@@ -276,9 +276,15 @@ abstract class ###Component###Helper
 		$db = JFactory::getDbo();
 		// Create a new query object.
 		$query = $db->getQuery(true);
-
-		$query->select($db->quoteName(array($what)));
-		$query->from($db->quoteName('#__'.$main.'_'.$table));
+		$query->select($db->quoteName(array($what)));		
+		if (empty($table))
+		{
+			$query->from($db->quoteName('#__'.$main));
+		}
+		else
+		{
+			$query->from($db->quoteName('#__'.$main.'_'.$table));
+		}
 		if (is_numeric($where))
 		{
 			$query->where($db->quoteName($whereString) . ' '.$operator.' '.(int) $where);

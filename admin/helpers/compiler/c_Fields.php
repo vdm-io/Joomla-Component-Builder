@@ -655,100 +655,104 @@ class Fields extends Structure
 	 */
 	public function setDynamicField(&$field, &$view, &$viewType, &$langView, &$viewName, &$listViewName, &$spacerCounter, &$placeholders, &$dbkey, $build)
 	{
-		$name = ComponentbuilderHelper::safeString($field['settings']->name);
-		$typeName = ComponentbuilderHelper::safeString($field['settings']->type_name);
-		$multiple = false;
-		$langLabel = '';
-		$taber = '';
-		$fieldSet = '';
-		// set field attributes
-		$fieldAttributes = $this->setFieldAttributes($field, $viewType, $name, $typeName, $multiple, $langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders);
-		// check if values were set
-		if (ComponentbuilderHelper::checkArray($fieldAttributes))
+		if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']))
 		{
-			// set the array of field names
-			$this->setFieldsNames($viewName,$fieldAttributes['name']);
-			
-			if ($this->defaultField($typeName, 'option'))
+			$name = ComponentbuilderHelper::safeString($field['settings']->name);
+			$typeName = ComponentbuilderHelper::safeString($field['settings']->type_name);
+			$multiple = false;
+			$langLabel = '';
+			$taber = '';
+			$fieldSet = '';
+			// set field attributes
+			$fieldAttributes = $this->setFieldAttributes($field, $viewType, $name, $typeName, $multiple, $langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders);
+			// check if values were set
+			if (ComponentbuilderHelper::checkArray($fieldAttributes))
 			{
-				//reset options array
-				$optionArray = array();
-				// now add to the field set
-				$fieldSet .= $this->setField('option', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
-				if ($build)
+				// set the array of field names
+				$this->setFieldsNames($viewName,$fieldAttributes['name']);
+
+				if ($this->defaultField($typeName, 'option'))
 				{
-					// set builders
-					$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, false, $optionArray);
-				}
-			}
-			elseif ($this->defaultField($typeName, 'plain'))
-			{
-				if ($build)
-				{
-					// set builders
-					$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple);
-				}
-				// now add to the field set
-				$fieldSet .= $this->setField('plain', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
-			}
-			elseif ($this->defaultField($typeName, 'spacer'))
-			{
-				if ($build)
-				{
-					// make sure spacers gets loaded to layout
-					$tabName = '';
-					if (isset($view['settings']->tabs) && isset($view['settings']->tabs[(int) $field['tab']]))
+					//reset options array
+					$optionArray = array();
+					// now add to the field set
+					$fieldSet .= $this->setField('option', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+					if ($build)
 					{
-						$tabName = $view['settings']->tabs[(int) $field['tab']];
+						// set builders
+						$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, false, $optionArray);
 					}
-					elseif ((int) $field['tab'] == 15)
-					{
-						// set to publishing tab
-						$tabName = 'publishing';
-					}
-					$this->setLayoutBuilder($viewName, $tabName, $name, $field);
 				}
-				// now add to the field set
-				$fieldSet .= $this->setField('spacer', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
-				// increment spacer counter
-				if ($typeName == 'spacer')
-				{
-					$spacerCounter++;
-				}
-			}
-			elseif ($this->defaultField($typeName, 'special'))
-			{
-				// set the repeatable field
-				if ($typeName == 'repeatable')
+				elseif ($this->defaultField($typeName, 'plain'))
 				{
 					if ($build)
 					{
 						// set builders
-						$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, false);
+						$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple);
 					}
 					// now add to the field set
-					$fieldSet .= $this->setField('special', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+					$fieldSet .= $this->setField('plain', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
 				}
-			}
-			elseif (ComponentbuilderHelper::checkArray($fieldAttributes['custom']))
-			{
-				// set the custom array
-				$custom = $fieldAttributes['custom'];
-				unset($fieldAttributes['custom']);
-				// set db key
-				$custom['db'] = $dbkey;
-				// increment the db key
-				$dbkey++;
-				if ($build)
+				elseif ($this->defaultField($typeName, 'spacer'))
 				{
-					// set builders
-					$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, $custom);
+					if ($build)
+					{
+						// make sure spacers gets loaded to layout
+						$tabName = '';
+						if (isset($view['settings']->tabs) && isset($view['settings']->tabs[(int) $field['tab']]))
+						{
+							$tabName = $view['settings']->tabs[(int) $field['tab']];
+						}
+						elseif ((int) $field['tab'] == 15)
+						{
+							// set to publishing tab
+							$tabName = 'publishing';
+						}
+						$this->setLayoutBuilder($viewName, $tabName, $name, $field);
+					}
+					// now add to the field set
+					$fieldSet .= $this->setField('spacer', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+					// increment spacer counter
+					if ($typeName == 'spacer')
+					{
+						$spacerCounter++;
+					}
 				}
-				// now add to the field set
-				$fieldSet .= $this->setField('custom', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+				elseif ($this->defaultField($typeName, 'special'))
+				{
+					// set the repeatable field
+					if ($typeName == 'repeatable')
+					{
+						if ($build)
+						{
+							// set builders
+							$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, false);
+						}
+						// now add to the field set
+						$fieldSet .= $this->setField('special', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+					}
+				}
+				elseif (ComponentbuilderHelper::checkArray($fieldAttributes['custom']))
+				{
+					// set the custom array
+					$custom = $fieldAttributes['custom'];
+					unset($fieldAttributes['custom']);
+					// set db key
+					$custom['db'] = $dbkey;
+					// increment the db key
+					$dbkey++;
+					if ($build)
+					{
+						// set builders
+						$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, $custom);
+					}
+					// now add to the field set
+					$fieldSet .= $this->setField('custom', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+				}
 			}
+			return $fieldSet;
 		}
-		return $fieldSet;
+		return '';
 	}
 
 	/**

@@ -234,13 +234,13 @@ abstract class ###Component###Email
 			$numReplyTo = count($mailreply);
 			for ($i=0; $i < $numReplyTo; $i++)
 			{
-				$mail->addReplyTo( array($mailreply[$i], $replyname[$i]) );
+				$mail->addReplyTo($mailreply[$i], $replyname[$i]);
 			}
 		}
 		elseif (!empty($mailreply))
 		{
 			$mail->ClearReplyTos();
-			$mail->addReplyTo( array( $mailreply, $replyname ) );
+			$mail->addReplyTo($mailreply, $replyname);
 		}
 		
 		// check if we can add the DKIM to email
@@ -266,6 +266,12 @@ abstract class ###Component###Email
 		if ($conf->get('enable_dkim') && !empty($conf->get('dkim_domain')) && !empty($conf->get('dkim_selector')) && !empty($conf->get('dkim_private')) && !empty($conf->get('dkim_public')))
 		{
 			@unlink($tmp);
+		}
+		
+		if (method_exists('###Component###Helper','storeMessage'))
+		{
+			// store the massage if the method is set
+			###Component###Helper::storeMessage($sendmail, $recipient, $subject, $body, $textonly, $mode, 'email');
 		}
 		
 		return $sendmail;

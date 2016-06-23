@@ -45,7 +45,7 @@ class Infusion extends Interpretation
 		if (parent::__construct($config))
 		{
 			// infuse the data into the structure
-			return $this->buildFileContent();		
+			return $this->buildFileContent();
 		}
 		return false;
 	}
@@ -241,7 +241,7 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$viewName_single]['###ADDTOOLBAR###'] = $this->setAddToolBar($view);
 
 						// set the script for this view
-						$this->buildTheViewScript($view, $this->fileContentStatic['###component###']);
+						$this->buildTheViewScript($view);
 
 						// ###VIEW_SCRIPT###
 						$this->fileContentDynamic[$viewName_single]['###VIEW_SCRIPT###'] = $this->setViewScript($viewName_single);
@@ -476,6 +476,9 @@ class Infusion extends Interpretation
 
 					// ###MODEL_BATCH_MOVE### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single]['###MODEL_BATCH_MOVE###'] = $this->setBatchMove($viewName_single);
+					
+					// ###BATCH_ONCLICK_CANCEL_SCRIPT### <<<DYNAMIC>>>
+					$this->fileContentDynamic[$viewName_list]['###BATCH_ONCLICK_CANCEL_SCRIPT###'] = ''; // TODO <-- must still be build
 
 					// ###JCONTROLLERFORM_ALLOWADD### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single]['###JCONTROLLERFORM_ALLOWADD###'] = $this->setJcontrollerAllowAdd($viewName_single,$viewName_list);
