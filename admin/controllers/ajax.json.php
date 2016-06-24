@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.13
-	@build			23rd June, 2016
+	@build			24th June, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -81,9 +81,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -96,9 +96,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -119,9 +119,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -134,9 +134,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -157,9 +157,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -172,9 +172,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -195,9 +195,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -210,9 +210,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -233,9 +233,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -248,9 +248,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -271,9 +271,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -286,9 +286,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -310,9 +310,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -325,9 +325,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -348,9 +348,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -363,9 +363,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -388,9 +388,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -403,9 +403,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -428,9 +428,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -443,9 +443,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -466,9 +466,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback'] . "(".json_encode($result).");";
+							echo $callback . "(".json_encode($result).");";
 						}
 						elseif($returnRaw)
 						{
@@ -481,9 +481,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET))
+						if($callback = $jinput->get('callback', null, 'CMD'))
 						{
-							echo $_GET['callback']."(".json_encode($e).");";
+							echo $callback."(".json_encode($e).");";
 						}
 						else
 						{
@@ -495,9 +495,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		}
                 else
                 {
-			if(array_key_exists('callback',$_GET))
+			if($callback = $jinput->get('callback', null, 'CMD'))
                         {
-				echo $_GET['callback']."(".json_encode(false).");";
+				echo $callback."(".json_encode(false).");";
 			}
                         else
                         {

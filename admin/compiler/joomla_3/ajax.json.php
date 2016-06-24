@@ -55,7 +55,8 @@ class ###Component###ControllerAjax extends JControllerLegacy
 		// Check Token!
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
-		if($user->id != 0 && $token == $call_token){
+		if($user->id != 0 && $token == $call_token)
+		{
 			$task = $this->getTask();
 			switch($task){
 				case 'fieldRequired':
@@ -73,26 +74,37 @@ class ###Component###ControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if(array_key_exists('callback',$_GET)){
-							echo $_GET['callback'] . "(".json_encode($result).");";
-						} else {
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						else
+						{
 							echo "(".json_encode($result).");";
 						}
 					}
-						catch(Exception $e)
+					catch(Exception $e)
 					{
-						if(array_key_exists('callback',$_GET)){
-							echo $_GET['callback']."(".json_encode($e).");";
-						} else {
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
 							echo "(".json_encode($e).");";
 						}
 					}
 				break;
 			}
-		} else {
-			if(array_key_exists('callback',$_GET)){
-				echo $_GET['callback']."(".json_encode(false).");";
-			} else {
+		}
+		else
+		{
+			if($callback = $jinput->get('callback', null, 'CMD'))
+			{
+				echo $callback."(".json_encode(false).");";
+			}
+			else
+			{
 				echo "(".json_encode(false).");";
 			}
 		}

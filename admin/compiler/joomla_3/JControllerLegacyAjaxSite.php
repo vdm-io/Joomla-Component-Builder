@@ -63,9 +63,9 @@ class ###Component###ControllerAjax extends JControllerLegacy
 		}
                 else
                 {
-			if(array_key_exists('callback',$_GET))
+			if($callback = $jinput->get('callback', null, 'CMD')
                         {
-				echo $_GET['callback']."(".json_encode(false).");";
+				echo $callback."(".json_encode(false).");";
 			}
                         else
                         {

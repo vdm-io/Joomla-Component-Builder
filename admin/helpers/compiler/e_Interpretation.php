@@ -8632,9 +8632,9 @@ class Interpretation extends Fields
 					$cases .= "\n\t\t\t\t\t\t{";
 					$cases .= "\n\t\t\t\t\t\t\t\$result = false;";
 					$cases .= "\n\t\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\t\tif(array_key_exists('callback',\$_GET))";
+					$cases .= "\n\t\t\t\t\t\tif(\$callback = \$jinput->get('callback', null, 'CMD'))";
 					$cases .= "\n\t\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\techo \$_GET['callback'] . \"(\".json_encode(\$result).\");\";";
+					$cases .= "\n\t\t\t\t\t\t\techo \$callback . \"(\".json_encode(\$result).\");\";";
 					$cases .= "\n\t\t\t\t\t\t}";
 					$cases .= "\n\t\t\t\t\t\telseif(\$returnRaw)";
 					$cases .= "\n\t\t\t\t\t\t{";
@@ -8647,9 +8647,9 @@ class Interpretation extends Fields
 					$cases .= "\n\t\t\t\t\t}";
 					$cases .= "\n\t\t\t\t\tcatch(Exception \$e)";
 					$cases .= "\n\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\tif(array_key_exists('callback',\$_GET))";
+					$cases .= "\n\t\t\t\t\t\tif(\$callback = \$jinput->get('callback', null, 'CMD'))";
 					$cases .= "\n\t\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\techo \$_GET['callback'].\"(\".json_encode(\$e).\");\";";
+					$cases .= "\n\t\t\t\t\t\t\techo \$callback.\"(\".json_encode(\$e).\");\";";
 					$cases .= "\n\t\t\t\t\t\t}";
 					$cases .= "\n\t\t\t\t\t\telse";
 					$cases .= "\n\t\t\t\t\t\t{";
