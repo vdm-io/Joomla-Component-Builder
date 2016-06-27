@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.13
-	@build			24th June, 2016
+	@build			27th June, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_vdm.php
@@ -31,7 +31,7 @@ $manifest = ComponentbuilderHelper::manifest();
 JHtml::_('bootstrap.loadCss');
 
 ?>
-<img alt="<?php echo JText::_('COM_COMPONENTBUILDER'); ?>" src="components/com_componentbuilder/assets/images/component-300.png">
+<img alt="<?php echo JText::_('COM_COMPONENTBUILDER'); ?>" src="components/com_componentbuilder/assets/images/component-300.jpg">
 <ul class="list-striped">
 <li><b><?php echo JText::_('COM_COMPONENTBUILDER_VERSION'); ?>:</b> <?php echo $manifest->version; ?></li>
 <li><b><?php echo JText::_('COM_COMPONENTBUILDER_DATE'); ?>:</b> <?php echo $manifest->creationDate; ?></li>
