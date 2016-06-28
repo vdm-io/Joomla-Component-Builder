@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.14
-	@build			27th June, 2016
+	@build			28th June, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_head.php
