@@ -99,9 +99,10 @@ class ###Component###Model###SView### extends JModelItem
                 // check if this user has permission to access item
                 if (!$this->user->authorise('site.###sview###.access', 'com_###component###'))
                 {
-			JError::raiseWarning(500, JText::_('Not authorised!'));
+			$app = JFactory::getApplication();
+			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
 			// redirect away if not a correct (TODO for now we go to default view)
-			JFactory::getApplication()->redirect(JRoute::_('index.php?option=com_###component###&view=###SITE_DEFAULT_VIEW###'));
+			$app->redirect(JRoute::_('index.php?option=com_###component###&view=###SITE_DEFAULT_VIEW###'));
 			return false;
                 }
 		$this->userId		= $this->user->get('id');
@@ -128,7 +129,7 @@ class ###Component###Model###SView### extends JModelItem
 				if ($e->getCode() == 404)
 				{
 					// Need to go thru the error handler to allow Redirect to work.
-					JError::raiseError(404, $e->getMessage());
+					JError::raiseWaring(404, $e->getMessage());
 				}
 				else
 				{

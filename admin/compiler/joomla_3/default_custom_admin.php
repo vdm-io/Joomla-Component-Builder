@@ -35,20 +35,9 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 ?>
-<?php if ($this->canDo->get('###sview###.access')): ?>
-<script type="text/javascript">
-	Joomla.submitbutton = function(task) {
-		if (task == '###sview###.back') {
-                        parent.history.back();
-			return false;
-                } else {
-			var form = document.getElementById('adminForm');
-			form.task.value = task;
-			form.submit();
-		}
-	}
-</script>
-<form action="<?php echo JRoute::_('index.php?option=com_costbenefitprojection&view=###sview###&id='.$this->item->id); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<?php if ($this->canDo->get('###sview###.access')): ?>###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT###
+<?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>
+<form action="<?php echo JRoute::_('index.php?option=com_###component###&view=###sview###'.$urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
         <input type="hidden" name="task" value="" />
         <?php echo JHtml::_('form.token'); ?>
 </form>###CUSTOM_ADMIN_BODY###

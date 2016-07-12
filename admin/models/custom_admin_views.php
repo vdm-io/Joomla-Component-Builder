@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.14
-	@build			28th June, 2016
+	@version		2.1.16
+	@build			12th July, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_views.php
@@ -267,20 +267,20 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 							continue;
 						}
 
-						// decode php_view
-						$item->php_view = base64_decode($item->php_view);
-						// decode php_jview
-						$item->php_jview = base64_decode($item->php_jview);
+						// decode php_model
+						$item->php_model = base64_decode($item->php_model);
 						// decode css_document
 						$item->css_document = base64_decode($item->css_document);
+						// decode php_jview
+						$item->php_jview = base64_decode($item->php_jview);
+						// decode php_view
+						$item->php_view = base64_decode($item->php_view);
 						// decode php_document
 						$item->php_document = base64_decode($item->php_document);
 						// decode php_jview_display
 						$item->php_jview_display = base64_decode($item->php_jview_display);
 						// decode js_document
 						$item->js_document = base64_decode($item->js_document);
-						// decode php_model
-						$item->php_model = base64_decode($item->php_model);
 						// decode css
 						$item->css = base64_decode($item->css);
 						// decode default

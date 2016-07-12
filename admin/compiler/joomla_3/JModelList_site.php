@@ -81,9 +81,10 @@ class ###Component###Model###SViews### extends JModelList
                 // check if this user has permission to access items
                 if (!$user->authorise('site.###sview###.access', 'com_###component###'))
                 {
-			JError::raiseWarning(500, JText::_('Not authorised!'));
+			$app = JFactory::getApplication();
+			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
 			// redirect away if not a correct (TODO for now we go to default view)
-			JFactory::getApplication()->redirect(JRoute::_('index.php?option=com_###component###&view=###SITE_DEFAULT_VIEW###'));
+			$app->redirect(JRoute::_('index.php?option=com_###component###&view=###SITE_DEFAULT_VIEW###'));
 			return false;
                 }###LICENSE_LOCKED_CHECK### ###SITE_BEFORE_GET_ITEMS###
 		// load parent items

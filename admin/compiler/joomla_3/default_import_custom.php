@@ -32,4 +32,5 @@ defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED###
 JHtml::_('jquery.framework');
 JHtml::_('bootstrap.tooltip');
 JHtml::_('script', 'system/core.js', false, true);
+JHtml::_('behavior.keepalive');
 ?>###IMPORT_DEFAULT_VIEW_CUSTOM###

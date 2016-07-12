@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.14
-	@build			28th June, 2016
+	@version		2.1.16
+	@build			12th July, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		snippets.php
@@ -132,16 +132,11 @@ class JFormFieldSnippets extends JFormFieldList
 			// check if button was created for snippet field.
 			if (is_array($button) && count($button) > 0)
 			{
-				// Add some final script
-				$script[] = "
-					jQuery(document).ready(function() {
-						jQuery('#jform_".$buttonName."').closest('.control-group').addClass('input-append');
-					});";
 				// Load the needed script.
 				$document = JFactory::getDocument();
 				$document->addScriptDeclaration(implode(' ',$script));
 				// return the button attached to input field.
-				return $html . implode('',$button);
+				return '<div class="input-append">' .$html . implode('',$button).'</div>';
 			}
 		}
 		return $html;

@@ -678,6 +678,8 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CODE_BODY###'] = $this->setCustomViewCodeBody($view);
 						// ###CUSTOM_ADMIN_BODY### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BODY###'] = $this->setCustomViewBody($view);
+						// ###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT###'] = $this->setCustomViewSubmitButtonScript($view);
 
 						// setup the templates
 						$this->setCustomViewTemplateBody($view);

@@ -161,8 +161,9 @@ class Interpretation extends Fields
 	{
 		$statment[] = "\n\t\tif (!\$this->isHonest())";
 		$statment[] = "\t\t{";
-		$statment[] = "\t\t\tJError::raiseWarning(500, JText::_('NIE_REG_NIE'));";
-		$statment[] = "\t\t\tJFactory::getApplication()->redirect('index.php');";
+		$statment[] = "\t\t\t\$app = JFactory::getApplication();";
+		$statment[] = "\t\t\t\$app->enqueueMessage(JText::_('NIE_REG_NIE'), 'error');";
+		$statment[] = "\t\t\t\$app->redirect('index.php');";
 		$statment[] = "\t\t\treturn false;";
 		$statment[] = "\t\t}";
 		// return the genuine mentod statement
@@ -1732,20 +1733,21 @@ class Interpretation extends Fields
 			$getItem .= "\n\t".$tab."\t{";
 			if ($type == 'main')
 			{
+				$getItem .= "\n\t".$tab."\t\t\$app = JFactory::getApplication();";
 				$langKeyWord = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Not found or access denied','U');
 				if (!isset($this->langContent[$this->lang][$langKeyWord]))
 				{
 					$this->langContent[$this->lang][$langKeyWord] = 'Not found, or access denied.';
 				}
 				$getItem .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." If no data is found redirect to default page and show warning.";
-				$getItem .= "\n\t".$tab."\t\tJError::raiseWarning(500, JText::_('".$langKeyWord."'));";
+				$getItem .= "\n\t".$tab."\t\t\$app->enqueueMessage(JText::_('".$langKeyWord."'), 'warning');";
 				if ('site' == $this->target)
 				{
-					$getItem .= "\n\t".$tab."\t\tJFactory::getApplication()->redirect('index.php?option=com_".$this->fileContentStatic['###component###']."&view=".$this->fileContentStatic['###SITE_DEFAULT_VIEW###']."');";
+					$getItem .= "\n\t".$tab."\t\t\$app->redirect('index.php?option=com_".$this->fileContentStatic['###component###']."&view=".$this->fileContentStatic['###SITE_DEFAULT_VIEW###']."');";
 				}
 				else
 				{
-					$getItem .= "\n\t".$tab."\t\tJFactory::getApplication()->redirect('index.php?option=com_".$this->fileContentStatic['###component###']."');";
+					$getItem .= "\n\t".$tab."\t\t\$app->redirect('index.php?option=com_".$this->fileContentStatic['###component###']."');";
 				}
 				$getItem .= "\n\t".$tab."\t\treturn false;";
 			}
@@ -2469,7 +2471,7 @@ class Interpretation extends Fields
 			$method .= "\n\n\t\t//".$this->setLine(__LINE__)." Check for errors.";
 			$method .= "\n\t\tif (count(\$errors = \$this->get('Errors')))";
 			$method .= "\n\t\t{";
-			$method .= "\n\t\t\tJError::raiseWarning(500, ".'implode("\n", $errors));';
+			$method .= "\n\t\t\tJError::raiseError(500, ".'implode("\n", $errors));';
 			$method .= "\n\t\t\treturn false;";
 			$method .= "\n\t\t}";
 			// add custom script
@@ -3083,6 +3085,34 @@ class Interpretation extends Fields
 			else
 			{
 				return "\n". str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->default);
+			}
+			
+		}
+		return '';
+	}
+
+	public function setCustomViewSubmitButtonScript(&$view)
+	{
+		if (ComponentbuilderHelper::checkString($view['settings']->default))
+		{
+			// add the script only if there is none set
+			if (strpos($view['settings']->default, 'Joomla.submitbutton = function(task)') === false)
+			{
+				$script = array();
+				$script[] = "\n<script type=\"text/javascript\">";
+				$script[] = "\tJoomla.submitbutton = function(task) {";
+				$script[] = "\t\tif (task == '".$view['settings']->code.".back') {";
+				$script[] = "\t\t\tparent.history.back();";
+				$script[] = "\t\t\treturn false;";
+				$script[] = "\t\t} else {";
+				$script[] = "\t\t\tvar form = document.getElementById('adminForm');";
+				$script[] = "\t\t\tform.task.value = task;";
+				$script[] = "\t\t\tform.submit();";
+				$script[] = "\t\t}";
+				$script[] = "\t}";
+				$script[] = "</script>";
+				
+				return implode("\n", $script);
 			}
 			
 		}
@@ -7471,16 +7501,11 @@ class Interpretation extends Fields
 		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." check if button was created for " . $targetView ." field.";
 		$addButton[] = "\t\t\tif (is_array(\$button) && count(\$button) > 0)";
 		$addButton[] = "\t\t\t{";
-		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." Add some final script";
-		$addButton[] = "\t\t\t\t\$script[] = \"";
-		$addButton[] = "\t\t\t\t\tjQuery(document).ready(function() {";
-		$addButton[] = "\t\t\t\t\t\tjQuery('#jform_\".\$buttonName.\"').closest('.control-group').addClass('input-append');";
-		$addButton[] = "\t\t\t\t\t});\";";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." Load the needed script.";
 		$addButton[] = "\t\t\t\t\$document = JFactory::getDocument();";
 		$addButton[] = "\t\t\t\t\$document->addScriptDeclaration(implode(' ',\$script));";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." return the button attached to input field.";
-		$addButton[] = "\t\t\t\treturn \$html . implode('',\$button);";
+		$addButton[] = "\t\t\t\treturn '<div class=\"input-append\">' .\$html . implode('',\$button).'</div>';";
 		$addButton[] = "\t\t\t}";
 		$addButton[] = "\t\t}";
 		$addButton[] = "\t\treturn \$html;";
@@ -11080,11 +11105,70 @@ class Interpretation extends Fields
 
 	public function addCustomDashboardIcons(&$view,&$counter)
 	{
+		$icon = '';
+		if (isset($this->componentData->custom_admin_views) && ComponentbuilderHelper::checkArray($this->componentData->custom_admin_views))
+		{
+			foreach ($this->componentData->custom_admin_views as $nr => $menu)
+			{
+				if (!isset($this->customAdminAdded[$menu['settings']->code]) && $menu['dashboard_list'] == 1 && $menu['before'] == $view['adminview'])
+				{
+					$type = ComponentbuilderHelper::imageInfo($menu['settings']->icon);
+					if ($type)
+					{
+						$type = $type.".";
+						// icon builder loader
+						$this->iconBuilder[$type.$menu['settings']->code] = $menu['settings']->icon;
+					}
+					else
+					{
+						$type = 'png.';
+					}
+					// build lang
+					$langName	= $menu['settings']->name.'<br /><br />';
+					$langKey	= $this->langPrefix.'_DASHBOARD_'.$menu['settings']->CODE;
+					// add to lang
+					$this->langContent[$this->lang][$langKey] = $langName;
+					// set icon
+					if ($counter == 0)
+					{
+						$counter++;
+						$icon .= "'".$type.$menu['settings']->code."'";
+					}
+					else
+					{
+						$counter++;
+						$icon .= ", '".$type.$menu['settings']->code."'";
+					}
+				}
+				elseif(!isset($this->customAdminAdded[$menu['settings']->code]) && $menu['dashboard_list'] == 1 && empty($menu['before']))
+				{
+					$type = ComponentbuilderHelper::imageInfo($menu['settings']->icon);
+					if ($type)
+					{
+						$type = $type.".";
+						// icon builder loader
+						$this->iconBuilder[$type.$menu['settings']->code] = $menu['settings']->icon;
+					}
+					else
+					{
+						$type = 'png.';
+					}
+					// build lang
+					$langName	= $menu['settings']->name.'<br /><br />';
+					$langKey	= $this->langPrefix.'_DASHBOARD_'.$menu['settings']->CODE;
+					// add to lang
+					$this->langContent[$this->lang][$langKey] = $langName;
+					// set icon
+					$this->lastCustomDashboardIcon[$nr] = ", '".$type.$menu['settings']->code."'";
+				}
+			}
+		}
 		// see if we should have custom menus
 		if (isset($this->componentData->custommenus) && ComponentbuilderHelper::checkArray($this->componentData->custommenus))
 		{
 			foreach ($this->componentData->custommenus as $nr => $menu)
 			{
+				$nr		= $nr + 100;
 				$nameList	= ComponentbuilderHelper::safeString($menu['name_code']);
 				$nameUpper	= ComponentbuilderHelper::safeString($menu['name_code'], 'U');
 				if ($menu['dashboard_list'] == 1 && $view['adminview'] == $menu['before'])
@@ -11116,12 +11200,12 @@ class Interpretation extends Fields
 						if ($counter == 0)
 						{
 							$counter++;
-							return "'".$type.$nameList."'";
+							$icon .= "'".$type.$nameList."'";
 						}
 						else
 						{
 							$counter++;
-							return ", '".$type.$nameList."'";
+							$icon .= ", '".$type.$nameList."'";
 						}
 					}
 				}
@@ -11156,7 +11240,7 @@ class Interpretation extends Fields
 				}
 			}
 		}
-		return '';
+		return $icon;
 	}
 
 	public function setSubMenus()
@@ -11413,11 +11497,35 @@ class Interpretation extends Fields
 
 	public function addCustomMainMenu(&$view,&$codeName,&$lang)
 	{
+		$customMenu = '';
+		// see if we should have custom admin views
+		if (isset($this->componentData->custom_admin_views) && ComponentbuilderHelper::checkArray($this->componentData->custom_admin_views))
+		{
+			foreach ($this->componentData->custom_admin_views as $nr => $menu)
+			{
+				if (!isset($this->customAdminAdded[$menu['settings']->code]))
+				{
+					if ($menu['mainmenu'] == 1 && $view['adminview'] == $menu['before'])
+					{
+						$this->langContent['adminsys'][$lang.'_'.$menu['settings']->CODE] = $menu['settings']->name;
+						// add custom menu
+						$customMenu .= "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$menu['settings']->code.'">'.$lang.'_'.$menu['settings']->CODE.'</menu>';
+					}
+					elseif($menu['mainmenu'] == 1 && empty($menu['before']))
+					{
+						$this->langContent['adminsys'][$lang.'_'.$menu['settings']->CODE] = $menu['settings']->name;
+						// add custom menu
+						$this->lastCustomMainMenu[$nr] = "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$menu['settings']->code.'">'.$lang.'_'.$menu['settings']->CODE.'</menu>';
+					}
+				}
+			}
+		}
 		// see if we should have custom menus
 		if (isset($this->componentData->custommenus) && ComponentbuilderHelper::checkArray($this->componentData->custommenus))
 		{
 			foreach ($this->componentData->custommenus as $nr => $menu)
 			{
+				$nr = $nr + 100;
 				if ($menu['mainmenu'] == 1 && $view['adminview'] == $menu['before'])
 				{
 					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
@@ -11426,7 +11534,7 @@ class Interpretation extends Fields
 						$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
 						$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $menu['name'];
 						// add custom menu
-						return "\n\t\t\t".'<menu link="'.$menu['link'].'">'.$lang.'_'.$nameUpper.'</menu>';
+						$customMenu .= "\n\t\t\t".'<menu link="'.$menu['link'].'">'.$lang.'_'.$nameUpper.'</menu>';
 					}
 					else
 					{
@@ -11434,7 +11542,7 @@ class Interpretation extends Fields
 						$nameUpper	= ComponentbuilderHelper::safeString($menu['name_code'], 'U');
 						$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $menu['name'];
 						// add custom menu
-						return "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$nameList.'">'.$lang.'_'.$nameUpper.'</menu>';
+						$customMenu .= "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$nameList.'">'.$lang.'_'.$nameUpper.'</menu>';
 					}
 				}
 				elseif($menu['mainmenu'] == 1 && empty($menu['before']))
@@ -11458,7 +11566,7 @@ class Interpretation extends Fields
 				}
 			}
 		}
-		return '';
+		return $customMenu;
 
 	}
 

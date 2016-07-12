@@ -229,6 +229,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	`default` TEXT NOT NULL DEFAULT '',
 	`description` VARCHAR(255) NOT NULL DEFAULT '',
 	`dynamic_get` INT(11) NOT NULL DEFAULT '0',
+	`icon` CHAR(64) NOT NULL DEFAULT '',
 	`js_document` TEXT NOT NULL DEFAULT '',
 	`main_get` INT(11) NOT NULL DEFAULT '0',
 	`name` VARCHAR(255) NOT NULL DEFAULT '',

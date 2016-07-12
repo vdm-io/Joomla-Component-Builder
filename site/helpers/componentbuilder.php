@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.14
-	@build			28th June, 2016
+	@version		2.1.16
+	@build			12th July, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -241,7 +241,7 @@ abstract class ComponentbuilderHelper
 
 			if (!$asset->check() || !$asset->store())
 			{
-				JError::raiseWarning(500, $asset->getError());
+				JFactory::getApplication()->enqueueMessage($asset->getError(), 'warning');
 				return false;
 			}
 			else

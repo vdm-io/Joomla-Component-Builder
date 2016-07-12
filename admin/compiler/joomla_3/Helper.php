@@ -486,7 +486,7 @@ abstract class ###Component###Helper
 
 			if (!$asset->check() || !$asset->store())
 			{
-				JError::raiseWarning(500, $asset->getError());
+				JFactory::getApplication()->enqueueMessage($asset->getError(), 'warning');
 				return false;
 			}
 			else

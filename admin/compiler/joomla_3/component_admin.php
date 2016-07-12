@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_###component###'))
 {
-	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+	return JError::raiseWaring(404, JText::_('JERROR_ALERTNOAUTHOR'));
 };
 
 // Load cms libraries

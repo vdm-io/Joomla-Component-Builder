@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.14
-	@build			28th June, 2016
+	@version		2.1.16
+	@build			12th July, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default.php
@@ -30,6 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 JHtml::_('jquery.framework');
 JHtml::_('bootstrap.tooltip');
 JHtml::_('script', 'system/core.js', false, true);
+JHtml::_('behavior.keepalive');
 ?>
 <script type="text/javascript">
 <?php if ($this->hasPackage && ComponentbuilderHelper::checkArray($this->headerList)) : ?>

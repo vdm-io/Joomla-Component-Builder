@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.14
-	@build			28th June, 2016
+	@version		2.1.16
+	@build			12th July, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_view.php
@@ -104,10 +104,16 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->custom_get = $custom_get->toArray();
 			}
 
-			if (!empty($item->php_view))
+			if (!empty($item->php_model))
 			{
-				// base64 Decode php_view.
-				$item->php_view = base64_decode($item->php_view);
+				// base64 Decode php_model.
+				$item->php_model = base64_decode($item->php_model);
+			}
+
+			if (!empty($item->css_document))
+			{
+				// base64 Decode css_document.
+				$item->css_document = base64_decode($item->css_document);
 			}
 
 			if (!empty($item->php_jview))
@@ -116,10 +122,10 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->php_jview = base64_decode($item->php_jview);
 			}
 
-			if (!empty($item->css_document))
+			if (!empty($item->php_view))
 			{
-				// base64 Decode css_document.
-				$item->css_document = base64_decode($item->css_document);
+				// base64 Decode php_view.
+				$item->php_view = base64_decode($item->php_view);
 			}
 
 			if (!empty($item->php_document))
@@ -138,12 +144,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			{
 				// base64 Decode js_document.
 				$item->js_document = base64_decode($item->js_document);
-			}
-
-			if (!empty($item->php_model))
-			{
-				// base64 Decode php_model.
-				$item->php_model = base64_decode($item->php_model);
 			}
 
 			if (!empty($item->css))
@@ -879,10 +879,16 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$data['custom_get'] = '';
 		}
 
-		// Set the php_view string to base64 string.
-		if (isset($data['php_view']))
+		// Set the php_model string to base64 string.
+		if (isset($data['php_model']))
 		{
-			$data['php_view'] = base64_encode($data['php_view']);
+			$data['php_model'] = base64_encode($data['php_model']);
+		}
+
+		// Set the css_document string to base64 string.
+		if (isset($data['css_document']))
+		{
+			$data['css_document'] = base64_encode($data['css_document']);
 		}
 
 		// Set the php_jview string to base64 string.
@@ -891,10 +897,10 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$data['php_jview'] = base64_encode($data['php_jview']);
 		}
 
-		// Set the css_document string to base64 string.
-		if (isset($data['css_document']))
+		// Set the php_view string to base64 string.
+		if (isset($data['php_view']))
 		{
-			$data['css_document'] = base64_encode($data['css_document']);
+			$data['php_view'] = base64_encode($data['php_view']);
 		}
 
 		// Set the php_document string to base64 string.
@@ -913,12 +919,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		if (isset($data['js_document']))
 		{
 			$data['js_document'] = base64_encode($data['js_document']);
-		}
-
-		// Set the php_model string to base64 string.
-		if (isset($data['php_model']))
-		{
-			$data['php_model'] = base64_encode($data['php_model']);
 		}
 
 		// Set the css string to base64 string.

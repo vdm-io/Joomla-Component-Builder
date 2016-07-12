@@ -157,17 +157,30 @@
 			required="false"
 			button="true"
 		/>
-		<!-- Php_view Field. Type: Textarea. (joomla) -->
+		<!-- Php_model Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_view"
-			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_LABEL"
-			rows="17"
-			cols="5"
-			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_DESCRIPTION"
+			name="php_model"
+			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_HINT"
+			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_HINT"
+			required="flase"
+		/>
+		<!-- Css_document Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="css_document"
+			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CSS_DOCUMENT_LABEL"
+			rows="17"
+			cols="5"
+			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CSS_DOCUMENT_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CSS_DOCUMENT_HINT"
 			required="true"
 		/>
 		<!-- Php_jview Field. Type: Textarea. (joomla) -->
@@ -183,17 +196,17 @@
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_HINT"
 			required="true"
 		/>
-		<!-- Css_document Field. Type: Textarea. (joomla) -->
+		<!-- Php_view Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="css_document"
-			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CSS_DOCUMENT_LABEL"
+			name="php_view"
+			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_LABEL"
 			rows="17"
 			cols="5"
-			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CSS_DOCUMENT_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CSS_DOCUMENT_HINT"
+			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_HINT"
 			required="true"
 		/>
 		<!-- Php_document Field. Type: Textarea. (joomla) -->
@@ -224,8 +237,14 @@
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DISPLAY_HINT"
 			required="true"
 		/>
-		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_uikit_snippet" label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_UIKIT_SNIPPET_LABEL" heading="h4" class="snippet-code note_uikit_snippet" />
+		<!-- Icon Field. Type: Media. (joomla) -->
+		<field
+			type="media"
+			name="icon"
+			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICON_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICON_DESCRIPTION"
+			directory=""
+		/>
 		<!-- Js_document Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -239,19 +258,8 @@
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_JS_DOCUMENT_HINT"
 			required="true"
 		/>
-		<!-- Php_model Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_model"
-			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_HINT"
-			required="flase"
-		/>
+		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_uikit_snippet" label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_UIKIT_SNIPPET_LABEL" heading="h4" class="snippet-code note_uikit_snippet" />
 		<!-- Css Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"

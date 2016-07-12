@@ -63,7 +63,7 @@ class ###Component###ControllerAjax extends JControllerLegacy
 		}
                 else
                 {
-			if($callback = $jinput->get('callback', null, 'CMD')
+			if($callback = $jinput->get('callback', null, 'CMD'))
                         {
 				echo $callback."(".json_encode(false).");";
 			}
