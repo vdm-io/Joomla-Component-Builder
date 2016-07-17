@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.1.16
-	@build			12th July, 2016
+	@build			17th July, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		template.php

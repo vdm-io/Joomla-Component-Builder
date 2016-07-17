@@ -853,6 +853,11 @@ class Fields extends Structure
 				$fieldSet .= $optionSet;
 				$fieldSet .= "\n\t\t" . $taber . "</field>";
 			}
+			elseif ($typeName == 'sql')
+			{
+				$optionArray = false;
+				$fieldSet .= "\n\t\t" . $taber . "/>";
+			}
 			else
 			{
 				$optionArray = false;
