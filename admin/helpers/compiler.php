@@ -82,6 +82,23 @@ class Compiler extends Infusion
 		}
 		return false;
 	}
+	
+	/**
+	 * Set the line number in comments
+	 * 
+	 * @param   int   $nr  The line number
+	 * 
+	 * @return  void
+	 * 
+	 */
+	private function setLine($nr)
+	{
+		if ($this->loadLineNr)
+		{
+			return ' [Compiler '.$nr.']';	
+		}
+		return '';
+	}
 
 	protected function updateFiles()
 	{

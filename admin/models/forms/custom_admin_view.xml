@@ -114,6 +114,7 @@
 			class="text_area"
 			readonly="false"
 			disabled="false"
+			required="true"
 			filter="STRING"
 			message="Error! Please add name here."
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_HINT"
@@ -433,7 +434,8 @@
 						label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICOMOON_LABEL"
 						description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICOMOON_DESCRIPTION"
 						class="list_class fieldMedium"
-						multiple="false">
+						multiple="false"
+						required="false">
 						<!-- Option Set. -->
 						<option value="joomla">
 							COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_JOOMLA</option>
@@ -867,6 +869,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add name here."
 						hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_HINT"
@@ -880,6 +883,7 @@
 						maxlength="50"
 						description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_DESCRIPTION"
 						class="text_area"
+						required="false"
 						filter="CMD"
 						message="Error! Please add controller method name here."
 						hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_HINT"
@@ -892,6 +896,7 @@
 						description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TARGET_DESCRIPTION"
 						class="list_class fieldMedium"
 						filter="INT"
+						required="false"
 						default="1">
 						<!-- Option Set. -->
 						<option value="1">

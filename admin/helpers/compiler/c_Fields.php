@@ -334,6 +334,23 @@ class Fields extends Structure
 	 * @var    array
 	 */
 	public $movedPublishingFields = array();
+	
+	/**
+	 * Set the line number in comments
+	 * 
+	 * @param   int   $nr  The line number
+	 * 
+	 * @return  void
+	 * 
+	 */
+	private function setLine($nr)
+	{
+		if ($this->loadLineNr)
+		{
+			return ' [Fields '.$nr.']';	
+		}
+		return '';
+	}
 
 	/**
 	 * set the Field set of a view
@@ -657,12 +674,14 @@ class Fields extends Structure
 	{
 		if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']))
 		{
+                        // reset some values
 			$name = ComponentbuilderHelper::safeString($field['settings']->name);
 			$typeName = ComponentbuilderHelper::safeString($field['settings']->type_name);
 			$multiple = false;
 			$langLabel = '';
 			$taber = '';
 			$fieldSet = '';
+                        $fieldAttributes = array();
 			// set field attributes
 			$fieldAttributes = $this->setFieldAttributes($field, $viewType, $name, $typeName, $multiple, $langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders);
 			// check if values were set
@@ -928,6 +947,7 @@ class Fields extends Structure
 					foreach ($fieldsSets as $fieldId)
 					{
 						// get the field data
+                                                $fieldData = array();
 						$fieldData['settings'] = $this->getFieldData($fieldId, $viewName);
 						if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 						{
@@ -935,8 +955,6 @@ class Fields extends Structure
 							$r_typeName = ComponentbuilderHelper::safeString($fieldData['settings']->type_name);
 							$r_multiple = false;
 							$r_langLabel = '';
-							// make sure that these fields are not required
-							$fieldData['settings']->xml = str_replace('required="', 'requirenot="', $fieldData['settings']->xml);
 							// add the tabs needed
 							$taber = "\t\t\t";
 							// get field values
@@ -1308,6 +1326,11 @@ class Fields extends Structure
 					// dont load the button to repeatable
 					$xmlValue = 'false';
 				}
+				elseif ($property['name'] == 'required' && $repeatable)
+				{
+					// dont load the required to repeatable
+					$xmlValue = 'false';
+				}
 				elseif ($viewType == 2 && ($property['name'] == 'readonly' || $property['name'] == 'disabled'))
 				{
 					// set read only
@@ -1315,7 +1338,7 @@ class Fields extends Structure
 				}
 				elseif ($property['name'] == 'multiple')
 				{
-					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
+					$xmlValue = (string) ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 					// add the multipal
 					if ('true' == $xmlValue)
 					{
@@ -1342,7 +1365,7 @@ class Fields extends Structure
 				else
 				{
 					// set the rest of the fields
-					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
+					$xmlValue = (string) ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 				}
 
 				// check if translatable
@@ -1471,23 +1494,29 @@ class Fields extends Structure
 					$field['settings']->datadefault = '0';
 				}
 			}
-			// build the query values
-			$this->queryBuilder[$viewName][$name] = array(
-			    'type' => $field['settings']->datatype,
-			    'lenght' => $field['settings']->datalenght,
-			    'lenght_other' => $field['settings']->datalenght_other,
-			    'default' => $field['settings']->datadefault,
-			    'other' => $field['settings']->datadefault_other,
-			    'null_switch' => $field['settings']->null_switch);
 			// don't use these as index or uniqe keys
-			$notKeys = array('TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB');
+			$textKeys = array('TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB');
+			// build the query values
+			$this->queryBuilder[$viewName][$name]['type']           = $field['settings']->datatype;
+                        if (!in_array($field['settings']->datatype, $textKeys))
+			{
+                                $this->queryBuilder[$viewName][$name]['lenght']         = $field['settings']->datalenght;
+                                $this->queryBuilder[$viewName][$name]['lenght_other']   = $field['settings']->datalenght_other;
+                                $this->queryBuilder[$viewName][$name]['default']        = $field['settings']->datadefault;
+                                $this->queryBuilder[$viewName][$name]['other']          = $field['settings']->datadefault_other;
+                        }
+                        else
+                        {
+                                $this->queryBuilder[$viewName][$name]['default']        = 'EMPTY';
+                        }
+                        $this->queryBuilder[$viewName][$name]['null_switch']    = $field['settings']->null_switch;
 			// set index types
-			if ($field['settings']->indexes == 1 && !in_array($field['settings']->datatype, $notKeys))
+			if ($field['settings']->indexes == 1 && !in_array($field['settings']->datatype, $textKeys))
 			{
 				// build unique keys of this view for db
 				$this->dbUniqueKeys[$viewName][] = $name;
 			}
-			elseif (($field['settings']->indexes == 2 || $field['alias'] || $field['title'] || $typeName == 'category') && !in_array($field['settings']->datatype, $notKeys))
+			elseif (($field['settings']->indexes == 2 || $field['alias'] || $field['title'] || $typeName == 'category') && !in_array($field['settings']->datatype, $textKeys))
 			{
 				// build keys of this view for db
 				$this->dbKeys[$viewName][] = $name;

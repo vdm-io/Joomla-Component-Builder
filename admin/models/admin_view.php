@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.16
-	@build			29th August, 2016
+	@version		2.1.17
+	@build			3rd September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -102,10 +102,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_allowedit = base64_decode($item->php_allowedit);
 			}
 
-			if (!empty($item->php_getitems))
+			if (!empty($item->php_getitems_after_all))
 			{
-				// base64 Decode php_getitems.
-				$item->php_getitems = base64_decode($item->php_getitems);
+				// base64 Decode php_getitems_after_all.
+				$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
 			}
 
 			if (!empty($item->php_after_delete))
@@ -132,10 +132,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_setdata = base64_decode($item->php_import_setdata);
 			}
 
-			if (!empty($item->php_getitem))
+			if (!empty($item->php_getitems))
 			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
+				// base64 Decode php_getitems.
+				$item->php_getitems = base64_decode($item->php_getitems);
 			}
 
 			if (!empty($item->php_getlistquery))
@@ -239,6 +239,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				// base64 Decode php_import_save.
 				$item->php_import_save = base64_decode($item->php_import_save);
 			}
+
+			if (!empty($item->php_getitem))
+			{
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
+			}
 			
 			if (!empty($item->id))
 			{
@@ -256,7 +262,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxffields()
+	public function getVxgfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -325,13 +331,13 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxffields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxgfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxffields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxgfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxffields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxgfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxffields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxgfields($item->store, 'store');
 				}
 			}
 
@@ -366,7 +372,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVxffields($value,$name)
+	public function selectionTranslationVxgfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -1135,10 +1141,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
 		}
 
-		// Set the php_getitems string to base64 string.
-		if (isset($data['php_getitems']))
+		// Set the php_getitems_after_all string to base64 string.
+		if (isset($data['php_getitems_after_all']))
 		{
-			$data['php_getitems'] = base64_encode($data['php_getitems']);
+			$data['php_getitems_after_all'] = base64_encode($data['php_getitems_after_all']);
 		}
 
 		// Set the php_after_delete string to base64 string.
@@ -1165,10 +1171,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
 		}
 
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
+		// Set the php_getitems string to base64 string.
+		if (isset($data['php_getitems']))
 		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
+			$data['php_getitems'] = base64_encode($data['php_getitems']);
 		}
 
 		// Set the php_getlistquery string to base64 string.
@@ -1271,6 +1277,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_import_save']))
 		{
 			$data['php_import_save'] = base64_encode($data['php_import_save']);
+		}
+
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
+		{
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
         
 		// Set the Params Items to data

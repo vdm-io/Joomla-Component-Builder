@@ -81,11 +81,11 @@ class Interpretation extends Fields
 	 * @return  void
 	 * 
 	 */
-	public function setLine($nr)
+	private function setLine($nr)
 	{
 		if ($this->loadLineNr)
 		{
-			return ' ['.__CLASS__.' '.$nr.']';	
+			return ' [Interpretation '.$nr.']';	
 		}
 		return '';
 	}
@@ -2285,6 +2285,32 @@ class Interpretation extends Fields
 		return $method;
 	}
 
+	public function getCustomScriptBuilder($first, $second, $prefix = '', $note = null, $unset = null, $default = null, $sufix = '')
+	{
+                // check if there is any custom script
+                $script = '';
+		if (isset($this->customScriptBuilder[$first][$second]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$first][$second]))
+		{
+                        // add not if set
+                        if ($note)
+                        {
+                                $script .= $note;
+                        }
+			$script .= $prefix . str_replace( array_keys($this->placeholders), array_values($this->placeholders), $this->customScriptBuilder[$first][$second]) . $sufix;
+			// clear some memory
+                        if ($unset)
+                        {
+                                unset($this->customScriptBuilder[$first][$second]);
+                        }
+		}
+                // if not found return default
+                if ($default)
+                {
+                        return $default;
+                }
+                return $script;
+        }
+
 	public function setCustomViewListQuery(&$get,$code,$return = true)
 	{
 		if (ComponentbuilderHelper::checkObject($get))
@@ -2303,13 +2329,7 @@ class Interpretation extends Fields
 			$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
 			$getItem .= "\n\t\t\$query = \$db->getQuery(true);";
 			// check if there is any custom script
-			if (isset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]))
-			{
-				$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." Filtering.";
-				$getItem .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]);
-				// clear some memory
-				unset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$code]);
-			}
+                        $getItem .= $this->getCustomScriptBuilder($this->target.'_php_getlistquery', $code, '', "\n\n\t\t//".$this->setLine(__LINE__)." Filtering.", true);
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get,$code);
 			// setup filters
@@ -3352,10 +3372,7 @@ class Interpretation extends Fields
 		}
 
 		// add custom php to getitem method
-		if (isset($this->customScriptBuilder['php_getitem'][$view]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_getitem'][$view]))
-		{
-			$script .= "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_getitem'][$view]);
-		}
+                $script .= $this->getCustomScriptBuilder('php_getitem', $view, "\n\n");
 
 		return $script;
 	}
@@ -3459,42 +3476,8 @@ class Interpretation extends Fields
 			}
 		}
 		// add custom PHP to the save method
-		if(isset($this->customScriptBuilder['php_save'][$view]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_save'][$view]))
-		{
-			$script .= "\n\n" . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_save'][$view]);
-		}
+                $script .= $this->getCustomScriptBuilder('php_save', $view, "\n\n");
 		return $script;
-	}
-	
-	public function setJmodelAdminBeforeDelete($view)
-	{
-		// add custom PHP to the delete Method
-		if(isset($this->customScriptBuilder['php_before_delete'][$view]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_before_delete'][$view]))
-		{
-			return "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_before_delete'][$view]);
-		}
-		return "";
-	}
-	
-	public function setJmodelAdminAfterDelete($view)
-	{
-		// add custom PHP to the delete Method
-		if(isset($this->customScriptBuilder['php_after_delete'][$view]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_after_delete'][$view]))
-		{
-			return "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_after_delete'][$view]);
-		}
-		return "";
-	}
-
-	public function setPostSaveHook($view)
-	{
-		// add custom PHP to the post save hook Method
-		if(isset($this->customScriptBuilder['php_postsavehook'][$view]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_postsavehook'][$view]))
-		{
-			return "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_postsavehook'][$view])."\n\n\t\treturn;";
-		}
-		return "\n\t\treturn;";
-
 	}
 
 	public function setJtableConstructor($view)
@@ -4068,14 +4051,7 @@ class Interpretation extends Fields
 			$title 		= $this->titleBuilder[$viewName_single];
 		}
 		// prepare custom script
-		if (isset($this->customScriptBuilder['php_batchmove'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_batchmove'][$viewName_single]))
-		{
-			$customScript = "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_batchmove'][$viewName_single]);
-		}
-		else
-		{
-			$customScript = '';
-		}
+                $customScript = $this->getCustomScriptBuilder('php_batchmove', $viewName_single, "\n\n", null, true);
 
 		$batchmove[] = "\n\t/**";
 		$batchmove[] = "\t * Batch move items to a new category";
@@ -4265,14 +4241,7 @@ class Interpretation extends Fields
 			$title = $this->titleBuilder[$viewName_single];
 		}
 		// prepare custom script
-		if (isset($this->customScriptBuilder['php_batchcopy'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_batchcopy'][$viewName_single]))
-		{
-			$customScript = "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_batchcopy'][$viewName_single]);
-		}
-		else
-		{
-			$customScript = '';
-		}
+                $customScript = $this->getCustomScriptBuilder('php_batchcopy', $viewName_single, "\n\n", null, true);
 
 		$batchcopy[] = "\n\t/**";
 		$batchcopy[] = "\t * Batch copy items to a new category or current.";
@@ -4672,7 +4641,11 @@ class Interpretation extends Fields
 					{
 						$default = $data['other'];
 					}
-					if ($default == 'DATETIME' || $default == 'CURRENT_TIMESTAMP')
+					if ($default == 'EMPTY')
+					{
+						$default = $data['null_switch'];
+					}
+					elseif ($default == 'DATETIME' || $default == 'CURRENT_TIMESTAMP')
 					{
 						$default =  $default.' '.$data['null_switch'];
 					}
@@ -4690,7 +4663,7 @@ class Interpretation extends Fields
 					}
 					// set the lenght
 					$lenght = '';
-					if ($data['lenght'] == 'Other' && isset($data['lenght_other']) && $data['lenght_other'] > 0)
+					if (isset($data['lenght']) && $data['lenght'] == 'Other' && isset($data['lenght_other']) && $data['lenght_other'] > 0)
 					{
 						$lenght = '('.$data['lenght_other'].')';
 					}
@@ -4704,7 +4677,7 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['params']))
 				{
-					$db .= "\n\t`params` TEXT NOT NULL DEFAULT '',";
+					$db .= "\n\t`params` TEXT NOT NULL,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
@@ -5250,7 +5223,7 @@ class Interpretation extends Fields
 								$coreLoadLink = true;
 							}
 							// check if the item has permissions.
-							if ($coreLoadLink && isset($this->permissionBuilder[$coreLink['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$coreLink['core.edit']]) && in_array($item['custom']['view'],$this->permissionBuilder[$coreLink['core.edit']]))
+							if ($coreLoadLink && (isset($coreLink['core.edit']) && isset($this->permissionBuilder[$coreLink['core.edit']])) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$coreLink['core.edit']]) && in_array($item['custom']['view'],$this->permissionBuilder[$coreLink['core.edit']]))
 							{
 								$accessCheck = "\$this->user->authorise('".$coreLink['core.edit']."', 'com_".$this->fileContentStatic['###component###'].".".$item['custom']['view'].".' . (int)\$item->".$item['id'].")";
 							}
@@ -6690,10 +6663,7 @@ class Interpretation extends Fields
 			$query .= "\n\t\t\$query->join('LEFT', \$db->quoteName('#__categories', 'c') . ' ON (' . \$db->quoteName('a.".$categoryCodeName."') . ' = ' . \$db->quoteName('c.id') . ')');";
 		}
 		// add custom filtering php
-		if (isset($this->customScriptBuilder['php_getlistquery'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_getlistquery'][$viewName_single]))
-		{
-			$query .= "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_getlistquery'][$viewName_single]);
-		}
+                $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, "\n\n");
 		// add the custom fields query
 		$query .= $this->setCustomQuery($viewName_list, $viewName_single);
 		if ($key && strpos($key,'-R>') === false && strpos($key,'-A>') === false && strpos($parentKey,'-R>') === false && strpos($parentKey,'-A>') === false)
@@ -6742,7 +6712,6 @@ class Interpretation extends Fields
 		$query .= $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###'],"\t");
 		// ###SELECTIONTRANSLATIONFIX### <<<DYNAMIC>>>
 		$query .= $this->setSelectionTranslationFix($viewName_list,$this->fileContentStatic['###Component###'],"\t");
-
 		// filter by child repetable field values
 		if ($key && strpos($key,'-R>') !== false && strpos($key,'-A>') === false)
 		{
@@ -6846,6 +6815,8 @@ class Interpretation extends Fields
 			$query .= "\n\t\t\t\treturn false;";
 			$query .= "\n\t\t\t}";
 		}
+                // add custom php to getitems method after all
+                $query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, "\n\n\t");
 
 		$query .= "\n\t\t\treturn \$items;";
 		$query .= "\n\t\t}";
@@ -6972,10 +6943,8 @@ class Interpretation extends Fields
 			$query .= "\n\t\t\t\$query->from(\$db->quoteName('#__".$this->fileContentStatic['###component###']."_".$viewName_single."', 'a'));";
 			$query .= "\n\t\t\t\$query->where('a.id IN (' . implode(',',\$pks) . ')');";
 			// add custom filtering php
-			if (isset($this->customScriptBuilder['php_getlistquery'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_getlistquery'][$viewName_single]))
-			{
-				$query .= "\n\n\t".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_getlistquery'][$viewName_single]);
-			}
+                        $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, "\n\n\t");
+                        
 			if (isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
 			{
 				$query .= "\n\t\t\t//".$this->setLine(__LINE__)." Implement View Level Access";
@@ -6994,6 +6963,8 @@ class Interpretation extends Fields
 			$query .= "\n\t\t\t{";
 			$query .= "\n\t\t\t\t\$items = \$db->loadObjectList();";
 			$query .= $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###'],"\t\t",true);
+                        // add custom php to getitems method after all
+                        $query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, "\n\n\t\t");
 			$query .= "\n\t\t\t\treturn \$items;";
 			$query .= "\n\t\t\t}";
 			$query .= "\n\t\t}";
@@ -7169,36 +7140,17 @@ class Interpretation extends Fields
 		$target = array('admin' => 'import_'.$viewName_list);
 		$this->buildDynamique($target,'customimport');
 		// load the custom script to the files
-		if (isset($this->customScriptBuilder['php_import_display']['import_'.$viewName_list]))
-		{
-			// ###IMPORT_DISPLAY_METHOD_CUSTOM### <<<DYNAMIC>>>
-			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DISPLAY_METHOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_display']['import_'.$viewName_list]);
-			unset($this->customScriptBuilder['php_import_display']['import_'.$viewName_list]);
-		}
-		if (isset($this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]))
-		{
-			// ###IMPORT_SETDATE_METHOD_CUSTOM### <<<DYNAMIC>>>
-			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SETDATE_METHOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]);
-			unset($this->customScriptBuilder['php_import_setdata']['import_'.$viewName_list]);
-		}
-		if (isset($this->customScriptBuilder['php_import']['import_'.$viewName_list]))
-		{
-			// ###IMPORT_METHOD_CUSTOM### <<<DYNAMIC>>>
-			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_METHOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import']['import_'.$viewName_list]);
-			unset($this->customScriptBuilder['php_import']['import_'.$viewName_list]);
-		}
-		if (isset($this->customScriptBuilder['php_import_save']['import_'.$viewName_list]))
-		{
-			// ###IMPORT_SAVE_METHOD_CUSTOM### <<<DYNAMIC>>>
-			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SAVE_METHOD_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_import_save']['import_'.$viewName_list]);
-			unset($this->customScriptBuilder['php_import_save']['import_'.$viewName_list]);
-		}
-		if (isset($this->customScriptBuilder['html_import_view']['import_'.$viewName_list]))
-		{
-			// ###IMPORT_DEFAULT_VIEW_CUSTOM### <<<DYNAMIC>>>
-			$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DEFAULT_VIEW_CUSTOM###'] = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['html_import_view']['import_'.$viewName_list]);
-			unset($this->customScriptBuilder['html_import_view']['import_'.$viewName_list]);
-		}
+                // ###IMPORT_DISPLAY_METHOD_CUSTOM### <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DISPLAY_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_display', 'import_'.$viewName_list, "\n", null, true);
+                // ###IMPORT_SETDATE_METHOD_CUSTOM### <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SETDATE_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_setdata', 'import_'.$viewName_list, "\n", null, true);
+                // ###IMPORT_METHOD_CUSTOM### <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import', 'import_'.$viewName_list, "\n", null, true);
+                // ###IMPORT_SAVE_METHOD_CUSTOM### <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SAVE_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_save', 'import_'.$viewName_list, "\n", null, true);
+                // ###IMPORT_DEFAULT_VIEW_CUSTOM### <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DEFAULT_VIEW_CUSTOM###'] = $this->getCustomScriptBuilder('html_import_view', 'import_'.$viewName_list, "\n", null, true);
+		
 		// insure we have the view placeholders setup
 		$this->fileContentDynamic['import_'.$viewName_list]['###VIEW###'] = 'IMPORT_'.$this->placeholders['###VIEWS###'];
 		$this->fileContentDynamic['import_'.$viewName_list]['###View###'] = 'Import_'.$this->placeholders['###views###'];
@@ -7241,10 +7193,7 @@ class Interpretation extends Fields
 			$query .= "\n\t\t\$query->join('LEFT', \$db->quoteName('#__categories', 'c') . ' ON (' . \$db->quoteName('a.".$categoryCodeName."') . ' = ' . \$db->quoteName('c.id') . ')');";
 		}
 		// add custom filtering php
-		if (isset($this->customScriptBuilder['php_getlistquery'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_getlistquery'][$viewName_single]))
-		{
-			$query .= "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_getlistquery'][$viewName_single]);
-		}
+                $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, "\n\n");
 		// add the custom fields query
 		$query .= $this->setCustomQuery($viewName_list, $viewName_single);
 		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Filter by published state";
@@ -9133,14 +9082,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 		// prepare custom permission script
-		if (isset($this->customScriptBuilder['php_allowedit'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_allowedit'][$viewName_single]))
-		{
-			$customAllow = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_allowedit'][$viewName_single]);
-		}
-		else
-		{
-			$customAllow = '';
-		}
+                $customAllow = $this->getCustomScriptBuilder('php_allowedit', $viewName_single, null, true);
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -9565,14 +9507,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 		// prepare custom permission script
-		if (isset($this->customScriptBuilder['php_allowedit'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_allowedit'][$viewName_single]))
-		{
-			$customAllow = "\t\t\$recordId\t= (int) isset(\$data[\$key]) ? \$data[\$key] : 0;\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_allowedit'][$viewName_single]);
-		}
-		else
-		{
-			$customAllow = '';
-		}
+                $customAllow = $this->getCustomScriptBuilder('php_allowedit', $viewName_single, "\t\t\$recordId\t= (int) isset(\$data[\$key]) ? \$data[\$key] : 0;\n");
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -9668,7 +9603,7 @@ class Interpretation extends Fields
 			$allow[] = "\t\t\t\treturn;";
 			$allow[] = "\t\t\t}";
 			// check if the item has permissions.
-			if ($coreLoad && isset($this->permissionBuilder[$core['core.delete']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.delete']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.delete']]))
+			if ($coreLoad && (isset($core['core.delete']) && isset($this->permissionBuilder[$core['core.delete']])) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.delete']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.delete']]))
 			{
 				$allow[] = "\n\t\t\t\$user = JFactory::getUser();";
 				$allow[] = "\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
@@ -10163,14 +10098,28 @@ class Interpretation extends Fields
 			$toolBar .= "\n\t\t\t\t\t\tJToolBarHelper::custom('".$viewName.".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
 			$toolBar .= "\n\t\t\t\t\t}";
 			$toolBar .= "\n\t\t\t\t}";
-			if ($coreLoad && isset($this->historyBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->historyBuilder[$viewName]))
-			{
-				$toolBar .= "\n\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('".$core['core.version']."'));";
-				$toolBar .= "\n\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('".$core['core.edit']."') && \$canVersion)";
-				$toolBar .= "\n\t\t\t\t{";
-				$toolBar .= "\n\t\t\t\t\tJToolbarHelper::versions('com_".$this->fileContentStatic['###component###'].".".$viewName."', \$this->item->id);";
-				$toolBar .= "\n\t\t\t\t}";
-			}
+                        if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.edit']]))
+                        {
+                                if ($coreLoad && isset($this->historyBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->historyBuilder[$viewName]))
+                                {
+                                        $toolBar .= "\n\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('".$core['core.version']."'));";
+                                        $toolBar .= "\n\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('".$core['core.edit']."') && \$canVersion)";
+                                        $toolBar .= "\n\t\t\t\t{";
+                                        $toolBar .= "\n\t\t\t\t\tJToolbarHelper::versions('com_".$this->fileContentStatic['###component###'].".".$viewName."', \$this->item->id);";
+                                        $toolBar .= "\n\t\t\t\t}";
+                                }
+                        }
+                        else
+                        {                                
+                                if ($coreLoad && isset($this->historyBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->historyBuilder[$viewName]))
+                                {
+                                        $toolBar .= "\n\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('".$core['core.version']."'));";
+                                        $toolBar .= "\n\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('core.edit') && \$canVersion)";
+                                        $toolBar .= "\n\t\t\t\t{";
+                                        $toolBar .= "\n\t\t\t\t\tJToolbarHelper::versions('com_".$this->fileContentStatic['###component###'].".".$viewName."', \$this->item->id);";
+                                        $toolBar .= "\n\t\t\t\t}";
+                                }
+                        }
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.create']]))
 			{
 				$toolBar .= "\n\t\t\t\tif (\$this->canDo->get('".$core['core.create']."'))";
@@ -10662,10 +10611,7 @@ class Interpretation extends Fields
 		}
 
 		// add custom php to getitems method
-		if (isset($this->customScriptBuilder['php_getitems'][$view]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_getitems'][$view]))
-		{
-			$fix .= "\n\n".$tab."".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_getitems'][$view]);
-		}
+                $fix .= $this->getCustomScriptBuilder('php_getitems', $view, "\n\n".$tab);
 
 		if ($basicCrypt)
 		{
@@ -12756,7 +12702,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 							// menucontroller
 							$menucontrollerView['action'] = $targetView_.$menuController;
 							$menucontrollerView['implementation'] = '2';
-							if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
+							if (isset($view['settings']->permissions) && ComponentbuilderHelper::checkArray($view['settings']->permissions))
 							{
 								array_push($view['settings']->permissions,$menucontrollerView);
 							}

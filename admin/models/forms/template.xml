@@ -101,6 +101,7 @@
 			class="text_area"
 			readonly="false"
 			disabled="false"
+			required="true"
 			filter="STRING"
 			message="Error! Please add name here."
 			hint="COM_COMPONENTBUILDER_TEMPLATE_NAME_HINT"

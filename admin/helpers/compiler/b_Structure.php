@@ -190,6 +190,23 @@ class Structure extends Get
 	}
 	
 	/**
+	 * Set the line number in comments
+	 * 
+	 * @param   int   $nr  The line number
+	 * 
+	 * @return  void
+	 * 
+	 */
+	private function setLine($nr)
+	{
+		if ($this->loadLineNr)
+		{
+			return ' [Structure '.$nr.']';	
+		}
+		return '';
+	}
+	
+	/**
 	 * Build the Initial Folders
 	 * 
 	 * @return  void

@@ -95,7 +95,7 @@ class ###Component###Model###Views### extends JModelList
 	public function getItems()
 	{###LICENSE_LOCKED_CHECK### ###CHECKINCALL###
 		// load parent items
-		$items = parent::getItems();###GET_ITEMS_METHOD_STRING_FIX### ###SELECTIONTRANSLATIONFIX###
+		$items = parent::getItems();###GET_ITEMS_METHOD_STRING_FIX### ###SELECTIONTRANSLATIONFIX### ###GET_ITEMS_METHOD_AFTER_ALL###
         
 		// return items
 		return $items;

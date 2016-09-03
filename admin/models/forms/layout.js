@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.16
-	@build			29th August, 2016
+	@version		2.1.17
+	@build			3rd September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		layout.js
@@ -24,42 +24,42 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // Some Global Values
-jform_vvvvvxzvya_required = false;
+jform_vvvvvyavyb_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvxz = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvxz(add_php_view_vvvvvxz);
+	var add_php_view_vvvvvya = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvya(add_php_view_vvvvvya);
 });
 
-// the vvvvvxz function
-function vvvvvxz(add_php_view_vvvvvxz)
+// the vvvvvya function
+function vvvvvya(add_php_view_vvvvvya)
 {
 	// set the function logic
-	if (add_php_view_vvvvvxz == 1)
+	if (add_php_view_vvvvvya == 1)
 	{
 		jQuery('#jform_php_view').closest('.control-group').show();
-		if (jform_vvvvvxzvya_required)
+		if (jform_vvvvvyavyb_required)
 		{
 			updateFieldRequired('php_view',0);
 			jQuery('#jform_php_view').prop('required','required');
 			jQuery('#jform_php_view').attr('aria-required',true);
 			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvxzvya_required = false;
+			jform_vvvvvyavyb_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_view').closest('.control-group').hide();
-		if (!jform_vvvvvxzvya_required)
+		if (!jform_vvvvvyavyb_required)
 		{
 			updateFieldRequired('php_view',1);
 			jQuery('#jform_php_view').removeAttr('required');
 			jQuery('#jform_php_view').removeAttr('aria-required');
 			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvxzvya_required = true;
+			jform_vvvvvyavyb_required = true;
 		}
 	}
 }

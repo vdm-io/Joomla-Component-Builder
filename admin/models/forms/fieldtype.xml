@@ -101,6 +101,7 @@
 			class="text_area"
 			readonly="false"
 			disabled="false"
+			required="true"
 			filter="STRING"
 			message="Error! Please add name here."
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
@@ -166,6 +167,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add name here."
 						hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
@@ -180,6 +182,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add value/example here."
 						hint="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_HINT"
@@ -190,7 +193,8 @@
 						name="adjustable"
 						label="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_LABEL"
 						description="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
@@ -203,7 +207,8 @@
 						name="mandatory"
 						label="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_LABEL"
 						description="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
@@ -216,7 +221,8 @@
 						name="translatable"
 						label="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_LABEL"
 						description="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
@@ -234,6 +240,7 @@
 						class="text_area"
 						filter="HTML"
 						hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT"
+						required="false"
 					/>
 				</fieldset>
 			</fields>

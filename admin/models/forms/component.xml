@@ -203,6 +203,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add some text here."
 						hint="COM_COMPONENTBUILDER_COMPONENT_VERSION_HINT"
@@ -218,6 +219,7 @@
 						class="text_area span6"
 						filter="raw"
 						hint="COM_COMPONENTBUILDER_COMPONENT_MYSQL_HINT"
+						required="false"
 					/>
 					<!-- Url Field. Type: Url. (joomla) -->
 					<field
@@ -228,6 +230,7 @@
 						maxlength="150"
 						description="COM_COMPONENTBUILDER_COMPONENT_URL_DESCRIPTION"
 						class="text_area"
+						required="false"
 						filter="raw"
 						validated="url"
 						message="Error! Please add url here."
@@ -386,6 +389,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add name here."
 						hint="COM_COMPONENTBUILDER_COMPONENT_NAME_HINT"
@@ -401,6 +405,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add some text here."
 						hint="COM_COMPONENTBUILDER_COMPONENT_TITLE_HINT"
@@ -414,6 +419,7 @@
 						maxlength="50"
 						description="COM_COMPONENTBUILDER_COMPONENT_EMAIL_DESCRIPTION"
 						class="text_area"
+						required="false"
 						filter="STRING"
 						validate="email"
 						message="Error! Please add email address here."
@@ -428,6 +434,7 @@
 						maxlength="150"
 						description="COM_COMPONENTBUILDER_COMPONENT_WEBSITE_DESCRIPTION"
 						class="text_area"
+						required="false"
 						filter="url"
 						validated="url"
 						message="Error! Please add website here."
@@ -441,6 +448,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_USE_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						default="2">
 						<!-- Option Set. -->
 						<option value="0">
@@ -458,6 +466,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_SHOW_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						default="3">
 						<!-- Option Set. -->
 						<option value="0">
@@ -523,6 +532,7 @@
 						class="list_class"
 						multiple="false"
 						default="0"
+						required="false"
 						button="false"
 					/>
 					<!-- Path Field. Type: Text. (joomla) -->
@@ -536,6 +546,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="PATH"
 						message="Error! Please add target path."
 						hint="COM_COMPONENTBUILDER_COMPONENT_PATH_HINT"
@@ -545,7 +556,8 @@
 						type="radio"
 						name="rename"
 						label="COM_COMPONENTBUILDER_COMPONENT_RENAME_LABEL"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -801,6 +813,7 @@
 						class="list_class"
 						multiple="false"
 						default="0"
+						required="false"
 						button="false"
 					/>
 					<!-- Path Field. Type: Text. (joomla) -->
@@ -814,6 +827,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="PATH"
 						message="Error! Please add target path."
 						hint="COM_COMPONENTBUILDER_COMPONENT_PATH_HINT"
@@ -824,7 +838,8 @@
 						name="notnew"
 						label="COM_COMPONENTBUILDER_COMPONENT_NOTNEW_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_NOTNEW_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -917,6 +932,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_ADMINVIEW_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 					<!-- Icomoon Field. Type: List. (joomla) -->
@@ -926,7 +942,8 @@
 						label="COM_COMPONENTBUILDER_COMPONENT_ICOMOON_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_ICOMOON_DESCRIPTION"
 						class="list_class fieldMedium"
-						multiple="false">
+						multiple="false"
+						required="false">
 						<!-- Option Set. -->
 						<option value="joomla">
 							COM_COMPONENTBUILDER_COMPONENT_JOOMLA</option>
@@ -1355,7 +1372,8 @@
 						name="mainmenu"
 						label="COM_COMPONENTBUILDER_COMPONENT_MAINMENU_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_MAINMENU_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1368,7 +1386,8 @@
 						name="dashboard_add"
 						label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_ADD_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_ADD_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1381,7 +1400,8 @@
 						name="dashboard_list"
 						label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_LIST_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_LIST_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1394,7 +1414,8 @@
 						name="submenu"
 						label="COM_COMPONENTBUILDER_COMPONENT_SUBMENU_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_SUBMENU_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1407,7 +1428,8 @@
 						name="checkin"
 						label="COM_COMPONENTBUILDER_COMPONENT_CHECKIN_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_CHECKIN_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1420,7 +1442,8 @@
 						name="history"
 						label="COM_COMPONENTBUILDER_COMPONENT_HISTORY_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_HISTORY_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1433,7 +1456,8 @@
 						name="metadata"
 						label="COM_COMPONENTBUILDER_COMPONENT_METADATA_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_METADATA_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1446,7 +1470,8 @@
 						name="access"
 						label="COM_COMPONENTBUILDER_COMPONENT_ACCESS_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_ACCESS_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1459,7 +1484,8 @@
 						name="port"
 						label="COM_COMPONENTBUILDER_COMPONENT_PORT_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_PORT_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1472,7 +1498,8 @@
 						name="edit_create_site_view"
 						label="COM_COMPONENTBUILDER_COMPONENT_EDIT_CREATE_SITE_VIEW_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_EDIT_CREATE_SITE_VIEW_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1487,6 +1514,7 @@
 						default="0"
 						description="COM_COMPONENTBUILDER_COMPONENT_ORDER_DESCRIPTION"
 						class="fieldSmall"
+						required="false"
 						first="0"
 						last="400"
 						step="1"
@@ -1527,6 +1555,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_CUSTOMADMINVIEW_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 					<!-- Icomoon Field. Type: List. (joomla) -->
@@ -1536,7 +1565,8 @@
 						label="COM_COMPONENTBUILDER_COMPONENT_ICOMOON_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_ICOMOON_DESCRIPTION"
 						class="list_class fieldMedium"
-						multiple="false">
+						multiple="false"
+						required="false">
 						<!-- Option Set. -->
 						<option value="joomla">
 							COM_COMPONENTBUILDER_COMPONENT_JOOMLA</option>
@@ -1965,7 +1995,8 @@
 						name="mainmenu"
 						label="COM_COMPONENTBUILDER_COMPONENT_MAINMENU_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_MAINMENU_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1978,7 +2009,8 @@
 						name="dashboard_list"
 						label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_LIST_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_LIST_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -1991,7 +2023,8 @@
 						name="submenu"
 						label="COM_COMPONENTBUILDER_COMPONENT_SUBMENU_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_SUBMENU_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2004,7 +2037,8 @@
 						name="metadata"
 						label="COM_COMPONENTBUILDER_COMPONENT_METADATA_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_METADATA_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2017,7 +2051,8 @@
 						name="access"
 						label="COM_COMPONENTBUILDER_COMPONENT_ACCESS_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_ACCESS_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2032,6 +2067,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_ADMINVIEWS_DESCRIPTION"
 						class="fieldMedium"
 						multiple="true"
+						required="false"
 						button="false"
 					/>
 					<!-- Before Field. Type: Adminviews. (custom) -->
@@ -2042,6 +2078,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_BEFORE_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 				</fieldset>
@@ -2082,6 +2119,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_SITEVIEW_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 					<!-- Menu Field. Type: Radio. (joomla) -->
@@ -2090,7 +2128,8 @@
 						name="menu"
 						label="COM_COMPONENTBUILDER_COMPONENT_MENU_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_MENU_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2103,7 +2142,8 @@
 						name="metadata"
 						label="COM_COMPONENTBUILDER_COMPONENT_METADATA_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_METADATA_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2116,7 +2156,8 @@
 						name="default_view"
 						label="COM_COMPONENTBUILDER_COMPONENT_DEFAULT_VIEW_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_DEFAULT_VIEW_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2129,7 +2170,8 @@
 						name="access"
 						label="COM_COMPONENTBUILDER_COMPONENT_ACCESS_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_ACCESS_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2190,6 +2232,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_ADMINVIEW_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 					<!-- Add_sql Field. Type: Radio. (joomla) -->
@@ -2198,7 +2241,8 @@
 						name="add_sql"
 						label="COM_COMPONENTBUILDER_COMPONENT_ADD_SQL_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_ADD_SQL_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2213,7 +2257,8 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_ADD_SQL_OPTIONS_DESCRIPTION"
 						class="list_class"
 						multiple="false"
-						filter="INT">
+						filter="INT"
+						required="false">
 						<!-- Option Set. -->
 						<option value="">
 							COM_COMPONENTBUILDER_COMPONENT_SELECT_AN_OPTION</option>
@@ -2233,6 +2278,7 @@
 						class="text_area span6"
 						filter="raw"
 						hint="COM_COMPONENTBUILDER_COMPONENT_IDS_HINT"
+						required="false"
 					/>
 				</fieldset>
 			</fields>
@@ -2306,6 +2352,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add name here."
 						hint="COM_COMPONENTBUILDER_COMPONENT_NAME_HINT"
@@ -2319,6 +2366,7 @@
 						maxlength="50"
 						description="COM_COMPONENTBUILDER_COMPONENT_NAME_CODE_DESCRIPTION"
 						class="text_area"
+						required="false"
 						filter="CMD"
 						message="Error! Please add name in code here."
 						hint="COM_COMPONENTBUILDER_COMPONENT_NAME_CODE_HINT"
@@ -2334,6 +2382,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add menu link."
 						hint="COM_COMPONENTBUILDER_COMPONENT_LINK_HINT"
@@ -2353,7 +2402,8 @@
 						name="mainmenu"
 						label="COM_COMPONENTBUILDER_COMPONENT_MAINMENU_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_MAINMENU_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2366,7 +2416,8 @@
 						name="dashboard_list"
 						label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_LIST_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_LIST_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2379,7 +2430,8 @@
 						name="submenu"
 						label="COM_COMPONENTBUILDER_COMPONENT_SUBMENU_LABEL"
 						description="COM_COMPONENTBUILDER_COMPONENT_SUBMENU_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_COMPONENT_YES</option>
@@ -2394,6 +2446,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_BEFORE_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 				</fieldset>
@@ -2423,6 +2476,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add name here."
 						hint="COM_COMPONENTBUILDER_COMPONENT_NAME_HINT"
@@ -2438,6 +2492,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add header here."
 						hint="COM_COMPONENTBUILDER_COMPONENT_HEADER_HINT"
@@ -2452,6 +2507,7 @@
 						class="text_area span6"
 						filter="raw"
 						hint="COM_COMPONENTBUILDER_COMPONENT_HTML_HINT"
+						required="false"
 					/>
 				</fieldset>
 			</fields>
@@ -2500,6 +2556,7 @@
 						description="COM_COMPONENTBUILDER_COMPONENT_FIELD_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 					<!-- Custom_value Field. Type: Text. (joomla) -->
@@ -2513,6 +2570,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						hint="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_VALUE_HINT"
 					/>
@@ -2528,6 +2586,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add tab name here."
 						hint="COM_COMPONENTBUILDER_COMPONENT_TABNAME_HINT"

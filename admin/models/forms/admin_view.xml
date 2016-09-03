@@ -149,6 +149,8 @@
 			message="Error! Please add some short description here."
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_HINT"
 		/>
+		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
 		<!-- Php_allowedit Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -162,17 +164,17 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_HINT"
 			required="true"
 		/>
-		<!-- Php_getitems Field. Type: Textarea. (joomla) -->
+		<!-- Php_getitems_after_all Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_getitems"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL"
+			name="php_getitems_after_all"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_HINT"
 			required="true"
 		/>
 		<!-- Php_after_delete Field. Type: Textarea. (joomla) -->
@@ -203,21 +205,6 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_READONLY</option>
 		</field>
-		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
-		<!-- Php_save Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_HINT"
-			required="true"
-		/>
 		<!-- Description Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -230,17 +217,17 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_HINT"
 		/>
-		<!-- Php_batchmove Field. Type: Textarea. (joomla) -->
+		<!-- Php_save Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_batchmove"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
+			name="php_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_HINT"
 			required="true"
 		/>
 		<!-- Add_fadein Field. Type: Radio. (joomla) -->
@@ -257,6 +244,27 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_REMOVE</option>
 		</field>
+		<!-- Php_batchmove Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_batchmove"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_HINT"
+			required="true"
+		/>
+		<!-- Icon Field. Type: Media. (joomla) -->
+		<field
+			type="media"
+			name="icon"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
+			directory=""
+		/>
 		<!-- Source Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -270,12 +278,12 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_DUMP</option>
 		</field>
-		<!-- Icon Field. Type: Media. (joomla) -->
+		<!-- Icon_add Field. Type: Media. (joomla) -->
 		<field
 			type="media"
-			name="icon"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
+			name="icon_add"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_DESCRIPTION"
 			directory=""
 		/>
 		<!-- Php_import_setdata Field. Type: Textarea. (joomla) -->
@@ -291,27 +299,6 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SETDATA_HINT"
 			required="true"
 		/>
-		<!-- Icon_add Field. Type: Media. (joomla) -->
-		<field
-			type="media"
-			name="icon_add"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_DESCRIPTION"
-			directory=""
-		/>
-		<!-- Php_getitem Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_getitem"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_HINT"
-			required="true"
-		/>
 		<!-- Icon_category Field. Type: Media. (joomla) -->
 		<field
 			type="media"
@@ -320,6 +307,21 @@
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_DESCRIPTION"
 			directory=""
 		/>
+		<!-- Php_getitems Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_getitems"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_HINT"
+			required="true"
+		/>
+		<!-- Note_on_permissions Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_permissions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_permissions" close="true" />
 		<!-- Php_getlistquery Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -331,21 +333,6 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_HINT"
-			required="true"
-		/>
-		<!-- Note_on_permissions Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_permissions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_permissions" close="true" />
-		<!-- Php_postsavehook Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_postsavehook"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_HINT"
 			required="true"
 		/>
 		<!-- Addpermissions Field. Type: Repeatable. (joomla) -->
@@ -369,7 +356,8 @@
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ACTION_DESCRIPTION"
 						class="list_class"
 						multiple="false"
-						filter="CMD">
+						filter="CMD"
+						required="false">
 						<!-- Option Set. -->
 						<option value="core.edit">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDIT</option>
@@ -408,7 +396,8 @@
 						name="implementation"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_IMPLEMENTATION_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_IMPLEMENTATION_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_IN_RELATION_TO_EACH_RECORD</option>
@@ -420,6 +409,21 @@
 				</fieldset>
 			</fields>
 		</field>
+		<!-- Php_postsavehook Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_postsavehook"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_HINT"
+			required="true"
+		/>
+		<!-- Note_on_tabs Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_tabs" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION" heading="h4" class="alert alert-info note_on_tabs" close="true" />
 		<!-- Php_batchcopy Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -431,21 +435,6 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_HINT"
-			required="true"
-		/>
-		<!-- Note_on_tabs Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_tabs" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION" heading="h4" class="alert alert-info note_on_tabs" close="true" />
-		<!-- Php_before_delete Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_before_delete"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_HINT"
 			required="true"
 		/>
 		<!-- Addtabs Field. Type: Repeatable. (joomla) -->
@@ -472,6 +461,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add name here."
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_HINT"
@@ -479,6 +469,21 @@
 				</fieldset>
 			</fields>
 		</field>
+		<!-- Php_before_delete Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_before_delete"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_HINT"
+			required="true"
+		/>
+		<!-- Note_on_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_views" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_views" close="true" />
 		<!-- Php_document Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -490,21 +495,6 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_DOCUMENT_HINT"
-			required="true"
-		/>
-		<!-- Note_on_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_views" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_views" close="true" />
-		<!-- Sql Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="sql"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_HINT"
 			required="true"
 		/>
 		<!-- Addfields Field. Type: Repeatable. (joomla) -->
@@ -528,6 +518,7 @@
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_FIELD_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 					<!-- List Field. Type: Radio. (joomla) -->
@@ -536,7 +527,8 @@
 						name="list"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_LIST_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_LIST_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_SHOW</option>
@@ -551,6 +543,7 @@
 						default="0"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_LIST_DESCRIPTION"
 						class="fieldSmall"
+						required="false"
 						first="0"
 						last="100"
 						step="1"
@@ -561,7 +554,8 @@
 						name="title"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TITLE_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TITLE_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -574,7 +568,8 @@
 						name="alias"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -587,7 +582,8 @@
 						name="sort"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_SORT_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_SORT_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -600,7 +596,8 @@
 						name="search"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_SEARCH_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_SEARCH_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -613,7 +610,8 @@
 						name="filter"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_FILTER_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_FILTER_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -626,7 +624,8 @@
 						name="link"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_LINK_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_LINK_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -641,6 +640,7 @@
 						default="1"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_DESCRIPTION"
 						class="fieldSmall"
+						required="false"
 						first="1"
 						last="15"
 						step="1"
@@ -654,6 +654,7 @@
 						class="fieldMedium"
 						multiple="false"
 						filter="INT"
+						required="false"
 						default="1">
 						<!-- Option Set. -->
 						<option value="1">
@@ -679,6 +680,7 @@
 						default="0"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_EDIT_DESCRIPTION"
 						class="fieldSmall"
+						required="false"
 						first="0"
 						last="100"
 						step="1"
@@ -689,7 +691,8 @@
 						name="permission"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_PERMISSION_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_PERMISSION_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -699,6 +702,21 @@
 				</fieldset>
 			</fields>
 		</field>
+		<!-- Sql Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="sql"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_HINT"
+			required="true"
+		/>
+		<!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_conditions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_CONDITIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_CONDITIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_conditions" close="true" />
 		<!-- Php_import_display Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -710,21 +728,6 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DISPLAY_HINT"
-			required="true"
-		/>
-		<!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_conditions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_CONDITIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_CONDITIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_conditions" close="true" />
-		<!-- Php_import Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_import"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HINT"
 			required="true"
 		/>
 		<!-- Addconditions Field. Type: Repeatable. (joomla) -->
@@ -748,6 +751,7 @@
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_FIELD_DESCRIPTION"
 						class="fieldMedium"
 						multiple="true"
+						required="false"
 						button="false"
 					/>
 					<!-- Target_behavior Field. Type: Radio. (joomla) -->
@@ -756,7 +760,8 @@
 						name="target_behavior"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_BEHAVIOR_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_BEHAVIOR_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_SHOW</option>
@@ -769,7 +774,8 @@
 						name="target_relation"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_RELATION_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_RELATION_DESCRIPTION"
-						default="0">
+						default="0"
+						required="false">
 						<!-- Option Set. -->
 						<option value="0">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_ISOLATE</option>
@@ -783,6 +789,7 @@
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_FIELD_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_FIELD_DESCRIPTION"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 					<!-- Match_behavior Field. Type: List. (joomla) -->
@@ -794,6 +801,7 @@
 						class="list_class"
 						multiple="false"
 						filter="INT"
+						required="false"
 						default="1">
 						<!-- Option Set. -->
 						<option value="1">
@@ -830,6 +838,7 @@
 						class="list_class"
 						multiple="false"
 						filter="INT"
+						required="false"
 						default="1">
 						<!-- Option Set. -->
 						<option value="1">
@@ -867,10 +876,24 @@
 						class="text_area"
 						filter="STRING"
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_OPTIONS_HINT"
+						required="false"
 					/>
 				</fieldset>
 			</fields>
 		</field>
+		<!-- Php_import Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_import"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HINT"
+			required="true"
+		/>
 		<!-- Addlinked_views Field. Type: Repeatable. (joomla) -->
 		<field
 			type="repeatable"
@@ -892,6 +915,7 @@
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADMINVIEW_DESCRIPTION"
 						class="fieldMedium"
 						multiple="false"
+						required="false"
 						button="false"
 					/>
 					<!-- Tab Field. Type: Integer. (joomla) -->
@@ -902,6 +926,7 @@
 						default="1"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_DESCRIPTION"
 						class="fieldSmall"
+						required="false"
 						first="1"
 						last="15"
 						step="1"
@@ -917,6 +942,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="WORD"
 						message="Error! Please add key here."
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_HINT"
@@ -932,6 +958,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="WORD"
 						message="Error! Please add key here."
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_HINT"
@@ -941,7 +968,8 @@
 						type="radio"
 						name="addnew"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDNEW_LABEL"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -979,11 +1007,11 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Add_php_getlistquery Field. Type: Radio. (joomla) -->
+		<!-- Add_php_getitems_after_all Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_getlistquery"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETLISTQUERY_LABEL"
+			name="add_php_getitems_after_all"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_AFTER_ALL_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1006,11 +1034,11 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEW_HINT"
 			required="true"
 		/>
-		<!-- Add_php_save Field. Type: Radio. (joomla) -->
+		<!-- Add_php_getlistquery Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_SAVE_LABEL"
+			name="add_php_getlistquery"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETLISTQUERY_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1034,11 +1062,11 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Add_php_postsavehook Field. Type: Radio. (joomla) -->
+		<!-- Add_php_save Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_postsavehook"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_POSTSAVEHOOK_LABEL"
+			name="add_php_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_SAVE_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1061,11 +1089,11 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEWS_HINT"
 			required="true"
 		/>
-		<!-- Add_php_allowedit Field. Type: Radio. (joomla) -->
+		<!-- Add_php_postsavehook Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_allowedit"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWEDIT_LABEL"
+			name="add_php_postsavehook"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_POSTSAVEHOOK_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1089,11 +1117,11 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Add_php_batchcopy Field. Type: Radio. (joomla) -->
+		<!-- Add_php_allowedit Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_batchcopy"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHCOPY_LABEL"
+			name="add_php_allowedit"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWEDIT_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1116,11 +1144,11 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FILE_HINT"
 			required="true"
 		/>
-		<!-- Add_php_batchmove Field. Type: Radio. (joomla) -->
+		<!-- Add_php_batchcopy Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_batchmove"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHMOVE_LABEL"
+			name="add_php_batchcopy"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHCOPY_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1144,11 +1172,11 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Add_php_before_delete Field. Type: Radio. (joomla) -->
+		<!-- Add_php_batchmove Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_before_delete"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_DELETE_LABEL"
+			name="add_php_batchmove"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHMOVE_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1171,11 +1199,11 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_HINT"
 			required="true"
 		/>
-		<!-- Add_php_after_delete Field. Type: Radio. (joomla) -->
+		<!-- Add_php_before_delete Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_after_delete"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_DELETE_LABEL"
+			name="add_php_before_delete"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_DELETE_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1199,11 +1227,11 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Add_php_document Field. Type: Radio. (joomla) -->
+		<!-- Add_php_after_delete Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_document"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL"
+			name="add_php_after_delete"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_DELETE_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1226,11 +1254,11 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FILE_HINT"
 			required="true"
 		/>
-		<!-- Add_sql Field. Type: Radio. (joomla) -->
+		<!-- Add_php_document Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_sql"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_SQL_LABEL"
+			name="add_php_document"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1254,6 +1282,33 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
+		<!-- Add_sql Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_sql"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_SQL_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Javascript_views_footer Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="javascript_views_footer"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_HINT"
+			required="true"
+		/>
 		<!-- Addtables Field. Type: Repeatable. (joomla) -->
 		<field
 			type="repeatable"
@@ -1274,6 +1329,7 @@
 						class="list_class"
 						multiple="false"
 						default="0"
+						required="false"
 						button="false"
 					/>
 					<!-- Sourcemap Field. Type: Textarea. (joomla) -->
@@ -1287,25 +1343,11 @@
 						class="text_area span4"
 						filter="HTML"
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_HINT"
+						required="false"
 					/>
 				</fieldset>
 			</fields>
 		</field>
-		<!-- Javascript_views_footer Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="javascript_views_footer"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_HINT"
-			required="true"
-		/>
-		<!-- Note_beginner_import Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_beginner_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_DESCRIPTION" heading="h4" class="alert alert-info note_beginner_import" />
 		<!-- Add_php_ajax Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1320,6 +1362,21 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
+		<!-- Note_beginner_import Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_beginner_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_DESCRIPTION" heading="h4" class="alert alert-info note_beginner_import" />
+		<!-- Php_ajaxmethod Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_ajaxmethod"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AJAXMETHOD_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AJAXMETHOD_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AJAXMETHOD_HINT"
+			required="true"
+		/>
 		<!-- Add_custom_import Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1335,32 +1392,6 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Php_ajaxmethod Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_ajaxmethod"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AJAXMETHOD_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AJAXMETHOD_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AJAXMETHOD_HINT"
-			required="true"
-		/>
-		<!-- Html_import_view Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="html_import_view"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_HINT"
-			required="true"
-		/>
 		<!-- Ajax_input Field. Type: Repeatable. (joomla) -->
 		<field
 			type="repeatable"
@@ -1384,6 +1415,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add value name here."
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_VALUE_NAME_HINT"
@@ -1399,6 +1431,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="WORD"
 						message="Error! Please add task name here."
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_TASK_NAME_HINT"
@@ -1415,6 +1448,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add default input value here."
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_DEFAULT_HINT"
@@ -1428,6 +1462,7 @@
 						class="list_class"
 						multiple="false"
 						filter="WORD"
+						required="false"
 						default="INT">
 						<!-- Option Set. -->
 						<option value="INT">
@@ -1473,6 +1508,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="WORD"
 						message="Error! Please add method name here."
 						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_NAME_HINT"
@@ -1483,7 +1519,8 @@
 						name="user_check"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_USER_CHECK_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_USER_CHECK_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
@@ -1493,17 +1530,17 @@
 				</fieldset>
 			</fields>
 		</field>
-		<!-- Php_import_save Field. Type: Textarea. (joomla) -->
+		<!-- Html_import_view Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_import_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_LABEL"
+			name="html_import_view"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_HINT"
 			required="true"
 		/>
 		<!-- Add_php_getitem Field. Type: Radio. (joomla) -->
@@ -1520,6 +1557,32 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
+		<!-- Php_import_save Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_import_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_HINT"
+			required="true"
+		/>
+		<!-- Php_getitem Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_getitem"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_HINT"
+			required="true"
+		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field
 			type="hidden"

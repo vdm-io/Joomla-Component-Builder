@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.16
-	@build			29th August, 2016
+	@version		2.1.17
+	@build			3rd September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views.php
@@ -131,7 +131,7 @@ class ComponentbuilderModelAdmin_views extends JModelList
 				}
 
 			}
-		} 
+		}  
         
 		// return items
 		return $items;
@@ -265,8 +265,8 @@ class ComponentbuilderModelAdmin_views extends JModelList
 
 						// decode php_allowedit
 						$item->php_allowedit = base64_decode($item->php_allowedit);
-						// decode php_getitems
-						$item->php_getitems = base64_decode($item->php_getitems);
+						// decode php_getitems_after_all
+						$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
 						// decode php_after_delete
 						$item->php_after_delete = base64_decode($item->php_after_delete);
 						// decode php_save
@@ -275,8 +275,8 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->php_batchmove = base64_decode($item->php_batchmove);
 						// decode php_import_setdata
 						$item->php_import_setdata = base64_decode($item->php_import_setdata);
-						// decode php_getitem
-						$item->php_getitem = base64_decode($item->php_getitem);
+						// decode php_getitems
+						$item->php_getitems = base64_decode($item->php_getitems);
 						// decode php_getlistquery
 						$item->php_getlistquery = base64_decode($item->php_getlistquery);
 						// decode php_postsavehook
@@ -311,6 +311,8 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->html_import_view = base64_decode($item->html_import_view);
 						// decode php_import_save
 						$item->php_import_save = base64_decode($item->php_import_save);
+						// decode php_getitem
+						$item->php_getitem = base64_decode($item->php_getitem);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.16
-	@build			29th August, 2016
+	@version		2.1.17
+	@build			3rd September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields.php
@@ -168,7 +168,7 @@ class ComponentbuilderModelFields extends JModelList
 				$item->store = $this->selectionTranslation($item->store, 'store');
 			}
 		}
-
+ 
         
 		// return items
 		return $items;

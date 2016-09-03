@@ -114,6 +114,7 @@
 			class="text_area"
 			readonly="false"
 			disabled="false"
+			required="true"
 			filter="STRING"
 			message="Error! Please add name here."
 			hint="COM_COMPONENTBUILDER_SITE_VIEW_NAME_HINT"
@@ -219,6 +220,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add value name here."
 						hint="COM_COMPONENTBUILDER_SITE_VIEW_VALUE_NAME_HINT"
@@ -234,6 +236,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="WORD"
 						message="Error! Please add task name here."
 						hint="COM_COMPONENTBUILDER_SITE_VIEW_TASK_NAME_HINT"
@@ -250,6 +253,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add default input value here."
 						hint="COM_COMPONENTBUILDER_SITE_VIEW_INPUT_DEFAULT_HINT"
@@ -263,6 +267,7 @@
 						class="list_class"
 						multiple="false"
 						filter="WORD"
+						required="false"
 						default="INT">
 						<!-- Option Set. -->
 						<option value="INT">
@@ -308,6 +313,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="WORD"
 						message="Error! Please add method name here."
 						hint="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_NAME_HINT"
@@ -318,7 +324,8 @@
 						name="user_check"
 						label="COM_COMPONENTBUILDER_SITE_VIEW_USER_CHECK_LABEL"
 						description="COM_COMPONENTBUILDER_SITE_VIEW_USER_CHECK_DESCRIPTION"
-						default="1">
+						default="1"
+						required="false">
 						<!-- Option Set. -->
 						<option value="1">
 							COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
@@ -543,7 +550,8 @@
 						label="COM_COMPONENTBUILDER_SITE_VIEW_ICOMOON_LABEL"
 						description="COM_COMPONENTBUILDER_SITE_VIEW_ICOMOON_DESCRIPTION"
 						class="list_class fieldMedium"
-						multiple="false">
+						multiple="false"
+						required="false">
 						<!-- Option Set. -->
 						<option value="joomla">
 							COM_COMPONENTBUILDER_SITE_VIEW_JOOMLA</option>
@@ -977,6 +985,7 @@
 						class="text_area"
 						readonly="false"
 						disabled="false"
+						required="false"
 						filter="STRING"
 						message="Error! Please add name here."
 						hint="COM_COMPONENTBUILDER_SITE_VIEW_NAME_HINT"
@@ -990,6 +999,7 @@
 						maxlength="50"
 						description="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_DESCRIPTION"
 						class="text_area"
+						required="false"
 						filter="CMD"
 						message="Error! Please add controller method name here."
 						hint="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_HINT"
@@ -1002,6 +1012,7 @@
 						description="COM_COMPONENTBUILDER_SITE_VIEW_TARGET_DESCRIPTION"
 						class="list_class fieldMedium"
 						filter="INT"
+						required="false"
 						default="1">
 						<!-- Option Set. -->
 						<option value="1">

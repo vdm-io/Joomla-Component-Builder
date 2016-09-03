@@ -51,6 +51,23 @@ class Infusion extends Interpretation
 	}
 	
 	/**
+	 * Set the line number in comments
+	 * 
+	 * @param   int   $nr  The line number
+	 * 
+	 * @return  void
+	 * 
+	 */
+	private function setLine($nr)
+	{
+		if ($this->loadLineNr)
+		{
+			return ' [Infusion '.$nr.']';	
+		}
+		return '';
+	}
+	
+	/**
 	 * Build the content for the structure
 	 * 
 	 *
@@ -293,10 +310,10 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWMETHODS###'] = '';
 
 						// ###JMODELADMIN_BEFORE_DELETE### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_DELETE###'] = $this->setJmodelAdminBeforeDelete($viewName_single);
+						$this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_DELETE###'] = $this->getCustomScriptBuilder('php_before_delete', $viewName_single, "\n");
 
 						// ###JMODELADMIN_AFTER_DELETE### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_DELETE###'] = $this->setJmodelAdminAfterDelete($viewName_single);
+						$this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_DELETE###'] = $this->getCustomScriptBuilder('php_after_delete', $viewName_single, "\n\n");
 
 						// ###CHECKBOX_SAVE### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_single]['###CHECKBOX_SAVE###'] = $this->setCheckboxSave($viewName_single);
@@ -305,7 +322,7 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$viewName_single]['###METHOD_ITEM_SAVE###'] = $this->setMethodItemSave($viewName_single);
 
 						// ###POSTSAVEHOOK### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$viewName_single]['###POSTSAVEHOOK###'] = $this->setPostSaveHook($viewName_single);
+						$this->fileContentDynamic[$viewName_single]['###POSTSAVEHOOK###'] = $this->getCustomScriptBuilder('php_postsavehook', $viewName_single, "\n", null, true, "\n\t\treturn;", "\n\n\t\treturn;");
 
 						if (isset($this->customScriptBuilder['css_view'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['css_view'][$viewName_single]))
 						{
@@ -383,8 +400,11 @@ class Infusion extends Interpretation
 							$this->fileContentDynamic[$viewName_list]['###CHECKINCALL###'] = '';
 						}
 
-						// ###STORE_METHOD_FIX### <<<DYNAMIC>>>
+						// ###GET_ITEMS_METHOD_STRING_FIX### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_STRING_FIX###'] = $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###']);
+                                                
+                                                // ###GET_ITEMS_METHOD_AFTER_ALL### <<<DYNAMIC>>>
+                                                $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_AFTER_ALL###'] = $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, "\n");
 
 						// ###SELECTIONTRANSLATIONFIX### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_list]['###SELECTIONTRANSLATIONFIX###'] = $this->setSelectionTranslationFix($viewName_list,$this->fileContentStatic['###Component###']);
