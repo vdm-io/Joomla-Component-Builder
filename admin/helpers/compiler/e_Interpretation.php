@@ -9082,7 +9082,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 		// prepare custom permission script
-                $customAllow = $this->getCustomScriptBuilder('php_allowedit', $viewName_single, null, true);
+                $customAllow = $this->getCustomScriptBuilder('php_allowedit', $viewName_single, '', null, true);
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
