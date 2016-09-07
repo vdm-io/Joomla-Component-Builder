@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.18
-	@build			3rd September, 2016
+	@version		2.1.19
+	@build			7th September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		php_fullwidth.php
@@ -52,6 +52,10 @@ $fields = $displayData->get('fields') ?: array(
 	'php_batchcopy',
 	'add_php_batchmove',
 	'php_batchmove',
+	'add_php_before_publish',
+	'php_before_publish',
+	'add_php_after_publish',
+	'php_after_publish',
 	'add_php_before_delete',
 	'php_before_delete',
 	'add_php_after_delete',

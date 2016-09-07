@@ -315,6 +315,12 @@ class Infusion extends Interpretation
 						// ###JMODELADMIN_AFTER_DELETE### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_DELETE###'] = $this->getCustomScriptBuilder('php_after_delete', $viewName_single, "\n\n");
 
+						// ###JMODELADMIN_BEFORE_DELETE### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_PUBLISH###'] = $this->getCustomScriptBuilder('php_before_publish', $viewName_single, "\n");
+
+						// ###JMODELADMIN_AFTER_DELETE### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_PUBLISH###'] = $this->getCustomScriptBuilder('php_after_publish', $viewName_single, "\n\n");
+
 						// ###CHECKBOX_SAVE### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_single]['###CHECKBOX_SAVE###'] = $this->setCheckboxSave($viewName_single);
 

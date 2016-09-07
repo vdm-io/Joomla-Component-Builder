@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.18
-	@build			3rd September, 2016
+	@version		2.1.19
+	@build			7th September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -96,24 +96,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_allowedit))
-			{
-				// base64 Decode php_allowedit.
-				$item->php_allowedit = base64_decode($item->php_allowedit);
-			}
-
-			if (!empty($item->php_getitems_after_all))
-			{
-				// base64 Decode php_getitems_after_all.
-				$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
-			}
-
-			if (!empty($item->php_after_delete))
-			{
-				// base64 Decode php_after_delete.
-				$item->php_after_delete = base64_decode($item->php_after_delete);
-			}
-
 			if (!empty($item->php_save))
 			{
 				// base64 Decode php_save.
@@ -126,16 +108,34 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_batchmove = base64_decode($item->php_batchmove);
 			}
 
+			if (!empty($item->php_after_delete))
+			{
+				// base64 Decode php_after_delete.
+				$item->php_after_delete = base64_decode($item->php_after_delete);
+			}
+
+			if (!empty($item->php_getitems_after_all))
+			{
+				// base64 Decode php_getitems_after_all.
+				$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
+			}
+
+			if (!empty($item->php_allowedit))
+			{
+				// base64 Decode php_allowedit.
+				$item->php_allowedit = base64_decode($item->php_allowedit);
+			}
+
+			if (!empty($item->php_after_publish))
+			{
+				// base64 Decode php_after_publish.
+				$item->php_after_publish = base64_decode($item->php_after_publish);
+			}
+
 			if (!empty($item->php_import_setdata))
 			{
 				// base64 Decode php_import_setdata.
 				$item->php_import_setdata = base64_decode($item->php_import_setdata);
-			}
-
-			if (!empty($item->php_getitems))
-			{
-				// base64 Decode php_getitems.
-				$item->php_getitems = base64_decode($item->php_getitems);
 			}
 
 			if (!empty($item->php_getlistquery))
@@ -154,6 +154,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_batchcopy.
 				$item->php_batchcopy = base64_decode($item->php_batchcopy);
+			}
+
+			if (!empty($item->php_before_publish))
+			{
+				// base64 Decode php_before_publish.
+				$item->php_before_publish = base64_decode($item->php_before_publish);
 			}
 
 			if (!empty($item->php_before_delete))
@@ -228,6 +234,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
 			}
 
+			if (!empty($item->php_getitem))
+			{
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
+			}
+
 			if (!empty($item->html_import_view))
 			{
 				// base64 Decode html_import_view.
@@ -240,10 +252,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_save = base64_decode($item->php_import_save);
 			}
 
-			if (!empty($item->php_getitem))
+			if (!empty($item->php_getitems))
 			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
+				// base64 Decode php_getitems.
+				$item->php_getitems = base64_decode($item->php_getitems);
 			}
 			
 			if (!empty($item->id))
@@ -262,7 +274,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxgfields()
+	public function getVxifields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -331,13 +343,13 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxgfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxifields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxgfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxifields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxgfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxifields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxgfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxifields($item->store, 'store');
 				}
 			}
 
@@ -372,7 +384,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVxgfields($value,$name)
+	public function selectionTranslationVxifields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -755,6 +767,26 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		
 		return true;
 	}
+
+	/**
+	 * Method to change the published state of one or more records.
+	 *
+	 * @param   array    &$pks   A list of the primary keys to change.
+	 * @param   integer  $value  The value of the published state.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   12.2
+	 */
+	public function publish(&$pks, $value = 1)
+	{
+		if (!parent::publish($pks, $value))
+		{
+			return false;
+		}
+		
+		return true;
+        }
     
 	/**
 	 * Method to perform batch operations on an item or a set of items.
@@ -1135,24 +1167,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_allowedit string to base64 string.
-		if (isset($data['php_allowedit']))
-		{
-			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
-		}
-
-		// Set the php_getitems_after_all string to base64 string.
-		if (isset($data['php_getitems_after_all']))
-		{
-			$data['php_getitems_after_all'] = base64_encode($data['php_getitems_after_all']);
-		}
-
-		// Set the php_after_delete string to base64 string.
-		if (isset($data['php_after_delete']))
-		{
-			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
-		}
-
 		// Set the php_save string to base64 string.
 		if (isset($data['php_save']))
 		{
@@ -1165,16 +1179,34 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
 		}
 
+		// Set the php_after_delete string to base64 string.
+		if (isset($data['php_after_delete']))
+		{
+			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
+		}
+
+		// Set the php_getitems_after_all string to base64 string.
+		if (isset($data['php_getitems_after_all']))
+		{
+			$data['php_getitems_after_all'] = base64_encode($data['php_getitems_after_all']);
+		}
+
+		// Set the php_allowedit string to base64 string.
+		if (isset($data['php_allowedit']))
+		{
+			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
+		}
+
+		// Set the php_after_publish string to base64 string.
+		if (isset($data['php_after_publish']))
+		{
+			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
+		}
+
 		// Set the php_import_setdata string to base64 string.
 		if (isset($data['php_import_setdata']))
 		{
 			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
-		}
-
-		// Set the php_getitems string to base64 string.
-		if (isset($data['php_getitems']))
-		{
-			$data['php_getitems'] = base64_encode($data['php_getitems']);
 		}
 
 		// Set the php_getlistquery string to base64 string.
@@ -1193,6 +1225,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_batchcopy']))
 		{
 			$data['php_batchcopy'] = base64_encode($data['php_batchcopy']);
+		}
+
+		// Set the php_before_publish string to base64 string.
+		if (isset($data['php_before_publish']))
+		{
+			$data['php_before_publish'] = base64_encode($data['php_before_publish']);
 		}
 
 		// Set the php_before_delete string to base64 string.
@@ -1267,6 +1305,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
 		}
 
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
+		{
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
+		}
+
 		// Set the html_import_view string to base64 string.
 		if (isset($data['html_import_view']))
 		{
@@ -1279,10 +1323,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_import_save'] = base64_encode($data['php_import_save']);
 		}
 
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
+		// Set the php_getitems string to base64 string.
+		if (isset($data['php_getitems']))
 		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
+			$data['php_getitems'] = base64_encode($data['php_getitems']);
 		}
         
 		// Set the Params Items to data

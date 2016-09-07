@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.18
-	@build			3rd September, 2016
+	@version		2.1.19
+	@build			7th September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		snippet.php
@@ -386,6 +386,26 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 		
 		return true;
 	}
+
+	/**
+	 * Method to change the published state of one or more records.
+	 *
+	 * @param   array    &$pks   A list of the primary keys to change.
+	 * @param   integer  $value  The value of the published state.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   12.2
+	 */
+	public function publish(&$pks, $value = 1)
+	{
+		if (!parent::publish($pks, $value))
+		{
+			return false;
+		}
+		
+		return true;
+        }
     
 	/**
 	 * Method to perform batch operations on an item or a set of items.

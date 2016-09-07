@@ -2304,7 +2304,7 @@ class Interpretation extends Fields
                         }
 		}
                 // if not found return default
-                if ($default)
+                if (!ComponentbuilderHelper::checkString($script) && $default)
                 {
                         return $default;
                 }
