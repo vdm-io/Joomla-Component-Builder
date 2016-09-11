@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.20
-	@build			7th September, 2016
+	@version		2.1.21
+	@build			11th September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -114,48 +114,33 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_datalenght listeners for datalenght_vvvvvyz function
+// #jform_datalenght listeners for datalenght_vvvvvza function
 jQuery('#jform_datalenght').on('keyup',function()
 {
-	var datalenght_vvvvvyz = jQuery("#jform_datalenght").val();
-	vvvvvyz(datalenght_vvvvvyz);
+	var datalenght_vvvvvza = jQuery("#jform_datalenght").val();
+	vvvvvza(datalenght_vvvvvza);
 
 });
 jQuery('#adminForm').on('change', '#jform_datalenght',function (e)
 {
 	e.preventDefault();
-	var datalenght_vvvvvyz = jQuery("#jform_datalenght").val();
-	vvvvvyz(datalenght_vvvvvyz);
+	var datalenght_vvvvvza = jQuery("#jform_datalenght").val();
+	vvvvvza(datalenght_vvvvvza);
 
 });
 
-// #jform_datadefault listeners for datadefault_vvvvvza function
+// #jform_datadefault listeners for datadefault_vvvvvzb function
 jQuery('#jform_datadefault').on('keyup',function()
 {
-	var datadefault_vvvvvza = jQuery("#jform_datadefault").val();
-	vvvvvza(datadefault_vvvvvza);
+	var datadefault_vvvvvzb = jQuery("#jform_datadefault").val();
+	vvvvvzb(datadefault_vvvvvzb);
 
 });
 jQuery('#adminForm').on('change', '#jform_datadefault',function (e)
 {
 	e.preventDefault();
-	var datadefault_vvvvvza = jQuery("#jform_datadefault").val();
-	vvvvvza(datadefault_vvvvvza);
-
-});
-
-// #jform_datatype listeners for datatype_vvvvvzb function
-jQuery('#jform_datatype').on('keyup',function()
-{
-	var datatype_vvvvvzb = jQuery("#jform_datatype").val();
-	vvvvvzb(datatype_vvvvvzb);
-
-});
-jQuery('#adminForm').on('change', '#jform_datatype',function (e)
-{
-	e.preventDefault();
-	var datatype_vvvvvzb = jQuery("#jform_datatype").val();
-	vvvvvzb(datatype_vvvvvzb);
+	var datadefault_vvvvvzb = jQuery("#jform_datadefault").val();
+	vvvvvzb(datadefault_vvvvvzb);
 
 });
 
@@ -174,97 +159,112 @@ jQuery('#adminForm').on('change', '#jform_datatype',function (e)
 
 });
 
-// #jform_store listeners for store_vvvvvzd function
-jQuery('#jform_store').on('keyup',function()
-{
-	var store_vvvvvzd = jQuery("#jform_store").val();
-	var datatype_vvvvvzd = jQuery("#jform_datatype").val();
-	vvvvvzd(store_vvvvvzd,datatype_vvvvvzd);
-
-});
-jQuery('#adminForm').on('change', '#jform_store',function (e)
-{
-	e.preventDefault();
-	var store_vvvvvzd = jQuery("#jform_store").val();
-	var datatype_vvvvvzd = jQuery("#jform_datatype").val();
-	vvvvvzd(store_vvvvvzd,datatype_vvvvvzd);
-
-});
-
 // #jform_datatype listeners for datatype_vvvvvzd function
 jQuery('#jform_datatype').on('keyup',function()
 {
-	var store_vvvvvzd = jQuery("#jform_store").val();
 	var datatype_vvvvvzd = jQuery("#jform_datatype").val();
-	vvvvvzd(store_vvvvvzd,datatype_vvvvvzd);
+	vvvvvzd(datatype_vvvvvzd);
 
 });
 jQuery('#adminForm').on('change', '#jform_datatype',function (e)
 {
 	e.preventDefault();
-	var store_vvvvvzd = jQuery("#jform_store").val();
 	var datatype_vvvvvzd = jQuery("#jform_datatype").val();
-	vvvvvzd(store_vvvvvzd,datatype_vvvvvzd);
+	vvvvvzd(datatype_vvvvvzd);
 
 });
 
-// #jform_add_css_view listeners for add_css_view_vvvvvzf function
+// #jform_store listeners for store_vvvvvze function
+jQuery('#jform_store').on('keyup',function()
+{
+	var store_vvvvvze = jQuery("#jform_store").val();
+	var datatype_vvvvvze = jQuery("#jform_datatype").val();
+	vvvvvze(store_vvvvvze,datatype_vvvvvze);
+
+});
+jQuery('#adminForm').on('change', '#jform_store',function (e)
+{
+	e.preventDefault();
+	var store_vvvvvze = jQuery("#jform_store").val();
+	var datatype_vvvvvze = jQuery("#jform_datatype").val();
+	vvvvvze(store_vvvvvze,datatype_vvvvvze);
+
+});
+
+// #jform_datatype listeners for datatype_vvvvvze function
+jQuery('#jform_datatype').on('keyup',function()
+{
+	var store_vvvvvze = jQuery("#jform_store").val();
+	var datatype_vvvvvze = jQuery("#jform_datatype").val();
+	vvvvvze(store_vvvvvze,datatype_vvvvvze);
+
+});
+jQuery('#adminForm').on('change', '#jform_datatype',function (e)
+{
+	e.preventDefault();
+	var store_vvvvvze = jQuery("#jform_store").val();
+	var datatype_vvvvvze = jQuery("#jform_datatype").val();
+	vvvvvze(store_vvvvvze,datatype_vvvvvze);
+
+});
+
+// #jform_add_css_view listeners for add_css_view_vvvvvzg function
 jQuery('#jform_add_css_view').on('keyup',function()
 {
-	var add_css_view_vvvvvzf = jQuery("#jform_add_css_view input[type='radio']:checked").val();
-	vvvvvzf(add_css_view_vvvvvzf);
+	var add_css_view_vvvvvzg = jQuery("#jform_add_css_view input[type='radio']:checked").val();
+	vvvvvzg(add_css_view_vvvvvzg);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_css_view',function (e)
 {
 	e.preventDefault();
-	var add_css_view_vvvvvzf = jQuery("#jform_add_css_view input[type='radio']:checked").val();
-	vvvvvzf(add_css_view_vvvvvzf);
+	var add_css_view_vvvvvzg = jQuery("#jform_add_css_view input[type='radio']:checked").val();
+	vvvvvzg(add_css_view_vvvvvzg);
 
 });
 
-// #jform_add_css_views listeners for add_css_views_vvvvvzg function
+// #jform_add_css_views listeners for add_css_views_vvvvvzh function
 jQuery('#jform_add_css_views').on('keyup',function()
 {
-	var add_css_views_vvvvvzg = jQuery("#jform_add_css_views input[type='radio']:checked").val();
-	vvvvvzg(add_css_views_vvvvvzg);
+	var add_css_views_vvvvvzh = jQuery("#jform_add_css_views input[type='radio']:checked").val();
+	vvvvvzh(add_css_views_vvvvvzh);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_css_views',function (e)
 {
 	e.preventDefault();
-	var add_css_views_vvvvvzg = jQuery("#jform_add_css_views input[type='radio']:checked").val();
-	vvvvvzg(add_css_views_vvvvvzg);
+	var add_css_views_vvvvvzh = jQuery("#jform_add_css_views input[type='radio']:checked").val();
+	vvvvvzh(add_css_views_vvvvvzh);
 
 });
 
-// #jform_add_javascript_view_footer listeners for add_javascript_view_footer_vvvvvzh function
+// #jform_add_javascript_view_footer listeners for add_javascript_view_footer_vvvvvzi function
 jQuery('#jform_add_javascript_view_footer').on('keyup',function()
 {
-	var add_javascript_view_footer_vvvvvzh = jQuery("#jform_add_javascript_view_footer input[type='radio']:checked").val();
-	vvvvvzh(add_javascript_view_footer_vvvvvzh);
+	var add_javascript_view_footer_vvvvvzi = jQuery("#jform_add_javascript_view_footer input[type='radio']:checked").val();
+	vvvvvzi(add_javascript_view_footer_vvvvvzi);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_javascript_view_footer',function (e)
 {
 	e.preventDefault();
-	var add_javascript_view_footer_vvvvvzh = jQuery("#jform_add_javascript_view_footer input[type='radio']:checked").val();
-	vvvvvzh(add_javascript_view_footer_vvvvvzh);
+	var add_javascript_view_footer_vvvvvzi = jQuery("#jform_add_javascript_view_footer input[type='radio']:checked").val();
+	vvvvvzi(add_javascript_view_footer_vvvvvzi);
 
 });
 
-// #jform_add_javascript_views_footer listeners for add_javascript_views_footer_vvvvvzi function
+// #jform_add_javascript_views_footer listeners for add_javascript_views_footer_vvvvvzj function
 jQuery('#jform_add_javascript_views_footer').on('keyup',function()
 {
-	var add_javascript_views_footer_vvvvvzi = jQuery("#jform_add_javascript_views_footer input[type='radio']:checked").val();
-	vvvvvzi(add_javascript_views_footer_vvvvvzi);
+	var add_javascript_views_footer_vvvvvzj = jQuery("#jform_add_javascript_views_footer input[type='radio']:checked").val();
+	vvvvvzj(add_javascript_views_footer_vvvvvzj);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_javascript_views_footer',function (e)
 {
 	e.preventDefault();
-	var add_javascript_views_footer_vvvvvzi = jQuery("#jform_add_javascript_views_footer input[type='radio']:checked").val();
-	vvvvvzi(add_javascript_views_footer_vvvvvzi);
+	var add_javascript_views_footer_vvvvvzj = jQuery("#jform_add_javascript_views_footer input[type='radio']:checked").val();
+	vvvvvzj(add_javascript_views_footer_vvvvvzj);
 
 });
 

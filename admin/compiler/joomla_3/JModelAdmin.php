@@ -67,7 +67,7 @@ class ###Component###Model###View### extends JModelAdmin
 	public function getTable($type = '###view###', $prefix = '###Component###Table', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
-	}
+	}###ADMIN_CUSTOM_BUTTONS_METHOD###
     
 	/**
 	 * Method to get a single record.

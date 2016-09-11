@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.20
-	@build			7th September, 2016
+	@version		2.1.21
+	@build			11th September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -72,7 +72,7 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vzefields		= $this->get('Vzefields');
+		$this->vzgfields		= $this->get('Vzgfields');
 
 		// Set the toolbar
 		$this->addToolBar();

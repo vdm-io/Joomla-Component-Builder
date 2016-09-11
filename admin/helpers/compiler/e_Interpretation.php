@@ -139,7 +139,7 @@ class Interpretation extends Fields
 	/**
 	 * @param $view
 	*/
-	public function setLockLicensePer($view)
+	public function setLockLicensePer(&$view)
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
@@ -1051,7 +1051,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setCustomViewMenu($view)
+	public function setCustomViewMenu(&$view)
 	{
 		$xml = '';
 		// build the file
@@ -2526,7 +2526,7 @@ class Interpretation extends Fields
 		return $method;
 	}
 
-	public function setPrepareDocument($view)
+	public function setPrepareDocument(&$view)
 	{
 		// ensure correct target is set
 		$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
@@ -2642,12 +2642,12 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setCustomGetForm($view)
+	public function setCustomGetForm(&$view)
 	{
 		return '';
 	}
 
-	public function setDocumentCustomPHP($view)
+	public function setDocumentCustomPHP(&$view)
 	{
 		if ($view['settings']->add_php_document == 1)
 		{
@@ -2660,45 +2660,52 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setCustomButtons($view)
+	public function setCustomButtons(&$view, $type = 1, $tab = '')
 	{
+                if (1 == $type)
+                {
+                       $viewName = $view['settings']->code;
+                }
+                if (2 == $type)
+                {
+                         $viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
+                }
 		// ensure correct target is set
 		$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
 		// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] = '';
+		$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] = '';
 		// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] = '';
+		$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] = '';
 		// if site add buttons to view
 		if ($this->target == 'site')
 		{
 			// set the custom buttons ###SITE_TOP_BUTTON###
-			$this->fileContentDynamic[$view['settings']->code]['###SITE_TOP_BUTTON###'] = '';
+			$this->fileContentDynamic[$viewName]['###SITE_TOP_BUTTON###'] = '';
 			// set the custom buttons ###SITE_BOTTOM_BUTTON###
-			$this->fileContentDynamic[$view['settings']->code]['###SITE_BOTTOM_BUTTON###'] = '';
+			$this->fileContentDynamic[$viewName]['###SITE_BOTTOM_BUTTON###'] = '';
 			// load into place
 			switch ($view['settings']->button_position)
 			{
 				case 1:
 					// set buttons to top right of the view
-					$this->fileContentDynamic[$view['settings']->code]['###SITE_TOP_BUTTON###'] = '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
+					$this->fileContentDynamic[$viewName]['###SITE_TOP_BUTTON###'] = '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
 					break;
 				case 2:
 					// set buttons to top left of the view
-					$this->fileContentDynamic[$view['settings']->code]['###SITE_TOP_BUTTON###'] = '<?php echo $this->toolbar->render(); ?>';
+					$this->fileContentDynamic[$viewName]['###SITE_TOP_BUTTON###'] = '<?php echo $this->toolbar->render(); ?>';
 					break;
 				case 3:
 					// set buttons to buttom right of the view
-					$this->fileContentDynamic[$view['settings']->code]['###SITE_BOTTOM_BUTTON###'] = '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
+					$this->fileContentDynamic[$viewName]['###SITE_BOTTOM_BUTTON###'] = '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
 					break;
 				case 4:
 					// set buttons to buttom left of the view
-					$this->fileContentDynamic[$view['settings']->code]['###SITE_BOTTOM_BUTTON###'] = '<?php echo $this->toolbar->render(); ?>';
+					$this->fileContentDynamic[$viewName]['###SITE_BOTTOM_BUTTON###'] = '<?php echo $this->toolbar->render(); ?>';
 					break;
 				case 5:
 					// set buttons to buttom left of the view
 					$this->placeholders['[[[SITE_TOOLBAR]]]'] = '<?php echo $this->toolbar->render(); ?>';
-					break;
-					
+					break;					
 			}
 
 		}
@@ -2717,11 +2724,11 @@ class Interpretation extends Fields
                                                 $keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
 						$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
 						// add cpanel button
-						$buttons[] = "\t\tif (\$this->canDo->get('".$view['settings']->code.".".$keyCode."'))";
-						$buttons[] = "\t\t{";
-						$buttons[] = "\t\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
-						$buttons[] = "\t\t\tJToolBarHelper::custom('".$view['settings']->code.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
-						$buttons[] = "\t\t}";
+						$buttons[] = "\t".$tab."\tif (\$this->canDo->get('".$viewName.".".$keyCode."'))";
+						$buttons[] = "\t".$tab."\t{";
+						$buttons[] = "\t".$tab."\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
+						$buttons[] = "\t".$tab."\t\tJToolBarHelper::custom('".$viewName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
+						$buttons[] = "\t".$tab."\t}";
 					}
 				}
 				if (ComponentbuilderHelper::checkArray($buttons))
@@ -2729,13 +2736,13 @@ class Interpretation extends Fields
 					if (ComponentbuilderHelper::checkString($view['settings']->php_controller))
 					{
 						// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-						$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
+						$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
 						"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_controller);
 						if ('site' == $this->target)
 						{
 							// add the controller for this view
 							// build the file
-							$target = array($this->target => $view['settings']->code);
+							$target = array($this->target => $viewName);
 							$this->buildDynamique($target,'custom_form');
 							###GET_FORM_CUSTOM###
 						}
@@ -2743,7 +2750,7 @@ class Interpretation extends Fields
 					if (ComponentbuilderHelper::checkString($view['settings']->php_model))
 					{
 						// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-						$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] =
+						$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] =
 						"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_model);
 					}
 
@@ -2754,7 +2761,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setCustomCSS($view)
+	public function setCustomCSS(&$view)
 	{
 		if ($view['settings']->add_css == 1)
 		{
@@ -2766,7 +2773,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setDocumentCustomCSS($view)
+	public function setDocumentCustomCSS(&$view)
 	{
 		if ($view['settings']->add_css_document == 1)
 		{
@@ -2781,7 +2788,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setDocumentCustomJS($view)
+	public function setDocumentCustomJS(&$view)
 	{
 		if ($view['settings']->add_js_document == 1)
 		{
@@ -2796,7 +2803,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setFootableScriptsLoader($view)
+	public function setFootableScriptsLoader(&$view)
 	{
 		if (isset($this->footableScripts[$this->target][$view['settings']->code]) && $this->footableScripts[$this->target][$view['settings']->code])
 		{
@@ -2805,7 +2812,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setDocumentMetadata($view)
+	public function setDocumentMetadata(&$view)
 	{
 		if ($view['settings']->main_get->gettype == 1 && $view['metadata'] == 1)
 		{
@@ -2919,7 +2926,7 @@ class Interpretation extends Fields
 		return implode("\n",$meta);
 	}
 
-	public function setGoogleChartLoader($view)
+	public function setGoogleChartLoader(&$view)
 	{
 		if (isset($this->googleChart[$this->target][$view['settings']->code]) && $this->googleChart[$this->target][$view['settings']->code])
 		{
@@ -2935,7 +2942,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setUikitLoader($view)
+	public function setUikitLoader(&$view)
 	{
 		// reset buktes
 		$setter = '';
@@ -3289,7 +3296,7 @@ class Interpretation extends Fields
 		return false;
 	}
 
-	public function setMethodGetItem($view)
+	public function setMethodGetItem(&$view)
 	{
 		$script = '';
 		// go from json to array
@@ -3377,7 +3384,7 @@ class Interpretation extends Fields
 		return $script;
 	}
 
-	public function setCheckboxSave($view)
+	public function setCheckboxSave(&$view)
 	{
 		$script = '';
 		if(isset($this->checkboxBuilder[$view]) && ComponentbuilderHelper::checkArray($this->checkboxBuilder[$view]))
@@ -3394,7 +3401,7 @@ class Interpretation extends Fields
 		return $script;
 	}
 
-	public function setMethodItemSave($view)
+	public function setMethodItemSave(&$view)
 	{
 		$script = '';
 		// turn array into JSON string
@@ -3480,7 +3487,7 @@ class Interpretation extends Fields
 		return $script;
 	}
 
-	public function setJtableConstructor($view)
+	public function setJtableConstructor(&$view)
 	{
 		// reset
 		$oserver = "";
@@ -3501,7 +3508,7 @@ class Interpretation extends Fields
 		return $oserver;
 	}
 
-	public function setJtableAliasCategory($view)
+	public function setJtableAliasCategory(&$view)
 	{
 		// only add Observers if both title, alias and category is availabe in view
 		if (array_key_exists($view, $this->catCodeBuilder))
@@ -3966,7 +3973,7 @@ class Interpretation extends Fields
 		return '';
 	}
 	
-	public function routerParseSwitch($view)
+	public function routerParseSwitch(&$view)
 	{
 		// add if tags is added, also for all front item views
 		if (1)
@@ -4006,7 +4013,7 @@ class Interpretation extends Fields
 		return '';
 	}
 	
-	public function routerBuildViews($view)
+	public function routerBuildViews(&$view)
 	{
 		if (isset($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']) && ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']))
 		{
@@ -8455,7 +8462,7 @@ class Interpretation extends Fields
 		return $clear;
 	}
 
-	public function setViewScript($view)
+	public function setViewScript(&$view)
 	{
 		if (isset($this->editBodyViewScriptBuilder[$view]) && isset($this->editBodyViewScriptBuilder[$view]['fileScript']))
 		{
@@ -8464,7 +8471,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setEditBodyScript($view)
+	public function setEditBodyScript(&$view)
 	{
 		if (isset($this->editBodyViewScriptBuilder[$view]) && isset($this->editBodyViewScriptBuilder[$view]['footerScript']))
 		{
@@ -8517,7 +8524,7 @@ class Interpretation extends Fields
 		return $fix;
 	}
 
-	public function setAjaxToke($view)
+	public function setAjaxToke(&$view)
 	{
 		$fix = '';
 		if (isset($this->customScriptBuilder['token'][$view]) && $this->customScriptBuilder['token'][$view])
@@ -8803,7 +8810,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setUniqueFields($view)
+	public function setUniqueFields(&$view)
 	{
 		$fields = array();
 		$fields[] = "\n\n\t/**";
@@ -8828,7 +8835,7 @@ class Interpretation extends Fields
 		return implode("\n",$fields);
 	}
 
-	public function setOtherFilter($view)
+	public function setOtherFilter(&$view)
 	{
 		if (isset($this->filterBuilder[$view]) && ComponentbuilderHelper::checkArray($this->filterBuilder[$view]))
 		{
@@ -9785,7 +9792,7 @@ class Interpretation extends Fields
 		return implode("\n",$allow);
 	}
 
-	public function setFieldSetAccessControl($view)
+	public function setFieldSetAccessControl(&$view)
 	{
 		$access = '';
 		if ($view != 'component')
@@ -9821,7 +9828,7 @@ class Interpretation extends Fields
 		return $access;
 	}
 
-	public function setFilterFields($view)
+	public function setFilterFields(&$view)
 	{
 		// keep track of all fields already added
 		$donelist = array('id','search','published','access','created_by','modified_by');
@@ -9897,7 +9904,7 @@ class Interpretation extends Fields
 		return $fields;
 	}
 
-	public function setStoredId($view)
+	public function setStoredId(&$view)
 	{
 		// keep track of all fields already added
 		$donelist = array('id','search','published','access','created_by','modified_by');
@@ -9974,7 +9981,7 @@ class Interpretation extends Fields
 		return $stored;
 	}
 
-	public function setAddToolBar($view)
+	public function setAddToolBar(&$view)
 	{
 		// set view name
 		$viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
@@ -10131,6 +10138,8 @@ class Interpretation extends Fields
 			$toolBar .= "\n\t\t\t\t{";
 			$toolBar .= "\n\t\t\t\t\tJToolBarHelper::custom('".$viewName.".save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);";
 			$toolBar .= "\n\t\t\t\t}";
+                        // add custom buttons
+                        $toolBar .= $this->setCustomButtons($view, 2, "\t\t");
 			$toolBar .= "\n\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CLOSE');";
 			$toolBar .= "\n\t\t\t}";
 			$toolBar .= "\n\t\t}";
@@ -10145,7 +10154,7 @@ class Interpretation extends Fields
 		return $toolBar;
 	}
 
-	public function setPopulateState($view)
+	public function setPopulateState(&$view)
 	{
 		// rest buket
 		$state = '';
@@ -10259,7 +10268,7 @@ class Interpretation extends Fields
 		return $state;
 	}
 
-	public function setSortFields($view)
+	public function setSortFields(&$view)
 	{
 		// keep track of all fields already added
 		$donelist = array('sorting','published');
@@ -12579,7 +12588,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 		$this->componentHead[] = "\t\t".'<action name="core.edit.created" title="'.$createdTitle.'" description="'.$createdDesc.'" />';
 		
 		// set the menu controller lookup
-		$menuControllers = array('submenu','dashboard_list','dashboard_add');
+		$menuControllers = array('access','submenu','dashboard_list','dashboard_add');
                 // set the custom admin views permissions
 		if (isset($this->componentData->custom_admin_views) && ComponentbuilderHelper::checkArray($this->componentData->custom_admin_views))
 		{
@@ -12595,20 +12604,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
                                 $this->langContent['admin'][$customAdminDesc]	= ' Allows the users in this group to access '.ComponentbuilderHelper::safeString($customAdminName,'w').'.';
                                 $this->componentGlobal[$sortKey]                      = "\t\t".'<action name="'.$customAdminCode.'.access" title="'.$customAdminTitle.'" description="'.$customAdminDesc.'" />';
                                 // add the custom permissions to use the buttons of this view
-                                if (isset($custom_admin_view['settings']->custom_buttons) && ComponentbuilderHelper::checkArray($custom_admin_view['settings']->custom_buttons))
-                                {
-                                       foreach ($custom_admin_view['settings']->custom_buttons as $custom_buttons)
-                                       {
-                                                $customAdminButtonName  = $custom_buttons['name'];
-                                                $customAdminButtonCode  = ComponentbuilderHelper::safeString($customAdminButtonName);
-                                                $customAdminButtonTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($customAdminName.' '.$customAdminButtonName.' Button Access','U');
-                                                $customAdminButtonDesc  = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($customAdminName.' '.$customAdminButtonName.' Button Access','U').'_DESC';
-                                                $sortButtonKey          = ComponentbuilderHelper::safeString($customAdminName.' '.$customAdminButtonName.' Button Access');
-                                                $this->langContent['admin'][$customAdminButtonTitle]	= $customAdminName.' '.$customAdminButtonName.' Button Access';
-                                                $this->langContent['admin'][$customAdminButtonDesc]	= ' Allows the users in this group to access the '.ComponentbuilderHelper::safeString($customAdminButtonName,'w').' button.';
-                                                $this->componentGlobal[$sortButtonKey]  = "\t\t".'<action name="'.$customAdminCode.'.'.$customAdminButtonCode.'" title="'.$customAdminButtonTitle.'" description="'.$customAdminButtonDesc.'" />';
-                                       }
-                                }
+                                $this->addCustomButtonPermissions($custom_admin_view['settings'], $customAdminName, $customAdminCode);
 				// add menu controll view that has menus options
 				foreach ($menuControllers  as $menuController)
 				{
@@ -12685,6 +12681,8 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				// set view name
 				$nameView = ComponentbuilderHelper::safeString($view['settings']->name_single);
 				$nameViews = ComponentbuilderHelper::safeString($view['settings']->name_list);
+                                // add the custom permissions to use the buttons of this view
+                                $this->addCustomButtonPermissions($view['settings'], $view['settings']->name_single, $nameView);
 				if ($nameView != 'component')
 				{
 
@@ -12790,6 +12788,25 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 		}
 		return false;
 	}
+        
+        protected function addCustomButtonPermissions($settings, $nameView, $code)
+        {
+ 		// add the custom permissions to use the buttons of this view
+		if (isset($settings->custom_buttons) && ComponentbuilderHelper::checkArray($settings->custom_buttons))
+		{
+			foreach ($settings->custom_buttons as $custom_buttons)
+			{
+			        $customButtonName  = $custom_buttons['name'];
+			        $customButtonCode  = ComponentbuilderHelper::safeString($customButtonName);
+			        $customButtonTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($nameView.' '.$customButtonName.' Button Access','U');
+			        $customButtonDesc  = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($nameView.' '.$customButtonName.' Button Access','U').'_DESC';
+			        $sortButtonKey     = ComponentbuilderHelper::safeString($nameView.' '.$customButtonName.' Button Access');
+			        $this->langContent['admin'][$customButtonTitle]	= $nameView.' '.$customButtonName.' Button Access';
+			        $this->langContent['admin'][$customButtonDesc]	= ' Allows the users in this group to access the '.ComponentbuilderHelper::safeString($customButtonName,'w').' button.';
+			        $this->componentGlobal[$sortButtonKey]  = "\t\t".'<action name="'.$code.'.'.$customButtonCode.'" title="'.$customButtonTitle.'" description="'.$customButtonDesc.'" />';
+			}
+		}
+        }
 	
 	public function buildPermissions(&$view, $nameView, $nameViews, $menuControllers, $type = 'admin')
 	{

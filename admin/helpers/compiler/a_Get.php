@@ -1081,7 +1081,31 @@ class Get
 					unset($view->$scripter);
 				}
 			}
-			
+                        // add the custom buttons
+                        if (isset($view->add_custom_button) && $view->add_custom_button == 1)
+                        {
+                                if (ComponentbuilderHelper::checkString($view->php_model))
+                                {
+                                        $view->php_model = base64_decode($view->php_model);
+                                        $view->php_model = $this->setCustomContentLang($view->php_model);
+                                }
+                                $view->php_controller = base64_decode($view->php_controller);
+                                $view->php_controller = $this->setCustomContentLang($view->php_controller);
+                                // set the button array
+                                $buttons = json_decode($view->custom_button,true);
+                                unset($view->custom_button);
+                                // sort the values
+                                if (ComponentbuilderHelper::checkArray($buttons))
+                                {
+                                        foreach ($buttons as $option => $values)
+                                        {
+                                                foreach ($values as $nr => $value)
+                                                {
+                                                        $view->custom_buttons[$nr][$option] = $value;
+                                                }
+                                        }
+                                }
+                        }			
 			// set custom import scripts
 			if (isset($view->add_custom_import) && $view->add_custom_import == 1)
 			{

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.20
-	@build			7th September, 2016
+	@version		2.1.21
+	@build			11th September, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -102,6 +102,19 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
 				<?php echo JLayoutHelper::render('admin_view.javascript_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'custom_buttons', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTONS', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('admin_view.custom_buttons_left', $this); ?>
+			</div>
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('admin_view.custom_buttons_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -614,8 +627,48 @@ jQuery('#adminForm').on('change', '#jform_add_custom_import',function (e)
 
 });
 
+// #jform_add_custom_button listeners for add_custom_button_vvvvvxk function
+jQuery('#jform_add_custom_button').on('keyup',function()
+{
+	var add_custom_button_vvvvvxk = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvvxk(add_custom_button_vvvvvxk);
 
-<?php $fieldNrs = range(1,500,1); ?>
+});
+jQuery('#adminForm').on('change', '#jform_add_custom_button',function (e)
+{
+	e.preventDefault();
+	var add_custom_button_vvvvvxk = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvvxk(add_custom_button_vvvvvxk);
+
+});
+
+
+
+<?php $fieldNrs = range(1,7,1); ?>
+<?php foreach($fieldNrs as $nr): ?>jQuery('#jform_custom_button_modal').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
+	// update the icon if changed
+	var vala_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
+	// build new span
+	var span = '<span id="icon_custom_button_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
+	// remove old one 
+	jQuery('#icon_custom_button_fields_icomoon_<?php echo $nr; ?>').remove();
+	// add the new icon
+	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
+});
+
+jQuery(document).ready(function() {
+jQuery('input.form-field-repeatable').on('row-add', function (e) {
+	// show the icon if set
+	var vala_<?php echo $nr; ?> = jQuery('#jform_custom_button_fields_icomoon-<?php echo $nr; ?>').val();
+	// build new span
+	var span = '<span id="icon_custom_button_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
+	// remove old one 
+	jQuery('#icon_custom_button_fields_icomoon_<?php echo $nr; ?>').remove();
+	// add the new icon
+	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
+});
+});
+<?php endforeach; ?><?php $fieldNrs = range(1,500,1); ?>
 jQuery('#jform_addconditions_modal').on('show.bs.modal', function (e) {
  	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_addconditions_modal').on('change', '#jform_addconditions_fields_match_field-<?php echo $fieldNr ?>',function (e) {
 		e.preventDefault();
