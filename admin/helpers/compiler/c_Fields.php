@@ -11,8 +11,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
-	@build			30th January, 2016
+	@version			2.2.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -766,7 +765,7 @@ class Fields extends Structure
 						$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, $custom);
 					}
 					// now add to the field set
-					$fieldSet .= $this->setField('custom', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+					$fieldSet .= $this->setField('custom', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray, $custom);
 				}
 			}
 			return $fieldSet;
@@ -787,11 +786,12 @@ class Fields extends Structure
 	 * @param   string   $listViewName The list view name
 	 * @param   array    $placeholders The place holder and replace values
 	 * @param   string   $optionArray The option bucket array used to set the field options if needed.
+	 * @param   arra	     $custom Used when field is from config
 	 *
 	 * @return  string The field in xml
 	 * 
 	 */
-	private function setField($setType, $taber, &$fieldAttributes, &$name, &$typeName, &$langView, &$viewName, &$listViewName, $placeholders, &$optionArray)
+	private function setField($setType, $taber, &$fieldAttributes, &$name, &$typeName, &$langView, &$viewName, &$listViewName, $placeholders, &$optionArray, $custom = null)
 	{
 		$fieldSet = '';
 		if ($setType == 'option')
@@ -1017,6 +1017,16 @@ class Fields extends Structure
 				}
 			}
 			$fieldSet .= "\n\t\t" . $taber . "/>";
+			// incase the field is in the config and has not been set
+			if ('config' == $viewName && 'configs' == $listViewName)
+			{
+				// set lang (just incase)
+				$listLangName = $langView . '_' . ComponentbuilderHelper::safeString($name, 'U');
+				// set the custom array
+				$data = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'custom' => $custom);
+				// set the custom field file
+				$this->setCustomFieldTypeFile($data, $listViewName, $viewName);
+			}
 		}
 		return $fieldSet;
 	}
@@ -1635,7 +1645,11 @@ class Fields extends Structure
 			{
 				$this->customFieldLinksBuilder[$viewName] = '';
 			}
-			$this->customFieldLinksBuilder[$viewName] .= ',{"sourceColumn": "' . $name . '","targetTable": "' . $custom['table'] . '","targetColumn": "' . $custom['id'] . '","displayColumn": "' . $custom['text'] . '"}';
+			// only load this if table is set
+			if (isset($custom['table']) && ComponentbuilderHelper::checkString($custom['table']))
+			{
+				$this->customFieldLinksBuilder[$viewName] .= ',{"sourceColumn": "' . $name . '","targetTable": "' . $custom['table'] . '","targetColumn": "' . $custom['id'] . '","displayColumn": "' . $custom['text'] . '"}';
+			}
 			// build script switch for user
 			if ($custom['extends'] == 'user')
 			{

@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -312,7 +311,7 @@ class ComponentbuilderModelFields extends JModelList
 			}
 			else
 			{
-				$search = $db->quote('%' . $db->escape($search, true) . '%');
+				$search = $db->quote('%' . $db->escape($search) . '%');
 				$query->where('(a.name LIKE '.$search.' OR a.fieldtype LIKE '.$search.' OR g.name LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.xml LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.store LIKE '.$search.')');
 			}
 		}
@@ -320,27 +319,27 @@ class ComponentbuilderModelFields extends JModelList
 		// Filter by fieldtype.
 		if ($fieldtype = $this->getState('filter.fieldtype'))
 		{
-			$query->where('a.fieldtype = ' . $db->quote($db->escape($fieldtype, true)));
+			$query->where('a.fieldtype = ' . $db->quote($db->escape($fieldtype)));
 		}
 		// Filter by Datatype.
 		if ($datatype = $this->getState('filter.datatype'))
 		{
-			$query->where('a.datatype = ' . $db->quote($db->escape($datatype, true)));
+			$query->where('a.datatype = ' . $db->quote($db->escape($datatype)));
 		}
 		// Filter by Indexes.
 		if ($indexes = $this->getState('filter.indexes'))
 		{
-			$query->where('a.indexes = ' . $db->quote($db->escape($indexes, true)));
+			$query->where('a.indexes = ' . $db->quote($db->escape($indexes)));
 		}
 		// Filter by Null_switch.
 		if ($null_switch = $this->getState('filter.null_switch'))
 		{
-			$query->where('a.null_switch = ' . $db->quote($db->escape($null_switch, true)));
+			$query->where('a.null_switch = ' . $db->quote($db->escape($null_switch)));
 		}
 		// Filter by Store.
 		if ($store = $this->getState('filter.store'))
 		{
-			$query->where('a.store = ' . $db->quote($db->escape($store, true)));
+			$query->where('a.store = ' . $db->quote($db->escape($store)));
 		}
 
 		// Filter by a single or group of categories.

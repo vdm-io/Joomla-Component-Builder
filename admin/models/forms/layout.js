@@ -9,13 +9,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		layout.js
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -24,42 +23,42 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // Some Global Values
-jform_vvvvvydvyf_required = false;
+jform_vvvvvyivyk_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvyd = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvyd(add_php_view_vvvvvyd);
+	var add_php_view_vvvvvyi = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyi(add_php_view_vvvvvyi);
 });
 
-// the vvvvvyd function
-function vvvvvyd(add_php_view_vvvvvyd)
+// the vvvvvyi function
+function vvvvvyi(add_php_view_vvvvvyi)
 {
 	// set the function logic
-	if (add_php_view_vvvvvyd == 1)
+	if (add_php_view_vvvvvyi == 1)
 	{
 		jQuery('#jform_php_view').closest('.control-group').show();
-		if (jform_vvvvvydvyf_required)
+		if (jform_vvvvvyivyk_required)
 		{
 			updateFieldRequired('php_view',0);
 			jQuery('#jform_php_view').prop('required','required');
 			jQuery('#jform_php_view').attr('aria-required',true);
 			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvydvyf_required = false;
+			jform_vvvvvyivyk_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_view').closest('.control-group').hide();
-		if (!jform_vvvvvydvyf_required)
+		if (!jform_vvvvvyivyk_required)
 		{
 			updateFieldRequired('php_view',1);
 			jQuery('#jform_php_view').removeAttr('required');
 			jQuery('#jform_php_view').removeAttr('aria-required');
 			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvydvyf_required = true;
+			jform_vvvvvyivyk_required = true;
 		}
 	}
 }

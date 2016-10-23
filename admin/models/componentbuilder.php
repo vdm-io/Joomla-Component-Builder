@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -260,5 +259,112 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			}
 		}
 		return $icons;
+	}
+
+	public function getGithub()
+	{
+		$document = JFactory::getDocument();
+		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
+		$document->addScriptDeclaration('
+		var urlToGetAllOpenIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=open&page=1&per_page=5";
+		var urlToGetAllClosedIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=closed&page=1&per_page=5";
+		jQuery(document).ready(function () {
+			jQuery.getJSON(urlToGetAllOpenIssues, function (openissues) {
+				jQuery("#openissues").html("");
+				jQuery.each(openissues, function (i, issue) {
+					jQuery("#openissues")
+            				.append("<h3><a href=\"" + issue.html_url + "\" target=\"_blank\">" + issue.title + "</a></h3>")
+            				.append("<small><em>#" + issue.number + " '.JText::_('COM_COMPONENTBUILDER_OPENED_BY').' " + issue.user.login + "<em></small>")
+            				.append(marked(issue.body))
+            				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_RESPOND_TO_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
+    				});
+			});
+			jQuery.getJSON(urlToGetAllClosedIssues, function (closedissues) {
+				jQuery("#closedissues").html("");
+				jQuery.each(closedissues, function (i, issue) {
+					jQuery("#closedissues")
+            				.append("<h3><a href=\"" + issue.html_url + "\" target=\"_blank\">" + issue.title + "</a></h3>")
+            				.append("<small><em>#" + issue.number + " '.JText::_('COM_COMPONENTBUILDER_OPENED_BY').' " + issue.user.login + "<em></small>")
+            				.append(marked(issue.body))
+            				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_REVIEW_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
+    				});
+			});
+		});
+		// nice little dot trick :)
+		jQuery(document).ready( function($) {
+			var x=0;
+			setInterval(function() {
+				var dots = "";
+				x++;
+				for (var y=0; y < x%8; y++) {
+					dots+=".";
+				}
+				$(".loading-dots").text(dots);
+			} , 500);
+		});');
+		$create = '<div class="btn-group pull-right">
+					<a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/new" class="btn btn-primary"  target="_blank">'.JText::_('COM_COMPONENTBUILDER_NEW_ISSUE').'</a>
+				</div></br >';
+		$moreopen = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/issues" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_ISSUES_ON_GITHUB').'</a>...</b>';
+		$moreclosed = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/issues?q=is%3Aissue+is%3Aclosed" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_ISSUES_ON_GITHUB').'</a>...</b>';
+
+		return (object) array(
+				'openissues' => $create.'<div id="openissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_OPEN_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreopen, 
+				'closedissues' => $create.'<div id="closedissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_CLOSED_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreclosed
+		);
+	}
+
+	public function getReadme()
+	{
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration('
+		var getreadme = "'. JURI::root() . 'administrator/components/com_componentbuilder/README.txt";
+		jQuery(document).ready(function () {
+			jQuery.get(getreadme)
+			.success(function(readme) { 
+				jQuery("#readme-md").html(marked(readme));
+			})
+			.error(function(jqXHR, textStatus, errorThrown) { 
+				jQuery("#readme-md").html("'.JText::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATTER').'");
+			});
+		});');
+
+		return '<div id="readme-md">'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+	}
+
+	public function getWiki()
+	{
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration('
+		var gewiki = "https://raw.githubusercontent.com/wiki/vdm-io/Joomla-Component-Builder/Home.md";
+		jQuery(document).ready(function () {
+			jQuery.get(gewiki)
+			.success(function(wiki) { 
+				jQuery("#wiki-md").html(marked(wiki));
+			})
+			.error(function(jqXHR, textStatus, errorThrown) { 
+				jQuery("#wiki-md").html("'.JText::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATTER').'");
+			});
+		});');
+
+		return '<div id="wiki-md">'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+	}
+
+	public function getNoticeboard()
+	{
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration('
+		var noticeboard = "https://www.vdm.io/componentbuilder-noticeboard-md";
+		jQuery(document).ready(function () {
+			jQuery.get(noticeboard)
+			.success(function(board) { 
+				jQuery("#noticeboard-md").html(marked(board));
+			})
+			.error(function(jqXHR, textStatus, errorThrown) { 
+				jQuery("#noticeboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
+			});
+		});');
+
+		return '<div id="noticeboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 }

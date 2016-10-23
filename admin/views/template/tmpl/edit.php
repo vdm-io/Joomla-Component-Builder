@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -115,18 +114,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_vvvvvyc function
+// #jform_add_php_view listeners for add_php_view_vvvvvyh function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_vvvvvyc = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvyc(add_php_view_vvvvvyc);
+	var add_php_view_vvvvvyh = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyh(add_php_view_vvvvvyh);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_vvvvvyc = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvyc(add_php_view_vvvvvyc);
+	var add_php_view_vvvvvyh = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyh(add_php_view_vvvvvyh);
 
 });
 

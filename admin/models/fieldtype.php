@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -112,7 +111,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVzgfields()
+	public function getVzlfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -196,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVzgfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVzlfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVzgfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVzlfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVzgfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVzlfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVzgfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVzlfields($item->store, 'store');
 				}
 			}
 
@@ -216,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVzgfields($value,$name)
+	public function selectionTranslationVzlfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

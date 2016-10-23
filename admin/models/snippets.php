@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		snippets.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -229,7 +228,7 @@ class ComponentbuilderModelSnippets extends JModelList
 			}
 			else
 			{
-				$search = $db->quote('%' . $db->escape($search, true) . '%');
+				$search = $db->quote('%' . $db->escape($search) . '%');
 				$query->where('(a.name LIKE '.$search.' OR a.url LIKE '.$search.' OR a.type LIKE '.$search.' OR a.heading LIKE '.$search.' OR a.description LIKE '.$search.')');
 			}
 		}
@@ -237,7 +236,7 @@ class ComponentbuilderModelSnippets extends JModelList
 		// Filter by Type.
 		if ($type = $this->getState('filter.type'))
 		{
-			$query->where('a.type = ' . $db->quote($db->escape($type, true)));
+			$query->where('a.type = ' . $db->quote($db->escape($type)));
 		}
 
 		// Add the list ordering clause.

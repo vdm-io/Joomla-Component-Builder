@@ -10,8 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
-	@build			30th January, 2016
+	@version			2.2.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -387,7 +386,7 @@ class Structure extends Get
 					continue;
 				}
 				// if not needed do not add
-				if ($item == 'README.md' && !$README)
+				if (($item == 'README.md' || $item == 'README.txt') && !$README)
 				{
 					continue;
 				}

@@ -10,8 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
-	@build			30th January, 2016
+	@version			2.2.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -176,7 +175,7 @@ class Compiler extends Infusion
 			// do a final run to update the readme file
 			foreach ($this->newFiles['static'] as $static)
 			{
-				if ($this->componentData->addreadme && 'README.md' == $static['name'] && JFile::exists($static['path']))
+				if (('README.md' == $static['name'] || 'README.txt' == $static['name']) && $this->componentData->addreadme && JFile::exists($static['path']))
 				{
 					$this->buildReadMe($static['path']);
 					break;
@@ -208,6 +207,22 @@ class Compiler extends Infusion
 	}
 	
 	private function buildReadMe($path)
+	{
+		// set readme data if not set already
+		if (!isset($this->fileContentStatic['###LINE_COUNT###']) || $this->fileContentStatic['###LINE_COUNT###'] != $this->lineCount)
+		{
+			$this->buildReadMeData();
+		}
+		// get the file
+		$string = JFile::read($path);
+		// update the file
+		$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$string);
+		// add to zip array
+		$this->writeFile($path,$answer);
+	}
+	
+	
+	private function buildReadMeData()
 	{
 		// setup the unrealistic numbers
 		$folders	= $this->folderCount * 5;
@@ -258,12 +273,6 @@ class Compiler extends Infusion
 		$this->fileContentStatic['###actualDaysSpent###'] = $actualDaysSpent;
 		$this->fileContentStatic['###projectWeekTime###'] = $projectWeekTime;
 		$this->fileContentStatic['###projectMonthTime###'] = $projectMonthTime;
-		// get the file
-		$string = JFile::read($path);
-		// update the file
-		$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$string);
-		// add to zip array
-		$this->writeFile($path,$answer);
 	}
 
 	private function zipComponent()

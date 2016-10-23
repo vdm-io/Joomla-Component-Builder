@@ -10,8 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
-	@build			30th January, 2016
+	@version			2.2.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -2723,7 +2722,7 @@ class Interpretation extends Fields
 						$keyLang = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($custom_button['name'],'U');
                                                 $keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
 						$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
-						// add cpanel button
+						// add cpanel button TODO does not work well on site with permissions
 						$buttons[] = "\t".$tab."\tif (\$this->canDo->get('".$viewName.".".$keyCode."'))";
 						$buttons[] = "\t".$tab."\t{";
 						$buttons[] = "\t".$tab."\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
@@ -3518,6 +3517,160 @@ class Interpretation extends Fields
 		}
 		return '';
 	}
+	
+	public function setComponentToContentTypes($action)
+	{
+		$script = '';
+		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
+		{
+			// set component name
+			$component	= $this->fileContentStatic['###component###'];
+			// reset
+			$dbStuff	= array();
+			// start loading the content type data
+			foreach ($this->componentData->admin_views as $viewData)
+			{
+				// set main keys
+				$view = ComponentbuilderHelper::safeString($viewData['settings']->name_single);
+				// set list view keys
+				$views = ComponentbuilderHelper::safeString($viewData['settings']->name_list);
+				// get this views content type data
+				$dbStuff[$view] = $this->getContentType($view, $component);
+				// get the correct views name
+				$checkViews = (isset($this->catCodeBuilder[$view]['views']) && ComponentbuilderHelper::checkString($this->catCodeBuilder[$view]['views'])) ? $this->catCodeBuilder[$view]['views'] : $views;
+				if (ComponentbuilderHelper::checkArray($dbStuff[$view]) && array_key_exists($view, $this->catCodeBuilder) && ($checkViews == $views))
+				{
+					$dbStuff[$view.' catagory'] = $this->getCategoryContentType($view, $views, $component);
+				}
+				elseif(!isset($dbStuff[$view]) || !ComponentbuilderHelper::checkArray($dbStuff[$view]))
+				{
+					// remove if not array
+					unset($dbStuff[$view]);
+				}
+
+			}
+			// build the db insert query
+			if (ComponentbuilderHelper::checkArray($dbStuff))
+			{
+				$taabb = '';
+				if ($action == 'update')
+				{
+					$taabb = "\t";
+				}
+				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Get The Database object";
+				$script .= "\n\t\t\t\$db = JFactory::getDbo();";
+				foreach ($dbStuff as $name => $tables)
+				{
+					if (ComponentbuilderHelper::checkArray($tables))
+					{
+						$code = ComponentbuilderHelper::safeString($name);
+						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Create the ".$name." content type object.";
+						$script .= "\n\t\t\t\$".$code." = new stdClass();";						
+						foreach ($tables as $table => $data)
+						{
+							$script .= "\n\t\t\t\$".$code."->".$table." = '".$data."';";
+						}
+						if ($action == 'update')
+						{
+							// we first load script to check if data exist
+							$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Check if ".$name." type is already in content_type DB.";
+							$script .= "\n\t\t\t\$".$code."_id = null;";
+							$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
+							$script .= "\n\t\t\t\$query->select(\$db->quoteName(array('type_id')));";
+							$script .= "\n\t\t\t\$query->from(\$db->quoteName('#__content_types'));";
+							$script .= "\n\t\t\t\$query->where(\$db->quoteName('type_alias') . ' LIKE '. \$db->quote($".$code."->type_alias));";
+							$script .= "\n\t\t\t\$db->setQuery(\$query);";
+							$script .= "\n\t\t\t\$db->execute();";
+						}
+						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Set the object into the content types table.";
+						if ($action == 'update')
+						{
+							$script .= "\n\t\t\tif (\$db->getNumRows())";
+							$script .= "\n\t\t\t{";
+							$script .= "\n\t\t\t\t\$".$code."->type_id = \$db->loadResult();";
+							$script .= "\n\t\t\t\t\$".$code."_Updated = \$db->updateObject('#__content_types', \$".$code.", 'type_id');";
+							$script .= "\n\t\t\t}";
+							$script .= "\n\t\t\telse";
+							$script .= "\n\t\t\t{";
+						}
+						$script .= "\n\t\t\t".$taabb."\$".$code."_Inserted = \$db->insertObject('#__content_types', \$".$code.");";
+						if ($action == 'update')
+						{
+							$script .= "\n\t\t\t}";
+						}
+					}
+				}
+				$script .= "\n\n";
+			}
+		}
+		return $script;
+	}
+
+	public function setPostInstallScript()
+	{
+		// reset script
+		$script = $this->setComponentToContentTypes('install');
+		
+		// set the component name
+		$component = $this->fileContentStatic['###component###'];
+
+		if (isset($this->paramsBuilder) && ComponentbuilderHelper::checkString($this->paramsBuilder))
+		{
+			if (ComponentbuilderHelper::checkString($script))
+			{
+				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion params.";
+			}
+			else
+			{
+				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion params.";
+				$script .= "\n\t\t\t\$db = JFactory::getDbo();";
+			}
+			$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
+			$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Field to update.";
+			$script .= "\n\t\t\t\$fields = array(";
+			$script .= "\n\t\t\t\t\$db->quoteName('params') . ' = ' . \$db->quote('{".$this->paramsBuilder."}'),";
+			$script .= "\n\t\t\t);";
+			$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Condition.";
+			$script .= "\n\t\t\t\$conditions = array(";
+			$script .= "\n\t\t\t\t\$db->quoteName('element') . ' = ' . \$db->quote('com_".$component."')";
+			$script .= "\n\t\t\t);";
+			$script .= "\n\n\t\t\t\$query->update(\$db->quoteName('#__extensions'))->set(\$fields)->where(\$conditions);";
+			$script .= "\n\t\t\t\$db->setQuery(\$query);";
+			$script .= "\n\t\t\t\$allDone = \$db->execute();";
+		}
+		// add the custom script
+		$script .= $this->getCustomScriptBuilder('php_postflight', 'install', "\n\n", null, true);
+		if (ComponentbuilderHelper::checkString($script))
+		{
+			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
+			$script .= "\n\t\t\t\t".'<img src="components/com_'.$component.'/assets/images/component-300.'.$this->componentImageType.'"/>';
+			$script .= "\n\t\t\t\t".'</a>\';';
+			
+			return $script;
+		}
+		return "\n\t\t\t//".$this->setLine(__LINE__)." noting to install.";
+	}
+	
+	public function setPostUpdateScript()
+	{
+		// reset script
+		$script = $this->setComponentToContentTypes('update');
+		// add the custom script
+		$script .= $this->getCustomScriptBuilder('php_postflight', 'update', "\n\n", null, true);
+		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
+		{
+			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
+			$script .= "\n\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/component-300.'.$this->componentImageType.'"/>';
+			$script .= "\n\t\t\t\t".'</a>';
+			$script .= "\n\t\t\t\t<h3>Upgrade to Version ".$this->fileContentStatic['###VERSION###']." Was Successful! Let us know if anything is not working as expected.</h3>';";
+		}
+
+		if (ComponentbuilderHelper::checkString($script))
+		{
+			return $script;
+		}
+		return "\n\t\t\t//".$this->setLine(__LINE__)." noting to update.";
+	}
 
 	public function setUninstallScript()
 	{
@@ -3659,160 +3812,10 @@ class Interpretation extends Fields
 			$script .= "\n\t\t}";
 			// done
 			$script .= "\n";
-			
 		}
+		// add the custom uninstall script
+		$script .= $this->getCustomScriptBuilder('php_method', 'uninstall', "", null, true, null, "\n");
 		return $script;
-	}
-	
-	public function setComponentToContentTypes($action)
-	{
-		$script = '';
-		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
-		{
-			// set component name
-			$component	= $this->fileContentStatic['###component###'];
-			// reset
-			$dbStuff	= array();
-			// start loading the content type data
-			foreach ($this->componentData->admin_views as $viewData)
-			{
-				// set main keys
-				$view = ComponentbuilderHelper::safeString($viewData['settings']->name_single);
-				// set list view keys
-				$views = ComponentbuilderHelper::safeString($viewData['settings']->name_list);
-				// get this views content type data
-				$dbStuff[$view] = $this->getContentType($view, $component);
-				// get the correct views name
-				$checkViews = (isset($this->catCodeBuilder[$view]['views']) && ComponentbuilderHelper::checkString($this->catCodeBuilder[$view]['views'])) ? $this->catCodeBuilder[$view]['views'] : $views;
-				if (ComponentbuilderHelper::checkArray($dbStuff[$view]) && array_key_exists($view, $this->catCodeBuilder) && ($checkViews == $views))
-				{
-					$dbStuff[$view.' catagory'] = $this->getCategoryContentType($view, $views, $component);
-				}
-				elseif(!isset($dbStuff[$view]) || !ComponentbuilderHelper::checkArray($dbStuff[$view]))
-				{
-					// remove if not array
-					unset($dbStuff[$view]);
-				}
-
-			}
-			// build the db insert query
-			if (ComponentbuilderHelper::checkArray($dbStuff))
-			{
-				$taabb = '';
-				if ($action == 'update')
-				{
-					$taabb = "\t";
-				}
-				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Get The Database object";
-				$script .= "\n\t\t\t\$db = JFactory::getDbo();";
-				foreach ($dbStuff as $name => $tables)
-				{
-					if (ComponentbuilderHelper::checkArray($tables))
-					{
-						$code = ComponentbuilderHelper::safeString($name);
-						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Create the ".$name." content type object.";
-						$script .= "\n\t\t\t\$".$code." = new stdClass();";						
-						foreach ($tables as $table => $data)
-						{
-							$script .= "\n\t\t\t\$".$code."->".$table." = '".$data."';";
-						}
-						if ($action == 'update')
-						{
-							// we first load script to check if data exist
-							$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Check if ".$name." type is already in content_type DB.";
-							$script .= "\n\t\t\t\$".$code."_id = null;";
-							$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
-							$script .= "\n\t\t\t\$query->select(\$db->quoteName(array('type_id')));";
-							$script .= "\n\t\t\t\$query->from(\$db->quoteName('#__content_types'));";
-							$script .= "\n\t\t\t\$query->where(\$db->quoteName('type_alias') . ' LIKE '. \$db->quote($".$code."->type_alias));";
-							$script .= "\n\t\t\t\$db->setQuery(\$query);";
-							$script .= "\n\t\t\t\$db->execute();";
-						}
-						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Set the object into the content types table.";
-						if ($action == 'update')
-						{
-							$script .= "\n\t\t\tif (\$db->getNumRows())";
-							$script .= "\n\t\t\t{";
-							$script .= "\n\t\t\t\t\$".$code."->type_id = \$db->loadResult();";
-							$script .= "\n\t\t\t\t\$".$code."_Updated = \$db->updateObject('#__content_types', \$".$code.", 'type_id');";
-							$script .= "\n\t\t\t}";
-							$script .= "\n\t\t\telse";
-							$script .= "\n\t\t\t{";
-						}
-						$script .= "\n\t\t\t".$taabb."\$".$code."_Inserted = \$db->insertObject('#__content_types', \$".$code.");";
-						if ($action == 'update')
-						{
-							$script .= "\n\t\t\t}";
-						}
-					}
-				}
-				$script .= "\n\n";
-			}
-		}
-		return $script;
-	}
-
-	public function setInstallScript()
-	{
-		// reset script
-		$script = $this->setComponentToContentTypes('install');
-		
-		// set the component name
-		$component = $this->fileContentStatic['###component###'];
-
-		if (isset($this->paramsBuilder) && ComponentbuilderHelper::checkString($this->paramsBuilder))
-		{
-			if (ComponentbuilderHelper::checkString($script))
-			{
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion params.";
-			}
-			else
-			{
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion params.";
-				$script .= "\n\t\t\t\$db = JFactory::getDbo();";
-			}
-			$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
-			$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Field to update.";
-			$script .= "\n\t\t\t\$fields = array(";
-			$script .= "\n\t\t\t\t\$db->quoteName('params') . ' = ' . \$db->quote('{".$this->paramsBuilder."}'),";
-			$script .= "\n\t\t\t);";
-			$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Condition.";
-			$script .= "\n\t\t\t\$conditions = array(";
-			$script .= "\n\t\t\t\t\$db->quoteName('element') . ' = ' . \$db->quote('com_".$component."')";
-			$script .= "\n\t\t\t);";
-			$script .= "\n\n\t\t\t\$query->update(\$db->quoteName('#__extensions'))->set(\$fields)->where(\$conditions);";
-			$script .= "\n\t\t\t\$db->setQuery(\$query);";
-			$script .= "\n\t\t\t\$allDone = \$db->execute();";
-		}
-
-		if (ComponentbuilderHelper::checkString($script))
-		{
-			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
-			$script .= "\n\t\t\t\t".'<img src="components/com_'.$component.'/assets/images/component-300.'.$this->componentImageType.'"/>';
-			$script .= "\n\t\t\t\t".'</a>\';';
-			
-			return $script;
-		}
-		return "\n\t\t\t//".$this->setLine(__LINE__)." noting to install.";
-	}
-	
-	public function setUpdateScript()
-	{
-		// reset script
-		$script = $this->setComponentToContentTypes('update');
-		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
-		{
-			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
-			$script .= "\n\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/component-300.'.$this->componentImageType.'"/>';
-			$script .= "\n\t\t\t\t".'</a>';
-			$script .= "\n\t\t\t\t<h3>Upgrade to Version ".$this->fileContentStatic['###VERSION###']." Was Successful! Let us know if anything is not working as expected.</h3>';";
-		}
-
-		if (ComponentbuilderHelper::checkString($script))
-		{
-			return $script;
-		}
-		return "\n\t\t\t//".$this->setLine(__LINE__)." noting to update.";
 	}
 
 	public function getContentType($view, $component)
@@ -5153,7 +5156,7 @@ class Interpretation extends Fields
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
 				$checkoutTriger = false;
-				if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']))
+				if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && isset($item['custom']['table']) && ComponentbuilderHelper::checkString($item['custom']['table']))
 				{
 					$item['id'] = $item['code'];
 					if (!$item['multiple'])
@@ -5161,13 +5164,13 @@ class Interpretation extends Fields
 						$item['code'] = $item['code'].'_'.$item['custom']['text'];
 					}
 				}
-				// check if translated vlaue is used
+				// check if translated value is used
 				if (isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list])
 					&& array_key_exists($item['code'],$this->selectionTranslationFixBuilder[$viewName_list]))
 				{
 					$itemCode = '<?php echo JText::_($item->'.$item['code'].'); ?>';
 				}
-				elseif ($item['custom']['text'] == 'user')
+				elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['text'] == 'user')
 				{
 					$itemCode = '<?php echo JFactory::getUser((int)$item->'.$item['code'].')->name; ?>';
 				}
@@ -6245,7 +6248,7 @@ class Interpretation extends Fields
 			{
 				$counter++;
 				$checkoutTriger = false;
-				if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']))
+				if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && isset($item['custom']['table']) && ComponentbuilderHelper::checkString($item['custom']['table']))
 				{
 					$item['id'] = $item['code'];
 					if (!$item['multiple'])
@@ -6345,7 +6348,7 @@ class Interpretation extends Fields
 								}
 							}
 						}
-						elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] == 'user' && !$item['title'])
+						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] == 'user' && !$item['title'])
 						{
 							// user and linked
 							$body .= "\n\t\t<?php \$_".$item['id']." = JFactory::getUser(\$item->".$item['id']."); ?>";
@@ -7310,7 +7313,7 @@ class Interpretation extends Fields
 			$query .= "\n\t\t\t}";
 			$query .= "\n\t\t\telse";
 			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\t\$search = \$db->quote('%' . \$db->escape(\$search, true) . '%');";
+			$query .= "\n\t\t\t\t\$search = \$db->quote('%' . \$db->escape(\$search) . '%');";
 			$query .= "\n\t\t\t\t\$query->where(".$search.");";
 			$query .= "\n\t\t\t}";
 			$query .= "\n\t\t}";
@@ -7328,7 +7331,12 @@ class Interpretation extends Fields
 			$query = "";
 			foreach ($this->customBuilder[$viewName_list] as $filter)
 			{
-				if (isset($this->customBuilderList[$viewName_list]) && ComponentbuilderHelper::checkArray($this->customBuilderList[$viewName_list]) && in_array($filter['code'],$this->customBuilderList[$viewName_list]))
+				// only load this if table is set
+				if (isset($this->customBuilderList[$viewName_list]) 
+					&& ComponentbuilderHelper::checkArray($this->customBuilderList[$viewName_list]) 
+					&& in_array($filter['code'],$this->customBuilderList[$viewName_list])
+					&& isset($filter['custom']['table']) 
+					&& ComponentbuilderHelper::checkString($filter['custom']['table']))
 				{
 					$query .= "\n\n\t\t//".$this->setLine(__LINE__)." From the ".ComponentbuilderHelper::safeString(ComponentbuilderHelper::safeString($filter['custom']['table'],'w'))." table.";
 					$query .= "\n\t\t\$query->select(\$db->quoteName('".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'));";
@@ -7482,7 +7490,7 @@ class Interpretation extends Fields
 					$filterQuery .= "\n\t\t//".$this->setLine(__LINE__)." Filter by ".$filter['code'].".";
 					$filterQuery .= "\n\t\tif (\$".$filter['code']." = \$this->getState('filter.".$filter['code']."'))";
 					$filterQuery .= "\n\t\t{";
-					$filterQuery .= "\n\t\t\t\$query->where('a.".$filter['code']." = ' . \$db->quote(\$db->escape(\$".$filter['code'].", true)));";
+					$filterQuery .= "\n\t\t\t\$query->where('a.".$filter['code']." = ' . \$db->quote(\$db->escape(\$".$filter['code'].")));";
 					$filterQuery .= "\n\t\t}";
 
 				}
@@ -7491,7 +7499,7 @@ class Interpretation extends Fields
 					$filterQuery .= "\n\t\t//".$this->setLine(__LINE__)." Filter by ".ucwords($filter['code']).".";
 					$filterQuery .= "\n\t\tif (\$".$filter['code']." = \$this->getState('filter.".$filter['code']."'))";
 					$filterQuery .= "\n\t\t{";
-					$filterQuery .= "\n\t\t\t\$query->where('a.".$filter['code']." = ' . \$db->quote(\$db->escape(\$".$filter['code'].", true)));";
+					$filterQuery .= "\n\t\t\t\$query->where('a.".$filter['code']." = ' . \$db->quote(\$db->escape(\$".$filter['code'].")));";
 					$filterQuery .= "\n\t\t}";
 				}
 			}
@@ -11553,6 +11561,7 @@ class Interpretation extends Fields
 				foreach ($this->componentData->config as $field)
 				{
 					$xmlField = $this->setDynamicField($field, $view, $viewType, $lang, $viewName, $listViewName, $spacerCounter, $placeholders, $dbkey, false);
+
 					if (ComponentbuilderHelper::checkString($xmlField))
 					{
 						$this->configFieldSetsCustomField[$field['tabname']][] = $xmlField;

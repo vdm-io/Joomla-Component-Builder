@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		scripts_fullwidth.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@subpackage		default_readme_information.php
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -25,43 +24,7 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-
-defined('_JEXEC') or die('Restricted access');
-
-$form = $displayData->getForm();
-
-$fields = $displayData->get('fields') ?: array(
-	'creatuserhelper',
-	'adduikit',
-	'addfootable',
-	'add_css',
-	'css',
-	'add_email_helper',
-	'add_php_helper_admin',
-	'php_helper_admin',
-	'add_admin_event',
-	'php_admin_event',
-	'add_php_helper_site',
-	'php_helper_site',
-	'add_site_event',
-	'php_site_event',
-	'add_sql',
-	'sql',
-	'add_php_dashboard_methods',
-	'php_dashboard_methods',
-	'dashboard_tab'
-);
+defined('_JEXEC') or die('Restricted access'); 
 
 ?>
-<div class="form-vertical">
-<?php foreach($fields as $field): ?>
-    <div class="control-group">
-        <div class="control-label">
-            <?php echo $form->getLabel($field); ?>
-        </div>
-        <div class="controls">
-            <?php echo $form->getInput($field); ?>
-        </div>
-    </div>
-<?php endforeach; ?>
-</div>
+<?php echo $this->readme; ?>

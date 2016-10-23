@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -96,6 +95,24 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->php_helper_site))
+			{
+				// base64 Decode php_helper_site.
+				$item->php_helper_site = base64_decode($item->php_helper_site);
+			}
+
+			if (!empty($item->php_helper_admin))
+			{
+				// base64 Decode php_helper_admin.
+				$item->php_helper_admin = base64_decode($item->php_helper_admin);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
+			}
+
 			if (!empty($item->php_admin_event))
 			{
 				// base64 Decode php_admin_event.
@@ -114,28 +131,40 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
 			}
 
-			if (!empty($item->php_helper_admin))
-			{
-				// base64 Decode php_helper_admin.
-				$item->php_helper_admin = base64_decode($item->php_helper_admin);
-			}
-
-			if (!empty($item->php_helper_site))
-			{
-				// base64 Decode php_helper_site.
-				$item->php_helper_site = base64_decode($item->php_helper_site);
-			}
-
-			if (!empty($item->sql))
-			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
-			}
-
 			if (!empty($item->css))
 			{
 				// base64 Decode css.
 				$item->css = base64_decode($item->css);
+			}
+
+			if (!empty($item->php_preflight_install))
+			{
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
+			if (!empty($item->php_preflight_update))
+			{
+				// base64 Decode php_preflight_update.
+				$item->php_preflight_update = base64_decode($item->php_preflight_update);
+			}
+
+			if (!empty($item->php_postflight_install))
+			{
+				// base64 Decode php_postflight_install.
+				$item->php_postflight_install = base64_decode($item->php_postflight_install);
+			}
+
+			if (!empty($item->php_postflight_update))
+			{
+				// base64 Decode php_postflight_update.
+				$item->php_postflight_update = base64_decode($item->php_postflight_update);
+			}
+
+			if (!empty($item->php_method_uninstall))
+			{
+				// base64 Decode php_method_uninstall.
+				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 			}
 
 			if (!empty($item->readme))
@@ -184,7 +213,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVweadmin_views()
+	public function getVwjadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -271,7 +300,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwfsite_views()
+	public function getVwksite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -1068,6 +1097,24 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
+		// Set the php_helper_site string to base64 string.
+		if (isset($data['php_helper_site']))
+		{
+			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
+		}
+
+		// Set the php_helper_admin string to base64 string.
+		if (isset($data['php_helper_admin']))
+		{
+			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
+		}
+
 		// Set the php_admin_event string to base64 string.
 		if (isset($data['php_admin_event']))
 		{
@@ -1086,28 +1133,40 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['php_dashboard_methods'] = base64_encode($data['php_dashboard_methods']);
 		}
 
-		// Set the php_helper_admin string to base64 string.
-		if (isset($data['php_helper_admin']))
-		{
-			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
-		}
-
-		// Set the php_helper_site string to base64 string.
-		if (isset($data['php_helper_site']))
-		{
-			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
-		}
-
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
-		{
-			$data['sql'] = base64_encode($data['sql']);
-		}
-
 		// Set the css string to base64 string.
 		if (isset($data['css']))
 		{
 			$data['css'] = base64_encode($data['css']);
+		}
+
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
+		{
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
+		// Set the php_preflight_update string to base64 string.
+		if (isset($data['php_preflight_update']))
+		{
+			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
+		}
+
+		// Set the php_postflight_install string to base64 string.
+		if (isset($data['php_postflight_install']))
+		{
+			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
+		}
+
+		// Set the php_postflight_update string to base64 string.
+		if (isset($data['php_postflight_update']))
+		{
+			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
+		}
+
+		// Set the php_method_uninstall string to base64 string.
+		if (isset($data['php_method_uninstall']))
+		{
+			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
 		// Set the readme string to base64 string.

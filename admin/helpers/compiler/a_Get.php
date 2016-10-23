@@ -10,8 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
-	@build			30th January, 2016
+	@version			2.2.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -634,72 +633,92 @@ class Get
 		if ($component->add_css == 1)
 		{
 			$this->customScriptBuilder['component_css'] = base64_decode($component->css);
-			unset($component->css);
 		}
 		else
 		{
 			$this->customScriptBuilder['component_css'] = '';
+		}
+		unset($component->css);
+		// set the lang target
+		$this->lang = 'admin';
+		// add PHP in ADMIN
+		$addScriptMethods = array('php_preflight','php_postflight','php_method');
+		$addScriptTypes = array('install','update','uninstall');
+		foreach ($addScriptMethods as $scriptMethod)
+		{			
+			foreach ($addScriptTypes as $scriptType)
+			{
+				if (isset($component->{'add_'.$scriptMethod.'_'.$scriptType}) && $component->{'add_'.$scriptMethod.'_'.$scriptType} == 1)
+				{
+					$this->customScriptBuilder[$scriptMethod][$scriptType] = $this->setCustomContentLang(base64_decode($component->{$scriptMethod.'_'.$scriptType}));	
+				}
+				else
+				{
+					$this->customScriptBuilder[$scriptMethod][$scriptType] = '';
+				}
+				unset($component->{$scriptMethod.'_'.$scriptType});
+			}
 		}
 		// add_php_helper
 		if ($component->add_php_helper_admin == 1)
 		{
 			$this->lang = 'admin';
 			$this->customScriptBuilder['component_php_helper_admin'] = "\n\n".$this->setCustomContentLang(base64_decode($component->php_helper_admin));
-			unset($component->php_helper);
 		}
 		else
 		{
 			$this->customScriptBuilder['component_php_helper_admin'] = '';
 		}
+		unset($component->php_helper);
 		// add_admin_event
 		if ($component->add_admin_event == 1)
 		{
 			$this->lang = 'admin';
 			$this->customScriptBuilder['component_php_admin_event'] = $this->setCustomContentLang(base64_decode($component->php_admin_event));
-			unset($component->php_admin_event);
 		}
 		else
 		{
 			$this->customScriptBuilder['component_php_admin_event'] = '';
 		}
+		unset($component->php_admin_event);
 		// add_php_helper_site
 		if ($component->add_php_helper_site == 1)
 		{
 			$this->lang = 'site';
 			$this->customScriptBuilder['component_php_helper_site'] = "\n\n".$this->setCustomContentLang(base64_decode($component->php_helper_site));
-			unset($component->php_helper);
 		}
 		else
 		{
 			$this->customScriptBuilder['component_php_helper_site'] = '';
 		}
+		unset($component->php_helper);
 		// add_site_event
 		if ($component->add_site_event == 1)
 		{
 			$this->lang = 'site';
 			$this->customScriptBuilder['component_php_site_event'] = $this->setCustomContentLang(base64_decode($component->php_site_event));
-			unset($component->php_site_event);
 		}
 		else
 		{
 			$this->customScriptBuilder['component_php_site_event'] = '';
 		}
+		unset($component->php_site_event);
 		// add_sql
 		if ($component->add_sql == 1)
 		{
 			$this->customScriptBuilder['sql']['component_sql'] = base64_decode($component->sql);
-			unset($component->sql);
 		}
+		unset($component->sql);
 		// bom
 		if (ComponentbuilderHelper::checkString($component->bom))
 		{
 			$this->bomPath = $this->compilerPath.'/'.$component->bom;
-			unset($component->bom);
 		}
 		else
 		{
 			$this->bomPath = $this->compilerPath.'/default.txt';
 		}
+		unset($component->bom);
 		// README
 		if ($component->addreadme)
 		{
@@ -713,15 +732,15 @@ class Get
 		// dashboard methods
 		if ($component->add_php_dashboard_methods)
 		{
+			$nowLang = $this->lang;
+			$this->lang = 'admin';
 			// load the php for the dashboard model
-			$component->php_dashboard_methods = base64_decode($component->php_dashboard_methods);
+			$component->php_dashboard_methods = $this->setCustomContentLang(base64_decode($component->php_dashboard_methods));
 			// check if dashboard_tab is set
 			$dashboard_tab = json_decode($component->dashboard_tab,true);
 			if (ComponentbuilderHelper::checkArray($dashboard_tab))
 			{
 				$component->dashboard_tab = array();
-				$nowLang = $this->lang;
-				$this->lang = 'admin';
 				foreach ($dashboard_tab as $option => $values)
 				{
 					foreach ($values as $nr => $value)
@@ -733,12 +752,12 @@ class Get
 						$component->dashboard_tab[$nr][$option] = $value;
 					}
 				}
-				$this->lang = $nowLang;
 			}
 			else
 			{
 				$component->dashboard_tab = '';
 			}
+			$this->lang = $nowLang;
 		}
 		else
 		{

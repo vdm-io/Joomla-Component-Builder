@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -85,12 +84,32 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'scripts', JText::_('COM_COMPONENTBUILDER_COMPONENT_SCRIPTS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'libs_helpers', JText::_('COM_COMPONENTBUILDER_COMPONENT_LIBS_HELPERS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('component.scripts_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('component.libs_helpers_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'php', JText::_('COM_COMPONENTBUILDER_COMPONENT_PHP', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component.php_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'mysql', JText::_('COM_COMPONENTBUILDER_COMPONENT_MYSQL', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component.mysql_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -360,6 +379,81 @@ jQuery('#adminForm').on('change', '#jform_add_php_dashboard_methods',function (e
 	e.preventDefault();
 	var add_php_dashboard_methods_vvvvvwh = jQuery("#jform_add_php_dashboard_methods input[type='radio']:checked").val();
 	vvvvvwh(add_php_dashboard_methods_vvvvvwh);
+
+});
+
+// #jform_add_php_postflight_install listeners for add_php_postflight_install_vvvvvwi function
+jQuery('#jform_add_php_postflight_install').on('keyup',function()
+{
+	var add_php_postflight_install_vvvvvwi = jQuery("#jform_add_php_postflight_install input[type='radio']:checked").val();
+	vvvvvwi(add_php_postflight_install_vvvvvwi);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_php_postflight_install',function (e)
+{
+	e.preventDefault();
+	var add_php_postflight_install_vvvvvwi = jQuery("#jform_add_php_postflight_install input[type='radio']:checked").val();
+	vvvvvwi(add_php_postflight_install_vvvvvwi);
+
+});
+
+// #jform_add_php_postflight_update listeners for add_php_postflight_update_vvvvvwj function
+jQuery('#jform_add_php_postflight_update').on('keyup',function()
+{
+	var add_php_postflight_update_vvvvvwj = jQuery("#jform_add_php_postflight_update input[type='radio']:checked").val();
+	vvvvvwj(add_php_postflight_update_vvvvvwj);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_php_postflight_update',function (e)
+{
+	e.preventDefault();
+	var add_php_postflight_update_vvvvvwj = jQuery("#jform_add_php_postflight_update input[type='radio']:checked").val();
+	vvvvvwj(add_php_postflight_update_vvvvvwj);
+
+});
+
+// #jform_add_php_method_uninstall listeners for add_php_method_uninstall_vvvvvwk function
+jQuery('#jform_add_php_method_uninstall').on('keyup',function()
+{
+	var add_php_method_uninstall_vvvvvwk = jQuery("#jform_add_php_method_uninstall input[type='radio']:checked").val();
+	vvvvvwk(add_php_method_uninstall_vvvvvwk);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_php_method_uninstall',function (e)
+{
+	e.preventDefault();
+	var add_php_method_uninstall_vvvvvwk = jQuery("#jform_add_php_method_uninstall input[type='radio']:checked").val();
+	vvvvvwk(add_php_method_uninstall_vvvvvwk);
+
+});
+
+// #jform_add_php_preflight_install listeners for add_php_preflight_install_vvvvvwl function
+jQuery('#jform_add_php_preflight_install').on('keyup',function()
+{
+	var add_php_preflight_install_vvvvvwl = jQuery("#jform_add_php_preflight_install input[type='radio']:checked").val();
+	vvvvvwl(add_php_preflight_install_vvvvvwl);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_php_preflight_install',function (e)
+{
+	e.preventDefault();
+	var add_php_preflight_install_vvvvvwl = jQuery("#jform_add_php_preflight_install input[type='radio']:checked").val();
+	vvvvvwl(add_php_preflight_install_vvvvvwl);
+
+});
+
+// #jform_add_php_preflight_update listeners for add_php_preflight_update_vvvvvwm function
+jQuery('#jform_add_php_preflight_update').on('keyup',function()
+{
+	var add_php_preflight_update_vvvvvwm = jQuery("#jform_add_php_preflight_update input[type='radio']:checked").val();
+	vvvvvwm(add_php_preflight_update_vvvvvwm);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_php_preflight_update',function (e)
+{
+	e.preventDefault();
+	var add_php_preflight_update_vvvvvwm = jQuery("#jform_add_php_preflight_update input[type='radio']:checked").val();
+	vvvvvwm(add_php_preflight_update_vvvvvwm);
 
 });
 

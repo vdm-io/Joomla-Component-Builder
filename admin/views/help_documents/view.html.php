@@ -10,13 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.1.21
-	@build			11th September, 2016
+	@version		2.2.0
+	@build			23rd October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -248,7 +247,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		}
 
 		// Set Admin View Selection
-		$this->admin_viewOptions = $this->getTheAdmin_viewSelections();
+		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->getOptions();
 		if ($this->admin_viewOptions)
 		{
 			// Admin View Filter
@@ -270,7 +269,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		}
 
 		// Set Site View Selection
-		$this->site_viewOptions = $this->getTheSite_viewSelections();
+		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->getOptions();
 		if ($this->site_viewOptions)
 		{
 			// Site View Filter
@@ -335,8 +334,8 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 			'a.title' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_TITLE_LABEL'),
 			'a.type' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_TYPE_LABEL'),
 			'a.location' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_LOCATION_LABEL'),
-			'a.admin_view' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL'),
-			'a.site_view' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL'),
+			'g.' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL'),
+			'h.' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	} 
@@ -407,70 +406,6 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 				$text = $model->selectionTranslation($location,'location');
 				// Now add the location and its text to the options array
 				$filter[] = JHtml::_('select.option', $location, JText::_($text));
-			}
-			return $filter;
-		}
-		return false;
-	}
-
-	protected function getTheAdmin_viewSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('admin_view'));
-		$query->from($db->quoteName('#__componentbuilder_help_document'));
-		$query->order($db->quoteName('admin_view') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			$results = array_unique($results);
-			$filter = array();
-			foreach ($results as $admin_view)
-			{
-				// Now add the admin_view and its text to the options array
-				$filter[] = JHtml::_('select.option', $admin_view, $admin_view);
-			}
-			return $filter;
-		}
-		return false;
-	}
-
-	protected function getTheSite_viewSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('site_view'));
-		$query->from($db->quoteName('#__componentbuilder_help_document'));
-		$query->order($db->quoteName('site_view') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			$results = array_unique($results);
-			$filter = array();
-			foreach ($results as $site_view)
-			{
-				// Now add the site_view and its text to the options array
-				$filter[] = JHtml::_('select.option', $site_view, $site_view);
 			}
 			return $filter;
 		}

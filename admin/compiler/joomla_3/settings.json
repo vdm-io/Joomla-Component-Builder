@@ -193,6 +193,12 @@
             "rename": false,
             "type": "file"
       },
+      "README.txt": {
+            "naam":"README.txt",
+            "path": "c0mp0n3nt/admin",
+            "rename": false,
+            "type": "file"
+      },
       "README.md": {
             "naam":"README.md",
             "path": "c0mp0n3nt/",

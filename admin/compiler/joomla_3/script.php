@@ -41,7 +41,6 @@ class com_###component###InstallerScript
 	/**
 	 * method to install the component
 	 *
-	 *
 	 * @return void
 	 */
 	function install($parent)
@@ -81,17 +80,27 @@ class com_###component###InstallerScript
 	 */
 	function preflight($type, $parent)
 	{
+		// get application
+		$app = JFactory::getApplication();
+		// is redundant ...hmmm
 		if ($type == 'uninstall')
-		{        	
+		{
 			return true;
 		}
-		
-		$app = JFactory::getApplication();
+		// the default for both install and update
 		$jversion = new JVersion();
-		if (!$jversion->isCompatible('3.4.1'))
+		if (!$jversion->isCompatible('3.6.0'))
 		{
-			$app->enqueueMessage('Please upgrade to at least Joomla! 3.4.1 before continuing!', 'error');
+			$app->enqueueMessage('Please upgrade to at least Joomla! 3.6.0 before continuing!', 'error');
 			return false;
+		}
+		// do any updates needed
+		if ($type == 'update')
+		{###PREUPDATESCRIPT###
+		}
+		// do any install needed
+		if ($type == 'install')
+		{###PREINSTALLSCRIPT###
 		}
 	}
 
@@ -104,11 +113,11 @@ class com_###component###InstallerScript
 	{
 		// set the default component settings
 		if ($type == 'install')
-		{###INSTALLSCRIPT###
+		{###POSTINSTALLSCRIPT###
 		}
 		// do any updates needed
 		if ($type == 'update')
-		{###UPDATESCRIPT###
+		{###POSTUPDATESCRIPT###
 		}
 	}
 }

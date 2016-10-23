@@ -10,8 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.8
-	@build			30th January, 2016
+	@version			2.2.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -159,6 +158,10 @@ class Infusion extends Interpretation
 			
 			// ###ADMIN_GLOBAL_EVENT###
 			$this->fileContentStatic['###ADMIN_GLOBAL_EVENT###'] = '';
+			
+			// set incase no extra admin files are loaded
+			$this->fileContentStatic['###EXSTRA_ADMIN_FILES###'] = '';
+			
 			// now load the data for the global event if needed
 			if ($this->componentData->add_admin_event == 1)
 			{
@@ -173,6 +176,12 @@ class Infusion extends Interpretation
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n\t".'{';
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_admin_event']);
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n\t".'}';
+			}
+			
+			// now load the readme file if needed
+			if ($this->componentData->addreadme == 1)
+			{
+				$this->fileContentStatic['###EXSTRA_ADMIN_FILES###'] .= "\n\t\t\t<filename>README.txt</filename>";
 			}
 			
 			// ###HELPER_CREATEUSER###
@@ -1001,11 +1010,17 @@ class Infusion extends Interpretation
 			// ###LANG_SITE_SYS###
 			$this->fileContentStatic['###LANG_SITE_SYS###'] = $this->setLangSiteSys();
 
-			// ###INSTALLSCRIPT###
-			$this->fileContentStatic['###INSTALLSCRIPT###'] = $this->setInstallScript();
+			// ###PREINSTALLSCRIPT###
+			$this->fileContentStatic['###PREINSTALLSCRIPT###'] = $this->getCustomScriptBuilder('php_preflight', 'install', "\n", null, true);
 
-			// ###UPDATESCRIPT###
-			$this->fileContentStatic['###UPDATESCRIPT###'] = $this->setUpdateScript();
+			// ###PREUPDATESCRIPT###
+			$this->fileContentStatic['###PREUPDATESCRIPT###'] = $this->getCustomScriptBuilder('php_preflight', 'update', "\n", null, true);
+
+			// ###POSTINSTALLSCRIPT###
+			$this->fileContentStatic['###POSTINSTALLSCRIPT###'] = $this->setPostInstallScript();
+
+			// ###POSTUPDATESCRIPT###
+			$this->fileContentStatic['###POSTUPDATESCRIPT###'] = $this->setPostUpdateScript();
 
 			// ###UNINSTALLSCRIPT###
 			$this->fileContentStatic['###UNINSTALLSCRIPT###'] = $this->setUninstallScript();
