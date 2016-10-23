@@ -173,11 +173,16 @@ class Compiler extends Infusion
 				}
 			}
 			// do a final run to update the readme file
+			$two = 0;
 			foreach ($this->newFiles['static'] as $static)
 			{
 				if (('README.md' == $static['name'] || 'README.txt' == $static['name']) && $this->componentData->addreadme && JFile::exists($static['path']))
 				{
 					$this->buildReadMe($static['path']);
+					$two++;
+				}
+				if ($two == 2)
+				{
 					break;
 				}
 			}

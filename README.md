@@ -1,12 +1,14 @@
-# ###Component_name### (###VERSION###)
+# Component Builder (2.2.0)
 
 This is a [Joomla 3.x](http://www.joomla.org/) component.
 
- ![###Component_name### image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/component-300.jpg "The ###Component_name###")
+ ![Component Builder image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/component-300.jpg "The Component Builder")
 
-###DESCRIPTION###
+The Component Builder for [Joomla](http://www.joomla.org/) that is highly advanced, truly able to build extremely complex components in a fraction of the time.
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (###VERSION###) with **ALL** its features and **ALL** concepts totally open-source and free!
+Whether you're a seasoned [Joomla](http://www.joomla.org/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
+
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.2.0) with **ALL** its features and **ALL** concepts totally open-source and free!
 
 Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
@@ -72,7 +74,7 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
 # Get Access to Video Tutorials
 
-> **You can purchase more demo content for ###Component_name### including access to training & help video tutorials:**
+> **You can purchase more demo content for Component Builder including access to training & help video tutorials:**
 
 + Demo Component* see the build on [github](https://github.com/namibia/demo-joomla-3-component)
 + Sermon Distributor* see the build on [github](https://github.com/SermonDistributor/Joomla-3-Component)
@@ -98,17 +100,17 @@ Component Builder is mapped as a component in itself on my local development env
 
 # Build Details
 
-+ *Company*: [###COMPANYNAME###](###AUTHORWEBSITE###)
-+ *Author*: [###AUTHOR###](mailto:###AUTHOREMAIL###)
-+ *Name*: [###Component_name###](###AUTHORWEBSITE###)
-+ *First Build*: ###CREATIONDATE###
-+ *Last Build*: ###BUILDDATE###
-+ *Version*: ###VERSION###
-+ *Copyright*: ###COPYRIGHT###
-+ *License*: ###LICENSE###
-+ *Line count*: **###LINE_COUNT###**
-+ *File count*: **###FILE_COUNT###**
-+ *Folder count*: **###FOLDER_COUNT###**
++ *Company*: [Vast Development Method](https://www.vdm.io/joomla-component-builder)
++ *Author*: [Llewellyn van der Merwe](mailto:info@vdm.io)
++ *Name*: [Component Builder](https://www.vdm.io/joomla-component-builder)
++ *First Build*: 30th April, 2015
++ *Last Build*: 23rd October, 2016
++ *Version*: 2.2.0
++ *Copyright*: Copyright (C) 2015. All Rights Reserved
++ *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
++ *Line count*: **85920**
++ *File count*: **537**
++ *Folder count*: **99**
 
 > This **component** was build with a Joomla [Automated Component Builder](https://www.vdm.io/joomla-component-builder).
 > Developed by [Llewellyn van der Merwe](mailto:joomla@vdm.io)
