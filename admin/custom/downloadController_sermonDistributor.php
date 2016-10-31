@@ -59,7 +59,7 @@ class ###Component###ControllerDownload extends JControllerLegacy
 							$name = ###Component###Helper::safeString($filename, 'Ww');
 							// Get local key
 							$localkey = ###Component###Helper::getLocalKey();
-							$opener = new FOFEncryptAes($localkey, 256);
+							$opener = new FOFEncryptAes($localkey, 128);
 							$link = rtrim($opener->decryptString(base64_decode($enUrl)));
 							$info = $this->getContentInfo($link);
 							// set headers

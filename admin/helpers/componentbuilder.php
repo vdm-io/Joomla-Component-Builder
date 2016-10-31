@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.0
-	@build			23rd October, 2016
+	@build			31st October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -50,6 +50,41 @@ abstract class ComponentbuilderHelper
 		jimport('joomla.application');
 		// include class to minify js
 		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
+	}
+
+	/**
+	* 	The user notice info File Name
+	**/
+	protected static $usernotice = false;
+	
+	public static function getFilePath($type, $name = 'listing', $key = '', $fileType = '.json', $PATH = JPATH_COMPONENT_SITE)
+	{
+		if (!self::checkString(self::${$type.$name}))
+		{
+			// Get local key
+			$localkey = self::getLocalKey();
+			// set the name
+			$fileName = md5($type.$name.$localkey.$key);
+			// set file path			
+			self::${$type.$name} = $PATH.'/helpers/'.$fileName.$fileType;
+		}
+		// return the path
+		return self::${$type.$name};
+	}
+
+	/**
+	* 	get the localkey
+	**/
+	protected static $localkey = false;
+	
+	public static function getLocalKey()
+	{
+		if (!self::$localkey)
+		{
+			// get the main key
+			self::$localkey = md5(JComponentHelper::getParams('com_componentbuilder')->get('basic_key', 'localKey34fdWEkl'));
+		}
+		return self::$localkey;
 	}
 
 	/**

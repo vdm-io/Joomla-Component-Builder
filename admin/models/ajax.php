@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.0
-	@build			23rd October, 2016
+	@build			31st October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -41,6 +41,55 @@ class ComponentbuilderModelAjax extends JModelList
 		// get params
 		$this->app_params	= JComponentHelper::getParams('com_componentbuilder');
 		
+	}
+
+	// Used in component
+	/**
+	* 	Check and if a vdm notice is new (per/user)
+	**/
+	public function isNew($notice)
+	{
+		// first get the file path
+		$path_filename = ComponentbuilderHelper::getFilePath('user', 'notice', JFactory::getUser()->username, $fileType = '.md', JPATH_COMPONENT_ADMINISTRATOR);
+		// check if the file is set
+		if (($content = @file_get_contents($path_filename)) !== FALSE)
+		{
+			if ($notice == $content)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	* 	set That a notice has been read (per/user)
+	**/
+	public function isRead($notice)
+	{
+		// first get the file path
+		$path_filename = ComponentbuilderHelper::getFilePath('user', 'notice', JFactory::getUser()->username, $fileType = '.md', JPATH_COMPONENT_ADMINISTRATOR);
+		// set as read if not already set
+		if (($content = @file_get_contents($path_filename)) !== FALSE)
+		{
+			if ($notice == $content)
+			{
+				return true;
+			}
+		}
+		return $this->saveFile($notice,$path_filename);
+	}
+
+	protected function saveFile($data,$path_filename)
+	{
+		if (ComponentbuilderHelper::checkString($data))
+		{
+			$fp = fopen($path_filename, 'w');
+			fwrite($fp, $data);
+			fclose($fp);
+			return true;
+		}
+		return false;
 	}
 
 	// Used in admin_view

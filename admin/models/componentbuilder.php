@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.0
-	@build			23rd October, 2016
+	@build			31st October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -266,6 +266,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$document = JFactory::getDocument();
 		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
 		$document->addScriptDeclaration('
+		var token = "'.JSession::getFormToken().'";
 		var urlToGetAllOpenIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=open&page=1&per_page=5";
 		var urlToGetAllClosedIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=closed&page=1&per_page=5";
 		jQuery(document).ready(function () {
@@ -290,6 +291,24 @@ class ComponentbuilderModelComponentbuilder extends JModelList
     				});
 			});
 		});
+		// to check is READ/NEW
+		function getIS(type,notice){
+			if(type == 1){
+				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isNew&format=json";
+			} else if (type == 2) {
+				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isRead&format=json";
+			}	
+			if(token.length > 0 && notice.length){
+				var request = "token="+token+"&notice="+notice;
+			}
+			return jQuery.ajax({
+				type: "POST",
+				url: getUrl,
+				dataType: "jsonp",
+				data: request,
+				jsonp: "callback"
+			});
+		}
 		// nice little dot trick :)
 		jQuery(document).ready( function($) {
 			var x=0;
@@ -358,7 +377,29 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		jQuery(document).ready(function () {
 			jQuery.get(noticeboard)
 			.success(function(board) { 
-				jQuery("#noticeboard-md").html(marked(board));
+				if (board.length > 5) {
+					jQuery("#noticeboard-md").html(marked(board));
+					getIS(1,board).done(function(result) {
+						if (result){
+							jQuery("#cpanel_tabTabs a").each(function() {
+								if (this.href.indexOf("#vast_development_method") >= 0) {
+									var textVDM = jQuery(this).text();
+									jQuery(this).html("<span class=\"label label-important vdm-new-notice\">1</span> "+textVDM);
+									jQuery(this).attr("id","vdm-new-notice");
+									jQuery("#vdm-new-notice").click(function() {
+										getIS(2,board).done(function(result) {
+												if (result) {
+												jQuery(".vdm-new-notice").fadeOut(500);
+											}
+										});
+									});
+								}
+							});
+						}
+					});
+				} else {
+					jQuery("#noticeboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
+				}
 			})
 			.error(function(jqXHR, textStatus, errorThrown) { 
 				jQuery("#noticeboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");

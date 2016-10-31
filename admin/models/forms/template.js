@@ -10,7 +10,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.0
-	@build			23rd October, 2016
+	@build			31st October, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		template.js

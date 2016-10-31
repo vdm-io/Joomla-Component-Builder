@@ -66,7 +66,7 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 + You can change/improve existing field types and add more.
 + Line numbers to show where in compiler was the code build.
 + You can improve the component since all code are open-source.
-+ You need only pay us once and use the component forever.
++ Free updates for the lifetime of the project.
 + You can dynamically add internal help structures to all component.
 + There is no limitations on how big or how much you want to build (server limitation only).
 + This is a complete factory kind of component that functions like a deployment hub.
@@ -104,11 +104,11 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:info@vdm.io)
 + *Name*: [Component Builder](https://www.vdm.io/joomla-component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 23rd October, 2016
++ *Last Build*: 31st October, 2016
 + *Version*: 2.2.0
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **85920**
++ *Line count*: **86123**
 + *File count*: **537**
 + *Folder count*: **99**
 
