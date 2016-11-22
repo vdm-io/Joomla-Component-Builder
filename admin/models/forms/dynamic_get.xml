@@ -321,7 +321,7 @@
 		<field
 			type="repeatable"
 			name="join_view_table"
-			label="Join View Tables"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_DESCRIPTION"
 			id="join_view_table"
 			class="join_view_tables"
@@ -594,7 +594,7 @@
 		<field
 			type="repeatable"
 			name="join_db_table"
-			label="Join DB Tables"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_DB_TABLE_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_DB_TABLE_DESCRIPTION"
 			id="join_db_table"
 			class="join_db_tables"
@@ -868,7 +868,7 @@
 		<field
 			type="repeatable"
 			name="filter"
-			label="Filter"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_FILTER_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_FILTER_DESCRIPTION"
 			id="filter"
 			class="filters"
@@ -1000,7 +1000,7 @@
 		<field
 			type="repeatable"
 			name="where"
-			label="Where"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_WHERE_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_WHERE_DESCRIPTION"
 			id="where"
 			class="wheres"
@@ -1097,7 +1097,7 @@
 		<field
 			type="repeatable"
 			name="order"
-			label="Ordering"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_ORDER_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_ORDER_DESCRIPTION"
 			id="order"
 			class="ordering"
@@ -1159,7 +1159,7 @@
 		<field
 			type="repeatable"
 			name="global"
-			label="Set Global"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_GLOBAL_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_GLOBAL_DESCRIPTION"
 			id="global"
 			class="globals"

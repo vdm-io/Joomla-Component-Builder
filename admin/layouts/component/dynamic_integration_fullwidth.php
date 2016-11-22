@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.0
-	@build			31st October, 2016
+	@version		2.2.2
+	@build			22nd November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		ftp_servers_fullwidth.php
+	@subpackage		dynamic_integration_fullwidth.php
 	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -32,6 +32,10 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'add_update_server',
 	'update_server',
+	'update_server_target',
+	'note_update_server_note_ftp',
+	'note_update_server_note_zip',
+	'note_update_server_note_other',
 	'update_server_ftp',
 	'add_sales_server',
 	'sales_server_ftp'

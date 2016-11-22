@@ -419,7 +419,7 @@
 		<field
 			type="repeatable"
 			name="custom_button"
-			label="Custom Buttons"
+			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CUSTOM_BUTTON_LABEL"
 			id="custom_button"
 			class="custom_buttons"
 			select="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CUSTOM_BUTTON_SELECT"

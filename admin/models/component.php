@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.0
-	@build			31st October, 2016
+	@version		2.2.2
+	@build			22nd November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -95,12 +95,6 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_helper_site))
-			{
-				// base64 Decode php_helper_site.
-				$item->php_helper_site = base64_decode($item->php_helper_site);
-			}
-
 			if (!empty($item->php_helper_admin))
 			{
 				// base64 Decode php_helper_admin.
@@ -111,6 +105,12 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			{
 				// base64 Decode sql.
 				$item->sql = base64_decode($item->sql);
+			}
+
+			if (!empty($item->php_helper_site))
+			{
+				// base64 Decode php_helper_site.
+				$item->php_helper_site = base64_decode($item->php_helper_site);
 			}
 
 			if (!empty($item->php_admin_event))
@@ -1097,12 +1097,6 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_helper_site string to base64 string.
-		if (isset($data['php_helper_site']))
-		{
-			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
-		}
-
 		// Set the php_helper_admin string to base64 string.
 		if (isset($data['php_helper_admin']))
 		{
@@ -1113,6 +1107,12 @@ class ComponentbuilderModelComponent extends JModelAdmin
 		if (isset($data['sql']))
 		{
 			$data['sql'] = base64_encode($data['sql']);
+		}
+
+		// Set the php_helper_site string to base64 string.
+		if (isset($data['php_helper_site']))
+		{
+			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
 		}
 
 		// Set the php_admin_event string to base64 string.

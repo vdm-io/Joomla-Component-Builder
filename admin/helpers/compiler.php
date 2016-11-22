@@ -43,7 +43,7 @@ class Compiler extends Infusion
 	
 	public $filepath		= '';
 	// fixed pathes
-	protected $add2SalesServer	= false;
+	protected $dynamicIntegration	= false;
 	protected $backupPath		= false;
 	protected $gitPath		= false;
 
@@ -61,8 +61,8 @@ class Compiler extends Infusion
 			// set some folder paths in relation to distribution
 			if ($config['addBackup'])
 			{
-				$this->backupPath	= $this->params->get('backup_folder_path', $this->tempPath).'/'.$this->componentBackupName.'.zip';
-				$this->add2SalesServer	= true;
+				$this->backupPath		= $this->params->get('backup_folder_path', $this->tempPath).'/'.$this->componentBackupName.'.zip';
+				$this->dynamicIntegration	= true;
 			}
 			if ($config['addGit'])
 			{
@@ -187,7 +187,7 @@ class Compiler extends Infusion
 				}
 			}
 			// move the update server to host
-			if ($this->componentData->add_update_server && isset($this->updateServerFileName) && $this->add2SalesServer)
+			if ($this->componentData->add_update_server && $this->componentData->update_server_target == 1 && isset($this->updateServerFileName) && $this->dynamicIntegration)
 			{
 				$xml_update_server_path = $this->componentPath.'/'.$this->updateServerFileName.'.xml';
 				// make sure we have the correct file
@@ -329,12 +329,12 @@ class Compiler extends Infusion
 		if ($zip->create($this->filepath, $zipArray))
 		{
 			// now move to backup if zip was made and backup is requered
-			if ($this->backupPath)
+			if ($this->backupPath && $this->dynamicIntegration)
 			{
 				JFile::copy($this->filepath, $this->backupPath);
 			}
 			// move to sales server host
-			if ($this->componentData->add_sales_server)
+			if ($this->componentData->add_sales_server && $this->dynamicIntegration)
 			{
 				// make sure we have the correct file
 				if (isset($this->componentData->sales_server_ftp))

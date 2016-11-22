@@ -339,7 +339,7 @@
 		<field
 			type="repeatable"
 			name="addpermissions"
-			label="Permissions"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDPERMISSIONS_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDPERMISSIONS_DESCRIPTION"
 			id="addpermissions"
 			class="addpermission"
@@ -441,7 +441,7 @@
 		<field
 			type="repeatable"
 			name="addtabs"
-			label="Tabs"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABS_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABS_DESCRIPTION"
 			id="addtabs"
 			class="addtab"
@@ -501,7 +501,7 @@
 		<field
 			type="repeatable"
 			name="addfields"
-			label="Fields"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDFIELDS_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDFIELDS_DESCRIPTION"
 			id="addfields"
 			class="addfield"
@@ -734,7 +734,7 @@
 		<field
 			type="repeatable"
 			name="addconditions"
-			label="Conditions"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDCONDITIONS_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDCONDITIONS_DESCRIPTION"
 			id="addconditions"
 			class="addcondition"
@@ -898,7 +898,7 @@
 		<field
 			type="repeatable"
 			name="addlinked_views"
-			label="Linked Views"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDLINKED_VIEWS_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDLINKED_VIEWS_DESCRIPTION"
 			id="addlinked_views"
 			class="addlinked_view"
@@ -1353,7 +1353,7 @@
 		<field
 			type="repeatable"
 			name="custom_button"
-			label="Custom Buttons"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTON_LABEL"
 			id="custom_button"
 			class="custom_buttons"
 			select="COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTON_SELECT"
@@ -1901,7 +1901,7 @@
 		<field
 			type="repeatable"
 			name="addtables"
-			label="Tables"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL"
 			id="addtables"
 			class="addtable"
 			select="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_SELECT"
@@ -1984,7 +1984,7 @@
 		<field
 			type="repeatable"
 			name="ajax_input"
-			label="Ajax Input"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_AJAX_INPUT_LABEL"
 			id="ajax_input"
 			class="ajax_inputs"
 			select="COM_COMPONENTBUILDER_ADMIN_VIEW_AJAX_INPUT_SELECT"

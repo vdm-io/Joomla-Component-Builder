@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.0
-	@build			31st October, 2016
+	@version		2.2.2
+	@build			22nd November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -1039,13 +1039,13 @@ abstract class ComponentbuilderHelper
 		return implode($key);
 	}
 
-	public static function getCryptKey($type)
+	public static function getCryptKey($type, $default = null)
 	{
 		if ('basic' == $type)
 		{
 			// Get the global params
 			$params = JComponentHelper::getParams('com_componentbuilder', true);
-			$basic_key = $params->get('basic_key', null);
+			$basic_key = $params->get('basic_key', $default);
 			if ($basic_key)
 			{
 				return $basic_key;

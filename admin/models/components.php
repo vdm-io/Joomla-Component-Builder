@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.0
-	@build			31st October, 2016
+	@version		2.2.2
+	@build			22nd November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		components.php
@@ -259,17 +259,17 @@ class ComponentbuilderModelComponents extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
-						// decode php_helper_site
-						$item->php_helper_site = base64_decode($item->php_helper_site);
 						// decode php_helper_admin
 						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
 						if ($basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
 						{
 							// decrypt update_server_ftp
 							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
 						}
-						// decode sql
-						$item->sql = base64_decode($item->sql);
+						// decode php_helper_site
+						$item->php_helper_site = base64_decode($item->php_helper_site);
 						// decode php_admin_event
 						$item->php_admin_event = base64_decode($item->php_admin_event);
 						// decode php_site_event

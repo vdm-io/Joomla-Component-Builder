@@ -147,7 +147,7 @@
 		<field
 			type="repeatable"
 			name="properties"
-			label="Properties"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_PROPERTIES_LABEL"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_PROPERTIES_DESCRIPTION"
 			id="addproperties"
 			class="addproperty"

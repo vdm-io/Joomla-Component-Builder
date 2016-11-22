@@ -45,8 +45,8 @@ class ###Component###ControllerDownload extends JControllerLegacy
 			switch($task)
                         {
 				case 'file':
-					$keys = $jinput->get('key', NULL, 'BASE64');
-					$enUrl = $jinput->get('link', NULL, 'BASE64');
+					$keys = ###Component###Helper::base64_urldecode($jinput->get('key', NULL, 'STRING'));
+					$enUrl = ###Component###Helper::base64_urldecode($jinput->get('link', NULL, 'STRING'));
 					$filename = $jinput->get('filename', NULL, 'CMD');
 					if((base64_encode(base64_decode($enUrl, true)) === $enUrl) && (base64_encode(base64_decode($keys, true)) === $keys) && $filename)
 					{
@@ -60,7 +60,7 @@ class ###Component###ControllerDownload extends JControllerLegacy
 							// Get local key
 							$localkey = ###Component###Helper::getLocalKey();
 							$opener = new FOFEncryptAes($localkey, 128);
-							$link = rtrim($opener->decryptString(base64_decode($enUrl)));
+							$link = rtrim($opener->decryptString($enUrl), "\0");
 							$info = $this->getContentInfo($link);
 							// set headers
 							$app = JFactory::getApplication();
@@ -108,7 +108,7 @@ class ###Component###ControllerDownload extends JControllerLegacy
 				break;
 			}
 		}
-		return false;
+		die('Restricted access');
 	}
 	
 	protected function getContentInfo($url)

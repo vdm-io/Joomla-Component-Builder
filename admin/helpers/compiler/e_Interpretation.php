@@ -445,13 +445,13 @@ class Interpretation extends Fields
 			$function = array();
 			if (isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder))
 			{
-				$function[] = "\n\n\tpublic static function getCryptKey(\$type)";
+				$function[] = "\n\n\tpublic static function getCryptKey(\$type, \$default = null)";
 				$function[] = "\t{";
 				$function[] = "\t\t//".$this->setLine(__LINE__)." Get the global params";
 				$function[] = "\t\t\$params = JComponentHelper::getParams('com_".$component."', true);";
 				$function[] = "\t\tif ('advanced' == \$type)";
 				$function[] = "\t\t{";
-				$function[] = "\t\t\t\$advanced_key = \$params->get('advanced_key', null);";
+				$function[] = "\t\t\t\$advanced_key = \$params->get('advanced_key', \$default);";
 				$function[] = "\t\t\tif (\$advanced_key)";
 				$function[] = "\t\t\t{";
 				$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." load the file";
@@ -462,7 +462,7 @@ class Interpretation extends Fields
 				$function[] = "\t\t}";
 				$function[] = "\t\telseif ('basic' == \$type)";
 				$function[] = "\t\t{";
-				$function[] = "\t\t\t\$basic_key = \$params->get('basic_key', null);";
+				$function[] = "\t\t\t\$basic_key = \$params->get('basic_key', \$default);";
 				$function[] = "\t\t\tif (\$basic_key)";
 				$function[] = "\t\t\t{";
 				$function[] = "\t\t\t\treturn \$basic_key;";
@@ -473,13 +473,13 @@ class Interpretation extends Fields
 			}
 			elseif (isset($this->advancedEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder))
 			{
-				$function[] = "\n\n\tpublic static function getCryptKey(\$type)";
+				$function[] = "\n\n\tpublic static function getCryptKey(\$type, \$default = null)";
 				$function[] = "\t{";
 				$function[] = "\t\tif ('advanced' == \$type)";
 				$function[] = "\t\t{";
 				$function[] = "\t\t\t//".$this->setLine(__LINE__)." Get the global params";
 				$function[] = "\t\t\t\$params = JComponentHelper::getParams('com_".$component."', true);";
-				$function[] = "\t\t\t\$advanced_key = \$params->get('advanced_key', null);";
+				$function[] = "\t\t\t\$advanced_key = \$params->get('advanced_key', \$default);";
 				$function[] = "\t\t\tif (\$advanced_key)";
 				$function[] = "\t\t\t{";
 				$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." load the file";
@@ -493,13 +493,13 @@ class Interpretation extends Fields
 			}
 			elseif (isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder))
 			{
-				$function[] = "\n\n\tpublic static function getCryptKey(\$type)";
+				$function[] = "\n\n\tpublic static function getCryptKey(\$type, \$default = null)";
 				$function[] = "\t{";
 				$function[] = "\t\tif ('basic' == \$type)";
 				$function[] = "\t\t{";
 				$function[] = "\t\t\t//".$this->setLine(__LINE__)." Get the global params";
 				$function[] = "\t\t\t\$params = JComponentHelper::getParams('com_".$component."', true);";
-				$function[] = "\t\t\t\$basic_key = \$params->get('basic_key', null);";
+				$function[] = "\t\t\t\$basic_key = \$params->get('basic_key', \$default);";
 				$function[] = "\t\t\tif (\$basic_key)";
 				$function[] = "\t\t\t{";
 				$function[] = "\t\t\t\treturn \$basic_key;";
@@ -521,7 +521,7 @@ class Interpretation extends Fields
 		{
 			$updateXML = array();
 			// add the update server
-			if ($this->componentData->add_update_server)
+			if ($this->componentData->add_update_server && $this->componentData->update_server_target != 3)
 			{
 				$updateXML[] = '<updates>';
 			}
@@ -545,7 +545,7 @@ class Interpretation extends Fields
 					$this->fileContentDynamic[$name.'_'.$update['version']]['###UPDATE_VERSION_MYSQL###'] = $update['mysql'];
 				}
 				// add the update server
-				if ($this->componentData->add_update_server)
+				if ($this->componentData->add_update_server && $this->componentData->update_server_target != 3)
 				{
 					// build update xml
 					$updateXML[] = "\t<update>";
@@ -571,8 +571,8 @@ class Interpretation extends Fields
 					$updateXML[] = "\t</update>";
 				}
 			}
-			// add the update server 
-			if ($this->componentData->add_update_server)
+			// add the update server file
+			if ($this->componentData->add_update_server && $this->componentData->update_server_target != 3)
 			{
 				$updateXML[] = '</updates>';
 				// ###UPDATE_SERVER_XML###
@@ -583,15 +583,18 @@ class Interpretation extends Fields
 				
 				// set the Update server file name
 				$this->updateServerFileName = $name;
-
-				// ###UPDATESERVER###
-				$updateServer = array();
-				$updateServer[] = "\n\t<updateservers>";
-				$updateServer[] = "\t\t".'<server type="extension" enabled="1" element="com_'.$this->fileContentStatic['###component###'].'" name="'.$this->fileContentStatic['###Component_name###'].'">'.$this->componentData->update_server.'</server>';
-				$updateServer[] = "\t</updateservers>";
-				// return the array to string
-				$updateServer = implode("\n", $updateServer);
 			}
+		}
+		// add the update server link to component XML
+		if ($this->componentData->add_update_server && isset($this->componentData->update_server) && ComponentbuilderHelper::checkString($this->componentData->update_server))
+		{
+			// ###UPDATESERVER###
+			$updateServer = array();
+			$updateServer[] = "\n\t<updateservers>";
+			$updateServer[] = "\t\t".'<server type="extension" enabled="1" element="com_'.$this->fileContentStatic['###component###'].'" name="'.$this->fileContentStatic['###Component_name###'].'">'.$this->componentData->update_server.'</server>';
+			$updateServer[] = "\t</updateservers>";
+			// return the array to string
+			$updateServer = implode("\n", $updateServer);
 		}
 		// add update server details to component XML file
 		$this->fileContentStatic['###UPDATESERVER###'] = $updateServer;
@@ -2711,6 +2714,27 @@ class Interpretation extends Fields
 		// check if custom button should be added
 		if (isset($view['settings']->add_custom_button) && $view['settings']->add_custom_button == 1)
 		{
+			// insure the controller and model strings are added
+			if (ComponentbuilderHelper::checkString($view['settings']->php_controller) && $view['settings']->php_controller != '//')
+			{
+				// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
+				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
+				"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_controller);
+				if ('site' == $this->target)
+				{
+					// add the controller for this view
+					// build the file
+					$target = array($this->target => $viewName);
+					$this->buildDynamique($target,'custom_form');
+					###GET_FORM_CUSTOM###
+				}
+			}
+			if (ComponentbuilderHelper::checkString($view['settings']->php_model) && $view['settings']->php_model != '//')
+			{
+				// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
+				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] =
+				"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_model);
+			}
 			if (ComponentbuilderHelper::checkArray($view['settings']->custom_buttons))
 			{
 				$buttons = array();
@@ -2732,27 +2756,6 @@ class Interpretation extends Fields
 				}
 				if (ComponentbuilderHelper::checkArray($buttons))
 				{
-					if (ComponentbuilderHelper::checkString($view['settings']->php_controller))
-					{
-						// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-						$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
-						"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_controller);
-						if ('site' == $this->target)
-						{
-							// add the controller for this view
-							// build the file
-							$target = array($this->target => $viewName);
-							$this->buildDynamique($target,'custom_form');
-							###GET_FORM_CUSTOM###
-						}
-					}
-					if (ComponentbuilderHelper::checkString($view['settings']->php_model))
-					{
-						// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-						$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] =
-						"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_model);
-					}
-
 					return "\n".implode("\n",$buttons);
 				}
 			}

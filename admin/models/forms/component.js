@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.0
-	@build			31st October, 2016
+	@version		2.2.2
+	@build			22nd November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.js
@@ -94,6 +94,22 @@ jQuery(document).ready(function()
 
 	var add_php_preflight_update_vvvvvwm = jQuery("#jform_add_php_preflight_update input[type='radio']:checked").val();
 	vvvvvwm(add_php_preflight_update_vvvvvwm);
+
+	var update_server_target_vvvvvwn = jQuery("#jform_update_server_target input[type='radio']:checked").val();
+	var add_update_server_vvvvvwn = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwn(update_server_target_vvvvvwn,add_update_server_vvvvvwn);
+
+	var add_update_server_vvvvvwo = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	var update_server_target_vvvvvwo = jQuery("#jform_update_server_target input[type='radio']:checked").val();
+	vvvvvwo(add_update_server_vvvvvwo,update_server_target_vvvvvwo);
+
+	var update_server_target_vvvvvwp = jQuery("#jform_update_server_target input[type='radio']:checked").val();
+	var add_update_server_vvvvvwp = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwp(update_server_target_vvvvvwp,add_update_server_vvvvvwp);
+
+	var update_server_target_vvvvvwr = jQuery("#jform_update_server_target input[type='radio']:checked").val();
+	var add_update_server_vvvvvwr = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwr(update_server_target_vvvvvwr,add_update_server_vvvvvwr);
 });
 
 // the vvvvvvv function
@@ -366,12 +382,10 @@ function vvvvvwe(add_update_server_vvvvvwe)
 	// set the function logic
 	if (add_update_server_vvvvvwe == 1)
 	{
-		jQuery('#jform_update_server_ftp').closest('.control-group').show();
 		jQuery('#jform_update_server').closest('.control-group').show();
 	}
 	else
 	{
-		jQuery('#jform_update_server_ftp').closest('.control-group').hide();
 		jQuery('#jform_update_server').closest('.control-group').hide();
 	}
 }
@@ -593,6 +607,66 @@ function vvvvvwm(add_php_preflight_update_vvvvvwm)
 			jQuery('#jform_php_preflight_update').removeClass('required');
 			jform_vvvvvwmvwi_required = true;
 		}
+	}
+}
+
+// the vvvvvwn function
+function vvvvvwn(update_server_target_vvvvvwn,add_update_server_vvvvvwn)
+{
+	// set the function logic
+	if (update_server_target_vvvvvwn == 1 && add_update_server_vvvvvwn == 1)
+	{
+		jQuery('#jform_update_server_ftp').closest('.control-group').show();
+		jQuery('.note_update_server_note_ftp').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('#jform_update_server_ftp').closest('.control-group').hide();
+		jQuery('.note_update_server_note_ftp').closest('.control-group').hide();
+	}
+}
+
+// the vvvvvwo function
+function vvvvvwo(add_update_server_vvvvvwo,update_server_target_vvvvvwo)
+{
+	// set the function logic
+	if (add_update_server_vvvvvwo == 1 && update_server_target_vvvvvwo == 1)
+	{
+		jQuery('#jform_update_server_ftp').closest('.control-group').show();
+		jQuery('.note_update_server_note_ftp').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('#jform_update_server_ftp').closest('.control-group').hide();
+		jQuery('.note_update_server_note_ftp').closest('.control-group').hide();
+	}
+}
+
+// the vvvvvwp function
+function vvvvvwp(update_server_target_vvvvvwp,add_update_server_vvvvvwp)
+{
+	// set the function logic
+	if (update_server_target_vvvvvwp == 2 && add_update_server_vvvvvwp == 1)
+	{
+		jQuery('.note_update_server_note_zip').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('.note_update_server_note_zip').closest('.control-group').hide();
+	}
+}
+
+// the vvvvvwr function
+function vvvvvwr(update_server_target_vvvvvwr,add_update_server_vvvvvwr)
+{
+	// set the function logic
+	if (update_server_target_vvvvvwr == 3 && add_update_server_vvvvvwr == 1)
+	{
+		jQuery('.note_update_server_note_other').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('.note_update_server_note_other').closest('.control-group').hide();
 	}
 }
 

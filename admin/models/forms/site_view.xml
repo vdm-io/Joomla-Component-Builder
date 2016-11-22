@@ -201,7 +201,7 @@
 		<field
 			type="repeatable"
 			name="ajax_input"
-			label="Ajax Input"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_AJAX_INPUT_LABEL"
 			id="ajax_input"
 			class="ajax_inputs"
 			select="COM_COMPONENTBUILDER_SITE_VIEW_AJAX_INPUT_SELECT"
@@ -535,7 +535,7 @@
 		<field
 			type="repeatable"
 			name="custom_button"
-			label="Custom Buttons"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_CUSTOM_BUTTON_LABEL"
 			id="custom_button"
 			class="custom_buttons"
 			select="COM_COMPONENTBUILDER_SITE_VIEW_CUSTOM_BUTTON_SELECT"

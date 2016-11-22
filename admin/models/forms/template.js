@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.0
-	@build			31st October, 2016
+	@version		2.2.2
+	@build			22nd November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		template.js
@@ -23,42 +23,42 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // Some Global Values
-jform_vvvvvyhvyj_required = false;
+jform_vvvvvynvyj_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvyh = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvyh(add_php_view_vvvvvyh);
+	var add_php_view_vvvvvyn = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyn(add_php_view_vvvvvyn);
 });
 
-// the vvvvvyh function
-function vvvvvyh(add_php_view_vvvvvyh)
+// the vvvvvyn function
+function vvvvvyn(add_php_view_vvvvvyn)
 {
 	// set the function logic
-	if (add_php_view_vvvvvyh == 1)
+	if (add_php_view_vvvvvyn == 1)
 	{
 		jQuery('#jform_php_view').closest('.control-group').show();
-		if (jform_vvvvvyhvyj_required)
+		if (jform_vvvvvynvyj_required)
 		{
 			updateFieldRequired('php_view',0);
 			jQuery('#jform_php_view').prop('required','required');
 			jQuery('#jform_php_view').attr('aria-required',true);
 			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvyhvyj_required = false;
+			jform_vvvvvynvyj_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_view').closest('.control-group').hide();
-		if (!jform_vvvvvyhvyj_required)
+		if (!jform_vvvvvynvyj_required)
 		{
 			updateFieldRequired('php_view',1);
 			jQuery('#jform_php_view').removeAttr('required');
 			jQuery('#jform_php_view').removeAttr('aria-required');
 			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvyhvyj_required = true;
+			jform_vvvvvynvyj_required = true;
 		}
 	}
 }
