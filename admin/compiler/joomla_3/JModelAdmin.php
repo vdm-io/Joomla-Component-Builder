@@ -181,7 +181,7 @@ class ###Component###Model###View### extends JModelAdmin
 	 * @since   1.6
 	 */
 	protected function prepareTable($table)
-	{
+	{###LICENSE_TABLE_LOCKED_CHECK###
 		$date = JFactory::getDate();
 		$user = JFactory::getUser();
 		

@@ -285,7 +285,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxpfields()
+	public function getVxqfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -354,13 +354,13 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxpfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxqfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxpfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxqfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxpfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxqfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxpfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxqfields($item->store, 'store');
 				}
 			}
 
@@ -395,7 +395,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVxpfields($value,$name)
+	public function selectionTranslationVxqfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -479,7 +479,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_componentbuilder.admin_view', 'admin_view', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))

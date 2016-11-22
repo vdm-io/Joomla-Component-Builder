@@ -190,7 +190,8 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_componentbuilder.site_view', 'site_view', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))

@@ -213,7 +213,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwjadmin_views()
+	public function getVwkadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -300,7 +300,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwksite_views()
+	public function getVwlsite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -397,7 +397,8 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_componentbuilder.component', 'component', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))

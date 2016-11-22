@@ -593,6 +593,21 @@ jQuery('#adminForm').on('change', '#jform_add_update_server',function (e)
 
 });
 
+// #jform_add_update_server listeners for add_update_server_vvvvvwt function
+jQuery('#jform_add_update_server').on('keyup',function()
+{
+	var add_update_server_vvvvvwt = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwt(add_update_server_vvvvvwt);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_update_server',function (e)
+{
+	e.preventDefault();
+	var add_update_server_vvvvvwt = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwt(add_update_server_vvvvvwt);
+
+});
+
 
 
 <?php $fieldNrs = range(1,50,1); ?>

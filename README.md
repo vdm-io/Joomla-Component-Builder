@@ -81,7 +81,7 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 + Help View Integration*
 + Training & Help Videos* tutorials in the component included.
 
-[**GET ACCESS NOW!**](https://www.vdm.io/joomla-component-builder#get)
+[**GET ACCESS NOW!**](http://vdm.bz/component-builder)
 
 # gitHub Support
 
@@ -108,7 +108,7 @@ Component Builder is mapped as a component in itself on my local development env
 + *Version*: 2.2.3
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **86456**
++ *Line count*: **86517**
 + *File count*: **540**
 + *Folder count*: **99**
 

@@ -184,7 +184,8 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_componentbuilder.custom_admin_view', 'custom_admin_view', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))

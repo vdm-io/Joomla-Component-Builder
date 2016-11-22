@@ -142,23 +142,26 @@ class Interpretation extends Fields
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$boolMethod	= 'isHonest';
-			$globalbool	= ComponentbuilderHelper::safeString($this->uniquekey(4));
+			$boolMethod	= ComponentbuilderHelper::safeString($this->uniquekey(6, false, 'llllllllll'));
+			$globalbool	= ComponentbuilderHelper::safeString($this->uniquekey(6));
 			// add it to the system
 			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###']	= $this->setBoolLincenseLock($boolMethod,$globalbool);
-			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###']		= $this->checkStatmentLicenseLocked();
+			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###']		= $this->checkStatmentLicenseLocked($boolMethod);
+			$this->fileContentDynamic[$view]['###LICENSE_TABLE_LOCKED_CHECK###']	= $this->checkStatmentLicenseLocked($boolMethod, '$table');
+			$this->fileContentDynamic[$view]['###BOOLMETHOD###']			= $boolMethod;
 		}
 		else
 		{
 			// don't add it to the system
 			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###']	= '';
 			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###']		= '';
+			$this->fileContentDynamic[$view]['###LICENSE_TABLE_LOCKED_CHECK###']	= '';
 		}
 	}
 	
-	public function checkStatmentLicenseLocked($boolMethod,$globalbool)
+	public function checkStatmentLicenseLocked($boolMethod, $thIIS = '$this')
 	{
-		$statment[] = "\n\t\tif (!\$this->isHonest())";
+		$statment[] = "\n\t\tif (!".$thIIS."->".$boolMethod."())";
 		$statment[] = "\t\t{";
 		$statment[] = "\t\t\t\$app = JFactory::getApplication();";
 		$statment[] = "\t\t\t\$app->enqueueMessage(JText::_('NIE_REG_NIE'), 'error');";
@@ -172,11 +175,15 @@ class Interpretation extends Fields
 	public function setBoolLincenseLock($boolMethod,$globalbool)
 	{
 		$bool[] = "\n\n\t/**";
+		$bool[] = "\t* The private bool.";
+		$bool[] = "\t**/";
+		$bool[] = "\tprivate $".$globalbool.";";
+		$bool[] = "\n\t/**";
 		$bool[] = "\t* Check if this install has a license.";
 		$bool[] = "\t**/";
 		$bool[] = "\tpublic function ".$boolMethod."()";
 		$bool[] = "\t{";
-		$bool[] = "\t\tif(isset(\$this->".$globalbool."))";
+		$bool[] = "\t\tif(!empty(\$this->".$globalbool."))";
 		$bool[] = "\t\t{";
 		$bool[] = "\t\t\treturn \$this->".$globalbool.";";
 		$bool[] = "\t\t}";
@@ -186,7 +193,7 @@ class Interpretation extends Fields
 		$bool[] = "\t\tif (\$license_key)";
 		$bool[] = "\t\t{";
 		$bool[] = "\t\t\t//".$this->setLine(__LINE__)." load the file";
-		$bool[] = "\t\t\tJLoader::import( 'vdm', JPATH_COMPONENT_ADMINISTRATOR);";
+		$bool[] = "\t\t\tJLoader::import( 'vdm', JPATH_ADMINISTRATOR .'/components/com_".$this->fileContentStatic['###component###']."');";
 		$bool[] = "\t\t\t\$the = new VDM(\$license_key);";
 		$bool[] = "\t\t\t\$this->".$globalbool." = \$the->_is;";
 		$bool[] = "\t\t\treturn \$this->".$globalbool.";";
@@ -210,7 +217,7 @@ class Interpretation extends Fields
 		$helper[] = "\t\tif (\$license_key)";
 		$helper[] = "\t\t{";
 		$helper[] = "\t\t\t//".$this->setLine(__LINE__)." load the file";
-		$helper[] = "\t\t\tJLoader::import( 'vdm', JPATH_COMPONENT_ADMINISTRATOR);";
+		$helper[] = "\t\t\tJLoader::import( 'vdm', JPATH_ADMINISTRATOR .'/components/com_".$this->fileContentStatic['###component###']."');";
 		$helper[] = "\t\t\t\$the = new VDM(\$license_key);";
 		$helper[] = "\t\t\treturn \$the->_is;";
 		$helper[] = "\t\t}";
@@ -9310,12 +9317,17 @@ class Interpretation extends Fields
 		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 		// allways load these
 		$allow = array();
-		$allow[] = "\t\t//".$this->setLine(__LINE__)." Get the form.";
+		$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Get the form.";
 		$allow[] = "\t\t\$form = \$this->loadForm('com_".$component.".".$viewName_single."', '".$viewName_single."', array('control' => 'jform', 'load_data' => \$loadData));";
 		$allow[] = "\n\t\tif (empty(\$form))";
 		$allow[] = "\t\t{";
 		$allow[] = "\t\t\treturn false;";
 		$allow[] = "\t\t}";
+		// load license locker
+		if ($this->componentData->add_license && $this->componentData->license_type == 3 && isset($this->fileContentDynamic[$viewName_single]['###BOOLMETHOD###']))
+		{
+			$allow[] = $this->checkStatmentLicenseLocked($this->fileContentDynamic[$viewName_single]['###BOOLMETHOD###']);
+		}
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))

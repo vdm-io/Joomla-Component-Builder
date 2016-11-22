@@ -111,7 +111,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVzlfields()
+	public function getVzmfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVzlfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVzmfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVzlfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVzmfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVzlfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVzmfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVzlfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVzmfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVzlfields($value,$name)
+	public function selectionTranslationVzmfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
@@ -299,7 +299,8 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_componentbuilder.fieldtype', 'fieldtype', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))

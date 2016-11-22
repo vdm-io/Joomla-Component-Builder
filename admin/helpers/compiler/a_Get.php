@@ -2421,7 +2421,7 @@ class Get
 	 * @return  string The unique localkey
 	 * 
 	 */
-	public function uniquekey($size, $random = false)
+	public function uniquekey($size, $random = false, $newBag = "vvvvvvvvvvvvvvvvvvv")
 	{
 		if ($random)
 		{
@@ -2429,7 +2429,7 @@ class Get
 		}
 		else
 		{
-			$bag = "vvvvvvvvvvvvvvvvvvv";
+			$bag = $newBag;
 		}
 		$key = array();
 		$bagsize = strlen($bag) - 1;

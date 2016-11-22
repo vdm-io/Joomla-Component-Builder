@@ -158,7 +158,8 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_componentbuilder.dynamic_get', 'dynamic_get', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
