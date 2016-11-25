@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  * ###Component### component helper.
  */
 abstract class ###Component###Helper
-{###ADMIN_GLOBAL_EVENT_HELPER### ###CUSTOM_HELPER_SCRIPT###
+{###ADMIN_GLOBAL_EVENT_HELPER### ###CUSTOM_HELPER_SCRIPT### ###BOTH_CUSTOM_HELPER_SCRIPT###
 	/**
 	*	Load the Component xml manifest.
 	**/

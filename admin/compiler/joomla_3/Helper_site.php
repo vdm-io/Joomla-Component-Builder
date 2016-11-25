@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  * ###Component### component helper
  */
 abstract class ###Component###Helper
-{###SITE_GLOBAL_EVENT_HELPER### ###SITE_CUSTOM_HELPER_SCRIPT###
+{###SITE_GLOBAL_EVENT_HELPER### ###SITE_CUSTOM_HELPER_SCRIPT### ###BOTH_CUSTOM_HELPER_SCRIPT###
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{

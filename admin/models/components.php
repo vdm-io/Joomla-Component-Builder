@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.3
-	@build			22nd November, 2016
+	@version		2.2.4
+	@build			25th November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		components.php
@@ -270,6 +270,8 @@ class ComponentbuilderModelComponents extends JModelList
 						}
 						// decode php_helper_site
 						$item->php_helper_site = base64_decode($item->php_helper_site);
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_admin_event
 						$item->php_admin_event = base64_decode($item->php_admin_event);
 						// decode php_site_event

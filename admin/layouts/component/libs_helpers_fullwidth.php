@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.3
-	@build			22nd November, 2016
+	@version		2.2.4
+	@build			25th November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		libs_helpers_fullwidth.php
@@ -36,6 +36,8 @@ $fields = $displayData->get('fields') ?: array(
 	'add_css',
 	'css',
 	'add_email_helper',
+	'add_php_helper_both',
+	'php_helper_both',
 	'add_php_helper_admin',
 	'php_helper_admin',
 	'add_admin_event',

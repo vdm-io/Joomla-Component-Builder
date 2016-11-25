@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.3
-	@build			22nd November, 2016
+	@version		2.2.4
+	@build			25th November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -285,7 +285,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxqfields()
+	public function getVxrfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -354,13 +354,13 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxqfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxrfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxqfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxrfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxqfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxrfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxqfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxrfields($item->store, 'store');
 				}
 			}
 
@@ -395,7 +395,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVxqfields($value,$name)
+	public function selectionTranslationVxrfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

@@ -142,8 +142,8 @@ class Interpretation extends Fields
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$boolMethod	= ComponentbuilderHelper::safeString($this->uniquekey(6, false, 'llllllllll'));
-			$globalbool	= ComponentbuilderHelper::safeString($this->uniquekey(6));
+			$boolMethod	= 'get'.ComponentbuilderHelper::safeString($this->uniquekey(3, false, 'ddd'), 'W');
+			$globalbool	= 'set'.ComponentbuilderHelper::safeString($this->uniquekey(3), 'W');
 			// add it to the system
 			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###']	= $this->setBoolLincenseLock($boolMethod,$globalbool);
 			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###']		= $this->checkStatmentLicenseLocked($boolMethod);

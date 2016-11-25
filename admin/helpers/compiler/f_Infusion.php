@@ -153,6 +153,9 @@ class Infusion extends Interpretation
 			// ###CUSTOM_HELPER_SCRIPT###
 			$this->fileContentStatic['###CUSTOM_HELPER_SCRIPT###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_helper_admin']);
 			
+			// ###BOTH_CUSTOM_HELPER_SCRIPT###
+			$this->fileContentStatic['###BOTH_CUSTOM_HELPER_SCRIPT###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_helper_both']);
+			
 			// ###ADMIN_GLOBAL_EVENT_HELPER###
 			$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] = '';
 			

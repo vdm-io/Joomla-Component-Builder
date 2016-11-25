@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.3
-	@build			22nd November, 2016
+	@version		2.2.4
+	@build			25th November, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -111,6 +111,12 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			{
 				// base64 Decode php_helper_site.
 				$item->php_helper_site = base64_decode($item->php_helper_site);
+			}
+
+			if (!empty($item->php_helper_both))
+			{
+				// base64 Decode php_helper_both.
+				$item->php_helper_both = base64_decode($item->php_helper_both);
 			}
 
 			if (!empty($item->php_admin_event))
@@ -213,7 +219,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwkadmin_views()
+	public function getVwladmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -300,7 +306,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwlsite_views()
+	public function getVwmsite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -1114,6 +1120,12 @@ class ComponentbuilderModelComponent extends JModelAdmin
 		if (isset($data['php_helper_site']))
 		{
 			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
+		}
+
+		// Set the php_helper_both string to base64 string.
+		if (isset($data['php_helper_both']))
+		{
+			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
 		}
 
 		// Set the php_admin_event string to base64 string.

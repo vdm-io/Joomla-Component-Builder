@@ -681,6 +681,16 @@ class Get
 			$this->customScriptBuilder['component_php_admin_event'] = '';
 		}
 		unset($component->php_admin_event);
+		// add_php_helper_both
+		if ($component->add_php_helper_both == 1)
+		{
+			$this->lang = 'both';
+			$this->customScriptBuilder['component_php_helper_both'] = "\n\n".$this->setCustomContentLang(base64_decode($component->php_helper_both));
+		}
+		else
+		{
+			$this->customScriptBuilder['component_php_helper_both'] = '';
+		}
 		// add_php_helper_site
 		if ($component->add_php_helper_site == 1)
 		{
