@@ -118,12 +118,15 @@ class Interpretation extends Fields
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$_VDM = '_'.ComponentbuilderHelper::safeString($this->uniquekey(10),'U');
-			// add it to the system
-			$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'site');
-			$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'admin');
-			$this->fileContentStatic['###LICENSE_LOCKED_INT###'] = $this->setInitLincenseLock($_VDM);
-			$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = "\n\n".'defined(\''.$_VDM.'\') or die(JText::_(\'NIE_REG_NIE\'));';
+			if (!isset($this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###']))
+			{
+				$_VDM = '_'.ComponentbuilderHelper::safeString($this->uniquekey(10),'U');
+				// add it to the system
+				$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'site');
+				$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'admin');
+				$this->fileContentStatic['###LICENSE_LOCKED_INT###'] = $this->setInitLincenseLock($_VDM);
+				$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = "\n\n".'defined(\''.$_VDM.'\') or die(JText::_(\'NIE_REG_NIE\'));';
+			}
 		}
 		else
 		{
@@ -138,17 +141,20 @@ class Interpretation extends Fields
 	/**
 	 * @param $view
 	*/
-	public function setLockLicensePer(&$view)
+	public function setLockLicensePer(&$view, $target)
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$boolMethod	= 'get'.ComponentbuilderHelper::safeString($this->uniquekey(3, false, 'ddd'), 'W');
-			$globalbool	= 'set'.ComponentbuilderHelper::safeString($this->uniquekey(3), 'W');
-			// add it to the system
-			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###']	= $this->setBoolLincenseLock($boolMethod,$globalbool);
-			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###']		= $this->checkStatmentLicenseLocked($boolMethod);
-			$this->fileContentDynamic[$view]['###LICENSE_TABLE_LOCKED_CHECK###']	= $this->checkStatmentLicenseLocked($boolMethod, '$table');
-			$this->fileContentDynamic[$view]['###BOOLMETHOD###']			= $boolMethod;
+			if (!isset($this->fileContentDynamic[$view]['###BOOLMETHOD###']))
+			{
+				$boolMethod	= 'get'.ComponentbuilderHelper::safeString($this->uniquekey(3, false, 'ddd'), 'W');
+				$globalbool	= 'set'.ComponentbuilderHelper::safeString($this->uniquekey(3), 'W');
+				// add it to the system
+				$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###']	= $this->setBoolLincenseLock($boolMethod,$globalbool);
+				$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###']		= $this->checkStatmentLicenseLocked($boolMethod);
+				$this->fileContentDynamic[$view]['###LICENSE_TABLE_LOCKED_CHECK###']	= $this->checkStatmentLicenseLocked($boolMethod, '$table');
+				$this->fileContentDynamic[$view]['###BOOLMETHOD###']			= $boolMethod;
+			}
 		}
 		else
 		{
@@ -1333,7 +1339,7 @@ class Interpretation extends Fields
 			{
 				if ($array['decode'] == 'json')
 				{
-					$if = "\n\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkString(".$string."->".$field."))\n\t".$tab."\t{";
+					$if = "\n\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(".$string."->".$field."))\n\t".$tab."\t{";
 					// json_decode
 					$decoder = $string."->".$field." = json_decode(".$string."->".$field.", true);";
 					// TODO Use the type of field to prepare it even more for use in the view
@@ -2114,7 +2120,7 @@ class Interpretation extends Fields
 					{
 						$methods .= "\n\n\t\t//".$this->setLine(__LINE__)." Check if \$" . $default['on_field'] . " is an array with values.";
 						$methods .= "\n\t\t\$array = \$" . $default['on_field'] . ";";
-						$methods .= "\n\t\tif (isset(\$array) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$array))";
+						$methods .= "\n\t\tif (isset(\$array) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$array, true))";
 						$methods .= "\n\t\t{";
 						$methods .= "\n\t\t\t\$query->where('".$get['join_field']." ".$get['operator']." (' . implode(',', \$array) . ')');";
 						$methods .= "\n\t\t}";
@@ -2368,13 +2374,16 @@ class Interpretation extends Fields
 		$getItem = '';
 		$this->siteDecrypt['basic'][$code] = false;
 		$this->siteDecrypt['advanced'][$code] = false;
+		$Component = $this->fileContentStatic['###Component###'];
 		if (ComponentbuilderHelper::checkObject($get))
 		{
 			$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
-			$getItem .= "\n\t\tforeach (\$items as \$nr => &\$item)";
+			$getItem .= "\n\t\tif (".$Component."Helper::checkArray(\$items))";
 			$getItem .= "\n\t\t{";
-			$getItem .= "\n\t\t\t//".$this->setLine(__LINE__)." Always create a slug for sef URL's";
-			$getItem .= "\n\t\t\t\$item->slug = (isset(\$item->alias)) ? \$item->id.':'.\$item->alias : \$item->id;";
+			$getItem .= "\n\t\t\tforeach (\$items as \$nr => &\$item)";
+			$getItem .= "\n\t\t\t{";
+			$getItem .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Always create a slug for sef URL's";
+			$getItem .= "\n\t\t\t\t\$item->slug = (isset(\$item->alias) && isset(\$item->id)) ? \$item->id.':'.\$item->alias : \$item->id;";
 			if (isset($get->main_get) && ComponentbuilderHelper::checkArray($get->main_get))
 			{
 				$asBucket = array();
@@ -2386,7 +2395,7 @@ class Interpretation extends Fields
 						if (ComponentbuilderHelper::checkArray($decodeChecker))
 						{
 							// set decoding of needed fields
-							$getItem .= $this->setCustomViewFieldDecode($main_get,$decodeChecker,"\$item",$code,"\t");
+							$getItem .= $this->setCustomViewFieldDecode($main_get,$decodeChecker,"\$item",$code,"\t\t");
 						}
 					}
 					// also filter fields if needed
@@ -2395,7 +2404,7 @@ class Interpretation extends Fields
 						$decodeFilter = $this->siteFieldDecodeFilter[$this->target][$code][$main_get['key']][$main_get['as']];
 						if (ComponentbuilderHelper::checkArray($decodeFilter))
 						{
-							$getItem .= $this->setCustomViewFieldDecodeFilter($main_get,$decodeFilter,"\$item",'$items[$nr]',$code,"\t");
+							$getItem .= $this->setCustomViewFieldDecodeFilter($main_get,$decodeFilter,"\$item",'$items[$nr]',$code,"\t\t");
 						}
 					}
 					if (isset($this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']]))
@@ -2404,25 +2413,26 @@ class Interpretation extends Fields
 						if (ComponentbuilderHelper::checkArray($uikitChecker))
 						{
 							// set uikit checkers on needed fields
-							$getItem .= $this->setCustomViewFieldUikitChecker($main_get,$uikitChecker,"\$item",$code,"\t");
+							$getItem .= $this->setCustomViewFieldUikitChecker($main_get,$uikitChecker,"\$item",$code,"\t\t");
 						}
 					}
 					$asBucket[] = $main_get['as'];
 				}
 			}
 			// setup Globals
-			$getItem .= $this->setCustomViewGlobals($get->global,'$item',$asBucket,"\t");
+			$getItem .= $this->setCustomViewGlobals($get->global,'$item',$asBucket,"\t\t");
 			// setup the custom gets that returns multipal values
-			$getItem .= $this->setCustomViewCustomJoin($get->custom_get,"\$item",$code,$asBucket,"\t");
+			$getItem .= $this->setCustomViewCustomJoin($get->custom_get,"\$item",$code,$asBucket,"\t\t");
 			// set calculations
 			if ($get->addcalculation == 1)
 			{
 				$get->php_calculation = (array) explode("\n",$get->php_calculation);
 				if (ComponentbuilderHelper::checkArray($get->php_calculation))
 				{
-					$getItem .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\t\t\t".implode("\n\t\t\t",$get->php_calculation));
+					$getItem .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\t\t\t\t".implode("\n\t\t\t\t",$get->php_calculation));
 				}
 			}
+			$getItem .= "\n\t\t\t}";
 			$getItem .= "\n\t\t}";
 			// remove empty foreach
 			if (strlen($getItem) <= 100)
@@ -2433,7 +2443,6 @@ class Interpretation extends Fields
 
 		if ($this->siteDecrypt['basic'][$code] || $this->siteDecrypt['advanced'][$code])
 		{
-			$Component	= $this->fileContentStatic['###Component###'];
 			$script = '';
 			if ($this->siteDecrypt['basic'][$code])
 			{
@@ -3986,8 +3995,16 @@ class Interpretation extends Fields
 		return '';
 	}
 	
-	public function routerParseSwitch(&$view)
+	public function routerParseSwitch(&$view, $viewArray = null)
 	{
+		$isCategory = '';
+		if ($viewArray && ComponentbuilderHelper::checkArray($viewArray))
+		{
+			if (isset($viewArray['settings']->main_get->db_table_main) && $viewArray['settings']->main_get->db_table_main == 'categories')
+			{
+				$isCategory = ', true'; // TODO we will keep an eye on this....
+			}
+		}
 		// add if tags is added, also for all front item views
 		if (1)
 		{
@@ -4002,7 +4019,7 @@ class Interpretation extends Fields
 			$routerSwitch[] = "\t\t\t\t}";
 			$routerSwitch[] = "\t\t\t\telse";
 			$routerSwitch[] = "\t\t\t\t{";
-			$routerSwitch[] = "\t\t\t\t\t\$id = \$this->getVar('".$view."', \$segments[\$count-1], 'alias', 'id');";
+			$routerSwitch[] = "\t\t\t\t\t\$id = \$this->getVar('".$view."', \$segments[\$count-1], 'alias', 'id'".$isCategory.");";
 			$routerSwitch[] = "\t\t\t\t\tif(\$id)";
 			$routerSwitch[] = "\t\t\t\t\t{";
 			$routerSwitch[] = "\t\t\t\t\t\t\$vars['id'] = \$id;";
@@ -7382,7 +7399,8 @@ class Interpretation extends Fields
 		$addButton[] = "\t\t\t\$script = array();";
 		$addButton[] = "\t\t\t\$buttonName = \$this->getAttribute('name');";
 		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." get the input from url";
-		$addButton[] = "\t\t\t\$jinput = JFactory::getApplication()->input;";
+		$addButton[] = "\t\t\t\$app = JFactory::getApplication();";
+		$addButton[] = "\t\t\t\$jinput = \$app->input;";
 		$addButton[] = "\t\t\t//".$this->setLine(__LINE__)." get the view name & id";
 		$addButton[] = "\t\t\t\$values = \$jinput->getArray(array(";
 		$addButton[] = "\t\t\t\t'id' => 'int',";
@@ -7409,11 +7427,11 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($targetView,$this->permissionBuilder['global'][$core['core.create']]))
 		{
-			$addButton[] = "\t\t\tif (\$user->authorise('".$core['core.create']."', 'com_".$this->fileContentStatic['###component###']."'))";
+			$addButton[] = "\t\t\tif (\$user->authorise('".$core['core.create']."', 'com_".$this->fileContentStatic['###component###']."') && \$app->isAdmin()) // TODO for now only in admin area.";
 		}
 		else
 		{
-			$addButton[] = "\t\t\tif (\$user->authorise('core.create', 'com_".$this->fileContentStatic['###component###']."'))";
+			$addButton[] = "\t\t\tif (\$user->authorise('core.create', 'com_".$this->fileContentStatic['###component###']."') && \$app->isAdmin()) // TODO for now only in admin area.";
 		}
 		$addButton[] = "\t\t\t{";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build Create button";
@@ -7430,11 +7448,11 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($targetView,$this->permissionBuilder['global'][$core['core.edit']]))
 		{
-			$addButton[] = "\t\t\tif ((\$buttonName == '".$targetView."' || \$buttonName == '".$targetViews."') && \$user->authorise('".$core['core.edit']."', 'com_".$this->fileContentStatic['###component###']."'))";
+			$addButton[] = "\t\t\tif ((\$buttonName == '".$targetView."' || \$buttonName == '".$targetViews."') && \$user->authorise('".$core['core.edit']."', 'com_".$this->fileContentStatic['###component###']."') && \$app->isAdmin()) // TODO for now only in admin area.";
 		}
 		else
 		{
-			$addButton[] = "\t\t\tif ((\$buttonName == '".$targetView."' || \$buttonName == '".$targetViews."')  && \$user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###']."'))";
+			$addButton[] = "\t\t\tif ((\$buttonName == '".$targetView."' || \$buttonName == '".$targetViews."')  && \$user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###']."') && \$app->isAdmin()) // TODO for now only in admin area.";
 		}
 		$addButton[] = "\t\t\t{";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build edit button";
@@ -9156,7 +9174,7 @@ class Interpretation extends Fields
 			{
 				$allow[] = "\t\t\t\$permission = \$user->authorise('core.edit', 'com_".$component.".".$otherView.".' . (int) \$recordId);";
 			}
-			$allow[] = "\t\t\tif (!\$permission && !is_null(\$permission))";
+			$allow[] = "\t\t\tif (!\$permission)";
 			$allow[] = "\t\t\t{";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.own']) && isset($this->permissionBuilder[$core['core.edit.own']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.own']]) && in_array($otherView,$this->permissionBuilder[$core['core.edit.own']]))
@@ -9252,7 +9270,7 @@ class Interpretation extends Fields
 			{
 				$allow[] = "\t\t\t\$permission = \$user->authorise('core.edit', 'com_".$component.".".$viewName_single.".' . (int) \$recordId);";
 			}
-			$allow[] = "\t\t\tif (!\$permission && !is_null(\$permission))";
+			$allow[] = "\t\t\tif (!\$permission)";
 			$allow[] = "\t\t\t{";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.own']) && isset($this->permissionBuilder[$core['core.edit.own']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.own']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.edit.own']]))
@@ -11608,6 +11626,7 @@ class Interpretation extends Fields
 			// these can be added anytime really (but looks best after groups
 			$this->setUikitConfigFieldsets($lang);
 			$this->setGooglechartConfigFieldsets($lang);
+			$this->setEmailHelperConfigFieldsets($lang);
 			$this->setEncryptionConfigFieldsets($lang);
 			// these are the coustom settings
 			$this->setCustomControlConfigFieldsets($lang);
@@ -12176,6 +12195,476 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			{
 				$this->configFieldSets[] = implode("\t\t",$this->configFieldSetsCustomField['Uikit Settings']);
 				unset($this->configFieldSetsCustomField['Uikit Settings']);
+			}
+			// close that fieldset
+			$this->configFieldSets[] = "\t</fieldset>";
+		}
+
+	}
+	
+	public function setEmailHelperConfigFieldsets($lang)
+	{
+		if (isset($this->componentData->add_email_helper) && $this->componentData->add_email_helper)
+		{
+			// main lang prefix
+			$lang = $lang.'';
+			// set main lang string
+			$this->langContent[$this->lang][$lang.'_MAIL_CONFIGURATION'] = "Mail Configuration";
+			$this->langContent[$this->lang][$lang.'_DKIM'] = "DKIM";
+			// start building field set for email helper functions
+			$this->configFieldSets[] = "\n\t<fieldset";
+			$this->configFieldSets[] = "\t\tname=\"mail_configuration_custom_config\"";
+			$this->configFieldSets[] = "\t\tlabel=\"".$lang."_MAIL_CONFIGURATION\">";
+			// add custom Mail Configurations
+			if (isset($this->configFieldSetsCustomField['Mail Configuration']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Mail Configuration']))
+			{
+				$this->configFieldSets[] = implode("\t\t",$this->configFieldSetsCustomField['Mail Configuration']);
+				unset($this->configFieldSetsCustomField['Mail Configuration']);
+			}
+			else
+			{
+				// set all the laguage strings
+				$this->langContent[$this->lang][$lang.'_MAILONLINE_LABEL'] = "Mailer Status";
+				$this->langContent[$this->lang][$lang.'_MAILONLINE_DESCRIPTION'] = "Warning this will stop all emails from going out.";
+				$this->langContent[$this->lang][$lang.'_ON'] = "On";
+				$this->langContent[$this->lang][$lang.'_OFF'] = "Off";
+				$this->langContent[$this->lang][$lang.'_MAILER_LABEL'] = "Mailer";
+				$this->langContent[$this->lang][$lang.'_MAILER_DESCRIPTION'] = "Select what mailer you would like to use to send emails.";
+				$this->langContent[$this->lang][$lang.'_GLOBAL'] = "Global";
+				$this->langContent[$this->lang][$lang.'_PHP_MAIL'] = "PHP Mail";
+				$this->langContent[$this->lang][$lang.'_SENDMAIL'] = "Sendmail";
+				$this->langContent[$this->lang][$lang.'_SMTP'] = "SMTP";
+				$this->langContent[$this->lang][$lang.'_EMAILFROM_LABEL'] = " From Email";
+				$this->langContent[$this->lang][$lang.'_EMAILFROM_DESCRIPTION'] = "The global email address that will be used to send system email.";
+				$this->langContent[$this->lang][$lang.'_EMAILFROM_HINT'] = "Email Address Here";
+				$this->langContent[$this->lang][$lang.'_FROMNAME_LABEL'] = "From Name";
+				$this->langContent[$this->lang][$lang.'_FROMNAME_DESCRIPTION'] = "Text displayed in the header &quot;From:&quot; field when sending a site email. Usually the site name.";
+				$this->langContent[$this->lang][$lang.'_FROMNAME_HINT'] = "From Name Here";
+				$this->langContent[$this->lang][$lang.'_EMAILREPLY_LABEL'] = " Reply Email";
+				$this->langContent[$this->lang][$lang.'_EMAILREPLY_DESCRIPTION'] = "The global email address that will be used to set as the reply email. (leave blank for none)";
+				$this->langContent[$this->lang][$lang.'_EMAILREPLY_HINT'] = "Email Address Here";
+				$this->langContent[$this->lang][$lang.'_REPLYNAME_LABEL'] = "Reply Name";
+				$this->langContent[$this->lang][$lang.'_REPLYNAME_DESCRIPTION'] = "Text displayed in the header &quot;Reply To:&quot; field when replying to the site email. Usually the the person that receives the response. (leave blank for none)";
+				$this->langContent[$this->lang][$lang.'_REPLYNAME_HINT'] = "Reply Name Here";
+				$this->langContent[$this->lang][$lang.'_SENDMAIL_LABEL'] = "Sendmail Path";
+				$this->langContent[$this->lang][$lang.'_SENDMAIL_DESCRIPTION'] = "Enter the path to the sendmail program directory on your host server.";
+				$this->langContent[$this->lang][$lang.'_SENDMAIL_HINT'] = "/usr/sbin/sendmail";
+				$this->langContent[$this->lang][$lang.'_SMTPAUTH_LABEL'] = "SMTP Authentication";
+				$this->langContent[$this->lang][$lang.'_SMTPAUTH_DESCRIPTION'] = "Select yes if your SMTP host requires SMTP Authentication.";
+				$this->langContent[$this->lang][$lang.'_YES'] = "Yes";
+				$this->langContent[$this->lang][$lang.'_NO'] = "No";
+				$this->langContent[$this->lang][$lang.'_SMTPSECURE_LABEL'] = "SMTP Security";
+				$this->langContent[$this->lang][$lang.'_SMTPSECURE_DESCRIPTION'] = "Select the security model that your SMTP server uses.";
+				$this->langContent[$this->lang][$lang.'_NONE'] = "None";
+				$this->langContent[$this->lang][$lang.'_SSL'] = "SSL";
+				$this->langContent[$this->lang][$lang.'_TLS'] = "TLS";
+				$this->langContent[$this->lang][$lang.'_SMTPPORT_LABEL'] = "SMTP Port";
+				$this->langContent[$this->lang][$lang.'_SMTPPORT_DESCRIPTION'] = "Enter the port number of your SMTP server. Use 25 for most unsecured servers and 465 for most secure servers.";
+				$this->langContent[$this->lang][$lang.'_SMTPPORT_HINT'] = "25";
+				$this->langContent[$this->lang][$lang.'_SMTPUSER_LABEL'] = "SMTP Username";
+				$this->langContent[$this->lang][$lang.'_SMTPUSER_DESCRIPTION'] = "Enter the username for access to the SMTP host.";
+				$this->langContent[$this->lang][$lang.'_SMTPUSER_HINT'] = "email@demo.com";
+				$this->langContent[$this->lang][$lang.'_SMTPPASS_LABEL'] = "SMTP Password";
+				$this->langContent[$this->lang][$lang.'_SMTPPASS_DESCRIPTION'] = "Enter the password for access to the SMTP host.";
+				$this->langContent[$this->lang][$lang.'_SMTPHOST_LABEL'] = "SMTP Host";
+				$this->langContent[$this->lang][$lang.'_SMTPHOST_DESCRIPTION'] = "Enter the name of the SMTP host.";
+				$this->langContent[$this->lang][$lang.'_SMTPHOST_HINT'] = "localhost";
+
+				// set the mailer fields
+				$this->configFieldSets[] = "\n\t\t<!--".$this->setLine(__LINE__)." Mailonline Field. Type: Radio. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"radio\"";
+				$this->configFieldSets[] = "\t\t\tname=\"mailonline\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_MAILONLINE_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_MAILONLINE_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"btn-group btn-group-yesno\"";
+				$this->configFieldSets[] = "\t\t\tdefault=\"1\">";
+				$this->configFieldSets[] = "\t\t\t<!--".$this->setLine(__LINE__)." Option Set. -->";
+				$this->configFieldSets[] = "\t\t\t<option value=\"1\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_ON</option>";
+				$this->configFieldSets[] = "\t\t\t<option value=\"0\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_OFF</option>";
+				$this->configFieldSets[] = "\t\t</field>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Mailer Field. Type: List. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"list\"";
+				$this->configFieldSets[] = "\t\t\tname=\"mailer\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_MAILER_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_MAILER_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"list_class\"";
+				$this->configFieldSets[] = "\t\t\tmultiple=\"false\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"WORD\"";
+				$this->configFieldSets[] = "\t\t\trequired=\"true\"";
+				$this->configFieldSets[] = "\t\t\tdefault=\"global\">";
+				$this->configFieldSets[] = "\t\t\t<!--".$this->setLine(__LINE__)." Option Set. -->";
+				$this->configFieldSets[] = "\t\t\t<option value=\"global\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_GLOBAL</option>";
+				$this->configFieldSets[] = "\t\t\t<option value=\"default\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_PHP_MAIL</option>";
+				$this->configFieldSets[] = "\t\t\t<option value=\"sendmail\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_SENDMAIL</option>";
+				$this->configFieldSets[] = "\t\t\t<option value=\"smtp\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_SMTP</option>";
+				$this->configFieldSets[] = "\t\t</field>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Emailfrom Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"emailfrom\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_EMAILFROM_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_EMAILFROM_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tvalidate=\"email\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add email address here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_EMAILFROM_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp,sendmail,default\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Fromname Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"fromname\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_FROMNAME_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_FROMNAME_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add some name here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_FROMNAME_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp,sendmail,default\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Emailreply Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"emailreply\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_EMAILREPLY_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_EMAILREPLY_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tvalidate=\"email\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add email address here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_EMAILREPLY_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp,sendmail,default\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Replyname Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"replyname\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_REPLYNAME_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_REPLYNAME_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add some name here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_REPLYNAME_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp,sendmail,default\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Sendmail Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"sendmail\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_SENDMAIL_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_SENDMAIL_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\trequired=\"false\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"PATH\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add path to you local sendmail here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_SENDMAIL_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:sendmail\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Smtpauth Field. Type: Radio. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"radio\"";
+				$this->configFieldSets[] = "\t\t\tname=\"smtpauth\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_SMTPAUTH_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_SMTPAUTH_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"btn-group btn-group-yesno\"";
+				$this->configFieldSets[] = "\t\t\tdefault=\"0\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp\">";
+				$this->configFieldSets[] = "\t\t\t<!--".$this->setLine(__LINE__)." Option Set. -->";
+				$this->configFieldSets[] = "\t\t\t<option value=\"1\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_YES</option>";
+				$this->configFieldSets[] = "\t\t\t<option value=\"0\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_NO</option>";
+				$this->configFieldSets[] = "\t\t</field>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Smtpsecure Field. Type: List. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"list\"";
+				$this->configFieldSets[] = "\t\t\tname=\"smtpsecure\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_SMTPSECURE_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_SMTPSECURE_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"list_class\"";
+				$this->configFieldSets[] = "\t\t\tmultiple=\"false\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"WORD\"";
+				$this->configFieldSets[] = "\t\t\tdefault=\"none\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp\">";
+				$this->configFieldSets[] = "\t\t\t<!--".$this->setLine(__LINE__)." Option Set. -->";
+				$this->configFieldSets[] = "\t\t\t<option value=\"none\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_NONE</option>";
+				$this->configFieldSets[] = "\t\t\t<option value=\"ssl\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_SSL</option>";
+				$this->configFieldSets[] = "\t\t\t<option value=\"tls\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_TLS</option>";
+				$this->configFieldSets[] = "\t\t</field>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Smtpport Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"smtpport\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_SMTPPORT_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdefault=\"25\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_SMTPPORT_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"INT\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add the port number of your SMTP server here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_SMTPPORT_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Smtpuser Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"smtpuser\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_SMTPUSER_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_SMTPUSER_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add the username for SMTP server here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_SMTPUSER_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Smtppass Field. Type: Password. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"password\"";
+				$this->configFieldSets[] = "\t\t\tname=\"smtppass\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_SMTPPASS_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_SMTPPASS_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"raw\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add the password for SMTP server here.\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Smtphost Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"smtphost\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_SMTPHOST_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdefault=\"localhost\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_SMTPHOST_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add the name of the SMTP host here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_SMTPHOST_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp\"";
+				$this->configFieldSets[] = "\t\t/>";
+			}
+			// close that fieldset
+			$this->configFieldSets[] = "\t</fieldset>";
+				
+			// start dkim field set
+			$this->configFieldSets[] = "\t<fieldset";
+			$this->configFieldSets[] = "\t\tname=\"dkim_custom_config\"";
+			$this->configFieldSets[] = "\t\tlabel=\"".$lang."_DKIM\">";
+			// add custom DKIM fields
+			if (isset($this->configFieldSetsCustomField['DKIM']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['DKIM']))
+			{
+				$this->configFieldSets[] = implode("\t\t",$this->configFieldSetsCustomField['DKIM']);
+				unset($this->configFieldSetsCustomField['DKIM']);
+			}
+			else
+			{
+				$this->langContent[$this->lang][$lang.'_DKIM_LABEL'] = "Enable DKIM";
+				$this->langContent[$this->lang][$lang.'_DKIM_DESCRIPTION'] = "Set this option to Yes if you want to sign your emails using DKIM.";
+				$this->langContent[$this->lang][$lang.'_YES'] = "Yes";
+				$this->langContent[$this->lang][$lang.'_NO'] = "No";
+				$this->langContent[$this->lang][$lang.'_DKIM_DOMAIN_LABEL'] = "Domain";
+				$this->langContent[$this->lang][$lang.'_DKIM_DOMAIN_DESCRIPTION'] = "Set the domain. Eg. domain.com";
+				$this->langContent[$this->lang][$lang.'_DKIM_DOMAIN_HINT'] = "domain.com";
+				$this->langContent[$this->lang][$lang.'_DKIM_SELECTOR_LABEL'] = "Selector";
+				$this->langContent[$this->lang][$lang.'_DKIM_SELECTOR_DESCRIPTION'] = "Set your DKIM/DNS selector.";
+				$this->langContent[$this->lang][$lang.'_DKIM_SELECTOR_HINT'] = "vdm";
+				$this->langContent[$this->lang][$lang.'_DKIM_PASSPHRASE_LABEL'] = "Passphrase";
+				$this->langContent[$this->lang][$lang.'_DKIM_PASSPHRASE_DESCRIPTION'] = "Enter your passphrase here.";
+				$this->langContent[$this->lang][$lang.'_DKIM_IDENTITY_LABEL'] = "Identity";
+				$this->langContent[$this->lang][$lang.'_DKIM_IDENTITY_DESCRIPTION'] = "Set DKIM identity. This can be in the format of an email address 'you@yourdomain.com' typically used as the source of the email.";
+				$this->langContent[$this->lang][$lang.'_DKIM_IDENTITY_HINT'] = "you@yourdomain.com";
+				$this->langContent[$this->lang][$lang.'_DKIM_PRIVATE_KEY_LABEL'] = "Private key";
+				$this->langContent[$this->lang][$lang.'_DKIM_PRIVATE_KEY_DESCRIPTION'] = "set private key";
+				$this->langContent[$this->lang][$lang.'_DKIM_PUBLIC_KEY_LABEL'] = "Public key";
+				$this->langContent[$this->lang][$lang.'_DKIM_PUBLIC_KEY_DESCRIPTION'] = "set public key";
+				$this->langContent[$this->lang][$lang.'_NOTE_DKIM_USE_LABEL'] = "Server Configuration";
+				$this->langContent[$this->lang][$lang.'_NOTE_DKIM_USE_DESCRIPTION'] = "<p>Using the below details, you need to configure your DNS by adding a TXT record on your domain: <b><span id='a_dkim_domain'></span></b></p>
+<script>
+jQuery(document).ready(function()
+{
+	// house cleaning
+        if( !jQuery('#jform_dkim_domain').val() ) {
+            jQuery('#jform_dkim_domain').val(window.location.hostname);
+        }
+        jQuery('#jform_dkim_key').click(function(){
+            jQuery(this).select();
+        });
+        jQuery('#jform_dkim_value').click(function(){
+            jQuery(this).select();
+        });
+        vdm_dkim();
+});
+
+function vdm_dkim() {
+        jQuery('#a_dkim_domain').text(jQuery('#jform_dkim_domain').val());
+	jQuery('#jform_dkim_key').val(jQuery('#jform_dkim_selector').val() + '._domainkey');
+	if( !jQuery('#jform_dkim_public_key').val() ) {
+	        jQuery('#jform_dkim_value').val('v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=PUBLICKEY');
+        } else {
+	        jQuery('#jform_dkim_value').val('v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=' + jQuery('#jform_dkim_public_key').val());
+        }
+}
+</script>";
+				$this->langContent[$this->lang][$lang.'_DKIM_KEY_LABEL'] = "Key";
+				$this->langContent[$this->lang][$lang.'_DKIM_KEY_DESCRIPTION'] = "This is the KEY to use in the DNS record.";
+				$this->langContent[$this->lang][$lang.'_DKIM_KEY_HINT'] = "vdm._domainkey";
+				$this->langContent[$this->lang][$lang.'_DKIM_VALUE_LABEL'] = "Value";
+				$this->langContent[$this->lang][$lang.'_DKIM_VALUE_DESCRIPTION'] = "This is the TXT value to use in the DNS. Replace the PUBLICKEY with your public key.";
+				$this->langContent[$this->lang][$lang.'_DKIM_VALUE_HINT'] = "v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=PUBLICKEY";
+
+
+				$this->configFieldSets[] = "\n\t\t<!--".$this->setLine(__LINE__)." Dkim Field. Type: Radio. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"radio\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"btn-group btn-group-yesno\"";
+				$this->configFieldSets[] = "\t\t\tdefault=\"0\"";
+				$this->configFieldSets[] = "\t\t\trequired=\"true\">";
+				$this->configFieldSets[] = "\t\t\t<!--".$this->setLine(__LINE__)." Option Set. -->";
+				$this->configFieldSets[] = "\t\t\t<option value=\"1\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_YES</option>";
+				$this->configFieldSets[] = "\t\t\t<option value=\"0\">";
+				$this->configFieldSets[] = "\t\t\t\t".$lang."_NO</option>";
+				$this->configFieldSets[] = "\t\t</field>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Dkim_domain Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim_domain\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_DOMAIN_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_DOMAIN_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add DKIM Domain here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_DKIM_DOMAIN_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"dkim:1\"";
+				$this->configFieldSets[] = "\t\t\tonchange=\"vdm_dkim();\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Dkim_selector Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim_selector\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_SELECTOR_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdefault=\"vdm\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_SELECTOR_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add DKIM/DNS selector here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_DKIM_SELECTOR_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"dkim:1\"";
+				$this->configFieldSets[] = "\t\t\tonchange=\"vdm_dkim();\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Dkim_passphrase Field. Type: Password. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"password\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim_passphrase\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_PASSPHRASE_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_PASSPHRASE_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"raw\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add  passphrase here.\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"dkim:1\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Dkim_identity Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim_identity\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_IDENTITY_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_IDENTITY_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"raw\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add  DKIM Identity here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_DKIM_IDENTITY_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"dkim:1\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Dkim_private_key Field. Type: Textarea. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"textarea\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim_private_key\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_PRIVATE_KEY_LABEL\"";
+				$this->configFieldSets[] = "\t\t\trows=\"15\"";
+				$this->configFieldSets[] = "\t\t\tcols=\"5\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_PRIVATE_KEY_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"input-xxlarge span12\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"dkim:1\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Dkim_public_key Field. Type: Textarea. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"textarea\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim_public_key\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_PUBLIC_KEY_LABEL\"";
+				$this->configFieldSets[] = "\t\t\trows=\"5\"";
+				$this->configFieldSets[] = "\t\t\tcols=\"5\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_PUBLIC_KEY_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"input-xxlarge span12\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"dkim:1\"";
+				$this->configFieldSets[] = "\t\t\tonchange=\"vdm_dkim();\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Note_dkim_use Field. Type: Note. A None Database Field. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field type=\"note\" name=\"note_dkim_use\" label=\"".$lang."_NOTE_DKIM_USE_LABEL\" description=\"".$lang."_NOTE_DKIM_USE_DESCRIPTION\" heading=\"h4\" class=\"note_dkim_use\" showon=\"dkim:1\" />\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Dkim_key Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim_key\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_KEY_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"40\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_KEY_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add KEY here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_DKIM_KEY_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"dkim:1\"";
+				$this->configFieldSets[] = "\t\t/>\t\t";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Dkim_value Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<field";
+				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
+				$this->configFieldSets[] = "\t\t\tname=\"dkim_value\"";
+				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_DKIM_VALUE_LABEL\"";
+				$this->configFieldSets[] = "\t\t\tsize=\"80\"";
+				$this->configFieldSets[] = "\t\t\tmaxlength=\"350\"";
+				$this->configFieldSets[] = "\t\t\tdescription=\"".$lang."_DKIM_VALUE_DESCRIPTION\"";
+				$this->configFieldSets[] = "\t\t\tclass=\"text_area\"";
+				$this->configFieldSets[] = "\t\t\tfilter=\"STRING\"";
+				$this->configFieldSets[] = "\t\t\tmessage=\"Error! Please add TXT record here.\"";
+				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_DKIM_VALUE_HINT\"";
+				$this->configFieldSets[] = "\t\t\tshowon=\"dkim:1\"";
+				$this->configFieldSets[] = "\t\t/>";
 			}
 			// close that fieldset
 			$this->configFieldSets[] = "\t</fieldset>";

@@ -10,12 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.4
-	@build			25th November, 2016
+	@version		2.2.5
+	@build			22nd December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		router.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
+	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -124,16 +124,10 @@ class ComponentbuilderRouter extends JComponentRouterBase
 	 * @since   3.3
 	 */
 	public function parse(&$segments)
-	{
-		//var_dump($segments);
-		//$app = JFactory::getApplication();
-		//$menu = $app->getMenu();
-		//$item = $menu->getActive();
-		
+	{		
 		$count = count($segments);
 		$vars = array();
-				
-		//var_dump($item->query['view']);
+		
 		//Handle View and Identifier
 		switch($segments[0])
 		{
@@ -142,7 +136,7 @@ class ComponentbuilderRouter extends JComponentRouterBase
 		return $vars;
 	} 
 
-	protected function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = 'componentbuilder')
+	protected function getVar($table, $where = null, $whereString = 'user', $what = 'id', $category = false, $operator = '=', $main = 'componentbuilder')
 	{
 		if(!$where)
 		{
@@ -154,7 +148,7 @@ class ComponentbuilderRouter extends JComponentRouterBase
 		$query = $db->getQuery(true);
 
 		$query->select($db->quoteName(array($what)));
-		if ('categories' == $table || 'category' == $table)
+		if ('categories' == $table || 'category' == $table || $category)
 		{
 			$query->from($db->quoteName('#__categories'));
 		}

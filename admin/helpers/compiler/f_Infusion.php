@@ -252,8 +252,8 @@ class Infusion extends Interpretation
                                         $this->placeholders['###View###'] = $viewName_f;
 
                                         // set license per view if needed
-                                        $this->setLockLicensePer($viewName_single);
-                                        $this->setLockLicensePer($viewName_list);
+                                        $this->setLockLicensePer($viewName_single, $this->target);
+                                        $this->setLockLicensePer($viewName_list, $this->target);
 
                                         // ###FIELDSETS### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_single]['###FIELDSETS###'] = $this->setFieldSet($view, $this->fileContentStatic['###component###']);
@@ -610,7 +610,7 @@ class Infusion extends Interpretation
                                         $this->placeholders['[[[SVIEWS]]]'] = $view['settings']->CODE;
 
                                         // set license per view if needed
-                                        $this->setLockLicensePer($view['settings']->code);
+                                        $this->setLockLicensePer($view['settings']->code, $this->target);
 
                                         if ($view['settings']->main_get->gettype == 1)
                                         {
@@ -857,7 +857,7 @@ class Infusion extends Interpretation
 					$this->placeholders['[[[SVIEWS]]]'] = $view['settings']->CODE;
 						
 					// set license per view if needed
-					$this->setLockLicensePer($view['settings']->code);
+					$this->setLockLicensePer($view['settings']->code, $this->target);
 					
 					// set the site default view
 					if ($view['default_view'] == 1)
@@ -874,7 +874,7 @@ class Infusion extends Interpretation
 					// insure the needed route helper is loaded
 					$this->fileContentStatic['###ROUTEHELPER###'] .= $this->setRouterHelp($view['settings']->code,$view['settings']->code, true);
 					// build route details 
-					$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($view['settings']->code);
+					$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($view['settings']->code, $view);
 					$this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] .= $this->routerBuildViews($view['settings']->code);
 					
 					if ($view['settings']->main_get->gettype == 1)

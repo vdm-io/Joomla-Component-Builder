@@ -96,6 +96,11 @@ class Dropbox
 	 * the error messages
 	 */	
 	public $error_summary = array();
+	
+	/**
+	* 	force the update to reset
+	**/
+	public $forceReset = false;
 
 	/**
 	 * Constructor
@@ -116,6 +121,7 @@ class Dropbox
 	 * =============
 	 * $details
 	 * =============
+	 * sourceID
 	 * dropboxOption
 	 * dropboxTarget
 	 * addTypes
@@ -217,16 +223,20 @@ class Dropbox
 	
 	protected function makeGetCall()
 	{
-		$query = json_encode($this->query);
 		
 		$options = array(
 			'http' => array(
 				'header' => "Content-Type: application/json\r\n".
 					"Authorization: Bearer ".$this->oauthToken,
-				'method'  => "POST",
-				'content' => $query
-				),
-			);
+				'method'  => "POST"
+			),
+		);
+		
+		if ($this->checkArray($this->query))
+		{
+			$this->query = json_encode($this->query);
+		}
+		$options['http']['content'] = $this->query;
 		
 		$context = stream_context_create($options);
 		$response = file_get_contents($this->url.$this->domainpath[$this->type], false, $context);
@@ -246,8 +256,6 @@ class Dropbox
 	
 	protected function makeCurlCall()
 	{
-		$query = json_encode($this->query);
-		
 		$headers = array('Authorization: Bearer '. $this->oauthToken,
 		    'Content-Type: application/json'
 		);
@@ -255,7 +263,12 @@ class Dropbox
 		$ch = curl_init($this->url.$this->domainpath[$this->type]);
 		
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+		// check if query is set		
+		if ($this->checkArray($this->query))
+		{
+			$this->query = json_encode($this->query);
+		}
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->query);
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		// curl_setopt($ch, CURLOPT_VERBOSE, 1); // debug
@@ -278,6 +291,7 @@ class Dropbox
 		if (isset($data->error_summary))
 		{
 			$this->error_summary[] = $data->error_summary;
+			$this->forceReset = true;
 			return false;
 		}
 		
@@ -330,6 +344,7 @@ class Dropbox
 				$this->error_summary[] = $this->type.'_error';
 				break;
 		}
+		$this->forceReset = true;
 		return false;
 	}
 	
@@ -338,13 +353,14 @@ class Dropbox
 		// we need to store the url to DB
 		if (isset($this->mediaData[$path]))
 		{
-			$localListing		= array();
-			$localListing['id']	= 0;
-			$localListing['name']	= $this->mediaData[$path]['name'];
-			$localListing['size']	= $this->mediaData[$path]['size'];
-			$localListing['key']	= $path;
-			$localListing['url']	= $url;
-			$localListing['build']	= $this->build;
+			$localListing				= array();
+			$localListing['id']			= 0;
+			$localListing['name']			= $this->mediaData[$path]['name'];
+			$localListing['size']			= $this->mediaData[$path]['size'];
+			$localListing['key']			= $path;
+			$localListing['url']			= $url;
+			$localListing['build']			= $this->build;
+			$localListing['external_source']	= (int) $this->sourceID;
 			// free some memory
 			unset($this->mediaData[$path]);
 			// check if item already set

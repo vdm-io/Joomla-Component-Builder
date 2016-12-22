@@ -10,12 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.4
-	@build			25th November, 2016
+	@version		2.2.5
+	@build			22nd December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		dynamic_get.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
+	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -99,7 +99,7 @@ class ComponentbuilderControllerDynamic_get extends JControllerForm
 		{
 			// The record has been set. Check the record permissions.
 			$permission = $user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int) $recordId);
-			if (!$permission && !is_null($permission))
+			if (!$permission)
 			{
 				if ($user->authorise('dynamic_get.edit.own', 'com_componentbuilder.dynamic_get.' . $recordId))
 				{

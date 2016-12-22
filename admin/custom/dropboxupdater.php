@@ -70,11 +70,6 @@ class Dropboxupdater
 	protected $infoFilePath;
 	
 	/**
-	* 	get the localkey
-	**/
-	protected $localkey = false;
-	
-	/**
 	* 	Main dropbox class
 	**/
 	protected $dropbox;
@@ -302,6 +297,8 @@ class Dropboxupdater
 	{
 		// reset config
 		$this->detailsConfig = array();
+		// the source ID
+		$this->detailsConfig['sourceID'] = $this->data->id;
 		// get the legal files set
 		$this->detailsConfig['addTypes'] = $this->data->filetypes;
 		// set other config settings
@@ -348,7 +345,7 @@ class Dropboxupdater
 	protected function setUpdateInfoData()
 	{
 		// set the info file name
-		$fileName = md5($this->fileKey.'info'.$this->localkey);
+		$fileName = md5($this->fileKey.'info');
 		// set file path
 		$this->infoFilePath = JPATH_COMPONENT_SITE.'/helpers/'.$fileName.'.json';
 		
@@ -402,7 +399,7 @@ class Dropboxupdater
 	protected function doUpdate()
 	{
 		// we need more then the normal time to run this script 5 minutes at least.
-		ini_set('max_execution_time', 500);
+		ini_set('max_execution_time', $this->app_params->get('max_execution_time', 500));
 		// get data of all the shared links of all target items
 		if (!$this->dropbox->getFiles($this->data->oauthtoken, $this->data->permissiontype, $this->detailsConfig))
 		{
@@ -412,23 +409,23 @@ class Dropboxupdater
 		// if this is a manual update, then revoke the token
 		if ($this->forceUpdate)
 		{
-			$this->dropbox->revokeToken($this->data->oauthtoken);
+			$this->dropbox->revokeToken();
 		}
 		return true;
 	}
 	
-	protected function resetUpdate()
+	public function resetUpdate()
 	{
-		if ($this->okay)
+		if ($this->okay || (isset($this->dropbox->forceReset) && $this->dropbox->forceReset))
 		{
 			// make sure the update reset
 			$this->updateInfo->nextupdate = $this->next;
 			$this->updateInfo->updateactive = false;
 			$this->updateInfo->updatenow = false;
-
-			return $this->saveUpdateInfo();
+			// store final update
+			$this->saveUpdateInfo();
 		}
-		return false;
+		return $this->okay;
 	}
 
 	protected function saveJson($data,$filename)

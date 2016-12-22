@@ -10,12 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.4
-	@build			25th November, 2016
+	@version		2.2.5
+	@build			22nd December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		dynamicgets.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
+	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -61,7 +61,8 @@ class JFormFieldDynamicgets extends JFormFieldList
 			$script = array();
 			$buttonName = $this->getAttribute('name');
 			// get the input from url
-			$jinput = JFactory::getApplication()->input;
+			$app = JFactory::getApplication();
+			$jinput = $app->input;
 			// get the view name & id
 			$values = $jinput->getArray(array(
 				'id' => 'int',
@@ -78,7 +79,7 @@ class JFormFieldDynamicgets extends JFormFieldList
 			}
 			$user = JFactory::getUser();
 			// only add if user allowed to create dynamic_get
-			if ($user->authorise('dynamic_get.create', 'com_componentbuilder'))
+			if ($user->authorise('dynamic_get.create', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build Create button
 				$buttonNamee = trim($buttonName);
@@ -91,7 +92,7 @@ class JFormFieldDynamicgets extends JFormFieldList
 					<span class="icon-new icon-white"></span></a>';
 			}
 			// only add if user allowed to edit dynamic_get
-			if (($buttonName == 'dynamic_get' || $buttonName == 'dynamic_gets') && $user->authorise('dynamic_get.edit', 'com_componentbuilder'))
+			if (($buttonName == 'dynamic_get' || $buttonName == 'dynamic_gets') && $user->authorise('dynamic_get.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build edit button
 				$buttonNamee = trim($buttonName);

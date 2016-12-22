@@ -127,16 +127,10 @@ class ###Component###Router extends JComponentRouterBase
 	 * @since   3.3
 	 */
 	public function parse(&$segments)
-	{
-		//var_dump($segments);
-		//$app = JFactory::getApplication();
-		//$menu = $app->getMenu();
-		//$item = $menu->getActive();
-		
+	{		
 		$count = count($segments);
 		$vars = array();
-				
-		//var_dump($item->query['view']);
+		
 		//Handle View and Identifier
 		switch($segments[0])
 		{###ROUTER_PARSE_SWITCH###
@@ -145,7 +139,7 @@ class ###Component###Router extends JComponentRouterBase
 		return $vars;
 	} 
 
-	protected function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = '###component###')
+	protected function getVar($table, $where = null, $whereString = 'user', $what = 'id', $category = false, $operator = '=', $main = '###component###')
 	{
 		if(!$where)
 		{
@@ -157,7 +151,7 @@ class ###Component###Router extends JComponentRouterBase
 		$query = $db->getQuery(true);
 
 		$query->select($db->quoteName(array($what)));
-		if ('categories' == $table || 'category' == $table)
+		if ('categories' == $table || 'category' == $table || $category)
 		{
 			$query->from($db->quoteName('#__categories'));
 		}

@@ -10,12 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.4
-	@build			25th November, 2016
+	@version		2.2.5
+	@build			22nd December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
+	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -1200,7 +1200,7 @@ class com_componentbuilderInstallerScript
 		<p>Please let me know at <a href="mailto:info@vdm.io">info@vdm.io</a>.
 		<br />We at Vast Development Method are committed to building extensions that performs proficiently! You can help us, really!
 		<br />Send me your thoughts on improvements that is needed, trust me, I will be very grateful!
-		<br />Visit us at <a href="https://www.vdm.io/joomla-component-builder" target="_blank">https://www.vdm.io/joomla-component-builder</a> today!</p>';
+		<br />Visit us at <a href="http://vdm.bz/component-builder" target="_blank">http://vdm.bz/component-builder</a> today!</p>';
 	}
 
 	/**
@@ -1431,7 +1431,7 @@ class com_componentbuilderInstallerScript
 			$query->update($db->quoteName('#__extensions'))->set($fields)->where($conditions);
 			$db->setQuery($query);
 			$allDone = $db->execute();
-			echo '<a target="_blank" href="https://www.vdm.io/joomla-component-builder" title="Component Builder">
+			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
 				</a>';
 		}
@@ -1820,10 +1820,10 @@ class com_componentbuilderInstallerScript
 			}
 
 
-			echo '<a target="_blank" href="https://www.vdm.io/joomla-component-builder" title="Component Builder">
+			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.2.4 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.2.5 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

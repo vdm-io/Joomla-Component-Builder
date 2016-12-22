@@ -10,12 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.4
-	@build			25th November, 2016
+	@version		2.2.5
+	@build			22nd December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>	
+	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -854,7 +854,7 @@ abstract class ComponentbuilderHelper
 			{
 				// The record has been set. Check the record permissions.
 				$permission = $user->authorise($action->name, 'com_componentbuilder.'.$view.'.' . (int) $record->id);
-				if (!$permission && !is_null($permission))
+				if (!$permission) // TODO removed && !is_null($permission)
 				{
 					if ($action->name == 'core.edit' || $action->name == $view.'.edit')
 					{
@@ -1189,10 +1189,22 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	public static function checkArray($array)
+	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && count($array) > 0)
 		{
+			// also make sure the empty strings are removed
+			if ($removeEmptyString)
+			{
+				foreach ($array as $key => $string)
+				{
+					if (empty($string))
+					{
+						unset($array[$key]);
+					}
+				}
+				return self::checkArray($array, false);
+			}
 			return true;
 		}
 		return false;

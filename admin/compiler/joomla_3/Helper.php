@@ -265,7 +265,7 @@ abstract class ###Component###Helper
 			{
 				// The record has been set. Check the record permissions.
 				$permission = $user->authorise($action->name, 'com_###component###.'.$view.'.' . (int) $record->id);
-				if (!$permission && !is_null($permission))
+				if (!$permission) // TODO removed && !is_null($permission)
 				{
 					if ($action->name == 'core.edit' || $action->name == $view.'.edit')
 					{
@@ -600,10 +600,22 @@ abstract class ###Component###Helper
 		return false;
 	}
 
-	public static function checkArray($array)
+	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && count($array) > 0)
 		{
+			// also make sure the empty strings are removed
+			if ($removeEmptyString)
+			{
+				foreach ($array as $key => $string)
+				{
+					if (empty($string))
+					{
+						unset($array[$key]);
+					}
+				}
+				return self::checkArray($array, false);
+			}
 			return true;
 		}
 		return false;
