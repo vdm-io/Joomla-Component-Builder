@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -95,58 +95,10 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_helper_admin))
-			{
-				// base64 Decode php_helper_admin.
-				$item->php_helper_admin = base64_decode($item->php_helper_admin);
-			}
-
-			if (!empty($item->sql))
-			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
-			}
-
-			if (!empty($item->php_helper_site))
-			{
-				// base64 Decode php_helper_site.
-				$item->php_helper_site = base64_decode($item->php_helper_site);
-			}
-
-			if (!empty($item->php_helper_both))
-			{
-				// base64 Decode php_helper_both.
-				$item->php_helper_both = base64_decode($item->php_helper_both);
-			}
-
-			if (!empty($item->php_admin_event))
-			{
-				// base64 Decode php_admin_event.
-				$item->php_admin_event = base64_decode($item->php_admin_event);
-			}
-
-			if (!empty($item->php_site_event))
-			{
-				// base64 Decode php_site_event.
-				$item->php_site_event = base64_decode($item->php_site_event);
-			}
-
-			if (!empty($item->php_dashboard_methods))
-			{
-				// base64 Decode php_dashboard_methods.
-				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
-			}
-
 			if (!empty($item->css))
 			{
 				// base64 Decode css.
 				$item->css = base64_decode($item->css);
-			}
-
-			if (!empty($item->php_preflight_install))
-			{
-				// base64 Decode php_preflight_install.
-				$item->php_preflight_install = base64_decode($item->php_preflight_install);
 			}
 
 			if (!empty($item->php_preflight_update))
@@ -155,16 +107,28 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->php_preflight_update = base64_decode($item->php_preflight_update);
 			}
 
-			if (!empty($item->php_postflight_install))
-			{
-				// base64 Decode php_postflight_install.
-				$item->php_postflight_install = base64_decode($item->php_postflight_install);
-			}
-
 			if (!empty($item->php_postflight_update))
 			{
 				// base64 Decode php_postflight_update.
 				$item->php_postflight_update = base64_decode($item->php_postflight_update);
+			}
+
+			if (!empty($item->readme))
+			{
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
+			}
+
+			if (!empty($item->php_preflight_install))
+			{
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
+			if (!empty($item->php_postflight_install))
+			{
+				// base64 Decode php_postflight_install.
+				$item->php_postflight_install = base64_decode($item->php_postflight_install);
 			}
 
 			if (!empty($item->php_method_uninstall))
@@ -173,10 +137,52 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 			}
 
-			if (!empty($item->readme))
+			if (!empty($item->php_helper_both))
 			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
+				// base64 Decode php_helper_both.
+				$item->php_helper_both = base64_decode($item->php_helper_both);
+			}
+
+			if (!empty($item->php_helper_admin))
+			{
+				// base64 Decode php_helper_admin.
+				$item->php_helper_admin = base64_decode($item->php_helper_admin);
+			}
+
+			if (!empty($item->php_admin_event))
+			{
+				// base64 Decode php_admin_event.
+				$item->php_admin_event = base64_decode($item->php_admin_event);
+			}
+
+			if (!empty($item->php_helper_site))
+			{
+				// base64 Decode php_helper_site.
+				$item->php_helper_site = base64_decode($item->php_helper_site);
+			}
+
+			if (!empty($item->php_site_event))
+			{
+				// base64 Decode php_site_event.
+				$item->php_site_event = base64_decode($item->php_site_event);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
+			}
+
+			if (!empty($item->php_dashboard_methods))
+			{
+				// base64 Decode php_dashboard_methods.
+				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
+			}
+
+			if (!empty($item->buildcompsql))
+			{
+				// base64 Decode buildcompsql.
+				$item->buildcompsql = base64_decode($item->buildcompsql);
 			}
 
 			// Get the basic encription.
@@ -190,16 +196,16 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->update_server_ftp = rtrim($basic->decryptString($item->update_server_ftp), "\0");
 			}
 
-			if (!empty($item->whmcs_key) && $basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
-			{
-				// basic decript data whmcs_key.
-				$item->whmcs_key = rtrim($basic->decryptString($item->whmcs_key), "\0");
-			}
-
 			if (!empty($item->sales_server_ftp) && $basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
 			{
 				// basic decript data sales_server_ftp.
 				$item->sales_server_ftp = rtrim($basic->decryptString($item->sales_server_ftp), "\0");
+			}
+
+			if (!empty($item->whmcs_key) && $basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
+			{
+				// basic decript data whmcs_key.
+				$item->whmcs_key = rtrim($basic->decryptString($item->whmcs_key), "\0");
 			}
 			
 			if (!empty($item->id))
@@ -209,7 +215,8 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 		}
 		$this->idvvvv = $item->addadmin_views;
-		$this->idvvvw = $item->addsite_views;
+		$this->idvvvw = $item->addcustom_admin_views;
+		$this->idvvvx = $item->addsite_views;
 
 		return $item;
 	}
@@ -219,7 +226,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwladmin_views()
+	public function getVwmadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -306,7 +313,98 @@ class ComponentbuilderModelComponent extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwmsite_views()
+	public function getVwncustom_admin_views()
+	{
+		// Get the user object.
+		$user = JFactory::getUser();
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select('a.*');
+
+		// From the componentbuilder_custom_admin_view table
+		$query->from($db->quoteName('#__componentbuilder_custom_admin_view', 'a'));
+
+		// From the componentbuilder_snippet table.
+		$query->select($db->quoteName('g.name','snippet_name'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet', 'g') . ' ON (' . $db->quoteName('a.snippet') . ' = ' . $db->quoteName('g.id') . ')');
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.published  ASC');
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+
+			// set values to display correctly.
+			if (ComponentbuilderHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('custom_admin_view.access', 'com_componentbuilder.custom_admin_view.' . (int) $item->id) && $user->authorise('custom_admin_view.access', 'com_componentbuilder'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
+
+			// Filter by id Repetable Field
+			$idvvvw = json_decode($this->idvvvw,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvw) && ComponentbuilderHelper::checkArray($idvvvw))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					if ($item->id && isset($idvvvw['customadminview']) && ComponentbuilderHelper::checkArray($idvvvw['customadminview']))
+					{
+						if (!in_array($item->id,$idvvvw['customadminview']))
+						{
+							unset($items[$nr]);
+							continue;
+						}
+					}
+				}
+			}
+			else
+			{
+				return false;
+			}
+			return $items;
+		}
+		return false;
+	}
+
+	/**
+	* Method to get list data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getVwosite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -368,14 +466,14 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			}
 
 			// Filter by id Repetable Field
-			$idvvvw = json_decode($this->idvvvw,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvw) && ComponentbuilderHelper::checkArray($idvvvw))
+			$idvvvx = json_decode($this->idvvvx,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvx) && ComponentbuilderHelper::checkArray($idvvvx))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idvvvw['siteview']) && ComponentbuilderHelper::checkArray($idvvvw['siteview']))
+					if ($item->id && isset($idvvvx['siteview']) && ComponentbuilderHelper::checkArray($idvvvx['siteview']))
 					{
-						if (!in_array($item->id,$idvvvw['siteview']))
+						if (!in_array($item->id,$idvvvx['siteview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -1104,58 +1202,10 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_helper_admin string to base64 string.
-		if (isset($data['php_helper_admin']))
-		{
-			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
-		}
-
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
-		{
-			$data['sql'] = base64_encode($data['sql']);
-		}
-
-		// Set the php_helper_site string to base64 string.
-		if (isset($data['php_helper_site']))
-		{
-			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
-		}
-
-		// Set the php_helper_both string to base64 string.
-		if (isset($data['php_helper_both']))
-		{
-			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
-		}
-
-		// Set the php_admin_event string to base64 string.
-		if (isset($data['php_admin_event']))
-		{
-			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
-		}
-
-		// Set the php_site_event string to base64 string.
-		if (isset($data['php_site_event']))
-		{
-			$data['php_site_event'] = base64_encode($data['php_site_event']);
-		}
-
-		// Set the php_dashboard_methods string to base64 string.
-		if (isset($data['php_dashboard_methods']))
-		{
-			$data['php_dashboard_methods'] = base64_encode($data['php_dashboard_methods']);
-		}
-
 		// Set the css string to base64 string.
 		if (isset($data['css']))
 		{
 			$data['css'] = base64_encode($data['css']);
-		}
-
-		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
-		{
-			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
 		}
 
 		// Set the php_preflight_update string to base64 string.
@@ -1164,16 +1214,28 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
 		}
 
-		// Set the php_postflight_install string to base64 string.
-		if (isset($data['php_postflight_install']))
-		{
-			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
-		}
-
 		// Set the php_postflight_update string to base64 string.
 		if (isset($data['php_postflight_update']))
 		{
 			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
+		}
+
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
+		{
+			$data['readme'] = base64_encode($data['readme']);
+		}
+
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
+		{
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
+		// Set the php_postflight_install string to base64 string.
+		if (isset($data['php_postflight_install']))
+		{
+			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
 		}
 
 		// Set the php_method_uninstall string to base64 string.
@@ -1182,10 +1244,52 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
+		// Set the php_helper_both string to base64 string.
+		if (isset($data['php_helper_both']))
 		{
-			$data['readme'] = base64_encode($data['readme']);
+			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
+		}
+
+		// Set the php_helper_admin string to base64 string.
+		if (isset($data['php_helper_admin']))
+		{
+			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
+		}
+
+		// Set the php_admin_event string to base64 string.
+		if (isset($data['php_admin_event']))
+		{
+			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
+		}
+
+		// Set the php_helper_site string to base64 string.
+		if (isset($data['php_helper_site']))
+		{
+			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
+		}
+
+		// Set the php_site_event string to base64 string.
+		if (isset($data['php_site_event']))
+		{
+			$data['php_site_event'] = base64_encode($data['php_site_event']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
+		}
+
+		// Set the php_dashboard_methods string to base64 string.
+		if (isset($data['php_dashboard_methods']))
+		{
+			$data['php_dashboard_methods'] = base64_encode($data['php_dashboard_methods']);
+		}
+
+		// Set the buildcompsql string to base64 string.
+		if (isset($data['buildcompsql']))
+		{
+			$data['buildcompsql'] = base64_encode($data['buildcompsql']);
 		}
 
 		// Get the basic encription key.
@@ -1199,17 +1303,20 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['update_server_ftp'] = $basic->encryptString($data['update_server_ftp']);
 		}
 
+		// Encript data sales_server_ftp.
+		if (isset($data['sales_server_ftp']) && $basickey)
+		{
+			$data['sales_server_ftp'] = $basic->encryptString($data['sales_server_ftp']);
+		}
+
 		// Encript data whmcs_key.
 		if (isset($data['whmcs_key']) && $basickey)
 		{
 			$data['whmcs_key'] = $basic->encryptString($data['whmcs_key']);
 		}
 
-		// Encript data sales_server_ftp.
-		if (isset($data['sales_server_ftp']) && $basickey)
-		{
-			$data['sales_server_ftp'] = $basic->encryptString($data['sales_server_ftp']);
-		}
+		// we check if component should be build from sql file
+		ComponentbuilderHelper::dynamicBuilder($data, 1);
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))

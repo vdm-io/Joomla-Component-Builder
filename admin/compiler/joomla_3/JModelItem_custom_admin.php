@@ -99,7 +99,7 @@ class ###Component###Model###SView### extends JModelItem
                 {
 			$app = JFactory::getApplication();
 			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
-			// redirect away if not a correct (TODO for now we go to default view)
+			// redirect away if not a correct to cPanel/default view
 			$app->redirect('index.php?option=com_###component###');
 			return false;
                 }

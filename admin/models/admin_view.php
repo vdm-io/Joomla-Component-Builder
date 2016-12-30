@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -275,7 +275,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_view');
 			}
 		}
-		$this->idvvvx = $item->addfields;
+		$this->idvvvy = $item->addfields;
 
 		return $item;
 	}
@@ -285,7 +285,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxrfields()
+	public function getVxtfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -354,26 +354,26 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxrfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxtfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxrfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxtfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxrfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxtfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxrfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxtfields($item->store, 'store');
 				}
 			}
 
 
 			// Filter by id Repetable Field
-			$idvvvx = json_decode($this->idvvvx,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvx) && ComponentbuilderHelper::checkArray($idvvvx))
+			$idvvvy = json_decode($this->idvvvy,true);
+			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvy) && ComponentbuilderHelper::checkArray($idvvvy))
 			{
 				foreach ($items as $nr => &$item)
 				{
-					if ($item->id && isset($idvvvx['field']) && ComponentbuilderHelper::checkArray($idvvvx['field']))
+					if ($item->id && isset($idvvvy['field']) && ComponentbuilderHelper::checkArray($idvvvy['field']))
 					{
-						if (!in_array($item->id,$idvvvx['field']))
+						if (!in_array($item->id,$idvvvy['field']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -395,7 +395,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVxrfields($value,$name)
+	public function selectionTranslationVxtfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')

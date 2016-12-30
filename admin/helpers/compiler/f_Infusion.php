@@ -879,6 +879,8 @@ class Infusion extends Interpretation
 					
 					if ($view['settings']->main_get->gettype == 1)
 					{
+						// set user permission access check ###USER_PERMISSION_CHECK_ACCESS### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###USER_PERMISSION_CHECK_ACCESS###'] = $this->setUserPermissionCheckAccess($view, 1);
 						// check if there is any custom script
 						if (isset($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]))
 						{
@@ -913,7 +915,9 @@ class Infusion extends Interpretation
 						}
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
-					{						
+					{
+						// set user permission access check ###USER_PERMISSION_CHECK_ACCESS### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###USER_PERMISSION_CHECK_ACCESS###'] = $this->setUserPermissionCheckAccess($view, 2);					
 						// ###SITE_GET_LIST_QUERY### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_LIST_QUERY###'] = $this->setCustomViewListQuery($view['settings']->main_get, $view['settings']->code);
 

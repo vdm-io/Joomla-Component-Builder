@@ -95,16 +95,7 @@ class ###Component###Model###SView### extends JModelItem
 	 */
 	public function getItem($pk = null)
 	{
-		$this->user	= JFactory::getUser();
-                // check if this user has permission to access item
-                if (!$this->user->authorise('site.###sview###.access', 'com_###component###'))
-                {
-			$app = JFactory::getApplication();
-			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
-			// redirect away if not a correct (TODO for now we go to default view)
-			$app->redirect(JRoute::_('index.php?option=com_###component###&view=###SITE_DEFAULT_VIEW###'));
-			return false;
-                }
+		$this->user		= JFactory::getUser();###USER_PERMISSION_CHECK_ACCESS###
 		$this->userId		= $this->user->get('id');
 		$this->guest		= $this->user->get('guest');
                 $this->groups		= $this->user->get('groups');

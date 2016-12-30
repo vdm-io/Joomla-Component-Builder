@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -33,23 +33,37 @@ abstract class ComponentbuilderHelper
 { 
 
 	/*
-	 * Compiler autoloader
+	 * Autoloader
 	 */
-	public static function autoLoader()
+	public static function autoLoader($type = 'compiler')
 	{
 		// load the compiler classes
-		foreach (glob(JPATH_ADMINISTRATOR."/components/com_componentbuilder/helpers/compiler/*.php") as $compilerFile)
+		foreach (glob(JPATH_ADMINISTRATOR."/components/com_componentbuilder/helpers/".$type."/*.php") as $autoFile)
 		{
-			require_once $compilerFile;
+			require_once $autoFile;
 		}
-		// import the Joomla librarys
-		jimport('joomla.filesystem.file');
-		jimport('joomla.filesystem.folder');
-		jimport('joomla.filesystem.archive');
-		jimport('joomla.application.component.modellist');
+		// load only if compiler
+		if ('compiler' == $type)
+		{
+			// import the Joomla librarys
+			jimport('joomla.filesystem.file');
+			jimport('joomla.filesystem.folder');
+			jimport('joomla.filesystem.archive');
+			jimport('joomla.application.component.modellist');
+			// include class to minify js
+			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
+		}
+		// load this for all
 		jimport('joomla.application');
-		// include class to minify js
-		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
+	}
+
+	/**
+	* 	The dynamic builder of views, tables and fields
+	**/
+	public static function dynamicBuilder(&$data, $type)
+	{
+		self::autoLoader('extrusion');
+		$extruder = new Extrusion($data);
 	}
 
 	/**
@@ -70,6 +84,48 @@ abstract class ComponentbuilderHelper
 		}
 		// return the path
 		return self::${$type.$name};
+	}
+	
+	public static function getFieldOptions($value, $type, $settings = array())
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		 
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
+		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+		$query->where($db->quoteName('published') . ' = 1');
+		$query->where($db->quoteName($type) . ' = '. $value);
+		 
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$result = $db->loadObject();
+			$properties = json_decode($result->properties,true);
+			$pointer = 0;
+			$field = array('values' => "<field ", 'values_description' => '<ul>', 'short_description' => $result->short_description, 'description' => $result->description);
+			foreach ($properties['name'] as $line)
+			{
+				$field['values_description'] .= '<li><b>'.$properties['name'][$pointer].'</b> '.$properties['description'][$pointer].'</li>';
+				if(isset($settings[$properties['name'][$pointer]]))
+				{
+					$field['values'] .= "\n\t".$properties['name'][$pointer].'="'.$settings[$properties['name'][$pointer]].'" ';
+				}
+				else
+				{
+					$field['values'] .= "\n\t".$properties['name'][$pointer].'="'.$properties['example'][$pointer].'" ';
+				}
+				$pointer++;
+			}
+			$field['values'] .= "\n/>";
+			$field['values_description'] .= '</ul>';
+			// return found field options
+			return $field;
+		}
+		return false;
 	}
 
 	/**

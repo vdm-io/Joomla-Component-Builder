@@ -1699,7 +1699,7 @@ class Interpretation extends Fields
 	 * @param $string
 	 * @param string $type
 	 * @return mixed
-     */
+	*/
 	public function removeAsDot($string, $type = '')
 	{
 		if (strpos($string,'.') !== false)
@@ -1712,6 +1712,56 @@ class Interpretation extends Fields
 		}
 		return $field;
 	}
+	
+	/**
+	 * @param type $view
+	 * @param type $type
+	 */
+	public function setUserPermissionCheckAccess($view, $type)
+	{
+		if (isset($view['access']) && $view['access'] == 1)
+		{
+			switch($type)
+			{
+				case 1:
+					$userString = '$this->user';
+					break;
+				default:
+					$userString = '$user';
+					break;
+			}
+			// check that the default and the redirect page is not the same
+			if ($this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $view['settings']->code)
+			{
+				$redirectMessage = "\t\t\t//".$this->setLine(__LINE__)." redirect away to the default view if no access allowed.";
+				$redirectString = "JRoute::_('index.php?option=com_".$this->fileContentStatic['###component###']."&view=".$this->fileContentStatic['###SITE_DEFAULT_VIEW###']."')";
+			}
+			else
+			{
+				$redirectMessage = "\t\t\t//".$this->setLine(__LINE__)." redirect away to the home page if no access allowed.";
+				$redirectString = 'JURI::root()';
+			}
+			$accessCheck[] = "\n\t\t//".$this->setLine(__LINE__)." check if this user has permission to access item";
+			$accessCheck[] = "\t\tif (!".$userString."->authorise('site.".$view['settings']->code.".access', 'com_".$this->fileContentStatic['###component###']."'))";
+			$accessCheck[] = "\t\t{";
+			$accessCheck[] = "\t\t\t\$app = JFactory::getApplication();";
+			// set lang
+			$langKeyWord = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Not authorised to view '.$view['settings']->code.'!','U');
+			if (!isset($this->langContent['site'][$langKeyWord]))
+			{
+				$this->langContent['site'][$langKeyWord] = 'Not authorised to view '.$view['settings']->code.'!';
+			}
+			$accessCheck[] = "\t\t\t\$app->enqueueMessage(JText::_('".$langKeyWord."'), 'error');";
+			$accessCheck[] = $redirectMessage;
+			$accessCheck[] = "\t\t\t\$app->redirect(".$redirectString.");";
+			$accessCheck[] = "\t\t\treturn false;";
+			$accessCheck[] = "\t\t}";
+			
+			// return the access check
+			return implode("\n",$accessCheck);
+		}
+		return '';
+	}
 
 	/**
 	 * @param $get
@@ -1719,7 +1769,7 @@ class Interpretation extends Fields
 	 * @param string $tab
 	 * @param string $type
 	 * @return string
-     */
+	*/
 	public function setCustomViewGetItem(&$get, &$code, $tab = '', $type = 'main')
 	{
 		if (ComponentbuilderHelper::checkObject($get))
@@ -1758,7 +1808,16 @@ class Interpretation extends Fields
 				$getItem .= "\n\t".$tab."\t\t\$app->enqueueMessage(JText::_('".$langKeyWord."'), 'warning');";
 				if ('site' == $this->target)
 				{
-					$getItem .= "\n\t".$tab."\t\t\$app->redirect('index.php?option=com_".$this->fileContentStatic['###component###']."&view=".$this->fileContentStatic['###SITE_DEFAULT_VIEW###']."');";
+					// check that the default and the redirect page is not the same
+					if ($this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $code)
+					{
+						$redirectString = "JRoute::_('index.php?option=com_".$this->fileContentStatic['###component###']."&view=".$this->fileContentStatic['###SITE_DEFAULT_VIEW###']."')";
+					}
+					else
+					{
+						$redirectString = 'JURI::root()';
+					}
+					$getItem .= "\n\t".$tab."\t\t\$app->redirect(".$redirectString.");";
 				}
 				else
 				{
@@ -4666,7 +4725,7 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['id']))
 				{
-					$db .= "\n\t`id` int(11) NOT NULL AUTO_INCREMENT,";
+					$db .= "\n\t`id` INT(11) NOT NULL AUTO_INCREMENT,";
 				}
 				$db .= "\n\t`asset_id` INT(255) UNSIGNED NOT NULL DEFAULT '0',";
 				ksort($fields);
@@ -4719,17 +4778,17 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
 				{
-					$db .= "\n\t`published` tinyint(1) NOT NULL DEFAULT '1',";
+					$db .= "\n\t`published` TINYINT(1) NOT NULL DEFAULT '1',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created_by']))
 				{
-					$db .= "\n\t`created_by` int(11) NOT NULL DEFAULT '0',";
+					$db .= "\n\t`created_by` INT(11) NOT NULL DEFAULT '0',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['modified_by']))
 				{
-					$db .= "\n\t`modified_by` int(11) NOT NULL DEFAULT '0',";
+					$db .= "\n\t`modified_by` INT(11) NOT NULL DEFAULT '0',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created']))
@@ -4744,7 +4803,7 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out']))
 				{
-					$db .= "\n\t`checked_out` int(11) NOT NULL,";
+					$db .= "\n\t`checked_out` INT(11) NOT NULL,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out_time']))
@@ -4754,22 +4813,22 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['version']))
 				{
-					$db .= "\n\t`version` int(11) NOT NULL DEFAULT '1',";
+					$db .= "\n\t`version` INT(11) NOT NULL DEFAULT '1',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['hits']))
 				{
-					$db .= "\n\t`hits` int(11) NOT NULL DEFAULT '0',";
+					$db .= "\n\t`hits` INT(11) NOT NULL DEFAULT '0',";
 				}
 				// check if view has access
 				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 				{
-					$db .= "\n\t`access` int(11) DEFAULT NULL,";
+					$db .= "\n\t`access` INT(11) DEFAULT NULL,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['ordering']))
 				{
-					$db .= "\n\t`ordering` int(11) NOT NULL DEFAULT '0',";
+					$db .= "\n\t`ordering` INT(11) NOT NULL DEFAULT '0',";
 				}
 				// check if metadata is added to this view
 				if (isset($this->metadataBuilder[$view]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view]))
@@ -13158,9 +13217,12 @@ function vdm_dkim() {
 				$siteTitle      = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($siteName.' Access Site','U');
 				$siteDesc       = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($siteName.' Access Site','U').'_DESC';
 				$sortKey        = ComponentbuilderHelper::safeString($siteName.' Access Site');
-				$this->langContent['admin'][$siteTitle]	= $siteName.' (Site) Access';
-				$this->langContent['admin'][$siteDesc]	= ' Allows the users in this group to access site '.ComponentbuilderHelper::safeString($siteName,'w').'.';
-				$this->componentGlobal[$sortKey]              = "\t\t".'<action name="site.'.$siteCode.'.access" title="'.$siteTitle.'" description="'.$siteDesc.'" />';
+				if (isset($site_view['access']) && $site_view['access'] == 1)
+				{
+					$this->langContent['admin'][$siteTitle]	= $siteName.' (Site) Access';
+					$this->langContent['admin'][$siteDesc]	= ' Allows the users in this group to access site '.ComponentbuilderHelper::safeString($siteName,'w').'.';
+					$this->componentGlobal[$sortKey]              = "\t\t".'<action name="site.'.$siteCode.'.access" title="'.$siteTitle.'" description="'.$siteDesc.'" />';
+				}
                                 // add the custom permissions to use the buttons of this view
                                 /* if (ComponentbuilderHelper::checkArray($site_view['settings']->custom_buttons))
                                 {

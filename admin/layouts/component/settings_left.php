@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_left.php
@@ -34,13 +34,13 @@ $fields = $displayData->get('fields') ?: array(
 	'addadmin_views',
 	'addcustom_admin_views',
 	'addsite_views',
-	'spacer_hr_c',
+	'spacer_hr_b',
 	'note_mysql_tweak_options',
 	'sql_tweak',
-	'spacer_hr_d',
+	'spacer_hr_c',
 	'note_add_custom_menus',
 	'addcustommenus',
-	'spacer_hr_e',
+	'spacer_hr_d',
 	'note_add_config',
 	'addconfig'
 );

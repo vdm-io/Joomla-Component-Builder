@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -1441,33 +1441,8 @@ class ComponentbuilderModelAjax extends JModelList
 	// Used in field
 	public function getFieldOptions($id)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
-		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
-		$query->where($db->quoteName('published') . ' = 1');
-		$query->where($db->quoteName('id') . ' = '. $id);
-		 
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
+		if ($field = ComponentbuilderHelper::getFieldOptions($id, 'id'))
 		{
-			$result = $db->loadObject();
-			$properties = json_decode($result->properties,true);
-			$pointer = 0;
-			$field = array('values' => "<field ", 'values_description' => '<ul>', 'short_description' => $result->short_description, 'description' => $result->description);
-			foreach ($properties['name'] as $line)
-			{
-				$field['values_description'] .= '<li><b>'.$properties['name'][$pointer].'</b> '.$properties['description'][$pointer].'</li>';
-				$field['values'] .= "\n\t".$properties['name'][$pointer].'="'.$properties['example'][$pointer].'" ';
-				$pointer++;
-			}
-			$field['values'] .= "\n/>";
-			$field['values_description'] .= '</ul>';
 			// return found field options
 			return $field;
 		}

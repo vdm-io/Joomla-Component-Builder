@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		site_views_fullwidth.php
@@ -28,7 +28,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->vwmsite_views;
+$items	= $displayData->vwosite_views;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit	= "index.php?option=com_componentbuilder&view=site_views&task=site_view.edit";

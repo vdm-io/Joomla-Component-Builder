@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.js
@@ -39,6 +39,7 @@ jform_vvvvvwlvwh_required = false;
 jform_vvvvvwmvwi_required = false;
 jform_vvvvvwnvwj_required = false;
 jform_vvvvvwuvwk_required = false;
+jform_vvvvvwvvwl_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -118,6 +119,9 @@ jQuery(document).ready(function()
 
 	var add_update_server_vvvvvwu = jQuery("#jform_add_update_server input[type='radio']:checked").val();
 	vvvvvwu(add_update_server_vvvvvwu);
+
+	var buildcomp_vvvvvwv = jQuery("#jform_buildcomp input[type='radio']:checked").val();
+	vvvvvwv(buildcomp_vvvvvwv);
 });
 
 // the vvvvvvv function
@@ -736,6 +740,37 @@ function vvvvvwu(add_update_server_vvvvvwu)
 			jQuery('#jform_update_server_target').removeAttr('aria-required');
 			jQuery('#jform_update_server_target').removeClass('required');
 			jform_vvvvvwuvwk_required = true;
+		}
+	}
+}
+
+// the vvvvvwv function
+function vvvvvwv(buildcomp_vvvvvwv)
+{
+	// set the function logic
+	if (buildcomp_vvvvvwv == 1)
+	{
+		jQuery('#jform_buildcompsql').closest('.control-group').show();
+		if (jform_vvvvvwvvwl_required)
+		{
+			updateFieldRequired('buildcompsql',0);
+			jQuery('#jform_buildcompsql').prop('required','required');
+			jQuery('#jform_buildcompsql').attr('aria-required',true);
+			jQuery('#jform_buildcompsql').addClass('required');
+			jform_vvvvvwvvwl_required = false;
+		}
+
+	}
+	else
+	{
+		jQuery('#jform_buildcompsql').closest('.control-group').hide();
+		if (!jform_vvvvvwvvwl_required)
+		{
+			updateFieldRequired('buildcompsql',1);
+			jQuery('#jform_buildcompsql').removeAttr('required');
+			jQuery('#jform_buildcompsql').removeAttr('aria-required');
+			jQuery('#jform_buildcompsql').removeClass('required');
+			jform_vvvvvwvvwl_required = true;
 		}
 	}
 }

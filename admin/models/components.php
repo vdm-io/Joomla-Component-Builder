@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		components.php
@@ -259,42 +259,17 @@ class ComponentbuilderModelComponents extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
-						// decode php_helper_admin
-						$item->php_helper_admin = base64_decode($item->php_helper_admin);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
 						if ($basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
 						{
 							// decrypt update_server_ftp
 							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
 						}
-						// decode php_helper_site
-						$item->php_helper_site = base64_decode($item->php_helper_site);
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode php_dashboard_methods
-						$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
-						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
-						{
-							// decrypt whmcs_key
-							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
-						}
 						// decode css
 						$item->css = base64_decode($item->css);
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
 						// decode php_preflight_update
 						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
 						// decode php_postflight_update
 						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 						// decode readme
 						$item->readme = base64_decode($item->readme);
 						if ($basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
@@ -302,6 +277,33 @@ class ComponentbuilderModelComponents extends JModelList
 							// decrypt sales_server_ftp
 							$item->sales_server_ftp = $basic->decryptString($item->sales_server_ftp);
 						}
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
+						{
+							// decrypt whmcs_key
+							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
+						}
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
+						// decode php_helper_admin
+						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
+						// decode php_helper_site
+						$item->php_helper_site = base64_decode($item->php_helper_site);
+						// decode php_site_event
+						$item->php_site_event = base64_decode($item->php_site_event);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
+						// decode php_dashboard_methods
+						$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
+						// decode buildcompsql
+						$item->buildcompsql = base64_decode($item->buildcompsql);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

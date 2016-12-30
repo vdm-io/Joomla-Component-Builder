@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -137,6 +137,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
+	<?php if ($this->canDo->get('custom_admin_view.access')) : ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'custom_admin_views', JText::_('COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component.custom_admin_views_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php endif; ?>
+
 	<?php if ($this->canDo->get('site_view.access')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'site_views', JText::_('COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
@@ -155,6 +167,16 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
 				<?php echo JLayoutHelper::render('component.dynamic_integration_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'componentTab', 'dynamic_build_beta', JText::_('COM_COMPONENTBUILDER_COMPONENT_DYNAMIC_BUILD_BETA', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component.dynamic_build_beta_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -620,6 +642,21 @@ jQuery('#adminForm').on('change', '#jform_add_update_server',function (e)
 	e.preventDefault();
 	var add_update_server_vvvvvwu = jQuery("#jform_add_update_server input[type='radio']:checked").val();
 	vvvvvwu(add_update_server_vvvvvwu);
+
+});
+
+// #jform_buildcomp listeners for buildcomp_vvvvvwv function
+jQuery('#jform_buildcomp').on('keyup',function()
+{
+	var buildcomp_vvvvvwv = jQuery("#jform_buildcomp input[type='radio']:checked").val();
+	vvvvvwv(buildcomp_vvvvvwv);
+
+});
+jQuery('#adminForm').on('change', '#jform_buildcomp',function (e)
+{
+	e.preventDefault();
+	var buildcomp_vvvvvwv = jQuery("#jform_buildcomp input[type='radio']:checked").val();
+	vvvvvwv(buildcomp_vvvvvwv);
 
 });
 

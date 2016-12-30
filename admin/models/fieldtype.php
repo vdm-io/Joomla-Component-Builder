@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.5
-	@build			22nd December, 2016
+	@version		2.2.6
+	@build			30th December, 2016
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -101,7 +101,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->fieldtypevvvy = $item->id;
+		$this->fieldtypevvvz = $item->id;
 
 		return $item;
 	}
@@ -111,7 +111,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVznfields()
+	public function getVzpfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -131,15 +131,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','fieldtype_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by fieldtypevvvy global.
-		$fieldtypevvvy = $this->fieldtypevvvy;
-		if (is_numeric($fieldtypevvvy ))
+		// Filter by fieldtypevvvz global.
+		$fieldtypevvvz = $this->fieldtypevvvz;
+		if (is_numeric($fieldtypevvvz ))
 		{
-			$query->where('a.fieldtype = ' . (int) $fieldtypevvvy );
+			$query->where('a.fieldtype = ' . (int) $fieldtypevvvz );
 		}
-		elseif (is_string($fieldtypevvvy))
+		elseif (is_string($fieldtypevvvz))
 		{
-			$query->where('a.fieldtype = ' . $db->quote($fieldtypevvvy));
+			$query->where('a.fieldtype = ' . $db->quote($fieldtypevvvz));
 		}
 		else
 		{
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVznfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVzpfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVznfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVzpfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVznfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVzpfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVznfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVzpfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVznfields($value,$name)
+	public function selectionTranslationVzpfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name == 'datatype')
