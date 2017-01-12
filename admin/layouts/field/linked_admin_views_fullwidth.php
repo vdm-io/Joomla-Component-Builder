@@ -14,7 +14,7 @@
 	@build			12th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		admin_views_fullwidth.php
+	@subpackage		linked_admin_views_fullwidth.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -28,19 +28,13 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->vwmadmin_views;
+$items	= $displayData->vzplinked_admin_views;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit	= "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.edit";
-$ref	= ($id) ? "&ref=component&refid=".$id : "";
-$new	= "index.php?option=com_componentbuilder&view=admin_view&layout=edit".$ref;
-$can	= ComponentbuilderHelper::getActions('admin_view');
 
 ?>
 <div class="form-vertical">
-<?php if ($can->get('core.create')): ?>
-	<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a><br /><br />
-<?php endif; ?>
 <?php if (ComponentbuilderHelper::checkArray($items)): ?>
 <table class="footable table data admin_views" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
 <thead>
@@ -75,7 +69,7 @@ $can	= ComponentbuilderHelper::getActions('admin_view');
 	<tr>
 		<td class="nowrap">
 			<?php if ($canDo->get('core.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=component&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=field&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'admin_views.', $canCheckin); ?>
 					<?php endif; ?>

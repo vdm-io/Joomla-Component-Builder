@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.6
-	@build			30th December, 2016
+	@build			12th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		field.php
@@ -131,8 +131,101 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.field');
 			}
 		}
+		$this->addfieldsvvvz = $item->id;
 
 		return $item;
+	}
+
+	/**
+	* Method to get list data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getVzplinked_admin_views()
+	{
+		// Get the user object.
+		$user = JFactory::getUser();
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select('a.*');
+
+		// From the componentbuilder_admin_view table
+		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.published  ASC');
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+
+			// set values to display correctly.
+			if (ComponentbuilderHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
+
+			// Filter by addfieldsvvvz in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addfieldsvvvz))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					if (isset($item->addfields) && ComponentbuilderHelper::checkJson($item->addfields))
+					{
+						$tmpArray = json_decode($item->addfields,true);
+						if (!in_array($this->addfieldsvvvz, $tmpArray['field']))
+						{
+							unset($items[$nr]);
+							continue;
+						}
+					}
+					else
+					{
+						unset($items[$nr]);
+						continue;
+					}
+				}
+			}
+			else
+			{
+				return false;
+			}
+			return $items;
+		}
+		return false;
 	} 
 
 	/**

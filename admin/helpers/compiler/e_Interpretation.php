@@ -3104,7 +3104,7 @@ class Interpretation extends Fields
 			$setter .= "\n\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
 			$setter .= "\n\t\t\t\t\t{";
 			$setter .= "\n\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
-			$setter .= "\n\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js');";
+			$setter .= "\n\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
 			$setter .= "\n\t\t\t\t\t}";
 			$setter .= "\n\t\t\t\t}";
 			$setter .= "\n\t\t\t}";
@@ -3133,7 +3133,7 @@ class Interpretation extends Fields
 			$setter .= "\n\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
 			$setter .= "\n\t\t\t\t\t{";
 			$setter .= "\n\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
-			$setter .= "\n\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js');";
+			$setter .= "\n\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
 			$setter .= "\n\t\t\t\t\t}";
 			$setter .= "\n\t\t\t\t}";
 			$setter .= "\n\t\t\t}";
@@ -6811,8 +6811,32 @@ class Interpretation extends Fields
 		// filter by child repetable field values
 		if ($key && strpos($key,'-R>') !== false && strpos($key,'-A>') === false)
 		{
-			$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Repetable Field";
-			$query .= "\n\t\t\$".$globalKey." = \$this->".$globalKey.";";
+			list($field,$target) = explode('-R>',$key);
+			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." in this Repetable Field";
+			$query .= "\n\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && isset(\$this->".$globalKey."))";
+			$query .= "\n\t\t\t{";
+			$query .= "\n\t\t\t\tforeach (\$items as \$nr => &\$item)";
+			$query .= "\n\t\t\t\t{";
+			$query .= "\n\t\t\t\t\tif (isset(\$item->".$field.") && ".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$field."))";
+			$query .= "\n\t\t\t\t\t{";
+			$query .= "\n\t\t\t\t\t\t\$tmpArray = json_decode(\$item->".$field.",true);";
+			$query .= "\n\t\t\t\t\t\tif (!in_array(\$this->".$globalKey.", \$tmpArray['".$target."']))";
+			$query .= "\n\t\t\t\t\t\t{";
+			$query .= "\n\t\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= "\n\t\t\t\t\t\t\tcontinue;";
+			$query .= "\n\t\t\t\t\t\t}";
+			$query .= "\n\t\t\t\t\t}";
+			$query .= "\n\t\t\t\t\telse";
+			$query .= "\n\t\t\t\t\t{";
+			$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= "\n\t\t\t\t\t\tcontinue;";
+			$query .= "\n\t\t\t\t\t}";
+			$query .= "\n\t\t\t\t}";
+			$query .= "\n\t\t\t}";
+			$query .= "\n\t\t\telse";
+			$query .= "\n\t\t\t{";
+			$query .= "\n\t\t\t\treturn false;";
+			$query .= "\n\t\t\t}";
 		}
 		// filter by child array field values
 		if ($key && strpos($key,'-R>') === false && strpos($key,'-A>') !== false)
