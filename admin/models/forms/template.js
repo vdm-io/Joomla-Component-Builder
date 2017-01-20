@@ -10,7 +10,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.6
-	@build			12th January, 2017
+	@build			20th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		template.js
@@ -23,7 +23,7 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // Some Global Values
-jform_vvvvvyqvyn_required = false;
+jform_vvvvvyqvyq_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -39,26 +39,26 @@ function vvvvvyq(add_php_view_vvvvvyq)
 	if (add_php_view_vvvvvyq == 1)
 	{
 		jQuery('#jform_php_view').closest('.control-group').show();
-		if (jform_vvvvvyqvyn_required)
+		if (jform_vvvvvyqvyq_required)
 		{
 			updateFieldRequired('php_view',0);
 			jQuery('#jform_php_view').prop('required','required');
 			jQuery('#jform_php_view').attr('aria-required',true);
 			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvyqvyn_required = false;
+			jform_vvvvvyqvyq_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_view').closest('.control-group').hide();
-		if (!jform_vvvvvyqvyn_required)
+		if (!jform_vvvvvyqvyq_required)
 		{
 			updateFieldRequired('php_view',1);
 			jQuery('#jform_php_view').removeAttr('required');
 			jQuery('#jform_php_view').removeAttr('aria-required');
 			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvyqvyn_required = true;
+			jform_vvvvvyqvyq_required = true;
 		}
 	}
 }

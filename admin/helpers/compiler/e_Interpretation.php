@@ -957,14 +957,10 @@ class Interpretation extends Fields
 			$method[] = "\t\t\t\$password = self::randomkey(8);";
 			$method[] = "\t\t\t\$password2 = \$password;";
 			$method[] = "\t\t}";
-			$method[] = "\t\t//".$this->setLine(__LINE__)." set username";
-			$method[] = "\t\tif (isset(\$new['username']) && self::checkString(\$new['username']))";
+			$method[] = "\t\t//".$this->setLine(__LINE__)." set username if not set";
+			$method[] = "\t\tif (!isset(\$new['username']) || !self::checkString(\$new['username']))";
 			$method[] = "\t\t{";
-			$method[] = "\t\t\t\$new['username'] = self::safeString(\$new['username']);";
-			$method[] = "\t\t}";
-			$method[] = "\t\telse";
-			$method[] = "\t\t{";
-			$method[] = "\t\t\t\$new['username'] = self::safeString(\$new['name']);\t\t\t";
+			$method[] = "\t\t\t\$new['username'] = self::safeString(\$new['name']);";
 			$method[] = "\t\t}";
 			$method[] = "\t\t//".$this->setLine(__LINE__)." linup new user data";
 			$method[] = "\t\t\$data = array(";
@@ -6854,6 +6850,11 @@ class Interpretation extends Fields
 				$query .= "\n\t\t\t\t\t{";
 				$query .= "\n\t\t\t\t\t\t\$item->".$target." = json_decode(\$item->".$target.");";
 				$query .= "\n\t\t\t\t\t}";
+				$query .= "\n\t\t\t\t\telse";
+				$query .= "\n\t\t\t\t\t{";
+				$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
+				$query .= "\n\t\t\t\t\t\tcontinue;";
+				$query .= "\n\t\t\t\t\t}";
 				$query .= "\n\t\t\t\t\tif (!in_array(\$".$globalKey.",\$item->".$target."))";
 			}
 			else
@@ -6861,6 +6862,11 @@ class Interpretation extends Fields
 				$query .= "\n\t\t\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$_key."))";
 				$query .= "\n\t\t\t\t\t{";
 				$query .= "\n\t\t\t\t\t\t\$item->".$_key." = json_decode(\$item->".$_key.");";
+				$query .= "\n\t\t\t\t\t}";
+				$query .= "\n\t\t\t\t\telse";
+				$query .= "\n\t\t\t\t\t{";
+				$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
+				$query .= "\n\t\t\t\t\t\tcontinue;";
 				$query .= "\n\t\t\t\t\t}";
 				$query .= "\n\t\t\t\t\tif (!in_array(\$".$globalKey.",\$item->".$_key."))";
 			}
@@ -6893,6 +6899,11 @@ class Interpretation extends Fields
 			$query .= "\n\t\t\t\t\t\t\tunset(\$items[\$nr]);";
 			$query .= "\n\t\t\t\t\t\t\tcontinue;";
 			$query .= "\n\t\t\t\t\t\t}";
+			$query .= "\n\t\t\t\t\t}";
+			$query .= "\n\t\t\t\t\telse";
+			$query .= "\n\t\t\t\t\t{";
+			$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= "\n\t\t\t\t\t\tcontinue;";
 			$query .= "\n\t\t\t\t\t}";
 			$query .= "\n\t\t\t\t}";
 			$query .= "\n\t\t\t}";
@@ -6927,6 +6938,11 @@ class Interpretation extends Fields
 			$query .= "\n\t\t\t\t\t\t\tunset(\$items[\$nr]);";
 			$query .= "\n\t\t\t\t\t\t\tcontinue;";
 			$query .= "\n\t\t\t\t\t\t}";
+			$query .= "\n\t\t\t\t\t}";
+			$query .= "\n\t\t\t\t\telse";
+			$query .= "\n\t\t\t\t\t{";
+			$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= "\n\t\t\t\t\t\tcontinue;";
 			$query .= "\n\t\t\t\t\t}";
 			$query .= "\n\t\t\t\t}";
 			$query .= "\n\t\t\t}";

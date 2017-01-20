@@ -68,6 +68,19 @@ class Compiler extends Infusion
 			{
 				$this->gitPath		= $this->params->get('git_folder_path', null);
 			}
+			// remove site folder
+			if ($this->removeSiteFolder)
+			{
+				// first remove the files and folders
+				$this->removeFolder($this->componentPath . '/site');
+				// clear form component xml
+				$xmlPath = $this->componentPath . '/'. $this->fileContentStatic['###component###']. '.xml';
+				$componentXML = JFile::read($xmlPath);
+				$textToSite = ComponentbuilderHelper::getBetween($componentXML,'<files folder="site">','</files>');
+				$textToSiteLang = ComponentbuilderHelper::getBetween($componentXML,'<languages folder="site">','</languages>');
+				$componentXML = str_replace(array('<files folder="site">'.$textToSite."</files>", '<languages folder="site">'.$textToSiteLang."</languages>"), array('',''), $componentXML);
+				$this->writeFile($xmlPath,$componentXML);
+			}
 			// now update the files
 			if ($this->updateFiles())
 			{

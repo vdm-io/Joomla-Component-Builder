@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.6
-	@build			12th January, 2017
+	@build			20th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -71,7 +71,7 @@ class ComponentbuilderViewField extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vzplinked_admin_views		= $this->get('Vzplinked_admin_views');
+		$this->vzslinked_admin_views		= $this->get('Vzslinked_admin_views');
 
 		// Set the toolbar
 		$this->addToolBar();

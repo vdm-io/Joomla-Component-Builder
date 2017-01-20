@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.6
-	@build			12th January, 2017
+	@build			20th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_view.php
@@ -169,8 +169,84 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.custom_admin_view');
 			}
 		}
+		$this->addcustom_admin_viewsvvwa = $item->id;
 
 		return $item;
+	}
+
+	/**
+	* Method to get list data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getVyelinked_components()
+	{
+		// Get the user object.
+		$user = JFactory::getUser();
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select('a.*');
+
+		// From the componentbuilder_component table
+		$query->from($db->quoteName('#__componentbuilder_component', 'a'));
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.published  ASC');
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+
+			// Filter by addcustom_admin_viewsvvwa in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addcustom_admin_viewsvvwa))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					if (isset($item->addcustom_admin_views) && ComponentbuilderHelper::checkJson($item->addcustom_admin_views))
+					{
+						$tmpArray = json_decode($item->addcustom_admin_views,true);
+						if (!in_array($this->addcustom_admin_viewsvvwa, $tmpArray['customadminview']))
+						{
+							unset($items[$nr]);
+							continue;
+						}
+					}
+					else
+					{
+						unset($items[$nr]);
+						continue;
+					}
+				}
+			}
+			else
+			{
+				return false;
+			}
+			return $items;
+		}
+		return false;
 	} 
 
 	/**

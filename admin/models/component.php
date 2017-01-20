@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.6
-	@build			12th January, 2017
+	@build			20th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -297,6 +297,11 @@ class ComponentbuilderModelComponent extends JModelAdmin
 							continue;
 						}
 					}
+					else
+					{
+						unset($items[$nr]);
+						continue;
+					}
 				}
 			}
 			else
@@ -388,6 +393,11 @@ class ComponentbuilderModelComponent extends JModelAdmin
 							continue;
 						}
 					}
+					else
+					{
+						unset($items[$nr]);
+						continue;
+					}
 				}
 			}
 			else
@@ -478,6 +488,11 @@ class ComponentbuilderModelComponent extends JModelAdmin
 							unset($items[$nr]);
 							continue;
 						}
+					}
+					else
+					{
+						unset($items[$nr]);
+						continue;
 					}
 				}
 			}

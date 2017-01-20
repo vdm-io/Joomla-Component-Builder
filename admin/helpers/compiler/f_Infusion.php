@@ -34,6 +34,7 @@ class Infusion extends Interpretation
 
 	public $eximportView = array();
 	public $importCustomScripts = array();
+	public $removeSiteFolder = false;
 
 	/**
 	 * Constructor
@@ -1003,6 +1004,11 @@ class Infusion extends Interpretation
 				}
 				// setup the layouts
 				$this->setCustomViewLayouts();
+			}
+			else
+			{
+				// clear all site folder since none is needed
+				$this->removeSiteFolder = true;
 			}
 			
 			// ###LANG_ADMIN###

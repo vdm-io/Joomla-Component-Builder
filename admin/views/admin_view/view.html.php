@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.6
-	@build			12th January, 2017
+	@build			20th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -72,6 +72,9 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
 
 		// Get Linked view data
 		$this->vxtfields		= $this->get('Vxtfields');
+
+		// Get Linked view data
+		$this->vxulinked_components		= $this->get('Vxulinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

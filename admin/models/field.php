@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.6
-	@build			12th January, 2017
+	@build			20th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		field.php
@@ -131,7 +131,7 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.field');
 			}
 		}
-		$this->addfieldsvvvz = $item->id;
+		$this->addfieldsvvwc = $item->id;
 
 		return $item;
 	}
@@ -141,7 +141,7 @@ class ComponentbuilderModelField extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVzplinked_admin_views()
+	public function getVzslinked_admin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -198,15 +198,15 @@ class ComponentbuilderModelField extends JModelAdmin
 				}
 			}
 
-			// Filter by addfieldsvvvz in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addfieldsvvvz))
+			// Filter by addfieldsvvwc in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addfieldsvvwc))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addfields) && ComponentbuilderHelper::checkJson($item->addfields))
 					{
 						$tmpArray = json_decode($item->addfields,true);
-						if (!in_array($this->addfieldsvvvz, $tmpArray['field']))
+						if (!in_array($this->addfieldsvvwc, $tmpArray['field']))
 						{
 							unset($items[$nr]);
 							continue;
