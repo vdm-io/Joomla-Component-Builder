@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
-	@created		30th April, 2015
+	@version		@update number 6 of this MVC
+	@build			17th October, 2016
+	@created		4th March, 2016
 	@package		Component Builder
 	@subpackage		default_toolbar.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	

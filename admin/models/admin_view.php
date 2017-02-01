@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
+	@version		@update number 94 of this MVC
+	@build			13th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -404,7 +404,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	public function selectionTranslationVxtfields($value,$name)
 	{
 		// Array of datatype language strings
-		if ($name == 'datatype')
+		if ($name === 'datatype')
 		{
 			$datatypeArray = array(
 				'CHAR' => 'COM_COMPONENTBUILDER_FIELD_CHAR',
@@ -429,7 +429,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			}
 		}
 		// Array of indexes language strings
-		if ($name == 'indexes')
+		if ($name === 'indexes')
 		{
 			$indexesArray = array(
 				1 => 'COM_COMPONENTBUILDER_FIELD_UNIQUE_KEY',
@@ -443,7 +443,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			}
 		}
 		// Array of null_switch language strings
-		if ($name == 'null_switch')
+		if ($name === 'null_switch')
 		{
 			$null_switchArray = array(
 				'NULL' => 'COM_COMPONENTBUILDER_FIELD_NULL',
@@ -456,7 +456,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			}
 		}
 		// Array of store language strings
-		if ($name == 'store')
+		if ($name === 'store')
 		{
 			$storeArray = array(
 				0 => 'COM_COMPONENTBUILDER_FIELD_DEFAULT',
@@ -1443,7 +1443,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		}
 
 		// Alter the uniqe field for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			// Automatic handling of other uniqe fields
 			$uniqeFields = $this->getUniqeFields();

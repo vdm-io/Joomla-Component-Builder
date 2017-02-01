@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
-	@created		30th April, 2015
+	@version		@update number 81 of this MVC
+	@build			15th January, 2017
+	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		dynamic_gets.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
@@ -153,7 +153,7 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 	public function selectionTranslation($value,$name)
 	{
 		// Array of main_source language strings
-		if ($name == 'main_source')
+		if ($name === 'main_source')
 		{
 			$main_sourceArray = array(
 				0 => 'COM_COMPONENTBUILDER_DYNAMIC_GET_PLEASE_SELECT',
@@ -168,7 +168,7 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 			}
 		}
 		// Array of gettype language strings
-		if ($name == 'gettype')
+		if ($name === 'gettype')
 		{
 			$gettypeArray = array(
 				1 => 'COM_COMPONENTBUILDER_DYNAMIC_GET_GETITEM',

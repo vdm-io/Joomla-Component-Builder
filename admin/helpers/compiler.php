@@ -68,7 +68,7 @@ class Compiler extends Infusion
 			{
 				$this->gitPath		= $this->params->get('git_folder_path', null);
 			}
-			// remove site folder
+			// remove site folder if not needed (TODO add check if custom script was moved to site folder then we must do a more complex cleanup here)
 			if ($this->removeSiteFolder)
 			{
 				// first remove the files and folders
@@ -82,15 +82,39 @@ class Compiler extends Infusion
 				$this->writeFile($xmlPath,$componentXML);
 			}
 			// now update the files
-			if ($this->updateFiles())
+			if (!$this->updateFiles())
 			{
-				// zip the component
-				if ($this->zipComponent())
-				{
-					// done
-					return true;
-				}
+				return false;
 			}
+			// we can remove all undeeded data
+			$this->freeMemory();
+			// check if this component is install on the current website
+			if ($paths = $this->getLocalInstallPaths())
+			{
+				// start Automatic import of custom code
+				$userId = JFactory::getUser()->id;
+				$today = JFactory::getDate()->toSql();
+				// Get a db connection.
+				$db = JFactory::getDbo();
+				// get the custom code from installed files
+				$this->customCodeFactory($paths, $db, $userId, $today);
+			}
+			// check if we have custom code to add
+			$this->getCustomCode();
+			// now insert into the new files
+			if (ComponentbuilderHelper::checkArray($this->customCode))
+			{
+				$this->addCustomCode();
+			}
+			// move the update server into place
+			$this->setUpdateServer();
+			// zip the component
+			if (!$this->zipComponent())
+			{
+				// done
+				return false;
+			}
+			return true;
 		}
 		return false;
 	}
@@ -111,7 +135,13 @@ class Compiler extends Infusion
 		}
 		return '';
 	}
-
+	
+	/**
+	 * Set the dynamic data to the created fils
+	 * 
+	 * @return  bool true on success
+	 * 
+	 */
 	protected function updateFiles()
 	{
 		if (isset($this->newFiles['static']) && ComponentbuilderHelper::checkArray($this->newFiles['static']) && isset($this->newFiles['dynamic']) && ComponentbuilderHelper::checkArray($this->newFiles['dynamic']))
@@ -158,6 +188,8 @@ class Compiler extends Infusion
 							if (JFile::exists($file['path']))
 							{
 								$this->fileContentStatic['###FILENAME###'] = $file['name'];
+								// do some weird stuff to improve the verion and dates being added to the license
+								$this->fixLicenseValues($file);
 								$php = '';
 								if (ComponentbuilderHelper::checkFileType($file['name'],'php'))
 								{
@@ -184,7 +216,11 @@ class Compiler extends Infusion
 						}
 					}
 				}
+				// free up some memory
+				unset($this->fileContentDynamic[$view]);
 			}
+			// free up some memory
+			unset($this->newFiles['dynamic']);
 			// do a final run to update the readme file
 			$two = 0;
 			foreach ($this->newFiles['static'] as $static)
@@ -199,29 +235,143 @@ class Compiler extends Infusion
 					break;
 				}
 			}
-			// move the update server to host
-			if ($this->componentData->add_update_server && $this->componentData->update_server_target == 1 && isset($this->updateServerFileName) && $this->dynamicIntegration)
-			{
-				$xml_update_server_path = $this->componentPath.'/'.$this->updateServerFileName.'.xml';
-				// make sure we have the correct file
-				if (JFile::exists($xml_update_server_path) && isset($this->componentData->update_server_ftp))
-				{
-					// Get the basic encription.
-					$basickey = ComponentbuilderHelper::getCryptKey('basic');
-					// Get the encription object.
-					$basic = new FOFEncryptAes($basickey, 128);
-					if (!empty($this->componentData->update_server_ftp) && $basickey && !is_numeric($this->componentData->update_server_ftp) && $this->componentData->update_server_ftp === base64_encode(base64_decode($this->componentData->update_server_ftp, true)))
-					{
-						// basic decript data update_server_ftp.
-						$this->componentData->update_server_ftp = rtrim($basic->decryptString($this->componentData->update_server_ftp), "\0");
-					}
-					// now move the file
-					$this->moveFileToFtpServer($xml_update_server_path,$this->componentData->update_server_ftp);
-				}
-			}
 			return true;
 		}
 		return false;
+	}
+	
+	protected function freeMemory()
+	{		
+		// free up some memory
+		unset($this->newFiles['static']);
+		unset($this->customScriptBuilder);
+		unset($this->permissionCore);
+		unset($this->permissionDashboard);
+		unset($this->componentData->admin_views);
+		unset($this->componentData->site_views);
+		unset($this->componentData->custom_admin_views);
+		unset($this->componentData->config);
+		unset($this->joomlaVersionData);
+		unset($this->langContent);
+		unset($this->dbKeys);
+		unset($this->permissionBuilder);
+		unset($this->layoutBuilder);
+		unset($this->historyBuilder);
+		unset($this->aliasBuilder);
+		unset($this->titleBuilder);
+		unset($this->customBuilderList);
+		unset($this->hiddenFieldsBuilder);
+		unset($this->intFieldsBuilder);
+		unset($this->dynamicfieldsBuilder);
+		unset($this->maintextBuilder);
+		unset($this->customFieldLinksBuilder);
+		unset($this->setScriptUserSwitch);
+		unset($this->categoryBuilder);
+		unset($this->catCodeBuilder);
+		unset($this->checkboxBuilder);
+		unset($this->jsonItemBuilder);
+		unset($this->base64Builder);
+		unset($this->basicEncryptionBuilder);
+		unset($this->advancedEncryptionBuilder);
+		unset($this->getItemsMethodListStringFixBuilder);
+		unset($this->getItemsMethodEximportStringFixBuilder);
+		unset($this->selectionTranslationFixBuilder);
+		unset($this->listBuilder);
+		unset($this->customBuilder);
+		unset($this->editBodyViewScriptBuilder);
+		unset($this->queryBuilder);
+		unset($this->sortBuilder);
+		unset($this->searchBuilder);
+		unset($this->filterBuilder);
+		unset($this->fieldsNames);
+		unset($this->siteFields);
+		unset($this->siteFieldData);
+		unset($this->customFieldScript);
+		unset($this->configFieldSets);
+		unset($this->jsonStringBuilder);
+		unset($this->importCustomScripts);
+		unset($this->eximportView);
+		unset($this->uninstallBuilder);
+		unset($this->listColnrBuilder);
+		unset($this->customFieldBuilder);
+		unset($this->permissionFields);
+		unset($this->getAsLookup);
+		unset($this->secondRunAdmin);
+		unset($this->uninstallScriptBuilder);
+		unset($this->buildCategories);
+		unset($this->iconBuilder);
+		unset($this->validationFixBuilder);
+		unset($this->targetRelationControl);
+		unset($this->targetControlsScriptChecker);
+		unset($this->accessBuilder);
+		unset($this->tabCounter);
+		unset($this->linkedAdminViews);
+		unset($this->uniquekeys);
+		unset($this->uniquecodes);
+		$this->unsetNow('_adminViewData');
+		$this->unsetNow('_fieldData');
+	}
+	
+	/**
+	 * move the local update server xml file to a remote ftp server
+	 * 
+	 * @return  void
+	 * 
+	 */
+	protected function setUpdateServer()
+	{
+		// move the update server to host
+		if ($this->componentData->add_update_server && $this->componentData->update_server_target == 1 && isset($this->updateServerFileName) && $this->dynamicIntegration)
+		{
+			$xml_update_server_path = $this->componentPath.'/'.$this->updateServerFileName.'.xml';
+			// make sure we have the correct file
+			if (JFile::exists($xml_update_server_path) && isset($this->componentData->update_server_ftp))
+			{
+				// Get the basic encription.
+				$basickey = ComponentbuilderHelper::getCryptKey('basic');
+				// Get the encription object.
+				$basic = new FOFEncryptAes($basickey, 128);
+				if (!empty($this->componentData->update_server_ftp) && $basickey && !is_numeric($this->componentData->update_server_ftp) && $this->componentData->update_server_ftp === base64_encode(base64_decode($this->componentData->update_server_ftp, true)))
+				{
+					// basic decript data update_server_ftp.
+					$this->componentData->update_server_ftp = rtrim($basic->decryptString($this->componentData->update_server_ftp), "\0");
+				}
+				// now move the file
+				$this->moveFileToFtpServer($xml_update_server_path,$this->componentData->update_server_ftp);
+			}
+		}
+	}
+
+	// link canges made to views into the file license
+	protected function fixLicenseValues($data)
+	{
+		// check if these files have its own config data
+		if (isset($data['config']) && ComponentbuilderHelper::checkArray($data['config']))
+		{
+			foreach ($data['config'] as $key => $value)
+			{
+				if ('###VERSION###' == $key)
+				{
+					// hmm we sould in some way make it known that this version number
+					// is not in relation the the project but to the file only... any ideas?
+					// this is the best for now...
+					if (1 == $value)
+					{
+						$value = '@first version of this MVC';
+					}
+					else
+					{
+						$value = '@update number '.$value.' of this MVC';
+					}
+				}
+				$this->fileContentStatic[$key] = $value;
+			}
+			return true;
+		}
+		// else insure to reset to global
+		$this->fileContentStatic['###CREATIONDATE###'] = $this->fileContentStatic['###CREATIONDATE###GLOBAL'];
+		$this->fileContentStatic['###BUILDDATE###'] = $this->fileContentStatic['###BUILDDATE###GLOBAL'];
+		$this->fileContentStatic['###VERSION###'] = $this->fileContentStatic['###VERSION###GLOBAL'];
 	}
 	
 	private function buildReadMe($path)
@@ -237,8 +387,7 @@ class Compiler extends Infusion
 		$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$string);
 		// add to zip array
 		$this->writeFile($path,$answer);
-	}
-	
+	}	
 	
 	private function buildReadMeData()
 	{
@@ -438,5 +587,149 @@ class Compiler extends Infusion
 			}
 		}
 		return false;
+	}
+	
+	protected function addCustomCode()
+	{
+		foreach($this->customCode as $nr => $target)
+		{
+			// reset each time per custom code
+			$fingerPrint = array();
+			if (isset($target['hashtarget'][0]) && $target['hashtarget'][0] > 3 
+				&& isset($target['path']) && ComponentbuilderHelper::checkString($target['path'])
+				&& isset($target['hashtarget'][1]) && ComponentbuilderHelper::checkString($target['hashtarget'][1]))
+			{
+				$file		= $this->componentPath . '/'. $target['path'];
+				$size		= (int) $target['hashtarget'][0];
+				$hash		= $target['hashtarget'][1];
+				$cut		= $size - 1;
+				$found		= false;
+				$bites		= 0;
+				$replace	= array();
+				if ($target['type'] == 1 && isset($target['hashendtarget'][0]) && $target['hashendtarget'][0] > 0)
+				{
+					$foundEnd	= false;
+					$sizeEnd	= (int) $target['hashendtarget'][0];
+					$hashEnd	= $target['hashendtarget'][1];
+					$cutEnd		= $sizeEnd - 1;
+				}
+				else
+				{
+					// replace to the end of the file
+					$foundEnd	= true;
+				}
+				$counter	= 0;
+				// check if file is new structure			
+				if (JFile::exists($file))
+				{
+					foreach (new SplFileObject($file) as $lineNumber => $lineContent)
+					{
+						if (!$found)
+						{
+							$bites = (int) bcadd(mb_strlen($lineContent, '8bit'), $bites);
+						}
+						if ($found && !$foundEnd)
+						{
+							$replace[] = (int) mb_strlen($lineContent, '8bit');
+							// we musk keep last three lines to dynamic find target entry
+							$fingerPrint[$lineNumber] = trim($lineContent);
+							// check lines each time if it fits our target
+							if (count($fingerPrint) === $sizeEnd && !$foundEnd)
+							{
+								$fingerTest = md5(implode('',$fingerPrint));
+								if ($fingerTest === $hashEnd)
+								{
+									// we are done here
+									$foundEnd = true;
+									$replace = array_slice($replace, 0, count($replace)-$sizeEnd);
+									break;
+								}
+								else
+								{
+									$fingerPrint = array_slice($fingerPrint, -$cutEnd, $cutEnd, true);
+								}
+							}
+						}
+						if ($found && $foundEnd)
+						{
+							$replace[] = (int) mb_strlen($lineContent, '8bit');
+						}
+						// we musk keep last three lines to dynamic find target entry
+						$fingerPrint[$lineNumber] = trim($lineContent);
+						// check lines each time if it fits our target
+						if (count($fingerPrint) === $size && !$found)
+						{
+							$fingerTest = md5(implode('',$fingerPrint));
+							if ($fingerTest === $hash)
+							{
+								// we are done here
+								$found = true;
+								// reset in case
+								$fingerPrint = array();
+								// break if it is insertion
+								if ($target['type'] == 2)
+								{
+									break;
+								}
+							}
+							else
+							{
+								$fingerPrint = array_slice($fingerPrint, -$cut, $cut, true);
+							}
+						}
+					}
+					if ($found)
+					{
+						$placeholder	= $this->getPlaceHolder($target['type'], $target['id']);
+						$data		= $placeholder['start'] . "\n" . $target['code'] . $placeholder['end'] . "\n";
+						if ($target['type'] == 2)
+						{
+							// found it now add code from the next line
+							$this->addDataToFile($file, $data, $bites);
+						}
+						elseif ($target['type'] == 1 && $foundEnd)
+						{
+							// found it now add code from the next line
+							$this->addDataToFile($file, $data, $bites, (int) array_sum($replace));
+						}
+						else
+						{
+							// TODO give developer a notice that the code could not be added and needs his attention.
+						}
+					}
+					else
+					{
+						// TODO give developer a notice that the code could not be added and needs his attention.
+					}
+				}
+				else
+				{
+					// TODO give developer a notice that the code could not be added and needs his attention.
+				}
+			}
+		}
+	}
+
+	// Thanks to http://stackoverflow.com/a/16813550/1429677
+	protected function addDataToFile($file, $data, $position, $replace = null)
+	{
+		$fpFile = fopen($file, "rw+");
+		$fpTemp = fopen('php://temp', "rw+");
+
+		$len = stream_copy_to_stream($fpFile, $fpTemp); // make a copy
+
+		fseek($fpFile, $position); // move to the position
+		if ($replace)
+		{
+			$position = bcadd($position, $replace);
+		}
+		fseek($fpTemp, $position); // move to the position
+
+		fwrite($fpFile, $data); // Add the data
+
+		stream_copy_to_stream($fpTemp, $fpFile); // @Jack
+
+		fclose($fpFile); // close file
+		fclose($fpTemp); // close tmp
 	}
 }

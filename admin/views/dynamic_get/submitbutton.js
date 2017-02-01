@@ -9,9 +9,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
-	@created		30th April, 2015
+	@version		@update number 81 of this MVC
+	@build			15th January, 2017
+	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		submitbutton.js
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	

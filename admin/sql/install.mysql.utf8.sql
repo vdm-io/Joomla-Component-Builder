@@ -513,6 +513,41 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_add_php_after_getitems` (`add_php_after_getitems`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`asset_id` INT(255) UNSIGNED NOT NULL DEFAULT '0',
+	`code` MEDIUMTEXT NOT NULL,
+	`component` INT(11) NOT NULL DEFAULT '0',
+	`from_line` VARCHAR(100) NOT NULL DEFAULT '',
+	`hashendtarget` VARCHAR(64) NOT NULL DEFAULT '',
+	`hashtarget` VARCHAR(64) NOT NULL DEFAULT '',
+	`path` TEXT NOT NULL,
+	`to_line` VARCHAR(100) NOT NULL DEFAULT '',
+	`type` TINYINT(1) NOT NULL DEFAULT '0',
+	`params` TEXT NOT NULL,
+	`published` TINYINT(1) NOT NULL DEFAULT '1',
+	`created_by` INT(11) NOT NULL DEFAULT '0',
+	`modified_by` INT(11) NOT NULL DEFAULT '0',
+	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`checked_out` INT(11) NOT NULL,
+	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`version` INT(11) NOT NULL DEFAULT '1',
+	`hits` INT(11) NOT NULL DEFAULT '0',
+	`access` INT(11) DEFAULT NULL,
+	`ordering` INT(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY  (`id`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`),
+	KEY `idx_component` (`component`),
+	KEY `idx_type` (`type`),
+	KEY `idx_from_line` (`from_line`),
+	KEY `idx_to_line` (`to_line`)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(255) UNSIGNED NOT NULL DEFAULT '0',

@@ -92,9 +92,11 @@ class Infusion extends Interpretation
 			
 			// ###CREATIONDATE###
 			$this->fileContentStatic['###CREATIONDATE###'] = JFactory::getDate($this->componentData->created)->format('jS F, Y');
+			$this->fileContentStatic['###CREATIONDATE###GLOBAL'] = $this->fileContentStatic['###CREATIONDATE###'];
 			
 			// ###BUILDDATE###
 			$this->fileContentStatic['###BUILDDATE###'] = JFactory::getDate()->format('jS F, Y');
+			$this->fileContentStatic['###BUILDDATE###GLOBAL'] = $this->fileContentStatic['###BUILDDATE###'];
 			
 			// ###AUTHOR###
 			$this->fileContentStatic['###AUTHOR###'] = trim(JFilterOutput::cleanText($this->componentData->author));
@@ -113,9 +115,10 @@ class Infusion extends Interpretation
 
 			// ###VERSION###
 			$this->fileContentStatic['###VERSION###'] = trim($this->componentData->component_version);
+			$this->fileContentStatic['###VERSION###GLOBAL'] = $this->fileContentStatic['###VERSION###'];
 
 			// ###Component_name###
-			$this->fileContentStatic['###Component_name###'] = JFilterOutput::cleanText($this->componentData->name);;
+			$this->fileContentStatic['###Component_name###'] = JFilterOutput::cleanText($this->componentData->name);
 
 			// ###SHORT_DISCRIPTION###
 			$this->fileContentStatic['###SHORT_DESCRIPTION###'] = trim(JFilterOutput::cleanText($this->componentData->short_description));

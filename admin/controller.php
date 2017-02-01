@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
+	@version		2.2.9
+	@build			1st February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		controller.php
@@ -95,6 +95,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'template' => 'templates',
 				'layout' => 'layouts',
 				'dynamic_get' => 'dynamic_gets',
+				'custom_code' => 'custom_codes',
 				'snippet' => 'snippets',
 				'field' => 'fields',
 				'fieldtype' => 'fieldtypes',

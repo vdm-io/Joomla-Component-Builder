@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
-	@created		30th April, 2015
+	@version		@update number 6 of this MVC
+	@build			17th October, 2016
+	@created		4th March, 2016
 	@package		Component Builder
 	@subpackage		edit.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
@@ -125,21 +125,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_location listeners for location_vvvvvzy function
-jQuery('#jform_location').on('keyup',function()
-{
-	var location_vvvvvzy = jQuery("#jform_location input[type='radio']:checked").val();
-	vvvvvzy(location_vvvvvzy);
-
-});
-jQuery('#adminForm').on('change', '#jform_location',function (e)
-{
-	e.preventDefault();
-	var location_vvvvvzy = jQuery("#jform_location input[type='radio']:checked").val();
-	vvvvvzy(location_vvvvvzy);
-
-});
-
 // #jform_location listeners for location_vvvvvzz function
 jQuery('#jform_location').on('keyup',function()
 {
@@ -155,18 +140,18 @@ jQuery('#adminForm').on('change', '#jform_location',function (e)
 
 });
 
-// #jform_type listeners for type_vvvvwaa function
-jQuery('#jform_type').on('keyup',function()
+// #jform_location listeners for location_vvvvwaa function
+jQuery('#jform_location').on('keyup',function()
 {
-	var type_vvvvwaa = jQuery("#jform_type").val();
-	vvvvwaa(type_vvvvwaa);
+	var location_vvvvwaa = jQuery("#jform_location input[type='radio']:checked").val();
+	vvvvwaa(location_vvvvwaa);
 
 });
-jQuery('#adminForm').on('change', '#jform_type',function (e)
+jQuery('#adminForm').on('change', '#jform_location',function (e)
 {
 	e.preventDefault();
-	var type_vvvvwaa = jQuery("#jform_type").val();
-	vvvvwaa(type_vvvvwaa);
+	var location_vvvvwaa = jQuery("#jform_location input[type='radio']:checked").val();
+	vvvvwaa(location_vvvvwaa);
 
 });
 
@@ -200,18 +185,33 @@ jQuery('#adminForm').on('change', '#jform_type',function (e)
 
 });
 
-// #jform_target listeners for target_vvvvwad function
+// #jform_type listeners for type_vvvvwad function
+jQuery('#jform_type').on('keyup',function()
+{
+	var type_vvvvwad = jQuery("#jform_type").val();
+	vvvvwad(type_vvvvwad);
+
+});
+jQuery('#adminForm').on('change', '#jform_type',function (e)
+{
+	e.preventDefault();
+	var type_vvvvwad = jQuery("#jform_type").val();
+	vvvvwad(type_vvvvwad);
+
+});
+
+// #jform_target listeners for target_vvvvwae function
 jQuery('#jform_target').on('keyup',function()
 {
-	var target_vvvvwad = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwad(target_vvvvwad);
+	var target_vvvvwae = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwae(target_vvvvwae);
 
 });
 jQuery('#adminForm').on('change', '#jform_target',function (e)
 {
 	e.preventDefault();
-	var target_vvvvwad = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwad(target_vvvvwad);
+	var target_vvvvwae = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwae(target_vvvvwae);
 
 });
 

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
+	@version		2.2.9
+	@build			1st February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		customadminviews.php
@@ -92,7 +92,7 @@ class JFormFieldCustomadminviews extends JFormFieldList
 					<span class="icon-new icon-white"></span></a>';
 			}
 			// only add if user allowed to edit custom_admin_view
-			if (($buttonName == 'custom_admin_view' || $buttonName == 'custom_admin_views')  && $user->authorise('core.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			if (($buttonName === 'custom_admin_view' || $buttonName === 'custom_admin_views')  && $user->authorise('core.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build edit button
 				$buttonNamee = trim($buttonName);

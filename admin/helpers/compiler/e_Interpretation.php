@@ -826,7 +826,7 @@ class Interpretation extends Fields
 			$exel[] = "\t\t\t\t\t\t\$objPHPExcel->getActiveSheet()->getColumnDimension(\$a)->setAutoSize(true);";
 			$exel[] = "\t\t\t\t\t\t\$objPHPExcel->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$headerStyles);";
 			$exel[] = "\t\t\t\t\t\t\$objPHPExcel->getActiveSheet()->getStyle(\$a.\$i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);";
-			$exel[] = "\t\t\t\t\t} elseif (\$a == 'A'){";
+			$exel[] = "\t\t\t\t\t} elseif (\$a === 'A'){";
 			$exel[] = "\t\t\t\t\t\t\$objPHPExcel->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$sideStyles);";
 			$exel[] = "\t\t\t\t\t} else {";
 			$exel[] = "\t\t\t\t\t\t\$objPHPExcel->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$normalStyles);";
@@ -1170,7 +1170,7 @@ class Interpretation extends Fields
 					// set the selection
 					$getItem .= "\n\t".$tab."\t".$the_get['selection']['select'];
 					if (($nr == 0 && (!isset($the_get['join_field']) || !ComponentbuilderHelper::checkString($the_get['join_field'])) && (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))) ||
-						($type == 'custom' && (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))))
+						($type === 'custom' && (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))))
 					{
 						$getItem .= "\n\t".$tab."\t".'$query->from('.$the_get['selection']['from'].');';
 					}
@@ -1333,28 +1333,28 @@ class Interpretation extends Fields
 		{
 			if (strpos($get['selection']['select'], $field) !== false)
 			{
-				if ($array['decode'] == 'json')
+				if ($array['decode'] === 'json')
 				{
 					$if = "\n\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(".$string."->".$field."))\n\t".$tab."\t{";
 					// json_decode
 					$decoder = $string."->".$field." = json_decode(".$string."->".$field.", true);";
 					// TODO Use the type of field to prepare it even more for use in the view
 				}
-				elseif ($array['decode'] == 'base64')
+				elseif ($array['decode'] === 'base64')
 				{
 					$if = "\n\t".$tab."\tif (!empty(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.")))\n\t".$tab."\t{";
 					// base64_decode
 					$decoder = $string."->".$field." = base64_decode(".$string."->".$field.");";
 					// TODO Use the type of field to prepare it even more for use in the view
 				}
-				elseif ($array['decode'] == 'basic_encryption')
+				elseif ($array['decode'] === 'basic_encryption')
 				{
 					$if = "\n\t".$tab."\tif (!empty(".$string."->".$field.") && \$basickey && !is_numeric(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.", true)))\n\t".$tab."\t{";
 					// basic decryption
 					$decoder = $string."->".$field." = rtrim(\$basic->decryptString(".$string."->".$field."), ".'"\0"'.");";
 					$this->siteDecrypt['basic'][$code] = true;
 				}
-				elseif ($array['decode'] == 'advance_encryption')
+				elseif ($array['decode'] === 'advance_encryption')
 				{
 					$if = "\n\t".$tab."\tif (!empty(".$string."->".$field.") && \$advancedkey && !is_numeric(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.", true)))\n\t".$tab."\t{";
 					// advanced decryption
@@ -1467,7 +1467,7 @@ class Interpretation extends Fields
 					case 4:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_USER_GROUPS
 					$decodeChecker = $this->siteFieldData['decode'][$code][$ter['key']][$as][$field];
-					if (ComponentbuilderHelper::checkArray($decodeChecker) || $ter['state_key'] == 'array')
+					if (ComponentbuilderHelper::checkArray($decodeChecker) || $ter['state_key'] === 'array')
 					{
 						// set needed fields to filter after query
 						$this->siteFieldDecodeFilter[$this->target][$code][$ter['key']][$as][$field] = $ter;
@@ -1491,7 +1491,7 @@ class Interpretation extends Fields
 					break;
 					case 8:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_FUNCTIONVAR
-					if ($ter['operator'] == 'IN' || $ter['operator'] == 'NOT IN')
+					if ($ter['operator'] === 'IN' || $ter['operator'] === 'NOT IN')
 					{						
 						$string = "\n\t\t".$tab."//".$this->setLine(__LINE__)." Check if " . $ter['state_key'] . " is an array with values.";
 						$string .= "\n\t\t".$tab."\$array = " . $ter['state_key'].";";
@@ -1549,11 +1549,11 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkString($string))
 				{
 					// sort where
-					if ($as == 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
+					if ($as === 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
 					{
 						$filters .= $string;
 					}
-					elseif($as != 'a')
+					elseif($as !== 'a')
 					{
 						$this->otherFilter[$this->target][$code][$as][$field] = $string;
 					}
@@ -1575,7 +1575,7 @@ class Interpretation extends Fields
 				// set the string
 				$string = "\$query->order('".$or['table_key']." ".$or['direction']."');";
 				// sort where
-				if ($as == 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
+				if ($as === 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
 				{
 					$ordering .= "\n\t".$tab."\t".$string;
 				}
@@ -1606,7 +1606,7 @@ class Interpretation extends Fields
 				}
 				elseif (strpos($whe['value_key'],'$this->') !== false)
 				{
-					if ($whe['operator'] == 'IN' || $whe['operator'] == 'NOT IN')
+					if ($whe['operator'] === 'IN' || $whe['operator'] === 'NOT IN')
 					{
 						$value = " (' . implode(',', " . $whe['value_key'] . ") . ')');";
 					}
@@ -1623,10 +1623,10 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkString($value))
 				{
 					// set the string
-					if ($whe['operator'] == 'IN' || $whe['operator'] == 'NOT IN')
+					if ($whe['operator'] === 'IN' || $whe['operator'] === 'NOT IN')
 					{
 						$tabe = '';
-						if ($as == 'a')
+						if ($as === 'a')
 						{
 							$tabe = $tab;
 						}
@@ -1645,11 +1645,11 @@ class Interpretation extends Fields
 						$string = "\$query->where('".$whe['table_key']." ".$whe['operator'].$value;
 					}
 					// sort where
-					if ($as == 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
+					if ($as === 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
 					{
 						$wheres .= "\n\t".$tab."\t".$string;
 					}
-					elseif ($as != 'a')
+					elseif ($as !== 'a')
 					{
 						$this->otherWhere[$this->target][$code][$as][$field] = "\n\t\t".$string;
 					}
@@ -1792,7 +1792,7 @@ class Interpretation extends Fields
 			$getItem .= "\n\t".$tab."\t\$data = \$db->loadObject();";
 			$getItem .= "\n\n".$tab."\t\tif (empty(\$data))";
 			$getItem .= "\n\t".$tab."\t{";
-			if ($type == 'main')
+			if ($type === 'main')
 			{
 				$getItem .= "\n\t".$tab."\t\t\$app = JFactory::getApplication();";
 				$langKeyWord = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Not found or access denied','U');
@@ -1894,7 +1894,7 @@ class Interpretation extends Fields
 				$get->php_calculation = (array) explode("\n",$get->php_calculation);
 				$getItem .= "\n\t".$tab."\t".implode("\n\t".$tab."\t",$get->php_calculation);
 			}
-			if ($type == 'custom')
+			if ($type === 'custom')
 			{
 				// return the object
 				$getItem .=  "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." return data object.";
@@ -2171,7 +2171,7 @@ class Interpretation extends Fields
 					$methods .= "\n\t\t".$get['selection']['select'];
 					$methods .= "\n\t\t".'$query->from('.$get['selection']['from'].');';
 					// set the string
-					if ($get['operator'] == 'IN' || $get['operator'] == 'NOT IN')
+					if ($get['operator'] === 'IN' || $get['operator'] === 'NOT IN')
 					{
 						$methods .= "\n\n\t\t//".$this->setLine(__LINE__)." Check if \$" . $default['on_field'] . " is an array with values.";
 						$methods .= "\n\t\t\$array = \$" . $default['on_field'] . ";";
@@ -2750,7 +2750,7 @@ class Interpretation extends Fields
 		// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
 		$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] = '';
 		// if site add buttons to view
-		if ($this->target == 'site')
+		if ($this->target === 'site')
 		{
 			// set the custom buttons ###SITE_TOP_BUTTON###
 			$this->fileContentDynamic[$viewName]['###SITE_TOP_BUTTON###'] = '';
@@ -2811,7 +2811,7 @@ class Interpretation extends Fields
 				$buttons = array();
 				foreach ($view['settings']->custom_buttons as $custom_button)
 				{
-					if ($custom_button['target'] != 2 || $this->target == 'site')
+					if ($custom_button['target'] != 2 || $this->target === 'site')
 					{
 						// Load to lang
 						$keyLang = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($custom_button['name'],'U');
@@ -3201,7 +3201,7 @@ class Interpretation extends Fields
 				$script = array();
 				$script[] = "\n<script type=\"text/javascript\">";
 				$script[] = "\tJoomla.submitbutton = function(task) {";
-				$script[] = "\t\tif (task == '".$view['settings']->code.".back') {";
+				$script[] = "\t\tif (task === '".$view['settings']->code.".back') {";
 				$script[] = "\t\t\tparent.history.back();";
 				$script[] = "\t\t\treturn false;";
 				$script[] = "\t\t} else {";
@@ -3236,11 +3236,13 @@ class Interpretation extends Fields
 	{
 		if (isset($this->templateData[$this->target][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->templateData[$this->target][$view['settings']->code]))
 		{
+			$modified = $this->getLastModifiedDate($view);
 			foreach ($this->templateData[$this->target][$view['settings']->code] as $template => $data)
 			{
 				// build the file
 				$target = array($this->target => $view['settings']->code);
-				$this->buildDynamique($target,'template',$template);
+				$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+				$this->buildDynamique($target,'template', $template, $config);
 				// set the file data
 				$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
 				// ###SITE_TEMPLATE_BODY### <<<DYNAMIC>>>
@@ -3331,12 +3333,12 @@ class Interpretation extends Fields
 				$replacments = array_unique($replacments);
 				foreach ($replacments as $replacment)
 				{
-					if ($type != 'static')
+					if ($type !== 'static')
 					{
 						//var_dump($replacment); echo "\n";
 						$echos[$replacment] = "###".$replacment."###<br />";
 					}
-					elseif ($type == 'static')
+					elseif ($type === 'static')
 					{
 						//var_dump($replacment); echo "\n";
 						$echos[$replacment] = "###".$replacment."###<br />";
@@ -3627,7 +3629,7 @@ class Interpretation extends Fields
 			if (ComponentbuilderHelper::checkArray($dbStuff))
 			{
 				$taabb = '';
-				if ($action == 'update')
+				if ($action === 'update')
 				{
 					$taabb = "\t";
 				}
@@ -3644,7 +3646,7 @@ class Interpretation extends Fields
 						{
 							$script .= "\n\t\t\t\$".$code."->".$table." = '".$data."';";
 						}
-						if ($action == 'update')
+						if ($action === 'update')
 						{
 							// we first load script to check if data exist
 							$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Check if ".$name." type is already in content_type DB.";
@@ -3657,7 +3659,7 @@ class Interpretation extends Fields
 							$script .= "\n\t\t\t\$db->execute();";
 						}
 						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Set the object into the content types table.";
-						if ($action == 'update')
+						if ($action === 'update')
 						{
 							$script .= "\n\t\t\tif (\$db->getNumRows())";
 							$script .= "\n\t\t\t{";
@@ -3668,7 +3670,7 @@ class Interpretation extends Fields
 							$script .= "\n\t\t\t{";
 						}
 						$script .= "\n\t\t\t".$taabb."\$".$code."_Inserted = \$db->insertObject('#__content_types', \$".$code.");";
-						if ($action == 'update')
+						if ($action === 'update')
 						{
 							$script .= "\n\t\t\t}";
 						}
@@ -4055,7 +4057,7 @@ class Interpretation extends Fields
 		$isCategory = '';
 		if ($viewArray && ComponentbuilderHelper::checkArray($viewArray))
 		{
-			if (isset($viewArray['settings']->main_get->db_table_main) && $viewArray['settings']->main_get->db_table_main == 'categories')
+			if (isset($viewArray['settings']->main_get->db_table_main) && $viewArray['settings']->main_get->db_table_main === 'categories')
 			{
 				$isCategory = ', true'; // TODO we will keep an eye on this....
 			}
@@ -4102,11 +4104,11 @@ class Interpretation extends Fields
 	{
 		if (isset($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']) && ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']))
 		{
-			return " || \$view == '".$view."'";
+			return " || \$view === '".$view."'";
 		}
 		else
 		{
-			return "\$view == '".$view."'";
+			return "\$view === '".$view."'";
 		}
 	}
 
@@ -4453,7 +4455,7 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t\t\tcontinue;";
 		$batchcopy[] = "\t\t\t\t}";
 		$batchcopy[] = "\t\t\t}";
-		if ($category && $alias == 'alias' && $title == 'title')
+		if ($category && $alias === 'alias' && $title === 'title')
 		{
 			$batchcopy[] = "\n\t\t\tif (isset(\$values['".$category."']))";
 			$batchcopy[] = "\t\t\t{";
@@ -4566,7 +4568,7 @@ class Interpretation extends Fields
 			}
 			// start building the fix
 			$fixUniqe[] = "\n\t\t//".$this->setLine(__LINE__)." Alter the ".$title." for save as copy";
-			$fixUniqe[] = "\t\tif (\$input->get('task') == 'save2copy')";
+			$fixUniqe[] = "\t\tif (\$input->get('task') === 'save2copy')";
 			$fixUniqe[] = "\t\t{";
 			$fixUniqe[] = "\t\t\t\$origTable = clone \$this->getTable();";
 			$fixUniqe[] = "\t\t\t\$origTable->load(\$input->getInt('id'));";
@@ -4632,7 +4634,7 @@ class Interpretation extends Fields
 		}
 		// handel other uniqe fields
 		$fixUniqe[] = "\n\t\t//".$this->setLine(__LINE__)." Alter the uniqe field for save as copy";
-		$fixUniqe[] = "\t\tif (\$input->get('task') == 'save2copy')";
+		$fixUniqe[] = "\t\tif (\$input->get('task') === 'save2copy')";
 		$fixUniqe[] = "\t\t{";
 		$fixUniqe[] = "\t\t\t//".$this->setLine(__LINE__)." Automatic handling of other uniqe fields";
 		$fixUniqe[] = "\t\t\t\$uniqeFields = \$this->getUniqeFields();";
@@ -4729,15 +4731,15 @@ class Interpretation extends Fields
 				{
 					// set default
 					$default = $data['default'];
-					if ( $default == 'Other' )
+					if ( $default === 'Other' )
 					{
 						$default = $data['other'];
 					}
-					if ($default == 'EMPTY')
+					if ($default === 'EMPTY')
 					{
 						$default = $data['null_switch'];
 					}
-					elseif ($default == 'DATETIME' || $default == 'CURRENT_TIMESTAMP')
+					elseif ($default === 'DATETIME' || $default === 'CURRENT_TIMESTAMP')
 					{
 						$default =  $default.' '.$data['null_switch'];
 					}
@@ -4745,7 +4747,7 @@ class Interpretation extends Fields
 					{
 						$default = $data['null_switch']." DEFAULT '".$default."'";
 					}
-					elseif ($data['null_switch'] == 'NULL')
+					elseif ($data['null_switch'] === 'NULL')
 					{
 						$default = "DEFAULT NULL";
 					}
@@ -4755,7 +4757,7 @@ class Interpretation extends Fields
 					}
 					// set the lenght
 					$lenght = '';
-					if (isset($data['lenght']) && $data['lenght'] == 'Other' && isset($data['lenght_other']) && $data['lenght_other'] > 0)
+					if (isset($data['lenght']) && $data['lenght'] === 'Other' && isset($data['lenght_other']) && $data['lenght_other'] > 0)
 					{
 						$lenght = '('.$data['lenght_other'].')';
 					}
@@ -5252,7 +5254,7 @@ class Interpretation extends Fields
 				{
 					$itemCode = '<?php echo JText::_($item->'.$item['code'].'); ?>';
 				}
-				elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['text'] == 'user')
+				elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['text'] === 'user')
 				{
 					$itemCode = '<?php echo JFactory::getUser((int)$item->'.$item['code'].')->name; ?>';
 				}
@@ -5276,7 +5278,7 @@ class Interpretation extends Fields
 					// allways rest custom links
 					$customAdminView = '';
 					// if to be linked
-					if ($item['type'] == 'category' && !$item['title'])
+					if ($item['type'] === 'category' && !$item['title'])
 					{
 						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 						// category and linked
@@ -5288,7 +5290,7 @@ class Interpretation extends Fields
 						$body .= "\n\t\t\t<?php endif; ?>";
 						$body .= "\n\t\t</td>";
 					}
-					elseif ($item['type'] == 'user' && !$item['title'])
+					elseif ($item['type'] === 'user' && !$item['title'])
 					{
 						// user and linked
 						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
@@ -5324,7 +5326,7 @@ class Interpretation extends Fields
 								$accessCheck = "\$this->user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###'].".".$item['custom']['view'].".' . (int)\$item->".$item['id'].")";
 							}
 						}
-						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] == 'user' && !$item['title'])
+						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'])
 						{
 							// user and linked
 							$body .= "\n\t\t<?php \$".$item['id']." = JFactory::getUser(\$item->".$item['id']."); ?>";
@@ -5398,13 +5400,13 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					if ($item['type'] == 'category')
+					if ($item['type'] === 'category')
 					{
 						$body .= "\n\t\t<td class=\"hidden-phone\">";
 						$body .= "\n\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
 						$body .= "\n\t\t</td>";
 					}
-					elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] == 'user')
+					elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user')
 					{
 						// custom user and linked
 						$body .= "\n\t\t<?php \$".$item['code']." = JFactory::getUser(\$item->".$item['id']."); ?>";
@@ -5416,7 +5418,7 @@ class Interpretation extends Fields
 						$body .= "\n\t\t\t<?php endif; ?>";
 						$body .= "\n\t\t</td>";
 					}
-					elseif ($item['type'] == 'user')
+					elseif ($item['type'] === 'user')
 					{
 						// user name only
 						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
@@ -5909,7 +5911,7 @@ class Interpretation extends Fields
 					{
 						$items[] = $defaultField;
 					}
-					elseif ($defaultField == 'access' && isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
+					elseif ($defaultField === 'access' && isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
 					{
 						$items[] = $defaultField;
 					}
@@ -6146,7 +6148,7 @@ class Interpretation extends Fields
 		$target = array('admin' => $viewName_single);
 		$this->buildDynamique($target,$type,$layoutName);
 		// add to front if needed
-		if ($this->lang == 'both')
+		if ($this->lang === 'both')
 		{
 			$target = array('site' => $viewName_single);
 			$this->buildDynamique($target,$type,$layoutName);
@@ -6344,7 +6346,7 @@ class Interpretation extends Fields
 				{
 					$itemCode = '<?php echo JText::_($item->'.$item['code'].'); ?>';
 				}
-				elseif ($item['custom']['text'] == 'user')
+				elseif ($item['custom']['text'] === 'user')
 				{
 					$itemCode = '<?php echo JFactory::getUser((int)$item->'.$item['code'].')->name; ?>';
 				}
@@ -6369,7 +6371,7 @@ class Interpretation extends Fields
 					// allways rest custom links
 					$customAdminView = '';
 					// if to be linked
-					if ($item['type'] == 'category' && !$item['title'])
+					if ($item['type'] === 'category' && !$item['title'])
 					{
 						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 						// category and linked
@@ -6381,7 +6383,7 @@ class Interpretation extends Fields
 						$body .= "\n\t\t\t<?php endif; ?>";
 						$body .= "\n\t\t</td>";
 					}
-					elseif ($item['type'] == 'user' && !$item['title'])
+					elseif ($item['type'] === 'user' && !$item['title'])
 					{
 						// user and linked
 						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
@@ -6398,7 +6400,7 @@ class Interpretation extends Fields
 						$add = true;
 						if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] != 'user' && !$item['title'])
 						{
-							if ($refview == $item['custom']['view'])
+							if ($refview === $item['custom']['view'])
 							{
 								// normal not linked
 								$body .= "\n\t\t<td>";
@@ -6430,7 +6432,7 @@ class Interpretation extends Fields
 								}
 							}
 						}
-						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] == 'user' && !$item['title'])
+						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'])
 						{
 							// user and linked
 							$body .= "\n\t\t<?php \$_".$item['id']." = JFactory::getUser(\$item->".$item['id']."); ?>";
@@ -6502,13 +6504,13 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					if ($item['type'] == 'category')
+					if ($item['type'] === 'category')
 					{
 						$body .= "\n\t\t<td>";
 						$body .= "\n\t\t\t<?php echo \$displayData->escape(\$item->category_title); ?>";
 						$body .= "\n\t\t</td>";
 					}
-					elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] == 'user')
+					elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user')
 					{
 						// custom user and linked
 						$body .= "\n\t\t<?php \$_".$item['code']." = JFactory::getUser(\$item->".$item['id']."); ?>";
@@ -6520,7 +6522,7 @@ class Interpretation extends Fields
 						$body .= "\n\t\t\t<?php endif; ?>";
 						$body .= "\n\t\t</td>";
 					}
-					elseif ($item['type'] == 'user')
+					elseif ($item['type'] === 'user')
 					{
 						// user name only
 						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
@@ -7547,11 +7549,11 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($targetView,$this->permissionBuilder['global'][$core['core.edit']]))
 		{
-			$addButton[] = "\t\t\tif ((\$buttonName == '".$targetView."' || \$buttonName == '".$targetViews."') && \$user->authorise('".$core['core.edit']."', 'com_".$this->fileContentStatic['###component###']."') && \$app->isAdmin()) // TODO for now only in admin area.";
+			$addButton[] = "\t\t\tif ((\$buttonName === '".$targetView."' || \$buttonName === '".$targetViews."') && \$user->authorise('".$core['core.edit']."', 'com_".$this->fileContentStatic['###component###']."') && \$app->isAdmin()) // TODO for now only in admin area.";
 		}
 		else
 		{
-			$addButton[] = "\t\t\tif ((\$buttonName == '".$targetView."' || \$buttonName == '".$targetViews."')  && \$user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###']."') && \$app->isAdmin()) // TODO for now only in admin area.";
+			$addButton[] = "\t\t\tif ((\$buttonName === '".$targetView."' || \$buttonName === '".$targetViews."')  && \$user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###']."') && \$app->isAdmin()) // TODO for now only in admin area.";
 		}
 		$addButton[] = "\t\t\t{";
 		$addButton[] = "\t\t\t\t//".$this->setLine(__LINE__)." build edit button";
@@ -8135,7 +8137,7 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkArray($target))
 				{
 					// set the required var
-					if($target['required'] == 'yes')
+					if($target['required'] === 'yes')
 					{
 						$unique = $uniqueVar.$this->uniquekey(3);
 						$bucket[$target['name']]['requiredVar'] = "jform_".$unique."_required = false;\n";
@@ -8151,7 +8153,7 @@ class Interpretation extends Fields
 						// target a class if this is a note or spacer
 						$targetType = ".";
 					}
-					elseif ($target['type'] == 'editor')
+					elseif ($target['type'] === 'editor')
 					{
 						// target the label if  editor field
 						$targetType = "#jform_";
@@ -8168,7 +8170,7 @@ class Interpretation extends Fields
 					// set the target default
 					$bucket[$target['name']]['default'] = "\n\t\tjQuery('".$targetType.$target['name'].$targetTypeSufix."').closest('.control-group').".$targetDefault."();";
 					// the hide required function
-					if($target['required'] == 'yes')
+					if($target['required'] === 'yes')
 					{
 						$hide = "\n\t\tif (!jform_".$unique."_required)";
 						$hide .= "\n\t\t{";
@@ -8547,16 +8549,16 @@ class Interpretation extends Fields
 		$select		= '';
 		$isArray	= false;
 		$keyName	= $name.'_'.$unique;
-		if ($type == 'checkboxes' || $extends == 'checkboxes')
+		if ($type === 'checkboxes' || $extends === 'checkboxes')
 		{
 			$select =  "var ".$keyName." = [];\n\tjQuery('#jform_".$name." input[type=checkbox]').each(function()\n\t{\n\t\tif (jQuery(this).is(':checked'))\n\t\t{\n\t\t\t".$keyName.".push(jQuery(this).prop('value'));\n\t\t}\n\t});";
 			$isArray = true;
 		}
-		elseif($type == 'checkbox')
+		elseif($type === 'checkbox')
 		{
 			$select = 'var '.$keyName.' = jQuery("#jform_'.$name.'").prop(\'checked\');';
 		}
-		elseif ($type == 'radio')
+		elseif ($type === 'radio')
 		{
 			$select = 'var '.$keyName.' = jQuery("#jform_'.$name.' input[type=\'radio\']:checked").val();';
 		}
@@ -8565,7 +8567,7 @@ class Interpretation extends Fields
 			// this is only since 3.3.4
 			$select = 'var '.$keyName.' = jQuery("#jform_'.$name.'_id").val();';
 		}
-		elseif ($type == 'list' || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
+		elseif ($type === 'list' || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
 		{
 			$select = 'var '.$keyName.' = jQuery("#jform_'.$name.'").val();';
 			$isArray = true;
@@ -8582,15 +8584,15 @@ class Interpretation extends Fields
 		$clear		= '';
 		$isArray	= false;
 		$keyName	= $name.'_'.$unique;
-		if($type == 'text' || $type == 'password' || $type == 'textarea')
+		if($type === 'text' || $type === 'password' || $type === 'textarea')
 		{
 			$clear =  "jQuery('#jform_".$name."').value = '';";
 		}
-		elseif($type == 'radio')
+		elseif($type === 'radio')
 		{
 			$clear = "jQuery('#jform_".$name."').checked = false;";
 		}
-		elseif($type == 'checkboxes' || $type == 'checkbox' || $type == 'checkbox')
+		elseif($type === 'checkboxes' || $type === 'checkbox' || $type === 'checkbox')
 		{
 			$clear = "jQuery('#jform_".$name."').selectedIndex = -1;";
 		}
@@ -8803,7 +8805,7 @@ class Interpretation extends Fields
 			$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 			foreach ($this->filterBuilder[$viewName_list] as $filter)
 			{
-				if ($filter['type'] != 'category' && ComponentbuilderHelper::checkArray($filter['custom']) && $filter['custom']['extends'] == 'user')
+				if ($filter['type'] != 'category' && ComponentbuilderHelper::checkArray($filter['custom']) && $filter['custom']['extends'] === 'user')
 				{
 					$function[] = "\n\tprotected function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
 					$function[] = "\t{";
@@ -8860,7 +8862,7 @@ class Interpretation extends Fields
 						$function[] = "\t\t\t\$batch = array();";
 						$function[] = "\t\t\tforeach (\$results as \$result)";
 						$function[] = "\t\t\t{";
-						if ($filter['custom']['text'] == 'user')
+						if ($filter['custom']['text'] === 'user')
 						{
 							$function[] = "\t\t\t\t\$filter[] = JHtml::_('select.option', \$result->".$filter['custom']['text'].", JFactory::getUser(\$result->".$filter['custom']['text'].")->name);";
 							$function[] = "\t\t\t\t\$batch[] = JHtml::_('select.option', \$result->".$filter['custom']['id'].", JFactory::getUser(\$result->".$filter['custom']['text'].")->name);";
@@ -8919,7 +8921,7 @@ class Interpretation extends Fields
 						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now add the ".$filter['code']." and its text to the options array";
 						$function[] = "\t\t\t\t\$filter[] = JHtml::_('select.option', \$".$filter['code'].", JText::_(\$text));";
 					}
-					elseif ($filter['type'] == 'user')
+					elseif ($filter['type'] === 'user')
 					{
 						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now add the ".$filter['code']." and its text to the options array";
 						$function[] = "\t\t\t\t\$filter[] = JHtml::_('select.option', \$".$filter['code'].", JFactory::getUser(\$".$filter['code'].")->name);";
@@ -9990,7 +9992,7 @@ class Interpretation extends Fields
 			{
 				if (!in_array($filter['code'],$donelist))
 				{
-					if ($filter['type'] == 'category')
+					if ($filter['type'] === 'category')
 					{
 						$fields .= ",\n\t\t\t\t'c.title','category_title'";
 						$fields .= ",\n\t\t\t\t'c.id', 'category_id'";
@@ -10019,7 +10021,7 @@ class Interpretation extends Fields
 			{
 				if (!in_array($filter['code'],$donelist))
 				{
-					if ($filter['type'] == 'category')
+					if ($filter['type'] === 'category')
 					{
 						$fields .= ",\n\t\t\t\t'c.title','category_title'";
 						$fields .= ",\n\t\t\t\t'c.id', 'category_id'";
@@ -10067,7 +10069,7 @@ class Interpretation extends Fields
 			{
 				if (!in_array($filter['code'],$donelist))
 				{
-					if ($filter['type'] == 'category')
+					if ($filter['type'] === 'category')
 					{
 						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.category');";
 						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.category_id');";
@@ -10096,7 +10098,7 @@ class Interpretation extends Fields
 			{
 				if (!in_array($filter['code'],$donelist))
 				{
-					if ($filter['type'] == 'category')
+					if ($filter['type'] === 'category')
 					{
 						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.category');";
 						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.category_id');";
@@ -10308,7 +10310,7 @@ class Interpretation extends Fields
 			{
 				if (!in_array($filter['code'],$donelist))
 				{
-					if ($filter['type'] == 'category')
+					if ($filter['type'] === 'category')
 					{
 						if (strlen($state) == 0)
 						{
@@ -10359,7 +10361,7 @@ class Interpretation extends Fields
 			{
 				if (!in_array($filter['code'],$donelist))
 				{
-					if ($filter['type'] == 'category')
+					if ($filter['type'] === 'category')
 					{
 						if (strlen($state) == 0)
 						{
@@ -10424,7 +10426,7 @@ class Interpretation extends Fields
 			{
 				if (!in_array($filter['code'], $donelist))
 				{
-					if ($filter['type'] == 'category')
+					if ($filter['type'] === 'category')
 					{
 						$fields .= ",\n\t\t\t'c.category_title' => JText::_('".$filter['lang']."')";
 					}
@@ -10591,7 +10593,7 @@ class Interpretation extends Fields
 					break;
 				}
 				
-				if ($item['type'] == 'usergroup' && !$export)
+				if ($item['type'] === 'usergroup' && !$export)
 				{
 					$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode ".$item['name'];
 					$fix .= "\n\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
@@ -10614,7 +10616,7 @@ class Interpretation extends Fields
 					$fix .= "\n\t".$tab."\t\t\t\t\$item->".$item['name']." = \$".$item['name']."Names;";
 					$fix .= "\n\t".$tab."\t\t\t}";
 				}
-				/*elseif ($item['type'] == 'usergroup' && $export)
+				/*elseif ($item['type'] === 'usergroup' && $export)
 				{
 					$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode ".$item['name'];
 					$fix .= "\n\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
@@ -10680,7 +10682,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						if ($export && $item['type'] == 'repeatable')
+						if ($export && $item['type'] === 'repeatable')
 						{
 							$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode repeatable ".$item['name'];
 							$fix .= "\n\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
@@ -10825,7 +10827,7 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkArray($values))
 				{
 					$fix .= "\n\t\t//".$this->setLine(__LINE__)." Array of ".$name." language strings";
-					$fix .= "\n\t\tif (\$name == '".$name."')";
+					$fix .= "\n\t\tif (\$name === '".$name."')";
 					$fix .= "\n\t\t{";
 					$fix .= "\n\t\t\t\$".$name."Array = array(";
 					$counter = 0;
@@ -11348,7 +11350,7 @@ class Interpretation extends Fields
 			// set the code name
 			$codeName = ComponentbuilderHelper::safeString($this->componentData->name_code);
 			// set dashboard
-			$menus .= "JHtmlSidebar::addEntry(JText::_('".$lang."_DASHBOARD'), 'index.php?option=com_".$codeName."&view=".$codeName."', \$submenu == '".$codeName."');";
+			$menus .= "JHtmlSidebar::addEntry(JText::_('".$lang."_DASHBOARD'), 'index.php?option=com_".$codeName."&view=".$codeName."', \$submenu === '".$codeName."');";
 			$this->langContent[$this->lang][$lang.'_DASHBOARD'] = 'Dashboard';
 			$catArray = array();
 			foreach ($this->componentData->admin_views as $view)
@@ -11376,7 +11378,7 @@ class Interpretation extends Fields
 					}
 					$nameList	= ComponentbuilderHelper::safeString($view['settings']->name_list);
 					$nameUpper	= ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
-					$menus .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu == '".$nameList."');";
+					$menus .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
 					$this->langContent[$this->lang][$lang."_".$nameUpper] = $view['settings']->name_list;
 					// check if category has another name
 					if (isset($this->catOtherName[$nameList]) && ComponentbuilderHelper::checkArray($this->catOtherName[$nameList]))
@@ -11389,7 +11391,7 @@ class Interpretation extends Fields
 					}
 					if (isset($this->categoryBuilder[$nameList]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameList]) && !in_array($otherViews,$catArray))
 					{
-						$menus .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$this->categoryBuilder[$nameList]['name']."'), 'index.php?option=com_categories&view=categories&extension=com_".$codeName.".".$otherViews."', \$submenu == 'categories.".$otherViews."');";
+						$menus .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$this->categoryBuilder[$nameList]['name']."'), 'index.php?option=com_categories&view=categories&extension=com_".$codeName.".".$otherViews."', \$submenu === 'categories.".$otherViews."');";
 						// make sure we add a category only once
 						$catArray[] = $otherViews;
 					}
@@ -11447,14 +11449,14 @@ class Interpretation extends Fields
 	
 	public function setCustomAdminSubMenu(&$view,&$codeName,&$lang,&$nr,&$menu,$type)
 	{
-		if ($type == 'customMenu')
+		if ($type === 'customMenu')
 		{
 			$name		= $menu['name'];
 			$nameSingle	= ComponentbuilderHelper::safeString($menu['name']);
 			$nameList	= ComponentbuilderHelper::safeString($menu['name']);
 			$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
 		}
-		elseif ($type == 'customView')
+		elseif ($type === 'customView')
 		{
 			$name		= $menu['settings']->name;
 			$nameSingle	= $menu['settings']->code;
@@ -11496,13 +11498,13 @@ class Interpretation extends Fields
 				
 				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
 				// add custom menu
-				$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu == '".$nameList."');";
+				$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu === '".$nameList."');";
 			}
 			else
 			{
 				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
 				// add custom menu
-				$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu == '".$nameList."');";
+				$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
 			}
 			// check if the item has permissions.
 			$custom .= "\n\t\t}";
@@ -11540,13 +11542,13 @@ class Interpretation extends Fields
 			{
 				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
 				// add custom menu
-				$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu == '".$nameList."');";
+				$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu === '".$nameList."');";
 			}
 			else
 			{
 				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
 				// add custom menu
-				$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu == '".$nameList."');";
+				$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
 			}
 			// check if the item has permissions.
 			$this->lastCustomSubMenu[$nr] .= "\n\t\t}";
@@ -13224,7 +13226,7 @@ function vdm_dkim() {
 					if (isset($custom_admin_view[$menuController]) && $custom_admin_view[$menuController])
 					{
 						$targetView_ = 'views.';
-						if ($menuController == 'dashboard_add')
+						if ($menuController === 'dashboard_add')
 						{
 							$targetView_ = 'view.';
 						}
@@ -13308,7 +13310,7 @@ function vdm_dkim() {
 						if ($view[$menuController])
 						{
 							$targetView_ = 'views.';
-							if ($menuController == 'dashboard_add')
+							if ($menuController === 'dashboard_add')
 							{
 								$targetView_ = 'view.';
 							}
@@ -13340,7 +13342,7 @@ function vdm_dkim() {
 								{
 									foreach ($field['settings']->properties as $property)
 									{
-										if ($property['name'] == 'type')
+										if ($property['name'] === 'type')
 										{
 											$propertyType = $property;
 										}
@@ -13471,7 +13473,7 @@ function vdm_dkim() {
 					$view['settings']->permissions[] = $versionView;
 				}
 			}
-			if ($type == 'admin')
+			if ($type === 'admin')
 			{
 				// set batch control
 				$batchView['action'] = 'view.batch';
@@ -13490,7 +13492,7 @@ function vdm_dkim() {
 			{
 				// set acction name
 				$arr = explode('.',trim($permission['action']));
-				if ($arr[0] != 'core' || $arr[0] == 'view')
+				if ($arr[0] != 'core' || $arr[0] === 'view')
 				{
 					array_shift($arr);
 					$actionMain = implode('.',$arr);
@@ -13498,7 +13500,7 @@ function vdm_dkim() {
 				}
 				else
 				{
-					if ($arr[0] == 'core')
+					if ($arr[0] === 'core')
 					{
 						// core is already set in global access
 						$permission['implementation'] = 1;
@@ -13510,13 +13512,13 @@ function vdm_dkim() {
 				array_shift($actionNameBuilder);
 				$nameBuilder = trim(implode('___',$actionNameBuilder));
 				$customName = trim(implode(' ',$actionNameBuilder));
-				if ($type == 'admin')
+				if ($type === 'admin')
 				{
 					$W_NameList = ComponentbuilderHelper::safeString($view['settings']->name_list, 'W');
 					$w_NameList = ComponentbuilderHelper::safeString($customName.' '.$view['settings']->name_list, 'w');
 					$w_NameSingle = ComponentbuilderHelper::safeString($view['settings']->name_single, 'w');
 				}
-				elseif ($type == 'customAdmin')
+				elseif ($type === 'customAdmin')
 				{
 					$W_NameList = ComponentbuilderHelper::safeString($view['settings']->name, 'W');
 					$w_NameList =  $view['settings']->name;
@@ -13627,21 +13629,21 @@ function vdm_dkim() {
 					// build permission switch
 					$this->permissionBuilder['global'][$action][$nameView] = $nameView;
 					// dashboard icon checker
-					if ($coreTarget == 'core.access')
+					if ($coreTarget === 'core.access')
 					{
 						$this->permissionDashboard[] = "'" . $nameViews . ".access' => '" . $action . "'";
 						$this->permissionDashboard[] = "'" . $nameView . ".access' => '" . $action . "'";
 					}
-					if ($coreTarget == 'core.create')
+					if ($coreTarget === 'core.create')
 					{
 						$this->permissionDashboard[] = "'" . $nameView . ".create' => '" . $action . "'";
 					}
 					// add menu controll view that has menus options
 					foreach ($menuControllers  as $menuController)
 					{
-						if ($coreTarget == 'core.'.$menuController)
+						if ($coreTarget === 'core.'.$menuController)
 						{
-							if ($menuController == 'dashboard_add')
+							if ($menuController === 'dashboard_add')
 							{
 								$this->permissionDashboard[] = "'" . $nameView . ".".$menuController."' => '" . $action . "'";
 							}
@@ -13663,21 +13665,21 @@ function vdm_dkim() {
 					// build permission switch
 					$this->permissionBuilder['global'][$action][$nameView] = $nameView;
 					// dashboard icon checker
-					if ($coreTarget == 'core.access')
+					if ($coreTarget === 'core.access')
 					{
 						$this->permissionDashboard[] = "'" . $nameViews . ".access' => '" . $action . "'";
 						$this->permissionDashboard[] = "'" . $nameView . ".access' => '" . $action . "'";
 					}
-					if ($coreTarget == 'core.create')
+					if ($coreTarget === 'core.create')
 					{
 						$this->permissionDashboard[] = "'" . $nameView . ".create' => '" . $action . "'";
 					}
 					// add menu controll view that has menus options
 					foreach ($menuControllers  as $menuController)
 					{
-						if ($coreTarget == 'core.'.$menuController)
+						if ($coreTarget === 'core.'.$menuController)
 						{
-							if ($menuController == 'dashboard_add')
+							if ($menuController === 'dashboard_add')
 							{
 								$this->permissionDashboard[] = "'" . $nameView . ".".$menuController."' => '" . $action . "'";
 							}
@@ -13698,13 +13700,13 @@ function vdm_dkim() {
 	public function getFieldName($typeName,$xml,$alias)
 	{
 		// if category then name must be catid (only one per view)
-		if ($typeName == 'category')
+		if ($typeName === 'category')
 		{
 			return 'catid';
 
 		}
 		// if tag is set then enable all tag options for this view (only one per view)
-		elseif ($typeName == 'tag')
+		elseif ($typeName === 'tag')
 		{
 			return 'tags';
 		}
@@ -13713,7 +13715,7 @@ function vdm_dkim() {
 		{
 			return 'alias';
 		}
-		elseif ($typeName == 'spacer')
+		elseif ($typeName === 'spacer')
 		{
 			// make sure the name is unique
 			return false;
@@ -13729,7 +13731,7 @@ function vdm_dkim() {
 		// make sure its lower case
 		$typeName = ComponentbuilderHelper::safeString($typeName);
 
-		if ($typeName == 'custom' || $typeName == 'customuser')
+		if ($typeName === 'custom' || $typeName === 'customuser')
 		{
 			$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xml,'type="','"'));
 		}

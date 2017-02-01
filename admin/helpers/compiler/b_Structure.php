@@ -144,6 +144,13 @@ class Structure extends Get
 	public $addCheckin = false;
 	
 	/**
+	 * The array of last modified dates
+	 * 
+	 * @var     array
+	 */
+	protected $lastModifiedDate = array();
+	
+	/**
 	 * Constructor
 	 */
 	public function __construct($config = array ())
@@ -367,7 +374,7 @@ class Structure extends Get
 				// do the file renaming
 				if ($details->rename)
 				{
-					if ($details->rename == 'new')
+					if ($details->rename === 'new')
 					{
 						$new = $details->newName;
 					}
@@ -381,12 +388,12 @@ class Structure extends Get
 					$new = $item;
 				}
 				// if not gnu/gpl license dont add the LICENSE.txt file
-				if ($item == 'LICENSE.txt' && !$LICENSE)
+				if ($item === 'LICENSE.txt' && !$LICENSE)
 				{
 					continue;
 				}
 				// if not needed do not add
-				if (($item == 'README.md' || $item == 'README.txt') && !$README)
+				if (($item === 'README.md' || $item === 'README.txt') && !$README)
 				{
 					continue;
 				}
@@ -396,7 +403,7 @@ class Structure extends Get
 				// set the template folder path
 				$templatePath = (isset($details->custom) && $details->custom) ? $this->templatePathCustom : $this->templatePath;
 				// now mov the file
-				if ($details->type == 'file')
+				if ($details->type === 'file')
 				{
 					// move the file to its place
 					JFile::copy($templatePath.'/'.$item, $path.'/'.$new);
@@ -408,7 +415,7 @@ class Structure extends Get
 						$this->newFiles['static'][] = array( 'path' => $path.'/'.$new, 'name' => $new, 'zip' => $zipPath.'/'.$new );
 					}
 				}
-				elseif ($details->type == 'folder')
+				elseif ($details->type === 'folder')
 				{
 					// move the folder to its place
 					JFolder::copy($templatePath.'/'.$item, $path.'/'.$new);
@@ -441,21 +448,25 @@ class Structure extends Get
 			{
 				if (ComponentbuilderHelper::checkObject($view['settings']))
 				{
+					$modified = $this->getLastModifiedDate($view);
 					if ($view['settings']->name_list != 'null')
 					{
 						$target = array('admin' => $view['settings']->name_list);
-						$this->buildDynamique($target,'list');
+						$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+						$this->buildDynamique($target,'list', false, $config);
 					}
 					if ($view['settings']->name_single != 'null')
 					{
 						$target = array('admin' => $view['settings']->name_single);
-						$this->buildDynamique($target,'single');
+						$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+						$this->buildDynamique($target,'single', false, $config);
 					}
 					if($view['edit_create_site_view'])
 					{
 						// setup the front site edit-view files
 						$target = array('site' => $view['settings']->name_single);
-						$this->buildDynamique($target,'edit');
+						$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+						$this->buildDynamique($target,'edit', false, $config);
 					}
 				}
 				// quick set of checkin once
@@ -472,17 +483,20 @@ class Structure extends Get
 
 			foreach ($this->componentData->site_views as $nr => $view)
 			{
+				$modified = $this->getLastModifiedDate($view);
 				if ($view['settings']->main_get->gettype == 2)
 				{
 					// set list view
 					$target = array('site' => $view['settings']->code);
-					$this->buildDynamique($target,'list');
+					$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+					$this->buildDynamique($target,'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('site' => $view['settings']->code);
-					$this->buildDynamique($target,'single');
+					$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+					$this->buildDynamique($target,'single', false, $config);
 				}
 			}
 			$front = true;
@@ -491,17 +505,20 @@ class Structure extends Get
 		{
 			foreach ($this->componentData->custom_admin_views as $nr => $view)
 			{
+				$modified = $this->getLastModifiedDate($view);
 				if ($view['settings']->main_get->gettype == 2)
 				{
 					// set list view
 					$target = array('custom_admin' => $view['settings']->code);
-					$this->buildDynamique($target,'list');
+					$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => JFactory::getDate($view['settings']->modified)->format('jS F, Y'),'###VERSION###' => $view['settings']->version);
+					$this->buildDynamique($target,'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('custom_admin' => $view['settings']->code);
-					$this->buildDynamique($target,'single');
+					$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => JFactory::getDate($view['settings']->modified)->format('jS F, Y'),'###VERSION###' => $view['settings']->version);
+					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
 			$back = true;
@@ -515,16 +532,97 @@ class Structure extends Get
 	}
 	
 	/**
+	 * get the last modified date of a MVC (view)
+	 *  
+	 * @param   array   $view  The view values
+	 * 
+	 * @return  string Last Modified Date
+	 * 
+	 */
+	public function getLastModifiedDate($view)
+	{
+		// first set the main date
+		$date = strtotime($view['settings']->modified);
+		if (isset($view['adminview']))
+		{
+			$id = $view['adminview'].'admin';
+			// now check if value has been set
+			if (!isset($this->lastModifiedDate[$id]))
+			{
+				if (isset($view['settings']->fields) && ComponentbuilderHelper::checkArray($view['settings']->fields))
+				{
+					foreach ($view['settings']->fields as $field)
+					{
+						if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']) && isset($field['settings']->modified))
+						{
+							$anotherDate = strtotime($field['settings']->modified);
+							if ($anotherDate > $date)
+							{
+								$date = $anotherDate;
+							}
+						}
+					}
+				}
+			}
+		}
+		elseif (isset($view['siteview']))
+		{			
+			$id = $view['siteview'].'site';
+			// now check if value has been set
+			if (!isset($this->lastModifiedDate[$id]))
+			{
+				if (isset($view['settings']->main_get->modified))
+				{
+					$anotherDate = strtotime($view['settings']->main_get->modified);
+					if ($anotherDate > $date)
+					{
+						$date = $anotherDate;
+					}
+				}
+			}
+		}
+		elseif (isset($view['customadminview']))
+		{			
+			$id = $view['customadminview'].'customadmin';
+			// now check if value has been set
+			if (!isset($this->lastModifiedDate[$id]))
+			{
+				if (isset($view['settings']->main_get->modified))
+				{
+					$anotherDate = strtotime($view['settings']->main_get->modified);
+					if ($anotherDate > $date)
+					{
+						$date = $anotherDate;
+					}
+				}
+			}
+		}
+		// check if ID was found
+		if (!isset($id))
+		{
+			$id = md5($date);
+		}
+		// now load the date
+		if (!isset($this->lastModifiedDate[$id]))
+		{
+			$this->lastModifiedDate[$id] = $date;
+		}
+		
+		return JFactory::getDate($this->lastModifiedDate[$id])->format('jS F, Y');
+	}
+	
+	/**
 	 * Set the Static File & Folder
 	 *  
 	 * @param   array   $target  The main target and name
 	 * @param   string   $type  The type in the target
 	 * @param   string   $fileName  The custom file name
+	 * @param   array   $cofig  to add more data to the files info
 	 * 
 	 * @return  boolean
 	 * 
 	 */
-	public function buildDynamique($target,$type,$fileName = false)
+	public function buildDynamique($target, $type, $fileName = false, $config = false)
 	{
 		if (ComponentbuilderHelper::checkArray($target))
 		{
@@ -566,7 +664,7 @@ class Structure extends Get
 								$new = str_replace($details->rename, $fileName, $item);
 								$name = $name.'_'.$fileName;
 							}
-							elseif ($details->rename == 'new')
+							elseif ($details->rename === 'new')
 							{
 								$new = $details->newName;
 							}
@@ -586,8 +684,14 @@ class Structure extends Get
 							// count the file created
 							$this->fileCount++;
 						}
+						// setup array for new file
+						$newFIle = array( 'path' => $path.'/'.$new, 'name' => $new , 'view' => $name, 'zip' => $zipPath.'/'.$new);
+						if (ComponentbuilderHelper::checkArray($config))
+						{
+							$newFIle['config'] = $config;
+						}
 						// store the new files
-						$this->newFiles['dynamic'][$name][] = array( 'path' => $path.'/'.$new, 'name' => $new , 'view' => $name, 'zip' => $zipPath.'/'.$new);
+						$this->newFiles['dynamic'][$name][] = $newFIle;
 					}
 				}
 			}
@@ -671,7 +775,7 @@ class Structure extends Get
 				{
 					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] = '';
 				}
-				if (count($pathArray) == 1 && $firstFolder == 'media')
+				if (count($pathArray) == 1 && $firstFolder === 'media')
 				{
 					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= "\n\t\t<folder>".$lastFolder."</folder>";
 				}
@@ -680,7 +784,7 @@ class Structure extends Get
 				{
 					$this->fileContentStatic['###EXSTRA_SITE_FOLDERS###'] = '';
 				}
-				if (count($pathArray) == 1 && $firstFolder == 'site')
+				if (count($pathArray) == 1 && $firstFolder === 'site')
 				{
 					$this->fileContentStatic['###EXSTRA_SITE_FOLDERS###'] .= "\n\t\t<folder>".$lastFolder."</folder>";
 				}
@@ -689,7 +793,7 @@ class Structure extends Get
 				{
 					$this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###'] = '';
 				}
-				if (count($pathArray) == 1 && $firstFolder == 'admin')
+				if (count($pathArray) == 1 && $firstFolder === 'admin')
 				{
 					$this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###'] .= "\n\t\t\t<folder>".$lastFolder."</folder>";
 				}
@@ -828,6 +932,40 @@ class Structure extends Get
 			{
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	/**
+	 * get the local installed path of this component
+	 *
+	 * @return  array   of paths on success
+	 * 
+	 */
+	public function getLocalInstallPaths()
+	{
+		// set the local paths to search
+		$localPaths = array();
+		// the admin path
+		$localPaths['admin'] = JPATH_ADMINISTRATOR . '/components/com_'. $this->componentCodeName;
+		// only check for site path if the component has a site area!
+		if (!$this->removeSiteFolder)
+		{
+			$localPaths['site'] = JPATH_ROOT . '/components/com_'. $this->componentCodeName;
+		}
+		// TODO later to include the JS and CSS
+		// $localPaths['media'] = JPATH_ROOT . '/media/com_'. $this->fileContentStatic['###component###'];
+		// check if the local install is found
+		foreach ($localPaths as $key => $localPath)
+		{
+			if (!JFolder::exists($localPath))
+			{
+				unset($localPaths[$key]);
+			}
+		}
+		if (ComponentbuilderHelper::checkArray($localPaths))
+		{
+			return $localPaths;
 		}
 		return false;
 	}

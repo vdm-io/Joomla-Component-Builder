@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
+	@version		2.2.9
+	@build			1st February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldsmulti.php
@@ -92,7 +92,7 @@ class JFormFieldFieldsmulti extends JFormFieldList
 					<span class="icon-new icon-white"></span></a>';
 			}
 			// only add if user allowed to edit field
-			if (($buttonName == 'field' || $buttonName == 'fields') && $user->authorise('field.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			if (($buttonName === 'field' || $buttonName === 'fields') && $user->authorise('field.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build edit button
 				$buttonNamee = trim($buttonName);

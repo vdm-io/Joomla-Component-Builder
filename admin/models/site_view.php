@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
-	@created		30th April, 2015
+	@version		@update number 44 of this MVC
+	@build			29th January, 2017
+	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		site_view.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
@@ -1056,7 +1056,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		}
 
 		// Alter the name for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			$origTable = clone $this->getTable();
 			$origTable->load($input->getInt('id'));
@@ -1110,7 +1110,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		}
 
 		// Alter the uniqe field for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			// Automatic handling of other uniqe fields
 			$uniqeFields = $this->getUniqeFields();

@@ -1,4 +1,4 @@
-# Component Builder (2.2.6)
+# Component Builder (2.2.9)
 
 This is a [Joomla 3.x](http://www.joomla.org/) component.
 
@@ -8,7 +8,7 @@ The Component Builder for [Joomla](http://www.joomla.org/) that is highly advanc
 
 Whether you're a seasoned [Joomla](http://www.joomla.org/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.2.6) with **ALL** its features and **ALL** concepts totally open-source and free!
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.2.9) with **ALL** its features and **ALL** concepts totally open-source and free!
 
 Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
@@ -104,13 +104,13 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:info@vdm.io)
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 20th January, 2017
-+ *Version*: 2.2.6
++ *Last Build*: 1st February, 2017
++ *Version*: 2.2.9
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **86216**
-+ *File count*: **549**
-+ *Folder count*: **100**
++ *Line count*: **90719**
++ *File count*: **583**
++ *Folder count*: **104**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).
 > Developed by [Llewellyn van der Merwe](mailto:joomla@vdm.io)

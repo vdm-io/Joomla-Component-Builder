@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
+	@version		@update number 94 of this MVC
+	@build			13th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.js

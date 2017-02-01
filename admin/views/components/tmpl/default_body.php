@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
-	@created		30th April, 2015
+	@version		@update number 77 of this MVC
+	@build			26th December, 2016
+	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		default_body.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	

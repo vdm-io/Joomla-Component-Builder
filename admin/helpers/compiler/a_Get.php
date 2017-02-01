@@ -52,6 +52,49 @@ class Get
 	 */
 	public $componentData;
 	
+	/* The custom script placeholders - we use the (xxx) to avoid detection it should be (***)
+	 * 
+	 *	New Insert Code		= /xxx[INSERT<>$$$$]xxx/		/xxx[/INSERT<>$$$$]xxx/
+	 *	New Replace Code	= /xxx[REPLACE<>$$$$]xxx/	/xxx[/REPLACE<>$$$$]xxx/
+	 *
+	 *	//////////////////////////// when JCB adds it back ///////////////////////////////
+	 *	JCB Add Inserted Code	= /xxx[INSERTED$$$$]xxx/	//23	/xxx[/INSERTED$$$$]xxx/
+	 *	JCB Add Replaced Code	= /xxx[REPLACED$$$$]xxx/	//25	/xxx[/REPLACED$$$$]xxx/
+	 *
+	 *	///////////////////////// changeing existing custom code /////////////////////////
+	 *	Update Inserted Code	= /xxx[INSERTED<>$$$$]xxx///23	/xxx[/INSERTED<>$$$$]xxx/
+	 *	Update Replaced Code	= /xxx[REPLACED<>$$$$]xxx///25	/xxx[/REPLACED<>$$$$]xxx/
+	 * 
+	 *	//23 is the ID of the code in the system don't change it!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 * 
+	 * @var      array
+	 ******************************************************************************************/
+	protected $customCodePlaceholders		= array(1 => 'REPLACE<>$$$$]',
+							2 => 'INSERT<>$$$$]',
+							3 => 'REPLACED<>$$$$]',
+							4 => 'INSERTED<>$$$$]');
+	
+	/**
+	 * The custom code to be added
+	 * 
+	 * @var      array
+	 */
+	public $customCode;
+	
+	/**
+	 * The custom code in local files that aready exist in system
+	 * 
+	 * @var      array
+	 */
+	protected $existingCustomCode = array();
+	
+	/**
+	 * The custom code in local files this are new
+	 * 
+	 * @var      array
+	 */
+	protected $newCustomCode = array();
+	
 	/**
 	 * The Language prefix
 	 * 
@@ -586,7 +629,7 @@ class Get
 				{
 					$component->config[$nr]['alias'] = 0;
 					$component->config[$nr]['title'] = 0;
-					if ($option == 'field')
+					if ($option === 'field')
 					{
 						// load the field data
 						$component->config[$nr]['settings'] = $this->getFieldData($value);
@@ -890,7 +933,7 @@ class Get
 			$this->customScriptBuilder['token'][$name_single] = false;
 			$this->customScriptBuilder['token'][$name_list] = false;
 			// load the values form params
-			$permissions	= json_decode($view->addpermissions,true);
+			$permissions		= json_decode($view->addpermissions,true);
 			unset($view->addpermissions);
 			$tabs			= json_decode($view->addtabs,true);
 			unset($view->addtabs);
@@ -898,9 +941,9 @@ class Get
 			unset($view->addfields);
 			$conditions		= json_decode($view->addconditions,true);
 			unset($view->addconditions);
-			$linked_views	= json_decode($view->addlinked_views,true);
+			$linked_views		= json_decode($view->addlinked_views,true);
 			unset($view->addlinked_views);
-			$tables	= json_decode($view->addtables,true);
+			$tables			= json_decode($view->addtables,true);
 			unset($view->addtables);
 			// sort the values
 			if (ComponentbuilderHelper::checkArray($tables))
@@ -972,7 +1015,7 @@ class Get
 				{
 					foreach ($conditionValues as $nr => $conditionValue)
 					{
-						if ($condition == 'target_field')
+						if ($condition === 'target_field')
 						{
 							if (ComponentbuilderHelper::checkArray($conditionValue) && ComponentbuilderHelper::checkArray($view->fields))
 							{
@@ -1006,7 +1049,7 @@ class Get
 								}
 							}
 						}
-						if ($condition == 'match_field')
+						if ($condition === 'match_field')
 						{
 							foreach ($view->fields as $fieldValue)
 							{
@@ -1240,7 +1283,7 @@ class Get
 
 		// Load the results as a list of stdClass objects (see later for more options on retrieving data).
 		$view = $db->loadObject();
-		if ($table == 'site_view')
+		if ($table === 'site_view')
 		{
 			$this->lang = 'site';
 		}
@@ -1409,7 +1452,7 @@ class Get
 	 */
 	public function getFieldData($id,$name_single = null,$name_list = null)
 	{
-		if (!isset($this->_fieldData[$id]))
+		if (!isset($this->_fieldData[$id]) && $id > 0)
 		{
 			// Get a db connection.
 			$db = JFactory::getDbo();
@@ -1462,90 +1505,7 @@ class Get
 				{
 					 $this->basicEncryption = true;
 				}
-
-				// check if we should load scripts for single view
-				if (ComponentbuilderHelper::checkString($name_single) && !isset($this->customFieldScript[$name_single][$id]))
-				{
-					// add_javascript_view_footer
-					if ($field->add_javascript_view_footer == 1)
-					{
-						if (!isset($this->customScriptBuilder['view_footer'][$name_single]))
-						{
-							if(!isset($this->customScriptBuilder['view_footer']))
-							{
-								$this->customScriptBuilder['view_footer'] = array();
-							}
-							$this->customScriptBuilder['view_footer'][$name_single] = '';
-						}
-						$this->customScriptBuilder['view_footer'][$name_single] .= "\n".$this->setCustomContentLang(base64_decode($field->javascript_view_footer));
-						if (strpos($field->javascript_view_footer,"token") !== false && strpos($field->javascript_view_footer,"task=ajax") !== false)
-						{
-							if (!isset($this->customScriptBuilder['token'][$name_single]) || !$this->customScriptBuilder['token'][$name_single])
-							{
-								if(!isset($this->customScriptBuilder['token']))
-								{
-									$this->customScriptBuilder['token'] = array();
-								}
-								$this->customScriptBuilder['token'][$name_single] = true;
-							}
-						}
-						unset($field->javascript_view_footer);
-					}
-
-					// add_css_view
-					if ($field->add_css_view == 1)
-					{
-						if (!isset($this->customScriptBuilder['css_view'][$name_single]))
-						{
-							$this->customScriptBuilder['css_view'][$name_single] = '';
-						}
-						$this->customScriptBuilder['css_view'][$name_single] .= "\n".base64_decode($field->css_view);
-						unset($field->css_view);
-					}
-
-					// add this only once to view.
-					$this->customFieldScript[$name_single][$id] = true;
-				}
-				else
-				{
-					// unset if not needed
-					unset($field->javascript_view_footer);
-					unset($field->css_view);
-				}
-				// check if we should load scripts for list views
-				if (ComponentbuilderHelper::checkString($name_list))
-				{
-					// add_javascript_views_footer
-					if ($field->add_javascript_views_footer == 1)
-					{
-						$this->customScriptBuilder['views_footer'][$name_list] .= $this->setCustomContentLang(base64_decode($field->javascript_views_footer));
-						if (strpos($field->javascript_views_footer,"token") !== false && strpos($field->javascript_views_footer,"task=ajax") !== false)
-						{
-							if (!$this->customScriptBuilder['token'][$name_list])
-							{
-								$this->customScriptBuilder['token'][$name_list] = true;
-							}
-						}
-						unset($field->javascript_views_footer);
-					}
-					// add_css_views
-					if ($field->add_css_views == 1)
-					{
-						if (!isset($this->customScriptBuilder['css_views'][$name_list]))
-						{
-							$this->customScriptBuilder['css_views'][$name_list] = '';
-						}
-						$this->customScriptBuilder['css_views'][$name_list] .= base64_decode($field->css_views);
-						unset($field->css_views);
-					}
-				}
-				else
-				{
-					// unset if not needed
-					unset($field->javascript_views_footer);
-					unset($field->css_views);
-
-				}
+				
 				$this->_fieldData[$id] = $field;
 			}
 			else
@@ -1553,8 +1513,121 @@ class Get
 				return false;
 			}
 		}
-		// return the found field data
-		return $this->_fieldData[$id];
+		// check if the script should be added to the view each time this field is called
+		if (isset($this->_fieldData[$id]) && $id > 0)
+		{
+			// check if we should load scripts for single view
+			if (ComponentbuilderHelper::checkString($name_single) && !isset($this->customFieldScript[$name_single][$id]))
+			{
+				// add_javascript_view_footer
+				if ($this->_fieldData[$id]->add_javascript_view_footer == 1)
+				{
+					if(!isset($this->customScriptBuilder['view_footer']))
+					{
+						$this->customScriptBuilder['view_footer'] = array();
+					}
+					if (!isset($this->customScriptBuilder['view_footer'][$name_single]))
+					{
+						$this->customScriptBuilder['view_footer'][$name_single] = '';
+					}
+					if (!isset($this->_fieldData[$id]->javascript_view_footer_decoded))
+					{
+						$this->_fieldData[$id]->javascript_view_footer = $this->setCustomContentLang(base64_decode($this->_fieldData[$id]->javascript_view_footer));
+						$this->_fieldData[$id]->javascript_view_footer_decoded = true;
+					}
+					$this->customScriptBuilder['view_footer'][$name_single] .= "\n".$this->_fieldData[$id]->javascript_view_footer;
+					if (strpos($this->_fieldData[$id]->javascript_view_footer,"token") !== false && strpos($this->_fieldData[$id]->javascript_view_footer,"task=ajax") !== false)
+					{
+						if (!isset($this->customScriptBuilder['token'][$name_single]) || !$this->customScriptBuilder['token'][$name_single])
+						{
+							if(!isset($this->customScriptBuilder['token']))
+							{
+								$this->customScriptBuilder['token'] = array();
+							}
+							$this->customScriptBuilder['token'][$name_single] = true;
+						}
+					}
+				}
+
+				// add_css_view
+				if ($this->_fieldData[$id]->add_css_view == 1)
+				{
+					if (!isset($this->customScriptBuilder['css_view']))
+					{
+						$this->customScriptBuilder['css_view'] = array();
+					}
+					if (!isset($this->customScriptBuilder['css_view'][$name_single]))
+					{
+						$this->customScriptBuilder['css_view'][$name_single] = '';
+					}
+					if (!isset($this->_fieldData[$id]->css_view_decoded))
+					{
+						$this->_fieldData[$id]->css_view = base64_decode($this->_fieldData[$id]->css_view);
+						$this->_fieldData[$id]->css_view_decoded = true;
+					}
+					$this->customScriptBuilder['css_view'][$name_single] .= "\n".$this->_fieldData[$id]->css_view;
+				}
+
+				// add this only once to view.
+				$this->customFieldScript[$name_single][$id] = true;
+			}
+			// check if we should load scripts for list views
+			if (ComponentbuilderHelper::checkString($name_list) && !isset($this->customFieldScript[$name_list][$id]))
+			{
+				// add_javascript_views_footer
+				if ($this->_fieldData[$id]->add_javascript_views_footer == 1)
+				{
+					if(!isset($this->customScriptBuilder['views_footer']))
+					{
+						$this->customScriptBuilder['views_footer'] = array();
+					}
+					if (!isset($this->customScriptBuilder['views_footer'][$name_list]))
+					{
+						$this->customScriptBuilder['views_footer'][$name_list] = '';
+					}
+					if (!isset($this->_fieldData[$id]->javascript_views_footer_decoded))
+					{
+						$this->_fieldData[$id]->javascript_views_footer = $this->setCustomContentLang(base64_decode($this->_fieldData[$id]->javascript_views_footer));
+						$this->_fieldData[$id]->javascript_views_footer_decoded = true;
+					}
+					$this->customScriptBuilder['views_footer'][$name_list] .= $this->_fieldData[$id]->javascript_views_footer;
+					if (strpos($this->_fieldData[$id]->javascript_views_footer,"token") !== false && strpos($this->_fieldData[$id]->javascript_views_footer,"task=ajax") !== false)
+					{
+						if (!$this->customScriptBuilder['token'][$name_list])
+						{
+							$this->customScriptBuilder['token'][$name_list] = true;
+						}
+					}
+				}
+				// add_css_views
+				if ($this->_fieldData[$id]->add_css_views == 1)
+				{
+					if (!isset($this->customScriptBuilder['css_views']))
+					{
+						$this->customScriptBuilder['css_views'] = array();
+					}
+					if (!isset($this->customScriptBuilder['css_views'][$name_list]))
+					{
+						$this->customScriptBuilder['css_views'][$name_list] = '';
+					}
+					if (!isset($this->_fieldData[$id]->css_views_decoded))
+					{
+						$this->_fieldData[$id]->css_views = base64_decode($this->_fieldData[$id]->css_views);
+						$this->_fieldData[$id]->css_views_decoded = true;
+					}
+					$this->customScriptBuilder['css_views'][$name_list] .= $this->_fieldData[$id]->css_views;
+				}
+
+				// add this only once to view.
+				$this->customFieldScript[$name_list][$id] = true;
+			}
+		}
+		if (isset($this->_fieldData[$id]) && $id > 0)
+		{
+			// return the found field data
+			return $this->_fieldData[$id];
+		}
+		return false;
 	}
 	
 	/**
@@ -1685,7 +1758,7 @@ class Get
 								{
 									if (ComponentbuilderHelper::checkString($value))
 									{
-										if ($option == 'selection')
+										if ($option === 'selection')
 										{
 											$on_field_as = '';
 											$on_field = '';
@@ -1699,7 +1772,7 @@ class Get
 											if ($result->join_view_table[$nr]['row_type'] == 1)
 											{
 												$result->main_get[] = $result->join_view_table[$nr];
-												if ($on_field_as == 'a')
+												if ($on_field_as === 'a')
 												{
 													$this->siteMainGet[$this->target][$view_code][$result->join_view_table[$nr]['as']] = $result->join_view_table[$nr]['as'];
 												}
@@ -1720,11 +1793,11 @@ class Get
 										}
 										else
 										{
-											if ($option == 'type')
+											if ($option === 'type')
 											{
 												$value = $typeArray[$value];
 											}
-											if ($option == 'operator')
+											if ($option === 'operator')
 											{
 												$value = $operatorArray[$value];
 											}
@@ -1747,7 +1820,7 @@ class Get
 								{
 									if (ComponentbuilderHelper::checkString($value))
 									{
-										if ($option == 'selection')
+										if ($option === 'selection')
 										{
 											$on_field_as = '';
 											$on_field = '';
@@ -1761,7 +1834,7 @@ class Get
 											if ($result->join_db_table[$nr]['row_type'] == 1)
 											{
 												$result->main_get[] = $result->join_db_table[$nr];
-												if ($on_field_as == 'a')
+												if ($on_field_as === 'a')
 												{
 													$this->siteMainGet[$this->target][$view_code][$result->join_db_table[$nr]['as']] = $result->join_db_table[$nr]['as'];
 												}
@@ -1782,11 +1855,11 @@ class Get
 										}
 										else
 										{
-											if ($option == 'type')
+											if ($option === 'type')
 											{
 												$value = $typeArray[$value];
 											}
-											if ($option == 'operator')
+											if ($option === 'operator')
 											{
 												$value = $operatorArray[$value];
 											}
@@ -1809,7 +1882,7 @@ class Get
 								{
 									if (ComponentbuilderHelper::checkString($value))
 									{
-										if ($option == 'operator')
+										if ($option === 'operator')
 										{
 											$value = $operatorArray[$value];
 											$result->filter[$nr]['key'] = $result->key;
@@ -1865,7 +1938,7 @@ class Get
 								{
 									if (ComponentbuilderHelper::checkString($value))
 									{
-										if ($option == 'operator')
+										if ($option === 'operator')
 										{
 											$value = $operatorArray[$value];
 										}
@@ -2237,7 +2310,7 @@ class Get
 			$query = $db->getQuery(true);
 			foreach ($tables as $table)
 			{
-				if ($counter == 'a')
+				if ($counter === 'a')
 				{
 					// the main table fields
 					if (strpos($table['sourcemap'],PHP_EOL) !== false)
@@ -2504,6 +2577,415 @@ class Get
 		if (strpos($content,'Chartbuilder(') !== false)
 		{
 			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * to unset stuff that are private or protected
+	 * 
+	 */
+	public function unsetNow($remove)
+	{
+		unset($this->$remove);
+	}
+	
+	/**
+	 * get the custom code from the system
+	 * 
+	 * @return  void
+	 * 
+	 */
+	public function getCustomCode()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id','a.code','a.component','a.from_line','a.hashtarget','a.hashendtarget','a.path','a.to_line','a.type')));
+		$query->from($db->quoteName('#__componentbuilder_custom_code','a'));
+		$query->where($db->quoteName('a.component') . ' = '. (int) $this->componentData->id);
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->order($db->quoteName('a.from_line') . ' ASC'); // <--- insrue we always add code from top of file
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$this->customCode = $db->loadAssocList();
+			// open the code
+			foreach($this->customCode as $nr => &$customCode)
+			{
+				$customCode['code'] = base64_decode($customCode['code']);
+				$customCode['hashtarget'] = explode("__", $customCode['hashtarget']);
+				if ($customCode['type'] == 1 && strpos($customCode['hashendtarget'], '__') !== false)
+				{
+					$customCode['hashendtarget'] = explode("__", $customCode['hashendtarget']);
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * store the code
+	 * 
+	 * @param   object   $db    The database object
+	 * @param   int	     $when  To set when to update
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function setNewCustomCode($db, $when = 1)
+	{
+		if (count($this->newCustomCode) >= $when)
+		{
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			// Insert columns.
+			$columns = array('path','type','component','published','created','created_by','version','access','hashtarget','from_line','to_line','code','hashendtarget');
+			// Prepare the insert query.
+			$query->insert($db->quoteName('#__componentbuilder_custom_code'));
+			$query->columns($db->quoteName($columns));
+			foreach($this->newCustomCode as $values){
+				$query->values(implode(',', $values));
+			}
+			// clear the values array
+			$this->newCustomCode = array();
+			// Set the query using our newly populated query object and execute it.
+			$db->setQuery($query);
+			$db->execute();
+		}
+	}
+	
+	/**
+	 * store the code
+	 * 
+	 * @param   object   $db    The database object
+	 * @param   int	     $when  To set when to update
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function setExistingCustomCode($db, $when = 1)
+	{
+		if (count($this->existingCustomCode) >= $when)
+		{
+			foreach($this->existingCustomCode as $code)
+			{
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				// Prepare the update query.
+				$query->update($db->quoteName('#__componentbuilder_custom_code'))->set($code['fields'])->where($code['conditions']);
+				// Set the query using our newly populated query object and execute it.
+				$db->setQuery($query);
+				$db->execute();
+			}
+			// clear the values array
+			$this->existingCustomCode = array();			
+		}
+	}
+	
+	/**
+	 * get the custom code from the local files
+	 * 
+	 * @param   array   $paths  The local paths to parse
+	 * @param   object  $db     The database object
+	 * @param   int     $userId The user id
+	 * @param   string  $today  The date for today
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function customCodeFactory(&$paths, &$db, &$userId, &$today)
+	{
+		// we must first store the current woking directory
+		$joomla = getcwd();
+		$counter = array(1 => 0, 2 => 0);
+		foreach ($paths as $target => $path)
+		{
+			// we are changing the working directory to the componet path
+			chdir($path);
+			// get a list of files in the current directory tree (only PHP for now)
+			$files = JFolder::files('.', '\.php', true, true);
+			foreach ($files as $file)
+			{
+				$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $db, $userId, $today);
+				// insert new code
+				if (ComponentbuilderHelper::checkArray($this->newCustomCode))
+				{
+					$this->setNewCustomCode($db, 100);
+				}
+				// update existing custom code
+				if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
+				{
+					$this->setExistingCustomCode($db, 30);
+				}
+			}
+		}
+		// change back to Joomla working directory
+		chdir($joomla);
+		// make sure all code is stored
+		if (ComponentbuilderHelper::checkArray($this->newCustomCode))
+		{
+			$this->setNewCustomCode($db);
+		}
+		// update existing custom code
+		if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
+		{
+			$this->setExistingCustomCode($db);
+		}
+	}
+	
+	/**
+	 * search a file for placeholders and store result
+	 * 
+	 * @param   array   $counter      The counter for the arrays
+	 * @param   string  $file         The file path to search
+	 * @param   array   $placeholders The values to search for
+	 * @param   object  $db           The database object
+	 * @param   int     $userId       The user id
+	 * @param   string  $today        The date for today
+	 *
+	 * @return  array    on success
+	 * 
+	 */
+	protected function searchFileContent(&$counter, &$file, &$target, &$placeholders, &$db, &$userId, &$today)
+	{
+		// reset each time per file
+		$loadEndFingerPrint	= false;
+		$endFingerPrint		= array();
+		$fingerPrint		= array();
+		$codeBucket		= array();
+		$pointer		= array();
+		$reading		= array();
+		$reader			= 0;
+		$path			= $target . '/' . str_replace('./', '', $file);
+		foreach (new SplFileObject($file) as $lineNumber => $lineContent)
+		{
+			// we musk keep last few lines to dynamic find target entry later
+			$fingerPrint[$lineNumber] = trim($lineContent);
+			// load the end fingerprint
+			if ($loadEndFingerPrint)
+			{
+				$endFingerPrint[$lineNumber] = trim($lineContent);
+			}
+			foreach ($placeholders as $type => $placeholder)
+			{
+				$i	= (int) ($type === 3 ||$type === 4) ? 2 : 1;
+				$_type	= (int) ($type === 1 || $type === 3) ? 1 : 2;
+				if ($reader === 0 || $reader === $i)
+				{
+					$targetKey	= $type;
+					$start		= '/***['.$placeholder.'***/';
+					$end		= '/***[/'.$placeholder.'***/';
+					// check if the ending place holder was found
+					if(isset($reading[$targetKey]) && $reading[$targetKey] && (trim($lineContent) === $end || strpos($lineContent, $end) !== false))
+					{
+						// deactivate the reader
+						$reading[$targetKey]		= false;
+						if ($_type == 2)
+						{
+							// deactivate search
+							$reader			= 0;
+						}
+						else
+						{
+							// activate fingerPrint for replacement end target
+							$loadEndFingerPrint	= true;
+							$backupTargetKey	= $targetKey;
+						}
+						// all new records we can do a bulk insert
+						if ($i === 1)
+						{
+							// end the bucket info for this code block
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $lineNumber);						// 'toline'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(base64_encode(implode('', $codeBucket[$pointer[$targetKey]])));	// 'code'
+							if ($_type == 2)
+							{
+								// load the last value
+								$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(0); // 'hashendtarget'
+							}
+						}
+						// the record already exist so we must use module to update
+						elseif ($i === 2)
+						{
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $db->quoteName('to_line') . ' = ' . $db->quote($lineNumber);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $db->quoteName('code') . ' = ' . $db->quote(base64_encode(implode('', $codeBucket[$pointer[$targetKey]])));
+							if ($_type == 2)
+							{
+								// load the last value
+								$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote(0);
+							}
+						}
+					}
+					// check if the endfingerprint is ready to save
+					if (count($endFingerPrint) === 3)
+					{
+						$hashendtarget = '3__'.md5(implode('',$endFingerPrint));
+						// all new records we can do a bulk insert
+						if ($i === 1)
+						{
+							// load the last value
+							$this->newCustomCode[$pointer[$backupTargetKey]][]	= $db->quote($hashendtarget); // 'hashendtarget'
+						}
+						// the record already exist so we must use module to update
+						elseif ($i === 2)
+						{
+							$this->existingCustomCode[$pointer[$backupTargetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote($hashendtarget);
+						}
+						// reset the needed values
+						$endFingerPrint		= array();
+						$loadEndFingerPrint	= false;
+						// deactivate reader (to allow other search)
+						$reader			= 0;
+					}
+					// then read in the code
+					if (isset($reading[$targetKey]) && $reading[$targetKey])
+					{
+						$codeBucket[$pointer[$targetKey]][] = $lineContent;
+					}
+					// check if the starting place holder was found
+					if((!isset($reading[$targetKey]) || !$reading[$targetKey]) && (($i === 1 && trim($lineContent) === $start) || strpos($lineContent, $start) !== false))
+					{
+						// set active reader (to lock out other search)
+						$reader				= $i;
+						// set pointer
+						$pointer[$targetKey]			= $counter[$i];
+						// activate the reader
+						$reading[$targetKey]			= true;
+						// start code bucket
+						$codeBucket[$pointer[$targetKey]]	= array();
+						// get the finger print around the custom code
+						$inFinger	= count($fingerPrint);
+						$getFinger	= $inFinger - 1;
+						$hasharray	= array_slice($fingerPrint, -$inFinger, $getFinger, true);
+						$hasleng	= count($hasharray);
+						$hashtarget	= $hasleng.'__'.md5(implode('',$hasharray));
+						// do a quick check to insure we have an id
+						$id = false;
+						if ($i === 2)
+						{
+							$id = $this->getSystemID($lineContent, $start);
+						}
+						// all new records we can do a buldk insert
+						if ($i === 1 || !$id)
+						{
+							// start the bucket for this code
+							$this->newCustomCode[$pointer[$targetKey]]	= array();
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($path);						// 'path'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $_type);					// 'type'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $this->componentData->id);			// 'component'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'published'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($today);						// 'created'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $userId);					// 'created_by'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'version'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'access'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($hashtarget);					// 'hashtarget'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $lineNumber);				// 'fromline'
+						}
+						// the record already exist so we must update instead
+						elseif ($i === 2 && $id > 0)
+						{
+							// start the bucket for this code
+							$this->existingCustomCode[$pointer[$targetKey]]			= array();
+							$this->existingCustomCode[$pointer[$targetKey]]['id']		= (int) $id;
+							$this->existingCustomCode[$pointer[$targetKey]]['conditions']	= array();
+							$this->existingCustomCode[$pointer[$targetKey]]['conditions'][]	= $db->quoteName('id') . ' = ' . $db->quote($id);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields']	= array();
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('path') . ' = ' . $db->quote($path);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('type') . ' = ' . $db->quote($_type);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('component') . ' = ' . $db->quote($this->componentData->id);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('from_line') . ' = ' . $db->quote($lineNumber);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('modified') . ' = ' . $db->quote($today);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('modified_by') . ' = ' . $db->quote($userId);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('hashtarget') . ' = ' . $db->quote($hashtarget);
+						}
+						// update the counter
+						$counter[$i]++;
+					}
+				}
+			}
+			// make sure only a few lines is kept at a time
+			if (count($fingerPrint) > 10)
+			{
+				$fingerPrint = array_slice($fingerPrint, -6, 6, true);
+			}
+		}
+		// if the code is at the end of the page and there were not three more lines
+		if (count($endFingerPrint) > 0 || $loadEndFingerPrint)
+		{
+			if (count($endFingerPrint) > 0)
+			{
+				$leng = count($endFingerPrint);
+				$hashendtarget = $leng . '__' . md5(implode('',$endFingerPrint));
+			}
+			else
+			{
+				$hashendtarget = 0;
+			}
+			// all new records we can do a buldk insert
+			if ($i === 1)
+			{
+				// load the last value
+				$this->newCustomCode[$pointer[$backupTargetKey]][]	= $db->quote($hashendtarget); // 'hashendtarget'
+			}
+			// the record already exist so we must use module to update
+			elseif ($i === 2)
+			{
+				$this->existingCustomCode[$pointer[$backupTargetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote($hashendtarget);
+			}
+		}
+	}
+	
+	/**
+	 * search for the system id in the line given
+	 * 
+	 * @param   string   $lineContent  The file path to search
+	 * @param   string   $placeholders The values to search for
+	 *
+	 * @return  array    on success
+	 * 
+	 */
+	protected function getSystemID(&$lineContent, $placeholder)
+	{
+		// remove place holder from content
+		$string = trim(str_replace($placeholder.'//', '', $lineContent));
+		// now get all numbers
+		$numbers = array();
+		preg_match_all('!\d+!', $string, $numbers);
+		// return the first number
+		if (isset($numbers[0]) && ComponentbuilderHelper::checkArray($numbers[0]))
+		{
+			return reset($numbers[0]);
+		}
+		return false;
+	}
+	
+	/**
+	 * return the placeholders for insered and replaced code
+	 * 
+	 * @param   int      $type  The type of placement
+	 * @param   int      $id    The code id in the system
+	 *
+	 * @return  array    on success
+	 * 
+	 */
+	public function getPlaceHolder(&$type, &$id)
+	{
+		switch ($type)
+		{
+			case 1:
+				//xxx[REPLACED$$$$]xxx///1
+				return array(
+					'start' => '/***[REPLACED$$$$]***///'.$id, 
+					'end' => '/***[/REPLACED$$$$]***/');
+				break;
+			case 2:
+				//xxx[INSERTED$$$$]xxx///1
+				return array(
+					'start' => '/***[INSERTED$$$$]***///'.$id, 
+					'end' => '/***[/INSERTED$$$$]***/');
+				break;
 		}
 		return false;
 	}

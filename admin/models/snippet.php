@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
-	@created		30th April, 2015
+	@version		@update number 16 of this MVC
+	@build			20th October, 2016
+	@created		19th May, 2015
 	@package		Component Builder
 	@subpackage		snippet.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
@@ -803,7 +803,7 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 		}
 
 		// Alter the uniqe field for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			// Automatic handling of other uniqe fields
 			$uniqeFields = $this->getUniqeFields();

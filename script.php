@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
+	@version		2.2.9
+	@build			1st February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -656,6 +656,92 @@ class com_componentbuilderInstallerScript
 				$query->where($dynamic_get_condition);
 				$db->setQuery($query);
 				// Execute the query to remove Dynamic_get items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Custom_code alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_code') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$custom_code_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($custom_code_found)
+		{
+			// Since there are load the needed  custom_code type ids
+			$custom_code_ids = $db->loadColumn();
+			// Remove Custom_code from the content type table
+			$custom_code_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_code') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($custom_code_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Custom_code items
+			$custom_code_done = $db->execute();
+			if ($custom_code_done);
+			{
+				// If succesfully remove Custom_code add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Custom_code items from the contentitem tag map table
+			$custom_code_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_code') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($custom_code_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Custom_code items
+			$custom_code_done = $db->execute();
+			if ($custom_code_done);
+			{
+				// If succesfully remove Custom_code add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Custom_code items from the ucm content table
+			$custom_code_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.custom_code') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($custom_code_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Custom_code items
+			$custom_code_done = $db->execute();
+			if ($custom_code_done);
+			{
+				// If succesfully remove Custom_code add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Custom_code items are cleared from DB
+			foreach ($custom_code_ids as $custom_code_id)
+			{
+				// Remove Custom_code items from the ucm base table
+				$custom_code_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $custom_code_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($custom_code_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Custom_code items
+				$db->execute();
+
+				// Remove Custom_code items from the ucm history table
+				$custom_code_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $custom_code_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($custom_code_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Custom_code items
 				$db->execute();
 			}
 		}
@@ -1342,6 +1428,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$dynamic_get_Inserted = $db->insertObject('#__content_types', $dynamic_get);
 
+			// Create the custom_code content type object.
+			$custom_code = new stdClass();
+			$custom_code->type_title = 'Componentbuilder Custom_code';
+			$custom_code->type_alias = 'com_componentbuilder.custom_code';
+			$custom_code->table = '{"special": {"dbtable": "#__componentbuilder_custom_code","key": "id","type": "Custom_code","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","type":"type","hashendtarget":"hashendtarget","from_line":"from_line","hashtarget":"hashtarget","to_line":"to_line","code":"code"}}';
+			$custom_code->router = 'ComponentbuilderHelperRoute::getCustom_codeRoute';
+			$custom_code->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_code.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","component","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "component","targetTable": "#__componentbuilder_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$custom_code_Inserted = $db->insertObject('#__content_types', $custom_code);
+
 			// Create the snippet content type object.
 			$snippet = new stdClass();
 			$snippet->type_title = 'Componentbuilder Snippet';
@@ -1645,6 +1743,35 @@ class com_componentbuilderInstallerScript
 				$dynamic_get_Inserted = $db->insertObject('#__content_types', $dynamic_get);
 			}
 
+			// Create the custom_code content type object.
+			$custom_code = new stdClass();
+			$custom_code->type_title = 'Componentbuilder Custom_code';
+			$custom_code->type_alias = 'com_componentbuilder.custom_code';
+			$custom_code->table = '{"special": {"dbtable": "#__componentbuilder_custom_code","key": "id","type": "Custom_code","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","type":"type","hashendtarget":"hashendtarget","from_line":"from_line","hashtarget":"hashtarget","to_line":"to_line","code":"code"}}';
+			$custom_code->router = 'ComponentbuilderHelperRoute::getCustom_codeRoute';
+			$custom_code->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_code.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","component","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "component","targetTable": "#__componentbuilder_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if custom_code type is already in content_type DB.
+			$custom_code_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($custom_code->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$custom_code->type_id = $db->loadResult();
+				$custom_code_Updated = $db->updateObject('#__content_types', $custom_code, 'type_id');
+			}
+			else
+			{
+				$custom_code_Inserted = $db->insertObject('#__content_types', $custom_code);
+			}
+
 			// Create the snippet content type object.
 			$snippet = new stdClass();
 			$snippet->type_title = 'Componentbuilder Snippet';
@@ -1823,7 +1950,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.2.6 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.2.9 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

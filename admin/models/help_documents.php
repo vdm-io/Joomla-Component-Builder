@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
-	@created		30th April, 2015
+	@version		@update number 6 of this MVC
+	@build			17th October, 2016
+	@created		4th March, 2016
 	@package		Component Builder
 	@subpackage		help_documents.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
@@ -181,7 +181,7 @@ class ComponentbuilderModelHelp_documents extends JModelList
 	public function selectionTranslation($value,$name)
 	{
 		// Array of type language strings
-		if ($name == 'type')
+		if ($name === 'type')
 		{
 			$typeArray = array(
 				0 => 'COM_COMPONENTBUILDER_HELP_DOCUMENT_SELECT_AN_OPTION',
@@ -196,7 +196,7 @@ class ComponentbuilderModelHelp_documents extends JModelList
 			}
 		}
 		// Array of location language strings
-		if ($name == 'location')
+		if ($name === 'location')
 		{
 			$locationArray = array(
 				1 => 'COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN',

@@ -731,7 +731,7 @@ class Fields extends Structure
 					// now add to the field set
 					$fieldSet .= $this->setField('spacer', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
 					// increment spacer counter
-					if ($typeName == 'spacer')
+					if ($typeName === 'spacer')
 					{
 						$spacerCounter++;
 					}
@@ -739,7 +739,7 @@ class Fields extends Structure
 				elseif ($this->defaultField($typeName, 'special'))
 				{
 					// set the repeatable field
-					if ($typeName == 'repeatable')
+					if ($typeName === 'repeatable')
 					{
 						if ($build)
 						{
@@ -794,7 +794,7 @@ class Fields extends Structure
 	private function setField($setType, $taber, &$fieldAttributes, &$name, &$typeName, &$langView, &$viewName, &$listViewName, $placeholders, &$optionArray, $custom = null)
 	{
 		$fieldSet = '';
-		if ($setType == 'option')
+		if ($setType === 'option')
 		{
 			// now add to the field set
 			$fieldSet .= "\n\t" . $taber . "\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
@@ -806,7 +806,7 @@ class Fields extends Structure
 				{
 					$fieldSet .= "\n\t\t" . $taber . "\t" . $property . '="' . $value . '"';
 				}
-				elseif ($property == 'option')
+				elseif ($property === 'option')
 				{
 					$optionSet = '';
 					if (strpos($value, ',') !== false)
@@ -872,7 +872,7 @@ class Fields extends Structure
 				$fieldSet .= $optionSet;
 				$fieldSet .= "\n\t\t" . $taber . "</field>";
 			}
-			elseif ($typeName == 'sql')
+			elseif ($typeName === 'sql')
 			{
 				$optionArray = false;
 				$fieldSet .= "\n\t\t" . $taber . "/>";
@@ -884,7 +884,7 @@ class Fields extends Structure
 				$fieldSet .= "\n\t\t" . $taber . "/>";
 			}
 		}
-		elseif ($setType == 'plain')
+		elseif ($setType === 'plain')
 		{
 			// now add to the field set
 			$fieldSet .= "\n\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
@@ -898,7 +898,7 @@ class Fields extends Structure
 			}
 			$fieldSet .= "\n\t\t" . $taber . "/>";
 		}
-		elseif ($setType == 'spacer')
+		elseif ($setType === 'spacer')
 		{
 			// now add to the field set
 			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". A None Database Field. (joomla) -->";
@@ -912,10 +912,10 @@ class Fields extends Structure
 			}
 			$fieldSet .= " />";
 		}
-		elseif ($setType == 'special')
+		elseif ($setType === 'special')
 		{
 			// set the repeatable field
-			if ($typeName == 'repeatable')
+			if ($typeName === 'repeatable')
 			{
 				// now add to the field set
 				$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
@@ -1004,7 +1004,7 @@ class Fields extends Structure
 				$fieldSet .= "\n\t\t</field>";
 			}
 		}
-		elseif ($setType == 'custom')
+		elseif ($setType === 'custom')
 		{
 			// now add to the field set
 			$fieldSet .= "\n\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (custom) -->";
@@ -1063,7 +1063,7 @@ class Fields extends Structure
 				$this->movedPublishingFields[$viewName][$name] = $name;
 			}
 		}
-		elseif ($tabName == 'publishing')
+		elseif ($tabName === 'publishing')
 		{
 			if (!in_array($name, $this->defaultFields))
 			{
@@ -1170,9 +1170,9 @@ class Fields extends Structure
 				// reset
 				$xmlValue = '';
 				$langValue = '';
-				if ($property['name'] == 'type')
+				if ($property['name'] === 'type')
 				{
-					if ($typeName == 'custom' || $typeName == 'customuser')
+					if ($typeName === 'custom' || $typeName === 'customuser')
 					{
 						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
 					}
@@ -1212,10 +1212,10 @@ class Fields extends Structure
 						$fieldAttributes['custom']['type'] = $typeName;
 					}
 				}
-				elseif ($property['name'] == 'name')
+				elseif ($property['name'] === 'name')
 				{
 					// if category then name must be catid (only one per view)
-					if ($typeName == 'category')
+					if ($typeName === 'category')
 					{
 						// quick check if this is a category linked to view page
 						$requeSt_id = ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"');
@@ -1242,7 +1242,7 @@ class Fields extends Structure
 						}
 					}
 					// if tag is set then enable all tag options for this view (only one per view)
-					elseif ($typeName == 'tag')
+					elseif ($typeName === 'tag')
 					{
 						$xmlValue = 'tags';
 					}
@@ -1251,7 +1251,7 @@ class Fields extends Structure
 					{
 						$xmlValue = 'alias';
 					}
-					elseif ($typeName == 'spacer')
+					elseif ($typeName === 'spacer')
 					{
 						// make sure the name is unique
 						$xmlValue = $name . '_' . $spacerCounter;
@@ -1272,7 +1272,7 @@ class Fields extends Structure
 						$name = $xmlValue;
 					}
 				}
-				elseif ($property['name'] == 'extension' || $property['name'] == 'directory')
+				elseif ($property['name'] === 'extension' || $property['name'] === 'directory')
 				{
 					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 					// replace the placeholders
@@ -1292,61 +1292,61 @@ class Fields extends Structure
 					// load the php for the custom field file
 					$fieldAttributes['custom']['phpx'][$phpLine] = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 				}
-				elseif ($property['name'] == 'extends' && $setCustom)
+				elseif ($property['name'] === 'extends' && $setCustom)
 				{
 					// load the class that is being extended
 					$fieldAttributes['custom']['extends'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'extends="', '"');
 				}
-				elseif ($property['name'] == 'view' && $setCustom)
+				elseif ($property['name'] === 'view' && $setCustom)
 				{
 					// load the view name
 					$fieldAttributes['custom']['view'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"'));
 				}
-				elseif ($property['name'] == 'views' && $setCustom)
+				elseif ($property['name'] === 'views' && $setCustom)
 				{
 					// load the views name
 					$fieldAttributes['custom']['views'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"'));
 				}
-				elseif ($property['name'] == 'component' && $setCustom)
+				elseif ($property['name'] === 'component' && $setCustom)
 				{
 					// load the component name
 					$fieldAttributes['custom']['component'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'component="', '"');
 					// replace the placeholders
 					$fieldAttributes['custom']['component'] = str_replace(array_keys($placeholders), array_values($placeholders), $fieldAttributes['custom']['component']);
 				}
-				elseif ($property['name'] == 'table' && $setCustom)
+				elseif ($property['name'] === 'table' && $setCustom)
 				{
 					// load the main table that is queried
 					$fieldAttributes['custom']['table'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'table="', '"');
 					// replace the placeholders
 					$fieldAttributes['custom']['table'] = str_replace(array_keys($placeholders), array_values($placeholders), $fieldAttributes['custom']['table']);
 				}
-				elseif ($property['name'] == 'value_field' && $setCustom)
+				elseif ($property['name'] === 'value_field' && $setCustom)
 				{
 					// load the text key
 					$fieldAttributes['custom']['text'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'value_field="', '"'));
 				}
-				elseif ($property['name'] == 'key_field' && $setCustom)
+				elseif ($property['name'] === 'key_field' && $setCustom)
 				{
 					// load the id key
 					$fieldAttributes['custom']['id'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'key_field="', '"'));
 				}
-				elseif ($property['name'] == 'button' && $repeatable && $setCustom)
+				elseif ($property['name'] === 'button' && $repeatable && $setCustom)
 				{
 					// dont load the button to repeatable
 					$xmlValue = 'false';
 				}
-				elseif ($property['name'] == 'required' && $repeatable)
+				elseif ($property['name'] === 'required' && $repeatable)
 				{
 					// dont load the required to repeatable
 					$xmlValue = 'false';
 				}
-				elseif ($viewType == 2 && ($property['name'] == 'readonly' || $property['name'] == 'disabled'))
+				elseif ($viewType == 2 && ($property['name'] === 'readonly' || $property['name'] === 'disabled'))
 				{
 					// set read only
 					$xmlValue = 'true';
 				}
-				elseif ($property['name'] == 'multiple')
+				elseif ($property['name'] === 'multiple')
 				{
 					$xmlValue = (string) ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 					// add the multipal
@@ -1356,7 +1356,7 @@ class Fields extends Structure
 					}
 				}
 				// make sure the name is added as a cless name for use in javascript
-				elseif ($property['name'] == 'class' && ($typeName == 'note' || $typeName == 'spacer'))
+				elseif ($property['name'] === 'class' && ($typeName === 'note' || $typeName === 'spacer'))
 				{
 					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, 'class="', '"');
 					// add the type class
@@ -1397,26 +1397,26 @@ class Fields extends Structure
 				}
 				elseif (isset($field['alias']) && $field['alias'] && $property['translatable'] == 1)
 				{
-					if ($property['name'] == 'label')
+					if ($property['name'] === 'label')
 					{
 						$xmlValue = 'JFIELD_ALIAS_LABEL';
 					}
-					elseif ($property['name'] == 'description')
+					elseif ($property['name'] === 'description')
 					{
 						$xmlValue = 'JFIELD_ALIAS_DESC';
 					}
-					elseif ($property['name'] == 'hint')
+					elseif ($property['name'] === 'hint')
 					{
 						$xmlValue = 'JFIELD_ALIAS_PLACEHOLDER';
 					}
 				}
 				elseif (isset($field['title']) && $field['title'] && $property['translatable'] == 1)
 				{
-					if ($property['name'] == 'label')
+					if ($property['name'] === 'label')
 					{
 						$xmlValue = 'JGLOBAL_TITLE';
 					}
-					elseif ($property['name'] == 'description')
+					elseif ($property['name'] === 'description')
 					{
 						$xmlValue = 'JFIELD_TITLE_DESC';
 					}
@@ -1436,7 +1436,7 @@ class Fields extends Structure
 					$fieldAttributes[$property['name']] = $xmlValue;
 
 					// load to langBuilder down the line
-					if ($property['name'] == 'label')
+					if ($property['name'] === 'label')
 					{
 						$langLabel = $xmlValue;
 						if ($setCustom)
@@ -1481,7 +1481,7 @@ class Fields extends Structure
 	 */
 	public function setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, $custom = false, $options = false)
 	{
-		if ($typeName == 'tag')
+		if ($typeName === 'tag')
 		{
 			// set tags for this view but don't load to DB
 			$this->tagsBuilder[$viewName] = $viewName;
@@ -1492,7 +1492,7 @@ class Fields extends Structure
 			$intKeys = array('INT', 'TINYINT', 'BIGINT', 'FLOAT', 'DECIMAL', 'DOUBLE');
 			if (in_array($field['settings']->datatype, $intKeys))
 			{
-				if ($field['settings']->datadefault == 'Other')
+				if ($field['settings']->datadefault === 'Other')
 				{
 					if (!is_numeric($field['settings']->datadefault_other) || $field['settings']->datadefault_other !== '0000-00-00 00:00:00')
 					{
@@ -1526,7 +1526,7 @@ class Fields extends Structure
 				// build unique keys of this view for db
 				$this->dbUniqueKeys[$viewName][] = $name;
 			}
-			elseif (($field['settings']->indexes == 2 || $field['alias'] || $field['title'] || $typeName == 'category') && !in_array($field['settings']->datatype, $textKeys))
+			elseif (($field['settings']->indexes == 2 || $field['alias'] || $field['title'] || $typeName === 'category') && !in_array($field['settings']->datatype, $textKeys))
 			{
 				// build keys of this view for db
 				$this->dbKeys[$viewName][] = $name;
@@ -1548,7 +1548,7 @@ class Fields extends Structure
 			$this->titleBuilder[$viewName] = $name;
 		}
 		// category name fix
-		if ($typeName == 'category')
+		if ($typeName === 'category')
 		{
 			if (isset($this->catOtherName[$listViewName]) && ComponentbuilderHelper::checkArray($this->catOtherName[$listViewName]))
 			{
@@ -1594,7 +1594,7 @@ class Fields extends Structure
 			$this->customBuilderList[$listViewName][] = $name;
 		}
 		// set the hidden field of this view
-		if ($typeName == 'hidden')
+		if ($typeName === 'hidden')
 		{
 			if (!isset($this->hiddenFieldsBuilder[$viewName]))
 			{
@@ -1603,7 +1603,7 @@ class Fields extends Structure
 			$this->hiddenFieldsBuilder[$viewName] .= ',"' . $name . '"';
 		}
 		// set all int fields of this view
-		if ($field['settings']->datatype == 'INT' || $field['settings']->datatype == 'TINYINT' || $field['settings']->datatype == 'BIGINT')
+		if ($field['settings']->datatype === 'INT' || $field['settings']->datatype === 'TINYINT' || $field['settings']->datatype === 'BIGINT')
 		{
 			if (!isset($this->intFieldsBuilder[$viewName]))
 			{
@@ -1629,7 +1629,7 @@ class Fields extends Structure
 		}
 		// TODO we may need to add a switch instead (since now it uses the first editor field)
 		// set the main(biggest) text field of this view
-		if ($typeName == 'editor')
+		if ($typeName === 'editor')
 		{
 			if (!isset($this->maintextBuilder[$viewName]) || !ComponentbuilderHelper::checkString($this->maintextBuilder[$viewName]))
 			{
@@ -1651,17 +1651,17 @@ class Fields extends Structure
 				$this->customFieldLinksBuilder[$viewName] .= ',{"sourceColumn": "' . $name . '","targetTable": "' . $custom['table'] . '","targetColumn": "' . $custom['id'] . '","displayColumn": "' . $custom['text'] . '"}';
 			}
 			// build script switch for user
-			if ($custom['extends'] == 'user')
+			if ($custom['extends'] === 'user')
 			{
 				$this->setScriptUserSwitch[$typeName] = $typeName;
 			}
 		}
-		if ($typeName == 'media')
+		if ($typeName === 'media')
 		{
 			$this->setScriptMediaSwitch[$typeName] = $typeName;
 		}
 		// setup gategory for this view
-		if ($typeName == 'category')
+		if ($typeName === 'category')
 		{
 			if (isset($this->catOtherName[$listViewName]) && ComponentbuilderHelper::checkArray($this->catOtherName[$listViewName]))
 			{
@@ -1678,12 +1678,12 @@ class Fields extends Structure
 			$this->catCodeBuilder[$viewName] = array('code' => $name, 'views' => $otherViews, 'view' => $otherView);
 		}
 		// setup checkbox for this view
-		if ($typeName == 'checkbox' || (ComponentbuilderHelper::checkArray($custom) && isset($custom['extends']) && $custom['extends'] == 'checkboxes'))
+		if ($typeName === 'checkbox' || (ComponentbuilderHelper::checkArray($custom) && isset($custom['extends']) && $custom['extends'] === 'checkboxes'))
 		{
 			$this->checkboxBuilder[$viewName][] = $name;
 		}
 		// setup checkboxes and other json items for this view
-		if (($typeName == 'checkboxes' || $multiple || $field['settings']->store != 0) && $typeName != 'tag')
+		if (($typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && $typeName != 'tag')
 		{
 			switch ($field['settings']->store)
 			{
@@ -1719,7 +1719,7 @@ class Fields extends Structure
 					break;
 			}
 			// just a heads-up for usergroups set to multiple
-			if ($typeName == 'usergroup')
+			if ($typeName === 'usergroup')
 			{
 				$this->buildSiteFieldData($viewName, $name, 'json', $typeName);
 			}
@@ -1737,8 +1737,8 @@ class Fields extends Structure
 				}
 			}
 		}
-		// build the data for the export & import methods $typeName == 'repeatable' ||
-		if (($typeName == 'checkboxes' || $multiple || $field['settings']->store != 0) && !ComponentbuilderHelper::checkArray($options))
+		// build the data for the export & import methods $typeName === 'repeatable' ||
+		if (($typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && !ComponentbuilderHelper::checkArray($options))
 		{
 			$this->getItemsMethodEximportStringFixBuilder[$viewName][] = array('name' => $name, 'type' => $typeName, 'translation' => false, 'custom' => $custom, 'method' => $field['settings']->store);
 		}
@@ -1838,7 +1838,7 @@ class Fields extends Structure
 				$phpCode = 'return null;';
 			}
 
-			if ($data['custom']['extends'] == 'user')
+			if ($data['custom']['extends'] === 'user')
 			{
 				// now load the php xclude script
 				if (ComponentbuilderHelper::checkArray($data['custom']['phpx']))

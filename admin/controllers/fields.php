@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.6
-	@build			20th January, 2017
+	@version		@update number 36 of this MVC
+	@build			12th January, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields.php

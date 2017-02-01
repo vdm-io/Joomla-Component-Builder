@@ -1,0 +1,53 @@
+/*--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
+    __      __       _     _____                 _                                  _     __  __      _   _               _
+    \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
+     \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
+      \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
+       \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
+        \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
+                                                        | |                                                                 
+                                                        |_| 				
+/-------------------------------------------------------------------------------------------------------------------------------/
+
+	@version		@update number 14 of this MVC
+	@build			31st January, 2017
+	@created		11th October, 2016
+	@package		Component Builder
+	@subpackage		custom_code.js
+	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
+	@copyright		Copyright (C) 2015. All Rights Reserved
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
+	
+	Builds Complex Joomla Components 
+                                                             
+/-----------------------------------------------------------------------------------------------------------------------------*/
+
+// Initial Script
+jQuery(document).ready(function()
+{
+	var type_vvvvvzo = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvvzo(type_vvvvvzo);
+});
+
+// the vvvvvzo function
+function vvvvvzo(type_vvvvvzo)
+{
+	// set the function logic
+	if (type_vvvvvzo == 1)
+	{
+		jQuery('#jform_hashendtarget').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('#jform_hashendtarget').closest('.control-group').hide();
+	}
+}
+
+// the isSet function
+function isSet(val)
+{
+	if ((val != undefined) && (val != null) && 0 !== val.length){
+		return true;
+	}
+	return false;
+} 
