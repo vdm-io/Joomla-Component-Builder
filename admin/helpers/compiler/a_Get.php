@@ -2976,15 +2976,33 @@ class Get
 		{
 			case 1:
 				//xxx[REPLACED$$$$]xxx///1
-				return array(
-					'start' => '/***[REPLACED$$$$]***///'.$id, 
-					'end' => '/***[/REPLACED$$$$]***/');
+				if (!isset($this->componentData->add_placeholders) || $this->componentData->add_placeholders == 1)
+				{
+					return array(
+						'start' => '/***[REPLACED$$$$]***///'.$id, 
+						'end' => '/***[/REPLACED$$$$]***/');
+				}
+				else
+				{
+					return array(
+						'start' => '', 
+						'end' => '');
+				}
 				break;
 			case 2:
 				//xxx[INSERTED$$$$]xxx///1
-				return array(
+				if (!isset($this->componentData->add_placeholders) || $this->componentData->add_placeholders == 1)
+				{
+					return array(
 					'start' => '/***[INSERTED$$$$]***///'.$id, 
 					'end' => '/***[/INSERTED$$$$]***/');
+				}
+				else
+				{
+					return array(
+						'start' => '', 
+						'end' => '');
+				}
 				break;
 		}
 		return false;

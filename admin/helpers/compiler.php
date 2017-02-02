@@ -345,8 +345,8 @@ class Compiler extends Infusion
 	// link canges made to views into the file license
 	protected function fixLicenseValues($data)
 	{
-		// check if these files have its own config data
-		if (isset($data['config']) && ComponentbuilderHelper::checkArray($data['config']))
+		// check if these files have its own config data)
+		if (isset($data['config']) && ComponentbuilderHelper::checkArray($data['config']) && (!isset($this->componentData->mvc_versiondate) || $this->componentData->mvc_versiondate == 1))
 		{
 			foreach ($data['config'] as $key => $value)
 			{
