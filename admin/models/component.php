@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 77 of this MVC
-	@build			26th December, 2016
+	@version		@update number 80 of this MVC
+	@build			2nd February, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -101,16 +101,16 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				$item->css = base64_decode($item->css);
 			}
 
-			if (!empty($item->php_preflight_update))
-			{
-				// base64 Decode php_preflight_update.
-				$item->php_preflight_update = base64_decode($item->php_preflight_update);
-			}
-
 			if (!empty($item->php_postflight_update))
 			{
 				// base64 Decode php_postflight_update.
 				$item->php_postflight_update = base64_decode($item->php_postflight_update);
+			}
+
+			if (!empty($item->php_preflight_update))
+			{
+				// base64 Decode php_preflight_update.
+				$item->php_preflight_update = base64_decode($item->php_preflight_update);
 			}
 
 			if (!empty($item->readme))
@@ -1153,7 +1153,7 @@ class ComponentbuilderModelComponent extends JModelAdmin
 				foreach ($values as $key => $value)
 				{
 					// Do special action for access.
-					if ('access' == $key && strlen($value) > 0)
+					if ('access' === $key && strlen($value) > 0)
 					{
 						$this->table->$key = $value;
 					}
@@ -1223,16 +1223,16 @@ class ComponentbuilderModelComponent extends JModelAdmin
 			$data['css'] = base64_encode($data['css']);
 		}
 
-		// Set the php_preflight_update string to base64 string.
-		if (isset($data['php_preflight_update']))
-		{
-			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
-		}
-
 		// Set the php_postflight_update string to base64 string.
 		if (isset($data['php_postflight_update']))
 		{
 			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
+		}
+
+		// Set the php_preflight_update string to base64 string.
+		if (isset($data['php_preflight_update']))
+		{
+			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
 		}
 
 		// Set the readme string to base64 string.

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 77 of this MVC
-	@build			26th December, 2016
+	@version		@update number 80 of this MVC
+	@build			2nd February, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		default_head.php

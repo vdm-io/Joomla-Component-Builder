@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.9
-	@build			1st February, 2017
+	@build			2nd February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_left.php
@@ -35,6 +35,8 @@ $fields = $displayData->get('fields') ?: array(
 	'component_version',
 	'version_update',
 	'debug_linenr',
+	'add_placeholders',
+	'mvc_versiondate',
 	'short_description',
 	'description',
 	'copyright'

@@ -225,7 +225,7 @@ class Compiler extends Infusion
 			$two = 0;
 			foreach ($this->newFiles['static'] as $static)
 			{
-				if (('README.md' == $static['name'] || 'README.txt' == $static['name']) && $this->componentData->addreadme && JFile::exists($static['path']))
+				if (('README.md' === $static['name'] || 'README.txt' === $static['name']) && $this->componentData->addreadme && JFile::exists($static['path']))
 				{
 					$this->buildReadMe($static['path']);
 					$two++;
@@ -350,7 +350,7 @@ class Compiler extends Infusion
 		{
 			foreach ($data['config'] as $key => $value)
 			{
-				if ('###VERSION###' == $key)
+				if ('###VERSION###' === $key)
 				{
 					// hmm we sould in some way make it known that this version number
 					// is not in relation the the project but to the file only... any ideas?
@@ -563,11 +563,11 @@ class Compiler extends Infusion
 				{
 					foreach ($options as $option => $value)
 					{
-						if ('timeout' == $option)
+						if ('timeout' === $option)
 						{
 							$options[$option] = (int) $value;
 						}
-						if ('type' == $option)
+						if ('type' === $option)
 						{
 							$options[$option] = (string) $value;
 						}

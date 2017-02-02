@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.9
-	@build			1st February, 2017
-	@created		30th April, 2015
+	@version		@update number 11 of this MVC
+	@build			2nd February, 2017
+	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
@@ -32,8 +32,26 @@ jimport('joomla.application.component.controlleradmin');
 /**
  * Compiler Controller
  */
-class ComponentbuilderControllerCompiler extends JControllerLegacy
+class ComponentbuilderControllerCompiler extends JControllerAdmin
 {
+	protected $text_prefix = 'COM_COMPONENTBUILDER_COMPILER';
+	/**
+	 * Proxy for getModel.
+	 * @since	2.5
+	 */
+	public function getModel($name = 'Compiler', $prefix = 'ComponentbuilderModel', $config = array())
+	{
+		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+
+		return $model;
+	}
+
+        public function dashboard()
+	{
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder', false));
+		return;
+	}
+
 	/**
 	 * Import an spreadsheet.
 	 *
@@ -53,6 +71,8 @@ class ComponentbuilderControllerCompiler extends JControllerLegacy
 			$version	= $jinput->post->get('version', 0, 'INT');
 			$addBackup	= $jinput->post->get('backup', 0, 'INT');
 			$addGit		= $jinput->post->get('git', 0, 'INT');
+			// include component compiler
+			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
 			$model		= $this->getModel('compiler');
 			if ($model->builder($version,$componentId,$addBackup,$addGit))
 			{
@@ -68,7 +88,7 @@ class ComponentbuilderControllerCompiler extends JControllerLegacy
 			$app = JFactory::getApplication();
 			$redirect_url	= $app->getUserState('com_componentbuilder.redirect_url');
 			$message	= $app->getUserState('com_componentbuilder.message');
-			if (empty($redirect_url))
+			if (empty($redirect_url) && $componentId > 0)
 			{
 				$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 				// setup the unrealistic numbers

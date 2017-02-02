@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 77 of this MVC
-	@build			26th December, 2016
+	@version		@update number 80 of this MVC
+	@build			2nd February, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		components.php
@@ -259,17 +259,17 @@ class ComponentbuilderModelComponents extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
+						// decode css
+						$item->css = base64_decode($item->css);
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
 						if ($basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
 						{
 							// decrypt update_server_ftp
 							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
 						}
-						// decode css
-						$item->css = base64_decode($item->css);
 						// decode php_preflight_update
 						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
 						// decode readme
 						$item->readme = base64_decode($item->readme);
 						if ($basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.9
-	@build			1st February, 2017
+	@build			2nd February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		javascript_fullwidth.php

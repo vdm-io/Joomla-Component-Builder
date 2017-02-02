@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.9
-	@build			1st February, 2017
+	@build			2nd February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -1190,7 +1190,7 @@ class ComponentbuilderModelAjax extends JModelList
 						}
 					}
 				}
-				$string[] = "<div>dynamicForm: <b>".$result->name."</b><br /><code>&lt;a href=\"index.php?option=com_&#91;&#91;&#91;component&#93;&#93;&#93;&task=form." . $result->name_code . implode('',$dynamicIds) ."&ref=[[[sview]]]\"&gt;" . $result->name . "&lt;/a&gt;</code></div>";
+				$string[] = "<div>dynamicForm: <b>".$result->name."</b><br /><code>&lt;a href=\"index.php?option=com_&#91;&#91;&#91;component&#93;&#93;&#93;&task=form." . $result->name_code . implode('',$dynamicIds) ."&ref=compiler\"&gt;" . $result->name . "&lt;/a&gt;</code></div>";
 			}
 			$string[] = "</div><hr />";
 			return implode("\n",$string);

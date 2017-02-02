@@ -1018,7 +1018,7 @@ class Fields extends Structure
 			}
 			$fieldSet .= "\n\t\t" . $taber . "/>";
 			// incase the field is in the config and has not been set
-			if ('config' == $viewName && 'configs' == $listViewName)
+			if ('config' === $viewName && 'configs' === $listViewName)
 			{
 				// set lang (just incase)
 				$listLangName = $langView . '_' . ComponentbuilderHelper::safeString($name, 'U');
@@ -1350,7 +1350,7 @@ class Fields extends Structure
 				{
 					$xmlValue = (string) ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 					// add the multipal
-					if ('true' == $xmlValue)
+					if ('true' === $xmlValue)
 					{
 						$multiple = true;
 					}

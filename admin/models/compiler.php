@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.9
-	@build			1st February, 2017
-	@created		30th April, 2015
+	@version		@update number 11 of this MVC
+	@build			2nd February, 2017
+	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
@@ -29,14 +29,120 @@ defined('_JEXEC') or die('Restricted access');
 // import the Joomla modellist library
 jimport('joomla.application.component.modellist');
 
-// include component compiler
-require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
-
 /**
- * Componentbuilder Model
+ * Componentbuilder Model for Compiler
  */
 class ComponentbuilderModelCompiler extends JModelList
 {
+        /**
+	 * Model user data.
+	 *
+	 * @var        strings
+	 */
+        protected $user;
+        protected $userId;
+        protected $guest;
+        protected $groups;
+        protected $levels;
+	protected $app;
+	protected $input;
+	protected $uikitComp;
+
+	/**
+	 * Method to build an SQL query to load the list data.
+	 *
+	 * @return      string  An SQL query
+	 */
+	protected function getListQuery()
+	{
+                // Get the current user for authorisation checks
+		$this->user		= JFactory::getUser();
+		$this->userId		= $this->user->get('id');
+		$this->guest		= $this->user->get('guest');
+                $this->groups		= $this->user->get('groups');
+                $this->authorisedGroups	= $this->user->getAuthorisedGroups();
+		$this->levels		= $this->user->getAuthorisedViewLevels();
+		$this->app		= JFactory::getApplication();
+		$this->input		= $this->app->input;
+		$this->initSet		= true; 
+		// Make sure all records load, since no pagination allowed.
+		$this->setState('list.limit', 0);
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Get from #__componentbuilder_component as a
+		$query->select($db->quoteName(
+			array('a.id','a.system_name','a.name','a.name_code','a.component_version','a.debug_linenr','a.short_description','a.image','a.companyname','a.author','a.email','a.website','a.copyright','a.modified','a.created','a.version'),
+			array('id','system_name','name','name_code','component_version','debug_linenr','short_description','image','companyname','author','email','website','copyright','modified','created','version')));
+		$query->from($db->quoteName('#__componentbuilder_component', 'a'));
+		$query->where('a.published = 1');
+		$query->order('a.modified DESC');
+		$query->order('a.created DESC');
+
+		// return the query object
+		return $query;
+	}
+
+	/**
+	 * Method to get an array of data items.
+	 *
+	 * @return  mixed  An array of data items on success, false on failure.
+	 */
+	public function getItems()
+	{
+                $user = JFactory::getUser();
+                // check if this user has permission to access items
+                if (!$user->authorise('compiler.access', 'com_componentbuilder'))
+                {
+			$app = JFactory::getApplication();
+			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
+			// redirect away if not a correct (TODO for now we go to default view)
+			$app->redirect('index.php?option=com_componentbuilder');
+			return false;
+                } 
+		// load parent items
+		$items = parent::getItems();
+
+		// Get the global params
+		$globalParams = JComponentHelper::getParams('com_componentbuilder', true);
+
+		// Convert the parameter fields into objects.
+		if (ComponentbuilderHelper::checkArray($items))
+		{
+			foreach ($items as $nr => &$item)
+			{
+				// Always create a slug for sef URL's
+				$item->slug = (isset($item->alias) && isset($item->id)) ? $item->id.':'.$item->alias : $item->id;
+				// Make sure the content prepare plugins fire on copyright.
+				$item->copyright = JHtml::_('content.prepare',$item->copyright);
+				// Checking if copyright has uikit components that must be loaded.
+				$this->uikitComp = ComponentbuilderHelper::getUikitComp($item->copyright,$this->uikitComp);
+			}
+		} 
+
+		// return items
+		return $items;
+	}
+
+
+	/**
+	* Get the uikit needed components
+	*
+	* @return mixed  An array of objects on success.
+	*
+	*/
+	public function getUikitComp()
+	{
+		if (isset($this->uikitComp) && ComponentbuilderHelper::checkArray($this->uikitComp))
+		{
+			return $this->uikitComp;
+		}
+		return false;
+	}  
+
 	protected $compiler;
 	
 	public function getComponents()

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.9
-	@build			1st February, 2017
+	@build			2nd February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_left.php
@@ -34,13 +34,13 @@ $fields = $displayData->get('fields') ?: array(
 	'addadmin_views',
 	'addcustom_admin_views',
 	'addsite_views',
-	'spacer_hr_b',
+	'spacer_hr_c',
 	'note_mysql_tweak_options',
 	'sql_tweak',
-	'spacer_hr_c',
+	'spacer_hr_d',
 	'note_add_custom_menus',
 	'addcustommenus',
-	'spacer_hr_d',
+	'spacer_hr_e',
 	'note_add_config',
 	'addconfig'
 );

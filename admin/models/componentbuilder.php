@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.2.9
-	@build			1st February, 2017
+	@build			2nd February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -47,6 +47,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		);
 		// view access array
 		$viewAccess = array(
+			'compiler.submenu' => 'compiler.submenu',
+			'compiler.dashboard_list' => 'compiler.dashboard_list',
 			'admin_views.access' => 'admin_view.access',
 			'admin_view.access' => 'admin_view.access',
 			'admin_views.submenu' => 'admin_view.submenu',

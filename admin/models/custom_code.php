@@ -726,7 +726,7 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 				foreach ($values as $key => $value)
 				{
 					// Do special action for access.
-					if ('access' == $key && strlen($value) > 0)
+					if ('access' === $key && strlen($value) > 0)
 					{
 						$this->table->$key = $value;
 					}

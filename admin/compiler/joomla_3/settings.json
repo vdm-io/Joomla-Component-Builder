@@ -187,6 +187,13 @@
             "rename": false,
             "type": "file"
       },
+      "headercheck_admin.php": {
+            "naam":"headercheck_admin.php",
+            "path": "c0mp0n3nt/admin/helpers",
+            "rename": "new",
+            "newName": "headercheck.php",
+            "type": "file"
+      },
       "LICENSE.txt": {
             "naam":"LICENSE.txt",
             "path": "c0mp0n3nt/",

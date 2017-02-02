@@ -54,12 +54,12 @@ class Get
 	
 	/* The custom script placeholders - we use the (xxx) to avoid detection it should be (***)
 	 * 
-	 *	New Insert Code		= /xxx[INSERT<>$$$$]xxx/		/xxx[/INSERT<>$$$$]xxx/
+	 *	New Insert Code		= /xxx[INSERT<>$$$$]xxx/	/xxx[/INSERT<>$$$$]xxx/
 	 *	New Replace Code	= /xxx[REPLACE<>$$$$]xxx/	/xxx[/REPLACE<>$$$$]xxx/
 	 *
 	 *	//////////////////////////// when JCB adds it back ///////////////////////////////
-	 *	JCB Add Inserted Code	= /xxx[INSERTED$$$$]xxx/	//23	/xxx[/INSERTED$$$$]xxx/
-	 *	JCB Add Replaced Code	= /xxx[REPLACED$$$$]xxx/	//25	/xxx[/REPLACED$$$$]xxx/
+	 *	JCB Add Inserted Code	= /xxx[INSERTED$$$$]xxx///23	/xxx[/INSERTED$$$$]xxx/
+	 *	JCB Add Replaced Code	= /xxx[REPLACED$$$$]xxx///25	/xxx[/REPLACED$$$$]xxx/
 	 *
 	 *	///////////////////////// changeing existing custom code /////////////////////////
 	 *	Update Inserted Code	= /xxx[INSERTED<>$$$$]xxx///23	/xxx[/INSERTED<>$$$$]xxx/
@@ -798,7 +798,7 @@ class Get
 				{
 					foreach ($values as $nr => $value)
 					{
-						if ('html' == $option)
+						if ('html' === $option)
 						{	
 							$value = $this->setCustomContentLang($value);
 						}
@@ -2197,13 +2197,13 @@ class Get
 			if (ComponentbuilderHelper::checkArray($lines))
 			{
 				$db = JFactory::getDbo();
-				if ('db' == $type)
+				if ('db' === $type)
 				{
 					$table = '#__'.$asset;
 					$queryName = $asset;
 					$view =  '';
 				}
-				elseif ('view' == $type)
+				elseif ('view' === $type)
 				{
 					$view = $this->getViewTableName($asset);
 					$table = '#__'.$this->componentCodeName.'_'.$view;
@@ -2229,7 +2229,7 @@ class Get
 					$get = trim($get);
 					$key = trim($key);
 					// only add the view
-					if ('a' != $as && 1 == $row_type && 'view' == $type && strpos('#'.$key,'#'.$view.'_') === false)
+					if ('a' != $as && 1 == $row_type && 'view' === $type && strpos('#'.$key,'#'.$view.'_') === false)
 					{
 						$key = $view.'_'.trim($key);
 					}

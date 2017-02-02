@@ -10,12 +10,10 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.9
-	@build			2nd February, 2017
-	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		details_left.php
-	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
+	@subpackage		componentbuilder.php
+	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
+	@my wife		Roline van der Merwe <http://www.vdm.io/>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -24,33 +22,67 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
+defined('_JEXEC') or die('Restricted access');
+?>
+###BOM###
 
+// No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$form = $displayData->getForm();
-
-$fields = $displayData->get('fields') ?: array(
-	'component',
-	'type',
-	'hashtarget'
-);
-
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
-
-foreach ($fields as $field)
+class HeaderCheck
 {
-	$field = is_array($field) ? $field : array($field);
-	foreach ($field as $f)
+	function js_loaded($script_name)
 	{
-		if ($form->getField($f))
+		// UIkit check point
+		if (strpos($script_name,'uikit') !== false)
 		{
-			if (in_array($f, $hiddenFields))
+			$app            	= JFactory::getApplication();
+			$getTemplateName  	= $app->getTemplate('template')->template;
+			
+			if (strpos($getTemplateName,'yoo') !== false)
 			{
-				$form->setFieldAttribute($f, 'type', 'hidden');
+				return true;
 			}
-
-			echo $form->renderField($f);
-			break;
 		}
+		
+		$document 	= JFactory::getDocument();
+		$head_data 	= $document->getHeadData();
+		foreach (array_keys($head_data['scripts']) as $script)
+		{
+			if (stristr($script, $script_name))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	function css_loaded($script_name)
+	{
+		// UIkit check point
+		if (strpos($script_name,'uikit') !== false)
+		{
+			$app            	= JFactory::getApplication();
+			$getTemplateName  	= $app->getTemplate('template')->template;
+			
+			if (strpos($getTemplateName,'yoo') !== false)
+			{
+				return true;
+			}
+		}
+		
+		$document 	= JFactory::getDocument();
+		$head_data 	= $document->getHeadData();
+		
+		foreach (array_keys($head_data['styleSheets']) as $script)
+		{
+			if (stristr($script, $script_name))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

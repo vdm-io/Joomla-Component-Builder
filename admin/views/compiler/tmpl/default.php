@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.9
-	@build			1st February, 2017
-	@created		30th April, 2015
+	@version		@update number 11 of this MVC
+	@build			2nd February, 2017
+	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		default.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
@@ -24,16 +24,21 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die('Restricted access'); 
+
+$this->app->input->set('hidemainmenu', false);
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
-JHtml::_('jquery.framework');
 ?>
-
+<?php if ($this->canDo->get('compiler.access')): ?>
+<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=compiler'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+        <input type="hidden" name="task" value="" />
+        <?php echo JHtml::_('form.token'); ?>
+</form>
 <script type="text/javascript">
 Joomla.submitbutton = function(task)
 {
@@ -64,7 +69,6 @@ Joomla.submitbutton = function(task)
 		}
 	}
 }
-
 // Add spindle-wheel for importations:
 jQuery(document).ready(function($) {
 	var outerDiv = $('body');
@@ -84,16 +88,16 @@ jQuery(document).ready(function($) {
 });
 </script>
 <?php if(!empty( $this->sidebar)): ?>
-<div id="j-sidebar-container" class="span2">
-    <?php echo $this->sidebar; ?>
-</div>
-<div id="j-main-container" class="span10">
-<?php else: ?>
-<div id="j-main-container">
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+<?php else : ?>
+	<div id="j-main-container">
 <?php endif; ?>
 	<div id="form">
         <h1>Ready to compile your component</h1>
-        <form action="index.php?option=com_componentbuilder&view=compiler" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+        <form action="index.php?option=com_componentbuilder&view=compiler" method="post" name="compilerForm" id="compilerForm" class="form-validate" enctype="multipart/form-data">
             <div>
             	<span class="notice" style="display:none; color:red;">You must select a component!</span><br />
 		<?php if ($this->form): ?>
@@ -126,7 +130,7 @@ jQuery(document).ready(function($) {
     </div>
 </div>
 <script>
-jQuery('#adminForm').on('change', '#component',function (e)
+jQuery('#compilerForm').on('change', '#component',function (e)
 {
 	var component = jQuery('#component').val();
 	if(component == ""){
@@ -150,3 +154,6 @@ jQuery(document).ready( function($) {
   } , 500);
 });
 </script>
+<?php else: ?>
+        <h1><?php echo JText::_('COM_COMPONENTBUILDER_NO_ACCESS_GRANTED'); ?></h1>
+<?php endif; ?>

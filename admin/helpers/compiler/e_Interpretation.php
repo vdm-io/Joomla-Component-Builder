@@ -281,15 +281,15 @@ class Interpretation extends Fields
 				$encrypt[] = "\t\t\$session = JFactory::getSession();";
 				$encrypt[] = "\t\t\$V2uekt2wcgwk = \$session->get(\$Vk5smi0wjnjb, null);";
 				$encrypt[] = "\t\t\$h4sgrGsqq = \$this->get(\$Vk5smi0wjnjb,\$V2uekt2wcgwk);";
-				$encrypt[] = "\t\tif (isset(\$h4sgrGsqq['nuut']) && \$h4sgrGsqq['nuut'] && (isset(\$h4sgrGsqq['status']) && 'Active' == \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['eiegrendel']) && strlen(\$h4sgrGsqq['eiegrendel']) > 300)";
+				$encrypt[] = "\t\tif (isset(\$h4sgrGsqq['nuut']) && \$h4sgrGsqq['nuut'] && (isset(\$h4sgrGsqq['status']) && 'Active' === \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['eiegrendel']) && strlen(\$h4sgrGsqq['eiegrendel']) > 300)";
 				$encrypt[] = "\t\t{";
 				$encrypt[] = "\t\t\t\$session->set(\$Vk5smi0wjnjb, \$h4sgrGsqq['eiegrendel']);";
 				$encrypt[] = "\t\t}";
-				$encrypt[] = "\t\tif ((isset(\$h4sgrGsqq['status']) && 'Active' == \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['md5hash']) && strlen(\$h4sgrGsqq['md5hash']) == 32 && isset(\$h4sgrGsqq['customfields']) && strlen(\$h4sgrGsqq['customfields']) > 4)";
+				$encrypt[] = "\t\tif ((isset(\$h4sgrGsqq['status']) && 'Active' === \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['md5hash']) && strlen(\$h4sgrGsqq['md5hash']) == 32 && isset(\$h4sgrGsqq['customfields']) && strlen(\$h4sgrGsqq['customfields']) > 4)";
 				$encrypt[] = "\t\t{";
 				$encrypt[] = "\t\t\t\$this->_key = md5(\$h4sgrGsqq['customfields']);";
 				$encrypt[] = "\t\t}";
-				$encrypt[] = "\t\tif ((isset(\$h4sgrGsqq['status']) && 'Active' == \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['md5hash']) && strlen(\$h4sgrGsqq['md5hash']) == 32 )";
+				$encrypt[] = "\t\tif ((isset(\$h4sgrGsqq['status']) && 'Active' === \$h4sgrGsqq['status']) && isset(\$h4sgrGsqq['md5hash']) && strlen(\$h4sgrGsqq['md5hash']) == 32 )";
 				$encrypt[] = "\t\t{";
 				$encrypt[] = "\t\t\t\$this->_is = true;";
 				$encrypt[] = "\t\t}";
@@ -462,7 +462,7 @@ class Interpretation extends Fields
 				$function[] = "\t{";
 				$function[] = "\t\t//".$this->setLine(__LINE__)." Get the global params";
 				$function[] = "\t\t\$params = JComponentHelper::getParams('com_".$component."', true);";
-				$function[] = "\t\tif ('advanced' == \$type)";
+				$function[] = "\t\tif ('advanced' === \$type)";
 				$function[] = "\t\t{";
 				$function[] = "\t\t\t\$advanced_key = \$params->get('advanced_key', \$default);";
 				$function[] = "\t\t\tif (\$advanced_key)";
@@ -473,7 +473,7 @@ class Interpretation extends Fields
 				$function[] = "\n\t\t\t\treturn \$the->_key;";
 				$function[] = "\t\t\t}";
 				$function[] = "\t\t}";
-				$function[] = "\t\telseif ('basic' == \$type)";
+				$function[] = "\t\telseif ('basic' === \$type)";
 				$function[] = "\t\t{";
 				$function[] = "\t\t\t\$basic_key = \$params->get('basic_key', \$default);";
 				$function[] = "\t\t\tif (\$basic_key)";
@@ -488,7 +488,7 @@ class Interpretation extends Fields
 			{
 				$function[] = "\n\n\tpublic static function getCryptKey(\$type, \$default = null)";
 				$function[] = "\t{";
-				$function[] = "\t\tif ('advanced' == \$type)";
+				$function[] = "\t\tif ('advanced' === \$type)";
 				$function[] = "\t\t{";
 				$function[] = "\t\t\t//".$this->setLine(__LINE__)." Get the global params";
 				$function[] = "\t\t\t\$params = JComponentHelper::getParams('com_".$component."', true);";
@@ -508,7 +508,7 @@ class Interpretation extends Fields
 			{
 				$function[] = "\n\n\tpublic static function getCryptKey(\$type, \$default = null)";
 				$function[] = "\t{";
-				$function[] = "\t\tif ('basic' == \$type)";
+				$function[] = "\t\tif ('basic' === \$type)";
 				$function[] = "\t\t{";
 				$function[] = "\t\t\t//".$this->setLine(__LINE__)." Get the global params";
 				$function[] = "\t\t\t\$params = JComponentHelper::getParams('com_".$component."', true);";
@@ -1802,7 +1802,7 @@ class Interpretation extends Fields
 				}
 				$getItem .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." If no data is found redirect to default page and show warning.";
 				$getItem .= "\n\t".$tab."\t\t\$app->enqueueMessage(JText::_('".$langKeyWord."'), 'warning');";
-				if ('site' == $this->target)
+				if ('site' === $this->target)
 				{
 					// check that the default and the redirect page is not the same
 					if ($this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $code)
@@ -2576,14 +2576,14 @@ class Interpretation extends Fields
 					$method .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\t\t".implode("\n\t\t",$view['settings']->php_jview_display));
 				}
 			}
-			if ('site' == $this->target)
+			if ('site' === $this->target)
 			{
 				$method .= "\n\n\t\t//".$this->setLine(__LINE__)." Set the toolbar";
 				$method .= "\n\t\t\$this->addToolBar();";
 				$method .= "\n\n\t\t//".$this->setLine(__LINE__)." set the document";
 				$method .= "\n\t\t\$this->_prepareDocument();";
 			}
-			elseif ('custom_admin' == $this->target)
+			elseif ('custom_admin' === $this->target)
 			{
 				$method .= "\n\n\t\t//".$this->setLine(__LINE__)." We don't need toolbar in the modal window.";
 				$method .= "\n\t\tif (\$this->getLayout() !== 'modal')";
@@ -2631,7 +2631,7 @@ class Interpretation extends Fields
 		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_CUSTOM_BUTTONS###'] = $this->setCustomButtons($view);
 		
 		// only set the custom get form method if site target
-		if ('site' == $this->target)
+		if ('site' === $this->target)
 		{
 			// set the custom get form method  ###SITE_CUSTOM_GET_FORM_METHOD###
 			$this->fileContentDynamic[$view['settings']->code]['###SITE_CUSTOM_GET_FORM_METHOD###'] = $this->setCustomGetForm($view);
@@ -2791,7 +2791,7 @@ class Interpretation extends Fields
 				// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
 				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
 				"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_controller);
-				if ('site' == $this->target)
+				if ('site' === $this->target)
 				{
 					// add the controller for this view
 					// build the file
@@ -3025,7 +3025,14 @@ class Interpretation extends Fields
 		$setter .= "\n\n\t\t//".$this->setLine(__LINE__)." always make sure jquery is loaded.";
 		$setter .= "\n\t\tJHtml::_('jquery.framework');";
 		$setter .= "\n\t\t//".$this->setLine(__LINE__)." Load the header checker class.";
-		$setter .= "\n\t\trequire_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
+		if ($this->target === 'site')
+		{
+			$setter .= "\n\t\trequire_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
+		}
+		else
+		{
+			$setter .= "\n\t\trequire_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
+		}
 		$setter .= "\n\t\t//".$this->setLine(__LINE__)." Initialize the header checker.";
 		$setter .= "\n\t\t\$HeaderCheck = new HeaderCheck;";
 		// load the defaults needed
@@ -3236,12 +3243,13 @@ class Interpretation extends Fields
 	{
 		if (isset($this->templateData[$this->target][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->templateData[$this->target][$view['settings']->code]))
 		{
+			$created = $this->getCreatedDate($view);
 			$modified = $this->getLastModifiedDate($view);
 			foreach ($this->templateData[$this->target][$view['settings']->code] as $template => $data)
 			{
 				// build the file
 				$target = array($this->target => $view['settings']->code);
-				$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+				$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 				$this->buildDynamique($target,'template', $template, $config);
 				// set the file data
 				$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
@@ -3994,7 +4002,7 @@ class Interpretation extends Fields
 			$routeHelper[] = "\n\n\t/**";
 			$routeHelper[] = "\t* @param int The route of the ".$View;
 			$routeHelper[] = "\t*/";
-			if ('category' == $viewName_single || 'categories' == $viewName_single)
+			if ('category' === $viewName_single || 'categories' === $viewName_single)
 			{
 				$routeHelper[] = "\tpublic static function get".$View."Route(\$id = 0)";
 			}
@@ -4259,7 +4267,7 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t\tforeach (\$values as \$key => \$value)";
 		$batchmove[] = "\t\t\t\t{";
 		$batchmove[] = "\t\t\t\t\t//".$this->setLine(__LINE__)." Do special action for access.";
-		$batchmove[] = "\t\t\t\t\tif ('access' == \$key && strlen(\$value) > 0)";
+		$batchmove[] = "\t\t\t\t\tif ('access' === \$key && strlen(\$value) > 0)";
 		$batchmove[] = "\t\t\t\t\t{";
 		$batchmove[] = "\t\t\t\t\t\t\$this->table->\$key = \$value;";
 		$batchmove[] = "\t\t\t\t\t}";
@@ -9614,7 +9622,7 @@ class Interpretation extends Fields
 				$allow[] = "\t\t\t\$form->setFieldAttribute('".$fieldName."', 'disabled', 'true');";
 				$allow[] = "\t\t\t//".$this->setLine(__LINE__)." Disable fields for display.";
 				$allow[] = "\t\t\t\$form->setFieldAttribute('".$fieldName."', 'readonly', 'true');";
-				if ('radio' == $fieldType || 'repeatable' == $fieldType)
+				if ('radio' === $fieldType || 'repeatable' === $fieldType)
 				{
 					$allow[] = "\t\t\t//".$this->setLine(__LINE__)." Disable radio button for display.";
 					$allow[] = "\t\t\t\$class = \$form->getFieldAttribute('".$fieldName."', 'class', '');";

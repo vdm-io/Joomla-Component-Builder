@@ -448,24 +448,25 @@ class Structure extends Get
 			{
 				if (ComponentbuilderHelper::checkObject($view['settings']))
 				{
+					$created = $this->getCreatedDate($view);
 					$modified = $this->getLastModifiedDate($view);
 					if ($view['settings']->name_list != 'null')
 					{
 						$target = array('admin' => $view['settings']->name_list);
-						$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 						$this->buildDynamique($target,'list', false, $config);
 					}
 					if ($view['settings']->name_single != 'null')
 					{
 						$target = array('admin' => $view['settings']->name_single);
-						$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 						$this->buildDynamique($target,'single', false, $config);
 					}
 					if($view['edit_create_site_view'])
 					{
 						// setup the front site edit-view files
 						$target = array('site' => $view['settings']->name_single);
-						$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 						$this->buildDynamique($target,'edit', false, $config);
 					}
 				}
@@ -483,19 +484,20 @@ class Structure extends Get
 
 			foreach ($this->componentData->site_views as $nr => $view)
 			{
+				$created = $this->getCreatedDate($view);
 				$modified = $this->getLastModifiedDate($view);
 				if ($view['settings']->main_get->gettype == 2)
 				{
 					// set list view
 					$target = array('site' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 					$this->buildDynamique($target,'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('site' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 					$this->buildDynamique($target,'single', false, $config);
 				}
 			}
@@ -505,19 +507,20 @@ class Structure extends Get
 		{
 			foreach ($this->componentData->custom_admin_views as $nr => $view)
 			{
+				$created = $this->getCreatedDate($view);
 				$modified = $this->getLastModifiedDate($view);
 				if ($view['settings']->main_get->gettype == 2)
 				{
-					// set list view
+					// set list view$view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => JFactory::getDate($view['settings']->modified)->format('jS F, Y'),'###VERSION###' => $view['settings']->version);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => JFactory::getDate($view['settings']->modified)->format('jS F, Y'),'###VERSION###' => $view['settings']->version);
 					$this->buildDynamique($target,'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => JFactory::getDate($view['settings']->created)->format('jS F, Y'), '###BUILDDATE###' => JFactory::getDate($view['settings']->modified)->format('jS F, Y'),'###VERSION###' => $view['settings']->version);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => JFactory::getDate($view['settings']->modified)->format('jS F, Y'),'###VERSION###' => $view['settings']->version);
 					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
@@ -532,6 +535,29 @@ class Structure extends Get
 	}
 	
 	/**
+	 * get the created date of the (view)
+	 *  
+	 * @param   array   $view  The view values
+	 * 
+	 * @return  string Last Modified Date
+	 * 
+	 */
+	public function getCreatedDate($view)
+	{		
+		if (isset($view['settings']->created) && ComponentbuilderHelper::checkString($view['settings']->created))
+		{
+			// first set the main date
+			$date = strtotime($view['settings']->created);
+		}
+		else
+		{
+			// first set the main date
+			$date = strtotime("now");
+		}
+		return JFactory::getDate($date)->format('jS F, Y');
+	}
+	
+	/**
 	 * get the last modified date of a MVC (view)
 	 *  
 	 * @param   array   $view  The view values
@@ -541,8 +567,16 @@ class Structure extends Get
 	 */
 	public function getLastModifiedDate($view)
 	{
-		// first set the main date
-		$date = strtotime($view['settings']->modified);
+		if (isset($view['settings']->modified) && ComponentbuilderHelper::checkString($view['settings']->modified))
+		{
+			// first set the main date
+			$date = strtotime($view['settings']->modified);
+		}
+		else
+		{
+			// first set the main date
+			$date = strtotime("now");
+		}
 		if (isset($view['adminview']))
 		{
 			$id = $view['adminview'].'admin';
