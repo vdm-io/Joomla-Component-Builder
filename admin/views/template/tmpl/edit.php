@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 39 of this MVC
-	@build			18th October, 2016
+	@version		@update number 40 of this MVC
+	@build			3rd February, 2017
 	@created		26th May, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -33,7 +33,29 @@ JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 $componentParams = JComponentHelper::getParams('com_componentbuilder');
 ?>
-<div id="componentbuilder_loader">
+<script type="text/javascript">
+	// waiting spinner
+	var outerDiv = jQuery('body');
+	jQuery('<div id="loading"></div>')
+		.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
+		.css("top", outerDiv.position().top - jQuery(window).scrollTop())
+		.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
+		.css("width", outerDiv.width())
+		.css("height", outerDiv.height())
+		.css("position", "fixed")
+		.css("opacity", "0.80")
+		.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
+		.css("filter", "alpha(opacity = 80)")
+		.css("display", "none")
+		.appendTo(outerDiv);
+	jQuery('#loading').show();
+	// when page is ready remove and show
+	jQuery(window).load(function() {
+		jQuery('#componentbuilder_loader').fadeIn('fast');
+		jQuery('#loading').hide();
+	});
+</script>
+<div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 <div class="form-horizontal span9">
 

@@ -119,18 +119,18 @@
 			message="Error! Please add name here."
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_HINT"
 		/>
-		<!-- Alias Field. Type: Text. (joomla) -->
+		<!-- Codename Field. Type: Text. (joomla) -->
 		<field
 			type="text"
-			name="alias"
-			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALIAS_LABEL"
-			size="40"
-			maxlength="50"
-			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALIAS_DESCRIPTION"
+			name="codename"
+			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_LABEL"
+			size="80"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_DESCRIPTION"
 			class="text_area"
 			filter="CMD"
 			message="Error! Please add name in code here."
-			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALIAS_HINT"
+			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_HINT"
 		/>
 		<!-- Description Field. Type: Text. (joomla) -->
 		<field

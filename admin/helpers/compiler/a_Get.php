@@ -1295,7 +1295,7 @@ class Get
 		$view->default = base64_decode($view->default);
 		$view->default = $this->setCustomContentLang($view->default);
 		// fix alias to use in code
-		$view->code = $this->uniqueCode(ComponentbuilderHelper::safeString($view->alias));
+		$view->code = $this->uniqueCode(ComponentbuilderHelper::safeString($view->codename));
 		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
 		$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');
 		// insure the uikit components are loaded
@@ -2985,8 +2985,8 @@ class Get
 				else
 				{
 					return array(
-						'start' => '', 
-						'end' => '');
+						'start' => "\t\t//////////////////////////////////////////", 
+						'end' => "\t\t//////////////////////////////////////////");
 				}
 				break;
 			case 2:
@@ -3000,8 +3000,8 @@ class Get
 				else
 				{
 					return array(
-						'start' => '', 
-						'end' => '');
+						'start' => "\t\t//////////////////////////////////////////", 
+						'end' => "\t\t//////////////////////////////////////////");
 				}
 				break;
 		}

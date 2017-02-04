@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 44 of this MVC
-	@build			29th January, 2017
+	@version		@update number 48 of this MVC
+	@build			3rd February, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -245,7 +245,7 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 			'a.published' => JText::_('JSTATUS'),
 			'a.system_name' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_SYSTEM_NAME_LABEL'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_NAME_LABEL'),
-			'a.alias' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_ALIAS_LABEL'),
+			'a.codename' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_LABEL'),
 			'a.description' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_DESCRIPTION_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);

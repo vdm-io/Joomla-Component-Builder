@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 18 of this MVC
-	@build			13th January, 2017
+	@version		@update number 22 of this MVC
+	@build			3rd February, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		default_head.php
@@ -50,7 +50,7 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_LABEL', 'name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALIAS_LABEL', 'alias', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_LABEL', 'codename', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DESCRIPTION_LABEL', 'description', $this->listDirn, $this->listOrder); ?>

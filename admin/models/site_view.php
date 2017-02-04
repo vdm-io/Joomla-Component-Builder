@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 44 of this MVC
-	@build			29th January, 2017
+	@version		@update number 48 of this MVC
+	@build			3rd February, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		site_view.php
@@ -769,7 +769,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				}
 			}
 
-			list($this->table->name, $this->table->alias) = $this->_generateNewTitle($this->table->alias, $this->table->name);
+			$this->table->name = $this->generateUniqe('name',$this->table->name);
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -1055,60 +1055,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$data['params'] = (string) $params;
 		}
 
-		// Alter the name for save as copy
-		if ($input->get('task') === 'save2copy')
-		{
-			$origTable = clone $this->getTable();
-			$origTable->load($input->getInt('id'));
-
-			if ($data['name'] == $origTable->name)
-			{
-				list($name, $alias) = $this->_generateNewTitle($data['alias'], $data['name']);
-				$data['name'] = $name;
-				$data['alias'] = $alias;
-			}
-			else
-			{
-				if ($data['alias'] == $origTable->alias)
-				{
-					$data['alias'] = '';
-				}
-			}
-
-			$data['published'] = 0;
-		}
-
-		// Automatic handling of alias for empty fields
-		if (in_array($input->get('task'), array('apply', 'save', 'save2new')) && (int) $input->get('id') == 0)
-		{
-			if ($data['alias'] == null)
-			{
-				if (JFactory::getConfig()->get('unicodeslugs') == 1)
-				{
-					$data['alias'] = JFilterOutput::stringURLUnicodeSlug($data['name']);
-				}
-				else
-				{
-					$data['alias'] = JFilterOutput::stringURLSafe($data['name']);
-				}
-
-				$table = JTable::getInstance('site_view', 'componentbuilderTable');
-
-				if ($table->load(array('alias' => $data['alias'])) && ($table->id != $data['id'] || $data['id'] == 0))
-				{
-					$msg = JText::_('COM_COMPONENTBUILDER_SITE_VIEW_SAVE_WARNING');
-				}
-
-				list($name, $alias) = $this->_generateNewTitle($data['alias'], $data['name']);
-				$data['alias'] = $alias;
-
-				if (isset($msg))
-				{
-					JFactory::getApplication()->enqueueMessage($msg, 'warning');
-				}
-			}
-		}
-
 		// Alter the uniqe field for save as copy
 		if ($input->get('task') === 'save2copy')
 		{
@@ -1157,24 +1103,22 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	/**
 	* Method to change the title & alias.
 	*
-	* @param   string   $alias        The alias.
 	* @param   string   $title        The title.
 	*
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	protected function _generateNewTitle($alias, $title)
+	protected function _generateNewTitle($title)
 	{
 
-		// Alter the title & alias
+		// Alter the title
 		$table = $this->getTable();
 
-		while ($table->load(array('alias' => $alias)))
+		while ($table->load(array('title' => $title)))
 		{
 			$title = JString::increment($title);
-			$alias = JString::increment($alias, 'dash');
 		}
 
-		return array($title, $alias);
+		return $title;
 	}
 }

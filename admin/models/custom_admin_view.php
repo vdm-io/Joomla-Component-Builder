@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 18 of this MVC
-	@build			13th January, 2017
+	@version		@update number 22 of this MVC
+	@build			3rd February, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_view.php
@@ -763,7 +763,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				}
 			}
 
-			list($this->table->name, $this->table->alias) = $this->_generateNewTitle($this->table->alias, $this->table->name);
+			$this->table->name = $this->generateUniqe('name',$this->table->name);
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -1043,60 +1043,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$data['params'] = (string) $params;
 		}
 
-		// Alter the name for save as copy
-		if ($input->get('task') === 'save2copy')
-		{
-			$origTable = clone $this->getTable();
-			$origTable->load($input->getInt('id'));
-
-			if ($data['name'] == $origTable->name)
-			{
-				list($name, $alias) = $this->_generateNewTitle($data['alias'], $data['name']);
-				$data['name'] = $name;
-				$data['alias'] = $alias;
-			}
-			else
-			{
-				if ($data['alias'] == $origTable->alias)
-				{
-					$data['alias'] = '';
-				}
-			}
-
-			$data['published'] = 0;
-		}
-
-		// Automatic handling of alias for empty fields
-		if (in_array($input->get('task'), array('apply', 'save', 'save2new')) && (int) $input->get('id') == 0)
-		{
-			if ($data['alias'] == null)
-			{
-				if (JFactory::getConfig()->get('unicodeslugs') == 1)
-				{
-					$data['alias'] = JFilterOutput::stringURLUnicodeSlug($data['name']);
-				}
-				else
-				{
-					$data['alias'] = JFilterOutput::stringURLSafe($data['name']);
-				}
-
-				$table = JTable::getInstance('custom_admin_view', 'componentbuilderTable');
-
-				if ($table->load(array('alias' => $data['alias'])) && ($table->id != $data['id'] || $data['id'] == 0))
-				{
-					$msg = JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SAVE_WARNING');
-				}
-
-				list($name, $alias) = $this->_generateNewTitle($data['alias'], $data['name']);
-				$data['alias'] = $alias;
-
-				if (isset($msg))
-				{
-					JFactory::getApplication()->enqueueMessage($msg, 'warning');
-				}
-			}
-		}
-
 		// Alter the uniqe field for save as copy
 		if ($input->get('task') === 'save2copy')
 		{
@@ -1145,24 +1091,22 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	/**
 	* Method to change the title & alias.
 	*
-	* @param   string   $alias        The alias.
 	* @param   string   $title        The title.
 	*
 	* @return	array  Contains the modified title and alias.
 	*
 	*/
-	protected function _generateNewTitle($alias, $title)
+	protected function _generateNewTitle($title)
 	{
 
-		// Alter the title & alias
+		// Alter the title
 		$table = $this->getTable();
 
-		while ($table->load(array('alias' => $alias)))
+		while ($table->load(array('title' => $title)))
 		{
 			$title = JString::increment($title);
-			$alias = JString::increment($alias, 'dash');
 		}
 
-		return array($title, $alias);
+		return $title;
 	}
 }

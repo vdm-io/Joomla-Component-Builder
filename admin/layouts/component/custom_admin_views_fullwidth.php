@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.2.10
-	@build			2nd February, 2017
+	@version		2.3.0
+	@build			4th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_views_fullwidth.php
@@ -52,7 +52,7 @@ $can	= ComponentbuilderHelper::getActions('custom_admin_view');
 			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALIAS_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DESCRIPTION_LABEL'); ?>
@@ -90,7 +90,7 @@ $can	= ComponentbuilderHelper::getActions('custom_admin_view');
 			<?php echo $displayData->escape($item->name); ?>
 		</td>
 		<td>
-			<?php echo $displayData->escape($item->alias); ?>
+			<?php echo $displayData->escape($item->codename); ?>
 		</td>
 		<td>
 			<?php echo $displayData->escape($item->description); ?>

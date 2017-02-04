@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 44 of this MVC
-	@build			29th January, 2017
+	@version		@update number 48 of this MVC
+	@build			3rd February, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		site_views.php
@@ -46,7 +46,7 @@ class ComponentbuilderModelSite_views extends JModelList
 				'a.modified_by','modified_by',
 				'a.system_name','system_name',
 				'a.name','name',
-				'a.alias','alias',
+				'a.codename','codename',
 				'a.description','description'
 			);
 		}
@@ -74,8 +74,8 @@ class ComponentbuilderModelSite_views extends JModelList
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
 		$this->setState('filter.name', $name);
 
-		$alias = $this->getUserStateFromRequest($this->context . '.filter.alias', 'filter_alias');
-		$this->setState('filter.alias', $alias);
+		$codename = $this->getUserStateFromRequest($this->context . '.filter.codename', 'filter_codename');
+		$this->setState('filter.codename', $codename);
 
 		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
 		$this->setState('filter.description', $description);
@@ -195,7 +195,7 @@ class ComponentbuilderModelSite_views extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.name LIKE '.$search.' OR a.alias LIKE '.$search.' OR a.description LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.name LIKE '.$search.' OR a.codename LIKE '.$search.' OR a.description LIKE '.$search.')');
 			}
 		}
 
@@ -350,7 +350,7 @@ class ComponentbuilderModelSite_views extends JModelList
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.name');
-		$id .= ':' . $this->getState('filter.alias');
+		$id .= ':' . $this->getState('filter.codename');
 		$id .= ':' . $this->getState('filter.description');
 
 		return parent::getStoreId($id);

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 36 of this MVC
-	@build			12th January, 2017
+	@version		@update number 37 of this MVC
+	@build			3rd February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php

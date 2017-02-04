@@ -104,7 +104,9 @@ class Compiler extends Infusion
 			// now insert into the new files
 			if (ComponentbuilderHelper::checkArray($this->customCode))
 			{
-				$this->addCustomCode();
+				// load error messages incase code can not be added
+				$app = JFactory::getApplication();
+				$this->addCustomCode($app);
 			}
 			// move the update server into place
 			$this->setUpdateServer();
@@ -589,7 +591,7 @@ class Compiler extends Infusion
 		return false;
 	}
 	
-	protected function addCustomCode()
+	protected function addCustomCode($app)
 	{
 		foreach($this->customCode as $nr => $target)
 		{
@@ -605,6 +607,7 @@ class Compiler extends Infusion
 				$cut		= $size - 1;
 				$found		= false;
 				$bites		= 0;
+				$lineBites	= array();
 				$replace	= array();
 				if ($target['type'] == 1 && isset($target['hashendtarget'][0]) && $target['hashendtarget'][0] > 0)
 				{
@@ -624,13 +627,15 @@ class Compiler extends Infusion
 				{
 					foreach (new SplFileObject($file) as $lineNumber => $lineContent)
 					{
+						// if not found we need to load line bites per line
+						$lineBites[$lineNumber] = (int) mb_strlen($lineContent, '8bit');
 						if (!$found)
 						{
-							$bites = (int) bcadd(mb_strlen($lineContent, '8bit'), $bites);
+							$bites = (int) bcadd($lineBites[$lineNumber], $bites);
 						}
 						if ($found && !$foundEnd)
 						{
-							$replace[] = (int) mb_strlen($lineContent, '8bit');
+							$replace[] = (int) $lineBites[$lineNumber];
 							// we musk keep last three lines to dynamic find target entry
 							$fingerPrint[$lineNumber] = trim($lineContent);
 							// check lines each time if it fits our target
@@ -649,10 +654,11 @@ class Compiler extends Infusion
 									$fingerPrint = array_slice($fingerPrint, -$cutEnd, $cutEnd, true);
 								}
 							}
+							continue;
 						}
 						if ($found && $foundEnd)
 						{
-							$replace[] = (int) mb_strlen($lineContent, '8bit');
+							$replace[] = (int) $lineBites[$lineNumber];
 						}
 						// we musk keep last three lines to dynamic find target entry
 						$fingerPrint[$lineNumber] = trim($lineContent);
@@ -681,7 +687,7 @@ class Compiler extends Infusion
 					if ($found)
 					{
 						$placeholder	= $this->getPlaceHolder($target['type'], $target['id']);
-						$data		= $placeholder['start'] . "\n" . $target['code'] . $placeholder['end'] . "\n";
+						$data		= $placeholder['start'] . "\n" . $target['code'] . $placeholder['end'];
 						if ($target['type'] == 2)
 						{
 							// found it now add code from the next line
@@ -690,24 +696,51 @@ class Compiler extends Infusion
 						elseif ($target['type'] == 1 && $foundEnd)
 						{
 							// found it now add code from the next line
-							$this->addDataToFile($file, $data, $bites, (int) array_sum($replace));
+							$this->addDataToFile($file, $data . "\n", $bites, (int) array_sum($replace));
 						}
 						else
 						{
-							// TODO give developer a notice that the code could not be added and needs his attention.
+							// Load escaped code since the target endhash has changed
+							$this->loadEscapedCode($file, $target, $lineBites);
+							$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at line %s. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'warning');
 						}
 					}
 					else
 					{
-						// TODO give developer a notice that the code could not be added and needs his attention.
+						// Load escaped code since the target hash has changed
+						$this->loadEscapedCode($file, $target, $lineBites);
+						$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at line %s. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'warning');
 					}
 				}
 				else
 				{
-					// TODO give developer a notice that the code could not be added and needs his attention.
+					// Give developer a notice that file is not found.
+					$app->enqueueMessage(JText::sprintf('File <b>%s</b> could not be found, so the custom code for this file could not be addded.', $target['path']), 'warning');
 				}
 			}
 		}
+	}
+
+	protected function loadEscapedCode($file, $target, $lineBites)
+	{
+		// escape the code
+		$code = explode("\n", $target['code']);
+		$code = "\n// " .implode("\n// ",$code). "\n";
+		// get place holders
+		$placeholder	= $this->getPlaceHolder($target['type'], $target['id']);
+		// build the data
+		$data		= $placeholder['start'] . $code . $placeholder['end']. "\n";
+		// get the bites before insertion
+		$bitBucket	= array();
+		foreach($lineBites as $line => $value)
+		{
+			if ($line < $target['from_line'])
+			{
+				$bitBucket[] = $value;
+			}
+		}
+		// add to the file
+		$this->addDataToFile($file, $data, (int) array_sum($bitBucket));
 	}
 
 	// Thanks to http://stackoverflow.com/a/16813550/1429677

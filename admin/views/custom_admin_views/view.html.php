@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 18 of this MVC
-	@build			13th January, 2017
+	@version		@update number 22 of this MVC
+	@build			3rd February, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -245,7 +245,7 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 			'a.published' => JText::_('JSTATUS'),
 			'a.system_name' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_LABEL'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_LABEL'),
-			'a.alias' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALIAS_LABEL'),
+			'a.codename' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_LABEL'),
 			'a.description' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DESCRIPTION_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
