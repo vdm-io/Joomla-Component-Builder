@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.6
+* @version 3.1.4
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -58,15 +58,18 @@
 			 * @type {FooTable.Column}
 			 */
 			this.column = null;
-
-			/* PRIVATE */
 			/**
-			 * Sets a flag indicating whether or not the sorting has changed. When set to true the {@link FooTable.Sorting#sorting_changing} and {@link FooTable.Sorting#sorting_changed} events
-			 * will be raised during the drawing operation.
-			 * @private
+			 * Whether or not to allow sorting to occur, should be set using the {@link FooTable.Sorting#toggleAllowed} method.
+			 * @instance
 			 * @type {boolean}
 			 */
-			this._changed = false;
+			this.allowed = true;
+			/**
+			 * The initial sort state of the table, this value is used for determining if the sorting has occurred or to reset the state to default.
+			 * @instance
+			 * @type {{isset: boolean, rows: Array.<FooTable.Row>, column: string, direction: ?string}}
+			 */
+			this.initial = null;
 		},
 
 		/* PROTECTED */
@@ -117,6 +120,17 @@
 			 */
 			var self = this;
 			this.ft.raise('init.ft.sorting').then(function(){
+				if (!self.initial){
+					var isset = !!self.column;
+					self.initial = {
+						isset: isset,
+						// grab a shallow copy of the rows array prior to sorting - allows us to reset without an initial sort
+						rows: self.ft.rows.all.slice(0),
+						// if there is a sorted column store its name and direction
+						column: isset ? self.column.name : null,
+						direction: isset ? self.column.direction : null
+					}
+				}
 				F.arr.each(self.ft.columns.array, function(col){
 					if (col.sortable){
 						col.$el.addClass('footable-sortable').append($('<span/>', {'class': 'fooicon fooicon-sort'}));
@@ -145,7 +159,7 @@
 			this.ft.raise('destroy.ft.paging').then(function(){
 				self.ft.$el.off('click.footable', '.footable-sortable', self._onSortClicked);
 				self.ft.$el.children('thead').children('tr.footable-header')
-					.children('.footable-sortable').removeClass('footable-sortable')
+					.children('.footable-sortable').removeClass('footable-sortable footable-asc footable-desc')
 					.find('span.fooicon').remove();
 			});
 		},
@@ -157,15 +171,10 @@
 		predraw: function () {
 			if (!this.column) return;
 			var self = this, col = self.column;
-			//self.ft.rows.array.sort(function (a, b) {
-			//	return col.direction == 'ASC'
-			//			? col.sorter(a.cells[col.index].value, b.cells[col.index].value)
-			//			: col.sorter(b.cells[col.index].value, a.cells[col.index].value);
-			//});
 			self.ft.rows.array.sort(function (a, b) {
-				return col.direction == 'ASC'
-						? col.sorter(a.cells[col.index].sortValue, b.cells[col.index].sortValue)
-						: col.sorter(b.cells[col.index].sortValue, a.cells[col.index].sortValue);
+				return col.direction == 'DESC'
+						? col.sorter(b.cells[col.index].sortValue, a.cells[col.index].sortValue)
+						: col.sorter(a.cells[col.index].sortValue, b.cells[col.index].sortValue);
 			});
 		},
 		/**
@@ -181,8 +190,8 @@
 
 			$sortable.removeClass('footable-asc footable-desc').children('.fooicon').removeClass('fooicon-sort fooicon-sort-asc fooicon-sort-desc');
 			$sortable.not($active).children('.fooicon').addClass('fooicon-sort');
-			$active.addClass(self.column.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
-				.children('.fooicon').addClass(self.column.direction == 'ASC' ? 'fooicon-sort-asc' : 'fooicon-sort-desc');
+			$active.addClass(self.column.direction == 'DESC' ? 'footable-desc' : 'footable-asc')
+				.children('.fooicon').addClass(self.column.direction == 'DESC' ? 'fooicon-sort-desc' : 'fooicon-sort-asc');
 		},
 
 		/* PUBLIC */
@@ -198,6 +207,47 @@
 		sort: function(column, direction){
 			return this._sort(column, direction);
 		},
+		/**
+		 * Toggles whether or not sorting is currently allowed.
+		 * @param {boolean} [state] - You can optionally specify the state you want it to be, if not supplied the current value is flipped.
+		 */
+		toggleAllowed: function(state){
+			state = F.is.boolean(state) ? state : !this.allowed;
+			this.allowed = state;
+			this.ft.$el.toggleClass('footable-sorting-disabled', !this.allowed);
+		},
+		/**
+		 * Checks whether any sorting has occurred for the table.
+		 * @returns {boolean}
+		 */
+		hasChanged: function(){
+			return !(!this.initial || !this.column ||
+				(this.column.name === this.initial.column &&
+					(this.column.direction === this.initial.direction || (this.initial.direction === null && this.column.direction === 'ASC')))
+			);
+		},
+		/**
+		 * Resets the table sorting to the initial state recorded in the components init method.
+		 */
+		reset: function(){
+			if (!!this.initial){
+				if (this.initial.isset){
+					// if the initial value specified a column, sort by it
+					this.sort(this.initial.column, this.initial.direction);
+				} else {
+					// if there was no initial column then we need to reset the rows to there original order
+					if (!!this.column){
+						// if there is a currently sorted column remove the asc/desc classes and set it to null.
+						this.column.$el.removeClass('footable-asc footable-desc');
+						this.column = null;
+					}
+					// replace the current all rows array with the one stored in the initial value
+					this.ft.rows.all = this.initial.rows;
+					// force the table to redraw itself using the updated rows array
+					this.ft.draw();
+				}
+			}
+		},
 
 		/* PRIVATE */
 		/**
@@ -211,6 +261,7 @@
 		 * @fires FooTable.Sorting#"after.ft.sorting"
 		 */
 		_sort: function(column, direction){
+			if (!this.allowed) return $.Deferred().reject('sorting disabled');
 			var self = this;
 			var sorter = new F.Sorter(self.ft.columns.get(column), F.Sorting.dir(direction));
 			/**
@@ -245,7 +296,6 @@
 		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onSortClicked: function (e) {
-			e.preventDefault();
 			var self = e.data.self, $header = $(this).closest('th,td'),
 				direction = $header.is('.footable-asc, .footable-desc')
 					? ($header.hasClass('footable-desc') ? 'ASC' : 'DESC')
@@ -264,7 +314,7 @@
 		return F.is.string(str) && (str == 'ASC' || str == 'DESC') ? str : 'ASC';
 	};
 
-	F.components.core.register('sorting', F.Sorting, 5);
+	F.components.register('sorting', F.Sorting, 600);
 
 })(jQuery, FooTable);
 (function(F){
@@ -355,7 +405,10 @@
 	 */
 	F.Column.prototype.sortValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('sortValue') || this.parser(valueOrElement);
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.defined(data) ? data : this.parser(valueOrElement);
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
@@ -371,6 +424,7 @@
 		this.direction = F.is.type(definition.direction, 'string') ? F.Sorting.dir(definition.direction) : null;
 		this.sortable = F.is.boolean(definition.sortable) ? definition.sortable : true;
 		this.sorted = F.is.boolean(definition.sorted) ? definition.sorted : false;
+		this.sortValue = F.checkFnValue(this, definition.sortValue, this.sortValue);
 	};
 
 	// overrides the public define method and replaces it with our own
@@ -406,7 +460,8 @@
 	F.HTMLColumn.prototype.sortValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
 		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-			return $(valueOrElement).data('sortValue') || $.trim($(valueOrElement)[this.sortUse]());
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.defined(data) ? data : $.trim($(valueOrElement)[this.sortUse]());
 		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){

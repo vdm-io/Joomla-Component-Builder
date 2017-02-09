@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 14 of this MVC
-	@build			31st January, 2017
+	@version		@update number 28 of this MVC
+	@build			9th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_codes.php
@@ -46,6 +46,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				'a.modified_by','modified_by',
 				'a.component','component',
 				'a.path','path',
+				'a.target','target',
 				'a.type','type'
 			);
 		}
@@ -72,6 +73,9 @@ class ComponentbuilderModelCustom_codes extends JModelList
 
 		$path = $this->getUserStateFromRequest($this->context . '.filter.path', 'filter_path');
 		$this->setState('filter.path', $path);
+
+		$target = $this->getUserStateFromRequest($this->context . '.filter.target', 'filter_target');
+		$this->setState('filter.target', $target);
 
 		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
 		$this->setState('filter.type', $type);
@@ -126,6 +130,19 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				}
 
 			}
+		}
+
+		if (ComponentbuilderHelper::checkArray($items) && !isset($_export))
+		{
+			foreach ($items as $item) 
+			{
+				if ($item->target == 2)
+				{
+					$item->component_system_name = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
+					$item->path = '/*';
+					$item->type = 2;
+				}
+			}
 		} 
 
 		// set selection value to a translatable value
@@ -133,6 +150,8 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		{
 			foreach ($items as $nr => &$item)
 			{
+				// convert target
+				$item->target = $this->selectionTranslation($item->target, 'target');
 				// convert type
 				$item->type = $this->selectionTranslation($item->type, 'type');
 			}
@@ -150,6 +169,19 @@ class ComponentbuilderModelCustom_codes extends JModelList
 	*/
 	public function selectionTranslation($value,$name)
 	{
+		// Array of target language strings
+		if ($name === 'target')
+		{
+			$targetArray = array(
+				1 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_HASH_AUTOMATION',
+				2 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_JCB_MANUAL'
+			);
+			// Now check if value is found in this array
+			if (isset($targetArray[$value]) && ComponentbuilderHelper::checkString($targetArray[$value]))
+			{
+				return $targetArray[$value];
+			}
+		}
 		// Array of type language strings
 		if ($name === 'type')
 		{
@@ -233,6 +265,11 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		if ($component = $this->getState('filter.component'))
 		{
 			$query->where('a.component = ' . $db->quote($db->escape($component)));
+		}
+		// Filter by Target.
+		if ($target = $this->getState('filter.target'))
+		{
+			$query->where('a.target = ' . $db->quote($db->escape($target)));
 		}
 		// Filter by Type.
 		if ($type = $this->getState('filter.type'))
@@ -320,6 +357,19 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				{
 					array_unshift($items,$headers);
 				}
+
+				if (ComponentbuilderHelper::checkArray($items) && !isset($_export))
+		{
+			foreach ($items as $item) 
+			{
+				if ($item->target == 2)
+				{
+					$item->component_system_name = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
+					$item->path = '/*';
+					$item->type = 2;
+				}
+			}
+		}
 				return $items;
 			}
 		}
@@ -370,6 +420,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.component');
 		$id .= ':' . $this->getState('filter.path');
+		$id .= ':' . $this->getState('filter.target');
 		$id .= ':' . $this->getState('filter.type');
 
 		return parent::getStoreId($id);

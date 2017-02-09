@@ -11,7 +11,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version			2.2.0
+	@version			2.3.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -382,7 +382,7 @@ class Fields extends Structure
 			$readOnly = "";
 			if ($view['settings']->type == 2)
 			{
-				$readOnly = "\t\t\t" . 'readonly="true"' . "\n\t\t\t" . 'disabled="true"';
+				$readOnly = "\t\t\t" . 'readonly="true"' . PHP_EOL."\t\t\t" . 'disabled="true"';
 			}
 			// main lang prefix
 			$langView = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($view['settings']->name_single, 'U');
@@ -601,7 +601,7 @@ class Fields extends Structure
 			// check if metadata is added to this view
 			if (isset($this->metadataBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName]))
 			{
-				$fieldSet[] = "\n\t<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
+				$fieldSet[] = PHP_EOL."\t<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
 				$fieldSet[] = "\t<fields" . ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
 				$fieldSet[] = "\t\t" . '<fieldset name="vdmmetadata"';
 				$fieldSet[] = "\t\t\t" . 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
@@ -634,7 +634,7 @@ class Fields extends Structure
 				$fieldSet[] = "\t</fields>";
 			}
 			// retunr the set
-			return implode("\n", $fieldSet);
+			return implode(PHP_EOL, $fieldSet);
 		}
 		return '';
 	}
@@ -797,14 +797,14 @@ class Fields extends Structure
 		if ($setType === 'option')
 		{
 			// now add to the field set
-			$fieldSet .= "\n\t" . $taber . "\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-			$fieldSet .= "\n\t" . $taber . "\t<field";
+			$fieldSet .= PHP_EOL."\t" . $taber . "\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
+			$fieldSet .= PHP_EOL."\t" . $taber . "\t<field";
 			$optionSet = '';
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$fieldSet .= "\n\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$fieldSet .= PHP_EOL."\t\t" . $taber . "\t" . $property . '="' . $value . '"';
 				}
 				elseif ($property === 'option')
 				{
@@ -823,7 +823,7 @@ class Fields extends Structure
 								// add to lang array
 								$this->langContent[$this->lang][$langValue] = $t;
 								// no add to option set
-								$optionSet .= "\n\t" . $taber . "\t\t" . '<option value="' . $v . '">' . "\n\t" . $taber . "\t\t\t" . $langValue . '</option>';
+								$optionSet .= PHP_EOL."\t" . $taber . "\t\t" . '<option value="' . $v . '">' . PHP_EOL."\t" . $taber . "\t\t\t" . $langValue . '</option>';
 								$optionArray[$v] = $langValue;
 							}
 							else
@@ -833,7 +833,7 @@ class Fields extends Structure
 								// add to lang array
 								$this->langContent[$this->lang][$langValue] = $option;
 								// no add to option set
-								$optionSet .= "\n\t\t" . $taber . "\t" . '<option value="' . $option . '">' . "\n\t\t" . $taber . "\t\t" . $langValue . '</option>';
+								$optionSet .= PHP_EOL."\t\t" . $taber . "\t" . '<option value="' . $option . '">' . PHP_EOL."\t\t" . $taber . "\t\t" . $langValue . '</option>';
 								$optionArray[$option] = $langValue;
 							}
 						}
@@ -849,7 +849,7 @@ class Fields extends Structure
 							// add to lang array
 							$this->langContent[$this->lang][$langValue] = $t;
 							// no add to option set
-							$optionSet .= "\n\t\t" . $taber . "\t" . '<option value="' . $v . '">' . "\n\t\t" . $taber . "\t\t" . $langValue . '</option>';
+							$optionSet .= PHP_EOL."\t\t" . $taber . "\t" . '<option value="' . $v . '">' . PHP_EOL."\t\t" . $taber . "\t\t" . $langValue . '</option>';
 							$optionArray[$v] = $langValue;
 						}
 						else
@@ -859,7 +859,7 @@ class Fields extends Structure
 							// add to lang array
 							$this->langContent[$this->lang][$langValue] = $value;
 							// no add to option set
-							$optionSet .= "\n\t\t" . $taber . "\t" . '<option value="' . $value . '">' . "\n\t\t" . $taber . "\t\t" . $langValue . '</option>';
+							$optionSet .= PHP_EOL."\t\t" . $taber . "\t" . '<option value="' . $value . '">' . PHP_EOL."\t\t" . $taber . "\t\t" . $langValue . '</option>';
 							$optionArray[$value] = $langValue;
 						}
 					}
@@ -868,41 +868,41 @@ class Fields extends Structure
 			if (ComponentbuilderHelper::checkString($optionSet))
 			{
 				$fieldSet .= '>';
-				$fieldSet .= "\n\t\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " Option Set. -->";
+				$fieldSet .= PHP_EOL."\t\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " Option Set. -->";
 				$fieldSet .= $optionSet;
-				$fieldSet .= "\n\t\t" . $taber . "</field>";
+				$fieldSet .= PHP_EOL."\t\t" . $taber . "</field>";
 			}
 			elseif ($typeName === 'sql')
 			{
 				$optionArray = false;
-				$fieldSet .= "\n\t\t" . $taber . "/>";
+				$fieldSet .= PHP_EOL."\t\t" . $taber . "/>";
 			}
 			else
 			{
 				$optionArray = false;
-				$fieldSet .= "\n\t\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->";
-				$fieldSet .= "\n\t\t" . $taber . "/>";
+				$fieldSet .= PHP_EOL."\t\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->";
+				$fieldSet .= PHP_EOL."\t\t" . $taber . "/>";
 			}
 		}
 		elseif ($setType === 'plain')
 		{
 			// now add to the field set
-			$fieldSet .= "\n\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-			$fieldSet .= "\n\t\t" . $taber . "<field";
+			$fieldSet .= PHP_EOL."\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
+			$fieldSet .= PHP_EOL."\t\t" . $taber . "<field";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$fieldSet .= "\n\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$fieldSet .= PHP_EOL."\t\t" . $taber . "\t" . $property . '="' . $value . '"';
 				}
 			}
-			$fieldSet .= "\n\t\t" . $taber . "/>";
+			$fieldSet .= PHP_EOL."\t\t" . $taber . "/>";
 		}
 		elseif ($setType === 'spacer')
 		{
 			// now add to the field set
-			$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". A None Database Field. (joomla) -->";
-			$fieldSet .= "\n\t\t<field";
+			$fieldSet .= PHP_EOL."\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". A None Database Field. (joomla) -->";
+			$fieldSet .= PHP_EOL."\t\t<field";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
@@ -918,19 +918,19 @@ class Fields extends Structure
 			if ($typeName === 'repeatable')
 			{
 				// now add to the field set
-				$fieldSet .= "\n\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-				$fieldSet .= "\n\t\t<field";
+				$fieldSet .= PHP_EOL."\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
+				$fieldSet .= PHP_EOL."\t\t<field";
 				$fieldsSet = array();
 				foreach ($fieldAttributes as $property => $value)
 				{
 					if ($property != 'fields')
 					{
-						$fieldSet .= "\n\t\t\t" . $property . '="' . $value . '"';
+						$fieldSet .= PHP_EOL."\t\t\t" . $property . '="' . $value . '"';
 					}
 				}
 				$fieldSet .= ">";
-				$fieldSet .= "\n\t\t\t" . '<fields name="' . $fieldAttributes['name'] . '_fields" label="">';
-				$fieldSet .= "\n\t\t\t\t" . '<fieldset hidden="true" name="' . $fieldAttributes['name'] . '_modal" repeat="true">';
+				$fieldSet .= PHP_EOL."\t\t\t" . '<fields name="' . $fieldAttributes['name'] . '_fields" label="">';
+				$fieldSet .= PHP_EOL."\t\t\t\t" . '<fieldset hidden="true" name="' . $fieldAttributes['name'] . '_modal" repeat="true">';
 				if (strpos($fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
@@ -999,24 +999,24 @@ class Fields extends Structure
 						}
 					}
 				}
-				$fieldSet .= "\n\t\t\t\t</fieldset>";
-				$fieldSet .= "\n\t\t\t</fields>";
-				$fieldSet .= "\n\t\t</field>";
+				$fieldSet .= PHP_EOL."\t\t\t\t</fieldset>";
+				$fieldSet .= PHP_EOL."\t\t\t</fields>";
+				$fieldSet .= PHP_EOL."\t\t</field>";
 			}
 		}
 		elseif ($setType === 'custom')
 		{
 			// now add to the field set
-			$fieldSet .= "\n\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (custom) -->";
-			$fieldSet .= "\n\t\t" . $taber . "<field";
+			$fieldSet .= PHP_EOL."\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (custom) -->";
+			$fieldSet .= PHP_EOL."\t\t" . $taber . "<field";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$fieldSet .= "\n\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$fieldSet .= PHP_EOL."\t\t" . $taber . "\t" . $property . '="' . $value . '"';
 				}
 			}
-			$fieldSet .= "\n\t\t" . $taber . "/>";
+			$fieldSet .= PHP_EOL."\t\t" . $taber . "/>";
 			// incase the field is in the config and has not been set
 			if ('config' === $viewName && 'configs' === $listViewName)
 			{
@@ -1791,7 +1791,7 @@ class Fields extends Structure
 			// set tab and break replacements
 			$tabBreak = array(
 				'\t' => "\t",
-				'\n' => "\n"
+				'\n' => PHP_EOL
 			);
 			// make field dynamic
 			$replace = array(
@@ -1822,7 +1822,7 @@ class Fields extends Structure
 						}
 						else
 						{
-							$phpCode .= "\n\t\t".str_replace(array_keys($tabBreak),array_values($tabBreak),$code);
+							$phpCode .= PHP_EOL."\t\t".str_replace(array_keys($tabBreak),array_values($tabBreak),$code);
 						}
 					}
 				}
@@ -1855,7 +1855,7 @@ class Fields extends Structure
 							}
 							else
 							{
-								$phpxCode .= "\n\t\t".str_replace(array_keys($tabBreak),array_values($tabBreak),$code);
+								$phpxCode .= PHP_EOL."\t\t".str_replace(array_keys($tabBreak),array_values($tabBreak),$code);
 							}
 						}
 					}

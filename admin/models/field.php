@@ -141,7 +141,7 @@ class ComponentbuilderModelField extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVzslinked_admin_views()
+	public function getVzvlinked_admin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -260,42 +260,17 @@ class ComponentbuilderModelField extends JModelAdmin
 		{
 			$id = $jinput->get('id', 0, 'INT');
 		}
-		// Determine correct permissions to check.
-		if ($this->getState('field.id'))
-		{
-			$id = $this->getState('field.id');
-
-			$catid = 0;
-			if (isset($this->getItem($id)->catid))
-			{
-				// set catagory id
-				$catid = $this->getItem($id)->catid;
-
-				// Existing record. Can only edit in selected categories.
-				$form->setFieldAttribute('catid', 'action', 'core.edit');
-
-				// Existing record. Can only edit own items in selected categories.
-				$form->setFieldAttribute('catid', 'action', 'core.edit.own');
-			}
-		}
-		else
-		{
-			// New record. Can only create in selected categories.
-			$form->setFieldAttribute('catid', 'action', 'core.create');
-		}
 
 		$user = JFactory::getUser();
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
 		if ($id != 0 && (!$user->authorise('field.edit.state', 'com_componentbuilder.field.' . (int) $id))
-			|| (isset($catid) && $catid != 0 && !$user->authorise('core.edit.state', 'com_componentbuilder.fields.category.' . (int) $catid))
 			|| ($id == 0 && !$user->authorise('field.edit.state', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
 			$form->setFieldAttribute('published', 'disabled', 'true');
-
 			// Disable fields while saving.
 			$form->setFieldAttribute('ordering', 'filter', 'unset');
 			$form->setFieldAttribute('published', 'filter', 'unset');
@@ -370,14 +345,8 @@ class ComponentbuilderModelField extends JModelAdmin
 			}
 
 			$user = JFactory::getUser();
-			$allow = $user->authorise('core.delete', 'com_componentbuilder.fields.category.' . (int) $record->catid);
-
-			if ($allow)
-			{
-				// The record has been set. Check the record permissions.
-				return $user->authorise('field.delete', 'com_componentbuilder.field.' . (int) $record->id);
-			}
-			return $allow;
+			// The record has been set. Check the record permissions.
+			return $user->authorise('field.delete', 'com_componentbuilder.field.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -401,15 +370,6 @@ class ComponentbuilderModelField extends JModelAdmin
 			// The record has been set. Check the record permissions.
 			$permission = $user->authorise('field.edit.state', 'com_componentbuilder.field.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
-			{
-				return false;
-			}
-		}
-		// Check against the category.
-		if (!empty($record->catid))
-		{
-			$catpermission = $user->authorise('core.edit.state', 'com_componentbuilder.fields.category.' . (int) $record->catid);
-			if (!$catpermission && !is_null($catpermission))
 			{
 				return false;
 			}

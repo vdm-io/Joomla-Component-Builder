@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version			2.2.0
+	@version			2.3.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -46,6 +46,7 @@ class Compiler extends Infusion
 	protected $dynamicIntegration	= false;
 	protected $backupPath		= false;
 	protected $gitPath		= false;
+	protected $addCustomCodeAt	= array();
 
 	/**
 	 * Constructor
@@ -101,6 +102,13 @@ class Compiler extends Infusion
 			}
 			// check if we have custom code to add
 			$this->getCustomCode();
+			// now add the other custom code by placeholder
+			if (ComponentbuilderHelper::checkArray($this->addCustomCodeAt))
+			{
+				// load error messages incase code can not be added
+				$app = JFactory::getApplication();
+				$this->addCustomCodeViaPlaceholders($app);
+			}
 			// now insert into the new files
 			if (ComponentbuilderHelper::checkArray($this->customCode))
 			{
@@ -166,12 +174,16 @@ class Compiler extends Infusion
 					{
 						list($wast,$code) = explode('###BOM###',$string);
 						$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$php.$bom.$code);
+						// add custom Code by placeholder if found
+						$this->getPlaceHolderKeys($static['path'], $answer);
 						// add to zip array
 						$this->writeFile($static['path'],$answer);
 					}
 					else
 					{
 						$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$string);
+						// add custom Code by placeholder if found
+						$this->getPlaceHolderKeys($static['path'], $answer);
 						// add to zip array
 						$this->writeFile($static['path'],$answer);
 					}
@@ -203,6 +215,8 @@ class Compiler extends Infusion
 									list($bin,$code) = explode('###BOM###',$string);
 									$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$php.$bom.$code);
 									$answer = str_replace(array_keys($this->fileContentDynamic[$view]),array_values($this->fileContentDynamic[$view]),$answer);
+									// add custom Code by placeholder if found
+									$this->getPlaceHolderKeys($file['path'], $answer, $view);
 									// add to zip array
 									$this->writeFile($file['path'],$answer);
 								}
@@ -210,6 +224,8 @@ class Compiler extends Infusion
 								{
 									$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$string);
 									$answer = str_replace(array_keys($this->fileContentDynamic[$view]),array_values($this->fileContentDynamic[$view]),$answer);
+									// add custom Code by placeholder if found
+									$this->getPlaceHolderKeys($file['path'], $answer, $view);
 									// add to zip array
 									$this->writeFile($file['path'],$answer);
 								}
@@ -240,6 +256,29 @@ class Compiler extends Infusion
 			return true;
 		}
 		return false;
+	}
+
+	protected function getPlaceHolderKeys(&$file, &$content, &$view = '')
+	{
+		// check if line has custom code place holder
+		if (strpos($content, '[CUSTO'.'MCODE=') !== false)
+		{
+			if (!isset($this->addCustomCodeAt[$file]))
+			{
+				$this->addCustomCodeAt[$file] = array();
+				$this->addCustomCodeAt[$file]['ids'] = array();
+				$this->addCustomCodeAt[$file]['replace'] = array();
+				$this->addCustomCodeAt[$file]['view'] = $view;
+			}
+			$found = ComponentbuilderHelper::getAllBetween($content, '[CUSTO'.'MCODE=', ']');
+			if (ComponentbuilderHelper::checkArray($found))
+			{
+				foreach ($found as $id)
+				{
+					$this->addCustomCodeAt[$file]['ids'][$id] = $id;
+				}
+			}
+		}
 	}
 	
 	protected function freeMemory()
@@ -591,6 +630,63 @@ class Compiler extends Infusion
 		return false;
 	}
 	
+	protected function addCustomCodeViaPlaceholders($app)
+	{
+		// reset all these
+		unset($this->placeholders['###view###']);
+		unset($this->placeholders['###VIEW###']);
+		unset($this->placeholders['###View###']);
+		unset($this->placeholders['[[[view]]]']);
+		unset($this->placeholders['[[[VIEW]]]']);
+		unset($this->placeholders['[[[View]]]']);
+		unset($this->placeholders['###views###']);
+		unset($this->placeholders['###VIEWS###']);
+		unset($this->placeholders['###Views###']);
+		unset($this->placeholders['[[[views]]]']);
+		unset($this->placeholders['[[[VIEWS]]]']);
+		unset($this->placeholders['[[[Views]]]']);
+		unset($this->placeholders['###SView###']);
+		unset($this->placeholders['###sview###']);
+		unset($this->placeholders['###SVIEW###']);
+		unset($this->placeholders['[[[SView]]]']);
+		unset($this->placeholders['[[[sview]]]']);
+		unset($this->placeholders['[[[SVIEW]]]']);
+		unset($this->placeholders['###SViews###']);
+		unset($this->placeholders['###sviews###']);
+		unset($this->placeholders['###SVIEWS###']);
+		unset($this->placeholders['[[[SViews]]]']);
+		unset($this->placeholders['[[[sviews]]]']);
+		unset($this->placeholders['[[[SVIEWS]]]']);
+		foreach ($this->addCustomCodeAt as $path => $item)
+		{
+			if (ComponentbuilderHelper::checkString($item['view']))
+			{
+				$this->placeholders['[[[view]]]'] = $item['view'];
+			}
+			elseif (isset($this->placeholders['[[[view]]]']))
+			{
+				unset($this->placeholders['[[[view]]]']);
+			}
+			if ($this->getCustomCode($item['ids']))
+			{
+				$code = array();
+				foreach($this->customCode as $item)
+				{
+					$placeholder	= $this->getPlaceHolder(2, $item['id']);
+					$code['[CUSTOM'.'CODE='.$item['id'].']'] = $placeholder['start'] . PHP_EOL . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$item['code']) . $placeholder['end'];
+				}
+				// now update the file
+				$string = JFile::read($path);
+				$answer = str_replace(array_keys($code),array_values($code),$string);
+				$this->writeFile($path,$answer);
+			}
+			else
+			{
+				$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> <br />Since there where no publish code returned from the database.', $path), 'warning');
+			}
+		}
+	}
+	
 	protected function addCustomCode($app)
 	{
 		foreach($this->customCode as $nr => $target)
@@ -687,7 +783,7 @@ class Compiler extends Infusion
 					if ($found)
 					{
 						$placeholder	= $this->getPlaceHolder($target['type'], $target['id']);
-						$data		= $placeholder['start'] . "\n" . $target['code'] . $placeholder['end'];
+						$data		= $placeholder['start'] . PHP_EOL . $target['code'] . $placeholder['end'];
 						if ($target['type'] == 2)
 						{
 							// found it now add code from the next line
@@ -696,20 +792,20 @@ class Compiler extends Infusion
 						elseif ($target['type'] == 1 && $foundEnd)
 						{
 							// found it now add code from the next line
-							$this->addDataToFile($file, $data . "\n", $bites, (int) array_sum($replace));
+							$this->addDataToFile($file, $data . PHP_EOL, $bites, (int) array_sum($replace));
 						}
 						else
 						{
 							// Load escaped code since the target endhash has changed
 							$this->loadEscapedCode($file, $target, $lineBites);
-							$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at line %s. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'warning');
+							$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'warning');
 						}
 					}
 					else
 					{
 						// Load escaped code since the target hash has changed
 						$this->loadEscapedCode($file, $target, $lineBites);
-						$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at line %s. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'warning');
+						$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'warning');
 					}
 				}
 				else
@@ -724,12 +820,12 @@ class Compiler extends Infusion
 	protected function loadEscapedCode($file, $target, $lineBites)
 	{
 		// escape the code
-		$code = explode("\n", $target['code']);
-		$code = "\n// " .implode("\n// ",$code). "\n";
+		$code = explode(PHP_EOL, $target['code']);
+		$code = PHP_EOL."// " .implode(PHP_EOL."// ",$code). PHP_EOL;
 		// get place holders
 		$placeholder	= $this->getPlaceHolder($target['type'], $target['id']);
 		// build the data
-		$data		= $placeholder['start'] . $code . $placeholder['end']. "\n";
+		$data		= $placeholder['start'] . $code . $placeholder['end']. PHP_EOL;
 		// get the bites before insertion
 		$bitBucket	= array();
 		foreach($lineBites as $line => $value)

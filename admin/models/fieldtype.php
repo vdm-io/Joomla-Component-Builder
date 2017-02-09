@@ -111,7 +111,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVztfields()
+	public function getVzwfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -195,13 +195,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVztfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVzwfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVztfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVzwfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVztfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVzwfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVztfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVzwfields($item->store, 'store');
 				}
 			}
 
@@ -215,7 +215,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVztfields($value,$name)
+	public function selectionTranslationVzwfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
@@ -320,42 +320,17 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		{
 			$id = $jinput->get('id', 0, 'INT');
 		}
-		// Determine correct permissions to check.
-		if ($this->getState('fieldtype.id'))
-		{
-			$id = $this->getState('fieldtype.id');
-
-			$catid = 0;
-			if (isset($this->getItem($id)->catid))
-			{
-				// set catagory id
-				$catid = $this->getItem($id)->catid;
-
-				// Existing record. Can only edit in selected categories.
-				$form->setFieldAttribute('catid', 'action', 'core.edit');
-
-				// Existing record. Can only edit own items in selected categories.
-				$form->setFieldAttribute('catid', 'action', 'core.edit.own');
-			}
-		}
-		else
-		{
-			// New record. Can only create in selected categories.
-			$form->setFieldAttribute('catid', 'action', 'core.create');
-		}
 
 		$user = JFactory::getUser();
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
 		if ($id != 0 && (!$user->authorise('fieldtype.edit.state', 'com_componentbuilder.fieldtype.' . (int) $id))
-			|| (isset($catid) && $catid != 0 && !$user->authorise('core.edit.state', 'com_componentbuilder.fieldtypes.category.' . (int) $catid))
 			|| ($id == 0 && !$user->authorise('fieldtype.edit.state', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
 			$form->setFieldAttribute('published', 'disabled', 'true');
-
 			// Disable fields while saving.
 			$form->setFieldAttribute('ordering', 'filter', 'unset');
 			$form->setFieldAttribute('published', 'filter', 'unset');
@@ -430,14 +405,8 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			}
 
 			$user = JFactory::getUser();
-			$allow = $user->authorise('core.delete', 'com_componentbuilder.fieldtypes.category.' . (int) $record->catid);
-
-			if ($allow)
-			{
-				// The record has been set. Check the record permissions.
-				return $user->authorise('fieldtype.delete', 'com_componentbuilder.fieldtype.' . (int) $record->id);
-			}
-			return $allow;
+			// The record has been set. Check the record permissions.
+			return $user->authorise('fieldtype.delete', 'com_componentbuilder.fieldtype.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -461,15 +430,6 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			// The record has been set. Check the record permissions.
 			$permission = $user->authorise('fieldtype.edit.state', 'com_componentbuilder.fieldtype.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
-			{
-				return false;
-			}
-		}
-		// Check against the category.
-		if (!empty($record->catid))
-		{
-			$catpermission = $user->authorise('core.edit.state', 'com_componentbuilder.fieldtypes.category.' . (int) $record->catid);
-			if (!$catpermission && !is_null($catpermission))
 			{
 				return false;
 			}

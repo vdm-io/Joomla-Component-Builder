@@ -139,11 +139,11 @@ class ###Component###Router extends JComponentRouterBase
 		return $vars;
 	} 
 
-	protected function getVar($table, $where = null, $whereString = 'user', $what = 'id', $category = false, $operator = '=', $main = '###component###')
+	protected function getVar($table, $where = null, $whereString = null, $what = null, $category = false, $operator = '=', $main = '###component###')
 	{
-		if(!$where)
+		if(!$where || !$what || !$whereString)
 		{
-			$where = JFactory::getUser()->id;
+			return false;
 		}
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -153,19 +153,42 @@ class ###Component###Router extends JComponentRouterBase
 		$query->select($db->quoteName(array($what)));
 		if ('categories' == $table || 'category' == $table || $category)
 		{
-			$query->from($db->quoteName('#__categories'));
+			$getTable = '#__categories';
+			$query->from($db->quoteName($getTable));
 		}
 		else
 		{
-			$query->from($db->quoteName('#__'.$main.'_'.$table));
+			// we must check if the table exist (TODO not ideal)
+			$tables = $db->getTableList();
+			$app = JFactory::getApplication();
+			$prefix = $app->get('dbprefix');
+			$check = $prefix.$main.'_'.$table;
+			if (in_array($check, $tables))
+			{
+				$getTable = '#__'.$main.'_'.$table;
+				$query->from($db->quoteName($getTable));
+			}
+			else
+			{
+				return false;
+			}
 		}
 		if (is_numeric($where))
 		{
-			$query->where($db->quoteName($whereString) . ' '.$operator.' '.(int) $where);
+			return false;
 		}
-		elseif (is_string($where))
+		elseif ($this->checkString($where))
 		{
-			$query->where($db->quoteName($whereString) . ' '.$operator.' '. $db->quote((string)$where));
+			// we must first check if this table has the column
+			$columns = $db->getTableColumns($getTable);
+			if (isset($columns[$whereString]))
+			{
+				$query->where($db->quoteName($whereString) . ' '.$operator.' '. $db->quote((string)$where));
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
@@ -176,6 +199,15 @@ class ###Component###Router extends JComponentRouterBase
 		if ($db->getNumRows())
 		{
 			return $db->loadResult();
+		}
+		return false;
+	}
+	
+	protected function checkString($string)
+	{
+		if (isset($string) && is_string($string) && strlen($string) > 0)
+		{
+			return true;
 		}
 		return false;
 	}

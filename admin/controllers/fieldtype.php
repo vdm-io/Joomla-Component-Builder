@@ -60,33 +60,14 @@ class ComponentbuilderControllerFieldtype extends JControllerForm
 	 */
 	protected function allowAdd($data = array())
 	{
-		// get the user object
-		$user = JFactory::getUser();
-
 		// Access check.
-		$access = $user->authorise('fieldtype.access', 'com_componentbuilder');
+		$access = JFactory::getUser()->authorise('fieldtype.access', 'com_componentbuilder');
 		if (!$access)
 		{
 			return false;
 		}
-		$categoryId = JArrayHelper::getValue($data, 'catid', $this->input->getInt('filter_category_id'), 'int');
-		$allow = null;
-
-		if ($categoryId)
-		{
-			// If the category has been passed in the URL check it.
-			$allow = $user->authorise('core.create', $this->option . '.fieldtypes.category.' . $categoryId);
-		}
-
-		if ($allow === null)
-		{
-			// In the absense of better information, revert to the component permissions.
-			return $user->authorise('fieldtype.create', $this->option);
-		}
-		else
-		{
-			return $allow;
-		}
+		// In the absense of better information, revert to the component permissions.
+		return JFactory::getUser()->authorise('fieldtype.create', $this->option);
 	}
 
 	/**
@@ -145,18 +126,6 @@ class ComponentbuilderControllerFieldtype extends JControllerForm
 					}
 				}
 				return false;
-			}
-
-			$categoryId = (int) isset($data['catid']) ? $data['catid']: $this->getModel()->getItem($recordId)->catid;
-
-			if ($categoryId)
-			{
-				// The category has been set. Check the category permissions.
-				$catpermission = $user->authorise('core.edit', $this->option . '.fieldtypes.category.' . $categoryId);
-				if (!$catpermission && !is_null($catpermission))
-				{
-					return false;
-				}
 			}
 		}
 		// Since there is no permission, revert to the component permissions.

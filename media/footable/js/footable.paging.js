@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.6
+* @version 3.1.4
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -84,16 +84,19 @@
 			this.size = table.o.paging.size;
 			/**
 			 * The maximum number of page links to display at once.
+			 * @instance
 			 * @type {number}
 			 */
 			this.limit = table.o.paging.limit;
 			/**
 			 * The position of the pagination control within the paging rows cell.
+			 * @instance
 			 * @type {string}
 			 */
 			this.position = table.o.paging.position;
 			/**
 			 * The format string used to generate the text displayed under the pagination control.
+			 * @instance
 			 * @type {string}
 			 */
 			this.countFormat = table.o.paging.countFormat;
@@ -103,6 +106,24 @@
 			 * @type {number}
 			 */
 			this.total = -1;
+			/**
+			 * The number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * @instance
+			 * @type {number}
+			 */
+			this.totalRows = 0;
+			/**
+			 * A number indicating the previous page displayed.
+			 * @instance
+			 * @type {number}
+			 */
+			this.previous = -1;
+			/**
+			 * The count string generated using the {@link FooTable.Filtering#countFormat} option. This value is only set after the first call to the {@link FooTable.Filtering#predraw} method.
+			 * @instance
+			 * @type {string}
+			 */
+			this.formattedCount = null;
 			/**
 			 * The jQuery row object that contains all the paging specific elements.
 			 * @instance
@@ -117,29 +138,31 @@
 			this.$cell = null;
 			/**
 			 * The jQuery object that contains the links for the pagination control.
+			 * @instance
 			 * @type {jQuery}
 			 */
 			this.$pagination = null;
 			/**
 			 * The jQuery object that contains the row count.
+			 * @instance
 			 * @type {jQuery}
 			 */
 			this.$count = null;
+			/**
+			 * Whether or not the pagination row is detached from the table.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.detached = true;
 
 			/* PRIVATE */
 			/**
-			 * A number indicating the previous page displayed.
-			 * @private
-			 * @type {number}
-			 */
-			this._previous = 1;
-
-			/**
-			 * Used to hold the number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * Used to hold the number of page links created.
+			 * @instance
 			 * @type {number}
 			 * @private
 			 */
-			this._total = 0;
+			this._createdLinks = 0;
 		},
 
 		/* PROTECTED */
@@ -196,8 +219,7 @@
 					? data.pagingCountFormat
 					: self.countFormat;
 
-				self.total = Math.ceil(self.ft.rows.array.length / self.size);
-				self._total = self.total;
+				self.total = Math.ceil(self.ft.rows.all.length / self.size);
 			}, function(){
 				self.enabled = false;
 			});
@@ -241,6 +263,8 @@
 			this.ft.raise('destroy.ft.paging').then(function(){
 				self.ft.$el.removeClass('footable-paging')
 					.find('tfoot > tr.footable-paging').remove();
+				self.detached = true;
+				self._createdLinks = 0;
 			});
 		},
 		/**
@@ -251,9 +275,11 @@
 		predraw: function(){
 			this.total = Math.ceil(this.ft.rows.array.length / this.size);
 			this.current = this.current > this.total ? this.total : (this.current < 1 ? 1 : this.current);
-			this._total = this.ft.rows.array.length;
-			if (this.ft.rows.array.length > this.size)
+			this.totalRows = this.ft.rows.array.length;
+			if (this.totalRows > this.size){
 				this.ft.rows.array = this.ft.rows.array.splice((this.current - 1) * this.size, this.size);
+			}
+			this.formattedCount = this.format(this.countFormat);
 		},
 		/**
 		 * Updates the paging UI setting the state of the pagination control.
@@ -261,9 +287,27 @@
 		 * @protected
 		 */
 		draw: function(){
-			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
-			this._setVisible(this.current, this.current > this._previous);
-			this._setNavigation(true);
+			if (this.total <= 1){
+				if (!this.detached){
+					this.$row.detach();
+					this.detached = true;
+				}
+			} else {
+				if (this.detached){
+					var $tfoot = this.ft.$el.children('tfoot');
+					if ($tfoot.length == 0){
+						$tfoot = $('<tfoot/>');
+						this.ft.$el.append($tfoot);
+					}
+					this.$row.appendTo($tfoot);
+					this.detached = false;
+				}
+				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+				this._createLinks();
+				this._setVisible(this.current, this.current > this.previous);
+				this._setNavigation(true);
+				this.$count.text(this.formattedCount);
+			}
 		},
 		/**
 		 * Creates the paging UI from the current options setting the various jQuery properties of this component.
@@ -271,62 +315,54 @@
 		 * @protected
 		 */
 		$create: function(){
-			var self = this,
-				multiple = self.total > 1,
-				link = function(attr, html, klass){
-					return $('<li/>', {
-						'class': klass
-					}).attr('data-page', attr)
-						.append($('<a/>', {
-							'class': 'footable-page-link',
-							href: '#'
-						}).data('page', attr).html(html));
-				},
-				position;
-
-			if (!multiple) return;
-
-			switch (self.position){
+			this._createdLinks = 0;
+			var position = 'footable-paging-center';
+			switch (this.position){
 				case 'left': position = 'footable-paging-left'; break;
 				case 'right': position = 'footable-paging-right'; break;
-				default: position = 'footable-paging-center'; break;
 			}
-			self.ft.$el.addClass('footable-paging').addClass(position);
-			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan);
-			var $tfoot = self.ft.$el.children('tfoot');
+			this.ft.$el.addClass('footable-paging').addClass(position);
+			this.$cell = $('<td/>').attr('colspan', this.ft.columns.visibleColspan);
+			var $tfoot = this.ft.$el.children('tfoot');
 			if ($tfoot.length == 0){
 				$tfoot = $('<tfoot/>');
-				self.ft.$el.append($tfoot);
+				this.ft.$el.append($tfoot);
 			}
-			self.$row = $('<tr/>', { 'class': 'footable-paging' }).append(self.$cell).appendTo($tfoot);
-			self.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: self }, self._onPageClicked);
-			self.$count = $('<span/>', { 'class': 'label label-default' });
-
-			self.$pagination.empty();
-			if (multiple) {
-				self.$pagination.append(link('first', self.strings.first, 'footable-page-nav'));
-				self.$pagination.append(link('prev', self.strings.prev, 'footable-page-nav'));
-				if (self.limit > 0 && self.limit < self.total){
-					self.$pagination.append(link('prev-limit', self.strings.prevPages, 'footable-page-nav'));
-				}
-			}
-			for (var i = 0, $li; i < self.total; i++){
-				$li = link(i + 1, i + 1, 'footable-page');
-				self.$pagination.append($li);
-			}
-			if (multiple){
-				if (self.limit > 0 && self.limit < self.total){
-					self.$pagination.append(link('next-limit', self.strings.nextPages, 'footable-page-nav'));
-				}
-				self.$pagination.append(link('next', self.strings.next, 'footable-page-nav'));
-				self.$pagination.append(link('last', self.strings.last, 'footable-page-nav'));
-			}
-
-			self.$cell.append(self.$pagination, $('<div/>', {'class': 'divider'}), self.$count);
-			self._total = self.total;
+			this.$row = $('<tr/>', { 'class': 'footable-paging' }).append(this.$cell).appendTo($tfoot);
+			this.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: this }, this._onPageClicked);
+			this.$count = $('<span/>', { 'class': 'label label-default' });
+			this.$cell.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
+			this.detached = false;
 		},
 
 		/* PUBLIC */
+		/**
+		 * @summary Uses the supplied format string and replaces the placeholder strings with the current values.
+		 * @description This method is used to generate the short description label for the pagination control. i.e. Showing X of Y records. The placeholders for this string are the following:
+		 * * {CP} - The current page number.
+		 * * {TP} - The total number of pages.
+		 * * {PF} - The first row of the current page.
+		 * * {PL} - The last row of the current page.
+		 * * {TR} - The total rows available.
+		 * These placeholders can be supplied in a string like; "Showing {PF} to {PL} of {TR} rows."
+		 * @param {string} formatString - The string to be formatted with the paging specific variables.
+		 * @returns {string}
+		 */
+		format: function(formatString){
+			var firstRow = (this.size * (this.current - 1)) + 1,
+				lastRow = this.size * this.current;
+			if (this.ft.rows.array.length == 0){
+				firstRow = 0;
+				lastRow = 0;
+			} else {
+				lastRow = lastRow > this.totalRows ? this.totalRows : lastRow;
+			}
+			return formatString.replace(/\{CP}/g, this.current)
+				.replace(/\{TP}/g, this.total)
+				.replace(/\{PF}/g, firstRow)
+				.replace(/\{PL}/g, lastRow)
+				.replace(/\{TR}/g, this.totalRows);
+		},
 		/**
 		 * Pages to the first page.
 		 * @instance
@@ -437,7 +473,7 @@
 				pager.page = pager.page > pager.total ? pager.total	: pager.page;
 				pager.page = pager.page < 1 ? 1 : pager.page;
 				if (self.current == page) return $.when();
-				self._previous = self.current;
+				self.previous = self.current;
 				self.current = pager.page;
 				return self.ft.draw().then(function(){
 					/**
@@ -450,6 +486,46 @@
 					self.ft.raise('after.ft.paging', [pager]);
 				});
 			});
+		},
+		/**
+		 * Creates the pagination links using the current state of the plugin. If the total number of pages is the same as
+		 * the last time this function was executed it does nothing.
+		 * @instance
+		 * @private
+		 */
+		_createLinks: function(){
+			if (this._createdLinks === this.total) return;
+			var self = this,
+				multiple = self.total > 1,
+				link = function(attr, html, klass){
+					return $('<li/>', {
+						'class': klass
+					}).attr('data-page', attr)
+						.append($('<a/>', {
+							'class': 'footable-page-link',
+							href: '#'
+						}).data('page', attr).html(html));
+				};
+			self.$pagination.empty();
+			if (multiple) {
+				self.$pagination.append(link('first', self.strings.first, 'footable-page-nav'));
+				self.$pagination.append(link('prev', self.strings.prev, 'footable-page-nav'));
+				if (self.limit > 0 && self.limit < self.total){
+					self.$pagination.append(link('prev-limit', self.strings.prevPages, 'footable-page-nav'));
+				}
+			}
+			for (var i = 0, $li; i < self.total; i++){
+				$li = link(i + 1, i + 1, 'footable-page');
+				self.$pagination.append($li);
+			}
+			if (multiple){
+				if (self.limit > 0 && self.limit < self.total){
+					self.$pagination.append(link('next-limit', self.strings.nextPages, 'footable-page-nav'));
+				}
+				self.$pagination.append(link('next', self.strings.next, 'footable-page-nav'));
+				self.$pagination.append(link('last', self.strings.last, 'footable-page-nav'));
+			}
+			self._createdLinks = self.total;
 		},
 		/**
 		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the current page link.
@@ -483,9 +559,9 @@
 			}
 
 			if (this.limit > 0 && this.total < this.limit){
-				this.$pagination.children('li[data-page="prev-limit"],li[data-page="next-limit"]').hide();
+				this.$pagination.children('li[data-page="prev-limit"],li[data-page="next-limit"]').css('display', 'none');
 			} else {
-				this.$pagination.children('li[data-page="prev-limit"],li[data-page="next-limit"]').show();
+				this.$pagination.children('li[data-page="prev-limit"],li[data-page="next-limit"]').css('display', '');
 			}
 
 			if (active){
@@ -523,31 +599,6 @@
 			} else {
 				this.$pagination.children('li.footable-page').removeClass('visible').slice(0, this.total).addClass('visible');
 			}
-			var first = (this.size * (page - 1)) + 1,
-				last = this.size * page;
-			if (this.ft.rows.array.length == 0){
-				first = 0;
-				last = 0;
-			} else {
-				last = last > this._total ? this._total : last;
-			}
-			this._setCount(page, this.total, first, last, this._total);
-		},
-		/**
-		 * Uses the countFormat option to generate the text using the supplied parameters.
-		 * @param {number} currentPage - The current page.
-		 * @param {number} totalPages - The total number of pages.
-		 * @param {number} pageFirst - The first row number of the current page.
-		 * @param {number} pageLast - The last row number of the current page.
-		 * @param {number} totalRows - The total number of rows.
-		 * @private
-		 */
-		_setCount: function(currentPage, totalPages, pageFirst, pageLast, totalRows){
-			this.$count.text(this.countFormat.replace(/\{CP}/g, currentPage)
-				.replace(/\{TP}/g, totalPages)
-				.replace(/\{PF}/g, pageFirst)
-				.replace(/\{PL}/g, pageLast)
-				.replace(/\{TR}/g, totalRows));
 		},
 		/**
 		 * Handles the click event for all links in the pagination control.
@@ -579,7 +630,7 @@
 		}
 	});
 
-	F.components.core.register('paging', F.Paging, 0);
+	F.components.register('paging', F.Paging, 400);
 
 })(jQuery, FooTable);
 (function(F){

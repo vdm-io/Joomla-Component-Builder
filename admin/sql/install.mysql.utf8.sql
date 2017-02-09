@@ -525,7 +525,9 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	`from_line` VARCHAR(100) NOT NULL DEFAULT '',
 	`hashendtarget` VARCHAR(64) NOT NULL DEFAULT '',
 	`hashtarget` VARCHAR(64) NOT NULL DEFAULT '',
+	`not_required` INT(1) NOT NULL DEFAULT '0',
 	`path` TEXT NOT NULL,
+	`target` TINYINT(1) NOT NULL DEFAULT '0',
 	`to_line` VARCHAR(100) NOT NULL DEFAULT '',
 	`type` TINYINT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
@@ -547,9 +549,10 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_component` (`component`),
+	KEY `idx_target` (`target`),
 	KEY `idx_type` (`type`),
-	KEY `idx_from_line` (`from_line`),
-	KEY `idx_to_line` (`to_line`)
+	KEY `idx_to_line` (`to_line`),
+	KEY `idx_from_line` (`from_line`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (

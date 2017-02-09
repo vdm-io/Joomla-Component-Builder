@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version			2.2.0
+	@version			2.3.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -105,7 +105,7 @@ class Interpretation extends Fields
 				// the text for the file ###BAKING###
 				$this->fileContentDynamic['emailer_'.$component]['###BAKING###'] = ''; // <<-- to insure it gets updated
 				// return the code need to load the abstract class
-				return "\nJLoader::register('".$component."Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/".$component."email.php'); ";
+				return PHP_EOL."JLoader::register('".$component."Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/".$component."email.php'); ";
 			}
 		}
 		return '';
@@ -125,7 +125,7 @@ class Interpretation extends Fields
 				$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'site');
 				$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'admin');
 				$this->fileContentStatic['###LICENSE_LOCKED_INT###'] = $this->setInitLincenseLock($_VDM);
-				$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = "\n\n".'defined(\''.$_VDM.'\') or die(JText::_(\'NIE_REG_NIE\'));';
+				$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = PHP_EOL.PHP_EOL.'defined(\''.$_VDM.'\') or die(JText::_(\'NIE_REG_NIE\'));';
 			}
 		}
 		else
@@ -167,7 +167,7 @@ class Interpretation extends Fields
 	
 	public function checkStatmentLicenseLocked($boolMethod, $thIIS = '$this')
 	{
-		$statment[] = "\n\t\tif (!".$thIIS."->".$boolMethod."())";
+		$statment[] = PHP_EOL."\t\tif (!".$thIIS."->".$boolMethod."())";
 		$statment[] = "\t\t{";
 		$statment[] = "\t\t\t\$app = JFactory::getApplication();";
 		$statment[] = "\t\t\t\$app->enqueueMessage(JText::_('NIE_REG_NIE'), 'error');";
@@ -175,16 +175,16 @@ class Interpretation extends Fields
 		$statment[] = "\t\t\treturn false;";
 		$statment[] = "\t\t}";
 		// return the genuine mentod statement
-		return implode("\n", $statment);
+		return implode(PHP_EOL, $statment);
 	}
 	
 	public function setBoolLincenseLock($boolMethod,$globalbool)
 	{
-		$bool[] = "\n\n\t/**";
+		$bool[] = PHP_EOL.PHP_EOL."\t/**";
 		$bool[] = "\t* The private bool.";
 		$bool[] = "\t**/";
 		$bool[] = "\tprivate $".$globalbool.";";
-		$bool[] = "\n\t/**";
+		$bool[] = PHP_EOL."\t/**";
 		$bool[] = "\t* Check if this install has a license.";
 		$bool[] = "\t**/";
 		$bool[] = "\tpublic function ".$boolMethod."()";
@@ -207,12 +207,12 @@ class Interpretation extends Fields
 		$bool[] = "\t\treturn false;";
 		$bool[] = "\t}";
 		// return the genuine mentod statement
-		return implode("\n", $bool);
+		return implode(PHP_EOL, $bool);
 	}
 	
 	public function setHelperLincenseLock($_VDM,$target)
 	{
-		$helper[] = "\n\n\t/**";
+		$helper[] = PHP_EOL.PHP_EOL."\t/**";
 		$helper[] = "\t* Check if this install has a license.";
 		$helper[] = "\t**/";
 		$helper[] = "\tpublic static function isGenuine()";
@@ -230,12 +230,12 @@ class Interpretation extends Fields
 		$helper[] = "\t\treturn false;";
 		$helper[] = "\t}";
 		// return the genuine mentod statement
-		return implode("\n", $helper);
+		return implode(PHP_EOL, $helper);
 	}
 	
 	public function setInitLincenseLock($_VDM)
 	{
-		$init[] = "\nif (!defined('".$_VDM."'))";
+		$init[] = PHP_EOL."if (!defined('".$_VDM."'))";
 		$init[] = "{";
 		$init[] = "\t\$allow = ".$this->fileContentStatic['###Component###']."Helper::isGenuine();";
 		$init[] = "\tif (\$allow)";
@@ -244,7 +244,7 @@ class Interpretation extends Fields
 		$init[] = "\t}";
 		$init[] = "}";
 		// return the initializing statement
-		return implode("\n", $init);
+		return implode(PHP_EOL, $init);
 	}
 	
 	public function setVDMCryption()
@@ -270,7 +270,7 @@ class Interpretation extends Fields
 				$encrypt[] = "/**";
 				$encrypt[] = "* ".$this->setLine(__LINE__)."VDM Class ";
 				$encrypt[] = "**/";
-				$encrypt[] = "\nclass VDM";
+				$encrypt[] = PHP_EOL."class VDM";
 				$encrypt[] = "{";
 				$encrypt[] = "\tpublic \$_key = false;";
 				$encrypt[] = "\tpublic \$_is = false;";
@@ -306,7 +306,7 @@ class Interpretation extends Fields
 				$encrypt[] = "\t\t\$Vc2rayehw4f0 = unserialize(base64_decode('czozNjoibW9kdWxlcy9zZXJ2ZXJzL2xpY2Vuc2luZy92ZXJpZnkucGhwIjs='));";
 				$encrypt[] = "\t\t\$Vlpolphukogz = false;";
 				$encrypt[] = "\t\tif (\$V2uekt2wcgwk) {";
-				$encrypt[] = "\t\t\t\$V2uekt2wcgwk = str_replace(\"".'\n'."\", '', \$V2uekt2wcgwk);";
+				$encrypt[] = "\t\t\t\$V2uekt2wcgwk = str_replace(\"".'".PHP_EOL."'."\", '', \$V2uekt2wcgwk);";
 				$encrypt[] = "\t\t\t\$Vm5cxjdc43g4 = substr(\$V2uekt2wcgwk, 0, strlen(\$V2uekt2wcgwk) - 32);";
 				$encrypt[] = "\t\t\t\$Vbgx0efeu2sy = substr(\$V2uekt2wcgwk, strlen(\$V2uekt2wcgwk) - 32);";
 				$encrypt[] = "\t\t\tif (\$Vbgx0efeu2sy == md5(\$Vm5cxjdc43g4 . \$Viioj50xuqu2['geheim'])) {";
@@ -367,7 +367,7 @@ class Interpretation extends Fields
 				$encrypt[] = "\t\t\t} else {";
 				$encrypt[] = "\t\t\t\t\$Vrpmu4bvnmkp = fsockopen(\$Viioj50xuqu2['kasier'], 80, \$Vc0t5kmpwkwk, \$Va3g41fnofhu, 5);";
 				$encrypt[] = "\t\t\t\tif (\$Vrpmu4bvnmkp) {";
-				$encrypt[] = "\t\t\t\t\t\$Vznkm0a0me1y = \"\r\n\";";
+				$encrypt[] = "\t\t\t\t\t\$Vznkm0a0me1y = \"\r".PHP_EOL."\";";
 				$encrypt[] = "\t\t\t\t\t\$V2sgyscukmgiop = \"POST \".\$Viioj50xuqu2['kasier'] . \$Vc2rayehw4f0 . \" HTTP/1.0\" . \$Vznkm0a0me1y;";
 				$encrypt[] = "\t\t\t\t\t\$V2sgyscukmgiop .= \"Host: \".\$Viioj50xuqu2['kasier'] . \$Vznkm0a0me1y;";
 				$encrypt[] = "\t\t\t\t\t\$V2sgyscukmgiop .= \"Content-type: application/x-www-form-urlencoded\" . \$Vznkm0a0me1y;";
@@ -419,7 +419,7 @@ class Interpretation extends Fields
 				$encrypt[] = "\t\t\t\t\$Vqojefyeohg5ing = md5(\$Vo4tezfgcf3e . \$Viioj50xuqu2['geheim']) . \$Vqojefyeohg5ing;";
 				$encrypt[] = "\t\t\t\t\$Vqojefyeohg5ing = strrev(\$Vqojefyeohg5ing);";
 				$encrypt[] = "\t\t\t\t\$Vqojefyeohg5ing = \$Vqojefyeohg5ing . md5(\$Vqojefyeohg5ing . \$Viioj50xuqu2['geheim']);";
-				$encrypt[] = "\t\t\t\t\$Vqojefyeohg5ing = wordwrap(\$Vqojefyeohg5ing, 80, \"".'\n'."\", true);";
+				$encrypt[] = "\t\t\t\t\$Vqojefyeohg5ing = wordwrap(\$Vqojefyeohg5ing, 80, \"".'".PHP_EOL."'."\", true);";
 				$encrypt[] = "\t\t\t\t\$Vwasqoybpyed['eiegrendel'] = \$Vqojefyeohg5ing;";
 				$encrypt[] = "\t\t\t}";
 				$encrypt[] = "\t\t\t\$Vwasqoybpyed['nuut'] = true;";
@@ -430,7 +430,7 @@ class Interpretation extends Fields
 				$encrypt[] = "}";
 
 				// return the help methods
-				return implode("\n",$encrypt);
+				return implode(PHP_EOL,$encrypt);
 			}
 		}
 		return '';
@@ -450,7 +450,7 @@ class Interpretation extends Fields
 				// the text for the file ###VDM_ENCRYPTION_BODY###
 				$this->fileContentDynamic['encrypt']['###VDM_ENCRYPTION_BODY###'] = $this->setVDMCryption();
 				// ###ENCRYPT_FILE###
-				$this->fileContentStatic['###ENCRYPT_FILE###'] = "\n\t\t\t<filename>vdm.php</filename>";
+				$this->fileContentStatic['###ENCRYPT_FILE###'] = PHP_EOL."\t\t\t<filename>vdm.php</filename>";
 			}
 			// get component name
 			$component	= $this->fileContentStatic['###component###'];
@@ -458,7 +458,7 @@ class Interpretation extends Fields
 			$function = array();
 			if (isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder))
 			{
-				$function[] = "\n\n\tpublic static function getCryptKey(\$type, \$default = null)";
+				$function[] = PHP_EOL.PHP_EOL."\tpublic static function getCryptKey(\$type, \$default = null)";
 				$function[] = "\t{";
 				$function[] = "\t\t//".$this->setLine(__LINE__)." Get the global params";
 				$function[] = "\t\t\$params = JComponentHelper::getParams('com_".$component."', true);";
@@ -469,8 +469,8 @@ class Interpretation extends Fields
 				$function[] = "\t\t\t{";
 				$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." load the file";
 				$function[] = "\t\t\t\tJLoader::import( 'vdm', JPATH_COMPONENT_ADMINISTRATOR);";
-				$function[] = "\n\t\t\t\t\$the = new VDM(\$advanced_key);";
-				$function[] = "\n\t\t\t\treturn \$the->_key;";
+				$function[] = PHP_EOL."\t\t\t\t\$the = new VDM(\$advanced_key);";
+				$function[] = PHP_EOL."\t\t\t\treturn \$the->_key;";
 				$function[] = "\t\t\t}";
 				$function[] = "\t\t}";
 				$function[] = "\t\telseif ('basic' === \$type)";
@@ -486,7 +486,7 @@ class Interpretation extends Fields
 			}
 			elseif (isset($this->advancedEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder))
 			{
-				$function[] = "\n\n\tpublic static function getCryptKey(\$type, \$default = null)";
+				$function[] = PHP_EOL.PHP_EOL."\tpublic static function getCryptKey(\$type, \$default = null)";
 				$function[] = "\t{";
 				$function[] = "\t\tif ('advanced' === \$type)";
 				$function[] = "\t\t{";
@@ -497,8 +497,8 @@ class Interpretation extends Fields
 				$function[] = "\t\t\t{";
 				$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." load the file";
 				$function[] = "\t\t\t\tJLoader::import( 'vdm', JPATH_COMPONENT_ADMINISTRATOR);";
-				$function[] = "\n\t\t\t\t\$the = new VDM(\$advanced_key);";
-				$function[] = "\n\t\t\t\treturn \$the->_key;";
+				$function[] = PHP_EOL."\t\t\t\t\$the = new VDM(\$advanced_key);";
+				$function[] = PHP_EOL."\t\t\t\treturn \$the->_key;";
 				$function[] = "\t\t\t}";
 				$function[] = "\t\t}";
 				$function[] = "\t\treturn false;";
@@ -506,7 +506,7 @@ class Interpretation extends Fields
 			}
 			elseif (isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder))
 			{
-				$function[] = "\n\n\tpublic static function getCryptKey(\$type, \$default = null)";
+				$function[] = PHP_EOL.PHP_EOL."\tpublic static function getCryptKey(\$type, \$default = null)";
 				$function[] = "\t{";
 				$function[] = "\t\tif ('basic' === \$type)";
 				$function[] = "\t\t{";
@@ -522,7 +522,7 @@ class Interpretation extends Fields
 				$function[] = "\t}";
 			}
 			// return the help methods
-			return implode("\n",$function);
+			return implode(PHP_EOL,$function);
 		}
 		return '';
 	}
@@ -592,7 +592,7 @@ class Interpretation extends Fields
 				$name = str_replace('.xml', '', substr($this->componentData->update_server, strrpos($this->componentData->update_server, '/') + 1));
 				$target = array('admin' => $name);
 				$this->buildDynamique($target,'update_server');
-				$this->fileContentDynamic[$name]['###UPDATE_SERVER_XML###'] = implode("\n", $updateXML);
+				$this->fileContentDynamic[$name]['###UPDATE_SERVER_XML###'] = implode(PHP_EOL, $updateXML);
 				
 				// set the Update server file name
 				$this->updateServerFileName = $name;
@@ -603,11 +603,11 @@ class Interpretation extends Fields
 		{
 			// ###UPDATESERVER###
 			$updateServer = array();
-			$updateServer[] = "\n\t<updateservers>";
+			$updateServer[] = PHP_EOL."\t<updateservers>";
 			$updateServer[] = "\t\t".'<server type="extension" enabled="1" element="com_'.$this->fileContentStatic['###component###'].'" name="'.$this->fileContentStatic['###Component_name###'].'">'.$this->componentData->update_server.'</server>';
 			$updateServer[] = "\t</updateservers>";
 			// return the array to string
-			$updateServer = implode("\n", $updateServer);
+			$updateServer = implode(PHP_EOL, $updateServer);
 		}
 		// add update server details to component XML file
 		$this->fileContentStatic['###UPDATESERVER###'] = $updateServer;
@@ -616,7 +616,7 @@ class Interpretation extends Fields
 	public function noHelp()
 	{
 		$help = array();
-		$help[] = "\n\n\t/**";
+		$help[] = PHP_EOL.PHP_EOL."\t/**";
 		$help[] = "\t*	Can be used to build help urls.";
 		$help[] = "\t**/";
 		$help[] = "\tpublic static function getHelpUrl(\$view)";
@@ -624,7 +624,7 @@ class Interpretation extends Fields
 		$help[] = "\t\treturn false;";
 		$help[] = "\t}";
 		// return the no help method
-		return implode("\n",$help);
+		return implode(PHP_EOL,$help);
 	}
 
 	public function checkHelp($viewName_single)
@@ -660,7 +660,7 @@ class Interpretation extends Fields
 			$target = 'site_view';
 		}
 		$help = array();
-		$help[] = "\n\n\t/**";
+		$help[] = PHP_EOL.PHP_EOL."\t/**";
 		$help[] = "\t*	Load the Component Help URLs.";
 		$help[] = "\t**/";
 		$help[] = "\tpublic static function getHelpUrl(\$view)";
@@ -714,14 +714,14 @@ class Interpretation extends Fields
 		$help[] = "\t\t}";
 		$help[] = "\t\treturn false;";
 		$help[] = "\t}";
-		$help[] = "\n\t/**";
+		$help[] = PHP_EOL."\t/**";
 		$help[] = "\t*	Get the Article Link.";
 		$help[] = "\t**/";
 		$help[] = "\tprotected static function loadArticleLink(\$id)";
 		$help[] = "\t{";
 		$help[] = "\t\treturn JURI::root().'index.php?option=com_content&view=article&id='.\$id.'&tmpl=component&layout=modal';";
 		$help[] = "\t}";
-		$help[] = "\n\t/**";
+		$help[] = PHP_EOL."\t/**";
 		$help[] = "\t*	Get the Help Text Link.";
 		$help[] = "\t**/";
 		$help[] = "\tprotected static function loadHelpTextLink(\$id)";
@@ -730,7 +730,7 @@ class Interpretation extends Fields
 		$help[] = "\t\treturn 'index.php?option=com_".$this->fileContentStatic['###component###']."&task=help.getText&id=' . (int) \$id . '&token=' . \$token;";
 		$help[] = "\t}";
 		// return the help methods
-		return implode("\n",$help);
+		return implode(PHP_EOL,$help);
 	}
 
 	public function setExelHelperMethods()
@@ -738,7 +738,7 @@ class Interpretation extends Fields
 		if ($this->addEximport)
 		{
 			$exel = array();
-			$exel[] = "\n\n\t/**";
+			$exel[] = PHP_EOL.PHP_EOL."\t/**";
 			$exel[] = "\t * Prepares the xml document";
 			$exel[] = "\t */";
 			$exel[] = "\tpublic static function xls(\$rows,\$fileName = null,\$title = null,\$subjectTab = null,\$creator = '".$this->fileContentStatic['###COMPANYNAME###']."',\$description = null,\$category = null,\$keywords = null,\$modified = null)";
@@ -916,7 +916,7 @@ class Interpretation extends Fields
 			$exel[] = "\t\treturn false;";
 			$exel[] = "\t}";
 			// return the help methods
-			return implode("\n",$exel);
+			return implode(PHP_EOL,$exel);
 		}
 		return '';
 	}
@@ -926,7 +926,7 @@ class Interpretation extends Fields
 		if ($add)
 		{
 			$method = array();
-			$method[] = "\n\n\t/**";
+			$method[] = PHP_EOL.PHP_EOL."\t/**";
 			$method[] = "\t* Greate user and update given table";
 			$method[] = "\t*/";
 			$method[] = "\tpublic static function createUser(\$new)";
@@ -984,7 +984,7 @@ class Interpretation extends Fields
 			$method[] = "\t\treturn \$model->getError();";
 			$method[] = "\t}";
 
-			$method[] = "\n\tprotected static function setParams(\$component,\$target,\$value)";
+			$method[] = PHP_EOL."\tprotected static function setParams(\$component,\$target,\$value)";
 			$method[] = "\t{";
 			$method[] = "\t\t//".$this->setLine(__LINE__)." Get the params and set the new values";
 			$method[] = "\t\t\$params = JComponentHelper::getParams(\$component);";
@@ -1007,7 +1007,7 @@ class Interpretation extends Fields
 			$method[] = "\t\treturn \$was;";
 			$method[] = "\t}";
 			
-			$method[] = "\n\t/**";
+			$method[] = PHP_EOL."\t/**";
 			$method[] = "\t* Update user values";
 			$method[] = "\t*/";
 			$method[] = "\tpublic static function updateUser(\$new)";
@@ -1057,7 +1057,7 @@ class Interpretation extends Fields
 			$method[] = "\t}";
 
 			// return the help method
-			return implode("\n",$method);
+			return implode(PHP_EOL,$method);
 		}
 		return '';
 	}
@@ -1077,23 +1077,23 @@ class Interpretation extends Fields
 			$this->langContent['adminsys'][$lang.'_DESC'] = $view['settings']->description;
 			//start loading xml
 			$xml = '<?xml version="1.0" encoding="utf-8" ?>';
-			$xml .= "\n".'<metadata>';
-			$xml .= "\n\t".'<layout title="'.$lang.'_TITLE" option="'.$lang.'_OPTION">';
-			$xml .= "\n\t\t".'<message>';
-			$xml .= "\n\t\t\t".'<![CDATA['.$lang.'_DESC]]>';
-			$xml .= "\n\t\t".'</message>';
-			$xml .= "\n\t".'</layout>';
+			$xml .= PHP_EOL.'<metadata>';
+			$xml .= PHP_EOL."\t".'<layout title="'.$lang.'_TITLE" option="'.$lang.'_OPTION">';
+			$xml .= PHP_EOL."\t\t".'<message>';
+			$xml .= PHP_EOL."\t\t\t".'<![CDATA['.$lang.'_DESC]]>';
+			$xml .= PHP_EOL."\t\t".'</message>';
+			$xml .= PHP_EOL."\t".'</layout>';
 			if (isset($this->hasIdRequest[$view['settings']->code]))
 			{
 				$requestField = str_replace($view['settings']->code.'_request_id', 'id', $this->hasIdRequest[$view['settings']->code]);
 				
-				$xml .= "\n\t".'<!--'.$this->setLine(__LINE__).' Add fields to the request variables for the layout. -->';
-				$xml .= "\n\t".'<fields name="request">';
-				$xml .= "\n\t\t".'<fieldset name="request"';
-				$xml .= "\n\t\t\t".'addfieldpath="/administrator/components/com_'.$this->fileContentStatic['###component###'].'/models/fields">';
-				$xml .= "\n\t\t\t".$requestField;
-				$xml .= "\n\t\t".'</fieldset>';
-				$xml .= "\n\t".'</fields>';
+				$xml .= PHP_EOL."\t".'<!--'.$this->setLine(__LINE__).' Add fields to the request variables for the layout. -->';
+				$xml .= PHP_EOL."\t".'<fields name="request">';
+				$xml .= PHP_EOL."\t\t".'<fieldset name="request"';
+				$xml .= PHP_EOL."\t\t\t".'addfieldpath="/administrator/components/com_'.$this->fileContentStatic['###component###'].'/models/fields">';
+				$xml .= PHP_EOL."\t\t\t".$requestField;
+				$xml .= PHP_EOL."\t\t".'</fieldset>';
+				$xml .= PHP_EOL."\t".'</fields>';
 			}
 			if (isset($this->frontEndParams) && isset($this->frontEndParams[$view['settings']->name]))
 			{
@@ -1102,15 +1102,15 @@ class Interpretation extends Fields
 				// now load the fields
 				if (ComponentbuilderHelper::checkArray($params))
 				{
-					$xml .= "\n\t".'<!--'.$this->setLine(__LINE__).' Adding page parameters -->';
-					$xml .= "\n\t".'<fields name="params">';
-					$xml .= "\n\t\t".'<fieldset name="basic" label="COM_'.$this->fileContentStatic['###COMPONENT###'].'">';
+					$xml .= PHP_EOL."\t".'<!--'.$this->setLine(__LINE__).' Adding page parameters -->';
+					$xml .= PHP_EOL."\t".'<fields name="params">';
+					$xml .= PHP_EOL."\t\t".'<fieldset name="basic" label="COM_'.$this->fileContentStatic['###COMPONENT###'].'">';
 					$xml .= implode("\t\t\t",$params);
-					$xml .= "\n\t\t".'</fieldset>';
-					$xml .= "\n\t".'</fields>';
+					$xml .= PHP_EOL."\t\t".'</fieldset>';
+					$xml .= PHP_EOL."\t".'</fields>';
 				}
 			}
-			$xml .= "\n".'</metadata>';
+			$xml .= PHP_EOL.'</metadata>';
 		}
 		return $xml;
 	}
@@ -1125,7 +1125,7 @@ class Interpretation extends Fields
 			if (strpos($field,'Option Set. -->') !== false && strpos($field,$menuSetter) === false)
 			{
 				// we add the global option
-				$field = str_replace('Option Set. -->', $this->setLine(__LINE__).' Global & Option Set. -->'."\n\t\t\t".'<option value="">'."\n\t\t\t\t".'JGLOBAL_USE_GLOBAL</option>', $field);
+				$field = str_replace('Option Set. -->', $this->setLine(__LINE__).' Global & Option Set. -->'.PHP_EOL."\t\t\t".'<option value="">'.PHP_EOL."\t\t\t\t".'JGLOBAL_USE_GLOBAL</option>', $field);
 				// update the default to be global
 				$field = preg_replace('/default=".+"/', 'default=""', $field);
 				// update the default to be filter
@@ -1161,22 +1161,22 @@ class Interpretation extends Fields
 					$this->customViewQueryChecker[$this->target][] = $checker;
 					if (ComponentbuilderHelper::checkString($the_get['selection']['type']))
 					{
-						$getItem = "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." Get from ".$the_get['selection']['table']." as ".$the_get['as'];
+						$getItem = PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get from ".$the_get['selection']['table']." as ".$the_get['as'];
 					}
 					else
 					{
-						$getItem = "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." Get data";
+						$getItem = PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get data";
 					}
 					// set the selection
-					$getItem .= "\n\t".$tab."\t".$the_get['selection']['select'];
+					$getItem .= PHP_EOL."\t".$tab."\t".$the_get['selection']['select'];
 					if (($nr == 0 && (!isset($the_get['join_field']) || !ComponentbuilderHelper::checkString($the_get['join_field'])) && (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))) ||
 						($type === 'custom' && (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))))
 					{
-						$getItem .= "\n\t".$tab."\t".'$query->from('.$the_get['selection']['from'].');';
+						$getItem .= PHP_EOL."\t".$tab."\t".'$query->from('.$the_get['selection']['from'].');';
 					}
 					elseif (isset($the_get['join_field']) && ComponentbuilderHelper::checkString($the_get['join_field']) && isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))
 					{
-						$getItem .= "\n\t".$tab."\t\$query->join('".$the_get['type'];
+						$getItem .= PHP_EOL."\t".$tab."\t\$query->join('".$the_get['type'];
 						$getItem .= "', (".$the_get['selection']['from'];
 						$getItem .= ") . ' ON (' . \$db->quoteName('".$the_get['on_field'];
 						$getItem .= "') . ' ".$the_get['operator'];
@@ -1226,97 +1226,97 @@ class Interpretation extends Fields
 						{
 							case 4:
 							// COM_COMPONENTBUILDER_DYNAMIC_GET_USER_GROUPS
-							$filter .= "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." filter ".$as." based on user groups";
-							$filter .= "\n\t".$tab."\t\$remove = (count(array_intersect((array) \$this->groups, (array) ".$string."->".$field."))) ? false : true;";
-							$filter .= "\n\t".$tab."\tif (\$remove)";
-							$filter .= "\n\t".$tab."\t{";
+							$filter .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." filter ".$as." based on user groups";
+							$filter .= PHP_EOL."\t".$tab."\t\$remove = (count(array_intersect((array) \$this->groups, (array) ".$string."->".$field."))) ? false : true;";
+							$filter .= PHP_EOL."\t".$tab."\tif (\$remove)";
+							$filter .= PHP_EOL."\t".$tab."\t{";
 							if ($removeString == $string)
 							{
-								$filter .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." Remove ".$string." if user not in groups";
-								$filter .= "\n\t".$tab."\t\t".$string." = null;";
-								$filter .= "\n\t".$tab."\t\treturn false;";
+								$filter .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." Remove ".$string." if user not in groups";
+								$filter .= PHP_EOL."\t".$tab."\t\t".$string." = null;";
+								$filter .= PHP_EOL."\t".$tab."\t\treturn false;";
 							}
 							else
 							{
-								$filter .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." Unset ".$string." if user not in groups";
-								$filter .= "\n\t".$tab."\t\tunset(".$removeString.");";
-								$filter .= "\n\t".$tab."\t\tcontinue;";
+								$filter .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." Unset ".$string." if user not in groups";
+								$filter .= PHP_EOL."\t".$tab."\t\tunset(".$removeString.");";
+								$filter .= PHP_EOL."\t".$tab."\t\tcontinue;";
 							}
-							$filter .= "\n\t".$tab."\t}";
+							$filter .= PHP_EOL."\t".$tab."\t}";
 							break;
 							case 9:
 							// COM_COMPONENTBUILDER_DYNAMIC_GET_ARRAY_VALUE
 
-							$filter .= "\n\n\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(".$string."->".$field."))";
-							$filter .= "\n\t".$tab."\t{";
+							$filter .= PHP_EOL.PHP_EOL."\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(".$string."->".$field."))";
+							$filter .= PHP_EOL."\t".$tab."\t{";
 
-							$filter .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." do your thing here";
+							$filter .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." do your thing here";
 
-							$filter .= "\n\t".$tab."\t}";
-							$filter .= "\n\t".$tab."\telse";
-							$filter .= "\n\t".$tab."\t{";
+							$filter .= PHP_EOL."\t".$tab."\t}";
+							$filter .= PHP_EOL."\t".$tab."\telse";
+							$filter .= PHP_EOL."\t".$tab."\t{";
 
 							if ($removeString == $string)
 							{
-								$filter .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." Remove ".$string." if not array.";
-								$filter .= "\n\t".$tab."\t\t".$string." = null;";
+								$filter .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." Remove ".$string." if not array.";
+								$filter .= PHP_EOL."\t".$tab."\t\t".$string." = null;";
 							}
 							else
 							{
-								$filter .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." Unset ".$string." if not array.";
-								$filter .= "\n\t".$tab."\t\tunset(".$removeString.");";
-								$filter .= "\n\t".$tab."\t\tcontinue;";
+								$filter .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." Unset ".$string." if not array.";
+								$filter .= PHP_EOL."\t".$tab."\t\tunset(".$removeString.");";
+								$filter .= PHP_EOL."\t".$tab."\t\tcontinue;";
 							}
 
-							$filter .= "\n\t".$tab."\t}";
+							$filter .= PHP_EOL."\t".$tab."\t}";
 							break;
 							case 10:
 							// COM_COMPONENTBUILDER_DYNAMIC_GET_REPEATABLE_VALUE
-							$filter .= "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." filter ".$as." based on repeatable value";
-							$filter .= "\n\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkString(".$string."->".$field."))";
-							$filter .= "\n\t".$tab."\t{";
+							$filter .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." filter ".$as." based on repeatable value";
+							$filter .= PHP_EOL."\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkString(".$string."->".$field."))";
+							$filter .= PHP_EOL."\t".$tab."\t{";
 
-							$filter .= "\n\t\t".$tab."\t\$array = json_decode(".$string."->".$field.",true);";
-							$filter .= "\n\t\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$array))";
-							$filter .= "\n\t\t".$tab."\t{";
+							$filter .= PHP_EOL."\t\t".$tab."\t\$array = json_decode(".$string."->".$field.",true);";
+							$filter .= PHP_EOL."\t\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$array))";
+							$filter .= PHP_EOL."\t\t".$tab."\t{";
 
-							$filter .= "\n\t\t".$tab."\t\t//".$this->setLine(__LINE__)." do your thing here";
+							$filter .= PHP_EOL."\t\t".$tab."\t\t//".$this->setLine(__LINE__)." do your thing here";
 
-							$filter .= "\n\t\t".$tab."\t}";
-							$filter .= "\n\t".$tab."\t\telse";
-							$filter .= "\n\t".$tab."\t\t{";
-
-							if ($removeString == $string)
-							{
-								$filter .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." Remove ".$string." if not array.";
-								$filter .= "\n\t".$tab."\t\t\t".$string." = null;";
-							}
-							else
-							{
-								$filter .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." Unset ".$string." if not array.";
-								$filter .= "\n\t".$tab."\t\t\tunset(".$removeString.");";
-								$filter .= "\n\t".$tab."\t\t\tcontinue;";
-							}
-
-							$filter .= "\n\t".$tab."\t\t}";
-
-							$filter .= "\n\t".$tab."\t}";
-							$filter .= "\n\t".$tab."\telse";
-							$filter .= "\n\t".$tab."\t{";
+							$filter .= PHP_EOL."\t\t".$tab."\t}";
+							$filter .= PHP_EOL."\t".$tab."\t\telse";
+							$filter .= PHP_EOL."\t".$tab."\t\t{";
 
 							if ($removeString == $string)
 							{
-								$filter .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." Remove ".$string." if not string.";
-								$filter .= "\n\t".$tab."\t\t".$string." = null;";
+								$filter .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." Remove ".$string." if not array.";
+								$filter .= PHP_EOL."\t".$tab."\t\t\t".$string." = null;";
 							}
 							else
 							{
-								$filter .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." Unset ".$string." if not string.";
-								$filter .= "\n\t".$tab."\t\tunset(".$removeString.");";
-								$filter .= "\n\t".$tab."\t\tcontinue;";
+								$filter .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." Unset ".$string." if not array.";
+								$filter .= PHP_EOL."\t".$tab."\t\t\tunset(".$removeString.");";
+								$filter .= PHP_EOL."\t".$tab."\t\t\tcontinue;";
 							}
 
-							$filter .= "\n\t".$tab."\t}";
+							$filter .= PHP_EOL."\t".$tab."\t\t}";
+
+							$filter .= PHP_EOL."\t".$tab."\t}";
+							$filter .= PHP_EOL."\t".$tab."\telse";
+							$filter .= PHP_EOL."\t".$tab."\t{";
+
+							if ($removeString == $string)
+							{
+								$filter .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." Remove ".$string." if not string.";
+								$filter .= PHP_EOL."\t".$tab."\t\t".$string." = null;";
+							}
+							else
+							{
+								$filter .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." Unset ".$string." if not string.";
+								$filter .= PHP_EOL."\t".$tab."\t\tunset(".$removeString.");";
+								$filter .= PHP_EOL."\t".$tab."\t\tcontinue;";
+							}
+
+							$filter .= PHP_EOL."\t".$tab."\t}";
 							break;
 						}
 					}
@@ -1335,36 +1335,36 @@ class Interpretation extends Fields
 			{
 				if ($array['decode'] === 'json')
 				{
-					$if = "\n\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(".$string."->".$field."))\n\t".$tab."\t{";
+					$if = PHP_EOL."\t".$tab."\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(".$string."->".$field."))".PHP_EOL."\t".$tab."\t{";
 					// json_decode
 					$decoder = $string."->".$field." = json_decode(".$string."->".$field.", true);";
 					// TODO Use the type of field to prepare it even more for use in the view
 				}
 				elseif ($array['decode'] === 'base64')
 				{
-					$if = "\n\t".$tab."\tif (!empty(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.")))\n\t".$tab."\t{";
+					$if = PHP_EOL."\t".$tab."\tif (!empty(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.")))".PHP_EOL."\t".$tab."\t{";
 					// base64_decode
 					$decoder = $string."->".$field." = base64_decode(".$string."->".$field.");";
 					// TODO Use the type of field to prepare it even more for use in the view
 				}
 				elseif ($array['decode'] === 'basic_encryption')
 				{
-					$if = "\n\t".$tab."\tif (!empty(".$string."->".$field.") && \$basickey && !is_numeric(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.", true)))\n\t".$tab."\t{";
+					$if = PHP_EOL."\t".$tab."\tif (!empty(".$string."->".$field.") && \$basickey && !is_numeric(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.", true)))".PHP_EOL."\t".$tab."\t{";
 					// basic decryption
 					$decoder = $string."->".$field." = rtrim(\$basic->decryptString(".$string."->".$field."), ".'"\0"'.");";
 					$this->siteDecrypt['basic'][$code] = true;
 				}
 				elseif ($array['decode'] === 'advance_encryption')
 				{
-					$if = "\n\t".$tab."\tif (!empty(".$string."->".$field.") && \$advancedkey && !is_numeric(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.", true)))\n\t".$tab."\t{";
+					$if = PHP_EOL."\t".$tab."\tif (!empty(".$string."->".$field.") && \$advancedkey && !is_numeric(".$string."->".$field.") && ".$string."->".$field." === base64_encode(base64_decode(".$string."->".$field.", true)))".PHP_EOL."\t".$tab."\t{";
 					// advanced decryption
 					$decoder = $string."->".$field." = rtrim(\$advanced->decryptString(".$string."->".$field."), ".'"\0"'.");";
 					$this->siteDecrypt['advanced'][$code] = true;
 				}
 
 				// build decoder string
-				$fieldDecode .= $if."\n\t".$tab."\t\t//".$this->setLine(__LINE__)." Decode ".$field;
-				$fieldDecode .= "\n\t".$tab."\t\t".$decoder."\n\t".$tab."\t}";
+				$fieldDecode .= $if.PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." Decode ".$field;
+				$fieldDecode .= PHP_EOL."\t".$tab."\t\t".$decoder.PHP_EOL."\t".$tab."\t}";
 			}
 		}
 		return $fieldDecode;
@@ -1378,10 +1378,10 @@ class Interpretation extends Fields
 			if (strpos($get['selection']['select'], $field) !== false)
 			{
 				// build decoder string
-				$fieldUikit .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field.".";
-				$fieldUikit .= "\n\t".$tab."\t".$string."->".$field." = JHtml::_('content.prepare',".$string."->".$field.");";
-				$fieldUikit .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." Checking if ".$field." has uikit components that must be loaded.";
-				$fieldUikit .= "\n\t".$tab."\t\$this->uikitComp = ".$this->fileContentStatic['###Component###']."Helper::getUikitComp(".$string."->".$field.",\$this->uikitComp);";
+				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field.".";
+				$fieldUikit .= PHP_EOL."\t".$tab."\t".$string."->".$field." = JHtml::_('content.prepare',".$string."->".$field.");";
+				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Checking if ".$field." has uikit components that must be loaded.";
+				$fieldUikit .= PHP_EOL."\t".$tab."\t\$this->uikitComp = ".$this->fileContentStatic['###Component###']."Helper::getUikitComp(".$string."->".$field.",\$this->uikitComp);";
 			}
 		}
 		return $fieldUikit;
@@ -1399,8 +1399,8 @@ class Interpretation extends Fields
 				if ($this->checkJoint($default,$get,$asBucket))
 				{
 					// build custom join string
-					$otherJoin = "\n\t###TAB###\t//".$this->setLine(__LINE__)." set ".$default['valueName']." to the ###STRING### object.";
-					$otherJoin .= "\n\t###TAB###\t###STRING###->".$default['valueName']." = \$this->get".$default['methodName']."(###STRING###->".$this->getAsLookup[$get['key']][$get['on_field']].");";
+					$otherJoin = PHP_EOL."\t###TAB###\t//".$this->setLine(__LINE__)." set ".$default['valueName']." to the ###STRING### object.";
+					$otherJoin .= PHP_EOL."\t###TAB###\t###STRING###->".$default['valueName']." = \$this->get".$default['methodName']."(###STRING###->".$this->getAsLookup[$get['key']][$get['on_field']].");";
 					// load to other join
 					if (!isset($this->otherJoin[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']]))
 					{
@@ -1411,8 +1411,8 @@ class Interpretation extends Fields
 				else
 				{
 					// build custom join string
-					$customJoin .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." set ".$default['valueName']." to the ".$string." object.";
-					$customJoin .= "\n\t".$tab."\t".$string."->".$default['valueName']." = \$this->get".$default['methodName']."(".$string."->".$this->getAsLookup[$get['key']][$get['on_field']].");";
+					$customJoin .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." set ".$default['valueName']." to the ".$string." object.";
+					$customJoin .= PHP_EOL."\t".$tab."\t".$string."->".$default['valueName']." = \$this->get".$default['methodName']."(".$string."->".$this->getAsLookup[$get['key']][$get['on_field']].");";
 				}
 			}
 			return $customJoin;
@@ -1454,15 +1454,15 @@ class Interpretation extends Fields
 				{
 					case 1:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_ID
-					$string = "\n\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ' . (int) \$pk);";
+					$string = PHP_EOL."\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ' . (int) \$pk);";
 					break;
 					case 2:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_USER
-					$string = "\n\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ' . (int) \$this->userId);";
+					$string = PHP_EOL."\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ' . (int) \$this->userId);";
 					break;
 					case 3:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_ACCESS_LEVEL
-					$string = "\n\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " (' . implode(',', \$this->levels) . ')');";
+					$string = PHP_EOL."\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " (' . implode(',', \$this->levels) . ')');";
 					break;
 					case 4:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_USER_GROUPS
@@ -1474,7 +1474,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$string = "\n\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " (' . implode(',', \$this->groups) . ')');";
+						$string = PHP_EOL."\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " (' . implode(',', \$this->groups) . ')');";
 					}
 					break;
 					case 5:
@@ -1493,33 +1493,33 @@ class Interpretation extends Fields
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_FUNCTIONVAR
 					if ($ter['operator'] === 'IN' || $ter['operator'] === 'NOT IN')
 					{						
-						$string = "\n\t\t".$tab."//".$this->setLine(__LINE__)." Check if " . $ter['state_key'] . " is an array with values.";
-						$string .= "\n\t\t".$tab."\$array = " . $ter['state_key'].";";
-						$string .= "\n\t\t".$tab."if (isset(\$array) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$array))";
-						$string .= "\n\t\t".$tab."{";
-						$string .= "\n\t\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator']  . " (' . implode(',', \$array) . ')');";
-						$string .= "\n\t\t".$tab."}";
-						$string .= "\n\t\t".$tab."else";
-						$string .= "\n\t\t".$tab."{";
-						$string .= "\n\t\t".$tab."\treturn false;";
-						$string .= "\n\t\t".$tab."}";
+						$string = PHP_EOL."\t\t".$tab."//".$this->setLine(__LINE__)." Check if " . $ter['state_key'] . " is an array with values.";
+						$string .= PHP_EOL."\t\t".$tab."\$array = " . $ter['state_key'].";";
+						$string .= PHP_EOL."\t\t".$tab."if (isset(\$array) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$array))";
+						$string .= PHP_EOL."\t\t".$tab."{";
+						$string .= PHP_EOL."\t\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator']  . " (' . implode(',', \$array) . ')');";
+						$string .= PHP_EOL."\t\t".$tab."}";
+						$string .= PHP_EOL."\t\t".$tab."else";
+						$string .= PHP_EOL."\t\t".$tab."{";
+						$string .= PHP_EOL."\t\t".$tab."\treturn false;";
+						$string .= PHP_EOL."\t\t".$tab."}";
 					}
 					else
 					{						
-						$string = "\n\t\t".$tab."//".$this->setLine(__LINE__)." Check if " . $ter['state_key'] . " is a string or numeric value.";
-						$string .= "\n\t\t".$tab."\$checkValue = " . $ter['state_key'].";";
-						$string .= "\n\t\t".$tab."if (isset(\$checkValue) && ".$this->fileContentStatic['###Component###']."Helper::checkString(\$checkValue))";
-						$string .= "\n\t\t".$tab."{";
-						$string .= "\n\t\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ' . \$db->quote(\$checkValue));";
-						$string .= "\n\t\t".$tab."}";
-						$string .= "\n\t\t".$tab."elseif (is_numeric(\$checkValue))";
-						$string .= "\n\t\t".$tab."{";
-						$string .= "\n\t\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ' . \$checkValue);";
-						$string .= "\n\t\t".$tab."}";
-						$string .= "\n\t\t".$tab."else";
-						$string .= "\n\t\t".$tab."{";
-						$string .= "\n\t\t".$tab."\treturn false;";
-						$string .= "\n\t\t".$tab."}";
+						$string = PHP_EOL."\t\t".$tab."//".$this->setLine(__LINE__)." Check if " . $ter['state_key'] . " is a string or numeric value.";
+						$string .= PHP_EOL."\t\t".$tab."\$checkValue = " . $ter['state_key'].";";
+						$string .= PHP_EOL."\t\t".$tab."if (isset(\$checkValue) && ".$this->fileContentStatic['###Component###']."Helper::checkString(\$checkValue))";
+						$string .= PHP_EOL."\t\t".$tab."{";
+						$string .= PHP_EOL."\t\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ' . \$db->quote(\$checkValue));";
+						$string .= PHP_EOL."\t\t".$tab."}";
+						$string .= PHP_EOL."\t\t".$tab."elseif (is_numeric(\$checkValue))";
+						$string .= PHP_EOL."\t\t".$tab."{";
+						$string .= PHP_EOL."\t\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ' . \$checkValue);";
+						$string .= PHP_EOL."\t\t".$tab."}";
+						$string .= PHP_EOL."\t\t".$tab."else";
+						$string .= PHP_EOL."\t\t".$tab."{";
+						$string .= PHP_EOL."\t\t".$tab."\treturn false;";
+						$string .= PHP_EOL."\t\t".$tab."}";
 					}
 					break;
 					case 9:
@@ -1542,7 +1542,7 @@ class Interpretation extends Fields
 						list($dump,$as) = array_map('trim', explode('(',$as));
 						$field = trim(str_replace(')', '', $field));
 					}
-					$string = "\n\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ". $ter['state_key']."');";
+					$string = PHP_EOL."\t".$tab."\t\$query->where('".$ter['table_key'] . " " . $ter['operator'] . " ". $ter['state_key']."');";
 					break;
 				}
 				// only add if the filter is set
@@ -1577,11 +1577,11 @@ class Interpretation extends Fields
 				// sort where
 				if ($as === 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
 				{
-					$ordering .= "\n\t".$tab."\t".$string;
+					$ordering .= PHP_EOL."\t".$tab."\t".$string;
 				}
 				else
 				{
-					$this->otherOrder[$this->target][$code][$as][$field] = "\n\t\t".$string;
+					$this->otherOrder[$this->target][$code][$as][$field] = PHP_EOL."\t\t".$string;
 				}
 			}
 		}
@@ -1631,13 +1631,13 @@ class Interpretation extends Fields
 							$tabe = $tab;
 						}
 						$string = "if (isset(" . $whe['value_key']. ") && ".$this->fileContentStatic['###Component###']."Helper::checkArray(" . $whe['value_key']. "))";
-						$string .= "\n\t".$tabe."\t{";
-						$string .= "\n\t".$tabe."\t\t\$query->where('".$whe['table_key']." ".$whe['operator'].$value;
-						$string .= "\n\t".$tabe."\t}";
-						$string .= "\n\t".$tabe."\telse";
-						$string .= "\n\t".$tabe."\t{";
-						$string .= "\n\t".$tabe."\t\treturn false;";
-						$string .= "\n\t".$tabe."\t}";
+						$string .= PHP_EOL."\t".$tabe."\t{";
+						$string .= PHP_EOL."\t".$tabe."\t\t\$query->where('".$whe['table_key']." ".$whe['operator'].$value;
+						$string .= PHP_EOL."\t".$tabe."\t}";
+						$string .= PHP_EOL."\t".$tabe."\telse";
+						$string .= PHP_EOL."\t".$tabe."\t{";
+						$string .= PHP_EOL."\t".$tabe."\t\treturn false;";
+						$string .= PHP_EOL."\t".$tabe."\t}";
 
 					}
 					else
@@ -1647,11 +1647,11 @@ class Interpretation extends Fields
 					// sort where
 					if ($as === 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
 					{
-						$wheres .= "\n\t".$tab."\t".$string;
+						$wheres .= PHP_EOL."\t".$tab."\t".$string;
 					}
 					elseif ($as !== 'a')
 					{
-						$this->otherWhere[$this->target][$code][$as][$field] = "\n\t\t".$string;
+						$this->otherWhere[$this->target][$code][$as][$field] = PHP_EOL."\t\t".$string;
 					}
 				}
 			}
@@ -1683,7 +1683,7 @@ class Interpretation extends Fields
 					// only add if the filter is set
 					if (ComponentbuilderHelper::checkString($value))
 					{
-						$globals .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." set the global " . $glo['name'] . " value.\n\t".$tab."\t".$value;
+						$globals .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." set the global " . $glo['name'] . " value.".PHP_EOL."\t".$tab."\t".$value;
 					}
 				}
 			}
@@ -1737,7 +1737,7 @@ class Interpretation extends Fields
 				$redirectMessage = "\t\t\t//".$this->setLine(__LINE__)." redirect away to the home page if no access allowed.";
 				$redirectString = 'JURI::root()';
 			}
-			$accessCheck[] = "\n\t\t//".$this->setLine(__LINE__)." check if this user has permission to access item";
+			$accessCheck[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." check if this user has permission to access item";
 			$accessCheck[] = "\t\tif (!".$userString."->authorise('site.".$view['settings']->code.".access', 'com_".$this->fileContentStatic['###component###']."'))";
 			$accessCheck[] = "\t\t{";
 			$accessCheck[] = "\t\t\t\$app = JFactory::getApplication();";
@@ -1754,7 +1754,7 @@ class Interpretation extends Fields
 			$accessCheck[] = "\t\t}";
 			
 			// return the access check
-			return implode("\n",$accessCheck);
+			return implode(PHP_EOL,$accessCheck);
 		}
 		return '';
 	}
@@ -1773,10 +1773,10 @@ class Interpretation extends Fields
 			$this->siteDecrypt['basic'][$code] = false;
 			$this->siteDecrypt['advanced'][$code] = false;
 
-			$getItem = "\n\t".$tab."\t//".$this->setLine(__LINE__)." Get a db connection.";
-			$getItem .= "\n\t".$tab."\t\$db = JFactory::getDbo();";
-			$getItem .= "\n\n".$tab."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-			$getItem .= "\n\t".$tab."\t\$query = \$db->getQuery(true);";
+			$getItem = PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get a db connection.";
+			$getItem .= PHP_EOL."\t".$tab."\t\$db = JFactory::getDbo();";
+			$getItem .= PHP_EOL.PHP_EOL.$tab."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+			$getItem .= PHP_EOL."\t".$tab."\t\$query = \$db->getQuery(true);";
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get,$code,$tab);
 			// setup filters
@@ -1786,22 +1786,22 @@ class Interpretation extends Fields
 			// setup ordering
 			$getItem .= $this->setCustomViewOrder($get->order,$code,$tab);
 			// get ready to get query
-			$getItem .= "\n\n".$tab."\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
-			$getItem .= "\n\t".$tab."\t\$db->setQuery(\$query);";
-			$getItem .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." Load the results as a stdClass object.";
-			$getItem .= "\n\t".$tab."\t\$data = \$db->loadObject();";
-			$getItem .= "\n\n".$tab."\t\tif (empty(\$data))";
-			$getItem .= "\n\t".$tab."\t{";
+			$getItem .= PHP_EOL.PHP_EOL.$tab."\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
+			$getItem .= PHP_EOL."\t".$tab."\t\$db->setQuery(\$query);";
+			$getItem .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Load the results as a stdClass object.";
+			$getItem .= PHP_EOL."\t".$tab."\t\$data = \$db->loadObject();";
+			$getItem .= PHP_EOL.PHP_EOL.$tab."\t\tif (empty(\$data))";
+			$getItem .= PHP_EOL."\t".$tab."\t{";
 			if ($type === 'main')
 			{
-				$getItem .= "\n\t".$tab."\t\t\$app = JFactory::getApplication();";
+				$getItem .= PHP_EOL."\t".$tab."\t\t\$app = JFactory::getApplication();";
 				$langKeyWord = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Not found or access denied','U');
 				if (!isset($this->langContent[$this->lang][$langKeyWord]))
 				{
 					$this->langContent[$this->lang][$langKeyWord] = 'Not found, or access denied.';
 				}
-				$getItem .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." If no data is found redirect to default page and show warning.";
-				$getItem .= "\n\t".$tab."\t\t\$app->enqueueMessage(JText::_('".$langKeyWord."'), 'warning');";
+				$getItem .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." If no data is found redirect to default page and show warning.";
+				$getItem .= PHP_EOL."\t".$tab."\t\t\$app->enqueueMessage(JText::_('".$langKeyWord."'), 'warning');";
 				if ('site' === $this->target)
 				{
 					// check that the default and the redirect page is not the same
@@ -1813,19 +1813,19 @@ class Interpretation extends Fields
 					{
 						$redirectString = 'JURI::root()';
 					}
-					$getItem .= "\n\t".$tab."\t\t\$app->redirect(".$redirectString.");";
+					$getItem .= PHP_EOL."\t".$tab."\t\t\$app->redirect(".$redirectString.");";
 				}
 				else
 				{
-					$getItem .= "\n\t".$tab."\t\t\$app->redirect('index.php?option=com_".$this->fileContentStatic['###component###']."');";
+					$getItem .= PHP_EOL."\t".$tab."\t\t\$app->redirect('index.php?option=com_".$this->fileContentStatic['###component###']."');";
 				}
-				$getItem .= "\n\t".$tab."\t\treturn false;";
+				$getItem .= PHP_EOL."\t".$tab."\t\treturn false;";
 			}
 			else
 			{
-				$getItem .= "\n\t".$tab."\t\treturn false;";
+				$getItem .= PHP_EOL."\t".$tab."\t\treturn false;";
 			}
-			$getItem .= "\n\t".$tab."\t}";
+			$getItem .= PHP_EOL."\t".$tab."\t}";
 			if (ComponentbuilderHelper::checkArray($get->main_get))
 			{
 				$asBucket = array();
@@ -1870,17 +1870,17 @@ class Interpretation extends Fields
 				$script = '';
 				if (isset($this->siteDecrypt['basic'][$code]) && $this->siteDecrypt['basic'][$code])
 				{
-					$script .= "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." Get the basic encription.";
-					$script .= "\n\t".$tab."\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-					$script .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
-					$script .= "\n\t".$tab."\t\$basic = new FOFEncryptAes(\$basickey, 128);";
+					$script .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the basic encription.";
+					$script .= PHP_EOL."\t".$tab."\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
+					$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
+					$script .= PHP_EOL."\t".$tab."\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 				}
 				if (isset($this->siteDecrypt['advanced'][$code]) && $this->siteDecrypt['advanced'][$code])
 				{
-					$script .= "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." Get the advanced encription.";
-					$script .= "\n\t".$tab."\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-					$script .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
-					$script .= "\n\t".$tab."\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
+					$script .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the advanced encription.";
+					$script .= PHP_EOL."\t".$tab."\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
+					$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
+					$script .= PHP_EOL."\t".$tab."\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 				}
 				$getItem = $script . $getItem;
 			}
@@ -1891,24 +1891,24 @@ class Interpretation extends Fields
 			// set calculations
 			if ($get->addcalculation == 1)
 			{
-				$get->php_calculation = (array) explode("\n",$get->php_calculation);
-				$getItem .= "\n\t".$tab."\t".implode("\n\t".$tab."\t",$get->php_calculation);
+				$get->php_calculation = (array) explode(PHP_EOL,$get->php_calculation);
+				$getItem .= PHP_EOL."\t".$tab."\t".implode(PHP_EOL."\t".$tab."\t",$get->php_calculation);
 			}
 			if ($type === 'custom')
 			{
 				// return the object
-				$getItem .=  "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." return data object.";
-				$getItem .=  "\n\t".$tab."\treturn \$data;";
+				$getItem .=  PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." return data object.";
+				$getItem .=  PHP_EOL."\t".$tab."\treturn \$data;";
 			}
 			else
 			{
 				// set the object
-				$getItem .=  "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." set data object to item.";
-				$getItem .=  "\n\t".$tab."\t\$this->_item[\$pk] = \$data;";
+				$getItem .=  PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." set data object to item.";
+				$getItem .=  PHP_EOL."\t".$tab."\t\$this->_item[\$pk] = \$data;";
 			}
 			return $getItem;
 		}
-		return "\n\t".$tab."\t//".$this->setLine(__LINE__)."add your custom code here.";
+		return PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)."add your custom code here.";
 	}
 
 	public function setCustomViewCustomMethods($main_view,$code)
@@ -1928,47 +1928,47 @@ class Interpretation extends Fields
 				if ($view->gettype == 3)
 				{
 					// ###SITE_GET_ITEM### <<<DYNAMIC>>>
-					$main .= "\n\n\t\tif (!isset(\$this->initSet) || !\$this->initSet)";
-					$main .= "\n\t\t{";
-					$main .= "\n\t\t\t\$this->user\t\t= JFactory::getUser();";
-					$main .= "\n\t\t\t\$this->userId\t\t= \$this->user->get('id');";
-					$main .= "\n\t\t\t\$this->guest\t\t= \$this->user->get('guest');";
-					$main .= "\n\t\t\t\$this->groups\t\t= \$this->user->get('groups');";
-					$main .= "\n\t\t\t\$this->authorisedGroups\t= \$this->user->getAuthorisedGroups();";
-					$main .= "\n\t\t\t\$this->levels\t\t= \$this->user->getAuthorisedViewLevels();";
-					$main .= "\n\t\t\t\$this->initSet\t\t= true;";
-					$main .= "\n\t\t}";
+					$main .= PHP_EOL.PHP_EOL."\t\tif (!isset(\$this->initSet) || !\$this->initSet)";
+					$main .= PHP_EOL."\t\t{";
+					$main .= PHP_EOL."\t\t\t\$this->user\t\t= JFactory::getUser();";
+					$main .= PHP_EOL."\t\t\t\$this->userId\t\t= \$this->user->get('id');";
+					$main .= PHP_EOL."\t\t\t\$this->guest\t\t= \$this->user->get('guest');";
+					$main .= PHP_EOL."\t\t\t\$this->groups\t\t= \$this->user->get('groups');";
+					$main .= PHP_EOL."\t\t\t\$this->authorisedGroups\t= \$this->user->getAuthorisedGroups();";
+					$main .= PHP_EOL."\t\t\t\$this->levels\t\t= \$this->user->getAuthorisedViewLevels();";
+					$main .= PHP_EOL."\t\t\t\$this->initSet\t\t= true;";
+					$main .= PHP_EOL."\t\t}";
 					$main .= $this->setCustomViewGetItem($view, $view->code,'','custom');
 					$type = 'mixed  item data object on success, false on failure.';
 				}
 				elseif ($view->gettype == 4)
 				{
-					$main .= "\n\n\t\tif (!isset(\$this->initSet) || !\$this->initSet)";
-					$main .= "\n\t\t{";
-					$main .= "\n\t\t\t\$this->user\t\t= JFactory::getUser();";
-					$main .= "\n\t\t\t\$this->userId\t\t= \$this->user->get('id');";
-					$main .= "\n\t\t\t\$this->guest\t\t= \$this->user->get('guest');";
-					$main .= "\n\t\t\t\$this->groups\t\t= \$this->user->get('groups');";
-					$main .= "\n\t\t\t\$this->authorisedGroups\t= \$this->user->getAuthorisedGroups();";
-					$main .= "\n\t\t\t\$this->levels\t\t= \$this->user->getAuthorisedViewLevels();";
-					$main .= "\n\t\t\t\$this->initSet\t\t= true;";
-					$main .= "\n\t\t}";
-					$main .= "\n\n\t\t//".$this->setLine(__LINE__)." Get the global params";
-					$main .= "\n\t\t\$globalParams = JComponentHelper::getParams('com_".$this->fileContentStatic['###component###']."', true);";
+					$main .= PHP_EOL.PHP_EOL."\t\tif (!isset(\$this->initSet) || !\$this->initSet)";
+					$main .= PHP_EOL."\t\t{";
+					$main .= PHP_EOL."\t\t\t\$this->user\t\t= JFactory::getUser();";
+					$main .= PHP_EOL."\t\t\t\$this->userId\t\t= \$this->user->get('id');";
+					$main .= PHP_EOL."\t\t\t\$this->guest\t\t= \$this->user->get('guest');";
+					$main .= PHP_EOL."\t\t\t\$this->groups\t\t= \$this->user->get('groups');";
+					$main .= PHP_EOL."\t\t\t\$this->authorisedGroups\t= \$this->user->getAuthorisedGroups();";
+					$main .= PHP_EOL."\t\t\t\$this->levels\t\t= \$this->user->getAuthorisedViewLevels();";
+					$main .= PHP_EOL."\t\t\t\$this->initSet\t\t= true;";
+					$main .= PHP_EOL."\t\t}";
+					$main .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the global params";
+					$main .= PHP_EOL."\t\t\$globalParams = JComponentHelper::getParams('com_".$this->fileContentStatic['###component###']."', true);";
 					// ###SITE_GET_LIST_QUERY### <<<DYNAMIC>>>
 					$main .= $this->setCustomViewListQuery($view, $view->code, false);
 					// load the object list
-					$main .= "\n\n\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
-					$main .= "\n\t\t\$db->setQuery(\$query);";
-					$main .= "\n\t\t\$items = \$db->loadObjectList();";
-					$main .= "\n\n\t\tif (empty(\$items))";
-					$main .= "\n\t\t{";
-					$main .= "\n\t\t\treturn false;";
-					$main .= "\n\t\t}";
+					$main .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
+					$main .= PHP_EOL."\t\t\$db->setQuery(\$query);";
+					$main .= PHP_EOL."\t\t\$items = \$db->loadObjectList();";
+					$main .= PHP_EOL.PHP_EOL."\t\tif (empty(\$items))";
+					$main .= PHP_EOL."\t\t{";
+					$main .= PHP_EOL."\t\t\treturn false;";
+					$main .= PHP_EOL."\t\t}";
 					// ###SITE_GET_ITEMS### <<<DYNAMIC>>>
 					$main .= $this->setCustomViewGetItems($view,$view->code);
-					$main .= "\n\t\t//".$this->setLine(__LINE__)." return items";
-					$main .= "\n\t\treturn \$items;";
+					$main .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." return items";
+					$main .= PHP_EOL."\t\treturn \$items;";
 					$type = 'mixed  An array of objects on success, false on failure.';
 				}
 				// load the main mehtod
@@ -1989,7 +1989,7 @@ class Interpretation extends Fields
 		{
 			// build uikit get method
 			$ukit = array();
-			$ukit[] = "\n\n\t/**";
+			$ukit[] = PHP_EOL.PHP_EOL."\t/**";
 			$ukit[] = "\t* \tUIKIT Component Classes";
 			$ukit[] = "\t**/";
 			$ukit[] = "\tpublic static \$uk_components = array(";
@@ -2092,7 +2092,7 @@ class Interpretation extends Fields
 			$ukit[] = "\t}";
 
 			// return the help methods
-			return implode("\n",$ukit);
+			return implode(PHP_EOL,$ukit);
 		}
 		return '';
 	}
@@ -2103,20 +2103,20 @@ class Interpretation extends Fields
 		if ($this->uikit)
 		{
 			// build uikit get method
-			$method .= "\n\n\t/**";
-			$method .= "\n\t* Get the uikit needed components";
-			$method .= "\n\t*";
-			$method .= "\n\t* @return mixed  An array of objects on success.";
-			$method .= "\n\t*";
-			$method .= "\n\t*/";
-			$method .= "\n\tpublic function getUikitComp()";
-			$method .= "\n\t{";
-			$method .= "\n\t\tif (isset(\$this->uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$this->uikitComp))";
-			$method .= "\n\t\t{";
-			$method .= "\n\t\t\treturn \$this->uikitComp;";
-			$method .= "\n\t\t}";
-			$method .= "\n\t\treturn false;";
-			$method .= "\n\t}";
+			$method .= PHP_EOL.PHP_EOL."\t/**";
+			$method .= PHP_EOL."\t* Get the uikit needed components";
+			$method .= PHP_EOL."\t*";
+			$method .= PHP_EOL."\t* @return mixed  An array of objects on success.";
+			$method .= PHP_EOL."\t*";
+			$method .= PHP_EOL."\t*/";
+			$method .= PHP_EOL."\tpublic function getUikitComp()";
+			$method .= PHP_EOL."\t{";
+			$method .= PHP_EOL."\t\tif (isset(\$this->uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$this->uikitComp))";
+			$method .= PHP_EOL."\t\t{";
+			$method .= PHP_EOL."\t\t\treturn \$this->uikitComp;";
+			$method .= PHP_EOL."\t\t}";
+			$method .= PHP_EOL."\t\treturn false;";
+			$method .= PHP_EOL."\t}";
 		}
 		return $method;
 	}
@@ -2127,15 +2127,15 @@ class Interpretation extends Fields
 		if (ComponentbuilderHelper::checkString($body))
 		{
 			// build custom method
-			$method .= "\n\n\t/**";
-			$method .= "\n\t* Custom Method";
-			$method .= "\n\t*";
-			$method .= "\n\t* @return ".$type;
-			$method .= "\n\t*";
-			$method .= "\n\t*/";
-			$method .= "\n\tpublic function ".$nAme."()";
-			$method .= "\n\t{".$body;
-			$method .= "\n\t}";
+			$method .= PHP_EOL.PHP_EOL."\t/**";
+			$method .= PHP_EOL."\t* Custom Method";
+			$method .= PHP_EOL."\t*";
+			$method .= PHP_EOL."\t* @return ".$type;
+			$method .= PHP_EOL."\t*";
+			$method .= PHP_EOL."\t*/";
+			$method .= PHP_EOL."\tpublic function ".$nAme."()";
+			$method .= PHP_EOL."\t{".$body;
+			$method .= PHP_EOL."\t}";
 		}
 		return $method;
 	}
@@ -2155,38 +2155,38 @@ class Interpretation extends Fields
 					// set the method defaults
 					$default = $this->setCustomViewMethodDefaults($get,$code);
 					// build custom method
-					$methods .= "\n\n\t/**";
-					$methods .= "\n\t* Method to get an array of ".$default['name']." Objects.";
-					$methods .= "\n\t*";
-					$methods .= "\n\t* @return mixed  An array of ".$default['name']." Objects on success, false on failure.";
-					$methods .= "\n\t*";
-					$methods .= "\n\t*/";
-					$methods .= "\n\tpublic function get".$default['methodName']."(\$".$default['on_field'].")";
-					$methods .= "\n\t{###CRYPT###";
-					$methods .= "\n\t\t//".$this->setLine(__LINE__)." Get a db connection.";
-					$methods .= "\n\t\t\$db = JFactory::getDbo();";
-					$methods .= "\n\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-					$methods .= "\n\t\t\$query = \$db->getQuery(true);";
-					$methods .= "\n\n\t\t//".$this->setLine(__LINE__)." Get from ".$get['selection']['table']." as ".$default['as'];
-					$methods .= "\n\t\t".$get['selection']['select'];
-					$methods .= "\n\t\t".'$query->from('.$get['selection']['from'].');';
+					$methods .= PHP_EOL.PHP_EOL."\t/**";
+					$methods .= PHP_EOL."\t* Method to get an array of ".$default['name']." Objects.";
+					$methods .= PHP_EOL."\t*";
+					$methods .= PHP_EOL."\t* @return mixed  An array of ".$default['name']." Objects on success, false on failure.";
+					$methods .= PHP_EOL."\t*";
+					$methods .= PHP_EOL."\t*/";
+					$methods .= PHP_EOL."\tpublic function get".$default['methodName']."(\$".$default['on_field'].")";
+					$methods .= PHP_EOL."\t{###CRYPT###";
+					$methods .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get a db connection.";
+					$methods .= PHP_EOL."\t\t\$db = JFactory::getDbo();";
+					$methods .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+					$methods .= PHP_EOL."\t\t\$query = \$db->getQuery(true);";
+					$methods .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get from ".$get['selection']['table']." as ".$default['as'];
+					$methods .= PHP_EOL."\t\t".$get['selection']['select'];
+					$methods .= PHP_EOL."\t\t".'$query->from('.$get['selection']['from'].');';
 					// set the string
 					if ($get['operator'] === 'IN' || $get['operator'] === 'NOT IN')
 					{
-						$methods .= "\n\n\t\t//".$this->setLine(__LINE__)." Check if \$" . $default['on_field'] . " is an array with values.";
-						$methods .= "\n\t\t\$array = \$" . $default['on_field'] . ";";
-						$methods .= "\n\t\tif (isset(\$array) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$array, true))";
-						$methods .= "\n\t\t{";
-						$methods .= "\n\t\t\t\$query->where('".$get['join_field']." ".$get['operator']." (' . implode(',', \$array) . ')');";
-						$methods .= "\n\t\t}";
-						$methods .= "\n\t\telse";
-						$methods .= "\n\t\t{";
-						$methods .= "\n\t\t\treturn false;";
-						$methods .= "\n\t\t}";
+						$methods .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check if \$" . $default['on_field'] . " is an array with values.";
+						$methods .= PHP_EOL."\t\t\$array = \$" . $default['on_field'] . ";";
+						$methods .= PHP_EOL."\t\tif (isset(\$array) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$array, true))";
+						$methods .= PHP_EOL."\t\t{";
+						$methods .= PHP_EOL."\t\t\t\$query->where('".$get['join_field']." ".$get['operator']." (' . implode(',', \$array) . ')');";
+						$methods .= PHP_EOL."\t\t}";
+						$methods .= PHP_EOL."\t\telse";
+						$methods .= PHP_EOL."\t\t{";
+						$methods .= PHP_EOL."\t\t\treturn false;";
+						$methods .= PHP_EOL."\t\t}";
 					}
 					else
 					{
-						$methods .= "\n\t\t\$query->where('".$get['join_field']." ".$get['operator']." ' . \$db->quote(\$".$default['on_field']."));";
+						$methods .= PHP_EOL."\t\t\$query->where('".$get['join_field']." ".$get['operator']." ' . \$db->quote(\$".$default['on_field']."));";
 					}
 					// check if other queries should be loaded
 					$queryChecker = (isset($this->otherQuery[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherQuery[$this->target][$default['code']][$default['as']])) ? $this->otherQuery[$this->target][$default['code']][$default['as']] : '';
@@ -2221,12 +2221,12 @@ class Interpretation extends Fields
 							$methods .= $string;
 						}
 					}
-					$methods .= "\n\n\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
-					$methods .= "\n\t\t\$db->setQuery(\$query);";
-					$methods .= "\n\t\t\$db->execute();";
-					$methods .= "\n\n\t\t//".$this->setLine(__LINE__)." check if there was data returned";
-					$methods .= "\n\t\tif (\$db->getNumRows())";
-					$methods .= "\n\t\t{";
+					$methods .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
+					$methods .= PHP_EOL."\t\t\$db->setQuery(\$query);";
+					$methods .= PHP_EOL."\t\t\$db->execute();";
+					$methods .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." check if there was data returned";
+					$methods .= PHP_EOL."\t\tif (\$db->getNumRows())";
+					$methods .= PHP_EOL."\t\t{";
 					// set decoding of needed fields
 					if (isset($this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']]))
 					{
@@ -2276,10 +2276,10 @@ class Interpretation extends Fields
 						}
 						if (ComponentbuilderHelper::checkString($decoder) || ComponentbuilderHelper::checkString($uikit) || ComponentbuilderHelper::checkString($decoder_filter) || ComponentbuilderHelper::checkString($joine))
 						{
-							$methods .= "\n\t\t\t\$items = \$db->loadObjectList();";
-							$methods .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
-							$methods .= "\n\t\t\tforeach (\$items as \$nr => &\$item)";
-							$methods .= "\n\t\t\t{";
+							$methods .= PHP_EOL."\t\t\t\$items = \$db->loadObjectList();";
+							$methods .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
+							$methods .= PHP_EOL."\t\t\tforeach (\$items as \$nr => &\$item)";
+							$methods .= PHP_EOL."\t\t\t{";
 							if (ComponentbuilderHelper::checkString($decoder))
 							{
 								$methods .= $decoder;
@@ -2296,21 +2296,21 @@ class Interpretation extends Fields
 							{
 								$methods .= $joine;
 							}
-							$methods .= "\n\t\t\t}";
-							$methods .= "\n\t\t\treturn \$items;";
+							$methods .= PHP_EOL."\t\t\t}";
+							$methods .= PHP_EOL."\t\t\treturn \$items;";
 						}
 						else
 						{
-							$methods .= "\n\t\t\treturn \$db->loadObjectList();";
+							$methods .= PHP_EOL."\t\t\treturn \$db->loadObjectList();";
 						}
 					}
 					else
 					{
-						$methods .= "\n\t\t\treturn \$db->loadObjectList();";
+						$methods .= PHP_EOL."\t\t\treturn \$db->loadObjectList();";
 					}
-					$methods .= "\n\t\t}";
-					$methods .= "\n\t\treturn false;";
-					$methods .= "\n\t}";
+					$methods .= PHP_EOL."\t\t}";
+					$methods .= PHP_EOL."\t\treturn false;";
+					$methods .= PHP_EOL."\t}";
 
 					if ((isset($this->siteDecrypt['basic'][$code]) && $this->siteDecrypt['basic'][$code]) || (isset($this->siteDecrypt['advanced'][$code]) && $this->siteDecrypt['advanced'][$code]))
 					{
@@ -2318,17 +2318,17 @@ class Interpretation extends Fields
 						$script = '';
 						if ($this->siteDecrypt['basic'][$code])
 						{
-							$script .= "\n\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
-							$script .= "\n\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-							$script .= "\n\t\t//".$this->setLine(__LINE__)." Get the encription object.";
-							$script .= "\n\t\t\$basic = new FOFEncryptAes(\$basickey, 128);\n";
+							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
+							$script .= PHP_EOL."\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
+							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+							$script .= PHP_EOL."\t\t\$basic = new FOFEncryptAes(\$basickey, 128);".PHP_EOL;
 						}
 						if ($this->siteDecrypt['advanced'][$code])
 						{
-							$script .= "\n\t\t//".$this->setLine(__LINE__)." Get the advanced encription.";
-							$script .= "\n\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-							$script .= "\n\t\t//".$this->setLine(__LINE__)." Get the encription object.";
-							$script .= "\n\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);\n";
+							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encription.";
+							$script .= PHP_EOL."\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
+							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+							$script .= PHP_EOL."\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);".PHP_EOL;
 						}
 						$methods = str_replace('###CRYPT###',$script,$methods);
 					}
@@ -2336,7 +2336,7 @@ class Interpretation extends Fields
 				$methods = str_replace('###CRYPT###','',$methods);
 			}
 		}
-		return $methods."\n";
+		return $methods.PHP_EOL;
 	}
 
 	public function setCustomViewMethodDefaults($get,$code)
@@ -2387,19 +2387,19 @@ class Interpretation extends Fields
 		{
 			if ($get->pagination == 1)
 			{
-				$getItem = "\n\t\t//".$this->setLine(__LINE__)." Get a db connection.";
+				$getItem = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get a db connection.";
 			}
 			else
 			{
-				$getItem = "\n\t\t//".$this->setLine(__LINE__)." Make sure all records load, since no pagination allowed.";
-				$getItem .= "\n\t\t\$this->setState('list.limit', 0);";
-				$getItem .= "\n\t\t//".$this->setLine(__LINE__)." Get a db connection.";
+				$getItem = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Make sure all records load, since no pagination allowed.";
+				$getItem .= PHP_EOL."\t\t\$this->setState('list.limit', 0);";
+				$getItem .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get a db connection.";
 			}
-			$getItem .= "\n\t\t\$db = JFactory::getDbo();";
-			$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-			$getItem .= "\n\t\t\$query = \$db->getQuery(true);";
+			$getItem .= PHP_EOL."\t\t\$db = JFactory::getDbo();";
+			$getItem .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+			$getItem .= PHP_EOL."\t\t\$query = \$db->getQuery(true);";
 			// check if there is any custom script
-                        $getItem .= $this->getCustomScriptBuilder($this->target.'_php_getlistquery', $code, '', "\n\n\t\t//".$this->setLine(__LINE__)." Filtering.", true);
+                        $getItem .= $this->getCustomScriptBuilder($this->target.'_php_getlistquery', $code, '', PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filtering.", true);
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get,$code);
 			// setup filters
@@ -2411,12 +2411,12 @@ class Interpretation extends Fields
 			if ($return)
 			{
 				// return the query object
-				$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." return the query object\n\t\treturn \$query;";
+				$getItem .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." return the query object".PHP_EOL."\t\treturn \$query;";
 			}
 
 			return $getItem;
 		}
-		return "\n\t\t//".$this->setLine(__LINE__)."add your custom code here.";
+		return PHP_EOL."\t\t//".$this->setLine(__LINE__)."add your custom code here.";
 	}
 
 	/**
@@ -2432,13 +2432,13 @@ class Interpretation extends Fields
 		$Component = $this->fileContentStatic['###Component###'];
 		if (ComponentbuilderHelper::checkObject($get))
 		{
-			$getItem .= "\n\n\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
-			$getItem .= "\n\t\tif (".$Component."Helper::checkArray(\$items))";
-			$getItem .= "\n\t\t{";
-			$getItem .= "\n\t\t\tforeach (\$items as \$nr => &\$item)";
-			$getItem .= "\n\t\t\t{";
-			$getItem .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Always create a slug for sef URL's";
-			$getItem .= "\n\t\t\t\t\$item->slug = (isset(\$item->alias) && isset(\$item->id)) ? \$item->id.':'.\$item->alias : \$item->id;";
+			$getItem .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
+			$getItem .= PHP_EOL."\t\tif (".$Component."Helper::checkArray(\$items))";
+			$getItem .= PHP_EOL."\t\t{";
+			$getItem .= PHP_EOL."\t\t\tforeach (\$items as \$nr => &\$item)";
+			$getItem .= PHP_EOL."\t\t\t{";
+			$getItem .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Always create a slug for sef URL's";
+			$getItem .= PHP_EOL."\t\t\t\t\$item->slug = (isset(\$item->alias) && isset(\$item->id)) ? \$item->id.':'.\$item->alias : \$item->id;";
 			if (isset($get->main_get) && ComponentbuilderHelper::checkArray($get->main_get))
 			{
 				$asBucket = array();
@@ -2481,18 +2481,18 @@ class Interpretation extends Fields
 			// set calculations
 			if ($get->addcalculation == 1)
 			{
-				$get->php_calculation = (array) explode("\n",$get->php_calculation);
+				$get->php_calculation = (array) explode(PHP_EOL,$get->php_calculation);
 				if (ComponentbuilderHelper::checkArray($get->php_calculation))
 				{
-					$getItem .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\t\t\t\t".implode("\n\t\t\t\t",$get->php_calculation));
+					$getItem .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t\t\t".implode(PHP_EOL."\t\t\t\t",$get->php_calculation));
 				}
 			}
-			$getItem .= "\n\t\t\t}";
-			$getItem .= "\n\t\t}";
+			$getItem .= PHP_EOL."\t\t\t}";
+			$getItem .= PHP_EOL."\t\t}";
 			// remove empty foreach
 			if (strlen($getItem) <= 100)
 			{
-				$getItem = "\n";
+				$getItem = PHP_EOL;
 			}
 		}
 
@@ -2501,17 +2501,17 @@ class Interpretation extends Fields
 			$script = '';
 			if ($this->siteDecrypt['basic'][$code])
 			{
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
-				$script .= "\n\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-				$script .= "\n\t\t//".$this->setLine(__LINE__)." Get the encription object.";
-				$script .= "\n\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
+				$script .= PHP_EOL."\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+				$script .= PHP_EOL."\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 			}
 			if ($this->siteDecrypt['advanced'][$code])
 			{
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Get the advanced encription.";
-				$script .= "\n\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-				$script .= "\n\t\t//".$this->setLine(__LINE__)." Get the encription object.";
-				$script .= "\n\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encription.";
+				$script .= PHP_EOL."\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+				$script .= PHP_EOL."\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 			}
 			$getItem = $script . $getItem;
 		}
@@ -2526,24 +2526,24 @@ class Interpretation extends Fields
 			if ($view['settings']->main_get->gettype == 1)
 			{
 				// for single views
-				$method .= "\n\t\t//".$this->setLine(__LINE__)." Initialise variables.";
-				$method .= "\n\t\t\$this->item\t= \$this->get('Item');";
+				$method .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Initialise variables.";
+				$method .= PHP_EOL."\t\t\$this->item\t= \$this->get('Item');";
 			}
 			elseif ($view['settings']->main_get->gettype == 2)
 			{
 				// for list views
-				$method .= "\n\t\t//".$this->setLine(__LINE__)." Initialise variables.";
-				$method .= "\n\t\t\$this->items\t= \$this->get('Items');";
+				$method .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Initialise variables.";
+				$method .= PHP_EOL."\t\t\$this->items\t= \$this->get('Items');";
 				// only add if pagination is requered
 				if ($view['settings']->main_get->pagination == 1)
 				{
-					$method .= "\n\t\t\$this->pagination\t= \$this->get('Pagination');";
+					$method .= PHP_EOL."\t\t\$this->pagination\t= \$this->get('Pagination');";
 				}
 				// add id to list view
 				if (isset($this->customAdminViewListId[$view['settings']->code]))
 				{
 					// ###HIDDEN_INPUT_VALUES###
-					$this->fileContentDynamic[$view['settings']->code]['###HIDDEN_INPUT_VALUES###'] = "\n\t".'<input type="hidden" name="id" value="<?php echo $this->app->input->getInt(\'id\', 0); ?>" />';
+					$this->fileContentDynamic[$view['settings']->code]['###HIDDEN_INPUT_VALUES###'] = PHP_EOL."\t".'<input type="hidden" name="id" value="<?php echo $this->app->input->getInt(\'id\', 0); ?>" />';
 				}
 				else
 				{
@@ -2557,44 +2557,44 @@ class Interpretation extends Fields
 				foreach ($view['settings']->custom_get as $custom_get)
 				{
 					$custom_get_name = str_replace('get','',$custom_get->getcustom);
-					$method .= "\n\t\t\$this->".ComponentbuilderHelper::safeString($custom_get_name)."\t= \$this->get('".$custom_get_name."');";
+					$method .= PHP_EOL."\t\t\$this->".ComponentbuilderHelper::safeString($custom_get_name)."\t= \$this->get('".$custom_get_name."');";
 				}
 			}
 
-			$method .= "\n\n\t\t//".$this->setLine(__LINE__)." Check for errors.";
-			$method .= "\n\t\tif (count(\$errors = \$this->get('Errors')))";
-			$method .= "\n\t\t{";
-			$method .= "\n\t\t\tJError::raiseError(500, ".'implode("\n", $errors));';
-			$method .= "\n\t\t\treturn false;";
-			$method .= "\n\t\t}";
+			$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check for errors.";
+			$method .= PHP_EOL."\t\tif (count(\$errors = \$this->get('Errors')))";
+			$method .= PHP_EOL."\t\t{";
+			$method .= PHP_EOL."\t\t\tJError::raiseError(500, ".'implode(PHP_EOL, $errors));';
+			$method .= PHP_EOL."\t\t\treturn false;";
+			$method .= PHP_EOL."\t\t}";
 			// add custom script
 			if ($view['settings']->add_php_jview_display == 1)
 			{
-				$view['settings']->php_jview_display = (array) explode("\n",$view['settings']->php_jview_display);
+				$view['settings']->php_jview_display = (array) explode(PHP_EOL,$view['settings']->php_jview_display);
 				if (ComponentbuilderHelper::checkArray($view['settings']->php_jview_display))
 				{
-					$method .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\t\t".implode("\n\t\t",$view['settings']->php_jview_display));
+					$method .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t".implode(PHP_EOL."\t\t",$view['settings']->php_jview_display));
 				}
 			}
 			if ('site' === $this->target)
 			{
-				$method .= "\n\n\t\t//".$this->setLine(__LINE__)." Set the toolbar";
-				$method .= "\n\t\t\$this->addToolBar();";
-				$method .= "\n\n\t\t//".$this->setLine(__LINE__)." set the document";
-				$method .= "\n\t\t\$this->_prepareDocument();";
+				$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the toolbar";
+				$method .= PHP_EOL."\t\t\$this->addToolBar();";
+				$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." set the document";
+				$method .= PHP_EOL."\t\t\$this->_prepareDocument();";
 			}
 			elseif ('custom_admin' === $this->target)
 			{
-				$method .= "\n\n\t\t//".$this->setLine(__LINE__)." We don't need toolbar in the modal window.";
-				$method .= "\n\t\tif (\$this->getLayout() !== 'modal')";
-				$method .= "\n\t\t{";
-				$method .= "\n\t\t\t//".$this->setLine(__LINE__)." add the tool bar";
-				$method .= "\n\t\t\t\$this->addToolBar();";
-				$method .= "\n\t\t}";
-				$method .= "\n\n\t\t//".$this->setLine(__LINE__)." set the document";
-				$method .= "\n\t\t\$this->setDocument();";
+				$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." We don't need toolbar in the modal window.";
+				$method .= PHP_EOL."\t\tif (\$this->getLayout() !== 'modal')";
+				$method .= PHP_EOL."\t\t{";
+				$method .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." add the tool bar";
+				$method .= PHP_EOL."\t\t\t\$this->addToolBar();";
+				$method .= PHP_EOL."\t\t}";
+				$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." set the document";
+				$method .= PHP_EOL."\t\t\$this->setDocument();";
 			}
-			$method .= "\n\n\t\tparent::display(\$tpl);";
+			$method .= PHP_EOL.PHP_EOL."\t\tparent::display(\$tpl);";
 		}
 		return $method;
 	}
@@ -2647,7 +2647,7 @@ class Interpretation extends Fields
 		if (isset($this->getModule[$this->target][$view['settings']->code]) && $this->getModule[$this->target][$view['settings']->code])
 		{
 			$addModule = array();
-			$addModule[] = "\n\n\t/**";
+			$addModule[] = PHP_EOL.PHP_EOL."\t/**";
 			$addModule[] = "\t * Get the modules published in a position";
 			$addModule[] = "\t */";
 			$addModule[] = "\tpublic function getModules(\$position, \$seperator = '', \$class = '')";
@@ -2707,9 +2707,9 @@ class Interpretation extends Fields
 			$addModule[] = "\t\treturn false;";
 			$addModule[] = "\t}";
 			
-			$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_GET_MODULE_JIMPORT###'] = "\njimport('joomla.application.module.helper');";
+			$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_GET_MODULE_JIMPORT###'] = PHP_EOL."jimport('joomla.application.module.helper');";
 			
-			return implode("\n",$addModule);
+			return implode(PHP_EOL,$addModule);
 		}	
 		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_GET_MODULE_JIMPORT###'] = '';
 		return '';
@@ -2724,10 +2724,10 @@ class Interpretation extends Fields
 	{
 		if ($view['settings']->add_php_document == 1)
 		{
-			$view['settings']->php_document = (array) explode("\n",$view['settings']->php_document);
+			$view['settings']->php_document = (array) explode(PHP_EOL,$view['settings']->php_document);
 			if (ComponentbuilderHelper::checkArray($view['settings']->php_document))
 			{
-				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\t\t".implode("\n\t\t",$view['settings']->php_document));
+				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t".implode(PHP_EOL."\t\t",$view['settings']->php_document));
 			}
 		}
 		return '';
@@ -2790,7 +2790,7 @@ class Interpretation extends Fields
 			{
 				// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
 				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
-				"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_controller);
+				PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_controller);
 				if ('site' === $this->target)
 				{
 					// add the controller for this view
@@ -2804,9 +2804,9 @@ class Interpretation extends Fields
 			{
 				// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
 				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] =
-				"\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_model);
+				PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_model);
 			}
-			if (ComponentbuilderHelper::checkArray($view['settings']->custom_buttons))
+			if (isset($view['settings']->custom_buttons) && ComponentbuilderHelper::checkArray($view['settings']->custom_buttons))
 			{
 				$buttons = array();
 				foreach ($view['settings']->custom_buttons as $custom_button)
@@ -2827,7 +2827,7 @@ class Interpretation extends Fields
 				}
 				if (ComponentbuilderHelper::checkArray($buttons))
 				{
-					return "\n".implode("\n",$buttons);
+					return PHP_EOL.implode(PHP_EOL,$buttons);
 				}
 			}
 		}
@@ -2850,12 +2850,12 @@ class Interpretation extends Fields
 	{
 		if ($view['settings']->add_css_document == 1)
 		{
-			$view['settings']->css_document = (array) explode("\n",$view['settings']->css_document);
+			$view['settings']->css_document = (array) explode(PHP_EOL,$view['settings']->css_document);
 			if (ComponentbuilderHelper::checkArray($view['settings']->css_document))
 			{
-				$script = "\n\t\t//".$this->setLine(__LINE__)." Set the Custom CSS script to view\n\t\t".'$this->document->addStyleDeclaration("';
-				$cssDocument = str_replace('"', '\"', implode("\n\t\t\t",$view['settings']->css_document));
-				return $script.str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\t\t\t".$cssDocument)."\n\t\t".'");';
+				$script = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the Custom CSS script to view".PHP_EOL."\t\t".'$this->document->addStyleDeclaration("';
+				$cssDocument = str_replace('"', '\"', implode(PHP_EOL."\t\t\t",$view['settings']->css_document));
+				return $script.str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t\t".$cssDocument).PHP_EOL."\t\t".'");';
 			}
 		}
 		return '';
@@ -2865,12 +2865,12 @@ class Interpretation extends Fields
 	{
 		if ($view['settings']->add_js_document == 1)
 		{
-			$view['settings']->js_document = (array) explode("\n",$view['settings']->js_document);
+			$view['settings']->js_document = (array) explode(PHP_EOL,$view['settings']->js_document);
 			if (ComponentbuilderHelper::checkArray($view['settings']->js_document))
 			{
-				$script = "\n\t\t//".$this->setLine(__LINE__)." Set the Custom JS script to view\n\t\t".'$this->document->addScriptDeclaration("';
-				$jsDocument = str_replace('"', '\"', implode("\n\t\t\t",$view['settings']->js_document));
-				return $script.str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\t\t\t".$jsDocument)."\n\t\t".'");';
+				$script = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the Custom JS script to view".PHP_EOL."\t\t".'$this->document->addScriptDeclaration("';
+				$jsDocument = str_replace('"', '\"', implode(PHP_EOL."\t\t\t",$view['settings']->js_document));
+				return $script.str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t\t".$jsDocument).PHP_EOL."\t\t".'");';
 			}
 		}
 		return '';
@@ -2929,7 +2929,7 @@ class Interpretation extends Fields
 	public function setMetadataItem($item = 'item')
 	{
 		$meta = array();
-		$meta[] = "\n\t\t//".$this->setLine(__LINE__)." load the meta description";
+		$meta[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." load the meta description";
 		$meta[] = "\t\tif (isset(\$this->".$item."->metadesc) && \$this->".$item."->metadesc)";
 		$meta[] = "\t\t{";
 		$meta[] = "\t\t\t\$this->document->setDescription(\$this->".$item."->metadesc);";
@@ -2974,13 +2974,13 @@ class Interpretation extends Fields
 		$meta[] = "\t\t\t}";
 		$meta[] = "\t\t}";
 
-		return implode("\n",$meta);
+		return implode(PHP_EOL,$meta);
 	}
 	
 	public function setMetadataList()
 	{
 		$meta = array();
-		$meta[] = "\n\t\t//".$this->setLine(__LINE__)." load the meta description";
+		$meta[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." load the meta description";
 		$meta[] = "\t\tif (\$this->params->get('menu-meta_description'))";
 		$meta[] = "\t\t{";
 		$meta[] = "\t\t\t\$this->document->setDescription(\$this->params->get('menu-meta_description'));";
@@ -2996,7 +2996,7 @@ class Interpretation extends Fields
 		$meta[] = "\t\t\t\$this->document->setMetadata('robots', \$this->params->get('robots'));";
 		$meta[] = "\t\t}";
 
-		return implode("\n",$meta);
+		return implode(PHP_EOL,$meta);
 	}
 
 	public function setGoogleChartLoader(&$view)
@@ -3004,13 +3004,13 @@ class Interpretation extends Fields
 		if (isset($this->googleChart[$this->target][$view['settings']->code]) && $this->googleChart[$this->target][$view['settings']->code])
 		{
 			$chart = array();
-			$chart[] = "\n\n\t\t//".$this->setLine(__LINE__)." add the google chart builder class.";
+			$chart[] = PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." add the google chart builder class.";
 			$chart[] = "\t\trequire_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/chartbuilder.php';";
 			$chart[] = "\t\t//".$this->setLine(__LINE__)." load the google chart js.";
 			$chart[] = "\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/js/google.jsapi.js');";
 			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js');";
 			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/canvg.js');";
-			return implode("\n",$chart);
+			return implode(PHP_EOL,$chart);
 		}
 		return '';
 	}
@@ -3022,125 +3022,125 @@ class Interpretation extends Fields
 		$loader['css'] = array();
 		$loader['js'] = array();
 		// allways load these in
-		$setter .= "\n\n\t\t//".$this->setLine(__LINE__)." always make sure jquery is loaded.";
-		$setter .= "\n\t\tJHtml::_('jquery.framework');";
-		$setter .= "\n\t\t//".$this->setLine(__LINE__)." Load the header checker class.";
+		$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." always make sure jquery is loaded.";
+		$setter .= PHP_EOL."\t\tJHtml::_('jquery.framework');";
+		$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load the header checker class.";
 		if ($this->target === 'site')
 		{
-			$setter .= "\n\t\trequire_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
+			$setter .= PHP_EOL."\t\trequire_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
 		}
 		else
 		{
-			$setter .= "\n\t\trequire_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
+			$setter .= PHP_EOL."\t\trequire_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
 		}
-		$setter .= "\n\t\t//".$this->setLine(__LINE__)." Initialize the header checker.";
-		$setter .= "\n\t\t\$HeaderCheck = new HeaderCheck;";
+		$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Initialize the header checker.";
+		$setter .= PHP_EOL."\t\t\$HeaderCheck = new HeaderCheck;";
 		// load the defaults needed
 		if ($this->uikit)
 		{
-			$setter .= "\n\n\t\t//".$this->setLine(__LINE__)." Load uikit options.";
-			$setter .= "\n\t\t\$uikit = \$this->params->get('uikit_load');";
-			$setter .= "\n\t\t//".$this->setLine(__LINE__)." Set script size.";
-			$setter .= "\n\t\t\$size = \$this->params->get('uikit_min');";
-			$setter .= "\n\t\t//".$this->setLine(__LINE__)." Set css style.";
-			$setter .= "\n\t\t\$style = \$this->params->get('uikit_style');";
+			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load uikit options.";
+			$setter .= PHP_EOL."\t\t\$uikit = \$this->params->get('uikit_load');";
+			$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set script size.";
+			$setter .= PHP_EOL."\t\t\$size = \$this->params->get('uikit_min');";
+			$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set css style.";
+			$setter .= PHP_EOL."\t\t\$style = \$this->params->get('uikit_style');";
 
-			$setter .= "\n\n\t\t//".$this->setLine(__LINE__)." The uikit css.";
-			$setter .= "\n\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
-			$setter .= "\n\t\t{";
-			$setter .= "\n\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/uikit'.\$style.\$size.'.css');";
-			$setter .= "\n\t\t}";
-			$setter .= "\n\t\t//".$this->setLine(__LINE__)." The uikit js.";
-			$setter .= "\n\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
-			$setter .= "\n\t\t{";
-			$setter .= "\n\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/uikit'.\$size.'.js');";
-			$setter .= "\n\t\t}";
+			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." The uikit css.";
+			$setter .= PHP_EOL."\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
+			$setter .= PHP_EOL."\t\t{";
+			$setter .= PHP_EOL."\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/uikit'.\$style.\$size.'.css');";
+			$setter .= PHP_EOL."\t\t}";
+			$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." The uikit js.";
+			$setter .= PHP_EOL."\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
+			$setter .= PHP_EOL."\t\t{";
+			$setter .= PHP_EOL."\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/uikit'.\$size.'.js');";
+			$setter .= PHP_EOL."\t\t}";
 		}
 		// load the components need
 		if ($this->uikit && isset($this->uikitComp[$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->uikitComp[$view['settings']->code]))
 		{
-			$setter .= "\n\n\t\t//".$this->setLine(__LINE__)." Load the script to find all uikit components needed.";
-			$setter .= "\n\t\tif (\$uikit != 2)";
-			$setter .= "\n\t\t{";
-			$setter .= "\n\t\t\t//".$this->setLine(__LINE__)." Set the default uikit components in this view.";
-			$setter .= "\n\t\t\t\$uikitComp = array();";
+			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load the script to find all uikit components needed.";
+			$setter .= PHP_EOL."\t\tif (\$uikit != 2)";
+			$setter .= PHP_EOL."\t\t{";
+			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Set the default uikit components in this view.";
+			$setter .= PHP_EOL."\t\t\t\$uikitComp = array();";
 			foreach ($this->uikitComp[$view['settings']->code] as $class)
 			{
-				$setter .= "\n\t\t\t\$uikitComp[] = '".$class."';";
+				$setter .= PHP_EOL."\t\t\t\$uikitComp[] = '".$class."';";
 			}
 			// check content for more needed components
 			if (isset($this->siteFieldData['uikit'][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->siteFieldData['uikit'][$view['settings']->code]))
 			{
-				$setter .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Get field uikit components needed in this view.";
-				$setter .= "\n\t\t\t\$uikitFieldComp = \$this->get('UikitComp');";
-				$setter .= "\n\t\t\tif (isset(\$uikitFieldComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitFieldComp))";
-				$setter .= "\n\t\t\t{";
-				$setter .= "\n\t\t\t\tif (isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
-				$setter .= "\n\t\t\t\t{";
-				$setter .= "\n\t\t\t\t\t\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
-				$setter .= "\n\t\t\t\t\t\$uikitComp = array_unique(\$uikitComp);";
-				$setter .= "\n\t\t\t\t}";
-				$setter .= "\n\t\t\t\telse";
-				$setter .= "\n\t\t\t\t{";
-				$setter .= "\n\t\t\t\t\t\$uikitComp = \$uikitFieldComp;";
-				$setter .= "\n\t\t\t\t}";
-				$setter .= "\n\t\t\t}";
+				$setter .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get field uikit components needed in this view.";
+				$setter .= PHP_EOL."\t\t\t\$uikitFieldComp = \$this->get('UikitComp');";
+				$setter .= PHP_EOL."\t\t\tif (isset(\$uikitFieldComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitFieldComp))";
+				$setter .= PHP_EOL."\t\t\t{";
+				$setter .= PHP_EOL."\t\t\t\tif (isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
+				$setter .= PHP_EOL."\t\t\t\t{";
+				$setter .= PHP_EOL."\t\t\t\t\t\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
+				$setter .= PHP_EOL."\t\t\t\t\t\$uikitComp = array_unique(\$uikitComp);";
+				$setter .= PHP_EOL."\t\t\t\t}";
+				$setter .= PHP_EOL."\t\t\t\telse";
+				$setter .= PHP_EOL."\t\t\t\t{";
+				$setter .= PHP_EOL."\t\t\t\t\t\$uikitComp = \$uikitFieldComp;";
+				$setter .= PHP_EOL."\t\t\t\t}";
+				$setter .= PHP_EOL."\t\t\t}";
 			}
-			$setter .= "\n\t\t}";
-			$setter .= "\n\n\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
-			$setter .= "\n\t\tif (\$uikit != 2 && isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
-			$setter .= "\n\t\t{";
-			$setter .= "\n\t\t\t//".$this->setLine(__LINE__)." load just in case.";
-			$setter .= "\n\t\t\tjimport('joomla.filesystem.file');";
-			$setter .= "\n\t\t\t//".$this->setLine(__LINE__)." loading...";
-			$setter .= "\n\t\t\tforeach (\$uikitComp as \$class)";
-			$setter .= "\n\t\t\t{";
-			$setter .= "\n\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
-			$setter .= "\n\t\t\t\t{";
-			$setter .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
-			$setter .= "\n\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
-			$setter .= "\n\t\t\t\t\t{";
-			$setter .= "\n\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
-			$setter .= "\n\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
-			$setter .= "\n\t\t\t\t\t}";
-			$setter .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
-			$setter .= "\n\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
-			$setter .= "\n\t\t\t\t\t{";
-			$setter .= "\n\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
-			$setter .= "\n\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
-			$setter .= "\n\t\t\t\t\t}";
-			$setter .= "\n\t\t\t\t}";
-			$setter .= "\n\t\t\t}";
-			$setter .= "\n\t\t}";
+			$setter .= PHP_EOL."\t\t}";
+			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
+			$setter .= PHP_EOL."\t\tif (\$uikit != 2 && isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
+			$setter .= PHP_EOL."\t\t{";
+			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." load just in case.";
+			$setter .= PHP_EOL."\t\t\tjimport('joomla.filesystem.file');";
+			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." loading...";
+			$setter .= PHP_EOL."\t\t\tforeach (\$uikitComp as \$class)";
+			$setter .= PHP_EOL."\t\t\t{";
+			$setter .= PHP_EOL."\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
+			$setter .= PHP_EOL."\t\t\t\t{";
+			$setter .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
+			$setter .= PHP_EOL."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
+			$setter .= PHP_EOL."\t\t\t\t\t{";
+			$setter .= PHP_EOL."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
+			$setter .= PHP_EOL."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
+			$setter .= PHP_EOL."\t\t\t\t\t}";
+			$setter .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
+			$setter .= PHP_EOL."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
+			$setter .= PHP_EOL."\t\t\t\t\t{";
+			$setter .= PHP_EOL."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
+			$setter .= PHP_EOL."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
+			$setter .= PHP_EOL."\t\t\t\t\t}";
+			$setter .= PHP_EOL."\t\t\t\t}";
+			$setter .= PHP_EOL."\t\t\t}";
+			$setter .= PHP_EOL."\t\t}";
 		}
 		elseif ($this->uikit && isset($this->siteFieldData['uikit'][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->siteFieldData['uikit'][$view['settings']->code]))
 		{
-			$setter .= "\n\n\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
-			$setter .= "\n\t\t\$uikitComp = \$this->get('UikitComp');";
-			$setter .= "\n\t\tif (\$uikit != 2 && isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
-			$setter .= "\n\t\t{";
-			$setter .= "\n\t\t\t//".$this->setLine(__LINE__)." load just in case.";
-			$setter .= "\n\t\t\tjimport('joomla.filesystem.file');";
-			$setter .= "\n\t\t\t//".$this->setLine(__LINE__)." loading...";
-			$setter .= "\n\t\t\tforeach (\$uikitComp as \$class)";
-			$setter .= "\n\t\t\t{";
-			$setter .= "\n\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
-			$setter .= "\n\t\t\t\t{";
-			$setter .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
-			$setter .= "\n\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
-			$setter .= "\n\t\t\t\t\t{";
-			$setter .= "\n\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
-			$setter .= "\n\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
-			$setter .= "\n\t\t\t\t\t}";
-			$setter .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
-			$setter .= "\n\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
-			$setter .= "\n\t\t\t\t\t{";
-			$setter .= "\n\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
-			$setter .= "\n\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
-			$setter .= "\n\t\t\t\t\t}";
-			$setter .= "\n\t\t\t\t}";
-			$setter .= "\n\t\t\t}";
-			$setter .= "\n\t\t}";
+			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
+			$setter .= PHP_EOL."\t\t\$uikitComp = \$this->get('UikitComp');";
+			$setter .= PHP_EOL."\t\tif (\$uikit != 2 && isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
+			$setter .= PHP_EOL."\t\t{";
+			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." load just in case.";
+			$setter .= PHP_EOL."\t\t\tjimport('joomla.filesystem.file');";
+			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." loading...";
+			$setter .= PHP_EOL."\t\t\tforeach (\$uikitComp as \$class)";
+			$setter .= PHP_EOL."\t\t\t{";
+			$setter .= PHP_EOL."\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
+			$setter .= PHP_EOL."\t\t\t\t{";
+			$setter .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
+			$setter .= PHP_EOL."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
+			$setter .= PHP_EOL."\t\t\t\t\t{";
+			$setter .= PHP_EOL."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
+			$setter .= PHP_EOL."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
+			$setter .= PHP_EOL."\t\t\t\t\t}";
+			$setter .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
+			$setter .= PHP_EOL."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
+			$setter .= PHP_EOL."\t\t\t\t\t{";
+			$setter .= PHP_EOL."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
+			$setter .= PHP_EOL."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
+			$setter .= PHP_EOL."\t\t\t\t\t}";
+			$setter .= PHP_EOL."\t\t\t\t}";
+			$setter .= PHP_EOL."\t\t\t}";
+			$setter .= PHP_EOL."\t\t}";
 		}
 		return $setter;
 	}
@@ -3149,7 +3149,7 @@ class Interpretation extends Fields
 	{
 		if ($view['settings']->add_php_jview == 1)
 		{
-			return str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\n".$view['settings']->php_jview);
+			return str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL.PHP_EOL.$view['settings']->php_jview);
 		}
 		return '';
 	}
@@ -3168,7 +3168,7 @@ class Interpretation extends Fields
 					$this->placeholders['[[[LIMITBOX]]]'] = '<?php echo $this->pagination->getLimitBox(); ?>';
 				}
 				$body[] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->default);
-				$body[] = "\n".'<?php if (isset($this->items) && '.$this->fileContentStatic['###component###'].'Helper::checkArray($this->items) && count($this->items) > 4): ?>';
+				$body[] = PHP_EOL.'<?php if (isset($this->items) && '.$this->fileContentStatic['###component###'].'Helper::checkArray($this->items) && count($this->items) > 4): ?>';
 				$body[] = '<form name="adminForm" method="post">';
 				$body[] = "\t".'<div class="pagination">';
 				$body[] = "\t\t".'<?php if ($this->params->def(\'show_pagination_results\', 1)) : ?>';
@@ -3187,11 +3187,11 @@ class Interpretation extends Fields
 				$body[] = '</form>';
 				$body[] = '<?php endif; ?>';
 				
-				return implode("\n",$body);
+				return implode(PHP_EOL,$body);
 			}
 			else
 			{
-				return "\n". str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->default);
+				return PHP_EOL. str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->default);
 			}
 			
 		}
@@ -3206,7 +3206,7 @@ class Interpretation extends Fields
 			if (strpos($view['settings']->default, 'Joomla.submitbutton = function(task)') === false)
 			{
 				$script = array();
-				$script[] = "\n<script type=\"text/javascript\">";
+				$script[] = PHP_EOL."<script type=\"text/javascript\">";
 				$script[] = "\tJoomla.submitbutton = function(task) {";
 				$script[] = "\t\tif (task === '".$view['settings']->code.".back') {";
 				$script[] = "\t\t\tparent.history.back();";
@@ -3219,7 +3219,7 @@ class Interpretation extends Fields
 				$script[] = "\t}";
 				$script[] = "</script>";
 				
-				return implode("\n", $script);
+				return implode(PHP_EOL, $script);
 			}
 			
 		}
@@ -3230,10 +3230,10 @@ class Interpretation extends Fields
 	{
 		if ($view['settings']->add_php_view == 1)
 		{
-			$view['settings']->php_view = (array) explode("\n",$view['settings']->php_view);
+			$view['settings']->php_view = (array) explode(PHP_EOL,$view['settings']->php_view);
 			if (ComponentbuilderHelper::checkArray($view['settings']->php_view))
 			{
-				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),"\n\n".implode("\n",$view['settings']->php_view));
+				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL.PHP_EOL.implode(PHP_EOL,$view['settings']->php_view));
 			}
 		}
 		return '';
@@ -3254,7 +3254,7 @@ class Interpretation extends Fields
 				// set the file data
 				$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
 				// ###SITE_TEMPLATE_BODY### <<<DYNAMIC>>>
-				$this->fileContentDynamic[$view['settings']->code.'_'.$template]['###'.$TARGET.'_TEMPLATE_BODY###'] = "\n" . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$data['html']);
+				$this->fileContentDynamic[$view['settings']->code.'_'.$template]['###'.$TARGET.'_TEMPLATE_BODY###'] = PHP_EOL . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$data['html']);
 				// ###SITE_TEMPLATE_CODE_BODY### <<<DYNAMIC>>>
 				$this->fileContentDynamic[$view['settings']->code.'_'.$template]['###'.$TARGET.'_TEMPLATE_CODE_BODY###'] = $this->setCustomViewTemplateCode($data['php_view']);
 			}
@@ -3265,10 +3265,10 @@ class Interpretation extends Fields
 	{
 		if (ComponentbuilderHelper::checkString($php))
 		{
-			$php_view = (array) explode("\n",$php);
+			$php_view = (array) explode(PHP_EOL,$php);
 			if (ComponentbuilderHelper::checkArray($php_view))
 			{
-				$php_view = "\n\n".implode("\n",$php_view);
+				$php_view = PHP_EOL.PHP_EOL.implode(PHP_EOL,$php_view);
 				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),$php_view);
 			}
 		}
@@ -3287,10 +3287,10 @@ class Interpretation extends Fields
 				// set the file data
 				$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
 				// ###SITE_LAYOUT_CODE### <<<DYNAMIC>>>
-				$php_view = (array) explode("\n",$data['php_view']);
+				$php_view = (array) explode(PHP_EOL,$data['php_view']);
 				if (ComponentbuilderHelper::checkArray($php_view))
 				{
-					$php_view = "\n\n".implode("\n",$php_view);
+					$php_view = PHP_EOL.PHP_EOL.implode(PHP_EOL,$php_view);
 					$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_CODE###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$php_view);
 				}
 				else
@@ -3298,7 +3298,7 @@ class Interpretation extends Fields
 					$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_CODE###'] = '';
 				}
 				// ###SITE_LAYOUT_BODY### <<<DYNAMIC>>>
-				$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_BODY###'] = "\n" . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$data['html']);
+				$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_BODY###'] = PHP_EOL . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$data['html']);
 
 			}
 		}
@@ -3343,12 +3343,12 @@ class Interpretation extends Fields
 				{
 					if ($type !== 'static')
 					{
-						//var_dump($replacment); echo "\n";
+						//var_dump($replacment); echo PHP_EOL;
 						$echos[$replacment] = "###".$replacment."###<br />";
 					}
 					elseif ($type === 'static')
 					{
-						//var_dump($replacment); echo "\n";
+						//var_dump($replacment); echo PHP_EOL;
 						$echos[$replacment] = "###".$replacment."###<br />";
 					}
 				}
@@ -3387,13 +3387,13 @@ class Interpretation extends Fields
 		{
 			foreach ($this->jsonItemBuilder[$view] as $jsonItem)
 			{
-				$script .= "\n\n\t\t\tif (!empty(\$item->".$jsonItem."))";
-				$script .= "\n\t\t\t{";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Convert the ".$jsonItem." field to an array.";
-				$script .= "\n\t\t\t\t\$".$jsonItem." = new Registry;";
-				$script .= "\n\t\t\t\t\$".$jsonItem."->loadString(\$item->".$jsonItem.");";
-				$script .= "\n\t\t\t\t\$item->".$jsonItem." = \$".$jsonItem."->toArray();";
-				$script .= "\n\t\t\t}";
+				$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$jsonItem."))";
+				$script .= PHP_EOL."\t\t\t{";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Convert the ".$jsonItem." field to an array.";
+				$script .= PHP_EOL."\t\t\t\t\$".$jsonItem." = new Registry;";
+				$script .= PHP_EOL."\t\t\t\t\$".$jsonItem."->loadString(\$item->".$jsonItem.");";
+				$script .= PHP_EOL."\t\t\t\t\$item->".$jsonItem." = \$".$jsonItem."->toArray();";
+				$script .= PHP_EOL."\t\t\t}";
 			}
 		}
 		// go from json to string
@@ -3402,15 +3402,15 @@ class Interpretation extends Fields
 			$makeArray = '';
 			foreach ($this->jsonStringBuilder[$view] as $jsonString)
 			{
-			$script .= "\n\n\t\t\tif (!empty(\$item->".$jsonString."))";
-				$script .= "\n\t\t\t{";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." JSON Decode ".$jsonString.".";
+			$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$jsonString."))";
+				$script .= PHP_EOL."\t\t\t{";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." JSON Decode ".$jsonString.".";
 				if (strpos($jsonString, 'group') !== false)
 				{
 					$makeArray = ',true';
 				}
-				$script .= "\n\t\t\t\t\$item->".$jsonString." = json_decode(\$item->".$jsonString.$makeArray.");";
-				$script .= "\n\t\t\t}";
+				$script .= PHP_EOL."\t\t\t\t\$item->".$jsonString." = json_decode(\$item->".$jsonString.$makeArray.");";
+				$script .= PHP_EOL."\t\t\t}";
 			}
 		}
 		// go from base64 to string
@@ -3418,11 +3418,11 @@ class Interpretation extends Fields
 		{
 			foreach ($this->base64Builder[$view] as $baseString)
 			{
-				$script .= "\n\n\t\t\tif (!empty(\$item->".$baseString."))"; // TODO && base64_encode(base64_decode(\$item->".$baseString.", true)) === \$item->".$baseString.")";
-				$script .= "\n\t\t\t{";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." base64 Decode ".$baseString.".";
-				$script .= "\n\t\t\t\t\$item->".$baseString." = base64_decode(\$item->".$baseString.");";
-				$script .= "\n\t\t\t}";
+				$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$baseString."))"; // TODO && base64_encode(base64_decode(\$item->".$baseString.", true)) === \$item->".$baseString.")";
+				$script .= PHP_EOL."\t\t\t{";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." base64 Decode ".$baseString.".";
+				$script .= PHP_EOL."\t\t\t\t\$item->".$baseString." = base64_decode(\$item->".$baseString.");";
+				$script .= PHP_EOL."\t\t\t}";
 			}
 		}
 		// decryption
@@ -3431,38 +3431,38 @@ class Interpretation extends Fields
 			$Component	= $this->fileContentStatic['###Component###'];
 			if (isset($this->basicEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder[$view]))
 			{
-				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
-				$script .= "\n\t\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Get the encription object.";
-				$script .= "\n\t\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
+				$script .= PHP_EOL."\t\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+				$script .= PHP_EOL."\t\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 				foreach ($this->basicEncryptionBuilder[$view] as $baseString)
 				{
-					$script .= "\n\n\t\t\tif (!empty(\$item->".$baseString.") && \$basickey && !is_numeric(\$item->".$baseString.") && \$item->".$baseString." === base64_encode(base64_decode(\$item->".$baseString.", true)))";
-					$script .= "\n\t\t\t{";
-					$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." basic decript data ".$baseString.".";
-					$script .= "\n\t\t\t\t\$item->".$baseString." = rtrim(\$basic->decryptString(\$item->".$baseString."), ".'"\0"'.");";
-					$script .= "\n\t\t\t}";
+					$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$baseString.") && \$basickey && !is_numeric(\$item->".$baseString.") && \$item->".$baseString." === base64_encode(base64_decode(\$item->".$baseString.", true)))";
+					$script .= PHP_EOL."\t\t\t{";
+					$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." basic decript data ".$baseString.".";
+					$script .= PHP_EOL."\t\t\t\t\$item->".$baseString." = rtrim(\$basic->decryptString(\$item->".$baseString."), ".'"\0"'.");";
+					$script .= PHP_EOL."\t\t\t}";
 				}
 			}
 			if (isset($this->advancedEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder[$view]))
 			{
-				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
-				$script .= "\n\t\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Get the encription object.";
-				$script .= "\n\t\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
+				$script .= PHP_EOL."\t\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+				$script .= PHP_EOL."\t\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 				foreach ($this->advancedEncryptionBuilder[$view] as $baseString)
 				{
-					$script .= "\n\n\t\t\tif (!empty(\$item->".$baseString.") && \$advancedkey && !is_numeric(\$item->".$baseString.") && \$item->".$baseString." === base64_encode(base64_decode(\$item->".$baseString.", true)))";
-					$script .= "\n\t\t\t{";
-					$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." advanced decript data ".$baseString.".";
-					$script .= "\n\t\t\t\t\$item->".$baseString." = rtrim(\$advanced->decryptString(\$item->".$baseString."), ".'"\0"'.");";
-					$script .= "\n\t\t\t}";
+					$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$baseString.") && \$advancedkey && !is_numeric(\$item->".$baseString.") && \$item->".$baseString." === base64_encode(base64_decode(\$item->".$baseString.", true)))";
+					$script .= PHP_EOL."\t\t\t{";
+					$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." advanced decript data ".$baseString.".";
+					$script .= PHP_EOL."\t\t\t\t\$item->".$baseString." = rtrim(\$advanced->decryptString(\$item->".$baseString."), ".'"\0"'.");";
+					$script .= PHP_EOL."\t\t\t}";
 				}
 			}
 		}
 
 		// add custom php to getitem method
-                $script .= $this->getCustomScriptBuilder('php_getitem', $view, "\n\n");
+                $script .= $this->getCustomScriptBuilder('php_getitem', $view, PHP_EOL.PHP_EOL);
 
 		return $script;
 	}
@@ -3474,11 +3474,11 @@ class Interpretation extends Fields
 		{
 			foreach ($this->checkboxBuilder[$view] as $checkbox)
 			{
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Set the empty ".$checkbox." item to data";
-				$script .= "\n\t\tif (!isset(\$data['".$checkbox."']))";
-				$script .= "\n\t\t{";
-				$script .= "\n\t\t\t\$data['".$checkbox."'] = '';";
-				$script .= "\n\t\t}";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the empty ".$checkbox." item to data";
+				$script .= PHP_EOL."\t\tif (!isset(\$data['".$checkbox."']))";
+				$script .= PHP_EOL."\t\t{";
+				$script .= PHP_EOL."\t\t\t\$data['".$checkbox."'] = '';";
+				$script .= PHP_EOL."\t\t}";
 			}
 		}
 		return $script;
@@ -3492,18 +3492,18 @@ class Interpretation extends Fields
 		{
 			foreach ($this->jsonItemBuilder[$view] as $jsonItem)
 			{
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Set the ".$jsonItem." items to data.";
-				$script .= "\n\t\tif (isset(\$data['".$jsonItem."']) && is_array(\$data['".$jsonItem."']))";
-				$script .= "\n\t\t{";
-				$script .= "\n\t\t\t\$".$jsonItem." = new JRegistry;";
-				$script .= "\n\t\t\t\$".$jsonItem."->loadArray(\$data['".$jsonItem."']);";
-				$script .= "\n\t\t\t\$data['".$jsonItem."'] = (string) \$".$jsonItem.";";
-				$script .= "\n\t\t}";
-				$script .= "\n\t\telseif (!isset(\$data['".$jsonItem."']))";
-				$script .= "\n\t\t{";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Set the empty ".$jsonItem." to data";
-				$script .= "\n\t\t\t\$data['".$jsonItem."'] = '';";
-				$script .= "\n\t\t}";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the ".$jsonItem." items to data.";
+				$script .= PHP_EOL."\t\tif (isset(\$data['".$jsonItem."']) && is_array(\$data['".$jsonItem."']))";
+				$script .= PHP_EOL."\t\t{";
+				$script .= PHP_EOL."\t\t\t\$".$jsonItem." = new JRegistry;";
+				$script .= PHP_EOL."\t\t\t\$".$jsonItem."->loadArray(\$data['".$jsonItem."']);";
+				$script .= PHP_EOL."\t\t\t\$data['".$jsonItem."'] = (string) \$".$jsonItem.";";
+				$script .= PHP_EOL."\t\t}";
+				$script .= PHP_EOL."\t\telseif (!isset(\$data['".$jsonItem."']))";
+				$script .= PHP_EOL."\t\t{";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Set the empty ".$jsonItem." to data";
+				$script .= PHP_EOL."\t\t\t\$data['".$jsonItem."'] = '';";
+				$script .= PHP_EOL."\t\t}";
 			}
 		}
 		// turn string into json string
@@ -3511,11 +3511,11 @@ class Interpretation extends Fields
 		{
 			foreach ($this->jsonStringBuilder[$view] as $jsonString)
 			{
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Set the ".$jsonString." string to JSON string.";
-				$script .= "\n\t\tif (isset(\$data['".$jsonString."']))";
-				$script .= "\n\t\t{";
-				$script .= "\n\t\t\t\$data['".$jsonString."'] = (string) json_encode(\$data['".$jsonString."']);";
-				$script .= "\n\t\t}";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the ".$jsonString." string to JSON string.";
+				$script .= PHP_EOL."\t\tif (isset(\$data['".$jsonString."']))";
+				$script .= PHP_EOL."\t\t{";
+				$script .= PHP_EOL."\t\t\t\$data['".$jsonString."'] = (string) json_encode(\$data['".$jsonString."']);";
+				$script .= PHP_EOL."\t\t}";
 			}
 		}
 		// turn string into base 64 string
@@ -3523,11 +3523,11 @@ class Interpretation extends Fields
 		{
 			foreach ($this->base64Builder[$view] as $baseString)
 			{
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Set the ".$baseString." string to base64 string.";
-				$script .= "\n\t\tif (isset(\$data['".$baseString."']))";
-				$script .= "\n\t\t{";
-				$script .= "\n\t\t\t\$data['".$baseString."'] = base64_encode(\$data['".$baseString."']);";
-				$script .= "\n\t\t}";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the ".$baseString." string to base64 string.";
+				$script .= PHP_EOL."\t\tif (isset(\$data['".$baseString."']))";
+				$script .= PHP_EOL."\t\t{";
+				$script .= PHP_EOL."\t\t\t\$data['".$baseString."'] = base64_encode(\$data['".$baseString."']);";
+				$script .= PHP_EOL."\t\t}";
 			}
 		}
 		// turn string into encrypted string
@@ -3536,37 +3536,37 @@ class Interpretation extends Fields
 			$Component	= $this->fileContentStatic['###Component###'];
 			if(isset($this->basicEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder[$view]))
 			{
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Get the basic encription key.";
-				$script .= "\n\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-				$script .= "\n\t\t//".$this->setLine(__LINE__)." Get the encription object";
-				$script .= "\n\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encription key.";
+				$script .= PHP_EOL."\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object";
+				$script .= PHP_EOL."\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 				foreach ($this->basicEncryptionBuilder[$view] as $baseString)
 				{
-					$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Encript data ".$baseString.".";
-					$script .= "\n\t\tif (isset(\$data['".$baseString."']) && \$basickey)";
-					$script .= "\n\t\t{";
-					$script .= "\n\t\t\t\$data['".$baseString."'] = \$basic->encryptString(\$data['".$baseString."']);";
-					$script .= "\n\t\t}";
+					$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Encript data ".$baseString.".";
+					$script .= PHP_EOL."\t\tif (isset(\$data['".$baseString."']) && \$basickey)";
+					$script .= PHP_EOL."\t\t{";
+					$script .= PHP_EOL."\t\t\t\$data['".$baseString."'] = \$basic->encryptString(\$data['".$baseString."']);";
+					$script .= PHP_EOL."\t\t}";
 				}
 			}
 			if(isset($this->advancedEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder[$view]))
 			{
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
-				$script .= "\n\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-				$script .= "\n\t\t//".$this->setLine(__LINE__)." Get the encription object";
-				$script .= "\n\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
+				$script .= PHP_EOL."\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object";
+				$script .= PHP_EOL."\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 				foreach ($this->advancedEncryptionBuilder[$view] as $baseString)
 				{
-					$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Encript data ".$baseString.".";
-					$script .= "\n\t\tif (isset(\$data['".$baseString."']) && \$advancedkey)";
-					$script .= "\n\t\t{";
-					$script .= "\n\t\t\t\$data['".$baseString."'] = \$advanced->encryptString(\$data['".$baseString."']);";
-					$script .= "\n\t\t}";
+					$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Encript data ".$baseString.".";
+					$script .= PHP_EOL."\t\tif (isset(\$data['".$baseString."']) && \$advancedkey)";
+					$script .= PHP_EOL."\t\t{";
+					$script .= PHP_EOL."\t\t\t\$data['".$baseString."'] = \$advanced->encryptString(\$data['".$baseString."']);";
+					$script .= PHP_EOL."\t\t}";
 				}
 			}
 		}
 		// add custom PHP to the save method
-                $script .= $this->getCustomScriptBuilder('php_save', $view, "\n\n");
+                $script .= $this->getCustomScriptBuilder('php_save', $view, PHP_EOL.PHP_EOL);
 		return $script;
 	}
 
@@ -3579,14 +3579,14 @@ class Interpretation extends Fields
 		// add the tags observer
 		if (isset($this->tagsBuilder[$view]) && ComponentbuilderHelper::checkString($this->tagsBuilder[$view]))
 		{
-			$oserver .= "\n\n\t\t//".$this->setLine(__LINE__)." Adding Tag Options";
-			$oserver .= "\n\t\tJTableObserverTags::createObserver(\$this, array('typeAlias' => 'com_".$component.".".$view."'));";
+			$oserver .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Adding Tag Options";
+			$oserver .= PHP_EOL."\t\tJTableObserverTags::createObserver(\$this, array('typeAlias' => 'com_".$component.".".$view."'));";
 		}
 		// add the history/version observer
 		if (isset($this->historyBuilder[$view]) && ComponentbuilderHelper::checkString($this->historyBuilder[$view]))
 		{
-			$oserver .= "\n\n\t\t//".$this->setLine(__LINE__)." Adding History Options";
-			$oserver .= "\n\t\tJTableObserverContenthistory::createObserver(\$this, array('typeAlias' => 'com_".$component.".".$view."'));";
+			$oserver .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Adding History Options";
+			$oserver .= PHP_EOL."\t\tJTableObserverContenthistory::createObserver(\$this, array('typeAlias' => 'com_".$component.".".$view."'));";
 		}
 		return $oserver;
 	}
@@ -3641,50 +3641,50 @@ class Interpretation extends Fields
 				{
 					$taabb = "\t";
 				}
-				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Get The Database object";
-				$script .= "\n\t\t\t\$db = JFactory::getDbo();";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get The Database object";
+				$script .= PHP_EOL."\t\t\t\$db = JFactory::getDbo();";
 				foreach ($dbStuff as $name => $tables)
 				{
 					if (ComponentbuilderHelper::checkArray($tables))
 					{
 						$code = ComponentbuilderHelper::safeString($name);
-						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Create the ".$name." content type object.";
-						$script .= "\n\t\t\t\$".$code." = new stdClass();";						
+						$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Create the ".$name." content type object.";
+						$script .= PHP_EOL."\t\t\t\$".$code." = new stdClass();";						
 						foreach ($tables as $table => $data)
 						{
-							$script .= "\n\t\t\t\$".$code."->".$table." = '".$data."';";
+							$script .= PHP_EOL."\t\t\t\$".$code."->".$table." = '".$data."';";
 						}
 						if ($action === 'update')
 						{
 							// we first load script to check if data exist
-							$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Check if ".$name." type is already in content_type DB.";
-							$script .= "\n\t\t\t\$".$code."_id = null;";
-							$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
-							$script .= "\n\t\t\t\$query->select(\$db->quoteName(array('type_id')));";
-							$script .= "\n\t\t\t\$query->from(\$db->quoteName('#__content_types'));";
-							$script .= "\n\t\t\t\$query->where(\$db->quoteName('type_alias') . ' LIKE '. \$db->quote($".$code."->type_alias));";
-							$script .= "\n\t\t\t\$db->setQuery(\$query);";
-							$script .= "\n\t\t\t\$db->execute();";
+							$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Check if ".$name." type is already in content_type DB.";
+							$script .= PHP_EOL."\t\t\t\$".$code."_id = null;";
+							$script .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
+							$script .= PHP_EOL."\t\t\t\$query->select(\$db->quoteName(array('type_id')));";
+							$script .= PHP_EOL."\t\t\t\$query->from(\$db->quoteName('#__content_types'));";
+							$script .= PHP_EOL."\t\t\t\$query->where(\$db->quoteName('type_alias') . ' LIKE '. \$db->quote($".$code."->type_alias));";
+							$script .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
+							$script .= PHP_EOL."\t\t\t\$db->execute();";
 						}
-						$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Set the object into the content types table.";
+						$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Set the object into the content types table.";
 						if ($action === 'update')
 						{
-							$script .= "\n\t\t\tif (\$db->getNumRows())";
-							$script .= "\n\t\t\t{";
-							$script .= "\n\t\t\t\t\$".$code."->type_id = \$db->loadResult();";
-							$script .= "\n\t\t\t\t\$".$code."_Updated = \$db->updateObject('#__content_types', \$".$code.", 'type_id');";
-							$script .= "\n\t\t\t}";
-							$script .= "\n\t\t\telse";
-							$script .= "\n\t\t\t{";
+							$script .= PHP_EOL."\t\t\tif (\$db->getNumRows())";
+							$script .= PHP_EOL."\t\t\t{";
+							$script .= PHP_EOL."\t\t\t\t\$".$code."->type_id = \$db->loadResult();";
+							$script .= PHP_EOL."\t\t\t\t\$".$code."_Updated = \$db->updateObject('#__content_types', \$".$code.", 'type_id');";
+							$script .= PHP_EOL."\t\t\t}";
+							$script .= PHP_EOL."\t\t\telse";
+							$script .= PHP_EOL."\t\t\t{";
 						}
-						$script .= "\n\t\t\t".$taabb."\$".$code."_Inserted = \$db->insertObject('#__content_types', \$".$code.");";
+						$script .= PHP_EOL."\t\t\t".$taabb."\$".$code."_Inserted = \$db->insertObject('#__content_types', \$".$code.");";
 						if ($action === 'update')
 						{
-							$script .= "\n\t\t\t}";
+							$script .= PHP_EOL."\t\t\t}";
 						}
 					}
 				}
-				$script .= "\n\n";
+				$script .= PHP_EOL.PHP_EOL;
 			}
 		}
 		return $script;
@@ -3702,37 +3702,37 @@ class Interpretation extends Fields
 		{
 			if (ComponentbuilderHelper::checkString($script))
 			{
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion params.";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion params.";
 			}
 			else
 			{
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion params.";
-				$script .= "\n\t\t\t\$db = JFactory::getDbo();";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion params.";
+				$script .= PHP_EOL."\t\t\t\$db = JFactory::getDbo();";
 			}
-			$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
-			$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Field to update.";
-			$script .= "\n\t\t\t\$fields = array(";
-			$script .= "\n\t\t\t\t\$db->quoteName('params') . ' = ' . \$db->quote('{".$this->paramsBuilder."}'),";
-			$script .= "\n\t\t\t);";
-			$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Condition.";
-			$script .= "\n\t\t\t\$conditions = array(";
-			$script .= "\n\t\t\t\t\$db->quoteName('element') . ' = ' . \$db->quote('com_".$component."')";
-			$script .= "\n\t\t\t);";
-			$script .= "\n\n\t\t\t\$query->update(\$db->quoteName('#__extensions'))->set(\$fields)->where(\$conditions);";
-			$script .= "\n\t\t\t\$db->setQuery(\$query);";
-			$script .= "\n\t\t\t\$allDone = \$db->execute();";
+			$script .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
+			$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Field to update.";
+			$script .= PHP_EOL."\t\t\t\$fields = array(";
+			$script .= PHP_EOL."\t\t\t\t\$db->quoteName('params') . ' = ' . \$db->quote('{".$this->paramsBuilder."}'),";
+			$script .= PHP_EOL."\t\t\t);";
+			$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Condition.";
+			$script .= PHP_EOL."\t\t\t\$conditions = array(";
+			$script .= PHP_EOL."\t\t\t\t\$db->quoteName('element') . ' = ' . \$db->quote('com_".$component."')";
+			$script .= PHP_EOL."\t\t\t);";
+			$script .= PHP_EOL.PHP_EOL."\t\t\t\$query->update(\$db->quoteName('#__extensions'))->set(\$fields)->where(\$conditions);";
+			$script .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
+			$script .= PHP_EOL."\t\t\t\$allDone = \$db->execute();";
 		}
 		// add the custom script
-		$script .= $this->getCustomScriptBuilder('php_postflight', 'install', "\n\n", null, true);
+		$script .= $this->getCustomScriptBuilder('php_postflight', 'install', PHP_EOL.PHP_EOL, null, true);
 		if (ComponentbuilderHelper::checkString($script))
 		{
-			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
-			$script .= "\n\t\t\t\t".'<img src="components/com_'.$component.'/assets/images/component-300.'.$this->componentImageType.'"/>';
-			$script .= "\n\t\t\t\t".'</a>\';';
+			$script .= PHP_EOL."\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
+			$script .= PHP_EOL."\t\t\t\t".'<img src="components/com_'.$component.'/assets/images/component-300.'.$this->componentImageType.'"/>';
+			$script .= PHP_EOL."\t\t\t\t".'</a>\';';
 			
 			return $script;
 		}
-		return "\n\t\t\t//".$this->setLine(__LINE__)." noting to install.";
+		return PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." noting to install.";
 	}
 	
 	public function setPostUpdateScript()
@@ -3740,20 +3740,20 @@ class Interpretation extends Fields
 		// reset script
 		$script = $this->setComponentToContentTypes('update');
 		// add the custom script
-		$script .= $this->getCustomScriptBuilder('php_postflight', 'update', "\n\n", null, true);
+		$script .= $this->getCustomScriptBuilder('php_postflight', 'update', PHP_EOL.PHP_EOL, null, true);
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
-			$script .= "\n\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
-			$script .= "\n\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/component-300.'.$this->componentImageType.'"/>';
-			$script .= "\n\t\t\t\t".'</a>';
-			$script .= "\n\t\t\t\t<h3>Upgrade to Version ".$this->fileContentStatic['###VERSION###']." Was Successful! Let us know if anything is not working as expected.</h3>';";
+			$script .= PHP_EOL."\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
+			$script .= PHP_EOL."\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/component-300.'.$this->componentImageType.'"/>';
+			$script .= PHP_EOL."\t\t\t\t".'</a>';
+			$script .= PHP_EOL."\t\t\t\t<h3>Upgrade to Version ".$this->fileContentStatic['###VERSION###']." Was Successful! Let us know if anything is not working as expected.</h3>';";
 		}
 
 		if (ComponentbuilderHelper::checkString($script))
 		{
 			return $script;
 		}
-		return "\n\t\t\t//".$this->setLine(__LINE__)." noting to update.";
+		return PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." noting to update.";
 	}
 
 	public function setUninstallScript()
@@ -3764,10 +3764,10 @@ class Interpretation extends Fields
 		{
 			$component = $this->fileContentStatic['###component###'];
 			// start loading the data to delet
-			$script .= "\n\t\t//".$this->setLine(__LINE__)." Get Application object";
-			$script .= "\n\t\t\$app = JFactory::getApplication();";
-			$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Get The Database object";
-			$script .= "\n\t\t\$db = JFactory::getDbo();";
+			$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get Application object";
+			$script .= PHP_EOL."\t\t\$app = JFactory::getApplication();";
+			$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get The Database object";
+			$script .= PHP_EOL."\t\t\$db = JFactory::getDbo();";
 
 			foreach ($this->uninstallScriptBuilder as $viewName => $typeAlias)
 			{
@@ -3775,130 +3775,130 @@ class Interpretation extends Fields
 				$view = ComponentbuilderHelper::safeString($viewName);
 
 				// First check if data is till in table
-				$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-				$script .= "\n\t\t\$query = \$db->getQuery(true);";
-				$script .= "\n\t\t//".$this->setLine(__LINE__)." Select id from content type table";
-				$script .= "\n\t\t\$query->select(\$db->quoteName('type_id'));";
-				$script .= "\n\t\t\$query->from(\$db->quoteName('#__content_types'));";
-				$script .= "\n\t\t//".$this->setLine(__LINE__)." Where ".$viewName." alias is found";
-				$script .= "\n\t\t\$query->where( \$db->quoteName('type_alias') . ' = '. \$db->quote('".$typeAlias."') );";
-				$script .= "\n\t\t\$db->setQuery(\$query);";
-				$script .= "\n\t\t//".$this->setLine(__LINE__)." Execute query to see if alias is found";
-				$script .= "\n\t\t\$db->execute();";
-				$script .= "\n\t\t\$".$view."_found = \$db->getNumRows();";
-				$script .= "\n\t\t//".$this->setLine(__LINE__)." Now check if there were any rows";
-				$script .= "\n\t\tif (\$".$view."_found)";
-				$script .= "\n\t\t{";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Since there are load the needed  ".$view." type ids";
-				$script .= "\n\t\t\t\$".$view."_ids = \$db->loadColumn();";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+				$script .= PHP_EOL."\t\t\$query = \$db->getQuery(true);";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Select id from content type table";
+				$script .= PHP_EOL."\t\t\$query->select(\$db->quoteName('type_id'));";
+				$script .= PHP_EOL."\t\t\$query->from(\$db->quoteName('#__content_types'));";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Where ".$viewName." alias is found";
+				$script .= PHP_EOL."\t\t\$query->where( \$db->quoteName('type_alias') . ' = '. \$db->quote('".$typeAlias."') );";
+				$script .= PHP_EOL."\t\t\$db->setQuery(\$query);";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Execute query to see if alias is found";
+				$script .= PHP_EOL."\t\t\$db->execute();";
+				$script .= PHP_EOL."\t\t\$".$view."_found = \$db->getNumRows();";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Now check if there were any rows";
+				$script .= PHP_EOL."\t\tif (\$".$view."_found)";
+				$script .= PHP_EOL."\t\t{";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Since there are load the needed  ".$view." type ids";
+				$script .= PHP_EOL."\t\t\t\$".$view."_ids = \$db->loadColumn();";
 
 				// Now remove the actual type entry
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." from the content type table";
-				$script .= "\n\t\t\t\$".$view."_condition = array( \$db->quoteName('type_alias') . ' = '. \$db->quote('".$typeAlias."') );";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-				$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
-				$script .= "\n\t\t\t\$query->delete(\$db->quoteName('#__content_types'));";
-				$script .= "\n\t\t\t\$query->where(\$".$view."_condition);";
-				$script .= "\n\t\t\t\$db->setQuery(\$query);";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
-				$script .= "\n\t\t\t\$".$view."_done = \$db->execute();";
-				$script .= "\n\t\t\tif (\$".$view."_done);";
-				$script .= "\n\t\t\t{";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." If succesfully remove ".$viewName." add queued success message.";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." from the content type table";
+				$script .= PHP_EOL."\t\t\t\$".$view."_condition = array( \$db->quoteName('type_alias') . ' = '. \$db->quote('".$typeAlias."') );";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+				$script .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
+				$script .= PHP_EOL."\t\t\t\$query->delete(\$db->quoteName('#__content_types'));";
+				$script .= PHP_EOL."\t\t\t\$query->where(\$".$view."_condition);";
+				$script .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
+				$script .= PHP_EOL."\t\t\t\$".$view."_done = \$db->execute();";
+				$script .= PHP_EOL."\t\t\tif (\$".$view."_done);";
+				$script .= PHP_EOL."\t\t\t{";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." If succesfully remove ".$viewName." add queued success message.";
 				// TODO lang is not translated
-				$script .= "\n\t\t\t\t\$app->enqueueMessage(JText::_('The (".$typeAlias.") type alias was removed from the <b>#__content_type</b> table'));";
-				$script .= "\n\t\t\t}";
+				$script .= PHP_EOL."\t\t\t\t\$app->enqueueMessage(JText::_('The (".$typeAlias.") type alias was removed from the <b>#__content_type</b> table'));";
+				$script .= PHP_EOL."\t\t\t}";
 
 				// Now remove the related items from contentitem tag map table
-				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." items from the contentitem tag map table";
-				$script .= "\n\t\t\t\$".$view."_condition = array( \$db->quoteName('type_alias') . ' = '. \$db->quote('".$typeAlias."') );";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-				$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
-				$script .= "\n\t\t\t\$query->delete(\$db->quoteName('#__contentitem_tag_map'));";
-				$script .= "\n\t\t\t\$query->where(\$".$view."_condition);";
-				$script .= "\n\t\t\t\$db->setQuery(\$query);";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
-				$script .= "\n\t\t\t\$".$view."_done = \$db->execute();";
-				$script .= "\n\t\t\tif (\$".$view."_done);";
-				$script .= "\n\t\t\t{";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." If succesfully remove ".$viewName." add queued success message.";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." items from the contentitem tag map table";
+				$script .= PHP_EOL."\t\t\t\$".$view."_condition = array( \$db->quoteName('type_alias') . ' = '. \$db->quote('".$typeAlias."') );";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+				$script .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
+				$script .= PHP_EOL."\t\t\t\$query->delete(\$db->quoteName('#__contentitem_tag_map'));";
+				$script .= PHP_EOL."\t\t\t\$query->where(\$".$view."_condition);";
+				$script .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
+				$script .= PHP_EOL."\t\t\t\$".$view."_done = \$db->execute();";
+				$script .= PHP_EOL."\t\t\tif (\$".$view."_done);";
+				$script .= PHP_EOL."\t\t\t{";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." If succesfully remove ".$viewName." add queued success message.";
 				// TODO lang is not translated
-				$script .= "\n\t\t\t\t\$app->enqueueMessage(JText::_('The (".$typeAlias.") type alias was removed from the <b>#__contentitem_tag_map</b> table'));";
-				$script .= "\n\t\t\t}";
+				$script .= PHP_EOL."\t\t\t\t\$app->enqueueMessage(JText::_('The (".$typeAlias.") type alias was removed from the <b>#__contentitem_tag_map</b> table'));";
+				$script .= PHP_EOL."\t\t\t}";
 
 				// Now remove the related items from ucm content table
-				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." items from the ucm content table";
-				$script .= "\n\t\t\t\$".$view."_condition = array( \$db->quoteName('core_type_alias') . ' = ' . \$db->quote('".$typeAlias."') );";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-				$script .= "\n\t\t\t\$query = \$db->getQuery(true);";
-				$script .= "\n\t\t\t\$query->delete(\$db->quoteName('#__ucm_content'));";
-				$script .= "\n\t\t\t\$query->where(\$".$view."_condition);";
-				$script .= "\n\t\t\t\$db->setQuery(\$query);";
-				$script .= "\n\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
-				$script .= "\n\t\t\t\$".$view."_done = \$db->execute();";
-				$script .= "\n\t\t\tif (\$".$view."_done);";
-				$script .= "\n\t\t\t{";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." If succesfully remove ".$viewName." add queued success message.";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." items from the ucm content table";
+				$script .= PHP_EOL."\t\t\t\$".$view."_condition = array( \$db->quoteName('core_type_alias') . ' = ' . \$db->quote('".$typeAlias."') );";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+				$script .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
+				$script .= PHP_EOL."\t\t\t\$query->delete(\$db->quoteName('#__ucm_content'));";
+				$script .= PHP_EOL."\t\t\t\$query->where(\$".$view."_condition);";
+				$script .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
+				$script .= PHP_EOL."\t\t\t\$".$view."_done = \$db->execute();";
+				$script .= PHP_EOL."\t\t\tif (\$".$view."_done);";
+				$script .= PHP_EOL."\t\t\t{";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." If succesfully remove ".$viewName." add queued success message.";
 				// TODO lang is not translated
-				$script .= "\n\t\t\t\t\$app->enqueueMessage(JText::_('The (".$typeAlias.") type alias was removed from the <b>#__ucm_content</b> table'));";
-				$script .= "\n\t\t\t}";
+				$script .= PHP_EOL."\t\t\t\t\$app->enqueueMessage(JText::_('The (".$typeAlias.") type alias was removed from the <b>#__ucm_content</b> table'));";
+				$script .= PHP_EOL."\t\t\t}";
 
 				// setup the foreach loop of ids
-				$script .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Make sure that all the ".$viewName." items are cleared from DB";
-				$script .= "\n\t\t\tforeach (\$".$view."_ids as \$".$view."_id)";
-				$script .= "\n\t\t\t{";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Make sure that all the ".$viewName." items are cleared from DB";
+				$script .= PHP_EOL."\t\t\tforeach (\$".$view."_ids as \$".$view."_id)";
+				$script .= PHP_EOL."\t\t\t{";
 
 				// Now remove the related items from ucm base table
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." items from the ucm base table";
-				$script .= "\n\t\t\t\t\$".$view."_condition = array( \$db->quoteName('ucm_type_id') . ' = ' . \$".$view."_id);";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-				$script .= "\n\t\t\t\t\$query = \$db->getQuery(true);";
-				$script .= "\n\t\t\t\t\$query->delete(\$db->quoteName('#__ucm_base'));";
-				$script .= "\n\t\t\t\t\$query->where(\$".$view."_condition);";
-				$script .= "\n\t\t\t\t\$db->setQuery(\$query);";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
-				$script .= "\n\t\t\t\t\$db->execute();";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." items from the ucm base table";
+				$script .= PHP_EOL."\t\t\t\t\$".$view."_condition = array( \$db->quoteName('ucm_type_id') . ' = ' . \$".$view."_id);";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+				$script .= PHP_EOL."\t\t\t\t\$query = \$db->getQuery(true);";
+				$script .= PHP_EOL."\t\t\t\t\$query->delete(\$db->quoteName('#__ucm_base'));";
+				$script .= PHP_EOL."\t\t\t\t\$query->where(\$".$view."_condition);";
+				$script .= PHP_EOL."\t\t\t\t\$db->setQuery(\$query);";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
+				$script .= PHP_EOL."\t\t\t\t\$db->execute();";
 
 				// Now remove the related items from ucm history table
-				$script .= "\n\n\t\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." items from the ucm history table";
-				$script .= "\n\t\t\t\t\$".$view."_condition = array( \$db->quoteName('ucm_type_id') . ' = ' . \$".$view."_id);";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-				$script .= "\n\t\t\t\t\$query = \$db->getQuery(true);";
-				$script .= "\n\t\t\t\t\$query->delete(\$db->quoteName('#__ucm_history'));";
-				$script .= "\n\t\t\t\t\$query->where(\$".$view."_condition);";
-				$script .= "\n\t\t\t\t\$db->setQuery(\$query);";
-				$script .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
-				$script .= "\n\t\t\t\t\$db->execute();";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Remove ".$viewName." items from the ucm history table";
+				$script .= PHP_EOL."\t\t\t\t\$".$view."_condition = array( \$db->quoteName('ucm_type_id') . ' = ' . \$".$view."_id);";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+				$script .= PHP_EOL."\t\t\t\t\$query = \$db->getQuery(true);";
+				$script .= PHP_EOL."\t\t\t\t\$query->delete(\$db->quoteName('#__ucm_history'));";
+				$script .= PHP_EOL."\t\t\t\t\$query->where(\$".$view."_condition);";
+				$script .= PHP_EOL."\t\t\t\t\$db->setQuery(\$query);";
+				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Execute the query to remove ".$viewName." items";
+				$script .= PHP_EOL."\t\t\t\t\$db->execute();";
 
-				$script .= "\n\t\t\t}";
+				$script .= PHP_EOL."\t\t\t}";
 
-				$script .= "\n\t\t}";
+				$script .= PHP_EOL."\t\t}";
 			}
 
-			$script .= "\n\n\t\t//".$this->setLine(__LINE__)." If All related items was removed queued success message.";
+			$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." If All related items was removed queued success message.";
 			// TODO lang is not translated
-			$script .= "\n\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_base</b> table'));";
-			$script .= "\n\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_history</b> table'));";
+			$script .= PHP_EOL."\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_base</b> table'));";
+			$script .= PHP_EOL."\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_history</b> table'));";
 			// finaly remove the assets from the assets table
-			$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Remove ".$component." assets from the assets table";
-			$script .= "\n\t\t\$".$component."_condition = array( \$db->quoteName('name') . ' LIKE ' . \$db->quote('com_".$component."%') );";
-			$script .= "\n\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-			$script .= "\n\t\t\$query = \$db->getQuery(true);";
-			$script .= "\n\t\t\$query->delete(\$db->quoteName('#__assets'));";
-			$script .= "\n\t\t\$query->where(\$".$component."_condition);";
-			$script .= "\n\t\t\$db->setQuery(\$query);";
-			$script .= "\n\t\t\$".$view."_done = \$db->execute();";
-			$script .= "\n\t\tif (\$".$view."_done);";
-			$script .= "\n\t\t{";
-			$script .= "\n\t\t\t//".$this->setLine(__LINE__)." If succesfully remove ".$component." add queued success message.";
+			$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Remove ".$component." assets from the assets table";
+			$script .= PHP_EOL."\t\t\$".$component."_condition = array( \$db->quoteName('name') . ' LIKE ' . \$db->quote('com_".$component."%') );";
+			$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+			$script .= PHP_EOL."\t\t\$query = \$db->getQuery(true);";
+			$script .= PHP_EOL."\t\t\$query->delete(\$db->quoteName('#__assets'));";
+			$script .= PHP_EOL."\t\t\$query->where(\$".$component."_condition);";
+			$script .= PHP_EOL."\t\t\$db->setQuery(\$query);";
+			$script .= PHP_EOL."\t\t\$".$view."_done = \$db->execute();";
+			$script .= PHP_EOL."\t\tif (\$".$view."_done);";
+			$script .= PHP_EOL."\t\t{";
+			$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." If succesfully remove ".$component." add queued success message.";
 			// TODO lang is not translated
-			$script .= "\n\t\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));";
-			$script .= "\n\t\t}";
+			$script .= PHP_EOL."\t\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));";
+			$script .= PHP_EOL."\t\t}";
 			// done
-			$script .= "\n";
+			$script .= PHP_EOL;
 		}
 		// add the custom uninstall script
-		$script .= $this->getCustomScriptBuilder('php_method', 'uninstall', "", null, true, null, "\n");
+		$script .= $this->getCustomScriptBuilder('php_method', 'uninstall', "", null, true, null, PHP_EOL);
 		return $script;
 	}
 
@@ -3999,7 +3999,7 @@ class Interpretation extends Fields
 			// build view route helper
 			$View = ComponentbuilderHelper::safeString($viewName_single, 'F');
 			$routeHelper = array();
-			$routeHelper[] = "\n\n\t/**";
+			$routeHelper[] = PHP_EOL.PHP_EOL."\t/**";
 			$routeHelper[] = "\t* @param int The route of the ".$View;
 			$routeHelper[] = "\t*/";
 			if ('category' === $viewName_single || 'categories' === $viewName_single)
@@ -4043,24 +4043,24 @@ class Interpretation extends Fields
 			}
 			if (isset($this->hasMenuGlobal[$viewName_single]))
 			{
-				$routeHelper[] = "\n\t\tif (\$item = self::_findItem(\$needles, '".$viewName_single."'))";
+				$routeHelper[] = PHP_EOL."\t\tif (\$item = self::_findItem(\$needles, '".$viewName_single."'))";
 			}
 			else
 			{				
-				$routeHelper[] = "\n\t\tif (\$item = self::_findItem(\$needles))";
+				$routeHelper[] = PHP_EOL."\t\tif (\$item = self::_findItem(\$needles))";
 			}
 			$routeHelper[] = "\t\t{";
 			$routeHelper[] = "\t\t\t\$link .= '&Itemid='.\$item;";
 			$routeHelper[] = "\t\t}";
-			$routeHelper[] = "\n\t\treturn \$link;";
+			$routeHelper[] = PHP_EOL."\t\treturn \$link;";
 			$routeHelper[] = "\t}";
 
-			return implode("\n",$routeHelper);
+			return implode(PHP_EOL,$routeHelper);
 		}
 		return '';
 	}
 	
-	public function routerParseSwitch(&$view, $viewArray = null)
+	public function routerParseSwitch(&$view, $viewArray = null, $aliasView = true, $idView = true)
 	{
 		$isCategory = '';
 		if ($viewArray && ComponentbuilderHelper::checkArray($viewArray))
@@ -4069,20 +4069,48 @@ class Interpretation extends Fields
 			{
 				$isCategory = ', true'; // TODO we will keep an eye on this....
 			}
+//			elseif (isset($viewArray['settings']->main_get->gettype) && $viewArray['settings']->main_get->gettype == 2)
+//			{
+//				$idView = false; // TODO we will keep an eye on this....
+//				$aliasView = false;
+//			}
+//			elseif (isset($viewArray['settings']->main_get->main_get) && ComponentbuilderHelper::checkArray($viewArray['settings']->main_get->main_get))
+//			{
+//				$aliasView = false;
+//				foreach ($viewArray['settings']->main_get->main_get as $get)
+//				{
+//					if ($get['as'] === 'a')
+//					{
+//						if (isset($get['selection']) && ComponentbuilderHelper::checkArray($get['selection'])
+//							&& isset($get['selection']['select_gets']) 
+//							&& ComponentbuilderHelper::checkArray($get['selection']['select_gets']))
+//						{
+//							foreach ($get['selection']['select_gets'] as $checkAlias)
+//							{
+//								if ($checkAlias === "'a.alias'")
+//								{
+//									$aliasView = true;
+//								}
+//							}
+//						}
+//						
+//					}
+//				}
+//			}
 		}
 		// add if tags is added, also for all front item views
-		if (1)
+		if ($aliasView)
 		{
 			// build view route switch
 			$routerSwitch = array();
 			
-			$routerSwitch[] = "\n\t\t\tcase '".$view."':";
+			$routerSwitch[] = PHP_EOL."\t\t\tcase '".$view."':";
 			$routerSwitch[] = "\t\t\t\t\$vars['view'] = '".$view."';";
 			$routerSwitch[] = "\t\t\t\tif (is_numeric(\$segments[\$count-1]))";
 			$routerSwitch[] = "\t\t\t\t{";
 			$routerSwitch[] = "\t\t\t\t\t\$vars['id'] = (int) \$segments[\$count-1];";
 			$routerSwitch[] = "\t\t\t\t}";
-			$routerSwitch[] = "\t\t\t\telse";
+			$routerSwitch[] = "\t\t\t\telseif (\$segments[\$count-1])";
 			$routerSwitch[] = "\t\t\t\t{";
 			$routerSwitch[] = "\t\t\t\t\t\$id = \$this->getVar('".$view."', \$segments[\$count-1], 'alias', 'id'".$isCategory.");";
 			$routerSwitch[] = "\t\t\t\t\tif(\$id)";
@@ -4092,18 +4120,33 @@ class Interpretation extends Fields
 			$routerSwitch[] = "\t\t\t\t}";
 			$routerSwitch[] = "\t\t\t\tbreak;";
 
-			return implode("\n",$routerSwitch);
+			return implode(PHP_EOL,$routerSwitch);
 		}
-		elseif (0)
+		elseif ($idView)
 		{
 			// build view route switch
 			$routerSwitch = array();
 			
-			$routerSwitch[] = "\n\t\t\tcase '".$view."':";
+			$routerSwitch[] = PHP_EOL."\t\t\tcase '".$view."':";
+			$routerSwitch[] = "\t\t\t\t\$vars['view'] = '".$view."';";
+			$routerSwitch[] = "\t\t\t\tif (is_numeric(\$segments[\$count-1]))";
+			$routerSwitch[] = "\t\t\t\t{";
+			$routerSwitch[] = "\t\t\t\t\t\$vars['id'] = (int) \$segments[\$count-1];";
+			$routerSwitch[] = "\t\t\t\t}";
+			$routerSwitch[] = "\t\t\t\tbreak;";
+
+			return implode(PHP_EOL,$routerSwitch);
+		}
+		else
+		{
+			// build view route switch
+			$routerSwitch = array();
+			
+			$routerSwitch[] = PHP_EOL."\t\t\tcase '".$view."':";
 			$routerSwitch[] = "\t\t\t\t\$vars['view'] = '".$view."';";
 			$routerSwitch[] = "\t\t\t\tbreak;";
 
-			return implode("\n",$routerSwitch);
+			return implode(PHP_EOL,$routerSwitch);
 		}
 		return '';
 	}
@@ -4153,9 +4196,9 @@ class Interpretation extends Fields
 			$title 		= $this->titleBuilder[$viewName_single];
 		}
 		// prepare custom script
-                $customScript = $this->getCustomScriptBuilder('php_batchmove', $viewName_single, "\n\n", null, true);
+                $customScript = $this->getCustomScriptBuilder('php_batchmove', $viewName_single, PHP_EOL.PHP_EOL, null, true);
 
-		$batchmove[] = "\n\t/**";
+		$batchmove[] = PHP_EOL."\t/**";
 		$batchmove[] = "\t * Batch move items to a new category";
 		$batchmove[] = "\t *";
 		$batchmove[] = "\t * @param   integer  \$value     The new category ID.";
@@ -4181,18 +4224,18 @@ class Interpretation extends Fields
 
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit']]))
 		{
-			$batchmove[] = "\n\t\tif (!\$this->canDo->get('".$core['core.edit']."') && !\$this->canDo->get('".$core['core.batch']."'))";
+			$batchmove[] = PHP_EOL."\t\tif (!\$this->canDo->get('".$core['core.edit']."') && !\$this->canDo->get('".$core['core.batch']."'))";
 		}
 		else
 		{
-			$batchmove[] = "\n\t\tif (!\$this->canDo->get('core.edit') && !\$this->canDo->get('core.batch'))";
+			$batchmove[] = PHP_EOL."\t\tif (!\$this->canDo->get('core.edit') && !\$this->canDo->get('core.batch'))";
 		}
 		$batchmove[] = "\t\t{";
 		$batchmove[] = "\t\t\t\$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
 		$batchmove[] = "\t\t\treturn false;";
 		$batchmove[] = "\t\t}".$customScript;
 
-		$batchmove[] = "\n\t\t//".$this->setLine(__LINE__)." make sure published only updates if user has the permission.";
+		$batchmove[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." make sure published only updates if user has the permission.";
 		if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit.state']]))
 		{
 			$batchmove[] = "\t\tif (isset(\$values['published']) && !\$this->canDo->get('".$core['core.edit.state']."'))";
@@ -4210,7 +4253,7 @@ class Interpretation extends Fields
 
 		if ($category)
 		{
-			$batchmove[] = "\n\t\tif (isset(\$values['category']) && (int) \$values['category'] > 0 && !static::checkCategoryId(\$values['category']))";
+			$batchmove[] = PHP_EOL."\t\tif (isset(\$values['category']) && (int) \$values['category'] > 0 && !static::checkCategoryId(\$values['category']))";
 			$batchmove[] = "\t\t{";
 			$batchmove[] = "\t\t\treturn false;";
 			$batchmove[] = "\t\t}";
@@ -4223,10 +4266,10 @@ class Interpretation extends Fields
 			$batchmove[] = "\t\telseif (isset(\$values['category']))";
 			$batchmove[] = "\t\t{";
 			$batchmove[] = "\t\t\tunset(\$values['category']);";
-			$batchmove[] = "\t\t}\n";
+			$batchmove[] = "\t\t}".PHP_EOL;
 		}
 
-		$batchmove[] = "\n\t\t//".$this->setLine(__LINE__)." Parent exists so we proceed";
+		$batchmove[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Parent exists so we proceed";
 		$batchmove[] = "\t\tforeach (\$pks as \$pk)";
 		$batchmove[] = "\t\t{";
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder[$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.edit']]))
@@ -4240,10 +4283,10 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t{";
 		$batchmove[] = "\t\t\t\t\$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
 
-		$batchmove[] = "\n\t\t\t\treturn false;";
+		$batchmove[] = PHP_EOL."\t\t\t\treturn false;";
 		$batchmove[] = "\t\t\t}";
 
-		$batchmove[] = "\n\t\t\t//".$this->setLine(__LINE__)." Check that the row actually exists";
+		$batchmove[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Check that the row actually exists";
 		$batchmove[] = "\t\t\tif (!\$this->table->load(\$pk))";
 		$batchmove[] = "\t\t\t{";
 		$batchmove[] = "\t\t\t\tif (\$error = \$this->table->getError())";
@@ -4251,7 +4294,7 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t\t\t//".$this->setLine(__LINE__)." Fatal error";
 		$batchmove[] = "\t\t\t\t\t\$this->setError(\$error);";
 
-		$batchmove[] = "\n\t\t\t\t\treturn false;";
+		$batchmove[] = PHP_EOL."\t\t\t\t\treturn false;";
 		$batchmove[] = "\t\t\t\t}";
 		$batchmove[] = "\t\t\t\telse";
 		$batchmove[] = "\t\t\t\t{";
@@ -4261,7 +4304,7 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t\t}";
 		$batchmove[] = "\t\t\t}";
 
-		$batchmove[] = "\n\t\t\t//".$this->setLine(__LINE__)." insert all set values.";
+		$batchmove[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." insert all set values.";
 		$batchmove[] = "\t\t\tif (".$Helper."::checkArray(\$values))";
 		$batchmove[] = "\t\t\t{";
 		$batchmove[] = "\t\t\t\tforeach (\$values as \$key => \$value)";
@@ -4276,37 +4319,37 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t\t\t\t\$this->table->\$key = \$value;";
 		$batchmove[] = "\t\t\t\t\t}";
 		$batchmove[] = "\t\t\t\t}";
-		$batchmove[] = "\t\t\t}\n";
+		$batchmove[] = "\t\t\t}".PHP_EOL;
 
-		$batchmove[] = "\n\t\t\t//".$this->setLine(__LINE__)." Check the row.";
+		$batchmove[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Check the row.";
 		$batchmove[] = "\t\t\tif (!\$this->table->check())";
 		$batchmove[] = "\t\t\t{";
 		$batchmove[] = "\t\t\t\t\$this->setError(\$this->table->getError());";
 
-		$batchmove[] = "\n\t\t\t\treturn false;";
+		$batchmove[] = PHP_EOL."\t\t\t\treturn false;";
 		$batchmove[] = "\t\t\t}";
 
-		$batchmove[] = "\n\t\t\tif (!empty(\$this->type))";
+		$batchmove[] = PHP_EOL."\t\t\tif (!empty(\$this->type))";
 		$batchmove[] = "\t\t\t{";
 		$batchmove[] = "\t\t\t\t\$this->createTagsHelper(\$this->tagsObserver, \$this->type, \$pk, \$this->typeAlias, \$this->table);";
 		$batchmove[] = "\t\t\t}";
 
-		$batchmove[] = "\n\t\t\t//".$this->setLine(__LINE__)." Store the row.";
+		$batchmove[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Store the row.";
 		$batchmove[] = "\t\t\tif (!\$this->table->store())";
 		$batchmove[] = "\t\t\t{";
 		$batchmove[] = "\t\t\t\t\$this->setError(\$this->table->getError());";
 
-		$batchmove[] = "\n\t\t\t\treturn false;";
+		$batchmove[] = PHP_EOL."\t\t\t\treturn false;";
 		$batchmove[] = "\t\t\t}";
 		$batchmove[] = "\t\t}";
 
-		$batchmove[] = "\n\t\t//".$this->setLine(__LINE__)." Clean the cache";
+		$batchmove[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Clean the cache";
 		$batchmove[] = "\t\t\$this->cleanCache();";
 
-		$batchmove[] = "\n\t\treturn true;";
+		$batchmove[] = PHP_EOL."\t\treturn true;";
 		$batchmove[] = "\t}";
 
-		return "\n".implode("\n",$batchmove);
+		return PHP_EOL.implode(PHP_EOL,$batchmove);
 	}
 
 	public function setBatchCopy($viewName_single)
@@ -4343,9 +4386,9 @@ class Interpretation extends Fields
 			$title = $this->titleBuilder[$viewName_single];
 		}
 		// prepare custom script
-                $customScript = $this->getCustomScriptBuilder('php_batchcopy', $viewName_single, "\n\n", null, true);
+                $customScript = $this->getCustomScriptBuilder('php_batchcopy', $viewName_single, PHP_EOL.PHP_EOL, null, true);
 
-		$batchcopy[] = "\n\t/**";
+		$batchcopy[] = PHP_EOL."\t/**";
 		$batchcopy[] = "\t * Batch copy items to a new category or current.";
 		$batchcopy[] = "\t *";
 		$batchcopy[] = "\t * @param   integer  \$values    The new values.";
@@ -4371,22 +4414,22 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t}";
 		if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.create']]))
 		{
-			$batchcopy[] = "\n\t\tif (!\$this->canDo->get('".$core['core.create']."') && !\$this->canDo->get('".$core['core.batch']."'))";
+			$batchcopy[] = PHP_EOL."\t\tif (!\$this->canDo->get('".$core['core.create']."') && !\$this->canDo->get('".$core['core.batch']."'))";
 		}
 		else
 		{
-			$batchcopy[] = "\n\t\tif (!\$this->canDo->get('core.create') || !\$this->canDo->get('core.batch'))";
+			$batchcopy[] = PHP_EOL."\t\tif (!\$this->canDo->get('core.create') || !\$this->canDo->get('core.batch'))";
 		}
 		$batchcopy[] = "\t\t{";
 		$batchcopy[] = "\t\t\treturn false;";
 		$batchcopy[] = "\t\t}".$customScript;
 
-		$batchcopy[] = "\n\t\t//".$this->setLine(__LINE__)." get list of uniqe fields";
+		$batchcopy[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." get list of uniqe fields";
 		$batchcopy[] = "\t\t\$uniqeFields = \$this->getUniqeFields();";
 		$batchcopy[] = "\t\t//".$this->setLine(__LINE__)." remove move_copy from array";
 		$batchcopy[] = "\t\tunset(\$values['move_copy']);";
 
-		$batchcopy[] = "\n\t\t//".$this->setLine(__LINE__)." make sure published is set";
+		$batchcopy[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." make sure published is set";
 		$batchcopy[] = "\t\tif (!isset(\$values['published']))";
 		$batchcopy[] = "\t\t{";
 		$batchcopy[] = "\t\t\t\$values['published'] = 0;";
@@ -4405,7 +4448,7 @@ class Interpretation extends Fields
 
 		if ($category)
 		{
-			$batchcopy[] = "\n\t\tif (isset(\$values['category']) && (int) \$values['category'] > 0 && !static::checkCategoryId(\$values['category']))";
+			$batchcopy[] = PHP_EOL."\t\tif (isset(\$values['category']) && (int) \$values['category'] > 0 && !static::checkCategoryId(\$values['category']))";
 			$batchcopy[] = "\t\t{";
 			$batchcopy[] = "\t\t\treturn false;";
 			$batchcopy[] = "\t\t}";
@@ -4421,32 +4464,32 @@ class Interpretation extends Fields
 			$batchcopy[] = "\t\t}";
 		}
 
-		$batchcopy[] = "\n\t\t\$newIds = array();";
+		$batchcopy[] = PHP_EOL."\t\t\$newIds = array();";
 
-		$batchcopy[] = "\n\t\t//".$this->setLine(__LINE__)." Parent exists so let's proceed";
+		$batchcopy[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Parent exists so let's proceed";
 		$batchcopy[] = "\t\twhile (!empty(\$pks))";
 		$batchcopy[] = "\t\t{";
 		$batchcopy[] = "\t\t\t//".$this->setLine(__LINE__)." Pop the first ID off the stack";
 		$batchcopy[] = "\t\t\t\$pk = array_shift(\$pks);";
 
-		$batchcopy[] = "\n\t\t\t\$this->table->reset();";
+		$batchcopy[] = PHP_EOL."\t\t\t\$this->table->reset();";
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." only allow copy if user may edit this item.";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." only allow copy if user may edit this item.";
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder[$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.edit']]))
 		{
-			$batchcopy[] = "\n\t\t\tif (!\$this->user->authorise('".$core['core.edit']."', \$contexts[\$pk]))";
+			$batchcopy[] = PHP_EOL."\t\t\tif (!\$this->user->authorise('".$core['core.edit']."', \$contexts[\$pk]))";
 		}
 		else
 		{
-			$batchcopy[] = "\n\t\t\tif (!\$this->user->authorise('core.edit', \$contexts[\$pk]))";
+			$batchcopy[] = PHP_EOL."\t\t\tif (!\$this->user->authorise('core.edit', \$contexts[\$pk]))";
 		}
-		$batchcopy[] = "\n\t\t\t{";
-		$batchcopy[] = "\n\t\t\t\t//".$this->setLine(__LINE__)." Not fatal error";
-		$batchcopy[] = "\n\t\t\t\t\$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
-		$batchcopy[] = "\n\t\t\t\tcontinue;";
-		$batchcopy[] = "\n\t\t\t}";
+		$batchcopy[] = PHP_EOL."\t\t\t{";
+		$batchcopy[] = PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Not fatal error";
+		$batchcopy[] = PHP_EOL."\t\t\t\t\$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
+		$batchcopy[] = PHP_EOL."\t\t\t\tcontinue;";
+		$batchcopy[] = PHP_EOL."\t\t\t}";
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." Check that the row actually exists";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Check that the row actually exists";
 		$batchcopy[] = "\t\t\tif (!\$this->table->load(\$pk))";
 		$batchcopy[] = "\t\t\t{";
 		$batchcopy[] = "\t\t\t\tif (\$error = \$this->table->getError())";
@@ -4454,7 +4497,7 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t\t\t//".$this->setLine(__LINE__)." Fatal error";
 		$batchcopy[] = "\t\t\t\t\t\$this->setError(\$error);";
 
-		$batchcopy[] = "\n\t\t\t\t\treturn false;";
+		$batchcopy[] = PHP_EOL."\t\t\t\t\treturn false;";
 		$batchcopy[] = "\t\t\t\t}";
 		$batchcopy[] = "\t\t\t\telse";
 		$batchcopy[] = "\t\t\t\t{";
@@ -4465,7 +4508,7 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t}";
 		if ($category && $alias === 'alias' && $title === 'title')
 		{
-			$batchcopy[] = "\n\t\t\tif (isset(\$values['".$category."']))";
+			$batchcopy[] = PHP_EOL."\t\t\tif (isset(\$values['".$category."']))";
 			$batchcopy[] = "\t\t\t{";
 			$batchcopy[] = "\t\t\t\tstatic::generateTitle((int) \$values['".$category."'], \$this->table);";
 			$batchcopy[] = "\t\t\t}";
@@ -4476,7 +4519,7 @@ class Interpretation extends Fields
 		}
 		elseif ($category && $alias && $title)
 		{
-			$batchcopy[] = "\n\t\t\tif (isset(\$values['".$category."']))";
+			$batchcopy[] = PHP_EOL."\t\t\tif (isset(\$values['".$category."']))";
 			$batchcopy[] = "\t\t\t{";
 			$batchcopy[] = "\t\t\t\tlist(\$this->table->".$title.", \$this->table->".$alias.") = \$this->generateNewTitle(\$values['".$category."'], \$this->table->".$alias.", \$this->table->".$title.");";
 			$batchcopy[] = "\t\t\t}";
@@ -4487,14 +4530,14 @@ class Interpretation extends Fields
 		}
 		elseif (!$category && $alias && $title)
 		{
-			$batchcopy[] = "\n\t\t\tlist(\$this->table->".$title.", \$this->table->".$alias.") = \$this->_generateNewTitle(\$this->table->".$alias.", \$this->table->".$title.");";
+			$batchcopy[] = PHP_EOL."\t\t\tlist(\$this->table->".$title.", \$this->table->".$alias.") = \$this->_generateNewTitle(\$this->table->".$alias.", \$this->table->".$title.");";
 		}
 		elseif (!$category && !$alias && $title && $title != 'user' && $title != 'jobnumber') // TODO [jobnumber] just for one project (not ideal)
 		{
-			$batchcopy[] = "\n\t\t\t\$this->table->".$title." = \$this->generateUniqe('".$title."',\$this->table->".$title.");";
+			$batchcopy[] = PHP_EOL."\t\t\t\$this->table->".$title." = \$this->generateUniqe('".$title."',\$this->table->".$title.");";
 		}
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." insert all set values";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." insert all set values";
 		$batchcopy[] = "\t\t\tif (".$Helper."::checkArray(\$values))";
 		$batchcopy[] = "\t\t\t{";
 		$batchcopy[] = "\t\t\t\tforeach (\$values as \$key => \$value)";
@@ -4504,7 +4547,7 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t\t\t\t\$this->table->\$key = \$value;";
 		$batchcopy[] = "\t\t\t\t\t}";
 		$batchcopy[] = "\t\t\t\t}";
-		$batchcopy[] = "\t\t\t}\n";
+		$batchcopy[] = "\t\t\t}".PHP_EOL;
 
 		$batchcopy[] = "\t\t\t//".$this->setLine(__LINE__)." update all uniqe fields";
 		$batchcopy[] = "\t\t\tif (".$Helper."::checkArray(\$uniqeFields))";
@@ -4515,47 +4558,47 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t\t}";
 		$batchcopy[] = "\t\t\t}";
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." Reset the ID because we are making a copy";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Reset the ID because we are making a copy";
 		$batchcopy[] = "\t\t\t\$this->table->id = 0;";
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." TODO: Deal with ordering?";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." TODO: Deal with ordering?";
 		$batchcopy[] = "\t\t\t//".$this->setLine(__LINE__)." \$this->table->ordering\t= 1;";
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." Check the row.";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Check the row.";
 		$batchcopy[] = "\t\t\tif (!\$this->table->check())";
 		$batchcopy[] = "\t\t\t{";
 		$batchcopy[] = "\t\t\t\t\$this->setError(\$this->table->getError());";
 
-		$batchcopy[] = "\n\t\t\t\treturn false;";
+		$batchcopy[] = PHP_EOL."\t\t\t\treturn false;";
 		$batchcopy[] = "\t\t\t}";
 
-		$batchcopy[] = "\n\t\t\tif (!empty(\$this->type))";
+		$batchcopy[] = PHP_EOL."\t\t\tif (!empty(\$this->type))";
 		$batchcopy[] = "\t\t\t{";
 		$batchcopy[] = "\t\t\t\t\$this->createTagsHelper(\$this->tagsObserver, \$this->type, \$pk, \$this->typeAlias, \$this->table);";
 		$batchcopy[] = "\t\t\t}";
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." Store the row.";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Store the row.";
 		$batchcopy[] = "\t\t\tif (!\$this->table->store())";
 		$batchcopy[] = "\t\t\t{";
 		$batchcopy[] = "\t\t\t\t\$this->setError(\$this->table->getError());";
 
-		$batchcopy[] = "\n\t\t\t\treturn false;";
+		$batchcopy[] = PHP_EOL."\t\t\t\treturn false;";
 		$batchcopy[] = "\t\t\t}";
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." Get the new item ID";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the new item ID";
 		$batchcopy[] = "\t\t\t\$newId = \$this->table->get('id');";
 
-		$batchcopy[] = "\n\t\t\t//".$this->setLine(__LINE__)." Add the new ID to the array";
+		$batchcopy[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Add the new ID to the array";
 		$batchcopy[] = "\t\t\t\$newIds[\$pk] = \$newId;";
 		$batchcopy[] = "\t\t}";
 
-		$batchcopy[] = "\n\t\t//".$this->setLine(__LINE__)." Clean the cache";
+		$batchcopy[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Clean the cache";
 		$batchcopy[] = "\t\t\$this->cleanCache();";
 
-		$batchcopy[] = "\n\t\treturn \$newIds;";
+		$batchcopy[] = PHP_EOL."\t\treturn \$newIds;";
 		$batchcopy[] = "\t}";
 
-		return "\n".implode("\n",$batchcopy);
+		return PHP_EOL.implode(PHP_EOL,$batchcopy);
 	}
 
 	public function setAliasTitleFix($viewName_single)
@@ -4575,12 +4618,12 @@ class Interpretation extends Fields
 				$setCategory	= true;
 			}
 			// start building the fix
-			$fixUniqe[] = "\n\t\t//".$this->setLine(__LINE__)." Alter the ".$title." for save as copy";
+			$fixUniqe[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Alter the ".$title." for save as copy";
 			$fixUniqe[] = "\t\tif (\$input->get('task') === 'save2copy')";
 			$fixUniqe[] = "\t\t{";
 			$fixUniqe[] = "\t\t\t\$origTable = clone \$this->getTable();";
 			$fixUniqe[] = "\t\t\t\$origTable->load(\$input->getInt('id'));";
-			$fixUniqe[] = "\n\t\t\tif (\$data['".$title."'] == \$origTable->".$title.")";
+			$fixUniqe[] = PHP_EOL."\t\t\tif (\$data['".$title."'] == \$origTable->".$title.")";
 			$fixUniqe[] = "\t\t\t{";
 			if ($setCategory)
 			{
@@ -4600,9 +4643,9 @@ class Interpretation extends Fields
 			$fixUniqe[] = "\t\t\t\t\t\$data['".$alias."'] = '';";
 			$fixUniqe[] = "\t\t\t\t}";
 			$fixUniqe[] = "\t\t\t}";
-			$fixUniqe[] = "\n\t\t\t\$data['published'] = 0;";
+			$fixUniqe[] = PHP_EOL."\t\t\t\$data['published'] = 0;";
 			$fixUniqe[] = "\t\t}";
-			$fixUniqe[] = "\n\t\t//".$this->setLine(__LINE__)." Automatic handling of ".$alias." for empty fields";
+			$fixUniqe[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Automatic handling of ".$alias." for empty fields";
 			$fixUniqe[] = "\t\tif (in_array(\$input->get('task'), array('apply', 'save', 'save2new')) && (int) \$input->get('id') == 0)";
 			$fixUniqe[] = "\t\t{";
 			$fixUniqe[] = "\t\t\tif (\$data['".$alias."'] == null)";
@@ -4615,25 +4658,25 @@ class Interpretation extends Fields
 			$fixUniqe[] = "\t\t\t\t{";
 			$fixUniqe[] = "\t\t\t\t\t\$data['".$alias."'] = JFilterOutput::stringURLSafe(\$data['".$title."']);";
 			$fixUniqe[] = "\t\t\t\t}";
-			$fixUniqe[] = "\n\t\t\t\t\$table = JTable::getInstance('".$viewName_single."', '".$this->fileContentStatic['###component###']."Table');";
+			$fixUniqe[] = PHP_EOL."\t\t\t\t\$table = JTable::getInstance('".$viewName_single."', '".$this->fileContentStatic['###component###']."Table');";
 			if ($setCategory)
 			{
-				$fixUniqe[] = "\n\t\t\t\tif (\$table->load(array('".$alias."' => \$data['".$alias."'], '".$category."' => \$data['".$category."'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
+				$fixUniqe[] = PHP_EOL."\t\t\t\tif (\$table->load(array('".$alias."' => \$data['".$alias."'], '".$category."' => \$data['".$category."'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUniqe[] = "\t\t\t\t{";
 				$fixUniqe[] = "\t\t\t\t\t\$msg = JText::_('COM_".$this->fileContentStatic['###COMPONENT###']."_".$VIEW."_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
-				$fixUniqe[] = "\n\t\t\t\tlist(\$".$title.", \$".$alias.") = \$this->generateNewTitle(\$data['".$category."'], \$data['".$alias."'], \$data['".$title."']);";
+				$fixUniqe[] = PHP_EOL."\t\t\t\tlist(\$".$title.", \$".$alias.") = \$this->generateNewTitle(\$data['".$category."'], \$data['".$alias."'], \$data['".$title."']);";
 			}
 			else
 			{
-				$fixUniqe[] = "\n\t\t\t\tif (\$table->load(array('".$alias."' => \$data['".$alias."'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
+				$fixUniqe[] = PHP_EOL."\t\t\t\tif (\$table->load(array('".$alias."' => \$data['".$alias."'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUniqe[] = "\t\t\t\t{";
 				$fixUniqe[] = "\t\t\t\t\t\$msg = JText::_('COM_".$this->fileContentStatic['###COMPONENT###']."_".$VIEW."_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
-				$fixUniqe[] = "\n\t\t\t\tlist(\$".$title.", \$".$alias.") = \$this->_generateNewTitle(\$data['".$alias."'], \$data['".$title."']);";
+				$fixUniqe[] = PHP_EOL."\t\t\t\tlist(\$".$title.", \$".$alias.") = \$this->_generateNewTitle(\$data['".$alias."'], \$data['".$title."']);";
 			}
 			$fixUniqe[] = "\t\t\t\t\$data['".$alias."'] = \$".$alias.";";
-			$fixUniqe[] = "\n\t\t\t\tif (isset(\$msg))";
+			$fixUniqe[] = PHP_EOL."\t\t\t\tif (isset(\$msg))";
 			$fixUniqe[] = "\t\t\t\t{";
 			$fixUniqe[] = "\t\t\t\t\tJFactory::getApplication()->enqueueMessage(\$msg, 'warning');";
 			$fixUniqe[] = "\t\t\t\t}";
@@ -4641,7 +4684,7 @@ class Interpretation extends Fields
 			$fixUniqe[] = "\t\t}";
 		}
 		// handel other uniqe fields
-		$fixUniqe[] = "\n\t\t//".$this->setLine(__LINE__)." Alter the uniqe field for save as copy";
+		$fixUniqe[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Alter the uniqe field for save as copy";
 		$fixUniqe[] = "\t\tif (\$input->get('task') === 'save2copy')";
 		$fixUniqe[] = "\t\t{";
 		$fixUniqe[] = "\t\t\t//".$this->setLine(__LINE__)." Automatic handling of other uniqe fields";
@@ -4655,7 +4698,7 @@ class Interpretation extends Fields
 		$fixUniqe[] = "\t\t\t}";
 		$fixUniqe[] = "\t\t}";
 
-		return "\n".implode("\n",$fixUniqe);
+		return PHP_EOL.implode(PHP_EOL,$fixUniqe);
 	}
 
 	public function setGenerateNewTitle($viewName_single)
@@ -4664,7 +4707,7 @@ class Interpretation extends Fields
 		if (array_key_exists($viewName_single, $this->aliasBuilder) && array_key_exists($viewName_single, $this->titleBuilder))
 		{
 			$newFunction = array();
-			$newFunction[] = "\n\n\t/**";
+			$newFunction[] = PHP_EOL.PHP_EOL."\t/**";
 			$newFunction[] = "\t* Method to change the title & alias.";
 			$newFunction[] = "\t*";
 			$newFunction[] = "\t* @param   string   \$alias        The alias.";
@@ -4675,21 +4718,21 @@ class Interpretation extends Fields
 			$newFunction[] = "\t*/";
 			$newFunction[] = "\tprotected function _generateNewTitle(\$alias, \$title)";
 			$newFunction[] = "\t{";
-			$newFunction[] = "\n\t\t//".$this->setLine(__LINE__)." Alter the title & alias";
+			$newFunction[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Alter the title & alias";
 			$newFunction[] = "\t\t\$table = \$this->getTable();";
-			$newFunction[] = "\n\t\twhile (\$table->load(array('alias' => \$alias)))";
+			$newFunction[] = PHP_EOL."\t\twhile (\$table->load(array('alias' => \$alias)))";
 			$newFunction[] = "\t\t{";
 			$newFunction[] = "\t\t\t\$title = JString::increment(\$title);";
 			$newFunction[] = "\t\t\t\$alias = JString::increment(\$alias, 'dash');";
 			$newFunction[] = "\t\t}";
-			$newFunction[] = "\n\t\treturn array(\$title, \$alias);";
+			$newFunction[] = PHP_EOL."\t\treturn array(\$title, \$alias);";
 			$newFunction[] = "\t}";
-			return implode("\n",$newFunction);
+			return implode(PHP_EOL,$newFunction);
 		}
 		elseif (array_key_exists($viewName_single, $this->titleBuilder))
 		{
 			$newFunction = array();
-			$newFunction[] = "\n\n\t/**";
+			$newFunction[] = PHP_EOL.PHP_EOL."\t/**";
 			$newFunction[] = "\t* Method to change the title & alias.";
 			$newFunction[] = "\t*";
 			$newFunction[] = "\t* @param   string   \$title        The title.";
@@ -4699,15 +4742,15 @@ class Interpretation extends Fields
 			$newFunction[] = "\t*/";
 			$newFunction[] = "\tprotected function _generateNewTitle(\$title)";
 			$newFunction[] = "\t{";
-			$newFunction[] = "\n\t\t//".$this->setLine(__LINE__)." Alter the title";
+			$newFunction[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Alter the title";
 			$newFunction[] = "\t\t\$table = \$this->getTable();";
-			$newFunction[] = "\n\t\twhile (\$table->load(array('title' => \$title)))";
+			$newFunction[] = PHP_EOL."\t\twhile (\$table->load(array('title' => \$title)))";
 			$newFunction[] = "\t\t{";
 			$newFunction[] = "\t\t\t\$title = JString::increment(\$title);";
 			$newFunction[] = "\t\t}";
-			$newFunction[] = "\n\t\treturn \$title;";
+			$newFunction[] = PHP_EOL."\t\treturn \$title;";
 			$newFunction[] = "\t}";
-			return implode("\n",$newFunction);
+			return implode(PHP_EOL,$newFunction);
 		}
 		return '';
 	}
@@ -4731,9 +4774,9 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['id']))
 				{
-					$db .= "\n\t`id` INT(11) NOT NULL AUTO_INCREMENT,";
+					$db .= PHP_EOL."\t`id` INT(11) NOT NULL AUTO_INCREMENT,";
 				}
-				$db .= "\n\t`asset_id` INT(255) UNSIGNED NOT NULL DEFAULT '0',";
+				$db .= PHP_EOL."\t`asset_id` INT(255) UNSIGNED NOT NULL DEFAULT '0',";
 				ksort($fields);
 				foreach ($fields as $field => $data)
 				{
@@ -4774,116 +4817,116 @@ class Interpretation extends Fields
 						$lenght = '('.$data['lenght'].')';
 					}
 					// set the field to db
-					$db .= "\n\t`".$field."` ".$data['type'].$lenght." ".$default.",";
+					$db .= PHP_EOL."\t`".$field."` ".$data['type'].$lenght." ".$default.",";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['params']))
 				{
-					$db .= "\n\t`params` TEXT NOT NULL,";
+					$db .= PHP_EOL."\t`params` TEXT NOT NULL,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
 				{
-					$db .= "\n\t`published` TINYINT(1) NOT NULL DEFAULT '1',";
+					$db .= PHP_EOL."\t`published` TINYINT(1) NOT NULL DEFAULT '1',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created_by']))
 				{
-					$db .= "\n\t`created_by` INT(11) NOT NULL DEFAULT '0',";
+					$db .= PHP_EOL."\t`created_by` INT(11) NOT NULL DEFAULT '0',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['modified_by']))
 				{
-					$db .= "\n\t`modified_by` INT(11) NOT NULL DEFAULT '0',";
+					$db .= PHP_EOL."\t`modified_by` INT(11) NOT NULL DEFAULT '0',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created']))
 				{
-					$db .= "\n\t`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					$db .= PHP_EOL."\t`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['modified']))
 				{
-					$db .= "\n\t`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					$db .= PHP_EOL."\t`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out']))
 				{
-					$db .= "\n\t`checked_out` INT(11) NOT NULL,";
+					$db .= PHP_EOL."\t`checked_out` INT(11) NOT NULL,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out_time']))
 				{
-					$db .= "\n\t`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					$db .= PHP_EOL."\t`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['version']))
 				{
-					$db .= "\n\t`version` INT(11) NOT NULL DEFAULT '1',";
+					$db .= PHP_EOL."\t`version` INT(11) NOT NULL DEFAULT '1',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['hits']))
 				{
-					$db .= "\n\t`hits` INT(11) NOT NULL DEFAULT '0',";
+					$db .= PHP_EOL."\t`hits` INT(11) NOT NULL DEFAULT '0',";
 				}
 				// check if view has access
 				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 				{
-					$db .= "\n\t`access` INT(11) DEFAULT NULL,";
+					$db .= PHP_EOL."\t`access` INT(11) DEFAULT NULL,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['ordering']))
 				{
-					$db .= "\n\t`ordering` INT(11) NOT NULL DEFAULT '0',";
+					$db .= PHP_EOL."\t`ordering` INT(11) NOT NULL DEFAULT '0',";
 				}
 				// check if metadata is added to this view
 				if (isset($this->metadataBuilder[$view]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view]))
 				{
-					$db .= "\n\t`metakey` TEXT NOT NULL DEFAULT '',";
-					$db .= "\n\t`metadesc` TEXT NOT NULL DEFAULT '',";
-					$db .= "\n\t`metadata` TEXT NOT NULL DEFAULT '',";
+					$db .= PHP_EOL."\t`metakey` TEXT NOT NULL DEFAULT '',";
+					$db .= PHP_EOL."\t`metadesc` TEXT NOT NULL DEFAULT '',";
+					$db .= PHP_EOL."\t`metadata` TEXT NOT NULL DEFAULT '',";
 				}
-				$db .= "\n\tPRIMARY KEY  (`id`)";
+				$db .= PHP_EOL."\tPRIMARY KEY  (`id`)";
 				if (isset($this->dbUniqueKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbUniqueKeys[$view]))
 				{
 					foreach ($this->dbUniqueKeys[$view] as $nr => $key)
 					{
-						$db .= ",\n\tUNIQUE KEY `idx_".$key."` (`".$key."`)";
+						$db .= ",".PHP_EOL."\tUNIQUE KEY `idx_".$key."` (`".$key."`)";
 					}
 				}
 				// check if view has access
 				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 				{
-					$db .= ",\n\tKEY `idx_access` (`access`)";
+					$db .= ",".PHP_EOL."\tKEY `idx_access` (`access`)";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out']))
 				{
-					$db .= ",\n\tKEY `idx_checkout` (`checked_out`)";
+					$db .= ",".PHP_EOL."\tKEY `idx_checkout` (`checked_out`)";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created_by']))
 				{
-					$db .= ",\n\tKEY `idx_createdby` (`created_by`)";
+					$db .= ",".PHP_EOL."\tKEY `idx_createdby` (`created_by`)";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['modified_by']))
 				{
-					$db .= ",\n\tKEY `idx_modifiedby` (`modified_by`)";
+					$db .= ",".PHP_EOL."\tKEY `idx_modifiedby` (`modified_by`)";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
 				{
-					$db .= ",\n\tKEY `idx_state` (`published`)";
+					$db .= ",".PHP_EOL."\tKEY `idx_state` (`published`)";
 				}
 				if (isset($this->dbKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbKeys[$view]))
 				{
 					foreach ($this->dbKeys[$view] as $nr => $key)
 					{
-						$db .= ",\n\tKEY `idx_".$key."` (`".$key."`)";
+						$db .= ",".PHP_EOL."\tKEY `idx_".$key."` (`".$key."`)";
 					}
 				}
-				$db .= "\n) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;\n\n";
+				$db .= PHP_EOL.") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;".PHP_EOL.PHP_EOL;
 			}
 			// add custom sql dump to the file
 			if (isset($this->customScriptBuilder['sql']) && ComponentbuilderHelper::checkArray($this->customScriptBuilder['sql']))
@@ -4891,7 +4934,7 @@ class Interpretation extends Fields
 				foreach ($this->customScriptBuilder['sql'] as $for => $customSql)
 				{
 					$placeholders = array('[[[component]]]' => $component, '[[[view]]]' => $for);
-					$db .= "\n\n".str_replace(array_keys($placeholders),array_values($placeholders),$customSql);
+					$db .= PHP_EOL.PHP_EOL.str_replace(array_keys($placeholders),array_values($placeholders),$customSql);
 				}
 
 			}
@@ -4907,7 +4950,7 @@ class Interpretation extends Fields
 			$bd = '';
 			foreach ($this->uninstallBuilder as $line)
 			{
-				$bd .= $line."\n";
+				$bd .= $line.PHP_EOL;
 			}
 			return $bd;
 		}
@@ -5003,7 +5046,7 @@ class Interpretation extends Fields
 					{
 						$lang = '';
 					}
-					$lang .= $key.'="'.$value.'"'."\n";
+					$lang .= $key.'="'.$value.'"'.PHP_EOL;
 				}
 			}
 			return $lang;
@@ -5052,7 +5095,7 @@ class Interpretation extends Fields
 					{
 						$lang = '';
 					}
-					$lang .= $key.'="'.$value.'"'."\n";
+					$lang .= $key.'="'.$value.'"'.PHP_EOL;
 				}
 			}
 			return $lang;
@@ -5076,7 +5119,7 @@ class Interpretation extends Fields
 					{
 						$lang = '';
 					}
-					$lang .= $key.'="'.$value.'"'."\n";
+					$lang .= $key.'="'.$value.'"'.PHP_EOL;
 				}
 			}
 			return $lang;
@@ -5097,7 +5140,7 @@ class Interpretation extends Fields
 					{
 						$lang = '';
 					}
-					$lang .= $key.'="'.$value.'"'."\n";
+					$lang .= $key.'="'.$value.'"'.PHP_EOL;
 				}
 			}
 			return $lang;
@@ -5174,70 +5217,70 @@ class Interpretation extends Fields
 			$firstTimeBeingAdded = true;
 			// add the default
 			$body = "<?php foreach (\$this->items as \$i => \$item): ?>";
-			$body .= "\n\t<?php";
-			$body .= "\n\t\t\$canCheckin = \$this->user->authorise('core.manage', 'com_checkin') || \$item->checked_out == \$this->user->id || \$item->checked_out == 0;";
-			$body .= "\n\t\t\$userChkOut = JFactory::getUser(\$item->checked_out);";
-			$body .= "\n\t\t\$canDo = ".$Helper."::getActions('".$viewName_single."',\$item,'".$viewName_list."');";
-			$body .= "\n\t?>";
-			$body .= "\n\t".'<tr class="row<?php echo $i % 2; ?>">';
+			$body .= PHP_EOL."\t<?php";
+			$body .= PHP_EOL."\t\t\$canCheckin = \$this->user->authorise('core.manage', 'com_checkin') || \$item->checked_out == \$this->user->id || \$item->checked_out == 0;";
+			$body .= PHP_EOL."\t\t\$userChkOut = JFactory::getUser(\$item->checked_out);";
+			$body .= PHP_EOL."\t\t\$canDo = ".$Helper."::getActions('".$viewName_single."',\$item,'".$viewName_list."');";
+			$body .= PHP_EOL."\t?>";
+			$body .= PHP_EOL."\t".'<tr class="row<?php echo $i % 2; ?>">';
 			// only load if not over written
 			if (!isset($this->fieldsNames[$viewName_single]['ordering']))
 			{
-				$body .= "\n\t\t".'<td class="order nowrap center hidden-phone">';
+				$body .= PHP_EOL."\t\t".'<td class="order nowrap center hidden-phone">';
 				// check if the item has permissions.
 				if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit.state']]))
 				{
-					$body .= "\n\t\t<?php if (\$canDo->get('".$core['core.edit.state']."')): ?>";
+					$body .= PHP_EOL."\t\t<?php if (\$canDo->get('".$core['core.edit.state']."')): ?>";
 				}
 				else
 				{
-					$body .= "\n\t\t<?php if (\$canDo->get('core.edit.state')): ?>";
+					$body .= PHP_EOL."\t\t<?php if (\$canDo->get('core.edit.state')): ?>";
 				}
-				$body .= "\n\t\t\t<?php";
-				$body .= "\n\t\t\t\tif (\$this->saveOrder)";
-				$body .= "\n\t\t\t\t{";
-				$body .= "\n\t\t\t\t\t\$iconClass = ' inactive';";
-				$body .= "\n\t\t\t\t}";
-				$body .= "\n\t\t\t\telse";
-				$body .= "\n\t\t\t\t{";
-				$body .= "\n\t\t\t\t\t\$iconClass = ' inactive tip-top".'" hasTooltip" title="'."' . JHtml::tooltipText('JORDERINGDISABLED');";
-				$body .= "\n\t\t\t\t}";
-				$body .= "\n\t\t\t?>";
-				$body .= "\n\t\t\t".'<span class="sortable-handler<?php echo $iconClass; ?>">';
-				$body .= "\n\t\t\t\t".'<i class="icon-menu"></i>';
-				$body .= "\n\t\t\t</span>";
-				$body .= "\n\t\t\t<?php if (\$this->saveOrder) : ?>";
-				$body .= "\n\t\t\t\t".'<input type="text" style="display:none" name="order[]" size="5"';
-				$body .= "\n\t\t\t\t".'value="<?php echo $item->ordering; ?>" class="width-20 text-area-order " />';
-				$body .= "\n\t\t\t<?php endif; ?>";
-				$body .= "\n\t\t<?php else: ?>";
-				$body .= "\n\t\t\t&#8942;";
-				$body .= "\n\t\t<?php endif; ?>";
-				$body .= "\n\t\t</td>";
+				$body .= PHP_EOL."\t\t\t<?php";
+				$body .= PHP_EOL."\t\t\t\tif (\$this->saveOrder)";
+				$body .= PHP_EOL."\t\t\t\t{";
+				$body .= PHP_EOL."\t\t\t\t\t\$iconClass = ' inactive';";
+				$body .= PHP_EOL."\t\t\t\t}";
+				$body .= PHP_EOL."\t\t\t\telse";
+				$body .= PHP_EOL."\t\t\t\t{";
+				$body .= PHP_EOL."\t\t\t\t\t\$iconClass = ' inactive tip-top".'" hasTooltip" title="'."' . JHtml::tooltipText('JORDERINGDISABLED');";
+				$body .= PHP_EOL."\t\t\t\t}";
+				$body .= PHP_EOL."\t\t\t?>";
+				$body .= PHP_EOL."\t\t\t".'<span class="sortable-handler<?php echo $iconClass; ?>">';
+				$body .= PHP_EOL."\t\t\t\t".'<i class="icon-menu"></i>';
+				$body .= PHP_EOL."\t\t\t</span>";
+				$body .= PHP_EOL."\t\t\t<?php if (\$this->saveOrder) : ?>";
+				$body .= PHP_EOL."\t\t\t\t".'<input type="text" style="display:none" name="order[]" size="5"';
+				$body .= PHP_EOL."\t\t\t\t".'value="<?php echo $item->ordering; ?>" class="width-20 text-area-order " />';
+				$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+				$body .= PHP_EOL."\t\t<?php else: ?>";
+				$body .= PHP_EOL."\t\t\t&#8942;";
+				$body .= PHP_EOL."\t\t<?php endif; ?>";
+				$body .= PHP_EOL."\t\t</td>";
 			}
-			$body .= "\n\t\t".'<td class="nowrap center">';
+			$body .= PHP_EOL."\t\t".'<td class="nowrap center">';
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit']]))
 			{
-				$body .= "\n\t\t<?php if (\$canDo->get('".$core['core.edit']."')): ?>";
+				$body .= PHP_EOL."\t\t<?php if (\$canDo->get('".$core['core.edit']."')): ?>";
 			}
 			else
 			{
-				$body .= "\n\t\t<?php if (\$canDo->get('core.edit')): ?>";
+				$body .= PHP_EOL."\t\t<?php if (\$canDo->get('core.edit')): ?>";
 			}
-			$body .= "\n\t\t\t\t<?php if (\$item->checked_out) : ?>";
-			$body .= "\n\t\t\t\t\t<?php if (\$canCheckin) : ?>";
-			$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('grid.id', \$i, \$item->id); ?>";
-			$body .= "\n\t\t\t\t\t<?php else: ?>";
-			$body .= "\n\t\t\t\t\t\t&#9633;";
-			$body .= "\n\t\t\t\t\t<?php endif; ?>";
-			$body .= "\n\t\t\t\t<?php else: ?>";
-			$body .= "\n\t\t\t\t\t<?php echo JHtml::_('grid.id', \$i, \$item->id); ?>";
-			$body .= "\n\t\t\t\t<?php endif; ?>";
-			$body .= "\n\t\t<?php else: ?>";
-			$body .= "\n\t\t\t&#9633;";
-			$body .= "\n\t\t<?php endif; ?>";
-			$body .= "\n\t\t</td>";
+			$body .= PHP_EOL."\t\t\t\t<?php if (\$item->checked_out) : ?>";
+			$body .= PHP_EOL."\t\t\t\t\t<?php if (\$canCheckin) : ?>";
+			$body .= PHP_EOL."\t\t\t\t\t\t<?php echo JHtml::_('grid.id', \$i, \$item->id); ?>";
+			$body .= PHP_EOL."\t\t\t\t\t<?php else: ?>";
+			$body .= PHP_EOL."\t\t\t\t\t\t&#9633;";
+			$body .= PHP_EOL."\t\t\t\t\t<?php endif; ?>";
+			$body .= PHP_EOL."\t\t\t\t<?php else: ?>";
+			$body .= PHP_EOL."\t\t\t\t\t<?php echo JHtml::_('grid.id', \$i, \$item->id); ?>";
+			$body .= PHP_EOL."\t\t\t\t<?php endif; ?>";
+			$body .= PHP_EOL."\t\t<?php else: ?>";
+			$body .= PHP_EOL."\t\t\t&#9633;";
+			$body .= PHP_EOL."\t\t<?php endif; ?>";
+			$body .= PHP_EOL."\t\t</td>";
 			// check if this view has fields that should not be escaped
 			$doNotEscape = false;
 			if (isset($this->doNotEscape[$viewName_list]))
@@ -5290,25 +5333,25 @@ class Interpretation extends Fields
 					{
 						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 						// category and linked
-						$body .= "\n\t\t".'<td class="nowrap">';
-						$body .= "\n\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###'].".".$otherViews.".category.' . (int)\$item->".$item['code'].")): ?>";
-						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->'.$item['code'].'; ?>&extension=com_'.$this->fileContentStatic['###component###'].'.'.$otherViews.'"><?php echo $this->escape($item->category_title); ?></a>';
-						$body .= "\n\t\t\t<?php else: ?>";
-						$body .= "\n\t\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
-						$body .= "\n\t\t\t<?php endif; ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+						$body .= PHP_EOL."\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###'].".".$otherViews.".category.' . (int)\$item->".$item['code'].")): ?>";
+						$body .= PHP_EOL."\t\t\t\t".'<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->'.$item['code'].'; ?>&extension=com_'.$this->fileContentStatic['###component###'].'.'.$otherViews.'"><?php echo $this->escape($item->category_title); ?></a>';
+						$body .= PHP_EOL."\t\t\t<?php else: ?>";
+						$body .= PHP_EOL."\t\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
+						$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					elseif ($item['type'] === 'user' && !$item['title'])
 					{
 						// user and linked
-						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
-						$body .= "\n\t\t".'<td class="nowrap">';
-						$body .= "\n\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
-						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['code'].' ?>"><?php echo $'.$item['code'].'User->name; ?></a>';
-						$body .= "\n\t\t\t<?php else: ?>";
-						$body .= "\n\t\t\t\t<?php echo \$".$item['code']."User->name; ?>";
-						$body .= "\n\t\t\t<?php endif; ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
+						$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+						$body .= PHP_EOL."\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
+						$body .= PHP_EOL."\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['code'].' ?>"><?php echo $'.$item['code'].'User->name; ?></a>';
+						$body .= PHP_EOL."\t\t\t<?php else: ?>";
+						$body .= PHP_EOL."\t\t\t\t<?php echo \$".$item['code']."User->name; ?>";
+						$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					else
 					{
@@ -5337,14 +5380,14 @@ class Interpretation extends Fields
 						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'])
 						{
 							// user and linked
-							$body .= "\n\t\t<?php \$".$item['id']." = JFactory::getUser(\$item->".$item['id']."); ?>";
-							$body .= "\n\t\t".'<td class="nowrap">';
-							$body .= "\n\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
-							$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['id'].' ?>"><?php echo $'.$item['id'].'->name; ?></a>';
-							$body .= "\n\t\t\t<?php else: ?>";
-							$body .= "\n\t\t\t\t<?php echo \$".$item['id']."->name; ?>";
-							$body .= "\n\t\t\t<?php endif; ?>";
-							$body .= "\n\t\t</td>";
+							$body .= PHP_EOL."\t\t<?php \$".$item['id']." = JFactory::getUser(\$item->".$item['id']."); ?>";
+							$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+							$body .= PHP_EOL."\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
+							$body .= PHP_EOL."\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['id'].' ?>"><?php echo $'.$item['id'].'->name; ?></a>';
+							$body .= PHP_EOL."\t\t\t<?php else: ?>";
+							$body .= PHP_EOL."\t\t\t\t<?php echo \$".$item['id']."->name; ?>";
+							$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+							$body .= PHP_EOL."\t\t</td>";
 
 							$add = false;
 						}
@@ -5358,16 +5401,16 @@ class Interpretation extends Fields
                                                                 // make sure the custom links are only added once
                                                                 $firstTimeBeingAdded = false;
                                                                 // start building the links
-                                                                $customAdminView = "\n\t\t\t".'<div class="btn-group">';
+                                                                $customAdminView = PHP_EOL."\t\t\t".'<div class="btn-group">';
                                                                 foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
                                                                 {
-                                                                        $customAdminView .= "\n\t\t\t<?php if (\$canDo->get('".$customLinkView['link'].".access')): ?>";
-                                                                        $customAdminView .= "\n\t\t\t\t".'<a class="hasTooltip btn btn-mini" href="index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$customLinkView['link'].'&id=<?php echo $item->id; ?>" title="<?php echo JText::_('."'COM_".$this->fileContentStatic['###COMPONENT###'].'_'.$customLinkView['NAME']."'".'); ?>" ><span class="icon-'.$customLinkView['icon'].'"></span></a>';
-                                                                        $customAdminView .= "\n\t\t\t<?php else: ?>";
-                                                                        $customAdminView .= "\n\t\t\t\t".'<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText::_('."'COM_".$this->fileContentStatic['###COMPONENT###'].'_'.$customLinkView['NAME']."'".'); ?>"><span class="icon-'.$customLinkView['icon'].'"></span></a>';
-                                                                        $customAdminView .= "\n\t\t\t<?php endif; ?>";
+                                                                        $customAdminView .= PHP_EOL."\t\t\t<?php if (\$canDo->get('".$customLinkView['link'].".access')): ?>";
+                                                                        $customAdminView .= PHP_EOL."\t\t\t\t".'<a class="hasTooltip btn btn-mini" href="index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$customLinkView['link'].'&id=<?php echo $item->id; ?>" title="<?php echo JText::_('."'COM_".$this->fileContentStatic['###COMPONENT###'].'_'.$customLinkView['NAME']."'".'); ?>" ><span class="icon-'.$customLinkView['icon'].'"></span></a>';
+                                                                        $customAdminView .= PHP_EOL."\t\t\t<?php else: ?>";
+                                                                        $customAdminView .= PHP_EOL."\t\t\t\t".'<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText::_('."'COM_".$this->fileContentStatic['###COMPONENT###'].'_'.$customLinkView['NAME']."'".'); ?>"><span class="icon-'.$customLinkView['icon'].'"></span></a>';
+                                                                        $customAdminView .= PHP_EOL."\t\t\t<?php endif; ?>";
                                                                 }
-                                                                $customAdminView .= "\n\t\t\t".'</div>';
+                                                                $customAdminView .= PHP_EOL."\t\t\t".'</div>';
 
                                                         }
 							// check if the item has permissions.
@@ -5388,21 +5431,21 @@ class Interpretation extends Fields
 						if ($add)
 						{
 							// set as linked
-							$body .= "\n\t\t".'<td class="nowrap">';
-							$body .= "\n\t\t\t<?php if (".$accessCheck."): ?>";
-							$body .= "\n\t\t\t\t".'<div class="name">'."\n\t\t\t\t\t".'<a href="'.$link.'">'.$itemCode.'</a>';
+							$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+							$body .= PHP_EOL."\t\t\t<?php if (".$accessCheck."): ?>";
+							$body .= PHP_EOL."\t\t\t\t".'<div class="name">'.PHP_EOL."\t\t\t\t\t".'<a href="'.$link.'">'.$itemCode.'</a>';
 							if ($checkoutTriger)
 							{
-								$body .= "\n\t\t\t\t\t<?php if (\$item->checked_out): ?>";
-								$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '".$viewName_list.".', \$canCheckin); ?>";
-								$body .= "\n\t\t\t\t\t<?php endif; ?>";
+								$body .= PHP_EOL."\t\t\t\t\t<?php if (\$item->checked_out): ?>";
+								$body .= PHP_EOL."\t\t\t\t\t\t<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '".$viewName_list.".', \$canCheckin); ?>";
+								$body .= PHP_EOL."\t\t\t\t\t<?php endif; ?>";
 							}
-							$body .= "\n\t\t\t\t".'</div>';
-							$body .= "\n\t\t\t<?php else: ?>";
-							$body .= "\n\t\t\t\t".'<div class="name">'.$itemCode.'</div>';
-							$body .= "\n\t\t\t<?php endif; ?>";
+							$body .= PHP_EOL."\t\t\t\t".'</div>';
+							$body .= PHP_EOL."\t\t\t<?php else: ?>";
+							$body .= PHP_EOL."\t\t\t\t".'<div class="name">'.$itemCode.'</div>';
+							$body .= PHP_EOL."\t\t\t<?php endif; ?>";
                                                         $body .= $customAdminView;
-							$body .= "\n\t\t</td>";
+							$body .= PHP_EOL."\t\t</td>";
 						}
 					}
 				}
@@ -5410,74 +5453,74 @@ class Interpretation extends Fields
 				{
 					if ($item['type'] === 'category')
 					{
-						$body .= "\n\t\t<td class=\"hidden-phone\">";
-						$body .= "\n\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<td class=\"hidden-phone\">";
+						$body .= PHP_EOL."\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user')
 					{
 						// custom user and linked
-						$body .= "\n\t\t<?php \$".$item['code']." = JFactory::getUser(\$item->".$item['id']."); ?>";
-						$body .= "\n\t\t".'<td class="nowrap hidden-phone">';
-						$body .= "\n\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
-						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['id'].' ?>"><?php echo $'.$item['code'].'->name; ?></a>';
-						$body .= "\n\t\t\t<?php else: ?>";
-						$body .= "\n\t\t\t\t<?php echo \$".$item['code']."->name; ?>";
-						$body .= "\n\t\t\t<?php endif; ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<?php \$".$item['code']." = JFactory::getUser(\$item->".$item['id']."); ?>";
+						$body .= PHP_EOL."\t\t".'<td class="nowrap hidden-phone">';
+						$body .= PHP_EOL."\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
+						$body .= PHP_EOL."\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['id'].' ?>"><?php echo $'.$item['code'].'->name; ?></a>';
+						$body .= PHP_EOL."\t\t\t<?php else: ?>";
+						$body .= PHP_EOL."\t\t\t\t<?php echo \$".$item['code']."->name; ?>";
+						$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					elseif ($item['type'] === 'user')
 					{
 						// user name only
-						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
-						$body .= "\n\t\t".'<td class="nowrap">';
-						$body .= "\n\t\t\t<?php echo \$".$item['code']."User->name; ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
+						$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+						$body .= PHP_EOL."\t\t\t<?php echo \$".$item['code']."User->name; ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					else
 					{
 						// normal not linked
-						$body .= "\n\t\t<td class=\"hidden-phone\">";
-						$body .= "\n\t\t\t".$itemCode;
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<td class=\"hidden-phone\">";
+						$body .= PHP_EOL."\t\t\t".$itemCode;
+						$body .= PHP_EOL."\t\t</td>";
 					}
 				}
 			}
 			// add the defaults
 			if (!isset($this->fieldsNames[$viewName_single]['published']))
 			{
-				$body .= "\n\t\t".'<td class="center">';
+				$body .= PHP_EOL."\t\t".'<td class="center">';
 				// check if the item has permissions.
 				if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit.state']]))
 				{
-					$body .= "\n\t\t<?php if (\$canDo->get('".$core['core.edit.state']."')) : ?>";
+					$body .= PHP_EOL."\t\t<?php if (\$canDo->get('".$core['core.edit.state']."')) : ?>";
 				}
 				else
 				{
-					$body .= "\n\t\t<?php if (\$canDo->get('core.edit.state')) : ?>";
+					$body .= PHP_EOL."\t\t<?php if (\$canDo->get('core.edit.state')) : ?>";
 				}
-				$body .= "\n\t\t\t\t<?php if (\$item->checked_out) : ?>";
-				$body .= "\n\t\t\t\t\t<?php if (\$canCheckin) : ?>";
-				$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', true, 'cb'); ?>";
-				$body .= "\n\t\t\t\t\t<?php else: ?>";
-				$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', false, 'cb'); ?>";
-				$body .= "\n\t\t\t\t\t<?php endif; ?>";
-				$body .= "\n\t\t\t\t<?php else: ?>";
-				$body .= "\n\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', true, 'cb'); ?>";
-				$body .= "\n\t\t\t\t<?php endif; ?>";
-				$body .= "\n\t\t<?php else: ?>";
-				$body .= "\n\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', false, 'cb'); ?>";
-				$body .= "\n\t\t<?php endif; ?>";
-				$body .= "\n\t\t</td>";
+				$body .= PHP_EOL."\t\t\t\t<?php if (\$item->checked_out) : ?>";
+				$body .= PHP_EOL."\t\t\t\t\t<?php if (\$canCheckin) : ?>";
+				$body .= PHP_EOL."\t\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', true, 'cb'); ?>";
+				$body .= PHP_EOL."\t\t\t\t\t<?php else: ?>";
+				$body .= PHP_EOL."\t\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', false, 'cb'); ?>";
+				$body .= PHP_EOL."\t\t\t\t\t<?php endif; ?>";
+				$body .= PHP_EOL."\t\t\t\t<?php else: ?>";
+				$body .= PHP_EOL."\t\t\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', true, 'cb'); ?>";
+				$body .= PHP_EOL."\t\t\t\t<?php endif; ?>";
+				$body .= PHP_EOL."\t\t<?php else: ?>";
+				$body .= PHP_EOL."\t\t\t<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '".$viewName_list.".', false, 'cb'); ?>";
+				$body .= PHP_EOL."\t\t<?php endif; ?>";
+				$body .= PHP_EOL."\t\t</td>";
 			}	
 			if (!isset($this->fieldsNames[$viewName_single]['id']))
 			{
-				$body .= "\n\t\t".'<td class="nowrap center hidden-phone">';
-				$body .= "\n\t\t\t<?php echo \$item->id; ?>";
-				$body .= "\n\t\t</td>";
+				$body .= PHP_EOL."\t\t".'<td class="nowrap center hidden-phone">';
+				$body .= PHP_EOL."\t\t\t<?php echo \$item->id; ?>";
+				$body .= PHP_EOL."\t\t</td>";
 			}
-			$body .= "\n\t</tr>";
-			$body .= "\n<?php endforeach; ?>";
+			$body .= PHP_EOL."\t</tr>";
+			$body .= PHP_EOL."<?php endforeach; ?>";
 			// return the build
 			return $body;
 		}
@@ -5506,24 +5549,24 @@ class Interpretation extends Fields
 			}
 			// set default
 			$head = '<tr>';
-			$head .= "\n\t<?php if (\$this->canEdit&& \$this->canState): ?>";
+			$head .= PHP_EOL."\t<?php if (\$this->canEdit&& \$this->canState): ?>";
 			if (!isset($this->fieldsNames[$viewName_single]['ordering']))
 			{
-				$head .= "\n\t\t".'<th width="1%" class="nowrap center hidden-phone">';
-				$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".'<i class="icon-menu-2"></i>'."', 'ordering', \$this->listDirn, \$this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>";
-				$head .= "\n\t\t</th>";
+				$head .= PHP_EOL."\t\t".'<th width="1%" class="nowrap center hidden-phone">';
+				$head .= PHP_EOL."\t\t\t<?php echo JHtml::_('grid.sort', '".'<i class="icon-menu-2"></i>'."', 'ordering', \$this->listDirn, \$this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>";
+				$head .= PHP_EOL."\t\t</th>";
 			}
-			$head .= "\n\t\t".'<th width="20" class="nowrap center">';
-			$head .= "\n\t\t\t<?php echo JHtml::_('grid.checkall'); ?>";
-			$head .= "\n\t\t</th>";
-			$head .= "\n\t<?php else: ?>";
-			$head .= "\n\t\t".'<th width="20" class="nowrap center hidden-phone">';
-			$head .= "\n\t\t\t&#9662;";
-			$head .= "\n\t\t</th>";
-			$head .= "\n\t\t".'<th width="20" class="nowrap center">';
-			$head .= "\n\t\t\t&#9632;";
-			$head .= "\n\t\t</th>";
-			$head .= "\n\t<?php endif; ?>";
+			$head .= PHP_EOL."\t\t".'<th width="20" class="nowrap center">';
+			$head .= PHP_EOL."\t\t\t<?php echo JHtml::_('grid.checkall'); ?>";
+			$head .= PHP_EOL."\t\t</th>";
+			$head .= PHP_EOL."\t<?php else: ?>";
+			$head .= PHP_EOL."\t\t".'<th width="20" class="nowrap center hidden-phone">';
+			$head .= PHP_EOL."\t\t\t&#9662;";
+			$head .= PHP_EOL."\t\t</th>";
+			$head .= PHP_EOL."\t\t".'<th width="20" class="nowrap center">';
+			$head .= PHP_EOL."\t\t\t&#9632;";
+			$head .= PHP_EOL."\t\t</th>";
+			$head .= PHP_EOL."\t<?php endif; ?>";
 			// set footer Column number
 			$this->listColnrBuilder[$viewName_list] = 4;
 			// build the dynamic fields
@@ -5543,31 +5586,31 @@ class Interpretation extends Fields
 				{
 					$title = "<?php echo JHtml::_('grid.sort', '".$item['lang']."', '".$item['code']."', \$this->listDirn, \$this->listOrder); ?>";
 				}
-				$head .= "\n\t".'<th class="'.$class.'" >';
-				$head .= "\n\t\t\t".$title;
-				$head .= "\n\t</th>";
+				$head .= PHP_EOL."\t".'<th class="'.$class.'" >';
+				$head .= PHP_EOL."\t\t\t".$title;
+				$head .= PHP_EOL."\t</th>";
 				$this->listColnrBuilder[$viewName_list]++;
 			}
 			// set default
 			if (!isset($this->fieldsNames[$viewName_single]['published']))
 			{
-				$head .= "\n\t<?php if (\$this->canState): ?>";
-				$head .= "\n\t\t".'<th width="10" class="nowrap center" >';
-				$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".$statusLangName."', 'published', \$this->listDirn, \$this->listOrder); ?>";
-				$head .= "\n\t\t</th>";
-				$head .= "\n\t<?php else: ?>";
-				$head .= "\n\t\t".'<th width="10" class="nowrap center" >';
-				$head .= "\n\t\t\t<?php echo JText::_('".$statusLangName."'); ?>";
-				$head .= "\n\t\t</th>";
-				$head .= "\n\t<?php endif; ?>";
+				$head .= PHP_EOL."\t<?php if (\$this->canState): ?>";
+				$head .= PHP_EOL."\t\t".'<th width="10" class="nowrap center" >';
+				$head .= PHP_EOL."\t\t\t<?php echo JHtml::_('grid.sort', '".$statusLangName."', 'published', \$this->listDirn, \$this->listOrder); ?>";
+				$head .= PHP_EOL."\t\t</th>";
+				$head .= PHP_EOL."\t<?php else: ?>";
+				$head .= PHP_EOL."\t\t".'<th width="10" class="nowrap center" >';
+				$head .= PHP_EOL."\t\t\t<?php echo JText::_('".$statusLangName."'); ?>";
+				$head .= PHP_EOL."\t\t</th>";
+				$head .= PHP_EOL."\t<?php endif; ?>";
 			}
 			if (!isset($this->fieldsNames[$viewName_single]['id']))
 			{
-				$head .= "\n\t".'<th width="5" class="nowrap center hidden-phone" >';
-				$head .= "\n\t\t\t<?php echo JHtml::_('grid.sort', '".$idLangName."', 'id', \$this->listDirn, \$this->listOrder); ?>";
-				$head .= "\n\t</th>";
+				$head .= PHP_EOL."\t".'<th width="5" class="nowrap center hidden-phone" >';
+				$head .= PHP_EOL."\t\t\t<?php echo JHtml::_('grid.sort', '".$idLangName."', 'id', \$this->listDirn, \$this->listOrder); ?>";
+				$head .= PHP_EOL."\t</th>";
 			}
- 			$head .= "\n</tr>";
+ 			$head .= PHP_EOL."</tr>";
 
 			return $head;
 		}
@@ -5684,7 +5727,7 @@ class Interpretation extends Fields
 							}
 							else
 							{
-								$items .= ",\n\t'".$name."'";
+								$items .= ",".PHP_EOL."\t'".$name."'";
 							}
 							$itemCounter++;
 						}
@@ -5721,27 +5764,27 @@ class Interpretation extends Fields
 								// set as title layout
 								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layouttitle');
 								// load to header
-								$header .= "\n\t<?php echo JLayoutHelper::render('".$viewName_single.".".$layoutCodeName."', \$this); ?>";
+								$header .= PHP_EOL."\t<?php echo JLayoutHelper::render('".$viewName_single.".".$layoutCodeName."', \$this); ?>";
 							break;
 							case 5: // under
 								// set as title layout
 								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layouttitle');
 								// load to footer
-								$footer .= "\n\n<div class=\"clearfix\"></div>\n<?php echo JLayoutHelper::render('".$viewName_single.".".$layoutCodeName."', \$this); ?>";
+								$footer .= PHP_EOL.PHP_EOL."<div class=\"clearfix\"></div>".PHP_EOL."<?php echo JLayoutHelper::render('".$viewName_single.".".$layoutCodeName."', \$this); ?>";
 							break;
 							case 6: // left side
 								$tabWidth = $tabWidth - 2;
 								// set as items layout
 								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layoutitems');
 								// load the body
-								$leftside .= "\n\t<?php echo JLayoutHelper::render('".$viewName_single.".".$layoutCodeName."', \$this); ?>";
+								$leftside .= PHP_EOL."\t<?php echo JLayoutHelper::render('".$viewName_single.".".$layoutCodeName."', \$this); ?>";
 							break;
 							case 7: // right side
 								$tabWidth = $tabWidth - 2;
 								// set as items layout
 								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layoutitems');
 								// load the body
-								$rightside .= "\n\t<?php echo JLayoutHelper::render('".$viewName_single.".".$layoutCodeName."', \$this); ?>";
+								$rightside .= PHP_EOL."\t<?php echo JLayoutHelper::render('".$viewName_single.".".$layoutCodeName."', \$this); ?>";
 							break;
 						}
 					}
@@ -5815,9 +5858,9 @@ class Interpretation extends Fields
 						{
 							case 1: // left
 							case 2: // right
-								$main .= "\n\t\t\t".'<div class="span6">';
-								$main .= "\n\t\t\t\t".$string;
-								$main .= "\n\t\t\t".'</div>';
+								$main .= PHP_EOL."\t\t\t".'<div class="span6">';
+								$main .= PHP_EOL."\t\t\t\t".$string;
+								$main .= PHP_EOL."\t\t\t".'</div>';
 							break;
 						}
 					}
@@ -5827,25 +5870,25 @@ class Interpretation extends Fields
 						{
 							case 1: // left
 							case 2: // right
-								$main .= "\n\t\t\t".'<div class="span12">';
-								$main .= "\n\t\t\t\t".$string;
-								$main .= "\n\t\t\t".'</div>';
+								$main .= PHP_EOL."\t\t\t".'<div class="span12">';
+								$main .= PHP_EOL."\t\t\t\t".$string;
+								$main .= PHP_EOL."\t\t\t".'</div>';
 							break;
 						}
 					}
 					switch($posion)
 					{
 						case 3: // fullwidth
-							$mainbottom .= "\n\t\t\t".'<div class="span12">';
-							$mainbottom .= "\n\t\t\t\t".$string;
-							$mainbottom .= "\n\t\t\t".'</div>';
+							$mainbottom .= PHP_EOL."\t\t\t".'<div class="span12">';
+							$mainbottom .= PHP_EOL."\t\t\t\t".$string;
+							$mainbottom .= PHP_EOL."\t\t\t".'</div>';
 						break;
 					}
 				}
 				// set acctive tab
 				if ($tabCounter == 0)
 				{
-					$body .= "\n\n\t<?php echo JHtml::_('bootstrap.startTabSet', '".$viewName_single."Tab', array('active' => '".$tabCodeName."')); ?>";
+					$body .= PHP_EOL.PHP_EOL."\t<?php echo JHtml::_('bootstrap.startTabSet', '".$viewName_single."Tab', array('active' => '".$tabCodeName."')); ?>";
 				}
 				// if this is a linked view set permissions
 				$closeIT = false;
@@ -5865,37 +5908,37 @@ class Interpretation extends Fields
 					// check if the item has permissions.
 					if ($coreLoadLinked && isset($coreLinked['core.access']) && isset($this->permissionBuilder['global'][$coreLinked['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$coreLinked['core.access']]) && in_array($linkedCodeName,$this->permissionBuilder['global'][$coreLinked['core.access']]))
 					{
-						$body .= "\n\n\t<?php if (\$this->canDo->get('".$coreLinked['core.access']."')) : ?>";
+						$body .= PHP_EOL.PHP_EOL."\t<?php if (\$this->canDo->get('".$coreLinked['core.access']."')) : ?>";
 						$closeIT = true;
 					}
 					else
 					{
-						$body .= "\n";
+						$body .= PHP_EOL;
 					}
 					// insure clear
 					unset($coreLoadLinked,$coreLinked,$linkedViewData);
 				}
 				else
 				{
-					$body .= "\n";
+					$body .= PHP_EOL;
 				}
 				// start tab
-				$body .= "\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeName."', JText::_('".$tabLangName."', true)); ?>";
+				$body .= PHP_EOL."\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeName."', JText::_('".$tabLangName."', true)); ?>";
 				// add the main
-				$body .= "\n\t\t".'<div class="row-fluid form-horizontal-desktop">';
+				$body .= PHP_EOL."\t\t".'<div class="row-fluid form-horizontal-desktop">';
 				$body .= $main;
-				$body .= "\n\t\t</div>";
+				$body .= PHP_EOL."\t\t</div>";
 				if (strlen($mainbottom) > 0)
 				{
 					// add the main bottom
-					$body .= "\n\t\t".'<div class="row-fluid form-horizontal-desktop">';
+					$body .= PHP_EOL."\t\t".'<div class="row-fluid form-horizontal-desktop">';
 					$body .= $mainbottom;
-					$body .= "\n\t\t</div>";
+					$body .= PHP_EOL."\t\t</div>";
 				}
-				$body .= "\n\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				$body .= PHP_EOL."\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
 				if($closeIT)
 				{
-					$body .= "\n\t<?php endif; ?>";
+					$body .= PHP_EOL."\t<?php endif; ?>";
 				}
 				// set counter
 				$tabCounter++;
@@ -5935,7 +5978,7 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkArray($items))
 				{
 					// load all items
-					$items_one = "'". implode("',\n\t'", $items)."'";
+					$items_one = "'". implode("',".PHP_EOL."\t'", $items)."'";
 					// set the publishing layout
 					$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
 					$items_one = true;
@@ -5978,7 +6021,7 @@ class Interpretation extends Fields
 					if (ComponentbuilderHelper::checkArray($items_one))
 					{
 						// load all items
-						$items_one = "'". implode("',\n\t'", $items_one)."'";
+						$items_one = "'". implode("',".PHP_EOL."\t'", $items_one)."'";
 						// set the publishing layout
 						$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
 						$items_one = true;
@@ -5987,7 +6030,7 @@ class Interpretation extends Fields
 					if (ComponentbuilderHelper::checkArray($items_two))
 					{
 						// load all items
-						$items_two = "'". implode("',\n\t'", $items_two)."'";
+						$items_two = "'". implode("',".PHP_EOL."\t'", $items_two)."'";
 						// set the publishing layout
 						$this->setLayout($viewName_single, $tabCodeNameRight, $items_two, 'layoutpublished');
 						$items_two = true;
@@ -6026,25 +6069,25 @@ class Interpretation extends Fields
 						$publishingPer[] = "\$this->canDo->get('".$core_permission."')";
 					}
 				}
-				$body .= "\n\n\t<?php if (".implode(' || ', $publishingPer).") : ?>";
+				$body .= PHP_EOL.PHP_EOL."\t<?php if (".implode(' || ', $publishingPer).") : ?>";
 				// set the default publishing tab
-				$body .= "\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeNameLeft."', JText::_('".$tabLangName."', true)); ?>";
-				$body .= "\n\t\t".'<div class="row-fluid form-horizontal-desktop">';
+				$body .= PHP_EOL."\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeNameLeft."', JText::_('".$tabLangName."', true)); ?>";
+				$body .= PHP_EOL."\t\t".'<div class="row-fluid form-horizontal-desktop">';
 				if ($items_one)
 				{
-					$body .= "\n\t\t\t".'<div class="'.$classs.'">';
-					$body .= "\n\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameLeft."', \$this); ?>";
-					$body .= "\n\t\t\t</div>";
+					$body .= PHP_EOL."\t\t\t".'<div class="'.$classs.'">';
+					$body .= PHP_EOL."\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameLeft."', \$this); ?>";
+					$body .= PHP_EOL."\t\t\t</div>";
 				}
 				if ($items_two)
 				{
-					$body .= "\n\t\t\t".'<div class="'.$classs.'">';
-					$body .= "\n\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameRight."', \$this); ?>";
-					$body .= "\n\t\t\t</div>";
+					$body .= PHP_EOL."\t\t\t".'<div class="'.$classs.'">';
+					$body .= PHP_EOL."\t\t\t\t<?php echo JLayoutHelper::render('".$viewName_single.".".$tabCodeNameRight."', \$this); ?>";
+					$body .= PHP_EOL."\t\t\t</div>";
 				}
-				$body .= "\n\t\t</div>";
-				$body .= "\n\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
-				$body .= "\n\t<?php endif; ?>";
+				$body .= PHP_EOL."\t\t</div>";
+				$body .= PHP_EOL."\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				$body .= PHP_EOL."\t<?php endif; ?>";
 			}
 			// make sure we dont load it to a view with the name component
 			if ($viewName_single != 'component')
@@ -6059,36 +6102,36 @@ class Interpretation extends Fields
 					$this->langContent[$this->lang][$tabLangName] = 'Permissions';
 				}
 				// set the permissions tab
-				$body .= "\n\n\t<?php if (\$this->canDo->get('core.admin')) : ?>";
-				$body .= "\n\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeName."', JText::_('".$tabLangName."', true)); ?>";
-				$body .= "\n\t\t".'<div class="row-fluid form-horizontal-desktop">';
-				$body .= "\n\t\t\t".'<div class="span12">';
-				$body .= "\n\t\t\t\t".'<fieldset class="adminform">';
-				$body .= "\n\t\t\t\t\t".'<div class="adminformlist">';
-				$body .= "\n\t\t\t\t\t<?php foreach (\$this->form->getFieldset('accesscontrol') as \$field): ?>";
-				$body .= "\n\t\t\t\t\t\t<div>";
-				$body .= "\n\t\t\t\t\t\t\t<?php echo \$field->label; echo \$field->input;?>";
-				$body .= "\n\t\t\t\t\t\t</div>";
-				$body .= "\n\t\t\t\t\t\t".'<div class="clearfix"></div>';
-				$body .= "\n\t\t\t\t\t<?php endforeach; ?>";
-				$body .= "\n\t\t\t\t\t</div>";
-				$body .= "\n\t\t\t\t</fieldset>";
-				$body .= "\n\t\t\t</div>";
-				$body .= "\n\t\t</div>";
-				$body .= "\n\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
-				$body .= "\n\t<?php endif; ?>";
+				$body .= PHP_EOL.PHP_EOL."\t<?php if (\$this->canDo->get('core.admin')) : ?>";
+				$body .= PHP_EOL."\t<?php echo JHtml::_('bootstrap.addTab', '".$viewName_single."Tab', '".$tabCodeName."', JText::_('".$tabLangName."', true)); ?>";
+				$body .= PHP_EOL."\t\t".'<div class="row-fluid form-horizontal-desktop">';
+				$body .= PHP_EOL."\t\t\t".'<div class="span12">';
+				$body .= PHP_EOL."\t\t\t\t".'<fieldset class="adminform">';
+				$body .= PHP_EOL."\t\t\t\t\t".'<div class="adminformlist">';
+				$body .= PHP_EOL."\t\t\t\t\t<?php foreach (\$this->form->getFieldset('accesscontrol') as \$field): ?>";
+				$body .= PHP_EOL."\t\t\t\t\t\t<div>";
+				$body .= PHP_EOL."\t\t\t\t\t\t\t<?php echo \$field->label; echo \$field->input;?>";
+				$body .= PHP_EOL."\t\t\t\t\t\t</div>";
+				$body .= PHP_EOL."\t\t\t\t\t\t".'<div class="clearfix"></div>';
+				$body .= PHP_EOL."\t\t\t\t\t<?php endforeach; ?>";
+				$body .= PHP_EOL."\t\t\t\t\t</div>";
+				$body .= PHP_EOL."\t\t\t\t</fieldset>";
+				$body .= PHP_EOL."\t\t\t</div>";
+				$body .= PHP_EOL."\t\t</div>";
+				$body .= PHP_EOL."\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				$body .= PHP_EOL."\t<?php endif; ?>";
 			}
 			// end the tab set
-			$body .= "\n\n\t<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
-			$body .= "\n\n\t<div>";
-			$body .= "\n\t\t".'<input type="hidden" name="task" value="'.$viewName_single.'.edit" />';
-			$body .= "\n\t\t<?php echo JHtml::_('form.token'); ?>";
-			$body .= "\n\t</div>";
-			$body .= "\n</div>";
+			$body .= PHP_EOL.PHP_EOL."\t<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
+			$body .= PHP_EOL.PHP_EOL."\t<div>";
+			$body .= PHP_EOL."\t\t".'<input type="hidden" name="task" value="'.$viewName_single.'.edit" />';
+			$body .= PHP_EOL."\t\t<?php echo JHtml::_('form.token'); ?>";
+			$body .= PHP_EOL."\t</div>";
+			$body .= PHP_EOL."</div>";
 			// check if left has been set
 			if (strlen($leftside) > 0 )
 			{
-				$left = '<div class="span'.$sidewidth.'">'.$leftside."\n</div>";
+				$left = '<div class="span'.$sidewidth.'">'.$leftside.PHP_EOL."</div>";
 			}
 			else
 			{
@@ -6097,7 +6140,7 @@ class Interpretation extends Fields
 			// check if right has been set
 			if (strlen($rightside) > 0 )
 			{
-				$right = '<div class="span'.$sidewidth.'">'.$rightside."\n</div>";
+				$right = '<div class="span'.$sidewidth.'">'.$rightside.PHP_EOL."</div>";
 			}
 			else
 			{
@@ -6139,7 +6182,7 @@ class Interpretation extends Fields
 			$fadein[] = "</script>";
 			$fadein[] = "<div id=\"".$this->fileContentStatic['###component###']."_loader\" style=\"display: none;\">";
 
-			return implode("\n", $fadein);
+			return implode(PHP_EOL, $fadein);
 		}
 		return "<div id=\"".$this->fileContentStatic['###component###']."_loader\">";
 	}
@@ -6210,13 +6253,13 @@ class Interpretation extends Fields
 			$headerscript = '$edit	= "index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$list.'&task='.$single.'.edit";';
 			if ($addNewButon)
 			{
-				$headerscript .= "\n".'$ref	= ($id) ? "&ref='.$viewName_single.'&refid=".$id : "";';
-				$headerscript .= "\n".'$new	= "index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$single.'&layout=edit".$ref;';
-				$headerscript .= "\n".'$can	= '.$this->fileContentStatic['###Component###'].'Helper::getActions('."'".$single."'".');';
+				$headerscript .= PHP_EOL.'$ref	= ($id) ? "&ref='.$viewName_single.'&refid=".$id : "";';
+				$headerscript .= PHP_EOL.'$new	= "index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$single.'&layout=edit".$ref;';
+				$headerscript .= PHP_EOL.'$can	= '.$this->fileContentStatic['###Component###'].'Helper::getActions('."'".$single."'".');';
 			}
 			$this->fileContentDynamic[$viewName_single.'_'.$layoutCodeName]['###LAYOUTITEMSHEADER###'] = $headerscript;
 			// ###LINKEDVIEWITEMS### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWITEMS###'] .=  "\n\n\t\t//".$this->setLine(__LINE__)." Get Linked view data\n\t\t\$this->".$codeName."\t\t= \$this->get('".$functionName."');";
+			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWITEMS###'] .=  PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get Linked view data".PHP_EOL."\t\t\$this->".$codeName."\t\t= \$this->get('".$functionName."');";
 			// ###LINKEDVIEWTABLESCRIPTS### <<<DYNAMIC>>>
 			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWTABLESCRIPTS###'] = $this->setFootableScripts();
 			if(strpos($parentKey, '-R>') !== false || strpos($parentKey, '-A>') !== false)
@@ -6238,7 +6281,7 @@ class Interpretation extends Fields
 			// set the global key
 			$globalKey = ComponentbuilderHelper::safeString($_key.$this->uniquekey(4));
 			// ###LINKEDVIEWGLOBAL### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWGLOBAL###'] .= "\n\t\t\$this->".$globalKey." = \$item->".$parent_key.";";
+			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWGLOBAL###'] .= PHP_EOL."\t\t\$this->".$globalKey." = \$item->".$parent_key.";";
 			// ###LINKEDVIEWMETHODS### <<<DYNAMIC>>>
 			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWMETHODS###'] .= $this->setListQueryLinked($single, $list, $functionName, $key, $_key, $parentKey, $parent_key, $globalKey);
 		}
@@ -6258,41 +6301,41 @@ class Interpretation extends Fields
 	{
 		if (!isset($this->footableVersion) || 2 == $this->footableVersion) // loading version 2
 		{
-			$foo = "\n\n\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable.";
-			$foo .= "\n\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.core.min.css');";
-			$foo .= "\n\n\t\t//".$this->setLine(__LINE__)." Use the Metro Style";
-			$foo .= "\n\t\tif (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
-			$foo .= "\n\t\t{";
-			$foo .= "\n\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.metro.min.css');";
-			$foo .= "\n\t\t}";
-			$foo .= "\n\t\t//".$this->setLine(__LINE__)." Use the Legacy Style.";
-			$foo .= "\n\t\telseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
-			$foo .= "\n\t\t{";
-			$foo .= "\n\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
-			$foo .= "\n\t\t}";
-			$foo .= "\n\n\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable";
-			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.js');";
-			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.sort.js');";
-			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.filter.js');";
-			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.paginate.js');";
+			$foo = PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable.";
+			$foo .= PHP_EOL."\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.core.min.css');";
+			$foo .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Use the Metro Style";
+			$foo .= PHP_EOL."\t\tif (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
+			$foo .= PHP_EOL."\t\t{";
+			$foo .= PHP_EOL."\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.metro.min.css');";
+			$foo .= PHP_EOL."\t\t}";
+			$foo .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Use the Legacy Style.";
+			$foo .= PHP_EOL."\t\telseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
+			$foo .= PHP_EOL."\t\t{";
+			$foo .= PHP_EOL."\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
+			$foo .= PHP_EOL."\t\t}";
+			$foo .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable";
+			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.js');";
+			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.sort.js');";
+			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.filter.js');";
+			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.paginate.js');";
 			if ($init)
 			{
-				$foo .= "\n\n\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable(); }); jQuery('."'.nav-tabs'".').on('."'click'".', '."'li'".', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('."'.footable'".').trigger('."'footable_resize'".'); }";';
-				$foo .= "\n\t\t\$document->addScriptDeclaration(\$footable);\n";
+				$foo .= PHP_EOL.PHP_EOL."\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable(); }); jQuery('."'.nav-tabs'".').on('."'click'".', '."'li'".', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('."'.footable'".').trigger('."'footable_resize'".'); }";';
+				$foo .= PHP_EOL."\t\t\$document->addScriptDeclaration(\$footable);".PHP_EOL;
 			}
 		}
 		elseif (3 == $this->footableVersion) // loading version 3
 		{
 			
-			$foo = "\n\n\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable";
-			$foo .= "\n\t\t".$document."->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
-			$foo .= "\n\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
-			$foo .= "\n\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable (adding all funtions)";
-			$foo .= "\n\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.min.js');";
+			$foo = PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable";
+			$foo .= PHP_EOL."\t\t".$document."->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
+			$foo .= PHP_EOL."\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
+			$foo .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable (adding all funtions)";
+			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.min.js');";
 			if ($init)
 			{
-				$foo .= "\n\n\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable();});});";';
-				$foo .= "\n\t\t\$document->addScriptDeclaration(\$footable);\n";
+				$foo .= PHP_EOL.PHP_EOL."\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable();});});";';
+				$foo .= PHP_EOL."\t\t\$document->addScriptDeclaration(\$footable);".PHP_EOL;
 			}
 		}
 		return $foo;
@@ -6321,14 +6364,14 @@ class Interpretation extends Fields
 			}
 			$counter = 0;
 			// add the default
-			$body = "\n<tbody>";
-			$body .= "\n<?php foreach (\$items as \$i => \$item): ?>";
-			$body .= "\n\t<?php";
-			$body .= "\n\t\t\$canCheckin = \$user->authorise('core.manage', 'com_checkin') || \$item->checked_out == \$user->id || \$item->checked_out == 0;";
-			$body .= "\n\t\t\$userChkOut = JFactory::getUser(\$item->checked_out);";
-			$body .= "\n\t\t\$canDo = ".$Helper."::getActions('".$viewName_single."',\$item,'".$viewName_list."');";
-			$body .= "\n\t?>";
-			$body .= "\n\t".'<tr>';
+			$body = PHP_EOL."<tbody>";
+			$body .= PHP_EOL."<?php foreach (\$items as \$i => \$item): ?>";
+			$body .= PHP_EOL."\t<?php";
+			$body .= PHP_EOL."\t\t\$canCheckin = \$user->authorise('core.manage', 'com_checkin') || \$item->checked_out == \$user->id || \$item->checked_out == 0;";
+			$body .= PHP_EOL."\t\t\$userChkOut = JFactory::getUser(\$item->checked_out);";
+			$body .= PHP_EOL."\t\t\$canDo = ".$Helper."::getActions('".$viewName_single."',\$item,'".$viewName_list."');";
+			$body .= PHP_EOL."\t?>";
+			$body .= PHP_EOL."\t".'<tr>';
 			// check if this view has fields that should not be escaped
 			$doNotEscape = false;
 			if (isset($this->doNotEscape[$viewName_list]))
@@ -6383,25 +6426,25 @@ class Interpretation extends Fields
 					{
 						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 						// category and linked
-						$body .= "\n\t\t".'<td class="nowrap">';
-						$body .= "\n\t\t\t<?php if (\$user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###'].".".$otherViews.".category.' . (int)\$item->".$item['code'].")): ?>";
-						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->'.$item['code'].'; ?>&extension=com_'.$this->fileContentStatic['###component###'].'.'.$otherViews.'"><?php echo $displayData->escape($item->category_title); ?></a>';
-						$body .= "\n\t\t\t<?php else: ?>";
-						$body .= "\n\t\t\t\t<?php echo \$displayData->escape(\$item->category_title); ?>";
-						$body .= "\n\t\t\t<?php endif; ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+						$body .= PHP_EOL."\t\t\t<?php if (\$user->authorise('core.edit', 'com_".$this->fileContentStatic['###component###'].".".$otherViews.".category.' . (int)\$item->".$item['code'].")): ?>";
+						$body .= PHP_EOL."\t\t\t\t".'<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->'.$item['code'].'; ?>&extension=com_'.$this->fileContentStatic['###component###'].'.'.$otherViews.'"><?php echo $displayData->escape($item->category_title); ?></a>';
+						$body .= PHP_EOL."\t\t\t<?php else: ?>";
+						$body .= PHP_EOL."\t\t\t\t<?php echo \$displayData->escape(\$item->category_title); ?>";
+						$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					elseif ($item['type'] === 'user' && !$item['title'])
 					{
 						// user and linked
-						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
-						$body .= "\n\t\t".'<td class="nowrap">';
-						$body .= "\n\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
-						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['code'].' ?>"><?php echo $'.$item['code'].'User->name; ?></a>';
-						$body .= "\n\t\t\t<?php else: ?>";
-						$body .= "\n\t\t\t\t<?php echo \$".$item['code']."User->name; ?>";
-						$body .= "\n\t\t\t<?php endif; ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
+						$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+						$body .= PHP_EOL."\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
+						$body .= PHP_EOL."\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['code'].' ?>"><?php echo $'.$item['code'].'User->name; ?></a>';
+						$body .= PHP_EOL."\t\t\t<?php else: ?>";
+						$body .= PHP_EOL."\t\t\t\t<?php echo \$".$item['code']."User->name; ?>";
+						$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					else
 					{
@@ -6411,9 +6454,9 @@ class Interpretation extends Fields
 							if ($refview === $item['custom']['view'])
 							{
 								// normal not linked
-								$body .= "\n\t\t<td>";
-								$body .= "\n\t\t\t".$itemCode;
-								$body .= "\n\t\t</td>";
+								$body .= PHP_EOL."\t\t<td>";
+								$body .= PHP_EOL."\t\t\t".$itemCode;
+								$body .= PHP_EOL."\t\t</td>";
 
 								$add = false;
 							}
@@ -6443,14 +6486,14 @@ class Interpretation extends Fields
 						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'])
 						{
 							// user and linked
-							$body .= "\n\t\t<?php \$_".$item['id']." = JFactory::getUser(\$item->".$item['id']."); ?>";
-							$body .= "\n\t\t".'<td class="nowrap">';
-							$body .= "\n\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
-							$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['id'].' ?>"><?php echo $_'.$item['id'].'->name; ?></a>';
-							$body .= "\n\t\t\t<?php else: ?>";
-							$body .= "\n\t\t\t\t<?php echo \$_".$item['id']."->name; ?>";
-							$body .= "\n\t\t\t<?php endif; ?>";
-							$body .= "\n\t\t</td>";
+							$body .= PHP_EOL."\t\t<?php \$_".$item['id']." = JFactory::getUser(\$item->".$item['id']."); ?>";
+							$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+							$body .= PHP_EOL."\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
+							$body .= PHP_EOL."\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['id'].' ?>"><?php echo $_'.$item['id'].'->name; ?></a>';
+							$body .= PHP_EOL."\t\t\t<?php else: ?>";
+							$body .= PHP_EOL."\t\t\t\t<?php echo \$_".$item['id']."->name; ?>";
+							$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+							$body .= PHP_EOL."\t\t</td>";
 
 							$add = false;
 						}
@@ -6463,16 +6506,16 @@ class Interpretation extends Fields
 								// make sure the custom links are only added once
 								$firstTimeBeingAdded = false;
 								// start building the links
-								$customAdminView = "\n\t\t\t".'<div class="btn-group">';
+								$customAdminView = PHP_EOL."\t\t\t".'<div class="btn-group">';
 								foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
 								{
-                                                                        $customAdminView .= "\n\t\t\t<?php if (\$canDo->get('".$customLinkView['link'].".access')): ?>";
-									$customAdminView .= "\n\t\t\t\t".'<a class="hasTooltip btn btn-mini" href="index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$customLinkView['link'].'&id=<?php echo $item->id; ?>&ref='.$refview.'&refid=<?php echo $id; ?>" title="<?php echo JText::_('."'COM_".$this->fileContentStatic['###COMPONENT###'].'_'.$customLinkView['NAME']."'".'); ?>" ><span class="icon-'.$customLinkView['icon'].'"></span></a>';
-                                                                        $customAdminView .= "\n\t\t\t<?php else: ?>";
-									$customAdminView .= "\n\t\t\t\t".'<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText::_('."'COM_".$this->fileContentStatic['###COMPONENT###'].'_'.$customLinkView['NAME']."'".'); ?>"><span class="icon-'.$customLinkView['icon'].'"></span></a>';
-                                                                        $customAdminView .= "\n\t\t\t<?php endif; ?>";
+                                                                        $customAdminView .= PHP_EOL."\t\t\t<?php if (\$canDo->get('".$customLinkView['link'].".access')): ?>";
+									$customAdminView .= PHP_EOL."\t\t\t\t".'<a class="hasTooltip btn btn-mini" href="index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$customLinkView['link'].'&id=<?php echo $item->id; ?>&ref='.$refview.'&refid=<?php echo $id; ?>" title="<?php echo JText::_('."'COM_".$this->fileContentStatic['###COMPONENT###'].'_'.$customLinkView['NAME']."'".'); ?>" ><span class="icon-'.$customLinkView['icon'].'"></span></a>';
+                                                                        $customAdminView .= PHP_EOL."\t\t\t<?php else: ?>";
+									$customAdminView .= PHP_EOL."\t\t\t\t".'<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText::_('."'COM_".$this->fileContentStatic['###COMPONENT###'].'_'.$customLinkView['NAME']."'".'); ?>"><span class="icon-'.$customLinkView['icon'].'"></span></a>';
+                                                                        $customAdminView .= PHP_EOL."\t\t\t<?php endif; ?>";
 								}
-								$customAdminView .= "\n\t\t\t".'</div>';
+								$customAdminView .= PHP_EOL."\t\t\t".'</div>';
 
 							}
 							// check if the item has permissions.
@@ -6493,20 +6536,20 @@ class Interpretation extends Fields
 						if ($add)
 						{
 							// set as linked
-							$body .= "\n\t\t".'<td class="nowrap">';
-							$body .= "\n\t\t\t<?php if (".$accessCheck."): ?>";
-							$body .= "\n\t\t\t\t".'<a href="'.$link.'">'.$itemCode.'</a>';
+							$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+							$body .= PHP_EOL."\t\t\t<?php if (".$accessCheck."): ?>";
+							$body .= PHP_EOL."\t\t\t\t".'<a href="'.$link.'">'.$itemCode.'</a>';
 							if ($checkoutTriger)
 							{
-								$body .= "\n\t\t\t\t\t<?php if (\$item->checked_out): ?>";
-								$body .= "\n\t\t\t\t\t\t<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '".$viewName_list.".', \$canCheckin); ?>";
-								$body .= "\n\t\t\t\t\t<?php endif; ?>";
+								$body .= PHP_EOL."\t\t\t\t\t<?php if (\$item->checked_out): ?>";
+								$body .= PHP_EOL."\t\t\t\t\t\t<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '".$viewName_list.".', \$canCheckin); ?>";
+								$body .= PHP_EOL."\t\t\t\t\t<?php endif; ?>";
 							}
-							$body .= "\n\t\t\t<?php else: ?>";
-							$body .= "\n\t\t\t\t".'<div class="name">'.$itemCode.'</div>';
-							$body .= "\n\t\t\t<?php endif; ?>";
+							$body .= PHP_EOL."\t\t\t<?php else: ?>";
+							$body .= PHP_EOL."\t\t\t\t".'<div class="name">'.$itemCode.'</div>';
+							$body .= PHP_EOL."\t\t\t<?php endif; ?>";
                                                         $body .= $customAdminView;
-							$body .= "\n\t\t</td>";
+							$body .= PHP_EOL."\t\t</td>";
 						}
 					}
 				}
@@ -6514,93 +6557,93 @@ class Interpretation extends Fields
 				{
 					if ($item['type'] === 'category')
 					{
-						$body .= "\n\t\t<td>";
-						$body .= "\n\t\t\t<?php echo \$displayData->escape(\$item->category_title); ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<td>";
+						$body .= PHP_EOL."\t\t\t<?php echo \$displayData->escape(\$item->category_title); ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user')
 					{
 						// custom user and linked
-						$body .= "\n\t\t<?php \$_".$item['code']." = JFactory::getUser(\$item->".$item['id']."); ?>";
-						$body .= "\n\t\t".'<td>';
-						$body .= "\n\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
-						$body .= "\n\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['id'].' ?>"><?php echo $_'.$item['code'].'->name; ?></a>';
-						$body .= "\n\t\t\t<?php else: ?>";
-						$body .= "\n\t\t\t\t<?php echo \$_".$item['code']."->name; ?>";
-						$body .= "\n\t\t\t<?php endif; ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<?php \$_".$item['code']." = JFactory::getUser(\$item->".$item['id']."); ?>";
+						$body .= PHP_EOL."\t\t".'<td>';
+						$body .= PHP_EOL."\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
+						$body .= PHP_EOL."\t\t\t\t".'<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'.$item['id'].' ?>"><?php echo $_'.$item['code'].'->name; ?></a>';
+						$body .= PHP_EOL."\t\t\t<?php else: ?>";
+						$body .= PHP_EOL."\t\t\t\t<?php echo \$_".$item['code']."->name; ?>";
+						$body .= PHP_EOL."\t\t\t<?php endif; ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					elseif ($item['type'] === 'user')
 					{
 						// user name only
-						$body .= "\n\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
-						$body .= "\n\t\t".'<td class="nowrap">';
-						$body .= "\n\t\t\t<?php echo \$".$item['code']."User->name; ?>";
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<?php \$".$item['code']."User = JFactory::getUser(\$item->".$item['code']."); ?>";
+						$body .= PHP_EOL."\t\t".'<td class="nowrap">';
+						$body .= PHP_EOL."\t\t\t<?php echo \$".$item['code']."User->name; ?>";
+						$body .= PHP_EOL."\t\t</td>";
 					}
 					else
 					{
 						// normal not linked
-						$body .= "\n\t\t<td>";
-						$body .= "\n\t\t\t".$itemCode;
-						$body .= "\n\t\t</td>";
+						$body .= PHP_EOL."\t\t<td>";
+						$body .= PHP_EOL."\t\t\t".$itemCode;
+						$body .= PHP_EOL."\t\t</td>";
 					}
 				}
 			}
 			$counter = $counter + 2;
 			$data_value =  (3 == $this->footableVersion) ? 'data-sort-value':'data-value';
 			// add the defaults
-			$body .= "\n\t\t<?php if (\$item->published == 1):?>";
-                        $body .= "\n\t\t\t".'<td class="center"  '.$data_value.'="1">';
-                        $body .= "\n\t\t\t\t".'<span class="status-metro status-published" title="<?php echo JText::_('."'PUBLISHED'".');  ?>">';
-                        $body .= "\n\t\t\t\t\t".'<?php echo JText::_('."'PUBLISHED'".'); ?>';
-                        $body .= "\n\t\t\t\t".'</span>';
-                        $body .= "\n\t\t\t".'</td>';
+			$body .= PHP_EOL."\t\t<?php if (\$item->published == 1):?>";
+                        $body .= PHP_EOL."\t\t\t".'<td class="center"  '.$data_value.'="1">';
+                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-published" title="<?php echo JText::_('."'PUBLISHED'".');  ?>">';
+                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'PUBLISHED'".'); ?>';
+                        $body .= PHP_EOL."\t\t\t\t".'</span>';
+                        $body .= PHP_EOL."\t\t\t".'</td>';
 
-			$body .= "\n\t\t<?php elseif (\$item->published == 0):?>";
-                        $body .= "\n\t\t\t".'<td class="center"  '.$data_value.'="2">';
-                        $body .= "\n\t\t\t\t".'<span class="status-metro status-inactive" title="<?php echo JText::_('."'INACTIVE'".');  ?>">';
-                        $body .= "\n\t\t\t\t\t".'<?php echo JText::_('."'INACTIVE'".'); ?>';
-                        $body .= "\n\t\t\t\t".'</span>';
-                        $body .= "\n\t\t\t".'</td>';
+			$body .= PHP_EOL."\t\t<?php elseif (\$item->published == 0):?>";
+                        $body .= PHP_EOL."\t\t\t".'<td class="center"  '.$data_value.'="2">';
+                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-inactive" title="<?php echo JText::_('."'INACTIVE'".');  ?>">';
+                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'INACTIVE'".'); ?>';
+                        $body .= PHP_EOL."\t\t\t\t".'</span>';
+                        $body .= PHP_EOL."\t\t\t".'</td>';
 
-			$body .= "\n\t\t<?php elseif (\$item->published == 2):?>";
-                        $body .= "\n\t\t\t".'<td class="center"  '.$data_value.'="3">';
-                        $body .= "\n\t\t\t\t".'<span class="status-metro status-archived" title="<?php echo JText::_('."'ARCHIVED'".');  ?>">';
-                        $body .= "\n\t\t\t\t\t".'<?php echo JText::_('."'ARCHIVED'".'); ?>';
-                        $body .= "\n\t\t\t\t".'</span>';
-                        $body .= "\n\t\t\t".'</td>';
+			$body .= PHP_EOL."\t\t<?php elseif (\$item->published == 2):?>";
+                        $body .= PHP_EOL."\t\t\t".'<td class="center"  '.$data_value.'="3">';
+                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-archived" title="<?php echo JText::_('."'ARCHIVED'".');  ?>">';
+                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'ARCHIVED'".'); ?>';
+                        $body .= PHP_EOL."\t\t\t\t".'</span>';
+                        $body .= PHP_EOL."\t\t\t".'</td>';
 
-			$body .= "\n\t\t<?php elseif (\$item->published == -2):?>";
-                        $body .= "\n\t\t\t".'<td class="center"  '.$data_value.'="4">';
-                        $body .= "\n\t\t\t\t".'<span class="status-metro status-trashed" title="<?php echo JText::_('."'ARCHIVED'".');  ?>">';
-                        $body .= "\n\t\t\t\t\t".'<?php echo JText::_('."'ARCHIVED'".'); ?>';
-                        $body .= "\n\t\t\t\t".'</span>';
-                        $body .= "\n\t\t\t".'</td>';
-                        $body .= "\n\t\t".'<?php endif; ?>';
+			$body .= PHP_EOL."\t\t<?php elseif (\$item->published == -2):?>";
+                        $body .= PHP_EOL."\t\t\t".'<td class="center"  '.$data_value.'="4">';
+                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-trashed" title="<?php echo JText::_('."'ARCHIVED'".');  ?>">';
+                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'ARCHIVED'".'); ?>';
+                        $body .= PHP_EOL."\t\t\t\t".'</span>';
+                        $body .= PHP_EOL."\t\t\t".'</td>';
+                        $body .= PHP_EOL."\t\t".'<?php endif; ?>';
 
-			$body .= "\n\t\t".'<td class="nowrap center hidden-phone">';
-			$body .= "\n\t\t\t<?php echo \$item->id; ?>";
-			$body .= "\n\t\t</td>";
-			$body .= "\n\t</tr>";
-			$body .= "\n<?php endforeach; ?>";
-			$body .= "\n</tbody>";
+			$body .= PHP_EOL."\t\t".'<td class="nowrap center hidden-phone">';
+			$body .= PHP_EOL."\t\t\t<?php echo \$item->id; ?>";
+			$body .= PHP_EOL."\t\t</td>";
+			$body .= PHP_EOL."\t</tr>";
+			$body .= PHP_EOL."<?php endforeach; ?>";
+			$body .= PHP_EOL."</tbody>";
 			if (2 == $this->footableVersion)
 			{
-				$body .= "\n".'<tfoot class="hide-if-no-paging">';
-				$body .= "\n\t".'<tr>';
-				$body .= "\n\t\t".'<td colspan="'.$counter.'">';
-				$body .= "\n\t\t\t".'<div class="pagination pagination-centered"></div>';
-				$body .= "\n\t\t".'</td>';
-				$body .= "\n\t".'</tr>';
-				$body .= "\n".'</tfoot>';
+				$body .= PHP_EOL.'<tfoot class="hide-if-no-paging">';
+				$body .= PHP_EOL."\t".'<tr>';
+				$body .= PHP_EOL."\t\t".'<td colspan="'.$counter.'">';
+				$body .= PHP_EOL."\t\t\t".'<div class="pagination pagination-centered"></div>';
+				$body .= PHP_EOL."\t\t".'</td>';
+				$body .= PHP_EOL."\t".'</tr>';
+				$body .= PHP_EOL.'</tfoot>';
 			}
-                        $body .= "\n".'</table>';
-			$body .= "\n".'<?php else: ?>';
-			$body .= "\n\t".'<div class="alert alert-no-items">';
-			$body .= "\n\t\t".'<?php echo JText::_('."'JGLOBAL_NO_MATCHING_RESULTS'".'); ?>';
-			$body .= "\n\t".'</div>';
-			$body .= "\n".'<?php endif; ?>';
+                        $body .= PHP_EOL.'</table>';
+			$body .= PHP_EOL.'<?php else: ?>';
+			$body .= PHP_EOL."\t".'<div class="alert alert-no-items">';
+			$body .= PHP_EOL."\t\t".'<?php echo JText::_('."'JGLOBAL_NO_MATCHING_RESULTS'".'); ?>';
+			$body .= PHP_EOL."\t".'</div>';
+			$body .= PHP_EOL.'<?php endif; ?>';
 			// return the build
 			return $body;
 		}
@@ -6637,8 +6680,8 @@ class Interpretation extends Fields
 				}
 				// add a button for new
 				$head = '<?php if ('.$accessCheck.'): ?>';
-				$head .= "\n\t".'<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('."'".$this->langPrefix."_NEW'".'); ?></a><br /><br />';
-				$head .= "\n".'<?php endif; ?>'."\n";
+				$head .= PHP_EOL."\t".'<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('."'".$this->langPrefix."_NEW'".'); ?></a><br /><br />';
+				$head .= PHP_EOL.'<?php endif; ?>'.PHP_EOL;
 			}
 			$head .= '<?php if ('.$Helper.'::checkArray($items)): ?>';
 			// set the style for V2
@@ -6649,8 +6692,8 @@ class Interpretation extends Fields
 			$paging = (2 == $this->footableVersion) ?' data-page-size="20" data-filter="#filter_'.$viewName_list.'"':' data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true"';
 			// add html fix for V3
 			$htmlFix = (3 == $this->footableVersion) ? ' data-type="html" data-sort-use="text"':'';
-			$head .= "\n".'<table class="footable table data '.$viewName_list.$metro_blue.'"'.$toggle.$paging.'>';
-			$head .= "\n<thead>";
+			$head .= PHP_EOL.'<table class="footable table data '.$viewName_list.$metro_blue.'"'.$toggle.$paging.'>';
+			$head .= PHP_EOL."<thead>";
 			// main lang prefix
 			$langView = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($viewName_single,'U');
 			// set status lang
@@ -6669,7 +6712,7 @@ class Interpretation extends Fields
 			{
 				$this->langContent[$this->lang][$idLangName] = 'Id';
 			}
- 			$head .= "\n\t<tr>";
+ 			$head .= PHP_EOL."\t<tr>";
 			// set controller for data hiding options
 			$controller = 1;
 			// build the dynamic fields
@@ -6691,23 +6734,23 @@ class Interpretation extends Fields
 					$setin = (2 == $this->footableVersion) ? ' data-toggle="true"':'';
 					$firstLink = false;
 				}
-				$head .= "\n\t\t<th".$setin.$htmlFix.">";
-				$head .= "\n\t\t\t<?php echo JText::_('".$item['lang']."'); ?>";
-				$head .= "\n\t\t</th>";
+				$head .= PHP_EOL."\t\t<th".$setin.$htmlFix.">";
+				$head .= PHP_EOL."\t\t\t<?php echo JText::_('".$item['lang']."'); ?>";
+				$head .= PHP_EOL."\t\t</th>";
 				$controller++;
 			}
 			// set some V3 attr
 			$data_hide = (2 == $this->footableVersion) ? 'data-hide="phone,tablet"' : 'data-breakpoints="xs sm md"';
 			$data_type = (2 == $this->footableVersion) ? 'data-type="numeric"':'data-type="number"';
 			// set default
- 			$head .= "\n\t\t".'<th width="10" '.$data_hide.'>';
-   			$head .= "\n\t\t\t<?php echo JText::_('".$statusLangName."'); ?>";
- 			$head .= "\n\t\t</th>";
- 			$head .= "\n\t\t".'<th width="5" '.$data_type.' '.$data_hide.'>';
-   			$head .= "\n\t\t\t<?php echo JText::_('".$idLangName."'); ?>";
- 			$head .= "\n\t\t</th>";
- 			$head .= "\n\t</tr>";
-			$head .= "\n</thead>";
+ 			$head .= PHP_EOL."\t\t".'<th width="10" '.$data_hide.'>';
+   			$head .= PHP_EOL."\t\t\t<?php echo JText::_('".$statusLangName."'); ?>";
+ 			$head .= PHP_EOL."\t\t</th>";
+ 			$head .= PHP_EOL."\t\t".'<th width="5" '.$data_type.' '.$data_hide.'>';
+   			$head .= PHP_EOL."\t\t\t<?php echo JText::_('".$idLangName."'); ?>";
+ 			$head .= PHP_EOL."\t\t</th>";
+ 			$head .= PHP_EOL."\t</tr>";
+			$head .= PHP_EOL."</thead>";
 
 			return $head;
 		}
@@ -6737,79 +6780,80 @@ class Interpretation extends Fields
 		{
 			$addCategory = false;
 		}
-		$query = "\n\n\t/**";
-		$query .= "\n\t* Method to get list data.";
-		$query .= "\n\t*";
-		$query .= "\n\t* @return mixed  An array of data items on success, false on failure.";
-		$query .= "\n\t*/";
-		$query .= "\n\tpublic function get".$functionName."()";
-		$query .= "\n\t{";
+		$query = PHP_EOL.PHP_EOL."\t/**";
+		$query .= PHP_EOL."\t* Method to get list data.";
+		$query .= PHP_EOL."\t*";
+		$query .= PHP_EOL."\t* @return mixed  An array of data items on success, false on failure.";
+		$query .= PHP_EOL."\t*/";
+		$query .= PHP_EOL."\tpublic function get".$functionName."()";
+		$query .= PHP_EOL."\t{";
 		// setup the query
-		$query .= "\n\t\t//".$this->setLine(__LINE__)." Get the user object.";
-		$query .= "\n\t\t\$user = JFactory::getUser();";
-		$query .= "\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-		$query .= "\n\t\t\$db = JFactory::getDBO();";
-		$query .= "\n\t\t\$query = \$db->getQuery(true);";
-		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Select some fields";
-		$query .= "\n\t\t\$query->select('a.*');";
+		$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the user object.";
+		$query .= PHP_EOL."\t\t\$user = JFactory::getUser();";
+		$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+		$query .= PHP_EOL."\t\t\$db = JFactory::getDBO();";
+		$query .= PHP_EOL."\t\t\$query = \$db->getQuery(true);";
+		$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Select some fields";
+		$query .= PHP_EOL."\t\t\$query->select('a.*');";
 		// add the category
 		if ($addCategory)
 		{
-			$query .= "\n\t\t\$query->select(\$db->quoteName('c.title','category_title'));";
+			$query .= PHP_EOL."\t\t\$query->select(\$db->quoteName('c.title','category_title'));";
 		}
-		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." From the ".$this->fileContentStatic['###component###']."_".$viewName_single." table";
-		$query .= "\n\t\t\$query->from(\$db->quoteName('#__".$this->fileContentStatic['###component###']."_".$viewName_single."', 'a'));";
+		$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." From the ".$this->fileContentStatic['###component###']."_".$viewName_single." table";
+		$query .= PHP_EOL."\t\t\$query->from(\$db->quoteName('#__".$this->fileContentStatic['###component###']."_".$viewName_single."', 'a'));";
 		// add the category
 		if ($addCategory)
 		{
-			$query .= "\n\t\t\$query->join('LEFT', \$db->quoteName('#__categories', 'c') . ' ON (' . \$db->quoteName('a.".$categoryCodeName."') . ' = ' . \$db->quoteName('c.id') . ')');";
+			$query .= PHP_EOL."\t\t\$query->join('LEFT', \$db->quoteName('#__categories', 'c') . ' ON (' . \$db->quoteName('a.".$categoryCodeName."') . ' = ' . \$db->quoteName('c.id') . ')');";
 		}
 		// add custom filtering php
-                $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, "\n\n");
+                $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, PHP_EOL.PHP_EOL);
 		// add the custom fields query
 		$query .= $this->setCustomQuery($viewName_list, $viewName_single);
 		if ($key && strpos($key,'-R>') === false && strpos($key,'-A>') === false && strpos($parentKey,'-R>') === false && strpos($parentKey,'-A>') === false)
 		{
-			$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." global.";
-			$query .= "\n\t\t\$".$globalKey." = \$this->".$globalKey.";";
-			$query .= "\n\t\tif (is_numeric(\$".$globalKey." ))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t\$query->where('a.".$key." = ' . (int) \$".$globalKey." );";
-			$query .= "\n\t\t}";
-			$query .= "\n\t\telseif (is_string(\$".$globalKey."))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t\$query->where('a.".$key." = ' . \$db->quote(\$".$globalKey."));";
-			$query .= "\n\t\t}";
-			$query .= "\n\t\telse";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t\$query->where('a.".$key." = -5');";
-			$query .= "\n\t\t}";
+			$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." global.";
+			$query .= PHP_EOL."\t\t\$".$globalKey." = \$this->".$globalKey.";";
+			$query .= PHP_EOL."\t\tif (is_numeric(\$".$globalKey." ))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.".$key." = ' . (int) \$".$globalKey." );";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL."\t\telseif (is_string(\$".$globalKey."))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.".$key." = ' . \$db->quote(\$".$globalKey."));";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL."\t\telse";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.".$key." = -5');";
+			$query .= PHP_EOL."\t\t}";
 		}
 		if (isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
 		{
-			$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Join over the asset groups.";
-			$query .= "\n\t\t\$query->select('ag.title AS access_level');";
-			$query .= "\n\t\t\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
-			$query .= "\n\t\t//".$this->setLine(__LINE__)." Filter by access level.";
-			$query .= "\n\t\tif (\$access = \$this->getState('filter.access'))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t\$query->where('a.access = ' . (int) \$access);";
-			$query .= "\n\t\t}";
-			$query .= "\n\t\t//".$this->setLine(__LINE__)." Implement View Level Access";
-			$query .= "\n\t\tif (!\$user->authorise('core.options', 'com_".$this->fileContentStatic['###component###']."'))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
-			$query .= "\n\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
-			$query .= "\n\t\t}";
+			$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Join over the asset groups.";
+			$query .= PHP_EOL."\t\t\$query->select('ag.title AS access_level');";
+			$query .= PHP_EOL."\t\t\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
+			$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by access level.";
+			$query .= PHP_EOL."\t\tif (\$access = \$this->getState('filter.access'))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.access = ' . (int) \$access);";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Implement View Level Access";
+			$query .= PHP_EOL."\t\tif (!\$user->authorise('core.options', 'com_".$this->fileContentStatic['###component###']."'))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
+			$query .= PHP_EOL."\t\t}";
 		}
-		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Order the results by ordering";
-		$query .= "\n\t\t\$query->order('a.published  ASC');";		$query .= "\n\t\t\$query->order('a.ordering  ASC');";
-		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Load the items";
-		$query .= "\n\t\t\$db->setQuery(\$query);";
-		$query .= "\n\t\t\$db->execute();";
-		$query .= "\n\t\tif (\$db->getNumRows())";
-		$query .= "\n\t\t{";
-		$query .= "\n\t\t\t\$items = \$db->loadObjectList();";
+		$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Order the results by ordering";
+		$query .= PHP_EOL."\t\t\$query->order('a.published  ASC');";
+		$query .= PHP_EOL."\t\t\$query->order('a.ordering  ASC');";
+		$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load the items";
+		$query .= PHP_EOL."\t\t\$db->setQuery(\$query);";
+		$query .= PHP_EOL."\t\t\$db->execute();";
+		$query .= PHP_EOL."\t\tif (\$db->getNumRows())";
+		$query .= PHP_EOL."\t\t{";
+		$query .= PHP_EOL."\t\t\t\$items = \$db->loadObjectList();";
 		// ###STORE_METHOD_FIX### <<<DYNAMIC>>>
 		$query .= $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###'],"\t");
 		// ###SELECTIONTRANSLATIONFIX### <<<DYNAMIC>>>
@@ -6818,156 +6862,156 @@ class Interpretation extends Fields
 		if ($key && strpos($key,'-R>') !== false && strpos($key,'-A>') === false)
 		{
 			list($field,$target) = explode('-R>',$key);
-			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." in this Repetable Field";
-			$query .= "\n\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && isset(\$this->".$globalKey."))";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\tforeach (\$items as \$nr => &\$item)";
-			$query .= "\n\t\t\t\t{";
-			$query .= "\n\t\t\t\t\tif (isset(\$item->".$field.") && ".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$field."))";
-			$query .= "\n\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\t\$tmpArray = json_decode(\$item->".$field.",true);";
-			$query .= "\n\t\t\t\t\t\tif (!in_array(\$this->".$globalKey.", \$tmpArray['".$target."']))";
-			$query .= "\n\t\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\t\tunset(\$items[\$nr]);";
-			$query .= "\n\t\t\t\t\t\t\tcontinue;";
-			$query .= "\n\t\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t\telse";
-			$query .= "\n\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
-			$query .= "\n\t\t\t\t\t\tcontinue;";
-			$query .= "\n\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t}";
-			$query .= "\n\t\t\t}";
-			$query .= "\n\t\t\telse";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\treturn false;";
-			$query .= "\n\t\t\t}";
+			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." in this Repetable Field";
+			$query .= PHP_EOL."\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && isset(\$this->".$globalKey."))";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\tforeach (\$items as \$nr => &\$item)";
+			$query .= PHP_EOL."\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\tif (isset(\$item->".$field.") && ".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$field."))";
+			$query .= PHP_EOL."\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\t\$tmpArray = json_decode(\$item->".$field.",true);";
+			$query .= PHP_EOL."\t\t\t\t\t\tif (!in_array(\$this->".$globalKey.", \$tmpArray['".$target."']))";
+			$query .= PHP_EOL."\t\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= PHP_EOL."\t\t\t\t\t\t\tcontinue;";
+			$query .= PHP_EOL."\t\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t\telse";
+			$query .= PHP_EOL."\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= PHP_EOL."\t\t\t\t\t\tcontinue;";
+			$query .= PHP_EOL."\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t}";
+			$query .= PHP_EOL."\t\t\telse";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\treturn false;";
+			$query .= PHP_EOL."\t\t\t}";
 		}
 		// filter by child array field values
 		if ($key && strpos($key,'-R>') === false && strpos($key,'-A>') !== false)
 		{
-			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Array Field";
-			$query .= "\n\t\t\t\$".$globalKey." = \$this->".$globalKey.";";
-			$query .= "\n\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && \$".$globalKey.")";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\tforeach (\$items as \$nr => &\$item)";
-			$query .= "\n\t\t\t\t{";
+			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Array Field";
+			$query .= PHP_EOL."\t\t\t\$".$globalKey." = \$this->".$globalKey.";";
+			$query .= PHP_EOL."\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && \$".$globalKey.")";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\tforeach (\$items as \$nr => &\$item)";
+			$query .= PHP_EOL."\t\t\t\t{";
 			list($bin,$target) = explode('-A>',$key);
 			if (ComponentbuilderHelper::checkString($target))
 			{				
-				$query .= "\n\t\t\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$target."))";
-				$query .= "\n\t\t\t\t\t{";
-				$query .= "\n\t\t\t\t\t\t\$item->".$target." = json_decode(\$item->".$target.");";
-				$query .= "\n\t\t\t\t\t}";
-				$query .= "\n\t\t\t\t\telse";
-				$query .= "\n\t\t\t\t\t{";
-				$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
-				$query .= "\n\t\t\t\t\t\tcontinue;";
-				$query .= "\n\t\t\t\t\t}";
-				$query .= "\n\t\t\t\t\tif (!in_array(\$".$globalKey.",\$item->".$target."))";
+				$query .= PHP_EOL."\t\t\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$target."))";
+				$query .= PHP_EOL."\t\t\t\t\t{";
+				$query .= PHP_EOL."\t\t\t\t\t\t\$item->".$target." = json_decode(\$item->".$target.", true);";
+				$query .= PHP_EOL."\t\t\t\t\t}";
+				$query .= PHP_EOL."\t\t\t\t\telseif (!isset(\$item->".$target.") || !".$this->fileContentStatic['###Component###']."Helper::checkArray(\$item->".$target."))";
+				$query .= PHP_EOL."\t\t\t\t\t{";
+				$query .= PHP_EOL."\t\t\t\t\t\tunset(\$items[\$nr]);";
+				$query .= PHP_EOL."\t\t\t\t\t\tcontinue;";
+				$query .= PHP_EOL."\t\t\t\t\t}";
+				$query .= PHP_EOL."\t\t\t\t\tif (!in_array(\$".$globalKey.",\$item->".$target."))";
 			}
 			else
 			{			
-				$query .= "\n\t\t\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$_key."))";
-				$query .= "\n\t\t\t\t\t{";
-				$query .= "\n\t\t\t\t\t\t\$item->".$_key." = json_decode(\$item->".$_key.");";
-				$query .= "\n\t\t\t\t\t}";
-				$query .= "\n\t\t\t\t\telse";
-				$query .= "\n\t\t\t\t\t{";
-				$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
-				$query .= "\n\t\t\t\t\t\tcontinue;";
-				$query .= "\n\t\t\t\t\t}";
-				$query .= "\n\t\t\t\t\tif (!in_array(\$".$globalKey.",\$item->".$_key."))";
+				$query .= PHP_EOL."\t\t\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$_key."))";
+				$query .= PHP_EOL."\t\t\t\t\t{";
+				$query .= PHP_EOL."\t\t\t\t\t\t\$item->".$_key." = json_decode(\$item->".$_key.", true);";
+				$query .= PHP_EOL."\t\t\t\t\t}";
+				$query .= PHP_EOL."\t\t\t\t\telseif (!isset(\$item->".$_key.") || !".$this->fileContentStatic['###Component###']."Helper::checkArray(\$item->".$_key."))";
+				$query .= PHP_EOL."\t\t\t\t\t{";
+				$query .= PHP_EOL."\t\t\t\t\t\tunset(\$items[\$nr]);";
+				$query .= PHP_EOL."\t\t\t\t\t\tcontinue;";
+				$query .= PHP_EOL."\t\t\t\t\t}";
+				$query .= PHP_EOL."\t\t\t\t\tif (!in_array(\$".$globalKey.",\$item->".$_key."))";
 			}
-			$query .= "\n\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
-			$query .= "\n\t\t\t\t\t\tcontinue;";
-			$query .= "\n\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t}";
-			$query .= "\n\t\t\t}";
-			$query .= "\n\t\t\telse";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\treturn false;";
-			$query .= "\n\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= PHP_EOL."\t\t\t\t\t\tcontinue;";
+			$query .= PHP_EOL."\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t}";
+			$query .= PHP_EOL."\t\t\telse";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\treturn false;";
+			$query .= PHP_EOL."\t\t\t}";
 
 		}
 		// filter by parent repetable field values
 		if ($key && strpos($parentKey,'-R>') !== false && strpos($parentKey,'-A>') === false)
 		{
 			list($bin,$target) = explode('-R>',$parentKey);
-			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Filter by ".$_key." Repetable Field";
-			$query .= "\n\t\t\t\$".$globalKey." = json_decode(\$this->".$globalKey.",true);";
-			$query .= "\n\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && isset(\$".$globalKey.") && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$".$globalKey."))";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\tforeach (\$items as \$nr => &\$item)";
-			$query .= "\n\t\t\t\t{";
-			$query .= "\n\t\t\t\t\tif (\$item->".$_key." && isset(\$".$globalKey."['".$target."']) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$".$globalKey."['".$target."']))";
-			$query .= "\n\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\tif (!in_array(\$item->".$_key.",\$".$globalKey."['".$target."']))";
-			$query .= "\n\t\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\t\tunset(\$items[\$nr]);";
-			$query .= "\n\t\t\t\t\t\t\tcontinue;";
-			$query .= "\n\t\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t\telse";
-			$query .= "\n\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
-			$query .= "\n\t\t\t\t\t\tcontinue;";
-			$query .= "\n\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t}";
-			$query .= "\n\t\t\t}";
-			$query .= "\n\t\t\telse";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\treturn false;";
-			$query .= "\n\t\t\t}";
+			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Filter by ".$_key." Repetable Field";
+			$query .= PHP_EOL."\t\t\t\$".$globalKey." = json_decode(\$this->".$globalKey.",true);";
+			$query .= PHP_EOL."\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && isset(\$".$globalKey.") && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$".$globalKey."))";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\tforeach (\$items as \$nr => &\$item)";
+			$query .= PHP_EOL."\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\tif (\$item->".$_key." && isset(\$".$globalKey."['".$target."']) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$".$globalKey."['".$target."']))";
+			$query .= PHP_EOL."\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\tif (!in_array(\$item->".$_key.",\$".$globalKey."['".$target."']))";
+			$query .= PHP_EOL."\t\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= PHP_EOL."\t\t\t\t\t\t\tcontinue;";
+			$query .= PHP_EOL."\t\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t\telse";
+			$query .= PHP_EOL."\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= PHP_EOL."\t\t\t\t\t\tcontinue;";
+			$query .= PHP_EOL."\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t}";
+			$query .= PHP_EOL."\t\t\telse";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\treturn false;";
+			$query .= PHP_EOL."\t\t\t}";
 		}
 		// filter by parent array field values
 		if ($key && strpos($parentKey,'-R>') === false && strpos($parentKey,'-A>') !== false)
 		{
-			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Array Field";
-			$query .= "\n\t\t\t\$".$globalKey." = \$this->".$globalKey.";";
-			$query .= "\n\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$".$globalKey."))";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\tforeach (\$items as \$nr => &\$item)";
-			$query .= "\n\t\t\t\t{";
+			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Array Field";
+			$query .= PHP_EOL."\t\t\t\$".$globalKey." = \$this->".$globalKey.";";
+			$query .= PHP_EOL."\t\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$items) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$".$globalKey."))";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\tforeach (\$items as \$nr => &\$item)";
+			$query .= PHP_EOL."\t\t\t\t{";
 			list($bin,$target) = explode('-A>',$parentKey);
 			if (ComponentbuilderHelper::checkString($target))
 			{
-				$query .= "\n\t\t\t\t\tif (\$item->".$_key." && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$".$globalKey."['".$target."']))";
-				$query .= "\n\t\t\t\t\t{";
-				$query .= "\n\t\t\t\t\t\tif (!in_array(\$item->".$_key.",\$".$globalKey."['".$target."']))";
+				$query .= PHP_EOL."\t\t\t\t\tif (\$item->".$_key." && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$".$globalKey."['".$target."']))";
+				$query .= PHP_EOL."\t\t\t\t\t{";
+				$query .= PHP_EOL."\t\t\t\t\t\tif (!in_array(\$item->".$_key.",\$".$globalKey."['".$target."']))";
 			}
 			else
 			{
-				$query .= "\n\t\t\t\t\tif (\$item->".$_key.")";
-				$query .= "\n\t\t\t\t\t{";
-				$query .= "\n\t\t\t\t\t\tif (!in_array(\$item->".$_key.",\$".$globalKey."))";
+				$query .= PHP_EOL."\t\t\t\t\tif (\$item->".$_key.")";
+				$query .= PHP_EOL."\t\t\t\t\t{";
+				$query .= PHP_EOL."\t\t\t\t\t\tif (!in_array(\$item->".$_key.",\$".$globalKey."))";
 			}
-			$query .= "\n\t\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\t\tunset(\$items[\$nr]);";
-			$query .= "\n\t\t\t\t\t\t\tcontinue;";
-			$query .= "\n\t\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t\telse";
-			$query .= "\n\t\t\t\t\t{";
-			$query .= "\n\t\t\t\t\t\tunset(\$items[\$nr]);";
-			$query .= "\n\t\t\t\t\t\tcontinue;";
-			$query .= "\n\t\t\t\t\t}";
-			$query .= "\n\t\t\t\t}";
-			$query .= "\n\t\t\t}";
-			$query .= "\n\t\t\telse";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\treturn false;";
-			$query .= "\n\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= PHP_EOL."\t\t\t\t\t\t\tcontinue;";
+			$query .= PHP_EOL."\t\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t\telse";
+			$query .= PHP_EOL."\t\t\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\t\tunset(\$items[\$nr]);";
+			$query .= PHP_EOL."\t\t\t\t\t\tcontinue;";
+			$query .= PHP_EOL."\t\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t\t}";
+			$query .= PHP_EOL."\t\t\t}";
+			$query .= PHP_EOL."\t\t\telse";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\treturn false;";
+			$query .= PHP_EOL."\t\t\t}";
 		}
                 // add custom php to getitems method after all
-                $query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, "\n\n\t");
+                $query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL.PHP_EOL."\t");
 
-		$query .= "\n\t\t\treturn \$items;";
-		$query .= "\n\t\t}";
-		$query .= "\n\t\treturn false;";
-		$query .= "\n\t}";
+		$query .= PHP_EOL."\t\t\treturn \$items;";
+		$query .= PHP_EOL."\t\t}";
+		$query .= PHP_EOL."\t\treturn false;";
+		$query .= PHP_EOL."\t}";
 		// ###SELECTIONTRANSLATIONFIXFUNC###<<<DYNAMIC>>>
 		$query .= $this->setSelectionTranslationFixFunc($viewName_list,$this->fileContentStatic['###Component###']);
 
@@ -7001,7 +7045,7 @@ class Interpretation extends Fields
 			}
 			if (ComponentbuilderHelper::checkArray($buttons))
 			{
-				return implode("\n",$buttons);
+				return implode(PHP_EOL,$buttons);
 			}
 		}
 		return $buttons;
@@ -7020,7 +7064,7 @@ class Interpretation extends Fields
 			foreach ($this->customAdminDynamicButtons[$viewName_list] as $custom_button)
 			{
 				// add the custom redirect method
-				$method[] = "\n\n\tpublic function redirectTo".ComponentbuilderHelper::safeString($custom_button['link'],'F')."()";
+				$method[] = PHP_EOL.PHP_EOL."\tpublic function redirectTo".ComponentbuilderHelper::safeString($custom_button['link'],'F')."()";
 				$method[] = "\t{";
 				$method[] = "\t\t//".$this->setLine(__LINE__)." Check for request forgeries";
 				$method[] = "\t\tJSession::checkToken() or die(JText::_('JINVALID_TOKEN'));";
@@ -7051,7 +7095,7 @@ class Interpretation extends Fields
 				}
 			}
 
-			return implode("\n",$method);
+			return implode(PHP_EOL,$method);
 		}
 		return $method;
 	}
@@ -7066,83 +7110,83 @@ class Interpretation extends Fields
 		$query = '';
 		if ($this->eximportView[$viewName_list])
 		{
-			$query = "\n\n\t/**";
-			$query .= "\n\t* Method to get list export data.";
-			$query .= "\n\t*";
-			$query .= "\n\t* @return mixed  An array of data items on success, false on failure.";
-			$query .= "\n\t*/";
-			$query .= "\n\tpublic function getExportData(\$pks)";
-			$query .= "\n\t{";
-			$query .= "\n\t\t//".$this->setLine(__LINE__)." setup the query";
-			$query .= "\n\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$pks))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t//".$this->setLine(__LINE__)." Set a value to know this is exporting method.";
-			$query .= "\n\t\t\t\$_export = true;";
-			$query .= "\n\t\t\t//".$this->setLine(__LINE__)." Get the user object.";
-			$query .= "\n\t\t\t\$user = JFactory::getUser();";
-			$query .= "\n\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-			$query .= "\n\t\t\t\$db = JFactory::getDBO();";
-			$query .= "\n\t\t\t\$query = \$db->getQuery(true);";
-			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Select some fields";
-			$query .= "\n\t\t\t\$query->select('a.*');";
-			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." From the ".$this->fileContentStatic['###component###']."_".$viewName_single." table";
-			$query .= "\n\t\t\t\$query->from(\$db->quoteName('#__".$this->fileContentStatic['###component###']."_".$viewName_single."', 'a'));";
-			$query .= "\n\t\t\t\$query->where('a.id IN (' . implode(',',\$pks) . ')');";
+			$query = PHP_EOL.PHP_EOL."\t/**";
+			$query .= PHP_EOL."\t* Method to get list export data.";
+			$query .= PHP_EOL."\t*";
+			$query .= PHP_EOL."\t* @return mixed  An array of data items on success, false on failure.";
+			$query .= PHP_EOL."\t*/";
+			$query .= PHP_EOL."\tpublic function getExportData(\$pks)";
+			$query .= PHP_EOL."\t{";
+			$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." setup the query";
+			$query .= PHP_EOL."\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$pks))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Set a value to know this is exporting method.";
+			$query .= PHP_EOL."\t\t\t\$_export = true;";
+			$query .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the user object.";
+			$query .= PHP_EOL."\t\t\t\$user = JFactory::getUser();";
+			$query .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+			$query .= PHP_EOL."\t\t\t\$db = JFactory::getDBO();";
+			$query .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
+			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Select some fields";
+			$query .= PHP_EOL."\t\t\t\$query->select('a.*');";
+			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." From the ".$this->fileContentStatic['###component###']."_".$viewName_single." table";
+			$query .= PHP_EOL."\t\t\t\$query->from(\$db->quoteName('#__".$this->fileContentStatic['###component###']."_".$viewName_single."', 'a'));";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.id IN (' . implode(',',\$pks) . ')');";
 			// add custom filtering php
-                        $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, "\n\n\t");
+                        $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, PHP_EOL.PHP_EOL."\t");
                         
 			if (isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
 			{
-				$query .= "\n\t\t\t//".$this->setLine(__LINE__)." Implement View Level Access";
-				$query .= "\n\t\t\tif (!\$user->authorise('core.options', 'com_".$this->fileContentStatic['###component###']."'))";
-				$query .= "\n\t\t\t{";
-				$query .= "\n\t\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
-				$query .= "\n\t\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
-				$query .= "\n\t\t\t}";
+				$query .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Implement View Level Access";
+				$query .= PHP_EOL."\t\t\tif (!\$user->authorise('core.options', 'com_".$this->fileContentStatic['###component###']."'))";
+				$query .= PHP_EOL."\t\t\t{";
+				$query .= PHP_EOL."\t\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
+				$query .= PHP_EOL."\t\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
+				$query .= PHP_EOL."\t\t\t}";
 			}
-			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Order the results by ordering";
-			$query .= "\n\t\t\t\$query->order('a.ordering  ASC');";
-			$query .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Load the items";
-			$query .= "\n\t\t\t\$db->setQuery(\$query);";
-			$query .= "\n\t\t\t\$db->execute();";
-			$query .= "\n\t\t\tif (\$db->getNumRows())";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\t\$items = \$db->loadObjectList();";
+			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Order the results by ordering";
+			$query .= PHP_EOL."\t\t\t\$query->order('a.ordering  ASC');";
+			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Load the items";
+			$query .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
+			$query .= PHP_EOL."\t\t\t\$db->execute();";
+			$query .= PHP_EOL."\t\t\tif (\$db->getNumRows())";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\$items = \$db->loadObjectList();";
 			$query .= $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###'],"\t\t",true);
                         // add custom php to getitems method after all
-                        $query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, "\n\n\t\t");
-			$query .= "\n\t\t\t\treturn \$items;";
-			$query .= "\n\t\t\t}";
-			$query .= "\n\t\t}";
-			$query .= "\n\t\treturn false;";
-			$query .= "\n\t}";
+                        $query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL.PHP_EOL."\t\t");
+			$query .= PHP_EOL."\t\t\t\treturn \$items;";
+			$query .= PHP_EOL."\t\t\t}";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL."\t\treturn false;";
+			$query .= PHP_EOL."\t}";
 
-			$query .= "\n\n\t/**";
-			$query .= "\n\t* Method to get header.";
-			$query .= "\n\t*";
-			$query .= "\n\t* @return mixed  An array of data items on success, false on failure.";
-			$query .= "\n\t*/";
-			$query .= "\n\tpublic function getExImPortHeaders()";
-			$query .= "\n\t{";
-			$query .= "\n\t\t//".$this->setLine(__LINE__)." Get a db connection.";
-			$query .= "\n\t\t\$db = JFactory::getDbo();";
-			$query .= "\n\t\t//".$this->setLine(__LINE__)." get the columns";
-			$query .= "\n\t\t\$columns = \$db->getTableColumns(".'"#__'.$this->fileContentStatic['###component###'].'_'.$viewName_single.'");';
-			$query .= "\n\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$columns))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t//".$this->setLine(__LINE__)." remove the headers you don't import/export.";
-			$query .= "\n\t\t\tunset(\$columns['asset_id']);";
-			$query .= "\n\t\t\tunset(\$columns['checked_out']);";
-			$query .= "\n\t\t\tunset(\$columns['checked_out_time']);";
-			$query .= "\n\t\t\t\$headers = new stdClass();";
-			$query .= "\n\t\t\tforeach (\$columns as \$column => \$type)";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\t\$headers->{\$column} = \$column;";
-			$query .= "\n\t\t\t}";
-			$query .= "\n\t\t\treturn \$headers;";
-			$query .= "\n\t\t}";
-			$query .= "\n\t\treturn false;";
-			$query .= "\n\t}";
+			$query .= PHP_EOL.PHP_EOL."\t/**";
+			$query .= PHP_EOL."\t* Method to get header.";
+			$query .= PHP_EOL."\t*";
+			$query .= PHP_EOL."\t* @return mixed  An array of data items on success, false on failure.";
+			$query .= PHP_EOL."\t*/";
+			$query .= PHP_EOL."\tpublic function getExImPortHeaders()";
+			$query .= PHP_EOL."\t{";
+			$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get a db connection.";
+			$query .= PHP_EOL."\t\t\$db = JFactory::getDbo();";
+			$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." get the columns";
+			$query .= PHP_EOL."\t\t\$columns = \$db->getTableColumns(".'"#__'.$this->fileContentStatic['###component###'].'_'.$viewName_single.'");';
+			$query .= PHP_EOL."\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkArray(\$columns))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." remove the headers you don't import/export.";
+			$query .= PHP_EOL."\t\t\tunset(\$columns['asset_id']);";
+			$query .= PHP_EOL."\t\t\tunset(\$columns['checked_out']);";
+			$query .= PHP_EOL."\t\t\tunset(\$columns['checked_out_time']);";
+			$query .= PHP_EOL."\t\t\t\$headers = new stdClass();";
+			$query .= PHP_EOL."\t\t\tforeach (\$columns as \$column => \$type)";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\$headers->{\$column} = \$column;";
+			$query .= PHP_EOL."\t\t\t}";
+			$query .= PHP_EOL."\t\t\treturn \$headers;";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL."\t\treturn false;";
+			$query .= PHP_EOL."\t}";
 		}
 		return $query;
 	}
@@ -7155,7 +7199,7 @@ class Interpretation extends Fields
 			$method = array();
 
 			// add the export method
-			$method[] = "\n\n\tpublic function exportData()";
+			$method[] = PHP_EOL.PHP_EOL."\tpublic function exportData()";
 			$method[] = "\t{";
 			$method[] = "\t\t//".$this->setLine(__LINE__)." Check for request forgeries";
 			$method[] = "\t\tJSession::checkToken() or die(JText::_('JINVALID_TOKEN'));";
@@ -7186,7 +7230,7 @@ class Interpretation extends Fields
 			$method[] = "\t}";
 
 			// add the import method
-			$method[] = "\n\n\tpublic function importData()";
+			$method[] = PHP_EOL.PHP_EOL."\tpublic function importData()";
 			$method[] = "\t{";
 			$method[] = "\t\t//".$this->setLine(__LINE__)." Check for request forgeries";
 			$method[] = "\t\tJSession::checkToken() or die(JText::_('JINVALID_TOKEN'));";
@@ -7231,7 +7275,7 @@ class Interpretation extends Fields
 			$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_".$this->fileContentStatic['###component###']."&view=".$viewName_list."', false), \$message, 'error');";
 			$method[] = "\t\treturn;";
 			$method[] = "\t}";
-			return implode("\n",$method);
+			return implode(PHP_EOL,$method);
 		}
 		return $method;
 	}
@@ -7249,11 +7293,11 @@ class Interpretation extends Fields
 				$this->langContent[$this->lang][$langExport] = 'Export Data';
 			}
 			$button = array();
-			$button[] = "\n\n\t\t\tif (\$this->canDo->get('core.export') && \$this->canDo->get('".$viewName_single.".export'))";
+			$button[] = PHP_EOL.PHP_EOL."\t\t\tif (\$this->canDo->get('core.export') && \$this->canDo->get('".$viewName_single.".export'))";
 			$button[] = "\t\t\t{";
 			$button[] = "\t\t\t\tJToolBarHelper::custom('".$viewName_list.".exportData', 'download', '', '".$langExport."', true);";
 			$button[] = "\t\t\t}";
-			return implode("\n",$button);
+			return implode(PHP_EOL,$button);
 		}
 		return $button;
 	}
@@ -7271,11 +7315,11 @@ class Interpretation extends Fields
 				$this->langContent[$this->lang][$langImport] = 'Import Data';
 			}
 			$button = array();
-			$button[] = "\n\n\t\tif (\$this->canDo->get('core.import') && \$this->canDo->get('".$viewName_single.".import'))";
+			$button[] = PHP_EOL.PHP_EOL."\t\tif (\$this->canDo->get('core.import') && \$this->canDo->get('".$viewName_single.".import'))";
 			$button[] = "\t\t{";
 			$button[] = "\t\t\tJToolBarHelper::custom('".$viewName_list.".importData', 'upload', '', '".$langImport."', false);";
 			$button[] = "\t\t}";
-			return implode("\n",$button);
+			return implode(PHP_EOL,$button);
 		}
 		return $button;
 	}
@@ -7287,15 +7331,15 @@ class Interpretation extends Fields
 		$this->buildDynamique($target,'customimport');
 		// load the custom script to the files
                 // ###IMPORT_DISPLAY_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DISPLAY_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_display', 'import_'.$viewName_list, "\n", null, true);
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DISPLAY_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_display', 'import_'.$viewName_list, PHP_EOL, null, true);
                 // ###IMPORT_SETDATE_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SETDATE_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_setdata', 'import_'.$viewName_list, "\n", null, true);
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SETDATE_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_setdata', 'import_'.$viewName_list, PHP_EOL, null, true);
                 // ###IMPORT_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import', 'import_'.$viewName_list, "\n", null, true);
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import', 'import_'.$viewName_list, PHP_EOL, null, true);
                 // ###IMPORT_SAVE_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SAVE_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_save', 'import_'.$viewName_list, "\n", null, true);
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_SAVE_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_save', 'import_'.$viewName_list, PHP_EOL, null, true);
                 // ###IMPORT_DEFAULT_VIEW_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DEFAULT_VIEW_CUSTOM###'] = $this->getCustomScriptBuilder('html_import_view', 'import_'.$viewName_list, "\n", null, true);
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DEFAULT_VIEW_CUSTOM###'] = $this->getCustomScriptBuilder('html_import_view', 'import_'.$viewName_list, PHP_EOL, null, true);
 		
 		// insure we have the view placeholders setup
 		$this->fileContentDynamic['import_'.$viewName_list]['###VIEW###'] = 'IMPORT_'.$this->placeholders['###VIEWS###'];
@@ -7320,54 +7364,54 @@ class Interpretation extends Fields
 		}
 		// setup the query
 		$query = "//".$this->setLine(__LINE__)." Get the user object.";
-		$query .= "\n\t\t\$user = JFactory::getUser();";
-		$query .= "\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
-		$query .= "\n\t\t\$db = JFactory::getDBO();";
-		$query .= "\n\t\t\$query = \$db->getQuery(true);";
-		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Select some fields";
-		$query .= "\n\t\t\$query->select('a.*');";
+		$query .= PHP_EOL."\t\t\$user = JFactory::getUser();";
+		$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+		$query .= PHP_EOL."\t\t\$db = JFactory::getDBO();";
+		$query .= PHP_EOL."\t\t\$query = \$db->getQuery(true);";
+		$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Select some fields";
+		$query .= PHP_EOL."\t\t\$query->select('a.*');";
 		// add the category
 		if ($addCategory)
 		{
-			$query .= "\n\t\t\$query->select(\$db->quoteName('c.title','category_title'));";
+			$query .= PHP_EOL."\t\t\$query->select(\$db->quoteName('c.title','category_title'));";
 		}
-		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." From the ".$this->fileContentStatic['###component###']."_item table";
-		$query .= "\n\t\t\$query->from(\$db->quoteName('#__".$this->fileContentStatic['###component###']."_".$viewName_single."', 'a'));";
+		$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." From the ".$this->fileContentStatic['###component###']."_item table";
+		$query .= PHP_EOL."\t\t\$query->from(\$db->quoteName('#__".$this->fileContentStatic['###component###']."_".$viewName_single."', 'a'));";
 		// add the category
 		if ($addCategory)
 		{
-			$query .= "\n\t\t\$query->join('LEFT', \$db->quoteName('#__categories', 'c') . ' ON (' . \$db->quoteName('a.".$categoryCodeName."') . ' = ' . \$db->quoteName('c.id') . ')');";
+			$query .= PHP_EOL."\t\t\$query->join('LEFT', \$db->quoteName('#__categories', 'c') . ' ON (' . \$db->quoteName('a.".$categoryCodeName."') . ' = ' . \$db->quoteName('c.id') . ')');";
 		}
 		// add custom filtering php
-                $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, "\n\n");
+                $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, PHP_EOL.PHP_EOL);
 		// add the custom fields query
 		$query .= $this->setCustomQuery($viewName_list, $viewName_single);
-		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Filter by published state";
-		$query .= "\n\t\t\$published = \$this->getState('filter.published');";
-		$query .= "\n\t\tif (is_numeric(\$published))";
-		$query .= "\n\t\t{";
-		$query .= "\n\t\t\t\$query->where('a.published = ' . (int) \$published);";
-		$query .= "\n\t\t}";
-		$query .= "\n\t\telseif (\$published === '')";
-		$query .= "\n\t\t{";
-		$query .= "\n\t\t\t\$query->where('(a.published = 0 OR a.published = 1)');";
-		$query .= "\n\t\t}";
+		$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by published state";
+		$query .= PHP_EOL."\t\t\$published = \$this->getState('filter.published');";
+		$query .= PHP_EOL."\t\tif (is_numeric(\$published))";
+		$query .= PHP_EOL."\t\t{";
+		$query .= PHP_EOL."\t\t\t\$query->where('a.published = ' . (int) \$published);";
+		$query .= PHP_EOL."\t\t}";
+		$query .= PHP_EOL."\t\telseif (\$published === '')";
+		$query .= PHP_EOL."\t\t{";
+		$query .= PHP_EOL."\t\t\t\$query->where('(a.published = 0 OR a.published = 1)');";
+		$query .= PHP_EOL."\t\t}";
 		if (isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
 		{
-			$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Join over the asset groups.";
-			$query .= "\n\t\t\$query->select('ag.title AS access_level');";
-			$query .= "\n\t\t\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
-			$query .= "\n\t\t//".$this->setLine(__LINE__)." Filter by access level.";
-			$query .= "\n\t\tif (\$access = \$this->getState('filter.access'))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t\$query->where('a.access = ' . (int) \$access);";
-			$query .= "\n\t\t}";
-			$query .= "\n\t\t//".$this->setLine(__LINE__)." Implement View Level Access";
-			$query .= "\n\t\tif (!\$user->authorise('core.options', 'com_".$this->fileContentStatic['###component###']."'))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
-			$query .= "\n\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
-			$query .= "\n\t\t}";
+			$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Join over the asset groups.";
+			$query .= PHP_EOL."\t\t\$query->select('ag.title AS access_level');";
+			$query .= PHP_EOL."\t\t\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
+			$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by access level.";
+			$query .= PHP_EOL."\t\tif (\$access = \$this->getState('filter.access'))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.access = ' . (int) \$access);";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Implement View Level Access";
+			$query .= PHP_EOL."\t\tif (!\$user->authorise('core.options', 'com_".$this->fileContentStatic['###component###']."'))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
+			$query .= PHP_EOL."\t\t}";
 		}
 		// set the search query
 		$query .= $this->setSearchQuery($viewName_list);
@@ -7376,37 +7420,37 @@ class Interpretation extends Fields
 		// add the category
 		if ($addCategory)
 		{
-			$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Filter by a single or group of categories.";
-			$query .= "\n\t\t\$baselevel = 1;";
-			$query .= "\n\t\t\$categoryId = \$this->getState('filter.category_id');";
-			$query .= "\n";
-			$query .= "\n\t\tif (is_numeric(\$categoryId))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\t\$cat_tbl = JTable::getInstance('Category', 'JTable');";
-			$query .= "\n\t\t\t\$cat_tbl->load(\$categoryId);";
-			$query .= "\n\t\t\t\$rgt = \$cat_tbl->rgt;";
-			$query .= "\n\t\t\t\$lft = \$cat_tbl->lft;";
-			$query .= "\n\t\t\t\$baselevel = (int) \$cat_tbl->level;";
-			$query .= "\n\t\t\t\$query->where('c.lft >= ' . (int) \$lft)";
-			$query .= "\n\t\t\t\t->where('c.rgt <= ' . (int) \$rgt);";
-			$query .= "\n\t\t}";
-			$query .= "\n\t\telseif (is_array(\$categoryId))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\tJArrayHelper::toInteger(\$categoryId);";
-			$query .= "\n\t\t\t\$categoryId = implode(',', \$categoryId);";
-			$query .= "\n\t\t\t\$query->where('a.category IN (' . \$categoryId . ')');";
-			$query .= "\n\t\t}";
-			$query .= "\n";
+			$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by a single or group of categories.";
+			$query .= PHP_EOL."\t\t\$baselevel = 1;";
+			$query .= PHP_EOL."\t\t\$categoryId = \$this->getState('filter.category_id');";
+			$query .= PHP_EOL;
+			$query .= PHP_EOL."\t\tif (is_numeric(\$categoryId))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\t\$cat_tbl = JTable::getInstance('Category', 'JTable');";
+			$query .= PHP_EOL."\t\t\t\$cat_tbl->load(\$categoryId);";
+			$query .= PHP_EOL."\t\t\t\$rgt = \$cat_tbl->rgt;";
+			$query .= PHP_EOL."\t\t\t\$lft = \$cat_tbl->lft;";
+			$query .= PHP_EOL."\t\t\t\$baselevel = (int) \$cat_tbl->level;";
+			$query .= PHP_EOL."\t\t\t\$query->where('c.lft >= ' . (int) \$lft)";
+			$query .= PHP_EOL."\t\t\t\t->where('c.rgt <= ' . (int) \$rgt);";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL."\t\telseif (is_array(\$categoryId))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\tJArrayHelper::toInteger(\$categoryId);";
+			$query .= PHP_EOL."\t\t\t\$categoryId = implode(',', \$categoryId);";
+			$query .= PHP_EOL."\t\t\t\$query->where('a.category IN (' . \$categoryId . ')');";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL;
 		}
-		$query .= "\n\n\t\t//".$this->setLine(__LINE__)." Add the list ordering clause.";
-		$query .= "\n\t\t\$orderCol = \$this->state->get('list.ordering', 'a.id');";
-		$query .= "\n\t\t\$orderDirn = \$this->state->get('list.direction', 'asc');	";
-		$query .= "\n\t\tif (\$orderCol != '')";
-		$query .= "\n\t\t{";
-		$query .= "\n\t\t\t\$query->order(\$db->escape(\$orderCol . ' ' . \$orderDirn));";
-		$query .= "\n\t\t}";
-		$query .= "\n";
-		$query .= "\n\t\treturn \$query;";
+		$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the list ordering clause.";
+		$query .= PHP_EOL."\t\t\$orderCol = \$this->state->get('list.ordering', 'a.id');";
+		$query .= PHP_EOL."\t\t\$orderDirn = \$this->state->get('list.direction', 'asc');	";
+		$query .= PHP_EOL."\t\tif (\$orderCol != '')";
+		$query .= PHP_EOL."\t\t{";
+		$query .= PHP_EOL."\t\t\t\$query->order(\$db->escape(\$orderCol . ' ' . \$orderDirn));";
+		$query .= PHP_EOL."\t\t}";
+		$query .= PHP_EOL;
+		$query .= PHP_EOL."\t\treturn \$query;";
 
 		return $query;
 	}
@@ -7439,21 +7483,21 @@ class Interpretation extends Fields
 			}
 			$search .= ")'";
 			// now setup query
-			$query = "\n\t\t//".$this->setLine(__LINE__)." Filter by search.";
-			$query .= "\n\t\t\$search = \$this->getState('filter.search');";
-			$query .= "\n\t\tif (!empty(\$search))";
-			$query .= "\n\t\t{";
-			$query .= "\n\t\t\tif (stripos(\$search, 'id:') === 0)";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\t\$query->where('a.id = ' . (int) substr(\$search, 3));";
-			$query .= "\n\t\t\t}";
-			$query .= "\n\t\t\telse";
-			$query .= "\n\t\t\t{";
-			$query .= "\n\t\t\t\t\$search = \$db->quote('%' . \$db->escape(\$search) . '%');";
-			$query .= "\n\t\t\t\t\$query->where(".$search.");";
-			$query .= "\n\t\t\t}";
-			$query .= "\n\t\t}";
-			$query .= "\n";
+			$query = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by search.";
+			$query .= PHP_EOL."\t\t\$search = \$this->getState('filter.search');";
+			$query .= PHP_EOL."\t\tif (!empty(\$search))";
+			$query .= PHP_EOL."\t\t{";
+			$query .= PHP_EOL."\t\t\tif (stripos(\$search, 'id:') === 0)";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\$query->where('a.id = ' . (int) substr(\$search, 3));";
+			$query .= PHP_EOL."\t\t\t}";
+			$query .= PHP_EOL."\t\t\telse";
+			$query .= PHP_EOL."\t\t\t{";
+			$query .= PHP_EOL."\t\t\t\t\$search = \$db->quote('%' . \$db->escape(\$search) . '%');";
+			$query .= PHP_EOL."\t\t\t\t\$query->where(".$search.");";
+			$query .= PHP_EOL."\t\t\t}";
+			$query .= PHP_EOL."\t\t}";
+			$query .= PHP_EOL;
 
 			return $query;
 		}
@@ -7474,9 +7518,9 @@ class Interpretation extends Fields
 					&& isset($filter['custom']['table']) 
 					&& ComponentbuilderHelper::checkString($filter['custom']['table']))
 				{
-					$query .= "\n\n\t\t//".$this->setLine(__LINE__)." From the ".ComponentbuilderHelper::safeString(ComponentbuilderHelper::safeString($filter['custom']['table'],'w'))." table.";
-					$query .= "\n\t\t\$query->select(\$db->quoteName('".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'));";
-					$query .= "\n\t\t\$query->join('LEFT', \$db->quoteName('".$filter['custom']['table']."', '".$filter['custom']['db']."') . ' ON (' . \$db->quoteName('a.".$filter['code']."') . ' = ' . \$db->quoteName('".$filter['custom']['db'].".".$filter['custom']['id']."') . ')');";
+					$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." From the ".ComponentbuilderHelper::safeString(ComponentbuilderHelper::safeString($filter['custom']['table'],'w'))." table.";
+					$query .= PHP_EOL."\t\t\$query->select(\$db->quoteName('".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'));";
+					$query .= PHP_EOL."\t\t\$query->join('LEFT', \$db->quoteName('".$filter['custom']['table']."', '".$filter['custom']['db']."') . ' ON (' . \$db->quoteName('a.".$filter['code']."') . ' = ' . \$db->quoteName('".$filter['custom']['db'].".".$filter['custom']['id']."') . ')');";
 				}
 				// build the field type file
 				$this->setCustomFieldTypeFile($filter, $viewName_list, $viewName_single);
@@ -7488,7 +7532,7 @@ class Interpretation extends Fields
 	public function setAddButttonToListField($targetView,$targetViews)
 	{
 		$addButton = array();
-		$addButton[] = "\n\t/**";
+		$addButton[] = PHP_EOL."\t/**";
 		$addButton[] = "\t * Override to add new button";
 		$addButton[] = "\t *";
 		$addButton[] = "\t * @return  string  The field input markup.";
@@ -7612,7 +7656,7 @@ class Interpretation extends Fields
 		$addButton[] = "\t\treturn \$html;";
 		$addButton[] = "\t}";
 
-		return implode("\n",$addButton);
+		return implode(PHP_EOL,$addButton);
 	}
 
 	public function setFilterQuery($viewName_list)
@@ -7624,20 +7668,20 @@ class Interpretation extends Fields
 			{
 				if ($filter['type'] != 'category' && ComponentbuilderHelper::checkArray($filter['custom']))
 				{
-					$filterQuery .= "\n\t\t//".$this->setLine(__LINE__)." Filter by ".$filter['code'].".";
-					$filterQuery .= "\n\t\tif (\$".$filter['code']." = \$this->getState('filter.".$filter['code']."'))";
-					$filterQuery .= "\n\t\t{";
-					$filterQuery .= "\n\t\t\t\$query->where('a.".$filter['code']." = ' . \$db->quote(\$db->escape(\$".$filter['code'].")));";
-					$filterQuery .= "\n\t\t}";
+					$filterQuery .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by ".$filter['code'].".";
+					$filterQuery .= PHP_EOL."\t\tif (\$".$filter['code']." = \$this->getState('filter.".$filter['code']."'))";
+					$filterQuery .= PHP_EOL."\t\t{";
+					$filterQuery .= PHP_EOL."\t\t\t\$query->where('a.".$filter['code']." = ' . \$db->quote(\$db->escape(\$".$filter['code'].")));";
+					$filterQuery .= PHP_EOL."\t\t}";
 
 				}
 				elseif ($filter['type'] != 'category')
 				{
-					$filterQuery .= "\n\t\t//".$this->setLine(__LINE__)." Filter by ".ucwords($filter['code']).".";
-					$filterQuery .= "\n\t\tif (\$".$filter['code']." = \$this->getState('filter.".$filter['code']."'))";
-					$filterQuery .= "\n\t\t{";
-					$filterQuery .= "\n\t\t\t\$query->where('a.".$filter['code']." = ' . \$db->quote(\$db->escape(\$".$filter['code'].")));";
-					$filterQuery .= "\n\t\t}";
+					$filterQuery .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by ".ucwords($filter['code']).".";
+					$filterQuery .= PHP_EOL."\t\tif (\$".$filter['code']." = \$this->getState('filter.".$filter['code']."'))";
+					$filterQuery .= PHP_EOL."\t\t{";
+					$filterQuery .= PHP_EOL."\t\t\t\$query->where('a.".$filter['code']." = ' . \$db->quote(\$db->escape(\$".$filter['code'].")));";
+					$filterQuery .= PHP_EOL."\t\t}";
 				}
 			}
 			return $filterQuery;
@@ -7741,14 +7785,14 @@ class Interpretation extends Fields
 			if (ComponentbuilderHelper::checkArray($functions))
 			{
 				// now build the initial script
-				$initial .= "// Initial Script\njQuery(document).ready(function()";
-				$initial .= "\n{";
+				$initial .= "// Initial Script".PHP_EOL."jQuery(document).ready(function()";
+				$initial .= PHP_EOL."{";
 				foreach ($functions as $function => $matchKeys)
 				{
 					$func_call = $this->buildFunctionCall($function,$matchKeys,$getValue);
 					$initial .= $func_call['code'];
 				}
-				$initial .= "});\n";
+				$initial .= "});".PHP_EOL;
 				// for modal fields
 				$modal = '';
 				// now build the listener scripts
@@ -7772,26 +7816,26 @@ class Interpretation extends Fields
 								$name = $name.'_id';
 							}
 
-							$listener .= "\n// #jform_".$name." listeners for ".$l_matchKey." function";
-							$listener .= "\njQuery('#jform_".$name."').on('keyup',function()";
-							$listener .= "\n{";
+							$listener .= PHP_EOL."// #jform_".$name." listeners for ".$l_matchKey." function";
+							$listener .= PHP_EOL."jQuery('#jform_".$name."').on('keyup',function()";
+							$listener .= PHP_EOL."{";
 							$listener .= $funcCall['code'];
-							$listener .= "\n});";
-							$listener .= "\njQuery('#adminForm').on('change', '#jform_".$name."',function (e)";
-							$listener .= "\n{";
-							$listener .= "\n\te.preventDefault();";
+							$listener .= PHP_EOL."});";
+							$listener .= PHP_EOL."jQuery('#adminForm').on('change', '#jform_".$name."',function (e)";
+							$listener .= PHP_EOL."{";
+							$listener .= PHP_EOL."\te.preventDefault();";
 							$listener .= $funcCall['code'];
-							$listener .= "\n});\n";
+							$listener .= PHP_EOL."});".PHP_EOL;
 						}
 					}
 				}
 				if (ComponentbuilderHelper::checkString($modal))
 				{
-					$listener .= "\nwindow.SqueezeBox.initialize({";
-					$listener .= "\n\tonClose:function(){";
+					$listener .= PHP_EOL."window.SqueezeBox.initialize({";
+					$listener .= PHP_EOL."\tonClose:function(){";
 					$listener .= $modal;
-					$listener .= "\n\t}";
-					$listener .= "\n});\n";
+					$listener .= PHP_EOL."\t}";
+					$listener .= PHP_EOL."});".PHP_EOL;
 				}
 
 				// now build the function
@@ -7808,8 +7852,8 @@ class Interpretation extends Fields
 					{
 						$addArray = true;
 					}
-					$func .= "\n// the ".$f_function." function";
-					$func .= "\nfunction ".$f_function."(";
+					$func .= PHP_EOL."// the ".$f_function." function";
+					$func .= PHP_EOL."function ".$f_function."(";
 					$fucounter = 0;
 					foreach ($f_matchKeys as $fu_matchKey)
 					{
@@ -7827,37 +7871,37 @@ class Interpretation extends Fields
 						}
 					}
 					$func .= ")";
-					$func .= "\n{";
+					$func .= PHP_EOL."{";
 					if ($addArray)
 					{
 						foreach ($f_matchKeys as $a_matchKey)
 						{
 							$name = $matchNames[$a_matchKey];
-							$func .= "\n\tif (isSet(".$a_matchKey.") && ".$a_matchKey.".constructor !== Array)\n\t{\n\t\tvar temp_".$f_function." = ".$a_matchKey.";\n\t\tvar ".$a_matchKey." = [];\n\t\t".$a_matchKey.".push(temp_".$f_function.");\n\t}";
-							$func .= "\n\telse if (!isSet(".$a_matchKey."))\n\t{";
-							$func .= "\n\t\tvar ".$a_matchKey." = [];";
-							$func .= "\n\t}";
-							$func .= "\n\tvar ".$name." = ".$a_matchKey.".some(".$a_matchKey."_SomeFunc);\n";
+							$func .= PHP_EOL."\tif (isSet(".$a_matchKey.") && ".$a_matchKey.".constructor !== Array)".PHP_EOL."\t{".PHP_EOL."\t\tvar temp_".$f_function." = ".$a_matchKey.";".PHP_EOL."\t\tvar ".$a_matchKey." = [];".PHP_EOL."\t\t".$a_matchKey.".push(temp_".$f_function.");".PHP_EOL."\t}";
+							$func .= PHP_EOL."\telse if (!isSet(".$a_matchKey."))".PHP_EOL."\t{";
+							$func .= PHP_EOL."\t\tvar ".$a_matchKey." = [];";
+							$func .= PHP_EOL."\t}";
+							$func .= PHP_EOL."\tvar ".$name." = ".$a_matchKey.".some(".$a_matchKey."_SomeFunc);".PHP_EOL;
 
 							// setup the map function
-							$map .= "\n// the ".$f_function." Some function";
-							$map .= "\nfunction ".$a_matchKey."_SomeFunc(".$a_matchKey.")";
-							$map .= "\n{";
-							$map .= "\n\t//".$this->setLine(__LINE__)." set the function logic";
-							$map .= "\n\tif (";
+							$map .= PHP_EOL."// the ".$f_function." Some function";
+							$map .= PHP_EOL."function ".$a_matchKey."_SomeFunc(".$a_matchKey.")";
+							$map .= PHP_EOL."{";
+							$map .= PHP_EOL."\t//".$this->setLine(__LINE__)." set the function logic";
+							$map .= PHP_EOL."\tif (";
 							$if = $ifValue[$a_matchKey];
 							if (ComponentbuilderHelper::checkString($if))
 							{
 								$map .= $if;
 							}
 							$map .= ")";
-							$map .= "\n\t{";
-							$map .= "\n\t\treturn true;";
-							$map .= "\n\t}\n\treturn false;";
-							$map .= "\n}\n";
+							$map .= PHP_EOL."\t{";
+							$map .= PHP_EOL."\t\treturn true;";
+							$map .= PHP_EOL."\t}".PHP_EOL."\treturn false;";
+							$map .= PHP_EOL."}".PHP_EOL;
 						}
-						$func .= "\n\n\t//".$this->setLine(__LINE__)." set this function logic";
-						$func .= "\n\tif (";
+						$func .= PHP_EOL.PHP_EOL."\t//".$this->setLine(__LINE__)." set this function logic";
+						$func .= PHP_EOL."\tif (";
 						// set if counter
 						$aifcounter = 0;
 						foreach ($f_matchKeys as $af_matchKey)
@@ -7873,13 +7917,13 @@ class Interpretation extends Fields
 							}
 							$aifcounter++;
 						}
-						$func .= ")\n\t{";
+						$func .= ")".PHP_EOL."\t{";
 
 					}
 					else
 					{
-						$func .= "\n\t//".$this->setLine(__LINE__)." set the function logic";
-						$func .= "\n\tif (";
+						$func .= PHP_EOL."\t//".$this->setLine(__LINE__)." set the function logic";
+						$func .= PHP_EOL."\tif (";
 						// set if counter
 						$ifcounter = 0;
 						foreach ($f_matchKeys as $f_matchKey)
@@ -7898,7 +7942,7 @@ class Interpretation extends Fields
 								$ifcounter++;
 							}
 						}
-						$func .= ")\n\t{";
+						$func .= ")".PHP_EOL."\t{";
 					}
 					// get the controles
 					$controls = $targetControls[$f_matchKeys[0]];
@@ -7915,7 +7959,7 @@ class Interpretation extends Fields
 							$head .= $action['requiredVar'];
 						}
 					}
-					$func .= "\n\t}\n\telse\n\t{";
+					$func .= PHP_EOL."\t}".PHP_EOL."\telse".PHP_EOL."\t{";
 					foreach($controls as $target => $action)
 					{
 						$func .= $action['default'];
@@ -7924,45 +7968,45 @@ class Interpretation extends Fields
 							$func .= $action[$targetDefault];
 						}
 					}
-					$func .= "\n\t}\n}\n".$map;
+					$func .= PHP_EOL."\t}".PHP_EOL."}".PHP_EOL.$map;
 				}
 				// add the needed validation to file
 				if (isset($this->validationFixBuilder[$viewName]) && ComponentbuilderHelper::checkArray($this->validationFixBuilder[$viewName]))
 				{
-					$validation .= "\n// update required fields";
-					$validation .= "\nfunction updateFieldRequired(name,status)";
-					$validation .= "\n{";
-					$validation .= "\n\tvar not_required = jQuery('#jform_not_required').val();";
-					$validation .= "\n\n\tif(status == 1)";
-					$validation .= "\n\t{";
-					$validation .= "\n\t\tif (isSet(not_required) && not_required != 0)";
-					$validation .= "\n\t\t{";
-					$validation .= "\n\t\t\tnot_required = not_required+','+name;";
-					$validation .= "\n\t\t}";
-					$validation .= "\n\t\telse";
-					$validation .= "\n\t\t{";
-					$validation .= "\n\t\t\tnot_required = ','+name;";
-					$validation .= "\n\t\t}";
-					$validation .= "\n\t}";
-					$validation .= "\n\telse";
-					$validation .= "\n\t{";
-					$validation .= "\n\t\tif (isSet(not_required) && not_required != 0)";
-					$validation .= "\n\t\t{";
-					$validation .= "\n\t\t\tnot_required = not_required.replace(','+name,'');";
-					$validation .= "\n\t\t}";
-					$validation .= "\n\t}";
-					$validation .= "\n\n\tjQuery('#jform_not_required').val(not_required);";
-					$validation .= "\n}\n";
+					$validation .= PHP_EOL."// update required fields";
+					$validation .= PHP_EOL."function updateFieldRequired(name,status)";
+					$validation .= PHP_EOL."{";
+					$validation .= PHP_EOL."\tvar not_required = jQuery('#jform_not_required').val();";
+					$validation .= PHP_EOL.PHP_EOL."\tif(status == 1)";
+					$validation .= PHP_EOL."\t{";
+					$validation .= PHP_EOL."\t\tif (isSet(not_required) && not_required != 0)";
+					$validation .= PHP_EOL."\t\t{";
+					$validation .= PHP_EOL."\t\t\tnot_required = not_required+','+name;";
+					$validation .= PHP_EOL."\t\t}";
+					$validation .= PHP_EOL."\t\telse";
+					$validation .= PHP_EOL."\t\t{";
+					$validation .= PHP_EOL."\t\t\tnot_required = ','+name;";
+					$validation .= PHP_EOL."\t\t}";
+					$validation .= PHP_EOL."\t}";
+					$validation .= PHP_EOL."\telse";
+					$validation .= PHP_EOL."\t{";
+					$validation .= PHP_EOL."\t\tif (isSet(not_required) && not_required != 0)";
+					$validation .= PHP_EOL."\t\t{";
+					$validation .= PHP_EOL."\t\t\tnot_required = not_required.replace(','+name,'');";
+					$validation .= PHP_EOL."\t\t}";
+					$validation .= PHP_EOL."\t}";
+					$validation .= PHP_EOL.PHP_EOL."\tjQuery('#jform_not_required').val(not_required);";
+					$validation .= PHP_EOL."}".PHP_EOL;
 				}
 				// set the isSet function
-				$isSet = "\n// the isSet function";
-				$isSet .= "\nfunction isSet(val)";
-				$isSet .= "\n{";
-				$isSet .= "\n\tif ((val != undefined) && (val != null) && 0 !== val.length){";
-				$isSet .= "\n\t\treturn true;";
-				$isSet .= "\n\t}";
-				$isSet .= "\n\treturn false;";
-				$isSet .= "\n}";
+				$isSet = PHP_EOL."// the isSet function";
+				$isSet .= PHP_EOL."function isSet(val)";
+				$isSet .= PHP_EOL."{";
+				$isSet .= PHP_EOL."\tif ((val != undefined) && (val != null) && 0 !== val.length){";
+				$isSet .= PHP_EOL."\t\treturn true;";
+				$isSet .= PHP_EOL."\t}";
+				$isSet .= PHP_EOL."\treturn false;";
+				$isSet .= PHP_EOL."}";
 			}
 			// load to this buket
 			$fileScript	= $initial.$func.$validation.$isSet;
@@ -7975,12 +8019,12 @@ class Interpretation extends Fields
 			{
 				$fileScript = '';
 			}
-			$fileScript .= "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['view_file'][$viewName]);
+			$fileScript .= PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['view_file'][$viewName]);
 		}
 		// add custom script to footer
 		if (isset($this->customScriptBuilder['view_footer'][$viewName]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['view_footer'][$viewName]))
 		{
-			$customFooterScript = "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['view_footer'][$viewName]);
+			$customFooterScript = PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['view_footer'][$viewName]);
 			if (strpos($customFooterScript,'<?php') === false)
 			{
 				// only add now if no php is added to the footer script
@@ -8015,7 +8059,7 @@ class Interpretation extends Fields
 			// add the head script if set
 			if (isset($head) && ComponentbuilderHelper::checkString($head))
 			{
-				$fileScript = "// Some Global Values\n".$head."\n".$fileScript;
+				$fileScript = "// Some Global Values".PHP_EOL.$head.PHP_EOL.$fileScript;
 			}
 			// load the script
 			$this->editBodyViewScriptBuilder[$viewName]['fileScript'] = $fileScript;
@@ -8033,7 +8077,7 @@ class Interpretation extends Fields
 		if (isset($footerScript) && ComponentbuilderHelper::checkString($footerScript))
 		{
 			// add the needed script tags
-			$footerScript = "\n\n".'<script type="text/javascript">'."\n".$footerScript."\n</script>";
+			$footerScript = PHP_EOL.PHP_EOL.'<script type="text/javascript">'.PHP_EOL.$footerScript.PHP_EOL."</script>";
 			$this->editBodyViewScriptBuilder[$viewName]['footerScript'] = $footerScript;
 		}
 	}
@@ -8048,13 +8092,13 @@ class Interpretation extends Fields
 			$value = $getValue[$matchKey];
 			if ($value['isArray'])
 			{
-				$initial .= "\n\t".$value['get'];
+				$initial .= PHP_EOL."\t".$value['get'];
 				$funcsets[] = $matchKey;
 				$array = true;
 			}
 			else
 			{
-				$initial .= "\n\t".$value['get'];
+				$initial .= PHP_EOL."\t".$value['get'];
 				$funcsets[] = $matchKey;
 			}
 		}
@@ -8062,9 +8106,9 @@ class Interpretation extends Fields
 		// make sure that the function is loaded only once
 		if (ComponentbuilderHelper::checkArray($funcsets))
 		{
-			$initial .= "\n\t".$function."(";
+			$initial .= PHP_EOL."\t".$function."(";
 			$initial .= implode(',',$funcsets);
-			$initial .= ");\n";
+			$initial .= ");".PHP_EOL;
 		}
 		return array('code' => $initial, 'array' => $array);
 	}
@@ -8148,7 +8192,7 @@ class Interpretation extends Fields
 					if($target['required'] === 'yes')
 					{
 						$unique = $uniqueVar.$this->uniquekey(3);
-						$bucket[$target['name']]['requiredVar'] = "jform_".$unique."_required = false;\n";
+						$bucket[$target['name']]['requiredVar'] = "jform_".$unique."_required = false;".PHP_EOL;
 					}
 					else
 					{
@@ -8174,30 +8218,30 @@ class Interpretation extends Fields
 						$targetType = "#jform_";
 					}
 					// set the target behavior
-					$bucket[$target['name']]['behavior'] = "\n\t\tjQuery('".$targetType.$target['name'].$targetTypeSufix."').closest('.control-group').".$targetBehavior."();";
+					$bucket[$target['name']]['behavior'] = PHP_EOL."\t\tjQuery('".$targetType.$target['name'].$targetTypeSufix."').closest('.control-group').".$targetBehavior."();";
 					// set the target default
-					$bucket[$target['name']]['default'] = "\n\t\tjQuery('".$targetType.$target['name'].$targetTypeSufix."').closest('.control-group').".$targetDefault."();";
+					$bucket[$target['name']]['default'] = PHP_EOL."\t\tjQuery('".$targetType.$target['name'].$targetTypeSufix."').closest('.control-group').".$targetDefault."();";
 					// the hide required function
 					if($target['required'] === 'yes')
 					{
-						$hide = "\n\t\tif (!jform_".$unique."_required)";
-						$hide .= "\n\t\t{";
-						$hide .= "\n\t\t\tupdateFieldRequired('".$target['name']."',1);";
-						$hide .= "\n\t\t\tjQuery('#jform_".$target['name']."').removeAttr('required');";
-						$hide .= "\n\t\t\tjQuery('#jform_".$target['name']."').removeAttr('aria-required');";
-						$hide .= "\n\t\t\tjQuery('#jform_".$target['name']."').removeClass('required');";
-						$hide .= "\n\t\t\tjform_".$unique."_required = true;";
-						$hide .= "\n\t\t}";
+						$hide = PHP_EOL."\t\tif (!jform_".$unique."_required)";
+						$hide .= PHP_EOL."\t\t{";
+						$hide .= PHP_EOL."\t\t\tupdateFieldRequired('".$target['name']."',1);";
+						$hide .= PHP_EOL."\t\t\tjQuery('#jform_".$target['name']."').removeAttr('required');";
+						$hide .= PHP_EOL."\t\t\tjQuery('#jform_".$target['name']."').removeAttr('aria-required');";
+						$hide .= PHP_EOL."\t\t\tjQuery('#jform_".$target['name']."').removeClass('required');";
+						$hide .= PHP_EOL."\t\t\tjform_".$unique."_required = true;";
+						$hide .= PHP_EOL."\t\t}";
 						$bucket[$target['name']]['hide'] = $hide;
 						// the show required function
-						$show = "\n\t\tif (jform_".$unique."_required)";
-						$show .= "\n\t\t{";
-						$show .= "\n\t\t\tupdateFieldRequired('".$target['name']."',0);";
-						$show .= "\n\t\t\tjQuery('#jform_".$target['name']."').prop('required','required');";
-						$show .= "\n\t\t\tjQuery('#jform_".$target['name']."').attr('aria-required',true);";
-						$show .= "\n\t\t\tjQuery('#jform_".$target['name']."').addClass('required');";
-						$show .= "\n\t\t\tjform_".$unique."_required = false;";
-						$show .= "\n\t\t}\n";
+						$show = PHP_EOL."\t\tif (jform_".$unique."_required)";
+						$show .= PHP_EOL."\t\t{";
+						$show .= PHP_EOL."\t\t\tupdateFieldRequired('".$target['name']."',0);";
+						$show .= PHP_EOL."\t\t\tjQuery('#jform_".$target['name']."').prop('required','required');";
+						$show .= PHP_EOL."\t\t\tjQuery('#jform_".$target['name']."').attr('aria-required',true);";
+						$show .= PHP_EOL."\t\t\tjQuery('#jform_".$target['name']."').addClass('required');";
+						$show .= PHP_EOL."\t\t\tjform_".$unique."_required = false;";
+						$show .= PHP_EOL."\t\t}".PHP_EOL;
 						$bucket[$target['name']]['show'] = $show;
 						// make sure that the axaj and other needed things for this view is loaded
 						$this->validationFixBuilder[$viewName][] = $target['name'];
@@ -8559,7 +8603,7 @@ class Interpretation extends Fields
 		$keyName	= $name.'_'.$unique;
 		if ($type === 'checkboxes' || $extends === 'checkboxes')
 		{
-			$select =  "var ".$keyName." = [];\n\tjQuery('#jform_".$name." input[type=checkbox]').each(function()\n\t{\n\t\tif (jQuery(this).is(':checked'))\n\t\t{\n\t\t\t".$keyName.".push(jQuery(this).prop('value'));\n\t\t}\n\t});";
+			$select =  "var ".$keyName." = [];".PHP_EOL."\tjQuery('#jform_".$name." input[type=checkbox]').each(function()".PHP_EOL."\t{".PHP_EOL."\t\tif (jQuery(this).is(':checked'))".PHP_EOL."\t\t{".PHP_EOL."\t\t\t".$keyName.".push(jQuery(this).prop('value'));".PHP_EOL."\t\t}".PHP_EOL."\t});";
 			$isArray = true;
 		}
 		elseif($type === 'checkbox')
@@ -8630,41 +8674,41 @@ class Interpretation extends Fields
 		$fix = '';
 		if (isset($this->validationFixBuilder[$view]) && ComponentbuilderHelper::checkArray($this->validationFixBuilder[$view]))
 		{
-			$fix .= "\n\n\t/**";
-			$fix .= "\n\t* Method to validate the form data.";
-			$fix .= "\n\t*";
-			$fix .= "\n\t* @param   JForm   \$form   The form to validate against.";
-			$fix .= "\n\t* @param   array   \$data   The data to validate.";
-			$fix .= "\n\t* @param   string  \$group  The name of the field group to validate.";
-			$fix .= "\n\t*";
-			$fix .= "\n\t* @return  mixed  Array of filtered data if valid, false otherwise.";
-			$fix .= "\n\t*";
-			$fix .= "\n\t* @see     JFormRule";
-			$fix .= "\n\t* @see     JFilterInput";
-			$fix .= "\n\t* @since   12.2";
-			$fix .= "\n\t*/";
-			$fix .= "\n\tpublic function validate(\$form, \$data, \$group = null)";
-			$fix .= "\n\t{";
-			$fix .= "\n\t\t//".$this->setLine(__LINE__)." check if the not_required field is set";
-			$fix .= "\n\t\tif (".$Component."Helper::checkString(\$data['not_required']))";
-			$fix .= "\n\t\t{";
-			$fix .= "\n\t\t\t\$requiredFields = (array) explode(',',(string) \$data['not_required']);";
-			$fix .= "\n\t\t\t\$requiredFields = array_unique(\$requiredFields);";
-			$fix .= "\n\t\t\t//".$this->setLine(__LINE__)." now change the required field attributes value";
-			$fix .= "\n\t\t\tforeach (\$requiredFields as \$requiredField)";
-			$fix .= "\n\t\t\t{";
-			$fix .= "\n\t\t\t\t//".$this->setLine(__LINE__)." make sure there is a string value";
-			$fix .= "\n\t\t\t\tif (".$Component."Helper::checkString(\$requiredField))";
-			$fix .= "\n\t\t\t\t{";
-			$fix .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." change to false";
-			$fix .= "\n\t\t\t\t\t\$form->setFieldAttribute(\$requiredField, 'required', 'false');";
-			$fix .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." also clear the data set";
-			$fix .= "\n\t\t\t\t\t\$data[\$requiredField] = '';";
-			$fix .= "\n\t\t\t\t}";
-			$fix .= "\n\t\t\t}";
-			$fix .= "\n\t\t}";
-			$fix .= "\n\t\treturn parent::validate(\$form, \$data, \$group);";
-			$fix .= "\n\t}";
+			$fix .= PHP_EOL.PHP_EOL."\t/**";
+			$fix .= PHP_EOL."\t* Method to validate the form data.";
+			$fix .= PHP_EOL."\t*";
+			$fix .= PHP_EOL."\t* @param   JForm   \$form   The form to validate against.";
+			$fix .= PHP_EOL."\t* @param   array   \$data   The data to validate.";
+			$fix .= PHP_EOL."\t* @param   string  \$group  The name of the field group to validate.";
+			$fix .= PHP_EOL."\t*";
+			$fix .= PHP_EOL."\t* @return  mixed  Array of filtered data if valid, false otherwise.";
+			$fix .= PHP_EOL."\t*";
+			$fix .= PHP_EOL."\t* @see     JFormRule";
+			$fix .= PHP_EOL."\t* @see     JFilterInput";
+			$fix .= PHP_EOL."\t* @since   12.2";
+			$fix .= PHP_EOL."\t*/";
+			$fix .= PHP_EOL."\tpublic function validate(\$form, \$data, \$group = null)";
+			$fix .= PHP_EOL."\t{";
+			$fix .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." check if the not_required field is set";
+			$fix .= PHP_EOL."\t\tif (".$Component."Helper::checkString(\$data['not_required']))";
+			$fix .= PHP_EOL."\t\t{";
+			$fix .= PHP_EOL."\t\t\t\$requiredFields = (array) explode(',',(string) \$data['not_required']);";
+			$fix .= PHP_EOL."\t\t\t\$requiredFields = array_unique(\$requiredFields);";
+			$fix .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." now change the required field attributes value";
+			$fix .= PHP_EOL."\t\t\tforeach (\$requiredFields as \$requiredField)";
+			$fix .= PHP_EOL."\t\t\t{";
+			$fix .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." make sure there is a string value";
+			$fix .= PHP_EOL."\t\t\t\tif (".$Component."Helper::checkString(\$requiredField))";
+			$fix .= PHP_EOL."\t\t\t\t{";
+			$fix .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." change to false";
+			$fix .= PHP_EOL."\t\t\t\t\t\$form->setFieldAttribute(\$requiredField, 'required', 'false');";
+			$fix .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." also clear the data set";
+			$fix .= PHP_EOL."\t\t\t\t\t\$data[\$requiredField] = '';";
+			$fix .= PHP_EOL."\t\t\t\t}";
+			$fix .= PHP_EOL."\t\t\t}";
+			$fix .= PHP_EOL."\t\t}";
+			$fix .= PHP_EOL."\t\treturn parent::validate(\$form, \$data, \$group);";
+			$fix .= PHP_EOL."\t}";
 		}
 		return $fix;
 	}
@@ -8674,8 +8718,8 @@ class Interpretation extends Fields
 		$fix = '';
 		if (isset($this->customScriptBuilder['token'][$view]) && $this->customScriptBuilder['token'][$view])
 		{
-			$fix .= "\n\t\t//".$this->setLine(__LINE__)." Add Ajax Token";
-			$fix .= "\n\t\t\$document->addScriptDeclaration(\"var token = '\".JSession::getFormToken().\"';\");";
+			$fix .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add Ajax Token";
+			$fix .= PHP_EOL."\t\t\$document->addScriptDeclaration(\"var token = '\".JSession::getFormToken().\"';\");";
 		}
 		return $fix;
 	}
@@ -8697,7 +8741,7 @@ class Interpretation extends Fields
 			{
 				foreach ($taskArray as $name)
 				{
-					$tasks .= "\n\t\t\$this->registerTask('".$name."', 'ajax');";
+					$tasks .= PHP_EOL."\t\t\$this->registerTask('".$name."', 'ajax');";
 				}
 			}
 		}
@@ -8716,9 +8760,9 @@ class Interpretation extends Fields
 			{
 				foreach ($view as $task)
 				{
-					$input[$task['task_name']][] = "\n\t\t\t\t\t\t\$".$task['value_name']."Value = \$jinput->get('".$task['value_name']."', ".$task['input_default'].", '".$task['input_filter']."');";
+					$input[$task['task_name']][] = PHP_EOL."\t\t\t\t\t\t\$".$task['value_name']."Value = \$jinput->get('".$task['value_name']."', ".$task['input_default'].", '".$task['input_filter']."');";
 					$valueArray[$task['task_name']][] = "\$".$task['value_name']."Value";
-					$getModel[$task['task_name']] = "\n\t\t\t\t\t\t\t\$result = \$this->getModel('ajax')->".$task['method_name']."([[[valueArray]]]);";
+					$getModel[$task['task_name']] = PHP_EOL."\t\t\t\t\t\t\t\$result = \$this->getModel('ajax')->".$task['method_name']."([[[valueArray]]]);";
 					
 					// see user check is needed
 					if (!isset($task['user_check']) || 1 == $task['user_check'])
@@ -8737,10 +8781,10 @@ class Interpretation extends Fields
 			{
 				foreach ($getModel as $task => $getMethod)
 				{
-					$cases .= "\n\t\t\t\tcase '".$task."':";
-					$cases .= "\n\t\t\t\t\ttry";
-					$cases .= "\n\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\$returnRaw = \$jinput->get('raw', false, 'BOOLEAN');";
+					$cases .= PHP_EOL."\t\t\t\tcase '".$task."':";
+					$cases .= PHP_EOL."\t\t\t\t\ttry";
+					$cases .= PHP_EOL."\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\t\$returnRaw = \$jinput->get('raw', false, 'BOOLEAN');";
 					foreach ($input[$task] as $string)
 					{
 						$cases .= $string;
@@ -8750,39 +8794,39 @@ class Interpretation extends Fields
 					$ifvalues = implode(' && ',$valueArray[$task]);
 					// set the values to method
 					$getMethod = str_replace('[[[valueArray]]]',$values,$getMethod);
-					$cases .= "\n\t\t\t\t\t\tif(".$ifvalues.$userCheck[$task].")";
-					$cases .= "\n\t\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\tif(".$ifvalues.$userCheck[$task].")";
+					$cases .= PHP_EOL."\t\t\t\t\t\t{";
 					$cases .= $getMethod;
-					$cases .= "\n\t\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\t\telse";
-					$cases .= "\n\t\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\t\$result = false;";
-					$cases .= "\n\t\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\t\tif(\$callback = \$jinput->get('callback', null, 'CMD'))";
-					$cases .= "\n\t\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\techo \$callback . \"(\".json_encode(\$result).\");\";";
-					$cases .= "\n\t\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\t\telseif(\$returnRaw)";
-					$cases .= "\n\t\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\techo json_encode(\$result);";
-					$cases .= "\n\t\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\t\telse";
-					$cases .= "\n\t\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\techo \"(\".json_encode(\$result).\");\";";
-					$cases .= "\n\t\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\tcatch(Exception \$e)";
-					$cases .= "\n\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\tif(\$callback = \$jinput->get('callback', null, 'CMD'))";
-					$cases .= "\n\t\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\techo \$callback.\"(\".json_encode(\$e).\");\";";
-					$cases .= "\n\t\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\t\telse";
-					$cases .= "\n\t\t\t\t\t\t{";
-					$cases .= "\n\t\t\t\t\t\t\techo \"(\".json_encode(\$e).\");\";";
-					$cases .= "\n\t\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\t\t}";
-					$cases .= "\n\t\t\t\tbreak;";
+					$cases .= PHP_EOL."\t\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\t\t\telse";
+					$cases .= PHP_EOL."\t\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\t\t\$result = false;";
+					$cases .= PHP_EOL."\t\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\t\t\tif(\$callback = \$jinput->get('callback', null, 'CMD'))";
+					$cases .= PHP_EOL."\t\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\t\techo \$callback . \"(\".json_encode(\$result).\");\";";
+					$cases .= PHP_EOL."\t\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\t\t\telseif(\$returnRaw)";
+					$cases .= PHP_EOL."\t\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\t\techo json_encode(\$result);";
+					$cases .= PHP_EOL."\t\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\t\t\telse";
+					$cases .= PHP_EOL."\t\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\t\techo \"(\".json_encode(\$result).\");\";";
+					$cases .= PHP_EOL."\t\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\t\tcatch(Exception \$e)";
+					$cases .= PHP_EOL."\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\tif(\$callback = \$jinput->get('callback', null, 'CMD'))";
+					$cases .= PHP_EOL."\t\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\t\techo \$callback.\"(\".json_encode(\$e).\");\";";
+					$cases .= PHP_EOL."\t\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\t\t\telse";
+					$cases .= PHP_EOL."\t\t\t\t\t\t{";
+					$cases .= PHP_EOL."\t\t\t\t\t\t\techo \"(\".json_encode(\$e).\");\";";
+					$cases .= PHP_EOL."\t\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\t\t}";
+					$cases .= PHP_EOL."\t\t\t\tbreak;";
 				}
 			}
 		}
@@ -8796,7 +8840,7 @@ class Interpretation extends Fields
 		{
 			foreach ($this->customScriptBuilder[$target]['ajax_model'] as $view => $method)
 			{
-				$methods .= "\n\n\t//".$this->setLine(__LINE__)." Used in ".$view."\n";
+				$methods .= PHP_EOL.PHP_EOL."\t//".$this->setLine(__LINE__)." Used in ".$view.PHP_EOL;
 				$methods .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$method);
 			}
 		}
@@ -8815,13 +8859,13 @@ class Interpretation extends Fields
 			{
 				if ($filter['type'] != 'category' && ComponentbuilderHelper::checkArray($filter['custom']) && $filter['custom']['extends'] === 'user')
 				{
-					$function[] = "\n\tprotected function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
+					$function[] = PHP_EOL."\tprotected function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
 					$function[] = "\t{";
 					$function[] = "\t\t//".$this->setLine(__LINE__)." Get a db connection.";
 					$function[] = "\t\t\$db = JFactory::getDbo();";
-					$function[] = "\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+					$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
 					$function[] = "\t\t\$query = \$db->getQuery(true);";
-					$function[] = "\n\t\t//".$this->setLine(__LINE__)." Select the text.";
+					$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Select the text.";
 					$function[] = "\t\t\$query->select(\$db->quoteName(array('a.".$filter['custom']['id']."','a.".$filter['custom']['text']."')));";
 					$function[] = "\t\t\$query->from(\$db->quoteName('".$filter['custom']['table']."', 'a'));";
 					$function[] = "\t\t//".$this->setLine(__LINE__)." get the targeted groups";
@@ -8832,9 +8876,9 @@ class Interpretation extends Fields
 					$function[] = "\t\t\t\$query->where('group.group_id IN (' . implode(',', \$groups) . ')');";
 					$function[] = "\t\t}";
 					$function[] = "\t\t\$query->order('a.".$filter['custom']['text']." ASC');";
-					$function[] = "\n\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
+					$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
 					$function[] = "\t\t\$db->setQuery(\$query);";
-					$function[] = "\n\t\t\$results = \$db->loadObjectList();";
+					$function[] = PHP_EOL."\t\t\$results = \$db->loadObjectList();";
 					$function[] = "\t\tif (\$results)";
 					$function[] = "\t\t{";
 					$function[] = "\t\t\t\$filter = array();";
@@ -8850,21 +8894,21 @@ class Interpretation extends Fields
 
 					/* else
 					{
-						$function[] = "\n\tprotected function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
+						$function[] = PHP_EOL."\tprotected function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
 						$function[] = "\t{";
 						$function[] = "\t\t//".$this->setLine(__LINE__)." Get a db connection.";
 						$function[] = "\t\t\$db = JFactory::getDbo();";
-						$function[] = "\n\t\t//".$this->setLine(__LINE__)." Select the text.";
+						$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Select the text.";
 						$function[] = "\t\t\$query = \$db->getQuery(true);";
-						$function[] = "\n\t\t//".$this->setLine(__LINE__)." Select the text.";
+						$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Select the text.";
 						$function[] = "\t\t\$query->select(\$db->quoteName(array('".$filter['custom']['id']."','".$filter['custom']['text']."')));";
 						$function[] = "\t\t\$query->from(\$db->quoteName('".$filter['custom']['table']."'));";
 						$function[] = "\t\t\$query->where(\$db->quoteName('published') . ' = 1');";
 						$function[] = "\t\t\$query->order(\$db->quoteName('".$filter['custom']['text']."') . ' ASC');";
-						$function[] = "\n\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
+						$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
 						$function[] = "\t\t\$db->setQuery(\$query);";
-						$function[] = "\n\t\t\$results = \$db->loadObjectList();";
-						$function[] = "\n\t\tif (\$results)";
+						$function[] = PHP_EOL."\t\t\$results = \$db->loadObjectList();";
+						$function[] = PHP_EOL."\t\tif (\$results)";
 						$function[] = "\t\t{";
 						$function[] = "\t\t\t\$filter = array();";
 						$function[] = "\t\t\t\$batch = array();";
@@ -8895,20 +8939,20 @@ class Interpretation extends Fields
 					{
 						$translation = true;
 					}
-					$function[] = "\n\tprotected function getThe".$filter['function']."Selections()";
+					$function[] = PHP_EOL."\tprotected function getThe".$filter['function']."Selections()";
 					$function[] = "\t{";
 					$function[] = "\t\t//".$this->setLine(__LINE__)." Get a db connection.";
 					$function[] = "\t\t\$db = JFactory::getDbo();";
-					$function[] = "\n\t\t//".$this->setLine(__LINE__)." Create a new query object.";
+					$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Create a new query object.";
 					$function[] = "\t\t\$query = \$db->getQuery(true);";
-					$function[] = "\n\t\t//".$this->setLine(__LINE__)." Select the text.";
+					$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Select the text.";
 					$function[] = "\t\t\$query->select(\$db->quoteName('".$filter['code']."'));";
 					$function[] = "\t\t\$query->from(\$db->quoteName('#__".$component."_".$filter['database']."'));";
 					$function[] = "\t\t\$query->order(\$db->quoteName('".$filter['code']."') . ' ASC');";
-					$function[] = "\n\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
+					$function[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Reset the query using our newly populated query object.";
 					$function[] = "\t\t\$db->setQuery(\$query);";
-					$function[] = "\n\t\t\$results = \$db->loadColumn();";
-					$function[] = "\n\t\tif (\$results)";
+					$function[] = PHP_EOL."\t\t\$results = \$db->loadColumn();";
+					$function[] = PHP_EOL."\t\tif (\$results)";
 					$function[] = "\t\t{";
 					// check if translated vlaue is used
 					if ($translation)
@@ -8949,7 +8993,7 @@ class Interpretation extends Fields
 			if (ComponentbuilderHelper::checkArray($function))
 			{
 				// return the function
-				return "\n".implode("\n",$function);
+				return PHP_EOL.implode(PHP_EOL,$function);
 			}
 		}
 		return '';
@@ -8958,7 +9002,7 @@ class Interpretation extends Fields
 	public function setUniqueFields(&$view)
 	{
 		$fields = array();
-		$fields[] = "\n\n\t/**";
+		$fields[] = PHP_EOL.PHP_EOL."\t/**";
 		$fields[] = "\t * Method to get the unique fields of this table.";
 		$fields[] = "\t *";
 		$fields[] = "\t * @return  mixed  An array of field names, boolean false if none is set.";
@@ -8977,7 +9021,7 @@ class Interpretation extends Fields
 		}
 		$fields[] = "\t}";
 		// return the unique fields
-		return implode("\n",$fields);
+		return implode(PHP_EOL,$fields);
 	}
 
 	public function setOtherFilter(&$view)
@@ -8992,7 +9036,7 @@ class Interpretation extends Fields
 					$CodeName = ComponentbuilderHelper::safeString($filter['code'].' '.$filter['custom']['text'],'W');
 					$codeName = $filter['code'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F');
 					$type = ComponentbuilderHelper::safeString($filter['custom']['type'],'F');
-					$otherFilter[] = "\n\t\t//".$this->setLine(__LINE__)." Set ".$CodeName." Selection";
+					$otherFilter[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set ".$CodeName." Selection";
 					$otherFilter[] = "\t\t\$this->".$codeName."Options = JFormHelper::loadFieldType('".$type."')->getOptions();";
 					$otherFilter[] = "\t\tif (\$this->".$codeName."Options)";
 					$otherFilter[] = "\t\t{";
@@ -9003,7 +9047,7 @@ class Interpretation extends Fields
 					$otherFilter[] = "\t\t\t\tJHtml::_('select.options', \$this->".$codeName."Options, 'value', 'text', \$this->state->get('filter.".$filter['code']."'))";
 					$otherFilter[] = "\t\t\t);";
 
-					$otherFilter[] = "\n\t\t\tif (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
+					$otherFilter[] = PHP_EOL."\t\t\tif (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
 					$otherFilter[] = "\t\t\t{";
 					$otherFilter[] = "\t\t\t\t//".$this->setLine(__LINE__)." ".$CodeName." Batch Selection";
 					$otherFilter[] = "\t\t\t\tJHtmlBatch_::addListSelection(";
@@ -9026,7 +9070,7 @@ class Interpretation extends Fields
 					{
 						$functionName = "\$this->getThe".$filter['function']."Selections();";
 					}
-					$otherFilter[] = "\n\t\t//".$this->setLine(__LINE__)." Set ".$Codename." Selection";
+					$otherFilter[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set ".$Codename." Selection";
 					$otherFilter[] = "\t\t\$this->".$filter['code']."Options = ".$functionName;
 					$otherFilter[] = "\t\tif (\$this->".$filter['code']."Options)";
 					$otherFilter[] = "\t\t{";
@@ -9037,7 +9081,7 @@ class Interpretation extends Fields
 					$otherFilter[] = "\t\t\t\tJHtml::_('select.options', \$this->".$filter['code']."Options, 'value', 'text', \$this->state->get('filter.".$filter['code']."'))";
 					$otherFilter[] = "\t\t\t);";
 
-					$otherFilter[] = "\n\t\t\tif (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
+					$otherFilter[] = PHP_EOL."\t\t\tif (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
 					$otherFilter[] = "\t\t\t{";
 					$otherFilter[] = "\t\t\t\t//".$this->setLine(__LINE__)." ".$Codename." Batch Selection";
 					$otherFilter[] = "\t\t\t\tJHtmlBatch_::addListSelection(";
@@ -9053,7 +9097,7 @@ class Interpretation extends Fields
 			if (ComponentbuilderHelper::checkArray($otherFilter))
 			{
 				// return the filter
-				return "\n".implode("\n",$otherFilter);
+				return PHP_EOL.implode(PHP_EOL,$otherFilter);
 			}
 		}
 		return '';
@@ -9077,7 +9121,7 @@ class Interpretation extends Fields
 			$COMONENT = ComponentbuilderHelper::safeString($this->componentData->name_code,'U');
 			// set filter
 			$filter = array();
-			$filter[] = "\n\n\t\t//".$this->setLine(__LINE__)." Category Filter.";
+			$filter[] = PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Category Filter.";
 			$filter[] = "\t\tJHtmlSidebar::addFilter(";
 			$filter[] = "\t\t\tJText::_('JOPTION_SELECT_CATEGORY'),";
 			$filter[] = "\t\t\t'filter_category_id',";
@@ -9085,7 +9129,7 @@ class Interpretation extends Fields
 			$filter[] = "\t\t);";
 
 
-			$filter[] = "\n\t\tif (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
+			$filter[] = PHP_EOL."\t\tif (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
 			$filter[] = "\t\t{";
 			$filter[] = "\t\t\t//".$this->setLine(__LINE__)." Category Batch selection.";
 			$filter[] = "\t\t\tJHtmlBatch_::addListSelection(";
@@ -9096,7 +9140,7 @@ class Interpretation extends Fields
 			$filter[] = "\t\t}";
 
 			// return the filter
-			return implode("\n",$filter);
+			return implode(PHP_EOL,$filter);
 		}
 		return '';
 	}
@@ -9122,11 +9166,11 @@ class Interpretation extends Fields
 			// return category view string
 			if (isset($this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###']) && ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###']))
 			{
-				return ",\n\t\t\t".'"com_'.$component.'.'.$otherViews.'" => "'.$otherView.'"';
+				return ",".PHP_EOL."\t\t\t".'"com_'.$component.'.'.$otherViews.'" => "'.$otherView.'"';
 			}
 			else
 			{
-				return "\n\t\t\t".'"com_'.$component.'.'.$otherViews.'" => "'.$otherView.'"';
+				return PHP_EOL."\t\t\t".'"com_'.$component.'.'.$otherViews.'" => "'.$otherView.'"';
 			}
 		}
 		return '';
@@ -9146,7 +9190,8 @@ class Interpretation extends Fields
 			$coreLoad = true;
 		}
 		// check if item has category
-		if(isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list])){
+		if(0) //isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list])) <-- remove category from check
+		{
 			// check if category has another name
 			if ($coreLoad && isset($this->catOtherName[$viewName_list]) && ComponentbuilderHelper::checkArray($this->catOtherName[$viewName_list]))
 			{
@@ -9159,12 +9204,12 @@ class Interpretation extends Fields
 				$otherView = $viewName_single;
 			}
 			// setup the category script
-			$allow[] = "\n\t\t//".$this->setLine(__LINE__)." get the user object";
+			$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." get the user object";
 			$allow[] = "\t\t\$user = JFactory::getUser();";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($otherView,$this->permissionBuilder['global'][$core['core.access']]))
 			{
-				$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Access check.";
+				$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Access check.";
 				$allow[] = "\t\t\$access = \$user->authorise('".$core['core.access']."', 'com_".$component."');";
 				$allow[] = "\t\tif (!\$access)";
 				$allow[] = "\t\t{";
@@ -9173,12 +9218,12 @@ class Interpretation extends Fields
 			}
 			$allow[] = "\t\t\$categoryId = JArrayHelper::getValue(\$data, 'catid', \$this->input->getInt('filter_category_id'), 'int');";
 			$allow[] = "\t\t\$allow = null;";
-			$allow[] = "\n\t\tif (\$categoryId)";
+			$allow[] = PHP_EOL."\t\tif (\$categoryId)";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t//".$this->setLine(__LINE__)." If the category has been passed in the URL check it.";
 			$allow[] = "\t\t\t\$allow = \$user->authorise('core.create', \$this->option . '.".$otherViews.".category.' . \$categoryId);";
 			$allow[] = "\t\t}";
-			$allow[] = "\n\t\tif (\$allow === null)";
+			$allow[] = PHP_EOL."\t\tif (\$allow === null)";
 			$allow[] = "\t\t{";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.create']]))
@@ -9204,7 +9249,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.access']]))
 			{
-				$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Access check.";
+				$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Access check.";
 				$allow[] = "\t\t\$access = JFactory::getUser()->authorise('".$core['core.access']."', 'com_".$component."');";
 				$allow[] = "\t\tif (!\$access)";
 				$allow[] = "\t\t{";
@@ -9225,7 +9270,7 @@ class Interpretation extends Fields
 				$allow[] = "\t\treturn parent::allowAdd(\$data);";
 			}
 		}
-		return implode("\n",$allow);
+		return implode(PHP_EOL,$allow);
 	}
 
 	public function setJcontrollerAllowEdit($viewName_single,$viewName_list)
@@ -9264,14 +9309,14 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($otherView,$this->permissionBuilder['global'][$core['core.access']]))
 			{
-				$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Access check.";
+				$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Access check.";
 				$allow[] = "\t\t\$access = (\$user->authorise('".$core['core.access']."', 'com_".$component.".".$otherView.".' . (int) \$recordId) && \$user->authorise('".$core['core.access']."', 'com_".$component."'));";
 				$allow[] = "\t\tif (!\$access)";
 				$allow[] = "\t\t{";
 				$allow[] = "\t\t\treturn false;";
 				$allow[] = "\t\t}";
 			}
-			$allow[] = "\n\t\tif (\$recordId)";
+			$allow[] = PHP_EOL."\t\tif (\$recordId)";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
 			// check if the item has permissions.
@@ -9301,13 +9346,13 @@ class Interpretation extends Fields
 			$allow[] = "\t\t\t\t\t{";
 			$allow[] = "\t\t\t\t\t\t//".$this->setLine(__LINE__)." Need to do a lookup from the model.";
 			$allow[] = "\t\t\t\t\t\t\$record = \$this->getModel()->getItem(\$recordId);";
-			$allow[] = "\n\t\t\t\t\t\tif (empty(\$record))";
+			$allow[] = PHP_EOL."\t\t\t\t\t\tif (empty(\$record))";
 			$allow[] = "\t\t\t\t\t\t{";
 			$allow[] = "\t\t\t\t\t\t\treturn false;";
 			$allow[] = "\t\t\t\t\t\t}";
 			$allow[] = "\t\t\t\t\t\t\$ownerId = \$record->created_by;";
 			$allow[] = "\t\t\t\t\t}";
-			$allow[] = "\n\t\t\t\t\t//".$this->setLine(__LINE__)." If the owner matches 'me' then do the test.";
+			$allow[] = PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." If the owner matches 'me' then do the test.";
 			$allow[] = "\t\t\t\t\tif (\$ownerId == \$user->id)";
 			$allow[] = "\t\t\t\t\t{";
 			// check if the item has permissions.
@@ -9326,16 +9371,16 @@ class Interpretation extends Fields
 			$allow[] = "\t\t\t\t}";
 			$allow[] = "\t\t\t\treturn false;";
 			$allow[] = "\t\t\t}";
-			$allow[] = "\n\t\t\t\$categoryId = (int) isset(\$data['catid']) ? \$data['catid']: \$this->getModel()->getItem(\$recordId)->catid;";
-			$allow[] = "\n\t\t\tif (\$categoryId)";
-			$allow[] = "\t\t\t{";
-			$allow[] = "\t\t\t\t//".$this->setLine(__LINE__)." The category has been set. Check the category permissions.";
-			$allow[] = "\t\t\t\t\$catpermission = \$user->authorise('core.edit', \$this->option . '.".$otherViews.".category.' . \$categoryId);";
-			$allow[] = "\t\t\t\tif (!\$catpermission && !is_null(\$catpermission))";
-			$allow[] = "\t\t\t\t{";
-			$allow[] = "\t\t\t\t\treturn false;";
-			$allow[] = "\t\t\t\t}";
-			$allow[] = "\t\t\t}";
+//			$allow[] = PHP_EOL."\t\t\t\$categoryId = (int) isset(\$data['catid']) ? \$data['catid']: \$this->getModel()->getItem(\$recordId)->catid;";  <-- remove category from check
+//			$allow[] = PHP_EOL."\t\t\tif (\$categoryId)";
+//			$allow[] = "\t\t\t{";
+//			$allow[] = "\t\t\t\t//".$this->setLine(__LINE__)." The category has been set. Check the category permissions.";
+//			$allow[] = "\t\t\t\t\$catpermission = \$user->authorise('core.edit', \$this->option . '.".$otherView.".category.' . \$categoryId);";
+//			$allow[] = "\t\t\t\tif (!\$catpermission && !is_null(\$catpermission))";
+//			$allow[] = "\t\t\t\t{";
+//			$allow[] = "\t\t\t\t\treturn false;";
+//			$allow[] = "\t\t\t\t}";
+//			$allow[] = "\t\t\t}";
 			$allow[] = "\t\t}";
 			if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($otherView,$this->permissionBuilder['global'][$core['core.edit']]))
 			{
@@ -9351,7 +9396,7 @@ class Interpretation extends Fields
 		else
 		{
 			// setup the category script
-			$allow[] = "\n\t\t//".$this->setLine(__LINE__)." get user object.";
+			$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." get user object.";
 			$allow[] = "\t\t\$user\t\t= JFactory::getUser();";
 			$allow[] = "\t\t//".$this->setLine(__LINE__)." get record id.";
 			$allow[] = "\t\t\$recordId\t= (int) isset(\$data[\$key]) ? \$data[\$key] : 0;";
@@ -9360,14 +9405,14 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder[$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.access']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.access']]))
 			{
-				$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Access check.";
+				$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Access check.";
 				$allow[] = "\t\t\$access = (\$user->authorise('".$core['core.access']."', 'com_".$component.".".$viewName_single.".' . (int) \$recordId) &&  \$user->authorise('".$core['core.access']."', 'com_".$component."'));";
 				$allow[] = "\t\tif (!\$access)";
 				$allow[] = "\t\t{";
 				$allow[] = "\t\t\treturn false;";
 				$allow[] = "\t\t}";
 			}
-			$allow[] = "\n\t\tif (\$recordId)";
+			$allow[] = PHP_EOL."\t\tif (\$recordId)";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
 			// check if the item has permissions.
@@ -9397,13 +9442,13 @@ class Interpretation extends Fields
 			$allow[] = "\t\t\t\t\t{";
 			$allow[] = "\t\t\t\t\t\t//".$this->setLine(__LINE__)." Need to do a lookup from the model.";
 			$allow[] = "\t\t\t\t\t\t\$record = \$this->getModel()->getItem(\$recordId);";
-			$allow[] = "\n\t\t\t\t\t\tif (empty(\$record))";
+			$allow[] = PHP_EOL."\t\t\t\t\t\tif (empty(\$record))";
 			$allow[] = "\t\t\t\t\t\t{";
 			$allow[] = "\t\t\t\t\t\t\treturn false;";
 			$allow[] = "\t\t\t\t\t\t}";
 			$allow[] = "\t\t\t\t\t\t\$ownerId = \$record->created_by;";
 			$allow[] = "\t\t\t\t\t}";
-			$allow[] = "\n\t\t\t\t\t//".$this->setLine(__LINE__)." If the owner matches 'me' then allow.";
+			$allow[] = PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." If the owner matches 'me' then allow.";
 			$allow[] = "\t\t\t\t\tif (\$ownerId == \$user->id)";
 			$allow[] = "\t\t\t\t\t{";
 			// check if the item has permissions.
@@ -9435,7 +9480,7 @@ class Interpretation extends Fields
 			}
 		}
 
-		return implode("\n",$allow);
+		return implode(PHP_EOL,$allow);
 	}
 
 	public function setJmodelAdminGetForm($viewName_single,$viewName_list)
@@ -9444,9 +9489,9 @@ class Interpretation extends Fields
 		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 		// allways load these
 		$allow = array();
-		$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Get the form.";
+		$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the form.";
 		$allow[] = "\t\t\$form = \$this->loadForm('com_".$component.".".$viewName_single."', '".$viewName_single."', array('control' => 'jform', 'load_data' => \$loadData));";
-		$allow[] = "\n\t\tif (empty(\$form))";
+		$allow[] = PHP_EOL."\t\tif (empty(\$form))";
 		$allow[] = "\t\t{";
 		$allow[] = "\t\t\treturn false;";
 		$allow[] = "\t\t}";
@@ -9462,7 +9507,8 @@ class Interpretation extends Fields
 			$core = $this->permissionCore[$viewName_single];
 			$coreLoad = true;
 		}
-		if(isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list])){
+		if(0) //isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list]))  <-- remove category from check
+		{
 			// check if category has another name
 			if ($coreLoad && isset($this->catOtherName[$viewName_list]) && ComponentbuilderHelper::checkArray($this->catOtherName[$viewName_list]))
 			{
@@ -9475,8 +9521,8 @@ class Interpretation extends Fields
 				$otherView = $viewName_single;
 			}
 			// setup the category script
-			$allow[] = "\n\t\t\$jinput = JFactory::getApplication()->input;";
-			$allow[] = "\n\t\t//".$this->setLine(__LINE__)." The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
+			$allow[] = PHP_EOL."\t\t\$jinput = JFactory::getApplication()->input;";
+			$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
 			$allow[] = "\t\tif (\$jinput->get('a_id'))";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t\$id = \$jinput->get('a_id', 0, 'INT');";
@@ -9490,14 +9536,14 @@ class Interpretation extends Fields
 			$allow[] = "\t\tif (\$this->getState('".$viewName_single.".id'))";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t\$id = \$this->getState('".$viewName_single.".id');";
-			$allow[] = "\n\t\t\t\$catid = 0;";
+			$allow[] = PHP_EOL."\t\t\t\$catid = 0;";
 			$allow[] = "\t\t\tif (isset(\$this->getItem(\$id)->catid))";
 			$allow[] = "\t\t\t{";
 			$allow[] = "\t\t\t\t//".$this->setLine(__LINE__)." set catagory id";
 			$allow[] = "\t\t\t\t\$catid = \$this->getItem(\$id)->catid;";
-			$allow[] = "\n\t\t\t\t//".$this->setLine(__LINE__)." Existing record. Can only edit in selected categories.";
+			$allow[] = PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Existing record. Can only edit in selected categories.";
 			$allow[] = "\t\t\t\t\$form->setFieldAttribute('catid', 'action', 'core.edit');";
-			$allow[] = "\n\t\t\t\t//".$this->setLine(__LINE__)." Existing record. Can only edit own items in selected categories.";
+			$allow[] = PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Existing record. Can only edit own items in selected categories.";
 			$allow[] = "\t\t\t\t\$form->setFieldAttribute('catid', 'action', 'core.edit.own');";
 			$allow[] = "\t\t\t}";
 			$allow[] = "\t\t}";
@@ -9506,8 +9552,8 @@ class Interpretation extends Fields
 			$allow[] = "\t\t\t//".$this->setLine(__LINE__)." New record. Can only create in selected categories.";
 			$allow[] = "\t\t\t\$form->setFieldAttribute('catid', 'action', 'core.create');";
 			$allow[] = "\t\t}";
-			$allow[] = "\n\t\t\$user = JFactory::getUser();";
-			$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Check for existing item.";
+			$allow[] = PHP_EOL."\t\t\$user = JFactory::getUser();";
+			$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check for existing item.";
 			$allow[] = "\t\t//".$this->setLine(__LINE__)." Modify the form based on Edit State access controls.";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder[$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.edit.state']]))
@@ -9526,15 +9572,15 @@ class Interpretation extends Fields
 			$allow[] = "\t\t\t//".$this->setLine(__LINE__)." Disable fields for display.";
 			$allow[] = "\t\t\t\$form->setFieldAttribute('ordering', 'disabled', 'true');";
 			$allow[] = "\t\t\t\$form->setFieldAttribute('published', 'disabled', 'true');";
-			$allow[] = "\n\t\t\t//".$this->setLine(__LINE__)." Disable fields while saving.";
+			$allow[] = PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Disable fields while saving.";
 			$allow[] = "\t\t\t\$form->setFieldAttribute('ordering', 'filter', 'unset');";
 			$allow[] = "\t\t\t\$form->setFieldAttribute('published', 'filter', 'unset');";
 			$allow[] = "\t\t}";
 		}
 		else
 		{
-			$allow[] = "\n\t\t\$jinput = JFactory::getApplication()->input;";
-			$allow[] = "\n\t\t//".$this->setLine(__LINE__)." The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
+			$allow[] = PHP_EOL."\t\t\$jinput = JFactory::getApplication()->input;";
+			$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
 			$allow[] = "\t\tif (\$jinput->get('a_id'))";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t\$id = \$jinput->get('a_id', 0, 'INT');";
@@ -9544,8 +9590,8 @@ class Interpretation extends Fields
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t\$id = \$jinput->get('id', 0, 'INT');";
 			$allow[] = "\t\t}";
-			$allow[] = "\n\t\t\$user = JFactory::getUser();";
-			$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Check for existing item.";
+			$allow[] = PHP_EOL."\t\t\$user = JFactory::getUser();";
+			$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check for existing item.";
 			$allow[] = "\t\t//".$this->setLine(__LINE__)." Modify the form based on Edit State access controls.";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder[$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.edit.state']]))
@@ -9653,9 +9699,9 @@ class Interpretation extends Fields
 		$allow[] = "\t\t\t}";
 		$allow[] = "\t\t}";
 		// setup the default script
-		$allow[] = "\n\t\treturn \$form;";
+		$allow[] = PHP_EOL."\t\treturn \$form;";
 
-		return implode("\n",$allow);
+		return implode(PHP_EOL,$allow);
 	}
 
 	public function setJmodelAdminAllowEdit($viewName_single,$viewName_list)
@@ -9664,7 +9710,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 		// prepare custom permission script
-                $customAllow = $this->getCustomScriptBuilder('php_allowedit', $viewName_single, "\t\t\$recordId\t= (int) isset(\$data[\$key]) ? \$data[\$key] : 0;\n");
+                $customAllow = $this->getCustomScriptBuilder('php_allowedit', $viewName_single, "\t\t\$recordId\t= (int) isset(\$data[\$key]) ? \$data[\$key] : 0;".PHP_EOL);
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -9675,7 +9721,7 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder[$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.edit']]))
 		{
-			$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Check specific edit permission then general edit permission.";
+			$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check specific edit permission then general edit permission.";
 			$allow[] = "\t\t\$user = JFactory::getUser();";
 			// load custom permission script
 			$allow[] = $customAllow;
@@ -9683,7 +9729,7 @@ class Interpretation extends Fields
 		}
 		else
 		{
-			$allow[] = "\n\t\t//".$this->setLine(__LINE__)." Check specific edit permission then general edit permission.";
+			$allow[] = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check specific edit permission then general edit permission.";
 			if (ComponentbuilderHelper::checkString($customAllow))
 			{
 				$allow[] = "\t\t\$user = JFactory::getUser();";
@@ -9693,7 +9739,7 @@ class Interpretation extends Fields
 			$allow[] = "\t\treturn JFactory::getUser()->authorise('core.edit', 'com_".$component.".".$viewName_single.".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
 		}
 
-		return implode("\n",$allow);
+		return implode(PHP_EOL,$allow);
 	}
 
 	public function setJmodelAdminCanDelete($viewName_single,$viewName_list)
@@ -9708,7 +9754,8 @@ class Interpretation extends Fields
 			$core = $this->permissionCore[$viewName_single];
 			$coreLoad = true;
 		}
-		if(isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list])){
+		if(0) //isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list]))  <-- remove category from check
+		{
 			// check if category has another name
 			if ($coreLoad && isset($this->catOtherName[$viewName_list]) && ComponentbuilderHelper::checkArray($this->catOtherName[$viewName_list]))
 			{
@@ -9721,18 +9768,18 @@ class Interpretation extends Fields
 				$otherView = $viewName_single;
 			}
 			// setup the category script
-			$allow[] = "\n\t\tif (!empty(\$record->id))";
+			$allow[] = PHP_EOL."\t\tif (!empty(\$record->id))";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\tif (\$record->published != -2)";
 			$allow[] = "\t\t\t{";
 			$allow[] = "\t\t\t\treturn;";
 			$allow[] = "\t\t\t}";
-			$allow[] = "\n\t\t\t\$user = JFactory::getUser();";
+			$allow[] = PHP_EOL."\t\t\t\$user = JFactory::getUser();";
 			$allow[] = "\t\t\t\$allow = \$user->authorise('core.delete', 'com_".$component.".".$otherViews.".category.' . (int) \$record->catid);";
 			// check if the item has permissions.
 			if ($coreLoad && isset($this->permissionBuilder[$core['core.delete']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.delete']]) && in_array($otherView,$this->permissionBuilder[$core['core.delete']]))
 			{
-				$allow[] = "\n\t\t\tif (\$allow)";
+				$allow[] = PHP_EOL."\t\t\tif (\$allow)";
 				$allow[] = "\t\t\t{";
 				$allow[] = "\t\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
 				$allow[] = "\t\t\t\treturn \$user->authorise('".$core['core.delete']."', 'com_".$component.".".$otherView.".' . (int) \$record->id);";
@@ -9740,7 +9787,7 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				$allow[] = "\n\t\t\tif (\$allow)";
+				$allow[] = PHP_EOL."\t\t\tif (\$allow)";
 				$allow[] = "\t\t\t{";
 				$allow[] = "\t\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
 				$allow[] = "\t\t\t\treturn \$user->authorise('core.delete', 'com_".$component.".".$otherView.".' . (int) \$record->id);";
@@ -9753,7 +9800,7 @@ class Interpretation extends Fields
 		else
 		{
 			// setup the default script
-			$allow[] = "\n\t\tif (!empty(\$record->id))";
+			$allow[] = PHP_EOL."\t\tif (!empty(\$record->id))";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\tif (\$record->published != -2)";
 			$allow[] = "\t\t\t{";
@@ -9762,13 +9809,13 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && (isset($core['core.delete']) && isset($this->permissionBuilder[$core['core.delete']])) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.delete']]) && in_array($viewName_single,$this->permissionBuilder[$core['core.delete']]))
 			{
-				$allow[] = "\n\t\t\t\$user = JFactory::getUser();";
+				$allow[] = PHP_EOL."\t\t\t\$user = JFactory::getUser();";
 				$allow[] = "\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
 				$allow[] = "\t\t\treturn \$user->authorise('".$core['core.delete']."', 'com_".$component.".".$viewName_single.".' . (int) \$record->id);";
 			}
 			else
 			{
-				$allow[] = "\n\t\t\t\$user = JFactory::getUser();";
+				$allow[] = PHP_EOL."\t\t\t\$user = JFactory::getUser();";
 				$allow[] = "\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
 				$allow[] = "\t\t\treturn \$user->authorise('core.delete', 'com_".$component.".".$viewName_single.".' . (int) \$record->id);";
 			}
@@ -9776,7 +9823,7 @@ class Interpretation extends Fields
 			$allow[] = "\t\treturn false;";
 		}
 
-		return implode("\n",$allow);
+		return implode(PHP_EOL,$allow);
 	}
 
 	public function setJmodelAdminCanEditState($viewName_single,$viewName_list)
@@ -9791,7 +9838,8 @@ class Interpretation extends Fields
 			$core = $this->permissionCore[$viewName_single];
 			$coreLoad = true;
 		}
-		if(isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list])){
+		if(0) // isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list]))  <-- remove category from check
+		{
 			// check if category has another name
 			if (isset($this->catOtherName[$viewName_list]) && ComponentbuilderHelper::checkArray($this->catOtherName[$viewName_list]))
 			{
@@ -9803,9 +9851,9 @@ class Interpretation extends Fields
 				$otherViews = $viewName_list;
 				$otherView = $viewName_single;
 			}
-			$allow[] = "\n\t\t\$user = JFactory::getUser();";
+			$allow[] = PHP_EOL."\t\t\$user = JFactory::getUser();";
 			$allow[] = "\t\t\$recordId\t= (!empty(\$record->id)) ? \$record->id : 0;";
-			$allow[] = "\n\t\tif (\$recordId)";
+			$allow[] = PHP_EOL."\t\tif (\$recordId)";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
 			// check if the item has permissions.
@@ -9846,9 +9894,9 @@ class Interpretation extends Fields
 		else
 		{
 			// setup the default script
-			$allow[] = "\n\t\t\$user = JFactory::getUser();";
+			$allow[] = PHP_EOL."\t\t\$user = JFactory::getUser();";
 			$allow[] = "\t\t\$recordId\t= (!empty(\$record->id)) ? \$record->id : 0;";
-			$allow[] = "\n\t\tif (\$recordId)";
+			$allow[] = PHP_EOL."\t\tif (\$recordId)";
 			$allow[] = "\t\t{";
 			$allow[] = "\t\t\t//".$this->setLine(__LINE__)." The record has been set. Check the record permissions.";
 			// check if the item has permissions.
@@ -9876,7 +9924,7 @@ class Interpretation extends Fields
 				$allow[] = "\t\treturn parent::canEditState(\$record);";
 			}
 		}
-		return implode("\n",$allow);
+		return implode(PHP_EOL,$allow);
 	}
 
 
@@ -9896,11 +9944,11 @@ class Interpretation extends Fields
 		// check if the item has permissions for edit.
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit']]))
 		{
-			$allow[] = "\n\t\t\$this->canEdit\t\t= \$this->canDo->get('".$core['core.edit']."');";
+			$allow[] = PHP_EOL."\t\t\$this->canEdit\t\t= \$this->canDo->get('".$core['core.edit']."');";
 		}
 		else
 		{
-			$allow[] = "\n\t\t\$this->canEdit\t\t= \$this->canDo->get('core.edit');";
+			$allow[] = PHP_EOL."\t\t\$this->canEdit\t\t= \$this->canDo->get('core.edit');";
 		}
 		// check if the item has permissions for edit state.
 		if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single,$this->permissionBuilder['global'][$core['core.edit.state']]))
@@ -9939,7 +9987,7 @@ class Interpretation extends Fields
 			$allow[] = "\t\t\$this->canBatch\t= \$this->canDo->get('core.batch');";
 		}
 
-		return implode("\n",$allow);
+		return implode(PHP_EOL,$allow);
 	}
 
 	public function setFieldSetAccessControl(&$view)
@@ -9953,26 +10001,26 @@ class Interpretation extends Fields
 			$label = 'Permissions in relation to this '.$view;
 			// set the access fieldset
 			$access = "<!--".$this->setLine(__LINE__)." Access Control Fields. -->";
-			$access .= "\n\t".'<fieldset name="accesscontrol">';
-			$access .= "\n\t\t<!--".$this->setLine(__LINE__)." Asset Id Field. Type: Hidden (joomla) -->";
-			$access .= "\n\t\t".'<field';
-			$access .= "\n\t\t\t".'name="asset_id"';
-			$access .= "\n\t\t\t".'type="hidden"';
-			$access .= "\n\t\t\t".'filter="unset"';
-			$access .= "\n\t\t".'/>';
-			$access .= "\n\t\t<!--".$this->setLine(__LINE__)." Rules Field. Type: Rules (joomla) -->";
-			$access .= "\n\t\t".'<field';
-			$access .= "\n\t\t\t".'name="rules"';
-			$access .= "\n\t\t\t".'type="rules"';
-			$access .= "\n\t\t\t".'label="'.$label.'"';
-			$access .= "\n\t\t\t".'translate_label="false"';
-			$access .= "\n\t\t\t".'filter="rules"';
-			$access .= "\n\t\t\t".'validate="rules"';
-			$access .= "\n\t\t\t".'class="inputbox"';
-			$access .= "\n\t\t\t".'component="com_'.$component.'"';
-			$access .= "\n\t\t\t".'section="'.$view.'"';
-			$access .= "\n\t\t".'/>';
-			$access .= "\n\t".'</fieldset>';
+			$access .= PHP_EOL."\t".'<fieldset name="accesscontrol">';
+			$access .= PHP_EOL."\t\t<!--".$this->setLine(__LINE__)." Asset Id Field. Type: Hidden (joomla) -->";
+			$access .= PHP_EOL."\t\t".'<field';
+			$access .= PHP_EOL."\t\t\t".'name="asset_id"';
+			$access .= PHP_EOL."\t\t\t".'type="hidden"';
+			$access .= PHP_EOL."\t\t\t".'filter="unset"';
+			$access .= PHP_EOL."\t\t".'/>';
+			$access .= PHP_EOL."\t\t<!--".$this->setLine(__LINE__)." Rules Field. Type: Rules (joomla) -->";
+			$access .= PHP_EOL."\t\t".'<field';
+			$access .= PHP_EOL."\t\t\t".'name="rules"';
+			$access .= PHP_EOL."\t\t\t".'type="rules"';
+			$access .= PHP_EOL."\t\t\t".'label="'.$label.'"';
+			$access .= PHP_EOL."\t\t\t".'translate_label="false"';
+			$access .= PHP_EOL."\t\t\t".'filter="rules"';
+			$access .= PHP_EOL."\t\t\t".'validate="rules"';
+			$access .= PHP_EOL."\t\t\t".'class="inputbox"';
+			$access .= PHP_EOL."\t\t\t".'component="com_'.$component.'"';
+			$access .= PHP_EOL."\t\t\t".'section="'.$view.'"';
+			$access .= PHP_EOL."\t\t".'/>';
+			$access .= PHP_EOL."\t".'</fieldset>';
 		}
 		// return access field set
 		return $access;
@@ -9984,14 +10032,14 @@ class Interpretation extends Fields
 		$donelist = array('id','search','published','access','created_by','modified_by');
 		// default filter fields
 		$fields = "'a.id','id'";
-		$fields .= ",\n\t\t\t\t'a.published','published'";
+		$fields .= ",".PHP_EOL."\t\t\t\t'a.published','published'";
 		if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 		{
-			$fields .= ",\n\t\t\t\t'a.access','access'";
+			$fields .= ",".PHP_EOL."\t\t\t\t'a.access','access'";
 		}
-		$fields .= ",\n\t\t\t\t'a.ordering','ordering'";
-		$fields .= ",\n\t\t\t\t'a.created_by','created_by'";
-		$fields .= ",\n\t\t\t\t'a.modified_by','modified_by'";
+		$fields .= ",".PHP_EOL."\t\t\t\t'a.ordering','ordering'";
+		$fields .= ",".PHP_EOL."\t\t\t\t'a.created_by','created_by'";
+		$fields .= ",".PHP_EOL."\t\t\t\t'a.modified_by','modified_by'";
 
 		// add the rest of the set filters
 		if (isset($this->sortBuilder[$view]) && ComponentbuilderHelper::checkArray($this->sortBuilder[$view]))
@@ -10002,11 +10050,11 @@ class Interpretation extends Fields
 				{
 					if ($filter['type'] === 'category')
 					{
-						$fields .= ",\n\t\t\t\t'c.title','category_title'";
-						$fields .= ",\n\t\t\t\t'c.id', 'category_id'";
+						$fields .= ",".PHP_EOL."\t\t\t\t'c.title','category_title'";
+						$fields .= ",".PHP_EOL."\t\t\t\t'c.id', 'category_id'";
 						if ($filter['code'] != 'category')
 						{
-							$fields .= ",\n\t\t\t\t'a.".$filter['code']."', '".$filter['code']."'";
+							$fields .= ",".PHP_EOL."\t\t\t\t'a.".$filter['code']."', '".$filter['code']."'";
 						}
 					}
 					else
@@ -10014,9 +10062,9 @@ class Interpretation extends Fields
 						// check if custom field is set
 						/*if (ComponentbuilderHelper::checkArray($filter['custom']))
 						{
-							$fields .= ",\n\t\t\t\t'".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'";
+							$fields .= ",".PHP_EOL."\t\t\t\t'".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'";
 						}*/
-						$fields .= ",\n\t\t\t\t'a.".$filter['code']."','".$filter['code']."'";
+						$fields .= ",".PHP_EOL."\t\t\t\t'a.".$filter['code']."','".$filter['code']."'";
 					}
 					$donelist[] = $filter['code'];
 				}
@@ -10031,11 +10079,11 @@ class Interpretation extends Fields
 				{
 					if ($filter['type'] === 'category')
 					{
-						$fields .= ",\n\t\t\t\t'c.title','category_title'";
-						$fields .= ",\n\t\t\t\t'c.id', 'category_id'";
+						$fields .= ",".PHP_EOL."\t\t\t\t'c.title','category_title'";
+						$fields .= ",".PHP_EOL."\t\t\t\t'c.id', 'category_id'";
 						if ($filter['code'] != 'category')
 						{
-							$fields .= ",\n\t\t\t\t'a.".$filter['code']."', '".$filter['code']."'";
+							$fields .= ",".PHP_EOL."\t\t\t\t'a.".$filter['code']."', '".$filter['code']."'";
 						}
 					}
 					else
@@ -10043,9 +10091,9 @@ class Interpretation extends Fields
 						// check if custom field is set
 						/*if (ComponentbuilderHelper::checkArray($filter['custom']))
 						{
-							$fields .= ",\n\t\t\t\t'".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'";
+							$fields .= ",".PHP_EOL."\t\t\t\t'".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'";
 						}*/
-						$fields .= ",\n\t\t\t\t'a.".$filter['code']."','".$filter['code']."'";
+						$fields .= ",".PHP_EOL."\t\t\t\t'a.".$filter['code']."','".$filter['code']."'";
 					}
 					$donelist[] = $filter['code'];
 				}
@@ -10060,16 +10108,16 @@ class Interpretation extends Fields
 		$donelist = array('id','search','published','access','created_by','modified_by');
 		// set the defaults first
 		$stored = "//".$this->setLine(__LINE__)." Compile the store id.";
-		$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.id');";
-		$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.search');";
-		$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.published');";
+		$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.id');";
+		$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.search');";
+		$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.published');";
 		if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 		{
-			$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.access');";
+			$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.access');";
 		}
-		$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.ordering');";
-		$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.created_by');";
-		$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.modified_by');";
+		$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.ordering');";
+		$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.created_by');";
+		$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.modified_by');";
 		// add the rest of the set filters
 		if (isset($this->sortBuilder[$view]) && ComponentbuilderHelper::checkArray($this->sortBuilder[$view]))
 		{
@@ -10079,11 +10127,11 @@ class Interpretation extends Fields
 				{
 					if ($filter['type'] === 'category')
 					{
-						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.category');";
-						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.category_id');";
+						$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.category');";
+						$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.category_id');";
 						if ($filter['code'] != 'category')
 						{
-							$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."');";
+							$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."');";
 						}
 					}
 					else
@@ -10091,9 +10139,9 @@ class Interpretation extends Fields
 						// check if custom field is set
 						/*if (ComponentbuilderHelper::checkArray($filter['custom']))
 						{
-							$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."_".$filter['custom']['text']."');";
+							$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."_".$filter['custom']['text']."');";
 						}*/
-						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."');";
+						$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."');";
 					}
 					$donelist[] = $filter['code'];
 				}
@@ -10108,11 +10156,11 @@ class Interpretation extends Fields
 				{
 					if ($filter['type'] === 'category')
 					{
-						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.category');";
-						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.category_id');";
+						$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.category');";
+						$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.category_id');";
 						if ($filter['code'] != 'category')
 						{
-							$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."');";
+							$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."');";
 						}
 					}
 					else
@@ -10120,9 +10168,9 @@ class Interpretation extends Fields
 						// check if custom field is set
 						/*if (ComponentbuilderHelper::checkArray($filter['custom']))
 						{
-							$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."_".$filter['custom']['text']."');";
+							$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."_".$filter['custom']['text']."');";
 						}*/
-						$stored .= "\n\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."');";
+						$stored .= PHP_EOL."\t\t\$id .= ':' . \$this->getState('filter.".$filter['code']."');";
 					}
 					$donelist[] = $filter['code'];
 				}
@@ -10152,8 +10200,8 @@ class Interpretation extends Fields
 
 			// build toolbar
 			$toolBar = "JFactory::getApplication()->input->set('hidemainmenu', true);";
-			$toolBar .= "\n\t\tJToolBarHelper::title(JText::_('".$viewNameLang_readonly."'), '".$viewName."');";
-			$toolBar .= "\n\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CLOSE');";
+			$toolBar .= PHP_EOL."\t\tJToolBarHelper::title(JText::_('".$viewNameLang_readonly."'), '".$viewName."');";
+			$toolBar .= PHP_EOL."\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CLOSE');";
 		}
 		else
 		{
@@ -10165,141 +10213,141 @@ class Interpretation extends Fields
 			$this->langContent[$this->lang][$viewNameLang_edit] = 'Editing the '.$view['settings']->name_single;
 			// build toolbar
 			$toolBar = "JFactory::getApplication()->input->set('hidemainmenu', true);";
-			$toolBar .= "\n\t\t\$user = JFactory::getUser();";
-			$toolBar .= "\n\t\t\$userId	= \$user->id;";
-			$toolBar .= "\n\t\t\$isNew = \$this->item->id == 0;";
-			$toolBar .= "\n\n\t\tJToolbarHelper::title( JText::_(\$isNew ? '".$viewNameLang_new."' : '".$viewNameLang_edit."'), 'pencil-2 article-add');";
-			$toolBar .= "\n\t\t//".$this->setLine(__LINE__)." Built the actions for new and existing records.";
-			$toolBar .= "\n\t\tif (\$this->refid || \$this->ref)";
-			$toolBar .= "\n\t\t{";
+			$toolBar .= PHP_EOL."\t\t\$user = JFactory::getUser();";
+			$toolBar .= PHP_EOL."\t\t\$userId	= \$user->id;";
+			$toolBar .= PHP_EOL."\t\t\$isNew = \$this->item->id == 0;";
+			$toolBar .= PHP_EOL.PHP_EOL."\t\tJToolbarHelper::title( JText::_(\$isNew ? '".$viewNameLang_new."' : '".$viewNameLang_edit."'), 'pencil-2 article-add');";
+			$toolBar .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Built the actions for new and existing records.";
+			$toolBar .= PHP_EOL."\t\tif (\$this->refid || \$this->ref)";
+			$toolBar .= PHP_EOL."\t\t{";
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.create']]))
 			{
-				$toolBar .= "\n\t\t\tif (\$this->canDo->get('".$core['core.create']."') && \$isNew)";
+				$toolBar .= PHP_EOL."\t\t\tif (\$this->canDo->get('".$core['core.create']."') && \$isNew)";
 			}
 			else
 			{
-				$toolBar .= "\n\t\t\tif (\$this->canDo->get('core.create') && \$isNew)";
+				$toolBar .= PHP_EOL."\t\t\tif (\$this->canDo->get('core.create') && \$isNew)";
 			}
-			$toolBar .= "\n\t\t\t{";
-			$toolBar .= "\n\t\t\t\t//".$this->setLine(__LINE__)." We can create the record.";
-			$toolBar .= "\n\t\t\t\tJToolBarHelper::save('".$viewName.".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= "\n\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." We can create the record.";
+			$toolBar .= PHP_EOL."\t\t\t\tJToolBarHelper::save('".$viewName.".save', 'JTOOLBAR_SAVE');";
+			$toolBar .= PHP_EOL."\t\t\t}";
 			if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.edit']]))
 			{
-				$toolBar .= "\n\t\t\telseif (\$this->canDo->get('".$core['core.edit']."'))";
+				$toolBar .= PHP_EOL."\t\t\telseif (\$this->canDo->get('".$core['core.edit']."'))";
 			}
 			else
 			{
-				$toolBar .= "\n\t\t\telseif (\$this->canDo->get('core.edit'))";
+				$toolBar .= PHP_EOL."\t\t\telseif (\$this->canDo->get('core.edit'))";
 			}
-			$toolBar .= "\n\t\t\t{";
-			$toolBar .= "\n\t\t\t\t//".$this->setLine(__LINE__)." We can save the record.";
-			$toolBar .= "\n\t\t\t\tJToolBarHelper::save('".$viewName.".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= "\n\t\t\t}";
-			$toolBar .= "\n\t\t\tif (\$isNew)";
-			$toolBar .= "\n\t\t\t{";
-			$toolBar .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Do not creat but cancel.";
-			$toolBar .= "\n\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CANCEL');";
-			$toolBar .= "\n\t\t\t}";
-			$toolBar .= "\n\t\t\telse";
-			$toolBar .= "\n\t\t\t{";
-			$toolBar .= "\n\t\t\t\t//".$this->setLine(__LINE__)." We can close it.";
-			$toolBar .= "\n\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CLOSE');";
-			$toolBar .= "\n\t\t\t}";
-			$toolBar .= "\n\t\t}";
-			$toolBar .= "\n\t\telse";
-			$toolBar .= "\n\t\t{";
-			$toolBar .= "\n\t\t\tif (\$isNew)";
-			$toolBar .= "\n\t\t\t{";
-			$toolBar .= "\n\t\t\t\t//".$this->setLine(__LINE__)." For new records, check the create permission.";
+			$toolBar .= PHP_EOL."\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." We can save the record.";
+			$toolBar .= PHP_EOL."\t\t\t\tJToolBarHelper::save('".$viewName.".save', 'JTOOLBAR_SAVE');";
+			$toolBar .= PHP_EOL."\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t\tif (\$isNew)";
+			$toolBar .= PHP_EOL."\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Do not creat but cancel.";
+			$toolBar .= PHP_EOL."\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CANCEL');";
+			$toolBar .= PHP_EOL."\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t\telse";
+			$toolBar .= PHP_EOL."\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." We can close it.";
+			$toolBar .= PHP_EOL."\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CLOSE');";
+			$toolBar .= PHP_EOL."\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t}";
+			$toolBar .= PHP_EOL."\t\telse";
+			$toolBar .= PHP_EOL."\t\t{";
+			$toolBar .= PHP_EOL."\t\t\tif (\$isNew)";
+			$toolBar .= PHP_EOL."\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." For new records, check the create permission.";
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.create']]))
 			{
-				$toolBar .= "\n\t\t\t\tif (\$this->canDo->get('".$core['core.create']."'))";
+				$toolBar .= PHP_EOL."\t\t\t\tif (\$this->canDo->get('".$core['core.create']."'))";
 			}
 			else
 			{
-				$toolBar .= "\n\t\t\t\tif (\$this->canDo->get('core.create'))";
+				$toolBar .= PHP_EOL."\t\t\t\tif (\$this->canDo->get('core.create'))";
 			}
-			$toolBar .= "\n\t\t\t\t{";
-			$toolBar .= "\n\t\t\t\t\tJToolBarHelper::apply('".$viewName.".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= "\n\t\t\t\t\tJToolBarHelper::save('".$viewName.".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= "\n\t\t\t\t\tJToolBarHelper::custom('".$viewName.".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
-			$toolBar .= "\n\t\t\t\t};";
-			$toolBar .= "\n\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CANCEL');";
-			$toolBar .= "\n\t\t\t}";
-			$toolBar .= "\n\t\t\telse";
-			$toolBar .= "\n\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t\tJToolBarHelper::apply('".$viewName.".apply', 'JTOOLBAR_APPLY');";
+			$toolBar .= PHP_EOL."\t\t\t\t\tJToolBarHelper::save('".$viewName.".save', 'JTOOLBAR_SAVE');";
+			$toolBar .= PHP_EOL."\t\t\t\t\tJToolBarHelper::custom('".$viewName.".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
+			$toolBar .= PHP_EOL."\t\t\t\t};";
+			$toolBar .= PHP_EOL."\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CANCEL');";
+			$toolBar .= PHP_EOL."\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t\telse";
+			$toolBar .= PHP_EOL."\t\t\t{";
 			if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.edit']]))
 			{
-				$toolBar .= "\n\t\t\t\tif (\$this->canDo->get('".$core['core.edit']."'))";
+				$toolBar .= PHP_EOL."\t\t\t\tif (\$this->canDo->get('".$core['core.edit']."'))";
 			}
 			else
 			{
-				$toolBar .= "\n\t\t\t\tif (\$this->canDo->get('core.edit'))";
+				$toolBar .= PHP_EOL."\t\t\t\tif (\$this->canDo->get('core.edit'))";
 			}
-			$toolBar .= "\n\t\t\t\t{";
-			$toolBar .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." We can save the new record";
-			$toolBar .= "\n\t\t\t\t\tJToolBarHelper::apply('".$viewName.".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= "\n\t\t\t\t\tJToolBarHelper::save('".$viewName.".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." We can save this record, but check the create permission to see";
-			$toolBar .= "\n\t\t\t\t\t//".$this->setLine(__LINE__)." if we can return to make a new one.";
+			$toolBar .= PHP_EOL."\t\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." We can save the new record";
+			$toolBar .= PHP_EOL."\t\t\t\t\tJToolBarHelper::apply('".$viewName.".apply', 'JTOOLBAR_APPLY');";
+			$toolBar .= PHP_EOL."\t\t\t\t\tJToolBarHelper::save('".$viewName.".save', 'JTOOLBAR_SAVE');";
+			$toolBar .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." We can save this record, but check the create permission to see";
+			$toolBar .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." if we can return to make a new one.";
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.create']]))
 			{
-				$toolBar .= "\n\t\t\t\t\tif (\$this->canDo->get('".$core['core.create']."'))";
+				$toolBar .= PHP_EOL."\t\t\t\t\tif (\$this->canDo->get('".$core['core.create']."'))";
 			}
 			else
 			{
-				$toolBar .= "\n\t\t\t\t\tif (\$this->canDo->get('core.create'))";
+				$toolBar .= PHP_EOL."\t\t\t\t\tif (\$this->canDo->get('core.create'))";
 			}
-			$toolBar .= "\n\t\t\t\t\t{";
-			$toolBar .= "\n\t\t\t\t\t\tJToolBarHelper::custom('".$viewName.".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
-			$toolBar .= "\n\t\t\t\t\t}";
-			$toolBar .= "\n\t\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t\t\tJToolBarHelper::custom('".$viewName.".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
+			$toolBar .= PHP_EOL."\t\t\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t\t\t}";
                         if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.edit']]))
                         {
                                 if ($coreLoad && isset($this->historyBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->historyBuilder[$viewName]))
                                 {
-                                        $toolBar .= "\n\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('".$core['core.version']."'));";
-                                        $toolBar .= "\n\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('".$core['core.edit']."') && \$canVersion)";
-                                        $toolBar .= "\n\t\t\t\t{";
-                                        $toolBar .= "\n\t\t\t\t\tJToolbarHelper::versions('com_".$this->fileContentStatic['###component###'].".".$viewName."', \$this->item->id);";
-                                        $toolBar .= "\n\t\t\t\t}";
+                                        $toolBar .= PHP_EOL."\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('".$core['core.version']."'));";
+                                        $toolBar .= PHP_EOL."\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('".$core['core.edit']."') && \$canVersion)";
+                                        $toolBar .= PHP_EOL."\t\t\t\t{";
+                                        $toolBar .= PHP_EOL."\t\t\t\t\tJToolbarHelper::versions('com_".$this->fileContentStatic['###component###'].".".$viewName."', \$this->item->id);";
+                                        $toolBar .= PHP_EOL."\t\t\t\t}";
                                 }
                         }
                         else
                         {                                
                                 if ($coreLoad && isset($this->historyBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->historyBuilder[$viewName]))
                                 {
-                                        $toolBar .= "\n\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('".$core['core.version']."'));";
-                                        $toolBar .= "\n\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('core.edit') && \$canVersion)";
-                                        $toolBar .= "\n\t\t\t\t{";
-                                        $toolBar .= "\n\t\t\t\t\tJToolbarHelper::versions('com_".$this->fileContentStatic['###component###'].".".$viewName."', \$this->item->id);";
-                                        $toolBar .= "\n\t\t\t\t}";
+                                        $toolBar .= PHP_EOL."\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('".$core['core.version']."'));";
+                                        $toolBar .= PHP_EOL."\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('core.edit') && \$canVersion)";
+                                        $toolBar .= PHP_EOL."\t\t\t\t{";
+                                        $toolBar .= PHP_EOL."\t\t\t\t\tJToolbarHelper::versions('com_".$this->fileContentStatic['###component###'].".".$viewName."', \$this->item->id);";
+                                        $toolBar .= PHP_EOL."\t\t\t\t}";
                                 }
                         }
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName,$this->permissionBuilder['global'][$core['core.create']]))
 			{
-				$toolBar .= "\n\t\t\t\tif (\$this->canDo->get('".$core['core.create']."'))";
+				$toolBar .= PHP_EOL."\t\t\t\tif (\$this->canDo->get('".$core['core.create']."'))";
 			}
 			else
 			{
-				$toolBar .= "\n\t\t\t\tif (\$this->canDo->get('core.create'))";
+				$toolBar .= PHP_EOL."\t\t\t\tif (\$this->canDo->get('core.create'))";
 			}
-			$toolBar .= "\n\t\t\t\t{";
-			$toolBar .= "\n\t\t\t\t\tJToolBarHelper::custom('".$viewName.".save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);";
-			$toolBar .= "\n\t\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t\t\t{";
+			$toolBar .= PHP_EOL."\t\t\t\t\tJToolBarHelper::custom('".$viewName.".save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);";
+			$toolBar .= PHP_EOL."\t\t\t\t}";
                         // add custom buttons
                         $toolBar .= $this->setCustomButtons($view, 2, "\t\t");
-			$toolBar .= "\n\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CLOSE');";
-			$toolBar .= "\n\t\t\t}";
-			$toolBar .= "\n\t\t}";
-			$toolBar .= "\n\t\tJToolbarHelper::divider();";
-			$toolBar .= "\n\t\t//".$this->setLine(__LINE__)." set help url for this view if found";
-			$toolBar .= "\n\t\t\$help_url = ".$this->fileContentStatic['###Component###']."Helper::getHelpUrl('".$viewName."');";
-			$toolBar .= "\n\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkString(\$help_url))";
-			$toolBar .= "\n\t\t{";
-			$toolBar .= "\n\t\t\tJToolbarHelper::help('".$this->langPrefix."_HELP_MANAGER', false, \$help_url);";
-			$toolBar .= "\n\t\t}";
+			$toolBar .= PHP_EOL."\t\t\t\tJToolBarHelper::cancel('".$viewName.".cancel', 'JTOOLBAR_CLOSE');";
+			$toolBar .= PHP_EOL."\t\t\t}";
+			$toolBar .= PHP_EOL."\t\t}";
+			$toolBar .= PHP_EOL."\t\tJToolbarHelper::divider();";
+			$toolBar .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." set help url for this view if found";
+			$toolBar .= PHP_EOL."\t\t\$help_url = ".$this->fileContentStatic['###Component###']."Helper::getHelpUrl('".$viewName."');";
+			$toolBar .= PHP_EOL."\t\tif (".$this->fileContentStatic['###Component###']."Helper::checkString(\$help_url))";
+			$toolBar .= PHP_EOL."\t\t{";
+			$toolBar .= PHP_EOL."\t\t\tJToolbarHelper::help('".$this->langPrefix."_HELP_MANAGER', false, \$help_url);";
+			$toolBar .= PHP_EOL."\t\t}";
 		}
 		return $toolBar;
 	}
@@ -10326,16 +10374,16 @@ class Interpretation extends Fields
 						}
 						else
 						{
-							$spacer = "\n\n\t\t";
+							$spacer = PHP_EOL.PHP_EOL."\t\t";
 						}
 						$state .= $spacer."\$category = \$app->getUserStateFromRequest(\$this->context . '.filter.category', 'filter_category');";
-						$state .= "\n\t\t\$this->setState('filter.category', \$category);";
-						$state .= "\n\n\t\t\$categoryId = \$this->getUserStateFromRequest(\$this->context . '.filter.category_id', 'filter_category_id');";
-						$state .= "\n\t\t\$this->setState('filter.category_id', \$categoryId);";
+						$state .= PHP_EOL."\t\t\$this->setState('filter.category', \$category);";
+						$state .= PHP_EOL.PHP_EOL."\t\t\$categoryId = \$this->getUserStateFromRequest(\$this->context . '.filter.category_id', 'filter_category_id');";
+						$state .= PHP_EOL."\t\t\$this->setState('filter.category_id', \$categoryId);";
 						if ($filter['code'] != 'category')
 						{
-							$state .= "\n\n\t\t\$".$filter['code']." = \$app->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."', 'filter_".$filter['code']."');";
-							$state .= "\n\t\t\$this->setState('filter.".$filter['code']."', \$".$filter['code'].");";
+							$state .= PHP_EOL.PHP_EOL."\t\t\$".$filter['code']." = \$app->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."', 'filter_".$filter['code']."');";
+							$state .= PHP_EOL."\t\t\$this->setState('filter.".$filter['code']."', \$".$filter['code'].");";
 						}
 					}
 					else
@@ -10346,17 +10394,17 @@ class Interpretation extends Fields
 						}
 						else
 						{
-							$spacer = "\n\n\t\t";
+							$spacer = PHP_EOL.PHP_EOL."\t\t";
 						}
 						// check if custom field is set
 						/*if (ComponentbuilderHelper::checkArray($filter['custom']))
 						{
 							$state .= $spacer."\$".$filter['code']."_".$filter['custom']['text']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."_".$filter['custom']['text']."', 'filter_".$filter['code']."_".$filter['custom']['text']."');";
-							$state .= "\n\t\t\$this->setState('filter.".$filter['code']."_".$filter['custom']['text']."', \$".$filter['code']."_".$filter['custom']['text'].");";
-							$spacer = "\n\n\t\t";
+							$state .= PHP_EOL."\t\t\$this->setState('filter.".$filter['code']."_".$filter['custom']['text']."', \$".$filter['code']."_".$filter['custom']['text'].");";
+							$spacer = PHP_EOL.PHP_EOL."\t\t";
 						}*/
 						$state .= $spacer."\$".$filter['code']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."', 'filter_".$filter['code']."');";
-						$state .= "\n\t\t\$this->setState('filter.".$filter['code']."', \$".$filter['code'].");";
+						$state .= PHP_EOL."\t\t\$this->setState('filter.".$filter['code']."', \$".$filter['code'].");";
 					}
 					$donelist[] = $filter['code'];
 				}
@@ -10377,16 +10425,16 @@ class Interpretation extends Fields
 						}
 						else
 						{
-							$spacer = "\n\n\t\t";
+							$spacer = PHP_EOL.PHP_EOL."\t\t";
 						}
 						$state .= $spacer."\$category = \$app->getUserStateFromRequest(\$this->context . '.filter.category', 'filter_category');";
-						$state .= "\n\t\t\$this->setState('filter.category', \$category);";
-						$state .= "\n\n\t\t\$categoryId = \$this->getUserStateFromRequest(\$this->context . '.filter.category_id', 'filter_category_id');";
-						$state .= "\n\t\t\$this->setState('filter.category_id', \$categoryId);";
+						$state .= PHP_EOL."\t\t\$this->setState('filter.category', \$category);";
+						$state .= PHP_EOL.PHP_EOL."\t\t\$categoryId = \$this->getUserStateFromRequest(\$this->context . '.filter.category_id', 'filter_category_id');";
+						$state .= PHP_EOL."\t\t\$this->setState('filter.category_id', \$categoryId);";
 						if ($filter['code'] != 'category')
 						{
-							$state .= "\n\n\t\t\$".$filter['code']." = \$app->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."', 'filter_".$filter['code']."');";
-							$state .= "\n\t\t\$this->setState('filter.".$filter['code']."', \$".$filter['code'].");";
+							$state .= PHP_EOL.PHP_EOL."\t\t\$".$filter['code']." = \$app->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."', 'filter_".$filter['code']."');";
+							$state .= PHP_EOL."\t\t\$this->setState('filter.".$filter['code']."', \$".$filter['code'].");";
 						}
 					}
 					else
@@ -10397,19 +10445,19 @@ class Interpretation extends Fields
 						}
 						else
 						{
-							$spacer = "\n\n\t\t";
+							$spacer = PHP_EOL.PHP_EOL."\t\t";
 						}
 						// check if custom field is set
 						/*if (ComponentbuilderHelper::checkArray($filter['custom']))
 						{
 							$state .= $spacer."\$".$filter['custom']['text']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['custom']['text']."', 'filter_".$filter['custom']['text']."');";
-							$state .= "\n\t\t\$this->setState('filter.".$filter['custom']['text']."', \$".$filter['custom']['text'].");";
-							$state .= "\n\t\t\$".$filter['code']."_".$filter['custom']['text']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."_".$filter['custom']['text']."', 'filter_".$filter['code']."_".$filter['custom']['text']."');";
-							$state .= "\n\t\t\$this->setState('filter.".$filter['code']."_".$filter['custom']['text']."', \$".$filter['code']."_".$filter['custom']['text'].");";
-							$spacer = "\n\n\t\t";
+							$state .= PHP_EOL."\t\t\$this->setState('filter.".$filter['custom']['text']."', \$".$filter['custom']['text'].");";
+							$state .= PHP_EOL."\t\t\$".$filter['code']."_".$filter['custom']['text']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."_".$filter['custom']['text']."', 'filter_".$filter['code']."_".$filter['custom']['text']."');";
+							$state .= PHP_EOL."\t\t\$this->setState('filter.".$filter['code']."_".$filter['custom']['text']."', \$".$filter['code']."_".$filter['custom']['text'].");";
+							$spacer = PHP_EOL.PHP_EOL."\t\t";
 						}*/
 						$state .= $spacer."\$".$filter['code']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."', 'filter_".$filter['code']."');";
-						$state .= "\n\t\t\$this->setState('filter.".$filter['code']."', \$".$filter['code'].");";
+						$state .= PHP_EOL."\t\t\$this->setState('filter.".$filter['code']."', \$".$filter['code'].");";
 					}
 					$donelist[] = $filter['code'];
 				}
@@ -10424,8 +10472,8 @@ class Interpretation extends Fields
 		$donelist = array('sorting','published');
 		// set the default first
 		$fields = "return array(";
-		$fields .= "\n\t\t\t'a.sorting' => JText::_('JGRID_HEADING_ORDERING')";
-		$fields .= ",\n\t\t\t'a.published' => JText::_('JSTATUS')";
+		$fields .= PHP_EOL."\t\t\t'a.sorting' => JText::_('JGRID_HEADING_ORDERING')";
+		$fields .= ",".PHP_EOL."\t\t\t'a.published' => JText::_('JSTATUS')";
 
 		// add the rest of the set filters
 		if (isset($this->sortBuilder[$view]) && ComponentbuilderHelper::checkArray($this->sortBuilder[$view]))
@@ -10436,80 +10484,80 @@ class Interpretation extends Fields
 				{
 					if ($filter['type'] === 'category')
 					{
-						$fields .= ",\n\t\t\t'c.category_title' => JText::_('".$filter['lang']."')";
+						$fields .= ",".PHP_EOL."\t\t\t'c.category_title' => JText::_('".$filter['lang']."')";
 					}
 					elseif (ComponentbuilderHelper::checkArray($filter['custom']))
 					{
-						$fields .= ",\n\t\t\t'".$filter['custom']['db'].".".$filter['custom']['text']."' => JText::_('".$filter['lang']."')";
+						$fields .= ",".PHP_EOL."\t\t\t'".$filter['custom']['db'].".".$filter['custom']['text']."' => JText::_('".$filter['lang']."')";
 					}
 					else
 					{
-						$fields .= ",\n\t\t\t'a.".$filter['code']."' => JText::_('".$filter['lang']."')";
+						$fields .= ",".PHP_EOL."\t\t\t'a.".$filter['code']."' => JText::_('".$filter['lang']."')";
 					}
 				}
 			}
 		}
-		$fields .= ",\n\t\t\t'a.id' => JText::_('JGRID_HEADING_ID')";
-		$fields .= "\n\t\t);";
+		$fields .= ",".PHP_EOL."\t\t\t'a.id' => JText::_('JGRID_HEADING_ID')";
+		$fields .= PHP_EOL."\t\t);";
 		// return fields
 		return $fields;
 	}
 
 	public function setCheckinCall()
 	{
-		$call = "\n\t\t//".$this->setLine(__LINE__)." check in items";
-		$call .= "\n\t\t\$this->checkInNow();\n";
+		$call = PHP_EOL."\t\t//".$this->setLine(__LINE__)." check in items";
+		$call .= PHP_EOL."\t\t\$this->checkInNow();".PHP_EOL;
 
 		return $call;
 	}
 
 	public function setAutoCheckin($view,$component)
 	{
-		$checkin = "\n\n\t/**";
-		$checkin .= "\n\t* Build an SQL query to checkin all items left checked out longer then a set time.";
-		$checkin .= "\n\t*";
-		$checkin .= "\n\t* @return  a bool";
-		$checkin .= "\n\t*";
-		$checkin .= "\n\t*/";
-		$checkin .= "\n\tprotected function checkInNow()";
-		$checkin .= "\n\t{";
-		$checkin .= "\n\t\t//".$this->setLine(__LINE__)." Get set check in time";
-		$checkin .= "\n\t\t\$time = JComponentHelper::getParams('com_".$component."')->get('check_in');";
-		$checkin .= "\n\t\t";
-		$checkin .= "\n\t\tif (\$time)";
-		$checkin .= "\n\t\t{";
-		$checkin .= "\n\n\t\t\t//".$this->setLine(__LINE__)." Get a db connection.";
-		$checkin .= "\n\t\t\t\$db = JFactory::getDbo();";
-		$checkin .= "\n\t\t\t//".$this->setLine(__LINE__)." reset query";
-		$checkin .= "\n\t\t\t\$query = \$db->getQuery(true);";
-		$checkin .= "\n\t\t\t\$query->select('*');";
-		$checkin .= "\n\t\t\t\$query->from(\$db->quoteName('#__".$component."_".$view."'));";
-		$checkin .= "\n\t\t\t\$db->setQuery(\$query);";
-		$checkin .= "\n\t\t\t\$db->execute();";
-		$checkin .= "\n\t\t\tif (\$db->getNumRows())";
-		$checkin .= "\n\t\t\t{";
-		$checkin .= "\n\t\t\t\t//".$this->setLine(__LINE__)." Get Yesterdays date";
-		$checkin .= "\n\t\t\t\t\$date = JFactory::getDate()->modify(\$time)->toSql();";
-		$checkin .= "\n\t\t\t\t//".$this->setLine(__LINE__)." reset query";
-		$checkin .= "\n\t\t\t\t\$query = \$db->getQuery(true);";
-		$checkin .= "\n\n\t\t\t\t//".$this->setLine(__LINE__)." Fields to update.";
-		$checkin .= "\n\t\t\t\t\$fields = array(";
-		$checkin .= "\n\t\t\t\t\t\$db->quoteName('checked_out_time') . '=\'0000-00-00 00:00:00\'',";
-		$checkin .= "\n\t\t\t\t\t\$db->quoteName('checked_out') . '=0'";
-		$checkin .= "\n\t\t\t\t);";
-		$checkin .= "\n\n\t\t\t\t//".$this->setLine(__LINE__)." Conditions for which records should be updated.";
-		$checkin .= "\n\t\t\t\t\$conditions = array(";
-		$checkin .= "\n\t\t\t\t\t\$db->quoteName('checked_out') . '!=0', ";
-		$checkin .= "\n\t\t\t\t\t\$db->quoteName('checked_out_time') . '<\''.\$date.'\''";
-		$checkin .= "\n\t\t\t\t);";
-		$checkin .= "\n\n\t\t\t\t//".$this->setLine(__LINE__)." Check table";
-		$checkin .= "\n\t\t\t\t\$query->update(\$db->quoteName('#__".$component."_".$view."'))->set(\$fields)->where(\$conditions); ";
-		$checkin .= "\n\n\t\t\t\t\$db->setQuery(\$query);";
-		$checkin .= "\n\n\t\t\t\t\$db->execute();";
-		$checkin .= "\n\t\t\t}";
-		$checkin .= "\n\t\t}";
-		$checkin .= "\n\n\t\treturn false;";
-		$checkin .= "\n\t}";
+		$checkin = PHP_EOL.PHP_EOL."\t/**";
+		$checkin .= PHP_EOL."\t* Build an SQL query to checkin all items left checked out longer then a set time.";
+		$checkin .= PHP_EOL."\t*";
+		$checkin .= PHP_EOL."\t* @return  a bool";
+		$checkin .= PHP_EOL."\t*";
+		$checkin .= PHP_EOL."\t*/";
+		$checkin .= PHP_EOL."\tprotected function checkInNow()";
+		$checkin .= PHP_EOL."\t{";
+		$checkin .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get set check in time";
+		$checkin .= PHP_EOL."\t\t\$time = JComponentHelper::getParams('com_".$component."')->get('check_in');";
+		$checkin .= PHP_EOL."\t\t";
+		$checkin .= PHP_EOL."\t\tif (\$time)";
+		$checkin .= PHP_EOL."\t\t{";
+		$checkin .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get a db connection.";
+		$checkin .= PHP_EOL."\t\t\t\$db = JFactory::getDbo();";
+		$checkin .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." reset query";
+		$checkin .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
+		$checkin .= PHP_EOL."\t\t\t\$query->select('*');";
+		$checkin .= PHP_EOL."\t\t\t\$query->from(\$db->quoteName('#__".$component."_".$view."'));";
+		$checkin .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
+		$checkin .= PHP_EOL."\t\t\t\$db->execute();";
+		$checkin .= PHP_EOL."\t\t\tif (\$db->getNumRows())";
+		$checkin .= PHP_EOL."\t\t\t{";
+		$checkin .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Get Yesterdays date";
+		$checkin .= PHP_EOL."\t\t\t\t\$date = JFactory::getDate()->modify(\$time)->toSql();";
+		$checkin .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." reset query";
+		$checkin .= PHP_EOL."\t\t\t\t\$query = \$db->getQuery(true);";
+		$checkin .= PHP_EOL.PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Fields to update.";
+		$checkin .= PHP_EOL."\t\t\t\t\$fields = array(";
+		$checkin .= PHP_EOL."\t\t\t\t\t\$db->quoteName('checked_out_time') . '=\'0000-00-00 00:00:00\'',";
+		$checkin .= PHP_EOL."\t\t\t\t\t\$db->quoteName('checked_out') . '=0'";
+		$checkin .= PHP_EOL."\t\t\t\t);";
+		$checkin .= PHP_EOL.PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Conditions for which records should be updated.";
+		$checkin .= PHP_EOL."\t\t\t\t\$conditions = array(";
+		$checkin .= PHP_EOL."\t\t\t\t\t\$db->quoteName('checked_out') . '!=0', ";
+		$checkin .= PHP_EOL."\t\t\t\t\t\$db->quoteName('checked_out_time') . '<\''.\$date.'\''";
+		$checkin .= PHP_EOL."\t\t\t\t);";
+		$checkin .= PHP_EOL.PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Check table";
+		$checkin .= PHP_EOL."\t\t\t\t\$query->update(\$db->quoteName('#__".$component."_".$view."'))->set(\$fields)->where(\$conditions); ";
+		$checkin .= PHP_EOL.PHP_EOL."\t\t\t\t\$db->setQuery(\$query);";
+		$checkin .= PHP_EOL.PHP_EOL."\t\t\t\t\$db->execute();";
+		$checkin .= PHP_EOL."\t\t\t}";
+		$checkin .= PHP_EOL."\t\t}";
+		$checkin .= PHP_EOL.PHP_EOL."\t\treturn false;";
+		$checkin .= PHP_EOL."\t}";
 
 		return $checkin;
 	}
@@ -10532,19 +10580,19 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder[$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.access']]) && in_array($view,$this->permissionBuilder[$core['core.access']]))
 		{
-			$fix .= "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." set values to display correctly.";
-			$fix .= "\n\t".$tab."\tif (".$Component."Helper::checkArray(\$items))";
-			$fix .= "\n\t".$tab."\t{";
-			$fix .= "\n\t".$tab."\t\t//".$this->setLine(__LINE__)." get user object.";
-			$fix .= "\n\t".$tab."\t\t\$user = JFactory::getUser();";
-			$fix .= "\n\t".$tab."\t\tforeach (\$items as \$nr => &\$item)";
-			$fix .= "\n\t".$tab."\t\t{";
-			$fix .= "\n\t".$tab."\t\t\t\$access = (\$user->authorise('".$core['core.access']."', 'com_".$component.".".$view.".' . (int) \$item->id) && \$user->authorise('".$core['core.access']."', 'com_".$component."'));";
-			$fix .= "\n\t".$tab."\t\t\tif (!\$access)";
-			$fix .= "\n\t".$tab."\t\t\t{";
-			$fix .= "\n\t".$tab."\t\t\t\tunset(\$items[\$nr]);";
-			$fix .= "\n\t".$tab."\t\t\t\tcontinue;";
-			$fix .= "\n\t".$tab."\t\t\t}\n";
+			$fix .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." set values to display correctly.";
+			$fix .= PHP_EOL."\t".$tab."\tif (".$Component."Helper::checkArray(\$items))";
+			$fix .= PHP_EOL."\t".$tab."\t{";
+			$fix .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." get user object.";
+			$fix .= PHP_EOL."\t".$tab."\t\t\$user = JFactory::getUser();";
+			$fix .= PHP_EOL."\t".$tab."\t\tforeach (\$items as \$nr => &\$item)";
+			$fix .= PHP_EOL."\t".$tab."\t\t{";
+			$fix .= PHP_EOL."\t".$tab."\t\t\t\$access = (\$user->authorise('".$core['core.access']."', 'com_".$component.".".$view.".' . (int) \$item->id) && \$user->authorise('".$core['core.access']."', 'com_".$component."'));";
+			$fix .= PHP_EOL."\t".$tab."\t\t\tif (!\$access)";
+			$fix .= PHP_EOL."\t".$tab."\t\t\t{";
+			$fix .= PHP_EOL."\t".$tab."\t\t\t\tunset(\$items[\$nr]);";
+			$fix .= PHP_EOL."\t".$tab."\t\t\t\tcontinue;";
+			$fix .= PHP_EOL."\t".$tab."\t\t\t}".PHP_EOL;
 
 		}
 		
@@ -10561,11 +10609,11 @@ class Interpretation extends Fields
 		{
 			if (!ComponentbuilderHelper::checkString($fix))
 			{
-				$fix .= "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." set values to display correctly.";
-				$fix .= "\n\t".$tab."\tif (".$Component."Helper::checkArray(\$items))";
-				$fix .= "\n\t".$tab."\t{";
-				$fix .= "\n\t".$tab."\t\tforeach (\$items as \$nr => &\$item)";
-				$fix .= "\n\t".$tab."\t\t{";
+				$fix .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." set values to display correctly.";
+				$fix .= PHP_EOL."\t".$tab."\tif (".$Component."Helper::checkArray(\$items))";
+				$fix .= PHP_EOL."\t".$tab."\t{";
+				$fix .= PHP_EOL."\t".$tab."\t\tforeach (\$items as \$nr => &\$item)";
+				$fix .= PHP_EOL."\t".$tab."\t\t{";
 			}
 			
 			foreach ($this->{$methodName}[$view] as $item)
@@ -10603,58 +10651,58 @@ class Interpretation extends Fields
 				
 				if ($item['type'] === 'usergroup' && !$export)
 				{
-					$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode ".$item['name'];
-					$fix .= "\n\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
-					$fix .= "\n\t".$tab."\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."Array))";
-					$fix .= "\n\t".$tab."\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\$".$item['name']."Names = '';";
-					$fix .= "\n\t".$tab."\t\t\t\t\$counter = 0;";
-					$fix .= "\n\t".$tab."\t\t\t\tforeach (\$".$item['name']."Array as \$".$item['name'].")";
-					$fix .= "\n\t".$tab."\t\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\tif (\$counter == 0)";
-					$fix .= "\n\t".$tab."\t\t\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\t\t\$".$item['name']."Names .= ".$Component."Helper::getGroupName(\$".$item['name'].");";
-					$fix .= "\n\t".$tab."\t\t\t\t\t}";
-					$fix .= "\n\t".$tab."\t\t\t\t\telse";
-					$fix .= "\n\t".$tab."\t\t\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\t\t\$".$item['name']."Names .= ', '.".$Component."Helper::getGroupName(\$".$item['name'].");";
-					$fix .= "\n\t".$tab."\t\t\t\t\t}";
-					$fix .= "\n\t".$tab."\t\t\t\t\t\$counter++;";
-					$fix .= "\n\t".$tab."\t\t\t\t}";
-					$fix .= "\n\t".$tab."\t\t\t\t\$item->".$item['name']." = \$".$item['name']."Names;";
-					$fix .= "\n\t".$tab."\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode ".$item['name'];
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
+					$fix .= PHP_EOL."\t".$tab."\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."Array))";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\$".$item['name']."Names = '';";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\$counter = 0;";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\tforeach (\$".$item['name']."Array as \$".$item['name'].")";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\tif (\$counter == 0)";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t\t\$".$item['name']."Names .= ".$Component."Helper::getGroupName(\$".$item['name'].");";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\telse";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t\t\$".$item['name']."Names .= ', '.".$Component."Helper::getGroupName(\$".$item['name'].");";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t\$counter++;";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\$item->".$item['name']." = \$".$item['name']."Names;";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t}";
 				}
 				/*elseif ($item['type'] === 'usergroup' && $export)
 				{
-					$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode ".$item['name'];
-					$fix .= "\n\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
-					$fix .= "\n\t".$tab."\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."Array))";
-					$fix .= "\n\t".$tab."\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\$item->".$item['name']." = implode('|',\$".$item['name']."Array);";
-					$fix .= "\n\t".$tab."\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode ".$item['name'];
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
+					$fix .= PHP_EOL."\t".$tab."\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."Array))";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\$item->".$item['name']." = implode('|',\$".$item['name']."Array);";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t}";
 				}*/
 				elseif ($item['translation'] && !$export)
 				{
-					$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
-					$fix .= "\n\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
-					$fix .= "\n\t".$tab."\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."Array))";
-					$fix .= "\n\t".$tab."\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\$".$item['name']."Names = '';";
-					$fix .= "\n\t".$tab."\t\t\t\t\$counter = 0;";
-					$fix .= "\n\t".$tab."\t\t\t\tforeach (\$".$item['name']."Array as \$".$item['name'].")";
-					$fix .= "\n\t".$tab."\t\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\tif (\$counter == 0)";
-					$fix .= "\n\t".$tab."\t\t\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\t\t\$".$item['name']."Names .= JText::_(\$this->selectionTranslation(\$".$item['name'].", '".$item['name']."'));";
-					$fix .= "\n\t".$tab."\t\t\t\t\t}";
-					$fix .= "\n\t".$tab."\t\t\t\t\telse";
-					$fix .= "\n\t".$tab."\t\t\t\t\t{";
-					$fix .= "\n\t".$tab."\t\t\t\t\t\t\$".$item['name']."Names .= ', '.JText::_(\$this->selectionTranslation(\$".$item['name'].", '".$item['name']."'));";
-					$fix .= "\n\t".$tab."\t\t\t\t\t}";
-					$fix .= "\n\t".$tab."\t\t\t\t\t\$counter++;";
-					$fix .= "\n\t".$tab."\t\t\t\t}";
-					$fix .= "\n\t".$tab."\t\t\t\t\$item->".$item['name']." = \$".$item['name']."Names;";
-					$fix .= "\n\t".$tab."\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
+					$fix .= PHP_EOL."\t".$tab."\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."Array))";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\$".$item['name']."Names = '';";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\$counter = 0;";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\tforeach (\$".$item['name']."Array as \$".$item['name'].")";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\tif (\$counter == 0)";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t\t\$".$item['name']."Names .= JText::_(\$this->selectionTranslation(\$".$item['name'].", '".$item['name']."'));";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\telse";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t{";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t\t\$".$item['name']."Names .= ', '.JText::_(\$this->selectionTranslation(\$".$item['name'].", '".$item['name']."'));";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t\$counter++;";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t}";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t\t\$item->".$item['name']." = \$".$item['name']."Names;";
+					$fix .= PHP_EOL."\t".$tab."\t\t\t}";
 				}
 				else
 				{
@@ -10664,71 +10712,71 @@ class Interpretation extends Fields
 						if ($item['method'] == 3)
 						{
 							$taber = "\t";
-							$fix .= "\n\t".$tab."\t\t\tif (\$basickey && !is_numeric(\$item->".$item['name'].") && \$item->".$item['name']." === base64_encode(base64_decode(\$item->".$item['name'].", true)))";
-							$fix .= "\n\t".$tab."\t\t\t{";
+							$fix .= PHP_EOL."\t".$tab."\t\t\tif (\$basickey && !is_numeric(\$item->".$item['name'].") && \$item->".$item['name']." === base64_encode(base64_decode(\$item->".$item['name'].", true)))";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t{";
 						}
 						if ($item['method'] == 4)
 						{
 							$taber = "\t";
-							$fix .= "\n\t".$tab."\t\t\tif (\$advancedkey && !is_numeric(\$item->".$item['name'].") && \$item->".$item['name']." === base64_encode(base64_decode(\$item->".$item['name'].", true)))";
-							$fix .= "\n\t".$tab."\t\t\t{";
+							$fix .= PHP_EOL."\t".$tab."\t\t\tif (\$advancedkey && !is_numeric(\$item->".$item['name'].") && \$item->".$item['name']." === base64_encode(base64_decode(\$item->".$item['name'].", true)))";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t{";
 						}
 						if ($item['method'] == 3 || $item['method'] == 4)
 						{
-							$fix .= "\n\t".$tab."\t\t\t\t//".$this->setLine(__LINE__)." decrypt ".$item['name'];
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t//".$this->setLine(__LINE__)." decrypt ".$item['name'];
 						}
 						else
 						{
-							$fix .= "\n\t".$tab.$taber."\t\t\t//".$this->setLine(__LINE__)." decode ".$item['name'];
+							$fix .= PHP_EOL."\t".$tab.$taber."\t\t\t//".$this->setLine(__LINE__)." decode ".$item['name'];
 						}
-						$fix .= "\n\t".$tab.$taber."\t\t\t\$item->".$item['name']." = ".$decode."(\$item->".$item['name'].");";
+						$fix .= PHP_EOL."\t".$tab.$taber."\t\t\t\$item->".$item['name']." = ".$decode."(\$item->".$item['name'].");";
 
 						if ($item['method'] == 3 || $item['method'] == 4)
 						{
-							$fix .= "\n\t".$tab."\t\t\t}";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t}";
 						}
 					}
 					else
 					{
 						if ($export && $item['type'] === 'repeatable')
 						{
-							$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode repeatable ".$item['name'];
-							$fix .= "\n\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
-							$fix .= "\n\t".$tab."\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."Array))";
-							$fix .= "\n\t".$tab."\t\t\t{";
-							$fix .= "\n\t".$tab."\t\t\t\t\$bucket".$item['name']." = array();";
-							$fix .= "\n\t".$tab."\t\t\t\tforeach (\$".$item['name']."Array as \$".$item['name']."FieldName => \$".$item['name'].")";
-							$fix .= "\n\t".$tab."\t\t\t\t{";
-							$fix .= "\n\t".$tab."\t\t\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."))";
-							$fix .= "\n\t".$tab."\t\t\t\t\t{";
-							$fix .= "\n\t".$tab."\t\t\t\t\t\t\$bucket".$item['name']."[] = \$".$item['name']."FieldName . '<||VDM||>' . implode('<|VDM|>',\$".$item['name'].");";
-							$fix .= "\n\t".$tab."\t\t\t\t\t}";
-							$fix .= "\n\t".$tab."\t\t\t\t}";
-							$fix .= "\n\t".$tab."\t\t\t\t//".$this->setLine(__LINE__)." make sure the bucket has values.";
-							$fix .= "\n\t".$tab."\t\t\t\tif (".$Component."Helper::checkArray(\$bucket".$item['name']."))";
-							$fix .= "\n\t".$tab."\t\t\t\t{";
-							$fix .= "\n\t".$tab."\t\t\t\t\t//".$this->setLine(__LINE__)." clear the repeatable field.";
-							$fix .= "\n\t".$tab."\t\t\t\t\tunset(\$item->".$item['name'].");";
-							$fix .= "\n\t".$tab."\t\t\t\t\t//".$this->setLine(__LINE__)." set repeatable field for export.";
-							$fix .= "\n\t".$tab."\t\t\t\t\t\$item->".$item['name']." = implode('<|||VDM|||>',\$bucket".$item['name'].");";
-							$fix .= "\n\t".$tab."\t\t\t\t\t//".$this->setLine(__LINE__)." unset the bucket.";
-							$fix .= "\n\t".$tab."\t\t\t\t\tunset(\$bucket".$item['name'].");";
-							$fix .= "\n\t".$tab."\t\t\t\t}";
-							$fix .= "\n\t".$tab."\t\t\t}";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." decode repeatable ".$item['name'];
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
+							$fix .= PHP_EOL."\t".$tab."\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."Array))";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t{";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\$bucket".$item['name']." = array();";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\tforeach (\$".$item['name']."Array as \$".$item['name']."FieldName => \$".$item['name'].")";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t{";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\tif (".$Component."Helper::checkArray(\$".$item['name']."))";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t{";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t\t\$bucket".$item['name']."[] = \$".$item['name']."FieldName . '<||VDM||>' . implode('<|VDM|>',\$".$item['name'].");";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t}";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t}";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t//".$this->setLine(__LINE__)." make sure the bucket has values.";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\tif (".$Component."Helper::checkArray(\$bucket".$item['name']."))";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t{";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t//".$this->setLine(__LINE__)." clear the repeatable field.";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\tunset(\$item->".$item['name'].");";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t//".$this->setLine(__LINE__)." set repeatable field for export.";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t\$item->".$item['name']." = implode('<|||VDM|||>',\$bucket".$item['name'].");";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\t//".$this->setLine(__LINE__)." unset the bucket.";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t\tunset(\$bucket".$item['name'].");";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\t}";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t}";
 						}
 						elseif ($item['method'] == 1 && !$export)
 						{
 							// TODO we check if this works well.
-							$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
-							$fix .= "\n\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].", ', ', '".$item['name']."');";
+							$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
+							$fix .= PHP_EOL."\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].", ', ', '".$item['name']."');";
 						}
 						else
 						{
 							if (!$export)
 							{
 								// For thos we have not cached yet.
-								$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
-								$fix .= "\n\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].");";
+								$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
+								$fix .= PHP_EOL."\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].");";
 							}
 						}
 					}
@@ -10739,11 +10787,11 @@ class Interpretation extends Fields
 		// close the foreach if needed
 		if (!ComponentbuilderHelper::checkString($fix) && $export)
 		{
-			$fix .= "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." set values to display correctly.";
-			$fix .= "\n\t".$tab."\tif (".$Component."Helper::checkArray(\$items))";
-			$fix .= "\n\t".$tab."\t{";
-			$fix .= "\n\t".$tab."\t\tforeach (\$items as \$nr => &\$item)";
-			$fix .= "\n\t".$tab."\t\t{";
+			$fix .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." set values to display correctly.";
+			$fix .= PHP_EOL."\t".$tab."\tif (".$Component."Helper::checkArray(\$items))";
+			$fix .= PHP_EOL."\t".$tab."\t{";
+			$fix .= PHP_EOL."\t".$tab."\t\tforeach (\$items as \$nr => &\$item)";
+			$fix .= PHP_EOL."\t".$tab."\t\t{";
 		}
 		// close the foreach if needed
 		if (ComponentbuilderHelper::checkString($fix))
@@ -10751,43 +10799,43 @@ class Interpretation extends Fields
 			// remove these values if export
 			if ($export)
 			{
-				$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." unset the values we don't want exported.";
-				$fix .= "\n\t".$tab."\t\t\tunset(\$item->asset_id);";
-				$fix .= "\n\t".$tab."\t\t\tunset(\$item->checked_out);";
-				$fix .= "\n\t".$tab."\t\t\tunset(\$item->checked_out_time);";
+				$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." unset the values we don't want exported.";
+				$fix .= PHP_EOL."\t".$tab."\t\t\tunset(\$item->asset_id);";
+				$fix .= PHP_EOL."\t".$tab."\t\t\tunset(\$item->checked_out);";
+				$fix .= PHP_EOL."\t".$tab."\t\t\tunset(\$item->checked_out_time);";
 			}
-			$fix .= "\n\t".$tab."\t\t}";
-			$fix .= "\n\t".$tab."\t}";
+			$fix .= PHP_EOL."\t".$tab."\t\t}";
+			$fix .= PHP_EOL."\t".$tab."\t}";
 			if ($export)
 			{
-				$fix .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." Add headers to items array.";
-				$fix .= "\n\t".$tab."\t\$headers = \$this->getExImPortHeaders();";
-				$fix .= "\n\t".$tab."\tif (".$Component."Helper::checkObject(\$headers))";
-				$fix .= "\n\t".$tab."\t{";
-				$fix .= "\n\t".$tab."\t\tarray_unshift(\$items,\$headers);";
-				$fix .= "\n\t".$tab."\t}";
+				$fix .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Add headers to items array.";
+				$fix .= PHP_EOL."\t".$tab."\t\$headers = \$this->getExImPortHeaders();";
+				$fix .= PHP_EOL."\t".$tab."\tif (".$Component."Helper::checkObject(\$headers))";
+				$fix .= PHP_EOL."\t".$tab."\t{";
+				$fix .= PHP_EOL."\t".$tab."\t\tarray_unshift(\$items,\$headers);";
+				$fix .= PHP_EOL."\t".$tab."\t}";
 			}
 		}
 
 		// add custom php to getitems method
-                $fix .= $this->getCustomScriptBuilder('php_getitems', $view, "\n\n".$tab);
+                $fix .= $this->getCustomScriptBuilder('php_getitems', $view, PHP_EOL.PHP_EOL.$tab);
 
 		if ($basicCrypt)
 		{
-			$script = "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." Get the basic encription key.";
-			$script .= "\n\t".$tab."\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-			$script .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
-			$script .= "\n\t".$tab."\t\$basic = new FOFEncryptAes(\$basickey, 128);";
+			$script = PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the basic encription key.";
+			$script .= PHP_EOL."\t".$tab."\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
+			$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
+			$script .= PHP_EOL."\t".$tab."\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 			// add the encryption script
 			$fix = $script . $fix;
 		}
 
 		if ($advancedCrypt)
 		{
-			$script = "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
-			$script .= "\n\t".$tab."\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-			$script .= "\n\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
-			$script .= "\n\t".$tab."\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
+			$script = PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
+			$script .= PHP_EOL."\t".$tab."\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
+			$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
+			$script .= PHP_EOL."\t".$tab."\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 			// add the encryption script
 			$fix = $script . $fix;
 		}
@@ -10801,18 +10849,18 @@ class Interpretation extends Fields
 		$fix = '';
 		if (isset($this->selectionTranslationFixBuilder[$views]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$views]))
 		{
-			$fix .= "\n\n\t".$tab."\t//".$this->setLine(__LINE__)." set selection value to a translatable value";
-			$fix .= "\n\t".$tab."\tif (".$Component."Helper::checkArray(\$items))";
-			$fix .= "\n\t".$tab."\t{";
-			$fix .= "\n\t".$tab."\t\tforeach (\$items as \$nr => &\$item)";
-			$fix .= "\n\t".$tab."\t\t{";
+			$fix .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." set selection value to a translatable value";
+			$fix .= PHP_EOL."\t".$tab."\tif (".$Component."Helper::checkArray(\$items))";
+			$fix .= PHP_EOL."\t".$tab."\t{";
+			$fix .= PHP_EOL."\t".$tab."\t\tforeach (\$items as \$nr => &\$item)";
+			$fix .= PHP_EOL."\t".$tab."\t\t{";
 			foreach ($this->selectionTranslationFixBuilder[$views] as $name => $values)
 			{
-				$fix .= "\n\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$name;
-				$fix .= "\n\t".$tab."\t\t\t\$item->".$name." = \$this->selectionTranslation(\$item->".$name.", '".$name."');";
+				$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$name;
+				$fix .= PHP_EOL."\t".$tab."\t\t\t\$item->".$name." = \$this->selectionTranslation(\$item->".$name.", '".$name."');";
 			}
-			$fix .= "\n\t".$tab."\t\t}";
-			$fix .= "\n\t".$tab."\t}\n";
+			$fix .= PHP_EOL."\t".$tab."\t\t}";
+			$fix .= PHP_EOL."\t".$tab."\t}".PHP_EOL;
 		}
 		return $fix;
 	}
@@ -10823,21 +10871,21 @@ class Interpretation extends Fields
 		$fix = '';
 		if (isset( $this->selectionTranslationFixBuilder[$views]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$views]))
 		{
-			$fix .= "\n\n\t/**";
-			$fix .= "\n\t* Method to convert selection values to translatable string.";
-			$fix .= "\n\t*";
-			$fix .= "\n\t* @return translatable string";
-			$fix .= "\n\t*/";
-			$fix .= "\n\tpublic function selectionTranslation(\$value,\$name)";
-			$fix .= "\n\t{";
+			$fix .= PHP_EOL.PHP_EOL."\t/**";
+			$fix .= PHP_EOL."\t* Method to convert selection values to translatable string.";
+			$fix .= PHP_EOL."\t*";
+			$fix .= PHP_EOL."\t* @return translatable string";
+			$fix .= PHP_EOL."\t*/";
+			$fix .= PHP_EOL."\tpublic function selectionTranslation(\$value,\$name)";
+			$fix .= PHP_EOL."\t{";
 			foreach ($this->selectionTranslationFixBuilder[$views] as $name => $values)
 			{
 				if (ComponentbuilderHelper::checkArray($values))
 				{
-					$fix .= "\n\t\t//".$this->setLine(__LINE__)." Array of ".$name." language strings";
-					$fix .= "\n\t\tif (\$name === '".$name."')";
-					$fix .= "\n\t\t{";
-					$fix .= "\n\t\t\t\$".$name."Array = array(";
+					$fix .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Array of ".$name." language strings";
+					$fix .= PHP_EOL."\t\tif (\$name === '".$name."')";
+					$fix .= PHP_EOL."\t\t{";
+					$fix .= PHP_EOL."\t\t\t\$".$name."Array = array(";
 					$counter = 0;
 					foreach ($values as $value => $translang)
 					{
@@ -10856,25 +10904,25 @@ class Interpretation extends Fields
 						}
 						if ($counter == 0)
 						{
-							$fix .=  "\n\t\t\t\t".$key." => '".$translang."'";
+							$fix .=  PHP_EOL."\t\t\t\t".$key." => '".$translang."'";
 						}
 						else
 						{
-							$fix .= ",\n\t\t\t\t".$key." => '".$translang."'";
+							$fix .= ",".PHP_EOL."\t\t\t\t".$key." => '".$translang."'";
 						}
 						$counter++;
 					}
-					$fix .= "\n\t\t\t);";
-					$fix .= "\n\t\t\t//".$this->setLine(__LINE__)." Now check if value is found in this array";
-					$fix .= "\n\t\t\tif (isset(\$".$name."Array[\$value]) && ".$Component."Helper::checkString(\$".$name."Array[\$value]))";
-					$fix .= "\n\t\t\t{";
-					$fix .= "\n\t\t\t\treturn \$".$name."Array[\$value];";
-					$fix .= "\n\t\t\t}";
-					$fix .= "\n\t\t}";
+					$fix .= PHP_EOL."\t\t\t);";
+					$fix .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Now check if value is found in this array";
+					$fix .= PHP_EOL."\t\t\tif (isset(\$".$name."Array[\$value]) && ".$Component."Helper::checkString(\$".$name."Array[\$value]))";
+					$fix .= PHP_EOL."\t\t\t{";
+					$fix .= PHP_EOL."\t\t\t\treturn \$".$name."Array[\$value];";
+					$fix .= PHP_EOL."\t\t\t}";
+					$fix .= PHP_EOL."\t\t}";
 				}
 			}
-			$fix .= "\n\t\treturn \$value;";
-			$fix .= "\n\t}";
+			$fix .= PHP_EOL."\t\treturn \$value;";
+			$fix .= PHP_EOL."\t}";
 		}
 		return $fix;
 	}
@@ -10883,11 +10931,11 @@ class Interpretation extends Fields
 	{
 		if (strlen($viewName) > 0)
 		{
-			$router = "\n\t\tcase '".$viewName."':";
-			$router .= "\n\t\t\t\$id = explode(':', \$segments[$count-1]);";
-			$router .= "\n\t\t\t\$vars['id'] = (int) \$id[0];";
-			$router .= "\n\t\t\t\$vars['view'] = '".$viewName."';";
-			$router .= "\n\t\tbreak;";
+			$router = PHP_EOL."\t\tcase '".$viewName."':";
+			$router .= PHP_EOL."\t\t\t\$id = explode(':', \$segments[$count-1]);";
+			$router .= PHP_EOL."\t\t\t\$vars['id'] = (int) \$id[0];";
+			$router .= PHP_EOL."\t\t\t\$vars['view'] = '".$viewName."';";
+			$router .= PHP_EOL."\t\tbreak;";
 
 			return $router;
 		}
@@ -10917,7 +10965,7 @@ class Interpretation extends Fields
 		if (isset($this->permissionDashboard) && ComponentbuilderHelper::checkArray($this->permissionDashboard))
 		{
 			$this->permissionDashboard = array_unique($this->permissionDashboard);
-			return "\n\t\t//".$this->setLine(__LINE__)." view access array\n\t\t\$viewAccess = array(\n\t\t\t".implode(",\n\t\t\t",$this->permissionDashboard).");";
+			return PHP_EOL."\t\t//".$this->setLine(__LINE__)." view access array".PHP_EOL."\t\t\$viewAccess = array(".PHP_EOL."\t\t\t".implode(",".PHP_EOL."\t\t\t",$this->permissionDashboard).");";
 		}
 		return '';
 
@@ -11090,7 +11138,7 @@ class Interpretation extends Fields
 			$this->DashboardGetCustomData = ComponentbuilderHelper::getAllBetween($this->componentData->php_dashboard_methods,'public function get','()');
 
 			// return the methods
-			return "\n\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->componentData->php_dashboard_methods);
+			return PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->componentData->php_dashboard_methods);
 		}
 		return '';
 	}
@@ -11109,7 +11157,7 @@ class Interpretation extends Fields
 				$gets[] = "\$this->".$string.$tabs."= \$this->get('".$get."');";
 			}
 			// return the gets
-			return "\n\t\t".implode("\n\t\t",$gets);
+			return PHP_EOL."\t\t".implode(PHP_EOL."\t\t",$gets);
 		}
 		return '';
 	}
@@ -11134,7 +11182,7 @@ class Interpretation extends Fields
 			$display[] = '<div id="j-main-container" class="span12">';
 			$display[] = "\t".'<div class="form-horizontal">';
 			$display[] = "\t<?php echo JHtml::_('bootstrap.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
-			$display[] = "\n\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'cpanel', JText::_('cPanel', true)); ?>";
+			$display[] = PHP_EOL."\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'cpanel', JText::_('cPanel', true)); ?>";
 			$display[] = "\t\t".'<div class="row-fluid">';
 			// set the tab to insure correct spacing
 			$tab = "\t\t\t";
@@ -11170,7 +11218,7 @@ class Interpretation extends Fields
 			foreach($builder as $tabname => $accordians)
 			{
 				$alias = ComponentbuilderHelper::safeString($tabname);
-				$display[] = "\n\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', '".$alias."', JText::_('".$tabname."', true)); ?>";
+				$display[] = PHP_EOL."\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', '".$alias."', JText::_('".$tabname."', true)); ?>";
 				$display[] = "\t\t".'<div class="row-fluid">';
 				$display[] = $tab.'<div class="span12">';
 				$display[] = $tab."\t<?php  echo JHtml::_('bootstrap.startAccordion', '".$alias."_accordian', array('active' => 'one')); ?>";
@@ -11190,7 +11238,7 @@ class Interpretation extends Fields
 					// set the file data
 					$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
 					// ###SITE_TEMPLATE_BODY### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$this->fileContentStatic['###component###'].'_'.$tempName]['###CUSTOM_ADMIN_TEMPLATE_BODY###'] = "\n".$html;
+					$this->fileContentDynamic[$this->fileContentStatic['###component###'].'_'.$tempName]['###CUSTOM_ADMIN_TEMPLATE_BODY###'] = PHP_EOL.$html;
 					// ###SITE_TEMPLATE_CODE_BODY### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$this->fileContentStatic['###component###'].'_'.$tempName]['###CUSTOM_ADMIN_TEMPLATE_CODE_BODY###'] = '';
 				}
@@ -11200,12 +11248,12 @@ class Interpretation extends Fields
 				$display[] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>"; 
 			}
 			
-			$display[] = "\n\t<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
+			$display[] = PHP_EOL."\t<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
 			$display[] = "\t</div>";
 		}
 		$display[] = "</div>";
 		// return the display
-		return "\n".implode("\n",$display);
+		return PHP_EOL.implode(PHP_EOL,$display);
 	}
 
 	public function addCustomDashboardIcons(&$view,&$counter)
@@ -11379,14 +11427,14 @@ class Interpretation extends Fields
 					// check if the item has permissions.
 					if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($nameSingle,$this->permissionBuilder['global'][$core['core.access']]))
 					{
-						$menus .= "\n\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-						$menus .= "\n\t\t{";
+						$menus .= PHP_EOL."\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+						$menus .= PHP_EOL."\t\t{";
 						// add tab to lines to follow
 						$tab = "\t";
 					}
 					$nameList	= ComponentbuilderHelper::safeString($view['settings']->name_list);
 					$nameUpper	= ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
-					$menus .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
+					$menus .= PHP_EOL."\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
 					$this->langContent[$this->lang][$lang."_".$nameUpper] = $view['settings']->name_list;
 					// check if category has another name
 					if (isset($this->catOtherName[$nameList]) && ComponentbuilderHelper::checkArray($this->catOtherName[$nameList]))
@@ -11399,14 +11447,14 @@ class Interpretation extends Fields
 					}
 					if (isset($this->categoryBuilder[$nameList]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameList]) && !in_array($otherViews,$catArray))
 					{
-						$menus .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$this->categoryBuilder[$nameList]['name']."'), 'index.php?option=com_categories&view=categories&extension=com_".$codeName.".".$otherViews."', \$submenu === 'categories.".$otherViews."');";
+						$menus .= PHP_EOL."\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$this->categoryBuilder[$nameList]['name']."'), 'index.php?option=com_categories&view=categories&extension=com_".$codeName.".".$otherViews."', \$submenu === 'categories.".$otherViews."');";
 						// make sure we add a category only once
 						$catArray[] = $otherViews;
 					}
 					// check if the item has permissions.
 					if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($nameSingle,$this->permissionBuilder['global'][$core['core.access']]))
 					{
-						$menus .= "\n\t\t}";
+						$menus .= PHP_EOL."\t\t}";
 					}
 				}
 			}
@@ -11487,17 +11535,17 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($nameSingle,$this->permissionBuilder['global'][$core['core.access']]))
 			{
-				$custom .= "\n\t\t//".$this->setLine(__LINE__)." Access control (".$core['core.access']." && ".$nameSingle.".submenu).";
-				$custom .= "\n\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-				$custom .= "\n\t\t{";
+				$custom .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Access control (".$core['core.access']." && ".$nameSingle.".submenu).";
+				$custom .= PHP_EOL."\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+				$custom .= PHP_EOL."\t\t{";
 				// add tab to lines to follow
 				$tab = "\t";
 			}
 			else
 			{
-				$custom .= "\n\t\t//".$this->setLine(__LINE__)." Access control (".$nameSingle.".submenu).";
-				$custom .= "\n\t\tif (\$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-				$custom .= "\n\t\t{";
+				$custom .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Access control (".$nameSingle.".submenu).";
+				$custom .= PHP_EOL."\t\tif (\$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+				$custom .= PHP_EOL."\t\t{";
 				// add tab to lines to follow
 				$tab = "\t";
 			}
@@ -11506,16 +11554,16 @@ class Interpretation extends Fields
 				
 				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
 				// add custom menu
-				$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu === '".$nameList."');";
+				$custom .= PHP_EOL."\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu === '".$nameList."');";
 			}
 			else
 			{
 				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
 				// add custom menu
-				$custom .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
+				$custom .= PHP_EOL."\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
 			}
 			// check if the item has permissions.
-			$custom .= "\n\t\t}";
+			$custom .= PHP_EOL."\t\t}";
 
 			return $custom;
 		}
@@ -11534,15 +11582,15 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($nameSingle,$this->permissionBuilder['global'][$core['core.access']]))
 			{
-				$this->lastCustomSubMenu[$nr] .= "\n\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-				$this->lastCustomSubMenu[$nr] .= "\n\t\t{";
+				$this->lastCustomSubMenu[$nr] .= PHP_EOL."\t\tif (\$user->authorise('".$core['core.access']."', 'com_".$codeName."') && \$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+				$this->lastCustomSubMenu[$nr] .= PHP_EOL."\t\t{";
 				// add tab to lines to follow
 				$tab = "\t";
 			}
 			else
 			{
-				$this->lastCustomSubMenu[$nr] .= "\n\t\tif (\$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
-				$this->lastCustomSubMenu[$nr] .= "\n\t\t{";
+				$this->lastCustomSubMenu[$nr] .= PHP_EOL."\t\tif (\$user->authorise('".$nameSingle.".submenu', 'com_".$codeName."'))";
+				$this->lastCustomSubMenu[$nr] .= PHP_EOL."\t\t{";
 				// add tab to lines to follow
 				$tab = "\t";
 			}
@@ -11550,16 +11598,16 @@ class Interpretation extends Fields
 			{
 				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
 				// add custom menu
-				$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu === '".$nameList."');";
+				$this->lastCustomSubMenu[$nr] .= PHP_EOL."\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), '".$menu['link']."', \$submenu === '".$nameList."');";
 			}
 			else
 			{
 				$this->langContent[$this->lang][$lang.'_'.$nameUpper] = $name;
 				// add custom menu
-				$this->lastCustomSubMenu[$nr] .= "\n\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
+				$this->lastCustomSubMenu[$nr] .= PHP_EOL."\t\t".$tab."JHtmlSidebar::addEntry(JText::_('".$lang."_".$nameUpper."'), 'index.php?option=com_".$codeName."&view=".$nameList."', \$submenu === '".$nameList."');";
 			}
 			// check if the item has permissions.
-			$this->lastCustomSubMenu[$nr] .= "\n\t\t}";
+			$this->lastCustomSubMenu[$nr] .= PHP_EOL."\t\t}";
 		}
 		return false;
 	}
@@ -11583,7 +11631,7 @@ class Interpretation extends Fields
 				{
 					$nameList	= ComponentbuilderHelper::safeString($view['settings']->name_list);
 					$nameUpper	= ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
-					$menus .= "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$nameList.'">'.$lang.'_'.$nameUpper.'</menu>';
+					$menus .= PHP_EOL."\t\t\t".'<menu option="com_'.$codeName.'" view="'.$nameList.'">'.$lang.'_'.$nameUpper.'</menu>';
 					$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $view['settings']->name_list;
 				}
 			}
@@ -11614,13 +11662,13 @@ class Interpretation extends Fields
 					{
 						$this->langContent['adminsys'][$lang.'_'.$menu['settings']->CODE] = $menu['settings']->name;
 						// add custom menu
-						$customMenu .= "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$menu['settings']->code.'">'.$lang.'_'.$menu['settings']->CODE.'</menu>';
+						$customMenu .= PHP_EOL."\t\t\t".'<menu option="com_'.$codeName.'" view="'.$menu['settings']->code.'">'.$lang.'_'.$menu['settings']->CODE.'</menu>';
 					}
 					elseif($menu['mainmenu'] == 1 && empty($menu['before']))
 					{
 						$this->langContent['adminsys'][$lang.'_'.$menu['settings']->CODE] = $menu['settings']->name;
 						// add custom menu
-						$this->lastCustomMainMenu[$nr] = "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$menu['settings']->code.'">'.$lang.'_'.$menu['settings']->CODE.'</menu>';
+						$this->lastCustomMainMenu[$nr] = PHP_EOL."\t\t\t".'<menu option="com_'.$codeName.'" view="'.$menu['settings']->code.'">'.$lang.'_'.$menu['settings']->CODE.'</menu>';
 					}
 				}
 			}
@@ -11639,7 +11687,7 @@ class Interpretation extends Fields
 						$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
 						$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $menu['name'];
 						// add custom menu
-						$customMenu .= "\n\t\t\t".'<menu link="'.$menu['link'].'">'.$lang.'_'.$nameUpper.'</menu>';
+						$customMenu .= PHP_EOL."\t\t\t".'<menu link="'.$menu['link'].'">'.$lang.'_'.$nameUpper.'</menu>';
 					}
 					else
 					{
@@ -11647,7 +11695,7 @@ class Interpretation extends Fields
 						$nameUpper	= ComponentbuilderHelper::safeString($menu['name_code'], 'U');
 						$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $menu['name'];
 						// add custom menu
-						$customMenu .= "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$nameList.'">'.$lang.'_'.$nameUpper.'</menu>';
+						$customMenu .= PHP_EOL."\t\t\t".'<menu option="com_'.$codeName.'" view="'.$nameList.'">'.$lang.'_'.$nameUpper.'</menu>';
 					}
 				}
 				elseif($menu['mainmenu'] == 1 && empty($menu['before']))
@@ -11658,7 +11706,7 @@ class Interpretation extends Fields
 						$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
 						$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $menu['name'];
 						// add custom menu
-						$this->lastCustomMainMenu[$nr] = "\n\t\t\t".'<menu link="'.$menu['link'].'">'.$lang.'_'.$nameUpper.'</menu>';
+						$this->lastCustomMainMenu[$nr] = PHP_EOL."\t\t\t".'<menu link="'.$menu['link'].'">'.$lang.'_'.$nameUpper.'</menu>';
 					}
 					else
 					{
@@ -11666,7 +11714,7 @@ class Interpretation extends Fields
 						$nameUpper	= ComponentbuilderHelper::safeString($menu['name_code'], 'U');
 						$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $menu['name'];
 						// add custom menu
-						$this->lastCustomMainMenu[$nr] = "\n\t\t\t".'<menu option="com_'.$codeName.'" view="'.$nameList.'">'.$lang.'_'.$nameUpper.'</menu>';
+						$this->lastCustomMainMenu[$nr] = PHP_EOL."\t\t\t".'<menu option="com_'.$codeName.'" view="'.$nameList.'">'.$lang.'_'.$nameUpper.'</menu>';
 					}
 				}
 			}
@@ -12098,7 +12146,7 @@ class Interpretation extends Fields
 				$this->configFieldSets[] = "\t\t\t".'<option value="3">'.$langCont.'_SHOW_ALL</option>';
 				$this->configFieldSets[] = "\t\t</field>";
 				// add the contributor
-				$this->theContributors .= "\n\t@".strtolower($contributor['title'])."\t\t".$contributor['name'].' <'.$contributor['website'].'>';
+				$this->theContributors .= PHP_EOL."\t@".strtolower($contributor['title'])."\t\t".$contributor['name'].' <'.$contributor['website'].'>';
 				// setup lang
 				$Counter = ComponentbuilderHelper::safeString($counter,'Ww');
 				$this->langContent[$this->lang][$langCont.'_'.$COUNTER]	= "Contributor ".$Counter;
@@ -12321,7 +12369,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			$this->langContent[$this->lang][$lang.'_MAIL_CONFIGURATION'] = "Mail Configuration";
 			$this->langContent[$this->lang][$lang.'_DKIM'] = "DKIM";
 			// start building field set for email helper functions
-			$this->configFieldSets[] = "\n\t<fieldset";
+			$this->configFieldSets[] = PHP_EOL."\t<fieldset";
 			$this->configFieldSets[] = "\t\tname=\"mail_configuration_custom_config\"";
 			$this->configFieldSets[] = "\t\tlabel=\"".$lang."_MAIL_CONFIGURATION\">";
 			// add custom Mail Configurations
@@ -12380,7 +12428,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				$this->langContent[$this->lang][$lang.'_SMTPHOST_HINT'] = "localhost";
 
 				// set the mailer fields
-				$this->configFieldSets[] = "\n\t\t<!--".$this->setLine(__LINE__)." Mailonline Field. Type: Radio. (joomla) -->";
+				$this->configFieldSets[] = PHP_EOL."\t\t<!--".$this->setLine(__LINE__)." Mailonline Field. Type: Radio. (joomla) -->";
 				$this->configFieldSets[] = "\t\t<field";
 				$this->configFieldSets[] = "\t\t\ttype=\"radio\"";
 				$this->configFieldSets[] = "\t\t\tname=\"mailonline\"";
@@ -12649,7 +12697,7 @@ function vdm_dkim() {
 				$this->langContent[$this->lang][$lang.'_DKIM_VALUE_HINT'] = "v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=PUBLICKEY";
 
 
-				$this->configFieldSets[] = "\n\t\t<!--".$this->setLine(__LINE__)." Dkim Field. Type: Radio. (joomla) -->";
+				$this->configFieldSets[] = PHP_EOL."\t\t<!--".$this->setLine(__LINE__)." Dkim Field. Type: Radio. (joomla) -->";
 				$this->configFieldSets[] = "\t\t<field";
 				$this->configFieldSets[] = "\t\t\ttype=\"radio\"";
 				$this->configFieldSets[] = "\t\t\tname=\"dkim\"";
@@ -12785,7 +12833,7 @@ function vdm_dkim() {
 	{
 		if ($this->googlechart)
 		{
-			$this->configFieldSets[] = "\n\t<fieldset";
+			$this->configFieldSets[] = PHP_EOL."\t<fieldset";
 			$this->configFieldSets[] = "\t\tname=\"googlechart_config\"";
 			$this->configFieldSets[] = "\t\tlabel=\"".$lang."_CHART_SETTINGS_LABEL\"";
 			$this->configFieldSets[] = "\t\tdescription=\"".$lang."_CHART_SETTINGS_DESC\">";
@@ -13141,13 +13189,13 @@ function vdm_dkim() {
 			$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 			if ($otherViews == $viewName_list)
 			{
-				$component .= "\n\t".'<section name="category.'.$otherViews.'">';
-				$component .= "\n\t\t".'<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
-				$component .= "\n\t\t".'<action name="core.delete" title="JACTION_DELETE" description="COM_CATEGORIES_ACCESS_DELETE_DESC" />';
-				$component .= "\n\t\t".'<action name="core.edit" title="JACTION_EDIT" description="COM_CATEGORIES_ACCESS_EDIT_DESC" />';
-				$component .= "\n\t\t".'<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORIES_ACCESS_EDITSTATE_DESC" />';
-				$component .= "\n\t\t".'<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />';
-				$component .= "\n\t</section>";
+				$component .= PHP_EOL."\t".'<section name="category.'.$otherViews.'">';
+				$component .= PHP_EOL."\t\t".'<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
+				$component .= PHP_EOL."\t\t".'<action name="core.delete" title="JACTION_DELETE" description="COM_CATEGORIES_ACCESS_DELETE_DESC" />';
+				$component .= PHP_EOL."\t\t".'<action name="core.edit" title="JACTION_EDIT" description="COM_CATEGORIES_ACCESS_EDIT_DESC" />';
+				$component .= PHP_EOL."\t\t".'<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORIES_ACCESS_EDITSTATE_DESC" />';
+				$component .= PHP_EOL."\t\t".'<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />';
+				$component .= PHP_EOL."\t</section>";
 			}
 		}
 		return $component;
@@ -13397,13 +13445,13 @@ function vdm_dkim() {
 				}
 			}
 			/// now build the section
-			$component = implode("\n",$this->componentHead);
+			$component = implode(PHP_EOL,$this->componentHead);
 			// sort the array to insure easy search
 			ksort($this->componentGlobal,SORT_STRING);
 			// add global to the compnent section
-			$component .= "\n".implode("\n",$this->componentGlobal)."\n\t</section>";
+			$component .= PHP_EOL.implode(PHP_EOL,$this->componentGlobal).PHP_EOL."\t</section>";
 			// add views to the compnent section
-			$component .= "\n".implode("\n",$componentViews);
+			$component .= PHP_EOL.implode(PHP_EOL,$componentViews);
 			// be sure to reset again. (memory)
 			$this->componentHead	= null;
 			$this->componentGlobal	= null;

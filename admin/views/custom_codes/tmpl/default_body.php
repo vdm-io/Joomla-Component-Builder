@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 14 of this MVC
-	@build			31st January, 2017
+	@version		@update number 28 of this MVC
+	@build			9th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		default_body.php
@@ -88,6 +88,9 @@ $edit = "index.php?option=com_componentbuilder&view=custom_codes&task=custom_cod
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->path); ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo JText::_($item->target); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo JText::_($item->type); ?>

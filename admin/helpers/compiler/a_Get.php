@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version			2.2.0
+	@version			2.3.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -94,6 +94,13 @@ class Get
 	 * @var      array
 	 */
 	protected $newCustomCode = array();
+	
+	/**
+	 * The index of code already loaded
+	 * 
+	 * @var      array
+	 */
+	protected $codeAreadyDone = array();
 	
 	/**
 	 * The Language prefix
@@ -706,7 +713,7 @@ class Get
 		if ($component->add_php_helper_admin == 1)
 		{
 			$this->lang = 'admin';
-			$this->customScriptBuilder['component_php_helper_admin'] = "\n\n".$this->setCustomContentLang(base64_decode($component->php_helper_admin));
+			$this->customScriptBuilder['component_php_helper_admin'] = PHP_EOL.PHP_EOL.$this->setCustomContentLang(base64_decode($component->php_helper_admin));
 		}
 		else
 		{
@@ -728,7 +735,7 @@ class Get
 		if ($component->add_php_helper_both == 1)
 		{
 			$this->lang = 'both';
-			$this->customScriptBuilder['component_php_helper_both'] = "\n\n".$this->setCustomContentLang(base64_decode($component->php_helper_both));
+			$this->customScriptBuilder['component_php_helper_both'] = PHP_EOL.PHP_EOL.$this->setCustomContentLang(base64_decode($component->php_helper_both));
 		}
 		else
 		{
@@ -738,7 +745,7 @@ class Get
 		if ($component->add_php_helper_site == 1)
 		{
 			$this->lang = 'site';
-			$this->customScriptBuilder['component_php_helper_site'] = "\n\n".$this->setCustomContentLang(base64_decode($component->php_helper_site));
+			$this->customScriptBuilder['component_php_helper_site'] = PHP_EOL.PHP_EOL.$this->setCustomContentLang(base64_decode($component->php_helper_site));
 		}
 		else
 		{
@@ -1535,7 +1542,7 @@ class Get
 						$this->_fieldData[$id]->javascript_view_footer = $this->setCustomContentLang(base64_decode($this->_fieldData[$id]->javascript_view_footer));
 						$this->_fieldData[$id]->javascript_view_footer_decoded = true;
 					}
-					$this->customScriptBuilder['view_footer'][$name_single] .= "\n".$this->_fieldData[$id]->javascript_view_footer;
+					$this->customScriptBuilder['view_footer'][$name_single] .= PHP_EOL.$this->_fieldData[$id]->javascript_view_footer;
 					if (strpos($this->_fieldData[$id]->javascript_view_footer,"token") !== false && strpos($this->_fieldData[$id]->javascript_view_footer,"task=ajax") !== false)
 					{
 						if (!isset($this->customScriptBuilder['token'][$name_single]) || !$this->customScriptBuilder['token'][$name_single])
@@ -1565,7 +1572,7 @@ class Get
 						$this->_fieldData[$id]->css_view = base64_decode($this->_fieldData[$id]->css_view);
 						$this->_fieldData[$id]->css_view_decoded = true;
 					}
-					$this->customScriptBuilder['css_view'][$name_single] .= "\n".$this->_fieldData[$id]->css_view;
+					$this->customScriptBuilder['css_view'][$name_single] .= PHP_EOL.$this->_fieldData[$id]->css_view;
 				}
 
 				// add this only once to view.
@@ -1674,7 +1681,7 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_before_getitem'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_before_getitem'][$view_code] .= "\n\n".base64_decode($result->php_before_getitem);
+							$this->customScriptBuilder[$this->target.'_php_before_getitem'][$view_code] .= PHP_EOL.PHP_EOL.base64_decode($result->php_before_getitem);
 							unset($result->php_before_getitem);
 						}
 						// add php custom scripting (php_after_getitem)
@@ -1684,7 +1691,7 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_after_getitem'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_after_getitem'][$view_code] .= "\n\n".base64_decode($result->php_after_getitem);
+							$this->customScriptBuilder[$this->target.'_php_after_getitem'][$view_code] .= PHP_EOL.PHP_EOL.base64_decode($result->php_after_getitem);
 							unset($result->php_after_getitem);
 						}
 						// add php custom scripting (php_before_getitems)
@@ -1694,7 +1701,7 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view_code] .= "\n\n".base64_decode($result->php_before_getitems);
+							$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view_code] .= PHP_EOL.PHP_EOL.base64_decode($result->php_before_getitems);
 							unset($result->php_before_getitems);
 						}
 						// add php custom scripting (php_after_getitems)
@@ -1704,7 +1711,7 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view_code] .= "\n\n".base64_decode($result->php_after_getitems);
+							$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view_code] .= PHP_EOL.PHP_EOL.base64_decode($result->php_after_getitems);
 							unset($result->php_after_getitems);
 						}
 						// add php custom scripting (php_getlistquery)
@@ -1714,7 +1721,7 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] .= "\n".base64_decode($result->php_getlistquery);
+							$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] .= PHP_EOL.base64_decode($result->php_getlistquery);
 							unset($result->php_getlistquery);
 						}
 						// set the getmethod code name
@@ -2256,7 +2263,7 @@ class Get
 				}
 				if (ComponentbuilderHelper::checkArray($gets) && ComponentbuilderHelper::checkArray($keys))
 				{
-					$querySelect = '$query->select($db->quoteName('."\n\t\t\t".'array('.implode(',',$gets).'),'."\n\t\t\t".'array('.implode(',',$keys).')));';
+					$querySelect = '$query->select($db->quoteName('.PHP_EOL."\t\t\t".'array('.implode(',',$gets).'),'.PHP_EOL."\t\t\t".'array('.implode(',',$keys).')));';
 					$queryFrom = '$db->quoteName('.$db->quote($table).', '.$db->quote($as).')';
 					// return the select query
 					return array('select' => $querySelect, 'from' => $queryFrom, 'name' => $queryName, 'table' => $table, 'type' => $type, 'select_gets' => $gets, 'select_keys' => $keys);
@@ -2390,9 +2397,9 @@ class Get
 				$data = $db->loadObjectList();
 				// start building the MySql dump
 				$dump = "--";
-				$dump .= "\n-- Dumping data for table `#__[[[component]]]_".$view."`";
-				$dump .= "\n--";
-				$dump .= "\n\nINSERT INTO `#__[[[component]]]_".$view."` (";
+				$dump .= PHP_EOL."-- Dumping data for table `#__[[[component]]]_".$view."`";
+				$dump .= PHP_EOL."--";
+				$dump .= PHP_EOL.PHP_EOL."INSERT INTO `#__[[[component]]]_".$view."` (";
 				foreach ($data as $line)
 				{
 					$comaSet = 0;
@@ -2416,11 +2423,11 @@ class Get
 				{
 					if ($coma == 0)
 					{
-						$dump .= "\n(";
+						$dump .= PHP_EOL."(";
 					}
 					else
 					{
-						$dump .= ",\n(";
+						$dump .= ",".PHP_EOL."(";
 					}
 					$comaSet = 0;
 					foreach($line as $fieldName => $fieldValue)
@@ -2596,17 +2603,27 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	public function getCustomCode()
+	public function getCustomCode($ids = null)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.code','a.component','a.from_line','a.hashtarget','a.hashendtarget','a.path','a.to_line','a.type')));
 		$query->from($db->quoteName('#__componentbuilder_custom_code','a'));
-		$query->where($db->quoteName('a.component') . ' = '. (int) $this->componentData->id);
+		if ($ids)
+		{
+			$query->select($db->quoteName(array('a.id','a.code')));
+			$query->where($db->quoteName('a.id') . ' IN (' . implode(',',$ids) . ')');
+			$query->where($db->quoteName('a.target') . ' = 2'); // <--- to load the correct target
+		}
+		else
+		{
+			$query->select($db->quoteName(array('a.id','a.code','a.component','a.from_line','a.hashtarget','a.hashendtarget','a.path','a.to_line','a.type')));
+			$query->where($db->quoteName('a.component') . ' = '. (int) $this->componentData->id);
+			$query->where($db->quoteName('a.target') . ' = 1'); // <--- to load the correct target
+			$query->order($db->quoteName('a.from_line') . ' ASC'); // <--- insrue we always add code from top of file
+		}
 		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->order($db->quoteName('a.from_line') . ' ASC'); // <--- insrue we always add code from top of file
 		$db->setQuery($query);
 		$db->execute();
 		if ($db->getNumRows())
@@ -2616,12 +2633,16 @@ class Get
 			foreach($this->customCode as $nr => &$customCode)
 			{
 				$customCode['code'] = base64_decode($customCode['code']);
-				$customCode['hashtarget'] = explode("__", $customCode['hashtarget']);
-				if ($customCode['type'] == 1 && strpos($customCode['hashendtarget'], '__') !== false)
+				if (isset($customCode['hashtarget']))
 				{
-					$customCode['hashendtarget'] = explode("__", $customCode['hashendtarget']);
+					$customCode['hashtarget'] = explode("__", $customCode['hashtarget']);
+					if ($customCode['type'] == 1 && strpos($customCode['hashendtarget'], '__') !== false)
+					{
+						$customCode['hashendtarget'] = explode("__", $customCode['hashendtarget']);
+					}
 				}
 			}
+			return true;
 		}
 		return false;
 	}
@@ -2642,12 +2663,20 @@ class Get
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			// Insert columns.
-			$columns = array('path','type','component','published','created','created_by','version','access','hashtarget','from_line','to_line','code','hashendtarget');
+			$columns = array('path','type','target','component','published','created','created_by','version','access','hashtarget','from_line','to_line','code','hashendtarget');
 			// Prepare the insert query.
 			$query->insert($db->quoteName('#__componentbuilder_custom_code'));
 			$query->columns($db->quoteName($columns));
-			foreach($this->newCustomCode as $values){
-				$query->values(implode(',', $values));
+			foreach($this->newCustomCode as $values)
+			{
+				if (count($values) == 14)
+				{
+					$query->values(implode(',', $values));
+				}
+				else
+				{
+					// TODO line mismatch... should not happen
+				}
 			}
 			// clear the values array
 			$this->newCustomCode = array();
@@ -2759,7 +2788,17 @@ class Get
 		$pointer		= array();
 		$reading		= array();
 		$reader			= 0;
-		$path			= $target . '/' . str_replace('./', '', $file);
+		// make sure we have the path correct (the script file is not in admin path for example)
+		// there may be more... will nead to keep our eye on this... since files could be moved during install
+		$file = str_replace('./', '', $file);
+		if ($file !== 'script.php')
+		{
+			$path		= $target . '/' . $file;
+		}
+		else
+		{
+			$path		= $file;
+		}
 		foreach (new SplFileObject($file) as $lineNumber => $lineContent)
 		{
 			// we musk keep last few lines to dynamic find target entry later
@@ -2771,8 +2810,8 @@ class Get
 			}
 			foreach ($placeholders as $type => $placeholder)
 			{
-				$i	= (int) ($type === 3 ||$type === 4) ? 2 : 1;
-				$_type	= (int) ($type === 1 || $type === 3) ? 1 : 2;
+				$i	= (int) ($type == 3 ||$type == 4) ? 2 : 1;
+				$_type	= (int) ($type == 1 || $type == 3) ? 1 : 2;
 				if ($reader === 0 || $reader === $i)
 				{
 					$targetKey	= $type;
@@ -2793,6 +2832,7 @@ class Get
 							// activate fingerPrint for replacement end target
 							$loadEndFingerPrint	= true;
 							$backupTargetKey	= $targetKey;
+							$backupI		= $i;
 						}
 						// all new records we can do a bulk insert
 						if ($i === 1)
@@ -2826,12 +2866,12 @@ class Get
 						if ($i === 1)
 						{
 							// load the last value
-							$this->newCustomCode[$pointer[$backupTargetKey]][]	= $db->quote($hashendtarget); // 'hashendtarget'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($hashendtarget); // 'hashendtarget'
 						}
 						// the record already exist so we must use module to update
 						elseif ($i === 2)
 						{
-							$this->existingCustomCode[$pointer[$backupTargetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote($hashendtarget);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote($hashendtarget);
 						}
 						// reset the needed values
 						$endFingerPrint		= array();
@@ -2847,6 +2887,20 @@ class Get
 					// check if the starting place holder was found
 					if((!isset($reading[$targetKey]) || !$reading[$targetKey]) && (($i === 1 && trim($lineContent) === $start) || strpos($lineContent, $start) !== false))
 					{
+						if ($i === 2)
+						{
+							$id = $this->getSystemID($lineContent, $start);
+						}
+						if ($i === 2 && $id > 0)
+						{
+							// make sure we update it only once even if found again.
+							if (isset($this->codeAreadyDone[$id]))
+							{
+								continue;
+							}
+							// store the id to avoid duplication
+							$this->codeAreadyDone[$id] = (int) $id;
+						}
 						// set active reader (to lock out other search)
 						$reader				= $i;
 						// set pointer
@@ -2863,10 +2917,6 @@ class Get
 						$hashtarget	= $hasleng.'__'.md5(implode('',$hasharray));
 						// do a quick check to insure we have an id
 						$id = false;
-						if ($i === 2)
-						{
-							$id = $this->getSystemID($lineContent, $start);
-						}
 						// all new records we can do a buldk insert
 						if ($i === 1 || !$id)
 						{
@@ -2874,6 +2924,7 @@ class Get
 							$this->newCustomCode[$pointer[$targetKey]]	= array();
 							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($path);						// 'path'
 							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $_type);					// 'type'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'target'
 							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $this->componentData->id);			// 'component'
 							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'published'
 							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($today);						// 'created'
@@ -2900,6 +2951,13 @@ class Get
 							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('modified_by') . ' = ' . $db->quote($userId);
 							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('hashtarget') . ' = ' . $db->quote($hashtarget);
 						}
+						else // this should actualy never happen
+						{
+							// de activate the reader
+							$reading[$targetKey]			= false;
+							$reader					= 0;
+							
+						}
 						// update the counter
 						$counter[$i]++;
 					}
@@ -2924,13 +2982,13 @@ class Get
 				$hashendtarget = 0;
 			}
 			// all new records we can do a buldk insert
-			if ($i === 1)
+			if ($backupI === 1)
 			{
 				// load the last value
 				$this->newCustomCode[$pointer[$backupTargetKey]][]	= $db->quote($hashendtarget); // 'hashendtarget'
 			}
 			// the record already exist so we must use module to update
-			elseif ($i === 2)
+			elseif ($backupI === 2)
 			{
 				$this->existingCustomCode[$pointer[$backupTargetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote($hashendtarget);
 			}
@@ -2970,7 +3028,7 @@ class Get
 	 * @return  array    on success
 	 * 
 	 */
-	public function getPlaceHolder(&$type, &$id)
+	public function getPlaceHolder($type, &$id)
 	{
 		switch ($type)
 		{
@@ -2985,8 +3043,8 @@ class Get
 				else
 				{
 					return array(
-						'start' => "\t\t//////////////////////////////////////////", 
-						'end' => "\t\t//////////////////////////////////////////");
+						'start' => "/*////////////////////////////////////////*/", 
+						'end' => "/*////////////////////////////////////////*/");
 				}
 				break;
 			case 2:
@@ -3000,8 +3058,8 @@ class Get
 				else
 				{
 					return array(
-						'start' => "\t\t//////////////////////////////////////////", 
-						'end' => "\t\t//////////////////////////////////////////");
+						'start' => "/*////////////////////////////////////////*/", 
+						'end' => "/*////////////////////////////////////////*/");
 				}
 				break;
 		}

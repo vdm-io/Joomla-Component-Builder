@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.0
-	@build			4th February, 2017
+	@version		2.3.1
+	@build			9th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_fullwidth.php
@@ -30,6 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
+	'path',
 	'code'
 );
 

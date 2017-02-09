@@ -67,7 +67,7 @@ class ###Component###Model###View### extends JModelAdmin
 	public function getTable($type = '###view###', $prefix = '###Component###Table', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
-	}
+	}###ADMIN_CUSTOM_BUTTONS_METHOD###
     
 	/**
 	 * Method to get a single record.
@@ -248,6 +248,45 @@ class ###Component###Model###View### extends JModelAdmin
 
 		return $data;
 	}###VALIDATIONFIX### ###UNIQUEFIELDS###
+	
+	/**
+	 * Method to delete one or more records.
+	 *
+	 * @param   array  &$pks  An array of record primary keys.
+	 *
+	 * @return  boolean  True if successful, false if an error occurs.
+	 *
+	 * @since   12.2
+	 */
+	public function delete(&$pks)
+	{###JMODELADMIN_BEFORE_DELETE###
+		if (!parent::delete($pks))
+		{
+			return false;
+		}###JMODELADMIN_AFTER_DELETE###
+		
+		return true;
+	}
+
+	/**
+	 * Method to change the published state of one or more records.
+	 *
+	 * @param   array    &$pks   A list of the primary keys to change.
+	 * @param   integer  $value  The value of the published state.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   12.2
+	 */
+	public function publish(&$pks, $value = 1)
+	{###JMODELADMIN_BEFORE_PUBLISH###
+		if (!parent::publish($pks, $value))
+		{
+			return false;
+		}###JMODELADMIN_AFTER_PUBLISH###
+		
+		return true;
+        }
     
 	/**
 	 * Method to perform batch operations on an item or a set of items.

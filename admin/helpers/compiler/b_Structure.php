@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version			2.2.0
+	@version			2.3.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -513,14 +513,14 @@ class Structure extends Get
 				{
 					// set list view$view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => JFactory::getDate($view['settings']->modified)->format('jS F, Y'),'###VERSION###' => $view['settings']->version);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 					$this->buildDynamique($target,'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => JFactory::getDate($view['settings']->modified)->format('jS F, Y'),'###VERSION###' => $view['settings']->version);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
@@ -811,7 +811,7 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'media')
 				{
-					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= "\n\t\t<folder>".$lastFolder."</folder>";
+					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL."\t\t<folder>".$lastFolder."</folder>";
 				}
 				// check if we sould add it to the site xml list
 				if (!isset($this->fileContentStatic['###EXSTRA_SITE_FOLDERS###']))
@@ -820,7 +820,7 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'site')
 				{
-					$this->fileContentStatic['###EXSTRA_SITE_FOLDERS###'] .= "\n\t\t<folder>".$lastFolder."</folder>";
+					$this->fileContentStatic['###EXSTRA_SITE_FOLDERS###'] .= PHP_EOL."\t\t<folder>".$lastFolder."</folder>";
 				}
 				// check if we sould add it to the admin xml list
 				if (!isset($this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###']))
@@ -829,7 +829,7 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'admin')
 				{
-					$this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###'] .= "\n\t\t\t<folder>".$lastFolder."</folder>";
+					$this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###'] .= PHP_EOL."\t\t\t<folder>".$lastFolder."</folder>";
 				}
 				// make we have not duplicates
 				$key_pointer = ComponentbuilderHelper::safeString($custom['folder']).'_f'.$pointer_tracker;

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 14 of this MVC
-	@build			31st January, 2017
+	@version		@update number 28 of this MVC
+	@build			9th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_code.php
@@ -356,6 +356,42 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 		}
 
 		return $data;
+	}
+
+	/**
+	* Method to validate the form data.
+	*
+	* @param   JForm   $form   The form to validate against.
+	* @param   array   $data   The data to validate.
+	* @param   string  $group  The name of the field group to validate.
+	*
+	* @return  mixed  Array of filtered data if valid, false otherwise.
+	*
+	* @see     JFormRule
+	* @see     JFilterInput
+	* @since   12.2
+	*/
+	public function validate($form, $data, $group = null)
+	{
+		// check if the not_required field is set
+		if (ComponentbuilderHelper::checkString($data['not_required']))
+		{
+			$requiredFields = (array) explode(',',(string) $data['not_required']);
+			$requiredFields = array_unique($requiredFields);
+			// now change the required field attributes value
+			foreach ($requiredFields as $requiredField)
+			{
+				// make sure there is a string value
+				if (ComponentbuilderHelper::checkString($requiredField))
+				{
+					// change to false
+					$form->setFieldAttribute($requiredField, 'required', 'false');
+					// also clear the data set
+					$data[$requiredField] = '';
+				}
+			}
+		}
+		return parent::validate($form, $data, $group);
 	} 
 
 	/**

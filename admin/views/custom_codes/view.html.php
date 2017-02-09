@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 14 of this MVC
-	@build			31st January, 2017
+	@version		@update number 28 of this MVC
+	@build			9th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -224,6 +224,28 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			}
 		}
 
+		// Set Target Selection
+		$this->targetOptions = $this->getTheTargetSelections();
+		if ($this->targetOptions)
+		{
+			// Target Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL').' -',
+				'filter_target',
+				JHtml::_('select.options', $this->targetOptions, 'value', 'text', $this->state->get('filter.target'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Target Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL').' -',
+					'batch[target]',
+					JHtml::_('select.options', $this->targetOptions, 'value', 'text')
+				);
+			}
+		}
+
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
 		if ($this->typeOptions)
@@ -289,10 +311,47 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			'a.published' => JText::_('JSTATUS'),
 			'g.system_name' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL'),
 			'a.path' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_LABEL'),
+			'a.target' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL'),
 			'a.type' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	} 
+
+	protected function getTheTargetSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('target'));
+		$query->from($db->quoteName('#__componentbuilder_custom_code'));
+		$query->order($db->quoteName('target') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$filter = array();
+			foreach ($results as $target)
+			{
+				// Translate the target selection
+				$text = $model->selectionTranslation($target,'target');
+				// Now add the target and its text to the options array
+				$filter[] = JHtml::_('select.option', $target, JText::_($text));
+			}
+			return $filter;
+		}
+		return false;
+	}
 
 	protected function getTheTypeSelections()
 	{

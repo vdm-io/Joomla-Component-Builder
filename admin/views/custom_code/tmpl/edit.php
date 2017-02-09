@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 14 of this MVC
-	@build			31st January, 2017
+	@version		@update number 28 of this MVC
+	@build			9th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		edit.php
@@ -117,24 +117,116 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </div>
+
+<div class="clearfix"></div>
+<?php echo JLayoutHelper::render('custom_code.details_under', $this); ?>
 </form>
 </div>
 
 <script type="text/javascript">
 
-// #jform_type listeners for type_vvvvvzo function
+// #jform_target listeners for target_vvvvvzo function
+jQuery('#jform_target').on('keyup',function()
+{
+	var target_vvvvvzo = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvvzo(target_vvvvvzo);
+
+});
+jQuery('#adminForm').on('change', '#jform_target',function (e)
+{
+	e.preventDefault();
+	var target_vvvvvzo = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvvzo(target_vvvvvzo);
+
+});
+
+// #jform_target listeners for target_vvvvvzp function
+jQuery('#jform_target').on('keyup',function()
+{
+	var target_vvvvvzp = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvvzp(target_vvvvvzp);
+
+});
+jQuery('#adminForm').on('change', '#jform_target',function (e)
+{
+	e.preventDefault();
+	var target_vvvvvzp = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvvzp(target_vvvvvzp);
+
+});
+
+// #jform_target listeners for target_vvvvvzq function
+jQuery('#jform_target').on('keyup',function()
+{
+	var target_vvvvvzq = jQuery("#jform_target input[type='radio']:checked").val();
+	var type_vvvvvzq = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvvzq(target_vvvvvzq,type_vvvvvzq);
+
+});
+jQuery('#adminForm').on('change', '#jform_target',function (e)
+{
+	e.preventDefault();
+	var target_vvvvvzq = jQuery("#jform_target input[type='radio']:checked").val();
+	var type_vvvvvzq = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvvzq(target_vvvvvzq,type_vvvvvzq);
+
+});
+
+// #jform_type listeners for type_vvvvvzq function
 jQuery('#jform_type').on('keyup',function()
 {
-	var type_vvvvvzo = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvvzo(type_vvvvvzo);
+	var target_vvvvvzq = jQuery("#jform_target input[type='radio']:checked").val();
+	var type_vvvvvzq = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvvzq(target_vvvvvzq,type_vvvvvzq);
 
 });
 jQuery('#adminForm').on('change', '#jform_type',function (e)
 {
 	e.preventDefault();
-	var type_vvvvvzo = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvvzo(type_vvvvvzo);
+	var target_vvvvvzq = jQuery("#jform_target input[type='radio']:checked").val();
+	var type_vvvvvzq = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvvzq(target_vvvvvzq,type_vvvvvzq);
 
 });
 
+// #jform_type listeners for type_vvvvvzr function
+jQuery('#jform_type').on('keyup',function()
+{
+	var type_vvvvvzr = jQuery("#jform_type input[type='radio']:checked").val();
+	var target_vvvvvzr = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvvzr(type_vvvvvzr,target_vvvvvzr);
+
+});
+jQuery('#adminForm').on('change', '#jform_type',function (e)
+{
+	e.preventDefault();
+	var type_vvvvvzr = jQuery("#jform_type input[type='radio']:checked").val();
+	var target_vvvvvzr = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvvzr(type_vvvvvzr,target_vvvvvzr);
+
+});
+
+// #jform_target listeners for target_vvvvvzr function
+jQuery('#jform_target').on('keyup',function()
+{
+	var type_vvvvvzr = jQuery("#jform_type input[type='radio']:checked").val();
+	var target_vvvvvzr = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvvzr(type_vvvvvzr,target_vvvvvzr);
+
+});
+jQuery('#adminForm').on('change', '#jform_target',function (e)
+{
+	e.preventDefault();
+	var type_vvvvvzr = jQuery("#jform_type input[type='radio']:checked").val();
+	var target_vvvvvzr = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvvzr(type_vvvvvzr,target_vvvvvzr);
+
+});
+
+
+var ide = jQuery('#jform_id').val();
+if (ide > 0)
+{
+	jQuery('#jcb-placeholder').html('<code> [CUSTO'+'MCODE='+ide+'] </code>');
+}
 </script>

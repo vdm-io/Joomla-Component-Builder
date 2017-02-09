@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version			2.2.0
+	@version			2.3.0
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -173,22 +173,22 @@ class Infusion extends Interpretation
 			if ($this->componentData->add_admin_event == 1)
 			{
 				// ###ADMIN_GLOBAL_EVENT###
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT###'] = "\n\n".'// Triger the Global Admin Event';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT###'] .= "\n".$this->fileContentStatic['###Component###'].'Helper::globalEvent($document);';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT###'] = PHP_EOL.PHP_EOL.'// Triger the Global Admin Event';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT###'] .= PHP_EOL.$this->fileContentStatic['###Component###'].'Helper::globalEvent($document);';
 				// ###ADMIN_GLOBAL_EVENT_HELPER###
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] = "\n\n\t".'/**';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n\t".'*	The Global Admin Event Method.';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n\t".'**/';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n\t".'public static function globalEvent($document)';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n\t".'{';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_admin_event']);
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= "\n\t".'}';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] = PHP_EOL.PHP_EOL."\t".'/**';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'*	The Global Admin Event Method.';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'**/';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'public static function globalEvent($document)';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'{';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_admin_event']);
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'}';
 			}
 			
 			// now load the readme file if needed
 			if ($this->componentData->addreadme == 1)
 			{
-				$this->fileContentStatic['###EXSTRA_ADMIN_FILES###'] .= "\n\t\t\t<filename>README.txt</filename>";
+				$this->fileContentStatic['###EXSTRA_ADMIN_FILES###'] .= PHP_EOL."\t\t\t<filename>README.txt</filename>";
 			}
 			
 			// ###HELPER_CREATEUSER###
@@ -254,6 +254,9 @@ class Infusion extends Interpretation
                                         $this->placeholders['###view###'] = $viewName_single;
                                         $this->placeholders['###VIEW###'] = $viewName_u;
                                         $this->placeholders['###View###'] = $viewName_f;
+                                        $this->placeholders['[[[view]]]'] = $viewName_single;
+                                        $this->placeholders['[[[VIEW]]]'] = $viewName_u;
+                                        $this->placeholders['[[[View]]]'] = $viewName_f;
 
                                         // set license per view if needed
                                         $this->setLockLicensePer($viewName_single, $this->target);
@@ -287,7 +290,7 @@ class Infusion extends Interpretation
                                         {
                                                 // ###DOCUMENT_CUSTOM_PHP### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] 
-                                                        = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_document'][$viewName_single]);
+                                                        = PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_document'][$viewName_single]);
                                                 // clear some memory
                                                 unset($this->customScriptBuilder['php_document'][$viewName_single]);
                                         }
@@ -324,16 +327,16 @@ class Infusion extends Interpretation
                                         $this->fileContentDynamic[$viewName_single]['###LINKEDVIEWMETHODS###'] = '';
 
                                         // ###JMODELADMIN_BEFORE_DELETE### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_DELETE###'] = $this->getCustomScriptBuilder('php_before_delete', $viewName_single, "\n");
+                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_DELETE###'] = $this->getCustomScriptBuilder('php_before_delete', $viewName_single, PHP_EOL);
 
                                         // ###JMODELADMIN_AFTER_DELETE### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_DELETE###'] = $this->getCustomScriptBuilder('php_after_delete', $viewName_single, "\n\n");
+                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_DELETE###'] = $this->getCustomScriptBuilder('php_after_delete', $viewName_single, PHP_EOL.PHP_EOL);
 
                                         // ###JMODELADMIN_BEFORE_DELETE### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_PUBLISH###'] = $this->getCustomScriptBuilder('php_before_publish', $viewName_single, "\n");
+                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_PUBLISH###'] = $this->getCustomScriptBuilder('php_before_publish', $viewName_single, PHP_EOL);
 
                                         // ###JMODELADMIN_AFTER_DELETE### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_PUBLISH###'] = $this->getCustomScriptBuilder('php_after_publish', $viewName_single, "\n\n");
+                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_PUBLISH###'] = $this->getCustomScriptBuilder('php_after_publish', $viewName_single, PHP_EOL.PHP_EOL);
 
                                         // ###CHECKBOX_SAVE### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_single]['###CHECKBOX_SAVE###'] = $this->setCheckboxSave($viewName_single);
@@ -342,7 +345,7 @@ class Infusion extends Interpretation
                                         $this->fileContentDynamic[$viewName_single]['###METHOD_ITEM_SAVE###'] = $this->setMethodItemSave($viewName_single);
 
                                         // ###POSTSAVEHOOK### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###POSTSAVEHOOK###'] = $this->getCustomScriptBuilder('php_postsavehook', $viewName_single, "\n", null, true, "\n\t\treturn;", "\n\n\t\treturn;");
+                                        $this->fileContentDynamic[$viewName_single]['###POSTSAVEHOOK###'] = $this->getCustomScriptBuilder('php_postsavehook', $viewName_single, PHP_EOL, null, true, PHP_EOL."\t\treturn;", PHP_EOL.PHP_EOL."\t\treturn;");
 
                                         if (isset($this->customScriptBuilder['css_view'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['css_view'][$viewName_single]))
                                         {
@@ -387,6 +390,9 @@ class Infusion extends Interpretation
                                         $this->placeholders['###views###'] = $viewName_list;
                                         $this->placeholders['###VIEWS###'] = $viewsName_u;
                                         $this->placeholders['###Views###'] = $viewsName_f;
+                                        $this->placeholders['[[[views]]]'] = $viewName_list;
+                                        $this->placeholders['[[[VIEWS]]]'] = $viewsName_u;
+                                        $this->placeholders['[[[Views]]]'] = $viewsName_f;
 
                                         // set the export/import option
                                         if ($view['port'])
@@ -424,7 +430,7 @@ class Infusion extends Interpretation
                                         $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_STRING_FIX###'] = $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###']);
 
                                         // ###GET_ITEMS_METHOD_AFTER_ALL### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_AFTER_ALL###'] = $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, "\n");
+                                        $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_AFTER_ALL###'] = $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL);
 
                                         // ###SELECTIONTRANSLATIONFIX### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_list]['###SELECTIONTRANSLATIONFIX###'] = $this->setSelectionTranslationFix($viewName_list,$this->fileContentStatic['###Component###']);
@@ -554,7 +560,7 @@ class Infusion extends Interpretation
                                 if ($view['edit_create_site_view'])
                                 {
                                         // add needed router stuff for front edit views
-                                        $this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($viewName_single);
+                                        $this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($viewName_single, null, false);
                                         $this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] .= $this->routerBuildViews($viewName_single);
                                 }
 
@@ -661,7 +667,7 @@ class Infusion extends Interpretation
                                                 {
                                                         // ###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY###']
-                                                                = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
+                                                                = PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
                                                         // clear some memory
                                                         unset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
                                                 }
@@ -676,7 +682,7 @@ class Infusion extends Interpretation
                                                 {
                                                         // ###CUSTOM_ADMIN_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEMS###']
-                                                                = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
+                                                                = PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
                                                         // clear some memory
                                                         unset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
                                                 }
@@ -694,7 +700,7 @@ class Infusion extends Interpretation
                                                 {
                                                         // ###CUSTOM_ADMIN_AFTER_GET_ITEMS### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEMS###']
-                                                                = "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
+                                                                = PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
                                                         // clear some memory
                                                         unset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
                                                 }
@@ -730,10 +736,10 @@ class Infusion extends Interpretation
                         }
 
                         // ###VIEWARRAY###
-                        $this->fileContentStatic['###VIEWARRAY###'] = "\n".implode(",\n",$viewarray);
+                        $this->fileContentStatic['###VIEWARRAY###'] = PHP_EOL.implode(",".PHP_EOL,$viewarray);
 
                         // ###CUSTOM_ADMIN_EDIT_VIEW_ARRAY###
-                        $this->fileContentStatic['###SITE_EDIT_VIEW_ARRAY###'] = "\n".implode(",\n",$site_edit_view_array);
+                        $this->fileContentStatic['###SITE_EDIT_VIEW_ARRAY###'] = PHP_EOL.implode(",".PHP_EOL,$site_edit_view_array);
 
                         // ###MAINMENUS###
                         $this->fileContentStatic['###MAINMENUS###'] = $this->setMainMenus();
@@ -930,7 +936,7 @@ class Infusion extends Interpretation
 						{
 							// ###SITE_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEMS###']
-								= "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
+								= PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
 							// clear some memory
 							unset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
 						}
@@ -948,7 +954,7 @@ class Infusion extends Interpretation
 						{
 							// ###SITE_AFTER_GET_ITEMS### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEMS###']
-								= "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
+								= PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
 							// clear some memory
 							unset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
 						}
@@ -994,16 +1000,16 @@ class Infusion extends Interpretation
 				// now load the data for the global event if needed
 				if ($this->componentData->add_site_event == 1)
 				{
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT###'] = "\n\n".'// Triger the Global Site Event';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT###'] .= "\n".$this->fileContentStatic['###Component###'].'Helper::globalEvent($document);';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT###'] = PHP_EOL.PHP_EOL.'// Triger the Global Site Event';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT###'] .= PHP_EOL.$this->fileContentStatic['###Component###'].'Helper::globalEvent($document);';
 					// ###SITE_GLOBAL_EVENT_HELPER###
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] = "\n\n\t".'/**';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= "\n\t".'*	The Global Site Event Method.';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= "\n\t".'**/';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= "\n\t".'public static function globalEvent($document)';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= "\n\t".'{';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= "\n".str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_site_event']);
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= "\n\t".'}';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] = PHP_EOL.PHP_EOL."\t".'/**';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'*	The Global Site Event Method.';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'**/';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'public static function globalEvent($document)';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'{';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_site_event']);
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'}';
 				}
 				// setup the layouts
 				$this->setCustomViewLayouts();
@@ -1027,10 +1033,10 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###LANG_SITE_SYS###'] = $this->setLangSiteSys();
 
 			// ###PREINSTALLSCRIPT###
-			$this->fileContentStatic['###PREINSTALLSCRIPT###'] = $this->getCustomScriptBuilder('php_preflight', 'install', "\n", null, true);
+			$this->fileContentStatic['###PREINSTALLSCRIPT###'] = $this->getCustomScriptBuilder('php_preflight', 'install', PHP_EOL, null, true);
 
 			// ###PREUPDATESCRIPT###
-			$this->fileContentStatic['###PREUPDATESCRIPT###'] = $this->getCustomScriptBuilder('php_preflight', 'update', "\n", null, true);
+			$this->fileContentStatic['###PREUPDATESCRIPT###'] = $this->getCustomScriptBuilder('php_preflight', 'update', PHP_EOL, null, true);
 
 			// ###POSTINSTALLSCRIPT###
 			$this->fileContentStatic['###POSTINSTALLSCRIPT###'] = $this->setPostInstallScript();
@@ -1045,7 +1051,7 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###HELPER_UIKIT###'] = $this->setUikitHelperMethods();
 			
 			// ###CONFIG_FIELDSETS###
-			$this->fileContentStatic['###CONFIG_FIELDSETS###'] = implode("\n",$this->configFieldSets);
+			$this->fileContentStatic['###CONFIG_FIELDSETS###'] = implode(PHP_EOL,$this->configFieldSets);
 			
 			// check if this has been set
 			if (!isset($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']) || !ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']))

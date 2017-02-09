@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.0
-	@build			4th February, 2017
+	@version		2.3.1
+	@build			9th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		dynamic_build_beta_fullwidth.php

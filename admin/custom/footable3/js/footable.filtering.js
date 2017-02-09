@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.6
+* @version 3.1.4
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -12,13 +12,15 @@
 		 * @constructs
 		 * @extends FooTable.Class
 		 * @param {string} name - The name for the filter.
-		 * @param {string} query - The query for the filter.
+		 * @param {(string|FooTable.Query)} query - The query for the filter.
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space, connectors){
+		construct: function(name, query, columns, space, connectors, ignoreCase, hidden){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -38,11 +40,23 @@
 			 */
 			this.connectors = F.is.boolean(connectors) ? connectors : true;
 			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
+			/**
+			 * Whether or not this is a hidden filter.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.hidden = F.is.boolean(hidden) ? hidden : false;
+			/**
 			 * The query for the filter.
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space, this.connectors);
+			this.query = query instanceof F.Query ? query : new F.Query(query, this.space, this.connectors, this.ignoreCase);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -60,7 +74,7 @@
 		match: function(str){
 			if (!F.is.string(str)) return false;
 			if (F.is.string(this.query)){
-				this.query = new F.Query(this.query, this.space, this.connectors);
+				this.query = new F.Query(this.query, this.space, this.connectors, this.ignoreCase);
 			}
 			return this.query instanceof F.Query ? this.query.match(str) : false;
 		},
@@ -124,11 +138,28 @@
 			 */
 			this.connectors = table.o.filtering.connectors;
 			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = table.o.filtering.ignoreCase;
+			/**
+			 * Whether or not search queries are treated as phrases when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.exactMatch = table.o.filtering.exactMatch;
+			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
 			 * @type {string}
 			 */
 			this.placeholder = table.o.filtering.placeholder;
+			/**
+			 * The title to display at the top of the search input column select.
+			 * @type {string}
+			 */
+			this.dropdownTitle = table.o.filtering.dropdownTitle;
 			/**
 			 * The position of the $search input within the filtering rows cell.
 			 * @type {string}
@@ -173,6 +204,13 @@
 			 * @type {?number}
 			 */
 			this._filterTimeout = null;
+			/**
+			 * The regular expression used to check for encapsulating quotations.
+			 * @instance
+			 * @private
+			 * @type {RegExp}
+			 */
+			this._exactRegExp = /^"(.*?)"$/;
 		},
 
 		/* PROTECTED */
@@ -193,7 +231,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {object} data - The jQuery data object of the table raising the event.
 			 */
-			this.ft.raise('preinit.ft.filtering').then(function(){
+			return self.ft.raise('preinit.ft.filtering').then(function(){
 				// first check if filtering is enabled via the class being applied
 				if (self.ft.$el.hasClass('footable-filtering'))
 					self.enabled = true;
@@ -213,17 +251,29 @@
 					? data.filterMin
 					: self.min;
 
-				self.connectors = F.is.number(data.filterConnectors)
+				self.connectors = F.is.boolean(data.filterConnectors)
 					? data.filterConnectors
 					: self.connectors;
+
+				self.ignoreCase = F.is.boolean(data.filterIgnoreCase)
+					? data.filterIgnoreCase
+					: self.ignoreCase;
+
+				self.exactMatch = F.is.boolean(data.filterExactMatch)
+					? data.filterExactMatch
+					: self.exactMatch;
 
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
 					: self.delay;
 
-				self.placeholder = F.is.number(data.filterPlaceholder)
+				self.placeholder = F.is.string(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
+
+				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
+					? data.filterDropdownTitle
+					: self.dropdownTitle;
 
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
@@ -258,7 +308,7 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
-			this.ft.raise('init.ft.filtering').then(function(){
+			return self.ft.raise('init.ft.filtering').then(function(){
 				self.$create();
 			}, function(){
 				self.enabled = false;
@@ -279,7 +329,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
 			var self = this;
-			this.ft.raise('destroy.ft.filtering').then(function(){
+			return self.ft.raise('destroy.ft.filtering').then(function(){
 				self.ft.$el.removeClass('footable-filtering')
 					.find('thead > tr.footable-filtering').remove();
 			});
@@ -293,7 +343,7 @@
 		$create: function () {
 			var self = this;
 			// generate the cell that actually contains all the UI.
-			var $form_grp = $('<div/>', {'class': 'form-group'})
+			var $form_grp = $('<div/>', {'class': 'form-group footable-filtering-search'})
 					.append($('<label/>', {'class': 'sr-only', text: 'Search'})),
 				$input_grp = $('<div/>', {'class': 'input-group'}).appendTo($form_grp),
 				$input_grp_btn = $('<div/>', {'class': 'input-group-btn'}),
@@ -320,9 +370,13 @@
 				.on('click', { self: self }, self._onSearchButtonClicked)
 				.append($('<span/>', {'class': 'fooicon fooicon-search'}));
 
-			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
+			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'});
+			if (!F.is.emptyString(self.dropdownTitle)){
+				self.$dropdown.append($('<li/>', {'class': 'dropdown-header','text': self.dropdownTitle}));
+			}
+			self.$dropdown.append(
 				F.arr.map(self.ft.columns.array, function (col) {
-					return col.filterable && col.visible ? $('<li/>').append(
+					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
 							$('<label/>', {text: col.title}).prepend(
 								$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)
@@ -333,7 +387,7 @@
 			);
 
 			if (self.delay > 0){
-				self.$input.on('keypress keyup', { self: self }, self._onSearchInputChanged);
+				self.$input.on('keypress keyup paste', { self: self }, self._onSearchInputChanged);
 				self.$dropdown.on('click', 'input[type="checkbox"]', {self: self}, self._onSearchColumnClicked);
 			}
 
@@ -361,55 +415,77 @@
 		 */
 		draw: function(){
 			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			var search = this.find('search');
+			if (search instanceof F.Filter){
+				var query = search.query.val();
+				if (this.exactMatch && this._exactRegExp.test(query)){
+					query = query.replace(this._exactRegExp, '$1');
+				}
+				this.$input.val(query);
+			} else {
+				this.$input.val(null);
+			}
+			this.setButton(!F.arr.any(this.filters, function(f){ return !f.hidden; }));
 		},
 
 		/* PUBLIC */
 		/**
 		 * Adds or updates the filter using the supplied name, query and columns.
-		 * @param {string} name - The name for the filter.
-		 * @param {(string|FooTable.Query)} query - The query for the filter.
-		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} columns - The columns to apply the filter to.
+		 * @instance
+		 * @param {(string|FooTable.Filter|object)} nameOrFilter - The name for the filter or the actual filter object itself.
+		 * @param {(string|FooTable.Query)} [query] - The query for the filter. This is only optional when the first parameter is a filter object.
+		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
+		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 */
-		addFilter: function(name, query, columns){
-			var f = F.arr.first(this.filters, function(f){ return f.name == name; });
+		addFilter: function(nameOrFilter, query, columns, ignoreCase, connectors, space, hidden){
+			var f = this.createFilter(nameOrFilter, query, columns, ignoreCase, connectors, space, hidden);
 			if (f instanceof F.Filter){
-				f.name = name;
-				f.query = query;
-				f.columns = columns;
-			} else {
-				this.filters.push({name: name, query: query, columns: columns});
+				this.removeFilter(f.name);
+				this.filters.push(f);
 			}
 		},
 		/**
 		 * Removes the filter using the supplied name if it exists.
+		 * @instance
 		 * @param {string} name - The name of the filter to remove.
 		 */
 		removeFilter: function(name){
 			F.arr.remove(this.filters, function(f){ return f.name == name; });
 		},
 		/**
-		 * Creates a new search filter from the supplied parameters and applies it to the rows. If no parameters are supplied the current search input value
-		 * and selected columns are used to create or update the search filter. If there is no search input value then the search filter is removed.
+		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"before.ft.filtering"} and {@link FooTable.Filtering#"after.ft.filtering"} events.
 		 * @instance
-		 * @param {string} [query] - The query to filter the rows by.
-		 * @param {(Array.<string>|Array.<number>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to in each row.
 		 * @returns {jQuery.Promise}
 		 * @fires FooTable.Filtering#"before.ft.filtering"
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
-		filter: function(query, columns){
-			if (F.is.undef(query)){
-				query = $.trim(this.$input.val() || '');
-			} else {
-				this.$input.val(query);
-			}
-			if (!F.is.emptyString(query)) {
-				this.addFilter('search', query, columns);
-			} else {
-				this.removeFilter('search');
-			}
-			this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
-			return this._filter();
+		filter: function(){
+			var self = this;
+			self.filters = self.ensure(self.filters);
+			/**
+			 * The before.ft.filtering event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Filtering#"before.ft.filtering"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {Array.<FooTable.Filter>} filters - The filters that are about to be applied.
+			 */
+			return self.ft.raise('before.ft.filtering', [self.filters]).then(function(){
+				self.filters = self.ensure(self.filters);
+				return self.ft.draw().then(function(){
+					/**
+					 * The after.ft.filtering event is raised after a filter has been applied.
+					 * @event FooTable.Filtering#"after.ft.filtering"
+					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+					 * @param {FooTable.Filter} filter - The filters that were applied.
+					 */
+					self.ft.raise('after.ft.filtering', [self.filters]);
+				});
+			});
 		},
 		/**
 		 * Removes the current search filter.
@@ -419,10 +495,28 @@
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
 		clear: function(){
-			this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
-			this.$input.val(null);
-			this.removeFilter('search');
-			return this._filter();
+			this.filters = F.arr.get(this.filters, function(f){ return f.hidden; });
+			return this.filter();
+		},
+		/**
+		 * Toggles the button icon between the search and clear icons based on the supplied value.
+		 * @instance
+		 * @param {boolean} search - Whether or not to display the search icon.
+		 */
+		setButton: function(search){
+			if (!search){
+				this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
+			} else {
+				this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
+			}
+		},
+		/**
+		 * Finds a filter by name.
+		 * @param {string} name - The name of the filter to find.
+		 * @returns {(FooTable.Filter|null)}
+		 */
+		find: function(name){
+			return F.arr.first(this.filters, function(f){ return f.name == name; });
 		},
 		/**
 		 * Gets an array of {@link FooTable.Column} to apply the search filter to. This also doubles as the default columns for filters which do not specify any columns.
@@ -451,48 +545,47 @@
 			var self = this, parsed = [], filterable = self.columns();
 			if (!F.is.emptyArray(filters)){
 				F.arr.each(filters, function(f){
-					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
-						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
-						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors));
-					}
+					f = self._ensure(f, filterable);
+					if (f instanceof F.Filter) parsed.push(f);
 				});
 			}
 			return parsed;
 		},
 
-		/* PRIVATE */
 		/**
-		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"before.ft.filtering"} and {@link FooTable.Filtering#"after.ft.filtering"} events.
+		 * Creates a new filter using the supplied object or individual parameters to populate it.
 		 * @instance
-		 * @private
-		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Filtering#"before.ft.filtering"
-		 * @fires FooTable.Filtering#"after.ft.filtering"
+		 * @param {(string|FooTable.Filter|object)} nameOrObject - The name for the filter or the actual filter object itself.
+		 * @param {(string|FooTable.Query)} [query] - The query for the filter. This is only optional when the first parameter is a filter object.
+		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
+		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
+		 * @returns {*}
 		 */
-		_filter: function(){
-			var self = this;
-			self.filters = self.ensure(self.filters);
-			/**
-			 * The before.ft.filtering event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
-			 * @event FooTable.Filtering#"before.ft.filtering"
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
-			 * @param {Array.<FooTable.Filter>} filters - The filters that are about to be applied.
-			 */
-			return self.ft.raise('before.ft.filtering', [self.filters]).then(function(){
-				self.filters = self.ensure(self.filters);
-				return self.ft.draw().then(function(){
-					/**
-					 * The after.ft.filtering event is raised after a filter has been applied.
-					 * @event FooTable.Filtering#"after.ft.filtering"
-					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
-					 * @param {FooTable.Filter} filter - The filters that were applied.
-					 */
-					self.ft.raise('after.ft.filtering', [self.filters]);
-				});
-			});
+		createFilter: function(nameOrObject, query, columns, ignoreCase, connectors, space, hidden){
+			if (F.is.string(nameOrObject)){
+				nameOrObject = {name: nameOrObject, query: query, columns: columns, ignoreCase: ignoreCase, connectors: connectors, space: space, hidden: hidden};
+			}
+			return this._ensure(nameOrObject, this.columns());
+		},
+
+		/* PRIVATE */
+		_ensure: function(filter, selectedColumns){
+			if ((F.is.hash(filter) || filter instanceof F.Filter) && !F.is.emptyString(filter.name) && (!F.is.emptyString(filter.query) || filter.query instanceof F.Query)){
+				filter.columns = F.is.emptyArray(filter.columns) ? selectedColumns : this.ft.columns.ensure(filter.columns);
+				filter.ignoreCase = F.is.boolean(filter.ignoreCase) ? filter.ignoreCase : this.ignoreCase;
+				filter.connectors = F.is.boolean(filter.connectors) ? filter.connectors : this.connectors;
+				filter.hidden = F.is.boolean(filter.hidden) ? filter.hidden : false;
+				filter.space = F.is.string(filter.space) && (filter.space === 'AND' || filter.space === 'OR') ? filter.space : this.space;
+				filter.query = F.is.string(filter.query) ? new F.Query(filter.query, filter.space, filter.connectors, filter.ignoreCase) : filter.query;
+				return (filter instanceof F.Filter)
+					? filter
+					: new F.Filter(filter.name, filter.query, filter.columns, filter.space, filter.connectors, filter.ignoreCase, filter.hidden);
+			}
+			return null;
 		},
 		/**
 		 * Handles the change event for the {@link FooTable.Filtering#$input}.
@@ -503,15 +596,25 @@
 		_onSearchInputChanged: function (e) {
 			var self = e.data.self;
 			var alpha = e.type == 'keypress' && !F.is.emptyString(String.fromCharCode(e.charCode)),
-				ctrl = e.type == 'keyup' && (e.which == 8 || e.which == 46); // backspace & delete
+				ctrl = e.type == 'keyup' && (e.which == 8 || e.which == 46),
+				paste = e.type == 'paste'; // backspace & delete
 
 			// if alphanumeric characters or specific control characters
-			if(alpha || ctrl) {
+			if(alpha || ctrl || paste) {
 				if (e.which == 13) e.preventDefault();
 				if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 				self._filterTimeout = setTimeout(function(){
 					self._filterTimeout = null;
-					self.filter();
+					var query = self.$input.val();
+					if (query.length >= self.min){
+						if (self.exactMatch && !self._exactRegExp.test(query)){
+							query = '"' + query + '"';
+						}
+						self.addFilter('search', query);
+						self.filter();
+					} else if (F.is.emptyString(query)){
+						self.clear();
+					}
 				}, self.delay);
 			}
 		},
@@ -527,7 +630,16 @@
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 			var $icon = self.$button.children('.fooicon');
 			if ($icon.hasClass('fooicon-remove')) self.clear();
-			else self.filter();
+			else {
+				var query = self.$input.val();
+				if (query.length >= self.min){
+					if (self.exactMatch && !self._exactRegExp.test(query)){
+						query = '"' + query + '"';
+					}
+					self.addFilter('search', query);
+					self.filter();
+				}
+			}
 		},
 		/**
 		 * Handles the click event for the column checkboxes in the {@link FooTable.Filtering#$dropdown}.
@@ -543,6 +655,7 @@
 				var $icon = self.$button.children('.fooicon');
 				if ($icon.hasClass('fooicon-remove')){
 					$icon.removeClass('fooicon-remove').addClass('fooicon-search');
+					self.addFilter('search', self.$input.val());
 					self.filter();
 				}
 			}, self.delay);
@@ -577,9 +690,10 @@
 		}
 	});
 
-	F.components.core.register('filtering', F.Filtering, 10);
+	F.components.register('filtering', F.Filtering, 500);
 
 })(jQuery, FooTable);
+
 (function(F){
 	F.Query = F.Class.extend(/** @lends FooTable.Query */{
 		/**
@@ -589,9 +703,10 @@
 		 * @param {string} query - The string value of the query.
 		 * @param {string} [space="AND"] - How the query treats whitespace.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
 		 * @returns {FooTable.Query}
 		 */
-		construct: function(query, space, connectors){
+		construct: function(query, space, connectors, ignoreCase){
 			/* PRIVATE */
 			/**
 			 * Holds the previous value of the query and is used internally in the {@link FooTable.Query#val} method.
@@ -617,6 +732,12 @@
 			 * @type {boolean}
 			 */
 			this.connectors = F.is.boolean(connectors) ? connectors : true;
+			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
 			/**
 			 * The left side of the query if one exists. OR takes precedence over AND.
 			 * @type {FooTable.Query}
@@ -680,26 +801,39 @@
 		 * @private
 		 */
 		_match: function(str, def){
-			var self = this, result = false;
+			var self = this, result = false, empty = F.is.emptyString(str);
 			if (F.is.emptyArray(self.parts) && self.left instanceof F.Query) return def;
 			if (F.is.emptyArray(self.parts)) return result;
 			if (self.space === 'OR'){
 				// with OR we give the str every part to test and if any match it is a success, we do exit early if a negated match occurs
 				F.arr.each(self.parts, function(p){
-					var match = F.str.contains(str, p.query, true);
-					if (match && !p.negate) result = true;
-					if (match && p.negate) {
-						result = false;
-						return result;
+					if (p.empty && empty){
+						result = true;
+						if (p.negate){
+							result = false;
+							return result;
+						}
+					} else {
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
+						if (match && !p.negate) result = true;
+						if (match && p.negate) {
+							result = false;
+							return result;
+						}
 					}
 				});
 			} else {
 				// otherwise with AND we check until the first failure and then exit
 				result = true;
 				F.arr.each(self.parts, function(p){
-					var match = F.str.contains(str, p.query, true);
-					if ((!match && !p.negate) || (match && p.negate)) result = false;
-					return result;
+					if (p.empty){
+						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
+						return result;
+					} else {
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
+						if ((!match && !p.negate) || (match && p.negate)) result = false;
+						return result;
+					}
 				});
 			}
 			return result;
@@ -735,14 +869,14 @@
 				// we have an OR so split the value on the first occurrence of OR to get the left and right sides of the statement
 				this.operator = 'OR';
 				var or = this._value.split(/(?:\sOR\s)(.*)?/);
-				this.left = new F.Query(or[0], this.space, this.connectors);
-				this.right = new F.Query(or[1], this.space, this.connectors);
+				this.left = new F.Query(or[0], this.space, this.connectors, this.ignoreCase);
+				this.right = new F.Query(or[1], this.space, this.connectors, this.ignoreCase);
 			} else if (/\sAND\s/.test(this._value)) {
 				// there are no more OR's so start with AND
 				this.operator = 'AND';
 				var and = this._value.split(/(?:\sAND\s)(.*)?/);
-				this.left = new F.Query(and[0], this.space, this.connectors);
-				this.right = new F.Query(and[1], this.space, this.connectors);
+				this.left = new F.Query(and[0], this.space, this.connectors, this.ignoreCase);
+				this.right = new F.Query(and[1], this.space, this.connectors, this.ignoreCase);
 			} else {
 				// we have no more statements to parse so set the parts array by parsing each part of the remaining query
 				var self = this;
@@ -762,7 +896,8 @@
 				query: str,
 				negate: false,
 				phrase: false,
-				exact: false
+				exact: false,
+				empty: false
 			};
 			// support for NEGATE operand - (minus sign). Remove this first so we can get onto phrase checking
 			if (F.str.startsWith(p.query, '-')){
@@ -780,6 +915,7 @@
 				});
 				p.phrase = true;
 			}
+			p.empty = p.phrase && F.is.emptyString(p.query);
 			return p;
 		}
 	});
@@ -836,7 +972,10 @@
 	 */
 	F.Column.prototype.filterValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('filterValue') || $(valueOrElement).text();
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('filterValue');
+			return F.is.defined(data) ? ''+data : $(valueOrElement).text();
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
@@ -849,6 +988,7 @@
 	// this is used to define the filtering specific properties on column creation
 	F.Column.prototype.__filtering_define__ = function(definition){
 		this.filterable = F.is.boolean(definition.filterable) ? definition.filterable : this.filterable;
+		this.filterValue = F.checkFnValue(this, definition.filterValue, this.filterValue);
 	};
 
 	// overrides the public define method and replaces it with our own
@@ -864,21 +1004,27 @@
 	 * @prop {boolean} enabled=false - Whether or not to allow filtering on the table.
 	 * @prop {({name: string, query: (string|FooTable.Query), columns: (Array.<string>|Array.<number>|Array.<FooTable.Column>)}|Array.<FooTable.Filter>)} filters - The filters to apply to the current {@link FooTable.Rows#array}.
 	 * @prop {number} delay=1200 - The delay in milliseconds before the query is auto applied after a change (any value equal to or less than zero will disable this).
-	 * @prop {number} min=3 - The minimum number of characters allowed in the search input before it is auto applied.
+	 * @prop {number} min=1 - The minimum number of characters allowed in the search input before it is auto applied.
 	 * @prop {string} space="AND" - Specifies how whitespace in a filter query is handled.
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
+	 * @prop {string} dropdownTitle=null - The title to display at the top of the search input column select.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
+	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
+	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
 		filters: [],
 		delay: 1200,
-		min: 3,
+		min: 1,
 		space: 'AND',
 		placeholder: 'Search',
+		dropdownTitle: null,
 		position: 'right',
-		connectors: true
+		connectors: true,
+		ignoreCase: true,
+		exactMatch: false
 	};
 })(FooTable);
 (function(F){
@@ -894,32 +1040,5 @@
 			if ((result = f.matchRow(self)) == false) return false;
 		});
 		return result;
-	};
-})(FooTable);
-(function(F){
-	/**
-	 * Filter the table using the supplied query and columns. Added by the {@link FooTable.Filtering} component.
-	 * @instance
-	 * @param {string} query - The query to filter the rows by.
-	 * @param {(Array.<string>|Array.<number>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to in each row.
-	 * @returns {jQuery.Promise}
-	 * @fires FooTable.Filtering#before.ft.filtering
-	 * @fires FooTable.Filtering#after.ft.filtering
-	 * @see FooTable.Filtering#filter
-	 */
-	F.Table.prototype.applyFilter = function(query, columns){
-		return this.use(F.Filtering).filter(query, columns);
-	};
-
-	/**
-	 * Clear the current filter from the table. Added by the {@link FooTable.Filtering} component.
-	 * @instance
-	 * @returns {jQuery.Promise}
-	 * @fires FooTable.Filtering#before.ft.filtering
-	 * @fires FooTable.Filtering#after.ft.filtering
-	 * @see FooTable.Filtering#clear
-	 */
-	F.Table.prototype.clearFilter = function(){
-		return this.use(F.Filtering).clear();
 	};
 })(FooTable);

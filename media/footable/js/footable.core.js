@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.6
+* @version 3.1.4
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -20,8 +20,6 @@
 		options = options || {};
 		// make sure we only work with tables
 		return this.filter('table').each(function (i, tbl) {
-			var ft = F.get(tbl);
-			if (ft instanceof F.Table) ft.destroy();
 			F.init(tbl, options, ready);
 		});
 	};
@@ -71,7 +69,25 @@
 	 * @returns {FooTable.Table}
 	 */
 	F.init = function(table, options, ready){
+		var ft = F.get(table);
+		if (ft instanceof F.Table) ft.destroy();
 		return new F.Table(table, options, ready);
+	};
+
+	/**
+	 * Gets the FooTable.Row instance for the supplied element.
+	 * @param {(jQuery|jQuery.selector|HTMLTableElement)} element - A jQuery object, selector or the HTMLElement of an element to retrieve the FooTable.Row for.
+	 * @returns {FooTable.Row}
+	 */
+	F.getRow = function(element){
+		// to get the FooTable.Row object simply walk up the DOM, find the TR and grab the __FooTableRow__ data value
+		var $row = $(element).closest('tr');
+		// if this is a detail row get the previous row in the table to get the main TR element
+		if ($row.hasClass('footable-detail-row')){
+			$row = $row.prev();
+		}
+		// grab the row object
+		return $row.data('__FooTableRow__');
 	};
 
 	// The below are external type definitions mainly used as pointers to jQuery docs for important information
@@ -529,14 +545,6 @@
 		return F.is.string(value) ? value.length === 0 : true;
 	};
 
-	/**
-	 * Whether or not we are on a mobile device.
-	 */
-	F.is.mobile = (function(a){
-		return (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)
-		||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)));
-	})(navigator.userAgent||navigator.vendor||window.opera);
-
 })(FooTable);
 (function (F) {
 	/**
@@ -551,13 +559,27 @@
 	 * @function contains
 	 * @param {string} str - The string to check.
 	 * @param {string} contains - The string to check for.
-	 * @param {boolean} [ignoreCase] - Whether or not to ignore casing when performing the check.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
 	 * @returns {boolean}
 	 */
 	F.str.contains = function (str, contains, ignoreCase) {
-		return !F.is.emptyString(str)
-			&& !F.is.emptyString(contains) && contains.length <= str.length
+		if (F.is.emptyString(str) || F.is.emptyString(contains)) return false;
+		return contains.length <= str.length
 			&& (ignoreCase ? str.toUpperCase().indexOf(contains.toUpperCase()) : str.indexOf(contains)) !== -1;
+	};
+
+	/**
+	 * Checks if the supplied string contains the exact given substring.
+	 * @memberof FooTable.str
+	 * @function contains
+	 * @param {string} str - The string to check.
+	 * @param {string} contains - The string to check for.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
+	 * @returns {boolean}
+	 */
+	F.str.containsExact = function (str, contains, ignoreCase) {
+		if (F.is.emptyString(str) || F.is.emptyString(contains) || contains.length > str.length) return false;
+		return new RegExp('\\b'+ F.str.escapeRegExp(contains)+'\\b', ignoreCase ? 'i' : '').test(str);
 	};
 
 	/**
@@ -566,7 +588,7 @@
 	 * @function containsWord
 	 * @param {string} str - The string to check.
 	 * @param {string} word - The word to check for.
-	 * @param {boolean} [ignoreCase] - Whether or not to ignore casing when performing the check.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
 	 * @returns {boolean}
 	 */
 	F.str.containsWord = function(str, word, ignoreCase){
@@ -588,7 +610,8 @@
 	 * @returns {string}
 	 */
 	F.str.from = function (str, from) {
-		return this.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
+		if (F.is.emptyString(str)) return str;
+		return F.str.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
 	};
 
 	/**
@@ -600,6 +623,7 @@
 	 * @returns {boolean}
 	 */
 	F.str.startsWith = function (str, prefix) {
+		if (F.is.emptyString(str)) return str == prefix;
 		return str.slice(0, prefix.length) == prefix;
 	};
 
@@ -611,9 +635,10 @@
 	 * @returns {string}
 	 */
 	F.str.toCamelCase = function (str) {
+		if (F.is.emptyString(str)) return str;
 		if (str.toUpperCase() === str) return str.toLowerCase();
 		return str.replace(/^([A-Z])|[-\s_](\w)/g, function (match, p1, p2) {
-			if (p2) return p2.toUpperCase();
+			if (F.is.string(p2)) return p2.toUpperCase();
 			return p1.toLowerCase();
 		});
 	};
@@ -632,10 +657,13 @@
 
 	/**
 	 * Escapes a string for use in a regular expression.
+	 * @memberof FooTable.str
+	 * @function escapeRegExp
 	 * @param {string} str - The string to escape.
 	 * @returns {string}
 	 */
 	F.str.escapeRegExp = function(str){
+		if (F.is.emptyString(str)) return str;
 		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	};
 
@@ -836,16 +864,34 @@
 		/**
 		 * Creates new instances of all registered classes using there priority and the supplied arguments to return them in an array.
 		 * @instance
+		 * @param {object} subs - An object containing classes to substitute on load.
 		 * @param {*} arg1 - The first argument to supply when creating new instances of all registered classes.
 		 * @param {*} [argN...] - Any number of additional arguments to supply when creating new instances of all registered classes.
 		 * @returns {Array.<FooTable.Class>}
 		 * @this FooTable.ClassFactory
 		 */
-		load: function(arg1, argN){
-			var self = this, args = Array.prototype.slice.call(arguments), reg = [], loaded = [];
-			for (var name in self.registered){
+		load: function(subs, arg1, argN){
+			var self = this, args = Array.prototype.slice.call(arguments), reg = [], loaded = [], name, klass;
+			subs = args.shift() || {};
+			for (name in self.registered){
 				if (!self.registered.hasOwnProperty(name)) continue;
-				reg.push(self.registered[name]);
+				var component = self.registered[name];
+				if (subs.hasOwnProperty(name)){
+					klass = subs[name];
+					if (F.is.string(klass)) klass = F.getFnPointer(subs[name]);
+					if (F.is.fn(klass)){
+						component = {name: name, klass: klass, priority: self.registered[name].priority};
+					}
+				}
+				reg.push(component);
+			}
+			for (name in subs){
+				if (!subs.hasOwnProperty(name) || self.registered.hasOwnProperty(name)) continue;
+				klass = subs[name];
+				if (F.is.string(klass)) klass = F.getFnPointer(subs[name]);
+				if (F.is.fn(klass)){
+					reg.push({name: name, klass: klass, priority: 0});
+				}
 			}
 			reg.sort(function(a, b){ return b.priority - a.priority; });
 			F.arr.each(reg, function(r){
@@ -903,7 +949,9 @@
 		if (F.is.emptyString(cssText)) return {};
 		var json = {}, props = cssText.split(';'), pair, key, value;
 		for (var i = 0, i_len = props.length; i < i_len; i++){
+			if (F.is.emptyString(props[i])) continue;
 			pair = props[i].split(':');
+			if (F.is.emptyString(pair[0]) || F.is.emptyString(pair[1])) continue;
 			key = F.str.toCamelCase($.trim(pair[0]));
 			value = $.trim(pair[1]);
 			json[key] = value;
@@ -913,14 +961,17 @@
 
 	/**
 	 * Attempts to retrieve a function pointer using the given name.
-	 * @protected
 	 * @param {string} functionName - The name of the function to fetch a pointer to.
 	 * @returns {(function|object|null)}
 	 */
 	F.getFnPointer = function(functionName){
 		if (F.is.emptyString(functionName)) return null;
-		if (F.is.fn(window[functionName])) return window[functionName];
-		return null;
+		var pointer = window,
+			parts = functionName.split('.');
+		F.arr.each(parts, function(part){
+			if (pointer[part]) pointer = pointer[part];
+		});
+		return F.is.fn(pointer) ? pointer : null;
 	};
 
 	/**
@@ -1066,11 +1117,12 @@
 		collapse: function(){
 			if (!this.created) return;
 			this.$detail.children('th').html(this.column.title);
-			this.$detail.children('td').first()
-				.attr('class', this.$el.attr('class'))
-				.attr('style', this.$el.attr('style'))
+			this.$el.clone()
+				.attr('id', this.$el.attr('id') ? this.$el.attr('id') + '-detail' : undefined)
 				.css('display', 'table-cell')
-				.append(this.$el.contents().detach());
+				.html('')
+				.append(this.$el.contents().detach())
+				.replaceAll(this.$detail.children('td').first());
 
 			if (!F.is.jq(this.$detail.parent()))
 				this.$detail.appendTo(this.row.$details.find('.footable-details > tbody'));
@@ -1302,7 +1354,7 @@
 		 * @this FooTable.Column
 		 */
 		$create: function(){
-			(this.$el = !this.virtual && F.is.jq(this.$el) ? this.$el : $('<th/>')).html(this.title);
+			(this.$el = !this.virtual && F.is.jq(this.$el) ? this.$el : $('<th/>')).html(this.title).addClass(this.classes.join(' ')).css(this.style);
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.Column#format} function
@@ -1314,7 +1366,10 @@
 		 * @this FooTable.Column
 		 */
 		parser: function(valueOrElement){
-			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('value') || $(valueOrElement).text(); // use jQuery to get the value
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var data = $(valueOrElement).data('value');
+				return F.is.defined(data) ? data : $(valueOrElement).html();
+			}
 			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+''; // use the native toString of the value
 			return null; // otherwise we have no value so return null
 		},
@@ -1348,6 +1403,81 @@
 	F.columns = new F.ClassFactory();
 
 	F.columns.register('text', F.Column);
+
+})(jQuery, FooTable);
+(function ($, F) {
+
+	F.Component = F.Class.extend(/** @lends FooTable.Component */{
+		/**
+		 * The base class for all FooTable components.
+		 * @constructs
+		 * @extends FooTable.Class
+		 * @param {FooTable.Table} instance - The parent {@link FooTable.Table} object for the component.
+		 * @param {boolean} enabled - Whether or not the component is enabled.
+		 * @throws {TypeError} The instance parameter must be an instance of {@link FooTable.Table}.
+		 * @returns {FooTable.Component}
+		 */
+		construct: function (instance, enabled) {
+			if (!(instance instanceof F.Table))
+				throw new TypeError('The instance parameter must be an instance of FooTable.Table.');
+
+			/**
+			 * The parent {@link FooTable.Table} for the component.
+			 * @type {FooTable.Table}
+			 */
+			this.ft = instance;
+			/**
+			 * Whether or not this component is enabled. Disabled components only have there preinit method called allowing for this value to be overridden.
+			 * @type {boolean}
+			 */
+			this.enabled = F.is.boolean(enabled) ? enabled : false;
+		},
+		/**
+		 * The preinit method is called during the parent {@link FooTable.Table} constructor call.
+		 * @param {object} data - The jQuery.data() object of the root table.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		preinit: function(data){},
+		/**
+		 * The init method is called during the parent {@link FooTable.Table} constructor call.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		init: function(){},
+		/**
+		 * This method is called from the {@link FooTable.Table#destroy} method.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		destroy: function(){},
+		/**
+		 * This method is called from the {@link FooTable.Table#draw} method.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		predraw: function(){},
+		/**
+		 * This method is called from the {@link FooTable.Table#draw} method.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		draw: function(){},
+		/**
+		 * This method is called from the {@link FooTable.Table#draw} method.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		postdraw: function(){}
+	});
+
+	F.components = new F.ClassFactory();
 
 })(jQuery, FooTable);
 (function ($, F) {
@@ -1417,7 +1547,6 @@
 
 			this.created = false;
 			this.define(dataOrElement);
-			this.val();
 		},
 		/**
 		 * This is supplied either the object containing the values for the row or the row element/jQuery object if it exists.
@@ -1490,6 +1619,13 @@
 			 * @type {Array.<FooTable.Cell>}
 			 */
 			this.cells = this.createCells();
+
+			// this ensures the value contains the parsed cell values and not the supplied values
+			var self = this;
+			self.value = {};
+			F.arr.each(self.cells, function(cell){
+				self.value[cell.column.name] = cell.val();
+			});
 		},
 		/**
 		 * After the row has been defined this ensures that the $el property is a jQuery object by either creating or updating the current value.
@@ -1538,9 +1674,10 @@
 		 * Using this method also allows us to supply an object containing options and the data for the row at the same time.
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
+		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
 		 * @returns {(*|undefined)}
 		 */
-		val: function(data){
+		val: function(data, redraw){
 			var self = this;
 			if (!F.is.hash(data)){
 				// get - check the value property and build it from the cells if required.
@@ -1566,7 +1703,19 @@
 			this.expanded = this.o.expanded;
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
-			this.value = isObj ? (hasOptions ? data.value : data) : null;
+			if (isObj) {
+				if ( hasOptions ) data = data.value;
+				if (F.is.hash(this.value)){
+					for (var prop in data) {
+						if (!data.hasOwnProperty(prop)) continue;
+						this.value[prop] = data[prop];
+					}
+				} else {
+					this.value = data;
+				}
+			} else {
+				this.value = null;
+			}
 
 			F.arr.each(this.cells, function(cell){
 				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
@@ -1575,7 +1724,7 @@
 			if (this.created){
 				this._setClasses(this.$el);
 				this._setStyle(this.$el);
-				this.draw();
+				if (F.is.boolean(redraw) ? redraw : true) this.draw();
 			}
 		},
 		_setClasses: function($el){
@@ -1601,54 +1750,79 @@
 		/**
 		 * Sets the current row to an expanded state displaying any hidden columns in a detail row just below it.
 		 * @instance
-		 * @this FooTable.Row
+		 * @fires FooTable.Row#"expand.ft.row"
 		 */
 		expand: function(){
 			if (!this.created) return;
-			this.__hidden__ = F.arr.map(this.cells, function(cell){
-				return cell.column.hidden && cell.column.visible ? cell : null;
-			});
-
-			if (this.__hidden__.length > 0){
-				this.$details.insertAfter(this.$el)
-					.children('td').first()
-					.attr('colspan', this.ft.columns.visibleColspan);
-
-				F.arr.each(this.__hidden__, function(cell){
-					cell.collapse();
+			var self = this;
+			/**
+			 * The expand.ft.row event is raised before the the row is expanded.
+			 * Calling preventDefault on this event will stop the row being expanded.
+			 * @event FooTable.Row#"expand.ft.row"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {FooTable.Row} row - The row about to be expanded.
+			 */
+			self.ft.raise('expand.ft.row',[self]).then(function(){
+				self.__hidden__ = F.arr.map(self.cells, function(cell){
+					return cell.column.hidden && cell.column.visible ? cell : null;
 				});
-			}
-			this.$el.attr('data-expanded', true);
-			this.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
-			this.expanded = true;
+
+				if (self.__hidden__.length > 0){
+					self.$details.insertAfter(self.$el)
+						.children('td').first()
+						.attr('colspan', self.ft.columns.visibleColspan);
+
+					F.arr.each(self.__hidden__, function(cell){
+						cell.collapse();
+					});
+				}
+				self.$el.attr('data-expanded', true);
+				self.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
+				self.expanded = true;
+			});
 		},
 		/**
 		 * Sets the current row to a collapsed state removing the detail row if it exists.
 		 * @instance
-		 * @this FooTable.Row
+		 * @param {boolean} [setExpanded] - Whether or not to set the {@link FooTable.Row#expanded} property to false.
+		 * @fires FooTable.Row#"collapse.ft.row"
 		 */
 		collapse: function(setExpanded){
 			if (!this.created) return;
-			F.arr.each(this.__hidden__, function(cell){
-				cell.restore();
+			var self = this;
+			/**
+			 * The collapse.ft.row event is raised before the the row is collapsed.
+			 * Calling preventDefault on this event will stop the row being collapsed.
+			 * @event FooTable.Row#"collapse.ft.row"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {FooTable.Row} row - The row about to be expanded.
+			 */
+			self.ft.raise('collapse.ft.row',[self]).then(function(){
+				F.arr.each(self.__hidden__, function(cell){
+					cell.restore();
+				});
+				self.$details.detach();
+				self.$el.removeAttr('data-expanded');
+				self.$toggle.removeClass('fooicon-minus').addClass('fooicon-plus');
+				if (F.is.boolean(setExpanded) ? setExpanded : true) self.expanded = false;
 			});
-			this.$details.detach();
-			this.$el.removeAttr('data-expanded');
-			this.$toggle.removeClass('fooicon-minus').addClass('fooicon-plus');
-			if (F.is.boolean(setExpanded) ? setExpanded : true) this.expanded = false;
 		},
 		/**
 		 * Prior to drawing this moves the details contents back to there original cells and detaches the toggle element from the row.
 		 * @instance
+		 * @param {boolean} [detach] - Whether or not to detach the row.
 		 * @this FooTable.Row
 		 */
-		predraw: function(){
+		predraw: function(detach){
 			if (this.created){
 				if (this.expanded){
 					this.collapse(false);
 				}
 				this.$toggle.detach();
-				this.$el.detach();
+				detach = F.is.boolean(detach) ? detach : true;
+				if (detach) this.$el.detach();
 			}
 		},
 		/**
@@ -1667,6 +1841,13 @@
 						|| (self.ft.rows.toggleColumn == 'last' && cell.column.index == self.ft.columns.lastVisibleIndex)) {
 						cell.$el.prepend(self.$toggle);
 					}
+				}
+				cell.$el.add(cell.column.$el).removeClass('footable-first-visible footable-last-visible');
+				if (cell.column.index == self.ft.columns.firstVisibleIndex){
+					cell.$el.add(cell.column.$el).addClass('footable-first-visible');
+				}
+				if (cell.column.index == self.ft.columns.lastVisibleIndex){
+					cell.$el.add(cell.column.$el).addClass('footable-last-visible');
 				}
 			});
 			if (this.expanded){
@@ -1694,13 +1875,14 @@
 		_onToggle: function (e) {
 			var self = e.data.self;
 			// only execute the toggle if the event.target is one of the approved initiators
-			if ($(e.target).is('tr,td,.footable-toggle')){
+			if ($(e.target).is(self.ft.rows.toggleSelector)){
 				self.toggle();
 			}
 		}
 	});
 
 })(jQuery, FooTable);
+
 (function ($, F) {
 
 	/**
@@ -1750,11 +1932,23 @@
 			 */
 			this.$el = (F.is.jq(element) ? element : $(element)).first(); // ensure one table, one instance
 			/**
+			 * A loader jQuery instance
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$loader = $('<div/>', { 'class': 'footable-loader' }).append($('<span/>', {'class': 'fooicon fooicon-loader'}));
+			/**
 			 * The options for the plugin. This is a merge of user defined options and the default options.
 			 * @instance
 			 * @type {object}
 			 */
 			this.o = $.extend(true, {}, F.defaults, options);
+			/**
+			 * The jQuery data object for the table at initialization.
+			 * @instance
+			 * @type {object}
+			 */
+			this.data = this.$el.data() || {};
 			/**
 			 * An array of all CSS classes on the table that do not start with "footable".
 			 * @instance
@@ -1762,24 +1956,6 @@
 			 * @type {Array.<string>}
 			 */
 			this.classes = [];
-			/**
-			 * The breakpoints component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Breakpoints}
-			 */
-			this.breakpoints = F.components.internal.make('breakpoints', this);
-			/**
-			 * The columns component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Columns}
-			 */
-			this.columns = F.components.internal.make('columns', this);
-			/**
-			 * The rows component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Rows}
-			 */
-			this.rows = F.components.internal.make('rows', this);
 			/**
 			 * All components for this instance of the plugin. These are executed in the order they appear in the array for the initialize phase and in reverse order for the destroy phase of the plugin.
 			 * @instance
@@ -1789,21 +1965,58 @@
 			 * @prop {Array.<FooTable.Component>} core - The core components for the plugin. These are executed either after the internal components in the initialize phase or before them in the destroy phase of the plugin.
 			 * @prop {Array.<FooTable.Component>} custom - The custom components for the plugin. These are executed either after the core components in the initialize phase or before them in the destroy phase of the plugin.
 			 */
-			this.components = {
-				internal: [this.breakpoints, this.columns, this.rows],
-				core: F.components.core.load(this),
-				custom: F.components.load(this)
-			};
+			this.components = F.components.load((F.is.hash(this.data.components) ? this.data.components : this.o.components), this);
+			/**
+			 * The breakpoints component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Breakpoints}
+			 */
+			this.breakpoints = this.use(FooTable.Breakpoints);
+			/**
+			 * The columns component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Columns}
+			 */
+			this.columns = this.use(FooTable.Columns);
+			/**
+			 * The rows component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Rows}
+			 */
+			this.rows = this.use(FooTable.Rows);
 
 			//END MEMBERS
+			this._construct(ready);
+		},
+		/**
+		 * Once all properties are set this performs the actual initialization of the plugin calling the {@link FooTable.Table#_preinit} and
+		 * {@link FooTable.Table#_init} methods as well as raising the {@link FooTable.Table#"ready.ft.table"} event.
+		 * @this FooTable.Table
+		 * @instance
+		 * @param {function} [ready] - A callback function to execute once the plugin is initialized.
+		 * @private
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Table#"ready.ft.table"
+		 */
+		_construct: function(ready){
 			var self = this;
-			self._preinit().then(function(){
-				return self._init().then(function(){
-					if (F.is.fn(ready)) ready.call(self, self);
-				});
-			}, function (err) {
-				if (F.is.error(err)){
-					console.error('FooTable: unhandled error thrown during initialization.', err);
+			this._preinit().then(function(){
+				return self._init();
+			}).always(function(arg){
+				self.$el.show();
+				if (F.is.error(arg)){
+					console.error('FooTable: unhandled error thrown during initialization.', arg);
+				} else {
+					/**
+					 * The postinit.ft.table event is raised after the plugin has been initialized and the table drawn.
+					 * Calling preventDefault on this event will stop the ready callback being executed.
+					 * @event FooTable.Table#"postinit.ft.table"
+					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+					 */
+					return self.raise('ready.ft.table').then(function(){
+						if (F.is.fn(ready)) ready.call(self, self);
+					});
 				}
 			});
 		},
@@ -1822,25 +2035,22 @@
 			 * @event FooTable.Table#"preinit.ft.table"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {object} data - The jQuery data object from the root table element.
 			 */
-			return this.raise('preinit.ft.table').then(function(){
-				var classes = self.$el.attr('class').match(/\S+/g),
-					data = self.$el.data() || {};
+			return this.raise('preinit.ft.table', [self.data]).then(function(){
+				var classes = (self.$el.attr('class') || '').match(/\S+/g) || [];
 
-				self.o.ajax = F.checkFnValue(self, data.ajax, self.o.ajax);
-				self.o.stopPropagation = F.is.boolean(data.stopPropagation)
-					? data.stopPropagation
+				self.o.ajax = F.checkFnValue(self, self.data.ajax, self.o.ajax);
+				self.o.stopPropagation = F.is.boolean(self.data.stopPropagation)
+					? self.data.stopPropagation
 					: self.o.stopPropagation;
 
 				for (var i = 0, len = classes.length; i < len; i++){
 					if (!F.str.startsWith(classes[i], 'footable')) self.classes.push(classes[i]);
 				}
-				var $loader = $('<div/>', { 'class': 'footable-loader' }).append($('<span/>', {'class': 'fooicon fooicon-loader'}));
-				self.$el.hide().after($loader);
-				return self.execute(false, false, 'preinit', data).always(function(){
-					self.$el.show();
-					$loader.remove();
-				});
+
+				self.$el.hide().after(self.$loader);
+				return self.execute(false, false, 'preinit', self.data);
 			});
 		},
 		/**
@@ -1873,7 +2083,18 @@
 					self.$el.data('__FooTable__', self);
 					if ($tfoot.children('tr').length == 0) $tfoot.remove();
 					if ($thead.children('tr').length == 0) $thead.remove();
-					return self.draw().then(function(){
+
+					/**
+					 * The postinit.ft.table event is raised after any components are initialized but before the table is
+					 * drawn for the first time.
+					 * Calling preventDefault on this event will disable the initial drawing of the table.
+					 * @event FooTable.Table#"postinit.ft.table"
+					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+					 */
+					return self.raise('postinit.ft.table').then(function(){
+						return self.draw();
+					}).always(function(){
 						$(window).off('resize.ft'+self.id, self._onWindowResize)
 							.on('resize.ft'+self.id, { self: self }, self._onWindowResize);
 						self.initialized = true;
@@ -1898,11 +2119,12 @@
 			 */
 			return self.raise('destroy.ft.table').then(function(){
 				return self.execute(true, true, 'destroy').then(function () {
-					self.$el.removeData('__FooTable__');
+					self.$el.removeData('__FooTable__').removeClass('footable-' + self.id);
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
+					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
 				});
-			},function(err){
+			}).fail(function(err){
 				if (F.is.error(err)){
 					console.error('FooTable: unhandled error thrown while destroying the plugin.', err);
 				}
@@ -1942,9 +2164,8 @@
 		 * @returns {(*|null)}
 		 */
 		use: function(type){
-			var components = this.components.internal.concat(this.components.core, this.components.custom);
-			for (var i = 0, len = components.length; i < len; i++){
-				if (components[i] instanceof type) return components[i];
+			for (var i = 0, len = this.components.length; i < len; i++){
+				if (this.components[i] instanceof type) return this.components[i];
 			}
 			return null;
 		},
@@ -1960,6 +2181,13 @@
 		 */
 		draw: function () {
 			var self = this;
+
+			// Clone the current table and insert it into the original's place
+			var $elCopy = self.$el.clone().insertBefore(self.$el);
+
+			// Detach `self.$el` from the DOM, retaining its event handlers
+			self.$el.detach();
+
 			// when drawing the order that the components are executed is important so chain the methods but use promises to retain async safety.
 			return self.execute(false, true, 'predraw').then(function(){
 				/**
@@ -1984,15 +2212,19 @@
 								 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 								 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 								 */
-								self.raise('postdraw.ft.table');
+								return self.raise('postdraw.ft.table');
 							});
 						});
 					});
 				});
-			}, function(err){
+			}).fail(function(err){
 				if (F.is.error(err)){
 					console.error('FooTable: unhandled error thrown during a draw operation.', err);
 				}
+			}).always(function(){
+				// Replace the copy that we added above with the modified `self.$el`
+				$elCopy.replaceWith(self.$el);
+				self.$loader.remove();
 			});
 		},
 		/**
@@ -2011,24 +2243,9 @@
 			var self = this, args = Array.prototype.slice.call(arguments);
 			reverse = args.shift();
 			enabled = args.shift();
-			var internal = self.components.internal.slice(0),
-				core = enabled ? F.arr.get(self.components.core, function(c){ return c.enabled; }) : self.components.core.slice(0),
-				custom = enabled ? F.arr.get(self.components.custom, function(c){ return c.enabled; }) : self.components.custom.slice(0);
-
-			args.unshift(reverse ? custom.reverse() : internal);
-			return self._execute.apply(self, args).then(function(){
-				args.shift();
-				args.unshift(reverse ? core.reverse() : core);
-				return self._execute.apply(self, args).then(function(){
-					args.shift();
-					args.unshift(reverse ? internal.reverse() : custom);
-					return self._execute.apply(self, args);
-				});
-			}, function(err){
-				if (F.is.error(err)){
-					console.error('FooTable: unhandled error thrown while executing "'+methodName+'".', err);
-				}
-			});
+			var components = enabled ? F.arr.get(self.components, function(c){ return c.enabled; }) : self.components.slice(0);
+			args.unshift(reverse ? components.reverse() : components);
+			return self._execute.apply(self, args);
 		},
 		/**
 		 * Executes the specified method with the optional number of parameters on all supplied components waiting for the result of each before executing the next.
@@ -2129,7 +2346,8 @@
 		 */
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text();
+				var data = $(valueOrElement).data('value');
+				valueOrElement = F.is.defined(data) ? data : $(valueOrElement).text();
 				if (F.is.string(valueOrElement)) valueOrElement = isNaN(valueOrElement) ? valueOrElement : +valueOrElement;
 			}
 			if (F.is.date(valueOrElement)) return moment(valueOrElement);
@@ -2157,7 +2375,7 @@
 		 * @this FooTable.DateColumn
 		 */
 		formatter: function(value){
-			return F.is.object(value) && F.is.boolean(value._isAMomentObject) ? value.format(this.formatString) : '';
+			return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. A string value must be returned from this method and will be used during filtering operations.
@@ -2197,6 +2415,7 @@
 	F.columns.register('date', F.DateColumn);
 
 })(jQuery, FooTable);
+
 (function($, F){
 
 	F.HTMLColumn = F.Column.extend(/** @lends FooTable.HTMLColumn */{
@@ -2217,7 +2436,7 @@
 		 * @instance
 		 * @protected
 		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
-		 * @returns {(number|null)}
+		 * @returns {(jQuery|null)}
 		 * @this FooTable.HTMLColumn
 		 */
 		parser: function(valueOrElement){
@@ -2225,7 +2444,10 @@
 			if (F.is.element(valueOrElement)) valueOrElement = $(valueOrElement);
 			if (F.is.jq(valueOrElement)){
 				var tagName = valueOrElement.prop('tagName').toLowerCase();
-				if (tagName == 'td' || tagName == 'th') return valueOrElement.data('value') || valueOrElement.contents();
+				if (tagName == 'td' || tagName == 'th'){
+					var data = valueOrElement.data('value');
+					return F.is.defined(data) ? data : valueOrElement.contents();
+				}
 				return valueOrElement;
 			}
 			return null;
@@ -2249,7 +2471,7 @@
 		construct: function(instance, definition){
 			this._super(instance, definition, 'number');
 			this.decimalSeparator = F.is.string(definition.decimalSeparator) ? definition.decimalSeparator : '.';
-			this.thousandSeparator = F.is.string(definition.thousandSeparator) ? definition.thousandSeparator : '.';
+			this.thousandSeparator = F.is.string(definition.thousandSeparator) ? definition.thousandSeparator : ',';
 			this.decimalSeparatorRegex = new RegExp(F.str.escapeRegExp(this.decimalSeparator), 'g');
 			this.thousandSeparatorRegex = new RegExp(F.str.escapeRegExp(this.thousandSeparator), 'g');
 			this.cleanRegex = new RegExp('[^0-9' + F.str.escapeRegExp(this.decimalSeparator) + ']', 'g');
@@ -2265,7 +2487,8 @@
 		 */
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text().replace(this.cleanRegex, '');
+				var data = $(valueOrElement).data('value');
+				valueOrElement = F.is.defined(data) ? data : $(valueOrElement).text().replace(this.cleanRegex, '');
 			}
 			if (F.is.string(valueOrElement)){
 				valueOrElement = valueOrElement.replace(this.thousandSeparatorRegex, '').replace(this.decimalSeparatorRegex, '.');
@@ -2294,82 +2517,6 @@
 	});
 
 	F.columns.register('number', F.NumberColumn);
-
-})(jQuery, FooTable);
-(function ($, F) {
-
-	F.Component = F.Class.extend(/** @lends FooTable.Component */{
-		/**
-		 * The base class for all FooTable components.
-		 * @constructs
-		 * @extends FooTable.Class
-		 * @param {FooTable.Table} instance - The parent {@link FooTable.Table} object for the component.
-		 * @param {boolean} enabled - Whether or not the component is enabled.
-		 * @throws {TypeError} The instance parameter must be an instance of {@link FooTable.Table}.
-		 * @returns {FooTable.Component}
-		 */
-		construct: function (instance, enabled) {
-			if (!(instance instanceof F.Table))
-				throw new TypeError('The instance parameter must be an instance of FooTable.Table.');
-
-			/**
-			 * The parent {@link FooTable.Table} for the component.
-			 * @type {FooTable.Table}
-			 */
-			this.ft = instance;
-			/**
-			 * Whether or not this component is enabled. Disabled components only have there preinit method called allowing for this value to be overridden.
-			 * @type {boolean}
-			 */
-			this.enabled = F.is.boolean(enabled) ? enabled : false;
-		},
-		/**
-		 * The preinit method is called during the parent {@link FooTable.Table} constructor call.
-		 * @param {object} data - The jQuery.data() object of the root table.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		preinit: null,
-		/**
-		 * The init method is called during the parent {@link FooTable.Table} constructor call.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		init: null,
-		/**
-		 * This method is called from the {@link FooTable.Table#destroy} method.
-		 * @instance
-		 * @protected
-		 */
-		destroy: null,
-		/**
-		 * This method is called from the {@link FooTable.Table#draw} method.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		predraw: null,
-		/**
-		 * This method is called from the {@link FooTable.Table#draw} method.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		draw: null,
-		/**
-		 * This method is called from the {@link FooTable.Table#draw} method.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		postdraw: null
-	});
-
-	F.components = new F.ClassFactory();
-	F.components.core = new F.ClassFactory();
-	F.components.internal = new F.ClassFactory();
 
 })(jQuery, FooTable);
 (function($, F){
@@ -2536,7 +2683,7 @@
 				// otherwise if the width is somewhere in between check all breakpoints testing if the width
 				// is greater than the current but smaller than the previous.
 				if ((!current && i == len -1)
-					|| (width >= breakpoint.width && (prev instanceof F.Breakpoint ? width <= prev.width : true))) {
+					|| (width >= breakpoint.width && (prev instanceof F.Breakpoint ? width < prev.width : true))) {
 					current = breakpoint;
 				}
 				if (!current) hidden.push(breakpoint.name);
@@ -2637,12 +2784,11 @@
 		 * @returns {number}
 		 */
 		getViewportWidth: function(){
-			var ratio = F.is.defined(window.devicePixelRatio) && F.is.mobile ? window.devicePixelRatio : 1;
-			return Math.max(document.documentElement.clientWidth, window.innerWidth, 0) / ratio;
+			return Math.max(document.documentElement.clientWidth, window.innerWidth, 0);
 		}
 	});
 
-	F.components.internal.register('breakpoints', F.Breakpoints, 10);
+	F.components.register('breakpoints', F.Breakpoints, 1000);
 
 })(jQuery, FooTable);
 (function(F){
@@ -2735,6 +2881,8 @@
 			 * @type {boolean}
 			 */
 			this.showHeader = table.o.showHeader;
+
+			this._fromHTML = F.is.emptyArray(table.o.columns) && !F.is.promise(table.o.columns);
 		},
 
 		/* PROTECTED */
@@ -2786,9 +2934,7 @@
 
 				var json = [], html = [];
 				// get the column options from the content
-				var $header = self.ft.$el.find('tr.footable-header'), $cell, cdata;
-				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last:has([data-breakpoints])');
-				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first:has([data-breakpoints])');
+				var $header = self.ft.$el.find('tr.footable-header, thead > tr:last:has([data-breakpoints]), tbody > tr:first:has([data-breakpoints]), thead > tr:last, tbody > tr:first').first(), $cell, cdata;
 				if ($header.length > 0){
 					var virtual = $header.parent().is('tbody') && $header.children().length == $header.children('td').length;
 					if (!virtual) self.$header = $header.addClass('footable-header');
@@ -2803,7 +2949,7 @@
 					if (virtual) self.showHeader = false;
 				}
 				// get the supplied column options
-				if (F.is.array(self.o.columns)){
+				if (F.is.array(self.o.columns) && !F.is.emptyArray(self.o.columns)){
 					F.arr.each(self.o.columns, function(c, i){
 						c.index = i;
 						json.push(c);
@@ -2893,6 +3039,25 @@
 			});
 		},
 		/**
+		 * Destroys the columns component removing any UI generated from the table.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Columns#"destroy.ft.columns"
+		 */
+		destroy: function(){
+			/**
+			 * The destroy.ft.columns event is raised before its UI is removed.
+			 * Calling preventDefault on this event will prevent the component from being destroyed.
+			 * @event FooTable.Columns#"destroy.ft.columns"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 */
+			var self = this;
+			this.ft.raise('destroy.ft.columns').then(function(){
+				if (!self._fromHTML) self.$header.remove();
+			});
+		},
+		/**
 		 * The predraw method called from within the {@link FooTable.Table#draw} method.
 		 * @instance
 		 * @protected
@@ -2916,6 +3081,7 @@
 				}
 				if (col.hidden) self.hasHidden = true;
 			});
+			self.ft.$el.toggleClass('breakpoint', self.hasHidden);
 		},
 		/**
 		 * Performs the actual drawing of the columns, hiding or displaying them depending on there breakpoints.
@@ -2990,7 +3156,7 @@
 		}
 	});
 
-	F.components.internal.register('columns', F.Columns, 5);
+	F.components.register('columns', F.Columns, 900);
 
 })(jQuery, FooTable);
 (function(F){
@@ -3059,6 +3225,12 @@
 			 */
 			this.showToggle = table.o.showToggle;
 			/**
+			 * The CSS selector used to filter row click events. If the event.target property matches the selector the row will be toggled.
+			 * @type {string}
+			 * @default "tr,td,.footable-toggle"
+			 */
+			this.toggleSelector = table.o.toggleSelector;
+			/**
 			 * Specifies which column the row toggle is appended to. Supports only two values; "first" and "last"
 			 * @type {string}
 			 */
@@ -3074,10 +3246,16 @@
 			 */
 			this.expandFirst = table.o.expandFirst;
 			/**
+			 * Whether or not all row details are expanded by default when displayed on a device that hides any columns.
+			 * @type {boolean}
+			 */
+			this.expandAll = table.o.expandAll;
+			/**
 			 * The jQuery object that contains the empty row control.
 			 * @type {jQuery}
 			 */
 			this.$empty = null;
+			this._fromHTML = F.is.emptyArray(table.o.rows) && !F.is.promise(table.o.rows);
 		},
 		/**
 		 * This parses the rows from either the tables rows or the supplied options.
@@ -3089,10 +3267,7 @@
 			var self = this;
 			return $.Deferred(function(d){
 				var $rows = self.ft.$el.children('tbody').children('tr');
-				if (F.is.jq($rows)){
-					self.parseFinalize(d, $rows);
-					$rows.detach();
-				} else if (F.is.array(self.o.rows) && self.o.rows.length > 0){
+				if (F.is.array(self.o.rows) && self.o.rows.length > 0){
 					self.parseFinalize(d, self.o.rows);
 				} else if (F.is.promise(self.o.rows)){
 					self.o.rows.then(function(rows){
@@ -3100,6 +3275,9 @@
 					}, function(xhr){
 						d.reject(Error('Rows ajax request error: ' + xhr.status + ' (' + xhr.statusText + ')'));
 					});
+				} else if (F.is.jq($rows)){
+					self.parseFinalize(d, $rows);
+					$rows.detach();
 				} else {
 					self.parseFinalize(d, []);
 				}
@@ -3141,10 +3319,12 @@
 					self.all = rows;
 					self.array = self.all.slice(0);
 					self.showToggle = F.is.boolean(data.showToggle) ? data.showToggle : self.showToggle;
+					self.toggleSelector = F.is.string(data.toggleSelector) ? data.toggleSelector : self.toggleSelector;
 					self.toggleColumn = F.is.string(data.toggleColumn) ? data.toggleColumn : self.toggleColumn;
 					if (self.toggleColumn != "first" && self.toggleColumn != "last") self.toggleColumn = "first";
 					self.emptyString = F.is.string(data.empty) ? data.empty : self.emptyString;
 					self.expandFirst = F.is.boolean(data.expandFirst) ? data.expandFirst : self.expandFirst;
+					self.expandAll = F.is.boolean(data.expandAll) ? data.expandAll : self.expandAll;
 				});
 			});
 		},
@@ -3166,6 +3346,27 @@
 			 */
 			return self.ft.raise('init.ft.rows', [self.all]).then(function(){
 				self.$create();
+			});
+		},
+		/**
+		 * Destroys the rows component removing any UI generated from the table.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Rows#"destroy.ft.rows"
+		 */
+		destroy: function(){
+			/**
+			 * The destroy.ft.rows event is raised before its UI is removed.
+			 * Calling preventDefault on this event will prevent the component from being destroyed.
+			 * @event FooTable.Rows#"destroy.ft.rows"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 */
+			var self = this;
+			this.ft.raise('destroy.ft.rows').then(function(){
+				F.arr.each(self.array, function(row){
+					row.predraw(!self._fromHTML);
+				});
 			});
 		},
 		/**
@@ -3194,7 +3395,7 @@
 				self.$empty.detach();
 				// loop through them appending to the tbody and then drawing
 				F.arr.each(self.array, function(row){
-					if (self.expandFirst && first){
+					if ((self.expandFirst && first) || self.expandAll){
 						row.expanded = true;
 						first = false;
 					}
@@ -3205,10 +3406,45 @@
 				self.$empty.children('td').attr('colspan', self.ft.columns.visibleColspan);
 				$tbody.append(self.$empty);
 			}
+		},
+		/**
+		 * Loads a JSON array of row objects into the table
+		 * @instance
+		 * @param {Array.<object>} data - An array of row objects to load.
+		 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
+		 */
+		load: function(data, append){
+			var self = this, rows = $.map(data, function(r){
+				return new F.Row(self.ft, self.ft.columns.array, r);
+			});
+			F.arr.each(this.array, function(row){
+				row.predraw();
+			});
+			this.all = (F.is.boolean(append) ? append : false) ? this.all.concat(rows) : rows;
+			this.array = this.all.slice(0);
+			this.ft.draw();
+		},
+		/**
+		 * Expands all visible rows.
+		 * @instance
+		 */
+		expand: function(){
+			F.arr.each(this.array, function(row){
+				row.expand();
+			});
+		},
+		/**
+		 * Collapses all visible rows.
+		 * @instance
+		 */
+		collapse: function(){
+			F.arr.each(this.array, function(row){
+				row.collapse();
+			});
 		}
 	});
 
-	F.components.internal.register('rows', F.Rows, 0);
+	F.components.register('rows', F.Rows, 800);
 
 })(jQuery, FooTable);
 (function(F){
@@ -3234,6 +3470,13 @@
 	F.Defaults.prototype.showToggle = true;
 
 	/**
+	 * The CSS selector used to filter row click events. If the event.target property matches the selector the row will be toggled.
+	 * @type {string}
+	 * @default "tr,td,.footable-toggle"
+	 */
+	F.Defaults.prototype.toggleSelector = 'tr,td,.footable-toggle';
+
+	/**
 	 * Specifies which column to display the row toggle in. The only supported values are "first" or "last".
 	 * @type {string}
 	 * @default "first"
@@ -3245,4 +3488,20 @@
 	 * @type {boolean}
 	 */
 	F.Defaults.prototype.expandFirst = false;
+
+	/**
+	 * Whether or not all row details are expanded by default when displayed on a device that hides any columns.
+	 * @type {boolean}
+	 */
+	F.Defaults.prototype.expandAll = false;
+})(FooTable);
+(function(F){
+	/**
+	 * Loads a JSON array of row objects into the table
+	 * @param {Array.<object>} data - An array of row objects to load.
+	 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
+	 */
+	F.Table.prototype.loadRows = function(data, append){
+		this.rows.load(data, append);
+	};
 })(FooTable);

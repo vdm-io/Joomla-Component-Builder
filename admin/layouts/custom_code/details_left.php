@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.0
-	@build			4th February, 2017
+	@version		2.3.1
+	@build			9th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_left.php
@@ -32,7 +32,8 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'component',
 	'type',
-	'hashtarget'
+	'hashtarget',
+	'note_jcb_placeholder'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

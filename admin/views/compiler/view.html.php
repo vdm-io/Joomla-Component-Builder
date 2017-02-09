@@ -51,7 +51,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			JError::raiseError(500, implode("\n", $errors));
+			JError::raiseError(500, implode(PHP_EOL, $errors));
 			return false;
 		}
 		if ($this->getLayout() !== 'modal')

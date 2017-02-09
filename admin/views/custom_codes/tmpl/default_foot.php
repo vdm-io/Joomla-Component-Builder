@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 14 of this MVC
-	@build			31st January, 2017
+	@version		@update number 28 of this MVC
+	@build			9th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		default_foot.php
@@ -28,5 +28,5 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <tr>
-	<td colspan="7"><?php echo $this->pagination->getListFooter(); ?></td>
+	<td colspan="8"><?php echo $this->pagination->getListFooter(); ?></td>
 </tr>
