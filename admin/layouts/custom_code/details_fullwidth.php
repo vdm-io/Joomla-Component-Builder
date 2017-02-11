@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.1
-	@build			9th February, 2017
+	@version		2.3.2
+	@build			11th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_fullwidth.php
@@ -31,6 +31,7 @@ $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
 	'path',
+	'note_jcb_placeholder',
 	'code'
 );
 

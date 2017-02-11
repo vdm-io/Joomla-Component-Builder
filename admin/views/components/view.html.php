@@ -318,13 +318,13 @@ class ComponentbuilderViewComponents extends JViewLegacy
 		if ($results)
 		{
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $companyname)
 			{
 				// Now add the companyname and its text to the options array
-				$filter[] = JHtml::_('select.option', $companyname, $companyname);
+				$_filter[] = JHtml::_('select.option', $companyname, $companyname);
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}
@@ -350,13 +350,13 @@ class ComponentbuilderViewComponents extends JViewLegacy
 		if ($results)
 		{
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $author)
 			{
 				// Now add the author and its text to the options array
-				$filter[] = JHtml::_('select.option', $author, $author);
+				$_filter[] = JHtml::_('select.option', $author, $author);
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}

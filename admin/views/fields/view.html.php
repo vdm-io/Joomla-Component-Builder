@@ -404,15 +404,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $datatype)
 			{
 				// Translate the datatype selection
 				$text = $model->selectionTranslation($datatype,'datatype');
 				// Now add the datatype and its text to the options array
-				$filter[] = JHtml::_('select.option', $datatype, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $datatype, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}
@@ -440,15 +440,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $indexes)
 			{
 				// Translate the indexes selection
 				$text = $model->selectionTranslation($indexes,'indexes');
 				// Now add the indexes and its text to the options array
-				$filter[] = JHtml::_('select.option', $indexes, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $indexes, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}
@@ -476,15 +476,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $null_switch)
 			{
 				// Translate the null_switch selection
 				$text = $model->selectionTranslation($null_switch,'null_switch');
 				// Now add the null_switch and its text to the options array
-				$filter[] = JHtml::_('select.option', $null_switch, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $null_switch, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}
@@ -512,15 +512,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $store)
 			{
 				// Translate the store selection
 				$text = $model->selectionTranslation($store,'store');
 				// Now add the store and its text to the options array
-				$filter[] = JHtml::_('select.option', $store, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $store, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}

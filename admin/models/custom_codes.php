@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 28 of this MVC
-	@build			9th February, 2017
+	@version		@update number 35 of this MVC
+	@build			10th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_codes.php
@@ -134,12 +134,12 @@ class ComponentbuilderModelCustom_codes extends JModelList
 
 		if (ComponentbuilderHelper::checkArray($items) && !isset($_export))
 		{
-			foreach ($items as $item) 
+			foreach ($items as $nr => &$item) 
 			{
 				if ($item->target == 2)
 				{
-					$item->component_system_name = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
-					$item->path = '/*';
+					$item->component_system_name = $item->system_name;
+					$item->path = '<code>[CUSTO'.'MCODE='.$item->id.']</code>'; // so it is not detected
 					$item->type = 2;
 				}
 			}
@@ -360,12 +360,12 @@ class ComponentbuilderModelCustom_codes extends JModelList
 
 				if (ComponentbuilderHelper::checkArray($items) && !isset($_export))
 		{
-			foreach ($items as $item) 
+			foreach ($items as $nr => &$item) 
 			{
 				if ($item->target == 2)
 				{
-					$item->component_system_name = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
-					$item->path = '/*';
+					$item->component_system_name = $item->system_name;
+					$item->path = '<code>[CUSTO'.'MCODE='.$item->id.']</code>'; // so it is not detected
 					$item->type = 2;
 				}
 			}

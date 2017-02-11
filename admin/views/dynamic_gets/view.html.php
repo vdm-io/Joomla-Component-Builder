@@ -317,15 +317,15 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $main_source)
 			{
 				// Translate the main_source selection
 				$text = $model->selectionTranslation($main_source,'main_source');
 				// Now add the main_source and its text to the options array
-				$filter[] = JHtml::_('select.option', $main_source, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $main_source, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}
@@ -353,15 +353,15 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $gettype)
 			{
 				// Translate the gettype selection
 				$text = $model->selectionTranslation($gettype,'gettype');
 				// Now add the gettype and its text to the options array
-				$filter[] = JHtml::_('select.option', $gettype, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $gettype, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}

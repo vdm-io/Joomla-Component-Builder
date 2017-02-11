@@ -363,15 +363,15 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $type)
 			{
 				// Translate the type selection
 				$text = $model->selectionTranslation($type,'type');
 				// Now add the type and its text to the options array
-				$filter[] = JHtml::_('select.option', $type, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}
@@ -399,15 +399,15 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $location)
 			{
 				// Translate the location selection
 				$text = $model->selectionTranslation($location,'location');
 				// Now add the location and its text to the options array
-				$filter[] = JHtml::_('select.option', $location, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $location, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}

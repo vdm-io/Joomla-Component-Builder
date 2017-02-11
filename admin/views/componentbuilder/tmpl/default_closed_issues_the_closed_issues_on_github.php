@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.1
-	@build			9th February, 2017
+	@version		2.3.2
+	@build			11th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_closed_issues_the_closed_issues_on_github.php

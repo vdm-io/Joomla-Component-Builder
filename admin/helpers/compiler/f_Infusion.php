@@ -150,15 +150,15 @@ class Infusion extends Interpretation
 			$this->lang = $keepLang;
 			
 			// ###ADMINCSS###
-			$this->fileContentStatic['###ADMINCSS###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_css']);
+			$this->fileContentStatic['###ADMINCSS###'] = $this->setPlaceholders($this->customScriptBuilder['component_css'], $this->placeholders);
 			// ###SITECSS###
-			$this->fileContentStatic['###SITECSS###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_css']);
+			$this->fileContentStatic['###SITECSS###'] = $this->setPlaceholders($this->customScriptBuilder['component_css'], $this->placeholders);
 
 			// ###CUSTOM_HELPER_SCRIPT###
-			$this->fileContentStatic['###CUSTOM_HELPER_SCRIPT###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_helper_admin']);
+			$this->fileContentStatic['###CUSTOM_HELPER_SCRIPT###'] = $this->setPlaceholders($this->customScriptBuilder['component_php_helper_admin'], $this->placeholders);
 			
 			// ###BOTH_CUSTOM_HELPER_SCRIPT###
-			$this->fileContentStatic['###BOTH_CUSTOM_HELPER_SCRIPT###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_helper_both']);
+			$this->fileContentStatic['###BOTH_CUSTOM_HELPER_SCRIPT###'] = $this->setPlaceholders($this->customScriptBuilder['component_php_helper_both'], $this->placeholders);
 			
 			// ###ADMIN_GLOBAL_EVENT_HELPER###
 			$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] = '';
@@ -181,7 +181,7 @@ class Infusion extends Interpretation
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'**/';
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'public static function globalEvent($document)';
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'{';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_admin_event']);
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['component_php_admin_event'], $this->placeholders);
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'}';
 			}
 			
@@ -290,7 +290,7 @@ class Infusion extends Interpretation
                                         {
                                                 // ###DOCUMENT_CUSTOM_PHP### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] 
-                                                        = PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['php_document'][$viewName_single]);
+                                                        = PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['php_document'][$viewName_single], $this->placeholders);
                                                 // clear some memory
                                                 unset($this->customScriptBuilder['php_document'][$viewName_single]);
                                         }
@@ -351,7 +351,7 @@ class Infusion extends Interpretation
                                         {
                                                 // ###VIEWCSS### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_single]['###VIEWCSS###']
-                                                        = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['css_view'][$viewName_single]);
+                                                        = $this->setPlaceholders($this->customScriptBuilder['css_view'][$viewName_single], $this->placeholders);
                                                 // clear some memory
                                                 unset($this->customScriptBuilder['css_view'][$viewName_single]);
                                         }
@@ -497,7 +497,7 @@ class Infusion extends Interpretation
                                         {
                                                 // ###VIEWCSS### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_list]['###VIEWSCSS###']
-                                                        = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['css_views'][$viewName_list]);
+                                                        = $this->setPlaceholders($this->customScriptBuilder['css_views'][$viewName_list], $this->placeholders);
                                                 // clear some memory
                                                 unset($this->customScriptBuilder['css_views'][$viewName_list]);
                                         }
@@ -629,7 +629,7 @@ class Infusion extends Interpretation
                                                 {
                                                         // ###CUSTOM_ADMIN_BEFORE_GET_ITEM### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEM###']
-                                                                = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]);
+                                                                = $this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code], $this->placeholders);
                                                         // clear some memory
                                                         unset($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]);
                                                 }
@@ -647,7 +647,7 @@ class Infusion extends Interpretation
                                                 {
                                                         // ###CUSTOM_ADMIN_AFTER_GET_ITEM### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEM###']
-                                                                = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]);
+                                                                = $this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code], $this->placeholders);
                                                         // clear some memory
                                                         unset($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]);
                                                 }
@@ -667,7 +667,7 @@ class Infusion extends Interpretation
                                                 {
                                                         // ###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY###']
-                                                                = PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
+                                                                = PHP_EOL.$this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code], $this->placeholders);
                                                         // clear some memory
                                                         unset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]);
                                                 }
@@ -682,7 +682,7 @@ class Infusion extends Interpretation
                                                 {
                                                         // ###CUSTOM_ADMIN_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEMS###']
-                                                                = PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
+                                                                = PHP_EOL.$this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code], $this->placeholders);
                                                         // clear some memory
                                                         unset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
                                                 }
@@ -700,7 +700,7 @@ class Infusion extends Interpretation
                                                 {
                                                         // ###CUSTOM_ADMIN_AFTER_GET_ITEMS### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEMS###']
-                                                                = PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
+                                                                = PHP_EOL.$this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code], $this->placeholders);
                                                         // clear some memory
                                                         unset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
                                                 }
@@ -896,7 +896,7 @@ class Infusion extends Interpretation
 						{
 							// ###SITE_BEFORE_GET_ITEM### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEM###']
-								= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]);
+								= $this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code], $this->placeholders);
 							// clear some memory
 							unset($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]);
 						}
@@ -914,7 +914,7 @@ class Infusion extends Interpretation
 						{
 							// ###SITE_AFTER_GET_ITEM### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEM###']
-								= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]);
+								= $this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code], $this->placeholders);
 							// clear some memory
 							unset($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]);
 						}
@@ -936,7 +936,7 @@ class Infusion extends Interpretation
 						{
 							// ###SITE_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEMS###']
-								= PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
+								= PHP_EOL.$this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code], $this->placeholders);
 							// clear some memory
 							unset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]);
 						}
@@ -954,7 +954,7 @@ class Infusion extends Interpretation
 						{
 							// ###SITE_AFTER_GET_ITEMS### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEMS###']
-								= PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
+								= PHP_EOL.$this->setPlaceholders($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code], $this->placeholders);
 							// clear some memory
 							unset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]);
 						}
@@ -992,7 +992,7 @@ class Infusion extends Interpretation
 				}
 				// set site custom script to helper class
 				// ###SITE_CUSTOM_HELPER_SCRIPT###
-				$this->fileContentStatic['###SITE_CUSTOM_HELPER_SCRIPT###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_helper_site']);
+				$this->fileContentStatic['###SITE_CUSTOM_HELPER_SCRIPT###'] = $this->setPlaceholders($this->customScriptBuilder['component_php_helper_site'], $this->placeholders);
 				// ###SITE_GLOBAL_EVENT_HELPER###
 				$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] = '';
 				// ###SITE_GLOBAL_EVENT###
@@ -1008,7 +1008,7 @@ class Infusion extends Interpretation
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'**/';
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'public static function globalEvent($document)';
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'{';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['component_php_site_event']);
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['component_php_site_event'], $this->placeholders);
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'}';
 				}
 				// setup the layouts

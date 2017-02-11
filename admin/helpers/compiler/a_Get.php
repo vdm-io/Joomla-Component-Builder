@@ -54,7 +54,7 @@ class Get
 	
 	/* The custom script placeholders - we use the (xxx) to avoid detection it should be (***)
 	 * 
-	 *	New Insert Code		= /xxx[INSERT<>$$$$]xxx/	/xxx[/INSERT<>$$$$]xxx/
+	 *	New Insert Code		= /xxx[INSERT<>$$$$]xxx/		/xxx[/INSERT<>$$$$]xxx/
 	 *	New Replace Code	= /xxx[REPLACE<>$$$$]xxx/	/xxx[/REPLACE<>$$$$]xxx/
 	 *
 	 *	//////////////////////////// when JCB adds it back ///////////////////////////////
@@ -2177,7 +2177,7 @@ class Get
 				$langHolders["JText::sprintf('".$string."',"] = "JText::sprintf('".$keyLang."',";
 				$langHolders['JText::sprintf("'.$string.'",'] = 'JText::sprintf("'.$keyLang.'",';
 			}
-			$content = str_replace(array_keys($langHolders),array_values($langHolders),$content);
+			$content = $this->setPlaceholders($content, $langHolders);
 		}
 		return $content;
 	}
@@ -2662,6 +2662,7 @@ class Get
 		{
 			// Create a new query object.
 			$query = $db->getQuery(true);
+			$continue = false;
 			// Insert columns.
 			$columns = array('path','type','target','component','published','created','created_by','version','access','hashtarget','from_line','to_line','code','hashendtarget');
 			// Prepare the insert query.
@@ -2672,6 +2673,7 @@ class Get
 				if (count($values) == 14)
 				{
 					$query->values(implode(',', $values));
+					$continue = true;
 				}
 				else
 				{
@@ -2680,6 +2682,10 @@ class Get
 			}
 			// clear the values array
 			$this->newCustomCode = array();
+			if (!$continue)
+			{
+				return false; // insure we dont continue if no values were loaded
+			}
 			// Set the query using our newly populated query object and execute it.
 			$db->setQuery($query);
 			$db->execute();
@@ -2729,7 +2735,12 @@ class Get
 	{
 		// we must first store the current woking directory
 		$joomla = getcwd();
-		$counter = array(1 => 0, 2 => 0);
+		$counter = array(1 => 0, 2 => 0);		
+		// set some local placeholders
+		$placeholders = array();
+		$placeholders[$this->fileContentStatic['###Component###'].'Helper::']	= '[[[Component]]]Helper::';
+		$placeholders['com_'.$this->fileContentStatic['###component###']]	= 'com_[[[component]]]';
+		$placeholders['COM_'.$this->fileContentStatic['###COMPONENT###']]	= 'COM_[[[COMPONENT]]]';
 		foreach ($paths as $target => $path)
 		{
 			// we are changing the working directory to the componet path
@@ -2738,7 +2749,7 @@ class Get
 			$files = JFolder::files('.', '\.php', true, true);
 			foreach ($files as $file)
 			{
-				$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $db, $userId, $today);
+				$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $placeholders, $db, $userId, $today);
 				// insert new code
 				if (ComponentbuilderHelper::checkArray($this->newCustomCode))
 				{
@@ -2770,7 +2781,8 @@ class Get
 	 * 
 	 * @param   array   $counter      The counter for the arrays
 	 * @param   string  $file         The file path to search
-	 * @param   array   $placeholders The values to search for
+	 * @param   array   $searchArray  The values to search for
+	 * @param   array   $placeholders The values to replace in the code being stored
 	 * @param   object  $db           The database object
 	 * @param   int     $userId       The user id
 	 * @param   string  $today        The date for today
@@ -2778,7 +2790,7 @@ class Get
 	 * @return  array    on success
 	 * 
 	 */
-	protected function searchFileContent(&$counter, &$file, &$target, &$placeholders, &$db, &$userId, &$today)
+	protected function searchFileContent(&$counter, &$file, &$target, &$searchArray, &$placeholders, &$db, &$userId, &$today)
 	{
 		// reset each time per file
 		$loadEndFingerPrint	= false;
@@ -2798,7 +2810,7 @@ class Get
 		else
 		{
 			$path		= $file;
-		}
+		}		
 		foreach (new SplFileObject($file) as $lineNumber => $lineContent)
 		{
 			// we musk keep last few lines to dynamic find target entry later
@@ -2808,15 +2820,15 @@ class Get
 			{
 				$endFingerPrint[$lineNumber] = trim($lineContent);
 			}
-			foreach ($placeholders as $type => $placeholder)
+			foreach ($searchArray as $type => $search)
 			{
 				$i	= (int) ($type == 3 ||$type == 4) ? 2 : 1;
 				$_type	= (int) ($type == 1 || $type == 3) ? 1 : 2;
 				if ($reader === 0 || $reader === $i)
 				{
 					$targetKey	= $type;
-					$start		= '/***['.$placeholder.'***/';
-					$end		= '/***[/'.$placeholder.'***/';
+					$start		= '/***['.$search.'***/';
+					$end		= '/***[/'.$search.'***/';
 					// check if the ending place holder was found
 					if(isset($reading[$targetKey]) && $reading[$targetKey] && (trim($lineContent) === $end || strpos($lineContent, $end) !== false))
 					{
@@ -2882,11 +2894,13 @@ class Get
 					// then read in the code
 					if (isset($reading[$targetKey]) && $reading[$targetKey])
 					{
-						$codeBucket[$pointer[$targetKey]][] = $lineContent;
+						$codeBucket[$pointer[$targetKey]][] = $this->setPlaceholders($lineContent, $placeholders, 2, 2); // <-- this could solve our placholder issue
 					}
 					// check if the starting place holder was found
 					if((!isset($reading[$targetKey]) || !$reading[$targetKey]) && (($i === 1 && trim($lineContent) === $start) || strpos($lineContent, $start) !== false))
 					{
+						// do a quick check to insure we have an id
+						$id = false;
 						if ($i === 2)
 						{
 							$id = $this->getSystemID($lineContent, $start);
@@ -2915,8 +2929,6 @@ class Get
 						$hasharray	= array_slice($fingerPrint, -$inFinger, $getFinger, true);
 						$hasleng	= count($hasharray);
 						$hashtarget	= $hasleng.'__'.md5(implode('',$hasharray));
-						// do a quick check to insure we have an id
-						$id = false;
 						// all new records we can do a buldk insert
 						if ($i === 1 || !$id)
 						{
@@ -3020,6 +3032,87 @@ class Get
 	}
 	
 	/**
+	 * Update the data with the placeholders
+	 * 
+	 * @param   string   $data          The actual date
+	 * @param   array    $placeholder   The placeholders
+	 *
+	 * @return  string
+	 * 
+	 */
+	public function setPlaceholders(&$data, &$placeholder, $action = 1, $langSwitch = 0)
+	{
+		// check if we should reverse the lang strings <-- for custom coding
+		if (2 == $langSwitch)
+		{
+			$langArray1 = ComponentbuilderHelper::getAllBetween($data,'JText::_("','")');
+			$langArray2 = ComponentbuilderHelper::getAllBetween($data,"JText::_('","')");
+			$langArray = ComponentbuilderHelper::mergeArrays(array($langArray1,$langArray2));
+			if (ComponentbuilderHelper::checkArray($langArray))
+			{
+				$_tmp = array();
+				$targets = array('admin','site','','sitesys','adminsys');
+				foreach ($langArray as $lang)
+				{
+					$found = false;
+					foreach ($targets as $in)
+					{
+						if (!$found && isset($this->langContent[$in][$lang]))
+						{
+							$_tmp[$lang] = $this->langContent[$in][$lang];
+							$found = true;
+						}
+					}
+				}
+				// now update
+				if (ComponentbuilderHelper::checkArray($_tmp))
+				{
+					$data = str_replace(array_keys($_tmp),array_values($_tmp),$data);
+				}
+			}
+		}
+		if (1 == $action) // <-- just replace (default)
+		{
+			return str_replace(array_keys($placeholder),array_values($placeholder),$data);
+		}
+		elseif (2 == $action) // <-- check if data string has placeholders
+		{
+			$replace = false;
+			foreach ($placeholder as $key => $val)
+			{
+				if (strpos($data, $key) !== FALSE)
+				{
+				    $replace = true;
+				    break;
+				}
+			}
+			// only replace if the data has these placeholder values
+			if ($replace === true)
+			{
+				
+				return str_replace(array_keys($placeholder),array_values($placeholder),$data);
+			}
+		}
+		elseif (3 == $action) // <-- remove placeholders not in data string
+		{
+			$replace = $placeholder;
+			foreach ($replace as $key => $val)
+			{
+				if (strpos($data, $key) === FALSE)
+				{
+				   unset($replace[$key]);
+				}
+			}
+			// only replace if the data has these placeholder values
+			if (ComponentbuilderHelper::checkArray($replace))
+			{
+			    return str_replace(array_keys($replace),array_values($replace),$data);
+			}
+		}
+		return $data;
+	}
+	
+	/**
 	 * return the placeholders for insered and replaced code
 	 * 
 	 * @param   int      $type  The type of placement
@@ -3028,7 +3121,7 @@ class Get
 	 * @return  array    on success
 	 * 
 	 */
-	public function getPlaceHolder($type, &$id)
+	public function getPlaceHolder($type, $id)
 	{
 		switch ($type)
 		{
@@ -3043,8 +3136,8 @@ class Get
 				else
 				{
 					return array(
-						'start' => "/*////////////////////////////////////////*/", 
-						'end' => "/*////////////////////////////////////////*/");
+						'start' => "\t\t\t", 
+						'end' => "\t\t\t");
 				}
 				break;
 			case 2:
@@ -3058,9 +3151,14 @@ class Get
 				else
 				{
 					return array(
-						'start' => "/*////////////////////////////////////////*/", 
-						'end' => "/*////////////////////////////////////////*/");
+						'start' => "\t\t\t", 
+						'end' => "\t\t\t");
 				}
+				break;
+			case 3:
+				return array(
+						'start' => "\t\t\t", 
+						'end' => "\t\t\t");
 				break;
 		}
 		return false;

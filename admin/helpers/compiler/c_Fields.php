@@ -1276,7 +1276,7 @@ class Fields extends Structure
 				{
 					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 					// replace the placeholders
-					$xmlValue = str_replace(array_keys($placeholders), array_values($placeholders), $xmlValue);
+					$xmlValue = $this->setPlaceholders($xmlValue, $placeholders);
 				}
 				elseif (strpos($property['name'], 'type_php_') !== false && $setCustom)
 				{
@@ -1312,14 +1312,14 @@ class Fields extends Structure
 					// load the component name
 					$fieldAttributes['custom']['component'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'component="', '"');
 					// replace the placeholders
-					$fieldAttributes['custom']['component'] = str_replace(array_keys($placeholders), array_values($placeholders), $fieldAttributes['custom']['component']);
+					$fieldAttributes['custom']['component'] = $this->setPlaceholders($fieldAttributes['custom']['component'], $placeholders);
 				}
 				elseif ($property['name'] === 'table' && $setCustom)
 				{
 					// load the main table that is queried
 					$fieldAttributes['custom']['table'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'table="', '"');
 					// replace the placeholders
-					$fieldAttributes['custom']['table'] = str_replace(array_keys($placeholders), array_values($placeholders), $fieldAttributes['custom']['table']);
+					$fieldAttributes['custom']['table'] = $this->setPlaceholders($fieldAttributes['custom']['table'], $placeholders);
 				}
 				elseif ($property['name'] === 'value_field' && $setCustom)
 				{
@@ -1382,7 +1382,7 @@ class Fields extends Structure
 				if (ComponentbuilderHelper::checkString($xmlValue) && $property['translatable'] == 1)
 				{
 					// replace placeholders
-					$xmlValue = str_replace(array_keys($placeholders), array_values($placeholders), $xmlValue);
+					$xmlValue = $this->setPlaceholders($xmlValue, $placeholders);
 					// insure custom lables dont get messed up
 					if ($setCustom)
 					{
@@ -1818,16 +1818,16 @@ class Fields extends Structure
 					{
 						if ($line == 1)
 						{
-							$phpCode .= str_replace(array_keys($tabBreak),array_values($tabBreak),$code);
+							$phpCode .= $this->setPlaceholders($code, $tabBreak);
 						}
 						else
 						{
-							$phpCode .= PHP_EOL."\t\t".str_replace(array_keys($tabBreak),array_values($tabBreak),$code);
+							$phpCode .= PHP_EOL."\t\t".$this->setPlaceholders($code, $tabBreak);
 						}
 					}
 				}
 				// replace the placholders
-				$phpCode = str_replace(array_keys($replace),array_values($replace),$phpCode);
+				$phpCode = $this->setPlaceholders($phpCode, $replace);
 			}
 			else
 			{
@@ -1851,16 +1851,16 @@ class Fields extends Structure
 						{
 							if ($line == 1)
 							{
-								$phpxCode .= str_replace(array_keys($tabBreak),array_values($tabBreak),$code);
+								$phpxCode .= $this->setPlaceholders($code, $tabBreak);
 							}
 							else
 							{
-								$phpxCode .= PHP_EOL."\t\t".str_replace(array_keys($tabBreak),array_values($tabBreak),$code);
+								$phpxCode .= PHP_EOL."\t\t".$this->setPlaceholders($code, $tabBreak);
 							}
 						}
 					}
 					// replace the placholders
-					$phpxCode = str_replace(array_keys($replace),array_values($replace),$phpxCode);
+					$phpxCode = $this->setPlaceholders($phpxCode, $replace);
 				}
 				else
 				{

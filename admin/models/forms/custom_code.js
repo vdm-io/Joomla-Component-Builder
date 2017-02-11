@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 28 of this MVC
-	@build			9th February, 2017
+	@version		@update number 35 of this MVC
+	@build			10th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_code.js
@@ -52,10 +52,12 @@ function vvvvvzo(target_vvvvvzo)
 	if (target_vvvvvzo == 2)
 	{
 		jQuery('.note_jcb_placeholder').closest('.control-group').show();
+		jQuery('#jform_system_name').closest('.control-group').show();
 	}
 	else
 	{
 		jQuery('.note_jcb_placeholder').closest('.control-group').hide();
+		jQuery('#jform_system_name').closest('.control-group').hide();
 	}
 }
 

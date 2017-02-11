@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 28 of this MVC
-	@build			9th February, 2017
+	@version		@update number 35 of this MVC
+	@build			10th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -340,15 +340,15 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $target)
 			{
 				// Translate the target selection
 				$text = $model->selectionTranslation($target,'target');
 				// Now add the target and its text to the options array
-				$filter[] = JHtml::_('select.option', $target, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $target, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}
@@ -376,15 +376,15 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $type)
 			{
 				// Translate the type selection
 				$text = $model->selectionTranslation($type,'type');
 				// Now add the type and its text to the options array
-				$filter[] = JHtml::_('select.option', $type, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}

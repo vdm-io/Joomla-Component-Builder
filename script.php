@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.1
-	@build			9th February, 2017
+	@version		2.3.2
+	@build			11th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1433,7 +1433,7 @@ class com_componentbuilderInstallerScript
 			$custom_code->type_title = 'Componentbuilder Custom_code';
 			$custom_code->type_alias = 'com_componentbuilder.custom_code';
 			$custom_code->table = '{"special": {"dbtable": "#__componentbuilder_custom_code","key": "id","type": "Custom_code","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","target":"target","type":"type","to_line":"to_line","hashtarget":"hashtarget","code":"code","from_line":"from_line","hashendtarget":"hashendtarget","not_required":"not_required"}}';
+			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","target":"target","type":"type","code":"code","to_line":"to_line","system_name":"system_name","hashtarget":"hashtarget","hashendtarget":"hashendtarget","from_line":"from_line","not_required":"not_required"}}';
 			$custom_code->router = 'ComponentbuilderHelperRoute::getCustom_codeRoute';
 			$custom_code->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_code.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","component","target","type","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "component","targetTable": "#__componentbuilder_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
@@ -1748,7 +1748,7 @@ class com_componentbuilderInstallerScript
 			$custom_code->type_title = 'Componentbuilder Custom_code';
 			$custom_code->type_alias = 'com_componentbuilder.custom_code';
 			$custom_code->table = '{"special": {"dbtable": "#__componentbuilder_custom_code","key": "id","type": "Custom_code","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","target":"target","type":"type","to_line":"to_line","hashtarget":"hashtarget","code":"code","from_line":"from_line","hashendtarget":"hashendtarget","not_required":"not_required"}}';
+			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","target":"target","type":"type","code":"code","to_line":"to_line","system_name":"system_name","hashtarget":"hashtarget","hashendtarget":"hashendtarget","from_line":"from_line","not_required":"not_required"}}';
 			$custom_code->router = 'ComponentbuilderHelperRoute::getCustom_codeRoute';
 			$custom_code->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_code.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","component","target","type","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "component","targetTable": "#__componentbuilder_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
@@ -1950,7 +1950,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.3.1 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.3.2 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

@@ -527,6 +527,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	`hashtarget` VARCHAR(64) NOT NULL DEFAULT '',
 	`not_required` INT(1) NOT NULL DEFAULT '0',
 	`path` TEXT NOT NULL,
+	`system_name` VARCHAR(255) NOT NULL DEFAULT '',
 	`target` TINYINT(1) NOT NULL DEFAULT '0',
 	`to_line` VARCHAR(100) NOT NULL DEFAULT '',
 	`type` TINYINT(1) NOT NULL DEFAULT '0',

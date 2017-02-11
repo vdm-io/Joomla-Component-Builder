@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 28 of this MVC
-	@build			9th February, 2017
+	@version		@update number 35 of this MVC
+	@build			10th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		edit.php
@@ -225,8 +225,8 @@ jQuery('#adminForm').on('change', '#jform_target',function (e)
 
 
 var ide = jQuery('#jform_id').val();
-if (ide > 0)
-{
+if (ide > 0) {
 	jQuery('#jcb-placeholder').html('<code> [CUSTO'+'MCODE='+ide+'] </code>');
+	jQuery('#jcb-placeholder-arg').html('<code> [CUSTO'+'MCODE='+ide+'&#43;value1,value2] </code>');
 }
 </script>

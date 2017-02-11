@@ -53,6 +53,7 @@ class Compiler extends Infusion
 	 */
 	public function __construct($config = array ())
 	{
+//		$time_start = microtime(true);
 		// first we run the perent constructor
 		if (parent::__construct($config))
 		{
@@ -100,8 +101,6 @@ class Compiler extends Infusion
 				// get the custom code from installed files
 				$this->customCodeFactory($paths, $db, $userId, $today);
 			}
-			// check if we have custom code to add
-			$this->getCustomCode();
 			// now add the other custom code by placeholder
 			if (ComponentbuilderHelper::checkArray($this->addCustomCodeAt))
 			{
@@ -109,6 +108,8 @@ class Compiler extends Infusion
 				$app = JFactory::getApplication();
 				$this->addCustomCodeViaPlaceholders($app);
 			}
+			// check if we have custom code to add
+			$this->getCustomCode();
 			// now insert into the new files
 			if (ComponentbuilderHelper::checkArray($this->customCode))
 			{
@@ -124,6 +125,9 @@ class Compiler extends Infusion
 				// done
 				return false;
 			}
+//			$time_end = microtime(true);
+//			$time = $time_end - $time_start;
+//			var_dump("Did Test in ($time seconds)");die;
 			return true;
 		}
 		return false;
@@ -173,7 +177,8 @@ class Compiler extends Infusion
 					if (strpos($string,'###BOM###') !== false)
 					{
 						list($wast,$code) = explode('###BOM###',$string);
-						$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$php.$bom.$code);
+						$string = $php.$bom.$code;
+						$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
 						// add custom Code by placeholder if found
 						$this->getPlaceHolderKeys($static['path'], $answer);
 						// add to zip array
@@ -181,7 +186,7 @@ class Compiler extends Infusion
 					}
 					else
 					{
-						$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$string);
+						$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
 						// add custom Code by placeholder if found
 						$this->getPlaceHolderKeys($static['path'], $answer);
 						// add to zip array
@@ -213,8 +218,9 @@ class Compiler extends Infusion
 								if (strpos($string,'###BOM###') !== false)
 								{
 									list($bin,$code) = explode('###BOM###',$string);
-									$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$php.$bom.$code);
-									$answer = str_replace(array_keys($this->fileContentDynamic[$view]),array_values($this->fileContentDynamic[$view]),$answer);
+									$string = $php.$bom.$code;
+									$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
+									$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
 									// add custom Code by placeholder if found
 									$this->getPlaceHolderKeys($file['path'], $answer, $view);
 									// add to zip array
@@ -222,8 +228,8 @@ class Compiler extends Infusion
 								}
 								else
 								{
-									$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$string);
-									$answer = str_replace(array_keys($this->fileContentDynamic[$view]),array_values($this->fileContentDynamic[$view]),$answer);
+									$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
+									$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
 									// add custom Code by placeholder if found
 									$this->getPlaceHolderKeys($file['path'], $answer, $view);
 									// add to zip array
@@ -267,14 +273,50 @@ class Compiler extends Infusion
 			{
 				$this->addCustomCodeAt[$file] = array();
 				$this->addCustomCodeAt[$file]['ids'] = array();
-				$this->addCustomCodeAt[$file]['replace'] = array();
+				$this->addCustomCodeAt[$file]['args'] = array();
 				$this->addCustomCodeAt[$file]['view'] = $view;
 			}
 			$found = ComponentbuilderHelper::getAllBetween($content, '[CUSTO'.'MCODE=', ']');
 			if (ComponentbuilderHelper::checkArray($found))
 			{
-				foreach ($found as $id)
+				foreach ($found as $key)
 				{
+					// check if we have args
+					if (is_numeric($key))
+					{
+						$id = (int) $key;
+					}
+					elseif (strpos($key, '+') !== false)
+					{
+						$array = explode('+', $key);
+						// set ID
+						$id = (int) $array[0];
+						// load args for this ID
+						if (isset($array[1]))
+						{
+							if (!isset($this->addCustomCodeAt[$file]['args'][$id]))
+							{
+								$this->addCustomCodeAt[$file]['args'][$id] = array();
+							}
+							// only load if not already loaded
+							if (!isset($this->addCustomCodeAt[$file]['args'][$id][$key]))
+							{
+								if (strpos($array[1], ',') !== false)
+								{
+									$this->addCustomCodeAt[$file]['args'][$id][$key] = array_map('trim', explode(',', $array[1]));
+								}
+								elseif (ComponentbuilderHelper::checkString($array[1]))
+								{
+									$this->addCustomCodeAt[$file]['args'][$id][$key] = array();
+									$this->addCustomCodeAt[$file]['args'][$id][$key][] = trim($array[1]);
+								}
+							}
+						}
+					}
+					else
+					{
+						continue;
+					}
 					$this->addCustomCodeAt[$file]['ids'][$id] = $id;
 				}
 			}
@@ -293,7 +335,7 @@ class Compiler extends Infusion
 		unset($this->componentData->custom_admin_views);
 		unset($this->componentData->config);
 		unset($this->joomlaVersionData);
-		unset($this->langContent);
+		// unset($this->langContent);
 		unset($this->dbKeys);
 		unset($this->permissionBuilder);
 		unset($this->layoutBuilder);
@@ -425,7 +467,7 @@ class Compiler extends Infusion
 		// get the file
 		$string = JFile::read($path);
 		// update the file
-		$answer = str_replace(array_keys($this->fileContentStatic),array_values($this->fileContentStatic),$string);
+		$answer = $this->setPlaceholders($string, $this->fileContentStatic);
 		// add to zip array
 		$this->writeFile($path,$answer);
 	}	
@@ -633,30 +675,7 @@ class Compiler extends Infusion
 	protected function addCustomCodeViaPlaceholders($app)
 	{
 		// reset all these
-		unset($this->placeholders['###view###']);
-		unset($this->placeholders['###VIEW###']);
-		unset($this->placeholders['###View###']);
-		unset($this->placeholders['[[[view]]]']);
-		unset($this->placeholders['[[[VIEW]]]']);
-		unset($this->placeholders['[[[View]]]']);
-		unset($this->placeholders['###views###']);
-		unset($this->placeholders['###VIEWS###']);
-		unset($this->placeholders['###Views###']);
-		unset($this->placeholders['[[[views]]]']);
-		unset($this->placeholders['[[[VIEWS]]]']);
-		unset($this->placeholders['[[[Views]]]']);
-		unset($this->placeholders['###SView###']);
-		unset($this->placeholders['###sview###']);
-		unset($this->placeholders['###SVIEW###']);
-		unset($this->placeholders['[[[SView]]]']);
-		unset($this->placeholders['[[[sview]]]']);
-		unset($this->placeholders['[[[SVIEW]]]']);
-		unset($this->placeholders['###SViews###']);
-		unset($this->placeholders['###sviews###']);
-		unset($this->placeholders['###SVIEWS###']);
-		unset($this->placeholders['[[[SViews]]]']);
-		unset($this->placeholders['[[[sviews]]]']);
-		unset($this->placeholders['[[[SVIEWS]]]']);
+		$this->clearFromPlaceHolders('view');
 		foreach ($this->addCustomCodeAt as $path => $item)
 		{
 			if (ComponentbuilderHelper::checkString($item['view']))
@@ -670,14 +689,13 @@ class Compiler extends Infusion
 			if ($this->getCustomCode($item['ids']))
 			{
 				$code = array();
-				foreach($this->customCode as $item)
+				foreach($this->customCode as $dbitem)
 				{
-					$placeholder	= $this->getPlaceHolder(2, $item['id']);
-					$code['[CUSTOM'.'CODE='.$item['id'].']'] = $placeholder['start'] . PHP_EOL . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$item['code']) . $placeholder['end'];
+					$this->buildCustomCodeForPlaceholders($item, $dbitem, $code);
 				}
 				// now update the file
 				$string = JFile::read($path);
-				$answer = str_replace(array_keys($code),array_values($code),$string);
+				$answer = $this->setPlaceholders($string, $code);
 				$this->writeFile($path,$answer);
 			}
 			else
@@ -687,8 +705,68 @@ class Compiler extends Infusion
 		}
 	}
 	
+	protected function buildCustomCodeForPlaceholders(&$at, &$item, &$code)
+	{
+		// check if there is args for this code
+		if (isset($at['args'][$item['id']]) && ComponentbuilderHelper::checkArray($at['args'][$item['id']]))
+		{
+			// since we have args we cant update this code via editor (TODO)
+			$placeholder	= $this->getPlaceHolder(3, null);
+			// we have args and so need to load each
+			foreach ($at['args'][$item['id']] as $key => $args)
+			{
+				$this->setThesePlaceHolders('arg', $args);
+				$code['[CUSTOM'.'CODE='.$key.']'] = $placeholder['start'] . PHP_EOL . $this->setPlaceholders($item['code'], $this->placeholders). $placeholder['end'];
+			}
+		}
+		else
+		{
+			// check what type of place holders we should load here (if view is being updated then we can't use inserted)
+			$placeholderType = 2;
+			if (strpos($item['code'], '[[[view]]]') !== false)
+			{
+				// since we have views we can't update this code via editor (TODO)
+				$placeholderType = 3;
+			}
+			// if now ars were found, clear it
+			$this->clearFromPlaceHolders('arg');
+			// load args for this code
+			$placeholder	= $this->getPlaceHolder($placeholderType, $item['id']);
+			$code['[CUSTOM'.'CODE='.$item['id'].']'] = $placeholder['start'] . PHP_EOL . $this->setPlaceholders($item['code'], $this->placeholders). $placeholder['end'];
+		}
+	}
+	
+	protected function setThesePlaceHolders($key, $values)
+	{
+		// aways fist reset these
+		$this->clearFromPlaceHolders($key);
+		if (ComponentbuilderHelper::checkArray($values))
+		{
+			$number = 0;
+			foreach ($values as $value)
+			{
+				$this->placeholders['[[['.$key.$number.']]]'] = $value;
+				$number++;
+			}
+		}
+	}
+	
+	protected function clearFromPlaceHolders($like)
+	{
+		foreach ($this->placeholders as $something => $value)
+		{
+			if (stripos($something, $like) !== false)
+			{
+				unset($this->placeholders[$something]);
+			}
+		}
+	}
+	
 	protected function addCustomCode($app)
 	{
+		// reset all these
+		$this->clearFromPlaceHolders('view');
+		$this->clearFromPlaceHolders('arg');
 		foreach($this->customCode as $nr => $target)
 		{
 			// reset each time per custom code
@@ -718,7 +796,7 @@ class Compiler extends Infusion
 					$foundEnd	= true;
 				}
 				$counter	= 0;
-				// check if file is new structure			
+				// check if file exist			
 				if (JFile::exists($file))
 				{
 					foreach (new SplFileObject($file) as $lineNumber => $lineContent)
@@ -783,7 +861,7 @@ class Compiler extends Infusion
 					if ($found)
 					{
 						$placeholder	= $this->getPlaceHolder($target['type'], $target['id']);
-						$data		= $placeholder['start'] . PHP_EOL . $target['code'] . $placeholder['end'];
+						$data		= $placeholder['start'] . PHP_EOL . $this->setPlaceholders($target['code'], $this->placeholders). $placeholder['end'];
 						if ($target['type'] == 2)
 						{
 							// found it now add code from the next line
@@ -842,23 +920,31 @@ class Compiler extends Infusion
 	// Thanks to http://stackoverflow.com/a/16813550/1429677
 	protected function addDataToFile($file, $data, $position, $replace = null)
 	{
+		// start the process
 		$fpFile = fopen($file, "rw+");
 		$fpTemp = fopen('php://temp', "rw+");
-
-		$len = stream_copy_to_stream($fpFile, $fpTemp); // make a copy
-
-		fseek($fpFile, $position); // move to the position
+		// make a copy of the file
+		stream_copy_to_stream($fpFile, $fpTemp);
+		// move to the position where we should add the data
+		fseek($fpFile, $position);
+		// Add the data
+		fwrite($fpFile, $data);
+		// truncate file at the end of the data that was added
+		$remove = bcadd($position, mb_strlen($data, '8bit'));
+		ftruncate($fpFile, $remove);
+		// check if this was a replacement of data
 		if ($replace)
 		{
 			$position = bcadd($position, $replace);
 		}
-		fseek($fpTemp, $position); // move to the position
-
-		fwrite($fpFile, $data); // Add the data
-
+		// move to the position of the data that should remain below the new data
+		fseek($fpTemp, $position);
+		// copy that remaining data to the file
 		stream_copy_to_stream($fpTemp, $fpFile); // @Jack
-
-		fclose($fpFile); // close file
-		fclose($fpTemp); // close tmp
+		// done close both files
+		fclose($fpFile);
+		fclose($fpTemp);
+		
+		// any help to improve this is welcome...
 	}
 }

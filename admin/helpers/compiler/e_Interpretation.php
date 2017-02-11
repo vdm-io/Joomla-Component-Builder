@@ -2271,7 +2271,7 @@ class Interpretation extends Fields
 						{
 							foreach ($joinedChecker as $joinedString)
 							{
-								$joine .= str_replace(array_keys($placeholders),array_values($placeholders),$joinedString);
+								$joine .= $this->setPlaceholders($joinedString, $placeholders);
 							}
 						}
 						if (ComponentbuilderHelper::checkString($decoder) || ComponentbuilderHelper::checkString($uikit) || ComponentbuilderHelper::checkString($decoder_filter) || ComponentbuilderHelper::checkString($joine))
@@ -2484,7 +2484,8 @@ class Interpretation extends Fields
 				$get->php_calculation = (array) explode(PHP_EOL,$get->php_calculation);
 				if (ComponentbuilderHelper::checkArray($get->php_calculation))
 				{
-					$getItem .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t\t\t".implode(PHP_EOL."\t\t\t\t",$get->php_calculation));
+					$_tmp = PHP_EOL."\t\t\t\t".implode(PHP_EOL."\t\t\t\t",$get->php_calculation);
+					$getItem .= $this->setPlaceholders($_tmp, $this->placeholders);
 				}
 			}
 			$getItem .= PHP_EOL."\t\t\t}";
@@ -2573,7 +2574,8 @@ class Interpretation extends Fields
 				$view['settings']->php_jview_display = (array) explode(PHP_EOL,$view['settings']->php_jview_display);
 				if (ComponentbuilderHelper::checkArray($view['settings']->php_jview_display))
 				{
-					$method .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t".implode(PHP_EOL."\t\t",$view['settings']->php_jview_display));
+					$_tmp = PHP_EOL."\t\t".implode(PHP_EOL."\t\t",$view['settings']->php_jview_display);
+					$method .= $this->setPlaceholders($_tmp, $this->placeholders);
 				}
 			}
 			if ('site' === $this->target)
@@ -2727,7 +2729,8 @@ class Interpretation extends Fields
 			$view['settings']->php_document = (array) explode(PHP_EOL,$view['settings']->php_document);
 			if (ComponentbuilderHelper::checkArray($view['settings']->php_document))
 			{
-				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t".implode(PHP_EOL."\t\t",$view['settings']->php_document));
+				$_tmp = PHP_EOL."\t\t".implode(PHP_EOL."\t\t",$view['settings']->php_document);
+				return $this->setPlaceholders($_tmp, $this->placeholders);
 			}
 		}
 		return '';
@@ -2790,7 +2793,7 @@ class Interpretation extends Fields
 			{
 				// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
 				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
-				PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_controller);
+				PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_controller, $this->placeholders);
 				if ('site' === $this->target)
 				{
 					// add the controller for this view
@@ -2804,7 +2807,7 @@ class Interpretation extends Fields
 			{
 				// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
 				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] =
-				PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->php_model);
+				PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_model, $this->placeholders);
 			}
 			if (isset($view['settings']->custom_buttons) && ComponentbuilderHelper::checkArray($view['settings']->custom_buttons))
 			{
@@ -2840,7 +2843,7 @@ class Interpretation extends Fields
 		{
 			if (ComponentbuilderHelper::checkString($view['settings']->css))
 			{
-				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->css);
+				return $this->setPlaceholders($view['settings']->css, $this->placeholders);
 			}
 		}
 		return '';
@@ -2854,8 +2857,8 @@ class Interpretation extends Fields
 			if (ComponentbuilderHelper::checkArray($view['settings']->css_document))
 			{
 				$script = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the Custom CSS script to view".PHP_EOL."\t\t".'$this->document->addStyleDeclaration("';
-				$cssDocument = str_replace('"', '\"', implode(PHP_EOL."\t\t\t",$view['settings']->css_document));
-				return $script.str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t\t".$cssDocument).PHP_EOL."\t\t".'");';
+				$cssDocument = PHP_EOL."\t\t\t".str_replace('"', '\"', implode(PHP_EOL."\t\t\t",$view['settings']->css_document));
+				return $script.$this->setPlaceholders($cssDocument, $this->placeholders).PHP_EOL."\t\t".'");';
 			}
 		}
 		return '';
@@ -2869,8 +2872,8 @@ class Interpretation extends Fields
 			if (ComponentbuilderHelper::checkArray($view['settings']->js_document))
 			{
 				$script = PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set the Custom JS script to view".PHP_EOL."\t\t".'$this->document->addScriptDeclaration("';
-				$jsDocument = str_replace('"', '\"', implode(PHP_EOL."\t\t\t",$view['settings']->js_document));
-				return $script.str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL."\t\t\t".$jsDocument).PHP_EOL."\t\t".'");';
+				$jsDocument = PHP_EOL."\t\t\t".str_replace('"', '\"', implode(PHP_EOL."\t\t\t",$view['settings']->js_document));
+				return $script.$this->setPlaceholders($jsDocument, $this->placeholders).PHP_EOL."\t\t".'");';
 			}
 		}
 		return '';
@@ -3149,7 +3152,7 @@ class Interpretation extends Fields
 	{
 		if ($view['settings']->add_php_jview == 1)
 		{
-			return str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL.PHP_EOL.$view['settings']->php_jview);
+			return PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_jview, $this->placeholders);
 		}
 		return '';
 	}
@@ -3167,7 +3170,7 @@ class Interpretation extends Fields
 				{
 					$this->placeholders['[[[LIMITBOX]]]'] = '<?php echo $this->pagination->getLimitBox(); ?>';
 				}
-				$body[] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->default);
+				$body[] = $this->setPlaceholders($view['settings']->default, $this->placeholders);
 				$body[] = PHP_EOL.'<?php if (isset($this->items) && '.$this->fileContentStatic['###component###'].'Helper::checkArray($this->items) && count($this->items) > 4): ?>';
 				$body[] = '<form name="adminForm" method="post">';
 				$body[] = "\t".'<div class="pagination">';
@@ -3191,7 +3194,7 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				return PHP_EOL. str_replace(array_keys($this->placeholders),array_values($this->placeholders),$view['settings']->default);
+				return PHP_EOL. $this->setPlaceholders($view['settings']->default, $this->placeholders);
 			}
 			
 		}
@@ -3233,7 +3236,8 @@ class Interpretation extends Fields
 			$view['settings']->php_view = (array) explode(PHP_EOL,$view['settings']->php_view);
 			if (ComponentbuilderHelper::checkArray($view['settings']->php_view))
 			{
-				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),PHP_EOL.PHP_EOL.implode(PHP_EOL,$view['settings']->php_view));
+				$_tmp = PHP_EOL.PHP_EOL.implode(PHP_EOL,$view['settings']->php_view);
+				return $this->setPlaceholders($_tmp, $this->placeholders);
 			}
 		}
 		return '';
@@ -3254,7 +3258,7 @@ class Interpretation extends Fields
 				// set the file data
 				$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
 				// ###SITE_TEMPLATE_BODY### <<<DYNAMIC>>>
-				$this->fileContentDynamic[$view['settings']->code.'_'.$template]['###'.$TARGET.'_TEMPLATE_BODY###'] = PHP_EOL . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$data['html']);
+				$this->fileContentDynamic[$view['settings']->code.'_'.$template]['###'.$TARGET.'_TEMPLATE_BODY###'] = PHP_EOL . $this->setPlaceholders($data['html'], $this->placeholders);
 				// ###SITE_TEMPLATE_CODE_BODY### <<<DYNAMIC>>>
 				$this->fileContentDynamic[$view['settings']->code.'_'.$template]['###'.$TARGET.'_TEMPLATE_CODE_BODY###'] = $this->setCustomViewTemplateCode($data['php_view']);
 			}
@@ -3269,7 +3273,7 @@ class Interpretation extends Fields
 			if (ComponentbuilderHelper::checkArray($php_view))
 			{
 				$php_view = PHP_EOL.PHP_EOL.implode(PHP_EOL,$php_view);
-				return str_replace(array_keys($this->placeholders),array_values($this->placeholders),$php_view);
+				return $this->setPlaceholders($php_view, $this->placeholders);
 			}
 		}
 		return '';
@@ -3291,14 +3295,14 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkArray($php_view))
 				{
 					$php_view = PHP_EOL.PHP_EOL.implode(PHP_EOL,$php_view);
-					$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_CODE###'] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$php_view);
+					$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_CODE###'] = $this->setPlaceholders($php_view, $this->placeholders);
 				}
 				else
 				{
 					$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_CODE###'] = '';
 				}
 				// ###SITE_LAYOUT_BODY### <<<DYNAMIC>>>
-				$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_BODY###'] = PHP_EOL . str_replace(array_keys($this->placeholders),array_values($this->placeholders),$data['html']);
+				$this->fileContentDynamic[$layout]['###'.$TARGET.'_LAYOUT_BODY###'] = PHP_EOL . $this->setPlaceholders($data['html'], $this->placeholders);
 
 			}
 		}
@@ -4934,7 +4938,7 @@ class Interpretation extends Fields
 				foreach ($this->customScriptBuilder['sql'] as $for => $customSql)
 				{
 					$placeholders = array('[[[component]]]' => $component, '[[[view]]]' => $for);
-					$db .= PHP_EOL.PHP_EOL.str_replace(array_keys($placeholders),array_values($placeholders),$customSql);
+					$db .= PHP_EOL.PHP_EOL.$this->setPlaceholders($customSql, $placeholders);
 				}
 
 			}
@@ -8019,12 +8023,12 @@ class Interpretation extends Fields
 			{
 				$fileScript = '';
 			}
-			$fileScript .= PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['view_file'][$viewName]);
+			$fileScript .= PHP_EOL.PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['view_file'][$viewName], $this->placeholders);
 		}
 		// add custom script to footer
 		if (isset($this->customScriptBuilder['view_footer'][$viewName]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['view_footer'][$viewName]))
 		{
-			$customFooterScript = PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->customScriptBuilder['view_footer'][$viewName]);
+			$customFooterScript = PHP_EOL.PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['view_footer'][$viewName], $this->placeholders);
 			if (strpos($customFooterScript,'<?php') === false)
 			{
 				// only add now if no php is added to the footer script
@@ -8841,7 +8845,7 @@ class Interpretation extends Fields
 			foreach ($this->customScriptBuilder[$target]['ajax_model'] as $view => $method)
 			{
 				$methods .= PHP_EOL.PHP_EOL."\t//".$this->setLine(__LINE__)." Used in ".$view.PHP_EOL;
-				$methods .= str_replace(array_keys($this->placeholders),array_values($this->placeholders),$method);
+				$methods .= $this->setPlaceholders($method, $this->placeholders);
 			}
 		}
 		return $methods;
@@ -8961,7 +8965,7 @@ class Interpretation extends Fields
 						$function[] = "\t\t\t\$model = \$this->getModel();";
 					}
 					$function[] = "\t\t\t\$results = array_unique(\$results);";
-					$function[] = "\t\t\t\$filter = array();";
+					$function[] = "\t\t\t\$_filter = array();";
 					$function[] = "\t\t\tforeach (\$results as \$".$filter['code'].")";
 					$function[] = "\t\t\t{";
 
@@ -8971,20 +8975,20 @@ class Interpretation extends Fields
 						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Translate the ".$filter['code']." selection";
 						$function[] = "\t\t\t\t\$text = \$model->selectionTranslation(\$".$filter['code'].",'".$filter['code']."');";
 						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now add the ".$filter['code']." and its text to the options array";
-						$function[] = "\t\t\t\t\$filter[] = JHtml::_('select.option', \$".$filter['code'].", JText::_(\$text));";
+						$function[] = "\t\t\t\t\$_filter[] = JHtml::_('select.option', \$".$filter['code'].", JText::_(\$text));";
 					}
 					elseif ($filter['type'] === 'user')
 					{
 						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now add the ".$filter['code']." and its text to the options array";
-						$function[] = "\t\t\t\t\$filter[] = JHtml::_('select.option', \$".$filter['code'].", JFactory::getUser(\$".$filter['code'].")->name);";
+						$function[] = "\t\t\t\t\$_filter[] = JHtml::_('select.option', \$".$filter['code'].", JFactory::getUser(\$".$filter['code'].")->name);";
 					}
 					else
 					{
 						$function[] = "\t\t\t\t//".$this->setLine(__LINE__)." Now add the ".$filter['code']." and its text to the options array";
-						$function[] = "\t\t\t\t\$filter[] = JHtml::_('select.option', \$".$filter['code'].", \$".$filter['code'].");";
+						$function[] = "\t\t\t\t\$_filter[] = JHtml::_('select.option', \$".$filter['code'].", \$".$filter['code'].");";
 					}
 					$function[] = "\t\t\t}";
-					$function[] = "\t\t\treturn \$filter;";
+					$function[] = "\t\t\treturn \$_filter;";
 					$function[] = "\t\t}";
 					$function[] = "\t\treturn false;";
 					$function[] = "\t}";
@@ -11138,7 +11142,7 @@ class Interpretation extends Fields
 			$this->DashboardGetCustomData = ComponentbuilderHelper::getAllBetween($this->componentData->php_dashboard_methods,'public function get','()');
 
 			// return the methods
-			return PHP_EOL.PHP_EOL.str_replace(array_keys($this->placeholders),array_values($this->placeholders),$this->componentData->php_dashboard_methods);
+			return PHP_EOL.PHP_EOL.$this->setPlaceholders($this->componentData->php_dashboard_methods, $this->placeholders);
 		}
 		return '';
 	}
@@ -11176,7 +11180,7 @@ class Interpretation extends Fields
 			// build the tabs and accordians
 			foreach ($this->componentData->dashboard_tab as $data)
 			{
-				$builder[$data['name']][$data['header']] = str_replace(array_keys($this->placeholders),array_values($this->placeholders),$data['html']);
+				$builder[$data['name']][$data['header']] = $this->setPlaceholders($data['html'], $this->placeholders);
 			}
 			// since we have custom tabs we must load the tab structure around the cpanel
 			$display[] = '<div id="j-main-container" class="span12">';
