@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.2
-	@build			11th February, 2017
+	@version		2.3.4
+	@build			13th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields_fullwidth.php
@@ -28,7 +28,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->vzwfields;
+$items	= $displayData->vzxfields;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit	= "index.php?option=com_componentbuilder&view=fields&task=field.edit";

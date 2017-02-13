@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.2
-	@build			11th February, 2017
+	@version		2.3.4
+	@build			13th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		javascript_css_fullwidth.php

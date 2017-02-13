@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 35 of this MVC
-	@build			10th February, 2017
+	@version		@update number 55 of this MVC
+	@build			13th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		default_body.php
@@ -94,6 +94,9 @@ $edit = "index.php?option=com_componentbuilder&view=custom_codes&task=custom_cod
 		</td>
 		<td class="hidden-phone">
 			<?php echo JText::_($item->type); ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo JText::_($item->comment_type); ?>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('custom_code.edit.state')) : ?>

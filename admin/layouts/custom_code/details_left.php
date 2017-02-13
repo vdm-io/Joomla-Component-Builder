@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.2
-	@build			11th February, 2017
+	@version		2.3.4
+	@build			13th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_left.php
@@ -30,6 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
+	'comment_type',
 	'component',
 	'type',
 	'hashtarget'

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 11 of this MVC
-	@build			2nd February, 2017
+	@version		@update number 17 of this MVC
+	@build			13th February, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -84,8 +84,8 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			
 			$radio1 = JFormHelper::loadFieldType('radio',true);
 			// start building add to sales folder xml field
-			$xml = '<field label="Add to Backup Folder &amp; Sales Server &lt;small&gt;(if set)&lt;/small&gt;" description="" name="backup" type="radio" class="btn-group btn-group-yesno" default="0">';
-			$xml .= '<option value="1">Yes</option> <option value="0">No</option>';
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_TO_BACKUP_FOLDER_AMP_SALES_SERVER_LTSMALLGTIF_SETLTSMALLGT').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_THE_ZIPPED_PACKAGE_OF_THE_COMPONENT_BE_MOVED_TO_THE_LOCAL_BACKUP_AND_REMOTE_SALES_SERVER_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_THOSE_VALUES_SET').'" name="backup" type="radio" class="btn-group btn-group-yesno" default="0">';
+			$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
 			$xml .= "</field>";
 			// prepare the xml
 			$sales = new SimpleXMLElement($xml);
@@ -94,18 +94,38 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			
 			$radio2 = JFormHelper::loadFieldType('radio',true);
 			// start building add to git folder xml field
-			$xml = '<field label="Add to Git Folder" description="" name="git" type="radio" class="btn-group btn-group-yesno" default="1">';
-			$xml .= '<option value="1">Yes</option> <option value="0">No</option>';
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_TO_GIT_FOLDER').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_THE_COMPONENT_BE_MOVED_TO_YOUR_LOCAL_GIT_FOLDER').'" name="git" type="radio" class="btn-group btn-group-yesno" default="1">';
+			$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
 			$xml .= "</field>";
 			// prepare the xml
 			$git = new SimpleXMLElement($xml);
 			// set components to form
 			$radio2->setup($git,1);
 			
+			$radio3 = JFormHelper::loadFieldType('radio',true);
+			// start building add to git folder xml field
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_JCB_INSERT_THE_CUSTOM_CODE_PLACEHOLDERS_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_CUSTOM_CODE').'" name="placeholders" type="radio" class="btn-group btn-group-yesno" default="2">';
+			$xml .= '<option value="2">'.JText::_('COM_COMPONENTBUILDER_GLOBAL').'</option> <option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
+			$xml .= "</field>";
+			// prepare the xml
+			$placeholder = new SimpleXMLElement($xml);
+			// set components to form
+			$radio3->setup($placeholder,2);
+			
+			$radio4 = JFormHelper::loadFieldType('radio',true);
+			// start building add to git folder xml field
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS').'" description="'.JText::_('COM_COMPONENTBUILDER_ADD_CORRESPONDING_LINE_NUMBERS_TO_THE_DYNAMIC_COMMENTS_SO_TO_SEE_WHERE_IN_THE_COMPILER_THE_LINES_OF_CODE_WAS_BUILD_THIS_WILL_HELP_IF_YOU_NEED_TO_GET_MORE_TECHNICAL_WITH_AN_ISSUE_ON_GITHUB').'" name="debuglinenr" type="radio" class="btn-group btn-group-yesno" default="2">';
+			$xml .= '<option value="2">'.JText::_('COM_COMPONENTBUILDER_GLOBAL').'</option> <option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
+			$xml .= "</field>";
+			// prepare the xml
+			$debug_linenr = new SimpleXMLElement($xml);
+			// set components to form
+			$radio4->setup($debug_linenr,2);
+			
 			$list = JFormHelper::loadFieldType('list',true);
 			// start building componet xml field
-			$xml = '<field label="Components" description="" name="component" type="list" class="btn-group" required="true">';
-			$xml .= '<option value="">- Select Component -</option>';
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_COMPONENTS').'" description="'.JText::_('COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_TO_COMPILE').'" name="component" type="list" class="btn-group" required="true">';
+			$xml .= '<option value="">'.JText::_('COM_COMPONENTBUILDER__SELECT_COMPONENT_').'</option>';
 			foreach($this->Components as $componet){
 				$xml .= '<option value="'.$componet->id.'">'.$this->escape($componet->name).'</option>';
 			}
@@ -115,7 +135,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			// set components to form
 			$list->setup($componets,0);
 						
-			return array($radio1,$radio2,$list);
+			return array($radio1,$radio2,$radio3,$radio4,$list);
 		}
 		return false;
 	}

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 81 of this MVC
-	@build			3rd February, 2017
+	@build			13th February, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		default_toolbar.php

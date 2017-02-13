@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 35 of this MVC
-	@build			10th February, 2017
+	@version		@update number 55 of this MVC
+	@build			13th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -267,6 +267,28 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 				);
 			}
 		}
+
+		// Set Comment Type Selection
+		$this->comment_typeOptions = $this->getTheComment_typeSelections();
+		if ($this->comment_typeOptions)
+		{
+			// Comment Type Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL').' -',
+				'filter_comment_type',
+				JHtml::_('select.options', $this->comment_typeOptions, 'value', 'text', $this->state->get('filter.comment_type'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Comment Type Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL').' -',
+					'batch[comment_type]',
+					JHtml::_('select.options', $this->comment_typeOptions, 'value', 'text')
+				);
+			}
+		}
 	}
 
 	/**
@@ -313,6 +335,7 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			'a.path' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_LABEL'),
 			'a.target' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL'),
 			'a.type' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL'),
+			'a.comment_type' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	} 
@@ -383,6 +406,42 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 				$text = $model->selectionTranslation($type,'type');
 				// Now add the type and its text to the options array
 				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
+	}
+
+	protected function getTheComment_typeSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('comment_type'));
+		$query->from($db->quoteName('#__componentbuilder_custom_code'));
+		$query->order($db->quoteName('comment_type') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $comment_type)
+			{
+				// Translate the comment_type selection
+				$text = $model->selectionTranslation($comment_type,'comment_type');
+				// Now add the comment_type and its text to the options array
+				$_filter[] = JHtml::_('select.option', $comment_type, JText::_($text));
 			}
 			return $_filter;
 		}

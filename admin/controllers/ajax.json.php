@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.2
-	@build			11th February, 2017
+	@version		2.3.4
+	@build			13th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -54,6 +54,8 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('dynamicFormDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
 		$this->registerTask('viewTableColumns', 'ajax');
+		$this->registerTask('checkFunctionName', 'ajax');
+		$this->registerTask('usedin', 'ajax');
 		$this->registerTask('fieldOptions', 'ajax');
 	}
 
@@ -500,6 +502,84 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($idValue && $asValue && $typeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getViewTableColumns($idValue, $asValue, $typeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'checkFunctionName':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$functioNameValue = $jinput->get('functioName', NULL, 'STRING');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						if($functioNameValue && $idValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->checkFunctionName($functioNameValue, $idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'usedin':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$functioNameValue = $jinput->get('functioName', NULL, 'WORD');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						if($functioNameValue && $idValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->usedin($functioNameValue, $idValue);
 						}
 						else
 						{

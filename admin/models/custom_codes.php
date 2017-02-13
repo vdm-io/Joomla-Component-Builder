@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 35 of this MVC
-	@build			10th February, 2017
+	@version		@update number 55 of this MVC
+	@build			13th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_codes.php
@@ -47,7 +47,8 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				'a.component','component',
 				'a.path','path',
 				'a.target','target',
-				'a.type','type'
+				'a.type','type',
+				'a.comment_type','comment_type'
 			);
 		}
 
@@ -79,6 +80,9 @@ class ComponentbuilderModelCustom_codes extends JModelList
 
 		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
 		$this->setState('filter.type', $type);
+
+		$comment_type = $this->getUserStateFromRequest($this->context . '.filter.comment_type', 'filter_comment_type');
+		$this->setState('filter.comment_type', $comment_type);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -140,6 +144,10 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				{
 					$item->component_system_name = $item->system_name;
 					$item->path = '<code>[CUSTO'.'MCODE='.$item->id.']</code>'; // so it is not detected
+					if (ComponentbuilderHelper::checkString($item->function_name))
+					{
+						$item->path =  '<code>[CUSTO'.'MCODE='.$item->function_name.']</code>'; // so it is not detected
+					}
 					$item->type = 2;
 				}
 			}
@@ -154,6 +162,8 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				$item->target = $this->selectionTranslation($item->target, 'target');
 				// convert type
 				$item->type = $this->selectionTranslation($item->type, 'type');
+				// convert comment_type
+				$item->comment_type = $this->selectionTranslation($item->comment_type, 'comment_type');
 			}
 		}
  
@@ -173,8 +183,8 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		if ($name === 'target')
 		{
 			$targetArray = array(
-				1 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_HASH_AUTOMATION',
-				2 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_JCB_MANUAL'
+				2 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_JCB_MANUAL',
+				1 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_HASH_AUTOMATION'
 			);
 			// Now check if value is found in this array
 			if (isset($targetArray[$value]) && ComponentbuilderHelper::checkString($targetArray[$value]))
@@ -193,6 +203,19 @@ class ComponentbuilderModelCustom_codes extends JModelList
 			if (isset($typeArray[$value]) && ComponentbuilderHelper::checkString($typeArray[$value]))
 			{
 				return $typeArray[$value];
+			}
+		}
+		// Array of comment_type language strings
+		if ($name === 'comment_type')
+		{
+			$comment_typeArray = array(
+				1 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_PHPJS',
+				2 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_HTML'
+			);
+			// Now check if value is found in this array
+			if (isset($comment_typeArray[$value]) && ComponentbuilderHelper::checkString($comment_typeArray[$value]))
+			{
+				return $comment_typeArray[$value];
 			}
 		}
 		return $value;
@@ -257,7 +280,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.component LIKE '.$search.' OR g.system_name LIKE '.$search.')');
+				$query->where('(a.component LIKE '.$search.' OR g.system_name LIKE '.$search.' OR a.comment_type LIKE '.$search.')');
 			}
 		}
 
@@ -275,6 +298,11 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		if ($type = $this->getState('filter.type'))
 		{
 			$query->where('a.type = ' . $db->quote($db->escape($type)));
+		}
+		// Filter by Comment_type.
+		if ($comment_type = $this->getState('filter.comment_type'))
+		{
+			$query->where('a.comment_type = ' . $db->quote($db->escape($comment_type)));
 		}
 
 		// Add the list ordering clause.
@@ -366,6 +394,10 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				{
 					$item->component_system_name = $item->system_name;
 					$item->path = '<code>[CUSTO'.'MCODE='.$item->id.']</code>'; // so it is not detected
+					if (ComponentbuilderHelper::checkString($item->function_name))
+					{
+						$item->path =  '<code>[CUSTO'.'MCODE='.$item->function_name.']</code>'; // so it is not detected
+					}
 					$item->type = 2;
 				}
 			}
@@ -422,6 +454,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		$id .= ':' . $this->getState('filter.path');
 		$id .= ':' . $this->getState('filter.target');
 		$id .= ':' . $this->getState('filter.type');
+		$id .= ':' . $this->getState('filter.comment_type');
 
 		return parent::getStoreId($id);
 	}

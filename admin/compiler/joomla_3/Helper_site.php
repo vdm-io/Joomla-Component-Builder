@@ -675,60 +675,72 @@ abstract class ###Component###Helper
 
 	public static function safeString($string, $type = 'L', $spacer = '_')
 	{
-		// remove all numbers and replace with english text version (works well only up to a thousand)
-		$string = self::replaceNumbers($string);
-
-		if (self::checkString($string))
-		{
+		// remove all numbers and replace with english text version (works well only up to millions)
+                $string = self::replaceNumbers($string);
+		// 0nly continue if we have a string
+                if (self::checkString($string))
+                {
 			// remove all other characters
 			$string = trim($string);
 			$string = preg_replace('/'.$spacer.'+/', ' ', $string);
 			$string = preg_replace('/\s+/', ' ', $string);
 			$string = preg_replace("/[^A-Za-z ]/", '', $string);
-			// return a string with all first letter of each word uppercase(no undersocre)
-			if ($type == 'W')
-				    {
-			    return ucwords(strtolower($string));
-			}
-				    elseif ($type == 'w')
-				    {
-			    return strtolower($string);
-			}
-				    elseif ($type == 'Ww')
-				    {
-			    return ucfirst(strtolower($string));
-			}
-				    elseif ($type == 'WW')
-				    {
-			    return strtoupper($string);
-			}
-			elseif ($type == 'U')
+			// select final adaptations
+			if ($type === 'L' || $type === 'strtolower')
+                        {
+                                // replace white space with underscore
+                                $string = preg_replace('/\s+/', $spacer, $string);
+                                // default is to return lower
+                                return strtolower($string);
+                        }
+			elseif ($type === 'W')
 			{
-				// replace white space with underscore
-				$string = preg_replace('/\s+/', $spacer, $string);
-				// return all upper
-				return strtoupper($string);
+				// return a string with all first letter of each word uppercase(no undersocre)
+				return ucwords(strtolower($string));
 			}
-			elseif ($type == 'F')
+			elseif ($type === 'w' || $type === 'word')
 			{
-				// replace white space with underscore
-				$string = preg_replace('/\s+/', $spacer, $string);
-				// return with first caracter to upper
+				// return a string with all lowercase(no undersocre)
+				return strtolower($string);
+			}
+			elseif ($type === 'Ww' || $type === 'Word')
+			{
+				// return a string with first letter of the first word uppercase and all the rest lowercase(no undersocre)
 				return ucfirst(strtolower($string));
 			}
-			elseif ($type == 'L')
+			elseif ($type === 'WW' || $type === 'WORD')
 			{
-				// replace white space with underscore
-				$string = preg_replace('/\s+/', $spacer, $string);
-				// default is to return lower
-				    return strtolower($string);
+				// return a string with all the uppercase(no undersocre)
+				return strtoupper($string);
 			}
-
-			// return string
-			return $string;
-		}
-		// not a string
-		return '';
+                        elseif ($type === 'U' || $type === 'strtoupper')
+                        {
+                                // replace white space with underscore
+                                $string = preg_replace('/\s+/', $spacer, $string);
+                                // return all upper
+                                return strtoupper($string);
+                        }
+                        elseif ($type === 'F' || $type === 'ucfirst')
+                        {
+                                // replace white space with underscore
+                                $string = preg_replace('/\s+/', $spacer, $string);
+                                // return with first caracter to upper
+                                return ucfirst(strtolower($string));
+                        }
+                        elseif ($type === 'cA' || $type === 'cAmel' || $type === 'camelcase')
+			{
+				// convert all words to first letter uppercase
+				$string = ucwords(strtolower($string));
+				// remove white space
+				$string = preg_replace('/\s+/', '', $string);
+				// now return first letter lowercase
+				return lcfirst($string);
+			}
+                        // return string
+                        return $string;
+                }
+                // not a string
+                return '';
 	}
 
 	public static function htmlEscape($var, $charset = 'UTF-8', $sorten = false, $length = 40)

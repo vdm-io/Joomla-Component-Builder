@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 35 of this MVC
-	@build			10th February, 2017
+	@version		@update number 55 of this MVC
+	@build			13th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		edit.php
@@ -224,9 +224,24 @@ jQuery('#adminForm').on('change', '#jform_target',function (e)
 });
 
 
-var ide = jQuery('#jform_id').val();
-if (ide > 0) {
-	jQuery('#jcb-placeholder').html('<code> [CUSTO'+'MCODE='+ide+'] </code>');
-	jQuery('#jcb-placeholder-arg').html('<code> [CUSTO'+'MCODE='+ide+'&#43;value1,value2] </code>');
-}
+jQuery('#adminForm').on('change', '#jform_function_name',function (e)
+{
+	e.preventDefault();
+	var target = jQuery("#jform_target input[type='radio']:checked").val();
+	if (target == 2) {
+		var functioName = jQuery('#jform_function_name').val();
+		// check if this function name is taken
+		checkFunctionName(functioName);
+	}
+});
+jQuery('#adminForm').on('change', '#jform_target',function (e)
+{
+	e.preventDefault();
+	var target = jQuery("#jform_target input[type='radio']:checked").val();
+	if (target == 2) {
+		var functioName = jQuery('#jform_function_name').val();
+		// check if this function name is taken
+		checkFunctionName(functioName);
+	}
+});
 </script>

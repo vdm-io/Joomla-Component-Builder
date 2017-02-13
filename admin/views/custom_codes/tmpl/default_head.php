@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 35 of this MVC
-	@build			10th February, 2017
+	@version		@update number 55 of this MVC
+	@build			13th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		default_head.php
@@ -54,6 +54,9 @@ defined('_JEXEC') or die('Restricted access');
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL', 'type', $this->listDirn, $this->listOrder); ?>
+	</th>
+	<th class="nowrap hidden-phone" >
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL', 'comment_type', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

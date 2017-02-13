@@ -969,38 +969,4 @@ class Structure extends Get
 		}
 		return false;
 	}
-	
-	/**
-	 * get the local installed path of this component
-	 *
-	 * @return  array   of paths on success
-	 * 
-	 */
-	public function getLocalInstallPaths()
-	{
-		// set the local paths to search
-		$localPaths = array();
-		// the admin path
-		$localPaths['admin'] = JPATH_ADMINISTRATOR . '/components/com_'. $this->componentCodeName;
-		// only check for site path if the component has a site area!
-		if (!$this->removeSiteFolder)
-		{
-			$localPaths['site'] = JPATH_ROOT . '/components/com_'. $this->componentCodeName;
-		}
-		// TODO later to include the JS and CSS
-		// $localPaths['media'] = JPATH_ROOT . '/media/com_'. $this->fileContentStatic['###component###'];
-		// check if the local install is found
-		foreach ($localPaths as $key => $localPath)
-		{
-			if (!JFolder::exists($localPath))
-			{
-				unset($localPaths[$key]);
-			}
-		}
-		if (ComponentbuilderHelper::checkArray($localPaths))
-		{
-			return $localPaths;
-		}
-		return false;
-	}
 }

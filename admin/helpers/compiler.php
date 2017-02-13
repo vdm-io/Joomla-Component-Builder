@@ -41,6 +41,15 @@ class Compiler extends Infusion
 	 */
 	private $tempPath;
 	
+	/*
+	 * The timer
+	 * 
+	 * @var      string
+	 */
+	private $time_start;
+	private $time_end;
+	public  $secondsCompiled;
+	
 	public $filepath		= '';
 	// fixed pathes
 	protected $dynamicIntegration	= false;
@@ -53,7 +62,8 @@ class Compiler extends Infusion
 	 */
 	public function __construct($config = array ())
 	{
-//		$time_start = microtime(true);
+		// to check the compiler speed
+		$this->time_start = microtime(true);
 		// first we run the perent constructor
 		if (parent::__construct($config))
 		{
@@ -88,46 +98,27 @@ class Compiler extends Infusion
 			{
 				return false;
 			}
-			// we can remove all undeeded data
-			$this->freeMemory();
-			// check if this component is install on the current website
-			if ($paths = $this->getLocalInstallPaths())
-			{
-				// start Automatic import of custom code
-				$userId = JFactory::getUser()->id;
-				$today = JFactory::getDate()->toSql();
-				// Get a db connection.
-				$db = JFactory::getDbo();
-				// get the custom code from installed files
-				$this->customCodeFactory($paths, $db, $userId, $today);
-			}
-			// now add the other custom code by placeholder
-			if (ComponentbuilderHelper::checkArray($this->addCustomCodeAt))
-			{
-				// load error messages incase code can not be added
-				$app = JFactory::getApplication();
-				$this->addCustomCodeViaPlaceholders($app);
-			}
-			// check if we have custom code to add
-			$this->getCustomCode();
 			// now insert into the new files
-			if (ComponentbuilderHelper::checkArray($this->customCode))
-			{
-				// load error messages incase code can not be added
-				$app = JFactory::getApplication();
-				$this->addCustomCode($app);
+			if ($this->getCustomCode())
+			{				
+				$this->addCustomCode();
 			}
+			// set the lang data now
+			$this->setLangFileData();
 			// move the update server into place
 			$this->setUpdateServer();
+			// build read me
+			$this->buildReadMe();
 			// zip the component
 			if (!$this->zipComponent())
 			{
-				// done
+				// done with error
 				return false;
 			}
-//			$time_end = microtime(true);
-//			$time = $time_end - $time_start;
-//			var_dump("Did Test in ($time seconds)");die;
+			// end the timer here
+			$this->time_end = microtime(true);
+			$this->secondsCompiled = $this->time_end - $this->time_start;
+			// completed the compilation
 			return true;
 		}
 		return false;
@@ -159,7 +150,9 @@ class Compiler extends Infusion
 	protected function updateFiles()
 	{
 		if (isset($this->newFiles['static']) && ComponentbuilderHelper::checkArray($this->newFiles['static']) && isset($this->newFiles['dynamic']) && ComponentbuilderHelper::checkArray($this->newFiles['dynamic']))
-		{
+		{			
+			// we don't update lang now since we will still posible add custom code
+			$langCheck = 'en-GB.com_'.$this->fileContentStatic['###component###'].'.';
 			// get the bom file
 			$bom = JFile::read($this->bomPath);
 			// first we do the static files
@@ -167,6 +160,12 @@ class Compiler extends Infusion
 			{
 				if (JFile::exists($static['path']))
 				{
+					// skip lang files and store for later
+					if (strpos($static['path'], $langCheck))
+					{
+						$this->langFiles[] = $static;
+						continue;
+					}
 					$this->fileContentStatic['###FILENAME###'] = $static['name'];
 					$php = '';
 					if (ComponentbuilderHelper::checkFileType($static['name'],'php'))
@@ -179,16 +178,12 @@ class Compiler extends Infusion
 						list($wast,$code) = explode('###BOM###',$string);
 						$string = $php.$bom.$code;
 						$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
-						// add custom Code by placeholder if found
-						$this->getPlaceHolderKeys($static['path'], $answer);
 						// add to zip array
 						$this->writeFile($static['path'],$answer);
 					}
 					else
 					{
 						$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
-						// add custom Code by placeholder if found
-						$this->getPlaceHolderKeys($static['path'], $answer);
 						// add to zip array
 						$this->writeFile($static['path'],$answer);
 					}
@@ -221,8 +216,6 @@ class Compiler extends Infusion
 									$string = $php.$bom.$code;
 									$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
 									$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
-									// add custom Code by placeholder if found
-									$this->getPlaceHolderKeys($file['path'], $answer, $view);
 									// add to zip array
 									$this->writeFile($file['path'],$answer);
 								}
@@ -230,8 +223,6 @@ class Compiler extends Infusion
 								{
 									$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
 									$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
-									// add custom Code by placeholder if found
-									$this->getPlaceHolderKeys($file['path'], $answer, $view);
 									// add to zip array
 									$this->writeFile($file['path'],$answer);
 								}
@@ -245,154 +236,9 @@ class Compiler extends Infusion
 			}
 			// free up some memory
 			unset($this->newFiles['dynamic']);
-			// do a final run to update the readme file
-			$two = 0;
-			foreach ($this->newFiles['static'] as $static)
-			{
-				if (('README.md' === $static['name'] || 'README.txt' === $static['name']) && $this->componentData->addreadme && JFile::exists($static['path']))
-				{
-					$this->buildReadMe($static['path']);
-					$two++;
-				}
-				if ($two == 2)
-				{
-					break;
-				}
-			}
 			return true;
 		}
 		return false;
-	}
-
-	protected function getPlaceHolderKeys(&$file, &$content, &$view = '')
-	{
-		// check if line has custom code place holder
-		if (strpos($content, '[CUSTO'.'MCODE=') !== false)
-		{
-			if (!isset($this->addCustomCodeAt[$file]))
-			{
-				$this->addCustomCodeAt[$file] = array();
-				$this->addCustomCodeAt[$file]['ids'] = array();
-				$this->addCustomCodeAt[$file]['args'] = array();
-				$this->addCustomCodeAt[$file]['view'] = $view;
-			}
-			$found = ComponentbuilderHelper::getAllBetween($content, '[CUSTO'.'MCODE=', ']');
-			if (ComponentbuilderHelper::checkArray($found))
-			{
-				foreach ($found as $key)
-				{
-					// check if we have args
-					if (is_numeric($key))
-					{
-						$id = (int) $key;
-					}
-					elseif (strpos($key, '+') !== false)
-					{
-						$array = explode('+', $key);
-						// set ID
-						$id = (int) $array[0];
-						// load args for this ID
-						if (isset($array[1]))
-						{
-							if (!isset($this->addCustomCodeAt[$file]['args'][$id]))
-							{
-								$this->addCustomCodeAt[$file]['args'][$id] = array();
-							}
-							// only load if not already loaded
-							if (!isset($this->addCustomCodeAt[$file]['args'][$id][$key]))
-							{
-								if (strpos($array[1], ',') !== false)
-								{
-									$this->addCustomCodeAt[$file]['args'][$id][$key] = array_map('trim', explode(',', $array[1]));
-								}
-								elseif (ComponentbuilderHelper::checkString($array[1]))
-								{
-									$this->addCustomCodeAt[$file]['args'][$id][$key] = array();
-									$this->addCustomCodeAt[$file]['args'][$id][$key][] = trim($array[1]);
-								}
-							}
-						}
-					}
-					else
-					{
-						continue;
-					}
-					$this->addCustomCodeAt[$file]['ids'][$id] = $id;
-				}
-			}
-		}
-	}
-	
-	protected function freeMemory()
-	{		
-		// free up some memory
-		unset($this->newFiles['static']);
-		unset($this->customScriptBuilder);
-		unset($this->permissionCore);
-		unset($this->permissionDashboard);
-		unset($this->componentData->admin_views);
-		unset($this->componentData->site_views);
-		unset($this->componentData->custom_admin_views);
-		unset($this->componentData->config);
-		unset($this->joomlaVersionData);
-		// unset($this->langContent);
-		unset($this->dbKeys);
-		unset($this->permissionBuilder);
-		unset($this->layoutBuilder);
-		unset($this->historyBuilder);
-		unset($this->aliasBuilder);
-		unset($this->titleBuilder);
-		unset($this->customBuilderList);
-		unset($this->hiddenFieldsBuilder);
-		unset($this->intFieldsBuilder);
-		unset($this->dynamicfieldsBuilder);
-		unset($this->maintextBuilder);
-		unset($this->customFieldLinksBuilder);
-		unset($this->setScriptUserSwitch);
-		unset($this->categoryBuilder);
-		unset($this->catCodeBuilder);
-		unset($this->checkboxBuilder);
-		unset($this->jsonItemBuilder);
-		unset($this->base64Builder);
-		unset($this->basicEncryptionBuilder);
-		unset($this->advancedEncryptionBuilder);
-		unset($this->getItemsMethodListStringFixBuilder);
-		unset($this->getItemsMethodEximportStringFixBuilder);
-		unset($this->selectionTranslationFixBuilder);
-		unset($this->listBuilder);
-		unset($this->customBuilder);
-		unset($this->editBodyViewScriptBuilder);
-		unset($this->queryBuilder);
-		unset($this->sortBuilder);
-		unset($this->searchBuilder);
-		unset($this->filterBuilder);
-		unset($this->fieldsNames);
-		unset($this->siteFields);
-		unset($this->siteFieldData);
-		unset($this->customFieldScript);
-		unset($this->configFieldSets);
-		unset($this->jsonStringBuilder);
-		unset($this->importCustomScripts);
-		unset($this->eximportView);
-		unset($this->uninstallBuilder);
-		unset($this->listColnrBuilder);
-		unset($this->customFieldBuilder);
-		unset($this->permissionFields);
-		unset($this->getAsLookup);
-		unset($this->secondRunAdmin);
-		unset($this->uninstallScriptBuilder);
-		unset($this->buildCategories);
-		unset($this->iconBuilder);
-		unset($this->validationFixBuilder);
-		unset($this->targetRelationControl);
-		unset($this->targetControlsScriptChecker);
-		unset($this->accessBuilder);
-		unset($this->tabCounter);
-		unset($this->linkedAdminViews);
-		unset($this->uniquekeys);
-		unset($this->uniquecodes);
-		$this->unsetNow('_adminViewData');
-		$this->unsetNow('_fieldData');
 	}
 	
 	/**
@@ -457,7 +303,26 @@ class Compiler extends Infusion
 		$this->fileContentStatic['###VERSION###'] = $this->fileContentStatic['###VERSION###GLOBAL'];
 	}
 	
-	private function buildReadMe($path)
+	private function buildReadMe()
+	{
+		// do a final run to update the readme file
+		$two = 0;
+		foreach ($this->newFiles['static'] as $static)
+		{
+			if (('README.md' === $static['name'] || 'README.txt' === $static['name']) && $this->componentData->addreadme && JFile::exists($static['path']))
+			{
+				$this->setReadMe($static['path']);
+				$two++;
+			}
+			if ($two == 2)
+			{
+				break;
+			}
+		}
+		unset($this->newFiles['static']);
+	}
+	
+	private function setReadMe($path)
 	{
 		// set readme data if not set already
 		if (!isset($this->fileContentStatic['###LINE_COUNT###']) || $this->fileContentStatic['###LINE_COUNT###'] != $this->lineCount)
@@ -672,98 +537,10 @@ class Compiler extends Infusion
 		return false;
 	}
 	
-	protected function addCustomCodeViaPlaceholders($app)
+	protected function addCustomCode()
 	{
-		// reset all these
-		$this->clearFromPlaceHolders('view');
-		foreach ($this->addCustomCodeAt as $path => $item)
-		{
-			if (ComponentbuilderHelper::checkString($item['view']))
-			{
-				$this->placeholders['[[[view]]]'] = $item['view'];
-			}
-			elseif (isset($this->placeholders['[[[view]]]']))
-			{
-				unset($this->placeholders['[[[view]]]']);
-			}
-			if ($this->getCustomCode($item['ids']))
-			{
-				$code = array();
-				foreach($this->customCode as $dbitem)
-				{
-					$this->buildCustomCodeForPlaceholders($item, $dbitem, $code);
-				}
-				// now update the file
-				$string = JFile::read($path);
-				$answer = $this->setPlaceholders($string, $code);
-				$this->writeFile($path,$answer);
-			}
-			else
-			{
-				$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> <br />Since there where no publish code returned from the database.', $path), 'warning');
-			}
-		}
-	}
-	
-	protected function buildCustomCodeForPlaceholders(&$at, &$item, &$code)
-	{
-		// check if there is args for this code
-		if (isset($at['args'][$item['id']]) && ComponentbuilderHelper::checkArray($at['args'][$item['id']]))
-		{
-			// since we have args we cant update this code via editor (TODO)
-			$placeholder	= $this->getPlaceHolder(3, null);
-			// we have args and so need to load each
-			foreach ($at['args'][$item['id']] as $key => $args)
-			{
-				$this->setThesePlaceHolders('arg', $args);
-				$code['[CUSTOM'.'CODE='.$key.']'] = $placeholder['start'] . PHP_EOL . $this->setPlaceholders($item['code'], $this->placeholders). $placeholder['end'];
-			}
-		}
-		else
-		{
-			// check what type of place holders we should load here (if view is being updated then we can't use inserted)
-			$placeholderType = 2;
-			if (strpos($item['code'], '[[[view]]]') !== false)
-			{
-				// since we have views we can't update this code via editor (TODO)
-				$placeholderType = 3;
-			}
-			// if now ars were found, clear it
-			$this->clearFromPlaceHolders('arg');
-			// load args for this code
-			$placeholder	= $this->getPlaceHolder($placeholderType, $item['id']);
-			$code['[CUSTOM'.'CODE='.$item['id'].']'] = $placeholder['start'] . PHP_EOL . $this->setPlaceholders($item['code'], $this->placeholders). $placeholder['end'];
-		}
-	}
-	
-	protected function setThesePlaceHolders($key, $values)
-	{
-		// aways fist reset these
-		$this->clearFromPlaceHolders($key);
-		if (ComponentbuilderHelper::checkArray($values))
-		{
-			$number = 0;
-			foreach ($values as $value)
-			{
-				$this->placeholders['[[['.$key.$number.']]]'] = $value;
-				$number++;
-			}
-		}
-	}
-	
-	protected function clearFromPlaceHolders($like)
-	{
-		foreach ($this->placeholders as $something => $value)
-		{
-			if (stripos($something, $like) !== false)
-			{
-				unset($this->placeholders[$something]);
-			}
-		}
-	}
-	
-	protected function addCustomCode($app)
-	{
+		// load error messages incase code can not be added
+		$app = JFactory::getApplication();
 		// reset all these
 		$this->clearFromPlaceHolders('view');
 		$this->clearFromPlaceHolders('arg');
@@ -860,8 +637,8 @@ class Compiler extends Infusion
 					}
 					if ($found)
 					{
-						$placeholder	= $this->getPlaceHolder($target['type'], $target['id']);
-						$data		= $placeholder['start'] . PHP_EOL . $this->setPlaceholders($target['code'], $this->placeholders). $placeholder['end'];
+						$placeholder	= $this->getPlaceHolder((int) $target['comment_type'].$target['type'], $target['id']);
+						$data		= $placeholder['start'] . PHP_EOL . $this->setPlaceholders($target['code'], $this->placeholders). $placeholder['end'] . PHP_EOL;
 						if ($target['type'] == 2)
 						{
 							// found it now add code from the next line
@@ -870,7 +647,7 @@ class Compiler extends Infusion
 						elseif ($target['type'] == 1 && $foundEnd)
 						{
 							// found it now add code from the next line
-							$this->addDataToFile($file, $data . PHP_EOL, $bites, (int) array_sum($replace));
+							$this->addDataToFile($file, $data, $bites, (int) array_sum($replace));
 						}
 						else
 						{
@@ -901,7 +678,7 @@ class Compiler extends Infusion
 		$code = explode(PHP_EOL, $target['code']);
 		$code = PHP_EOL."// " .implode(PHP_EOL."// ",$code). PHP_EOL;
 		// get place holders
-		$placeholder	= $this->getPlaceHolder($target['type'], $target['id']);
+		$placeholder	= $this->getPlaceHolder((int) $target['comment_type'].$target['type'], $target['id']);
 		// build the data
 		$data		= $placeholder['start'] . $code . $placeholder['end']. PHP_EOL;
 		// get the bites before insertion

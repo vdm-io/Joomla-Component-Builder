@@ -39,6 +39,13 @@ class Get
 	public $params;
 	
 	/**
+	 * The placeholders
+	 * 
+	 * @var     array
+	 */
+	public $placeholders = array();
+	
+	/**
 	 * The Compiler Path
 	 * 
 	 * @var     object
@@ -52,27 +59,45 @@ class Get
 	 */
 	public $componentData;
 	
-	/* The custom script placeholders - we use the (xxx) to avoid detection it should be (***)
+	/***********************************************************************************************
+	 *	The custom script placeholders - we use the (xxx) to avoid detection it should be (***)
+	 *	##################################--->  PHP/JS  <---####################################
 	 * 
-	 *	New Insert Code		= /xxx[INSERT<>$$$$]xxx/		/xxx[/INSERT<>$$$$]xxx/
-	 *	New Replace Code	= /xxx[REPLACE<>$$$$]xxx/	/xxx[/REPLACE<>$$$$]xxx/
+	 *	New Insert Code		= /xxx[INSERT<>$$$$]xxx/                /xxx[/INSERT<>$$$$]xxx/
+	 *	New Replace Code	= /xxx[REPLACE<>$$$$]xxx/               /xxx[/REPLACE<>$$$$]xxx/
 	 *
-	 *	//////////////////////////// when JCB adds it back ///////////////////////////////
-	 *	JCB Add Inserted Code	= /xxx[INSERTED$$$$]xxx///23	/xxx[/INSERTED$$$$]xxx/
-	 *	JCB Add Replaced Code	= /xxx[REPLACED$$$$]xxx///25	/xxx[/REPLACED$$$$]xxx/
+	 *	//////////////////////////////// when JCB adds it back //////////////////////////////////
+	 *	JCB Add Inserted Code	= /xxx[INSERTED$$$$]xxx//x23x/          /xxx[/INSERTED$$$$]xxx/
+	 *	JCB Add Replaced Code	= /xxx[REPLACED$$$$]xxx//x25x/          /xxx[/REPLACED$$$$]xxx/
 	 *
-	 *	///////////////////////// changeing existing custom code /////////////////////////
-	 *	Update Inserted Code	= /xxx[INSERTED<>$$$$]xxx///23	/xxx[/INSERTED<>$$$$]xxx/
-	 *	Update Replaced Code	= /xxx[REPLACED<>$$$$]xxx///25	/xxx[/REPLACED<>$$$$]xxx/
+	 *	/////////////////////////////// changeing existing custom code /////////////////////////
+	 *	Update Inserted Code	= /xxx[INSERTED<>$$$$]xxx//x23x/        /xxx[/INSERTED<>$$$$]xxx/
+	 *	Update Replaced Code	= /xxx[REPLACED<>$$$$]xxx//x25x/        /xxx[/REPLACED<>$$$$]xxx/
 	 * 
-	 *	//23 is the ID of the code in the system don't change it!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 *	The custom script placeholders - we use the (==) to avoid detection it should be (--)
+	 *	###################################--->  HTML  <---#####################################
 	 * 
-	 * @var      array
-	 ******************************************************************************************/
-	protected $customCodePlaceholders		= array(1 => 'REPLACE<>$$$$]',
+	 * 	New Insert Code		= <!==[INSERT<>$$$$]==>                 <!==[/INSERT<>$$$$]==>
+	 *	New Replace Code	= <!==[REPLACE<>$$$$]==>                <!==[/REPLACE<>$$$$]==>
+	 *
+	 *	///////////////////////////////// when JCB adds it back ///////////////////////////////
+	 *	JCB Add Inserted Code	= <!==[INSERTED$$$$]==><!==23==>        <!==[/INSERTED$$$$]==>
+	 *	JCB Add Replaced Code	= <!==[REPLACED$$$$]==><!==25==>        <!==[/REPLACED$$$$]==>
+	 *
+	 *	//////////////////////////// changeing existing custom code ///////////////////////////
+	 *	Update Inserted Code	= <!==[INSERTED<>$$$$]==><!==23==>      <!==[/INSERTED<>$$$$]==>
+	 *	Update Replaced Code	= <!==[REPLACED<>$$$$]==><!==25==>      <!==[/REPLACED<>$$$$]==>
+	 * 
+	 *	////////23 is the ID of the code in the system don't change it!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 * 
+	 *	@var      array
+	 ***********************************************************************************************/
+	protected $customCodePlaceholders	= array(
+							1 => 'REPLACE<>$$$$]',
 							2 => 'INSERT<>$$$$]',
 							3 => 'REPLACED<>$$$$]',
-							4 => 'INSERTED<>$$$$]');
+							4 => 'INSERTED<>$$$$]'
+						);
 	
 	/**
 	 * The custom code to be added
@@ -80,6 +105,27 @@ class Get
 	 * @var      array
 	 */
 	public $customCode;
+	
+	/**
+	 * The custom code to be added
+	 * 
+	 * @var      array
+	 */
+	protected $customCodeData = array();
+	
+	/**
+	 * The function name memory ids
+	 * 
+	 * @var      array
+	 */
+	public $functionNameMemory = array();
+	
+	/**
+	 * The custom code for local memory
+	 * 
+	 * @var      array
+	 */
+	public $customCodeMemory = array();
 	
 	/**
 	 * The custom code in local files that aready exist in system
@@ -100,7 +146,14 @@ class Get
 	 * 
 	 * @var      array
 	 */
-	protected $codeAreadyDone = array();
+	protected $codeAreadyDone = array();	
+	
+	/*
+	 * The line numbers Switch
+	 * 
+	 * @var      boolean
+	 */
+	public $loadLineNr = false;
 	
 	/**
 	 * The Language prefix
@@ -122,6 +175,27 @@ class Get
 	 * @var      string
 	 */
 	public $componentCodeName;
+	
+	/**
+	 * The Component ID
+	 * 
+	 * @var      int
+	 */
+	public $componentID;
+	
+	/**
+	 * The current user
+	 * 
+	 * @var      array
+	 */
+	public $user;
+	
+	/**
+	 * The database object
+	 * 
+	 * @var      array
+	 */
+	public $db;
 	
 	/**
 	 * The Component version
@@ -373,10 +447,38 @@ class Get
 			$this->params			= JComponentHelper::getParams('com_componentbuilder');
 			// load the compiler path
 			$this->compilerPath		= $this->params->get('compiler_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/compiler');
-			// get the component data
-			$this->componentData		= $this->getComponentData($config['componentId']);
-			
-			return true;
+			// set the component ID
+			$this->componentID		= (int) $config['componentId'];
+			// set this components code name
+			if ($name_code = ComponentbuilderHelper::getVar('component', $this->componentID, 'id', 'name_code'))
+			{
+				// set lang prefix
+				$this->langPrefix		.= ComponentbuilderHelper::safeString($name_code,'U');
+				// set component code name
+				$this->componentCodeName	= ComponentbuilderHelper::safeString($name_code);
+				// set if placeholders should be added to customcode
+				$global = ((int) ComponentbuilderHelper::getVar('component', $this->componentID, 'id', 'add_placeholders') == 1) ? true:false;
+				$this->addPlaceholders		= ((int) $config['addPlaceholders'] == 0) ? false : (((int) $config['addPlaceholders'] == 1) ? true : $global);
+				// set if line numbers should be added to comments
+				$global = ((int) ComponentbuilderHelper::getVar('component', $this->componentID, 'id', 'debug_linenr') == 1) ? true:false;
+				$this->loadLineNr		= ((int) $config['debugLinenr'] == 0) ? false : (((int) $config['debugLinenr'] == 1) ? true : $global);
+				// set the current user
+				$this->user			= JFactory::getUser();
+				// Get a db connection.
+				$this->db			= JFactory::getDbo();
+				// check if this component is install on the current website
+				if ($paths = $this->getLocalInstallPaths())
+				{
+					// start Automatic import of custom code
+					$today = JFactory::getDate()->toSql();
+					// get the custom code from installed files
+					$this->customCodeFactory($paths, $today);
+				}
+				// get the component data
+				$this->componentData = $this->getComponentData();
+
+				return true;
+			}
 		}
 		return false;
 	}
@@ -406,27 +508,20 @@ class Get
 	 * @return  oject The component data
 	 * 
 	 */
-	public function getComponentData($id)
+	public function getComponentData()
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
 		// Create a new query object.
-		$query = $db->getQuery(true);
+		$query = $this->db->getQuery(true);
 
 		$query->select('a.*');
 		$query->from('#__componentbuilder_component AS a');
-		$query->where($db->quoteName('a.id') . ' = '. $db->quote($id));
+		$query->where($this->db->quoteName('a.id') . ' = '. (int) $this->componentID);
 
 		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
+		$this->db->setQuery($query);
 
 		// Load the results as a list of stdClass objects
-		$component = $db->loadObject();
-		// set lang prefix
-		$this->langPrefix .= ComponentbuilderHelper::safeString($component->name_code,'U');
-		// set component code name
-		$this->componentCodeName = ComponentbuilderHelper::safeString($component->name_code);
+		$component = $this->db->loadObject();
 		// set component sales name
 		$component->sales_name = ComponentbuilderHelper::safeString($component->system_name);
 		// ensure version naming is correct
@@ -700,7 +795,7 @@ class Get
 			{
 				if (isset($component->{'add_'.$scriptMethod.'_'.$scriptType}) && $component->{'add_'.$scriptMethod.'_'.$scriptType} == 1)
 				{
-					$this->customScriptBuilder[$scriptMethod][$scriptType] = $this->setCustomContentLang(base64_decode($component->{$scriptMethod.'_'.$scriptType}));	
+					$this->customScriptBuilder[$scriptMethod][$scriptType] = $this->setDynamicValues(base64_decode($component->{$scriptMethod.'_'.$scriptType}));
 				}
 				else
 				{
@@ -713,7 +808,7 @@ class Get
 		if ($component->add_php_helper_admin == 1)
 		{
 			$this->lang = 'admin';
-			$this->customScriptBuilder['component_php_helper_admin'] = PHP_EOL.PHP_EOL.$this->setCustomContentLang(base64_decode($component->php_helper_admin));
+			$this->customScriptBuilder['component_php_helper_admin'] = PHP_EOL.PHP_EOL.$this->setDynamicValues(base64_decode($component->php_helper_admin));
 		}
 		else
 		{
@@ -724,7 +819,7 @@ class Get
 		if ($component->add_admin_event == 1)
 		{
 			$this->lang = 'admin';
-			$this->customScriptBuilder['component_php_admin_event'] = $this->setCustomContentLang(base64_decode($component->php_admin_event));
+			$this->customScriptBuilder['component_php_admin_event'] = $this->setDynamicValues(base64_decode($component->php_admin_event));
 		}
 		else
 		{
@@ -735,7 +830,7 @@ class Get
 		if ($component->add_php_helper_both == 1)
 		{
 			$this->lang = 'both';
-			$this->customScriptBuilder['component_php_helper_both'] = PHP_EOL.PHP_EOL.$this->setCustomContentLang(base64_decode($component->php_helper_both));
+			$this->customScriptBuilder['component_php_helper_both'] = PHP_EOL.PHP_EOL.$this->setDynamicValues(base64_decode($component->php_helper_both));
 		}
 		else
 		{
@@ -745,7 +840,7 @@ class Get
 		if ($component->add_php_helper_site == 1)
 		{
 			$this->lang = 'site';
-			$this->customScriptBuilder['component_php_helper_site'] = PHP_EOL.PHP_EOL.$this->setCustomContentLang(base64_decode($component->php_helper_site));
+			$this->customScriptBuilder['component_php_helper_site'] = PHP_EOL.PHP_EOL.$this->setDynamicValues(base64_decode($component->php_helper_site));
 		}
 		else
 		{
@@ -756,7 +851,7 @@ class Get
 		if ($component->add_site_event == 1)
 		{
 			$this->lang = 'site';
-			$this->customScriptBuilder['component_php_site_event'] = $this->setCustomContentLang(base64_decode($component->php_site_event));
+			$this->customScriptBuilder['component_php_site_event'] = $this->setDynamicValues(base64_decode($component->php_site_event));
 		}
 		else
 		{
@@ -795,7 +890,7 @@ class Get
 			$nowLang = $this->lang;
 			$this->lang = 'admin';
 			// load the php for the dashboard model
-			$component->php_dashboard_methods = $this->setCustomContentLang(base64_decode($component->php_dashboard_methods));
+			$component->php_dashboard_methods = $this->setDynamicValues(base64_decode($component->php_dashboard_methods));
 			// check if dashboard_tab is set
 			$dashboard_tab = json_decode($component->dashboard_tab,true);
 			if (ComponentbuilderHelper::checkArray($dashboard_tab))
@@ -807,7 +902,7 @@ class Get
 					{
 						if ('html' === $option)
 						{	
-							$value = $this->setCustomContentLang($value);
+							$value = $this->setDynamicValues($value);
 						}
 						$component->dashboard_tab[$nr][$option] = $value;
 					}
@@ -916,27 +1011,28 @@ class Get
 	{
 		if (!isset($this->_adminViewData[$id]))
 		{
-			// Get a db connection.
-			$db = JFactory::getDbo();
-
 			// Create a new query object.
-			$query = $db->getQuery(true);
+			$query = $this->db->getQuery(true);
 
 			$query->select('a.*');
 			$query->from('#__componentbuilder_admin_view AS a');
-			$query->where($db->quoteName('a.id') . ' = '. (int) $id);
+			$query->where($this->db->quoteName('a.id') . ' = '. (int) $id);
 
 			// Reset the query using our newly populated query object.
-			$db->setQuery($query);
+			$this->db->setQuery($query);
 
 			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
-			$view = $db->loadObject();
+			$view = $this->db->loadObject();
 			// reset fields
 			$view->fields = array();
 			// setup view name to use in storing the data
 			$name_single = ComponentbuilderHelper::safeString($view->name_single);
 			$name_list = ComponentbuilderHelper::safeString($view->name_list);
 			// setup token check
+			if (!isset($this->customScriptBuilder['token']))
+			{
+				$this->customScriptBuilder['token'] = array();
+			}
 			$this->customScriptBuilder['token'][$name_single] = false;
 			$this->customScriptBuilder['token'][$name_list] = false;
 			// load the values form params
@@ -1115,7 +1211,7 @@ class Get
 			{
 				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
 				{
-					$view->$scripter = $this->setCustomContentLang(base64_decode($view->$scripter));
+					$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
 					$scripter_target = str_replace('javascript_', '', $scripter);
 					if (!isset($this->customScriptBuilder[$scripter_target][$name_single]))
 					{
@@ -1126,7 +1222,8 @@ class Get
 						$this->customScriptBuilder[$scripter_target][$name_single] = '';
 					}
 					$this->customScriptBuilder[$scripter_target][$name_single] .= $view->$scripter;
-					if (strpos($view->$scripter,"token") !== false && strpos($view->$scripter,"task=ajax") !== false)
+					if (strpos($view->$scripter,"token") !== false || strpos($view->$scripter,"task=ajax") !== false ||						
+						strpos($this->$scripter,"[CUSTOM"."CODE=") !== false) // <-- since it could have ajax in it, and we can know for sure at this point
 					{
 						if (!$this->customScriptBuilder['token'][$name_single])
 						{
@@ -1156,20 +1253,21 @@ class Get
 			{
 				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
 				{
-					$this->customScriptBuilder[$scripter][$name_single] = $this->setCustomContentLang(base64_decode($view->$scripter));
+					$this->customScriptBuilder[$scripter][$name_single] = $this->setDynamicValues(base64_decode($view->$scripter));
 					unset($view->$scripter);
 				}
 			}
                         // add the custom buttons
                         if (isset($view->add_custom_button) && $view->add_custom_button == 1)
                         {
-                                if (ComponentbuilderHelper::checkString($view->php_model))
+                                if (ComponentbuilderHelper::checkString($view->php_model) && $view->php_mode !== '//')
                                 {
-                                        $view->php_model = base64_decode($view->php_model);
-                                        $view->php_model = $this->setCustomContentLang($view->php_model);
+                                        $view->php_model = $this->setDynamicValues(base64_decode($view->php_model));
                                 }
-                                $view->php_controller = base64_decode($view->php_controller);
-                                $view->php_controller = $this->setCustomContentLang($view->php_controller);
+				if (ComponentbuilderHelper::checkString($view->php_controller) && trim($view->php_controller) !== '//')
+                                {
+					$view->php_controller = $this->setDynamicValues(base64_decode($view->php_controller));
+				}
                                 // set the button array
                                 $buttons = json_decode($view->custom_button,true);
                                 unset($view->custom_button);
@@ -1193,7 +1291,7 @@ class Get
 				{
 					if (isset($view->$importScripter) && strlen($view->$importScripter) > 0)
 					{
-						$this->customScriptBuilder[$importScripter]['import_'.$name_list] = $this->setCustomContentLang(base64_decode($view->$importScripter));
+						$this->customScriptBuilder[$importScripter]['import_'.$name_list] = $this->setDynamicValues(base64_decode($view->$importScripter));
 						unset($view->$importScripter);
 					}
 				}
@@ -1202,10 +1300,12 @@ class Get
 			// add_Ajax for this view
 			if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 			{
+				// insure the token is added to edit view atleast
+				$this->customScriptBuilder['token'][$name_single] = true;
 				$addAjaxSite = false;
 				if (isset($this->siteEditView[$id]) && $this->siteEditView[$id])
 				{
-					// we should add this site ajax to fron ajax
+					// we should add this site ajax to front ajax
 					$addAjaxSite = true;
 					if (!isset($this->addSiteAjax) || !$this->addSiteAjax)
 					{
@@ -1232,11 +1332,11 @@ class Get
 				}
 				if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
 				{
+					$this->customScriptBuilder['admin']['ajax_model'][$name_single] = $this->setDynamicValues(base64_decode($view->php_ajaxmethod));
 					if ($addAjaxSite)
 					{
-						$this->customScriptBuilder['site']['ajax_model'][$name_single] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
+						$this->customScriptBuilder['site']['ajax_model'][$name_single] = $this->customScriptBuilder['admin']['ajax_model'][$name_single];
 					}
-					$this->customScriptBuilder['admin']['ajax_model'][$name_single] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
 					// unset anyway
 					unset($view->php_ajaxmethod);
 					$this->addAjax = true;
@@ -1275,21 +1375,18 @@ class Get
 	 */
 	public function getCustomViewData($id, $table = 'site_view')
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
 		// Create a new query object.
-		$query = $db->getQuery(true);
+		$query = $this->db->getQuery(true);
 
 		$query->select('a.*');
 		$query->from('#__componentbuilder_'.$table.' AS a');
-		$query->where($db->quoteName('a.id') . ' = '. (int) $id);
+		$query->where($this->db->quoteName('a.id') . ' = '. (int) $id);
 
 		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
+		$this->db->setQuery($query);
 
 		// Load the results as a list of stdClass objects (see later for more options on retrieving data).
-		$view = $db->loadObject();
+		$view = $this->db->loadObject();
 		if ($table === 'site_view')
 		{
 			$this->lang = 'site';
@@ -1299,8 +1396,7 @@ class Get
 			$this->lang = 'admin';
 		}
 		// set the default data
-		$view->default = base64_decode($view->default);
-		$view->default = $this->setCustomContentLang($view->default);
+		$view->default = $this->setDynamicValues(base64_decode($view->default));
 		// fix alias to use in code
 		$view->code = $this->uniqueCode(ComponentbuilderHelper::safeString($view->codename));
 		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
@@ -1348,8 +1444,7 @@ class Get
 		{
 			if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
 			{
-				$view->$scripter = base64_decode($view->$scripter);
-				$view->$scripter = $this->setCustomContentLang($view->$scripter);
+				$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
 				// set uikit to views
 				$this->uikitComp[$view->code] = ComponentbuilderHelper::getUikitComp($view->$scripter,$this->uikitComp[$view->code]);
 				
@@ -1412,7 +1507,7 @@ class Get
 			if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
 			{
 				
-				$this->customScriptBuilder[$this->target]['ajax_model'][$view->code] = $this->setCustomContentLang(base64_decode($view->php_ajaxmethod));
+				$this->customScriptBuilder[$this->target]['ajax_model'][$view->code] = $this->setDynamicValues(base64_decode($view->php_ajaxmethod));
 				$this->addSiteAjax = true;
 			}
 			// unset anyway
@@ -1424,10 +1519,10 @@ class Get
 			if (ComponentbuilderHelper::checkString($view->php_model))
 			{
 				$view->php_model = base64_decode($view->php_model);
-				$view->php_model = $this->setCustomContentLang($view->php_model);
+				$view->php_model = $this->setDynamicValues($view->php_model);
 			}
 			$view->php_controller = base64_decode($view->php_controller);
-			$view->php_controller = $this->setCustomContentLang($view->php_controller);
+			$view->php_controller = $this->setDynamicValues($view->php_controller);
 			// set the button array
 			$buttons = json_decode($view->custom_button,true);
 			unset($view->custom_button);
@@ -1461,26 +1556,23 @@ class Get
 	{
 		if (!isset($this->_fieldData[$id]) && $id > 0)
 		{
-			// Get a db connection.
-			$db = JFactory::getDbo();
-
 			// Create a new query object.
-			$query = $db->getQuery(true);
+			$query = $this->db->getQuery(true);
 
 			// Order it by the ordering field.
 			$query->select('a.*');
-			$query->select($db->quoteName(array('c.name', 'c.properties'),array('type_name','type_properties')));
+			$query->select($this->db->quoteName(array('c.name', 'c.properties'),array('type_name','type_properties')));
 			$query->from('#__componentbuilder_field AS a');
-			$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('c.id') . ')');
-			$query->where($db->quoteName('a.id') . ' = '. $db->quote($id));
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $this->db->quoteName('a.fieldtype') . ' = ' . $this->db->quoteName('c.id') . ')');
+			$query->where($this->db->quoteName('a.id') . ' = '. $this->db->quote($id));
 
 			// Reset the query using our newly populated query object.
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
+			$this->db->setQuery($query);
+			$this->db->execute();
+			if ($this->db->getNumRows())
 			{
 				// Load the results as a list of stdClass objects (see later for more options on retrieving data).
-				$field = $db->loadObject();
+				$field = $this->db->loadObject();
 
 				// adding a fix for the changed name of type to fieldtype
 				$field->type = $field->fieldtype;
@@ -1539,18 +1631,20 @@ class Get
 					}
 					if (!isset($this->_fieldData[$id]->javascript_view_footer_decoded))
 					{
-						$this->_fieldData[$id]->javascript_view_footer = $this->setCustomContentLang(base64_decode($this->_fieldData[$id]->javascript_view_footer));
+						$this->_fieldData[$id]->javascript_view_footer = $this->setDynamicValues(base64_decode($this->_fieldData[$id]->javascript_view_footer));
 						$this->_fieldData[$id]->javascript_view_footer_decoded = true;
 					}
 					$this->customScriptBuilder['view_footer'][$name_single] .= PHP_EOL.$this->_fieldData[$id]->javascript_view_footer;
-					if (strpos($this->_fieldData[$id]->javascript_view_footer,"token") !== false && strpos($this->_fieldData[$id]->javascript_view_footer,"task=ajax") !== false)
+					if (	strpos($this->_fieldData[$id]->javascript_view_footer,"token") !== false || 
+						strpos($this->_fieldData[$id]->javascript_view_footer,"task=ajax") !== false || 
+						strpos($this->_fieldData[$id]->javascript_view_footer,"[CUSTOM"."CODE=") !== false) // <-- since it could have ajax in it, and we can know for sure at this point
 					{
+						if(!isset($this->customScriptBuilder['token']))
+						{
+							$this->customScriptBuilder['token'] = array();
+						}
 						if (!isset($this->customScriptBuilder['token'][$name_single]) || !$this->customScriptBuilder['token'][$name_single])
 						{
-							if(!isset($this->customScriptBuilder['token']))
-							{
-								$this->customScriptBuilder['token'] = array();
-							}
 							$this->customScriptBuilder['token'][$name_single] = true;
 						}
 					}
@@ -1569,7 +1663,9 @@ class Get
 					}
 					if (!isset($this->_fieldData[$id]->css_view_decoded))
 					{
-						$this->_fieldData[$id]->css_view = base64_decode($this->_fieldData[$id]->css_view);
+						$this->_fieldData[$id]->css_view = base64_decode($this->_fieldData[$id]->css_view);						
+						// check for custom code
+						$this->setCustomCodeData($this->_fieldData[$id]->css_view);
 						$this->_fieldData[$id]->css_view_decoded = true;
 					}
 					$this->customScriptBuilder['css_view'][$name_single] .= PHP_EOL.$this->_fieldData[$id]->css_view;
@@ -1594,13 +1690,19 @@ class Get
 					}
 					if (!isset($this->_fieldData[$id]->javascript_views_footer_decoded))
 					{
-						$this->_fieldData[$id]->javascript_views_footer = $this->setCustomContentLang(base64_decode($this->_fieldData[$id]->javascript_views_footer));
+						$this->_fieldData[$id]->javascript_views_footer = $this->setDynamicValues(base64_decode($this->_fieldData[$id]->javascript_views_footer));
 						$this->_fieldData[$id]->javascript_views_footer_decoded = true;
 					}
 					$this->customScriptBuilder['views_footer'][$name_list] .= $this->_fieldData[$id]->javascript_views_footer;
-					if (strpos($this->_fieldData[$id]->javascript_views_footer,"token") !== false && strpos($this->_fieldData[$id]->javascript_views_footer,"task=ajax") !== false)
+					if (	strpos($this->_fieldData[$id]->javascript_views_footer,"token") !== false ||
+						strpos($this->_fieldData[$id]->javascript_views_footer,"task=ajax") !== false ||						
+						strpos($this->_fieldData[$id]->javascript_views_footer,"[CUSTOM"."CODE=") !== false) // <-- since it could have ajax in it, and we can know for sure at this point
 					{
-						if (!$this->customScriptBuilder['token'][$name_list])
+						if(!isset($this->customScriptBuilder['token']))
+						{
+							$this->customScriptBuilder['token'] = array();
+						}
+						if (!isset($this->customScriptBuilder['token'][$name_list]) || !$this->customScriptBuilder['token'][$name_list])
 						{
 							$this->customScriptBuilder['token'][$name_list] = true;
 						}
@@ -1619,7 +1721,9 @@ class Get
 					}
 					if (!isset($this->_fieldData[$id]->css_views_decoded))
 					{
-						$this->_fieldData[$id]->css_views = base64_decode($this->_fieldData[$id]->css_views);
+						$this->_fieldData[$id]->css_views = base64_decode($this->_fieldData[$id]->css_views);					
+						// check for custom code
+						$this->setCustomCodeData($this->_fieldData[$id]->css_views);
 						$this->_fieldData[$id]->css_views_decoded = true;
 					}
 					$this->customScriptBuilder['css_views'][$name_list] .= $this->_fieldData[$id]->css_views;
@@ -1653,18 +1757,16 @@ class Get
 			$ids = implode(',', $ids);
 			if (ComponentbuilderHelper::checkString($ids))
 			{
-				// Get a db connection.
-				$db = JFactory::getDbo();
 				// Create a new query object.
-				$query = $db->getQuery(true);
+				$query = $this->db->getQuery(true);
 				$query->select('a.*');
 				$query->from('#__componentbuilder_dynamic_get AS a');
 				$query->where('a.id IN (' . $ids . ')');
-				$db->setQuery($query);
-				$db->execute();
-				if ($db->getNumRows())
+				$this->db->setQuery($query);
+				$this->db->execute();
+				if ($this->db->getNumRows())
 				{
-					$results = $db->loadObjectList();
+					$results = $this->db->loadObjectList();
 					$typeArray = array(1 => 'LEFT', 2 => 'LEFT OUTER', 3 => 'INNER', 4 => 'RIGHT', 5 => 'RIGHT OUTER');
 					$operatorArray = array(1 => '=', 2 => '!=', 3 => '<>', 4 => '>', 5 => '<', 6 => '>=', 7 => '<=', 8 => '!<', 9 => '!>', 10 => 'IN', 11 => 'NOT IN');
 					foreach ($results as $nr => &$result)
@@ -1681,7 +1783,8 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_before_getitem'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_before_getitem'][$view_code] .= PHP_EOL.PHP_EOL.base64_decode($result->php_before_getitem);
+							$this->customScriptBuilder[$this->target.'_php_before_getitem'][$view_code] .= 
+								$this->setDynamicValues(PHP_EOL.PHP_EOL.base64_decode($result->php_before_getitem));
 							unset($result->php_before_getitem);
 						}
 						// add php custom scripting (php_after_getitem)
@@ -1691,7 +1794,8 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_after_getitem'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_after_getitem'][$view_code] .= PHP_EOL.PHP_EOL.base64_decode($result->php_after_getitem);
+							$this->customScriptBuilder[$this->target.'_php_after_getitem'][$view_code] .= 
+								$this->setDynamicValues(PHP_EOL.PHP_EOL.base64_decode($result->php_after_getitem));
 							unset($result->php_after_getitem);
 						}
 						// add php custom scripting (php_before_getitems)
@@ -1701,7 +1805,8 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view_code] .= PHP_EOL.PHP_EOL.base64_decode($result->php_before_getitems);
+							$this->customScriptBuilder[$this->target.'_php_before_getitems'][$view_code] .= 
+								$this->setDynamicValues(PHP_EOL.PHP_EOL.base64_decode($result->php_before_getitems));
 							unset($result->php_before_getitems);
 						}
 						// add php custom scripting (php_after_getitems)
@@ -1711,7 +1816,8 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view_code] .= PHP_EOL.PHP_EOL.base64_decode($result->php_after_getitems);
+							$this->customScriptBuilder[$this->target.'_php_after_getitems'][$view_code] .= 
+								$this->setDynamicValues(PHP_EOL.PHP_EOL.base64_decode($result->php_after_getitems));
 							unset($result->php_after_getitems);
 						}
 						// add php custom scripting (php_getlistquery)
@@ -1721,7 +1827,8 @@ class Get
 							{
 								$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] = '';
 							}
-							$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] .= PHP_EOL.base64_decode($result->php_getlistquery);
+							$this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code] .= 
+								$this->setDynamicValues(PHP_EOL.base64_decode($result->php_getlistquery));
 							unset($result->php_getlistquery);
 						}
 						// set the getmethod code name
@@ -2066,14 +2173,12 @@ class Get
 	 */
 	public function getDataWithAlias($n_ame,$table,$view)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
 		// Create a new query object.
-		$query = $db->getQuery(true);
+		$query = $this->db->getQuery(true);
 		$query->select('a.*');
 		$query->from('#__componentbuilder_'.$table.' AS a');
-		$db->setQuery($query);
-		$rows = $db->loadObjectList();
+		$this->db->setQuery($query);
+		$rows = $this->db->loadObjectList();
 		foreach ($rows as $row)
 		{
 			$k_ey = ComponentbuilderHelper::safeString($row->alias);
@@ -2084,11 +2189,9 @@ class Get
 				$php_view = '';
 				if ($row->add_php_view == 1)
 				{
-					$php_view = base64_decode($row->php_view);
-					$php_view = $this->setCustomContentLang($php_view);
+					$php_view = $this->setDynamicValues(base64_decode($row->php_view));
 				}
-				$contnent = base64_decode($row->{$table});
-				$contnent = $this->setCustomContentLang($contnent);
+				$contnent = $this->setDynamicValues(base64_decode($row->{$table}));
 				// set uikit to views
 				$this->uikitComp[$view] = ComponentbuilderHelper::getUikitComp($contnent,$this->uikitComp[$view]);
 				// set footable to views and turn it on
@@ -2135,49 +2238,48 @@ class Get
 	}
 	
 	/**
-	 * Set Custom Content Language Place Holders
+	 * Set Language Place Holders
 	 * 
 	 * @param   string   $content  The content
 	 *
 	 * @return  string The content with the updated Language place holder
 	 * 
 	 */
-	public function setCustomContentLang($content)
+	public function setLangStrings($content)
 	{
-		// insure string is not broken
-		$content = str_replace('COM_###COMPONENT###',$this->langPrefix,$content);
-		// set language data
-		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::_('","'");
-		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::_("','"');
-		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::sprintf('","'");
-		$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::sprintf("','"');
-		$langHolders = array();
-		$lang = array();
-		foreach ($langCheck as $langChecked)
+		// first check if we should continue
+		if (strpos($content, 'JText::_(') !== false || strpos($content, 'JText::sprintf(') !== false)
 		{
-			if (ComponentbuilderHelper::checkArray($langChecked))
+			// insure string is not broken
+			$content = str_replace('COM_###COMPONENT###',$this->langPrefix,$content);
+			// set language data
+			$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::_('","'");
+			$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::_("','"');
+			$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::sprintf('","'");
+			$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::sprintf("','"');
+			$langArray = ComponentbuilderHelper::mergeArrays($langCheck);
+			if (ComponentbuilderHelper::checkArray($langArray))
 			{
-				$lang = array_merge($lang,$langChecked);
-			}
-		}
-		if (ComponentbuilderHelper::checkArray($lang))
-		{
-			foreach ($lang as $string)
-			{
-				// this is there to insure we dont break already added Language strings
-				if (ComponentbuilderHelper::safeString($string,'U') == $string)
+				foreach ($langArray as $string)
 				{
-					continue;
+					// this is there to insure we dont break already added Language strings
+					if (ComponentbuilderHelper::safeString($string,'U') === $string)
+					{
+						continue;
+					}
+					// only load if string is not already set
+					$keyLang = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($string,'U');
+					if (!isset($this->langContent[$this->lang][$keyLang]))
+					{
+						$this->langContent[$this->lang][$keyLang] = trim($string);
+					}
+					$langHolders["JText::_('".$string."')"] = "JText::_('".$keyLang."')";
+					$langHolders['JText::_("'.$string.'")'] = 'JText::_("'.$keyLang.'")';
+					$langHolders["JText::sprintf('".$string."',"] = "JText::sprintf('".$keyLang."',";
+					$langHolders['JText::sprintf("'.$string.'",'] = 'JText::sprintf("'.$keyLang.'",';
 				}
-				// only load if string is not already set
-				$keyLang = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($string,'U');
-				$this->langContent[$this->lang][$keyLang] = trim($string);
-				$langHolders["JText::_('".$string."')"] = "JText::_('".$keyLang."')";
-				$langHolders['JText::_("'.$string.'")'] = 'JText::_("'.$keyLang.'")';
-				$langHolders["JText::sprintf('".$string."',"] = "JText::sprintf('".$keyLang."',";
-				$langHolders['JText::sprintf("'.$string.'",'] = 'JText::sprintf("'.$keyLang.'",';
+				$content = $this->setPlaceholders($content, $langHolders);
 			}
-			$content = $this->setPlaceholders($content, $langHolders);
 		}
 		return $content;
 	}
@@ -2203,7 +2305,6 @@ class Get
 			$lines = explode(PHP_EOL,$string);
 			if (ComponentbuilderHelper::checkArray($lines))
 			{
-				$db = JFactory::getDbo();
 				if ('db' === $type)
 				{
 					$table = '#__'.$asset;
@@ -2242,17 +2343,17 @@ class Get
 					}
 					if (ComponentbuilderHelper::checkString($get))
 					{
-						$gets[] = $db->quote($get);
+						$gets[] = $this->db->quote($get);
 						if (ComponentbuilderHelper::checkString($key))
 						{
 							$this->getAsLookup[$method_key][$get] = $key;
-							$keys[] = $db->quote($key);
+							$keys[] = $this->db->quote($key);
 						}
 						else
 						{
 							$key = str_replace($as.'.','',$get);
 							$this->getAsLookup[$method_key][$get] = $key;
-							$keys[] = $db->quote($key);
+							$keys[] = $this->db->quote($key);
 						}
 						if (ComponentbuilderHelper::checkString($view))
 						{
@@ -2264,7 +2365,7 @@ class Get
 				if (ComponentbuilderHelper::checkArray($gets) && ComponentbuilderHelper::checkArray($keys))
 				{
 					$querySelect = '$query->select($db->quoteName('.PHP_EOL."\t\t\t".'array('.implode(',',$gets).'),'.PHP_EOL."\t\t\t".'array('.implode(',',$keys).')));';
-					$queryFrom = '$db->quoteName('.$db->quote($table).', '.$db->quote($as).')';
+					$queryFrom = '$db->quoteName('.$this->db->quote($table).', '.$this->db->quote($as).')';
 					// return the select query
 					return array('select' => $querySelect, 'from' => $queryFrom, 'name' => $queryName, 'table' => $table, 'type' => $type, 'select_gets' => $gets, 'select_keys' => $keys);
 				}
@@ -2283,15 +2384,13 @@ class Get
 	 */
 	public function getViewTableName($id)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
 		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.name_single')));
-		$query->from($db->quoteName('#__componentbuilder_admin_view','a'));
-		$query->where($db->quoteName('a.id') . ' = '. (int) $id);
-		$db->setQuery($query);
-		return ComponentbuilderHelper::safeString($db->loadResult());
+		$query = $this->db->getQuery(true);
+		$query->select($this->db->quoteName(array('a.name_single')));
+		$query->from($this->db->quoteName('#__componentbuilder_admin_view','a'));
+		$query->where($this->db->quoteName('a.id') . ' = '. (int) $id);
+		$this->db->setQuery($query);
+		return ComponentbuilderHelper::safeString($this->db->loadResult());
 
 	}
 	
@@ -2311,10 +2410,8 @@ class Get
 		if (ComponentbuilderHelper::checkArray($tables) && (!isset($this->sqlTweak[$view_id]['remove']) || !$this->sqlTweak[$view_id]['remove']))
 		{
 			$counter = 'a';
-			// Get a db connection.
-			$db = JFactory::getDbo();
 			// Create a new query object.
-			$query = $db->getQuery(true);
+			$query = $this->db->getQuery(true);
 			foreach ($tables as $table)
 			{
 				if ($counter === 'a')
@@ -2340,7 +2437,7 @@ class Get
 							if (ComponentbuilderHelper::checkArray($sourceArray) && ComponentbuilderHelper::checkArray($targetArray))
 							{
 								// add to query
-								$query->select($db->quoteName($sourceArray,$targetArray));
+								$query->select($this->db->quoteName($sourceArray,$targetArray));
 								$query->from('#__'.$table['table'].' AS a');
 							}
 							// we may need to filter the selection
@@ -2375,13 +2472,13 @@ class Get
 								{
 									list($aKey,$bKey) = explode("==",$field);
 									// add to query
-									$query->join('LEFT', $db->quoteName('#__'.$table['table'], $counter) . ' ON (' . $db->quoteName('a.'.trim($aKey)) . ' = ' . $db->quoteName($counter.'.'.trim($bKey)) . ')');
+									$query->join('LEFT', $this->db->quoteName('#__'.$table['table'], $counter) . ' ON (' . $this->db->quoteName('a.'.trim($aKey)) . ' = ' . $this->db->quoteName($counter.'.'.trim($bKey)) . ')');
 								}
 							}
 							if (ComponentbuilderHelper::checkArray($sourceArray) && ComponentbuilderHelper::checkArray($targetArray))
 							{
 								// add to query
-								$query->select($db->quoteName($sourceArray,$targetArray));
+								$query->select($this->db->quoteName($sourceArray,$targetArray));
 							}
 						}
 					}
@@ -2389,12 +2486,12 @@ class Get
 				$counter++;
 			}
 			// now get the data
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
+			$this->db->setQuery($query);
+			$this->db->execute();
+			if ($this->db->getNumRows())
 			{
 				// get the data
-				$data = $db->loadObjectList();
+				$data = $this->db->loadObjectList();
 				// start building the MySql dump
 				$dump = "--";
 				$dump .= PHP_EOL."-- Dumping data for table `#__[[[component]]]_".$view."`";
@@ -2407,11 +2504,11 @@ class Get
 					{
 						if ($comaSet == 0)
 						{
-							$dump .= $db->quoteName($fieldName);
+							$dump .= $this->db->quoteName($fieldName);
 						}
 						else
 						{
-							$dump .= ", ".$db->quoteName($fieldName);
+							$dump .= ", ".$this->db->quoteName($fieldName);
 						}
 						$comaSet++;
 					}
@@ -2471,9 +2568,7 @@ class Get
 		// if string make sure it is correctly escaped
 		if(ComponentbuilderHelper::checkString($value) && !is_numeric($value))
 		{
-			// Get a db connection.
-			$db = JFactory::getDbo();
-			return $db->quote($value);
+			return $this->db->quote($value);
 		}
 		// if empty value return place holder
 		if(empty($value))
@@ -2589,6 +2684,240 @@ class Get
 	}
 	
 	/**
+	 * Set the dynamic values in strings here
+	 * 
+	 * @param   string   $string The content to check
+	 *
+	 * @return  string
+	 * 
+	 */
+	public function setDynamicValues($string)
+	{
+		return $this->setLangStrings($this->setCustomCodeData($string));
+	}
+	
+	/**
+	 * We start set the custom code data & can load it in to string
+	 * 
+	 * @param   string   $string The content to check
+	 * @param   bool     $insert Should we insert the code into the content
+	 * @param   bool     $bool Should we return bool on success
+	 *
+	 * @return  string|bool based on sig
+	 * 
+	 */
+	public function setCustomCodeData($string)
+	{
+		// insure the code is loaded
+		$loaded = false;
+		// check if content has custom code place holder
+		if (strpos($string, '[CUSTO'.'MCODE=') !== false)
+		{
+			// the ids found in this content
+			$bucket = array();
+			$found = ComponentbuilderHelper::getAllBetween($string, '[CUSTO'.'MCODE=', ']');
+			if (ComponentbuilderHelper::checkArray($found))
+			{
+				foreach ($found as $key)
+				{
+					// check if we have args
+					if (is_numeric($key))
+					{
+						$id = (int) $key;
+					}
+					elseif (ComponentbuilderHelper::checkString($key) && strpos($key, '+') === false)
+					{
+						$getFuncName = trim($key);
+						if (!isset($this->functionNameMemory[$getFuncName]))
+						{
+							if (!$found = ComponentbuilderHelper::getVar('custom_code', $getFuncName, 'function_name', 'id'))
+							{
+								continue;
+							}
+							$this->functionNameMemory[$getFuncName] = $found;
+						}
+						$id = (int) $this->functionNameMemory[$getFuncName];
+					}
+					elseif (ComponentbuilderHelper::checkString($key) && strpos($key, '+') !== false)
+					{
+						$array = explode('+', $key);
+						// set ID
+						if (is_numeric($array[0]))
+						{
+							$id = (int) $array[0];
+						}
+						elseif (ComponentbuilderHelper::checkString($array[0]))
+						{
+							$getFuncName = trim($array[0]);
+							if (!isset($this->functionNameMemory[$getFuncName]))
+							{
+								if (!$found = ComponentbuilderHelper::getVar('custom_code', $getFuncName, 'function_name', 'id'))
+								{
+									continue;
+								}
+								$this->functionNameMemory[$getFuncName] = $found;
+							}
+							$id = (int) $this->functionNameMemory[$getFuncName];
+						}
+						else
+						{
+							continue;
+						}
+						// load args for this ID
+						if (isset($array[1]))
+						{
+							if (!isset($this->customCodeData[$id]['args']))
+							{
+								$this->customCodeData[$id]['args'] = array();
+							}
+							// only load if not already loaded
+							if (!isset($this->customCodeData[$id]['args'][$key]))
+							{
+								if (strpos($array[1], ',') !== false)
+								{
+									$this->customCodeData[$id]['args'][$key] =  explode(',', $array[1]);
+								}
+								elseif (ComponentbuilderHelper::checkString($array[1]))
+								{
+									$this->customCodeData[$id]['args'][$key] = array();
+									$this->customCodeData[$id]['args'][$key][] = $array[1];
+								}
+							}
+						}						
+					}
+					else
+					{
+						continue;
+					}
+					$bucket[$id] = $id;
+				}
+			}
+			// check if any custom code placeholders where found
+			if (ComponentbuilderHelper::checkArray($bucket))
+			{
+				$_tmpLang = $this->lang;
+				// insure we add the langs to both site and admin
+				$this->lang = 'both';
+				// now load the code to memory
+				$loaded = $this->getCustomCode($bucket, false);
+				// revert lang to current setting
+				$this->lang = $_tmpLang;
+			}
+			// when the custom code is loaded
+			if ($loaded === true)
+			{
+				$string = $this->insertCustomCode($string);
+			}
+		}
+		return $string;
+	}
+	
+	/**
+	 * Insert the custom code into the string
+	 * 
+	 * @param   string   $string The content to check
+	 *
+	 * @return  string on success
+	 * 
+	 */
+	protected function insertCustomCode($string)
+	{
+		$code = array();
+		foreach($this->customCode as $item)
+		{
+			$this->buildCustomCodePlaceholders($item, $code);
+		}
+		// now update the string
+		return $this->setPlaceholders($string, $code);
+	}
+	
+	/**
+	 * Insert the custom code into the string
+	 * 
+	 * @param   string   $string The content to check
+	 *
+	 * @return  string on success
+	 * 
+	 */	
+	protected function buildCustomCodePlaceholders($item, &$code)
+	{
+		// check if there is args for this code
+		if (isset($this->customCodeData[$item['id']]['args']) && ComponentbuilderHelper::checkArray($this->customCodeData[$item['id']]['args']))
+		{
+			// since we have args we cant update this code via IDE (TODO)
+			$placeholder = $this->getPlaceHolder(3, null);
+			// we have args and so need to load each
+			foreach ($this->customCodeData[$item['id']]['args'] as $key => $args)
+			{
+				$this->setThesePlaceHolders('arg', $args);
+				$code['[CUSTOM'.'CODE='.$key.']'] = $placeholder['start'] . PHP_EOL . $this->setPlaceholders($item['code'], $this->placeholders). $placeholder['end'];
+			}
+			// always clear the args
+			$this->clearFromPlaceHolders('arg');
+		}
+		else
+		{
+			if (!$keyPlaceholder = array_search($item['id'], $this->functionNameMemory))
+			{
+				$keyPlaceholder = $item['id'];
+			}
+			// check what type of place holders we should load here
+			$placeholderType = (int) $item['comment_type'].'2';
+			if (stripos($item['code'], '[[[view') !== false || stripos($item['code'], '[[[sview') !== false)
+			{
+				// if view is being set dynamicly then we can't update this code via IDE (TODO)
+				$placeholderType = 3;
+			}
+			// if now ars were found, clear it
+			$this->clearFromPlaceHolders('arg');
+			// load args for this code
+			$placeholder	= $this->getPlaceHolder($placeholderType, $item['id']);
+			$code['[CUSTOM'.'CODE='.$keyPlaceholder.']'] = $placeholder['start'] . PHP_EOL . $this->setPlaceholders($item['code'], $this->placeholders). $placeholder['end'];
+		}
+	}
+	
+	/**
+	 * Set a type of placeholder with set of values
+	 * 
+	 * @param   string   $key     The main string for placeholder key
+	 * @param   array    $values  The values to add
+	 *
+	 * @return  void
+	 */
+	public function setThesePlaceHolders($key, $values)
+	{
+		// aways fist reset these
+		$this->clearFromPlaceHolders($key);
+		if (ComponentbuilderHelper::checkArray($values))
+		{
+			$number = 0;
+			foreach ($values as $value)
+			{
+				$this->placeholders['[[['.$key.$number.']]]'] = $value;
+				$number++;
+			}
+		}
+	}
+	
+	/**
+	 * Remove a type of placeholder by main string
+	 * 
+	 * @param   string   $like     The main string for placeholder key
+	 *
+	 * @return  void
+	 */
+	public function clearFromPlaceHolders($like)
+	{
+		foreach ($this->placeholders as $something => $value)
+		{
+			if (stripos($something, $like) !== false)
+			{
+				unset($this->placeholders[$something]);
+			}
+		}
+	}
+	
+	/**
 	 * to unset stuff that are private or protected
 	 * 
 	 */
@@ -2603,36 +2932,51 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	public function getCustomCode($ids = null)
+	public function getCustomCode($ids = null, $setLang = true)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
+		// should the result be stored in memory
+		$loadInMemory = false;
 		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->from($db->quoteName('#__componentbuilder_custom_code','a'));
-		if ($ids)
+		$query = $this->db->getQuery(true);
+		$query->from($this->db->quoteName('#__componentbuilder_custom_code','a'));
+		if (ComponentbuilderHelper::checkArray($ids))
 		{
-			$query->select($db->quoteName(array('a.id','a.code')));
-			$query->where($db->quoteName('a.id') . ' IN (' . implode(',',$ids) . ')');
-			$query->where($db->quoteName('a.target') . ' = 2'); // <--- to load the correct target
+			if ($idArray = $this->customCodeMemory($ids))
+			{
+				$query->select($this->db->quoteName(array('a.id','a.code','a.comment_type')));
+				$query->where($this->db->quoteName('a.id') . ' IN (' . implode(',',$idArray) . ')');
+				$query->where($this->db->quoteName('a.target') . ' = 2'); // <--- to load the correct target
+				$loadInMemory = true;
+			}
+			else
+			{
+				// all values are already in memory continue
+				return true;
+			}
 		}
 		else
 		{
-			$query->select($db->quoteName(array('a.id','a.code','a.component','a.from_line','a.hashtarget','a.hashendtarget','a.path','a.to_line','a.type')));
-			$query->where($db->quoteName('a.component') . ' = '. (int) $this->componentData->id);
-			$query->where($db->quoteName('a.target') . ' = 1'); // <--- to load the correct target
-			$query->order($db->quoteName('a.from_line') . ' ASC'); // <--- insrue we always add code from top of file
+			$query->select($this->db->quoteName(array('a.id','a.code','a.comment_type','a.component','a.from_line','a.hashtarget','a.hashendtarget','a.path','a.to_line','a.type')));
+			$query->where($this->db->quoteName('a.component') . ' = '. (int) $this->componentData->id);
+			$query->where($this->db->quoteName('a.target') . ' = 1'); // <--- to load the correct target
+			$query->order($this->db->quoteName('a.from_line') . ' ASC'); // <--- insrue we always add code from top of file
+			// reset custom code
+			$this->customCode = array();
 		}
-		$query->where($db->quoteName('a.published') . ' >= 1');
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
+		$query->where($this->db->quoteName('a.published') . ' >= 1');
+		$this->db->setQuery($query);
+		$this->db->execute();
+		if ($this->db->getNumRows())
 		{
-			$this->customCode = $db->loadAssocList();
+			$bucket = $this->db->loadAssocList('id');
 			// open the code
-			foreach($this->customCode as $nr => &$customCode)
+			foreach($bucket as $nr => &$customCode)
 			{
 				$customCode['code'] = base64_decode($customCode['code']);
+				if ($setLang)
+				{
+					$customCode['code'] = $this->setLangStrings($customCode['code']);
+				}
 				if (isset($customCode['hashtarget']))
 				{
 					$customCode['hashtarget'] = explode("__", $customCode['hashtarget']);
@@ -2642,7 +2986,39 @@ class Get
 					}
 				}
 			}
+			// load this code into memory if needed
+			if ($loadInMemory === true)
+			{
+				$this->customCodeMemory = $this->customCodeMemory + $bucket;
+			}
+			$this->customCode = array_merge($this->customCode, $bucket);
 			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * check if we already have these ids in local memory
+	 * 
+	 * @return  void
+	 * 
+	 */
+	protected function customCodeMemory($ids)
+	{
+		// reset custom code
+		$this->customCode = array();
+		foreach ($ids as $pointer => $id)
+		{
+			if (isset($this->customCodeMemory[$id]))
+			{
+				$this->customCode[] = $this->customCodeMemory[$id];
+				unset($ids[$pointer]);
+			}
+		}
+		// check if any ids left to fetch
+		if (ComponentbuilderHelper::checkArray($ids))
+		{
+			return $ids;
 		}
 		return false;
 	}
@@ -2650,27 +3026,26 @@ class Get
 	/**
 	 * store the code
 	 * 
-	 * @param   object   $db    The database object
 	 * @param   int	     $when  To set when to update
 	 *
 	 * @return  void
 	 * 
 	 */
-	protected function setNewCustomCode($db, $when = 1)
+	protected function setNewCustomCode($when = 1)
 	{
 		if (count($this->newCustomCode) >= $when)
 		{
 			// Create a new query object.
-			$query = $db->getQuery(true);
+			$query = $this->db->getQuery(true);
 			$continue = false;
 			// Insert columns.
-			$columns = array('path','type','target','component','published','created','created_by','version','access','hashtarget','from_line','to_line','code','hashendtarget');
+			$columns = array('path','type','target','comment_type','component','published','created','created_by','version','access','hashtarget','from_line','to_line','code','hashendtarget');
 			// Prepare the insert query.
-			$query->insert($db->quoteName('#__componentbuilder_custom_code'));
-			$query->columns($db->quoteName($columns));
+			$query->insert($this->db->quoteName('#__componentbuilder_custom_code'));
+			$query->columns($this->db->quoteName($columns));
 			foreach($this->newCustomCode as $values)
 			{
-				if (count($values) == 14)
+				if (count($values) == 15)
 				{
 					$query->values(implode(',', $values));
 					$continue = true;
@@ -2687,33 +3062,32 @@ class Get
 				return false; // insure we dont continue if no values were loaded
 			}
 			// Set the query using our newly populated query object and execute it.
-			$db->setQuery($query);
-			$db->execute();
+			$this->db->setQuery($query);
+			$this->db->execute();
 		}
 	}
 	
 	/**
 	 * store the code
 	 * 
-	 * @param   object   $db    The database object
 	 * @param   int	     $when  To set when to update
 	 *
 	 * @return  void
 	 * 
 	 */
-	protected function setExistingCustomCode($db, $when = 1)
+	protected function setExistingCustomCode($when = 1)
 	{
 		if (count($this->existingCustomCode) >= $when)
 		{
 			foreach($this->existingCustomCode as $code)
 			{
 				// Create a new query object.
-				$query = $db->getQuery(true);
+				$query = $this->db->getQuery(true);
 				// Prepare the update query.
-				$query->update($db->quoteName('#__componentbuilder_custom_code'))->set($code['fields'])->where($code['conditions']);
+				$query->update($this->db->quoteName('#__componentbuilder_custom_code'))->set($code['fields'])->where($code['conditions']);
 				// Set the query using our newly populated query object and execute it.
-				$db->setQuery($query);
-				$db->execute();
+				$this->db->setQuery($query);
+				$this->db->execute();
 			}
 			// clear the values array
 			$this->existingCustomCode = array();			
@@ -2724,23 +3098,21 @@ class Get
 	 * get the custom code from the local files
 	 * 
 	 * @param   array   $paths  The local paths to parse
-	 * @param   object  $db     The database object
-	 * @param   int     $userId The user id
 	 * @param   string  $today  The date for today
 	 *
 	 * @return  void
 	 * 
 	 */
-	protected function customCodeFactory(&$paths, &$db, &$userId, &$today)
+	protected function customCodeFactory(&$paths, &$today)
 	{
 		// we must first store the current woking directory
 		$joomla = getcwd();
 		$counter = array(1 => 0, 2 => 0);		
 		// set some local placeholders
 		$placeholders = array();
-		$placeholders[$this->fileContentStatic['###Component###'].'Helper::']	= '[[[Component]]]Helper::';
-		$placeholders['com_'.$this->fileContentStatic['###component###']]	= 'com_[[[component]]]';
-		$placeholders['COM_'.$this->fileContentStatic['###COMPONENT###']]	= 'COM_[[[COMPONENT]]]';
+		$placeholders[ComponentbuilderHelper::safeString($this->componentCodeName, 'F').'Helper::']	= '[[[Component]]]Helper::';
+		$placeholders['COM_'.ComponentbuilderHelper::safeString($this->componentCodeName, 'U')]		= 'COM_[[[COMPONENT]]]';
+		$placeholders['com_'.$this->componentCodeName]							= 'com_[[[component]]]';
 		foreach ($paths as $target => $path)
 		{
 			// we are changing the working directory to the componet path
@@ -2749,16 +3121,16 @@ class Get
 			$files = JFolder::files('.', '\.php', true, true);
 			foreach ($files as $file)
 			{
-				$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $placeholders, $db, $userId, $today);
+				$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $placeholders, $today);
 				// insert new code
 				if (ComponentbuilderHelper::checkArray($this->newCustomCode))
 				{
-					$this->setNewCustomCode($db, 100);
+					$this->setNewCustomCode(100);
 				}
 				// update existing custom code
 				if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
 				{
-					$this->setExistingCustomCode($db, 30);
+					$this->setExistingCustomCode(30);
 				}
 			}
 		}
@@ -2767,12 +3139,12 @@ class Get
 		// make sure all code is stored
 		if (ComponentbuilderHelper::checkArray($this->newCustomCode))
 		{
-			$this->setNewCustomCode($db);
+			$this->setNewCustomCode();
 		}
 		// update existing custom code
 		if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
 		{
-			$this->setExistingCustomCode($db);
+			$this->setExistingCustomCode();
 		}
 	}
 	
@@ -2783,14 +3155,12 @@ class Get
 	 * @param   string  $file         The file path to search
 	 * @param   array   $searchArray  The values to search for
 	 * @param   array   $placeholders The values to replace in the code being stored
-	 * @param   object  $db           The database object
-	 * @param   int     $userId       The user id
 	 * @param   string  $today        The date for today
 	 *
 	 * @return  array    on success
 	 * 
 	 */
-	protected function searchFileContent(&$counter, &$file, &$target, &$searchArray, &$placeholders, &$db, &$userId, &$today)
+	protected function searchFileContent(&$counter, &$file, &$target, &$searchArray, &$placeholders, &$today)
 	{
 		// reset each time per file
 		$loadEndFingerPrint	= false;
@@ -2800,6 +3170,8 @@ class Get
 		$pointer		= array();
 		$reading		= array();
 		$reader			= 0;
+		// reset found Start type
+		$commentType		= 0;
 		// make sure we have the path correct (the script file is not in admin path for example)
 		// there may be more... will nead to keep our eye on this... since files could be moved during install
 		$file = str_replace('./', '', $file);
@@ -2829,9 +3201,18 @@ class Get
 					$targetKey	= $type;
 					$start		= '/***['.$search.'***/';
 					$end		= '/***[/'.$search.'***/';
+					$startHTML	= '<!--['.$search.'-->';
+					$endHTML	= '<!--[/'.$search.'-->';
 					// check if the ending place holder was found
-					if(isset($reading[$targetKey]) && $reading[$targetKey] && (trim($lineContent) === $end || strpos($lineContent, $end) !== false))
+					if(isset($reading[$targetKey]) && $reading[$targetKey] && 
+						((trim($lineContent) === $end || strpos($lineContent, $end) !== false) || 
+						(trim($lineContent) === $endHTML || strpos($lineContent, $endHTML) !== false)))
 					{
+						// trim the placeholder and if there is still data then load it
+						if ($_line = $this->addLineChecker($endReplace, 2, $lineContent))
+						{
+							$codeBucket[$pointer[$targetKey]][] = $_line;
+						}
 						// deactivate the reader
 						$reading[$targetKey]		= false;
 						if ($_type == 2)
@@ -2850,23 +3231,28 @@ class Get
 						if ($i === 1)
 						{
 							// end the bucket info for this code block
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $lineNumber);						// 'toline'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(base64_encode(implode('', $codeBucket[$pointer[$targetKey]])));	// 'code'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote((int) $lineNumber);			// 'toline'
+							// first reverse engineer this code block
+							$c0de = $this->reversePlaceholders(implode('', $codeBucket[$pointer[$targetKey]]), $placeholders);
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote(base64_encode($c0de));		// 'code'
 							if ($_type == 2)
 							{
 								// load the last value
-								$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(0); // 'hashendtarget'
+								$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote(0);				// 'hashendtarget'
 							}
 						}
 						// the record already exist so we must use module to update
 						elseif ($i === 2)
 						{
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $db->quoteName('to_line') . ' = ' . $db->quote($lineNumber);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $db->quoteName('code') . ' = ' . $db->quote(base64_encode(implode('', $codeBucket[$pointer[$targetKey]])));
+							// end the bucket info for this code block
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $this->db->quoteName('to_line') . ' = ' . $this->db->quote($lineNumber);
+							// first reverse engineer this code block
+							$c0de = $this->reversePlaceholders(implode('', $codeBucket[$pointer[$targetKey]]), $placeholders, $this->existingCustomCode[$pointer[$targetKey]]['id']);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $this->db->quoteName('code') . ' = ' . $this->db->quote(base64_encode($c0de));
 							if ($_type == 2)
 							{
 								// load the last value
-								$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote(0);
+								$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $this->db->quoteName('hashendtarget') . ' = ' . $this->db->quote(0);
 							}
 						}
 					}
@@ -2878,12 +3264,12 @@ class Get
 						if ($i === 1)
 						{
 							// load the last value
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($hashendtarget); // 'hashendtarget'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote($hashendtarget); // 'hashendtarget'
 						}
 						// the record already exist so we must use module to update
 						elseif ($i === 2)
 						{
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote($hashendtarget);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $this->db->quoteName('hashendtarget') . ' = ' . $this->db->quote($hashendtarget);
 						}
 						// reset the needed values
 						$endFingerPrint		= array();
@@ -2894,16 +3280,35 @@ class Get
 					// then read in the code
 					if (isset($reading[$targetKey]) && $reading[$targetKey])
 					{
-						$codeBucket[$pointer[$targetKey]][] = $this->setPlaceholders($lineContent, $placeholders, 2, 2); // <-- this could solve our placholder issue
+						$codeBucket[$pointer[$targetKey]][] = $lineContent;
+					}
+					// see if the custom code line starts now with PHP/JS comment type
+					if ((!isset($reading[$targetKey]) || !$reading[$targetKey]) && (($i === 1 && trim($lineContent) === $start) || strpos($lineContent, $start) !== false))
+					{
+						$commentType	= 1; // PHP/JS type
+						$startReplace	= $start;
+						$endReplace	= $end;
+					}
+					// see if the custom code line starts now with HTML comment type
+					elseif ((!isset($reading[$targetKey]) || !$reading[$targetKey]) && (($i === 1 && trim($lineContent) === $startHTML) || strpos($lineContent, $startHTML) !== false))
+					{
+						$commentType	= 2; // HTML type
+						$startReplace	= $startHTML;
+						$endReplace	= $endHTML;
 					}
 					// check if the starting place holder was found
-					if((!isset($reading[$targetKey]) || !$reading[$targetKey]) && (($i === 1 && trim($lineContent) === $start) || strpos($lineContent, $start) !== false))
-					{
+					if($commentType > 0)
+					{						
+						// if we have all on one line we have a problem
+						if (strpos($lineContent, $endReplace) !== false)
+						{
+							continue;
+						}
 						// do a quick check to insure we have an id
 						$id = false;
 						if ($i === 2)
 						{
-							$id = $this->getSystemID($lineContent, $start);
+							$id = $this->getSystemID($lineContent, array(1 => $start, 2 => $startHTML), $commentType);
 						}
 						if ($i === 2 && $id > 0)
 						{
@@ -2915,14 +3320,21 @@ class Get
 							// store the id to avoid duplication
 							$this->codeAreadyDone[$id] = (int) $id;
 						}
+						// start replace
+						$startReplace = $this->setStartReplace($id, $commentType, $startReplace);
 						// set active reader (to lock out other search)
-						$reader				= $i;
+						$reader					= $i;
 						// set pointer
 						$pointer[$targetKey]			= $counter[$i];
 						// activate the reader
 						$reading[$targetKey]			= true;
 						// start code bucket
-						$codeBucket[$pointer[$targetKey]]	= array();
+						$codeBucket[$pointer[$targetKey]]	= array();						
+						// trim the placeholder and if there is still data then load it
+						if ($_line = $this->addLineChecker($startReplace, 1, $lineContent))
+						{
+							$codeBucket[$pointer[$targetKey]][] = $_line;
+						}
 						// get the finger print around the custom code
 						$inFinger	= count($fingerPrint);
 						$getFinger	= $inFinger - 1;
@@ -2934,17 +3346,18 @@ class Get
 						{
 							// start the bucket for this code
 							$this->newCustomCode[$pointer[$targetKey]]	= array();
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($path);						// 'path'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $_type);					// 'type'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'target'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $this->componentData->id);			// 'component'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'published'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($today);						// 'created'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $userId);					// 'created_by'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'version'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote(1);						// 'access'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote($hashtarget);					// 'hashtarget'
-							$this->newCustomCode[$pointer[$targetKey]][]	= $db->quote((int) $lineNumber);				// 'fromline'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote($path);			// 'path'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote((int) $_type);		// 'type'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote(1);				// 'target'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote($commentType);		// 'comment_type'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote((int) $this->componentID);	// 'component'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote(1);				// 'published'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote($today);			// 'created'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote((int) $this->user->id);	// 'created_by'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote(1);				// 'version'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote(1);				// 'access'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote($hashtarget);		// 'hashtarget'
+							$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote((int) $lineNumber);		// 'fromline'
 						}
 						// the record already exist so we must update instead
 						elseif ($i === 2 && $id > 0)
@@ -2953,15 +3366,16 @@ class Get
 							$this->existingCustomCode[$pointer[$targetKey]]			= array();
 							$this->existingCustomCode[$pointer[$targetKey]]['id']		= (int) $id;
 							$this->existingCustomCode[$pointer[$targetKey]]['conditions']	= array();
-							$this->existingCustomCode[$pointer[$targetKey]]['conditions'][]	= $db->quoteName('id') . ' = ' . $db->quote($id);
+							$this->existingCustomCode[$pointer[$targetKey]]['conditions'][]	= $this->db->quoteName('id') . ' = ' . $this->db->quote($id);
 							$this->existingCustomCode[$pointer[$targetKey]]['fields']	= array();
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('path') . ' = ' . $db->quote($path);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('type') . ' = ' . $db->quote($_type);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('component') . ' = ' . $db->quote($this->componentData->id);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('from_line') . ' = ' . $db->quote($lineNumber);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('modified') . ' = ' . $db->quote($today);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('modified_by') . ' = ' . $db->quote($userId);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $db->quoteName('hashtarget') . ' = ' . $db->quote($hashtarget);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $this->db->quoteName('path') . ' = ' . $this->db->quote($path);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $this->db->quoteName('type') . ' = ' . $this->db->quote($_type);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $this->db->quoteName('comment_type') . ' = ' . $this->db->quote($commentType);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $this->db->quoteName('component') . ' = ' . $this->db->quote($this->componentID);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $this->db->quoteName('from_line') . ' = ' . $this->db->quote($lineNumber);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $this->db->quoteName('modified') . ' = ' . $this->db->quote($today);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $this->db->quoteName('modified_by') . ' = ' . $this->db->quote($this->user->id);
+							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]	= $this->db->quoteName('hashtarget') . ' = ' . $this->db->quote($hashtarget);
 						}
 						else // this should actualy never happen
 						{
@@ -2970,6 +3384,8 @@ class Get
 							$reader					= 0;
 							
 						}
+						// reset found comment type
+						$commentType = 0;
 						// update the counter
 						$counter[$i]++;
 					}
@@ -2997,14 +3413,76 @@ class Get
 			if ($backupI === 1)
 			{
 				// load the last value
-				$this->newCustomCode[$pointer[$backupTargetKey]][]	= $db->quote($hashendtarget); // 'hashendtarget'
+				$this->newCustomCode[$pointer[$backupTargetKey]][]	= $this->db->quote($hashendtarget); // 'hashendtarget'
 			}
 			// the record already exist so we must use module to update
 			elseif ($backupI === 2)
 			{
-				$this->existingCustomCode[$pointer[$backupTargetKey]]['fields'][] = $db->quoteName('hashendtarget') . ' = ' . $db->quote($hashendtarget);
+				$this->existingCustomCode[$pointer[$backupTargetKey]]['fields'][] = $this->db->quoteName('hashendtarget') . ' = ' . $this->db->quote($hashendtarget);
 			}
 		}
+	}
+	
+	/**
+	 * Check if this line should be added
+	 * 
+	 * @param   strin    $replaceKey   The key to remove from line
+	 * @param   int      $type         The line type
+	 * @param   string   $lineContent  The line to check
+	 *
+	 * @return  bool true    on success
+	 * 
+	 */
+	protected function addLineChecker($replaceKey, $type, $lineContent)
+	{
+		$check = explode($replaceKey, $lineContent);
+		switch($type)
+		{
+			case 1:
+				// beginning of code
+				$i = trim($check[1]);
+				if (ComponentbuilderHelper::checkString($i))
+				{
+					return $check[1];
+				}
+			break;
+			case 2:
+				// end of code
+				$i = trim($check[0]);
+				if (ComponentbuilderHelper::checkString($i))
+				{
+					return $check[0];
+				}
+			break;
+		}
+		return false;
+	}
+	
+	/**
+	 * search for the system id in the line given
+	 * 
+	 * @param   int      $id           The comment id
+	 * @param   int      $commentType  The comment type
+	 * @param   string   $startReplace The main replace string
+	 *
+	 * @return  array    on success
+	 * 
+	 */
+	protected function setStartReplace($id, $commentType, $startReplace)
+	{
+		if ($id > 0)
+		{
+			switch($commentType)
+			{
+				case 1:
+					$startReplace .= '/*'.$id.'*/';
+				break;
+				case 2:
+					$startReplace .= '<!--'.$id.'-->';
+				break;
+			}
+		}
+		return $startReplace;
 	}
 	
 	/**
@@ -3016,10 +3494,15 @@ class Get
 	 * @return  array    on success
 	 * 
 	 */
-	protected function getSystemID(&$lineContent, $placeholder)
+	protected function getSystemID(&$lineContent, $placeholders, $commentType)
 	{
+		$trim = '/';
+		if ($commentType == 2)
+		{
+			$trim = '<!--';
+		}
 		// remove place holder from content
-		$string = trim(str_replace($placeholder.'//', '', $lineContent));
+		$string = trim(str_replace($placeholders[$commentType].$trim, '', $lineContent));
 		// now get all numbers
 		$numbers = array();
 		preg_match_all('!\d+!', $string, $numbers);
@@ -3032,45 +3515,101 @@ class Get
 	}
 	
 	/**
-	 * Update the data with the placeholders
+	 * Reverse Engineer the dynamic placeholders (hmmmm)
 	 * 
-	 * @param   string   $data          The actual date
-	 * @param   array    $placeholder   The placeholders
+	 * @param   string   $string       The string to revers
+	 * @param   int      $id           The custom code id
+	 * @param   array    $placeholders The values to search for
 	 *
 	 * @return  string
 	 * 
 	 */
-	public function setPlaceholders(&$data, &$placeholder, $action = 1, $langSwitch = 0)
+	protected function reversePlaceholders($string, &$placeholders, $id = null)
 	{
-		// check if we should reverse the lang strings <-- for custom coding
-		if (2 == $langSwitch)
+		// get local code if set
+		if ($id > 0 && $code = base64_decode(ComponentbuilderHelper::getVar('custom_code', $id, 'id', 'code')))
 		{
-			$langArray1 = ComponentbuilderHelper::getAllBetween($data,'JText::_("','")');
-			$langArray2 = ComponentbuilderHelper::getAllBetween($data,"JText::_('","')");
-			$langArray = ComponentbuilderHelper::mergeArrays(array($langArray1,$langArray2));
+			$string = $this->setReverseLangPlaceholders($string, $code);
+		}
+		return $this->setPlaceholders($string, $placeholders, 2);
+	}
+	
+	/**
+	 * Set the langs strings for the reveres prossess
+	 * 
+	 * @param   string   $updateString   The string to update
+	 * @param   string   $string         The string to use lang update
+	 *
+	 * @return  array
+	 * 
+	 */
+	protected function setReverseLangPlaceholders($updateString, $string)
+	{
+		if (strpos($string, 'JText::_(') !== false || strpos($string, 'JText::sprintf(') !== false)
+		{
+			$langHolders = array();
+			// set the lang for both since we don't know what area is being targeted
+			$_tmp = $this->lang;
+			$this->lang = 'both';
+			// set language data
+			$langCheck[] = ComponentbuilderHelper::getAllBetween($string, "JText::_('","'");
+			$langCheck[] = ComponentbuilderHelper::getAllBetween($string, 'JText::_("','"');
+			$langCheck[] = ComponentbuilderHelper::getAllBetween($string, "JText::sprintf('","'");
+			$langCheck[] = ComponentbuilderHelper::getAllBetween($string, 'JText::sprintf("','"');
+			// merge arrays
+			$langArray = ComponentbuilderHelper::mergeArrays($langCheck);
+			// continue only if strings were found
 			if (ComponentbuilderHelper::checkArray($langArray))
 			{
-				$_tmp = array();
-				$targets = array('admin','site','','sitesys','adminsys');
 				foreach ($langArray as $lang)
 				{
-					$found = false;
-					foreach ($targets as $in)
+					$_keyLang = ComponentbuilderHelper::safeString($lang,'U');
+					// this is there to insure we dont break already added Language strings
+					if ($_keyLang === $lang)
 					{
-						if (!$found && isset($this->langContent[$in][$lang]))
-						{
-							$_tmp[$lang] = $this->langContent[$in][$lang];
-							$found = true;
-						}
+						continue;
 					}
+					// only load if string is not already set
+					$keyLang = $this->langPrefix.'_'.$_keyLang;
+					if (!isset($this->langContent[$this->lang][$keyLang]))
+					{
+						$this->langContent[$this->lang][$keyLang] = trim($lang);
+					}
+					// reverse the placeholders
+					$langHolders["JText::_('".$keyLang."')"] = "JText::_('".$lang."')";
+					$langHolders['JText::_("'.$keyLang.'")'] = 'JText::_("'.$lang.'")';
+					$langHolders["JText::sprintf('".$keyLang."',"] = "JText::sprintf('".$lang."',";
+					$langHolders['JText::sprintf("'.$keyLang.'",'] = 'JText::sprintf("'.$lang.'",';
 				}
-				// now update
-				if (ComponentbuilderHelper::checkArray($_tmp))
-				{
-					$data = str_replace(array_keys($_tmp),array_values($_tmp),$data);
-				}
+				// return the found placeholders
+				$updateString = $this->setPlaceholders($updateString, $langHolders);
 			}
+			// reset the lang
+			$this->lang = $_tmp;
 		}
+		return $updateString;
+	}
+	
+	/**
+	 * Update the data with the placeholders
+	 * 
+	 * @param   string   $data          The actual data
+	 * @param   array    $placeholder   The placeholders
+	 * @param   int      $action        The action to use
+	 *===================================================
+	 * THE ACTION OPTIONS ARE
+	 *===================================================
+	 * 1 -> Just replace (default)
+	 * 2 -> Check if data string has placeholders
+	 * 3 -> Remove placeholders not in data string
+	 *===================================================
+	 * @param   int      $langSwitch    The lang switch
+	 *
+	 * @return  string
+	 * 
+	 */
+	public function setPlaceholders(&$data, &$placeholder, $action = 1)
+	{
 		if (1 == $action) // <-- just replace (default)
 		{
 			return str_replace(array_keys($placeholder),array_values($placeholder),$data);
@@ -3125,12 +3664,12 @@ class Get
 	{
 		switch ($type)
 		{
-			case 1:
-				//xxx[REPLACED$$$$]xxx///1
-				if (!isset($this->componentData->add_placeholders) || $this->componentData->add_placeholders == 1)
+			case 11:
+				//***[REPLACED$$$$]***//*1*/
+				if ($this->addPlaceholders === true)
 				{
 					return array(
-						'start' => '/***[REPLACED$$$$]***///'.$id, 
+						'start' => '/***[REPLACED$$$$]***//*'.$id.'*/', 
 						'end' => '/***[/REPLACED$$$$]***/');
 				}
 				else
@@ -3140,13 +3679,43 @@ class Get
 						'end' => "\t\t\t");
 				}
 				break;
-			case 2:
-				//xxx[INSERTED$$$$]xxx///1
-				if (!isset($this->componentData->add_placeholders) || $this->componentData->add_placeholders == 1)
+			case 12:
+				//***[INSERTED$$$$]***//*1*/
+				if ($this->addPlaceholders === true)
 				{
 					return array(
-					'start' => '/***[INSERTED$$$$]***///'.$id, 
+					'start' => '/***[INSERTED$$$$]***//*'.$id.'*/', 
 					'end' => '/***[/INSERTED$$$$]***/');
+				}
+				else
+				{
+					return array(
+						'start' => "\t\t\t", 
+						'end' => "\t\t\t");
+				}
+				break;
+			case 21:
+				//<!--[REPLACED$$$$]--><!--1-->
+				if ($this->addPlaceholders === true)
+				{
+					return array(
+					'start' => '<!--[REPLACED$$$$]--><!--'.$id.'-->', 
+					'end' => '<!--[/REPLACED$$$$]-->');
+				}
+				else
+				{
+					return array(
+						'start' => "\t\t\t", 
+						'end' => "\t\t\t");
+				}
+				break;
+			case 22:
+				//<!--[INSERTED$$$$]--><!--1-->
+				if ($this->addPlaceholders === true)
+				{
+					return array(
+					'start' => '<!--[INSERTED$$$$]--><!--'.$id.'-->', 
+					'end' => '<!--[/INSERTED$$$$]-->');
 				}
 				else
 				{
@@ -3160,6 +3729,37 @@ class Get
 						'start' => "\t\t\t", 
 						'end' => "\t\t\t");
 				break;
+		}
+		return false;
+	}
+	
+	/**
+	 * get the local installed path of this component
+	 *
+	 * @return  array   of paths on success
+	 * 
+	 */
+	protected function getLocalInstallPaths()
+	{
+		// set the local paths to search
+		$localPaths = array();
+		// admin path
+		$localPaths['admin']	= JPATH_ADMINISTRATOR . '/components/com_'. $this->componentCodeName;
+		// site path
+		$localPaths['site']	= JPATH_ROOT . '/components/com_'. $this->componentCodeName;
+		// TODO later to include the JS and CSS
+		$localPaths['media']	= JPATH_ROOT . '/media/com_'. $this->componentCodeName;
+		// check if the local install is found
+		foreach ($localPaths as $key => $localPath)
+		{
+			if (!JFolder::exists($localPath))
+			{
+				unset($localPaths[$key]);
+			}
+		}
+		if (ComponentbuilderHelper::checkArray($localPaths))
+		{
+			return $localPaths;
 		}
 		return false;
 	}

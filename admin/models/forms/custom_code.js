@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 35 of this MVC
-	@build			10th February, 2017
+	@version		@update number 55 of this MVC
+	@build			13th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_code.js
@@ -23,9 +23,10 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // Some Global Values
-jform_vvvvvzpvzk_required = false;
+jform_vvvvvzovzk_required = false;
 jform_vvvvvzpvzl_required = false;
 jform_vvvvvzpvzm_required = false;
+jform_vvvvvzpvzn_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -51,11 +52,30 @@ function vvvvvzo(target_vvvvvzo)
 	// set the function logic
 	if (target_vvvvvzo == 2)
 	{
+		jQuery('#jform_function_name').closest('.control-group').show();
+		if (jform_vvvvvzovzk_required)
+		{
+			updateFieldRequired('function_name',0);
+			jQuery('#jform_function_name').prop('required','required');
+			jQuery('#jform_function_name').attr('aria-required',true);
+			jQuery('#jform_function_name').addClass('required');
+			jform_vvvvvzovzk_required = false;
+		}
+
 		jQuery('.note_jcb_placeholder').closest('.control-group').show();
 		jQuery('#jform_system_name').closest('.control-group').show();
 	}
 	else
 	{
+		jQuery('#jform_function_name').closest('.control-group').hide();
+		if (!jform_vvvvvzovzk_required)
+		{
+			updateFieldRequired('function_name',1);
+			jQuery('#jform_function_name').removeAttr('required');
+			jQuery('#jform_function_name').removeAttr('aria-required');
+			jQuery('#jform_function_name').removeClass('required');
+			jform_vvvvvzovzk_required = true;
+		}
 		jQuery('.note_jcb_placeholder').closest('.control-group').hide();
 		jQuery('#jform_system_name').closest('.control-group').hide();
 	}
@@ -68,70 +88,70 @@ function vvvvvzp(target_vvvvvzp)
 	if (target_vvvvvzp == 1)
 	{
 		jQuery('#jform_component').closest('.control-group').show();
-		if (jform_vvvvvzpvzk_required)
+		if (jform_vvvvvzpvzl_required)
 		{
 			updateFieldRequired('component',0);
 			jQuery('#jform_component').prop('required','required');
 			jQuery('#jform_component').attr('aria-required',true);
 			jQuery('#jform_component').addClass('required');
-			jform_vvvvvzpvzk_required = false;
+			jform_vvvvvzpvzl_required = false;
 		}
 
 		jQuery('#jform_path').closest('.control-group').show();
-		if (jform_vvvvvzpvzl_required)
+		if (jform_vvvvvzpvzm_required)
 		{
 			updateFieldRequired('path',0);
 			jQuery('#jform_path').prop('required','required');
 			jQuery('#jform_path').attr('aria-required',true);
 			jQuery('#jform_path').addClass('required');
-			jform_vvvvvzpvzl_required = false;
+			jform_vvvvvzpvzm_required = false;
 		}
 
 		jQuery('#jform_from_line').closest('.control-group').show();
 		jQuery('#jform_hashtarget').closest('.control-group').show();
 		jQuery('#jform_to_line').closest('.control-group').show();
 		jQuery('#jform_type').closest('.control-group').show();
-		if (jform_vvvvvzpvzm_required)
+		if (jform_vvvvvzpvzn_required)
 		{
 			updateFieldRequired('type',0);
 			jQuery('#jform_type').prop('required','required');
 			jQuery('#jform_type').attr('aria-required',true);
 			jQuery('#jform_type').addClass('required');
-			jform_vvvvvzpvzm_required = false;
+			jform_vvvvvzpvzn_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_component').closest('.control-group').hide();
-		if (!jform_vvvvvzpvzk_required)
+		if (!jform_vvvvvzpvzl_required)
 		{
 			updateFieldRequired('component',1);
 			jQuery('#jform_component').removeAttr('required');
 			jQuery('#jform_component').removeAttr('aria-required');
 			jQuery('#jform_component').removeClass('required');
-			jform_vvvvvzpvzk_required = true;
+			jform_vvvvvzpvzl_required = true;
 		}
 		jQuery('#jform_path').closest('.control-group').hide();
-		if (!jform_vvvvvzpvzl_required)
+		if (!jform_vvvvvzpvzm_required)
 		{
 			updateFieldRequired('path',1);
 			jQuery('#jform_path').removeAttr('required');
 			jQuery('#jform_path').removeAttr('aria-required');
 			jQuery('#jform_path').removeClass('required');
-			jform_vvvvvzpvzl_required = true;
+			jform_vvvvvzpvzm_required = true;
 		}
 		jQuery('#jform_from_line').closest('.control-group').hide();
 		jQuery('#jform_hashtarget').closest('.control-group').hide();
 		jQuery('#jform_to_line').closest('.control-group').hide();
 		jQuery('#jform_type').closest('.control-group').hide();
-		if (!jform_vvvvvzpvzm_required)
+		if (!jform_vvvvvzpvzn_required)
 		{
 			updateFieldRequired('type',1);
 			jQuery('#jform_type').removeAttr('required');
 			jQuery('#jform_type').removeAttr('aria-required');
 			jQuery('#jform_type').removeClass('required');
-			jform_vvvvvzpvzm_required = true;
+			jform_vvvvvzpvzn_required = true;
 		}
 	}
 }
@@ -202,4 +222,103 @@ function isSet(val)
 		return true;
 	}
 	return false;
+}
+
+jQuery(document).ready(function()
+{
+	var target = jQuery("#jform_target input[type='radio']:checked").val();
+	if (target == 2) {
+		var functioName = jQuery('#jform_function_name').val();
+		// check if this function name is taken
+		checkFunctionName(functioName);
+	}
+});
+function setCustomCodePlaceholder() {
+	var ide = jQuery('#jform_id').val();
+	var functioName = jQuery('#jform_function_name').val();
+	if (ide > 0 && functioName.length > 2) {
+		jQuery('#jcb-placeholder').html('<code>[CUSTO'+'MCODE='+ide+']</code> or <code>[CUSTO'+'MCODE='+functioName+']</code>');
+		jQuery('#jcb-placeholder-arg').html('<code>[CUSTO'+'MCODE='+ide+'&#43;value1,value2]</code>  or <code>[CUSTO'+'MCODE='+functioName+'&#43;value1,value2]</code>');
+	} else if (ide > 0){
+		jQuery('#jcb-placeholder').html('<code>[CUSTO'+'MCODE='+ide+']</code> or <code>[not ready]</code>');
+		jQuery('#jcb-placeholder-arg').html('<code>[CUSTO'+'MCODE='+ide+'&#43;value1,value2]</code>  or <code>[not ready]</code>');
+	} else if (functioName.length > 2) {
+		jQuery('#jcb-placeholder').html('<code>[save to see]</code> or <code>[CUSTO'+'MCODE='+functioName+']</code>');
+		jQuery('#jcb-placeholder-arg').html('<code>[save to see]</code>  or <code>[CUSTO'+'MCODE='+functioName+'&#43;value1,value2]</code>');
+	} else {
+		jQuery('#jcb-placeholder').html('<code>[save to see]</code>');
+		jQuery('#jcb-placeholder-arg').html('<code>[save to see]</code>');
+	}
+	// update the notes
+	if (ide > 0) {
+		jQuery('.placeholder-key-id').text(ide);
+	}
+}
+function checkFunctionName(functioName) {
+	if (functioName.length > 2) {
+		var ide = jQuery('#jform_id').val();
+		if (ide == 0) {
+			ide = -1;
+		}
+		checkFunctionName_server(functioName, ide).done(function(result) {
+			if(result.name && result.message){
+				// show notice that functioName is okay
+				jQuery.UIkit.notify({message: result.message, timeout: 5000, status: result.status, pos: 'top-right'});
+				jQuery('#jform_function_name').val(result.name);
+				// now start search for where the function is used
+				usedin(result.name, ide);
+			} else if(result.message){
+				// show notice that functioName is not okay
+				jQuery.UIkit.notify({message: result.message, timeout: 5000, status: result.status, pos: 'top-right'});
+				jQuery('#jform_function_name').val('');
+			} else {
+				// set an error that message was not send
+				jQuery.UIkit.notify({message: 'Function name already taken, please try again.', timeout: 5000, status: 'danger', pos: 'top-right'});
+				jQuery('#jform_function_name').val('');
+			}
+			// set custom code placeholder
+			setCustomCodePlaceholder();
+		});
+	} else {
+		// set an error that message was not send
+		jQuery.UIkit.notify({message: 'You must add an unique function name.', timeout: 5000, status: 'danger', pos: 'top-right'});
+		jQuery('#jform_function_name').val('');
+		// set custom code placeholder
+		setCustomCodePlaceholder();
+	}
+}
+// check Function Name
+function checkFunctionName_server(functioName, ide){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.checkFunctionName&format=json";
+	if(token.length > 0){
+		var request = 'token='+token+'&functioName='+functioName+'&id='+ide;
+	}
+	return jQuery.ajax({
+		type: 'POST',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
+// check where this Function is used
+function usedin(functioName, ide) {
+	usedin_server(functioName, ide).done(function(used) {
+		if (used.in) {
+			jQuery('#usedin').html(used.in);
+		}
+	});
+}
+function usedin_server(functioName, ide){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.usedin&format=json";
+	if(token.length > 0){
+		var request = 'token='+token+'&functioName='+functioName+'&id='+ide;
+	}
+	return jQuery.ajax({
+		type: 'POST',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
 } 

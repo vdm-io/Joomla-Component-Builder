@@ -31,15 +31,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Interpretation extends Fields
 {	
-	/*
-	 * The line numbers Switch
-	 * 
-	 * @var      boolean
-	 */
-	public $loadLineNr			= false;
-	
 	public $theContributors			= '';
-	public $placeholders			= array();
 	public $uninstallBuilder		= array();
 	public $listColnrBuilder		= array();
 	public $permissionBuilder		= array();
@@ -65,8 +57,6 @@ class Interpretation extends Fields
 		// first we run the perent constructor
 		if (parent::__construct($config))
 		{
-			// set if line numbers should be added to comments
-			$this->loadLineNr = ($this->componentData->debug_linenr) ? true:false;
 			return true;
 		}
 		return false;
@@ -4780,7 +4770,7 @@ class Interpretation extends Fields
 				{
 					$db .= PHP_EOL."\t`id` INT(11) NOT NULL AUTO_INCREMENT,";
 				}
-				$db .= PHP_EOL."\t`asset_id` INT(255) UNSIGNED NOT NULL DEFAULT '0',";
+				$db .= PHP_EOL."\t`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',";
 				ksort($fields);
 				foreach ($fields as $field => $data)
 				{
@@ -4826,22 +4816,22 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['params']))
 				{
-					$db .= PHP_EOL."\t`params` TEXT NOT NULL,";
+					$db .= PHP_EOL."\t`params` text NOT NULL DEFAULT '',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
 				{
-					$db .= PHP_EOL."\t`published` TINYINT(1) NOT NULL DEFAULT '1',";
+					$db .= PHP_EOL."\t`published` TINYINT(3) NOT NULL DEFAULT 1,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created_by']))
 				{
-					$db .= PHP_EOL."\t`created_by` INT(11) NOT NULL DEFAULT '0',";
+					$db .= PHP_EOL."\t`created_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['modified_by']))
 				{
-					$db .= PHP_EOL."\t`modified_by` INT(11) NOT NULL DEFAULT '0',";
+					$db .= PHP_EOL."\t`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created']))
@@ -4856,7 +4846,7 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out']))
 				{
-					$db .= PHP_EOL."\t`checked_out` INT(11) NOT NULL,";
+					$db .= PHP_EOL."\t`checked_out` int(11) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out_time']))
@@ -4866,22 +4856,22 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['version']))
 				{
-					$db .= PHP_EOL."\t`version` INT(11) NOT NULL DEFAULT '1',";
+					$db .= PHP_EOL."\t`version` INT(10) unsigned NOT NULL DEFAULT 1,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['hits']))
 				{
-					$db .= PHP_EOL."\t`hits` INT(11) NOT NULL DEFAULT '0',";
+					$db .= PHP_EOL."\t`hits` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if view has access
 				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 				{
-					$db .= PHP_EOL."\t`access` INT(11) DEFAULT NULL,";
+					$db .= PHP_EOL."\t`access` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['ordering']))
 				{
-					$db .= PHP_EOL."\t`ordering` INT(11) NOT NULL DEFAULT '0',";
+					$db .= PHP_EOL."\t`ordering` INT(11) NOT NULL DEFAULT 0,";
 				}
 				// check if metadata is added to this view
 				if (isset($this->metadataBuilder[$view]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view]))

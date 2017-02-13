@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 81 of this MVC
-	@build			3rd February, 2017
+	@build			13th February, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -196,7 +196,9 @@ class ComponentbuilderViewComponent extends JViewLegacy
 		$isNew = ($this->item->id < 1);
 		$document = JFactory::getDocument();
 		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component.css"); 
+		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component.css");
+		// Add Ajax Token
+		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
 
 		// Add the CSS for Footable
 		$document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');

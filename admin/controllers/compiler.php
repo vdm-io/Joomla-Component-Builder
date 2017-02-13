@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 11 of this MVC
-	@build			2nd February, 2017
+	@version		@update number 17 of this MVC
+	@build			13th February, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -66,15 +66,17 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		if($user->authorise('core.admin', 'com_componentbuilder'))
 		{
 			// get the post values
-			$jinput 	= JFactory::getApplication()->input;
-			$componentId 	= $jinput->post->get('component', 0, 'INT');
-			$version	= $jinput->post->get('version', 0, 'INT');
-			$addBackup	= $jinput->post->get('backup', 0, 'INT');
-			$addGit		= $jinput->post->get('git', 0, 'INT');
+			$jinput 			= JFactory::getApplication()->input;
+			$componentId 		= $jinput->post->get('component', 0, 'INT');
+			$version			= $jinput->post->get('version', 0, 'INT');
+			$addBackup		= $jinput->post->get('backup', 0, 'INT');
+			$addGit			= $jinput->post->get('git', 0, 'INT');
+			$addPlaceholders	= $jinput->post->get('placeholders', 2, 'INT');
+			$debugLinenr		= $jinput->post->get('debuglinenr', 2, 'INT');
 			// include component compiler
 			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
 			$model		= $this->getModel('compiler');
-			if ($model->builder($version,$componentId,$addBackup,$addGit))
+			if ($model->builder($version,$componentId,$addBackup,$addGit,$addPlaceholders,$debugLinenr))
 			{
 				$cache = JFactory::getCache('mod_menu');
 				$cache->clean();
@@ -143,6 +145,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$message .= '<b>URL:</b> <code>'.$url.'</code><br /><br />';
 				$message .= '<small>Hey! you can also download the file right now!</small><br /><a class="btn btn-success" href="'.$url.'" ><span class="icon-download icon-white"></span>Download</a></p>';
 				$message .= '<p><small><b>Remember!</b> This file is in your tmp folder and therefore publicly accessible untill you click [Clear tmp]!</small> </p>';
+				$message .= '<p><small>Compilation took <b>'.$counter['time'].'</b> seconds to complete.</small> </p>';
 				// set redirect
 				$this->setRedirect($redirect_url,$message,'message');
 				$app->setUserState('com_componentbuilder.extension_name', $counter['filename']);

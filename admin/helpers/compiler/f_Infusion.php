@@ -34,6 +34,7 @@ class Infusion extends Interpretation
 
 	public $eximportView = array();
 	public $importCustomScripts = array();
+	public $langFiles = array();
 	public $removeSiteFolder = false;
 
 	/**
@@ -1019,18 +1020,6 @@ class Infusion extends Interpretation
 				// clear all site folder since none is needed
 				$this->removeSiteFolder = true;
 			}
-			
-			// ###LANG_ADMIN###
-			$this->fileContentStatic['###LANG_ADMIN###'] = $this->setLangAdmin();
-
-			// ###LANG_ADMIN_SYS###
-			$this->fileContentStatic['###LANG_ADMIN_SYS###'] = $this->setLangAdminSys();
-			
-			// ###LANG_SITE###
-			$this->fileContentStatic['###LANG_SITE###'] = $this->setLangSite();
-			
-			// ###LANG_SITE_SYS###
-			$this->fileContentStatic['###LANG_SITE_SYS###'] = $this->setLangSiteSys();
 
 			// ###PREINSTALLSCRIPT###
 			$this->fileContentStatic['###PREINSTALLSCRIPT###'] = $this->getCustomScriptBuilder('php_preflight', 'install', PHP_EOL, null, true);
@@ -1071,6 +1060,42 @@ class Infusion extends Interpretation
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Build the lang values and insert to fiel
+	 * 
+	 *
+	 * @return  boolean  on success
+	 * 
+	 */
+	
+	public function setLangFileData()
+	{
+		// First we build the strings
+		$lang = array();
+		// ###LANG_ADMIN###
+		$lang['###LANG_ADMIN###'] = $this->setLangAdmin();
+		// ###LANG_ADMIN_SYS###
+		$lang['###LANG_ADMIN_SYS###'] = $this->setLangAdminSys();
+		// ###LANG_SITE###
+		$lang['###LANG_SITE###'] = $this->setLangSite();
+		// ###LANG_SITE_SYS###
+		$lang['###LANG_SITE_SYS###'] = $this->setLangSiteSys();
+		// now we insert the values into the files
+		if (ComponentbuilderHelper::checkArray($this->langFiles))
+		{
+			foreach ($this->langFiles as $file)
+			{
+				$string = JFile::read($file['path']);
+				// load the data
+				$answer = $this->setPlaceholders($string, $lang, 3);
+				// add to zip array
+				$this->writeFile($file['path'],$answer);
+				// set the line counter
+				$this->lineCount = $this->lineCount + substr_count($answer, PHP_EOL);
+			}
+		}
 	}
 
 }

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.2
-	@build			11th February, 2017
+	@version		2.3.4
+	@build			13th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -1264,10 +1264,6 @@ class ComponentbuilderModelAjax extends JModelList
 		return '';
 	}
 
-	protected function splitAtUpperCase($s) {
-       		return preg_split('/(?=[A-Z])/', $s, -1, PREG_SPLIT_NO_EMPTY);
-	}
-
 	// Used in dynamic_get
 	public function getViewTableColumns($id,$as,$type)
 	{
@@ -1436,6 +1432,37 @@ class ComponentbuilderModelAjax extends JModelList
 			return implode("\n",$tableColumns);
 		}
 		return false;
+	}
+
+	// Used in custom_code
+	public function checkFunctionName($name, $id)
+	{
+		$nameArray = (array) $this->splitAtUpperCase($name);
+		$name = ComponentbuilderHelper::safeString(implode(' ', $nameArray), 'cA');
+		if ($found = ComponentbuilderHelper::getVar('custom_code', $name, 'function_name', 'id'))
+		{
+			if ((int) $id !== (int) $found)
+			{
+				return array (
+					'message' => JText::_('COM_COMPONENTBUILDER_SORRY_THIS_FUNCTION_NAME_IS_ALREADY_IN_USE'),
+					'status' => 'danger');
+			}
+		}
+		return array (
+			'name' => $name,
+			'message' => JText::_('COM_COMPONENTBUILDER_GREAT_THIS_FUNCTION_NAME_WILL_WORK'),
+			'status' => 'success');
+	}
+
+	protected function splitAtUpperCase($string)
+	{
+		return preg_split('/(?=[A-Z])/', $string, -1, PREG_SPLIT_NO_EMPTY);
+	}
+
+	public function usedin($name, $id)
+	{
+		// search where this function is being used
+		return array('in' => 'Soon we will show where this function is being used');
 	}
 
 	// Used in field
