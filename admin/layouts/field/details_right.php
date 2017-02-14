@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.4
-	@build			13th February, 2017
+	@build			14th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_right.php

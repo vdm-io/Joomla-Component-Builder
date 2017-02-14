@@ -53,6 +53,13 @@ class Get
 	public $compilerPath;
 	
 	/**
+	 * Switch to add custom code placeholders
+	 * 
+	 * @var     bool
+	 */
+	public $addPlaceholders = false;
+	
+	/**
 	 * The Component data
 	 * 
 	 * @var      object
@@ -3107,7 +3114,9 @@ class Get
 	{
 		// we must first store the current woking directory
 		$joomla = getcwd();
-		$counter = array(1 => 0, 2 => 0);		
+		$counter = array(1 => 0, 2 => 0);
+		// file types to get
+		$fileTypes = array('\.php', '\.js');		
 		// set some local placeholders
 		$placeholders = array();
 		$placeholders[ComponentbuilderHelper::safeString($this->componentCodeName, 'F').'Helper::']	= '[[[Component]]]Helper::';
@@ -3117,20 +3126,23 @@ class Get
 		{
 			// we are changing the working directory to the componet path
 			chdir($path);
-			// get a list of files in the current directory tree (only PHP for now)
-			$files = JFolder::files('.', '\.php', true, true);
-			foreach ($files as $file)
+			foreach ($fileTypes as $type)
 			{
-				$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $placeholders, $today);
-				// insert new code
-				if (ComponentbuilderHelper::checkArray($this->newCustomCode))
+				// get a list of files in the current directory tree (only PHP for now)
+				$files = JFolder::files('.', $type, true, true);
+				foreach ($files as $file)
 				{
-					$this->setNewCustomCode(100);
-				}
-				// update existing custom code
-				if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
-				{
-					$this->setExistingCustomCode(30);
+					$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $placeholders, $today);
+					// insert new code
+					if (ComponentbuilderHelper::checkArray($this->newCustomCode))
+					{
+						$this->setNewCustomCode(100);
+					}
+					// update existing custom code
+					if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
+					{
+						$this->setExistingCustomCode(30);
+					}
 				}
 			}
 		}
