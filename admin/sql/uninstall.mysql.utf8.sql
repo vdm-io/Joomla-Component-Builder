@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `#__componentbuilder_component`;
+DROP TABLE IF EXISTS `#__componentbuilder_joomla_component`;
 DROP TABLE IF EXISTS `#__componentbuilder_admin_view`;
 DROP TABLE IF EXISTS `#__componentbuilder_custom_admin_view`;
 DROP TABLE IF EXISTS `#__componentbuilder_site_view`;

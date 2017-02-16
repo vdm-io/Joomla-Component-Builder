@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.4
-	@build			14th February, 2017
+	@version		2.3.5
+	@build			16th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		linked_components_fullwidth.php
@@ -31,37 +31,37 @@ defined('_JEXEC') or die('Restricted access');
 $items	= $displayData->vyplinked_components;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
-$edit	= "index.php?option=com_componentbuilder&view=components&task=component.edit";
+$edit	= "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";
 
 ?>
 <div class="form-vertical">
 <?php if (ComponentbuilderHelper::checkArray($items)): ?>
-<table class="footable table data components" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
+<table class="footable table data joomla_components" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
 <thead>
 	<tr>
 		<th data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_COMPONENT_SYSTEM_NAME_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_COMPONENT_NAME_CODE_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_CODE_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_COMPONENT_COMPONENT_VERSION_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_COMPONENT_SHORT_DESCRIPTION_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SHORT_DESCRIPTION_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_COMPONENT_COMPANYNAME_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_COMPONENT_AUTHOR_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_LABEL'); ?>
 		</th>
 		<th width="10" data-breakpoints="xs sm md">
-			<?php echo JText::_('COM_COMPONENTBUILDER_COMPONENT_STATUS'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_STATUS'); ?>
 		</th>
 		<th width="5" data-type="number" data-breakpoints="xs sm md">
-			<?php echo JText::_('COM_COMPONENTBUILDER_COMPONENT_ID'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ID'); ?>
 		</th>
 	</tr>
 </thead>
@@ -70,14 +70,14 @@ $edit	= "index.php?option=com_componentbuilder&view=components&task=component.ed
 	<?php
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $user->id || $item->checked_out == 0;
 		$userChkOut = JFactory::getUser($item->checked_out);
-		$canDo = ComponentbuilderHelper::getActions('component',$item,'components');
+		$canDo = ComponentbuilderHelper::getActions('joomla_component',$item,'joomla_components');
 	?>
 	<tr>
 		<td class="nowrap">
 			<?php if ($canDo->get('core.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=site_view&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'components.', $canCheckin); ?>
+						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_components.', $canCheckin); ?>
 					<?php endif; ?>
 			<?php else: ?>
 				<div class="name"><?php echo $displayData->escape($item->system_name); ?></div>

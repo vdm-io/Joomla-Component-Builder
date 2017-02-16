@@ -457,17 +457,17 @@ class Get
 			// set the component ID
 			$this->componentID		= (int) $config['componentId'];
 			// set this components code name
-			if ($name_code = ComponentbuilderHelper::getVar('component', $this->componentID, 'id', 'name_code'))
+			if ($name_code = ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'name_code'))
 			{
 				// set lang prefix
 				$this->langPrefix		.= ComponentbuilderHelper::safeString($name_code,'U');
 				// set component code name
 				$this->componentCodeName	= ComponentbuilderHelper::safeString($name_code);
 				// set if placeholders should be added to customcode
-				$global = ((int) ComponentbuilderHelper::getVar('component', $this->componentID, 'id', 'add_placeholders') == 1) ? true:false;
+				$global = ((int) ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'add_placeholders') == 1) ? true:false;
 				$this->addPlaceholders		= ((int) $config['addPlaceholders'] == 0) ? false : (((int) $config['addPlaceholders'] == 1) ? true : $global);
 				// set if line numbers should be added to comments
-				$global = ((int) ComponentbuilderHelper::getVar('component', $this->componentID, 'id', 'debug_linenr') == 1) ? true:false;
+				$global = ((int) ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'debug_linenr') == 1) ? true:false;
 				$this->loadLineNr		= ((int) $config['debugLinenr'] == 0) ? false : (((int) $config['debugLinenr'] == 1) ? true : $global);
 				// set the current user
 				$this->user			= JFactory::getUser();
@@ -521,7 +521,7 @@ class Get
 		$query = $this->db->getQuery(true);
 
 		$query->select('a.*');
-		$query->from('#__componentbuilder_component AS a');
+		$query->from('#__componentbuilder_joomla_component AS a');
 		$query->where($this->db->quoteName('a.id') . ' = '. (int) $this->componentID);
 
 		// Reset the query using our newly populated query object.
@@ -1229,8 +1229,7 @@ class Get
 						$this->customScriptBuilder[$scripter_target][$name_single] = '';
 					}
 					$this->customScriptBuilder[$scripter_target][$name_single] .= $view->$scripter;
-					if (strpos($view->$scripter,"token") !== false || strpos($view->$scripter,"task=ajax") !== false ||						
-						strpos($this->$scripter,"[CUSTOM"."CODE=") !== false) // <-- since it could have ajax in it, and we can know for sure at this point
+					if (strpos($view->$scripter,"token") !== false || strpos($view->$scripter,"task=ajax") !== false)
 					{
 						if (!$this->customScriptBuilder['token'][$name_single])
 						{
@@ -1643,8 +1642,7 @@ class Get
 					}
 					$this->customScriptBuilder['view_footer'][$name_single] .= PHP_EOL.$this->_fieldData[$id]->javascript_view_footer;
 					if (	strpos($this->_fieldData[$id]->javascript_view_footer,"token") !== false || 
-						strpos($this->_fieldData[$id]->javascript_view_footer,"task=ajax") !== false || 
-						strpos($this->_fieldData[$id]->javascript_view_footer,"[CUSTOM"."CODE=") !== false) // <-- since it could have ajax in it, and we can know for sure at this point
+						strpos($this->_fieldData[$id]->javascript_view_footer,"task=ajax") !== false)
 					{
 						if(!isset($this->customScriptBuilder['token']))
 						{
@@ -1702,8 +1700,7 @@ class Get
 					}
 					$this->customScriptBuilder['views_footer'][$name_list] .= $this->_fieldData[$id]->javascript_views_footer;
 					if (	strpos($this->_fieldData[$id]->javascript_views_footer,"token") !== false ||
-						strpos($this->_fieldData[$id]->javascript_views_footer,"task=ajax") !== false ||						
-						strpos($this->_fieldData[$id]->javascript_views_footer,"[CUSTOM"."CODE=") !== false) // <-- since it could have ajax in it, and we can know for sure at this point
+						strpos($this->_fieldData[$id]->javascript_views_footer,"task=ajax") !== false)
 					{
 						if(!isset($this->customScriptBuilder['token']))
 						{
@@ -3128,7 +3125,7 @@ class Get
 			chdir($path);
 			foreach ($fileTypes as $type)
 			{
-				// get a list of files in the current directory tree (only PHP for now)
+				// get a list of files in the current directory tree (only PHP and JS for now)
 				$files = JFolder::files('.', $type, true, true);
 				foreach ($files as $file)
 				{
@@ -3253,7 +3250,7 @@ class Get
 								$this->newCustomCode[$pointer[$targetKey]][]	= $this->db->quote(0);				// 'hashendtarget'
 							}
 						}
-						// the record already exist so we must use module to update
+						// the record already exist so we must update instead
 						elseif ($i === 2)
 						{
 							// end the bucket info for this code block
@@ -3311,9 +3308,11 @@ class Get
 					// check if the starting place holder was found
 					if($commentType > 0)
 					{						
-						// if we have all on one line we have a problem
+						// if we have all on one line we have a problem (don't load it TODO)
 						if (strpos($lineContent, $endReplace) !== false)
 						{
+							// reset found comment type
+							$commentType = 0;
 							continue;
 						}
 						// do a quick check to insure we have an id
@@ -3327,6 +3326,8 @@ class Get
 							// make sure we update it only once even if found again.
 							if (isset($this->codeAreadyDone[$id]))
 							{
+								// reset found comment type
+								$commentType = 0;
 								continue;
 							}
 							// store the id to avoid duplication

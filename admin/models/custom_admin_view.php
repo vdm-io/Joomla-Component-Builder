@@ -190,8 +190,8 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		// Select some fields
 		$query->select('a.*');
 
-		// From the componentbuilder_component table
-		$query->from($db->quoteName('#__componentbuilder_component', 'a'));
+		// From the componentbuilder_joomla_component table
+		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
 
 		// Join over the asset groups.
 		$query->select('ag.title AS access_level');

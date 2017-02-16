@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.4
-	@build			14th February, 2017
+	@version		2.3.5
+	@build			16th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -43,12 +43,17 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
                 // view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.component.add', 'png.components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.snippet.add', 'png.snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.help_document.add', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.snippet.add', 'png.snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.help_document.add', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
 			'compiler.submenu' => 'compiler.submenu',
 			'compiler.dashboard_list' => 'compiler.dashboard_list',
+			'joomla_components.access' => 'joomla_component.access',
+			'joomla_component.access' => 'joomla_component.access',
+			'joomla_components.submenu' => 'joomla_component.submenu',
+			'joomla_components.dashboard_list' => 'joomla_component.dashboard_list',
+			'joomla_component.dashboard_add' => 'joomla_component.dashboard_add',
 			'admin_views.access' => 'admin_view.access',
 			'admin_view.access' => 'admin_view.access',
 			'admin_views.submenu' => 'admin_view.submenu',

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 55 of this MVC
-	@build			13th February, 2017
+	@build			16th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_codes.php
@@ -240,9 +240,9 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_custom_code', 'a'));
 
-		// From the componentbuilder_component table.
+		// From the componentbuilder_joomla_component table.
 		$query->select($db->quoteName('g.system_name','component_system_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_component', 'g') . ' ON (' . $db->quoteName('a.component') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_component', 'g') . ' ON (' . $db->quoteName('a.component') . ' = ' . $db->quoteName('g.id') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

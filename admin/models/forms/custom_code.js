@@ -10,7 +10,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 55 of this MVC
-	@build			13th February, 2017
+	@build			16th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_code.js

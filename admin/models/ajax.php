@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.4
-	@build			14th February, 2017
+	@version		2.3.5
+	@build			16th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -43,7 +43,7 @@ class ComponentbuilderModelAjax extends JModelList
 		
 	}
 
-	// Used in component
+	// Used in joomla_component
 	/**
 	* 	Check and if a vdm notice is new (per/user)
 	**/

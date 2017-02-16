@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.4
-	@build			14th February, 2017
+	@version		2.3.5
+	@build			16th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		component.php
@@ -78,7 +78,7 @@ class JFormFieldComponent extends JFormFieldList
 				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
 			}
 			$user = JFactory::getUser();
-			// only add if user allowed to create component
+			// only add if user allowed to create joomla_component
 			if ($user->authorise('core.create', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build Create button
@@ -88,11 +88,11 @@ class JFormFieldComponent extends JFormFieldList
 				$buttonNamee = preg_replace("/[^A-Za-z ]/", '', $buttonNamee);
 				$buttonNamee = ucfirst(strtolower($buttonNamee));
 				$button[] = '<a id="'.$buttonName.'Create" class="btn btn-small btn-success hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', $buttonNamee).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
-					href="index.php?option=com_componentbuilder&amp;view=component&amp;layout=edit'.$ref.'" >
+					href="index.php?option=com_componentbuilder&amp;view=joomla_component&amp;layout=edit'.$ref.'" >
 					<span class="icon-new icon-white"></span></a>';
 			}
-			// only add if user allowed to edit component
-			if (($buttonName === 'component' || $buttonName === 'components')  && $user->authorise('core.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			// only add if user allowed to edit joomla_component
+			if (($buttonName === 'joomla_component' || $buttonName === 'joomla_components')  && $user->authorise('core.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build edit button
 				$buttonNamee = trim($buttonName);
@@ -119,7 +119,7 @@ class JFormFieldComponent extends JFormFieldList
 							jQuery('#".$buttonName."Create').hide();
 							// show edit button
 							jQuery('#".$buttonName."Edit').show();
-							var url = 'index.php?option=com_componentbuilder&view=components&task=component.edit&id='+value+'".$refJ."';
+							var url = 'index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit&id='+value+'".$refJ."';
 							jQuery('#".$buttonName."Edit').attr('href', url);
 						} else {
 							// show the create button
@@ -129,7 +129,7 @@ class JFormFieldComponent extends JFormFieldList
 						}
 					}";
 			}
-			// check if button was created for component field.
+			// check if button was created for joomla_component field.
 			if (is_array($button) && count($button) > 0)
 			{
 				// Load the needed script.
@@ -152,7 +152,7 @@ class JFormFieldComponent extends JFormFieldList
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','component_system_name')));
-		$query->from($db->quoteName('#__componentbuilder_component', 'a'));
+		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.system_name ASC');
 		$db->setQuery((string)$query);

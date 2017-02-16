@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.4
-	@build			14th February, 2017
+	@version		2.3.5
+	@build			16th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		controller.php
@@ -88,7 +88,7 @@ class ComponentbuilderController extends JControllerLegacy
                 if (ComponentbuilderHelper::checkString($view))
                 {
                         $views = array(
-				'component' => 'components',
+				'joomla_component' => 'joomla_components',
 				'admin_view' => 'admin_views',
 				'custom_admin_view' => 'custom_admin_views',
 				'site_view' => 'site_views',
