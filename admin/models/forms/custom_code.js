@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 55 of this MVC
-	@build			16th February, 2017
+	@version		@update number 79 of this MVC
+	@build			17th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_code.js
@@ -228,9 +228,18 @@ jQuery(document).ready(function()
 {
 	var target = jQuery("#jform_target input[type='radio']:checked").val();
 	if (target == 2) {
+		jQuery('#usedin').show();
 		var functioName = jQuery('#jform_function_name').val();
 		// check if this function name is taken
 		checkFunctionName(functioName);
+	}
+	var type = jQuery("#jform_comment_type input[type='radio']:checked").val();
+	if (type == 2) {
+		jQuery('#html-comment-info').show();
+		jQuery('#phpjs-comment-info').hide();
+	} else {
+		jQuery('#html-comment-info').hide();
+		jQuery('#phpjs-comment-info').show();
 	}
 });
 function setCustomCodePlaceholder() {
@@ -303,19 +312,45 @@ function checkFunctionName_server(functioName, ide){
 }
 // check where this Function is used
 function usedin(functioName, ide) {
-	usedin_server(functioName, ide).done(function(used) {
-		if (used.in) {
-			jQuery('#usedin').html(used.in);
+	var found = false;
+	jQuery('#before-usedin').hide();
+	jQuery('#note-usedin-not').hide();
+	jQuery('#note-usedin-found').hide();
+	jQuery('#loading-usedin').show();
+	var targets = ['a','b','c','d','e','f','g','h'];
+	var run = 0;
+	var usedinChecker = setInterval(function(){ 
+		var target = targets[run];
+		usedin_server(functioName, ide, target).done(function(used) {
+			if (used.in) {
+				jQuery('#usedin-'+used.id).show();
+				jQuery('#area-'+used.id).html(used.in);
+				found = true;
+			} else {
+				jQuery('#usedin-'+target).hide();
+			}
+			if (target === 'h') {
+				jQuery('#loading-usedin').hide();
+				if (found) {
+					jQuery('#note-usedin-found').show();
+				} else {
+					jQuery('#note-usedin-not').show();
+				}
+			}
+		});
+		if (run == 7) {
+			clearInterval(usedinChecker);
 		}
-	});
+		run++;
+	}, 800);
 }
-function usedin_server(functioName, ide){
+function usedin_server(functioName, ide, target){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.usedin&format=json";
 	if(token.length > 0){
-		var request = 'token='+token+'&functioName='+functioName+'&id='+ide;
+		var request = 'token='+token+'&functioName='+functioName+'&id='+ide+'&target='+target;
 	}
 	return jQuery.ajax({
-		type: 'POST',
+		type: 'GET',
 		url: getUrl,
 		dataType: 'jsonp',
 		data: request,

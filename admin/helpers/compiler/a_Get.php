@@ -692,7 +692,7 @@ class Get
 			// load the view and field data
 			foreach ($component->site_views as $key => &$view)
 			{
-				// TODO this is a temp fix until front view is added
+				// has become a lacacy issue, can't remove this
 				$view['view'] = $view['siteview'];
 				$view['settings'] = $this->getCustomViewData($view['view']);
 			}
@@ -722,7 +722,7 @@ class Get
 			// load the view and field data
 			foreach ($component->custom_admin_views as $key => &$view)
 			{
-				// TODO this is a temp fix until front view is added
+				// has become a lacacy issue, can't remove this
 				$view['view'] = $view['customadminview'];
 				$view['settings'] = $this->getCustomViewData($view['view'], 'custom_admin_view');
 			}
@@ -1491,6 +1491,18 @@ class Get
 						$this->getModule[$this->target][$view->code] = true;
 					}
 				}
+				// (TODO) we may want to automate this .... lets see if someone asks
+//				if (strpos($view->$scripter,"token") !== false || strpos($view->$scripter,"task=ajax") !== false)
+//				{
+//					if(!isset($this->customScriptBuilder['token']))
+//					{
+//						$this->customScriptBuilder['token'] = array();
+//					}
+//					if (!isset($this->customScriptBuilder['token'][$this->target.$view->code]) || !$this->customScriptBuilder['token'][$this->target.$view->code])
+//					{
+//						$this->customScriptBuilder['token'][$this->target.$view->code] = true;
+//					}
+//				}
 			}
 		}
 		// add_Ajax for this view
@@ -1584,7 +1596,7 @@ class Get
 				$field->type = $field->fieldtype;
 
 				// load the values form params
-				$field->xml = json_decode($field->xml);
+				$field->xml = $this->setDynamicValues(json_decode($field->xml));
 
 				// load the type values form type params
 				$properties = json_decode($field->type_properties,true);

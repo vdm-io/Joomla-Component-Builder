@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.5
-	@build			16th February, 2017
+	@build			17th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		customfolderlist.php
@@ -152,7 +152,7 @@ class JFormFieldCustomfolderlist extends JFormFieldList
 		// get custom folder folder
 		$localfolder = JComponentHelper::getParams('com_componentbuilder')->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
 		// set the default
-		$options[] = JHtml::_('select.option', '', JText::sprintf('Please add folders to (%s)',$localfolder));
+		$options[] = JHtml::_('select.option', '', JText::sprintf('COM_COMPONENTBUILDER_PLEASE_ADD_FOLDERS_TO_S',$localfolder));
 		// import all needed classes
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');

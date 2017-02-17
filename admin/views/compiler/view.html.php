@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 18 of this MVC
+	@version		@update number 25 of this MVC
 	@build			16th February, 2017
 	@created		1st February, 2017
 	@package		Component Builder
@@ -199,6 +199,29 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		}   
                 // add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/compiler.css'); 
+		// Set the Custom JS script to view
+		$this->document->addScriptDeclaration("
+			function getComponentDetails_server(id){
+				var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.getComponentDetails&format=json\");
+				if(token.length > 0 && id > 0){
+					var request = 'token='+token+'&id='+id;
+				}
+				return jQuery.ajax({
+					type: 'GET',
+					url: getUrl,
+					dataType: 'jsonp',
+					data: request,
+					jsonp: 'callback'
+				});
+			}
+			function getComponentDetails(id) {
+				getComponentDetails_server(id).done(function(result) {
+					if(result.html) {
+						jQuery('#component-details').html(result.html);
+					}
+				});
+			}
+		");
         }
 
 	/**

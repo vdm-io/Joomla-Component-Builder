@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.5
-	@build			16th February, 2017
+	@build			17th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -44,6 +44,7 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in joomla_component
+			
 	/**
 	* 	Check and if a vdm notice is new (per/user)
 	**/
@@ -90,6 +91,61 @@ class ComponentbuilderModelAjax extends JModelList
 			return true;
 		}
 		return false;
+	}			
+	/**
+	* 	get the component details (html)
+	**/
+	public function getComponentDetails($id)
+	{
+		// Need to find the asset id by the name of the component.
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->select($db->quoteName(array(
+				'companyname','component_version','copyright','debug_linenr',
+				'description','email','image','license','name',
+				'short_description','website','author','add_placeholders',
+				'system_name','mvc_versiondate')))
+			->from($db->quoteName('#__componentbuilder_joomla_component'))
+			->where($db->quoteName('id') . ' = ' . (int) $id);
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->loadRowList())
+		{
+			return array( 'html' => $this->componentDetailsDisplay($db->loadObject()));
+		}
+		return false;
+	}
+
+	/**
+	* 	set the component display
+	**/
+	protected function componentDetailsDisplay($object)
+	{
+		// set some vars
+		$image = (ComponentbuilderHelper::checkString($object->image)) ? '<img alt="Joomla Component Image" src="'. JURI::root() . $object->image . '" style="float: right;">': '';
+		$desc = (ComponentbuilderHelper::checkString($object->description)) ? $object->description : $object->short_description;
+		$placeholder = ($object->add_placeholders == 1) ? '<span class="btn btn-small btn-success"> ' . JText::_('COM_COMPONENTBUILDER_YES') . ' </span>' : '<span class="btn btn-small btn-danger"> ' .JText::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
+		$debug = ($object->debug_linenr == 1) ? '<span class="btn btn-small btn-success"> ' .JText::_('COM_COMPONENTBUILDER_YES') . '</span>'  : ' <span class="btn btn-small btn-danger"> ' .JText::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
+		$html = array();
+		$html[] = '<h3>' . $object->name . ' (v' . $object->component_version . ')</h3>';
+		$html[] = '<p>' . $desc . $image . '</p>';
+		$html[] = '<ul>';
+		$html[] = '<li>' . JText::_('COM_COMPONENTBUILDER_COMPANY') . ': <b>' . $object->companyname . '</b></li>';
+		$html[] = '<li>' . JText::_('COM_COMPONENTBUILDER_AUTHOR') . ': <b>' . $object->author . '</b></li>';
+		$html[] = '<li>' . JText::_('COM_COMPONENTBUILDER_EMAIL') . ': <b>' . $object->email . '</b></li>';
+		$html[] = '<li>' . JText::_('COM_COMPONENTBUILDER_WEBSITE') . ': <b>' . $object->website . '</b></li>';
+		$html[] = '</ul>';
+		$html[] = '<h4>' . JText::_('COM_COMPONENTBUILDER_COMPONENT_GLOBAL_SETTINGS') . '</h4>';
+		$html[] = '<p>';
+		$html[] = JText::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS') . '<br />' . $placeholder . '<br />';
+		$html[] = JText::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS') . '<br />' . $debug ;
+		$html[] = '</p>';
+		$html[] = '<h4>' . JText::_('COM_COMPONENTBUILDER_LICENSE') . '</h4>';
+		$html[] = '<p>' . $object->license . '</p>';
+		$html[] = '<h4>' . JText::_('COM_COMPONENTBUILDER_COPYRIGHT') . '</h4>';
+		$html[] = '<p>' . $object->copyright . '</p>';
+		// now return the diplay
+		return implode("\n", $html);
 	}
 
 	// Used in admin_view
@@ -1459,10 +1515,155 @@ class ComponentbuilderModelAjax extends JModelList
 		return preg_split('/(?=[A-Z])/', $string, -1, PREG_SPLIT_NO_EMPTY);
 	}
 
-	public function usedin($name, $id)
+	public function usedin($functioName, $id, $targeting)
 	{
-		// search where this function is being used
-		return array('in' => 'Soon we will show where this function is being used');
+		// get the table being targeted
+		if ($target = $this->getTableQueryOptions($targeting))
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select($db->quoteName($target['select']))
+				->from($db->quoteName('#__componentbuilder_' . $target['table']));
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->loadRowList())
+			{
+				$bucket = array();
+				$hugeDataSet = $db->loadAssocList();
+				foreach ($hugeDataSet as $data)
+				{
+					foreach ($data as $key => $value)
+					{
+						if ('id' !== $key && $target['name'] !== $key)
+						{
+							if (!isset($target['not_base64'][$key]))
+							{
+								$value = base64_decode($value);
+							}
+							// check if place holder set
+							if (strpos($value, '[CUSTOMC' . 'ODE=' . (string) $functioName . ']') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . ']') !== false ||
+							strpos($value, '[CUSTOMC' . 'ODE=' . (string) $functioName . '+') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . '+') !== false)
+							{
+								// found it so add to bucket
+								if (!isset($bucket[$data['id']]))
+								{
+									$bucket[$data['id']] = array();
+									$bucket[$data['id']]['name'] = $data[$target['name']];
+									$bucket[$data['id']]['fields'] = array();
+								}
+								$bucket[$data['id']]['fields'][] = $key;
+							}
+						}
+					}
+				}
+				// check if any values found
+				if (ComponentbuilderHelper::checkArray($bucket))
+				{
+					$usedin = array();
+					foreach ($bucket as $editId => $values)
+					{
+						$usedin[] = '<a href="index.php?option=com_componentbuilder&ref=custom_code&refid=' . (int) $id . '&view=' . $target['view'] . '&task=' . $target['table'] . '.edit&id=' . (int) $editId . '">' . $values['name'] . '</a> (' . implode(', ', $values['fields']) . ')';
+					}
+					$html = '<ul><li>' . implode('</li><li>', $usedin) . '</li></ul>';
+					return array('in' => $html, 'id' => $targeting);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* Get the table query to search for function used in
+	*
+	*  @param   string    $targe  The table targeted
+	* 
+	*  @return  array      The query options
+	* 
+	*/
+	protected function getTableQueryOptions($target)
+	{
+		$query = array();
+		// #__componentbuilder_joomla_component as a
+		$query['a'] = array();
+		$query['a']['table'] = 'joomla_component';
+		$query['a']['view'] = 'joomla_components';
+		$query['a']['select'] = array('id', 'system_name', 'php_preflight_install','php_postflight_install',
+			'php_preflight_update','php_postflight_update','php_method_uninstall',
+			'php_helper_admin','php_admin_event','php_helper_both','php_helper_site',
+			'php_site_event','php_dashboard_methods','dashboard_tab');
+		$query['a']['not_base64'] = array('dashboard_tab' => 'json');
+		$query['a']['name'] = 'system_name';
+
+		// #__componentbuilder_admin_view as b
+		$query['b'] = array();
+		$query['b']['table'] = 'admin_view';
+		$query['b']['view'] = 'admin_views';
+		$query['b']['select'] = array('id', 'system_name', 'javascript_view_file','javascript_view_footer','javascript_views_file',
+			'javascript_views_footer','php_getitem','php_save','php_postsavehook','php_getitems',
+			'php_getitems_after_all','php_getlistquery','php_allowedit','php_before_delete',
+			'php_after_delete','php_before_publish','php_after_publish','php_batchcopy',
+			'php_batchmove','php_document','php_model','php_controller','php_import_display',
+			'php_import','php_import_setdata','php_import_save','html_import_view','php_ajaxmethod');
+		$query['b']['not_base64'] = array();
+		$query['b']['name'] = 'system_name';
+
+		// #__componentbuilder_custom_admin_view as c
+		$query['c'] = array();
+		$query['c']['table'] = 'custom_admin_view';
+		$query['c']['view'] = 'custom_admin_views';
+		$query['c']['select'] = array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
+			'js_document','css_document','css','php_model','php_controller');
+		$query['c']['not_base64'] = array();
+		$query['c']['name'] = 'system_name';
+
+		// #__componentbuilder_site_view as d
+		$query['d'] = array();
+		$query['d']['table'] = 'site_view';
+		$query['d']['view'] = 'site_views';
+		$query['d']['select'] = array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
+			'js_document','css_document','css','php_ajaxmethod','php_model','php_controller');
+		$query['d']['not_base64'] = array();
+		$query['d']['name'] = 'system_name';
+
+		// #__componentbuilder_field as e
+		$query['e'] = array();
+		$query['e']['table'] = 'field';
+		$query['e']['view'] = 'fields';
+		$query['e']['select'] = array('id', 'name', 'xml','javascript_view_footer','javascript_views_footer');
+		$query['e']['not_base64'] = array('xml' => 'json');
+		$query['e']['name'] = 'name';
+
+		// #__componentbuilder_dynamic_get as f
+		$query['f'] = array();
+		$query['f']['table'] = 'dynamic_get';
+		$query['f']['view'] = 'dynamic_gets';
+		$query['f']['select'] = array('id', 'name', 'php_before_getitem','php_after_getitem','php_before_getitems','php_after_getitems',
+			'php_getlistquery');
+		$query['f']['not_base64'] = array();
+		$query['f']['name'] = 'name';
+
+		// #__componentbuilder_template as g
+		$query['g'] = array();
+		$query['g']['table'] = 'template';
+		$query['g']['view'] = 'templates';
+		$query['g']['select'] = array('id', 'name', 'php_view','template');
+		$query['g']['not_base64'] = array();
+		$query['g']['name'] = 'name';
+
+		// #__componentbuilder_layout as h
+		$query['h'] = array();
+		$query['h']['table'] = 'layout';
+		$query['h']['view'] = 'layouts';
+		$query['h']['select'] = array('id', 'name', 'php_view','layout');
+		$query['h']['not_base64'] = array();
+		$query['h']['name'] = 'name';
+
+		// return the query string to search
+		if (isset($query[$target]))
+		{
+			return $query[$target];
+		}
+		return false;
 	}
 
 	// Used in field

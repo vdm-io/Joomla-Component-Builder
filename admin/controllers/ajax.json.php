@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.5
-	@build			16th February, 2017
+	@build			17th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -44,6 +44,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		// load the tasks 
 		$this->registerTask('isNew', 'ajax');
 		$this->registerTask('isRead', 'ajax');
+		$this->registerTask('getComponentDetails', 'ajax');
 		$this->registerTask('tableColumns', 'ajax');
 		$this->registerTask('fieldSelectOptions', 'ajax');
 		$this->registerTask('getImportScripts', 'ajax');
@@ -117,6 +118,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($noticeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->isRead($noticeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getComponentDetails':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						if($idValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getComponentDetails($idValue);
 						}
 						else
 						{
@@ -577,9 +616,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$functioNameValue = $jinput->get('functioName', NULL, 'WORD');
 						$idValue = $jinput->get('id', NULL, 'INT');
-						if($functioNameValue && $idValue && $user->id != 0)
+						$targetValue = $jinput->get('target', NULL, 'WORD');
+						if($functioNameValue && $idValue && $targetValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->usedin($functioNameValue, $idValue);
+							$result = $this->getModel('ajax')->usedin($functioNameValue, $idValue, $targetValue);
 						}
 						else
 						{

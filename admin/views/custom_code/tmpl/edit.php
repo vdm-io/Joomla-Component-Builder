@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 55 of this MVC
-	@build			16th February, 2017
+	@version		@update number 79 of this MVC
+	@build			17th February, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		edit.php
@@ -229,9 +229,12 @@ jQuery('#adminForm').on('change', '#jform_function_name',function (e)
 	e.preventDefault();
 	var target = jQuery("#jform_target input[type='radio']:checked").val();
 	if (target == 2) {
+		jQuery('#usedin').show();
 		var functioName = jQuery('#jform_function_name').val();
 		// check if this function name is taken
 		checkFunctionName(functioName);
+	} else {
+		jQuery('#usedin').hide();
 	}
 });
 jQuery('#adminForm').on('change', '#jform_target',function (e)
@@ -239,9 +242,36 @@ jQuery('#adminForm').on('change', '#jform_target',function (e)
 	e.preventDefault();
 	var target = jQuery("#jform_target input[type='radio']:checked").val();
 	if (target == 2) {
+		jQuery('#usedin').show();
 		var functioName = jQuery('#jform_function_name').val();
 		// check if this function name is taken
 		checkFunctionName(functioName);
+	} else {
+		jQuery('#usedin').hide();
 	}
+});
+jQuery('#adminForm').on('change', '#jform_comment_type',function (e)
+{
+	e.preventDefault();
+	var type = jQuery("#jform_comment_type input[type='radio']:checked").val();
+	if (type == 2) {
+		jQuery('#html-comment-info').show();
+		jQuery('#phpjs-comment-info').hide();
+	} else {
+		jQuery('#html-comment-info').hide();
+		jQuery('#phpjs-comment-info').show();
+	}
+});
+// nice little dot trick :)
+jQuery(document).ready( function($) {
+  var x=0;
+  setInterval(function() {
+	var dots = "";
+	x++;
+	for (var y=0; y < x%8; y++) {
+		dots+=".";
+	}
+	$(".loading-dots").text(dots);
+  } , 500);
 });
 </script>

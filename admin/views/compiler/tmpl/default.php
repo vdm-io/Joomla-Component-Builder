@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 18 of this MVC
+	@version		@update number 25 of this MVC
 	@build			16th February, 2017
 	@created		1st February, 2017
 	@package		Component Builder
@@ -27,6 +27,7 @@
 defined('_JEXEC') or die('Restricted access'); 
 
 $this->app->input->set('hidemainmenu', false);
+$selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3><p>' . JText::_('COM_COMPONENTBUILDER_PLEASE_SELECT_A_COMPONENT_THAT_YOU_WOULD_LIKE_TO_COMPILE') . '</p>';
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
@@ -95,49 +96,55 @@ jQuery(document).ready(function($) {
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif; ?>
-	<div id="form">
-        <h1>Ready to compile your component</h1>
-        <form action="index.php?option=com_componentbuilder&view=compiler" method="post" name="compilerForm" id="compilerForm" class="form-validate" enctype="multipart/form-data">
-            <div>
-            	<span class="notice" style="display:none; color:red;">You must select a component!</span><br />
-		<?php if ($this->form): ?>
-			<?php foreach ($this->form as $field): ?>
-			<div class="control-group">
-				<div class="control-label"><?php echo $field->label;?></div>
-				<div class="controls"><?php echo $field->input;?></div>
-			</div>
-			<?php endforeach; ?>
-		<?php endif; ?>
-            </div>
-            <br />
-            <div class="clearfix"></div>
-            <button class="btn btn-small btn-success" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
-                Compile Component
-            </button>
-            <input type="hidden" name="version" value="3" />
-            <input type="hidden" name="task" value="compiler.compiler" />
-            <?php echo JHtml::_('form.token'); ?>
-        </form>
-    </div>
-    <div id="clear" style="display:none;">
-        <h1>Please wait! Clearing the tmp folder <span class="loading-dots">.</span></h1>
-        <div class="clearfix"></div>
-    </div>
-    <div id="compiler" style="display:none;">
-        <h1>Please wait! Compiling the component <span class="loading-dots">.</span></h1>
-        <img src="components/com_componentbuilder/assets/images/ajax-loader.gif" />
-        <div class="clearfix"></div>
-    </div>
-</div>
+		<div id="form">
+		<div class="span6">
+			<h3><?php echo JText::_('COM_COMPONENTBUILDER_READY_TO_COMPILE_YOUR_COMPONENT'); ?></h3>
+			<form action="index.php?option=com_componentbuilder&view=compiler" method="post" name="compilerForm" id="compilerForm" class="form-validate" enctype="multipart/form-data">
+				<div>
+				<span class="notice" style="display:none; color:red;"><?php echo JText::_('COM_COMPONENTBUILDER_YOU_MUST_SELECT_A_COMPONENT'); ?></span><br />
+				<?php if ($this->form): ?>
+					<?php foreach ($this->form as $field): ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label;?></div>
+						<div class="controls"><?php echo $field->input;?></div>
+					</div>
+					<?php endforeach; ?>
+				<?php endif; ?>
+				</div>
+				<br />
+				<div class="clearfix"></div>
+				<button class="btn btn-small btn-success" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
+					<?php echo JText::_('COM_COMPONENTBUILDER_COMPILE_COMPONENT'); ?>
+				</button>
+				<input type="hidden" name="version" value="3" />
+				<input type="hidden" name="task" value="compiler.compiler" />
+				<?php echo JHtml::_('form.token'); ?>
+			</form>
+		</div>
+		<div class="span6" id="component-details">
+			<?php echo $selectNotice; ?>
+		</div>
+		</div>
+		<div id="clear" style="display:none;">
+			<h1><?php echo JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT_CLEARING_THE_TMP_FOLDER'); ?> <span class="loading-dots">.</span></h1>
+			<div class="clearfix"></div>
+		</div>
+		<div id="compiler" style="display:none;">
+			<h1><?php echo JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT_COMPILING_THE_COMPONENT'); ?> <span class="loading-dots">.</span></h1>
+			<img src="components/com_componentbuilder/assets/images/ajax-loader.gif" />
+		<div class="clearfix"></div>
+	</div>
 <script>
+// token 
+var token = '<?php echo JSession::getFormToken(); ?>';
 jQuery('#compilerForm').on('change', '#component',function (e)
 {
 	var component = jQuery('#component').val();
-	if(component == ""){
+	if(component == "") {
+		jQuery('#component-details').html("<?php echo $selectNotice; ?>");
 		jQuery('.notice').show();
-	}
-	else
-	{
+	} else {
+		getComponentDetails(component);
 		jQuery('.notice').hide();
 	}
 });
@@ -153,6 +160,23 @@ jQuery(document).ready( function($) {
 	$(".loading-dots").text(dots);
   } , 500);
 });
+			
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}			
 </script>
 <?php else: ?>
         <h1><?php echo JText::_('COM_COMPONENTBUILDER_NO_ACCESS_GRANTED'); ?></h1>
