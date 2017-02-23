@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.5
-	@build			17th February, 2017
+	@build			22nd February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -101,7 +101,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->select($db->quoteName(array(
-				'companyname','component_version','copyright','debug_linenr',
+				'id','companyname','component_version','copyright','debug_linenr',
 				'description','email','image','license','name',
 				'short_description','website','author','add_placeholders',
 				'system_name','mvc_versiondate')))
@@ -144,6 +144,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$html[] = '<p>' . $object->license . '</p>';
 		$html[] = '<h4>' . JText::_('COM_COMPONENTBUILDER_COPYRIGHT') . '</h4>';
 		$html[] = '<p>' . $object->copyright . '</p>';
+		$html[] = '<a href="index.php?option=com_componentbuilder&ref=compiler&view=joomla_components&task=joomla_component.edit&id=' . (int) $object->id . '" class="btn btn-small span12"><span class="icon-edit"></span> ' . JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' .$object->system_name . '</a>';
 		// now return the diplay
 		return implode("\n", $html);
 	}

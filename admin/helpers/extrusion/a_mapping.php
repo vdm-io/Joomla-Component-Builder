@@ -69,12 +69,12 @@ class Mapping
 	 *	The datatypes and it linked field types (basic)
 	 *	(TODO) We may need to set this dynamicly
 	 */
-	protected $dataTypes = array(	'CHAR' => 'Text', 'VARCHAR' => 'Text',
-					'TEXT' => 'Textarea', 'MEDIUMTEXT' => 'Textarea', 
-					'LONGTEXT'  => 'Textarea', 'DATE' => 'Text', 'TIME' => 'Text',
-					'DATETIME' => 'Calendar', 'INT' => 'Text', 'TINYINT' => 'Text',
-					'BIGINT' => 'Text', 'FLOAT' => 'Text', 'DECIMAL' => 'Text',
-					'DOUBLE' => 'Text');
+	protected $dataTypes = array(	'VARCHAR' => 'Text', 'CHAR' => 'Text',
+					'MEDIUMTEXT' => 'Textarea', 'LONGTEXT'  => 'Textarea',
+					'TEXT' => 'Textarea', 'DATETIME' => 'Calendar',
+					'DATE' => 'Text', 'TIME' => 'Text', 'TINYINT' => 'Text',
+					'BIGINT' => 'Text', 'INT' => 'Text',  'FLOAT' => 'Text',
+					'DECIMAL' => 'Text', 'DOUBLE' => 'Text');
 	
 	/**
 	 *	The datasize identifiers

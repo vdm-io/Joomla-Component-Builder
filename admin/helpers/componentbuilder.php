@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.5
-	@build			17th February, 2017
+	@build			22nd February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -1333,10 +1333,13 @@ abstract class ComponentbuilderHelper
 		return $string;
 	}
 
-	public static function safeString($string, $type = 'L', $spacer = '_')
+	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true)
 	{
-		// remove all numbers and replace with english text version (works well only up to millions)
-                $string = self::replaceNumbers($string);
+		if ($replaceNumbers === true)
+		{
+			// remove all numbers and replace with english text version (works well only up to millions)
+			$string = self::replaceNumbers($string);
+		}
 		// 0nly continue if we have a string
                 if (self::checkString($string))
                 {
