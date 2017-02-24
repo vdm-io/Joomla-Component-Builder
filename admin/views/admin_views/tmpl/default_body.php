@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 95 of this MVC
-	@build			3rd February, 2017
+	@version		@update number 97 of this MVC
+	@build			24th February, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_body.php
