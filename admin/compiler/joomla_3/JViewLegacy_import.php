@@ -52,7 +52,8 @@ class ###Component###ViewImport extends JViewLegacy
 		}
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))){
+		if (count($errors = $this->get('Errors')))
+		{
 			JError::raiseError(500, implode('<br />', $errors));
 			return false;
 		}

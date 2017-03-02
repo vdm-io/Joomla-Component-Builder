@@ -1266,13 +1266,23 @@ class Get
                         // add the custom buttons
                         if (isset($view->add_custom_button) && $view->add_custom_button == 1)
                         {
-                                if (ComponentbuilderHelper::checkString($view->php_model) && $view->php_mode !== '//')
+				// set for the edit views
+                                if (ComponentbuilderHelper::checkString($view->php_model))
                                 {
                                         $view->php_model = $this->setDynamicValues(base64_decode($view->php_model));
                                 }
-				if (ComponentbuilderHelper::checkString($view->php_controller) && trim($view->php_controller) !== '//')
+				if (ComponentbuilderHelper::checkString($view->php_controller))
                                 {
 					$view->php_controller = $this->setDynamicValues(base64_decode($view->php_controller));
+				}
+				// set for the list views
+                                if (isset($view->php_model_list) && ComponentbuilderHelper::checkString($view->php_model_list))
+                                {
+                                        $view->php_model_list = $this->setDynamicValues(base64_decode($view->php_model_list));
+                                }
+				if (isset($view->php_controller_list) && ComponentbuilderHelper::checkString($view->php_controller_list))
+                                {
+					$view->php_controller_list = $this->setDynamicValues(base64_decode($view->php_controller_list));
 				}
                                 // set the button array
                                 $buttons = json_decode($view->custom_button,true);

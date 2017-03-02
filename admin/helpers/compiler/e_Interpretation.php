@@ -2728,20 +2728,33 @@ class Interpretation extends Fields
 
 	public function setCustomButtons(&$view, $type = 1, $tab = '')
 	{
-                if (1 == $type)
-                {
-                       $viewName = $view['settings']->code;
-                }
-                if (2 == $type)
-                {
-                         $viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
-                }
 		// ensure correct target is set
 		$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
-		// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-		$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] = '';
-		// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-		$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] = '';
+		if (1 == $type || 2 == $type)
+		{
+			if (1 == $type)
+			{
+			       $viewName = $view['settings']->code;
+			}
+			if (2 == $type)
+			{
+				 $viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
+			}
+			// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
+			$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] = '';
+			// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
+			$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] = '';
+		}
+		elseif (3 == $type)
+		{
+			// set the names
+			$viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
+			$viewsName = ComponentbuilderHelper::safeString($view['settings']->name_list);
+			// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER_LIST###
+			$this->fileContentDynamic[$viewsName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER_LIST###'] = '';
+			// set the custom buttons ###CUSTOM_BUTTONS_METHOD_LIST###
+			$this->fileContentDynamic[$viewsName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD_LIST###'] = '';
+		}
 		// if site add buttons to view
 		if ($this->target === 'site')
 		{
@@ -2778,30 +2791,10 @@ class Interpretation extends Fields
 		// check if custom button should be added
 		if (isset($view['settings']->add_custom_button) && $view['settings']->add_custom_button == 1)
 		{
-			// insure the controller and model strings are added
-			if (ComponentbuilderHelper::checkString($view['settings']->php_controller) && $view['settings']->php_controller != '//')
-			{
-				// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
-				PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_controller, $this->placeholders);
-				if ('site' === $this->target)
-				{
-					// add the controller for this view
-					// build the file
-					$target = array($this->target => $viewName);
-					$this->buildDynamique($target,'custom_form');
-					###GET_FORM_CUSTOM###
-				}
-			}
-			if (ComponentbuilderHelper::checkString($view['settings']->php_model) && $view['settings']->php_model != '//')
-			{
-				// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-				$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] =
-				PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_model, $this->placeholders);
-			}
+			$buttons = array();
+			$functionNames = array();
 			if (isset($view['settings']->custom_buttons) && ComponentbuilderHelper::checkArray($view['settings']->custom_buttons))
 			{
-				$buttons = array();
 				foreach ($view['settings']->custom_buttons as $custom_button)
 				{
 					if ($custom_button['target'] != 2 || $this->target === 'site')
@@ -2817,11 +2810,69 @@ class Interpretation extends Fields
 						$buttons[] = "\t".$tab."\t\tJToolBarHelper::custom('".$viewName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
 						$buttons[] = "\t".$tab."\t}";
 					}
+					// load the list button
+					elseif (3 == $type && ($custom_button['target'] == 2 || $custom_button['target'] == 3))
+					{
+						// Load to lang
+						$keyLang = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($custom_button['name'],'U');
+                                                $keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
+						$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
+						// add cpanel button TODO does not work well on site with permissions
+						$buttons[] = "\t".$tab."\tif (\$this->canDo->get('".$viewName.".".$keyCode."'))";
+						$buttons[] = "\t".$tab."\t{";
+						$buttons[] = "\t".$tab."\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
+						$buttons[] = "\t".$tab."\t\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
+						$buttons[] = "\t".$tab."\t}";
+					}
 				}
-				if (ComponentbuilderHelper::checkArray($buttons))
+			}
+			// load the model and controller
+			if (3 == $type)
+			{
+				// insure the controller and model strings are added
+				if (isset($view['settings']->php_controller_list) && ComponentbuilderHelper::checkString($view['settings']->php_controller_list) && $view['settings']->php_controller_list != '//')
 				{
-					return PHP_EOL.implode(PHP_EOL,$buttons);
+					// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
+					$this->fileContentDynamic[$viewsName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER_LIST###'] =
+					PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_controller_list, $this->placeholders);
 				}
+				// load the model
+				if (isset($view['settings']->php_model_list) && ComponentbuilderHelper::checkString($view['settings']->php_model_list) && $view['settings']->php_model_list != '//')
+				{
+					// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
+					$this->fileContentDynamic[$viewsName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD_LIST###'] =
+					PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_model_list, $this->placeholders);
+				}
+			}
+			else
+			{
+				// insure the controller and model strings are added
+				if (ComponentbuilderHelper::checkString($view['settings']->php_controller) && $view['settings']->php_controller != '//')
+				{
+					// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
+					$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER'.$list.'###'] =
+					PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_controller, $this->placeholders);
+					if ('site' === $this->target)
+					{
+						// add the controller for this view
+						// build the file
+						$target = array($this->target => $viewName);
+						$this->buildDynamique($target,'custom_form');
+						###GET_FORM_CUSTOM###
+					}
+				}
+				// load the model
+				if (ComponentbuilderHelper::checkString($view['settings']->php_model) && $view['settings']->php_model != '//')
+				{
+					// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
+					$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD'.$list.'###'] =
+					PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_model, $this->placeholders);
+				}
+			}
+			// return buttons if they were build
+			if (ComponentbuilderHelper::checkArray($buttons))
+			{
+				return PHP_EOL.implode(PHP_EOL,$buttons);
 			}
 		}
 		return '';

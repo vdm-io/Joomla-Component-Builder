@@ -426,6 +426,8 @@ class Infusion extends Interpretation
                                                 // ###CHECKINCALL### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_list]['###CHECKINCALL###'] = '';
                                         }
+					// ###ADMIN_CUSTOM_BUTTONS_LIST###
+                                        $this->fileContentDynamic[$viewName_list]['###ADMIN_CUSTOM_BUTTONS_LIST###'] = $this->setCustomButtons($view, 3, "\t");
 
                                         // ###GET_ITEMS_METHOD_STRING_FIX### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_STRING_FIX###'] = $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###']);

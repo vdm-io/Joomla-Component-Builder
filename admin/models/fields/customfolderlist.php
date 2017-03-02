@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.5
-	@build			24th February, 2017
+	@version		2.3.6
+	@build			1st March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		customfolderlist.php

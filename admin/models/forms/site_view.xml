@@ -1089,7 +1089,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_SITE_VIEW_PHP_CONTROLLER_HINT"
-			required="true"
+			required="false"
 		/>
 		<!-- Add_css Field. Type: Radio. (joomla) -->
 		<field
@@ -1116,7 +1116,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_SITE_VIEW_PHP_MODEL_HINT"
-			required="flase"
+			required="false"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field

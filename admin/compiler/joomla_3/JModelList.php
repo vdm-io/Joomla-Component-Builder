@@ -47,7 +47,7 @@ class ###Component###Model###Views### extends JModelList
 		}
 
 		parent::__construct($config);
-	}
+	}###ADMIN_CUSTOM_BUTTONS_METHOD_LIST###
 	
 	/**
 	 * Method to auto-populate the model state.

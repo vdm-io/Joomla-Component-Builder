@@ -132,7 +132,7 @@ class ###Component###View###Views### extends JViewLegacy
                                 // add the button to the page
                                 $dhtml = $layout->render(array('title' => $title));
                                 $bar->appendButton('Custom', $dhtml, 'batch');
-                        }###CUSTOM_ADMIN_DYNAMIC_BUTTONS### 
+                        }###CUSTOM_ADMIN_DYNAMIC_BUTTONS### ###ADMIN_CUSTOM_BUTTONS_LIST###
 
                         if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
                         {

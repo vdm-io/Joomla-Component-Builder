@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 80 of this MVC
-	@build			17th February, 2017
+	@version		@update number 81 of this MVC
+	@build			1st March, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_codes.php
@@ -107,5 +107,5 @@ class ComponentbuilderControllerCustom_codes extends JControllerAdmin
 		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_codes', false), $message, 'error');
 		return;
-	} 
+	}  
 }

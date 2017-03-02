@@ -184,6 +184,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`php_before_delete` MEDIUMTEXT NOT NULL,
 	`php_before_publish` MEDIUMTEXT NOT NULL,
 	`php_controller` MEDIUMTEXT NOT NULL,
+	`php_controller_list` MEDIUMTEXT NOT NULL,
 	`php_document` MEDIUMTEXT NOT NULL,
 	`php_getitem` MEDIUMTEXT NOT NULL,
 	`php_getitems` MEDIUMTEXT NOT NULL,
@@ -194,6 +195,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`php_import_save` MEDIUMTEXT NOT NULL,
 	`php_import_setdata` MEDIUMTEXT NOT NULL,
 	`php_model` MEDIUMTEXT NOT NULL,
+	`php_model_list` MEDIUMTEXT NOT NULL,
 	`php_postsavehook` MEDIUMTEXT NOT NULL,
 	`php_save` MEDIUMTEXT NOT NULL,
 	`short_description` VARCHAR(255) NOT NULL DEFAULT '',
@@ -226,6 +228,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_add_php_document` (`add_php_document`),
 	KEY `idx_add_php_allowedit` (`add_php_allowedit`),
 	KEY `idx_add_sql` (`add_sql`),
+	KEY `idx_add_php_save` (`add_php_save`),
 	KEY `idx_add_php_postsavehook` (`add_php_postsavehook`),
 	KEY `idx_add_php_batchcopy` (`add_php_batchcopy`),
 	KEY `idx_add_fadein` (`add_fadein`),
@@ -236,18 +239,17 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_add_css_views` (`add_css_views`),
 	KEY `idx_add_javascript_view_file` (`add_javascript_view_file`),
 	KEY `idx_add_php_batchmove` (`add_php_batchmove`),
-	KEY `idx_add_php_before_publish` (`add_php_before_publish`),
 	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`),
+	KEY `idx_add_php_before_publish` (`add_php_before_publish`),
 	KEY `idx_add_php_after_publish` (`add_php_after_publish`),
-	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
 	KEY `idx_add_javascript_views_file` (`add_javascript_views_file`),
+	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
 	KEY `idx_add_php_after_delete` (`add_php_after_delete`),
 	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`),
 	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_source` (`source`),
 	KEY `idx_add_php_ajax` (`add_php_ajax`),
-	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
-	KEY `idx_add_php_save` (`add_php_save`)
+	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
@@ -555,8 +557,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	KEY `idx_target` (`target`),
 	KEY `idx_type` (`type`),
 	KEY `idx_function_name` (`function_name`),
-	KEY `idx_to_line` (`to_line`),
-	KEY `idx_from_line` (`from_line`)
+	KEY `idx_from_line` (`from_line`),
+	KEY `idx_to_line` (`to_line`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (
@@ -755,6 +757,8 @@ INSERT INTO `#__componentbuilder_site_view` (`id`, `add_css_document`, `add_css`
 INSERT INTO `#__componentbuilder_dynamic_get` (`id`, `add_php_after_getitem`, `add_php_before_getitem`, `add_php_after_getitems`, `add_php_before_getitems`, `add_php_getlistquery`, `php_after_getitem`, `php_before_getitem`, `php_before_getitems`, `php_getlistquery`, `php_after_getitems`, `pagination`, `addcalculation`, `db_selection`, `db_table_main`, `filter`, `getcustom`, `gettype`, `global`, `join_db_table`, `join_view_table`, `main_source`, `name`, `not_required`, `order`, `php_calculation`, `php_custom_get`, `view_selection`, `view_table_main`, `where`, `params`, `published`, `version`, `hits`, `ordering`) VALUES
 (36, '', '', 1, '', '', '', '', '', '', 'CQkvLyBkbyBhIHF1aWNrIGJ1aWxkIG9mIGFsbCBlZGl0IGxpbmtzIGxpbmtzDQoJCWlmIChpc3NldCgkaXRlbXMpICYmICRpdGVtcykNCgkJew0KCQkJZm9yZWFjaCAoJGl0ZW1zIGFzICRuciA9PiAmJGl0ZW0pDQoJCQl7DQoJCQkJJGNhbkRvID0gW1tbQ29tcG9uZW50XV1dSGVscGVyOjpnZXRBY3Rpb25zKCdsb29rJywkaXRlbSwnbG9va3MnKTsNCgkJCQlpZiAoJGNhbkRvLT5nZXQoJ2xvb2suZWRpdCcpKQ0KCQkJCXsNCgkJCQkJJGl0ZW0tPmVkaXRMaW5rID0gJzxiciAvPjxiciAvPjxhIGNsYXNzPSJ1ay1idXR0b24gdWstYnV0dG9uLXByaW1hcnkgdWstd2lkdGgtMS0xIiBocmVmPSInOw0KCQkJCQkkaXRlbS0+ZWRpdExpbmsgLj0gSlJvdXRlOjpfKCdpbmRleC5waHA/b3B0aW9uPWNvbV9bW1tjb21wb25lbnRdXV0mdmlldz1sb29rJnRhc2s9bG9vay5lZGl0JmlkPScgLiAkaXRlbS0+aWQpOw0KCQkJCQkkaXRlbS0+ZWRpdExpbmsgLj0gJyI+PGkgY2xhc3M9InVrLWljb24tcGVuY2lsIj48L2k+PHNwYW4gY2xhc3M9InVrLWhpZGRlbi1zbWFsbCI+JzsNCgkJCQkJJGl0ZW0tPmVkaXRMaW5rIC49IEpUZXh0OjpfKCdFZGl0IExvb2snKTsNCgkJCQkJJGl0ZW0tPmVkaXRMaW5rIC49ICc8L3NwYW4+PC9hPic7DQoJCQkJfQ0KCQkJCWVsc2UNCgkJCQl7DQoJCQkJCSRpdGVtLT5lZGl0TGluayA9ICcnOw0KCQkJCX0NCgkJCX0NCgkJfQ==', 1, '', '', '', '{\"filter_type\":[],\"state_key\":[],\"operator\":[],\"table_key\":[]}', '', 2, '{\"name\":[],\"key\":[],\"as\":[],\"type\":[]}', '', '{\"view_table\":[],\"row_type\":[],\"as\":[],\"type\":[],\"on_field\":[],\"operator\":[],\"join_field\":[],\"selection\":[]}', 1, 'Looks', '', '{\"table_key\":[\"a.name\"],\"direction\":[\"ASC\"]}', '', '', 'a.id AS id\r\na.name AS name\r\na.alias AS alias\r\na.description AS description\r\na.add AS add\r\na.email AS email\r\na.mobile_phone AS mobile_phone\r\na.dateofbirth AS dateofbirth\r\na.image AS image\r\na.website AS website\r\na.not_required AS not_required\r\na.published AS published\r\na.hits AS hits\r\na.ordering AS ordering', 109, '{\"table_key\":[\"a.published\"],\"operator\":[\"1\"],\"value_key\":[\"1\"]}', '', 1, 5, '', 13),
 (39, '', '', '', '', '', '', '', '', '', '', 1, '', '', '', '{\"filter_type\":[\"1\"],\"state_key\":[\"id\"],\"operator\":[\"1\"],\"table_key\":[\"a.id\"]}', '', 1, '', '', '', 1, 'Looking', '', '', '', '', 'a.id AS id\r\na.name AS name\r\na.alias AS alias\r\na.description AS description\r\na.add AS add\r\na.email AS email\r\na.mobile_phone AS mobile_phone\r\na.dateofbirth AS dateofbirth\r\na.image AS image\r\na.website AS website\r\na.published AS published\r\na.hits AS hits', 109, '{\"table_key\":[],\"operator\":[],\"value_key\":[]}', '', 1, 7, '', '');
+
+
 
 --
 -- Dumping data for table `#__componentbuilder_snippet`

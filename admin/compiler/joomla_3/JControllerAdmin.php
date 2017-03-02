@@ -47,5 +47,5 @@ class ###Component###Controller###Views### extends JControllerAdmin
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		
 		return $model;
-	}###CONTROLLEREXIMPORTMETHOD### ###CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER###
+	}###CONTROLLEREXIMPORTMETHOD### ###CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER### ###ADMIN_CUSTOM_BUTTONS_CONTROLLER_LIST###
 }

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 80 of this MVC
-	@build			17th February, 2017
+	@version		@update number 81 of this MVC
+	@build			1st March, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		default_foot.php

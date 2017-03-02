@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 22 of this MVC
-	@build			22nd February, 2017
+	@build			1st March, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_views.php
@@ -107,5 +107,5 @@ class ComponentbuilderControllerCustom_admin_views extends JControllerAdmin
 		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_admin_views', false), $message, 'error');
 		return;
-	} 
+	}  
 }

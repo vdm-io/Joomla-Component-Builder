@@ -107,5 +107,5 @@ class ComponentbuilderControllerTemplates extends JControllerAdmin
 		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=templates', false), $message, 'error');
 		return;
-	} 
+	}  
 }

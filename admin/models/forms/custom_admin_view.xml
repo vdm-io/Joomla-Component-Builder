@@ -169,7 +169,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_HINT"
-			required="flase"
+			required="false"
 		/>
 		<!-- Css_document Field. Type: Textarea. (joomla) -->
 		<field
@@ -934,7 +934,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_HINT"
-			required="true"
+			required="false"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 25 of this MVC
-	@build			16th February, 2017
+	@version		@update number 26 of this MVC
+	@build			28th February, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		default.php
@@ -148,6 +148,7 @@ jQuery('#compilerForm').on('change', '#component',function (e)
 		jQuery('.notice').hide();
 	}
 });
+			
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -159,7 +160,7 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});
+});			
 			
 <?php
 	$app = JFactory::getApplication();
