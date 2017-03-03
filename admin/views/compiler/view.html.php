@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 26 of this MVC
-	@build			28th February, 2017
+	@version		@update number 46 of this MVC
+	@build			3rd March, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -197,8 +197,16 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 				}
 			}
 		}   
+		// add marked library
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
                 // add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/compiler.css'); 
+		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/compiler.css');
+		// Set the Custom CSS script to view
+		$this->document->addStyleDeclaration("
+			.j-sidebar-container {
+			margin: -28px 0 0 -1px !important;
+			}
+		"); 
 		// Set the Custom JS script to view
 		$this->document->addScriptDeclaration("
 			function getComponentDetails_server(id){
@@ -219,6 +227,44 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 					if(result.html) {
 						jQuery('#component-details').html(result.html);
 					}
+				});
+			}
+			var noticeboard = \"https://www.vdm.io/componentbuilder-noticeboard-md\";
+			jQuery(document).ready(function () {
+				jQuery.get(noticeboard)
+				.success(function(board) { 
+					if (board.length > 5) {
+						jQuery(\"#noticeboard-md\").html(marked(board));
+						getIS(1,board).done(function(result) {
+							if (result){
+								jQuery(\"#vdm-new-notice\").show();
+								getIS(2,board);
+							}
+						});
+					} else {
+						jQuery(\"#noticeboard-md\").html(\"'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IN_NO_NOTICE_AT_THIS_TIME').'\");
+					}
+				})
+				.error(function(jqXHR, textStatus, errorThrown) { 
+					jQuery(\"#noticeboard-md\").html(\"'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IN_NO_NOTICE_AT_THIS_TIME').'\");
+				});
+			});
+			// to check is READ/NEW
+			function getIS(type,notice){
+				if (type == 1) {
+					var getUrl = \"index.php?option=com_componentbuilder&task=ajax.isNew&format=json\";
+				} else if (type == 2) {
+					var getUrl = \"index.php?option=com_componentbuilder&task=ajax.isRead&format=json\";
+				}	
+				if(token.length > 0 && notice.length){
+					var request = \"token=\"+token+\"&notice=\"+notice;
+				}
+				return jQuery.ajax({
+					type: \"POST\",
+					url: getUrl,
+					dataType: \"jsonp\",
+					data: request,
+					jsonp: \"callback\"
 				});
 			}
 		");

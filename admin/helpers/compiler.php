@@ -339,55 +339,66 @@ class Compiler extends Infusion
 	
 	private function buildReadMeData()
 	{
+		// what is the size in terms of an A4 book
+		$this->pageCount		= round($this->lineCount / 56);
 		// setup the unrealistic numbers
-		$folders	= $this->folderCount * 5;
-		$files		= $this->fileCount * 5;
-		$lines		= $this->lineCount * 10;
-		$seconds	= $folders + $files + $lines;
-		$totalHours	= round($seconds / 3600);
-		$totalDays	= round($totalHours / 8);
+		$this->folderSeconds		= $this->folderCount * 5;
+		$this->fileSeconds		= $this->fileCount * 5;
+		$this->lineSeconds		= $this->lineCount * 10;
+		$this->seconds			= $this->folderSeconds + $this->fileSeconds + $this->lineSeconds;
+		$this->totalHours		= round($this->seconds / 3600);
+		$this->totalDays		= round($this->totalHours / 8);
 		// setup the more realistic numbers
-		$debugging		= $seconds / 4;
-		$planning		= $seconds / 7;
-		$mapping		= $seconds / 10;
-		$office			= $seconds / 6;
-		$seconds		= $folders + $files + $lines + $debugging + $planning + $mapping + $office;
-		$actualTotalHours	= round($seconds / 3600);
-		$actualTotalDays	= round($actualTotalHours / 8);
-		$debuggingHours		= round($debugging / 3600);
-		$planningHours		= round($planning / 3600);
-		$mappingHours		= round($mapping / 3600);
-		$officeHours		= round($office / 3600);
+		$this->secondsDebugging		= $this->seconds / 4;
+		$this->secondsPlanning		= $this->seconds / 7;
+		$this->secondsMapping		= $this->seconds / 10;
+		$this->secondsOffice		= $this->seconds / 6;
+		$this->actualSeconds		= $this->folderSeconds + $this->fileSeconds + $this->lineSeconds + $this->secondsDebugging + $this->secondsPlanning + $this->secondsMapping + $this->secondsOffice;
+		$this->actualTotalHours		= round($this->actualSeconds / 3600);
+		$this->actualTotalDays		= round($this->actualTotalHours / 8);
+		$this->debuggingHours		= round($this->secondsDebugging / 3600);
+		$this->planningHours		= round($this->secondsPlanning / 3600);
+		$this->mappingHours		= round($this->secondsMapping / 3600);
+		$this->officeHours		= round($this->secondsOffice / 3600);
 		// the actual time spent
-		$actualHoursSpent = $actualTotalHours - $totalHours;
-		$actualDaysSpent = $actualTotalDays - $totalDays;
+		$this->actualHoursSpent		= $this->actualTotalHours - $this->totalHours;
+		$this->actualDaysSpent		= $this->actualTotalDays - $this->totalDays;
 		// calculate the projects actual time frame of completion
-		$projectWeekTime = round($actualTotalDays / 5,1);
-		$projectMonthTime = round($actualTotalDays / 24,1);
+		$this->projectWeekTime		= round($this->actualTotalDays / 5,1);
+		$this->projectMonthTime		= round($this->actualTotalDays / 24,1);
 		// set some defaults
-		$this->fileContentStatic['###LINE_COUNT###'] = $this->lineCount;
-		$this->fileContentStatic['###FILE_COUNT###'] = $this->fileCount;
-		$this->fileContentStatic['###FOLDER_COUNT###'] = $this->folderCount;
-		$this->fileContentStatic['###folders###'] = $folders;
-		$this->fileContentStatic['###files###'] = $files;
-		$this->fileContentStatic['###lines###'] = $lines;
-		$this->fileContentStatic['###seconds###'] = $seconds;
-		$this->fileContentStatic['###totalHours###'] = $totalHours;
-		$this->fileContentStatic['###totalDays###'] = $totalDays;
-		$this->fileContentStatic['###debugging###'] = $debugging;
-		$this->fileContentStatic['###planning###'] = $planning;
-		$this->fileContentStatic['###mapping###'] = $mapping;
-		$this->fileContentStatic['###office###'] = $office;
-		$this->fileContentStatic['###actualTotalHours###'] = $actualTotalHours;
-		$this->fileContentStatic['###actualTotalDays###'] = $actualTotalDays;
-		$this->fileContentStatic['###debuggingHours###'] = $debuggingHours;
-		$this->fileContentStatic['###planningHours###'] = $planningHours;
-		$this->fileContentStatic['###mappingHours###'] = $mappingHours;
-		$this->fileContentStatic['###officeHours###'] = $officeHours;
-		$this->fileContentStatic['###actualHoursSpent###'] = $actualHoursSpent;
-		$this->fileContentStatic['###actualDaysSpent###'] = $actualDaysSpent;
-		$this->fileContentStatic['###projectWeekTime###'] = $projectWeekTime;
-		$this->fileContentStatic['###projectMonthTime###'] = $projectMonthTime;
+		$this->fileContentStatic['###LINE_COUNT###']		= $this->lineCount;
+		$this->fileContentStatic['###FILE_COUNT###']		= $this->fileCount;
+		$this->fileContentStatic['###FOLDER_COUNT###']		= $this->folderCount;
+		$this->fileContentStatic['###PAGE_COUNT###']		= $this->pageCount;
+		$this->fileContentStatic['###folders###']		= $this->folderSeconds;
+		$this->fileContentStatic['###foldersSeconds###']	= $this->folderSeconds;
+		$this->fileContentStatic['###files###']			= $this->fileSeconds;
+		$this->fileContentStatic['###filesSeconds###']		= $this->fileSeconds;
+		$this->fileContentStatic['###lines###']			= $this->lineSeconds;
+		$this->fileContentStatic['###linesSeconds###']		= $this->lineSeconds;
+		$this->fileContentStatic['###seconds###']		= $this->actualSeconds;
+		$this->fileContentStatic['###actualSeconds###']		= $this->actualSeconds;
+		$this->fileContentStatic['###totalHours###']		= $this->totalHours;
+		$this->fileContentStatic['###totalDays###']		= $this->totalDays;
+		$this->fileContentStatic['###debugging###']		= $this->secondsDebugging;
+		$this->fileContentStatic['###secondsDebugging###']	= $this->secondsDebugging;
+		$this->fileContentStatic['###planning###']		= $this->secondsPlanning;
+		$this->fileContentStatic['###secondsPlanning###']	= $this->secondsPlanning;
+		$this->fileContentStatic['###mapping###']		= $this->secondsMapping;
+		$this->fileContentStatic['###secondsMapping###']	= $this->secondsMapping;
+		$this->fileContentStatic['###office###']		= $this->secondsOffice;
+		$this->fileContentStatic['###secondsOffice###']		= $this->secondsOffice;
+		$this->fileContentStatic['###actualTotalHours###']	= $this->actualTotalHours;
+		$this->fileContentStatic['###actualTotalDays###']	= $this->actualTotalDays;
+		$this->fileContentStatic['###debuggingHours###']	= $this->debuggingHours;
+		$this->fileContentStatic['###planningHours###']		= $this->planningHours;
+		$this->fileContentStatic['###mappingHours###']		= $this->mappingHours;
+		$this->fileContentStatic['###officeHours###']		= $this->officeHours;
+		$this->fileContentStatic['###actualHoursSpent###']	= $this->actualHoursSpent;
+		$this->fileContentStatic['###actualDaysSpent###']	= $this->actualDaysSpent;
+		$this->fileContentStatic['###projectWeekTime###']	= $this->projectWeekTime;
+		$this->fileContentStatic['###projectMonthTime###']	= $this->projectMonthTime;
 	}
 
 	private function zipComponent()

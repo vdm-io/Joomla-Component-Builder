@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 26 of this MVC
-	@build			28th February, 2017
+	@version		@update number 46 of this MVC
+	@build			3rd March, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -143,7 +143,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		return false;
 	}  
 
-	protected $compiler;
+	public $compiler;
 	
 	public function getComponents()
 	{
@@ -177,18 +177,6 @@ class ComponentbuilderModelCompiler extends JModelList
 			return true;
 		}
 		return false;
-	}
-    
-	public function getCount()
-	{
-		return array(
-			'lines' => $this->compiler->lineCount, 
-			'files' => $this->compiler->fileCount, 
-			'folders' => $this->compiler->folderCount, 
-			'filePath' => $this->compiler->filepath, 
-			'filename' => $this->compiler->componentFolderName,
-			'time' => $this->compiler->secondsCompiled
-		);
 	}
 	
 	public function emptyFolder($dir, $removeDir = false)

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 26 of this MVC
-	@build			28th February, 2017
+	@version		@update number 46 of this MVC
+	@build			3rd March, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -66,9 +66,9 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		if($user->authorise('core.admin', 'com_componentbuilder'))
 		{
 			// get the post values
-			$jinput 			= JFactory::getApplication()->input;
+			$jinput 		= JFactory::getApplication()->input;
 			$componentId 		= $jinput->post->get('component', 0, 'INT');
-			$version			= $jinput->post->get('version', 0, 'INT');
+			$version		= $jinput->post->get('version', 0, 'INT');
 			$addBackup		= $jinput->post->get('backup', 0, 'INT');
 			$addGit			= $jinput->post->get('git', 0, 'INT');
 			$addPlaceholders	= $jinput->post->get('placeholders', 2, 'INT');
@@ -93,62 +93,37 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			if (empty($redirect_url) && $componentId > 0)
 			{
 				$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
-				// setup the unrealistic numbers
-				$counter	= $model->getCount();
-				$folders	= $counter['folders'] * 5;
-				$files		= $counter['files'] * 5;
-				$lines		= $counter['lines'] * 10;
-				$seconds	= $folders + $files + $lines;
-				$totalHours	= round($seconds / 3600);
-				$totalDays	= round($totalHours / 8);
-				// setup the more realistic numbers
-				$debugging		= $seconds / 4;
-				$planning		= $seconds / 7;
-				$mapping		= $seconds / 10;
-				$office			= $seconds / 6;
-				$seconds		= $folders + $files + $lines + $debugging + $planning + $mapping + $office;
-				$actualTotalHours	= round($seconds / 3600);
-				$actualTotalDays	= round($actualTotalHours / 8);
-				$debuggingHours		= round($debugging / 3600);
-				$planningHours		= round($planning / 3600);
-				$mappingHours		= round($mapping / 3600);
-				$officeHours		= round($office / 3600);
-				// the actual time spent
-				$actualHoursSpent = $actualTotalHours - $totalHours;
-				$actualDaysSpent = $actualTotalDays - $totalDays;
-				// calculate the projects actual time frame of completion
-				$projectWeekTime = round($actualTotalDays / 5,1);
-				$projectMonthTime = round($actualTotalDays / 24,1);
-				if (($pos = strpos($counter['filePath'], "/tmp/")) !== FALSE)
+				if (($pos = strpos($model->compiler->filepath, "/tmp/")) !== FALSE)
 				{
-				    $url = JURI::root() . substr($counter['filePath'], $pos + 1);
+				    $url = JURI::root() . substr($model->compiler->filepath, $pos + 1);
 				}
 				// Message of successful build
-				$message = '<h1>The ('.$counter['filename'].') Was Successfully Compiled!</h1>';
+				$message = '<h1>The ('.$model->compiler->componentFolderName.') Was Successfully Compiled!</h1>';
 				$message .= '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installExtention\')">';
-				$message .= 'Install '.$counter['filename'].' on this <span class="icon-joomla icon-white"></span>Joomla website.</button></p>';
+				$message .= 'Install '.$model->compiler->componentFolderName.' on this <span class="icon-joomla icon-white"></span>Joomla website.</button></p>';
 				$message .= '<h2>Total time saved</h2>';
 				$message .= '<ul>';
-				$message .= '<li>Total folders created: <b>'.$counter['folders'].'</b></li>';
-				$message .= '<li>Total files created: <b>'.$counter['files'].'</b></li>';
-				$message .= '<li>Total lines written: <b>'.$counter['lines'].'</b></li>';
+				$message .= '<li>Total folders created: <b>'.$model->compiler->folderCount.'</b></li>';
+				$message .= '<li>Total files created: <b>'.$model->compiler->fileCount.'</b></li>';
+				$message .= '<li>Total lines written: <b>'.$model->compiler->lineCount.'</b></li>';
+				$message .= '<li>A4 Book of: <b>'.$model->compiler->pageCount.' pages</b></li>';
 				$message .= '</ul>';
-				$message .= '<p><b>'.$totalHours.' Hours</b> or <b>'.$totalDays.' Eight Hour Days</b> <em>(actual time you saved)</em><br />';
+				$message .= '<p><b>'.$model->compiler->totalHours.' Hours</b> or <b>'.$model->compiler->totalDays.' Eight Hour Days</b> <em>(actual time you saved)</em><br />';
 				$message .= '<small>(if creating a folder and file took <b>5 seconds</b> and writing one line of code took <b>10 seconds</b>, never making one mistake or taking any coffee break.)</small><br />';
-				$message .= '<b>'.$actualHoursSpent.' Hours</b> or <b>'.$actualDaysSpent.' Eight Hour Days</b> <em>(the actual time you spent)</em><br />';
-				$message .= '<small>(with the following break down: <b>debugging @'.$debuggingHours.'hours</b> = codingtime / 4; <b>planning @'.$planningHours.'hours</b> = codingtime / 7; <b>mapping @'.$mappingHours.'hours</b> = codingtime / 10; <b>office @'.$officeHours.'hours</b> = codingtime / 6;)</small></p>';
-				$message .= '<p><b>'.$actualTotalHours.' Hours</b> or <b>'.$actualTotalDays.' Eight Hour Days</b> <em>(a total of the realistic time frame for this project)</em><br />';
+				$message .= '<b>'.$model->compiler->actualHoursSpent.' Hours</b> or <b>'.$model->compiler->actualDaysSpent.' Eight Hour Days</b> <em>(the actual time you spent)</em><br />';
+				$message .= '<small>(with the following break down: <b>debugging @'.$model->compiler->debuggingHours.'hours</b> = codingtime / 4; <b>planning @'.$model->compiler->planningHours.'hours</b> = codingtime / 7; <b>mapping @'.$model->compiler->mappingHours.'hours</b> = codingtime / 10; <b>office @'.$model->compiler->officeHours.'hours</b> = codingtime / 6;)</small></p>';
+				$message .= '<p><b>'.$model->compiler->actualTotalHours.' Hours</b> or <b>'.$model->compiler->actualTotalDays.' Eight Hour Days</b> <em>(a total of the realistic time frame for this project)</em><br />';
 				$message .= '<small>(if creating a folder and file took <b>5 seconds</b> and writing one line of code took <b>10 seconds</b>, with the normal everyday realities at the office, that includes the component planning, mapping & debugging.)</small></p>';
-				$message .= '<p>Project duration: <b>'.$projectWeekTime. ' weeks</b> or <b>'.$projectMonthTime.' months</b></p>';
+				$message .= '<p>Project duration: <b>'.$model->compiler->projectWeekTime. ' weeks</b> or <b>'.$model->compiler->projectMonthTime.' months</b></p>';
 				$message .= '<h2>Path to Zip File</h2>';
-				$message .= '<p><b>Path:</b> <code>'.$counter['filePath'].'</code><br />';
+				$message .= '<p><b>Path:</b> <code>'.$model->compiler->filepath.'</code><br />';
 				$message .= '<b>URL:</b> <code>'.$url.'</code><br /><br />';
 				$message .= '<small>Hey! you can also download the file right now!</small><br /><a class="btn btn-success" href="'.$url.'" ><span class="icon-download icon-white"></span>Download</a></p>';
 				$message .= '<p><small><b>Remember!</b> This file is in your tmp folder and therefore publicly accessible untill you click [Clear tmp]!</small> </p>';
-				$message .= '<p><small>Compilation took <b>'.$counter['time'].'</b> seconds to complete.</small> </p>';
+				$message .= '<p><small>Compilation took <b>'.$model->compiler->secondsCompiled.'</b> seconds to complete.</small> </p>';
 				// set redirect
 				$this->setRedirect($redirect_url,$message,'message');
-				$app->setUserState('com_componentbuilder.extension_name', $counter['filename']);
+				$app->setUserState('com_componentbuilder.extension_name', $model->compiler->componentFolderName);
 			} 
 			else
 			{

@@ -1469,15 +1469,15 @@ class Interpretation extends Fields
 					break;
 					case 5:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_CATEGORIES
-					$string = "";
+					$string = PHP_EOL."\t\t".$tab."//".$this->setLine(__LINE__)." (TODO) The dynamic category filter is not ready.";
 					break;
 					case 6:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_TAGS
-					$string = "";
+					$string = PHP_EOL."\t\t".$tab."//".$this->setLine(__LINE__)." (TODO) The dynamic tags filter is not ready.";
 					break;
 					case 7:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_DATE
-					$string = "";
+					$string = PHP_EOL."\t\t".$tab."//".$this->setLine(__LINE__)." (TODO) The dynamic date filter is not ready.";
 					break;
 					case 8:
 					// COM_COMPONENTBUILDER_DYNAMIC_GET_FUNCTIONVAR

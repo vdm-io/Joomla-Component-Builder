@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 96 of this MVC
-	@build			17th February, 2017
+	@version		@update number 97 of this MVC
+	@build			3rd March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -95,10 +95,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->css))
+			if (!empty($item->readme))
 			{
-				// base64 Decode css.
-				$item->css = base64_decode($item->css);
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
 			}
 
 			if (!empty($item->php_postflight_update))
@@ -107,22 +107,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_postflight_update = base64_decode($item->php_postflight_update);
 			}
 
+			if (!empty($item->buildcompsql))
+			{
+				// base64 Decode buildcompsql.
+				$item->buildcompsql = base64_decode($item->buildcompsql);
+			}
+
 			if (!empty($item->php_preflight_update))
 			{
 				// base64 Decode php_preflight_update.
 				$item->php_preflight_update = base64_decode($item->php_preflight_update);
 			}
 
-			if (!empty($item->readme))
+			if (!empty($item->php_helper_both))
 			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
-			}
-
-			if (!empty($item->php_preflight_install))
-			{
-				// base64 Decode php_preflight_install.
-				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+				// base64 Decode php_helper_both.
+				$item->php_helper_both = base64_decode($item->php_helper_both);
 			}
 
 			if (!empty($item->php_postflight_install))
@@ -137,10 +137,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 			}
 
-			if (!empty($item->php_helper_both))
+			if (!empty($item->php_preflight_install))
 			{
-				// base64 Decode php_helper_both.
-				$item->php_helper_both = base64_decode($item->php_helper_both);
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
 			}
 
 			if (!empty($item->php_helper_admin))
@@ -167,22 +173,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_site_event = base64_decode($item->php_site_event);
 			}
 
-			if (!empty($item->sql))
+			if (!empty($item->css))
 			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
+				// base64 Decode css.
+				$item->css = base64_decode($item->css);
 			}
 
 			if (!empty($item->php_dashboard_methods))
 			{
 				// base64 Decode php_dashboard_methods.
 				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
-			}
-
-			if (!empty($item->buildcompsql))
-			{
-				// base64 Decode buildcompsql.
-				$item->buildcompsql = base64_decode($item->buildcompsql);
 			}
 
 			// Get the basic encription.
@@ -1252,10 +1252,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the css string to base64 string.
-		if (isset($data['css']))
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
 		{
-			$data['css'] = base64_encode($data['css']);
+			$data['readme'] = base64_encode($data['readme']);
 		}
 
 		// Set the php_postflight_update string to base64 string.
@@ -1264,22 +1264,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
+		// Set the buildcompsql string to base64 string.
+		if (isset($data['buildcompsql']))
+		{
+			$data['buildcompsql'] = base64_encode($data['buildcompsql']);
+		}
+
 		// Set the php_preflight_update string to base64 string.
 		if (isset($data['php_preflight_update']))
 		{
 			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
 		}
 
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
+		// Set the php_helper_both string to base64 string.
+		if (isset($data['php_helper_both']))
 		{
-			$data['readme'] = base64_encode($data['readme']);
-		}
-
-		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
-		{
-			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
 		}
 
 		// Set the php_postflight_install string to base64 string.
@@ -1294,10 +1294,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
-		// Set the php_helper_both string to base64 string.
-		if (isset($data['php_helper_both']))
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
 		{
-			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
 		}
 
 		// Set the php_helper_admin string to base64 string.
@@ -1324,22 +1330,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_site_event'] = base64_encode($data['php_site_event']);
 		}
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
+		// Set the css string to base64 string.
+		if (isset($data['css']))
 		{
-			$data['sql'] = base64_encode($data['sql']);
+			$data['css'] = base64_encode($data['css']);
 		}
 
 		// Set the php_dashboard_methods string to base64 string.
 		if (isset($data['php_dashboard_methods']))
 		{
 			$data['php_dashboard_methods'] = base64_encode($data['php_dashboard_methods']);
-		}
-
-		// Set the buildcompsql string to base64 string.
-		if (isset($data['buildcompsql']))
-		{
-			$data['buildcompsql'] = base64_encode($data['buildcompsql']);
 		}
 
 		// Get the basic encription key.

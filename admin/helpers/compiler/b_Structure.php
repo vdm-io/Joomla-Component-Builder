@@ -46,11 +46,165 @@ class Structure extends Get
 	public $fileCount = 0;
 	
 	/**
+	 * The page counter
+	 * 
+	 * @var     int
+	 */
+	public $pageCount = 0;
+	
+	/**
 	 * The line counter
 	 * 
 	 * @var     int
 	 */
 	public $lineCount = 0;
+	
+	/**
+	 * The seconds counter
+	 * 
+	 * @var     int
+	 */
+	public $seconds = 0;
+	
+	/**
+	 * The actual seconds counter
+	 * 
+	 * @var     int
+	 */
+	public $actualSeconds = 0;
+	
+	/**
+	 * The folder seconds counter
+	 * 
+	 * @var     int
+	 */
+	public $folderSeconds = 0;
+	
+	/**
+	 * The file seconds counter
+	 * 
+	 * @var     int
+	 */
+	public $fileSeconds = 0;
+	
+	/**
+	 * The line seconds counter
+	 * 
+	 * @var     int
+	 */
+	public $lineSeconds = 0;
+	
+	/**
+	 * The seconds debugging counter
+	 * 
+	 * @var     int
+	 */
+	public $secondsDebugging = 0;
+	
+	/**
+	 * The seconds planning counter
+	 * 
+	 * @var     int
+	 */
+	public $secondsPlanning = 0;
+	
+	/**
+	 * The seconds mapping counter
+	 * 
+	 * @var     int
+	 */
+	public $secondsMapping = 0;
+	
+	/**
+	 * The seconds office counter
+	 * 
+	 * @var     int
+	 */
+	public $secondsOffice = 0;
+	
+	/**
+	 * The total hours counter
+	 * 
+	 * @var     int
+	 */
+	public $totalHours = 0;
+	
+	/**
+	 * The debugging hours counter
+	 * 
+	 * @var     int
+	 */
+	public $debuggingHours = 0;
+	
+	/**
+	 * The planning hours counter
+	 * 
+	 * @var     int
+	 */
+	public $planningHours = 0;
+	
+	/**
+	 * The mapping hours counter
+	 * 
+	 * @var     int
+	 */
+	public $mappingHours = 0;
+	
+	/**
+	 * The office hours counter
+	 * 
+	 * @var     int
+	 */
+	public $officeHours = 0;
+	
+	/**
+	 * The actual Total Hours counter
+	 * 
+	 * @var     int
+	 */
+	public $actualTotalHours = 0;
+	
+	/**
+	 * The actual hours spent counter
+	 * 
+	 * @var     int
+	 */
+	public $actualHoursSpent = 0;
+	
+	/**
+	 * The actual days spent counter
+	 * 
+	 * @var     int
+	 */
+	public $actualDaysSpent = 0;
+	
+	/**
+	 * The total days counter
+	 * 
+	 * @var     int
+	 */
+	public $totalDays = 0;
+	
+	/**
+	 * The actual Total Days counter
+	 * 
+	 * @var     int
+	 */
+	public $actualTotalDays = 0;
+	
+	/**
+	 * The project week time counter
+	 * 
+	 * @var     int
+	 */
+	public $projectWeekTime = 0;
+	
+	/**
+	 * The project month time counter
+	 * 
+	 * @var     int
+	 */
+	public $projectMonthTime = 0;
 	
 	/**
 	 * The Joomla Version

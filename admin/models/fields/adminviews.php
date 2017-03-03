@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.6
-	@build			1st March, 2017
+	@build			3rd March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		adminviews.php
@@ -151,7 +151,7 @@ class JFormFieldAdminviews extends JFormFieldList
 	{
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','adminview_system_name')));
+		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','before_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
 		$query->where($db->quoteName('a.published') . ' = 1');
 		$query->order('a.system_name ASC');
@@ -163,7 +163,7 @@ class JFormFieldAdminviews extends JFormFieldList
 			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->adminview_system_name);
+				$options[] = JHtml::_('select.option', $item->id, $item->before_system_name);
 			}
 		}
 		return $options;

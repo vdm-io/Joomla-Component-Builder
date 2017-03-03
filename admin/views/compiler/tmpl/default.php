@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 26 of this MVC
-	@build			28th February, 2017
+	@version		@update number 46 of this MVC
+	@build			3rd March, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		default.php
@@ -27,7 +27,8 @@
 defined('_JEXEC') or die('Restricted access'); 
 
 $this->app->input->set('hidemainmenu', false);
-$selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3><p>' . JText::_('COM_COMPONENTBUILDER_PLEASE_SELECT_A_COMPONENT_THAT_YOU_WOULD_LIKE_TO_COMPILE') . '</p>';
+$selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
+$selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_PLEASE_SELECT_A_COMPONENT_THAT_YOU_WOULD_LIKE_TO_COMPILE') . '</p>';
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
@@ -89,16 +90,16 @@ jQuery(document).ready(function($) {
 });
 </script>
 <?php if(!empty( $this->sidebar)): ?>
-	<div id="j-sidebar-container" class="span2">
-		<?php echo $this->sidebar; ?>
-	</div>
-	<div id="j-main-container" class="span10">
+<div id="j-sidebar-container" class="span2">
+	<?php echo $this->sidebar; ?>
+</div>
+<div id="j-main-container" class="span10">
 <?php else : ?>
-	<div id="j-main-container">
+<div id="j-main-container">
 <?php endif; ?>
-		<div id="form">
+	<div id="form">
 		<div class="span6">
-			<h3><?php echo JText::_('COM_COMPONENTBUILDER_READY_TO_COMPILE_YOUR_COMPONENT'); ?></h3>
+			<h3><?php echo JText::_('COM_COMPONENTBUILDER_READY_TO_COMPILE_A_COMPONENT'); ?></h3>
 			<form action="index.php?option=com_componentbuilder&view=compiler" method="post" name="compilerForm" id="compilerForm" class="form-validate" enctype="multipart/form-data">
 				<div>
 				<span class="notice" style="display:none; color:red;"><?php echo JText::_('COM_COMPONENTBUILDER_YOU_MUST_SELECT_A_COMPONENT'); ?></span><br />
@@ -121,20 +122,26 @@ jQuery(document).ready(function($) {
 				<?php echo JHtml::_('form.token'); ?>
 			</form>
 		</div>
-		<div class="span6" id="component-details">
-			<?php echo $selectNotice; ?>
+		<div class="span6">
+			<div id="component-details"><?php echo $selectNotice; ?></div>
+			<div id="noticeboard" class="well well-small">
+				<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span id="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
+				<div id="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
+				<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
+			</div>
 		</div>
-		</div>
-		<div id="clear" style="display:none;">
-			<h1><?php echo JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT_CLEARING_THE_TMP_FOLDER'); ?> <span class="loading-dots">.</span></h1>
-			<div class="clearfix"></div>
-		</div>
-		<div id="compiler" style="display:none;">
-			<h1><?php echo JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT_COMPILING_THE_COMPONENT'); ?> <span class="loading-dots">.</span></h1>
-			<img src="components/com_componentbuilder/assets/images/ajax-loader.gif" />
+	</div>
+	<div id="clear" style="display:none;">
+		<h1><?php echo JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT_CLEARING_THE_TMP_FOLDER'); ?> <span class="loading-dots">.</span></h1>
 		<div class="clearfix"></div>
 	</div>
-<script>
+	<div id="compiler" style="display:none;">
+		<h1><?php echo JText::sprintf('COM_COMPONENTBUILDER_S_PLEASE_WAIT_THE_COMPONENT_IS_BEING_COMPILED', $this->user->name); ?><span class="loading-dots">.</span></h1>
+		<img src="components/com_componentbuilder/assets/images/ajax-loader.gif" />
+		<div class="clearfix"></div>
+	</div>
+</div>
+<script type="text/javascript">
 // token 
 var token = '<?php echo JSession::getFormToken(); ?>';
 jQuery('#compilerForm').on('change', '#component',function (e)
@@ -142,9 +149,11 @@ jQuery('#compilerForm').on('change', '#component',function (e)
 	var component = jQuery('#component').val();
 	if(component == "") {
 		jQuery('#component-details').html("<?php echo $selectNotice; ?>");
+		jQuery("#noticeboard").show();
 		jQuery('.notice').show();
 	} else {
 		getComponentDetails(component);
+		jQuery("#noticeboard").hide();
 		jQuery('.notice').hide();
 	}
 });
