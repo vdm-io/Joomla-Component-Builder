@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.6
-	@build			3rd March, 2017
+	@build			6th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		publishing.php

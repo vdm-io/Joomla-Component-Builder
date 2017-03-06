@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.6
-	@build			3rd March, 2017
+	@build			6th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -798,13 +798,18 @@ abstract class ComponentbuilderHelper
 
 		if (self::checkArray($where))
 		{
+			// prep main <-- why? well if $main='' is empty then $table can be categories or users
+			if (self::checkString($main))
+			{
+				$main = '_'.ltrim($main, '_');
+			}
 			// Get a db connection.
 			$db = JFactory::getDbo();
 			// Create a new query object.
 			$query = $db->getQuery(true);
 
 			$query->select($db->quoteName(array($what)));
-			$query->from($db->quoteName('#__'.$main.'_'.$table));
+			$query->from($db->quoteName('#_'.$main.'_'.$table));
 			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
 			$db->setQuery($query);
 			$db->execute();

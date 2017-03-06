@@ -146,13 +146,18 @@ abstract class ###Component###Helper
 
 		if (self::checkArray($where))
 		{
+			// prep main <-- why? well if $main='' is empty then $table can be categories or users
+			if (self::checkString($main))
+			{
+				$main = '_'.ltrim($main, '_');
+			}
 			// Get a db connection.
 			$db = JFactory::getDbo();
 			// Create a new query object.
 			$query = $db->getQuery(true);
 
 			$query->select($db->quoteName(array($what)));
-			$query->from($db->quoteName('#__'.$main.'_'.$table));
+			$query->from($db->quoteName('#_'.$main.'_'.$table));
 			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
 			$db->setQuery($query);
 			$db->execute();

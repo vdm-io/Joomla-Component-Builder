@@ -311,7 +311,14 @@ class Fields extends Structure
 	 * 
 	 * @var    array
 	 */
-	public $fieldsNames = array();
+	public $fieldsNames = array();	
+	
+	/**
+	 * Set unique Names
+	 * 
+	 * @var    array
+	 */
+	public $uniqueNames = array();
 	
 	/**
 	 * Default Fields
@@ -368,6 +375,19 @@ class Fields extends Structure
 			// setup the list view and single view name
 			$listViewName = ComponentbuilderHelper::safeString($view['settings']->name_list);
 			$viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
+			// set some place holder for this view
+			$this->placeholders['###view###'] = $viewName;
+			$this->placeholders['###VIEW###'] = strtoupper($viewName);
+			$this->placeholders['###View###'] = ucfirst($viewName);
+			$this->placeholders['[[[view]]]'] = $this->placeholders['###view###'];
+			$this->placeholders['[[[VIEW]]]'] = $this->placeholders['###VIEW###'];
+			$this->placeholders['[[[View]]]'] = $this->placeholders['###View###'];			
+			$this->placeholders['###views###'] = $listViewName;
+			$this->placeholders['###VIEWS###'] = strtoupper($listViewName);
+			$this->placeholders['###Views###'] = ucfirst($listViewName);
+			$this->placeholders['[[[views]]]'] = $this->placeholders['###views###'];
+			$this->placeholders['[[[VIEWS]]]'] = $this->placeholders['###VIEWS###'];
+			$this->placeholders['[[[Views]]]'] = $this->placeholders['###Views###'];
 			// add metadata to the view
 			if ($view['metadata'])
 			{
@@ -385,12 +405,12 @@ class Fields extends Structure
 				$readOnly = "\t\t\t" . 'readonly="true"' . PHP_EOL."\t\t\t" . 'disabled="true"';
 			}
 			// main lang prefix
-			$langView = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($view['settings']->name_single, 'U');
-			$langViews = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
+			$langView = $this->langPrefix . '_' . $this->placeholders['###VIEW###'];
+			$langViews = $this->langPrefix . '_' . $this->placeholders['###VIEWS###'];
 			// set default lang
 			$this->langContent[$this->lang][$langView] = $view['settings']->name_single;
 			$this->langContent[$this->lang][$langViews] = $view['settings']->name_list;
-			// set the singel name
+			// set the single name
 			$viewSingleName = ComponentbuilderHelper::safeString($view['settings']->name_single, 'W');
 			// set global item strings
 			$this->langContent[$this->lang][$langViews . '_N_ITEMS_ARCHIVED'] = "%s " . $view['settings']->name_list . " archived.";
@@ -427,6 +447,12 @@ class Fields extends Structure
 			$this->langContent[$this->lang][$langView . '_VERSION_DESC'] = "A count of the number of times this " . $view['settings']->name_single . " has been revised.";
 			$this->langContent[$this->lang][$langView . '_SAVE_WARNING'] = "Alias already existed so a number was added at the end. You can re-edit the " . $view['settings']->name_single . " to customise the alias.";
 			
+			// check if the same field is added multiple times
+			foreach ($view['settings']->fields as $field)
+			{
+				$name = ComponentbuilderHelper::safeString($field['settings']->name);
+				$this->setUniqueNameKeeper($field, $view['settings']->type, $name, $viewName);
+			}
 			// start adding dynamc fields
 			$dynamcfields = '';
 			// place holders
@@ -633,6 +659,8 @@ class Fields extends Structure
 				$fieldSet[] = "\t\t</fieldset>";
 				$fieldSet[] = "\t</fields>";
 			}
+			// just to be safe, lets clear the view placeholders
+			$this->clearFromPlaceHolders('view');
 			// retunr the set
 			return implode(PHP_EOL, $fieldSet);
 		}
@@ -1135,18 +1163,18 @@ class Fields extends Structure
 	/**
 	 * set field attributes
 	 * 
-	 * @param   array    $field  The field data
-	 * @param   int      $viewType The view type
-	 * @param   string   $name The field name
-	 * @param   string   $typeName The field type
-	 * @param   boolean  $multiple The switch to set multiple selection option
-	 * @param   string   $langLabel The language string for field label
-	 * @param   string   $langView The language string of the view
+	 * @param   array    $field         The field data
+	 * @param   int      $viewType      The view type
+	 * @param   string   $name          The field name
+	 * @param   string   $typeName      The field type
+	 * @param   boolean  $multiple      The switch to set multiple selection option
+	 * @param   string   $langLabel     The language string for field label
+	 * @param   string   $langView      The language string of the view
 	 * @param   string   $spacerCounter The space counter value
-	 * @param   string   $listViewName The list view name
-	 * @param   string   $viewName The singel view name
-	 * @param   array    $placeholders The place holder and replace values
-	 * @param   boolean  $repeatable The repeatable field switch
+	 * @param   string   $listViewName  The list view name
+	 * @param   string   $viewName      The singel view name
+	 * @param   array    $placeholders  The place holder and replace values
+	 * @param   boolean  $repeatable    The repeatable field switch
 	 *
 	 * @return  array The field attributes
 	 * 
@@ -1264,12 +1292,16 @@ class Fields extends Structure
 					// use field core name only if not found in xml
 					if (!ComponentbuilderHelper::checkString($xmlValue))
 					{
+						// make sure the XML name is uniqe, so we can add one field multiple times
+						$name = $this->uniqueName($name, $viewName);
 						$xmlValue = $name;
 					}
 					// set the name if found
 					else
 					{
-						$name = $xmlValue;
+						// make sure the XML name is uniqe, so we can add one field multiple times
+						$xmlValue = $this->uniqueName($xmlValue, $viewName);
+						$name = $this->setPlaceholders($xmlValue);
 					}
 				}
 				elseif ($property['name'] === 'extension' || $property['name'] === 'directory')
@@ -1381,6 +1413,14 @@ class Fields extends Structure
 				// check if translatable
 				if (ComponentbuilderHelper::checkString($xmlValue) && $property['translatable'] == 1)
 				{
+					// update lable if field use multiple times
+					if ($property['name'] === 'label')
+					{
+						if (isset($fieldAttributes['name']) && isset($this->uniqueNames[$viewName]['names'][$fieldAttributes['name']]))
+						{
+							$xmlValue .= ' (' . ComponentbuilderHelper::safeString($this->uniqueNames[$viewName]['names'][$fieldAttributes['name']]) . ')';
+						}
+					}
 					// replace placeholders
 					$xmlValue = $this->setPlaceholders($xmlValue, $placeholders);
 					// insure custom lables dont get messed up
@@ -1432,18 +1472,17 @@ class Fields extends Structure
 							$xmlValue = $property['example'];
 						}
 					}
-
-					$fieldAttributes[$property['name']] = $xmlValue;
-
 					// load to langBuilder down the line
 					if ($property['name'] === 'label')
 					{
-						$langLabel = $xmlValue;
 						if ($setCustom)
 						{
 							$fieldAttributes['custom']['label'] = $customLabel;
 						}
+						$langLabel = $xmlValue;
 					}
+					// now set the value
+					$fieldAttributes[$property['name']] = $xmlValue;
 				}
 			}
 			// do some nice twigs beyond the default
@@ -1458,6 +1497,123 @@ class Fields extends Structure
 			}
 		}
 		return $fieldAttributes;
+	}
+
+	/**
+	 * Keep track of the field names, to see if it used multiple times
+	 * 
+	 * @param   array    $field     The field data
+	 * @param   string   $typeName  The field type
+	 * @param   string   $name      The field name
+	 * @param   string   $viewName  The singel view name
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function setUniqueNameKeeper(&$field, &$typeName, &$name, $viewName)
+	{
+		// setup a default field
+		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
+		{
+			foreach ($field['settings']->properties as $property)
+			{
+				// reset
+				$xmlValue = '';
+				if ($property['name'] === 'name')
+				{
+					// if category then name must be catid (only one per view)
+					if ($typeName === 'category')
+					{
+						// only one allowed
+						return;
+					}
+					// if tag is set then enable all tag options for this view (only one per view)
+					elseif ($typeName === 'tag')
+					{
+						// only one allowed
+						return;
+					}
+					// if the field is set as alias it must be called alias
+					elseif (isset($field['alias']) && $field['alias'])
+					{
+						// only one allowed
+						return;
+					}
+					elseif ($typeName === 'spacer')
+					{
+						// not needed here
+						return;
+					}
+					else
+					{
+						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
+					}
+
+					// use field core name only if not found in xml
+					if (!ComponentbuilderHelper::checkString($xmlValue))
+					{
+						$xmlValue = $name;
+					}
+					// make sure the XML name is uniqe, so we can add one field multiple times
+					return $this->setUniqueNameCounter($xmlValue, $viewName);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Count how many times the same field is used per view
+	 * 
+	 * @param   string   $name The name of the field
+	 * @param   string   $view The name of the view
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function setUniqueNameCounter($name, $view)
+	{
+		if (!isset($this->uniqueNames[$view]))
+		{
+			$this->uniqueNames[$view] = array();
+			$this->uniqueNames[$view]['counter'] = array();
+			$this->uniqueNames[$view]['names'] = array();
+		}
+		if (!isset($this->uniqueNames[$view]['counter'][$name]))
+		{
+			$this->uniqueNames[$view]['counter'][$name] = 1;
+			return;
+		}
+		// count how many times the field is used
+		$this->uniqueNames[$view]['counter'][$name]++;
+		return;
+	}
+	
+	/**
+	 * Naming each field with an unique name
+	 * 
+	 * @param   string   $name The name of the field
+	 * @param   string   $view The name of the view
+	 *
+	 * @return  string   the name
+	 * 
+	 */
+	protected function uniqueName($name, $view)
+	{
+		// only increment if the field name is used multiple times
+		if (isset($this->uniqueNames[$view]['counter'][$name]) && $this->uniqueNames[$view]['counter'][$name] > 1)
+		{
+			$counter = $this->uniqueNames[$view]['counter'][$name];
+			$uniqueName = ComponentbuilderHelper::safeString($name . '_' . $counter);
+			while (isset($this->uniqueNames[$view]['names'][$uniqueName]))
+			{
+				$counter--;
+				$uniqueName = ComponentbuilderHelper::safeString($name . '_' . $counter);
+			}
+			// set the new name
+			$this->uniqueNames[$view]['names'][$uniqueName] = $counter;
+			return $uniqueName;
+		}
+		return $name;
 	}
 
 

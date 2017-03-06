@@ -80,13 +80,13 @@ class Infusion extends Interpretation
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
 			// ###COMPONENT###
-			$this->fileContentStatic['###COMPONENT###'] = ComponentbuilderHelper::safeString($this->componentData->name_code, 'U');
+			$this->fileContentStatic['###COMPONENT###'] = $this->placeholders['###COMPONENT###'];
 
 			// ###Component###
-			$this->fileContentStatic['###Component###'] = ComponentbuilderHelper::safeString($this->componentData->name_code, 'F');
+			$this->fileContentStatic['###Component###'] = $this->placeholders['###Component###'];
 
 			// ###component###
-			$this->fileContentStatic['###component###'] = ComponentbuilderHelper::safeString($this->componentData->name_code);
+			$this->fileContentStatic['###component###'] = $this->placeholders['###component###'];
 
 			// ###COMPANYNAME###
 			$this->fileContentStatic['###COMPANYNAME###'] = trim(JFilterOutput::cleanText($this->componentData->companyname));
@@ -132,20 +132,13 @@ class Infusion extends Interpretation
 
 			// ###ACCESS_SECTIONS###
 			$this->fileContentStatic['###ACCESS_SECTIONS###'] = $this->setAccessSections();
-
-			// set component place holders
-			$this->placeholders = array(
-				'###Component###'		=> $this->fileContentStatic['###Component###'],
-				'###component###'		=> $this->fileContentStatic['###component###'],
-				'###COMPONENT###'		=> $this->fileContentStatic['###COMPONENT###'],
-				'[[[Component]]]'		=> $this->fileContentStatic['###Component###'],
-				'[[[component]]]'		=> $this->fileContentStatic['###component###'],
-				'[[[COMPONENT]]]'		=> $this->fileContentStatic['###COMPONENT###']
-				);
 			
 			// ###CONFIG_FIELDSETS###
 			$keepLang = $this->lang;
 			$this->lang = 'admin';
+			
+			// start loading the category tree scripts
+			 $this->fileContentStatic['###CATEGORY_CLASS_TREES###'] = '';
 			// run the field sets for first time
 			$this->setConfigFieldsets(1);
 			$this->lang = $keepLang;
@@ -216,6 +209,9 @@ class Infusion extends Interpretation
                         // start dynamic build
                         foreach ($this->componentData->admin_views as $view)
                         {
+				// just to be safe, lets clear the view placeholders
+				$this->clearFromPlaceHolders('view');
+				// set the target
                                 $this->target	= 'admin';
                                 $this->lang     = 'admin';
                                 // set main keys
@@ -253,11 +249,11 @@ class Infusion extends Interpretation
 
                                         // set some place holder for the views
                                         $this->placeholders['###view###'] = $viewName_single;
-                                        $this->placeholders['###VIEW###'] = $viewName_u;
                                         $this->placeholders['###View###'] = $viewName_f;
+                                        $this->placeholders['###VIEW###'] = $viewName_u;
                                         $this->placeholders['[[[view]]]'] = $viewName_single;
-                                        $this->placeholders['[[[VIEW]]]'] = $viewName_u;
                                         $this->placeholders['[[[View]]]'] = $viewName_f;
+                                        $this->placeholders['[[[VIEW]]]'] = $viewName_u;
 
                                         // set license per view if needed
                                         $this->setLockLicensePer($viewName_single, $this->target);
@@ -389,11 +385,11 @@ class Infusion extends Interpretation
 
                                         // set some place holder for the views
                                         $this->placeholders['###views###'] = $viewName_list;
-                                        $this->placeholders['###VIEWS###'] = $viewsName_u;
                                         $this->placeholders['###Views###'] = $viewsName_f;
+                                        $this->placeholders['###VIEWS###'] = $viewsName_u;
                                         $this->placeholders['[[[views]]]'] = $viewName_list;
-                                        $this->placeholders['[[[VIEWS]]]'] = $viewsName_u;
                                         $this->placeholders['[[[Views]]]'] = $viewsName_f;
+                                        $this->placeholders['[[[VIEWS]]]'] = $viewsName_u;
 
                                         // set the export/import option
                                         if ($view['port'])

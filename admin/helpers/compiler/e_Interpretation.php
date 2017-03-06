@@ -9208,6 +9208,31 @@ class Interpretation extends Fields
 				$otherViews = $viewName_list;
 				$otherView = $viewName_single;
 			}
+			// load the category helper details in not already loaded
+			if (!isset($this->fileContentDynamic['category'.$otherViews]['###view###']))
+			{
+				// lets also set the category helper for this view
+				$target = array('site' => 'category'.$viewName_list);
+				$this->buildDynamique($target, 'category');
+				// insure the file gets updated
+				$this->fileContentDynamic['category'.$otherViews]['###view###'] = $otherView;
+				$this->fileContentDynamic['category'.$otherViews]['###View###'] = ucfirst($otherView);
+				$this->fileContentDynamic['category'.$otherViews]['###views###'] = $otherViews;
+				$this->fileContentDynamic['category'.$otherViews]['###Views###'] = ucfirst($otherViews);
+				// set script to global helper file
+				$includeHelper = array();
+				$includeHelper[] = "\n//".$this->setLine(__LINE__)."Insure this view category file is loaded.";
+				$includeHelper[] = "\$classname = '".$this->fileContentStatic['###component###'] . ucfirst($viewName_list) . "Categories';";
+				$includeHelper[] = "if (!class_exists(\$classname))";
+				$includeHelper[] = "{";
+				$includeHelper[] = "\t\$path = JPATH_SITE . '/components/com_".$this->fileContentStatic['###component###']."/helpers/category" . $viewName_list . ".php';";
+				$includeHelper[] = "\tif (is_file(\$path))";
+				$includeHelper[] = "\t{";
+				$includeHelper[] = "\t\tinclude_once \$path;";
+				$includeHelper[] = "\t}";
+				$includeHelper[] = "}";
+				$this->fileContentStatic['###CATEGORY_CLASS_TREES###'] .= implode("\n",$includeHelper);
+			}
 			// return category view string
 			if (isset($this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###']) && ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###']))
 			{

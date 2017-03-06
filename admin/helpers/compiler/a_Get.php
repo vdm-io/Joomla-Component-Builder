@@ -529,6 +529,14 @@ class Get
 
 		// Load the results as a list of stdClass objects
 		$component = $this->db->loadObject();
+		
+		// set component place holders
+		$this->placeholders['###component###'] = ComponentbuilderHelper::safeString($component->name_code);
+		$this->placeholders['###Component###'] = ComponentbuilderHelper::safeString($component->name_code, 'F');
+		$this->placeholders['###COMPONENT###'] = ComponentbuilderHelper::safeString($component->name_code, 'U');
+		$this->placeholders['[[[component]]]'] = $this->placeholders['###component###'];
+		$this->placeholders['[[[Component]]]'] = $this->placeholders['###Component###'];
+		$this->placeholders['[[[COMPONENT]]]'] = $this->placeholders['###COMPONENT###'];
 		// set component sales name
 		$component->sales_name = ComponentbuilderHelper::safeString($component->system_name);
 		// ensure version naming is correct
@@ -669,7 +677,7 @@ class Get
 		}
 
 		// set the site_view data
-		$site_views	= json_decode($component->addsite_views,true);
+		$site_views = json_decode($component->addsite_views,true);
 		if (ComponentbuilderHelper::checkArray($site_views))
 		{
 			foreach ($site_views as $option => $values)
@@ -690,11 +698,14 @@ class Get
 			$this->lang = 'site';
 			$this->target = 'site';
 			// load the view and field data
-			foreach ($component->site_views as $key => &$view)
+			if (isset($component->site_views) && ComponentbuilderHelper::checkArray($component->site_views))
 			{
-				// has become a lacacy issue, can't remove this
-				$view['view'] = $view['siteview'];
-				$view['settings'] = $this->getCustomViewData($view['view']);
+				foreach ($component->site_views as $key => &$view)
+				{
+					// has become a lacacy issue, can't remove this
+					$view['view'] = $view['siteview'];
+					$view['settings'] = $this->getCustomViewData($view['view']);
+				}
 			}
 		}
 
@@ -720,11 +731,14 @@ class Get
 			$this->lang = 'admin';
 			$this->target = 'custom_admin';
 			// load the view and field data
-			foreach ($component->custom_admin_views as $key => &$view)
+			if (isset($component->custom_admin_views) && ComponentbuilderHelper::checkArray($component->custom_admin_views))
 			{
-				// has become a lacacy issue, can't remove this
-				$view['view'] = $view['customadminview'];
-				$view['settings'] = $this->getCustomViewData($view['view'], 'custom_admin_view');
+				foreach ($component->custom_admin_views as $key => &$view)
+				{
+					// has become a lacacy issue, can't remove this
+					$view['view'] = $view['customadminview'];
+					$view['settings'] = $this->getCustomViewData($view['view'], 'custom_admin_view');
+				}
 			}
 		}
 
