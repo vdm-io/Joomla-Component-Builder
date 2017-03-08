@@ -2318,7 +2318,11 @@ class Get
 					$langHolders["JText::sprintf('".$string."',"] = "JText::sprintf('".$keyLang."',";
 					$langHolders['JText::sprintf("'.$string.'",'] = 'JText::sprintf("'.$keyLang.'",';
 				}
-				$content = $this->setPlaceholders($content, $langHolders);
+				// only continue if we have value to replace
+				if (isset($langHolders) && ComponentbuilderHelper::checkArray($langHolders))
+				{
+					$content = $this->setPlaceholders($content, $langHolders);
+				}
 			}
 		}
 		return $content;
@@ -2733,7 +2737,11 @@ class Get
 	 */
 	public function setDynamicValues($string)
 	{
-		return $this->setLangStrings($this->setCustomCodeData($string));
+		if (ComponentbuilderHelper::checkString($string))
+		{
+			return $this->setLangStrings($this->setCustomCodeData($string));
+		}
+		return $string;
 	}
 	
 	/**

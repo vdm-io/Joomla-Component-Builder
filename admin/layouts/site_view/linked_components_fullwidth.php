@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.6
-	@build			6th March, 2017
+	@build			8th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		linked_components_fullwidth.php
@@ -28,7 +28,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->vyplinked_components;
+$items	= $displayData->vyrlinked_components;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit	= "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";

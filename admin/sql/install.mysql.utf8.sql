@@ -371,18 +371,18 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_codename` (`codename`),
-	KEY `idx_add_php_ajax` (`add_php_ajax`),
-	KEY `idx_main_get` (`main_get`),
-	KEY `idx_dynamic_get` (`dynamic_get`),
 	KEY `idx_add_php_document` (`add_php_document`),
-	KEY `idx_add_php_view` (`add_php_view`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
-	KEY `idx_add_custom_button` (`add_custom_button`),
+	KEY `idx_add_php_view` (`add_php_view`),
 	KEY `idx_add_php_jview` (`add_php_jview`),
 	KEY `idx_add_js_document` (`add_js_document`),
-	KEY `idx_button_position` (`button_position`),
+	KEY `idx_main_get` (`main_get`),
 	KEY `idx_add_css_document` (`add_css_document`),
-	KEY `idx_add_css` (`add_css`)
+	KEY `idx_dynamic_get` (`dynamic_get`),
+	KEY `idx_add_css` (`add_css`),
+	KEY `idx_add_php_ajax` (`add_php_ajax`),
+	KEY `idx_button_position` (`button_position`),
+	KEY `idx_add_custom_button` (`add_custom_button`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (

@@ -48,6 +48,9 @@ class Interpretation extends Fields
 	public $otherWhere			= array();
 	public $DashboardGetCustomData		= array();
 	public $customAdminAdded		= array();
+	
+	protected $hasCatIdRequest		= array();
+	protected $hasIdRequest			= array();
 
 	/**
 	 * Constructor
@@ -1073,15 +1076,27 @@ class Interpretation extends Fields
 			$xml .= PHP_EOL."\t\t\t".'<![CDATA['.$lang.'_DESC]]>';
 			$xml .= PHP_EOL."\t\t".'</message>';
 			$xml .= PHP_EOL."\t".'</layout>';
-			if (isset($this->hasIdRequest[$view['settings']->code]))
+			if (isset($this->hasIdRequest[$view['settings']->code]) || isset($this->hasCatIdRequest[$view['settings']->code]))
 			{
-				$requestField = str_replace($view['settings']->code.'_request_id', 'id', $this->hasIdRequest[$view['settings']->code]);
 				
 				$xml .= PHP_EOL."\t".'<!--'.$this->setLine(__LINE__).' Add fields to the request variables for the layout. -->';
 				$xml .= PHP_EOL."\t".'<fields name="request">';
 				$xml .= PHP_EOL."\t\t".'<fieldset name="request"';
 				$xml .= PHP_EOL."\t\t\t".'addfieldpath="/administrator/components/com_'.$this->fileContentStatic['###component###'].'/models/fields">';
-				$xml .= PHP_EOL."\t\t\t".$requestField;
+				if (isset($this->hasIdRequest[$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->hasIdRequest[$view['settings']->code]))
+				{
+					foreach($this->hasIdRequest[$view['settings']->code] as $requestFieldXML)
+					{
+						$xml .= PHP_EOL."\t\t\t".$requestFieldXML;
+					}
+				}
+				if (isset($this->hasCatIdRequest[$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->hasCatIdRequest[$view['settings']->code]))
+				{
+					foreach($this->hasCatIdRequest[$view['settings']->code] as $requestFieldXML)
+					{
+						$xml .= PHP_EOL."\t\t\t".$requestFieldXML;
+					}
+				}
 				$xml .= PHP_EOL."\t\t".'</fieldset>';
 				$xml .= PHP_EOL."\t".'</fields>';
 			}
@@ -2804,7 +2819,14 @@ class Interpretation extends Fields
                                                 $keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
 						$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
 						// add cpanel button TODO does not work well on site with permissions
-						$buttons[] = "\t".$tab."\tif (\$this->canDo->get('".$viewName.".".$keyCode."'))";
+						if ($custom_button['target'] == 2)
+						{
+							$buttons[] = "\t".$tab."\tif (\$this->user->authorise('".$viewName.".".$keyCode."'))";
+						}
+						else
+						{
+							$buttons[] = "\t".$tab."\tif (\$this->canDo->get('".$viewName.".".$keyCode."'))";
+						}
 						$buttons[] = "\t".$tab."\t{";
 						$buttons[] = "\t".$tab."\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
 						$buttons[] = "\t".$tab."\t\tJToolBarHelper::custom('".$viewName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
@@ -2818,7 +2840,7 @@ class Interpretation extends Fields
                                                 $keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
 						$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
 						// add cpanel button TODO does not work well on site with permissions
-						$buttons[] = "\t".$tab."\tif (\$this->canDo->get('".$viewName.".".$keyCode."'))";
+						$buttons[] = "\t".$tab."\tif (\$this->user->authorise('".$viewName.".".$keyCode."'))";
 						$buttons[] = "\t".$tab."\t{";
 						$buttons[] = "\t".$tab."\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
 						$buttons[] = "\t".$tab."\t\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
@@ -2850,7 +2872,7 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkString($view['settings']->php_controller) && $view['settings']->php_controller != '//')
 				{
 					// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-					$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER'.$list.'###'] =
+					$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_CONTROLLER###'] =
 					PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_controller, $this->placeholders);
 					if ('site' === $this->target)
 					{
@@ -2865,7 +2887,7 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkString($view['settings']->php_model) && $view['settings']->php_model != '//')
 				{
 					// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-					$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD'.$list.'###'] =
+					$this->fileContentDynamic[$viewName]['###'.$TARGET.'_CUSTOM_BUTTONS_METHOD###'] =
 					PHP_EOL.PHP_EOL.$this->setPlaceholders($view['settings']->php_model, $this->placeholders);
 				}
 			}
@@ -11883,23 +11905,41 @@ class Interpretation extends Fields
 				$tabCode = ComponentbuilderHelper::safeString($tab).'_custom_config';
 				$tabUpper = ComponentbuilderHelper::safeString($tab,'U');
 				$tabLower = ComponentbuilderHelper::safeString($tab);
-				// load the regust id setters for menu views
-				$viewRequest = 'name="'.$tabLower.'_request_id"';
+				// load the request id setters for menu views
+				$viewRequest = 'name="'.$tabLower.'_request_id';
 				foreach($tabFields as $et => $id_field)
 				{
 					if(strpos($id_field,$viewRequest) !== false)
 					{
-						// set the values needed to insure route is done correclty
-						$this->hasIdRequest[$tabLower] = $id_field;
+						$this->setRequestValues($tabLower, $id_field, $viewRequest, 'id', 'hasIdRequest');
 						unset($tabFields[$et]);
 					}
-					elseif (strpos($id_field,'_request_id"') !== false)
+					elseif (strpos($id_field,'_request_id') !== false)
 					{
 						// not loaded to a tab "view" name
-						$_viewRequest = ComponentbuilderHelper::getBetween($id_field,'name="','_request_id"');
-						// set the values needed to insure route is done correclty
-						$this->hasIdRequest[$_viewRequest] = $id_field;
+						$_viewRequest = ComponentbuilderHelper::getBetween($id_field,'name="','_request_id');
+						$searchIdKe = 'name="'.$_viewRequest.'_request_id';
+						$this->setRequestValues($_viewRequest, $id_field, $searchIdKe, 'id', 'hasIdRequest');
 						unset($tabFields[$et]);
+					}
+				}
+				// load the request catid setters for menu views
+				$viewRequestC = 'name="'.$tabLower.'_request_catid';
+				foreach($tabFields as $ci => $catid_field)
+				{
+					if(strpos($catid_field,$viewRequestC) !== false)
+					{
+						
+						$this->setRequestValues($tabLower, $catid_field, $viewRequestC, 'catid', 'hasCatIdRequest');
+						unset($tabFields[$ci]);
+					}
+					elseif (strpos($catid_field,'_request_catid') !== false)
+					{
+						// not loaded to a tab "view" name
+						$_viewRequestC = ComponentbuilderHelper::getBetween($catid_field,'name="','_request_catid');
+						$searchCatidKe = 'name="'.$_viewRequestC.'_request_catid';
+						$this->setRequestValues($_viewRequestC, $catid_field, $searchCatidKe, 'catid', 'hasCatIdRequest');
+						unset($tabFields[$ci]);
 					}
 				}
 				// load the global menu setters for single fields
@@ -11931,6 +11971,29 @@ class Interpretation extends Fields
 				}
 			}
 		}
+	}
+	
+	protected function setRequestValues($view, $field, $search, $target, $store)
+	{
+		$key = ComponentbuilderHelper::getBetween($field, $search, '"');
+		if (!ComponentbuilderHelper::checkString($key))
+		{
+			// is not having special var
+			$key = $target;
+			// update field
+			$field = str_replace($search . '"', 'name="'. $key . '"', $field);
+		}
+		else
+		{
+			// update field
+			$field = str_replace($search . $key . '"', 'name="'. $key . '"', $field);
+		}
+		if (!isset($this->{$store}[$view]))
+		{
+			$this->{$store}[$view] = array();
+		}
+		// set the values needed for view requests to be made
+		$this->{$store}[$view][$key] = $field;
 	}
 
 	public function setCustomControlConfigFieldsets($lang)
@@ -13391,30 +13454,8 @@ function vdm_dkim() {
 					$this->langContent['admin'][$siteDesc]	= ' Allows the users in this group to access site '.ComponentbuilderHelper::safeString($siteName,'w').'.';
 					$this->componentGlobal[$sortKey]              = "\t\t".'<action name="site.'.$siteCode.'.access" title="'.$siteTitle.'" description="'.$siteDesc.'" />';
 				}
-                                // add the custom permissions to use the buttons of this view
-                                /* if (ComponentbuilderHelper::checkArray($site_view['settings']->custom_buttons))
-                                {
-                                       foreach ($site_view['settings']->custom_buttons as $custom_buttons)
-                                       {
-                                                $siteButtonName  = $custom_buttons['name'];
-                                                $siteButtonCode  = ComponentbuilderHelper::safeString($siteButtonName);
-                                                $siteButtonTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($siteName.' '.$siteButtonName.' Button Access','U');
-                                                $siteButtonDesc  = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($siteName.' '.$siteButtonName.' Button Access','U').'_DESC';
-                                                $sortButtonKey   = ComponentbuilderHelper::safeString($siteButtonTitle);
-                                                $this->langContent['admin'][$siteButtonTitle]	= $siteName.' '.$siteButtonName.' Button Access';
-                                                $this->langContent['admin'][$siteButtonDesc]	= ' Allows the users in this group to access the '.ComponentbuilderHelper::safeString($siteButtonName,'w').' button.';
-                                                $this->componentGlobal[$sortButtonKey]  = "\t\t".'<action name="'.$siteCode.'.'.$siteButtonCode.'" title="'.$siteButtonTitle.'" description="'.$siteButtonDesc.'" />';
-                                       }
-                                }
-				// add menu controll view that has menus options
-				foreach ($menuControllers  as $menuController)
-				{
-					// add menu controll view that has menus options
-					if ($site_view[$menuController])
-					{
-						// TODO for CUSTOM MENUS!!!
-					}
-				} */
+				// add the custom permissions to use the buttons of this view
+				$this->addCustomButtonPermissions($site_view['settings'], $siteName, $siteCode);
                         }
                 }
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
