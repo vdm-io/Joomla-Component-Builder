@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 103 of this MVC
-	@build			3rd March, 2017
+	@version		@update number 104 of this MVC
+	@build			6th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -298,7 +298,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxtfields()
+	public function getVxvfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -367,13 +367,13 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxtfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxvfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxtfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxvfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxtfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxvfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxtfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxvfields($item->store, 'store');
 				}
 			}
 
@@ -413,7 +413,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVxtfields($value,$name)
+	public function selectionTranslationVxvfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
@@ -491,7 +491,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxulinked_components()
+	public function getVxwlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();

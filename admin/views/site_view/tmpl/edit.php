@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 48 of this MVC
-	@build			1st March, 2017
+	@version		@update number 51 of this MVC
+	@build			6th March, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -80,6 +80,12 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 	<?php echo JHtml::_('bootstrap.addTab', 'site_viewTab', 'custom_buttons', JText::_('COM_COMPONENTBUILDER_SITE_VIEW_CUSTOM_BUTTONS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
+			<div class="span6">
+				<?php echo JLayoutHelper::render('site_view.custom_buttons_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('site_view.custom_buttons_right', $this); ?>
+			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">

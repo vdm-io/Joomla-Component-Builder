@@ -696,6 +696,20 @@ abstract class ###Component###Helper
 		// 0nly continue if we have a string
                 if (self::checkString($string))
                 {
+			// create file name without the extention that is safe
+			if ($type === 'filename')
+			{
+				// make sure VDM is not in the string
+				$string = str_replace('VDM', 'vDm', $string);
+				// Remove anything which isn't a word, whitespace, number
+				// or any of the following caracters -_()
+				// If you don't need to handle multi-byte characters
+				// you can use preg_replace rather than mb_ereg_replace
+				// Thanks @Łukasz Rysiak!
+				$string = mb_ereg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				// http://stackoverflow.com/a/2021729/1429677
+				return preg_replace('/\s+/', ' ', $string);
+			}
 			// remove all other characters
 			$string = trim($string);
 			$string = preg_replace('/'.$spacer.'+/', ' ', $string);

@@ -107,6 +107,8 @@ class Compiler extends Infusion
 			$this->setLangFileData();
 			// move the update server into place
 			$this->setUpdateServer();
+			// set the global counters
+			$this->setCountingStuff();
 			// build read me
 			$this->buildReadMe();
 			// zip the component
@@ -302,6 +304,38 @@ class Compiler extends Infusion
 		$this->fileContentStatic['###BUILDDATE###'] = $this->fileContentStatic['###BUILDDATE###GLOBAL'];
 		$this->fileContentStatic['###VERSION###'] = $this->fileContentStatic['###VERSION###GLOBAL'];
 	}
+
+	// set all global numbers
+	protected function setCountingStuff()
+	{
+		// what is the size in terms of an A4 book
+		$this->pageCount		= round($this->lineCount / 56);
+		// setup the unrealistic numbers
+		$this->folderSeconds		= $this->folderCount * 5;
+		$this->fileSeconds		= $this->fileCount * 5;
+		$this->lineSeconds		= $this->lineCount * 10;
+		$this->seconds			= $this->folderSeconds + $this->fileSeconds + $this->lineSeconds;
+		$this->totalHours		= round($this->seconds / 3600);
+		$this->totalDays		= round($this->totalHours / 8);
+		// setup the more realistic numbers
+		$this->secondsDebugging		= $this->seconds / 4;
+		$this->secondsPlanning		= $this->seconds / 7;
+		$this->secondsMapping		= $this->seconds / 10;
+		$this->secondsOffice		= $this->seconds / 6;
+		$this->actualSeconds		= $this->folderSeconds + $this->fileSeconds + $this->lineSeconds + $this->secondsDebugging + $this->secondsPlanning + $this->secondsMapping + $this->secondsOffice;
+		$this->actualTotalHours		= round($this->actualSeconds / 3600);
+		$this->actualTotalDays		= round($this->actualTotalHours / 8);
+		$this->debuggingHours		= round($this->secondsDebugging / 3600);
+		$this->planningHours		= round($this->secondsPlanning / 3600);
+		$this->mappingHours		= round($this->secondsMapping / 3600);
+		$this->officeHours		= round($this->secondsOffice / 3600);
+		// the actual time spent
+		$this->actualHoursSpent		= $this->actualTotalHours - $this->totalHours;
+		$this->actualDaysSpent		= $this->actualTotalDays - $this->totalDays;
+		// calculate the projects actual time frame of completion
+		$this->projectWeekTime		= round($this->actualTotalDays / 5,1);
+		$this->projectMonthTime		= round($this->actualTotalDays / 24,1);		
+	}
 	
 	private function buildReadMe()
 	{
@@ -339,33 +373,6 @@ class Compiler extends Infusion
 	
 	private function buildReadMeData()
 	{
-		// what is the size in terms of an A4 book
-		$this->pageCount		= round($this->lineCount / 56);
-		// setup the unrealistic numbers
-		$this->folderSeconds		= $this->folderCount * 5;
-		$this->fileSeconds		= $this->fileCount * 5;
-		$this->lineSeconds		= $this->lineCount * 10;
-		$this->seconds			= $this->folderSeconds + $this->fileSeconds + $this->lineSeconds;
-		$this->totalHours		= round($this->seconds / 3600);
-		$this->totalDays		= round($this->totalHours / 8);
-		// setup the more realistic numbers
-		$this->secondsDebugging		= $this->seconds / 4;
-		$this->secondsPlanning		= $this->seconds / 7;
-		$this->secondsMapping		= $this->seconds / 10;
-		$this->secondsOffice		= $this->seconds / 6;
-		$this->actualSeconds		= $this->folderSeconds + $this->fileSeconds + $this->lineSeconds + $this->secondsDebugging + $this->secondsPlanning + $this->secondsMapping + $this->secondsOffice;
-		$this->actualTotalHours		= round($this->actualSeconds / 3600);
-		$this->actualTotalDays		= round($this->actualTotalHours / 8);
-		$this->debuggingHours		= round($this->secondsDebugging / 3600);
-		$this->planningHours		= round($this->secondsPlanning / 3600);
-		$this->mappingHours		= round($this->secondsMapping / 3600);
-		$this->officeHours		= round($this->secondsOffice / 3600);
-		// the actual time spent
-		$this->actualHoursSpent		= $this->actualTotalHours - $this->totalHours;
-		$this->actualDaysSpent		= $this->actualTotalDays - $this->totalDays;
-		// calculate the projects actual time frame of completion
-		$this->projectWeekTime		= round($this->actualTotalDays / 5,1);
-		$this->projectMonthTime		= round($this->actualTotalDays / 24,1);
 		// set some defaults
 		$this->fileContentStatic['###LINE_COUNT###']		= $this->lineCount;
 		$this->fileContentStatic['###FILE_COUNT###']		= $this->fileCount;

@@ -455,18 +455,13 @@ class Fields extends Structure
 			}
 			// start adding dynamc fields
 			$dynamcfields = '';
-			// place holders
-			$placeholders = array(
-			    '###component###' => $component,
-			    '###view###' => $viewName,
-			    '###views###' => $listViewName);
 			$spacerCounter = 'a';
 			// set the custom table key
 			$dbkey = 'g';
 			// TODO we should add the global and local view switch if field for front end
 			foreach ($view['settings']->fields as $field)
 			{
-				$dynamcfields .= $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $spacerCounter, $placeholders, $dbkey, true);
+				$dynamcfields .= $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $spacerCounter, $this->placeholders, $dbkey, true);
 			}
 			
 			// set the defautl fields
@@ -1247,7 +1242,7 @@ class Fields extends Structure
 					{
 						// quick check if this is a category linked to view page
 						$requeSt_id = ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"');
-						if (strpos($requeSt_id, '_request_id') !== false)
+						if (strpos($requeSt_id, '_request_id') !== false || strpos($requeSt_id, '_request_catid') !== false)
 						{
 							// keep it then, don't change
 							$xmlValue = $requeSt_id;
@@ -1301,7 +1296,7 @@ class Fields extends Structure
 					{
 						// make sure the XML name is uniqe, so we can add one field multiple times
 						$xmlValue = $this->uniqueName($xmlValue, $viewName);
-						$name = $this->setPlaceholders($xmlValue);
+						$name = $this->setPlaceholders($xmlValue, $placeholders);
 					}
 				}
 				elseif ($property['name'] === 'extension' || $property['name'] === 'directory')
