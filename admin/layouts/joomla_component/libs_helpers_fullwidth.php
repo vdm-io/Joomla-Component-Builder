@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.6
-	@build			8th March, 2017
+	@version		2.3.7
+	@build			12th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		libs_helpers_fullwidth.php
