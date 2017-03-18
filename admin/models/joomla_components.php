@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 101 of this MVC
+	@version		@update number 112 of this MVC
 	@build			18th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -56,6 +56,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		parent::__construct($config);
 	}
 
+	public $smartExport = array();
+	protected $templateIds = array();
+	protected $layoutIds = array();
+
 	/**
 	* Method to get list export data.
 	*
@@ -95,9 +99,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			if ($db->getNumRows())
 			{
 				$items = $db->loadObjectList();
-				// set values to display correctly.
+				// check if we have items
 				if (ComponentbuilderHelper::checkArray($items))
 				{
+					// start loading the components
+					$this->smartExport['components'] = array();
 					foreach ($items as $nr => &$item)
 					{
 						$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
@@ -105,12 +111,260 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						{
 							unset($items[$nr]);
 							continue;
-						}
-						
+						}						
+						// add config fields
+						$this->setData($user, $db, 'field', $item->addconfig, 'field');
+						// add admin views
+						$this->setData($user, $db, 'admin_view', $item->addadmin_views, 'adminview');
+						// add custom admin views
+						$this->setData($user, $db, 'custom_admin_view', $item->addcustom_admin_views, 'customadminview');
+						// add site views
+						$this->setData($user, $db, 'site_view', $item->addsite_views, 'siteview');
+						// load to global object
+						$this->smartExport['components'][$item->id] = $item;
+					}
+					// add templates
+					if (ComponentbuilderHelper::checkArray($this->templateIds))
+					{
+						$this->setData($user, $db, 'template', array('template' => $this->templateIds), 'template');
+					}
+					// add layouts
+					if (ComponentbuilderHelper::checkArray($this->layoutIds))
+					{
+						$this->setData($user, $db, 'layout', array('layout' => $this->layoutIds), 'layout');
+					}
+					// has any data been set
+					if (ComponentbuilderHelper::checkArray($this->smartExport['components']))
+					{
+						return true;
 					}
 				}
-				
-				return $items;
+			}
+		}
+		return false;
+	}
+
+	/**
+	* Method to get data of a given table.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	protected function setData(&$user, &$db, $table, $values, $key)
+	{
+		// if json convert to array
+		if (ComponentbuilderHelper::checkJson($values))
+		{
+			$values = json_decode($values, true);
+		}
+		// make sure we have an array
+		if (!ComponentbuilderHelper::checkArray($values) || !isset($values[$key]) || !ComponentbuilderHelper::checkArray($values[$key]))
+		{
+			return false;
+		}
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select($db->quoteName('a.*'));
+			
+		// From the componentbuilder_ANY table
+		$query->from($db->quoteName('#__componentbuilder_'. $table, 'a'));
+		$query->where('a.id IN (' . implode(',',$values[$key]) . ')');
+			
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+			// check if we have items
+			if (ComponentbuilderHelper::checkArray($items))
+			{
+				// set search array
+				if ('site_view' === $table || 'custom_admin_view' === $table)
+				{
+					$searchArray = array('php_view','php_jview','php_jview_display','php_document','js_document','css_document','css');
+				}
+				// start loading the data
+				if (!isset($this->smartExport[$table]))
+				{
+					$this->smartExport[$table] = array();
+				}
+				foreach ($items as $nr => &$item)
+				{
+					if (isset($this->smartExport[$table][$item->id]))
+					{
+						continue;
+					}
+					// actions to take if table is admin_view
+					if ('admin_view' === $table)
+					{
+						// add fields
+						$this->setData($user, $db, 'field', $item->addfields, 'field');
+					}
+					// actions to take if table is field
+					if ('field' === $table)
+					{
+						// add field types
+						$this->setData($user, $db, 'fieldtype', array('fieldtype' => array($item->fieldtype)), 'fieldtype');
+					}
+					// actions to take if table is site_view and custom_admin_view
+					if ('site_view' === $table || 'custom_admin_view' === $table)
+					{
+						// search for templates & layouts
+						$this->getTemplateLayout(base64_decode($item->default), $db);
+						// add search array templates and layouts
+						foreach ($searchArray as $scripter)
+						{
+							if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
+							{
+								$this->getTemplateLayout($view->$scripter, $db);
+							}
+						}
+						// add dynamic gets
+						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => array($item->main_get)), 'dynamic_get');
+						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => $item->custom_get), 'dynamic_get');
+					}
+					// load to global object
+					$this->smartExport[$table][$item->id] = $item;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Set Template and Layout Data
+	 * 
+	 * @param   string   $default  The content to check
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function getTemplateLayout($default, &$db)
+	{
+		// set the Template data
+		$temp1 = ComponentbuilderHelper::getAllBetween($default, "\$this->loadTemplate('","')");
+		$temp2 = ComponentbuilderHelper::getAllBetween($default, '$this->loadTemplate("','")');
+		$templates = array();
+		$again = array();
+		if (ComponentbuilderHelper::checkArray($temp1) && ComponentbuilderHelper::checkArray($temp2))
+		{
+			$templates = array_merge($temp1,$temp2);
+		}
+		else
+		{
+			if (ComponentbuilderHelper::checkArray($temp1))
+			{
+				$templates = $temp1;
+			}
+			elseif (ComponentbuilderHelper::checkArray($temp2))
+			{
+				$templates = $temp2;
+			}
+		}
+		if (ComponentbuilderHelper::checkArray($templates))
+		{
+			foreach ($templates as $template)
+			{
+				$data = $this->getDataWithAlias($template, 'template', $db);
+				if (ComponentbuilderHelper::checkArray($data))
+				{
+					if (!isset($this->templateIds[$data['id']]))
+					{
+						$this->templateIds[$data['id']] = $data['id'];
+						// call self to get child data
+						$again[] = $data['html'];
+						$again[] = $data['php_view'];
+					}
+				}
+			}
+		}
+		// set  the layout data
+		$lay1 = ComponentbuilderHelper::getAllBetween($default, "JLayoutHelper::render('","',");
+		$lay2 = ComponentbuilderHelper::getAllBetween($default, 'JLayoutHelper::render("','",');;
+		if (ComponentbuilderHelper::checkArray($lay1) && ComponentbuilderHelper::checkArray($lay2))
+		{
+			$layouts = array_merge($lay1,$lay2);
+		}
+		else
+		{
+			if (ComponentbuilderHelper::checkArray($lay1))
+			{
+				$layouts = $lay1;
+			}
+			elseif (ComponentbuilderHelper::checkArray($lay2))
+			{
+				$layouts = $lay2;
+			}
+		}
+		if (isset($layouts) && ComponentbuilderHelper::checkArray($layouts))
+		{
+			foreach ($layouts as $layout)
+			{
+				$data = $this->getDataWithAlias($layout, 'layout', $db);
+				if (ComponentbuilderHelper::checkArray($data))
+				{
+					if (!isset($this->layoutIds[$data['id']]))
+					{
+						$this->layoutIds[$data['id']] = $data['id'];
+						// call self to get child data
+						$again[] = $data['html'];
+						$again[] = $data['php_view'];
+					}
+				}
+			}
+		}
+		if (ComponentbuilderHelper::checkArray($again))
+		{
+			foreach ($again as $get)
+			{
+				$this->getTemplateLayout($get, $db);
+			}
+		}
+	}
+	
+	/**
+	 * Get Data With Alias
+	 * 
+	 * @param   string   $n_ame  The alias name
+	 * @param   string   $table  The table where to find the alias
+	 * @param   string   $view  The view code name
+	 *
+	 * @return  array The data found with the alias
+	 * 
+	 */
+	protected function getDataWithAlias($n_ame, $table, &$db)
+	{
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id', 'a.alias', 'a.'.$table, 'a.php_view', 'a.add_php_view')));
+		$query->from('#__componentbuilder_'.$table.' AS a');
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+		foreach ($rows as $row)
+		{
+			$k_ey = ComponentbuilderHelper::safeString($row->alias);
+			$key = preg_replace("/[^A-Za-z]/", '', $k_ey);
+			$name = preg_replace("/[^A-Za-z]/", '', $n_ame);
+			if ($k_ey == $n_ame || $key == $name)
+			{
+				$php_view = '';
+				if ($row->add_php_view == 1)
+				{
+					$php_view = base64_decode($row->php_view);
+				}
+				$contnent = base64_decode($row->{$table});
+				// return to continue the search
+				return array('id' => $row->id, 'html' => $contnent, 'php_view' => $php_view);
 			}
 		}
 		return false;

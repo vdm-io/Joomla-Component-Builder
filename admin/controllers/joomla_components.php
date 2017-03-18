@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 101 of this MVC
+	@version		@update number 112 of this MVC
 	@build			18th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -109,13 +109,13 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		return;
 	}  
 
-        public function exportComponent()
+        public function smartExport()
 	{
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		// check if export is allowed for this user.
 		$user = JFactory::getUser();
-		if ($user->authorise('[[[view]]].export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
+		if ($user->authorise('joomla_component.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// Get the input
 			$input = JFactory::getApplication()->input;
@@ -125,11 +125,10 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 			// Get the model
 			$model = $this->getModel('Joomla_components');
 			// get the data to export
-			$data = $model->getSmartExport($pks);
-			if (ComponentbuilderHelper::checkArray($data))
+			if ($model->getSmartExport($pks))
 			{
 				// now lets look at what was build
-				var_dump($data); jexit();
+				var_dump($model->smartExport); jexit();
 			}
 		}
 		// Redirect to the list screen with error.

@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 101 of this MVC
+	@version		@update number 112 of this MVC
 	@build			18th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -138,7 +138,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			if ($this->user->authorise('joomla_component.export_component'))
 			{
 				// add Export Component button.
-				JToolBarHelper::custom('joomla_components.exportComponent', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_COMPONENT', false);
+				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_COMPONENT', false);
 			}
 
                         if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
