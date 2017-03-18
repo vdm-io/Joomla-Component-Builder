@@ -3691,7 +3691,7 @@ class Interpretation extends Fields
 				$checkViews = (isset($this->catCodeBuilder[$view]['views']) && ComponentbuilderHelper::checkString($this->catCodeBuilder[$view]['views'])) ? $this->catCodeBuilder[$view]['views'] : $views;
 				if (ComponentbuilderHelper::checkArray($dbStuff[$view]) && array_key_exists($view, $this->catCodeBuilder) && ($checkViews == $views))
 				{
-					$dbStuff[$view.' catagory'] = $this->getCategoryContentType($view, $views, $component);
+					$dbStuff[$view.' category'] = $this->getCategoryContentType($view, $views, $component);
 				}
 				elseif(!isset($dbStuff[$view]) || !ComponentbuilderHelper::checkArray($dbStuff[$view]))
 				{
@@ -9631,7 +9631,7 @@ class Interpretation extends Fields
 			$allow[] = PHP_EOL."\t\t\t\$catid = 0;";
 			$allow[] = "\t\t\tif (isset(\$this->getItem(\$id)->catid))";
 			$allow[] = "\t\t\t{";
-			$allow[] = "\t\t\t\t//".$this->setLine(__LINE__)." set catagory id";
+			$allow[] = "\t\t\t\t//".$this->setLine(__LINE__)." set category id";
 			$allow[] = "\t\t\t\t\$catid = \$this->getItem(\$id)->catid;";
 			$allow[] = PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Existing record. Can only edit in selected categories.";
 			$allow[] = "\t\t\t\t\$form->setFieldAttribute('catid', 'action', 'core.edit');";
@@ -11148,7 +11148,7 @@ class Interpretation extends Fields
 					{
 						$otherViews = $name_list;
 						// build lang
-						$langName = 'Catagory &nbsp;For<br />'.ComponentbuilderHelper::safeString($otherViews, 'W');
+						$langName = 'Category &nbsp;For<br />'.ComponentbuilderHelper::safeString($otherViews, 'W');
 					}
 					if(!in_array($otherViews,$catArray))
 					{
