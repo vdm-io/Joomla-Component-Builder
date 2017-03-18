@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 97 of this MVC
-	@build			3rd March, 2017
+	@version		@update number 101 of this MVC
+	@build			18th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -135,6 +135,11 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
                                 $dhtml = $layout->render(array('title' => $title));
                                 $bar->appendButton('Custom', $dhtml, 'batch');
                         } 
+			if ($this->user->authorise('joomla_component.export_component'))
+			{
+				// add Export Component button.
+				JToolBarHelper::custom('joomla_components.exportComponent', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_COMPONENT', false);
+			}
 
                         if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
                         {

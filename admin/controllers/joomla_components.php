@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 97 of this MVC
-	@build			3rd March, 2017
+	@version		@update number 101 of this MVC
+	@build			18th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -108,4 +108,33 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}  
+
+        public function exportComponent()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// check if export is allowed for this user.
+		$user = JFactory::getUser();
+		if ($user->authorise('[[[view]]].export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
+		{
+			// Get the input
+			$input = JFactory::getApplication()->input;
+			$pks = $input->post->get('cid', array(), 'array');
+			// Sanitize the input
+			JArrayHelper::toInteger($pks);
+			// Get the model
+			$model = $this->getModel('Joomla_components');
+			// get the data to export
+			$data = $model->getSmartExport($pks);
+			if (ComponentbuilderHelper::checkArray($data))
+			{
+				// now lets look at what was build
+				var_dump($data); jexit();
+			}
+		}
+		// Redirect to the list screen with error.
+		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		return;
+	}
 }

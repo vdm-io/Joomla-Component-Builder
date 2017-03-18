@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 97 of this MVC
-	@build			3rd March, 2017
+	@version		@update number 101 of this MVC
+	@build			18th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -54,6 +54,66 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		}
 
 		parent::__construct($config);
+	}
+
+	/**
+	* Method to get list export data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getSmartExport($pks)
+	{
+		// setup the query
+		if (ComponentbuilderHelper::checkArray($pks))
+		{
+			// Get the user object.
+			$user = JFactory::getUser();
+			// Create a new query object.
+			$db = JFactory::getDBO();
+			$query = $db->getQuery(true);
+
+			// Select some fields
+			$query->select($db->quoteName('a.*'));
+			
+			// From the componentbuilder_joomla_componet table
+			$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
+			$query->where('a.id IN (' . implode(',',$pks) . ')');
+			
+			// Implement View Level Access
+			if (!$user->authorise('core.options', 'com_componentbuilder'))
+			{
+				$groups = implode(',', $user->getAuthorisedViewLevels());
+				$query->where('a.access IN (' . $groups . ')');
+			}
+
+			// Order the results by ordering
+			$query->order('a.ordering  ASC');
+
+			// Load the items
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				$items = $db->loadObjectList();
+				// set values to display correctly.
+				if (ComponentbuilderHelper::checkArray($items))
+				{
+					foreach ($items as $nr => &$item)
+					{
+						$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
+						if (!$access)
+						{
+							unset($items[$nr]);
+							continue;
+						}
+						
+					}
+				}
+				
+				return $items;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -264,46 +324,46 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// decrypt update_server_ftp
 							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
 						}
-						if ($basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
-						{
-							// decrypt sales_server_ftp
-							$item->sales_server_ftp = $basic->decryptString($item->sales_server_ftp);
-						}
-						// decode readme
-						$item->readme = base64_decode($item->readme);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode buildcompsql
-						$item->buildcompsql = base64_decode($item->buildcompsql);
-						// decode php_preflight_update
-						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_postflight_install
 						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode readme
+						$item->readme = base64_decode($item->readme);
 						// decode php_preflight_install
 						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
-						// decode php_helper_admin
-						$item->php_helper_admin = base64_decode($item->php_helper_admin);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
+						// decode css
+						$item->css = base64_decode($item->css);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
+						// decode php_preflight_update
+						$item->php_preflight_update = base64_decode($item->php_preflight_update);
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
+						if ($basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
+						{
+							// decrypt sales_server_ftp
+							$item->sales_server_ftp = $basic->decryptString($item->sales_server_ftp);
+						}
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
+						// decode php_helper_admin
+						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
 						// decode php_helper_site
 						$item->php_helper_site = base64_decode($item->php_helper_site);
 						// decode php_site_event
 						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode css
-						$item->css = base64_decode($item->css);
 						// decode php_dashboard_methods
 						$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
+						// decode buildcompsql
+						$item->buildcompsql = base64_decode($item->buildcompsql);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);
