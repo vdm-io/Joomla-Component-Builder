@@ -34,10 +34,10 @@ $fields = $displayData->get('fields') ?: array(
 	'addcontributors',
 	'emptycontributors',
 	'number',
-	'spacer_hr_c',
+	'spacer_hr_d',
 	'note_add_files',
 	'addfiles',
-	'spacer_hr_b',
+	'spacer_hr_e',
 	'note_add_folders',
 	'addfolders'
 );

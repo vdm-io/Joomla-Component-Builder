@@ -34,13 +34,13 @@ $fields = $displayData->get('fields') ?: array(
 	'addadmin_views',
 	'addcustom_admin_views',
 	'addsite_views',
-	'spacer_hr_e',
+	'spacer_hr_a',
 	'note_mysql_tweak_options',
 	'sql_tweak',
-	'spacer_hr_a',
+	'spacer_hr_b',
 	'note_add_custom_menus',
 	'addcustommenus',
-	'spacer_hr_d',
+	'spacer_hr_c',
 	'note_add_config',
 	'addconfig'
 );
