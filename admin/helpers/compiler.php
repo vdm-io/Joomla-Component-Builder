@@ -422,39 +422,9 @@ class Compiler extends Infusion
 		}
 		// the name of the zip file to create
 		$this->filepath = $this->tempPath.'/'.$this->componentFolderName.'.zip';
-		// store the current joomla working directory
-		$joomla = getcwd();
-
-		// we are changing the working directory to the componet temp folder
-		chdir($this->componentPath);
-
-		// the full file path of the zip file
-		$this->filepath = JPath::clean($this->filepath);
-
-		// delete an existing zip file (or use an exclusion parameter in JFolder::files()
-		JFile::delete($this->filepath);
-
-		// get a list of files in the current directory tree
-		$files = JFolder::files('.', '', true, true);
-		$zipArray = array();
-		// setup the zip array
-		foreach ($files as $file)
-		{
-		   $tmp = array();
-		   $tmp['name'] = str_replace('./', '', $file);
-		   $tmp['data'] = JFile::read($file);
-		   $tmp['time'] = filemtime($file);
-		   $zipArray[] = $tmp;
-		}
-
-		// change back to joomla working directory
-		chdir($joomla);
-
-		// get the zip adapter
-		$zip = JArchive::getAdapter('zip');
-
+		
 		//create the zip file
-		if ($zip->create($this->filepath, $zipArray))
+		if (ComponentbuilderHelper::zip($this->componentPath, $this->filepath))
 		{
 			// now move to backup if zip was made and backup is requered
 			if ($this->backupPath && $this->dynamicIntegration)

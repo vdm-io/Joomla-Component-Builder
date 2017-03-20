@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.7
-	@build			18th March, 2017
+	@build			20th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -37,13 +37,16 @@ abstract class ComponentbuilderHelper
 	 */
 	public static function autoLoader($type = 'compiler')
 	{
-		// load the compiler classes
-		foreach (glob(JPATH_ADMINISTRATOR."/components/com_componentbuilder/helpers/".$type."/*.php") as $autoFile)
+		// load the type classes
+		if ('smart' !== $type)
 		{
-			require_once $autoFile;
+			foreach (glob(JPATH_ADMINISTRATOR."/components/com_componentbuilder/helpers/".$type."/*.php") as $autoFile)
+			{
+				require_once $autoFile;
+			}
 		}
 		// load only if compiler
-		if ('compiler' == $type)
+		if ('compiler' === $type)
 		{
 			// import the Joomla librarys
 			jimport('joomla.filesystem.file');
@@ -52,6 +55,15 @@ abstract class ComponentbuilderHelper
 			jimport('joomla.application.component.modellist');
 			// include class to minify js
 			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
+		}
+		// load only if smart
+		if ('smart' === $type)
+		{
+			// import the Joomla libraries
+			jimport('joomla.filesystem.file');
+			jimport('joomla.filesystem.folder');
+			jimport('joomla.filesystem.archive');
+			jimport('joomla.application.component.modellist');
 		}
 		// load this for all
 		jimport('joomla.application');
@@ -64,6 +76,108 @@ abstract class ComponentbuilderHelper
 	{
 		self::autoLoader('extrusion');
 		$extruder = new Extrusion($data);
+	}
+
+	/**
+	* 	The zipper method
+	**/
+	public static function zip($workingDIR, &$filepath)
+	{
+		// store the current joomla working directory
+		$joomla = getcwd();
+
+		// we are changing the working directory to the component temp folder
+		chdir($workingDIR);
+
+		// the full file path of the zip file
+		$filepath = JPath::clean($filepath);
+
+		// delete an existing zip file (or use an exclusion parameter in JFolder::files()
+		JFile::delete($filepath);
+
+		// get a list of files in the current directory tree
+		$files = JFolder::files('.', '', true, true);
+		$zipArray = array();
+		// setup the zip array
+		foreach ($files as $file)
+		{
+		   $tmp = array();
+		   $tmp['name'] = str_replace('./', '', $file);
+		   $tmp['data'] = JFile::read($file);
+		   $tmp['time'] = filemtime($file);
+		   $zipArray[] = $tmp;
+		}
+
+		// change back to joomla working directory
+		chdir($joomla);
+
+		// get the zip adapter
+		$zip = JArchive::getAdapter('zip');
+
+		//create the zip file
+		if ($zip->create($filepath, $zipArray))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Remove folders with files
+	 * 
+	 * @param   string   $dir  The path to folder to remove
+	 * @param   boolean   $git  if there is a git folder in that must not be removed
+	 *
+	 * @return  boolean   True in all is removed
+	 * 
+	 */
+	public static function removeFolder($dir, $git = false)
+	{
+		if (JFolder::exists($dir))
+		{
+			$it = new RecursiveDirectoryIterator($dir);
+			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+			foreach ($it as $file)
+			{
+				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
+				if ($file->isDir())
+				{
+					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
+					JFolder::delete($file->getPathname());
+				}
+				else
+				{
+					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
+					JFile::delete($file->getPathname());
+				}
+			}
+			if (!$git && JFolder::delete($dir))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	* 	Create file and write data to the file
+	**/
+	public static function writeFile($path, $data)
+	{
+		$fh = fopen($path, "w");
+		if (!is_resource($fh))
+		{
+			return false;
+		}
+		if (fwrite($fh, $data))
+		{
+			// close file.
+			fclose($fh);
+			return true;
+		}
+		// close file.
+		fclose($fh);
+		return false;
 	}
 
 	/**

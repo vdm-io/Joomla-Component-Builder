@@ -3428,22 +3428,9 @@ class Interpretation extends Fields
 		}
 	}
 
-	public function writeFile($path,$data)
+	public function writeFile($path, $data)
 	{
-		$fh = fopen($path, "w");
-		if (!is_resource($fh))
-		{
-			return false;
-		}
-		if (fwrite($fh, $data))
-		{
-			// close file.
-			fclose($fh);
-			return true;
-		}
-		// close file.
-		fclose($fh);
-		return false;
+		return ComponentbuilderHelper::writeFile($path, $data);
 	}
 
 	public function setMethodGetItem(&$view)

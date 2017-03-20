@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 122 of this MVC
-	@build			18th March, 2017
+	@version		@update number 132 of this MVC
+	@build			20th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -56,17 +56,22 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		parent::__construct($config);
 	}
 
-	public $smartExport		= array();
+	public $packagePath = false;
+	public $zipPath = false;
 
+	protected $params;
+	protected $tempPath;
+	protected $customPath;
+	protected $smartExport	= array();
 	protected $templateIds	= array();
 	protected $layoutIds		= array();
 	protected $customCodeIds	= array();
 	protected $customCodeM	= array();
 
 	/**
-	* Method to get list export data.
+	* Method to build the export package
 	*
-	* @return mixed  An array of data items on success, false on failure.
+	* @return bool on success.
 	*/
 	public function getSmartExport($pks)
 	{
@@ -101,10 +106,27 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$db->execute();
 			if ($db->getNumRows())
 			{
+				// load the items from db
 				$items = $db->loadObjectList();
 				// check if we have items
 				if (ComponentbuilderHelper::checkArray($items))
 				{
+					// set the paths
+					$comConfig = JFactory::getConfig();
+					$this->tempPath = $comConfig->get('tmp_path');
+					$this->packagePath = $this->tempPath . '/JCB_smartPackage';
+					$this->zipPath = $this->packagePath .'.zip';
+					if (JFolder::exists($this->packagePath))
+					{
+						// remove if old folder is found
+						ComponentbuilderHelper::removeFolder($this->packagePath);
+					}
+					// create the folders
+					JFolder::create($this->packagePath);
+					// set params
+					$this->params = JComponentHelper::getParams('com_componentbuilder');
+					// set custom folder path
+					$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
 					// add custom code
 					$this->setData($user, $db, 'custom_code', $pks, 'component');
 					// start loading the components
@@ -116,7 +138,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						{
 							unset($items[$nr]);
 							continue;
-						}						
+						}
+						// build files
+						$this->moveIt($item->addfiles, 'file');
+						// build folders
+						$this->moveIt($item->addfolders, 'folder');
 						// add config fields
 						$this->setData($user, $db, 'field', $item->addconfig, 'field');
 						// add admin views
@@ -148,12 +174,107 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					// has any data been set
 					if (ComponentbuilderHelper::checkArray($this->smartExport['components']))
 					{
-						return true;
+						// set the folder and move the files of each component to the folder
+						return $this->smartExportBuilder();
 					}
 				}
 			}
 		}
 		return false;
+	}
+
+	/**
+	* Method to build the package to export
+	*
+	* @return void
+	*/
+	protected function smartExportBuilder()
+	{
+		$this->smartExport = serialize($this->smartExport);
+		$dbPath = $this->packagePath . '/db.vdm';
+		if (JFile::exists($dbPath))
+		{
+			// remove file if found
+			JFile::delete($dbPath);
+		}
+		// write the db data to file in package
+		if (!ComponentbuilderHelper::writeFile($dbPath, $this->smartExport))
+		{
+			return false;
+		}
+		if (JFile::exists($this->zipPath))
+		{
+			// remove file if found
+			JFile::delete($this->zipPath);
+		}
+		// zip the folder
+		if (!ComponentbuilderHelper::zip($this->packagePath, $this->zipPath))
+		{
+			return false;
+		}
+		// remove the folder
+		if (!ComponentbuilderHelper::removeFolder($this->packagePath))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	* Method to move the files and folder to the package folder
+	*
+	* @return bool
+	*/
+	protected function moveIt($data, $type)
+	{
+		// if json convert to array
+		if (ComponentbuilderHelper::checkJson($data))
+		{
+			$data = json_decode($data, true);
+		}
+		// make sure we have an array
+		if (!ComponentbuilderHelper::checkArray($data) || !isset($data[$type]) || !ComponentbuilderHelper::checkArray($data[$type]))
+		{
+			return false;
+		}
+		// set the name of the folder
+		if ('file' === $type || 'folder' === $type)
+		{
+			$name = 'custom';
+		}
+		if ('image' === $type)
+		{
+			$name = 'images';
+		}
+		// setup the type path
+		$tmpPath = $this->packagePath . '/' . $name;
+		// create type path if not set
+		if (!JFolder::exists($tmpPath))
+		{
+			// create the folders if not found
+			JFolder::create($tmpPath);
+		}
+		// now move it
+		foreach ($data[$type] as $item)
+		{
+			if ('file' === $type || 'image' === $type)
+			{
+				if (!JFile::exists($tmpPath.'/'.$item) && JFile::exists($this->customPath.'/'.$item))
+				{
+					// move the file to its place
+					JFile::copy($this->customPath.'/'.$item, $tmpPath.'/'.$item,'',true);
+				}
+			}
+			if ('folder' === $type)
+			{
+				if (!JFolder::exists($tmpPath.'/'.$item) && JFolder::exists($this->customPath.'/'.$item))
+				{
+					// move the folder to its place
+					JFolder::copy($this->customPath.'/'.$item, $tmpPath.'/'.$item,'',true);
+				}
+			}
+		}
+		return true;
 	}
 
 	/**

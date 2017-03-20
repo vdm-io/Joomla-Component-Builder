@@ -1093,34 +1093,11 @@ class Structure extends Get
 	 * @param   string   $dir  The path to folder to remove
 	 * @param   boolean   $git  if there is a git folder in that must not be removed
 	 *
-	 * @return  boolean   True in all is removed
+	 * @return  boolean   True if all is removed
 	 * 
 	 */
 	protected function removeFolder($dir, $git = false)
 	{
-		if (JFolder::exists($dir))
-		{
-			$it = new RecursiveDirectoryIterator($dir);
-			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			foreach ($it as $file)
-			{
-				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
-				if ($file->isDir())
-				{
-					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
-					JFolder::delete($file->getPathname());
-				}
-				else
-				{
-					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
-					JFile::delete($file->getPathname());
-				}
-			}
-			if (!$git && JFolder::delete($dir))
-			{
-				return true;
-			}
-		}
-		return false;
+		return ComponentbuilderHelper::removeFolder($dir, $git);
 	}
 }

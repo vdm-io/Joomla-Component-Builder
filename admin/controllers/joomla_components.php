@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 122 of this MVC
-	@build			18th March, 2017
+	@version		@update number 132 of this MVC
+	@build			20th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -124,11 +124,30 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 			JArrayHelper::toInteger($pks);
 			// Get the model
 			$model = $this->getModel('Joomla_components');
+			// set auto loader
+			ComponentbuilderHelper::autoLoader('smart');
 			// get the data to export
 			if ($model->getSmartExport($pks))
 			{
-				// now lets look at what was build
-				var_dump($model->smartExport); jexit();
+				// Redirect to the list screen with error.
+				$message = array();
+				$message[] = '<h1>' . JText::_('COM_COMPONENTBUILDER_EXPORT_COMPLETED') . '</h1>';
+				$message[] = '<p>' . JText::sprintf('COM_COMPONENTBUILDER_PATH_TO_THE_ZIPPED_PACKAGE_IS_CODESCODE', $model->zipPath) . '</p>';
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), implode('', $message), 'Success');
+				return;
+			}
+			else
+			{
+				if (componentbuilderHelper::checkString($model->packagePath))
+				{
+					// clear all if not successful
+					ComponentbuilderHelper::removeFolder($model->packagePath);
+				}
+				if (componentbuilderHelper::checkString($model->zipPath))
+				{
+					// clear all if not successful
+					JFile::delete($model->zipPath);
+				}				
 			}
 		}
 		// Redirect to the list screen with error.
