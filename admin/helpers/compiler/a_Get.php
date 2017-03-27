@@ -814,7 +814,7 @@ class Get
 		{			
 			foreach ($addScriptTypes as $scriptType)
 			{
-				if (isset($component->{'add_'.$scriptMethod.'_'.$scriptType}) && $component->{'add_'.$scriptMethod.'_'.$scriptType} == 1)
+				if (isset($component->{'add_'.$scriptMethod.'_'.$scriptType}) && $component->{'add_'.$scriptMethod.'_'.$scriptType} == 1 && ComponentbuilderHelper::checkString($component->{$scriptMethod.'_'.$scriptType}))
 				{
 					$this->customScriptBuilder[$scriptMethod][$scriptType] = $this->setDynamicValues(base64_decode($component->{$scriptMethod.'_'.$scriptType}));
 				}
@@ -826,7 +826,7 @@ class Get
 			}
 		}
 		// add_php_helper
-		if ($component->add_php_helper_admin == 1)
+		if ($component->add_php_helper_admin == 1 && ComponentbuilderHelper::checkString($component->php_helper_admin))
 		{
 			$this->lang = 'admin';
 			$this->customScriptBuilder['component_php_helper_admin'] = PHP_EOL.PHP_EOL.$this->setDynamicValues(base64_decode($component->php_helper_admin));
@@ -837,7 +837,7 @@ class Get
 		}
 		unset($component->php_helper);
 		// add_admin_event
-		if ($component->add_admin_event == 1)
+		if ($component->add_admin_event == 1 && ComponentbuilderHelper::checkString($component->php_admin_event))
 		{
 			$this->lang = 'admin';
 			$this->customScriptBuilder['component_php_admin_event'] = $this->setDynamicValues(base64_decode($component->php_admin_event));
@@ -848,7 +848,7 @@ class Get
 		}
 		unset($component->php_admin_event);
 		// add_php_helper_both
-		if ($component->add_php_helper_both == 1)
+		if ($component->add_php_helper_both == 1 && ComponentbuilderHelper::checkString($component->php_helper_both))
 		{
 			$this->lang = 'both';
 			$this->customScriptBuilder['component_php_helper_both'] = PHP_EOL.PHP_EOL.$this->setDynamicValues(base64_decode($component->php_helper_both));
@@ -858,7 +858,7 @@ class Get
 			$this->customScriptBuilder['component_php_helper_both'] = '';
 		}
 		// add_php_helper_site
-		if ($component->add_php_helper_site == 1)
+		if ($component->add_php_helper_site == 1 && ComponentbuilderHelper::checkString($component->php_helper_site))
 		{
 			$this->lang = 'site';
 			$this->customScriptBuilder['component_php_helper_site'] = PHP_EOL.PHP_EOL.$this->setDynamicValues(base64_decode($component->php_helper_site));
@@ -869,7 +869,7 @@ class Get
 		}
 		unset($component->php_helper);
 		// add_site_event
-		if ($component->add_site_event == 1)
+		if ($component->add_site_event == 1 && ComponentbuilderHelper::checkString($component->php_site_event))
 		{
 			$this->lang = 'site';
 			$this->customScriptBuilder['component_php_site_event'] = $this->setDynamicValues(base64_decode($component->php_site_event));
@@ -906,7 +906,7 @@ class Get
 		}
 		
 		// dashboard methods
-		if ($component->add_php_dashboard_methods)
+		if ($component->add_php_dashboard_methods && ComponentbuilderHelper::checkString($component->php_dashboard_methods))
 		{
 			$nowLang = $this->lang;
 			$this->lang = 'admin';
@@ -1230,7 +1230,7 @@ class Get
 			$addArrayJ = array('javascript_view_file','javascript_view_footer','javascript_views_file','javascript_views_footer');
 			foreach ($addArrayJ as $scripter)
 			{
-				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
+				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1 && ComponentbuilderHelper::checkString($view->$scripter))
 				{
 					$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
 					$scripter_target = str_replace('javascript_', '', $scripter);
@@ -1316,13 +1316,18 @@ class Get
 			// set custom import scripts
 			if (isset($view->add_custom_import) && $view->add_custom_import == 1)
 			{
-				$addImportArray = array('php_import_display','php_import','php_import_setdata','php_import_save','html_import_view');
+				$addImportArray = array('php_import_ext','php_import_display','php_import','php_import_setdata','php_import_save','html_import_view');
 				foreach ($addImportArray as $importScripter)
 				{
 					if (isset($view->$importScripter) && strlen($view->$importScripter) > 0)
 					{
 						$this->customScriptBuilder[$importScripter]['import_'.$name_list] = $this->setDynamicValues(base64_decode($view->$importScripter));
 						unset($view->$importScripter);
+					}
+					else
+					{
+						// load the default
+						$this->customScriptBuilder[$importScripter]['import_'.$name_list] = ComponentbuilderHelper::getImportScripts($importScripter, true);
 					}
 				}
 			}
@@ -1472,7 +1477,7 @@ class Get
 		$addArray = array('php_view','php_jview','php_jview_display','php_document','js_document','css_document','css');
 		foreach ($addArray as $scripter)
 		{
-			if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
+			if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1 && ComponentbuilderHelper::checkString($view->$scripter))
 			{
 				$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
 				// set uikit to views
@@ -1661,7 +1666,7 @@ class Get
 			if (ComponentbuilderHelper::checkString($name_single) && !isset($this->customFieldScript[$name_single][$id]))
 			{
 				// add_javascript_view_footer
-				if ($this->_fieldData[$id]->add_javascript_view_footer == 1)
+				if ($this->_fieldData[$id]->add_javascript_view_footer == 1 && ComponentbuilderHelper::checkString($this->_fieldData[$id]->javascript_view_footer))
 				{
 					if(!isset($this->customScriptBuilder['view_footer']))
 					{
@@ -1719,7 +1724,7 @@ class Get
 			if (ComponentbuilderHelper::checkString($name_list) && !isset($this->customFieldScript[$name_list][$id]))
 			{
 				// add_javascript_views_footer
-				if ($this->_fieldData[$id]->add_javascript_views_footer == 1)
+				if ($this->_fieldData[$id]->add_javascript_views_footer == 1 && ComponentbuilderHelper::checkString($this->_fieldData[$id]->javascript_views_footer))
 				{
 					if(!isset($this->customScriptBuilder['views_footer']))
 					{
@@ -1812,12 +1817,12 @@ class Get
 					foreach ($results as $nr => &$result)
 					{
 						// add calculations if set
-						if($result->addcalculation == 1)
+						if($result->addcalculation == 1 && ComponentbuilderHelper::checkString($result->php_calculation))
 						{
-							$result->php_calculation = base64_decode($result->php_calculation);
+							$result->php_calculation = $this->setDynamicValues(base64_decode($result->php_calculation));
 						}
 						// add php custom scripting (php_before_getitem)
-						if($result->add_php_before_getitem == 1)
+						if($result->add_php_before_getitem == 1 && ComponentbuilderHelper::checkString($result->php_before_getitem))
 						{
 							if (!isset($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view_code]))
 							{
@@ -1828,7 +1833,7 @@ class Get
 							unset($result->php_before_getitem);
 						}
 						// add php custom scripting (php_after_getitem)
-						if($result->add_php_after_getitem == 1)
+						if($result->add_php_after_getitem == 1 && ComponentbuilderHelper::checkString($result->php_after_getitem))
 						{
 							if (!isset($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view_code]))
 							{
@@ -1839,7 +1844,7 @@ class Get
 							unset($result->php_after_getitem);
 						}
 						// add php custom scripting (php_before_getitems)
-						if($result->add_php_before_getitems == 1)
+						if($result->add_php_before_getitems == 1 && ComponentbuilderHelper::checkString($result->php_before_getitems))
 						{
 							if (!isset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view_code]))
 							{
@@ -1850,7 +1855,7 @@ class Get
 							unset($result->php_before_getitems);
 						}
 						// add php custom scripting (php_after_getitems)
-						if($result->add_php_after_getitems == 1)
+						if($result->add_php_after_getitems == 1 && ComponentbuilderHelper::checkString($result->php_after_getitems))
 						{
 							if (!isset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view_code]))
 							{
@@ -1861,7 +1866,7 @@ class Get
 							unset($result->php_after_getitems);
 						}
 						// add php custom scripting (php_getlistquery)
-						if($result->add_php_getlistquery == 1)
+						if($result->add_php_getlistquery == 1 && ComponentbuilderHelper::checkString($result->php_getlistquery))
 						{
 							if (!isset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view_code]))
 							{
@@ -2227,7 +2232,7 @@ class Get
 			if ($k_ey == $n_ame || $key == $name)
 			{
 				$php_view = '';
-				if ($row->add_php_view == 1)
+				if ($row->add_php_view == 1 && ComponentbuilderHelper::checkString($row->php_view))
 				{
 					$php_view = $this->setDynamicValues(base64_decode($row->php_view));
 				}

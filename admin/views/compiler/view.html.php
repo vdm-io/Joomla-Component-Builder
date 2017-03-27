@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 46 of this MVC
-	@build			3rd March, 2017
+	@version		@update number 47 of this MVC
+	@build			21st March, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -242,11 +242,11 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 							}
 						});
 					} else {
-						jQuery(\"#noticeboard-md\").html(\"'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IN_NO_NOTICE_AT_THIS_TIME').'\");
+						jQuery(\"#noticeboard-md\").html(all_is_good);
 					}
 				})
 				.error(function(jqXHR, textStatus, errorThrown) { 
-					jQuery(\"#noticeboard-md\").html(\"'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IN_NO_NOTICE_AT_THIS_TIME').'\");
+					jQuery(\"#noticeboard-md\").html(all_is_good);
 				});
 			});
 			// to check is READ/NEW

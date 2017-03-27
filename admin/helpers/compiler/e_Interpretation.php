@@ -7382,8 +7382,10 @@ class Interpretation extends Fields
 	{
 		// setup Ajax files
 		$target = array('admin' => 'import_'.$viewName_list);
-		$this->buildDynamique($target,'customimport');
+		$this->buildDynamique($target, 'customimport');
 		// load the custom script to the files
+		// ###IMPORT_EXT_METHOD_CUSTOM### <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_EXT_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_ext', 'import_'.$viewName_list, PHP_EOL, null, true);
                 // ###IMPORT_DISPLAY_METHOD_CUSTOM### <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_'.$viewName_list]['###IMPORT_DISPLAY_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_display', 'import_'.$viewName_list, PHP_EOL, null, true);
                 // ###IMPORT_SETDATE_METHOD_CUSTOM### <<<DYNAMIC>>>

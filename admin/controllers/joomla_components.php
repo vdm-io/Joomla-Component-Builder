@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 132 of this MVC
-	@build			20th March, 2017
+	@version		@update number 182 of this MVC
+	@build			27th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -99,12 +99,34 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 				$session->set('dataType_VDM_IMPORTINTO', 'joomla_component');
 				// Redirect to import view.
 				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_JOOMLA_COMPONENTS');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import', false), $message);
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components', false), $message);
 				return;
 			}
 		}
 		// Redirect to the list screen with error.
 		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		return;
+	}  
+
+	public function smartImport()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// check if import is allowed for this user.
+		$user = JFactory::getUser();
+		if ($user->authorise('joomla_component.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
+		{
+			$session = JFactory::getSession();
+			$session->set('backto_VDM_IMPORT', 'joomla_components');
+			$session->set('dataType_VDM_IMPORTINTO', 'smart_package');
+			// Redirect to import view.
+			$message = JText::_('COM_COMPONENTBUILDER_YOU_CAN_NOW_SELECT_THE_COMPONENT_BZIPB_PACKAGE_YOU_WOULD_LIKE_TO_IMPORTBR_SMALLPLEASE_NOTE_THAT_SMART_COMPONENT_IMPORT_ONLY_WORKS_WITH_THE_FOLLOWING_FORMAT_BZIPBSMALL');
+			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', false), $message);
+			return;
+		}
+		// Redirect to the list screen with error.
+		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_IMPORT_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}  
@@ -122,6 +144,14 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
 			JArrayHelper::toInteger($pks);
+			// check if there is any selections
+			if (!ComponentbuilderHelper::checkArray($pks))
+			{
+				// Redirect to the list screen with error.
+				$message = JText::_('COM_COMPONENTBUILDER_NO_COMPONENTS_WERE_SELECTED_PLEASE_MAKE_A_SELECTION_AND_TRY_AGAIN');
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+				return;
+			}
 			// Get the model
 			$model = $this->getModel('Joomla_components');
 			// set auto loader
@@ -129,7 +159,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 			// get the data to export
 			if ($model->getSmartExport($pks))
 			{
-				// Redirect to the list screen with error.
+				// Redirect to the list screen with success.
 				$message = array();
 				$message[] = '<h1>' . JText::_('COM_COMPONENTBUILDER_EXPORT_COMPLETED') . '</h1>';
 				$message[] = '<p>' . JText::sprintf('COM_COMPONENTBUILDER_PATH_TO_THE_ZIPPED_PACKAGE_IS_CODESCODE', $model->zipPath) . '</p>';
@@ -151,7 +181,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
+		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED_PLEASE_TRY_AGAIN_LATTER');
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}

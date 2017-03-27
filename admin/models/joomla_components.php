@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 132 of this MVC
-	@build			20th March, 2017
+	@version		@update number 182 of this MVC
+	@build			27th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -130,7 +130,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					// add custom code
 					$this->setData($user, $db, 'custom_code', $pks, 'component');
 					// start loading the components
-					$this->smartExport['components'] = array();
+					$this->smartExport['joomla_component'] = array();
 					foreach ($items as $nr => &$item)
 					{
 						$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
@@ -143,6 +143,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$this->moveIt($item->addfiles, 'file');
 						// build folders
 						$this->moveIt($item->addfolders, 'folder');
+						// component image
+						$this->moveIt(array('image' => array($item->image)), 'image');
 						// add config fields
 						$this->setData($user, $db, 'field', $item->addconfig, 'field');
 						// add admin views
@@ -154,7 +156,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// set the custom code ID's
 						$this->setCustomCodeIds($item, 'joomla_component');
 						// load to global object
-						$this->smartExport['components'][$item->id] = $item;
+						$this->smartExport['joomla_component'][$item->id] = $item;
 					}
 					// add templates
 					if (ComponentbuilderHelper::checkArray($this->templateIds))
@@ -172,7 +174,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$this->setData($user, $db, 'custom_code', array('custom_code' => $this->customCodeIds), 'custom_code');
 					}
 					// has any data been set
-					if (ComponentbuilderHelper::checkArray($this->smartExport['components']))
+					if (ComponentbuilderHelper::checkArray($this->smartExport['joomla_component']))
 					{
 						// set the folder and move the files of each component to the folder
 						return $this->smartExportBuilder();
@@ -257,20 +259,31 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		// now move it
 		foreach ($data[$type] as $item)
 		{
-			if ('file' === $type || 'image' === $type)
+			if (ComponentbuilderHelper::checkString($item))
 			{
-				if (!JFile::exists($tmpPath.'/'.$item) && JFile::exists($this->customPath.'/'.$item))
+				if ('file' === $type)
 				{
-					// move the file to its place
-					JFile::copy($this->customPath.'/'.$item, $tmpPath.'/'.$item,'',true);
+					if (!JFile::exists($tmpPath.'/'.$item) && JFile::exists($this->customPath.'/'.$item))
+					{
+						// move the file to its place
+						JFile::copy($this->customPath.'/'.$item, $tmpPath.'/'.$item,'',true);
+					}
 				}
-			}
-			if ('folder' === $type)
-			{
-				if (!JFolder::exists($tmpPath.'/'.$item) && JFolder::exists($this->customPath.'/'.$item))
+				if ('image' === $type)
 				{
-					// move the folder to its place
-					JFolder::copy($this->customPath.'/'.$item, $tmpPath.'/'.$item,'',true);
+					if (!JFile::exists($this->packagePath.'/'.$item) && JFile::exists(JPATH_ROOT.'/'.$item))
+					{
+						// move the file to its place
+						JFile::copy(JPATH_ROOT.'/'.$item, $this->packagePath.'/'.$item,'',true);
+					}
+				}
+				if ('folder' === $type)
+				{
+					if (!JFolder::exists($tmpPath.'/'.$item) && JFolder::exists($this->customPath.'/'.$item))
+					{
+						// move the folder to its place
+						JFolder::copy($this->customPath.'/'.$item, $tmpPath.'/'.$item,'',true);
+					}
 				}
 			}
 		}
@@ -354,6 +367,17 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						// add fields
 						$this->setData($user, $db, 'field', $item->addfields, 'field');
+						// add admin views
+						if (isset($item->addlinked_views))
+						{
+							$this->setData($user, $db, 'admin_view', $item->addlinked_views, 'adminview');
+						}
+						// admin icon
+						$this->moveIt(array('image' => array($item->icon)), 'image');
+						// admin icon_add
+						$this->moveIt(array('image' => array($item->icon_add)), 'image');
+						// admin icon_category
+						$this->moveIt(array('image' => array($item->icon_category)), 'image');
 					}
 					// actions to take if table is field
 					if ('field' === $table)
@@ -377,6 +401,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add dynamic gets
 						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => array($item->main_get)), 'dynamic_get');
 						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => $item->custom_get), 'dynamic_get');
+						if ('custom_admin_view' === $table && isset($item->icon))
+						{
+							// view icon
+							$this->moveIt(array('image' => array($item->icon)), 'image');
+						}
 					}
 					// set the custom code ID's
 					$this->setCustomCodeIds($item, $table);

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 46 of this MVC
-	@build			3rd March, 2017
+	@version		@update number 47 of this MVC
+	@build			21st March, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		default.php
@@ -144,6 +144,7 @@ jQuery(document).ready(function($) {
 <script type="text/javascript">
 // token 
 var token = '<?php echo JSession::getFormToken(); ?>';
+var all_is_good = '<?php echo JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IN_NO_NOTICE_AT_THIS_TIME'); ?>';
 jQuery('#compilerForm').on('change', '#component',function (e)
 {
 	var component = jQuery('#component').val();

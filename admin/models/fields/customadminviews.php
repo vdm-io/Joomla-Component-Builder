@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.7
-	@build			20th March, 2017
+	@version		2.3.8
+	@build			27th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		customadminviews.php

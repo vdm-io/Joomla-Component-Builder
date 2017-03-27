@@ -34,6 +34,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class ###Component###ModelImport extends JModelLegacy
 {
+	// set uploading values
+	protected $use_streams = false;
+	protected $allow_unsafe = false;
+	protected $safeFileOptions = array();
+	
 	/**
 	 * @var object JTable object
 	 */
@@ -75,10 +80,6 @@ class ###Component###ModelImport extends JModelLegacy
 		// Recall the 'Import from Directory' path.
 		$path = $app->getUserStateFromRequest($this->_context . '.import_directory', 'import_directory', $app->get('tmp_path'));
 		$this->setState('import.directory', $path);
-		// set uploading values
-		$this->use_streams = false;
-		$this->allow_unsafe = false;
-		$this->safeFileOptions = array();
 		parent::populateState();
 	}
 
@@ -285,21 +286,16 @@ class ###Component###ModelImport extends JModelLegacy
 		}
 		
 		// check the extention
-		switch(strtolower(pathinfo($p_dir, PATHINFO_EXTENSION))){
-			case 'xls':
-			case 'ods':
-			case 'csv':
-			break;
-			
-			default:
+		if(!$this->checkExtension($p_dir))
+		{
+			// set error message
 			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
-			break;
 		}
 		
 		$package['packagename'] = null;
-		$package['dir'] 		= $p_dir;
-		$package['type'] 		= $type;
+		$package['dir'] 	= $p_dir;
+		$package['type'] 	= $type;
 
 		return $package;
 	}
@@ -357,21 +353,15 @@ class ###Component###ModelImport extends JModelLegacy
 		$archivename = JPath::clean($archivename);
 		
 		// check the extention
-		switch(strtolower(pathinfo($archivename, PATHINFO_EXTENSION))){
-			case 'xls':
-			case 'ods':
-			case 'csv':
-			break;
-			
-			default:
+		if(!$this->checkExtension($archivename))
+		{
 			// Cleanup the import files
 			$this->remove($archivename);
 			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
-			break;
-		}	
+		}
 		
-		$config					= JFactory::getConfig();
+		$config			= JFactory::getConfig();
 		// set Package Name
 		$check['packagename']	= $archivename;
 		
@@ -382,6 +372,28 @@ class ###Component###ModelImport extends JModelLegacy
 		$check['type']		= $this->getType;
 		
 		return $check;
+	}
+	
+	/**
+	 * Check the extension 
+	 *
+	 * @param   string  $file    Name of the uploaded file
+	 *
+	 * @return  boolean  True on success
+	 *
+	 */
+	protected function checkExtension($file)
+	{		
+		// check the extention
+		switch(strtolower(pathinfo($file, PATHINFO_EXTENSION)))
+		{
+			case 'xls':
+			case 'ods':
+			case 'csv':
+			return true;
+			break;
+		}
+		return false;
 	}
 	
 	/**
