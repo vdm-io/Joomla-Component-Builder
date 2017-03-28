@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 182 of this MVC
-	@build			27th March, 2017
+	@version		@update number 214 of this MVC
+	@build			28th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -159,10 +159,19 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 			// get the data to export
 			if ($model->getSmartExport($pks))
 			{
+				// set the key string
+				if (componentbuilderHelper::checkString($model->key) && strlen($model->key) == 32)
+				{
+					$keyNotice = '<h1>' . JText::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_CODESCODE', $model->key) . '</h1>';
+				}
+				else
+				{
+					$keyNotice = '<h1>' . JText::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY') . '</h1>';
+				}
 				// Redirect to the list screen with success.
 				$message = array();
 				$message[] = '<h1>' . JText::_('COM_COMPONENTBUILDER_EXPORT_COMPLETED') . '</h1>';
-				$message[] = '<p>' . JText::sprintf('COM_COMPONENTBUILDER_PATH_TO_THE_ZIPPED_PACKAGE_IS_CODESCODE', $model->zipPath) . '</p>';
+				$message[] = '<p>' . JText::sprintf('COM_COMPONENTBUILDER_PATH_TO_THE_ZIPPED_PACKAGE_IS_CODESCODE_BR_S', $model->zipPath, $keyNotice) . '</p>';
 				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), implode('', $message), 'Success');
 				return;
 			}

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 182 of this MVC
-	@build			27th March, 2017
+	@version		@update number 214 of this MVC
+	@build			28th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -95,40 +95,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_postflight_install))
-			{
-				// base64 Decode php_postflight_install.
-				$item->php_postflight_install = base64_decode($item->php_postflight_install);
-			}
-
-			if (!empty($item->readme))
-			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
-			}
-
-			if (!empty($item->php_preflight_install))
-			{
-				// base64 Decode php_preflight_install.
-				$item->php_preflight_install = base64_decode($item->php_preflight_install);
-			}
-
-			if (!empty($item->css))
-			{
-				// base64 Decode css.
-				$item->css = base64_decode($item->css);
-			}
-
-			if (!empty($item->php_method_uninstall))
-			{
-				// base64 Decode php_method_uninstall.
-				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-			}
-
 			if (!empty($item->php_preflight_update))
 			{
 				// base64 Decode php_preflight_update.
 				$item->php_preflight_update = base64_decode($item->php_preflight_update);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
 			}
 
 			if (!empty($item->php_postflight_update))
@@ -137,10 +113,34 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_postflight_update = base64_decode($item->php_postflight_update);
 			}
 
-			if (!empty($item->sql))
+			if (!empty($item->css))
 			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
+				// base64 Decode css.
+				$item->css = base64_decode($item->css);
+			}
+
+			if (!empty($item->php_preflight_install))
+			{
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
+			if (!empty($item->php_postflight_install))
+			{
+				// base64 Decode php_postflight_install.
+				$item->php_postflight_install = base64_decode($item->php_postflight_install);
+			}
+
+			if (!empty($item->php_method_uninstall))
+			{
+				// base64 Decode php_method_uninstall.
+				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+			}
+
+			if (!empty($item->readme))
+			{
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
 			}
 
 			if (!empty($item->php_helper_both))
@@ -190,12 +190,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			// Get the encription object.
 			$basic = new FOFEncryptAes($basickey, 128);
 
-			if (!empty($item->update_server_ftp) && $basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
-			{
-				// basic decript data update_server_ftp.
-				$item->update_server_ftp = rtrim($basic->decryptString($item->update_server_ftp), "\0");
-			}
-
 			if (!empty($item->whmcs_key) && $basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 			{
 				// basic decript data whmcs_key.
@@ -206,6 +200,18 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			{
 				// basic decript data sales_server_ftp.
 				$item->sales_server_ftp = rtrim($basic->decryptString($item->sales_server_ftp), "\0");
+			}
+
+			if (!empty($item->update_server_ftp) && $basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
+			{
+				// basic decript data update_server_ftp.
+				$item->update_server_ftp = rtrim($basic->decryptString($item->update_server_ftp), "\0");
+			}
+
+			if (!empty($item->export_key) && $basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
+			{
+				// basic decript data export_key.
+				$item->export_key = rtrim($basic->decryptString($item->export_key), "\0");
 			}
 			
 			if (!empty($item->id))
@@ -1252,40 +1258,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_postflight_install string to base64 string.
-		if (isset($data['php_postflight_install']))
-		{
-			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
-		}
-
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
-		{
-			$data['readme'] = base64_encode($data['readme']);
-		}
-
-		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
-		{
-			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
-		}
-
-		// Set the css string to base64 string.
-		if (isset($data['css']))
-		{
-			$data['css'] = base64_encode($data['css']);
-		}
-
-		// Set the php_method_uninstall string to base64 string.
-		if (isset($data['php_method_uninstall']))
-		{
-			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
-		}
-
 		// Set the php_preflight_update string to base64 string.
 		if (isset($data['php_preflight_update']))
 		{
 			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
 		}
 
 		// Set the php_postflight_update string to base64 string.
@@ -1294,10 +1276,34 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
+		// Set the css string to base64 string.
+		if (isset($data['css']))
 		{
-			$data['sql'] = base64_encode($data['sql']);
+			$data['css'] = base64_encode($data['css']);
+		}
+
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
+		{
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
+		// Set the php_postflight_install string to base64 string.
+		if (isset($data['php_postflight_install']))
+		{
+			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
+		}
+
+		// Set the php_method_uninstall string to base64 string.
+		if (isset($data['php_method_uninstall']))
+		{
+			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
+		}
+
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
+		{
+			$data['readme'] = base64_encode($data['readme']);
 		}
 
 		// Set the php_helper_both string to base64 string.
@@ -1347,12 +1353,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		// Get the encription object
 		$basic = new FOFEncryptAes($basickey, 128);
 
-		// Encript data update_server_ftp.
-		if (isset($data['update_server_ftp']) && $basickey)
-		{
-			$data['update_server_ftp'] = $basic->encryptString($data['update_server_ftp']);
-		}
-
 		// Encript data whmcs_key.
 		if (isset($data['whmcs_key']) && $basickey)
 		{
@@ -1363,6 +1363,18 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (isset($data['sales_server_ftp']) && $basickey)
 		{
 			$data['sales_server_ftp'] = $basic->encryptString($data['sales_server_ftp']);
+		}
+
+		// Encript data update_server_ftp.
+		if (isset($data['update_server_ftp']) && $basickey)
+		{
+			$data['update_server_ftp'] = $basic->encryptString($data['update_server_ftp']);
+		}
+
+		// Encript data export_key.
+		if (isset($data['export_key']) && $basickey)
+		{
+			$data['export_key'] = $basic->encryptString($data['export_key']);
 		}
 
 		// we check if component should be build from sql file

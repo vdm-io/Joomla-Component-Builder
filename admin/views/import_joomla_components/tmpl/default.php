@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.8
-	@build			27th March, 2017
+	@version		2.3.9
+	@build			28th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default.php
@@ -143,8 +143,6 @@ jQuery(document).ready(function($) {
 		.css("display", "none")
 		.appendTo(outerDiv);
 });
-
-
 </script>
 
 <?php $formats = ($this->dataType === 'smart_package') ? '.zip' : '.csv .xls .ods'; ?>
@@ -195,9 +193,17 @@ jQuery(document).ready(function($) {
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php elseif ($this->hasPackage && $this->dataType === 'smart_package') : ?>
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'advanced')); ?>
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'advanced', JText::_('Smart JCB Components Import', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'advanced', JText::_('Import Components', true)); ?>
 		<fieldset class="uploadform">
-			<legend><?php echo JText::_('COM_COMPONENTBUILDER_HERE_YOU_CAN_ADD'); ?></legend>
+			<legend><?php echo JText::_('COM_COMPONENTBUILDER_SMART_PACKAGE_OPTIONS'); ?></legend>
+				<?php if ($this->formPackage): ?>
+					<?php foreach ($this->formPackage as $field): ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label;?></div>
+						<div class="controls"><?php echo $field->input;?></div>
+					</div>
+					<?php endforeach; ?>
+				<?php endif; ?>
 			<div class="form-actions">
 				<input class="btn btn-primary" type="button" value="<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_CONTINUE'); ?>" onclick="Joomla.continueExtImport()" />
 			</div>
@@ -261,3 +267,15 @@ jQuery(document).ready(function($) {
 	<?php echo JHtml::_('form.token'); ?>
 </form>
 </div>
+<script type="text/javascript">
+jQuery('#adminForm').on('change', '#haskey',function (e)
+{
+	e.preventDefault();
+	var haskey = jQuery("#haskey input[type='radio']:checked").val();
+	if (haskey == 1) {
+		jQuery("#sleutle").closest('.control-group').show();
+	} else {
+		jQuery("#sleutle").closest('.control-group').hide();
+	}
+});
+</script>

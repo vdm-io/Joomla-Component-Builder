@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 182 of this MVC
-	@build			27th March, 2017
+	@version		@update number 214 of this MVC
+	@build			28th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -56,8 +56,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		parent::__construct($config);
 	}
 
-	public $packagePath = false;
-	public $zipPath = false;
+	public $packagePath		= false;
+	public $zipPath			= false;
+	public $key			= array();
 
 	protected $params;
 	protected $tempPath;
@@ -127,6 +128,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					$this->params = JComponentHelper::getParams('com_componentbuilder');
 					// set custom folder path
 					$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
+					// Get the basic encription.
+					$basickey = ComponentbuilderHelper::getCryptKey('basic');
+					// Get the encription object.
+					if ($basickey)
+					{
+						$basic = new FOFEncryptAes($basickey, 128);
+					}
 					// add custom code
 					$this->setData($user, $db, 'custom_code', $pks, 'component');
 					// start loading the components
@@ -138,6 +146,15 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						{
 							unset($items[$nr]);
 							continue;
+						}
+						// set the keys
+						if (isset($item->export_key) && ComponentbuilderHelper::checkString($item->export_key))
+						{
+							if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
+							{
+								$item->export_key = rtrim($basic->decryptString($item->export_key), "\0");
+							}
+							$this->key[$item->id] = $item->export_key;
 						}
 						// build files
 						$this->moveIt($item->addfiles, 'file');
@@ -192,7 +209,19 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*/
 	protected function smartExportBuilder()
 	{
-		$this->smartExport = serialize($this->smartExport);
+		$data = serialize($this->smartExport);
+		// lock the data if set
+		if (ComponentbuilderHelper::checkArray($this->key))
+		{
+			$this->key = md5(implode('', $this->key));
+			$locker = new FOFEncryptAes($this->key, 128);
+			$data = $locker->encryptString($data);			
+		}
+		else
+		{
+			$data = base64_encode($data);
+		}
+		// set the path
 		$dbPath = $this->packagePath . '/db.vdm';
 		if (JFile::exists($dbPath))
 		{
@@ -200,7 +229,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			JFile::delete($dbPath);
 		}
 		// write the db data to file in package
-		if (!ComponentbuilderHelper::writeFile($dbPath, $this->smartExport))
+		if (!ComponentbuilderHelper::writeFile($dbPath, wordwrap($data, 128, "\n", true)))
 		{
 			return false;
 		}
@@ -370,7 +399,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add admin views
 						if (isset($item->addlinked_views))
 						{
-							$this->setData($user, $db, 'admin_view', $item->addlinked_views, 'adminview');
+							// $this->setData($user, $db, 'admin_view', $item->addlinked_views, 'adminview');  TODO infinite loop error
 						}
 						// admin icon
 						$this->moveIt(array('image' => array($item->icon)), 'image');
@@ -875,36 +904,41 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
-						if ($basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
-						{
-							// decrypt update_server_ftp
-							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
-						}
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode readme
-						$item->readme = base64_decode($item->readme);
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode php_preflight_update
+						$item->php_preflight_update = base64_decode($item->php_preflight_update);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
 						// decode css
 						$item->css = base64_decode($item->css);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
-						// decode php_preflight_update
-						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode readme
+						$item->readme = base64_decode($item->readme);
 						if ($basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
 						{
 							// decrypt sales_server_ftp
 							$item->sales_server_ftp = $basic->decryptString($item->sales_server_ftp);
+						}
+						if ($basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
+						{
+							// decrypt update_server_ftp
+							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
+						}
+						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
+						{
+							// decrypt export_key
+							$item->export_key = $basic->decryptString($item->export_key);
 						}
 						// decode php_helper_both
 						$item->php_helper_both = base64_decode($item->php_helper_both);

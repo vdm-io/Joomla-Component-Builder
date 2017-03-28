@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.8
-	@build			27th March, 2017
+	@version		2.3.9
+	@build			28th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -80,8 +80,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		parent::populateState();
 	}
 	
+	protected $app;
 	protected $target = false;
 	protected $newID = array();
+	protected $forceUpdate = 0;
+	protected $hasKey = 0;
+	protected $sleutle = null;
 
 	/**
 	 * Import an spreadsheet from either folder, url or upload.
@@ -92,12 +96,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	public function import()
 	{
 		$this->setState('action', 'import');
-		$app 			= JFactory::getApplication();
+		$this->app 		= JFactory::getApplication();
 		$session 			= JFactory::getSession();
 		$package 			= null;
 		$continue			= false;
 		// get import type
-		$this->getType 		= $app->input->getString('gettype', NULL);
+		$this->getType 		= $this->app->input->getString('gettype', NULL);
 		// get import type
 		$this->dataType		= $session->get('dataType_VDM_IMPORTINTO', NULL);
 
@@ -111,7 +115,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				case 'folder':
 					// Remember the 'Import from Directory' path.
-					$app->getUserStateFromRequest($this->_context . '.import_directory', 'import_directory');
+					$this->app->getUserStateFromRequest($this->_context . '.import_directory', 'import_directory');
 					$package = $this->_getPackageFromFolder();
 					break;
 
@@ -135,7 +139,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					break;
 
 				default:
-					$app->setUserState('com_componentbuilder.message', JText::_('COM_COMPONENTBUILDER_IMPORT_NO_IMPORT_TYPE_FOUND'));
+					$this->app->setUserState('com_componentbuilder.message', JText::_('COM_COMPONENTBUILDER_IMPORT_NO_IMPORT_TYPE_FOUND'));
 					return false;
 					break;
 			}
@@ -148,7 +152,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->remove($package['packagename']);
 			}
 
-			$app->setUserState('com_componentbuilder.message', JText::_('COM_COMPONENTBUILDER_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));
+			$this->app->setUserState('com_componentbuilder.message', JText::_('COM_COMPONENTBUILDER_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));
 			return false;
 		}
 		
@@ -168,15 +172,22 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		else
 		{
 				$headerList = null;
+				// force update
+				$this->forceUpdate 	= $this->app->input->getInt('force_update', 0);
+				// has a key
+				$this->hasKey 		= $this->app->input->getInt('haskey', 0);
+				// die sleutle
+				$this->sleutle 		= $this->app->input->getString('sleutle', NULL);
 		}
 		if (!$this->setData($package, $headerList))
 		{
 			// There was an error importing the package
 			$msg = JText::_('COM_COMPONENTBUILDER_IMPORT_ERROR');
+			$msgType = 'error';
 			$back = $session->get('backto_VDM_IMPORT', NULL);
 			if ($back)
 			{
-				$app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view='.$back);
+				$this->app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view='.$back);
 				$session->clear('backto_VDM_IMPORT');
 			}
 			$result = false;
@@ -185,17 +196,18 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		{
 			// Package imported sucessfully
 			$msg = JText::sprintf('COM_COMPONENTBUILDER_IMPORT_SUCCESS', $package['packagename']);
+			$msgType = 'success';
 			$back = $session->get('backto_VDM_IMPORT', NULL);
 			if ($back)
 			{
-			    $app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view='.$back);
+			    $this->app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view='.$back);
 			    $session->clear('backto_VDM_IMPORT');
 			}
 			$result = true;
 		}
 
-		// Set some model state values
-		$app->enqueueMessage($msg);
+		// Set message to qeue
+		$this->app->enqueueMessage($msg, $msgType);
 
 		// remove file after import
 		$this->remove($package['packagename']);
@@ -495,14 +507,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						if ($data = @file_get_contents($dbFile))
 						{
 							// prep the data
-							$data = unserialize($data);
-							if (isset($data['joomla_component']) && ComponentbuilderHelper::checkArray($data['joomla_component']))
+							if ($data = $this->extractData($data))
 							{
-								// save the smart data
-								if ($this->saveSmartComponents($data, $dir))
+								if (isset($data['joomla_component']) && ComponentbuilderHelper::checkArray($data['joomla_component']))
 								{
-									ComponentbuilderHelper::removeFolder($dir);
-									return true;
+									// save the smart data
+									if ($this->saveSmartComponents($data, $dir))
+									{
+										ComponentbuilderHelper::removeFolder($dir);
+										return true;
+									}
 								}
 							}
 						}
@@ -511,6 +525,50 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 			}
 		}
+		return false;
+	}
+
+	/**
+	* Extract the data from the string
+	*
+	* @param string  $data The data string
+	*
+	* @return  object false on failure
+	*
+	**/
+	protected function extractData($data)
+	{
+		// remove all line breaks
+		$data = str_replace("\n", '', $data);
+		// make sure we have base64
+		if ($data === base64_encode(base64_decode($data, true)))
+		{
+			// open the data
+			if($this->hasKey == 1 && ComponentbuilderHelper::checkString($this->sleutle) && strlen($this->sleutle) == 32)
+			{
+				// Get the encryption object.
+				$opener = new FOFEncryptAes($this->sleutle, 128);
+				$data = rtrim($opener->decryptString($data), "\0");
+			}
+			elseif($this->hasKey == 0)
+			{
+				$data = base64_decode($data);
+			}
+			else
+			{
+				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWOKEY_ERRORHTWOPLEASE_PROVIDE_THE_CORRECT_KEY_TO_IMPORT_THIS_PACKAGE'), 'error');
+				return false;
+			}
+			// final check if we have success
+			$data = @unserialize($data);
+			if ($data !== false)
+			{
+				return $data;
+			}
+			$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWODATA_IS_CORRUPTHTWOTHIS_COULD_BE_DUE_TO_KEY_ERROR_OR_BROKEN_PACKAGE'), 'error');
+			return false;
+		}
+		$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWODATA_IS_CORRUPTHTWOTHIS_COULD_BE_DUE_TO_BROKEN_PACKAGE'), 'error');
 		return false;
 	} 
 	
@@ -603,19 +661,28 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// set custom folder path
 		$customPath = $params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
 		$imagesPath = JPATH_SITE . '/images';
+		$success = true;
 		// check if we have custom files
 		if (JFolder::exists($dir . '/custom'))
 		{
 			// great we have some custom stuff lets move it
-			JFolder::copy($dir . '/custom', $customPath,'',true);
+			if (!JFolder::copy($dir . '/custom', $customPath,'',true))
+			{
+				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BCUSTOM_FILESB_NOT_MOVE_TO_CORRECT_LOCATION'), 'error');
+				$success = false;
+			}
 		}
 		// check if we have images
 		if (JFolder::exists($dir . '/images'))
 		{
 			// great we have some images lets move them
-			JFolder::copy($dir . '/images', $imagesPath,'',true);
+			if (!JFolder::copy($dir . '/images', $imagesPath,'',true))
+			{
+				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BIMAGESB_NOT_MOVE_TO_CORRECT_LOCATION'), 'error');
+				$success = false;
+			}
 		}
-		return true;
+		return $success;
 	}
 
 	/**
@@ -632,6 +699,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	**/
 	protected function saveSmartItems(&$items, $type, &$db, &$user, &$today)
 	{
+		$success = true;
 		if (isset($items[$type]) && ComponentbuilderHelper::checkArray($items[$type]))
 		{
 			// get global action permissions
@@ -643,37 +711,52 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				$oldID = $item->id;
 				// first check if exist
-				if ($canEdit && $local = $this->getLocalItem($item, $type, $db, true))
+				if ($local = $this->getLocalItem($item, $type, $db, true))
 				{
 					$dbDate = strtotime($item->modified);
 					$localDate = strtotime($local->modified);
 					// okay we have it local (check if the version is newer)
-					if ($dbDate > $localDate) /// hmmm not sure about this... may cause issues <-- lets see (some may even want to override the local version even if it is newer) TODO (add switch)
+					if ($this->forceUpdate == 1 || $dbDate > $localDate)
 					{
 						// make sure we have the correct ID set
 						$item->id = $local->id;
 						// yes it is newer, lets update
-						if ($id = $this->updateLocalItem($item, $type, $db, $user, $today, $canState))
+						if ($canEdit && $id = $this->updateLocalItem($item, $type, $db, $user, $today, $canState))
 						{
 							$this->newID[$type][$oldID] = $id;
 						}
-						// we must add some error handler here
+						else
+						{
+							$notice = '!';
+							if (!$canEdit)
+							{
+								$notice = JText::sprintf("COM_COMPONENTBUILDER__SINCE_YOU_DONT_HAVE_PERMISSION_TO_EDIT_S", $type);
+							}
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_COULD_NOT_BE_IMPORTEDS', $type.' id:'.$oldID, $notice), 'error');
+						}
 					}
 					else
 					{
 						$this->newID[$type][$oldID] = $local->id;
 					}
-					// we must add some notice handler here
 				}
 				elseif ($canCreate && $id = $this->addLocalItem($item, $type, $db, $user, $today))
 				{
 					// not found in local db so add
 					$this->newID[$type][$oldID] = $id;
 				}
-				// we must add some error handler here
+				else
+				{
+					$notice = '!';
+					if (!$canCreate)
+					{
+						$notice = JText::sprintf("COM_COMPONENTBUILDER__SINCE_YOU_DONT_HAVE_PERMISSION_TO_CREATE_S", $type);
+					}
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_COULD_NOT_BE_IMPORTEDS', $type.' id:'.$oldID, $notice), 'error');
+				}
 			}
 		}
-		return true;
+		return $success;
 	}
 
 	/**
@@ -715,7 +798,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				else
 				{
-					// we must add some error handler here
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BFIELD_TYPEB_IDS_MISMATCH_IN_BSB', $item->fieldtype, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'error');
 					return false;
 				}
 			break;
@@ -729,7 +812,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					}
 					else
 					{
-						// we must add some error handler here
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BVIEW_TABLE_MAINB_IDS_MISMATCH_IN_BSB', $item->view_table_main, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'error');
 						return false;
 					}
 				}
@@ -745,8 +828,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							$join_view_table['view_table'][$nr] = $this->newID['admin_view'][$id];
 						}
 						else
-						{
-							// we must add some error handler here
+						{							
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BJOIN_VIEW_TABLE_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BVIEW_TABLEB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
 							$join_view_table['view_table'][$nr] = '';
 						}
 					}
@@ -779,7 +862,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				else
 				{
-					// we must add some error handler here
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BMAIN_GETB_IDS_MISMATCH_IN_BSB', $item->main_get, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'error');
 					return false;
 				}
 				// update the dynamic_get
@@ -804,7 +887,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 						else
 						{
-							// we must add some error handler here
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BCUSTOM_GET_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BDYNAMIC_GETB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
 							unset($custom_get[$nr]);
 						}
 					}
@@ -841,7 +924,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 						else
 						{
-							// we must add some error handler here
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BFIELD_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BFIELDB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
 							$addfields['field'][$nr] = '';
 						}
 					}
@@ -883,17 +966,24 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$targets = array('target_field', 'match_field');
 					foreach ($targets as $target)
 					{
-						foreach ($addconditions[$target] as $nr => $id)
+						foreach ($addconditions[$target] as $nr => $ids)
 						{
 							// update the addconditions
-							if (isset($this->newID['field'][$id]))
+							if (!ComponentbuilderHelper::checkArray($ids))
 							{
-								$addconditions[$target][$nr] = $this->newID['field'][$id];
+								$ids = array((int) $ids);
 							}
-							else
+							foreach ($ids as $id)
 							{
-								// we must add some error handler here
-								$addconditions[$target][$nr] = '';
+								if (isset($this->newID['field'][$id]))
+								{
+									$addconditions[$target][$nr] = $this->newID['field'][$id];
+								}
+								else
+								{
+									$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_ID_MISMATCH_OF_SELECTED_BFIELDB_SO_THE_IDS_WAS_REMOVED', ComponentbuilderHelper::safeString($target, 'Ww') . ' in ('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
+									$addconditions[$target][$nr] = '';
+								}
 							}
 						}
 					}
@@ -919,7 +1009,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 						else
 						{
-							// we must add some error handler here
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BCONFIG_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BFIELDB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
 							$addconfig['field'][$nr] = '';
 						}
 					}
@@ -939,7 +1029,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 						else
 						{
-							// we must add some error handler here
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BADMIN_VIEW_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BADMIN_VIEWB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
 							$addadmin_views['adminview'][$nr] = '';
 						}
 					}
@@ -963,7 +1053,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 						else
 						{
-							// we must add some error handler here
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BCUSTOM_ADMIN_VIEW_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BCUSTOM_ADMIN_VIEWB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
 							$addcustom_admin_views['customadminview'][$nr] = '';
 						}
 					}
@@ -983,7 +1073,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 						else
 						{
-							// we must add some error handler here
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSITE_VIEW_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BSITE_VIEWB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
 							$addsite_views['siteview'][$nr] = '';
 						}
 					}
