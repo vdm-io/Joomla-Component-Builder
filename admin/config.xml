@@ -224,6 +224,157 @@
 		/>
 	</fieldset>
 	<fieldset
+		name="company_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_COMPANY">
+
+		<!-- Export_company Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="export_company"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="STRING"
+			message="Error! Please add company name here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_HINT"
+		/>		
+		<!-- Export_owner Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="export_owner"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_LABEL"
+			size="10"
+			maxlength="120"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="HTML"
+			message="Error! Please add owner name here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_HINT"
+		/>		
+		<!-- Export_email Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="export_email"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="STRING"
+			validate="email"
+			message="Error! Please email address here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_HINT"
+		/>		
+		<!-- Export_website Field. Type: Url. (joomla) -->
+		<field
+			type="url"
+			name="export_website"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="url"
+			validated="url"
+			message="Error! Please add website here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_HINT"
+		/>		
+		<!-- Export_license Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="export_license"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_LABEL"
+			rows="7"
+			cols="10"
+			default="GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_DESCRIPTION"
+			class="text_area span12"
+			filter="HTML"
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_HINT"
+			required="true"
+		/>		
+		<!-- Export_copyright Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="export_copyright"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_LABEL"
+			rows="7"
+			cols="10"
+			default="Copyright (C) 2015. All Rights Reserved"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_DESCRIPTION"
+			class="text_area span12"
+			filter="HTML"
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_HINT"
+			required="true"
+		/>		
+		<!-- Export_buy_link Field. Type: Url. (joomla) -->
+		<field
+			type="url"
+			name="export_buy_link"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_DESCRIPTION"
+			class="text_area"
+			required="false"
+			filter="url"
+			validated="url"
+			message="Error! Please add link here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_HINT"
+		/>		
+		<!-- Export_buy_query Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="export_buy_query"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_QUERY_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_QUERY_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please email address here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_QUERY_HINT"
+		/>		
+		<!-- Export_package_link Field. Type: Url. (joomla) -->
+		<field
+			type="url"
+			name="export_package_link"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_LINK_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_LINK_DESCRIPTION"
+			class="text_area"
+			required="false"
+			filter="url"
+			validated="url"
+			message="Error! Please add link here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_LINK_HINT"
+		/>		
+		<!-- Export_package_query Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="export_package_query"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_QUERY_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_QUERY_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please email address here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_QUERY_HINT"
+		/>
+	</fieldset>
+	<fieldset
 		name="permissions"
 		label="JCONFIG_PERMISSIONS_LABEL"
 		description="JCONFIG_PERMISSIONS_DESC">

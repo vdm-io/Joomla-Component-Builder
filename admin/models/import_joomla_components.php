@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.9
-	@build			28th March, 2017
+	@build			30th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -136,6 +136,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$session->clear('package');
 					$session->clear('dataType');
 					$session->clear('hasPackage');
+					$session->clear('smart_package_info');
 					break;
 
 				default:
@@ -157,13 +158,20 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		}
 		
 		// first link data to table headers
-		if(!$continue){
+		if(!$continue)
+		{
+			// check if this a smart package, if true then get info
+			if ($this->dataType === 'smart_package')
+			{
+				$this->getInfo($package, $session);
+			}
 			$package	= json_encode($package);
 			$session->set('package', $package);
 			$session->set('dataType', $this->dataType);
 			$session->set('hasPackage', true);
 			return true;
 		}
+
 		// set the data
 		if ('continue-basic' == $this->getType)
 		{
@@ -213,6 +221,48 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$this->remove($package['packagename']);
 		$session->clear($this->getType.'_VDM_IMPORTHEADERS');
 		return $result;
+	}
+
+	protected function getInfo(&$package, &$session)
+	{
+		// set the data
+		if(isset($package['dir']))
+		{
+			// set auto loader
+			ComponentbuilderHelper::autoLoader('smart');
+			// extract the package
+			if (JFile::exists($package['dir']))
+			{
+				// get the zip adapter
+				$zip = JArchive::getAdapter('zip');
+				// set the directory name
+				$dir = JFile::stripExt($package['dir']);
+				// unzip the package
+				$zip->extract($package['dir'], $dir);
+				// check for database file
+				$infoFile = $dir . '/info.vdm';
+				if (JFile::exists($infoFile))
+				{
+					// load the data
+					if ($info = @file_get_contents($infoFile))
+					{
+						// remove all line breaks
+						$info = str_replace("\n", '', $info);
+						// make sure we have base64
+						if ($info === base64_encode(base64_decode($info, true)))
+						{
+							// Get the encryption object.
+							$opener = new FOFEncryptAes('V4stD3vel0pmEntMethOd@YoUrS3rv!s', 128);
+							$info = rtrim($opener->decryptString($info), "\0");
+							$session->set('smart_package_info', $info);
+							return true;
+						}
+					}
+				}
+				ComponentbuilderHelper::removeFolder($dir);
+			}
+		}
+		return false;
 	} 
 
 	/**
@@ -493,14 +543,18 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// extract the package
 				if (JFile::exists($package['dir']))
 				{
-					// get the zip adapter
-					$zip = JArchive::getAdapter('zip');
 					// set the directory name
 					$dir = JFile::stripExt($package['dir']);
-					// unzip the package
-					$zip->extract($package['dir'], $dir);
 					// check for database file
 					$dbFile = $dir . '/db.vdm';
+					if (!JFile::exists($dbFile))
+					{
+						// get the zip adapter
+						$zip = JArchive::getAdapter('zip');
+						// unzip the package
+						$zip->extract($package['dir'], $dir);
+					}
+					// check again
 					if (JFile::exists($dbFile))
 					{
 						// load the data
@@ -544,20 +598,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		if ($data === base64_encode(base64_decode($data, true)))
 		{
 			// open the data
-			if($this->hasKey == 1 && ComponentbuilderHelper::checkString($this->sleutle) && strlen($this->sleutle) == 32)
+			if(ComponentbuilderHelper::checkString($this->sleutle) && strlen($this->sleutle) == 32)
 			{
 				// Get the encryption object.
 				$opener = new FOFEncryptAes($this->sleutle, 128);
 				$data = rtrim($opener->decryptString($data), "\0");
 			}
-			elseif($this->hasKey == 0)
-			{
-				$data = base64_decode($data);
-			}
 			else
 			{
-				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWOKEY_ERRORHTWOPLEASE_PROVIDE_THE_CORRECT_KEY_TO_IMPORT_THIS_PACKAGE'), 'error');
-				return false;
+				$data = base64_decode($data);
 			}
 			// final check if we have success
 			$data = @unserialize($data);
@@ -822,6 +871,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$join_view_table = json_decode($item->join_view_table, true);
 					foreach ($join_view_table['view_table'] as $nr => $id)
 					{
+						if (!is_numeric($id))
+						{
+							continue;
+						}
 						// update the join_view_table
 						if (isset($this->newID['admin_view'][$id]))
 						{
@@ -850,6 +903,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				else
 				{
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BDYNAMIC_GETB_IDS_MISMATCH_IN_BSB', $item->dynamic_get, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'warning');
 					unset($item->dynamic_get);
 				}
 			break;
@@ -872,6 +926,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				else
 				{
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BDYNAMIC_GETB_IDS_MISMATCH_IN_BSB', $item->dynamic_get, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'warning');
 					unset($item->dynamic_get);
 				}
 				// update the custom_get
@@ -880,6 +935,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$custom_get = json_decode($item->custom_get, true);
 					foreach ($custom_get as $nr => $get)
 					{
+						if (!is_numeric($get))
+						{
+							continue;
+						}
 						// update the custom_get
 						if (isset($this->newID['dynamic_get'][$get]))
 						{
@@ -917,6 +976,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$addfields = json_decode($item->addfields, true);
 					foreach ($addfields['field'] as $nr => $id)
 					{
+						if (!is_numeric($id))
+						{
+							continue;
+						}
 						// update the addfields
 						if (isset($this->newID['field'][$id]))
 						{
@@ -949,6 +1012,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						else
 						{
 							// this is painful but true...
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BLINKED_ADMIN_VIEW_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BADMIN_VIEWB_SO_THE_IDS_WAS_NOT_UPDATED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
 							$this->updateAfter = true;
 						}
 					}
@@ -975,6 +1039,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							}
 							foreach ($ids as $id)
 							{
+								if (!is_numeric($id))
+								{
+									continue;
+								}
 								if (isset($this->newID['field'][$id]))
 								{
 									$addconditions[$target][$nr] = $this->newID['field'][$id];
@@ -1002,6 +1070,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$addconfig = json_decode($item->addconfig, true);
 					foreach ($addconfig['field'] as $nr => $id)
 					{
+						if (!is_numeric($id))
+						{
+							continue;
+						}
 						// update the addconfig
 						if (isset($this->newID['field'][$id]))
 						{
@@ -1022,6 +1094,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$addadmin_views = json_decode($item->addadmin_views, true);
 					foreach ($addadmin_views['adminview'] as $nr => $id)
 					{
+						if (!is_numeric($id))
+						{
+							continue;
+						}
 						// update the addadmin_views
 						if (isset($this->newID['admin_view'][$id]))
 						{
@@ -1046,6 +1122,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$addcustom_admin_views = json_decode($item->addcustom_admin_views, true);
 					foreach ($addcustom_admin_views['customadminview'] as $nr => $id)
 					{
+						if (!is_numeric($id))
+						{
+							continue;
+						}
 						// update the addcustom_admin_views
 						if (isset($this->newID['custom_admin_view'][$id]))
 						{
@@ -1066,6 +1146,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$addsite_views = json_decode($item->addsite_views, true);
 					foreach ($addsite_views['siteview'] as $nr => $id)
 					{
+						if (!is_numeric($id))
+						{
+							continue;
+						}
 						// update the addsite_views
 						if (isset($this->newID['site_view'][$id]))
 						{
@@ -1091,6 +1175,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					}
 					else
 					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BCOMPONENT_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BCOMPONENTB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $item->component), 'warning');
 						unset($item->component);
 					}
 				}

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.3.9
-	@build			28th March, 2017
+	@build			30th March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -39,8 +39,8 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 	protected $headers;
 	protected $hasHeader = 0;
 	protected $dataType;
-
-	public $formPackage;
+	protected $packageInfo;
+	protected $formPackage;
 
 	public function display($tpl = null)
 	{
@@ -92,6 +92,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 		// set form only if smart package
 		if ($this->dataType === 'smart_package')
 		{
+			$this->packageInfo = json_decode($session->get('smart_package_info', false), true);
 			$this->formPackage = $this->getForm();
 		}
 		// Display the template
@@ -101,7 +102,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 	public function getForm()
 	{		
 		jimport('joomla.form.form');
-			
+		$form = array();
 		$radio1 = JFormHelper::loadFieldType('radio',true);
 		// Switch to force local update
 		$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_FORCE_LOCAL_UPDATE').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_WE_FORCE_THE_UPDATE_OF_ALL_LOCAL_DATA_EVEN_IF_IT_IS_NEWER_THEN_THE_DATA_BEING_IMPORTED').'" name="force_update" type="radio" class="btn-group btn-group-yesno" default="0" filter="INT">';
@@ -111,26 +112,41 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 		$force = new SimpleXMLElement($xml);
 		// set components to form
 		$radio1->setup($force,0);
+		// add to form
+		$form[] = $radio1;
 		
-		$radio2 = JFormHelper::loadFieldType('radio',true);
-		// has key
-		$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_USE_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_DOES_THIS_PACKAGE_REQUIRE_A_KEY_TO_INSTALL').'" name="haskey" type="radio" class="btn-group btn-group-yesno" default="1" filter="INT">';
-		$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
-		$xml .= "</field>";
-		// prepare the xml
-		$license = new SimpleXMLElement($xml);
-		// set components to form
-		$radio2->setup($license,1);
-		
-		$text1 = JFormHelper::loadFieldType('text',true);
-		// add the key
-		$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE').'" name="sleutle" type="text" class="text_area" filter="STRING" hint="add key here" />';
-		// prepare the xml
-		$sleutle = new SimpleXMLElement($xml);
-		// set components to form
-		$text1->setup($sleutle,'');
+		if (!$this->packageInfo || (isset($this->packageInfo['getKeyFrom']) && ComponentbuilderHelper::checkArray($this->packageInfo['getKeyFrom'])))
+		{
+			// set required field
+			$required = 'required="true"';
+			if (!$this->packageInfo)
+			{
+				$radio2 = JFormHelper::loadFieldType('radio',true);
+				// has key
+				$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_USE_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_DOES_THIS_PACKAGE_REQUIRE_A_KEY_TO_INSTALL').'" name="haskey" type="radio" class="btn-group btn-group-yesno" default="1" filter="INT">';
+				$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
+				$xml .= "</field>";
+				// prepare the xml
+				$license = new SimpleXMLElement($xml);
+				// set components to form
+				$radio2->setup($license,1);
+				$required = ''; // change required field
+				// add to form
+				$form[] = $radio2;
+			}
+
+			$text1 = JFormHelper::loadFieldType('text',true);
+			// add the key
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE').'" name="sleutle" type="text" class="text_area" filter="STRING" hint="add key here" '.$required.' />';
+			// prepare the xml
+			$sleutle = new SimpleXMLElement($xml);
+			// set components to form
+			$text1->setup($sleutle,'');
+			// add to form
+			$form[] = $text1;
+		}
 					
-		return array($radio1,$radio2,$text1);
+		return $form;
 	}
 
 	/**

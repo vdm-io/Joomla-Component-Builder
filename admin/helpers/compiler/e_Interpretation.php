@@ -11838,7 +11838,7 @@ class Interpretation extends Fields
 						$this->configFieldSetsCustomField[$field['tabname']][] = $xmlField;
 						// set global params to db on install
 						$fieldName = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xmlField,'name="','"'));
-						$fieldDefault = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xmlField,'default="','"'));
+						$fieldDefault = ComponentbuilderHelper::getBetween($xmlField,'default="','"');
 						if (isset($field['custom_value']) && ComponentbuilderHelper::checkString($field['custom_value']))
 						{
 							// load the Global checkin defautls

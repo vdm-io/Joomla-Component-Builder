@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 214 of this MVC
-	@build			28th March, 2017
+	@version		@update number 266 of this MVC
+	@build			30th March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -57,8 +57,21 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	}
 
 	public $packagePath		= false;
+	public $packageName	= false;
 	public $zipPath			= false;
 	public $key			= array();
+	public $info			= array(
+						'name' => array(),
+						'short_description' => array(),
+						'component_version' => array(),
+						'companyname' => array(),
+						'author' => array(),
+						'email' => array(),
+						'website' => array(),
+						'license' => array(),
+						'copyright' => array(),
+						'getKeyFrom' => null
+						);
 
 	protected $params;
 	protected $tempPath;
@@ -115,7 +128,20 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					// set the paths
 					$comConfig = JFactory::getConfig();
 					$this->tempPath = $comConfig->get('tmp_path');
-					$this->packagePath = $this->tempPath . '/JCB_smartPackage';
+					// set params
+					$this->params = JComponentHelper::getParams('com_componentbuilder');
+					// set custom folder path
+					$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
+					// set the package path
+					if (count($items) == 1)
+					{
+						$this->packageName = 'JCB_' . $this->getPackageName($items);
+					}
+					else
+					{
+						$this->packageName = 'JCB_smartPackage';
+					}
+					$this->packagePath = $this->tempPath . '/' . $this->packageName;
 					$this->zipPath = $this->packagePath .'.zip';
 					if (JFolder::exists($this->packagePath))
 					{
@@ -124,10 +150,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					}
 					// create the folders
 					JFolder::create($this->packagePath);
-					// set params
-					$this->params = JComponentHelper::getParams('com_componentbuilder');
-					// set custom folder path
-					$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
 					// Get the basic encription.
 					$basickey = ComponentbuilderHelper::getCryptKey('basic');
 					// Get the encription object.
@@ -141,20 +163,37 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					$this->smartExport['joomla_component'] = array();
 					foreach ($items as $nr => &$item)
 					{
+						// check if user has access
 						$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
 							continue;
 						}
+						// build information data set
+						$this->info['name'][$item->id]			= $item->name;
+						$this->info['short_description'][$item->id]	= $item->short_description;
+						$this->info['component_version'][$item->id]	= $item->component_version;
+						$this->info['companyname'][$item->id]		= $item->companyname;
+						$this->info['author'][$item->id]		= $item->author;
+						$this->info['email'][$item->id]			= $item->email;
+						$this->info['website'][$item->id]		= $item->website;
+						$this->info['license'][$item->id]		= $item->license;
+						$this->info['copyright'][$item->id]		= $item->copyright;
 						// set the keys
 						if (isset($item->export_key) && ComponentbuilderHelper::checkString($item->export_key))
 						{
+							// keep the key locked for exported data set
+							$export_key = $item->export_key;
 							if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
 							{
-								$item->export_key = rtrim($basic->decryptString($item->export_key), "\0");
+								$export_key = rtrim($basic->decryptString($item->export_key), "\0");
 							}
-							$this->key[$item->id] = $item->export_key;
+							// make sure we have a string
+							if (strlen($export_key) > 4 )
+							{
+								$this->key[$item->id] = $export_key;
+							}
 						}
 						// build files
 						$this->moveIt($item->addfiles, 'file');
@@ -209,30 +248,49 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*/
 	protected function smartExportBuilder()
 	{
+		// set db data
 		$data = serialize($this->smartExport);
 		// lock the data if set
 		if (ComponentbuilderHelper::checkArray($this->key))
 		{
+			// lock the data
 			$this->key = md5(implode('', $this->key));
 			$locker = new FOFEncryptAes($this->key, 128);
-			$data = $locker->encryptString($data);			
+			$data = $locker->encryptString($data);		
+			// Set the key owner information
+			$this->info['getKeyFrom'] = array();
+			$this->info['getKeyFrom']['company']		= $this->params->get('export_company', null);
+			$this->info['getKeyFrom']['owner']			= $this->params->get('export_owner', null);
+			$this->info['getKeyFrom']['email']			= $this->params->get('export_email', null);
+			$this->info['getKeyFrom']['website']		= $this->params->get('export_website', null);
+			$this->info['getKeyFrom']['license']		= $this->params->get('export_license', null);
+			$this->info['getKeyFrom']['copyright']		= $this->params->get('export_copyright', null);
+			$this->info['getKeyFrom']['buy_link']		= ($buy_link = $this->params->get('export_buy_link', null)) ? $buy_link . $this->params->get('export_buy_query', '&package=') . $this->packageName : null;
+			$this->info['getKeyFrom']['package_link']	= ($package_link = $this->params->get('export_package_link', null)) ? $package_link . $this->params->get('export_package_query', '&package=') . $this->packageName : null;
 		}
 		else
 		{
+			// Set the owner information
 			$data = base64_encode($data);
 		}
 		// set the path
 		$dbPath = $this->packagePath . '/db.vdm';
-		if (JFile::exists($dbPath))
-		{
-			// remove file if found
-			JFile::delete($dbPath);
-		}
 		// write the db data to file in package
 		if (!ComponentbuilderHelper::writeFile($dbPath, wordwrap($data, 128, "\n", true)))
 		{
 			return false;
 		}
+		// set info data
+		$locker = new FOFEncryptAes('V4stD3vel0pmEntMethOd@YoUrS3rv!s', 128);
+		$info = $locker->encryptString(json_encode($this->info));
+		// set the path
+		$infoPath = $this->packagePath . '/info.vdm';
+		// write the db data to file in package
+		if (!ComponentbuilderHelper::writeFile($infoPath, wordwrap($info, 128, "\n", true)))
+		{
+				return false;
+		}
+		// remove old zip files with the same name
 		if (JFile::exists($this->zipPath))
 		{
 			// remove file if found
@@ -628,6 +686,22 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	* Get the package name
+	*
+	*  @param   array    $items of all components
+	* 
+	*  @return  string     The package name
+	* 
+	*/
+	protected function getPackageName(&$items)
+	{
+		foreach ($items as $item)
+		{
+			return ComponentbuilderHelper::safeString($item->name_code);
 		}
 	}
 
