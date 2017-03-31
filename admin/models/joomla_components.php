@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 266 of this MVC
-	@build			30th March, 2017
+	@version		@update number 297 of this MVC
+	@build			31st March, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -81,6 +81,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	protected $layoutIds		= array();
 	protected $customCodeIds	= array();
 	protected $customCodeM	= array();
+	protected $fieldTypes		= array();
+	protected $isRepeatable	= array();
 
 	/**
 	* Method to build the export package
@@ -390,7 +392,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$values = json_decode($values, true);
 		}
 		// make sure we have an array
-		if (('custom_code' !== $table && 'component' !== $key) && (!ComponentbuilderHelper::checkArray($values) || !isset($values[$key]) || !ComponentbuilderHelper::checkArray($values[$key])))
+		if (('custom_code' !== $table && 'component' !== $key && 'custom_get' !== $key) && (!ComponentbuilderHelper::checkArray($values) || !isset($values[$key]) || !ComponentbuilderHelper::checkArray($values[$key])))
 		{
 			return false;
 		}
@@ -408,6 +410,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		if ('custom_code' === $table && 'component' === $key)
 		{
 			$query->where('a.component IN (' . implode(',',$values) . ')');
+		}
+		elseif ('custom_get' === $key)
+		{
+			$query->where('a.id IN (' . implode(',',$values) . ')');
 		}
 		else
 		{
@@ -438,6 +444,15 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				{
 					$searchArray = array('php_view','php_jview','php_jview_display','php_document','js_document','css_document','css');
 				}
+				// reset the global array
+				if ('template' === $table)
+				{
+					$this->templateIds = array();
+				}
+				elseif ('layout' === $table)
+				{
+					$this->layoutIds = array();
+				}
 				// start loading the data
 				if (!isset($this->smartExport[$table]))
 				{
@@ -445,20 +460,20 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				}
 				foreach ($items as $nr => &$item)
 				{
+					// set the data per id only once
 					if (isset($this->smartExport[$table][$item->id]))
 					{
 						continue;
 					}
+					// load to global object
+					$this->smartExport[$table][$item->id] = $item;
+					// set the custom code ID's
+					$this->setCustomCodeIds($item, $table);
 					// actions to take if table is admin_view
 					if ('admin_view' === $table)
 					{
 						// add fields
 						$this->setData($user, $db, 'field', $item->addfields, 'field');
-						// add admin views
-						if (isset($item->addlinked_views))
-						{
-							// $this->setData($user, $db, 'admin_view', $item->addlinked_views, 'adminview');  TODO infinite loop error
-						}
 						// admin icon
 						$this->moveIt(array('image' => array($item->icon)), 'image');
 						// admin icon_add
@@ -471,6 +486,27 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						// add field types
 						$this->setData($user, $db, 'fieldtype', array('fieldtype' => array($item->fieldtype)), 'fieldtype');
+						// we must add a repeatable field subfields
+						if ($this->checkRepeatable($item->fieldtype))
+						{
+							$fields = ComponentbuilderHelper::getBetween(json_decode($item->xml), 'fields="', '"');
+							$fieldsSets = array();
+							if (strpos($fields, ',') !== false)
+							{
+								// multiple fields
+								$fieldsSets = (array) explode(',', $fields);
+							}
+							elseif (is_numeric($fields))
+							{
+								// single field
+								$fieldsSets[] = (int) $fields;
+							}
+							// get fields
+							if (ComponentbuilderHelper::checkArray($fieldsSets))
+							{
+								$this->setData($user, $db, 'field', array('field' => $fieldsSets), 'field');
+							}
+						}
 					}
 					// actions to take if table is site_view and custom_admin_view
 					if ('site_view' === $table || 'custom_admin_view' === $table)
@@ -480,27 +516,114 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add search array templates and layouts
 						foreach ($searchArray as $scripter)
 						{
-							if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)
+							if (isset($item->{'add_'.$scripter}) && $item->{'add_'.$scripter} == 1)
 							{
-								$this->getTemplateLayout($view->$scripter, $db);
+								$this->getTemplateLayout($item->$scripter, $db);
 							}
 						}
 						// add dynamic gets
 						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => array($item->main_get)), 'dynamic_get');
-						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => $item->custom_get), 'dynamic_get');
+						$this->setData($user, $db, 'dynamic_get', $item->custom_get, 'custom_get');
 						if ('custom_admin_view' === $table && isset($item->icon))
 						{
 							// view icon
 							$this->moveIt(array('image' => array($item->icon)), 'image');
 						}
+						// add snippets
+						$this->setData($user, $db, 'snippet', array('snippet' => array($item->snippet)), 'snippet');
 					}
-					// set the custom code ID's
-					$this->setCustomCodeIds($item, $table);
-					// load to global object
-					$this->smartExport[$table][$item->id] = $item;
+					// actions to take if table is template and layout
+					if ('layout' === $table || 'template' === $table)
+					{
+						// search for templates & layouts
+						$this->getTemplateLayout(base64_decode($item->$table), $db, $user);
+						// add search array templates and layouts
+						if (isset($item->add_php_view) && $item->add_php_view == 1)
+						{
+							$this->getTemplateLayout($item->php_view, $db, $user);
+						}
+						// add dynamic gets
+						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => $item->dynamic_get), 'dynamic_get');
+						// add snippets
+						$this->setData($user, $db, 'snippet', array('snippet' => array($item->snippet)), 'snippet');
+					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * Check if a field is a repeatable field
+	 * 
+	 * @param   string   $typeID  The type ID
+	 *
+	 * @return  bool true on success
+	 * 
+	 */
+	protected function checkRepeatable($typeID)
+	{
+		if(isset($this->isRepeatable[$typeID]))
+		{
+			return true;
+		}
+		elseif (ComponentbuilderHelper::checkArray($this->isRepeatable))
+		{
+			return false;
+		}
+		elseif ($type = $this->getFieldType($typeID))
+		{
+			if ('repeatable' === $type)
+			{
+				$this->isRepeatable[$typeID] = true;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Get the field type
+	 * 
+	 * @param   string   $id  The field type id
+	 *
+	 * @return  string field type
+	 * 
+	 */
+	protected function getFieldType($id)
+	{
+		if (!isset($this->fieldTypes[$id]))
+		{
+			$properties = ComponentbuilderHelper::getVar('fieldtype', $id, 'id', 'properties');
+			if (ComponentbuilderHelper::checkJson($properties))
+			{
+				$properties = json_decode($properties, true);
+				if (isset($properties['name']) && ComponentbuilderHelper::checkArray($properties['name']))
+				{
+					foreach ($properties['name'] as $key => $value)
+					{
+						if ('type' === $value)
+						{
+							if (isset($properties['example'][$key])  && ComponentbuilderHelper::checkString($properties['example'][$key]))
+							{
+								$this->fieldTypes[$id] = $properties['example'][$key];
+								break;
+							}
+						}
+					}
+				}
+			}
+			// if not found
+			if (!isset($this->fieldTypes[$id]) && $name = ComponentbuilderHelper::getVar('fieldtype', $id, 'id', 'name'))
+			{
+				$this->fieldTypes[$id] = ComponentbuilderHelper::safeString($name);
+			}
+		}
+		// return the type
+		if (isset($this->fieldTypes[$id]))
+		{
+			return $this->fieldTypes[$id];
+		}
+		return false;
 	}
 
 	/**
@@ -511,7 +634,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	 * @return  void
 	 * 
 	 */
-	protected function getTemplateLayout($default, &$db)
+	protected function getTemplateLayout($default, &$db, $user = false)
 	{
 		// set the Template data
 		$temp1 = ComponentbuilderHelper::getAllBetween($default, "\$this->loadTemplate('","')");
@@ -590,6 +713,20 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			foreach ($again as $get)
 			{
 				$this->getTemplateLayout($get, $db);
+			}
+		}
+		// Set the Data 
+		if ($user)
+		{
+			// add templates
+			if (ComponentbuilderHelper::checkArray($this->templateIds))
+			{
+				$this->setData($user, $db, 'template', array('template' => $this->templateIds), 'template');
+			}
+			// add layouts
+			if (ComponentbuilderHelper::checkArray($this->layoutIds))
+			{
+				$this->setData($user, $db, 'layout', array('layout' => $this->layoutIds), 'layout');
 			}
 		}
 	}

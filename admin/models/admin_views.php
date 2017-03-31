@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 108 of this MVC
-	@build			24th March, 2017
+	@version		@update number 109 of this MVC
+	@build			31st March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views.php
@@ -312,10 +312,10 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 						// decode php_controller
 						$item->php_controller = base64_decode($item->php_controller);
-						// decode php_controller_list
-						$item->php_controller_list = base64_decode($item->php_controller_list);
 						// decode php_model
 						$item->php_model = base64_decode($item->php_model);
+						// decode php_controller_list
+						$item->php_controller_list = base64_decode($item->php_controller_list);
 						// decode php_model_list
 						$item->php_model_list = base64_decode($item->php_model_list);
 						// decode html_import_view

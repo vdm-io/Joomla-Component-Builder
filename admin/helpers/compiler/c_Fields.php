@@ -957,12 +957,12 @@ class Fields extends Structure
 				if (strpos($fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
-					$fieldsSets = explode(',', $fieldAttributes['fields']);
+					$fieldsSets = (array) explode(',', $fieldAttributes['fields']);
 				}
-				else
+				elseif (is_numeric($fieldAttributes['fields']))
 				{
 					// single field
-					$fieldsSets[] = $fieldAttributes['fields'];
+					$fieldsSets[] = (int) $fieldAttributes['fields'];
 				}
 				// only continue if we have a field set
 				if (ComponentbuilderHelper::checkArray($fieldsSets))

@@ -31,8 +31,8 @@ $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
 	'php_controller',
-	'php_controller_list',
 	'php_model',
+	'php_controller_list',
 	'php_model_list'
 );
 

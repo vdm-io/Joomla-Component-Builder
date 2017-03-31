@@ -1917,17 +1917,17 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Php_controller_list Field. Type: Textarea. (joomla) -->
+		<!-- Php_model Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_controller_list"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_LABEL"
+			name="php_model"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_HINT"
 			required="false"
 		/>
 		<!-- Addtables Field. Type: Repeatable. (joomla) -->
@@ -1969,17 +1969,17 @@
 				</fieldset>
 			</fields>
 		</field>
-		<!-- Php_model Field. Type: Textarea. (joomla) -->
+		<!-- Php_controller_list Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_model"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LABEL"
+			name="php_controller_list"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_HINT"
 			required="false"
 		/>
 		<!-- Note_beginner_import Field. Type: Note. A None Database Field. (joomla) -->

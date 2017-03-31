@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 108 of this MVC
-	@build			24th March, 2017
+	@version		@update number 109 of this MVC
+	@build			31st March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -245,16 +245,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_controller = base64_decode($item->php_controller);
 			}
 
-			if (!empty($item->php_controller_list))
-			{
-				// base64 Decode php_controller_list.
-				$item->php_controller_list = base64_decode($item->php_controller_list);
-			}
-
 			if (!empty($item->php_model))
 			{
 				// base64 Decode php_model.
 				$item->php_model = base64_decode($item->php_model);
+			}
+
+			if (!empty($item->php_controller_list))
+			{
+				// base64 Decode php_controller_list.
+				$item->php_controller_list = base64_decode($item->php_controller_list);
 			}
 
 			if (!empty($item->php_model_list))
@@ -1428,16 +1428,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_controller'] = base64_encode($data['php_controller']);
 		}
 
-		// Set the php_controller_list string to base64 string.
-		if (isset($data['php_controller_list']))
-		{
-			$data['php_controller_list'] = base64_encode($data['php_controller_list']);
-		}
-
 		// Set the php_model string to base64 string.
 		if (isset($data['php_model']))
 		{
 			$data['php_model'] = base64_encode($data['php_model']);
+		}
+
+		// Set the php_controller_list string to base64 string.
+		if (isset($data['php_controller_list']))
+		{
+			$data['php_controller_list'] = base64_encode($data['php_controller_list']);
 		}
 
 		// Set the php_model_list string to base64 string.
