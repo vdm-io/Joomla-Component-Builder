@@ -1,4 +1,4 @@
-# Component Builder (2.3.9)
+# Component Builder (2.3.10)
 
 This is a [Joomla 3.x](http://www.joomla.org/) component.
 
@@ -8,7 +8,7 @@ The Component Builder for [Joomla](http://www.joomla.org/) that is highly advanc
 
 Whether you're a seasoned [Joomla](http://www.joomla.org/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.3.9) with **ALL** its features and **ALL** concepts totally open-source and free!
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.3.10) with **ALL** its features and **ALL** concepts totally open-source and free!
 
 Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
@@ -70,6 +70,7 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 + You can dynamically add internal help structures to all component.
 + There is no limitations on how big or how much you want to build (server limitation only).
 + This is a complete factory kind of component that functions like a deployment hub.
++ Export any component completely mapped in JCB and import into another JCB.
 + This and much much more are all possible with this component builder!
 
 # Get Access to Video Tutorials
@@ -104,12 +105,12 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 30th March, 2017
-+ *Version*: 2.3.9
++ *Last Build*: 31st March, 2017
++ *Version*: 2.3.10
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **96694**
-+ *File count*: **610**
++ *Line count*: **96064**
++ *File count*: **578**
 + *Folder count*: **107**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).
