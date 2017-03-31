@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.3.10
+	@version		2.4.0
 	@build			31st March, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -1950,7 +1950,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.3.10 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.4.0 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }
