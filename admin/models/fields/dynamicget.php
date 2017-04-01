@@ -14,7 +14,7 @@
 	@build			1st April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		maingets.php
+	@subpackage		dynamicget.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -31,16 +31,16 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Maingets Form Field class for the Componentbuilder component
+ * Dynamicget Form Field class for the Componentbuilder component
  */
-class JFormFieldMaingets extends JFormFieldList
+class JFormFieldDynamicget extends JFormFieldList
 {
 	/**
-	 * The maingets field type.
+	 * The dynamicget field type.
 	 *
 	 * @var		string
 	 */
-	public $type = 'maingets'; 
+	public $type = 'dynamicget'; 
 	/**
 	 * Override to add new button
 	 *
@@ -151,21 +151,21 @@ class JFormFieldMaingets extends JFormFieldList
 	{
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','main_get_name','type')));
+		$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','dynamic_get_name','type')));
 		$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
 		$query->where($db->quoteName('a.published') . ' = 1');
-		$query->where('( '.$db->quoteName('a.gettype') . ' = 1 OR ' . $db->quoteName('a.gettype') . ' = 2 )');
-		$query->order('a.name ASC');
+$query->order('a.name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
 		$options = array();
 		if ($items)
 		{
+			$options[] = JHtml::_('select.option', '', 'Select an option');
 			$model = ComponentbuilderHelper::getModel('dynamic_gets');
 			foreach($items as $item)
 			{
 				$type = $model->selectionTranslation($item->type,'gettype');
-				$options[] = JHtml::_('select.option', $item->id, $item->main_get_name . ' (' . JText::_($type) . ')' );
+				$options[] = JHtml::_('select.option', $item->id, $item->dynamic_get_name . ' (' . JText::_($type) . ')' );
 			}
 		}
 		return $options;

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 67 of this MVC
-	@build			22nd February, 2017
+	@build			1st April, 2017
 	@created		18th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -203,7 +203,7 @@ class ComponentbuilderViewLayouts extends JViewLegacy
                 }  
 
 		// Set Dynamic Get Name Selection
-		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicgets')->getOptions();
+		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->getOptions();
 		if ($this->dynamic_getNameOptions)
 		{
 			// Dynamic Get Name Filter

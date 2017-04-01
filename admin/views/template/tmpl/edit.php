@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 40 of this MVC
-	@build			22nd February, 2017
+	@build			1st April, 2017
 	@created		26th May, 2015
 	@package		Component Builder
 	@subpackage		edit.php

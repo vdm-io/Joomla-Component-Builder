@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.0
-	@build			31st March, 2017
+	@version		2.4.1
+	@build			1st April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -89,6 +89,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected $updateAfter 	= array('field' => array(), 'adminview' => array());
 	protected $fieldTypes		= array();
 	protected $isRepeatable	= array();
+	protected $specialValue 	= false;
 
 	/**
 	 * Import an spreadsheet from either folder, url or upload.
@@ -715,6 +716,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	**/
 	protected function moveSmartStuff($dir)
 	{
+		// make sure to first unlock files
+		$this->unLockFiles($dir);
 		// set params
 		$params = JComponentHelper::getParams('com_componentbuilder');
 		// set custom folder path
@@ -742,6 +745,66 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		return $success;
+	}
+
+	/**
+	* Method to unlock all files
+	*
+	* @return void
+	*/
+	protected function unLockFiles(&$dir)
+	{
+		// lock the data if set
+		if(ComponentbuilderHelper::checkString($this->sleutle) && strlen($this->sleutle) == 32)
+		{
+			$unlocker = new FOFEncryptAes($this->sleutle, 128);
+			// we must first store the current working directory
+			$joomla = getcwd();
+			// setup the type path
+			$customPath = $dir . '/custom';
+			// go to the custom folder if found
+			if (JFolder::exists($customPath))
+			{
+				$this->unlock($customPath, $unlocker);
+			}
+			// setup the type path
+			$imagesPath = $dir . '/images';
+			// go to the custom folder if found
+			if (JFolder::exists($imagesPath))
+			{
+				$this->unlock($imagesPath, $unlocker);
+			}
+			// change back to working dir
+			chdir($joomla);
+		}
+	}
+
+	/**
+	* The Unlocker
+	*
+	* @return void
+	*/	
+	protected function unlock(&$tmpPath, &$unlocker)
+	{
+		// we are changing the working directory to the tmp path (important)
+		chdir($tmpPath);
+		// get a list of files in the current directory tree (all)
+		$files = JFolder::files('.', '.', true, true);
+		// read in the file content
+		foreach ($files as $file)
+		{
+			// check that the string is base64
+			$data = str_replace("\n", '', file_get_contents($file));
+			if ($data === base64_encode(base64_decode($data, true)))
+			{
+				// write the decrypted data back to file
+				if (!ComponentbuilderHelper::writeFile($file, rtrim($unlocker->decryptString($data), "\0")))
+				{
+					// we should add error handler here in case file could not be unlocked
+				}
+			}
+			
+		}
 	}
 
 	/**
@@ -775,7 +838,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				$oldID = $item->id;
 				// first check if exist
-				if ($local = $this->getLocalItem($item, $type, $db, true))
+				if ($local = $this->getLocalItem($item, $type, $db, 1))
 				{
 					$dbDate = strtotime($item->modified);
 					$localDate = strtotime($local->modified);
@@ -1550,17 +1613,25 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				if (isset($item->$field))
 				{
-					if (is_numeric($item->$field) && is_int($item->$field))
+					// set the value
+					$value = $item->$field;
+					// check if we have special value
+					if ($this->specialValue && ComponentbuilderHelper::checkArray($this->specialValue) && isset($this->specialValue[$field]))
 					{
-						$query->where($db->quoteName('a.' . $field) . ' = '. (int) $item->$field);
+						$value = $this->specialValue[$field];
 					}
-					elseif (is_numeric($item->$field) && is_float($item->$field))
+					// load to query
+					if (is_numeric($value) && is_int($value))
 					{
-						$query->where($db->quoteName('a.' . $field) . ' = '. (float) $item->$field);
+						$query->where($db->quoteName('a.' . $field) . ' = '. (int) $value);
 					}
-					elseif(componentbuilderHelper::checkString($item->$field)) // do not allow empty strings (since it could be major mis match)
+					elseif (is_numeric($value) && is_float($value))
 					{
-						$query->where($db->quoteName('a.' . $field) . ' = '. $db->quote($item->$field));
+						$query->where($db->quoteName('a.' . $field) . ' = '. (float) $value);
+					}
+					elseif(componentbuilderHelper::checkString($value)) // do not allow empty strings (since it could be major mis match)
+					{
+						$query->where($db->quoteName('a.' . $field) . ' = '. $db->quote($value));
 					}
 					else
 					{
@@ -1573,24 +1644,39 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 			}
 		}
+		elseif (isset($item->$get) && componentbuilderHelper::checkString($item->$get)) // do not allow empty strings (since it could be major mis match)
+		{
+			// set the value
+			$value = $item->$get;
+			// check if we have special value
+			if ($this->specialValue && ComponentbuilderHelper::checkArray($this->specialValue) && isset($this->specialValue[$get]))
+			{
+				$value = $this->specialValue[$get];
+			}
+			$query->where($db->quoteName('a.' . $get) . ' = '. $db->quote($value));
+		}
 		elseif (isset($item->$get) && is_numeric($item->$get))
 		{
-			if (is_int($item->$get))
+			// set the value
+			$value = $item->$get;
+			// check if we have special value
+			if ($this->specialValue && ComponentbuilderHelper::checkArray($this->specialValue) && isset($this->specialValue[$get]))
 			{
-				$query->where($db->quoteName('a.' . $get) . ' = '. (int) $item->$get);
+				$value = $this->specialValue[$get];
 			}
-			elseif (is_float($item->$get))
+			// load to query
+			if (is_int($value))
 			{
-				$query->where($db->quoteName('a.' . $get) . ' = '. (float) $item->$get);
+				$query->where($db->quoteName('a.' . $get) . ' = '. (int) $value);
+			}
+			elseif (is_float($value))
+			{
+				$query->where($db->quoteName('a.' . $get) . ' = '. (float) $value);
 			}
 			else
 			{
 				return false; // really not needed but who knows for sure...
 			}
-		}
-		elseif (isset($item->$get) && componentbuilderHelper::checkString($item->$get)) // do not allow empty strings (since it could be major mis match)
-		{
-			$query->where($db->quoteName('a.' . $get) . ' = '. $db->quote($item->$get));
 		}
 		else
 		{
@@ -1606,6 +1692,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		elseif ($retry)
 		{
 			$retryAgain = false;
+			$this->specialValue = false;
 			// set the getter
 			switch ($type)
 			{
@@ -1615,12 +1702,40 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					break;
 				case 'field':
 					// get by name and xml to target correct field
-					$getter = array('name', 'xml'); // risky will look at this again (to add fieldtype)
+					if ($retry == 2)
+					{
+						// get by id name..
+						$getter = array('name','datatype','store','indexes','null_switch','xml');
+					}
+					else
+					{
+						// get by id name..
+						$getter = array('name','datatype','store','indexes','null_switch');
+						// lets try to add the fieldtype
+						if (isset($item->fieldtype) && is_numeric($item->fieldtype) && $item->fieldtype > 0 && isset($this->newID['fieldtype'][$item->fieldtype]) && $this->newID['fieldtype'][$item->fieldtype] > 0)
+						{
+							$getter[] = 'fieldtype';
+							$this->specialValue = array();
+							$this->specialValue['fieldtype'] = $this->newID['fieldtype'][$item->fieldtype];
+							$retryAgain = 2;
+						}
+						else
+						{
+							$getter[] = 'xml';
+						}
+					}
 					break;
 				case 'site_view':
 				case 'custom_admin_view':
 					// get by name, system_name and codename
-					$getter = array('name', 'system_name', 'codename'); // risky will look at this again (to add main_get)
+					$getter = array('name', 'system_name', 'codename');
+					// lets try to add the main_get
+					if (isset($item->main_get) && is_numeric($item->main_get) && $item->main_get > 0 && isset($this->newID['dynamic_get'][$item->main_get]) && $this->newID['dynamic_get'][$item->main_get] > 0)
+					{
+						$getter[] = 'main_get';
+						$this->specialValue = array();
+						$this->specialValue['main_get'] = $this->newID['dynamic_get'][$item->main_get];
+					}
 					break;
 				case 'template':
 				case 'layout':

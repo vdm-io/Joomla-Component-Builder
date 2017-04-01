@@ -192,14 +192,14 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_TEMPLATE_NO</option>
 		</field>
-		<!-- Dynamic_get Field. Type: Dynamicgets. (custom) -->
+		<!-- Dynamic_get Field. Type: Dynamicget. (custom) -->
 		<field
-			type="dynamicgets"
+			type="dynamicget"
 			name="dynamic_get"
 			label="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL"
 			description="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_DESCRIPTION"
 			multiple="false"
-			required="true"
+			required="false"
 			button="true"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->

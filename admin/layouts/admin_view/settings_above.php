@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.0
-	@build			31st March, 2017
+	@version		2.4.1
+	@build			1st April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_above.php

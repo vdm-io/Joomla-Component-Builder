@@ -1085,7 +1085,7 @@ class Infusion extends Interpretation
 		{
 			foreach ($this->langFiles as $file)
 			{
-				$string = JFile::read($file['path']);
+				$string = file_get_contents($file['path']);
 				// load the data
 				$answer = $this->setPlaceholders($string, $lang, 3);
 				// add to zip array

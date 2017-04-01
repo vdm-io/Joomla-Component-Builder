@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 297 of this MVC
-	@build			31st March, 2017
+	@version		@update number 311 of this MVC
+	@build			1st April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -292,6 +292,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 				return false;
 		}
+		// lock all files
+		$this->lockFiles();
 		// remove old zip files with the same name
 		if (JFile::exists($this->zipPath))
 		{
@@ -309,6 +311,60 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	* Method to lock all files
+	*
+	* @return void
+	*/
+	protected function lockFiles()
+	{
+		// lock the data if set
+		if (ComponentbuilderHelper::checkString($this->key) && strlen($this->key) == 32)
+		{
+			$locker = new FOFEncryptAes($this->key, 128);
+			// we must first store the current working directory
+			$joomla = getcwd();
+			// setup the type path
+			$customPath = $this->packagePath . '/custom';
+			// go to the custom folder if found
+			if (JFolder::exists($customPath))
+			{
+				$this->lock($customPath, $locker);
+			}
+			// setup the type path
+			$imagesPath = $this->packagePath . '/images';
+			// go to the custom folder if found
+			if (JFolder::exists($imagesPath))
+			{
+				$this->lock($imagesPath, $locker);
+			}
+			// change back to working dir
+			chdir($joomla);
+		}
+	}
+
+	/**
+	* The Locker
+	*
+	* @return void
+	*/	
+	protected function lock(&$tmpPath, &$locker)
+	{
+		// we are changing the working directory to the tmp path (important)
+		chdir($tmpPath);
+		// get a list of files in the current directory tree (all)
+		$files = JFolder::files('.', '.', true, true);
+		// read in the file content
+		foreach ($files as $file)
+		{
+			// write the encrypted string back to file
+			if (!ComponentbuilderHelper::writeFile($file, wordwrap($locker->encryptString(file_get_contents($file)), 128, "\n", true)))
+			{
+				// we should add error handler here in case file could not be locked
+			}
+		}
 	}
 
 	/**
@@ -838,7 +894,14 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	{
 		foreach ($items as $item)
 		{
-			return ComponentbuilderHelper::safeString($item->name_code);
+			if (isset($item->system_name))
+			{
+				return ComponentbuilderHelper::safeString($item->system_name, 'cAmel');
+			}
+			else
+			{
+				return ComponentbuilderHelper::safeString($item->name_code);
+			}
 		}
 	}
 

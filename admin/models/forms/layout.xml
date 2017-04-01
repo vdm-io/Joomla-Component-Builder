@@ -135,14 +135,14 @@
 			message="Error! Please add description here."
 			hint="COM_COMPONENTBUILDER_LAYOUT_DESCRIPTION_HINT"
 		/>
-		<!-- Dynamic_get Field. Type: Dynamicgets. (custom) -->
+		<!-- Dynamic_get Field. Type: Dynamicget. (custom) -->
 		<field
-			type="dynamicgets"
+			type="dynamicget"
 			name="dynamic_get"
 			label="COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_LABEL"
 			description="COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_DESCRIPTION"
 			multiple="false"
-			required="true"
+			required="false"
 			button="true"
 		/>
 		<!-- Snippet Field. Type: Snippets. (custom) -->

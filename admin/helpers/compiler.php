@@ -87,7 +87,7 @@ class Compiler extends Infusion
 				$this->removeFolder($this->componentPath . '/site');
 				// clear form component xml
 				$xmlPath = $this->componentPath . '/'. $this->fileContentStatic['###component###']. '.xml';
-				$componentXML = JFile::read($xmlPath);
+				$componentXML = file_get_contents($xmlPath);
 				$textToSite = ComponentbuilderHelper::getBetween($componentXML,'<files folder="site">','</files>');
 				$textToSiteLang = ComponentbuilderHelper::getBetween($componentXML,'<languages folder="site">','</languages>');
 				$componentXML = str_replace(array('<files folder="site">'.$textToSite."</files>", '<languages folder="site">'.$textToSiteLang."</languages>"), array('',''), $componentXML);
@@ -156,7 +156,7 @@ class Compiler extends Infusion
 			// we don't update lang now since we will still posible add custom code
 			$langCheck = 'en-GB.com_'.$this->fileContentStatic['###component###'].'.';
 			// get the bom file
-			$bom = JFile::read($this->bomPath);
+			$bom = file_get_contents($this->bomPath);
 			// first we do the static files
 			foreach ($this->newFiles['static'] as $static)
 			{
@@ -174,7 +174,7 @@ class Compiler extends Infusion
 					{
 						$php = "<?php\n";
 					}
-					$string = JFile::read($static['path']);
+					$string = file_get_contents($static['path']);
 					if (strpos($string,'###BOM###') !== false)
 					{
 						list($wast,$code) = explode('###BOM###',$string);
@@ -211,7 +211,7 @@ class Compiler extends Infusion
 								{
 									$php = "<?php\n";
 								}
-								$string = JFile::read($file['path']);
+								$string = file_get_contents($file['path']);
 								if (strpos($string,'###BOM###') !== false)
 								{
 									list($bin,$code) = explode('###BOM###',$string);
@@ -364,7 +364,7 @@ class Compiler extends Infusion
 			$this->buildReadMeData();
 		}
 		// get the file
-		$string = JFile::read($path);
+		$string = file_get_contents($path);
 		// update the file
 		$answer = $this->setPlaceholders($string, $this->fileContentStatic);
 		// add to zip array
