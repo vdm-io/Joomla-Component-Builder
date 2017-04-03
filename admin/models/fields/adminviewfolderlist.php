@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.1
-	@build			1st April, 2017
+	@version		2.4.2
+	@build			3rd April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		adminviewfolderlist.php

@@ -9,4 +9,6 @@ DROP TABLE IF EXISTS `#__componentbuilder_custom_code`;
 DROP TABLE IF EXISTS `#__componentbuilder_snippet`;
 DROP TABLE IF EXISTS `#__componentbuilder_field`;
 DROP TABLE IF EXISTS `#__componentbuilder_fieldtype`;
+DROP TABLE IF EXISTS `#__componentbuilder_language_placeholder`;
+DROP TABLE IF EXISTS `#__componentbuilder_language`;
 DROP TABLE IF EXISTS `#__componentbuilder_help_document`;

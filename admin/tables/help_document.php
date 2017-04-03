@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 6 of this MVC
-	@build			17th October, 2016
+	@build			18th October, 2016
 	@created		4th March, 2016
 	@package		Component Builder
 	@subpackage		help_document.php

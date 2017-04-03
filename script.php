@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.1
-	@build			1st April, 2017
+	@version		2.4.2
+	@build			3rd April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1181,6 +1181,178 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Language_placeholder alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language_placeholder') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$language_placeholder_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($language_placeholder_found)
+		{
+			// Since there are load the needed  language_placeholder type ids
+			$language_placeholder_ids = $db->loadColumn();
+			// Remove Language_placeholder from the content type table
+			$language_placeholder_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language_placeholder') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($language_placeholder_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Language_placeholder items
+			$language_placeholder_done = $db->execute();
+			if ($language_placeholder_done);
+			{
+				// If succesfully remove Language_placeholder add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_placeholder) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Language_placeholder items from the contentitem tag map table
+			$language_placeholder_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language_placeholder') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($language_placeholder_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Language_placeholder items
+			$language_placeholder_done = $db->execute();
+			if ($language_placeholder_done);
+			{
+				// If succesfully remove Language_placeholder add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_placeholder) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Language_placeholder items from the ucm content table
+			$language_placeholder_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.language_placeholder') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($language_placeholder_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Language_placeholder items
+			$language_placeholder_done = $db->execute();
+			if ($language_placeholder_done);
+			{
+				// If succesfully remove Language_placeholder add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_placeholder) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Language_placeholder items are cleared from DB
+			foreach ($language_placeholder_ids as $language_placeholder_id)
+			{
+				// Remove Language_placeholder items from the ucm base table
+				$language_placeholder_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $language_placeholder_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($language_placeholder_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Language_placeholder items
+				$db->execute();
+
+				// Remove Language_placeholder items from the ucm history table
+				$language_placeholder_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $language_placeholder_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($language_placeholder_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Language_placeholder items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Language alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$language_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($language_found)
+		{
+			// Since there are load the needed  language type ids
+			$language_ids = $db->loadColumn();
+			// Remove Language from the content type table
+			$language_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($language_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Language items
+			$language_done = $db->execute();
+			if ($language_done);
+			{
+				// If succesfully remove Language add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Language items from the contentitem tag map table
+			$language_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($language_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Language items
+			$language_done = $db->execute();
+			if ($language_done);
+			{
+				// If succesfully remove Language add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Language items from the ucm content table
+			$language_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.language') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($language_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Language items
+			$language_done = $db->execute();
+			if ($language_done);
+			{
+				// If succesfully remove Language add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Language items are cleared from DB
+			foreach ($language_ids as $language_id)
+			{
+				// Remove Language items from the ucm base table
+				$language_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $language_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($language_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Language items
+				$db->execute();
+
+				// Remove Language items from the ucm history table
+				$language_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $language_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($language_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Language items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Help_document alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.help_document') );
 		$db->setQuery($query);
@@ -1499,6 +1671,30 @@ class com_componentbuilderInstallerScript
 
 			// Set the object into the content types table.
 			$fieldtype_category_Inserted = $db->insertObject('#__content_types', $fieldtype_category);
+
+			// Create the language_placeholder content type object.
+			$language_placeholder = new stdClass();
+			$language_placeholder->type_title = 'Componentbuilder Language_placeholder';
+			$language_placeholder->type_alias = 'com_componentbuilder.language_placeholder';
+			$language_placeholder->table = '{"special": {"dbtable": "#__componentbuilder_language_placeholder","key": "id","type": "Language_placeholder","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$language_placeholder->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "placeholder","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"placeholder":"placeholder","components":"components"}}';
+			$language_placeholder->router = 'ComponentbuilderHelperRoute::getLanguage_placeholderRoute';
+			$language_placeholder->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language_placeholder.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "components","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$language_placeholder_Inserted = $db->insertObject('#__content_types', $language_placeholder);
+
+			// Create the language content type object.
+			$language = new stdClass();
+			$language->type_title = 'Componentbuilder Language';
+			$language->type_alias = 'com_componentbuilder.language';
+			$language->table = '{"special": {"dbtable": "#__componentbuilder_language","key": "id","type": "Language","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$language->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","langtag":"langtag"}}';
+			$language->router = 'ComponentbuilderHelperRoute::getLanguageRoute';
+			$language->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$language_Inserted = $db->insertObject('#__content_types', $language);
 
 			// Create the help_document content type object.
 			$help_document = new stdClass();
@@ -1917,6 +2113,64 @@ class com_componentbuilderInstallerScript
 				$fieldtype_category_Inserted = $db->insertObject('#__content_types', $fieldtype_category);
 			}
 
+			// Create the language_placeholder content type object.
+			$language_placeholder = new stdClass();
+			$language_placeholder->type_title = 'Componentbuilder Language_placeholder';
+			$language_placeholder->type_alias = 'com_componentbuilder.language_placeholder';
+			$language_placeholder->table = '{"special": {"dbtable": "#__componentbuilder_language_placeholder","key": "id","type": "Language_placeholder","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$language_placeholder->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "placeholder","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"placeholder":"placeholder","components":"components"}}';
+			$language_placeholder->router = 'ComponentbuilderHelperRoute::getLanguage_placeholderRoute';
+			$language_placeholder->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language_placeholder.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "components","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if language_placeholder type is already in content_type DB.
+			$language_placeholder_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($language_placeholder->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$language_placeholder->type_id = $db->loadResult();
+				$language_placeholder_Updated = $db->updateObject('#__content_types', $language_placeholder, 'type_id');
+			}
+			else
+			{
+				$language_placeholder_Inserted = $db->insertObject('#__content_types', $language_placeholder);
+			}
+
+			// Create the language content type object.
+			$language = new stdClass();
+			$language->type_title = 'Componentbuilder Language';
+			$language->type_alias = 'com_componentbuilder.language';
+			$language->table = '{"special": {"dbtable": "#__componentbuilder_language","key": "id","type": "Language","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$language->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","langtag":"langtag"}}';
+			$language->router = 'ComponentbuilderHelperRoute::getLanguageRoute';
+			$language->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if language type is already in content_type DB.
+			$language_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($language->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$language->type_id = $db->loadResult();
+				$language_Updated = $db->updateObject('#__content_types', $language, 'type_id');
+			}
+			else
+			{
+				$language_Inserted = $db->insertObject('#__content_types', $language);
+			}
+
 			// Create the help_document content type object.
 			$help_document = new stdClass();
 			$help_document->type_title = 'Componentbuilder Help_document';
@@ -1950,7 +2204,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.4.1 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.4.2 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }
