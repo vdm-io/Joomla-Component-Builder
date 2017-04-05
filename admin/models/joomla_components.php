@@ -101,7 +101,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$query = $db->getQuery(true);
 
 			// Select some fields
-			$query->select($db->quoteName('a.*'));
+			$query->select(array('a.*'));
 			
 			// From the componentbuilder_joomla_component table
 			$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
@@ -459,7 +459,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$query = $db->getQuery(true);
 
 		// Select some fields
-		$query->select($db->quoteName('a.*'));
+		$query->select(array('a.*'));
 			
 		// From the componentbuilder_ANY table
 		$query->from($db->quoteName('#__componentbuilder_'. $table, 'a'));
