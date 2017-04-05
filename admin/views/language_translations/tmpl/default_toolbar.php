@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		default_toolbar.php
@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 <div id="filter-bar" class="btn-toolbar">
         <div class="filter-search btn-group pull-left">
             <label for="filter_search" class="element-invisible"><?php echo JText::_('Search');?></label>
-            <input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" class="hasTooltip" title="<?php echo JHtml::tooltipText('Search Language_placeholders'); ?>" />
+            <input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" class="hasTooltip" title="<?php echo JHtml::tooltipText('Search Language_translations'); ?>" />
         </div>
         <div class="btn-group pull-left">
             <button type="submit" class="btn hasTooltip" title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>

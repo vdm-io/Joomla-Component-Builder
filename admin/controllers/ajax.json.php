@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			3rd April, 2017
+	@build			5th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -58,6 +58,8 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('checkFunctionName', 'ajax');
 		$this->registerTask('usedin', 'ajax');
 		$this->registerTask('fieldOptions', 'ajax');
+		$this->registerTask('getBuildTable', 'ajax');
+		$this->registerTask('getButton', 'ajax');
 	}
 
 	public function ajax()
@@ -658,6 +660,83 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($idValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getFieldOptions($idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getBuildTable':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idNameValue = $jinput->get('idName', NULL, 'CMD');
+						$objectValue = $jinput->get('object', NULL, 'STRING');
+						if($idNameValue && $objectValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getBuildTable($idNameValue, $objectValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getButton':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$typeValue = $jinput->get('type', NULL, 'WORD');
+						if($typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getButton($typeValue);
 						}
 						else
 						{

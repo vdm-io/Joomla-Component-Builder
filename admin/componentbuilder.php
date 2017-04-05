@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			3rd April, 2017
+	@build			5th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -45,6 +45,9 @@ $document->addScript('components/com_componentbuilder/assets/js/admin.js');
 // require helper files
 JLoader::register('ComponentbuilderHelper', dirname(__FILE__) . '/helpers/componentbuilder.php'); 
 JLoader::register('JHtmlBatch_', dirname(__FILE__) . '/helpers/html/batch_.php'); 
+
+// Triger the Global Admin Event
+ComponentbuilderHelper::globalEvent($document);
 
 // import joomla controller library
 jimport('joomla.application.component.controller');

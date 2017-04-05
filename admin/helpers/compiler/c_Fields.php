@@ -1790,7 +1790,7 @@ class Fields extends Structure
 		// set the custom builder
 		if (ComponentbuilderHelper::checkArray($custom) && $typeName != 'category' && $typeName != 'repeatable')
 		{
-			$this->customBuilder[$listViewName][] = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'custom' => $custom);
+			$this->customBuilder[$listViewName][] = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'custom' => $custom, 'method' => $field['settings']->store);
 			// set the custom fields needed in content type data
 			if (!isset($this->customFieldLinksBuilder[$viewName]))
 			{

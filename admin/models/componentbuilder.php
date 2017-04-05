@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			3rd April, 2017
+	@build			5th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -43,7 +43,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
                 // view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.snippet.add', 'png.snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_placeholder.add', 'png.language_placeholders', 'png.help_document.add', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.snippet.add', 'png.snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.help_document.add', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
@@ -107,12 +107,11 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'fieldtypes.submenu' => 'fieldtype.submenu',
 			'fieldtypes.dashboard_list' => 'fieldtype.dashboard_list',
 			'fieldtype.dashboard_add' => 'fieldtype.dashboard_add',
-			'language_placeholder.create' => 'language_placeholder.create',
-			'language_placeholders.access' => 'language_placeholder.access',
-			'language_placeholder.access' => 'language_placeholder.access',
-			'language_placeholders.submenu' => 'language_placeholder.submenu',
-			'language_placeholders.dashboard_list' => 'language_placeholder.dashboard_list',
-			'language_placeholder.dashboard_add' => 'language_placeholder.dashboard_add',
+			'language_translation.create' => 'language_translation.create',
+			'language_translations.access' => 'language_translation.access',
+			'language_translation.access' => 'language_translation.access',
+			'language_translations.submenu' => 'language_translation.submenu',
+			'language_translations.dashboard_list' => 'language_translation.dashboard_list',
 			'language.create' => 'language.create',
 			'languages.access' => 'language.access',
 			'language.access' => 'language.access',

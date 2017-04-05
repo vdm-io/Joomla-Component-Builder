@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
-	@subpackage		language_placeholder.php
+	@subpackage		language_translation.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -30,9 +30,9 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controllerform');
 
 /**
- * Language_placeholder Controller
+ * Language_translation Controller
  */
-class ComponentbuilderControllerLanguage_placeholder extends JControllerForm
+class ComponentbuilderControllerLanguage_translation extends JControllerForm
 {
 	/**
 	 * Current or most recently performed task.
@@ -45,7 +45,7 @@ class ComponentbuilderControllerLanguage_placeholder extends JControllerForm
 
 	public function __construct($config = array())
 	{
-		$this->view_list = 'Language_placeholders'; // safeguard for setting the return view listing to the main view.
+		$this->view_list = 'Language_translations'; // safeguard for setting the return view listing to the main view.
 		parent::__construct($config);
 	}
 
@@ -61,13 +61,13 @@ class ComponentbuilderControllerLanguage_placeholder extends JControllerForm
 	protected function allowAdd($data = array())
 	{
 		// Access check.
-		$access = JFactory::getUser()->authorise('language_placeholder.access', 'com_componentbuilder');
+		$access = JFactory::getUser()->authorise('language_translation.access', 'com_componentbuilder');
 		if (!$access)
 		{
 			return false;
 		}
 		// In the absense of better information, revert to the component permissions.
-		return JFactory::getUser()->authorise('language_placeholder.create', $this->option);
+		return JFactory::getUser()->authorise('language_translation.create', $this->option);
 	}
 
 	/**
@@ -89,7 +89,7 @@ class ComponentbuilderControllerLanguage_placeholder extends JControllerForm
 
 
 		// Access check.
-		$access = ($user->authorise('language_placeholder.access', 'com_componentbuilder.language_placeholder.' . (int) $recordId) &&  $user->authorise('language_placeholder.access', 'com_componentbuilder'));
+		$access = ($user->authorise('language_translation.access', 'com_componentbuilder.language_translation.' . (int) $recordId) &&  $user->authorise('language_translation.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;
@@ -98,10 +98,10 @@ class ComponentbuilderControllerLanguage_placeholder extends JControllerForm
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('language_placeholder.edit', 'com_componentbuilder.language_placeholder.' . (int) $recordId);
+			$permission = $user->authorise('language_translation.edit', 'com_componentbuilder.language_translation.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('language_placeholder.edit.own', 'com_componentbuilder.language_placeholder.' . $recordId))
+				if ($user->authorise('language_translation.edit.own', 'com_componentbuilder.language_translation.' . $recordId))
 				{
 					// Now test the owner is the user.
 					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
@@ -120,7 +120,7 @@ class ComponentbuilderControllerLanguage_placeholder extends JControllerForm
 					// If the owner matches 'me' then allow.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('language_placeholder.edit.own', 'com_componentbuilder'))
+						if ($user->authorise('language_translation.edit.own', 'com_componentbuilder'))
 						{
 							return true;
 						}
@@ -130,7 +130,7 @@ class ComponentbuilderControllerLanguage_placeholder extends JControllerForm
 			}
 		}
 		// Since there is no permission, revert to the component permissions.
-		return $user->authorise('language_placeholder.edit', $this->option);
+		return $user->authorise('language_translation.edit', $this->option);
 	}
 
 	/**
@@ -196,10 +196,10 @@ class ComponentbuilderControllerLanguage_placeholder extends JControllerForm
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Set the model
-		$model = $this->getModel('Language_placeholder', '', array());
+		$model = $this->getModel('Language_translation', '', array());
 
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=language_placeholders' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=language_translations' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}

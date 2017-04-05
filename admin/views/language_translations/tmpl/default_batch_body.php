@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		default_batch_body.php
@@ -28,5 +28,5 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 
-<p><?php echo JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDERS_BATCH_TIP'); ?></p>
+<p><?php echo JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATIONS_BATCH_TIP'); ?></p>
 <?php echo $this->batchDisplay; ?>

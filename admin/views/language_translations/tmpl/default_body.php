@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		default_body.php
@@ -26,18 +26,18 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access'); 
 
-$edit = "index.php?option=com_componentbuilder&view=language_placeholders&task=language_placeholder.edit";
+$edit = "index.php?option=com_componentbuilder&view=language_translations&task=language_translation.edit";
 
 ?>
 <?php foreach ($this->items as $i => $item): ?>
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = JFactory::getUser($item->checked_out);
-		$canDo = ComponentbuilderHelper::getActions('language_placeholder',$item,'language_placeholders');
+		$canDo = ComponentbuilderHelper::getActions('language_translation',$item,'language_translations');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
-		<?php if ($canDo->get('language_placeholder.edit.state')): ?>
+		<?php if ($canDo->get('language_translation.edit.state')): ?>
 			<?php
 				if ($this->saveOrder)
 				{
@@ -60,7 +60,7 @@ $edit = "index.php?option=com_componentbuilder&view=language_placeholders&task=l
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center">
-		<?php if ($canDo->get('language_placeholder.edit')): ?>
+		<?php if ($canDo->get('language_translation.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
@@ -75,33 +75,33 @@ $edit = "index.php?option=com_componentbuilder&view=language_placeholders&task=l
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('language_placeholder.edit')): ?>
+			<?php if ($canDo->get('language_translation.edit')): ?>
 				<div class="name">
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->placeholder); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->entranslation); ?></a>
 					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'language_placeholders.', $canCheckin); ?>
+						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'language_translations.', $canCheckin); ?>
 					<?php endif; ?>
 				</div>
 			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->placeholder); ?></div>
+				<div class="name"><?php echo $this->escape($item->entranslation); ?></div>
 			<?php endif; ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->components); ?>
 		</td>
 		<td class="center">
-		<?php if ($canDo->get('language_placeholder.edit.state')) : ?>
+		<?php if ($canDo->get('language_translation.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_placeholders.', true, 'cb'); ?>
+						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_translations.', true, 'cb'); ?>
 					<?php else: ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_placeholders.', false, 'cb'); ?>
+						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_translations.', false, 'cb'); ?>
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_placeholders.', true, 'cb'); ?>
+					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_translations.', true, 'cb'); ?>
 				<?php endif; ?>
 		<?php else: ?>
-			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_placeholders.', false, 'cb'); ?>
+			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_translations.', false, 'cb'); ?>
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center hidden-phone">

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		edit.php
@@ -58,35 +58,35 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('language_placeholder.details_above', $this); ?><div class="form-horizontal">
+	<?php echo JLayoutHelper::render('language_translation.details_above', $this); ?><div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'language_placeholderTab', array('active' => 'details')); ?>
+	<?php echo JHtml::_('bootstrap.startTabSet', 'language_translationTab', array('active' => 'details')); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'language_placeholderTab', 'details', JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_DETAILS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'language_translationTab', 'details', JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_DETAILS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('language_placeholder.details_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('language_translation.details_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php if ($this->canDo->get('language_placeholder.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('language_placeholder.edit.state') || $this->canDo->get('core.edit.created')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'language_placeholderTab', 'publishing', JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_PUBLISHING', true)); ?>
+	<?php if ($this->canDo->get('language_translation.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('language_translation.edit.state') || $this->canDo->get('core.edit.created')) : ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'language_translationTab', 'publishing', JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('language_placeholder.publishing', $this); ?>
+				<?php echo JLayoutHelper::render('language_translation.publishing', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('language_placeholder.publlshing', $this); ?>
+				<?php echo JLayoutHelper::render('language_translation.publlshing', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
 	<?php if ($this->canDo->get('core.admin')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'language_placeholderTab', 'permissions', JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_PERMISSION', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'language_translationTab', 'permissions', JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_PERMISSION', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
 				<fieldset class="adminform">
@@ -107,9 +107,37 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 
 	<div>
-		<input type="hidden" name="task" value="language_placeholder.edit" />
+		<input type="hidden" name="task" value="language_translation.edit" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </div>
 </form>
 </div>
+
+<script type="text/javascript">
+
+
+jQuery('input.form-field-repeatable').on('value-update', function(e, value){
+	if (value)
+	{
+		getBuildTable(JSON.stringify(value), e.currentTarget.id);
+	}
+});
+			
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}			 
+</script>

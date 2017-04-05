@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
-	@subpackage		language_placeholder.php
+	@subpackage		language_translation.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -32,9 +32,9 @@ use Joomla\Registry\Registry;
 jimport('joomla.database.table');
 
 /**
- * Language_placeholders Table class
+ * Language_translations Table class
  */
-class ComponentbuilderTableLanguage_placeholder extends JTable
+class ComponentbuilderTableLanguage_translation extends JTable
 {
 	/**
 	 * Ensure the params and metadata in json encoded in the bind method
@@ -51,10 +51,10 @@ class ComponentbuilderTableLanguage_placeholder extends JTable
 	 */
 	function __construct(&$db) 
 	{
-		parent::__construct('#__componentbuilder_language_placeholder', 'id', $db);
+		parent::__construct('#__componentbuilder_language_translation', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.language_placeholder')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.language_translation')); 
 	}	
  
 	public function bind($array, $ignore = '')
@@ -84,7 +84,7 @@ class ComponentbuilderTableLanguage_placeholder extends JTable
 	}
     
 	/**
-	 * Overload the store method for the Language_placeholder table.
+	 * Overload the store method for the Language_translation table.
 	 *
 	 * @param   boolean	Toggle whether null values should be updated.
 	 * @return  boolean  True on success, false on failure.
@@ -103,7 +103,7 @@ class ComponentbuilderTableLanguage_placeholder extends JTable
 		}
 		else
 		{
-			// New language_placeholder. A language_placeholder created and created_by field can be set by the user,
+			// New language_translation. A language_translation created and created_by field can be set by the user,
 			// so we don't touch either of these if they are set.
 			if (!(int) $this->created)
 			{
@@ -118,11 +118,11 @@ class ComponentbuilderTableLanguage_placeholder extends JTable
 		if (isset($this->alias))
 		{
 			// Verify that the alias is unique
-			$table = JTable::getInstance('language_placeholder', 'ComponentbuilderTable');
+			$table = JTable::getInstance('language_translation', 'ComponentbuilderTable');
 
 			if ($table->load(array('alias' => $this->alias)) && ($table->id != $this->id || $this->id == 0))
 			{
-				$this->setError(JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_ERROR_UNIQUE_ALIAS'));
+				$this->setError(JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ERROR_UNIQUE_ALIAS'));
 				return false;
 			}
 		}
@@ -153,7 +153,7 @@ class ComponentbuilderTableLanguage_placeholder extends JTable
 			// Generate a valid alias
 			$this->generateAlias();
             
-			$table = JTable::getInstance('language_placeholder', 'componentbuilderTable');
+			$table = JTable::getInstance('language_translation', 'componentbuilderTable');
 
 			while ($table->load(array('alias' => $this->alias)) && ($table->id != $this->id || $this->id == 0))
 			{
@@ -202,7 +202,7 @@ class ComponentbuilderTableLanguage_placeholder extends JTable
 		// If we don't have any access rules set at this point just use an empty JAccessRules class
 		if (!$this->getRules())
 		{
-			$rules = $this->getDefaultAssetValues('com_componentbuilder.language_placeholder.'.$this->id);
+			$rules = $this->getDefaultAssetValues('com_componentbuilder.language_translation.'.$this->id);
 			$this->setRules($rules);
 		}
         
@@ -293,7 +293,7 @@ class ComponentbuilderTableLanguage_placeholder extends JTable
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
-		return 'com_componentbuilder.language_placeholder.'.(int) $this->$k;
+		return 'com_componentbuilder.language_translation.'.(int) $this->$k;
 	}
 
 	/**

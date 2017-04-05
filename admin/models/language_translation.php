@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
-	@subpackage		language_placeholder.php
+	@subpackage		language_translation.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -32,9 +32,9 @@ use Joomla\Registry\Registry;
 jimport('joomla.application.component.modeladmin');
 
 /**
- * Componentbuilder Language_placeholder Model
+ * Componentbuilder Language_translation Model
  */
-class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
+class ComponentbuilderModelLanguage_translation extends JModelAdmin
 {    
 	/**
 	 * @var        string    The prefix to use with controller messages.
@@ -48,7 +48,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 	 * @var      string
 	 * @since    3.2
 	 */
-	public $typeAlias = 'com_componentbuilder.language_placeholder';
+	public $typeAlias = 'com_componentbuilder.language_translation';
 
 	/**
 	 * Returns a Table object, always creating it
@@ -61,9 +61,14 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'language_placeholder', $prefix = 'ComponentbuilderTable', $config = array())
+	public function getTable($type = 'language_translation', $prefix = 'ComponentbuilderTable', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
+	}
+
+	public function getVDM()
+	{
+		return $this->vastDevMod;
 	}
     
 	/**
@@ -100,11 +105,32 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 				// JSON Decode components.
 				$item->components = json_decode($item->components);
 			}
+
+			
+			if (empty($item->id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $item->id;
+			}			
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('language_placeholder__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'language_placeholder__'.$id);
+				ComponentbuilderHelper::set('language_placeholder__'.$id, $this->vastDevMod);
+			}			
 			
 			if (!empty($item->id))
 			{
 				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.language_placeholder');
+				$item->tags->getTagIds($item->id, 'com_componentbuilder.language_translation');
 			}
 		}
 
@@ -124,7 +150,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
-		$form = $this->loadForm('com_componentbuilder.language_placeholder', 'language_placeholder', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_componentbuilder.language_translation', 'language_translation', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
 		{
@@ -148,8 +174,8 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('language_placeholder.edit.state', 'com_componentbuilder.language_placeholder.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('language_placeholder.edit.state', 'com_componentbuilder')))
+		if ($id != 0 && (!$user->authorise('language_translation.edit.state', 'com_componentbuilder.language_translation.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('language_translation.edit.state', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
@@ -206,7 +232,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/language_placeholder.js';
+		return 'administrator/components/com_componentbuilder/models/forms/language_translation.js';
 	}
     
 	/**
@@ -229,7 +255,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 
 			$user = JFactory::getUser();
 			// The record has been set. Check the record permissions.
-			return $user->authorise('language_placeholder.delete', 'com_componentbuilder.language_placeholder.' . (int) $record->id);
+			return $user->authorise('language_translation.delete', 'com_componentbuilder.language_translation.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -251,14 +277,14 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('language_placeholder.edit.state', 'com_componentbuilder.language_placeholder.' . (int) $recordId);
+			$permission = $user->authorise('language_translation.edit.state', 'com_componentbuilder.language_translation.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
 				return false;
 			}
 		}
 		// In the absense of better information, revert to the component permissions.
-		return $user->authorise('language_placeholder.edit.state', 'com_componentbuilder');
+		return $user->authorise('language_translation.edit.state', 'com_componentbuilder');
 	}
     
 	/**
@@ -275,7 +301,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 		// Check specific edit permission then general edit permission.
 		$user = JFactory::getUser();
 
-		return $user->authorise('language_placeholder.edit', 'com_componentbuilder.language_placeholder.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('language_placeholder.edit',  'com_componentbuilder');
+		return $user->authorise('language_translation.edit', 'com_componentbuilder.language_translation.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('language_translation.edit',  'com_componentbuilder');
 	}
     
 	/**
@@ -316,7 +342,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
-					->from($db->quoteName('#__componentbuilder_language_placeholder'));
+					->from($db->quoteName('#__componentbuilder_language_translation'));
 				$db->setQuery($query);
 				$max = $db->loadResult();
 
@@ -346,7 +372,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 	protected function loadFormData() 
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.language_placeholder.data', array());
+		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.language_translation.data', array());
 
 		if (empty($data))
 		{
@@ -444,7 +470,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 		$this->tableClassName		= get_class($this->table);
 		$this->contentType		= new JUcmType;
 		$this->type			= $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo			= ComponentbuilderHelper::getActions('language_placeholder');
+		$this->canDo			= ComponentbuilderHelper::getActions('language_translation');
 		$this->batchSet			= true;
 
 		if (!$this->canDo->get('core.batch'))
@@ -524,10 +550,10 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 			$this->tableClassName	= get_class($this->table);
 			$this->contentType	= new JUcmType;
 			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
-			$this->canDo		= ComponentbuilderHelper::getActions('language_placeholder');
+			$this->canDo		= ComponentbuilderHelper::getActions('language_translation');
 		}
 
-		if (!$this->canDo->get('language_placeholder.create') && !$this->canDo->get('language_placeholder.batch'))
+		if (!$this->canDo->get('language_translation.create') && !$this->canDo->get('language_translation.batch'))
 		{
 			return false;
 		}
@@ -542,7 +568,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 		{
 			$values['published'] = 0;
 		}
-		elseif (isset($values['published']) && !$this->canDo->get('language_placeholder.edit.state'))
+		elseif (isset($values['published']) && !$this->canDo->get('language_translation.edit.state'))
 		{
 				$values['published'] = 0;
 		}
@@ -559,7 +585,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 
 			// only allow copy if user may edit this item.
 
-			if (!$this->user->authorise('language_placeholder.edit', $contexts[$pk]))
+			if (!$this->user->authorise('language_translation.edit', $contexts[$pk]))
 
 			{
 
@@ -589,7 +615,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 				}
 			}
 
-			$this->table->placeholder = $this->generateUniqe('placeholder',$this->table->placeholder);
+			$this->table->entranslation = $this->generateUniqe('entranslation',$this->table->entranslation);
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -673,17 +699,17 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 			$this->tableClassName	= get_class($this->table);
 			$this->contentType	= new JUcmType;
 			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
-			$this->canDo		= ComponentbuilderHelper::getActions('language_placeholder');
+			$this->canDo		= ComponentbuilderHelper::getActions('language_translation');
 		}
 
-		if (!$this->canDo->get('language_placeholder.edit') && !$this->canDo->get('language_placeholder.batch'))
+		if (!$this->canDo->get('language_translation.edit') && !$this->canDo->get('language_translation.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
 		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('language_placeholder.edit.state'))
+		if (isset($values['published']) && !$this->canDo->get('language_translation.edit.state'))
 		{
 			unset($values['published']);
 		}
@@ -693,7 +719,7 @@ class ComponentbuilderModelLanguage_placeholder extends JModelAdmin
 		// Parent exists so we proceed
 		foreach ($pks as $pk)
 		{
-			if (!$this->user->authorise('language_placeholder.edit', $contexts[$pk]))
+			if (!$this->user->authorise('language_translation.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 

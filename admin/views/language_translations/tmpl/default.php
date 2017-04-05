@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		default.php
@@ -34,8 +34,8 @@ JHtml::_('formbehavior.chosen', 'select');
 
 if ($this->saveOrder)
 {
-	$saveOrderingUrl = 'index.php?option=com_componentbuilder&task=language_placeholders.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', 'language_placeholderList', 'adminForm', strtolower($this->listDirn), $saveOrderingUrl);
+	$saveOrderingUrl = 'index.php?option=com_componentbuilder&task=language_translations.saveOrderAjax&tmpl=component';
+	JHtml::_('sortablelist.sortable', 'language_translationList', 'adminForm', strtolower($this->listDirn), $saveOrderingUrl);
 }
 
 ?>
@@ -56,7 +56,7 @@ if ($this->saveOrder)
 		Joomla.tableOrdering(order, dirn, '');
 	}
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=language_placeholders'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=language_translations'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if(!empty( $this->sidebar)): ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -72,7 +72,7 @@ if ($this->saveOrder)
     </div>
 <?php else : ?>
 		<?php echo $this->loadTemplate('toolbar');?>
-		<table class="table table-striped" id="language_placeholderList">
+		<table class="table table-striped" id="language_translationList">
 			<thead><?php echo $this->loadTemplate('head');?></thead>
 			<tfoot><?php echo $this->loadTemplate('foot');?></tfoot>
 			<tbody><?php echo $this->loadTemplate('body');?></tbody>
@@ -83,7 +83,7 @@ if ($this->saveOrder)
                 'bootstrap.renderModal',
                 'collapseModal',
                 array(
-                    'title' => JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDERS_BATCH_OPTIONS'),
+                    'title' => JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATIONS_BATCH_OPTIONS'),
                     'footer' => $this->loadTemplate('batch_footer')
                 ),
                 $this->loadTemplate('batch_body')

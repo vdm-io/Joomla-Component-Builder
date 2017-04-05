@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			3rd April, 2017
+	@build			5th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -30,7 +30,16 @@ defined('_JEXEC') or die('Restricted access');
  * Componentbuilder component helper.
  */
 abstract class ComponentbuilderHelper
-{ 
+{
+
+	/**
+	*	The Global Admin Event Method.
+	**/
+	public static function globalEvent($document)
+	{
+		// the Session keeps track of all data related to the current session of this user
+		self::loadSession();
+	} 
 
 	/*
 	 * Autoloader
@@ -1065,7 +1074,64 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-			 
+			
+	/**
+	* 	set the session defaults if not set
+	**/
+	protected static function setSessionDefaults()
+	{
+		// noting for now
+		return true;
+	}
+			
+	/**
+	* 	the Butler
+	**/
+	public static $session = array();
+
+	/**
+	* 	the Butler Assistant 
+	**/
+	protected static $localSession = array();
+
+	/**
+	* 	start a session if not already set, and load with data
+	**/
+	public static function loadSession()
+	{
+		if (!isset(self::$session) || !self::checkObject(self::$session))
+		{
+			self::$session = JFactory::getSession();
+		}
+		// set the defaults
+		self::setSessionDefaults();
+	}
+
+	/**
+	* 	give Session more to keep
+	**/
+	public static function set($key, $value)
+	{
+		// set to local memory to speed up program
+		self::$localSession[$key] = $value;
+		// load to session for later use
+		return self::$session->set($key, self::$localSession[$key]);
+	}
+
+	/**
+	* 	get info from Session
+	**/
+	public static function get($key, $default = null)
+	{
+		// check if in local memory
+		if (!isset(self::$localSession[$key]))
+		{
+			// set to local memory to speed up program
+			self::$localSession[$key] = self::$session->get($key, $default);
+		}
+		return self::$localSession[$key];
+	}
+			  
 	/**
 	*	Load the Component xml manifest.
 	**/
@@ -1245,9 +1311,9 @@ abstract class ComponentbuilderHelper
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_FIELDTYPES'), 'index.php?option=com_componentbuilder&view=fieldtypes', $submenu === 'fieldtypes');
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPE_CATEGORY'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtypes', $submenu === 'categories.fieldtypes');
 		}
-		if ($user->authorise('language_placeholder.access', 'com_componentbuilder') && $user->authorise('language_placeholder.submenu', 'com_componentbuilder'))
+		if ($user->authorise('language_translation.access', 'com_componentbuilder') && $user->authorise('language_translation.submenu', 'com_componentbuilder'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGE_PLACEHOLDERS'), 'index.php?option=com_componentbuilder&view=language_placeholders', $submenu === 'language_placeholders');
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGE_TRANSLATIONS'), 'index.php?option=com_componentbuilder&view=language_translations', $submenu === 'language_translations');
 		}
 		if ($user->authorise('language.access', 'com_componentbuilder') && $user->authorise('language.submenu', 'com_componentbuilder'))
 		{

@@ -11,10 +11,10 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			3rd April, 2017
+	@build			5th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		publlshing.php
+	@subpackage		details_above.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -27,34 +27,15 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-$app = JFactory::getApplication();
 $form = $displayData->getForm();
 
-$fields = $displayData->get('fields') ?: array(
-	'published',
-	'ordering',
-	'access',
-	'version',
-	'hits',
-	'id'
+$fields = array(
+	'components'
 );
 
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
-
-foreach ($fields as $field)
-{
-	$field = is_array($field) ? $field : array($field);
-	foreach ($field as $f)
-	{
-		if ($form->getField($f))
-		{
-			if (in_array($f, $hiddenFields))
-			{
-				$form->setFieldAttribute($f, 'type', 'hidden');
-			}
-
-			echo $form->renderField($f);
-			break;
-		}
-	}
-}
+?>
+<div class="form-inline form-inline-header">
+	<?php foreach($fields as $field){
+		echo $form->renderField($field);
+	} ?>
+</div>

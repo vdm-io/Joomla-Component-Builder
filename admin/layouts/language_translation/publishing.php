@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
-	@created		3rd April, 2017
+	@version		2.4.2
+	@build			5th April, 2017
+	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		default_batch_footer.php
+	@subpackage		publishing.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -24,14 +24,35 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
 
-?>
-<!-- clear the batch values if cancel -->
-<button class="btn" type="button" onclick="" data-dismiss="modal">
-	<?php echo JText::_('JCANCEL'); ?>
-</button>
-<!-- post the batch values if process -->
-<button class="btn btn-success" type="submit" onclick="Joomla.submitbutton('language_placeholder.batch');">
-	<?php echo JText::_('JGLOBAL_BATCH_PROCESS'); ?>
-</button>
+defined('_JEXEC') or die('Restricted access');
+
+$app = JFactory::getApplication();
+$form = $displayData->getForm();
+
+$fields = $displayData->get('fields') ?: array(
+	'created',
+	'created_by',
+	'modified',
+	'modified_by'
+);
+
+$hiddenFields = $displayData->get('hidden_fields') ?: array();
+
+foreach ($fields as $field)
+{
+	$field = is_array($field) ? $field : array($field);
+	foreach ($field as $f)
+	{
+		if ($form->getField($f))
+		{
+			if (in_array($f, $hiddenFields))
+			{
+				$form->setFieldAttribute($f, 'type', 'hidden');
+			}
+
+			echo $form->renderField($f);
+			break;
+		}
+	}
+}

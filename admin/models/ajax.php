@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			3rd April, 2017
+	@build			5th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -1053,6 +1053,226 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			// return found field options
 			return $field;
+		}
+		return false;
+	}
+
+	// Used in language_translation
+	protected $functionArray = array(
+				'translation' => 'checkString',
+				'language' => 'getLanguageName');
+	
+	protected function checkString($header, $value)
+	{
+		return $value;
+	}
+	
+	protected function getLanguageName($header, $value)
+	{
+		if ($name = ComponentbuilderHelper::getVar($header, $value, 'langtag', 'name'))
+		{
+			return $name . ' (' . $value . ')';
+		}
+		return $value;
+	}
+
+	protected function setAutoLangZero()
+	{
+		// set the headers
+		$headers = array(
+			'translation' => JText::_('COM_COMPONENTBUILDER_TRANSLATION'),
+			'language' => JText::_('COM_COMPONENTBUILDER_LANGUAGE')
+		);
+		// loop the array
+		foreach ($headers as $key => $lang)
+		{
+			$this->setLanguage($key,$lang);
+		}
+	}
+			
+	protected $languageArray = array();
+
+	protected function setLanguage($key,$lang)
+	{
+		$this->languageArray[$key] = $lang;
+	}
+
+	public function getLanguage()
+	{
+		// return the language string that were set
+		return $this->languageArray;
+	}
+	
+	protected function autoLoader()
+	{
+		$functions = range(0,10);
+		foreach ($functions as $function)
+		{
+			$function = 'setAutoLang'.ComponentbuilderHelper::safeString($function, 'f');
+			if (method_exists($this, $function))
+			{
+				$this->{$function}();
+			}
+		}
+		foreach ($functions as $function)
+		{
+			$function = 'setAutoFunc'.ComponentbuilderHelper::safeString($function, 'f');
+			if (method_exists($this, $function))
+			{
+				$this->{$function}();
+			}
+		}
+	}
+
+	public function getBuildTable($idName, $oject)
+	{
+		if (ComponentbuilderHelper::checkJson($oject) && ComponentbuilderHelper::checkString($idName))
+		{
+			$array = json_decode($oject, true);
+			if (ComponentbuilderHelper::checkArray($array))
+			{ 
+				// make sure we run the autoloader to insure all is set
+				$this->autoLoader();
+				// set the target headers
+				$targetHeaders 	= $this->getLanguage();
+				// start table build
+				$table 		= '<table id="table_'.$idName.'" class="uk-table" style="margin: 5px 0 20px;"><thead><tr>';
+				$rows		= array();				
+				foreach ($array as $header => $values)
+				{
+					if (ComponentbuilderHelper::checkArray($values))
+					{
+						$targetHeader = (isset($targetHeaders[$header])) ? $targetHeaders[$header] : ComponentbuilderHelper::safeString($header, 'W');
+						$table .= '<th style="padding: 10px; text-align: center; border: 1px solid rgb(221, 221, 221);" scope="col">'.$targetHeader.'</th>';
+
+						foreach ($values as $nr => $value)
+						{
+							// set the value for the row
+							$this->setRows($nr, $this->setValue($header, $value), $rows);
+						}
+					}
+				}
+				// close header start body
+				$table .= '</tr></thead><tbody>';
+				// add rows to table
+				if (ComponentbuilderHelper::checkArray($rows))
+				{
+					foreach ($rows as $row)
+					{
+						$table .= '<tr>'.$row.'</tr>';
+					}
+				}
+				// close the body and table
+				$table .= '</tbody></table>';
+				// return the table
+				return $table;
+			}
+		}
+		return false;
+	}
+
+	protected function setValue($header, $value)
+	{
+		if (array_key_exists($header, $this->functionArray) && method_exists($this, $this->functionArray[$header]))
+		{
+			$value = $this->{$this->functionArray[$header]}($header, $value);
+		}
+		// if no value are set
+		if (!ComponentbuilderHelper::checkString($value))
+		{
+			$value = '-';
+		}
+		// make total stand out
+		if ('total' == $header)
+		{
+			$value = '<b>'.$value.'</b>';
+		}
+		return $value;
+	}
+
+	protected function setRows($nr, $value, &$rows)
+	{
+		// build rows
+		if (!isset($rows[$nr]))
+		{
+			$rows[$nr] = '<td style="padding: 10px; text-align: center; border: 1px solid rgb(221, 221, 221);">'.$value.'</td>';
+		}
+		else
+		{
+			$rows[$nr] .= '<td style="padding: 10px; text-align: center; border: 1px solid rgb(221, 221, 221);">'.$value.'</td>';
+		}
+	}			
+			
+	protected $viewid = array();
+
+	protected function getViewID($call = 'table')
+	{
+		if (!isset($this->viewid[$call]))
+		{
+			// get the vdm key
+			$jinput = JFactory::getApplication()->input;
+			$vdm = $jinput->get('vdm', null, 'WORD');
+			if ($vdm) 
+			{
+				if ($view = ComponentbuilderHelper::get($vdm))
+				{
+					$current = (array) explode('__', $view);
+					if (ComponentbuilderHelper::checkString($current[0]) && isset($current[1]) && is_numeric($current[1]))
+					{
+						// get the view name & id
+						$this->viewid[$call] = array(
+							'a_id' => (int) $current[1],
+							'a_view' => $current[0]
+						);
+					}
+				}
+			}
+		}
+		if (isset($this->viewid[$call]))
+		{
+			return $this->viewid[$call];
+		}
+		return false;
+	}
+			
+	protected $buttonArray = array(
+				'language' => true);
+
+	public function getButton($type)
+	{
+		if (isset($this->buttonArray[$type]))
+		{
+			$user = JFactory::getUser();
+			// only add if user allowed to create
+			if ($user->authorise($type.'.create', 'com_componentbuilder'))
+			{
+				// get the input from url
+				$jinput = JFactory::getApplication()->input;
+				// get the view name & id
+				$values = $this->getViewID();
+				// check if new item
+				$ref = '';
+				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
+				{
+					// only load referal if not new item.
+					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
+				}
+				// build the button
+				$button = '<div class="control-group">
+					<div class="control-label">
+						<label>' . ucwords($type) . '</label>
+					</div>
+					<div class="controls">	
+							<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit'.$ref.'\' })" href="javascript:void(0)" >
+								<span class="icon-new icon-white"></span> 
+								' . JText::_('COM_COMPONENTBUILDER_NEW') . '
+							</a>
+					</div>
+				</div>';
+				// return the button attached to input field
+				return $button;
+			}
+			return '';
 		}
 		return false;
 	}

@@ -60,8 +60,7 @@
 	</files>
 
 	<languages folder="site">
-		<language tag="en-GB">language/en-GB/en-GB.com_###component###.ini</language>
-		<language tag="en-GB">language/en-GB/en-GB.com_###component###.sys.ini</language>
+		###SITE_LANGUAGES###
 	</languages>
 
 	<administration>
@@ -86,8 +85,7 @@
 		</files>
 
 		<languages folder="admin">
-			<language tag="en-GB">language/en-GB/en-GB.com_###component###.ini</language>
-			<language tag="en-GB">language/en-GB/en-GB.com_###component###.sys.ini</language>
+			###ADMIN_LANGUAGES###
 		</languages>
 
 	</administration>###UPDATESERVER###

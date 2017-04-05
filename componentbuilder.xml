@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>3rd April, 2017</creationDate>
+	<creationDate>5th April, 2017</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>http://vdm.bz/component-builder</authorUrl>
@@ -70,7 +70,7 @@ Whether you're a seasoned [Joomla](http://www.joomla.org/) developer, or have ju
 			<menu option="com_componentbuilder" view="snippets">COM_COMPONENTBUILDER_MENU_SNIPPETS</menu>
 			<menu option="com_componentbuilder" view="fields">COM_COMPONENTBUILDER_MENU_FIELDS</menu>
 			<menu option="com_componentbuilder" view="fieldtypes">COM_COMPONENTBUILDER_MENU_FIELDTYPES</menu>
-			<menu option="com_componentbuilder" view="language_placeholders">COM_COMPONENTBUILDER_MENU_LANGUAGE_PLACEHOLDERS</menu>
+			<menu option="com_componentbuilder" view="language_translations">COM_COMPONENTBUILDER_MENU_LANGUAGE_TRANSLATIONS</menu>
 			<menu option="com_componentbuilder" view="help_documents">COM_COMPONENTBUILDER_MENU_HELP_DOCUMENTS</menu>
 		</submenu>
 		<files folder="admin">

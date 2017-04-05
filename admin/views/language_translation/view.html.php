@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -30,9 +30,9 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 
 /**
- * Language_placeholder View class
+ * Language_translation View class
  */
-class ComponentbuilderViewLanguage_placeholder extends JViewLegacy
+class ComponentbuilderViewLanguage_translation extends JViewLegacy
 {
 	/**
 	 * display method of View
@@ -53,7 +53,7 @@ class ComponentbuilderViewLanguage_placeholder extends JViewLegacy
 		$this->script 		= $this->get('Script');
 		$this->state		= $this->get('State');
                 // get action permissions
-		$this->canDo		= ComponentbuilderHelper::getActions('language_placeholder',$this->item);
+		$this->canDo		= ComponentbuilderHelper::getActions('language_translation',$this->item);
 		// get input
 		$jinput = JFactory::getApplication()->input;
 		$this->ref 		= $jinput->get('ref', 0, 'word');
@@ -91,29 +91,29 @@ class ComponentbuilderViewLanguage_placeholder extends JViewLegacy
 		$userId	= $user->id;
 		$isNew = $this->item->id == 0;
 
-		JToolbarHelper::title( JText::_($isNew ? 'COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_NEW' : 'COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_EDIT'), 'pencil-2 article-add');
+		JToolbarHelper::title( JText::_($isNew ? 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_NEW' : 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_EDIT'), 'pencil-2 article-add');
 		// Built the actions for new and existing records.
 		if ($this->refid || $this->ref)
 		{
-			if ($this->canDo->get('language_placeholder.create') && $isNew)
+			if ($this->canDo->get('language_translation.create') && $isNew)
 			{
 				// We can create the record.
-				JToolBarHelper::save('language_placeholder.save', 'JTOOLBAR_SAVE');
+				JToolBarHelper::save('language_translation.save', 'JTOOLBAR_SAVE');
 			}
-			elseif ($this->canDo->get('language_placeholder.edit'))
+			elseif ($this->canDo->get('language_translation.edit'))
 			{
 				// We can save the record.
-				JToolBarHelper::save('language_placeholder.save', 'JTOOLBAR_SAVE');
+				JToolBarHelper::save('language_translation.save', 'JTOOLBAR_SAVE');
 			}
 			if ($isNew)
 			{
 				// Do not creat but cancel.
-				JToolBarHelper::cancel('language_placeholder.cancel', 'JTOOLBAR_CANCEL');
+				JToolBarHelper::cancel('language_translation.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
 			{
 				// We can close it.
-				JToolBarHelper::cancel('language_placeholder.cancel', 'JTOOLBAR_CLOSE');
+				JToolBarHelper::cancel('language_translation.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}
 		else
@@ -121,43 +121,43 @@ class ComponentbuilderViewLanguage_placeholder extends JViewLegacy
 			if ($isNew)
 			{
 				// For new records, check the create permission.
-				if ($this->canDo->get('language_placeholder.create'))
+				if ($this->canDo->get('language_translation.create'))
 				{
-					JToolBarHelper::apply('language_placeholder.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('language_placeholder.save', 'JTOOLBAR_SAVE');
-					JToolBarHelper::custom('language_placeholder.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+					JToolBarHelper::apply('language_translation.apply', 'JTOOLBAR_APPLY');
+					JToolBarHelper::save('language_translation.save', 'JTOOLBAR_SAVE');
+					JToolBarHelper::custom('language_translation.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 				};
-				JToolBarHelper::cancel('language_placeholder.cancel', 'JTOOLBAR_CANCEL');
+				JToolBarHelper::cancel('language_translation.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
 			{
-				if ($this->canDo->get('language_placeholder.edit'))
+				if ($this->canDo->get('language_translation.edit'))
 				{
 					// We can save the new record
-					JToolBarHelper::apply('language_placeholder.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('language_placeholder.save', 'JTOOLBAR_SAVE');
+					JToolBarHelper::apply('language_translation.apply', 'JTOOLBAR_APPLY');
+					JToolBarHelper::save('language_translation.save', 'JTOOLBAR_SAVE');
 					// We can save this record, but check the create permission to see
 					// if we can return to make a new one.
-					if ($this->canDo->get('language_placeholder.create'))
+					if ($this->canDo->get('language_translation.create'))
 					{
-						JToolBarHelper::custom('language_placeholder.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+						JToolBarHelper::custom('language_translation.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 					}
 				}
-				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('language_placeholder.version'));
-				if ($this->state->params->get('save_history', 1) && $this->canDo->get('language_placeholder.edit') && $canVersion)
+				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('language_translation.version'));
+				if ($this->state->params->get('save_history', 1) && $this->canDo->get('language_translation.edit') && $canVersion)
 				{
-					JToolbarHelper::versions('com_componentbuilder.language_placeholder', $this->item->id);
+					JToolbarHelper::versions('com_componentbuilder.language_translation', $this->item->id);
 				}
-				if ($this->canDo->get('language_placeholder.create'))
+				if ($this->canDo->get('language_translation.create'))
 				{
-					JToolBarHelper::custom('language_placeholder.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+					JToolBarHelper::custom('language_translation.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}
-				JToolBarHelper::cancel('language_placeholder.cancel', 'JTOOLBAR_CLOSE');
+				JToolBarHelper::cancel('language_translation.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}
 		JToolbarHelper::divider();
 		// set help url for this view if found
-		$help_url = ComponentbuilderHelper::getHelpUrl('language_placeholder');
+		$help_url = ComponentbuilderHelper::getHelpUrl('language_translation');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
 			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
@@ -191,10 +191,21 @@ class ComponentbuilderViewLanguage_placeholder extends JViewLegacy
 	{
 		$isNew = ($this->item->id < 1);
 		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_NEW' : 'COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/language_placeholder.css"); 
+		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_NEW' : 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_EDIT'));
+		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/language_translation.css");
+		// Add Ajax Token
+		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
 		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/language_placeholder/submitbutton.js"); 
+		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/language_translation/submitbutton.js"); 
+		// add JavaScripts
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/uikit.min.js' );
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/lightbox.min.js', 'text/javascript', true);
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/notify.min.js', 'text/javascript', true);
+		// add the style sheets
+		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/uikit.gradient.min.css' );
+		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/components/notify.gradient.min.css' );
+		// add var key
+		$document->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';"); 
 		JText::script('view not acceptable. Error');
 	}
 }

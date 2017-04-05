@@ -1067,33 +1067,124 @@ class Infusion extends Interpretation
 	 * @return  boolean  on success
 	 * 
 	 */
-	
 	public function setLangFileData()
 	{
-		// First we build the strings
-		$lang = array();
-		// ###LANG_ADMIN###
-		$lang['###LANG_ADMIN###'] = $this->setLangAdmin();
-		// ###LANG_ADMIN_SYS###
-		$lang['###LANG_ADMIN_SYS###'] = $this->setLangAdminSys();
-		// ###LANG_SITE###
-		$lang['###LANG_SITE###'] = $this->setLangSite();
-		// ###LANG_SITE_SYS###
-		$lang['###LANG_SITE_SYS###'] = $this->setLangSiteSys();
-		// now we insert the values into the files
-		if (ComponentbuilderHelper::checkArray($this->langFiles))
+		$values = array();
+		$mainLangLoader = array();
+		// check the admin lang is set
+		if ($this->setLangAdmin())
 		{
-			foreach ($this->langFiles as $file)
+			$values[] = array_values($this->languages['en-GB']['admin']);
+			$mainLangLoader['admin'] = count($this->languages['en-GB']['admin']);
+		}
+		// check the admin system lang is set
+		if ($this->setLangAdminSys())
+		{
+			$values[] = array_values($this->languages['en-GB']['adminsys']);
+			$mainLangLoader['adminsys'] = count($this->languages['en-GB']['adminsys']);
+		}
+		// check the site lang is set
+		if (!$this->removeSiteFolder && $this->setLangSite())
+		{
+			$values[] = array_values($this->languages['en-GB']['site']);
+			$mainLangLoader['site'] = count($this->languages['en-GB']['site']);
+		}
+		// check the site system lang is set
+		if (!$this->removeSiteFolder && $this->setLangSiteSys())
+		{
+			$values[] = array_values($this->languages['en-GB']['sitesys']);
+			$mainLangLoader['sitesys'] = count($this->languages['en-GB']['sitesys']);
+		}
+		$values = array_unique(ComponentbuilderHelper::mergeArrays($values));
+		// get the other lang strings if there is any
+		$this->multiLangString = $this->getMultiLangStrings($values);
+		// update insert the current lang in to DB
+		$this->setLangPlaceholders($values);
+		// path to INI file
+		$getPAth = $this->templatePath . '/en-GB.com_admin.ini';
+		// now we insert the values into the files
+		if (ComponentbuilderHelper::checkArray($this->languages))
+		{
+			$langXML = array();
+			foreach ($this->languages as $tag => $areas)
 			{
-				$string = file_get_contents($file['path']);
-				// load the data
-				$answer = $this->setPlaceholders($string, $lang, 3);
-				// add to zip array
-				$this->writeFile($file['path'],$answer);
-				// set the line counter
-				$this->lineCount = $this->lineCount + substr_count($answer, PHP_EOL);
+				foreach ($areas as $area => $languageStrings)
+				{
+					// check if we sould install this translation (must be atleast 50% ready
+					$dif = bcdiv(count($languageStrings), $mainLangLoader[$area]);
+					$percentage = bcmul($dif, 100);
+					if ($percentage < 50)
+					{
+						// dont add
+						continue;
+					}
+					$p = 'admin';
+					$t = '';
+					if (strpos($area, 'site') !== false)
+					{
+						if ($this->removeSiteFolder)
+						{
+							continue;
+						}
+						$p = 'site';
+					}
+					if (strpos($area, 'sys') !== false)
+					{
+						$t = '.sys';
+					}
+					// build the path to to place the lang file
+					$path = $this->componentPath.'/'.$p.'/language/'.$tag;
+					if (!JFolder::exists($path))
+					{
+						JFolder::create($path);
+						// count the folder created
+						$this->folderCount++;
+					}
+					// build the file name
+					$fileName = $tag . '.com_' . $this->componentCodeName . $t . '.ini';
+					// move the file to its place
+					JFile::copy($getPAth, $path.'/'.$fileName);
+					// count the file created
+					$this->fileCount++;
+					// add content to it
+					$lang = '';
+					foreach ($languageStrings as $place => $string)
+					{
+						$lang .= $place.'="'.$string.'"'.PHP_EOL;
+					}
+					// add to language file
+					$this->writeFile($path.'/'.$fileName, $lang);
+					// set the line counter
+					$this->lineCount = $this->lineCount + substr_count($lang, PHP_EOL);
+					// build xml strings
+					if (!isset($langXML[$p]))
+					{
+						$langXML[$p] = array();
+					}
+					$langXML[$p][] = '<language tag="'.$tag.'">language/'.$tag.'/'.$fileName.'</language>';
+				}
+			}
+			// load the lang xml 
+			if (ComponentbuilderHelper::checkArray($langXML))
+			{
+				$replace = array();
+				if (isset($langXML['admin']) && ComponentbuilderHelper::checkArray($langXML['admin']))
+				{
+					$replace['###ADMIN_LANGUAGES###'] = implode(PHP_EOL."\t\t\t", $langXML['admin']);
+				}
+				if (!$this->removeSiteFolder && isset($langXML['site']) && ComponentbuilderHelper::checkArray($langXML['site']))
+				{
+					$replace['###SITE_LANGUAGES###'] = implode(PHP_EOL."\t\t", $langXML['site']);
+				}
+				// build xml path
+				$xmlPath = $this->componentPath . '/'. $this->fileContentStatic['###component###']. '.xml';
+				// get the content in xml
+				$componentXML = file_get_contents($xmlPath);
+				// update the xml content
+				$componentXML = $this->setPlaceholders($componentXML, $replace);
+				// store the values back to xml
+				$this->writeFile($xmlPath,$componentXML);
 			}
 		}
 	}
-
 }

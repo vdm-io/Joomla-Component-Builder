@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
-	@subpackage		language_placeholders.php
+	@subpackage		language_translations.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -30,16 +30,16 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controlleradmin');
 
 /**
- * Language_placeholders Controller
+ * Language_translations Controller
  */
-class ComponentbuilderControllerLanguage_placeholders extends JControllerAdmin
+class ComponentbuilderControllerLanguage_translations extends JControllerAdmin
 {
-	protected $text_prefix = 'COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDERS';
+	protected $text_prefix = 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATIONS';
 	/**
 	 * Proxy for getModel.
 	 * @since	2.5
 	 */
-	public function getModel($name = 'Language_placeholder', $prefix = 'ComponentbuilderModel', $config = array())
+	public function getModel($name = 'Language_translation', $prefix = 'ComponentbuilderModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		
@@ -52,7 +52,7 @@ class ComponentbuilderControllerLanguage_placeholders extends JControllerAdmin
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		// check if export is allowed for this user.
 		$user = JFactory::getUser();
-		if ($user->authorise('language_placeholder.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
+		if ($user->authorise('language_translation.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// Get the input
 			$input = JFactory::getApplication()->input;
@@ -60,19 +60,19 @@ class ComponentbuilderControllerLanguage_placeholders extends JControllerAdmin
 			// Sanitize the input
 			JArrayHelper::toInteger($pks);
 			// Get the model
-			$model = $this->getModel('Language_placeholders');
+			$model = $this->getModel('Language_translations');
 			// get the data to export
 			$data = $model->getExportData($pks);
 			if (ComponentbuilderHelper::checkArray($data))
 			{
 				// now set the data to the spreadsheet
 				$date = JFactory::getDate();
-				ComponentbuilderHelper::xls($data,'Language_placeholders_'.$date->format('jS_F_Y'),'Language placeholders exported ('.$date->format('jS F, Y').')','language placeholders');
+				ComponentbuilderHelper::xls($data,'Language_translations_'.$date->format('jS_F_Y'),'Language translations exported ('.$date->format('jS F, Y').')','language translations');
 			}
 		}
 		// Redirect to the list screen with error.
 		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=language_placeholders', false), $message, 'error');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=language_translations', false), $message, 'error');
 		return;
 	}
 
@@ -83,10 +83,10 @@ class ComponentbuilderControllerLanguage_placeholders extends JControllerAdmin
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
 		$user = JFactory::getUser();
-		if ($user->authorise('language_placeholder.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
+		if ($user->authorise('language_translation.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
 			// Get the import model
-			$model = $this->getModel('Language_placeholders');
+			$model = $this->getModel('Language_translations');
 			// get the headers to import
 			$headers = $model->getExImPortHeaders();
 			if (ComponentbuilderHelper::checkObject($headers))
@@ -94,18 +94,18 @@ class ComponentbuilderControllerLanguage_placeholders extends JControllerAdmin
 				// Load headers to session.
 				$session = JFactory::getSession();
 				$headers = json_encode($headers);
-				$session->set('language_placeholder_VDM_IMPORTHEADERS', $headers);
-				$session->set('backto_VDM_IMPORT', 'language_placeholders');
-				$session->set('dataType_VDM_IMPORTINTO', 'language_placeholder');
+				$session->set('language_translation_VDM_IMPORTHEADERS', $headers);
+				$session->set('backto_VDM_IMPORT', 'language_translations');
+				$session->set('dataType_VDM_IMPORTINTO', 'language_translation');
 				// Redirect to import view.
-				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_LANGUAGE_PLACEHOLDERS');
+				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_LANGUAGE_TRANSLATIONS');
 				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import', false), $message);
 				return;
 			}
 		}
 		// Redirect to the list screen with error.
 		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=language_placeholders', false), $message, 'error');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=language_translations', false), $message, 'error');
 		return;
 	}  
 

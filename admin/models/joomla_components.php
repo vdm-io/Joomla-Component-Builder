@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 311 of this MVC
-	@build			1st April, 2017
+	@version		@update number 314 of this MVC
+	@build			5th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -101,7 +101,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$query = $db->getQuery(true);
 
 			// Select some fields
-			$query->select($db->quoteName('a.*'));
+			$query->select(array('a.*'));
 			
 			// From the componentbuilder_joomla_component table
 			$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
@@ -459,7 +459,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$query = $db->getQuery(true);
 
 		// Select some fields
-		$query->select($db->quoteName('a.*'));
+		$query->select(array('a.*'));
 			
 		// From the componentbuilder_ANY table
 		$query->from($db->quoteName('#__componentbuilder_'. $table, 'a'));

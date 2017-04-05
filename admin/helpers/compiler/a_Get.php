@@ -163,11 +163,11 @@ class Get
 	public $loadLineNr = false;
 	
 	/**
-	 * The Language prefix
+	 * The Placholder Language prefix
 	 * 
 	 * @var      string
 	 */
-	public $langPrefix = 'COM_';
+	public $langPrefix;
 	
 	/**
 	 * The Language content
@@ -175,6 +175,34 @@ class Get
 	 * @var      array
 	 */
 	public $langContent = array();
+	
+	/**
+	 * The Languages bucket
+	 * 
+	 * @var      array
+	 */
+	public $languages  = array('en-GB' => array());
+	
+	/**
+	 * The Multi Languages bucket
+	 * 
+	 * @var      array
+	 */
+	public $multiLangString = array();
+	
+	/**
+	 * The new lang to add
+	 * 
+	 * @var      array
+	 */
+	protected $newLangStrings = array();
+	
+	/**
+	 * The existing lang to update
+	 * 
+	 * @var      array
+	 */
+	protected $existingLangStrings = array();
 	
 	/**
 	 * The Component Code Name
@@ -460,7 +488,7 @@ class Get
 			if ($name_code = ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'name_code'))
 			{
 				// set lang prefix
-				$this->langPrefix		.= ComponentbuilderHelper::safeString($name_code,'U');
+				$this->langPrefix		= 'COM_'.ComponentbuilderHelper::safeString($name_code,'U');
 				// set component code name
 				$this->componentCodeName	= ComponentbuilderHelper::safeString($name_code);
 				// set if placeholders should be added to customcode
@@ -2977,6 +3005,230 @@ class Get
 	public function unsetNow($remove)
 	{
 		unset($this->$remove);
+	}
+	
+	/**
+	 * Get the other languages
+	 * 
+	 * @param   array    $values  The lang strings to get
+	 * 
+	 *
+	 * @return  void
+	 * 
+	 */
+	public function getMultiLangStrings($values)
+	{
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+		$query->from($this->db->quoteName('#__componentbuilder_language_translation','a'));
+		if (ComponentbuilderHelper::checkArray($values))
+		{
+			$query->select($this->db->quoteName(array('a.id','a.translation','a.entranslation','a.components')));
+			$query->where($this->db->quoteName('a.entranslation') . ' IN (' . implode(',',array_map(function($a){ return $this->db->quote($a); }, $values)) . ')');
+			$query->where($this->db->quoteName('a.published') . ' >= 1');
+			$this->db->setQuery($query);
+			$this->db->execute();
+			if ($this->db->getNumRows())
+			{
+				return $this->db->loadAssocList('entranslation');
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Set the Current language values to DB
+	 * 
+	 *
+	 * @return  void
+	 * 
+	 */
+	public function setLangPlaceholders(&$strings)
+	{
+		$counterInsert = 0;
+		$counterUpdate = 0;
+		$today = JFactory::getDate()->toSql();
+		foreach ($this->languages['en-GB'] as $area => $placeholders)
+		{
+			foreach ($placeholders as $placeholder => $string)
+			{
+				// to keep or remove
+				$remove = false;
+				// build the tranlations
+				if (isset($this->multiLangString[$string]))
+				{
+					// make sure we have converted the string to array
+					if (isset($this->multiLangString[$string]['translation']) && ComponentbuilderHelper::checkJson($this->multiLangString[$string]['translation']))
+					{
+						$this->multiLangString[$string]['translation'] = json_decode($this->multiLangString[$string]['translation'], true);
+					}
+					// if we have an array continue
+					if (isset($this->multiLangString[$string]['translation']) 
+						&& ComponentbuilderHelper::checkArray($this->multiLangString[$string]['translation']) 
+						&& isset($this->multiLangString[$string]['translation']['translation'])
+						&& isset($this->multiLangString[$string]['translation']['language'])
+						&& ComponentbuilderHelper::checkArray($this->multiLangString[$string]['translation']['language'])
+						&& ComponentbuilderHelper::checkArray($this->multiLangString[$string]['translation']['translation']))
+					{
+						// great lets build the multi languages strings
+						foreach ($this->multiLangString[$string]['translation']['translation'] as $at => $lang)
+						{
+							$_tag = $this->multiLangString[$string]['translation']['language'][$at];
+							// build arrays
+							if (!isset($this->languages[$_tag]))
+							{
+								$this->languages[$_tag] = array();
+							}
+							if (!isset($this->languages[$_tag][$area]))
+							{
+								$this->languages[$_tag][$area] = array();
+							}
+							$this->languages[$_tag][$area][$placeholder] = $lang;
+						}
+					}
+					else
+					{
+						// remove this string not to be checked again
+						$remove = true;
+					}
+				}
+				// do the database managment
+				if(($key = array_search($string, $strings)) !== false)
+				{
+					if (isset($this->multiLangString[$string]))
+					{
+						// update the existing placeholder in db
+						$id = $this->multiLangString[$string]['id'];
+						if (ComponentbuilderHelper::checkJson($this->multiLangString[$string]['components']))
+						{
+							$components = (array) json_decode($this->multiLangString[$string]['components'], true);
+							if (in_array($this->componentID, $components))
+							{
+								continue;
+							}
+							else
+							{
+								$components[] = $this->componentID;
+							}
+						}
+						else
+						{
+							$components = array($this->componentID);
+						}
+						// start the bucket for this lang
+						$this->existingLangStrings[$counterUpdate]			= array();
+						$this->existingLangStrings[$counterUpdate]['id']		= (int) $id;
+						$this->existingLangStrings[$counterUpdate]['conditions']	= array();
+						$this->existingLangStrings[$counterUpdate]['conditions'][]	= $this->db->quoteName('id') . ' = ' . $this->db->quote($id);
+						$this->existingLangStrings[$counterUpdate]['fields']		= array();
+						$this->existingLangStrings[$counterUpdate]['fields'][]		= $this->db->quoteName('components') . ' = ' . $this->db->quote(json_encode($components));
+
+						$counterUpdate++;
+
+						// load to db 
+						$this->setExistingLangStrings(50);
+						// remove string if needed
+						if ($remove)
+						{
+							unset($this->multiLangString[$string]);
+						}
+					}
+					else
+					{
+						// add the new lang placeholder to the db
+						$this->newLangStrings[$counterInsert]	= array();
+						$this->newLangStrings[$counterInsert][]	= $this->db->quote(json_encode(array($this->componentID)));	// 'components'
+						$this->newLangStrings[$counterInsert][]	= $this->db->quote($string);					// 'entranslation'
+						$this->newLangStrings[$counterInsert][]	= $this->db->quote(1);						// 'published'
+						$this->newLangStrings[$counterInsert][]	= $this->db->quote($today);					// 'created'
+						$this->newLangStrings[$counterInsert][]	= $this->db->quote((int) $this->user->id);			// 'created_by'
+						$this->newLangStrings[$counterInsert][]	= $this->db->quote(1);						// 'version'
+						$this->newLangStrings[$counterInsert][]	= $this->db->quote(1);						// 'access'
+
+						$counterInsert++;
+
+						// load to db 
+						$this->setNewLangStrings(100);
+					}
+					// only set the string once
+					unset($strings[$key]);
+				}
+			}
+		}
+		// just to make sure all is done
+		$this->setExistingLangStrings();
+		$this->setNewLangStrings();
+	}
+	
+	/**
+	 * store the language placeholders
+	 * 
+	 * @param   int	     $when  To set when to update
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function setNewLangStrings($when = 1)
+	{
+		if (count($this->newLangStrings) >= $when)
+		{
+			// Create a new query object.
+			$query = $this->db->getQuery(true);
+			$continue = false;
+			// Insert columns.
+			$columns = array('components','entranslation','published','created','created_by','version','access');
+			// Prepare the insert query.
+			$query->insert($this->db->quoteName('#__componentbuilder_language_translation'));
+			$query->columns($this->db->quoteName($columns));
+			foreach($this->newLangStrings as $values)
+			{
+				if (count($values) == 7)
+				{
+					$query->values(implode(',', $values));
+					$continue = true;
+				}
+				else
+				{
+					// TODO line mismatch... should not happen
+				}
+			}
+			// clear the values array
+			$this->newLangStrings = array();
+			if (!$continue)
+			{
+				return false; // insure we dont continue if no values were loaded
+			}
+			// Set the query using our newly populated query object and execute it.
+			$this->db->setQuery($query);
+			$this->db->execute();
+		}
+	} 
+	
+	/**
+	 * update the language placeholders
+	 * 
+	 * @param   int      $when  To set when to update
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function setExistingLangStrings($when = 1)
+	{
+		if (count($this->existingLangStrings) >= $when)
+		{
+			foreach($this->existingLangStrings as $values)
+			{
+				// Create a new query object.
+				$query = $this->db->getQuery(true);
+				// Prepare the update query.
+				$query->update($this->db->quoteName('#__componentbuilder_language_translation'))->set($values['fields'])->where($values['conditions']);
+				// Set the query using our newly populated query object and execute it.
+				$this->db->setQuery($query);
+				$this->db->execute();
+			}
+			// clear the values array
+			$this->existingLangStrings = array();            
+		}
 	}
 	
 	/**

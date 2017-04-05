@@ -16,8 +16,8 @@
 		<field
 			name="created"
 			type="calendar"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_CREATED_DATE_LABEL"
-			description="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_CREATED_DATE_DESC"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_DATE_DESC"
 			size="22"
 
 			format="%Y-%m-%d %H:%M:%S"
@@ -27,9 +27,9 @@
 		<field
 			name="created_by"
 			type="user"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_CREATED_BY_LABEL"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_BY_LABEL"
 
-			description="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_CREATED_BY_DESC"
+			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_BY_DESC"
 		/>
 		<!-- Published Field. Type: List (joomla) -->
 		<field name="published" type="list" label="JSTATUS"
@@ -47,12 +47,12 @@
 		</field>
 		<!-- Date Modified Field. Type: Calendar (joomla) -->
 		<field name="modified" type="calendar" class="readonly"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_MODIFIED_DATE_DESC"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_DATE_DESC"
 			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
 		<!-- User Modified Field. Type: User (joomla) -->
 		<field name="modified_by" type="user"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_MODIFIED_BY_LABEL"
-			description="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_MODIFIED_BY_DESC"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_BY_DESC"
 			class="readonly"
 			readonly="true"
 			filter="unset"
@@ -71,7 +71,7 @@
 			name="ordering"
 			type="number"
 			class="inputbox validate-ordering"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_ORDERING_LABEL"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ORDERING_LABEL"
 			description=""
 			default="0"
 			size="6"
@@ -83,33 +83,32 @@
 			name="version"
 			type="text"
 			class="readonly"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_VERSION_LABEL"
-			description="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_VERSION_DESC"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_VERSION_DESC"
 			size="6"
 			readonly="true"
 			filter="unset"
 		/>
 		<!-- Dynamic Fields. -->
-		<!-- Placeholder Field. Type: Text. (joomla) -->
+		<!-- Entranslation Field. Type: Textarea. (joomla) -->
 		<field
-			type="text"
-			name="placeholder"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_PLACEHOLDER_LABEL"
-			size="100"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_PLACEHOLDER_DESCRIPTION"
-			class="text_area"
+			type="textarea"
+			name="entranslation"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL"
+			rows="4"
+			cols="5"
+			description="JFIELD_TITLE_DESC"
+			class="text_area span12"
+			filter="STRING"
+			hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_HINT"
 			readonly="true"
 			disabled="true"
-			filter="STRING"
-			message="Error! Please add some text here."
-			hint="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_PLACEHOLDER_HINT"
 		/>
 		<!-- Components Field. Type: Components. (custom) -->
 		<field
 			type="components"
 			name="components"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_COMPONENTS_LABEL"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
 			class="list_class"
 			multiple="true"
 			default="0"
@@ -120,34 +119,32 @@
 		<field
 			type="repeatable"
 			name="translation"
-			label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_TRANSLATION_LABEL"
-			description="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_TRANSLATION_DESCRIPTION"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
+			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_DESCRIPTION"
 			id="translation"
 			class="translations"
-			select="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_TRANSLATION_SELECT"
+			select="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_SELECT"
 			icon="list"
 			maximum="50">
 			<fields name="translation_fields" label="">
 				<fieldset hidden="true" name="translation_modal" repeat="true">
-					<!-- Translation Field. Type: Text. (joomla) -->
+					<!-- Translation Field. Type: Textarea. (joomla) -->
 					<field
-						type="text"
+						type="textarea"
 						name="translation"
-						label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_TRANSLATION_LABEL"
-						size="100"
-						maxlength="150"
-						class="text_area"
-						required="false"
+						label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
+						rows="4"
+						cols="5"
+						class="text_area span12"
 						filter="STRING"
-						message="Error! Please add translated string here."
-						hint="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_TRANSLATION_HINT"
+						hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
+						required="false"
 					/>
-					<!-- Language Field. Type: Language. (joomla) -->
+					<!-- Language Field. Type: Lang. (custom) -->
 					<field
-						custom="Array"
-						type="language"
+						type="lang"
 						name="language"
-						label="COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_LANGUAGE_LABEL"
+						label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGE_LABEL"
 						class="list_class"
 						multiple="false"
 						default="0"
@@ -171,13 +168,13 @@
 		<field
 			name="rules"
 			type="rules"
-			label="Permissions in relation to this language_placeholder"
+			label="Permissions in relation to this language_translation"
 			translate_label="false"
 			filter="rules"
 			validate="rules"
 			class="inputbox"
 			component="com_componentbuilder"
-			section="language_placeholder"
+			section="language_translation"
 		/>
 	</fieldset>
 </form>

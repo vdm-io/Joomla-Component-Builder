@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -30,12 +30,12 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 
 /**
- * Componentbuilder View class for the Language_placeholders
+ * Componentbuilder View class for the Language_translations
  */
-class ComponentbuilderViewLanguage_placeholders extends JViewLegacy
+class ComponentbuilderViewLanguage_translations extends JViewLegacy
 {
 	/**
-	 * Language_placeholders view display method
+	 * Language_translations view display method
 	 * @return void
 	 */
 	function display($tpl = null)
@@ -43,7 +43,7 @@ class ComponentbuilderViewLanguage_placeholders extends JViewLegacy
 		if ($this->getLayout() !== 'modal')
 		{
 			// Include helper submenu
-			ComponentbuilderHelper::addSubmenu('language_placeholders');
+			ComponentbuilderHelper::addSubmenu('language_translations');
 		}
 
 		// Check for errors.
@@ -62,11 +62,11 @@ class ComponentbuilderViewLanguage_placeholders extends JViewLegacy
 		$this->listDirn		= $this->escape($this->state->get('list.direction'));
 		$this->saveOrder	= $this->listOrder == 'ordering';
                 // get global action permissions
-		$this->canDo		= ComponentbuilderHelper::getActions('language_placeholder');
-		$this->canEdit		= $this->canDo->get('language_placeholder.edit');
-		$this->canState		= $this->canDo->get('language_placeholder.edit.state');
-		$this->canCreate	= $this->canDo->get('language_placeholder.create');
-		$this->canDelete	= $this->canDo->get('language_placeholder.delete');
+		$this->canDo		= ComponentbuilderHelper::getActions('language_translation');
+		$this->canEdit		= $this->canDo->get('language_translation.edit');
+		$this->canState		= $this->canDo->get('language_translation.edit.state');
+		$this->canCreate	= $this->canDo->get('language_translation.create');
+		$this->canDelete	= $this->canDo->get('language_translation.delete');
 		$this->canBatch	= $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
@@ -93,13 +93,13 @@ class ComponentbuilderViewLanguage_placeholders extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDERS'), 'comments-2');
-		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=language_placeholders');
+		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATIONS'), 'comments-2');
+		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=language_translations');
                 JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		if ($this->canCreate)
                 {
-			JToolBarHelper::addNew('language_placeholder.add');
+			JToolBarHelper::addNew('language_translation.add');
 		}
 
                 // Only load if there are items
@@ -107,18 +107,18 @@ class ComponentbuilderViewLanguage_placeholders extends JViewLegacy
 		{
                         if ($this->canEdit)
                         {
-                            JToolBarHelper::editList('language_placeholder.edit');
+                            JToolBarHelper::editList('language_translation.edit');
                         }
 
                         if ($this->canState)
                         {
-                            JToolBarHelper::publishList('language_placeholders.publish');
-                            JToolBarHelper::unpublishList('language_placeholders.unpublish');
-                            JToolBarHelper::archiveList('language_placeholders.archive');
+                            JToolBarHelper::publishList('language_translations.publish');
+                            JToolBarHelper::unpublishList('language_translations.unpublish');
+                            JToolBarHelper::archiveList('language_translations.archive');
 
                             if ($this->canDo->get('core.admin'))
                             {
-                                JToolBarHelper::checkin('language_placeholders.checkin');
+                                JToolBarHelper::checkin('language_translations.checkin');
                             }
                         }
 
@@ -135,34 +135,34 @@ class ComponentbuilderViewLanguage_placeholders extends JViewLegacy
                                 $dhtml = $layout->render(array('title' => $title));
                                 $bar->appendButton('Custom', $dhtml, 'batch');
                         } 
-			if ($this->user->authorise('language_placeholder.update_placeholders'))
+			if ($this->user->authorise('language_translation.update_placeholders'))
 			{
 				// add Update Placeholders button.
-				JToolBarHelper::custom('language_placeholders.updatePlaceholders', 'flash', '', 'COM_COMPONENTBUILDER_UPDATE_PLACEHOLDERS', false);
+				JToolBarHelper::custom('language_translations.updatePlaceholders', 'flash', '', 'COM_COMPONENTBUILDER_UPDATE_PLACEHOLDERS', false);
 			}
 
                         if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
                         {
-                            JToolbarHelper::deleteList('', 'language_placeholders.delete', 'JTOOLBAR_EMPTY_TRASH');
+                            JToolbarHelper::deleteList('', 'language_translations.delete', 'JTOOLBAR_EMPTY_TRASH');
                         }
                         elseif ($this->canState && $this->canDelete)
                         {
-                                JToolbarHelper::trash('language_placeholders.trash');
+                                JToolbarHelper::trash('language_translations.trash');
                         }
 
-			if ($this->canDo->get('core.export') && $this->canDo->get('language_placeholder.export'))
+			if ($this->canDo->get('core.export') && $this->canDo->get('language_translation.export'))
 			{
-				JToolBarHelper::custom('language_placeholders.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
+				JToolBarHelper::custom('language_translations.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
                 }
 
-		if ($this->canDo->get('core.import') && $this->canDo->get('language_placeholder.import'))
+		if ($this->canDo->get('core.import') && $this->canDo->get('language_translation.import'))
 		{
-			JToolBarHelper::custom('language_placeholders.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
+			JToolBarHelper::custom('language_translations.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
 		}
 
                 // set help url for this view if found
-                $help_url = ComponentbuilderHelper::getHelpUrl('language_placeholders');
+                $help_url = ComponentbuilderHelper::getHelpUrl('language_translations');
                 if (ComponentbuilderHelper::checkString($help_url))
                 {
                         JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
@@ -216,8 +216,8 @@ class ComponentbuilderViewLanguage_placeholders extends JViewLegacy
 	protected function setDocument()
 	{
 		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDERS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/language_placeholders.css");
+		$document->setTitle(JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATIONS'));
+		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/language_translations.css");
 	}
 
         /**
@@ -248,7 +248,7 @@ class ComponentbuilderViewLanguage_placeholders extends JViewLegacy
 		return array(
 			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
-			'a.placeholder' => JText::_('COM_COMPONENTBUILDER_LANGUAGE_PLACEHOLDER_PLACEHOLDER_LABEL'),
+			'a.entranslation' => JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	} 

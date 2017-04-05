@@ -5092,20 +5092,14 @@ class Interpretation extends Fields
 		if (isset($this->langContent['admin']) && ComponentbuilderHelper::checkArray($this->langContent['admin']))
 		{
 			ksort($this->langContent['admin']);
-			foreach ($this->langContent['admin'] as $key => $value)
-			{
-				if (strlen($key) > 0)
-				{
-					if (!isset($lang))
-					{
-						$lang = '';
-					}
-					$lang .= $key.'="'.$value.'"'.PHP_EOL;
-				}
-			}
-			return $lang;
+			// load to global languages
+			$this->languages['en-GB']['admin'] = $this->langContent['admin'];
+			// remove tmp array
+			unset($this->langContent['admin']);
+			
+			return true;
 		}
-		return '';
+		return false;
 	}
 
 	public function setLangSite()
@@ -5141,20 +5135,14 @@ class Interpretation extends Fields
 		if (isset($this->langContent['site']) && ComponentbuilderHelper::checkArray($this->langContent['site']))
 		{
 			ksort($this->langContent['site']);
-			foreach ($this->langContent['site'] as $key => $value)
-			{
-				if (strlen($key) > 0)
-				{
-					if (!isset($lang))
-					{
-						$lang = '';
-					}
-					$lang .= $key.'="'.$value.'"'.PHP_EOL;
-				}
-			}
-			return $lang;
+			// load to global languages
+			$this->languages['en-GB']['site'] = $this->langContent['site'];
+			// remove tmp array
+			unset($this->langContent['site']);
+			
+			return true;
 		}
-		return '';
+		return false;
 	}
 
 	public function setLangSiteSys()
@@ -5165,20 +5153,14 @@ class Interpretation extends Fields
 		if (isset($this->langContent['sitesys']) && ComponentbuilderHelper::checkArray($this->langContent['sitesys']))
 		{
 			ksort($this->langContent['sitesys']);
-			foreach ($this->langContent['sitesys'] as $key => $value)
-			{
-				if (strlen($key) > 0)
-				{
-					if (!isset($lang))
-					{
-						$lang = '';
-					}
-					$lang .= $key.'="'.$value.'"'.PHP_EOL;
-				}
-			}
-			return $lang;
+			// load to global languages
+			$this->languages['en-GB']['sitesys'] = $this->langContent['sitesys'];
+			// remove tmp array
+			unset($this->langContent['sitesys']);
+			
+			return true;
 		}
-		return '';
+		return false;
 	}
 
 	public function setLangAdminSys()
@@ -5186,20 +5168,14 @@ class Interpretation extends Fields
 		if (isset($this->langContent['adminsys']) && ComponentbuilderHelper::checkArray($this->langContent['adminsys']))
 		{
 			ksort($this->langContent['adminsys']);
-			foreach ($this->langContent['adminsys'] as $key => $value)
-			{
-				if (strlen($key) > 0)
-				{
-					if (!isset($lang))
-					{
-						$lang = '';
-					}
-					$lang .= $key.'="'.$value.'"'.PHP_EOL;
-				}
-			}
-			return $lang;
+			// load to global languages
+			$this->languages['en-GB']['adminsys'] = $this->langContent['adminsys'];
+			// remove tmp array
+			unset($this->langContent['adminsys']);
+			
+			return true;
 		}
-		return '';
+		return false;
 	}
 
 	public function setCustomAdminViewListLink($view,$viewName_list)
@@ -7206,7 +7182,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL."\t\t\tif (\$db->getNumRows())";
 			$query .= PHP_EOL."\t\t\t{";
 			$query .= PHP_EOL."\t\t\t\t\$items = \$db->loadObjectList();";
-			$query .= $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###'],"\t\t",true);
+			$query .= $this->setGetItemsMethodStringFix($viewName_single, $this->fileContentStatic['###Component###'], "\t\t", true);
                         // add custom php to getitems method after all
                         $query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL.PHP_EOL."\t\t");
 			$query .= PHP_EOL."\t\t\t\treturn \$items;";
@@ -7572,7 +7548,8 @@ class Interpretation extends Fields
 					&& ComponentbuilderHelper::checkArray($this->customBuilderList[$viewName_list]) 
 					&& in_array($filter['code'],$this->customBuilderList[$viewName_list])
 					&& isset($filter['custom']['table']) 
-					&& ComponentbuilderHelper::checkString($filter['custom']['table']))
+					&& ComponentbuilderHelper::checkString($filter['custom']['table'])
+					&& $filter['method'] == 0)
 				{
 					$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." From the ".ComponentbuilderHelper::safeString(ComponentbuilderHelper::safeString($filter['custom']['table'],'w'))." table.";
 					$query .= PHP_EOL."\t\t\$query->select(\$db->quoteName('".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'));";
@@ -10643,7 +10620,7 @@ class Interpretation extends Fields
 		return $checkin;
 	}
 
-	public function setGetItemsMethodStringFix($view,$Component,$tab = '',$export = false)
+	public function setGetItemsMethodStringFix($view, $Component, $tab = '', $export = false)
 	{
 		// add the fix if this view has the need for it
 		$fix = '';
@@ -10849,7 +10826,15 @@ class Interpretation extends Fields
 						{
 							// TODO we check if this works well.
 							$fix .= PHP_EOL."\t".$tab."\t\t\t//".$this->setLine(__LINE__)." convert ".$item['name'];
-							$fix .= PHP_EOL."\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].", ', ', '".$item['name']."');";
+							if (isset($item['custom']['table']))
+							{
+								$keyTableNAme = str_replace('#__'.$this->fileContentStatic['###component###'] .'_', '', $item['custom']['table']);
+								$fix .= PHP_EOL."\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].", ', ', '".$keyTableNAme."');";
+							}
+							else
+							{
+								$fix .= PHP_EOL."\t".$tab."\t\t\t\$item->".$item['name']." = ".$Component."Helper::jsonToString(\$item->".$item['name'].", ', ', '".$item['name']."');";
+							}
 						}
 						else
 						{

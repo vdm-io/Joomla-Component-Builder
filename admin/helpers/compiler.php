@@ -152,9 +152,7 @@ class Compiler extends Infusion
 	protected function updateFiles()
 	{
 		if (isset($this->newFiles['static']) && ComponentbuilderHelper::checkArray($this->newFiles['static']) && isset($this->newFiles['dynamic']) && ComponentbuilderHelper::checkArray($this->newFiles['dynamic']))
-		{			
-			// we don't update lang now since we will still posible add custom code
-			$langCheck = 'en-GB.com_'.$this->fileContentStatic['###component###'].'.';
+		{
 			// get the bom file
 			$bom = file_get_contents($this->bomPath);
 			// first we do the static files
@@ -162,12 +160,6 @@ class Compiler extends Infusion
 			{
 				if (JFile::exists($static['path']))
 				{
-					// skip lang files and store for later
-					if (strpos($static['path'], $langCheck))
-					{
-						$this->langFiles[] = $static;
-						continue;
-					}
 					$this->fileContentStatic['###FILENAME###'] = $static['name'];
 					$php = '';
 					if (ComponentbuilderHelper::checkFileType($static['name'],'php'))

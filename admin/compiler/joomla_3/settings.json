@@ -170,18 +170,6 @@
             "rename": false,
             "type": "file"
       },
-      "en-GB.com_admin.ini": {
-            "naam":"en-GB.com_admin.ini",
-            "path": "c0mp0n3nt/admin/language/en-GB",
-            "rename": "admin",
-            "type": "file"
-      },
-      "en-GB.com_admin.sys.ini": {
-            "naam":"en-GB.com_admin.sys.ini",
-            "path": "c0mp0n3nt/admin/language/en-GB",
-            "rename": "admin",
-            "type": "file"
-      },
       "install.mysql.utf8.sql": {
             "naam":"install.mysql.utf8.sql",
             "path": "c0mp0n3nt/admin/sql",
@@ -217,18 +205,6 @@
             "naam":"README.md",
             "path": "c0mp0n3nt/",
             "rename": false,
-            "type": "file"
-      },
-      "en-GB.com_site.ini": {
-            "naam":"en-GB.com_site.ini",
-            "path": "c0mp0n3nt/site/language/en-GB",
-            "rename": "site",
-            "type": "file"
-      },
-      "en-GB.com_site.sys.ini": {
-            "naam":"en-GB.com_site.sys.ini",
-            "path": "c0mp0n3nt/site/language/en-GB",
-            "rename": "site",
             "type": "file"
       },
       "headercheck.php": {

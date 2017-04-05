@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			3rd April, 2017
+	@build			5th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		controller.php
@@ -99,7 +99,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'snippet' => 'snippets',
 				'field' => 'fields',
 				'fieldtype' => 'fieldtypes',
-				'language_placeholder' => 'language_placeholders',
+				'language_translation' => 'language_translations',
 				'language' => 'languages',
 				'help_document' => 'help_documents'
                                 );

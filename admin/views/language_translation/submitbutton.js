@@ -9,11 +9,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
-	@subpackage		language_placeholder.js
+	@subpackage		submitbutton.js
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -22,4 +22,28 @@
                                                              
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
- 
+Joomla.submitbutton = function(task)
+{
+	if (task == ''){
+		return false;
+	} else { 
+		var isValid=true;
+		var action = task.split('.');
+		if (action[1] != 'cancel' && action[1] != 'close'){
+			var forms = $$('form.form-validate');
+			for (var i=0;i<forms.length;i++){
+				if (!document.formvalidator.isValid(forms[i])){
+					isValid = false;
+					break;
+				}
+			}
+		}
+		if (isValid){
+			Joomla.submitform(task);
+			return true;
+		} else {
+			alert(Joomla.JText._('language_translation, some values are not acceptable.','Some values are unacceptable'));
+			return false;
+		}
+	}
+}

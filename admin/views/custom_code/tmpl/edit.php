@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 81 of this MVC
-	@build			1st March, 2017
+	@version		@update number 82 of this MVC
+	@build			3rd April, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		edit.php
@@ -262,6 +262,7 @@ jQuery('#adminForm').on('change', '#jform_comment_type',function (e)
 		jQuery('#phpjs-comment-info').show();
 	}
 });
+			
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -273,5 +274,5 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});
+});			
 </script>

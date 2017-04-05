@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 8 of this MVC
-	@build			3rd April, 2017
+	@version		@update number 28 of this MVC
+	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
-	@subpackage		language_placeholders.php
+	@subpackage		language_translations.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -30,9 +30,9 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.modellist');
 
 /**
- * Language_placeholders Model
+ * Language_translations Model
  */
-class ComponentbuilderModelLanguage_placeholders extends JModelList
+class ComponentbuilderModelLanguage_translations extends JModelList
 {
 	public function __construct($config = array())
 	{
@@ -44,7 +44,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.placeholder','placeholder'
+				'a.entranslation','entranslation'
 			);
 		}
 
@@ -65,8 +65,8 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 		{
 			$this->context .= '.' . $layout;
 		}
-		$placeholder = $this->getUserStateFromRequest($this->context . '.filter.placeholder', 'filter_placeholder');
-		$this->setState('filter.placeholder', $placeholder);
+		$entranslation = $this->getUserStateFromRequest($this->context . '.filter.entranslation', 'filter_entranslation');
+		$this->setState('filter.entranslation', $entranslation);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -110,7 +110,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('language_placeholder.access', 'com_componentbuilder.language_placeholder.' . (int) $item->id) && $user->authorise('language_placeholder.access', 'com_componentbuilder'));
+				$access = ($user->authorise('language_translation.access', 'com_componentbuilder.language_translation.' . (int) $item->id) && $user->authorise('language_translation.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -118,7 +118,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 				}
 
 				// convert components
-				$item->components = ComponentbuilderHelper::jsonToString($item->components, ', ', 'components');
+				$item->components = ComponentbuilderHelper::jsonToString($item->components, ', ', 'joomla_component');
 			}
 		}  
         
@@ -143,11 +143,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 		$query->select('a.*');
 
 		// From the componentbuilder_item table
-		$query->from($db->quoteName('#__componentbuilder_language_placeholder', 'a'));
-
-		// From the componentbuilder_joomla_component table.
-		$query->select($db->quoteName('g.system_name','components_system_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_component', 'g') . ' ON (' . $db->quoteName('a.components') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->from($db->quoteName('#__componentbuilder_language_translation', 'a'));
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -185,7 +181,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.placeholder LIKE '.$search.' OR a.components LIKE '.$search.' OR g.system_name LIKE '.$search.')');
+				$query->where('(a.entranslation LIKE '.$search.' OR a.components LIKE '.$search.' OR g.system_name LIKE '.$search.')');
 			}
 		}
 
@@ -222,8 +218,8 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 			// Select some fields
 			$query->select('a.*');
 
-			// From the componentbuilder_language_placeholder table
-			$query->from($db->quoteName('#__componentbuilder_language_placeholder', 'a'));
+			// From the componentbuilder_language_translation table
+			$query->from($db->quoteName('#__componentbuilder_language_translation', 'a'));
 			$query->where('a.id IN (' . implode(',',$pks) . ')');
 			// Implement View Level Access
 			if (!$user->authorise('core.options', 'com_componentbuilder'))
@@ -249,7 +245,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('language_placeholder.access', 'com_componentbuilder.language_placeholder.' . (int) $item->id) && $user->authorise('language_placeholder.access', 'com_componentbuilder'));
+						$access = ($user->authorise('language_translation.access', 'com_componentbuilder.language_translation.' . (int) $item->id) && $user->authorise('language_translation.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -284,7 +280,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 		// Get a db connection.
 		$db = JFactory::getDbo();
 		// get the columns
-		$columns = $db->getTableColumns("#__componentbuilder_language_placeholder");
+		$columns = $db->getTableColumns("#__componentbuilder_language_translation");
 		if (ComponentbuilderHelper::checkArray($columns))
 		{
 			// remove the headers you don't import/export.
@@ -316,7 +312,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.placeholder');
+		$id .= ':' . $this->getState('filter.entranslation');
 
 		return parent::getStoreId($id);
 	}
@@ -340,7 +336,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 			// reset query
 			$query = $db->getQuery(true);
 			$query->select('*');
-			$query->from($db->quoteName('#__componentbuilder_language_placeholder'));
+			$query->from($db->quoteName('#__componentbuilder_language_translation'));
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getNumRows())
@@ -363,7 +359,7 @@ class ComponentbuilderModelLanguage_placeholders extends JModelList
 				);
 
 				// Check table
-				$query->update($db->quoteName('#__componentbuilder_language_placeholder'))->set($fields)->where($conditions); 
+				$query->update($db->quoteName('#__componentbuilder_language_translation'))->set($fields)->where($conditions); 
 
 				$db->setQuery($query);
 
