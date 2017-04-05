@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 28 of this MVC
+	@version		@update number 29 of this MVC
 	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
@@ -135,11 +135,6 @@ class ComponentbuilderViewLanguage_translations extends JViewLegacy
                                 $dhtml = $layout->render(array('title' => $title));
                                 $bar->appendButton('Custom', $dhtml, 'batch');
                         } 
-			if ($this->user->authorise('language_translation.update_placeholders'))
-			{
-				// add Update Placeholders button.
-				JToolBarHelper::custom('language_translations.updatePlaceholders', 'flash', '', 'COM_COMPONENTBUILDER_UPDATE_PLACEHOLDERS', false);
-			}
 
                         if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
                         {

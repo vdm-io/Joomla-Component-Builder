@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 28 of this MVC
+	@version		@update number 29 of this MVC
 	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
@@ -108,13 +108,4 @@ class ComponentbuilderControllerLanguage_translations extends JControllerAdmin
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=language_translations', false), $message, 'error');
 		return;
 	}  
-
-	public function updatePlaceholders()
-	{
-		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		// check if import is allowed for this user.
-		$user = JFactory::getUser();
-		return true;
-	}
 }
