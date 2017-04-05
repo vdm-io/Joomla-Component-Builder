@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 29 of this MVC
+	@version		@update number 30 of this MVC
 	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
@@ -47,7 +47,7 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL', 'entranslation', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL', 'components_system_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL'); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

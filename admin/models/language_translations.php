@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 29 of this MVC
+	@version		@update number 30 of this MVC
 	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
@@ -181,7 +181,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.entranslation LIKE '.$search.' OR a.components LIKE '.$search.' OR g.system_name LIKE '.$search.')');
+				$query->where('(a.entranslation LIKE '.$search.')');
 			}
 		}
 
