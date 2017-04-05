@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 35 of this MVC
+	@version		@update number 37 of this MVC
 	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
@@ -116,15 +116,15 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				$id = $item->id;
 			}			
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('language_placeholder__'.$id))
+			if ($vdm = ComponentbuilderHelper::get('language_translation__'.$id))
 			{
 				$this->vastDevMod = $vdm;
 			}
 			else
 			{
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'language_placeholder__'.$id);
-				ComponentbuilderHelper::set('language_placeholder__'.$id, $this->vastDevMod);
+				ComponentbuilderHelper::set($this->vastDevMod, 'language_translation__'.$id);
+				ComponentbuilderHelper::set('language_translation__'.$id, $this->vastDevMod);
 			}			
 			
 			if (!empty($item->id))
