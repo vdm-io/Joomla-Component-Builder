@@ -3055,7 +3055,7 @@ class Get
 				// to keep or remove
 				$remove = false;
 				// build the tranlations
-				if (isset($this->multiLangString[$string]))
+				if (ComponentbuilderHelper::checkString($string) && isset($this->multiLangString[$string]))
 				{
 					// make sure we have converted the string to array
 					if (isset($this->multiLangString[$string]['translation']) && ComponentbuilderHelper::checkJson($this->multiLangString[$string]['translation']))
@@ -3093,7 +3093,7 @@ class Get
 					}
 				}
 				// do the database managment
-				if(($key = array_search($string, $strings)) !== false)
+				if(ComponentbuilderHelper::checkString($string) && ($key = array_search($string, $strings)) !== false)
 				{
 					if (isset($this->multiLangString[$string]))
 					{

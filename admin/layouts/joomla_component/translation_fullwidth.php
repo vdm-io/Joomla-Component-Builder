@@ -14,7 +14,7 @@
 	@build			5th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		linked_components_fullwidth.php
+	@subpackage		translation_fullwidth.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -28,40 +28,25 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->vxylinked_components;
+$items	= $displayData->vwptranslation;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
-$edit	= "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";
+$edit	= "index.php?option=com_componentbuilder&view=language_translations&task=language_translation.edit";
 
 ?>
 <div class="form-vertical">
 <?php if (ComponentbuilderHelper::checkArray($items)): ?>
-<table class="footable table data joomla_components" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
+<table class="footable table data language_translations" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
 <thead>
 	<tr>
 		<th data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_CODE_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SHORT_DESCRIPTION_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL'); ?>
 		</th>
 		<th width="10" data-breakpoints="xs sm md">
-			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_STATUS'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_STATUS'); ?>
 		</th>
 		<th width="5" data-type="number" data-breakpoints="xs sm md">
-			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ID'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ID'); ?>
 		</th>
 	</tr>
 </thead>
@@ -70,33 +55,18 @@ $edit	= "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 	<?php
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $user->id || $item->checked_out == 0;
 		$userChkOut = JFactory::getUser($item->checked_out);
-		$canDo = ComponentbuilderHelper::getActions('joomla_component',$item,'joomla_components');
+		$canDo = ComponentbuilderHelper::getActions('language_translation',$item,'language_translations');
 	?>
 	<tr>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=admin_view&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
+			<?php if ($canDo->get('language_translation.edit')): ?>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=joomla_component&refid=<?php echo $id; ?>"><?php echo $item->entranslation; ?></a>
 					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_components.', $canCheckin); ?>
+						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'language_translations.', $canCheckin); ?>
 					<?php endif; ?>
 			<?php else: ?>
-				<div class="name"><?php echo $displayData->escape($item->system_name); ?></div>
+				<div class="name"><?php echo $item->entranslation; ?></div>
 			<?php endif; ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->name_code); ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->component_version); ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->short_description); ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->companyname); ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->author); ?>
 		</td>
 		<?php if ($item->published == 1):?>
 			<td class="center"  data-sort-value="1">

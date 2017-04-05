@@ -169,7 +169,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.custom_admin_view');
 			}
 		}
-		$this->addcustom_admin_viewsvvwa = $item->id;
+		$this->addcustom_admin_viewsvvwb = $item->id;
 
 		return $item;
 	}
@@ -179,7 +179,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyhlinked_components()
+	public function getVyilinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -219,15 +219,15 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		{
 			$items = $db->loadObjectList();
 
-			// Filter by addcustom_admin_viewsvvwa in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addcustom_admin_viewsvvwa))
+			// Filter by addcustom_admin_viewsvvwb in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addcustom_admin_viewsvvwb))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addcustom_admin_views) && ComponentbuilderHelper::checkJson($item->addcustom_admin_views))
 					{
 						$tmpArray = json_decode($item->addcustom_admin_views,true);
-						if (!in_array($this->addcustom_admin_viewsvvwa, $tmpArray['customadminview']))
+						if (!in_array($this->addcustom_admin_viewsvvwb, $tmpArray['customadminview']))
 						{
 							unset($items[$nr]);
 							continue;

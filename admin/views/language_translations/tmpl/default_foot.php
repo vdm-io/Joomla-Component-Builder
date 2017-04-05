@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 30 of this MVC
+	@version		@update number 35 of this MVC
 	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
@@ -28,5 +28,5 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <tr>
-	<td colspan="6"><?php echo $this->pagination->getListFooter(); ?></td>
+	<td colspan="5"><?php echo $this->pagination->getListFooter(); ?></td>
 </tr>

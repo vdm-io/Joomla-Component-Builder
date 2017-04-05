@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 314 of this MVC
+	@version		@update number 318 of this MVC
 	@build			5th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -78,6 +78,9 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 
 		// Get Linked view data
 		$this->vwosite_views		= $this->get('Vwosite_views');
+
+		// Get Linked view data
+		$this->vwptranslation		= $this->get('Vwptranslation');
 
 		// Set the toolbar
 		$this->addToolBar();

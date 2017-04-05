@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 30 of this MVC
+	@version		@update number 35 of this MVC
 	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
@@ -117,10 +117,36 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					continue;
 				}
 
-				// convert components
-				$item->components = ComponentbuilderHelper::jsonToString($item->components, ', ', 'joomla_component');
 			}
 		}  
+			// show all languages that are already set for this string
+			if (!isset($_export) && ComponentbuilderHelper::checkArray($items))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					$langBucket = array();
+					if (ComponentbuilderHelper::checkJson($item->translation))
+					{
+						$translations = json_decode($item->translation, true);
+						if (ComponentbuilderHelper::checkArray($translations) && isset($translations['language']) && ComponentbuilderHelper::checkArray($translations['language']))
+						{
+							foreach ($translations['language'] as $language)
+							{
+								$langBucket[$language] = $language;
+							}
+						}
+					}
+					// load the languages to the string
+					if (ComponentbuilderHelper::checkArray($langBucket))
+					{
+						$item->entranslation = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150);
+					}
+					else
+					{
+						$item->entranslation = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150);
+					}
+				}
+			}
         
 		// return items
 		return $items;
@@ -264,6 +290,35 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 				{
 					array_unshift($items,$headers);
 				}
+
+					// show all languages that are already set for this string
+			if (!isset($_export) && ComponentbuilderHelper::checkArray($items))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					$langBucket = array();
+					if (ComponentbuilderHelper::checkJson($item->translation))
+					{
+						$translations = json_decode($item->translation, true);
+						if (ComponentbuilderHelper::checkArray($translations) && isset($translations['language']) && ComponentbuilderHelper::checkArray($translations['language']))
+						{
+							foreach ($translations['language'] as $language)
+							{
+								$langBucket[$language] = $language;
+							}
+						}
+					}
+					// load the languages to the string
+					if (ComponentbuilderHelper::checkArray($langBucket))
+					{
+						$item->entranslation = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150);
+					}
+					else
+					{
+						$item->entranslation = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150);
+					}
+				}
+			}
 				return $items;
 			}
 		}

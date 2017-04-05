@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 30 of this MVC
+	@version		@update number 35 of this MVC
 	@build			5th April, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
@@ -77,17 +77,14 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 		<td class="nowrap">
 			<?php if ($canDo->get('language_translation.edit')): ?>
 				<div class="name">
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->entranslation); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $item->entranslation; ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'language_translations.', $canCheckin); ?>
 					<?php endif; ?>
 				</div>
 			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->entranslation); ?></div>
+				<div class="name"><?php echo $item->entranslation; ?></div>
 			<?php endif; ?>
-		</td>
-		<td class="hidden-phone">
-			<?php echo $this->escape($item->components); ?>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('language_translation.edit.state')) : ?>

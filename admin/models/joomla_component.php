@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 314 of this MVC
+	@version		@update number 318 of this MVC
 	@build			5th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -223,6 +223,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		$this->idvvvv = $item->addadmin_views;
 		$this->idvvvw = $item->addcustom_admin_views;
 		$this->idvvvx = $item->addsite_views;
+		$this->componentsvvvy = $item->id;
 
 		return $item;
 	}
@@ -505,6 +506,128 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			else
 			{
 				return false;
+			}
+			return $items;
+		}
+		return false;
+	}
+
+	/**
+	* Method to get list data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getVwptranslation()
+	{
+		// Get the user object.
+		$user = JFactory::getUser();
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select('a.*');
+
+		// From the componentbuilder_language_translation table
+		$query->from($db->quoteName('#__componentbuilder_language_translation', 'a'));
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.published  ASC');
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+
+			// set values to display correctly.
+			if (ComponentbuilderHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('language_translation.access', 'com_componentbuilder.language_translation.' . (int) $item->id) && $user->authorise('language_translation.access', 'com_componentbuilder'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
+
+			// Filter by componentsvvvy Array Field
+			$componentsvvvy = $this->componentsvvvy;
+			if (ComponentbuilderHelper::checkArray($items) && $componentsvvvy)
+			{
+				foreach ($items as $nr => &$item)
+				{
+					if (ComponentbuilderHelper::checkJson($item->components))
+					{
+						$item->components = json_decode($item->components, true);
+					}
+					elseif (!isset($item->components) || !ComponentbuilderHelper::checkArray($item->components))
+					{
+						unset($items[$nr]);
+						continue;
+					}
+					if (!in_array($componentsvvvy,$item->components))
+					{
+						unset($items[$nr]);
+						continue;
+					}
+				}
+			}
+			else
+			{
+				return false;
+			}
+
+				// show all languages that are already set for this string
+			if (!isset($_export) && ComponentbuilderHelper::checkArray($items))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					$langBucket = array();
+					if (ComponentbuilderHelper::checkJson($item->translation))
+					{
+						$translations = json_decode($item->translation, true);
+						if (ComponentbuilderHelper::checkArray($translations) && isset($translations['language']) && ComponentbuilderHelper::checkArray($translations['language']))
+						{
+							foreach ($translations['language'] as $language)
+							{
+								$langBucket[$language] = $language;
+							}
+						}
+					}
+					// load the languages to the string
+					if (ComponentbuilderHelper::checkArray($langBucket))
+					{
+						$item->entranslation = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150);
+					}
+					else
+					{
+						$item->entranslation = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150);
+					}
+				}
 			}
 			return $items;
 		}

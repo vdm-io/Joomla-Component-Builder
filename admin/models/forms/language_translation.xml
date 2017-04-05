@@ -104,17 +104,6 @@
 			readonly="true"
 			disabled="true"
 		/>
-		<!-- Components Field. Type: Components. (custom) -->
-		<field
-			type="components"
-			name="components"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
-			class="list_class"
-			multiple="true"
-			default="0"
-			required="true"
-			button="true"
-		/>
 		<!-- Translation Field. Type: Repeatable. (joomla) -->
 		<field
 			type="repeatable"
@@ -154,6 +143,17 @@
 				</fieldset>
 			</fields>
 		</field>
+		<!-- Components Field. Type: Components. (custom) -->
+		<field
+			type="components"
+			name="components"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
+			class="list_class"
+			multiple="true"
+			default="0"
+			required="true"
+			button="true"
+		/>
 	</fieldset>
 	
 	<!-- Access Control Fields. -->

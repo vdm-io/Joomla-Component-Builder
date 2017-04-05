@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 314 of this MVC
+	@version		@update number 318 of this MVC
 	@build			5th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -180,6 +180,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php if ($this->canDo->get('language_translation.access')) : ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'translation', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TRANSLATION', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('joomla_component.translation_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php endif; ?>
 
 	<?php if ($this->canDo->get('core.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.state') || $this->canDo->get('core.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'publishing', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PUBLISHING', true)); ?>
