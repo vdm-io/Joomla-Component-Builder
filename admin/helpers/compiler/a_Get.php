@@ -519,7 +519,7 @@ class Get
 				// get the component data
 				$this->componentData = $this->getComponentData();
 				// set the percentage when a language can be added
-				$this->percentageLanguageAdd = (int) $this->params->get('percentageLanguageAdd', 50);
+				$this->percentageLanguageAdd = (int) $this->params->get('percentagelanguageadd', 50);
 				
 				return true;
 			}
