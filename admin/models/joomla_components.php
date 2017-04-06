@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 318 of this MVC
-	@build			5th April, 2017
+	@version		@update number 329 of this MVC
+	@build			6th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -213,6 +213,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$this->setData($user, $db, 'site_view', $item->addsite_views, 'siteview');
 						// set the custom code ID's
 						$this->setCustomCodeIds($item, 'joomla_component');
+						// set the language strings for this component
+						$this->setLanguageTranslation($user, $db, $item->id);						
 						// load to global object
 						$this->smartExport['joomla_component'][$item->id] = $item;
 					}
@@ -874,6 +876,64 @@ class ComponentbuilderModelJoomla_components extends JModelList
 								{
 									$this->customCodeIds[$funcID] = (int) $funcID;
 								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	* Set the language strings for this component
+	*
+	*  @param   int    $id   The component id
+	* 
+	*  @return  void
+	* 
+	*/
+	protected function setLanguageTranslation(&$user, &$db, &$id)
+	{
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select(array('a.*'));
+		$query->from('#__componentbuilder_language_translation AS a');
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+			// check if we have items
+			if (ComponentbuilderHelper::checkArray($items))
+			{
+				if (!isset($this->smartExport['language_translation']))
+				{
+					$this->smartExport['language_translation'] = array();
+				}
+				foreach ($items as $item)
+				{
+					if (!isset($this->smartExport['language_translation'][$item->id]) && ComponentbuilderHelper::checkJson($item->components))
+					{
+						$components = json_decode($item->components, true);
+						if (in_array($id, $components))
+						{
+							// load to global object
+							$this->smartExport['language_translation'][$item->id] = $item;
+							// add languages
+							if (isset($item->translation))
+							{							
+								$this->setData($user, $db, 'language', $item->translation, 'language');
 							}
 						}
 					}

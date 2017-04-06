@@ -691,6 +691,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		{
 			return false;
 		}
+		// we then store the languages
+		if (!$this->saveSmartItems($data, 'language', $db, $user, $today))
+		{
+			return false;
+		}
+		// we then store the language translations
+		if (!$this->saveSmartItems($data, 'language_translation', $db, $user, $today))
+		{
+			return false;
+		}
 		// we then store the custom_code
 		if (!$this->saveSmartItems($data, 'custom_code', $db, $user, $today))
 		{
@@ -845,6 +855,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// okay we have it local (check if the version is newer)
 					if ($this->forceUpdate == 1 || $dbDate > $localDate)
 					{
+						// add some local values to item to combine
+						if ($type === 'language_translation')
+						{
+							$item->localComponents = $local->components;
+							$item->localTranslation = $local->translation;
+						}
 						// make sure we have the correct ID set
 						$item->id = $local->id;
 						// yes it is newer, lets update (or is being forced)
@@ -1416,6 +1432,87 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					}
 				}
 			break;
+			case 'language_translation':
+				// update the component ID where needed
+				if (isset($item->components) && ComponentbuilderHelper::checkJson($item->components))
+				{
+					$components = json_decode($item->components, true);
+					foreach ($components as $nr => $id)
+					{
+						if (!is_numeric($id))
+						{
+							continue;
+						}
+						// update the components
+						if (isset($this->newID['joomla_component'][$id]))
+						{
+							$components[$nr] = $this->newID['joomla_component'][$id];
+						}
+						else
+						{
+							unset($components[$nr]);
+						}
+					}
+				}
+				// load the local components if found
+				if (isset($item->localComponents) && ComponentbuilderHelper::checkJson($item->localComponents))
+				{
+					if (!isset($components))
+					{
+						$components= array();
+					}
+					$localComponents = json_decode($item->localComponents, true);
+					foreach ($localComponents as $lid)
+					{
+						if (!is_numeric($lid))
+						{
+							continue;
+						}
+						// add if not already there
+						if (!in_array($lid, $components))
+						{
+							$components[] = $lid;
+						}
+					}
+				}
+				// remove the localComponents
+				if (isset($item->localComponents))
+				{
+					unset($item->localComponents);
+				}
+				// load it back
+				if (isset($components) && ComponentbuilderHelper::checkArray($components))
+				{
+					// load it back
+					$item->components = json_encode(array_values($components));
+				}
+				// merge the translations where needed
+				if (isset($item->translation) && isset($item->localTranslation) 
+					&& ComponentbuilderHelper::checkJson($item->translation) 
+					&& ComponentbuilderHelper::checkJson($item->localTranslation))
+				{
+					$translations = json_decode($item->translation, true);
+					$localTranslations = json_decode($item->localTranslation, true);
+					foreach ($localTranslations['translation'] as $nr => $value)
+					{
+						if (!in_array($value, $translations['translation']))
+						{
+							$translations['translation'][] = $value;
+							$translations['language'][] = $localTranslations['language'][$nr];
+						}
+					}
+					$item->translation = json_encode($translations);
+				}
+				elseif (isset($item->localTranslation) 	&& ComponentbuilderHelper::checkJson($item->localTranslation))
+				{
+					$item->translation = $item->localTranslation;
+				}
+				// remove the localTranslation
+				if (isset($item->localTranslation))
+				{
+					unset($item->localTranslation);
+				}
+			break;
 		}
 		// final action prep
 		switch($action)
@@ -1828,6 +1925,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						$getter = array('id', 'name', 'name_code', 'short_description', 'author', 'component_version', 'companyname', 'system_name'); // risky will look at this again
 						$retryAgain = 2;
 					}
+					break;
+				case 'language_translation':
+						// get by English translation since there should just be one
+						$getter = 'entranslation';
+					break;
+				case 'language':
+						// get by language tag since there should just be one
+						$getter = 'langtag';
 					break;
 				default:
 					// can't be found so return false
