@@ -351,7 +351,7 @@ class Fields extends Structure
 	 */
 	private function setLine($nr)
 	{
-		if ($this->loadLineNr)
+		if ($this->debugLinenr)
 		{
 			return ' [Fields '.$nr.']';	
 		}

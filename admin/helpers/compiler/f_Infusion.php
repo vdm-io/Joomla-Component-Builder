@@ -61,7 +61,7 @@ class Infusion extends Interpretation
 	 */
 	private function setLine($nr)
 	{
-		if ($this->loadLineNr)
+		if ($this->debugLinenr)
 		{
 			return ' [Infusion '.$nr.']';	
 		}
@@ -1110,13 +1110,17 @@ class Infusion extends Interpretation
 			{
 				foreach ($areas as $area => $languageStrings)
 				{
-					// check if we sould install this translation (must be atleast 50% ready
-					$dif = bcdiv(count($languageStrings), $mainLangLoader[$area]);
-					$percentage = bcmul($dif, 100);
-					if ($percentage < 50)
+					// force load if debug lines are added
+					if (!$this->debugLinenr)
 					{
-						// dont add
-						continue;
+						// check if we sould install this translation
+						$dif = bcdiv(count($languageStrings), $mainLangLoader[$area]);
+						$percentage = bcmul($dif, 100);
+						if ($percentage < $this->percentageLanguageAdd)
+						{
+							// dont add
+							continue;
+						}
 					}
 					$p = 'admin';
 					$t = '';

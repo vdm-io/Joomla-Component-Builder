@@ -160,7 +160,14 @@ class Get
 	 * 
 	 * @var      boolean
 	 */
-	public $loadLineNr = false;
+	public $debugLinenr = false;	
+	
+	/*
+	 * The percentage when a language should be added
+	 * 
+	 * @var      boolean
+	 */
+	public $percentageLanguageAdd = 0;
 	
 	/**
 	 * The Placholder Language prefix
@@ -496,7 +503,7 @@ class Get
 				$this->addPlaceholders		= ((int) $config['addPlaceholders'] == 0) ? false : (((int) $config['addPlaceholders'] == 1) ? true : $global);
 				// set if line numbers should be added to comments
 				$global = ((int) ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'debug_linenr') == 1) ? true:false;
-				$this->loadLineNr		= ((int) $config['debugLinenr'] == 0) ? false : (((int) $config['debugLinenr'] == 1) ? true : $global);
+				$this->debugLinenr		= ((int) $config['debugLinenr'] == 0) ? false : (((int) $config['debugLinenr'] == 1) ? true : $global);
 				// set the current user
 				$this->user			= JFactory::getUser();
 				// Get a db connection.
@@ -511,7 +518,9 @@ class Get
 				}
 				// get the component data
 				$this->componentData = $this->getComponentData();
-
+				// set the percentage when a language can be added
+				$this->percentageLanguageAdd = (int) $this->params->get('percentageLanguageAdd', 50);
+				
 				return true;
 			}
 		}
@@ -528,7 +537,7 @@ class Get
 	 */
 	private function setLine($nr)
 	{
-		if ($this->loadLineNr)
+		if ($this->debugLinenr)
 		{
 			return ' [Get '.$nr.']';	
 		}

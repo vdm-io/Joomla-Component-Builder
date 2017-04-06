@@ -75,7 +75,7 @@ class Interpretation extends Fields
 	 */
 	private function setLine($nr)
 	{
-		if ($this->loadLineNr)
+		if ($this->debugLinenr)
 		{
 			return ' [Interpretation '.$nr.']';	
 		}

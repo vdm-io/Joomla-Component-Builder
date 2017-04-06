@@ -136,7 +136,7 @@ class Compiler extends Infusion
 	 */
 	private function setLine($nr)
 	{
-		if ($this->loadLineNr)
+		if ($this->debugLinenr)
 		{
 			return ' [Compiler '.$nr.']';	
 		}

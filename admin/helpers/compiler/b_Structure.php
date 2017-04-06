@@ -359,7 +359,7 @@ class Structure extends Get
 	 */
 	private function setLine($nr)
 	{
-		if ($this->loadLineNr)
+		if ($this->debugLinenr)
 		{
 			return ' [Structure '.$nr.']';	
 		}
