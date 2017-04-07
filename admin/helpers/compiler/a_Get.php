@@ -2947,7 +2947,7 @@ class Get
 		}
 		else
 		{
-			if (!$keyPlaceholder = array_search($item['id'], $this->functionNameMemory))
+			if (($keyPlaceholder = array_search($item['id'], $this->functionNameMemory)) === false)
 			{
 				$keyPlaceholder = $item['id'];
 			}
@@ -3032,9 +3032,8 @@ class Get
 		$query->from($this->db->quoteName('#__componentbuilder_language_translation','a'));
 		if (ComponentbuilderHelper::checkArray($values))
 		{
-			$query->select($this->db->quoteName(array('a.id','a.translation','a.entranslation','a.components')));
+			$query->select($this->db->quoteName(array('a.id','a.translation','a.entranslation','a.components','a.published')));
 			$query->where($this->db->quoteName('a.entranslation') . ' IN (' . implode(',',array_map(function($a){ return $this->db->quote($a); }, $values)) . ')');
-			$query->where($this->db->quoteName('a.published') . ' >= 1');
 			$this->db->setQuery($query);
 			$this->db->execute();
 			if ($this->db->getNumRows())
@@ -3052,7 +3051,7 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	public function setLangPlaceholders(&$strings)
+	public function setLangPlaceholders($strings)
 	{
 		$counterInsert = 0;
 		$counterUpdate = 0;
@@ -3111,9 +3110,14 @@ class Get
 						if (ComponentbuilderHelper::checkJson($this->multiLangString[$string]['components']))
 						{
 							$components = (array) json_decode($this->multiLangString[$string]['components'], true);
+							// check if we should add the component ID
 							if (in_array($this->componentID, $components))
 							{
-								continue;
+								// only skip the update if the string is published and has the component ID
+								if ($this->multiLangString[$string]['published'] == 1)
+								{
+									continue;
+								}
 							}
 							else
 							{
@@ -3125,12 +3129,7 @@ class Get
 							$components = array($this->componentID);
 						}
 						// start the bucket for this lang
-						$this->existingLangStrings[$counterUpdate]			= array();
-						$this->existingLangStrings[$counterUpdate]['id']		= (int) $id;
-						$this->existingLangStrings[$counterUpdate]['conditions']	= array();
-						$this->existingLangStrings[$counterUpdate]['conditions'][]	= $this->db->quoteName('id') . ' = ' . $this->db->quote($id);
-						$this->existingLangStrings[$counterUpdate]['fields']		= array();
-						$this->existingLangStrings[$counterUpdate]['fields'][]		= $this->db->quoteName('components') . ' = ' . $this->db->quote(json_encode($components));
+						$this->setUpdateExistingLangStrings($id, $components, 1, $today, $counterUpdate);
 
 						$counterUpdate++;
 
@@ -3238,6 +3237,129 @@ class Get
 			// clear the values array
 			$this->existingLangStrings = array();            
 		}
+	} 
+	
+	/**
+	 * Remove exiting language translation stings
+	 * 
+	 * @param   int      $id  To string ID to remove
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function removeExitingLangString($id)
+	{
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+ 
+		// delete all custom keys for user 1001.
+		$conditions = array(
+		    $this->db->quoteName('id') . ' = ' . (int) $id
+		);
+
+		$query->delete($this->db->quoteName('#__componentbuilder_language_translation'));
+		$query->where($conditions);
+
+		$this->db->setQuery($query);
+		$this->db->execute();
+	}
+	
+	/**
+	 * Function to purge the unused languge strings
+	 * 
+	 * @param   string    $values  the active strings
+	 *
+	 * @return  void
+	 * 
+	 */
+	public function purgeLanuageStrings($values)
+	{
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+		$query->from($this->db->quoteName('#__componentbuilder_language_translation','a'));
+		$query->select($this->db->quoteName(array('a.id','a.translation','a.components')));
+		// get all string that are not linked to this component
+		$query->where($this->db->quoteName('a.entranslation') . ' NOT IN (' . implode(',',array_map(function($a){ return $this->db->quote($a); }, $values)) . ')');
+		$query->where($this->db->quoteName('a.published') . ' = 1');
+		$this->db->setQuery($query);
+		$this->db->execute();
+		if ($this->db->getNumRows())
+		{
+			$counterUpdate = 0;
+			$otherStrings = $this->db->loadAssocList();
+			$today = JFactory::getDate()->toSql();
+			foreach ($otherStrings as $item)
+			{
+				if (ComponentbuilderHelper::checkJson($item['components']))
+				{
+					$components = (array) json_decode($item['components'], true);
+					// if component is not found ignore this string, and do nothing
+					if (($key = array_search($this->componentID, $components)) !== false)
+					{
+						// first remove the component from the string
+						unset($components[$key]);
+						// check if there are more components
+						if (ComponentbuilderHelper::checkArray($components))
+						{
+							// just update the string to unlink the current component
+							$this->setUpdateExistingLangStrings($item['id'], $components, 1, $today, $counterUpdate);
+
+							$counterUpdate++;
+
+							// load to db 
+							$this->setExistingLangStrings(50);
+						}
+						// check if this string has been worked on
+						elseif (ComponentbuilderHelper::checkJson($item['translation']))
+						{
+							$translation = json_decode($item['translation'], true);
+							if (ComponentbuilderHelper::checkArray($translation) && ComponentbuilderHelper::checkArray($translation['translation']))
+							{
+								// only archive the item and update the string to unlink the current component
+								$this->setUpdateExistingLangStrings($item['id'], $components, 2, $today, $counterUpdate);
+
+								$counterUpdate++;
+
+								// load to db 
+								$this->setExistingLangStrings(50);
+							}
+							else
+							{
+								// remove the string since no translation found and not linked to any other component
+								$this->removeExitingLangString($item['id']);
+							}
+						}
+						else
+						{
+							// remove the string since no translation found and not linked to any other component
+							$this->removeExitingLangString($item['id']);
+						}
+					}
+				}
+			}
+			// load to db 
+			$this->setExistingLangStrings();
+		}
+	}
+	
+	/**
+	 * just to add lang string to the existing Lang Strings array
+	 * 
+	 * @return  void
+	 * 
+	 */
+	protected function setUpdateExistingLangStrings($id, $components, $published, $today, $counterUpdate)
+	{
+		// start the bucket for this lang
+		$this->existingLangStrings[$counterUpdate]			= array();
+		$this->existingLangStrings[$counterUpdate]['id']		= (int) $id;
+		$this->existingLangStrings[$counterUpdate]['conditions']	= array();
+		$this->existingLangStrings[$counterUpdate]['conditions'][]	= $this->db->quoteName('id') . ' = ' . $this->db->quote($id);
+		$this->existingLangStrings[$counterUpdate]['fields']		= array();
+		$this->existingLangStrings[$counterUpdate]['fields'][]		= $this->db->quoteName('components') . ' = ' . $this->db->quote(json_encode($components));
+		$this->existingLangStrings[$counterUpdate]['fields'][]		= $this->db->quoteName('published') . ' = ' . $this->db->quote($published);
+		$this->existingLangStrings[$counterUpdate]['fields'][]		= $this->db->quoteName('modified') . ' = ' . $this->db->quote($today);
+		$this->existingLangStrings[$counterUpdate]['fields'][]		= $this->db->quoteName('modified_by') . ' = ' . $this->db->quote((int) $this->user->id);
 	}
 	
 	/**

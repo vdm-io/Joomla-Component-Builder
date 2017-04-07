@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			6th April, 2017
+	@build			7th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_open_issues_the_open_issues_on_github.php

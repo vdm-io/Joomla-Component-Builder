@@ -1100,6 +1100,8 @@ class Infusion extends Interpretation
 		$this->multiLangString = $this->getMultiLangStrings($values);
 		// update insert the current lang in to DB
 		$this->setLangPlaceholders($values);
+		// remove old unused language strings
+		$this->purgeLanuageStrings($values);
 		// path to INI file
 		$getPAth = $this->templatePath . '/en-GB.com_admin.ini';
 		// now we insert the values into the files

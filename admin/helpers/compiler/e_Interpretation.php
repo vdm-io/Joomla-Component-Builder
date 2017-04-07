@@ -5127,7 +5127,7 @@ class Interpretation extends Fields
 		// check if the both array is set
 		if (isset($this->langContent['both']) && ComponentbuilderHelper::checkArray($this->langContent['both']))
 		{
-			foreach ($this->langContent[$this->lang] as $keylang => $langval)
+			foreach ($this->langContent['both'] as $keylang => $langval)
 			{
 				$this->langContent['site'][$keylang] = $langval;
 			}
@@ -5729,8 +5729,7 @@ class Interpretation extends Fields
 				$linkedViewId = '';
 				if (ComponentbuilderHelper::checkArray($linkedTab))
 				{
-					$linkedViewId = array_search($tabNr,$linkedTab);
-					if ($linkedViewId)
+					if (($linkedViewId = array_search($tabNr, $linkedTab)) !== false)
 					{
 						// don't build
 						$buildLayout = false;
@@ -5925,7 +5924,7 @@ class Interpretation extends Fields
 				if(isset($linkedViewIdentifier) && ComponentbuilderHelper::checkArray($linkedViewIdentifier) && in_array($tabCodeName,$linkedViewIdentifier))
 				{
 					// get view name
-					$linkedViewId = array_search($tabCodeName,$linkedViewIdentifier);
+					$linkedViewId = array_search($tabCodeName, $linkedViewIdentifier);
 					$linkedViewData = $this->getAdminViewData($linkedViewId);
 					$linkedCodeName = ComponentbuilderHelper::safeString($linkedViewData->name_single);
 					// setup correct core target

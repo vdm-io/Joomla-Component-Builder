@@ -618,14 +618,24 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 							}
 						}
 					}
+					// set how many component use this string
+					$componentCounter = '';
+					if (ComponentbuilderHelper::checkJson($item->components))
+					{
+						$item->components = json_decode($item->components, true);
+					}
+					if (ComponentbuilderHelper::checkArray($item->components))
+					{
+						$componentCounter = ' - <small>' . JText::_('COM_COMPONENTBUILDER_USED_IN') . ' ' . count($item->components) . '</small>';
+					}
 					// load the languages to the string
 					if (ComponentbuilderHelper::checkArray($langBucket))
 					{
-						$item->entranslation = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150);
+						$item->entranslation = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150) . $componentCounter;
 					}
 					else
 					{
-						$item->entranslation = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150);
+						$item->entranslation = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150) . $componentCounter;
 					}
 				}
 			}
