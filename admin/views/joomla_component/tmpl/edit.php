@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 330 of this MVC
+	@version		@update number 331 of this MVC
 	@build			8th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder

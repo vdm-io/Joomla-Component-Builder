@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 330 of this MVC
+	@version		@update number 331 of this MVC
 	@build			8th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -396,7 +396,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$name = 'images';
 		}
 		// setup the type path
-		$tmpPath = $this->packagePath . '/' . $name;
+		$tmpPath = str_replace('//', '/', $this->packagePath . '/' . $name);
 		// create type path if not set
 		if (!JFolder::exists($tmpPath))
 		{
@@ -410,26 +410,32 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			{
 				if ('file' === $type)
 				{
-					if (!JFile::exists($tmpPath.'/'.$item) && JFile::exists($this->customPath.'/'.$item))
+					$tmpFilePath = str_replace('//', '/', $tmpPath.'/'.$item);
+					$customFilePath = str_replace('//', '/', $this->customPath.'/'.$item);
+					if (!JFile::exists($tmpFilePath) && JFile::exists($customFilePath))
 					{
 						// move the file to its place
-						JFile::copy($this->customPath.'/'.$item, $tmpPath.'/'.$item,'',true);
+						JFile::copy($customFilePath, $tmpFilePath,'',true);
 					}
 				}
 				if ('image' === $type)
 				{
-					if (!JFile::exists($this->packagePath.'/'.$item) && JFile::exists(JPATH_ROOT.'/'.$item))
+					$tmpImagePath = str_replace('//', '/', $this->packagePath.'/'.$item);
+					$customImagePath = str_replace('//', '/', JPATH_ROOT.'/'.$item);
+					if (!JFile::exists($tmpImagePath) && JFile::exists($customImagePath))
 					{
 						// move the file to its place
-						JFile::copy(JPATH_ROOT.'/'.$item, $this->packagePath.'/'.$item,'',true);
+						JFile::copy($customImagePath, $tmpImagePath,'',true);
 					}
 				}
 				if ('folder' === $type)
 				{
-					if (!JFolder::exists($tmpPath.'/'.$item) && JFolder::exists($this->customPath.'/'.$item))
+					$tmpFolderPath = str_replace('//', '/', $tmpPath.'/'.$item);
+					$customFolderPath = str_replace('//', '/', $this->customPath.'/'.$item);
+					if (!JFolder::exists($tmpFolderPath) && JFolder::exists($customFolderPath))
 					{
 						// move the folder to its place
-						JFolder::copy($this->customPath.'/'.$item, $tmpPath.'/'.$item,'',true);
+						JFolder::copy($customFolderPath, $tmpFolderPath,'',true);
 					}
 				}
 			}

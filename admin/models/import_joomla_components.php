@@ -731,24 +731,26 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// set params
 		$params = JComponentHelper::getParams('com_componentbuilder');
 		// set custom folder path
-		$customPath = $params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
-		$imagesPath = JPATH_SITE . '/images';
+		$customPath = str_replace('//', '/', $params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom'));
+		$imagesPath = str_replace('//', '/', JPATH_SITE . '/images');
 		$success = true;
 		// check if we have custom files
-		if (JFolder::exists($dir . '/custom'))
+		$customDir = str_replace('//', '/', $dir . '/custom');
+		if (JFolder::exists($customDir))
 		{
 			// great we have some custom stuff lets move it
-			if (!JFolder::copy($dir . '/custom', $customPath,'',true))
+			if (!JFolder::copy($customDir, $customPath,'',true))
 			{
 				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BCUSTOM_FILESB_NOT_MOVE_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
 			}
 		}
 		// check if we have images
-		if (JFolder::exists($dir . '/images'))
+		$imageDir = str_replace('//', '/', $dir . '/images');
+		if (JFolder::exists($imageDir))
 		{
 			// great we have some images lets move them
-			if (!JFolder::copy($dir . '/images', $imagesPath,'',true))
+			if (!JFolder::copy($imageDir, $imagesPath,'',true))
 			{
 				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BIMAGESB_NOT_MOVE_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
@@ -771,14 +773,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// we must first store the current working directory
 			$joomla = getcwd();
 			// setup the type path
-			$customPath = $dir . '/custom';
+			$customPath = str_replace('//', '/', $dir . '/custom');
 			// go to the custom folder if found
 			if (JFolder::exists($customPath))
 			{
 				$this->unlock($customPath, $unlocker);
 			}
 			// setup the type path
-			$imagesPath = $dir . '/images';
+			$imagesPath = str_replace('//', '/', $dir . '/images');
 			// go to the custom folder if found
 			if (JFolder::exists($imagesPath))
 			{
