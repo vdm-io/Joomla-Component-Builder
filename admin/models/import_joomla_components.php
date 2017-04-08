@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.2
-	@build			7th April, 2017
+	@build			8th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -1495,7 +1495,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$localTranslations = json_decode($item->localTranslation, true);
 					foreach ($localTranslations['translation'] as $nr => $value)
 					{
-						if (!in_array($value, $translations['translation']))
+						// only keep old translation if the new does not have this translation & language
+						if (!in_array($value, $translations['translation']) && !in_array($localTranslations['language'][$nr], $translations['language']))
 						{
 							$translations['translation'][] = $value;
 							$translations['language'][] = $localTranslations['language'][$nr];
