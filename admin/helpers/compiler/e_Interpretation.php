@@ -4117,6 +4117,7 @@ class Interpretation extends Fields
 	public function routerParseSwitch(&$view, $viewArray = null, $aliasView = true, $idView = true)
 	{
 		$isCategory = '';
+		$viewTable = false;
 		if ($viewArray && ComponentbuilderHelper::checkArray($viewArray))
 		{
 			if (isset($viewArray['settings']->main_get->db_table_main) && $viewArray['settings']->main_get->db_table_main === 'categories')
@@ -4128,29 +4129,25 @@ class Interpretation extends Fields
 //				$idView = false; // TODO we will keep an eye on this....
 //				$aliasView = false;
 //			}
-//			elseif (isset($viewArray['settings']->main_get->main_get) && ComponentbuilderHelper::checkArray($viewArray['settings']->main_get->main_get))
-//			{
-//				$aliasView = false;
-//				foreach ($viewArray['settings']->main_get->main_get as $get)
-//				{
-//					if ($get['as'] === 'a')
-//					{
-//						if (isset($get['selection']) && ComponentbuilderHelper::checkArray($get['selection'])
-//							&& isset($get['selection']['select_gets']) 
-//							&& ComponentbuilderHelper::checkArray($get['selection']['select_gets']))
-//						{
-//							foreach ($get['selection']['select_gets'] as $checkAlias)
-//							{
-//								if ($checkAlias === "'a.alias'")
-//								{
-//									$aliasView = true;
-//								}
-//							}
-//						}
-//						
-//					}
-//				}
-//			}
+			elseif (isset($viewArray['settings']->main_get->main_get) && ComponentbuilderHelper::checkArray($viewArray['settings']->main_get->main_get))
+			{
+				foreach ($viewArray['settings']->main_get->main_get as $get)
+				{
+					if ($get['as'] === 'a')
+					{
+						if (isset($get['selection']) && ComponentbuilderHelper::checkArray($get['selection'])
+							&& isset($get['selection']['select_gets']) 
+							&& ComponentbuilderHelper::checkArray($get['selection']['select_gets']))
+						{
+							if (isset($get['selection']['table']))
+							{
+								$viewTable = str_replace('#__'.$this->fileContentStatic['###component###'].'_', '', $get['selection']['table']);
+							}
+						}
+						
+					}
+				}
+			}
 		}
 		// add if tags is added, also for all front item views
 		if ($aliasView)
@@ -4166,7 +4163,15 @@ class Interpretation extends Fields
 			$routerSwitch[] = "\t\t\t\t}";
 			$routerSwitch[] = "\t\t\t\telseif (\$segments[\$count-1])";
 			$routerSwitch[] = "\t\t\t\t{";
-			$routerSwitch[] = "\t\t\t\t\t\$id = \$this->getVar('".$view."', \$segments[\$count-1], 'alias', 'id'".$isCategory.");";
+			// we need to get from the table of this views main get the alias so we need the table name
+			if ($viewTable)
+			{
+				$routerSwitch[] = "\t\t\t\t\t\$id = \$this->getVar('".$viewTable."', \$segments[\$count-1], 'alias', 'id'".$isCategory.");";
+			}
+			else
+			{
+				$routerSwitch[] = "\t\t\t\t\t\$id = \$this->getVar('".$view."', \$segments[\$count-1], 'alias', 'id'".$isCategory.");";
+			}
 			$routerSwitch[] = "\t\t\t\t\tif(\$id)";
 			$routerSwitch[] = "\t\t\t\t\t{";
 			$routerSwitch[] = "\t\t\t\t\t\t\$vars['id'] = \$id;";
