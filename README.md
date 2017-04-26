@@ -1,4 +1,4 @@
-# Component Builder (2.4.3)
+# Component Builder (2.4.4)
 
 This is a [Joomla 3.x](http://www.joomla.org/) component.
 
@@ -8,7 +8,7 @@ The Component Builder for [Joomla](http://www.joomla.org/) that is highly advanc
 
 Whether you're a seasoned [Joomla](http://www.joomla.org/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.4.3) with **ALL** its features and **ALL** concepts totally open-source and free!
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.4.4) with **ALL** its features and **ALL** concepts totally open-source and free!
 
 Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
@@ -77,8 +77,10 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
 > **You can purchase more demo content for Component Builder including access to training & help video tutorials:**
 
-+ Demo Component* see the build on [github](https://github.com/namibia/demo-joomla-3-component)
-+ Sermon Distributor* see the build on [github](https://github.com/SermonDistributor/Joomla-3-Component)
++ Demo Component* see the build on [github](https://github.com/namibia/demo-joomla-3-component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demo.zip) _(free)_
++ Advance Demo Component* get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demoAdvanced.zip) _(buy key)_
++ Sermon Distributor* see the build on [github](https://github.com/SermonDistributor/Joomla-3-Component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_sermondistributor.zip) _(buy key)_
++ Location Data* see the build on [github](https://github.com/vdm-io/Joomla-Location-Data) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_locationData.zip) _(buy key)_
 + Help View Integration*
 + Training & Help Videos* tutorials in the component included.
 
@@ -105,12 +107,12 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 8th April, 2017
-+ *Version*: 2.4.3
++ *Last Build*: 26th April, 2017
++ *Version*: 2.4.4
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **105862**
-+ *File count*: **640**
++ *Line count*: **105968**
++ *File count*: **641**
 + *Folder count*: **115**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).

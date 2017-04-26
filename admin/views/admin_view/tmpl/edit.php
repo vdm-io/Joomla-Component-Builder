@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 109 of this MVC
-	@build			31st March, 2017
+	@version		@update number 110 of this MVC
+	@build			25th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -58,7 +58,8 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('admin_view.settings_above', $this); ?><div class="form-horizontal">
+	<?php echo JLayoutHelper::render('admin_view.settings_above', $this); ?>
+<div class="form-horizontal">
 
 	<?php echo JHtml::_('bootstrap.startTabSet', 'admin_viewTab', array('active' => 'settings')); ?>
 
@@ -200,6 +201,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	<div>
 		<input type="hidden" name="task" value="admin_view.edit" />
 		<?php echo JHtml::_('form.token'); ?>
+	</div>
 	</div>
 </div>
 

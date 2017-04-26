@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 82 of this MVC
-	@build			3rd April, 2017
+	@build			26th April, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		edit.php
@@ -58,7 +58,8 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('custom_code.details_above', $this); ?><div class="form-horizontal">
+	<?php echo JLayoutHelper::render('custom_code.details_above', $this); ?>
+<div class="form-horizontal">
 
 	<?php echo JHtml::_('bootstrap.startTabSet', 'custom_codeTab', array('active' => 'details')); ?>
 
@@ -115,6 +116,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	<div>
 		<input type="hidden" name="task" value="custom_code.edit" />
 		<?php echo JHtml::_('form.token'); ?>
+	</div>
 	</div>
 </div>
 

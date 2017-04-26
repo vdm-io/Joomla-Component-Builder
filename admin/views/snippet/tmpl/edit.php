@@ -36,7 +36,8 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('snippet.details_above', $this); ?><div class="form-horizontal">
+	<?php echo JLayoutHelper::render('snippet.details_above', $this); ?>
+<div class="form-horizontal">
 
 	<?php echo JHtml::_('bootstrap.startTabSet', 'snippetTab', array('active' => 'details')); ?>
 
@@ -88,6 +89,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	<div>
 		<input type="hidden" name="task" value="snippet.edit" />
 		<?php echo JHtml::_('form.token'); ?>
+	</div>
 	</div>
 </div>
 </form>

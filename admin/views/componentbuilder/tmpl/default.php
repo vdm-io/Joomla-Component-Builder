@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.3
-	@build			8th April, 2017
+	@version		2.4.4
+	@build			26th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default.php
@@ -29,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
 JHtml::_('behavior.tooltip');
 
 ?>
-<div id="j-main-container" class="span12">
+<div id="j-main-container">
 	<div class="form-horizontal">
 	<?php echo JHtml::_('bootstrap.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>
 

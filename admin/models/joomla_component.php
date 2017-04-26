@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 331 of this MVC
-	@build			8th April, 2017
+	@version		@update number 337 of this MVC
+	@build			26th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -95,6 +95,12 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->php_postflight_update))
+			{
+				// base64 Decode php_postflight_update.
+				$item->php_postflight_update = base64_decode($item->php_postflight_update);
+			}
+
 			if (!empty($item->php_preflight_update))
 			{
 				// base64 Decode php_preflight_update.
@@ -105,12 +111,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			{
 				// base64 Decode sql.
 				$item->sql = base64_decode($item->sql);
-			}
-
-			if (!empty($item->php_postflight_update))
-			{
-				// base64 Decode php_postflight_update.
-				$item->php_postflight_update = base64_decode($item->php_postflight_update);
 			}
 
 			if (!empty($item->css))
@@ -1391,6 +1391,12 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
+		// Set the php_postflight_update string to base64 string.
+		if (isset($data['php_postflight_update']))
+		{
+			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
+		}
+
 		// Set the php_preflight_update string to base64 string.
 		if (isset($data['php_preflight_update']))
 		{
@@ -1401,12 +1407,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (isset($data['sql']))
 		{
 			$data['sql'] = base64_encode($data['sql']);
-		}
-
-		// Set the php_postflight_update string to base64 string.
-		if (isset($data['php_postflight_update']))
-		{
-			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
 		// Set the css string to base64 string.

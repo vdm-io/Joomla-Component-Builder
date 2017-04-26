@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.3
-	@build			8th April, 2017
+	@version		2.4.4
+	@build			26th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_right.php
@@ -41,7 +41,10 @@ $fields = $displayData->get('fields') ?: array(
 	'note_add_folders',
 	'addfolders',
 	'spacer_hr_f',
-	'export_key'
+	'jcb_export_package_note',
+	'export_key',
+	'export_package_link',
+	'export_buy_link'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

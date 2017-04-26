@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 331 of this MVC
-	@build			8th April, 2017
+	@version		@update number 337 of this MVC
+	@build			26th April, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -60,6 +60,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	public $packageName	= false;
 	public $zipPath			= false;
 	public $key			= array();
+	public $exportBuyLinks	= array();
+	public $exportPackageLinks= array();
 	public $info			= array(
 						'name' => array(),
 						'short_description' => array(),
@@ -197,6 +199,27 @@ class ComponentbuilderModelJoomla_components extends JModelList
 								$this->key[$item->id] = $export_key;
 							}
 						}
+						// get name of this item key_name
+						if (isset($item->system_name))
+						{
+							$keyName = ComponentbuilderHelper::safeString($item->system_name, 'cAmel');
+						}
+						else
+						{
+							$keyName = ComponentbuilderHelper::safeString($item->name_code);
+						}
+						// set the export buy links
+						if (isset($item->export_buy_link) && ComponentbuilderHelper::checkString($item->export_buy_link))
+						{
+							// keep the key locked for exported data set
+							$this->exportBuyLinks[$keyName] = $item->export_buy_link;
+						}
+						// set the export buy links
+						if (isset($item->export_package_link) && ComponentbuilderHelper::checkString($item->export_package_link))
+						{
+							// keep the key locked for exported data set
+							$this->exportPackageLinks[$keyName] = $item->export_package_link;
+						}
 						// build files
 						$this->moveIt($item->addfiles, 'file');
 						// build folders
@@ -269,8 +292,17 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$this->info['getKeyFrom']['website']		= $this->params->get('export_website', null);
 			$this->info['getKeyFrom']['license']		= $this->params->get('export_license', null);
 			$this->info['getKeyFrom']['copyright']		= $this->params->get('export_copyright', null);
-			$this->info['getKeyFrom']['buy_link']		= ($buy_link = $this->params->get('export_buy_link', null)) ? $buy_link . $this->params->get('export_buy_query', '&package=') . $this->packageName : null;
-			$this->info['getKeyFrom']['package_link']	= ($package_link = $this->params->get('export_package_link', null)) ? $package_link . $this->params->get('export_package_query', '&package=') . $this->packageName : null;
+			// making provision for future changes 
+			if (count($this->exportBuyLinks) == 1)
+			{
+				$this->info['getKeyFrom']['buy_links'] = $this->exportBuyLinks;
+			}
+			else
+			{
+				// use global if more then one component is exported, or if none has a buy link
+				$this->info['getKeyFrom']['buy_link'] = $this->params->get('export_buy_link', null);
+			}
+			$this->info['getKeyFrom']['package_links']	= $this->exportPackageLinks;
 		}
 		else
 		{
@@ -1244,12 +1276,12 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
 						// decode php_preflight_update
 						$item->php_preflight_update = base64_decode($item->php_preflight_update);
 						// decode sql
 						$item->sql = base64_decode($item->sql);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
 						// decode css
 						$item->css = base64_decode($item->css);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))

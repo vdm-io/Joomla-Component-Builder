@@ -344,47 +344,6 @@
 			validated="url"
 			message="Error! Please add link here."
 			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_HINT"
-		/>		
-		<!-- Export_buy_query Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="export_buy_query"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_QUERY_LABEL"
-			size="40"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_QUERY_DESCRIPTION"
-			class="text_area"
-			filter="STRING"
-			message="Error! Please email address here."
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_QUERY_HINT"
-		/>		
-		<!-- Export_package_link Field. Type: Url. (joomla) -->
-		<field
-			type="url"
-			name="export_package_link"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_LINK_LABEL"
-			size="60"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_LINK_DESCRIPTION"
-			class="text_area"
-			required="false"
-			filter="url"
-			validated="url"
-			message="Error! Please add link here."
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_LINK_HINT"
-		/>		
-		<!-- Export_package_query Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="export_package_query"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_QUERY_LABEL"
-			size="40"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_QUERY_DESCRIPTION"
-			class="text_area"
-			filter="STRING"
-			message="Error! Please email address here."
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_PACKAGE_QUERY_HINT"
 		/>
 	</fieldset>
 	<fieldset

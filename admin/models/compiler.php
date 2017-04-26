@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 47 of this MVC
-	@build			21st March, 2017
+	@version		@update number 48 of this MVC
+	@build			26th April, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -78,6 +78,7 @@ class ComponentbuilderModelCompiler extends JModelList
 			array('a.id','a.system_name','a.name','a.name_code','a.component_version','a.debug_linenr','a.short_description','a.image','a.companyname','a.author','a.email','a.website','a.copyright','a.modified','a.created','a.version'),
 			array('id','system_name','name','name_code','component_version','debug_linenr','short_description','image','companyname','author','email','website','copyright','modified','created','version')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
+		// Get where a.published is 1
 		$query->where('a.published = 1');
 		$query->order('a.modified DESC');
 		$query->order('a.created DESC');

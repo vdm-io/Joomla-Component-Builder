@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.3
-	@build			8th April, 2017
+	@version		2.4.4
+	@build			26th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		js.php

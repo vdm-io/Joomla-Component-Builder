@@ -35,6 +35,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 ?>
 <div id="componentbuilder_loader">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+
 <div class="form-horizontal">
 
 	<?php echo JHtml::_('bootstrap.startTabSet', 'fieldTab', array('active' => 'details')); ?>
@@ -115,6 +116,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	<div>
 		<input type="hidden" name="task" value="field.edit" />
 		<?php echo JHtml::_('form.token'); ?>
+	</div>
 	</div>
 </div>
 

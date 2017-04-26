@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 109 of this MVC
-	@build			31st March, 2017
+	@version		@update number 110 of this MVC
+	@build			25th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -1470,34 +1470,44 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_import_ext'] = base64_encode($data['php_import_ext']);
 		}
 
-		// Sort fields by "Tab" ASC, "Order in Edit" ASC
-		$addfields = json_decode($data["addfields"], true);
-
-		$out = array();
-		foreach ($addfields as $key => $subarr)
+	if (isset($data['addfields']) && ComponentbuilderHelper::checkJson($data['addfields']))
+	{
+		// Sort fields by 'Tab' ASC, 'Order in Edit' ASC
+		$addfields = json_decode($data['addfields'], true);
+		if (ComponentbuilderHelper::checkArray($addfields))
 		{
-			foreach ($subarr as $subkey => $subvalue)
+			$out = array();
+			foreach ($addfields as $key => $subarr)
 			{
-				$out[$subkey][$key] = $subvalue;
+				if (ComponentbuilderHelper::checkArray($subarr))
+				{
+					foreach ($subarr as $subkey => $subvalue)
+					{
+						$out[$subkey][$key] = $subvalue;
+					}
+				}
+			}
+			if (ComponentbuilderHelper::checkArray($out))
+			{
+				// do the actual sort by tab and order_edit
+				usort($out, function ($a, $b) {
+					$val_a = sprintf('%02u', $a['tab']) . sprintf('%02u', $a['alignment']) . sprintf('%03u', $a['order_edit']);
+					$val_b = sprintf('%02u', $b['tab']) . sprintf('%02u', $b['alignment']) . sprintf('%03u', $b['order_edit']);
+					return strcmp($val_a, $val_b);
+				});
+
+				$addfields = array();
+				foreach ($out as $key => $subarr)
+				{
+					foreach ($subarr as $subkey => $subvalue)
+					{
+						$addfields[$subkey][$key] = $subvalue;
+					}
+				}
+				$data['addfields'] = json_encode($addfields, true);
 			}
 		}
-
-		// do the actual sort by tab and order_edit
-		usort($out, function ($a, $b) {
-			$val_a = sprintf('%02u', $a['tab']) . sprintf('%02u', $a['alignment']) . sprintf('%03u', $a['order_edit']);
-			$val_b = sprintf('%02u', $b['tab']) . sprintf('%02u', $b['alignment']) . sprintf('%03u', $b['order_edit']);
-			return strcmp($val_a, $val_b);
-		});
-
-		$addfields = array();
-		foreach ($out as $key => $subarr)
-		{
-			foreach ($subarr as $subkey => $subvalue)
-			{
-				$addfields[$subkey][$key] = $subvalue;
-			}
-		}
-		$data["addfields"] = json_encode($addfields, true);
+	}
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))

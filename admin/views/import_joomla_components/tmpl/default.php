@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.3
-	@build			8th April, 2017
+	@version		2.4.4
+	@build			26th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default.php
@@ -273,6 +273,17 @@ jQuery(document).ready(function($) {
 				{
 					$ownerDetails .= '<hr />';
 					$ownerDetails .= JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_CLASSBTN_BTNPRIMARY_HREFS_TARGET_BLANK_TITLEGET_A_KEY_FROM_SSA', $this->packageInfo['getKeyFrom']['buy_link'], $owner, $owner);
+				}
+				// add more custom links
+				elseif (isset($this->packageInfo['getKeyFrom']['buy_links']) && componentbuilderHelper::checkArray($this->packageInfo['getKeyFrom']['buy_links']))
+				{
+					$buttons = array();
+					foreach ($this->packageInfo['getKeyFrom']['buy_links'] as $keyName => $link)
+					{
+						$buttons[] = JText::sprintf('COM_COMPONENTBUILDER_GET_THE_KEY_FROM_BSB_FOR_A_CLASSBTN_BTNPRIMARY_HREFS_TARGET_BLANK_TITLEGET_A_KEY_FROM_SSA', $owner, $link, $owner, $keyName);
+					}
+					$ownerDetails .= '<hr />';
+					$ownerDetails .= implode('<br />', $buttons);
 				}
 
 				// return the owner details

@@ -30,7 +30,6 @@ defined('_JEXEC') or die('Restricted access');
 defined('_JEXEC') or die('Restricted access');
 
 $manifest = ###Component###Helper::manifest();
-JHtml::_('bootstrap.loadCss');
 
 ?>
 <img alt="<?php echo JText::_('COM_###COMPONENT###'); ?>" src="components/com_###component###/assets/images/component-300.###COMP_IMAGE_TYPE###">

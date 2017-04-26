@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 47 of this MVC
-	@build			21st March, 2017
+	@version		@update number 48 of this MVC
+	@build			26th April, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -204,7 +204,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		// Set the Custom CSS script to view
 		$this->document->addStyleDeclaration("
 			.j-sidebar-container {
-			margin: -28px 0 0 -1px !important;
+			margin: -37px 0 0 -1px !important;
 			}
 		"); 
 		// Set the Custom JS script to view

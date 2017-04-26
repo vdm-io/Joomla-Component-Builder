@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.3
-	@build			8th April, 2017
+	@version		2.4.4
+	@build			26th April, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_vdm.php
@@ -27,7 +27,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 $manifest = ComponentbuilderHelper::manifest();
-JHtml::_('bootstrap.loadCss');
 
 ?>
 <img alt="<?php echo JText::_('COM_COMPONENTBUILDER'); ?>" src="components/com_componentbuilder/assets/images/component-300.jpg">

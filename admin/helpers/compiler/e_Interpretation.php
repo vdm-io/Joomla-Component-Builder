@@ -1609,7 +1609,7 @@ class Interpretation extends Fields
 					$value = " ".$whe['value_key']."');";
 
 				}
-				elseif (strpos($whe['value_key'],'$this->') !== false)
+				elseif (strpos($whe['value_key'],'$') !== false)
 				{
 					if ($whe['operator'] === 'IN' || $whe['operator'] === 'NOT IN')
 					{
@@ -1622,21 +1622,29 @@ class Interpretation extends Fields
 				}
 				elseif (strpos($whe['value_key'],'.') !== false)
 				{
-					$value = " ".$whe['value_key']."');";
+					if (strpos($whe['value_key'],"'") !== false)
+					{
+						$value = " ' . \$db->quote(".$whe['value_key']."));";
+					}
+					else
+					{
+						$value = " ".$whe['value_key']."');";
+					}
 				}
 				// only load if there is a value
 				if (ComponentbuilderHelper::checkString($value))
 				{
+					$tabe = '';
+					if ($as === 'a')
+					{
+						$tabe = $tab;
+					}
 					// set the string
 					if ($whe['operator'] === 'IN' || $whe['operator'] === 'NOT IN')
 					{
-						$tabe = '';
-						if ($as === 'a')
-						{
-							$tabe = $tab;
-						}
 						$string = "if (isset(" . $whe['value_key']. ") && ".$this->fileContentStatic['###Component###']."Helper::checkArray(" . $whe['value_key']. "))";
 						$string .= PHP_EOL."\t".$tabe."\t{";
+						$string .= PHP_EOL."\t".$tabe."\t\t\//".$this->setLine(__LINE__)." Get where ".$whe['table_key']." is " . $whe['value_key'];
 						$string .= PHP_EOL."\t".$tabe."\t\t\$query->where('".$whe['table_key']." ".$whe['operator'].$value;
 						$string .= PHP_EOL."\t".$tabe."\t}";
 						$string .= PHP_EOL."\t".$tabe."\telse";
@@ -1647,7 +1655,8 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$string = "\$query->where('".$whe['table_key']." ".$whe['operator'].$value;
+						$string = "//".$this->setLine(__LINE__)." Get where ".$whe['table_key']." is " . $whe['value_key'];
+						$string .= PHP_EOL."\t".$tabe."\t\$query->where('".$whe['table_key']." ".$whe['operator'].$value;
 					}
 					// sort where
 					if ($as === 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
@@ -5870,10 +5879,14 @@ class Interpretation extends Fields
 			$span = '';
 			if ($mainwidth != 12)
 			{
-				$span = ' span'.$mainwidth;
+				$span = 'span'.$mainwidth;
 			}
 			// start building body
-			$body = '<div class="form-horizontal'.$span.'">';
+			$body = PHP_EOL.'<div class="form-horizontal">';
+			if (ComponentbuilderHelper::checkString($span))
+			{
+				$body .= PHP_EOL."\t".'<div class="'.$span.'">';
+			}
 			// now build the template
 			foreach ($bucket as $tabCodeName => $posions)
 			{
@@ -6160,6 +6173,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL.PHP_EOL."\t<div>";
 			$body .= PHP_EOL."\t\t".'<input type="hidden" name="task" value="'.$viewName_single.'.edit" />';
 			$body .= PHP_EOL."\t\t<?php echo JHtml::_('form.token'); ?>";
+			$body .= PHP_EOL."\t</div>";
 			$body .= PHP_EOL."\t</div>";
 			$body .= PHP_EOL."</div>";
 			// check if left has been set
@@ -11249,7 +11263,7 @@ class Interpretation extends Fields
 				$builder[$data['name']][$data['header']] = $this->setPlaceholders($data['html'], $this->placeholders);
 			}
 			// since we have custom tabs we must load the tab structure around the cpanel
-			$display[] = '<div id="j-main-container" class="span12">';
+			$display[] = '<div id="j-main-container">';
 			$display[] = "\t".'<div class="form-horizontal">';
 			$display[] = "\t<?php echo JHtml::_('bootstrap.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
 			$display[] = PHP_EOL."\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'cpanel', JText::_('cPanel', true)); ?>";
