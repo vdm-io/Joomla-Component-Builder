@@ -75,14 +75,14 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
 # Get Access to Video Tutorials
 
-> **You can purchase more demo content for Component Builder including access to training & help video tutorials:**
+> **You can purchase more [demo content](http://vdm.bz/jcb-packages) for Component Builder including access to training & help video tutorials:**
 
-+ Demo Component* see the build on [github](https://github.com/namibia/demo-joomla-3-component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demo.zip) _(free)_
-+ Advance Demo Component* get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demoAdvanced.zip) _(buy key)_
-+ Sermon Distributor* see the build on [github](https://github.com/SermonDistributor/Joomla-3-Component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_sermondistributor.zip) _(buy key)_
-+ Location Data* see the build on [github](https://github.com/vdm-io/Joomla-Location-Data) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_locationData.zip) _(buy key)_
-+ Help View Integration*
-+ Training & Help Videos* tutorials in the component included.
++ *Demo Component* see the build on [github](https://github.com/namibia/demo-joomla-3-component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demo.zip) _(free)_
++ *Advance Demo Component* get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demoAdvanced.zip) _([buy key](http://vdm.bz/get-advance-demo-key))_
++ *Sermon Distributor* see the build on [github](https://github.com/SermonDistributor/Joomla-3-Component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_sermondistributor.zip) _([buy key](http://vdm.bz/get-sermon-distributor-key))_
++ *Location Data* see the build on [github](https://github.com/vdm-io/Joomla-Location-Data) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_locationData.zip) _([buy key](http://vdm.bz/get-location-data-key))_
++ *Help View Integration*
++ *Training & Help Videos* tutorials in the component included.
 
 [**GET ACCESS NOW!**](http://vdm.bz/component-builder)
 
