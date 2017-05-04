@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 81 of this MVC
-	@build			15th January, 2017
+	@version		@update number 84 of this MVC
+	@build			4th May, 2017
 	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		dynamic_gets.php
@@ -321,20 +321,20 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 							continue;
 						}
 
-						// decode php_after_getitem
-						$item->php_after_getitem = base64_decode($item->php_after_getitem);
-						// decode php_before_getitems
-						$item->php_before_getitems = base64_decode($item->php_before_getitems);
 						// decode php_before_getitem
 						$item->php_before_getitem = base64_decode($item->php_before_getitem);
+						// decode php_custom_get
+						$item->php_custom_get = base64_decode($item->php_custom_get);
+						// decode php_after_getitem
+						$item->php_after_getitem = base64_decode($item->php_after_getitem);
 						// decode php_getlistquery
 						$item->php_getlistquery = base64_decode($item->php_getlistquery);
+						// decode php_before_getitems
+						$item->php_before_getitems = base64_decode($item->php_before_getitems);
 						// decode php_after_getitems
 						$item->php_after_getitems = base64_decode($item->php_after_getitems);
 						// decode php_calculation
 						$item->php_calculation = base64_decode($item->php_calculation);
-						// decode php_custom_get
-						$item->php_custom_get = base64_decode($item->php_custom_get);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

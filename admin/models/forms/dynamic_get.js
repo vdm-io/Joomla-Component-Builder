@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 81 of this MVC
-	@build			15th January, 2017
+	@version		@update number 84 of this MVC
+	@build			4th May, 2017
 	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		dynamic_get.js
@@ -1352,7 +1352,7 @@ function loadSelectionData(result,type,key,main)
 	}
 	else 
 	{
-		var textArea = 'textarea#jform_join_'+type+'_table_fields_selection-'+key;
+		var textArea = 'textarea#'+key+'-jform_join_'+type+'_table_fields_selection';
 	}
 	// no update the text area
 	if (result)

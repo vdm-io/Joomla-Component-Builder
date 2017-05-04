@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 81 of this MVC
-	@build			15th January, 2017
+	@version		@update number 84 of this MVC
+	@build			4th May, 2017
 	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		dynamic_get.php
@@ -95,28 +95,34 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_after_getitem))
-			{
-				// base64 Decode php_after_getitem.
-				$item->php_after_getitem = base64_decode($item->php_after_getitem);
-			}
-
-			if (!empty($item->php_before_getitems))
-			{
-				// base64 Decode php_before_getitems.
-				$item->php_before_getitems = base64_decode($item->php_before_getitems);
-			}
-
 			if (!empty($item->php_before_getitem))
 			{
 				// base64 Decode php_before_getitem.
 				$item->php_before_getitem = base64_decode($item->php_before_getitem);
 			}
 
+			if (!empty($item->php_custom_get))
+			{
+				// base64 Decode php_custom_get.
+				$item->php_custom_get = base64_decode($item->php_custom_get);
+			}
+
+			if (!empty($item->php_after_getitem))
+			{
+				// base64 Decode php_after_getitem.
+				$item->php_after_getitem = base64_decode($item->php_after_getitem);
+			}
+
 			if (!empty($item->php_getlistquery))
 			{
 				// base64 Decode php_getlistquery.
 				$item->php_getlistquery = base64_decode($item->php_getlistquery);
+			}
+
+			if (!empty($item->php_before_getitems))
+			{
+				// base64 Decode php_before_getitems.
+				$item->php_before_getitems = base64_decode($item->php_before_getitems);
 			}
 
 			if (!empty($item->php_after_getitems))
@@ -129,12 +135,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			{
 				// base64 Decode php_calculation.
 				$item->php_calculation = base64_decode($item->php_calculation);
-			}
-
-			if (!empty($item->php_custom_get))
-			{
-				// base64 Decode php_custom_get.
-				$item->php_custom_get = base64_decode($item->php_custom_get);
 			}
 			
 			if (!empty($item->id))
@@ -860,28 +860,34 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_after_getitem string to base64 string.
-		if (isset($data['php_after_getitem']))
-		{
-			$data['php_after_getitem'] = base64_encode($data['php_after_getitem']);
-		}
-
-		// Set the php_before_getitems string to base64 string.
-		if (isset($data['php_before_getitems']))
-		{
-			$data['php_before_getitems'] = base64_encode($data['php_before_getitems']);
-		}
-
 		// Set the php_before_getitem string to base64 string.
 		if (isset($data['php_before_getitem']))
 		{
 			$data['php_before_getitem'] = base64_encode($data['php_before_getitem']);
 		}
 
+		// Set the php_custom_get string to base64 string.
+		if (isset($data['php_custom_get']))
+		{
+			$data['php_custom_get'] = base64_encode($data['php_custom_get']);
+		}
+
+		// Set the php_after_getitem string to base64 string.
+		if (isset($data['php_after_getitem']))
+		{
+			$data['php_after_getitem'] = base64_encode($data['php_after_getitem']);
+		}
+
 		// Set the php_getlistquery string to base64 string.
 		if (isset($data['php_getlistquery']))
 		{
 			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
+		}
+
+		// Set the php_before_getitems string to base64 string.
+		if (isset($data['php_before_getitems']))
+		{
+			$data['php_before_getitems'] = base64_encode($data['php_before_getitems']);
 		}
 
 		// Set the php_after_getitems string to base64 string.
@@ -894,12 +900,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 		if (isset($data['php_calculation']))
 		{
 			$data['php_calculation'] = base64_encode($data['php_calculation']);
-		}
-
-		// Set the php_custom_get string to base64 string.
-		if (isset($data['php_custom_get']))
-		{
-			$data['php_custom_get'] = base64_encode($data['php_custom_get']);
 		}
         
 		// Set the Params Items to data

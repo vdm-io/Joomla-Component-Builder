@@ -514,13 +514,13 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_name` (`name`),
 	KEY `idx_main_source` (`main_source`),
 	KEY `idx_gettype` (`gettype`),
-	KEY `idx_getcustom` (`getcustom`),
-	KEY `idx_pagination` (`pagination`),
 	KEY `idx_add_php_before_getitem` (`add_php_before_getitem`),
-	KEY `idx_add_php_after_getitem` (`add_php_after_getitem`),
+	KEY `idx_add_php_after_getitems` (`add_php_after_getitems`),
 	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
+	KEY `idx_add_php_after_getitem` (`add_php_after_getitem`),
 	KEY `idx_add_php_before_getitems` (`add_php_before_getitems`),
-	KEY `idx_add_php_after_getitems` (`add_php_after_getitems`)
+	KEY `idx_getcustom` (`getcustom`),
+	KEY `idx_pagination` (`pagination`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (

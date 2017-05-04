@@ -721,16 +721,19 @@ class Structure extends Get
 	 */
 	public function getLastModifiedDate($view)
 	{
-		if (isset($view['settings']->modified) && ComponentbuilderHelper::checkString($view['settings']->modified))
+		// first set the main date
+		if (isset($view['settings']->modified) 
+			&& ComponentbuilderHelper::checkString($view['settings']->modified) 
+			&& '0000-00-00 00:00:00' !== $view['settings']->modified)
 		{
-			// first set the main date
 			$date = strtotime($view['settings']->modified);
 		}
 		else
 		{
-			// first set the main date
+			// use todays date
 			$date = strtotime("now");
 		}
+		// search for the last modified date
 		if (isset($view['adminview']))
 		{
 			$id = $view['adminview'].'admin';
@@ -741,7 +744,9 @@ class Structure extends Get
 				{
 					foreach ($view['settings']->fields as $field)
 					{
-						if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']) && isset($field['settings']->modified))
+						if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']) 
+							&& isset($field['settings']->modified) && ComponentbuilderHelper::checkString($field['settings']->modified) 
+							&& '0000-00-00 00:00:00' !== $field['settings']->modified)
 						{
 							$anotherDate = strtotime($field['settings']->modified);
 							if ($anotherDate > $date)
@@ -759,7 +764,9 @@ class Structure extends Get
 			// now check if value has been set
 			if (!isset($this->lastModifiedDate[$id]))
 			{
-				if (isset($view['settings']->main_get->modified))
+				if (isset($view['settings']->main_get->modified)
+					&& ComponentbuilderHelper::checkString($view['settings']->main_get->modified) 
+					&& '0000-00-00 00:00:00' !== $view['settings']->main_get->modified)
 				{
 					$anotherDate = strtotime($view['settings']->main_get->modified);
 					if ($anotherDate > $date)
@@ -775,7 +782,9 @@ class Structure extends Get
 			// now check if value has been set
 			if (!isset($this->lastModifiedDate[$id]))
 			{
-				if (isset($view['settings']->main_get->modified))
+				if (isset($view['settings']->main_get->modified)
+					&& ComponentbuilderHelper::checkString($view['settings']->main_get->modified) 
+					&& '0000-00-00 00:00:00' !== $view['settings']->main_get->modified)
 				{
 					$anotherDate = strtotime($view['settings']->main_get->modified);
 					if ($anotherDate > $date)

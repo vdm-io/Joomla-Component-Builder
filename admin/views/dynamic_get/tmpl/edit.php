@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 81 of this MVC
-	@build			15th January, 2017
+	@version		@update number 84 of this MVC
+	@build			4th May, 2017
 	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -557,30 +557,30 @@ jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 <?php $fieldNrs = range(1,50,1); ?>
 <?php $fieldNames = array('db' => 'Db','view' => 'View'); ?>
 <?php foreach($fieldNames as $fieldName => $funcName): ?>jQuery('#jform_join_<?php echo $fieldName ?>_table_modal').on('show.bs.modal', function (e) {
- 	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_join_<?php echo $fieldName ?>_table_modal').on('change', '#jform_join_<?php echo $fieldName ?>_table_fields_<?php echo $fieldName ?>_table-<?php echo $fieldNr ?>',function (e) {
+ 	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_join_<?php echo $fieldName ?>_table_modal').on('change', '#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_<?php echo $fieldName ?>_table',function (e) {
 		e.preventDefault();
 		// get options
-		var <?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_<?php echo $fieldName ?>_table-<?php echo $fieldNr ?> option:selected").val();
-		var as_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_as-<?php echo $fieldNr ?> option:selected").val();
-		var row_<?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_row_type-<?php echo $fieldNr ?> option:selected").val();
+		var <?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_<?php echo $fieldName ?>_table option:selected").val();
+		var as_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_as option:selected").val();
+		var row_<?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_row_type option:selected").val();
 		get<?php echo $funcName ?>TableColumns(<?php echo $fieldName ?>_<?php echo $fieldNr ?>,as_<?php echo $fieldNr ?>,<?php echo $fieldNr ?>,row_<?php echo $fieldName ?>_<?php echo $fieldNr ?>,false);
 	});
 	<?php endforeach; ?>
-	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_join_<?php echo $fieldName ?>_table_modal').on('change', '#jform_join_<?php echo $fieldName ?>_table_fields_as-<?php echo $fieldNr ?>',function (e) {
+	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_join_<?php echo $fieldName ?>_table_modal').on('change', '#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_as',function (e) {
 		e.preventDefault();
 		// get options
-		var <?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_<?php echo $fieldName ?>_table-<?php echo $fieldNr ?> option:selected").val();
-		var as_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_as-<?php echo $fieldNr ?> option:selected").val();
-		var row_<?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_row_type-<?php echo $fieldNr ?> option:selected").val();
+		var <?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_<?php echo $fieldName ?>_table option:selected").val();
+		var as_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_as option:selected").val();
+		var row_<?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_row_type option:selected").val();
 		get<?php echo $funcName ?>TableColumns(<?php echo $fieldName ?>_<?php echo $fieldNr ?>,as_<?php echo $fieldNr ?>,<?php echo $fieldNr ?>,row_<?php echo $fieldName ?>_<?php echo $fieldNr ?>,false);
 	});
 	<?php endforeach; ?>
-	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_join_<?php echo $fieldName ?>_table_modal').on('change', '#jform_join_<?php echo $fieldName ?>_table_fields_row_type-<?php echo $fieldNr ?>',function (e) {
+	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_join_<?php echo $fieldName ?>_table_modal').on('change', '#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_row_type',function (e) {
 		e.preventDefault();
 		// get options
-		var <?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_<?php echo $fieldName ?>_table-<?php echo $fieldNr ?> option:selected").val();
-		var as_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_as-<?php echo $fieldNr ?> option:selected").val();
-		var row_<?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#jform_join_<?php echo $fieldName ?>_table_fields_row_type-<?php echo $fieldNr ?> option:selected").val();
+		var <?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_<?php echo $fieldName ?>_table option:selected").val();
+		var as_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_as option:selected").val();
+		var row_<?php echo $fieldName ?>_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_join_<?php echo $fieldName ?>_table_fields_row_type option:selected").val();
 		get<?php echo $funcName ?>TableColumns(<?php echo $fieldName ?>_<?php echo $fieldNr ?>,as_<?php echo $fieldNr ?>,<?php echo $fieldNr ?>,row_<?php echo $fieldName ?>_<?php echo $fieldNr ?>,false);
 	});
 	<?php endforeach; ?>
