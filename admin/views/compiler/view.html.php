@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 48 of this MVC
-	@build			26th April, 2017
+	@build			25th April, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		view.html.php

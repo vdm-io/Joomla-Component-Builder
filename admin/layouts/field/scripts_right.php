@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.5
-	@build			4th May, 2017
+	@build			8th May, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		scripts_right.php

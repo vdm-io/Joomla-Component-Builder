@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 110 of this MVC
-	@build			25th April, 2017
+	@version		@update number 111 of this MVC
+	@build			7th May, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.js
@@ -1164,11 +1164,11 @@ function getFieldSelectOptions_server(fieldId){
 function getFieldSelectOptions(id,fieldKey){
 	getFieldSelectOptions_server(id).done(function(result) {
 		if(result){
-			jQuery('textarea#jform_addconditions_fields_match_options-'+fieldKey).val(result);
+			jQuery('textarea#'+fieldKey+'-jform_addconditions_fields_match_options').val(result);
 		}
 		else
 		{
-			jQuery('textarea#jform_addconditions_fields_match_options-'+fieldKey).val('');
+			jQuery('textarea#'+fieldKey+'-jform_addconditions_fields_match_options').val('');
 		}
 	})
 }
@@ -1190,11 +1190,11 @@ function getTableColumns_server(tableName){
 function getTableColumns(tableName,fieldKey){
 	getTableColumns_server(tableName).done(function(result) {
 		if(result){
-			jQuery('textarea#jform_addtables_fields_sourcemap-'+fieldKey).val(result);
+			jQuery('textarea#'+fieldKey+'-jform_addtables_fields_sourcemap').val(result);
 		}
 		else
 		{
-			jQuery('textarea#jform_addtables_fields_sourcemap-'+fieldKey).val('');
+			jQuery('textarea#'+fieldKey+'-jform_addtables_fields_sourcemap').val('');
 		}
 	})
 }

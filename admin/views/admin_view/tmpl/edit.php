@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 110 of this MVC
-	@build			25th April, 2017
+	@version		@update number 111 of this MVC
+	@build			7th May, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -683,19 +683,19 @@ jQuery('input.form-field-repeatable').on('row-add', function (e) {
 });
 <?php endforeach; ?><?php $fieldNrs = range(1,500,1); ?>
 jQuery('#jform_addconditions_modal').on('show.bs.modal', function (e) {
- 	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_addconditions_modal').on('change', '#jform_addconditions_fields_match_field-<?php echo $fieldNr ?>',function (e) {
+ 	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_addconditions_modal').on('change', '#<?php echo $fieldNr ?>-jform_addconditions_fields_match_field',function (e) {
 		e.preventDefault();
 		// get options
-		var fieldId_<?php echo $fieldNr ?> = jQuery("#jform_addconditions_fields_match_field-<?php echo $fieldNr ?> option:selected").val();
+		var fieldId_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_addconditions_fields_match_field option:selected").val();
 		getFieldSelectOptions(fieldId_<?php echo $fieldNr ?>,<?php echo $fieldNr ?>);
 	});
 	<?php endforeach; ?>
 });
 jQuery('#jform_addtables_modal').on('show.bs.modal', function (e) {
- 	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_addtables_modal').on('change', '#jform_addtables_fields_table-<?php echo $fieldNr ?>',function (e) {
+ 	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_addtables_modal').on('change', '#<?php echo $fieldNr ?>-jform_addtables_fields_table',function (e) {
 		e.preventDefault();
 		// get options
-		var tableName_<?php echo $fieldNr ?> = jQuery("#jform_addtables_fields_table-<?php echo $fieldNr ?> option:selected").val();
+		var tableName_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_addtables_fields_table option:selected").val();
 		getTableColumns(tableName_<?php echo $fieldNr ?>,<?php echo $fieldNr ?>);
 	});
 	<?php endforeach; ?>
