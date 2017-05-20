@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.5
-	@build			8th May, 2017
+	@version		2.4.6
+	@build			20th May, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -1700,7 +1700,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected function getLocalItem(&$item, &$type, &$db, $retry = false, $get = 1)
 	{
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName('a.*'));
+		$query->select('a.*');
 		$query->from($db->quoteName('#__componentbuilder_' . $type, 'a'));
 		if ($get == 1)
 		{
