@@ -233,7 +233,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 					if (isset($item->addsite_views) && ComponentbuilderHelper::checkJson($item->addsite_views))
 					{
 						$tmpArray = json_decode($item->addsite_views,true);
-						if (!in_array($this->addsite_viewsvvwc, $tmpArray['siteview']))
+						if (!isset($tmpArray['siteview']) || !ComponentbuilderHelper::checkArray($tmpArray['siteview']) || !in_array($this->addsite_viewsvvwc, $tmpArray['siteview']))
 						{
 							unset($items[$nr]);
 							continue;

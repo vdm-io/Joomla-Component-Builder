@@ -545,7 +545,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 					if (isset($item->addadmin_views) && ComponentbuilderHelper::checkJson($item->addadmin_views))
 					{
 						$tmpArray = json_decode($item->addadmin_views,true);
-						if (!in_array($this->addadmin_viewsvvwa, $tmpArray['adminview']))
+						if (!isset($tmpArray['adminview']) || !ComponentbuilderHelper::checkArray($tmpArray['adminview']) || !in_array($this->addadmin_viewsvvwa, $tmpArray['adminview']))
 						{
 							unset($items[$nr]);
 							continue;

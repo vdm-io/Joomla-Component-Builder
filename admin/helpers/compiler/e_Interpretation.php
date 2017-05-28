@@ -6918,7 +6918,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL."\t\t\t\t\tif (isset(\$item->".$field.") && ".$this->fileContentStatic['###Component###']."Helper::checkJson(\$item->".$field."))";
 			$query .= PHP_EOL."\t\t\t\t\t{";
 			$query .= PHP_EOL."\t\t\t\t\t\t\$tmpArray = json_decode(\$item->".$field.",true);";
-			$query .= PHP_EOL."\t\t\t\t\t\tif (!in_array(\$this->".$globalKey.", \$tmpArray['".$target."']))";
+			$query .= PHP_EOL."\t\t\t\t\t\tif (!isset(\$tmpArray['".$target."']) || !".$this->fileContentStatic['###Component###']."Helper::checkArray(\$tmpArray['".$target."']) || !in_array(\$this->".$globalKey.", \$tmpArray['".$target."']))";
 			$query .= PHP_EOL."\t\t\t\t\t\t{";
 			$query .= PHP_EOL."\t\t\t\t\t\t\tunset(\$items[\$nr]);";
 			$query .= PHP_EOL."\t\t\t\t\t\t\tcontinue;";

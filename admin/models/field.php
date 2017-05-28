@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 37 of this MVC
-	@build			3rd February, 2017
+	@version		@update number 38 of this MVC
+	@build			28th May, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		field.php
@@ -206,7 +206,7 @@ class ComponentbuilderModelField extends JModelAdmin
 					if (isset($item->addfields) && ComponentbuilderHelper::checkJson($item->addfields))
 					{
 						$tmpArray = json_decode($item->addfields,true);
-						if (!in_array($this->addfieldsvvwd, $tmpArray['field']))
+						if (!isset($tmpArray['field']) || !ComponentbuilderHelper::checkArray($tmpArray['field']) || !in_array($this->addfieldsvvwd, $tmpArray['field']))
 						{
 							unset($items[$nr]);
 							continue;

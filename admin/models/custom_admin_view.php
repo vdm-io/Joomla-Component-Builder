@@ -227,7 +227,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 					if (isset($item->addcustom_admin_views) && ComponentbuilderHelper::checkJson($item->addcustom_admin_views))
 					{
 						$tmpArray = json_decode($item->addcustom_admin_views,true);
-						if (!in_array($this->addcustom_admin_viewsvvwb, $tmpArray['customadminview']))
+						if (!isset($tmpArray['customadminview']) || !ComponentbuilderHelper::checkArray($tmpArray['customadminview']) || !in_array($this->addcustom_admin_viewsvvwb, $tmpArray['customadminview']))
 						{
 							unset($items[$nr]);
 							continue;
