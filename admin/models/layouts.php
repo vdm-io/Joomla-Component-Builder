@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 67 of this MVC
-	@build			1st April, 2017
+	@version		@update number 77 of this MVC
+	@build			30th May, 2017
 	@created		18th May, 2015
 	@package		Component Builder
 	@subpackage		layouts.php
@@ -271,10 +271,10 @@ class ComponentbuilderModelLayouts extends JModelList
 							continue;
 						}
 
-						// decode php_view
-						$item->php_view = base64_decode($item->php_view);
 						// decode layout
 						$item->layout = base64_decode($item->layout);
+						// decode php_view
+						$item->php_view = base64_decode($item->php_view);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

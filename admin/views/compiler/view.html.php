@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 48 of this MVC
-	@build			25th April, 2017
+	@version		@update number 49 of this MVC
+	@build			31st May, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -252,9 +252,9 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			// to check is READ/NEW
 			function getIS(type,notice){
 				if (type == 1) {
-					var getUrl = \"index.php?option=com_componentbuilder&task=ajax.isNew&format=json\";
+					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isNew&format=json\");
 				} else if (type == 2) {
-					var getUrl = \"index.php?option=com_componentbuilder&task=ajax.isRead&format=json\";
+					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isRead&format=json\");
 				}	
 				if(token.length > 0 && notice.length){
 					var request = \"token=\"+token+\"&notice=\"+notice;

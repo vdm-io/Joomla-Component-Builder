@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.6
-	@build			28th May, 2017
+	@build			5th June, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_closed_issues_the_closed_issues_on_github.php

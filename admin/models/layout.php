@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 67 of this MVC
-	@build			1st April, 2017
+	@version		@update number 77 of this MVC
+	@build			30th May, 2017
 	@created		18th May, 2015
 	@package		Component Builder
 	@subpackage		layout.php
@@ -95,16 +95,16 @@ class ComponentbuilderModelLayout extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_view))
-			{
-				// base64 Decode php_view.
-				$item->php_view = base64_decode($item->php_view);
-			}
-
 			if (!empty($item->layout))
 			{
 				// base64 Decode layout.
 				$item->layout = base64_decode($item->layout);
+			}
+
+			if (!empty($item->php_view))
+			{
+				// base64 Decode php_view.
+				$item->php_view = base64_decode($item->php_view);
 			}
 			
 			if (!empty($item->id))
@@ -830,16 +830,16 @@ class ComponentbuilderModelLayout extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_view string to base64 string.
-		if (isset($data['php_view']))
-		{
-			$data['php_view'] = base64_encode($data['php_view']);
-		}
-
 		// Set the layout string to base64 string.
 		if (isset($data['layout']))
 		{
 			$data['layout'] = base64_encode($data['layout']);
+		}
+
+		// Set the php_view string to base64 string.
+		if (isset($data['php_view']))
+		{
+			$data['php_view'] = base64_encode($data['php_view']);
 		}
         
 		// Set the Params Items to data

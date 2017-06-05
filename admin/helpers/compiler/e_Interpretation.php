@@ -4864,7 +4864,14 @@ class Interpretation extends Fields
 					}
 					elseif ($default == 0 || $default)
 					{
-						$default = $data['null_switch']." DEFAULT '".$default."'";
+						if (is_numeric($default))
+						{
+							$default = $data['null_switch']." DEFAULT ".$default;
+						}
+						else
+						{
+							$default = $data['null_switch']." DEFAULT '".$default."'";
+						}
 					}
 					elseif ($data['null_switch'] === 'NULL')
 					{
@@ -6814,8 +6821,8 @@ class Interpretation extends Fields
 	 * @param $parentKey
 	 * @param $parent_key
 	 * @param $globalKey
-     * @return string
-     */
+	 * @return string
+	 */
 	public function setListQueryLinked($viewName_single, $viewName_list, $functionName, $key, $_key, $parentKey, $parent_key, $globalKey)
 	{
 		// check if this view has category added

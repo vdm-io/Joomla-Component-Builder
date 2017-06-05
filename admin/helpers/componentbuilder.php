@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.6
-	@build			28th May, 2017
+	@build			5th June, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -2219,7 +2219,8 @@ abstract class ComponentbuilderHelper
 				// If you don't need to handle multi-byte characters
 				// you can use preg_replace rather than mb_ereg_replace
 				// Thanks @Łukasz Rysiak!
-				$string = mb_ereg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				// $string = mb_ereg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				$string = preg_replace("([^\w\s\d\-_\(\)])", '', $string);
 				// http://stackoverflow.com/a/2021729/1429677
 				return preg_replace('/\s+/', ' ', $string);
 			}

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 48 of this MVC
-	@build			25th April, 2017
+	@version		@update number 49 of this MVC
+	@build			31st May, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		default.php
@@ -50,7 +50,7 @@ Joomla.submitbutton = function(task)
 		var component = jQuery('#component').val();
 		var isValid = true;
 		
-		if(component == "" && task == 'compiler.compiler'){
+		if(component == '' && task == 'compiler.compiler'){
 			isValid = false;
 		}
 		if (isValid){

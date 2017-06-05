@@ -698,7 +698,8 @@ abstract class ###Component###Helper
 				// If you don't need to handle multi-byte characters
 				// you can use preg_replace rather than mb_ereg_replace
 				// Thanks @Łukasz Rysiak!
-				$string = mb_ereg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				// $string = mb_ereg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				$string = preg_replace("([^\w\s\d\-_\(\)])", '', $string);
 				// http://stackoverflow.com/a/2021729/1429677
 				return preg_replace('/\s+/', ' ', $string);
 			}

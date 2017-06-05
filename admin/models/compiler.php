@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 48 of this MVC
-	@build			25th April, 2017
+	@version		@update number 49 of this MVC
+	@build			31st May, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -174,7 +174,8 @@ class ComponentbuilderModelCompiler extends JModelList
 		$set['debugLinenr']		= $debugLinenr;
 		// start up Compiler
 		$this->compiler			= new Compiler($set);
-		if($this->compiler){
+		if($this->compiler)
+		{
 			return true;
 		}
 		return false;
