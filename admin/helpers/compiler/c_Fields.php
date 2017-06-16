@@ -1665,6 +1665,8 @@ class Fields extends Structure
                                 $this->queryBuilder[$viewName][$name]['lenght_other']   = $field['settings']->datalenght_other;
                                 $this->queryBuilder[$viewName][$name]['default']        = $field['settings']->datadefault;
                                 $this->queryBuilder[$viewName][$name]['other']          = $field['settings']->datadefault_other;
+				// to identify the field
+                                $this->queryBuilder[$viewName][$name]['ID']		= $field['settings']->id;
                         }
                         else
                         {

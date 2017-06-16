@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 338 of this MVC
-	@build			29th May, 2017
+	@build			16th June, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		default.php

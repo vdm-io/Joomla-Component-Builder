@@ -776,8 +776,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 	KEY `idx_article` (`article`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
-
-
 --
 -- Dumping data for table `#__componentbuilder_joomla_component`
 --
@@ -972,6 +970,8 @@ INSERT INTO `#__componentbuilder_help_document` (`id`, `admin_view`, `alias`, `a
 (9, 'fields', 'welcome-to-the-list-view-of-fields', '', '', '\"\"', 1, '', '', 2, 'Welcome to the List view of Fields', 3, 'http://projects.vdm.io/projects/joomla-component-builder/wiki/Fields_List_View', '', 1, 2, '', 9),
 (10, 'fieldtypes', 'welcome-to-the-list-view-of-fieldtypes', '', '', '\"\"', 1, '', '', 2, 'Welcome to the List view of Fieldtypes', 3, 'http://projects.vdm.io/projects/joomla-component-builder/wiki/Fieldtypes_List_View', '', 1, 2, '', 10),
 (11, 'help_documents', 'welcome-to-the-list-view-of-help-documents', '', '', '\"\"', 1, '', '', 2, 'Welcome to the List view of Help Documents', 3, 'http://projects.vdm.io/projects/joomla-component-builder/wiki/Help_Documents_List_View', '', 1, 2, '', 11);
+
+
 
 --
 -- Always insure this column rules is large enough for all the access control values.

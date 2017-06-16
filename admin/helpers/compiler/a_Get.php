@@ -476,7 +476,20 @@ class Get
 	 * @var    array
 	 */
 	public $siteFields = array();
-
+	
+	/**
+	 * The add SQL
+	 * 
+	 * @var    array
+	 */
+	public $addSQL = array();
+	
+	/**
+	 * The update SQL
+	 * 
+	 * @var    array
+	 */
+	public $updateSQL = array();
 
 	/***
 	 * Constructor
@@ -518,6 +531,27 @@ class Get
 				}
 				// get the component data
 				$this->componentData = $this->getComponentData();
+				// make sure we have a version
+				if (strpos($this->componentData->component_version, '.') === FALSE)
+				{
+					$this->componentData->component_version = '1.0.0';
+				}
+				// update the version
+				if (!isset($this->componentData->old_component_version) 
+					&& (ComponentbuilderHelper::checkArray($this->addSQL) || ComponentbuilderHelper::checkArray($this->updateSQL)))
+				{
+					// set the new version
+					$version = (array) explode('.', $this->componentData->component_version);
+					// get last key
+					end($version);
+					$key = key($version);
+					// just increment the last
+					$version[$key]++;
+					// set the old version
+					$this->componentData->old_component_version = $this->componentData->component_version;
+					// set the new version, and set update switch
+					$this->componentData->component_version = implode('.', $version);
+				}
 				// set the percentage when a language can be added
 				$this->percentageLanguageAdd = (int) $this->params->get('percentagelanguageadd', 50);
 				
@@ -591,6 +625,7 @@ class Get
 			}
 			unset($component->addfolders);
 		}
+		
 		// ser the addfiles data
 		$addfiles	= json_decode($component->addfiles,true);
 		if (ComponentbuilderHelper::checkArray($addfiles))
@@ -657,6 +692,7 @@ class Get
 		
 		// set the admin_view data
 		$admin_views	= json_decode($component->addadmin_views,true);
+		
 		if (ComponentbuilderHelper::checkArray($admin_views))
 		{
 			foreach ($admin_views as $option => $values)
@@ -830,6 +866,25 @@ class Get
 					$component->version_update[$nr][$option] = $value;
 				}
 			}
+		}		
+		
+		// build update SQL
+		if ($old_component = $this->getHistoryWatch('joomla_component', $this->componentID))
+		{
+			// add new views if found
+			if (isset($old_component->addadmin_views) && ComponentbuilderHelper::checkJson($old_component->addadmin_views))
+			{
+				$this->setUpdateSQL(json_decode($old_component->addadmin_views, true), $admin_views, 'adminview');
+			}
+			// check if a new version was manualy set
+			$old_component_version = preg_replace('/[^0-9.]+/', '', $old_component->component_version);
+			if ($old_component_version != $this->component_version)
+			{
+				// yes, this is a new version, this mean there may be manual sql and must be checked and updated
+				$component->old_component_version = $old_component_version;
+			}
+			// clear this data
+			unset($old_component);
 		}
 
 		// add_css
@@ -1106,6 +1161,22 @@ class Get
 			unset($view->addlinked_views);
 			$tables			= json_decode($view->addtables,true);
 			unset($view->addtables);
+			// build update SQL
+			if ($old_view = $this->getHistoryWatch('admin_view', $id))
+			{
+				// add new fields were added
+				if (isset($old_view->addfields) && ComponentbuilderHelper::checkJson($old_view->addfields))
+				{
+					$this->setUpdateSQL(json_decode($old_view->addfields, true), $fields, 'field', $name_single);
+				}
+				// check if the view name changed
+				if (ComponentbuilderHelper::checkString($old_view->name_single))
+				{
+					$this->setUpdateSQL(ComponentbuilderHelper::safeString($old_view->name_single), $name_single, 'table_name', $name_single);
+				}				
+				// clear this data
+				unset($old_view);
+			}
 			// sort the values
 			if (ComponentbuilderHelper::checkArray($tables))
 			{
@@ -1430,6 +1501,7 @@ class Get
 					unset($view->sql);
 				}
 			}
+			// store this view to class object
 			$this->_adminViewData[$id] = $view;
 		}
 		// return the found view data
@@ -1688,6 +1760,9 @@ class Get
 				{
 					 $this->basicEncryption = true;
 				}
+				
+				// get the last used version
+				$field->history = $this->getHistoryWatch('field', $id);
 				
 				$this->_fieldData[$id] = $field;
 			}
@@ -2149,6 +2224,210 @@ class Get
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * check if an update SQL is needed
+	 * 
+	 * @param   mix      $old    The old values
+	 * @param   mix      $new    The new values
+	 * @param   string   $type   The type of values
+	 * @param   int      $key    The id/key where values changed
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function setUpdateSQL($old, $new, $type, $key = null)
+	{
+		// check if there were new items added
+		if (isset($new[$type]) && ComponentbuilderHelper::checkArray($new[$type]) 
+			&& isset($old[$type]) && ComponentbuilderHelper::checkArray($old[$type]))
+		{
+			foreach ($new[$type] as $item)
+			{
+				if (!in_array($item, $old[$type]))
+				{
+					// we have a new item, lets add to SQL
+					if (!isset($this->addSQL[$type]) || !ComponentbuilderHelper::checkArray($this->addSQL[$type]))
+					{
+						$this->addSQL[$type] = array();
+					}
+					// add key if found
+					if ($key)
+					{
+						if (!isset($this->addSQL[$type][$key]) || !ComponentbuilderHelper::checkArray($this->addSQL[$type][$key]))
+						{
+							$this->addSQL[$type][$key] = array();
+						}
+						$this->addSQL[$type][$key][] = (int) $item;
+					}
+					else
+					{
+						// convert adminview id to name
+						if ('adminview' === $type)
+						{
+							$this->addSQL[$type][] = ComponentbuilderHelper::safeString($this->getAdminViewData($item)->name_single);
+						}
+						else
+						{
+							$this->addSQL[$type][] = (int) item;
+						}
+					}
+				}
+			}
+		}
+		elseif ($key && ComponentbuilderHelper::checkString($new) 
+			&& ComponentbuilderHelper::checkString($old)
+			&& $new !== $old)
+		{
+			// the string changed, lets add to SQL update
+			if (!isset($this->updateSQL[$type]) || !ComponentbuilderHelper::checkArray($this->updateSQL[$type]))
+			{
+				$this->updateSQL[$type] = array();
+			}
+			// set at key
+			$this->updateSQL[$type][$key] = array('old' => $old, 'new' => $new);			
+		}
+	}
+	
+	/**
+	 * Get Item History values
+	 * 
+	 * @param   string   $type  The type of item
+	 * @param   int      $id    The item ID
+	 *
+	 * @return  oject    The history
+	 * 
+	 */
+	protected function getHistoryWatch($type, $id)
+	{
+		// quick class object to store old history object
+		$this->tmpHistory = null;
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+
+		$query->select('h.*');
+		$query->from('#__ucm_history AS h');
+		$query->where($this->db->quoteName('h.ucm_item_id') . ' = '. (int) $id);
+		// Join over the content type for the type id
+		$query->join('LEFT', '#__content_types AS ct ON ct.type_id = h.ucm_type_id');
+		$query->where('ct.type_alias = ' . $this->db->quote('com_componentbuilder.'.$type));
+		$query->order('h.save_date DESC');
+		$this->db->setQuery($query, 0, 1);
+		$this->db->execute();
+		if ($this->db->getNumRows())
+		{
+			// new version of this item found
+			// so we need to mark it as the last compiled version
+			$newActive = $this->db->loadObject();
+			// set the new version watch
+			$this->setHistoryWatch($newActive, 1);
+		}
+		// Get last compiled verion
+		$query = $this->db->getQuery(true);
+
+		$query->select('h.*');
+		$query->from('#__ucm_history AS h');
+		$query->where($this->db->quoteName('h.ucm_item_id') . ' = ' . (int) $id);
+		$query->where('h.keep_forever = 1');
+		$query->where('h.version_note LIKE ' . $this->db->quote('%component%'));
+		// make sure it does not return the active version
+		if (isset($newActive) && isset($newActive->version_id))
+		{
+			$query->where('h.version_id != ' . (int) $newActive->version_id);
+		}
+		// Join over the content type for the type id
+		$query->join('LEFT', '#__content_types AS ct ON ct.type_id = h.ucm_type_id');
+		$query->where('ct.type_alias = ' . $this->db->quote('com_componentbuilder.'.$type));
+		$query->order('h.save_date DESC');
+		$this->db->setQuery($query);
+		$this->db->execute();
+		if ($this->db->getNumRows())
+		{
+			// the old active version was found
+			// so we may need to do an SQL update
+			// and unmark the old compiled version
+			$oldActives = $this->db->loadObjectList();
+			foreach ($oldActives as $oldActive)
+			{
+				// remove old version watch
+				$this->setHistoryWatch($oldActive, 0);
+			}
+		}
+		// return the last used history record or null.
+		return $this->tmpHistory;
+	}
+	
+	/**
+	 * Set Item History Watch
+	 * 
+	 * @param   Object   $object  The history object
+	 * @param   int      $action  The action to take
+	 *				0 = remove watch
+	 *				1 = add watch
+	 * @param   string   $type    The type of item
+	 *
+	 * @return  bool
+	 * 
+	 */
+	protected function setHistoryWatch($object, $action)
+	{
+		// check the note
+		if (ComponentbuilderHelper::checkJson($object->version_note))
+		{
+			$version_note = json_decode($object->version_note, true);
+		}
+		else
+		{
+			$version_note = array('component' => array());
+		}
+		// set watch
+		switch ($action)
+		{
+			case 0:
+				// remove watch
+				if(isset($version_note['component']) && ($key = array_search($this->componentID, $version_note['component'])) !== false)
+				{
+					// last version that was used to build/compile
+					$this->tmpHistory = json_decode($object->version_data);
+					// remove it from this component			
+					unset($version_note['component'][$key]);
+				}
+				else
+				{
+					// since it was not found, no need to update anything
+					return true;
+				}
+			break;
+			case 1:
+				// add watch
+				if (!in_array($this->componentID, $version_note['component']))
+				{
+					$version_note['component'][] = $this->componentID;
+				}
+				else
+				{
+					// since it is there already, no need to update anything
+					return true;
+				}
+			break;
+		}
+		// check if we need to still keep this locked
+		if (isset($version_note['component']) && ComponentbuilderHelper::checkArray($version_note['component']))
+		{
+			// insure component ids are only added once per item
+			$version_note['component'] = array_unique($version_note['component']);
+			// we may change this, little risky (but since JCB does not have history notes it should be okay for now)
+			$object->version_note = json_encode($version_note);
+			$object->keep_forever = '1';
+		}
+		else
+		{
+			$object->version_note = '';
+			$object->keep_forever = '0';
+		}
+		// run the update
+		return $this->db->updateObject('#__ucm_history', $object, 'version_id');
 	}
 	
 	/**

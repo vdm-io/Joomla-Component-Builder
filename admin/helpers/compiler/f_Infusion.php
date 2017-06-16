@@ -192,8 +192,6 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###HELP###'] = $this->noHelp();
 			// ###HELP_SITE###
 			$this->fileContentStatic['###HELP_SITE###'] = $this->noHelp();
-			// ###UPDATE_VERSION_MYSQL###
-			$this->setVersionController();
 
 			// build route parse switch
 			$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] = '';
@@ -760,6 +758,9 @@ class Infusion extends Interpretation
 
                         // ###UNINSTALL###
                         $this->fileContentStatic['###UNINSTALL###'] = $this->setUninstall();
+			
+			// ###UPDATE_VERSION_MYSQL###
+			$this->setVersionController();
 
                         // ###DASHBOARDICONS###
                         $this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASHBOARDICONS###'] = $this->setDashboardIcons();

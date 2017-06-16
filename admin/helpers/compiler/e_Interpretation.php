@@ -33,6 +33,7 @@ class Interpretation extends Fields
 {	
 	public $theContributors			= '';
 	public $uninstallBuilder		= array();
+	public $updateSQLBuilder		= array();
 	public $listColnrBuilder		= array();
 	public $permissionBuilder		= array();
 	public $permissionDashboard		= array();
@@ -522,8 +523,7 @@ class Interpretation extends Fields
 	
 	public function setVersionController()
 	{
-		$updateServer = '';
-		if (ComponentbuilderHelper::checkArray($this->componentData->version_update))
+		if (ComponentbuilderHelper::checkArray($this->componentData->version_update) || ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
 		{
 			$updateXML = array();
 			// add the update server
@@ -531,51 +531,33 @@ class Interpretation extends Fields
 			{
 				$updateXML[] = '<updates>';
 			}
-			// add the update sql
-			$addSQL = true;
-			foreach ($this->componentData->version_update as $update)
+			
+			// add the dynamic sql switch
+			$addDynamicSQL = true;
+			$addActive = true;
+			if (ComponentbuilderHelper::checkArray($this->componentData->version_update))
 			{
-				// ensure version naming is correct
-				$update['version'] = preg_replace('/[^0-9.]+/', '', $update['version']);
-				// check if the sql should be added
-				if ($update['version'] == $this->componentData->component_version)
+				foreach ($this->componentData->version_update as $nr => &$update)
 				{
-					$addSQL = false;
-				}
-				// setup import files
-				if ($addSQL)
-				{
-					$name = ComponentbuilderHelper::safeString($update['version']);
-					$target = array('admin' => $name);
-					$this->buildDynamique($target,'sql_update',$update['version']);
-					$this->fileContentDynamic[$name.'_'.$update['version']]['###UPDATE_VERSION_MYSQL###'] = $update['mysql'];
-				}
-				// add the update server
-				if ($this->componentData->add_update_server && $this->componentData->update_server_target != 3)
-				{
-					// build update xml
-					$updateXML[] = "\t<update>";
-					$updateXML[] = "\t\t<name>".$this->fileContentStatic['###Component_name###']."</name>";
-					$updateXML[] = "\t\t<description>".$this->fileContentStatic['###SHORT_DESCRIPTION###']."</description>";
-					$updateXML[] = "\t\t<element>com_".$this->fileContentStatic['###component###']."</element>";
-					$updateXML[] = "\t\t<type>component</type>";
-					$updateXML[] = "\t\t<version>".$update['version']."</version>";
-					$updateXML[] = "\t\t".'<infourl title="'.$this->fileContentStatic['###Component_name###'].'!">'.$this->fileContentStatic['###AUTHORWEBSITE###'].'</infourl>';
-					$updateXML[] = "\t\t<downloads>";
-					if (!isset($update['url']))
+					$this->setUpdateXMLSQL($update, $updateXML, $addDynamicSQL);
+					
+					if ($update['version'] == $this->componentData->component_version)
 					{
-						$update['url'] = 'http://domain.com/demo.xml';
+						$addActive = false;
 					}
-					$updateXML[] = "\t\t\t".'<downloadurl type="full" format="zip">'.$update['url'].'</downloadurl>';
-					$updateXML[] = "\t\t</downloads>";
-					$updateXML[] = "\t\t<tags>";
-					$updateXML[] = "\t\t\t<tag>stable</tag>";
-					$updateXML[] = "\t\t</tags>";
-					$updateXML[] = "\t\t<maintainer>".$this->fileContentStatic['###AUTHOR###']."</maintainer>";
-					$updateXML[] = "\t\t<maintainerurl>".$this->fileContentStatic['###AUTHORWEBSITE###']."</maintainerurl>";
-					$updateXML[] = "\t\t".'<targetplatform name="joomla" version="3.*"/>';
-					$updateXML[] = "\t</update>";
 				}
+			}
+			// add the dynamic sql if not already added
+			if ($addDynamicSQL && ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
+			{
+				// add the dynamic sql
+				$this->setDynamicUpdateXMLSQL($updateXML);
+			}
+			// add the new active version if needed
+			if ($addActive && ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
+			{
+				// add the dynamic sql
+				$this->setDynamicUpdateXMLSQL($updateXML, $addActive);
 			}
 			// add the update server file
 			if ($this->componentData->add_update_server && $this->componentData->update_server_target != 3)
@@ -604,6 +586,141 @@ class Interpretation extends Fields
 		}
 		// add update server details to component XML file
 		$this->fileContentStatic['###UPDATESERVER###'] = $updateServer;
+		// ensure to update Component version data
+		if (ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
+		{
+			$buket = array();
+			$buket['version'] = array();
+			$buket['mysql'] = array();
+			$buket['url'] = array();
+			foreach ($this->componentData->version_update as $values)
+			{
+				foreach ($values as $key => $value)
+				{
+					$buket[$key][] = $value;
+				}
+			}
+			$new = array();
+			$new['id'] = (int) $this->componentID;
+			$new['component_version'] = $this->componentData->component_version;
+			$new['version_update'] = json_encode($buket);
+			// update the component with the new dynamic SQL
+			$model = ComponentbuilderHelper::getModel('joomla_component');
+			$model->save($new); // <-- to insure the history is also updated
+			// reset the watch here
+			$this->getHistoryWatch('joomla_component', $this->componentID);
+		}
+	}	
+	
+	public function setDynamicUpdateXMLSQL(&$updateXML, $current_version = false)
+	{
+		// start building the update
+		$update_ = array();
+		if ($current_version)
+		{
+			// setup new version
+			$update_['version'] = $this->componentData->component_version;
+			// setup SQL
+			$update_['mysql'] = '';
+			// setup URL
+			$update_['url'] = 'http://domain.com/demo.zip';
+		}
+		else
+		{
+			// setup new version
+			$update_['version'] = $this->componentData->old_component_version;
+			// setup SQL
+			$update_['mysql'] = trim(implode(PHP_EOL.PHP_EOL, $this->updateSQLBuilder));
+			// setup URL
+			if (isset($this->lastupdateURL))
+			{
+				$paceholders = array(
+					$this->componentData->component_version => $this->componentData->old_component_version,
+					str_replace('.','-', $this->componentData->component_version) => str_replace('.','-', $this->componentData->old_component_version),
+					str_replace('.','_', $this->componentData->component_version) => str_replace('.','_', $this->componentData->old_component_version),
+					str_replace('.','', $this->componentData->component_version) => str_replace('.','', $this->componentData->old_component_version)
+				);
+				$update_['url'] = $this->setPlaceholders($this->lastupdateURL, $paceholders);
+			}
+			else
+			{
+				// setup URL
+				$update_['url'] = 'http://domain.com/demo.zip';
+			}
+		}
+		// stop it from being added double
+		$addDynamicSQL = false;
+		$this->componentData->version_update[] = $update_;
+		// add dynamic SQL
+		$this->setUpdateXMLSQL($update_, $updateXML, $addDynamicSQL);
+	}
+	
+	public function setUpdateXMLSQL(&$update, &$updateXML, &$addDynamicSQL)
+	{
+		// ensure version naming is correct
+		$update['version'] = preg_replace('/[^0-9.]+/', '', $update['version']);
+		// setup SQL
+		if (ComponentbuilderHelper::checkString($update['mysql']))
+		{
+			$update['mysql'] = $this->setPlaceholders($update['mysql'], $this->placeholders);
+		}
+		// add dynamic SQL
+		$force = false;
+		if ($addDynamicSQL && ComponentbuilderHelper::checkArray($this->updateSQLBuilder)
+			&& (isset($this->componentData->old_component_version) && $this->componentData->old_component_version == $update['version']))
+		{
+			$searchMySQL = preg_replace('/\s+/', '', $update['mysql']);
+			// add the updates to the SQL only if not found
+			foreach ($this->updateSQLBuilder as $search => $query)
+			{
+				if (strpos($searchMySQL, $search) === FALSE)
+				{
+					$update['mysql'] .= PHP_EOL.PHP_EOL.$query;
+				}
+			}
+			// make sure no unneeded white space is added
+			$update['mysql'] = trim($update['mysql']);
+			// update has been added
+			$addDynamicSQL = false;
+		}
+		// setup import files
+		if ($update['version'] != $this->componentData->component_version)
+		{
+			$name = ComponentbuilderHelper::safeString($update['version']);
+			$target = array('admin' => $name);
+			$this->buildDynamique($target,'sql_update',$update['version']);
+			$this->fileContentDynamic[$name.'_'.$update['version']]['###UPDATE_VERSION_MYSQL###'] = $update['mysql'];
+		}
+		elseif (isset($update['url']) && ComponentbuilderHelper::checkString($update['url']))
+		{
+			$this->lastupdateURL = $update['url'];
+		}
+		// add the update server
+		if ($this->componentData->add_update_server && $this->componentData->update_server_target != 3)
+		{
+			// build update xml
+			$updateXML[] = "\t<update>";
+			$updateXML[] = "\t\t<name>".$this->fileContentStatic['###Component_name###']."</name>";
+			$updateXML[] = "\t\t<description>".$this->fileContentStatic['###SHORT_DESCRIPTION###']."</description>";
+			$updateXML[] = "\t\t<element>com_".$this->fileContentStatic['###component###']."</element>";
+			$updateXML[] = "\t\t<type>component</type>";
+			$updateXML[] = "\t\t<version>".$update['version']."</version>";
+			$updateXML[] = "\t\t".'<infourl title="'.$this->fileContentStatic['###Component_name###'].'!">'.$this->fileContentStatic['###AUTHORWEBSITE###'].'</infourl>';
+			$updateXML[] = "\t\t<downloads>";
+			if (!isset($update['url']) || !ComponentbuilderHelper::checkString($update['url']))
+			{
+				$update['url'] = 'http://domain.com/demo.zip';
+			}
+			$updateXML[] = "\t\t\t".'<downloadurl type="full" format="zip">'.$update['url'].'</downloadurl>';
+			$updateXML[] = "\t\t</downloads>";
+			$updateXML[] = "\t\t<tags>";
+			$updateXML[] = "\t\t\t<tag>stable</tag>";
+			$updateXML[] = "\t\t</tags>";
+			$updateXML[] = "\t\t<maintainer>".$this->fileContentStatic['###AUTHOR###']."</maintainer>";
+			$updateXML[] = "\t\t<maintainerurl>".$this->fileContentStatic['###AUTHORWEBSITE###']."</maintainerurl>";
+			$updateXML[] = "\t\t".'<targetplatform name="joomla" version="3.*"/>';
+			$updateXML[] = "\t</update>";
+		}
 	}
 
 	public function noHelp()
@@ -4837,15 +4954,24 @@ class Interpretation extends Fields
 				// build the uninstall array
 				$this->uninstallBuilder[] = "DROP TABLE IF EXISTS `#__".$component."_".$view."`;";
 
-				// setup the tables
-				$db .= "CREATE TABLE IF NOT EXISTS `#__".$component."_".$view."` (";
+				// setup the table DB string
+				$db_ = '';
+				$db_ .= "CREATE TABLE IF NOT EXISTS `#__".$component."_".$view."` (";
+				// check if the table name has changed
+				if (isset($this->updateSQL['table_name']) && isset($this->updateSQL['table_name'][$view]))
+				{
+					$old_table_name = $this->updateSQL['table_name'][$view]['old'];
+					$this->updateSQLBuilder["RENAMETABLE`#__".$component."_".$old_table_name."`"] 
+						= "RENAME TABLE `#__".$component."_".$old_table_name."` to `#__".$component."_".$view."`;";
+				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['id']))
 				{
-					$db .= PHP_EOL."\t`id` INT(11) NOT NULL AUTO_INCREMENT,";
+					$db_ .= PHP_EOL."\t`id` INT(11) NOT NULL AUTO_INCREMENT,";
 				}
-				$db .= PHP_EOL."\t`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',";
+				$db_ .= PHP_EOL."\t`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',";
 				ksort($fields);
+				$last_name = 'asset_id';
 				foreach ($fields as $field => $data)
 				{
 					// set default
@@ -4892,116 +5018,142 @@ class Interpretation extends Fields
 						$lenght = '('.$data['lenght'].')';
 					}
 					// set the field to db
-					$db .= PHP_EOL."\t`".$field."` ".$data['type'].$lenght." ".$default.",";
+					$db_ .= PHP_EOL."\t`".$field."` ".$data['type'].$lenght." ".$default.",";
+					// check if this a new field that should be added via SQL update
+					if (isset($this->addSQL['field']) && isset($this->addSQL['field'][$view]) 
+						&& ComponentbuilderHelper::checkArray($this->addSQL['field'][$view])
+						&& in_array($data['ID'], $this->addSQL['field'][$view]))
+					{
+						$this->updateSQLBuilder["ALTERTABLE`#__".$component."_".$view."`ADD`".$field."`"] 
+							= "ALTER TABLE `#__".$component."_".$view."` ADD `".$field."` ".$data['type'].$lenght." ".$default." AFTER `".$last_name."`;";
+					}
+					// check if the field has changed name and/or data type and lenght
+					elseif (0)
+					{
+						// hmmm tough one
+					}
+					// be sure to track the last name used :)
+					$last_name = $field;
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['params']))
 				{
-					$db .= PHP_EOL."\t`params` text NOT NULL DEFAULT '',";
+					$db_ .= PHP_EOL."\t`params` text NOT NULL DEFAULT '',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
 				{
-					$db .= PHP_EOL."\t`published` TINYINT(3) NOT NULL DEFAULT 1,";
+					$db_ .= PHP_EOL."\t`published` TINYINT(3) NOT NULL DEFAULT 1,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created_by']))
 				{
-					$db .= PHP_EOL."\t`created_by` INT(10) unsigned NOT NULL DEFAULT 0,";
+					$db_ .= PHP_EOL."\t`created_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['modified_by']))
 				{
-					$db .= PHP_EOL."\t`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,";
+					$db_ .= PHP_EOL."\t`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created']))
 				{
-					$db .= PHP_EOL."\t`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					$db_ .= PHP_EOL."\t`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['modified']))
 				{
-					$db .= PHP_EOL."\t`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					$db_ .= PHP_EOL."\t`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out']))
 				{
-					$db .= PHP_EOL."\t`checked_out` int(11) unsigned NOT NULL DEFAULT 0,";
+					$db_ .= PHP_EOL."\t`checked_out` int(11) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out_time']))
 				{
-					$db .= PHP_EOL."\t`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					$db_ .= PHP_EOL."\t`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['version']))
 				{
-					$db .= PHP_EOL."\t`version` INT(10) unsigned NOT NULL DEFAULT 1,";
+					$db_ .= PHP_EOL."\t`version` INT(10) unsigned NOT NULL DEFAULT 1,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['hits']))
 				{
-					$db .= PHP_EOL."\t`hits` INT(10) unsigned NOT NULL DEFAULT 0,";
+					$db_ .= PHP_EOL."\t`hits` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if view has access
 				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 				{
-					$db .= PHP_EOL."\t`access` INT(10) unsigned NOT NULL DEFAULT 0,";
+					$db_ .= PHP_EOL."\t`access` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['ordering']))
 				{
-					$db .= PHP_EOL."\t`ordering` INT(11) NOT NULL DEFAULT 0,";
+					$db_ .= PHP_EOL."\t`ordering` INT(11) NOT NULL DEFAULT 0,";
 				}
 				// check if metadata is added to this view
 				if (isset($this->metadataBuilder[$view]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view]))
 				{
-					$db .= PHP_EOL."\t`metakey` TEXT NOT NULL DEFAULT '',";
-					$db .= PHP_EOL."\t`metadesc` TEXT NOT NULL DEFAULT '',";
-					$db .= PHP_EOL."\t`metadata` TEXT NOT NULL DEFAULT '',";
+					$db_ .= PHP_EOL."\t`metakey` TEXT NOT NULL DEFAULT '',";
+					$db_ .= PHP_EOL."\t`metadesc` TEXT NOT NULL DEFAULT '',";
+					$db_ .= PHP_EOL."\t`metadata` TEXT NOT NULL DEFAULT '',";
 				}
-				$db .= PHP_EOL."\tPRIMARY KEY  (`id`)";
+				$db_ .= PHP_EOL."\tPRIMARY KEY  (`id`)";
 				if (isset($this->dbUniqueKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbUniqueKeys[$view]))
 				{
 					foreach ($this->dbUniqueKeys[$view] as $nr => $key)
 					{
-						$db .= ",".PHP_EOL."\tUNIQUE KEY `idx_".$key."` (`".$key."`)";
+						$db_ .= ",".PHP_EOL."\tUNIQUE KEY `idx_".$key."` (`".$key."`)";
 					}
 				}
 				// check if view has access
 				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
 				{
-					$db .= ",".PHP_EOL."\tKEY `idx_access` (`access`)";
+					$db_ .= ",".PHP_EOL."\tKEY `idx_access` (`access`)";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['checked_out']))
 				{
-					$db .= ",".PHP_EOL."\tKEY `idx_checkout` (`checked_out`)";
+					$db_ .= ",".PHP_EOL."\tKEY `idx_checkout` (`checked_out`)";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['created_by']))
 				{
-					$db .= ",".PHP_EOL."\tKEY `idx_createdby` (`created_by`)";
+					$db_ .= ",".PHP_EOL."\tKEY `idx_createdby` (`created_by`)";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['modified_by']))
 				{
-					$db .= ",".PHP_EOL."\tKEY `idx_modifiedby` (`modified_by`)";
+					$db_ .= ",".PHP_EOL."\tKEY `idx_modifiedby` (`modified_by`)";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
 				{
-					$db .= ",".PHP_EOL."\tKEY `idx_state` (`published`)";
+					$db_ .= ",".PHP_EOL."\tKEY `idx_state` (`published`)";
 				}
 				if (isset($this->dbKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbKeys[$view]))
 				{
 					foreach ($this->dbKeys[$view] as $nr => $key)
 					{
-						$db .= ",".PHP_EOL."\tKEY `idx_".$key."` (`".$key."`)";
+						$db_ .= ",".PHP_EOL."\tKEY `idx_".$key."` (`".$key."`)";
 					}
 				}
-				$db .= PHP_EOL.") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;".PHP_EOL.PHP_EOL;
+				$db_ .= PHP_EOL.") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
+				
+				// check if this is a new table that should be added via update SQL
+				if (isset($this->addSQL['adminview']) && ComponentbuilderHelper::checkArray($this->addSQL['adminview'])
+					&& in_array($view, $this->addSQL['adminview']))
+				{
+					// build the update array
+					$this->updateSQLBuilder["CREATETABLEIFNOTEXISTS`#__".$component."_".$view."`"] = $db_;
+				}
+				
+				// add to main DB string
+				$db .= $db_.PHP_EOL.PHP_EOL;
 			}
 			// add custom sql dump to the file
 			if (isset($this->customScriptBuilder['sql']) && ComponentbuilderHelper::checkArray($this->customScriptBuilder['sql']))
@@ -5009,7 +5161,7 @@ class Interpretation extends Fields
 				foreach ($this->customScriptBuilder['sql'] as $for => $customSql)
 				{
 					$placeholders = array('[[[component]]]' => $component, '[[[view]]]' => $for);
-					$db .= PHP_EOL.PHP_EOL.$this->setPlaceholders($customSql, $placeholders);
+					$db .= $this->setPlaceholders($customSql, $placeholders).PHP_EOL.PHP_EOL;
 				}
 
 			}
