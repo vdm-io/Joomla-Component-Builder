@@ -1033,7 +1033,7 @@ class Fields extends Structure
 				$fieldSet .= PHP_EOL."\t\t\t</fields>";
 				$fieldSet .= PHP_EOL."\t\t</field>";
 			}
-			// set the repeatable field
+			// set the subform fields (it is a repeatable without the modal) 
 			elseif ($typeName === 'subform')
 			{
 				// now add to the field set
