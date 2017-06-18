@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.6
-	@build			16th June, 2017
+	@version		2.4.7
+	@build			18th June, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		gettable_left.php

@@ -3582,10 +3582,16 @@ class Interpretation extends Fields
 			$makeArray = '';
 			foreach ($this->jsonStringBuilder[$view] as $jsonString)
 			{
-			$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$jsonString."))";
+				$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$jsonString."))";
 				$script .= PHP_EOL."\t\t\t{";
 				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." JSON Decode ".$jsonString.".";
-				if (strpos($jsonString, 'group') !== false)
+				if (isset($this->jsonItemBuilderArray[$view])
+					&& ComponentbuilderHelper::checkArray($this->jsonStringBuilderArray[$view])
+					&& in_array($jsonString, $this->jsonItemBuilderArray[$view]))
+				{
+					$makeArray = ',true';
+				}
+				elseif (strpos($jsonString, 'group') !== false)
 				{
 					$makeArray = ',true';
 				}
