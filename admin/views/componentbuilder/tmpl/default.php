@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.7
-	@build			18th June, 2017
+	@build			28th June, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default.php
@@ -76,12 +76,12 @@ JHtml::_('behavior.tooltip');
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'readme', JText::_('Readme', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'releases', JText::_('Releases', true)); ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'readme_accordian', array('active' => 'one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'readme_accordian', 'Information', 'one'); ?>
-						<?php echo $this->loadTemplate('readme_information');?>
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'releases_accordian', array('active' => 'one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'releases_accordian', 'Information', 'one'); ?>
+						<?php echo $this->loadTemplate('releases_information');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
@@ -94,6 +94,18 @@ JHtml::_('behavior.tooltip');
 				<?php  echo JHtml::_('bootstrap.startAccordion', 'vast_development_method_accordian', array('active' => 'one')); ?>
 					<?php  echo JHtml::_('bootstrap.addSlide', 'vast_development_method_accordian', 'Notice Board', 'one'); ?>
 						<?php echo $this->loadTemplate('vast_development_method_notice_board');?>
+					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
+				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
+			</div>
+		</div>
+		<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'readme', JText::_('Readme', true)); ?>
+		<div class="row-fluid">
+			<div class="span12">
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'readme_accordian', array('active' => 'one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'readme_accordian', 'Information', 'one'); ?>
+						<?php echo $this->loadTemplate('readme_information');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>

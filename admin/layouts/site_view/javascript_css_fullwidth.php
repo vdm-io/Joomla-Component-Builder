@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.7
-	@build			18th June, 2017
+	@build			28th June, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		javascript_css_fullwidth.php

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.7
-	@build			18th June, 2017
+	@build			28th June, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -282,6 +282,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		return $icons;
 	}
 
+			
 	public function getGithub()
 	{
 		$document = JFactory::getDocument();
@@ -290,15 +291,17 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		var token = "'.JSession::getFormToken().'";
 		var urlToGetAllOpenIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=open&page=1&per_page=5";
 		var urlToGetAllClosedIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=closed&page=1&per_page=5";
+		var urlToGetAllReleases = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/releases?page=1&per_page=5";
 		jQuery(document).ready(function () {
 			jQuery.getJSON(urlToGetAllOpenIssues, function (openissues) {
 				jQuery("#openissues").html("");
 				jQuery.each(openissues, function (i, issue) {
 					jQuery("#openissues")
             				.append("<h3><a href=\"" + issue.html_url + "\" target=\"_blank\">" + issue.title + "</a></h3>")
-            				.append("<small><em>#" + issue.number + " '.JText::_('COM_COMPONENTBUILDER_OPENED_BY').' " + issue.user.login + "<em></small>")
+					.append("<img alt=\"@" + issue.user.login + "\" style=\"vertical-align: baseline;\" src=\"" + issue.user.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
+            				.append("<em><a href=\"" + issue.user.html_url + "\" target=\"_blank\">" + issue.user.login + "</a> '.JText::_('COM_COMPONENTBUILDER_OPENED').' <a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_ISSUE').'-" + issue.number + "</a></em>")
             				.append(marked(issue.body))
-            				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_RESPOND_TO_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
+            				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_RESPOND_TO_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
     				});
 			});
 			jQuery.getJSON(urlToGetAllClosedIssues, function (closedissues) {
@@ -306,9 +309,36 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 				jQuery.each(closedissues, function (i, issue) {
 					jQuery("#closedissues")
             				.append("<h3><a href=\"" + issue.html_url + "\" target=\"_blank\">" + issue.title + "</a></h3>")
-            				.append("<small><em>#" + issue.number + " '.JText::_('COM_COMPONENTBUILDER_OPENED_BY').' " + issue.user.login + "<em></small>")
+					.append("<img alt=\"@" + issue.user.login + "\" style=\"vertical-align: baseline;\" src=\"" + issue.user.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
+            				.append("<em><a href=\"" + issue.user.html_url + "\" target=\"_blank\">" + issue.user.login + "</a> '.JText::_('COM_COMPONENTBUILDER_OPENED').' <a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_ISSUE').'-" + issue.number + "</a></em>")
             				.append(marked(issue.body))
-            				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_REVIEW_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
+            				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_REVIEW_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
+    				});
+			});
+			jQuery.getJSON(urlToGetAllReleases, function (tagreleases) {				
+				// set the update notice while we are at it
+				var activeVersion = tagreleases[0].tag_name.substring(1);
+				if (activeVersion === manifest.version) {
+					jQuery(".update-notice").html("<small><span style=\'color:green;\'><span class=\'icon-shield\'></span>'.JText::_('COM_COMPONENTBUILDER_UP_TO_DATE').'</span></small>");
+				} else {
+					jQuery(".update-notice").html("<small><span style=\'color:red;\'><span class=\'icon-warning-circle\'></span>'.JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE').'</span></small>");
+				}
+				// set the taged releases
+				jQuery("#tagreleases").html("");
+				jQuery.each(tagreleases, function (i, tagrelease) {
+					// set active release
+					var activeNotice = "";
+					if (i === 0) {
+						var activeNotice = "<a class=\'btn btn-small btn-success\' href=\'https://github.com/vdm-io/Joomla-Component-Builder/releases/latest\'><span class=\'icon-shield icon-white\'></span> '.JText::_('COM_COMPONENTBUILDER_LATEST_RELEASE').'</a><br /><br />";
+					}
+					jQuery("#tagreleases")
+            				.append("<h3><a href=\"" + tagrelease.html_url + "\" target=\"_blank\">" + tagrelease.name + "</a></h3>")
+					.append(activeNotice)
+					.append("<img alt=\"@" + tagrelease.author.login + "\" style=\"vertical-align: baseline;\" src=\"" + tagrelease.author.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
+            				.append("<em><a href=\"" + tagrelease.author.html_url + "\" target=\"_blank\">" + tagrelease.author.login + "</a> '.JText::_('COM_COMPONENTBUILDER_RELEASED').'<em> <b><span class=\'icon-tag-2\'></span>" + tagrelease.tag_name+ "</b>")
+            				.append(marked(tagrelease.body))
+            				.append(" <a class=\"hasTooltip\" href=\"" + tagrelease.assets[0].browser_download_url + "\" title=\"'.JText::_('COM_COMPONENTBUILDER_DOWNLOAD').' " + tagrelease.assets[0].name + "\" target=\"_self\"><span class=\'icon-download\'></span>" + tagrelease.assets[0].name + "</a> (<a class=\"hasTooltip\" href=\"" + tagrelease.assets[0].browser_download_url + "\" title=\"'.JText::_('COM_COMPONENTBUILDER_TOTAL_DOWNLOADS').'\"><small>" + tagrelease.assets[0].download_count + "</small></a>) ")
+            				.append("| <a href=\"" + tagrelease.html_url + "\" target=\"_blank\" title=\"'.JText::_('COM_COMPONENTBUILDER_OPEN').' " + tagrelease.name + " '.JText::_('COM_COMPONENTBUILDER_ON_GITHUB').'\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_OPEN_ON_GITHUB').'</a>...<hr />");
     				});
 			});
 		});
@@ -345,12 +375,14 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$create = '<div class="btn-group pull-right">
 					<a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/new" class="btn btn-primary"  target="_blank">'.JText::_('COM_COMPONENTBUILDER_NEW_ISSUE').'</a>
 				</div></br >';
-		$moreopen = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/issues" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_ISSUES_ON_GITHUB').'</a>...</b>';
-		$moreclosed = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/issues?q=is%3Aissue+is%3Aclosed" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_ISSUES_ON_GITHUB').'</a>...</b>';
+		$moreopen = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/issues" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_ISSUES_ON_GITHUB').'</a>...</b> ';
+		$moreclosed = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/issues?q=is%3Aissue+is%3Aclosed" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_ISSUES_ON_GITHUB').'</a>...</b> ';
+		$viewissues = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/releases" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_RELEASES_ON_GITHUB').'</a>...</b> ';
 
 		return (object) array(
 				'openissues' => $create.'<div id="openissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_OPEN_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreopen, 
-				'closedissues' => $create.'<div id="closedissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_CLOSED_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreclosed
+				'closedissues' => $create.'<div id="closedissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_CLOSED_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreclosed,
+				'tagreleases' => '<div id="tagreleases">'.JText::_('COM_COMPONENTBUILDER_LAST_FEW_RELEASES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$viewissues
 		);
 	}
 
@@ -369,7 +401,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			});
 		});');
 
-		return '<div id="readme-md">'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+		return '<div id="readme-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
 	public function getWiki()
@@ -387,7 +419,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			});
 		});');
 
-		return '<div id="wiki-md">'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
 	public function getNoticeboard()
@@ -428,5 +460,5 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		});');
 
 		return '<div id="noticeboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
-	}
+	}			
 }

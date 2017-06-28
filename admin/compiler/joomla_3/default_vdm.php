@@ -29,29 +29,27 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$manifest = ###Component###Helper::manifest();
-
 ?>
 <img alt="<?php echo JText::_('COM_###COMPONENT###'); ?>" src="components/com_###component###/assets/images/component-300.###COMP_IMAGE_TYPE###">
 <ul class="list-striped">
-<li><b><?php echo JText::_('COM_###COMPONENT###_VERSION'); ?>:</b> <?php echo $manifest->version; ?></li>
-<li><b><?php echo JText::_('COM_###COMPONENT###_DATE'); ?>:</b> <?php echo $manifest->creationDate; ?></li>
-<li><b><?php echo JText::_('COM_###COMPONENT###_AUTHOR'); ?>:</b> <a href="mailto:<?php echo $manifest->authorEmail; ?>"><?php echo $manifest->author; ?></a></li>
-<li><b><?php echo JText::_('COM_###COMPONENT###_WEBSITE'); ?>:</b> <a href="<?php echo $manifest->authorUrl; ?>" target="_blank"><?php echo $manifest->authorUrl; ?></a></li>
-<li><b><?php echo JText::_('COM_###COMPONENT###_LICENSE'); ?>:</b> <?php echo $manifest->license; ?></li>
-<li><b><?php echo $manifest->copyright; ?></b></li>
+	<li><b><?php echo JText::_('COM_###COMPONENT###_VERSION'); ?>:</b> <?php echo $this->manifest->version; ?>&nbsp;&nbsp;<span class="update-notice"></span></li>
+	<li><b><?php echo JText::_('COM_###COMPONENT###_DATE'); ?>:</b> <?php echo $this->manifest->creationDate; ?></li>
+	<li><b><?php echo JText::_('COM_###COMPONENT###_AUTHOR'); ?>:</b> <a href="mailto:<?php echo $this->manifest->authorEmail; ?>"><?php echo $this->manifest->author; ?></a></li>
+	<li><b><?php echo JText::_('COM_###COMPONENT###_WEBSITE'); ?>:</b> <a href="<?php echo $this->manifest->authorUrl; ?>" target="_blank"><?php echo $this->manifest->authorUrl; ?></a></li>
+	<li><b><?php echo JText::_('COM_###COMPONENT###_LICENSE'); ?>:</b> <?php echo $this->manifest->license; ?></li>
+	<li><b><?php echo $this->manifest->copyright; ?></b></li>
 </ul>
 <div class="clearfix"></div>
 <?php if(###Component###Helper::checkArray($this->contributors)): ?>
-<?php if(count($this->contributors) > 1): ?>
-<h3><?php echo JText::_('COM_###COMPONENT###_CONTRIBUTORS'); ?></h3>
-<?php else: ?>
-<h3><?php echo JText::_('COM_###COMPONENT###_CONTRIBUTOR'); ?></h3>
-<?php endif; ?>
-<ul class="list-striped">
-	<?php foreach($this->contributors as $contributor): ?>
-    <li><b><?php echo $contributor['title']; ?>:</b> <?php echo $contributor['name']; ?></li>
-    <?php endforeach; ?>
-</ul>
-<div class="clearfix"></div>
+	<?php if(count($this->contributors) > 1): ?>
+		<h3><?php echo JText::_('COM_###COMPONENT###_CONTRIBUTORS'); ?></h3>
+	<?php else: ?>
+		<h3><?php echo JText::_('COM_###COMPONENT###_CONTRIBUTOR'); ?></h3>
+	<?php endif; ?>
+	<ul class="list-striped">
+		<?php foreach($this->contributors as $contributor): ?>
+		<li><b><?php echo $contributor['title']; ?>:</b> <?php echo $contributor['name']; ?></li>
+		<?php endforeach; ?>
+	</ul>
+	<div class="clearfix"></div>
 <?php endif; ?>

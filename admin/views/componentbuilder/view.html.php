@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.7
-	@build			18th June, 2017
+	@build			28th June, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -53,7 +53,10 @@ class ComponentbuilderViewComponentbuilder extends JViewLegacy
 		$this->readme	= $this->get('Readme');
 		$this->wiki	= $this->get('Wiki');
 		$this->noticeboard	= $this->get('Noticeboard');
-
+		
+		// get the manifest details of the component
+		$this->manifest = ComponentbuilderHelper::manifest();
+		
 		// Set the toolbar
 		$this->addToolBar();
 
@@ -88,15 +91,19 @@ class ComponentbuilderViewComponentbuilder extends JViewLegacy
 	/**
 	 * Method to set up the document properties
 	 *
-	 *
 	 * @return void
 	 */
 	protected function setDocument()
 	{
 		$document = JFactory::getDocument();
-
+		
+		// add dashboard style sheets
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/dashboard.css");
-
+		
+		// set page title
 		$document->setTitle(JText::_('COM_COMPONENTBUILDER_DASHBOARD'));
+		
+		// add manifest to page JavaScript
+		$document->addScriptDeclaration("var manifest = jQuery.parseJSON('" . json_encode($this->manifest) . "');", "text/javascript");
 	}
 }
