@@ -111,7 +111,7 @@ Component Builder is mapped as a component in itself on my local development env
 + *Version*: 2.4.7
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **106152**
++ *Line count*: **106155**
 + *File count*: **645**
 + *Folder count*: **115**
 
@@ -121,5 +121,6 @@ Component Builder is mapped as a component in itself on my local development env
 ## Donations
 
 Come on buy me a coffee :)
- * PayPal: pay@vdm.io
- * Bitcoin: 1Ga1WZyxC4ArSKuiFpUxdqzjfkAR1kJhZh
+ * PayPal: [paypal.me/payvdm](https://www.paypal.me/payvdm)
+ * Bitcoin: 1N45VjnZSNmDK64xRrQYGRRi56rgpnze3s
+ * Ethereum: 0x243392daa3c9c8bc841fcacf7c7f72541cb16823
