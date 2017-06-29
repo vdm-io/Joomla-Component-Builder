@@ -1759,13 +1759,13 @@ class Fields extends Structure
                                 $this->queryBuilder[$viewName][$name]['lenght_other']   = $field['settings']->datalenght_other;
                                 $this->queryBuilder[$viewName][$name]['default']        = $field['settings']->datadefault;
                                 $this->queryBuilder[$viewName][$name]['other']          = $field['settings']->datadefault_other;
-				// to identify the field
-                                $this->queryBuilder[$viewName][$name]['ID']		= $field['settings']->id;
                         }
                         else
                         {
                                 $this->queryBuilder[$viewName][$name]['default']        = 'EMPTY';
                         }
+			// to identify the field
+			$this->queryBuilder[$viewName][$name]['ID']		= $field['settings']->id;
                         $this->queryBuilder[$viewName][$name]['null_switch']    = $field['settings']->null_switch;
 			// set index types
 			if ($field['settings']->indexes == 1 && !in_array($field['settings']->datatype, $textKeys))
