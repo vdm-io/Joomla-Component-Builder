@@ -285,8 +285,12 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			
 	public function getGithub()
 	{
+		// load jquery (not sure why... but else the timeago breaks)
+		JHtml::_('jquery.framework');
+		// get the document to load the scripts
 		$document = JFactory::getDocument();
 		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
+		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/timeago.js");
 		$document->addScriptDeclaration('
 		var token = "'.JSession::getFormToken().'";
 		var urlToGetAllOpenIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=open&page=1&per_page=5";
@@ -296,10 +300,12 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			jQuery.getJSON(urlToGetAllOpenIssues, function (openissues) {
 				jQuery("#openissues").html("");
 				jQuery.each(openissues, function (i, issue) {
+					// set time ago
+					var timeago = jQuery.timeago(new Date(issue.created_at)); 
 					jQuery("#openissues")
             				.append("<h3><a href=\"" + issue.html_url + "\" target=\"_blank\">" + issue.title + "</a></h3>")
 					.append("<img alt=\"@" + issue.user.login + "\" style=\"vertical-align: baseline;\" src=\"" + issue.user.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
-            				.append("<em><a href=\"" + issue.user.html_url + "\" target=\"_blank\">" + issue.user.login + "</a> '.JText::_('COM_COMPONENTBUILDER_OPENED').' <a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_ISSUE').'-" + issue.number + "</a></em>")
+            				.append("<em><a href=\"" + issue.user.html_url + "\" target=\"_blank\">" + issue.user.login + "</a> '.JText::_('COM_COMPONENTBUILDER_OPENED_THIS').' <a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_ISSUE').'-" + issue.number + "</a> (" + timeago + ")</em>")
             				.append(marked(issue.body))
             				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_RESPOND_TO_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
     				});
@@ -307,10 +313,12 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			jQuery.getJSON(urlToGetAllClosedIssues, function (closedissues) {
 				jQuery("#closedissues").html("");
 				jQuery.each(closedissues, function (i, issue) {
+					// set time ago
+					var timeago = jQuery.timeago(new Date(issue.created_at)); 
 					jQuery("#closedissues")
             				.append("<h3><a href=\"" + issue.html_url + "\" target=\"_blank\">" + issue.title + "</a></h3>")
 					.append("<img alt=\"@" + issue.user.login + "\" style=\"vertical-align: baseline;\" src=\"" + issue.user.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
-            				.append("<em><a href=\"" + issue.user.html_url + "\" target=\"_blank\">" + issue.user.login + "</a> '.JText::_('COM_COMPONENTBUILDER_OPENED').' <a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_ISSUE').'-" + issue.number + "</a></em>")
+            				.append("<em><a href=\"" + issue.user.html_url + "\" target=\"_blank\">" + issue.user.login + "</a> '.JText::_('COM_COMPONENTBUILDER_OPENED').' <a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_ISSUE').'-" + issue.number + "</a> (" + timeago + ")</em>")
             				.append(marked(issue.body))
             				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_REVIEW_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
     				});
@@ -331,11 +339,13 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 					if (i === 0) {
 						var activeNotice = "<a class=\'btn btn-small btn-success\' href=\'https://github.com/vdm-io/Joomla-Component-Builder/releases/latest\'><span class=\'icon-shield icon-white\'></span> '.JText::_('COM_COMPONENTBUILDER_LATEST_RELEASE').'</a><br /><br />";
 					}
+					// set time ago
+					var timeago = jQuery.timeago(new Date(tagrelease.published_at)); 
 					jQuery("#tagreleases")
             				.append("<h3><a href=\"" + tagrelease.html_url + "\" target=\"_blank\">" + tagrelease.name + "</a></h3>")
 					.append(activeNotice)
 					.append("<img alt=\"@" + tagrelease.author.login + "\" style=\"vertical-align: baseline;\" src=\"" + tagrelease.author.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
-            				.append("<em><a href=\"" + tagrelease.author.html_url + "\" target=\"_blank\">" + tagrelease.author.login + "</a> '.JText::_('COM_COMPONENTBUILDER_RELEASED').'<em> <b><span class=\'icon-tag-2\'></span>" + tagrelease.tag_name+ "</b>")
+            				.append("<em><a href=\"" + tagrelease.author.html_url + "\" target=\"_blank\">" + tagrelease.author.login + "</a> '.JText::_('COM_COMPONENTBUILDER_RELEASED_THIS').'<em> <b><span class=\'icon-tag-2\'></span>" + tagrelease.tag_name+ "</b> (" + timeago + ")")
             				.append(marked(tagrelease.body))
             				.append(" <a class=\"hasTooltip\" href=\"" + tagrelease.assets[0].browser_download_url + "\" title=\"'.JText::_('COM_COMPONENTBUILDER_DOWNLOAD').' " + tagrelease.assets[0].name + "\" target=\"_self\"><span class=\'icon-download\'></span>" + tagrelease.assets[0].name + "</a> (<a class=\"hasTooltip\" href=\"" + tagrelease.assets[0].browser_download_url + "\" title=\"'.JText::_('COM_COMPONENTBUILDER_TOTAL_DOWNLOADS').'\"><small>" + tagrelease.assets[0].download_count + "</small></a>) ")
             				.append("| <a href=\"" + tagrelease.html_url + "\" target=\"_blank\" title=\"'.JText::_('COM_COMPONENTBUILDER_OPEN').' " + tagrelease.name + " '.JText::_('COM_COMPONENTBUILDER_ON_GITHUB').'\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_OPEN_ON_GITHUB').'</a>...<hr />");
