@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.4.7
-	@build			29th June, 2017
+	@version		2.4.8
+	@build			3rd July, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_main.php
