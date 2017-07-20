@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.8
-	@build			3rd July, 2017
+	@build			20th July, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -50,9 +50,9 @@ class ComponentbuilderViewComponentbuilder extends JViewLegacy
 		$this->icons			= $this->get('Icons');
 		$this->contributors		= ComponentbuilderHelper::getContributors();
 		$this->github	= $this->get('Github');
-		$this->readme	= $this->get('Readme');
 		$this->wiki	= $this->get('Wiki');
 		$this->noticeboard	= $this->get('Noticeboard');
+		$this->readme	= $this->get('Readme');
 		
 		// get the manifest details of the component
 		$this->manifest = ComponentbuilderHelper::manifest();

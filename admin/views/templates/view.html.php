@@ -149,7 +149,7 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 			{
 				JToolBarHelper::custom('templates.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                }
+                } 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('template.import'))
 		{

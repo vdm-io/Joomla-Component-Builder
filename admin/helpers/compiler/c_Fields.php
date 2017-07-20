@@ -1583,6 +1583,12 @@ class Fields extends Structure
 				{
 					$this->doNotEscape[$listViewName][] = $fieldAttributes['name'];
 				}
+				// check if we have display switch for dynamic placment
+				$display = ComponentbuilderHelper::getBetween($field['settings']->xml, 'display="', '"');
+				if (ComponentbuilderHelper::checkString($display))
+				{
+					$fieldAttributes['display'] = $display;
+				}
 			}
 		}
 		return $fieldAttributes;

@@ -583,9 +583,14 @@ class Interpretation extends Fields
 			$updateServer[] = "\t</updateservers>";
 			// return the array to string
 			$updateServer = implode(PHP_EOL, $updateServer);
+			// add update server details to component XML file
+			$this->fileContentStatic['###UPDATESERVER###'] = $updateServer;
 		}
-		// add update server details to component XML file
-		$this->fileContentStatic['###UPDATESERVER###'] = $updateServer;
+		else
+		{
+			// add update server details to component XML file
+			$this->fileContentStatic['###UPDATESERVER###'] = '';
+		}
 		// ensure to update Component version data
 		if (ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
 		{
@@ -1243,24 +1248,30 @@ class Interpretation extends Fields
 		$menuSetter = $view.'_menu';
 		foreach ($params as $field)
 		{
-			// we load fields that have options
-			if (strpos($field,'Option Set. -->') !== false && strpos($field,$menuSetter) === false)
+			// some switch to see if it should be added to front end params
+			$target = ComponentbuilderHelper::getBetween($field, 'display="', '"');
+			if (!ComponentbuilderHelper::checkString($target) || $target === 'menu')
 			{
-				// we add the global option
-				$field = str_replace('Option Set. -->', $this->setLine(__LINE__).' Global & Option Set. -->'.PHP_EOL."\t\t\t".'<option value="">'.PHP_EOL."\t\t\t\t".'JGLOBAL_USE_GLOBAL</option>', $field);
-				// update the default to be global
-				$field = preg_replace('/default=".+"/', 'default=""', $field);
-				// update the default to be filter
-				$field = preg_replace('/filter=".+"/', 'filter="string"', $field);
-				// update required
-				$field = str_replace('required="true"', 'required="false"', $field);
-				// add to keeper array
-				$keep[] = $field;
-			}
-			else
-			{
-				// TODO add convetion to filter fields that we should not load
-				$keep[] = $field;
+				
+				$field = str_replace('display="menu"', '', $field);
+				// we load fields that have options
+				if (strpos($field,'Option Set. -->') !== false && strpos($field,$menuSetter) === false && !ComponentbuilderHelper::checkString($target))
+				{
+					// we add the global option
+					$field = str_replace('Option Set. -->', $this->setLine(__LINE__).' Global & Option Set. -->'.PHP_EOL."\t\t\t".'<option value="">'.PHP_EOL."\t\t\t\t".'JGLOBAL_USE_GLOBAL</option>', $field);
+					// update the default to be global
+					$field = preg_replace('/default=".+"/', 'default=""', $field);
+					// update the default to be filter
+					$field = preg_replace('/filter=".+"/', 'filter="string"', $field);
+					// update required
+					$field = str_replace('required="true"', 'required="false"', $field);
+					// add to keeper array
+					$keep[] = $field;
+				}
+				else
+				{
+					$keep[] = $field;
+				}
 			}
 		}
 		return $keep;
@@ -1858,7 +1869,7 @@ class Interpretation extends Fields
 					break;
 			}
 			// check that the default and the redirect page is not the same
-			if ($this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $view['settings']->code)
+			if (isset($this->fileContentStatic['###SITE_DEFAULT_VIEW###']) && $this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $view['settings']->code)
 			{
 				$redirectMessage = "\t\t\t//".$this->setLine(__LINE__)." redirect away to the default view if no access allowed.";
 				$redirectString = "JRoute::_('index.php?option=com_".$this->fileContentStatic['###component###']."&view=".$this->fileContentStatic['###SITE_DEFAULT_VIEW###']."')";
@@ -1926,17 +1937,17 @@ class Interpretation extends Fields
 			if ($type === 'main')
 			{
 				$getItem .= PHP_EOL."\t".$tab."\t\t\$app = JFactory::getApplication();";
-				$langKeyWord = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Not found or access denied','U');
-				if (!isset($this->langContent[$this->lang][$langKeyWord]))
+				$langKeyWoord = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Not found or access denied','U');
+				if (!isset($this->langContent[$this->lang][$langKeyWoord]))
 				{
-					$this->langContent[$this->lang][$langKeyWord] = 'Not found, or access denied.';
+					$this->langContent[$this->lang][$langKeyWoord] = 'Not found, or access denied.';
 				}
 				$getItem .= PHP_EOL."\t".$tab."\t\t//".$this->setLine(__LINE__)." If no data is found redirect to default page and show warning.";
-				$getItem .= PHP_EOL."\t".$tab."\t\t\$app->enqueueMessage(JText::_('".$langKeyWord."'), 'warning');";
+				$getItem .= PHP_EOL."\t".$tab."\t\t\$app->enqueueMessage(JText::_('".$langKeyWoord."'), 'warning');";
 				if ('site' === $this->target)
 				{
 					// check that the default and the redirect page is not the same
-					if ($this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $code)
+					if (isset($this->fileContentStatic['###SITE_DEFAULT_VIEW###']) && $this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $code)
 					{
 						$redirectString = "JRoute::_('index.php?option=com_".$this->fileContentStatic['###component###']."&view=".$this->fileContentStatic['###SITE_DEFAULT_VIEW###']."')";
 					}
@@ -2933,6 +2944,7 @@ class Interpretation extends Fields
 		if (isset($view['settings']->add_custom_button) && $view['settings']->add_custom_button == 1)
 		{
 			$buttons = array();
+			$this->onlyFunctionButton = array();
 			$functionNames = array();
 			if (isset($view['settings']->custom_buttons) && ComponentbuilderHelper::checkArray($view['settings']->custom_buttons))
 			{
@@ -2966,11 +2978,22 @@ class Interpretation extends Fields
                                                 $keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
 						$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
 						// add cpanel button TODO does not work well on site with permissions
-						$buttons[] = "\t".$tab."\tif (\$this->user->authorise('".$viewName.".".$keyCode."'))";
-						$buttons[] = "\t".$tab."\t{";
-						$buttons[] = "\t".$tab."\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
-						$buttons[] = "\t".$tab."\t\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
-						$buttons[] = "\t".$tab."\t}";
+						if (isset($custom_button['type']) && $custom_button['type'] == 2)
+						{
+							$this->onlyFunctionButton[] = "\t".$tab."if (\$this->user->authorise('".$viewName.".".$keyCode."'))";
+							$this->onlyFunctionButton[] = "\t".$tab."{";
+							$this->onlyFunctionButton[] = "\t".$tab."\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
+							$this->onlyFunctionButton[] = "\t".$tab."\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
+							$this->onlyFunctionButton[] = "\t".$tab."}";
+						}
+						else
+						{
+							$buttons[] = "\t".$tab."\tif (\$this->user->authorise('".$viewName.".".$keyCode."'))";
+							$buttons[] = "\t".$tab."\t{";
+							$buttons[] = "\t".$tab."\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
+							$buttons[] = "\t".$tab."\t\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
+							$buttons[] = "\t".$tab."\t}";
+						}
 					}
 				}
 			}
@@ -3022,6 +3045,16 @@ class Interpretation extends Fields
 			{
 				return PHP_EOL.implode(PHP_EOL,$buttons);
 			}
+		}
+		return '';
+	}
+
+	public function setFunctionOnlyButtons()
+	{
+		// return buttons if they were build
+		if (isset($this->onlyFunctionButton) && ComponentbuilderHelper::checkArray($this->onlyFunctionButton))
+		{
+			return PHP_EOL.implode(PHP_EOL,$this->onlyFunctionButton);
 		}
 		return '';
 	}
@@ -3226,7 +3259,7 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL."\t\trequire_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
 		}
 		$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Initialize the header checker.";
-		$setter .= PHP_EOL."\t\t\$HeaderCheck = new HeaderCheck;";
+		$setter .= PHP_EOL."\t\t\$HeaderCheck = new ".$this->fileContentStatic['###component###']."HeaderCheck;";
 		// load the defaults needed
 		if ($this->uikit)
 		{
@@ -7237,7 +7270,7 @@ class Interpretation extends Fields
 	/**
 	 * @param $viewName_list
 	 * @return array|string
-     */
+	 */
 	public function setCustomAdminDynamicButton($viewName_list)
 	{
 		$buttons = '';
@@ -7267,7 +7300,7 @@ class Interpretation extends Fields
 	/**
 	 * @param $viewName_list
 	 * @return array|string
-     */
+	 */
 	public function setCustomAdminDynamicButtonController($viewName_list)
 	{
 		$method = '';
@@ -7317,7 +7350,7 @@ class Interpretation extends Fields
 	 * @param $viewName_single
 	 * @param $viewName_list
 	 * @return string
-     */
+	 */
 	public function setModelExportMethod($viewName_single, $viewName_list)
 	{
 		$query = '';
@@ -8421,7 +8454,7 @@ class Interpretation extends Fields
 						// target a class if this is a note or spacer
 						$targetType = ".";
 					}
-					elseif ($target['type'] === 'editor')
+					elseif ($target['type'] === 'editor' || $target['type'] === 'subform')
 					{
 						// target the label if  editor field
 						$targetType = "#jform_";
@@ -12169,8 +12202,19 @@ class Interpretation extends Fields
 				$this->configFieldSets[] = "\t<fieldset";
 				$this->configFieldSets[] = "\t\t".'name="'.$tabCode.'"';
 				$this->configFieldSets[] = "\t\t".'label="'.$lang.'_'.$tabUpper.'">';
+				// remove display targeted fields
+				$bucket = array();
+				foreach ($tabFields as $tabField)
+				{
+					$display = ComponentbuilderHelper::getBetween($tabField, 'display="', '"');
+					if (!ComponentbuilderHelper::checkString($display) || $display === 'config')
+					{
+						// remove this display since it is not used in Joomla
+						$bucket[] = str_replace('display="config"', '', $tabField);
+					}
+				}
 				// set the fields
-				$this->configFieldSets[] = implode("\t\t",$tabFields);
+				$this->configFieldSets[] = implode("\t\t",$bucket);
 				// close field set
 				$this->configFieldSets[] = "\t</fieldset>";
 				// remove after loading

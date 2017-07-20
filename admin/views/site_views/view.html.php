@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 51 of this MVC
-	@build			6th March, 2017
+	@build			17th July, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -149,7 +149,7 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 			{
 				JToolBarHelper::custom('site_views.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                }
+                } 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('site_view.import'))
 		{

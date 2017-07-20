@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.8
-	@build			3rd July, 2017
+	@build			20th July, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -289,10 +289,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		JHtml::_('jquery.framework');
 		// get the document to load the scripts
 		$document = JFactory::getDocument();
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/timeago.js");
+		$document->addScript(JURI::root() . "media/com_componentbuilder/js/timeago.js");
 		$document->addScriptDeclaration('
-		var token = "'.JSession::getFormToken().'";
 		var urlToGetAllOpenIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=open&page=1&per_page=5";
 		var urlToGetAllClosedIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=closed&page=1&per_page=5";
 		var urlToGetAllReleases = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/releases?page=1&per_page=5";
@@ -351,36 +349,6 @@ class ComponentbuilderModelComponentbuilder extends JModelList
             				.append("| <a href=\"" + tagrelease.html_url + "\" target=\"_blank\" title=\"'.JText::_('COM_COMPONENTBUILDER_OPEN').' " + tagrelease.name + " '.JText::_('COM_COMPONENTBUILDER_ON_GITHUB').'\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_OPEN_ON_GITHUB').'</a>...<hr />");
     				});
 			});
-		});
-		// to check is READ/NEW
-		function getIS(type,notice){
-			if(type == 1){
-				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isNew&format=json";
-			} else if (type == 2) {
-				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isRead&format=json";
-			}	
-			if(token.length > 0 && notice.length){
-				var request = "token="+token+"&notice="+notice;
-			}
-			return jQuery.ajax({
-				type: "POST",
-				url: getUrl,
-				dataType: "jsonp",
-				data: request,
-				jsonp: "callback"
-			});
-		}
-		// nice little dot trick :)
-		jQuery(document).ready( function($) {
-			var x=0;
-			setInterval(function() {
-				var dots = "";
-				x++;
-				for (var y=0; y < x%8; y++) {
-					dots+=".";
-				}
-				$(".loading-dots").text(dots);
-			} , 500);
 		});');
 		$create = '<div class="btn-group pull-right">
 					<a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/new" class="btn btn-primary"  target="_blank">'.JText::_('COM_COMPONENTBUILDER_NEW_ISSUE').'</a>
@@ -394,26 +362,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 				'closedissues' => $create.'<div id="closedissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_CLOSED_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreclosed,
 				'tagreleases' => '<div id="tagreleases">'.JText::_('COM_COMPONENTBUILDER_LAST_FEW_RELEASES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$viewissues
 		);
-	}
-
-	public function getReadme()
-	{
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration('
-		var getreadme = "'. JURI::root() . 'administrator/components/com_componentbuilder/README.txt";
-		jQuery(document).ready(function () {
-			jQuery.get(getreadme)
-			.success(function(readme) { 
-				jQuery("#readme-md").html(marked(readme));
-			})
-			.error(function(jqXHR, textStatus, errorThrown) { 
-				jQuery("#readme-md").html("'.JText::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATTER').'");
-			});
-		});');
-
-		return '<div id="readme-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
-	}
-
+	}			
+			
 	public function getWiki()
 	{
 		$document = JFactory::getDocument();
@@ -432,10 +382,15 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
+				 
+			
 	public function getNoticeboard()
 	{
+		// get the document to load the scripts
 		$document = JFactory::getDocument();
+		$document->addScript(JURI::root() . "media/com_componentbuilder/js/marked.js");
 		$document->addScriptDeclaration('
+		var token = "'.JSession::getFormToken().'";
 		var noticeboard = "https://www.vdm.io/componentbuilder-noticeboard-md";
 		jQuery(document).ready(function () {
 			jQuery.get(noticeboard)
@@ -467,8 +422,56 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			.error(function(jqXHR, textStatus, errorThrown) { 
 				jQuery("#noticeboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
 			});
+		});
+		// to check is READ/NEW
+		function getIS(type,notice){
+			if(type == 1){
+				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isNew&format=json";
+			} else if (type == 2) {
+				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isRead&format=json";
+			}	
+			if(token.length > 0 && notice.length){
+				var request = "token="+token+"&notice="+notice;
+			}
+			return jQuery.ajax({
+				type: "POST",
+				url: getUrl,
+				dataType: "jsonp",
+				data: request,
+				jsonp: "callback"
+			});
+		}
+		// nice little dot trick :)
+		jQuery(document).ready( function($) {
+			var x=0;
+			setInterval(function() {
+				var dots = "";
+				x++;
+				for (var y=0; y < x%8; y++) {
+					dots+=".";
+				}
+				$(".loading-dots").text(dots);
+			} , 500);
 		});');
 
 		return '<div id="noticeboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+	}			
+			
+	public function getReadme()
+	{
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration('
+		var getreadme = "'. JURI::root() . 'administrator/components/com_componentbuilder/README.txt";
+		jQuery(document).ready(function () {
+			jQuery.get(getreadme)
+			.success(function(readme) { 
+				jQuery("#readme-md").html(marked(readme));
+			})
+			.error(function(jqXHR, textStatus, errorThrown) { 
+				jQuery("#readme-md").html("'.JText::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATTER').'");
+			});
+		});');
+
+		return '<div id="readme-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}			
 }

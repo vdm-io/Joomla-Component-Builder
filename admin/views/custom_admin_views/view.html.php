@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 22 of this MVC
-	@build			1st March, 2017
+	@build			17th July, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -149,7 +149,7 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 			{
 				JToolBarHelper::custom('custom_admin_views.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                }
+                } 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('custom_admin_view.import'))
 		{

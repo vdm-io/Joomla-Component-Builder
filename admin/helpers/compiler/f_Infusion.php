@@ -149,10 +149,12 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###SITECSS###'] = $this->setPlaceholders($this->customScriptBuilder['component_css'], $this->placeholders);
 
 			// ###CUSTOM_HELPER_SCRIPT###
-			$this->fileContentStatic['###CUSTOM_HELPER_SCRIPT###'] = $this->setPlaceholders($this->customScriptBuilder['component_php_helper_admin'], $this->placeholders);
+			$this->fileContentStatic['###CUSTOM_HELPER_SCRIPT###'] 
+				= $this->setPlaceholders($this->customScriptBuilder['component_php_helper_admin'], $this->placeholders);
 			
 			// ###BOTH_CUSTOM_HELPER_SCRIPT###
-			$this->fileContentStatic['###BOTH_CUSTOM_HELPER_SCRIPT###'] = $this->setPlaceholders($this->customScriptBuilder['component_php_helper_both'], $this->placeholders);
+			$this->fileContentStatic['###BOTH_CUSTOM_HELPER_SCRIPT###'] 
+				= $this->setPlaceholders($this->customScriptBuilder['component_php_helper_both'], $this->placeholders);
 			
 			// ###ADMIN_GLOBAL_EVENT_HELPER###
 			$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] = '';
@@ -168,14 +170,16 @@ class Infusion extends Interpretation
 			{
 				// ###ADMIN_GLOBAL_EVENT###
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT###'] = PHP_EOL.PHP_EOL.'// Triger the Global Admin Event';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT###'] .= PHP_EOL.$this->fileContentStatic['###Component###'].'Helper::globalEvent($document);';
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT###'] 
+					.= PHP_EOL.$this->fileContentStatic['###Component###'].'Helper::globalEvent($document);';
 				// ###ADMIN_GLOBAL_EVENT_HELPER###
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] = PHP_EOL.PHP_EOL."\t".'/**';
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'*	The Global Admin Event Method.';
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'**/';
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'public static function globalEvent($document)';
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'{';
-				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['component_php_admin_event'], $this->placeholders);
+				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] 
+					.= PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['component_php_admin_event'], $this->placeholders);
 				$this->fileContentStatic['###ADMIN_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'}';
 			}
 			
@@ -258,7 +262,8 @@ class Infusion extends Interpretation
                                         $this->setLockLicensePer($viewName_list, $this->target);
 
                                         // ###FIELDSETS### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###FIELDSETS###'] = $this->setFieldSet($view, $this->fileContentStatic['###component###']);
+                                        $this->fileContentDynamic[$viewName_single]['###FIELDSETS###'] 
+						= $this->setFieldSet($view, $this->fileContentStatic['###component###']);
 
                                         // ###ACCESSCONTROL### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_single]['###ACCESSCONTROL###'] = $this->setFieldSetAccessControl($viewName_single);
@@ -281,11 +286,14 @@ class Infusion extends Interpretation
                                         // ###AJAXTOKE### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_single]['###AJAXTOKE###'] = $this->setAjaxToke($viewName_single);
 
-                                        if (isset($this->customScriptBuilder['php_document'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_document'][$viewName_single]))
+                                        if (isset($this->customScriptBuilder['php_document'][$viewName_single]) 
+						&& ComponentbuilderHelper::checkString($this->customScriptBuilder['php_document'][$viewName_single]))
                                         {
                                                 // ###DOCUMENT_CUSTOM_PHP### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] 
-                                                        = PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['php_document'][$viewName_single], $this->placeholders);
+                                                        = PHP_EOL.$this->setPlaceholders(
+								$this->customScriptBuilder['php_document'][$viewName_single], 
+								$this->placeholders);
                                                 // clear some memory
                                                 unset($this->customScriptBuilder['php_document'][$viewName_single]);
                                         }
@@ -298,7 +306,8 @@ class Infusion extends Interpretation
                                         $this->fileContentDynamic[$viewName_single]['###LINKEDVIEWTABLESCRIPTS###'] = '';
 
                                         // ###VALIDATEFIX### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###VALIDATIONFIX###'] = $this->setValidationFix($viewName_single, $this->fileContentStatic['###Component###']);
+                                        $this->fileContentDynamic[$viewName_single]['###VALIDATIONFIX###'] 
+						= $this->setValidationFix($viewName_single, $this->fileContentStatic['###Component###']);
 
                                         // ###EDITBODY### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_single]['###EDITBODY###'] = $this->setEditBody($view);
@@ -322,16 +331,20 @@ class Infusion extends Interpretation
                                         $this->fileContentDynamic[$viewName_single]['###LINKEDVIEWMETHODS###'] = '';
 
                                         // ###JMODELADMIN_BEFORE_DELETE### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_DELETE###'] = $this->getCustomScriptBuilder('php_before_delete', $viewName_single, PHP_EOL);
+                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_DELETE###'] 
+						= $this->getCustomScriptBuilder('php_before_delete', $viewName_single, PHP_EOL);
 
                                         // ###JMODELADMIN_AFTER_DELETE### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_DELETE###'] = $this->getCustomScriptBuilder('php_after_delete', $viewName_single, PHP_EOL.PHP_EOL);
+                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_DELETE###'] 
+						= $this->getCustomScriptBuilder('php_after_delete', $viewName_single, PHP_EOL.PHP_EOL);
 
                                         // ###JMODELADMIN_BEFORE_DELETE### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_PUBLISH###'] = $this->getCustomScriptBuilder('php_before_publish', $viewName_single, PHP_EOL);
+                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_BEFORE_PUBLISH###'] 
+						= $this->getCustomScriptBuilder('php_before_publish', $viewName_single, PHP_EOL);
 
                                         // ###JMODELADMIN_AFTER_DELETE### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_PUBLISH###'] = $this->getCustomScriptBuilder('php_after_publish', $viewName_single, PHP_EOL.PHP_EOL);
+                                        $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_AFTER_PUBLISH###'] 
+						= $this->getCustomScriptBuilder('php_after_publish', $viewName_single, PHP_EOL.PHP_EOL);
 
                                         // ###CHECKBOX_SAVE### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_single]['###CHECKBOX_SAVE###'] = $this->setCheckboxSave($viewName_single);
@@ -340,9 +353,12 @@ class Infusion extends Interpretation
                                         $this->fileContentDynamic[$viewName_single]['###METHOD_ITEM_SAVE###'] = $this->setMethodItemSave($viewName_single);
 
                                         // ###POSTSAVEHOOK### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_single]['###POSTSAVEHOOK###'] = $this->getCustomScriptBuilder('php_postsavehook', $viewName_single, PHP_EOL, null, true, PHP_EOL."\t\treturn;", PHP_EOL.PHP_EOL."\t\treturn;");
+                                        $this->fileContentDynamic[$viewName_single]['###POSTSAVEHOOK###'] 
+						= $this->getCustomScriptBuilder('php_postsavehook', $viewName_single, PHP_EOL, null, true, 
+							PHP_EOL."\t\treturn;", PHP_EOL.PHP_EOL."\t\treturn;");
 
-                                        if (isset($this->customScriptBuilder['css_view'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['css_view'][$viewName_single]))
+                                        if (isset($this->customScriptBuilder['css_view'][$viewName_single]) 
+						&& ComponentbuilderHelper::checkString($this->customScriptBuilder['css_view'][$viewName_single]))
                                         {
                                                 // ###VIEWCSS### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_single]['###VIEWCSS###']
@@ -358,7 +374,8 @@ class Infusion extends Interpretation
                                         // add css to front end
                                         if ($view['edit_create_site_view'])
                                         {
-                                                $this->fileContentDynamic[$viewName_single]['###SITE_VIEWCSS###'] = $this->fileContentDynamic[$viewName_single]['###VIEWCSS###'];
+                                                $this->fileContentDynamic[$viewName_single]['###SITE_VIEWCSS###'] 
+							= $this->fileContentDynamic[$viewName_single]['###VIEWCSS###'];
                                         }
                                 }
                                 // set the views names
@@ -409,9 +426,11 @@ class Infusion extends Interpretation
                                         if ($view['checkin'] == 1)
                                         {
                                                 // ###AUTOCHECKIN### <<<DYNAMIC>>>
-                                                $this->fileContentDynamic[$viewName_list]['###AUTOCHECKIN###'] = $this->setAutoCheckin($viewName_single,$this->fileContentStatic['###component###']);
+                                                $this->fileContentDynamic[$viewName_list]['###AUTOCHECKIN###']
+							= $this->setAutoCheckin($viewName_single,$this->fileContentStatic['###component###']);
                                                 // ###CHECKINCALL### <<<DYNAMIC>>>
-                                                $this->fileContentDynamic[$viewName_list]['###CHECKINCALL###'] = $this->setCheckinCall();
+                                                $this->fileContentDynamic[$viewName_list]['###CHECKINCALL###']
+							= $this->setCheckinCall();
                                         }
                                         else
                                         {
@@ -421,19 +440,26 @@ class Infusion extends Interpretation
                                                 $this->fileContentDynamic[$viewName_list]['###CHECKINCALL###'] = '';
                                         }
 					// ###ADMIN_CUSTOM_BUTTONS_LIST###
-                                        $this->fileContentDynamic[$viewName_list]['###ADMIN_CUSTOM_BUTTONS_LIST###'] = $this->setCustomButtons($view, 3, "\t");
+                                        $this->fileContentDynamic[$viewName_list]['###ADMIN_CUSTOM_BUTTONS_LIST###']
+						= $this->setCustomButtons($view, 3, "\t");
+                                        $this->fileContentDynamic[$viewName_list]['###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST###'] 
+						= $this->setFunctionOnlyButtons();
 
                                         // ###GET_ITEMS_METHOD_STRING_FIX### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_STRING_FIX###'] = $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###']);
+                                        $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_STRING_FIX###']
+						= $this->setGetItemsMethodStringFix($viewName_single,$this->fileContentStatic['###Component###']);
 
                                         // ###GET_ITEMS_METHOD_AFTER_ALL### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_AFTER_ALL###'] = $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL);
+                                        $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_AFTER_ALL###']
+						= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL);
 
                                         // ###SELECTIONTRANSLATIONFIX### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###SELECTIONTRANSLATIONFIX###'] = $this->setSelectionTranslationFix($viewName_list,$this->fileContentStatic['###Component###']);
+                                        $this->fileContentDynamic[$viewName_list]['###SELECTIONTRANSLATIONFIX###']
+						= $this->setSelectionTranslationFix($viewName_list,$this->fileContentStatic['###Component###']);
 
                                         // ###SELECTIONTRANSLATIONFIXFUNC### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###SELECTIONTRANSLATIONFIXFUNC###'] = $this->setSelectionTranslationFixFunc($viewName_list,$this->fileContentStatic['###Component###']);
+                                        $this->fileContentDynamic[$viewName_list]['###SELECTIONTRANSLATIONFIXFUNC###']
+						= $this->setSelectionTranslationFixFunc($viewName_list,$this->fileContentStatic['###Component###']);
 
                                         // ###FILTER_FIELDS### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_list]['###FILTER_FIELDS###'] = $this->setFilterFields($viewName_list);
@@ -455,28 +481,34 @@ class Infusion extends Interpretation
                                         {
                                                 $this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###'] = '';
                                         }
-                                        $this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###'] .= $this->setRouterCategoryViews($viewName_single,$viewName_list);
+                                        $this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###'] 
+						.= $this->setRouterCategoryViews($viewName_single,$viewName_list);
 
                                         // ###OTHERFILTERS### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_list]['###OTHERFILTERS###'] = $this->setOtherFilter($viewName_list);
 
                                         // ###FILTERFUNCTIONS### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###FILTERFUNCTIONS###'] = $this->setFilterFunctions($viewName_single,$viewName_list);
+                                        $this->fileContentDynamic[$viewName_list]['###FILTERFUNCTIONS###'] 
+						= $this->setFilterFunctions($viewName_single,$viewName_list);
 
                                         // ###LISTQUERY### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_list]['###LISTQUERY###'] = $this->setListQuery($viewName_single,$viewName_list);
 
                                         // ###MODELEXPORTMETHOD### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###MODELEXPORTMETHOD###'] = $this->setModelExportMethod($viewName_single, $viewName_list);
+                                        $this->fileContentDynamic[$viewName_list]['###MODELEXPORTMETHOD###'] 
+						= $this->setModelExportMethod($viewName_single, $viewName_list);
 
                                         // ###MODELEXIMPORTMETHOD### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###CONTROLLEREXIMPORTMETHOD###'] = $this->setControllerEximportMethod($viewName_single, $viewName_list);
+                                        $this->fileContentDynamic[$viewName_list]['###CONTROLLEREXIMPORTMETHOD###'] 
+						= $this->setControllerEximportMethod($viewName_single, $viewName_list);
 
                                         // ###EXPORTBUTTON### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###EXPORTBUTTON###'] = $this->setExportButton($viewName_single, $viewName_list);
+                                        $this->fileContentDynamic[$viewName_list]['###EXPORTBUTTON###'] 
+						= $this->setExportButton($viewName_single, $viewName_list);
 
                                         // ###IMPORTBUTTON### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###IMPORTBUTTON###'] = $this->setImportButton($viewName_single, $viewName_list);
+                                        $this->fileContentDynamic[$viewName_list]['###IMPORTBUTTON###'] 
+						= $this->setImportButton($viewName_single, $viewName_list);
 
                                         // ###LISTHEAD### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_list]['###LISTHEAD###'] = $this->setListHead($viewName_single,$viewName_list);
@@ -488,9 +520,11 @@ class Infusion extends Interpretation
                                         $this->fileContentDynamic[$viewName_list]['###LISTCOLNR###'] = $this->setListColnr($viewName_list);
 
                                         // ###JVIEWLISTCANDO### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$viewName_list]['###JVIEWLISTCANDO###'] = $this->setJviewListCanDo($viewName_single,$viewName_list);
+                                        $this->fileContentDynamic[$viewName_list]['###JVIEWLISTCANDO###'] 
+						= $this->setJviewListCanDo($viewName_single,$viewName_list);
 
-                                        if (isset($this->customScriptBuilder['css_views'][$viewName_list]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['css_views'][$viewName_list]))
+                                        if (isset($this->customScriptBuilder['css_views'][$viewName_list]) 
+						&& ComponentbuilderHelper::checkString($this->customScriptBuilder['css_views'][$viewName_list]))
                                         {
                                                 // ###VIEWCSS### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_list]['###VIEWSCSS###']
@@ -524,28 +558,36 @@ class Infusion extends Interpretation
                                 $this->fileContentDynamic[$viewName_list]['###BATCH_ONCLICK_CANCEL_SCRIPT###'] = ''; // TODO <-- must still be build
 
                                 // ###JCONTROLLERFORM_ALLOWADD### <<<DYNAMIC>>>
-                                $this->fileContentDynamic[$viewName_single]['###JCONTROLLERFORM_ALLOWADD###'] = $this->setJcontrollerAllowAdd($viewName_single,$viewName_list);
+                                $this->fileContentDynamic[$viewName_single]['###JCONTROLLERFORM_ALLOWADD###'] 
+					= $this->setJcontrollerAllowAdd($viewName_single,$viewName_list);
 
                                 // ###JCONTROLLERFORM_ALLOWEDIT### <<<DYNAMIC>>>
-                                $this->fileContentDynamic[$viewName_single]['###JCONTROLLERFORM_ALLOWEDIT###'] = $this->setJcontrollerAllowEdit($viewName_single,$viewName_list);
+                                $this->fileContentDynamic[$viewName_single]['###JCONTROLLERFORM_ALLOWEDIT###'] 
+					= $this->setJcontrollerAllowEdit($viewName_single,$viewName_list);
 
                                 // ###JMODELADMIN_GETFORM### <<<DYNAMIC>>>
-                                $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_GETFORM###'] = $this->setJmodelAdminGetForm($viewName_single,$viewName_list);
+                                $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_GETFORM###'] 
+					= $this->setJmodelAdminGetForm($viewName_single,$viewName_list);
 
                                 // ###JMODELADMIN_ALLOWEDIT### <<<DYNAMIC>>>
-                                $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_ALLOWEDIT###'] = $this->setJmodelAdminAllowEdit($viewName_single,$viewName_list);
+                                $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_ALLOWEDIT###'] 
+					= $this->setJmodelAdminAllowEdit($viewName_single,$viewName_list);
 
                                 // ###JMODELADMIN_CANDELETE### <<<DYNAMIC>>>
-                                $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_CANDELETE###'] = $this->setJmodelAdminCanDelete($viewName_single,$viewName_list);
+                                $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_CANDELETE###'] 
+					= $this->setJmodelAdminCanDelete($viewName_single,$viewName_list);
 
                                 // ###JMODELADMIN_CANEDITSTATE### <<<DYNAMIC>>>
-                                $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_CANEDITSTATE###'] = $this->setJmodelAdminCanEditState($viewName_single,$viewName_list);
+                                $this->fileContentDynamic[$viewName_single]['###JMODELADMIN_CANEDITSTATE###'] 
+					= $this->setJmodelAdminCanEditState($viewName_single,$viewName_list);
 
                                 // set custom admin view Toolbare buttons
                                 // ###CUSTOM_ADMIN_DYNAMIC_BUTTONS###  <<<DYNAMIC>>>
-                                $this->fileContentDynamic[$viewName_list]['###CUSTOM_ADMIN_DYNAMIC_BUTTONS###'] = $this->setCustomAdminDynamicButton($viewName_list);
+                                $this->fileContentDynamic[$viewName_list]['###CUSTOM_ADMIN_DYNAMIC_BUTTONS###'] 
+					= $this->setCustomAdminDynamicButton($viewName_list);
                                 // ###CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER###  <<<DYNAMIC>>>
-                                $this->fileContentDynamic[$viewName_list]['###CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER###'] = $this->setCustomAdminDynamicButtonController($viewName_list);
+                                $this->fileContentDynamic[$viewName_list]['###CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER###'] 
+					= $this->setCustomAdminDynamicButtonController($viewName_list);
 
                                 // set helper router
                                 if (!isset($this->fileContentStatic['###ROUTEHELPER###']))
@@ -597,7 +639,8 @@ class Infusion extends Interpretation
                                         }
                                         if (!isset($this->langContent[$this->lang][$this->langPrefix.'_'.$view['settings']->CODE.'_DESC']))
                                         {
-                                                $this->langContent[$this->lang][$this->langPrefix.'_'.$view['settings']->CODE.'_DESC'] = $view['settings']->description;
+                                                $this->langContent[$this->lang][$this->langPrefix.'_'.$view['settings']->CODE.'_DESC'] 
+							= $view['settings']->description;
                                         }
                                         // ###ICOMOON### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$view['settings']->code]['###ICOMOON###'] = $view['icomoon'];
@@ -622,7 +665,8 @@ class Infusion extends Interpretation
                                         if ($view['settings']->main_get->gettype == 1)
                                         {
                                                 // check if there is any custom script
-                                                if (isset($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]))
+                                                if (isset($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]))
                                                 {
                                                         // ###CUSTOM_ADMIN_BEFORE_GET_ITEM### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEM###']
@@ -637,10 +681,12 @@ class Infusion extends Interpretation
                                                 }
 
                                                 // ###CUSTOM_ADMIN_GET_ITEM### <<<DYNAMIC>>>
-                                                $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_ITEM###'] = $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code,"\t\t");
+                                                $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_ITEM###'] 
+							= $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code,"\t\t");
 
                                                 // check if there is any custom script
-                                                if (isset($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]))
+                                                if (isset($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]))
                                                 {
                                                         // ###CUSTOM_ADMIN_AFTER_GET_ITEM### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEM###']
@@ -657,10 +703,12 @@ class Infusion extends Interpretation
                                         elseif ($view['settings']->main_get->gettype == 2)
                                         {
                                                 // ###CUSTOM_ADMIN_GET_LIST_QUERY### <<<DYNAMIC>>>
-                                                $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_LIST_QUERY###'] = $this->setCustomViewListQuery($view['settings']->main_get, $view['settings']->code);
+                                                $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_LIST_QUERY###'] 
+							= $this->setCustomViewListQuery($view['settings']->main_get, $view['settings']->code);
 
                                                 // check if there is any custom script
-                                                if (isset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]))
+                                                if (isset($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_getlistquery'][$view['settings']->code]))
                                                 {
                                                         // ###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY###']
@@ -675,7 +723,8 @@ class Infusion extends Interpretation
                                                 }
 
                                                 // check if there is any custom script
-                                                if (isset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]))
+                                                if (isset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]))
                                                 {
                                                         // ###CUSTOM_ADMIN_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEMS###']
@@ -690,10 +739,12 @@ class Infusion extends Interpretation
                                                 }
 
                                                 // ###CUSTOM_ADMIN_GET_ITEMS### <<<DYNAMIC>>>
-                                                $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_ITEMS###'] = $this->setCustomViewGetItems($view['settings']->main_get, $view['settings']->code);
+                                                $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_ITEMS###'] 
+							= $this->setCustomViewGetItems($view['settings']->main_get, $view['settings']->code);
 
                                                 // check if there is any custom script
-                                                if (isset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]))
+                                                if (isset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]))
                                                 {
                                                         // ###CUSTOM_ADMIN_AFTER_GET_ITEMS### <<<DYNAMIC>>>
                                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEMS###']
@@ -709,20 +760,25 @@ class Infusion extends Interpretation
                                         }
 
                                         // ###CUSTOM_ADMIN_CUSTOM_METHODS### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_METHODS###'] = $this->setCustomViewCustomItemMethods($view['settings']->main_get, $view['settings']->code);
-                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_METHODS###'] .= $this->setCustomViewCustomMethods($view, $view['settings']->code);
+                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_METHODS###'] 
+						= $this->setCustomViewCustomItemMethods($view['settings']->main_get, $view['settings']->code);
+                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_METHODS###'] 
+						.= $this->setCustomViewCustomMethods($view, $view['settings']->code);
                                         // ###CUSTOM_ADMIN_DIPLAY_METHOD### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_DIPLAY_METHOD###'] = $this->setCustomViewDisplayMethod($view);
+                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_DIPLAY_METHOD###'] 
+						= $this->setCustomViewDisplayMethod($view);
                                         // set document details
                                         $this->setPrepareDocument($view);
                                         // ###CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS###'] = $this->setCustomViewExtraDisplayMethods($view);
+                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS###'] 
+						= $this->setCustomViewExtraDisplayMethods($view);
                                         // ###CUSTOM_ADMIN_CODE_BODY### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CODE_BODY###'] = $this->setCustomViewCodeBody($view);
                                         // ###CUSTOM_ADMIN_BODY### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BODY###'] = $this->setCustomViewBody($view);
                                         // ###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT### <<<DYNAMIC>>>
-                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT###'] = $this->setCustomViewSubmitButtonScript($view);
+                                        $this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT###'] 
+						= $this->setCustomViewSubmitButtonScript($view);
 
                                         // setup the templates
                                         $this->setCustomViewTemplateBody($view);
@@ -882,7 +938,8 @@ class Infusion extends Interpretation
 					}
 					
 					// insure the needed route helper is loaded
-					$this->fileContentStatic['###ROUTEHELPER###'] .= $this->setRouterHelp($view['settings']->code,$view['settings']->code, true);
+					$this->fileContentStatic['###ROUTEHELPER###'] 
+						.= $this->setRouterHelp($view['settings']->code,$view['settings']->code, true);
 					// build route details 
 					$this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($view['settings']->code, $view);
 					$this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] .= $this->routerBuildViews($view['settings']->code);
@@ -890,9 +947,11 @@ class Infusion extends Interpretation
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// set user permission access check ###USER_PERMISSION_CHECK_ACCESS### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code]['###USER_PERMISSION_CHECK_ACCESS###'] = $this->setUserPermissionCheckAccess($view, 1);
+						$this->fileContentDynamic[$view['settings']->code]['###USER_PERMISSION_CHECK_ACCESS###'] 
+							= $this->setUserPermissionCheckAccess($view, 1);
 						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]))
+						if (isset($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitem'][$view['settings']->code]))
 						{
 							// ###SITE_BEFORE_GET_ITEM### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEM###']
@@ -907,10 +966,12 @@ class Infusion extends Interpretation
 						}
 
 						// ###SITE_GET_ITEM### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_ITEM###'] = $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code,"\t\t");
+						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_ITEM###'] 
+							= $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code,"\t\t");
 
 						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]))
+						if (isset($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_after_getitem'][$view['settings']->code]))
 						{
 							// ###SITE_AFTER_GET_ITEM### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEM###']
@@ -927,12 +988,15 @@ class Infusion extends Interpretation
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// set user permission access check ###USER_PERMISSION_CHECK_ACCESS### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code]['###USER_PERMISSION_CHECK_ACCESS###'] = $this->setUserPermissionCheckAccess($view, 2);					
+						$this->fileContentDynamic[$view['settings']->code]['###USER_PERMISSION_CHECK_ACCESS###'] 
+							= $this->setUserPermissionCheckAccess($view, 2);					
 						// ###SITE_GET_LIST_QUERY### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_LIST_QUERY###'] = $this->setCustomViewListQuery($view['settings']->main_get, $view['settings']->code);
+						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_LIST_QUERY###'] 
+							= $this->setCustomViewListQuery($view['settings']->main_get, $view['settings']->code);
 
 						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]))
+						if (isset($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_before_getitems'][$view['settings']->code]))
 						{
 							// ###SITE_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEMS###']
@@ -947,10 +1011,12 @@ class Infusion extends Interpretation
 						}
 						
 						// ###SITE_GET_ITEMS### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_ITEMS###'] = $this->setCustomViewGetItems($view['settings']->main_get, $view['settings']->code);
+						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_ITEMS###'] 
+							= $this->setCustomViewGetItems($view['settings']->main_get, $view['settings']->code);
 						
 						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]))
+						if (isset($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]) 
+							&& ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target.'_php_after_getitems'][$view['settings']->code]))
 						{
 							// ###SITE_AFTER_GET_ITEMS### <<<DYNAMIC>>>
 							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEMS###']
@@ -971,17 +1037,22 @@ class Infusion extends Interpretation
 					}
 					if (!isset($this->langContent['site'][$this->langPrefix.'_'.$view['settings']->CODE.'_DESC']))
 					{
-						$this->langContent['site'][$this->langPrefix.'_'.$view['settings']->CODE.'_DESC'] = $view['settings']->description;
+						$this->langContent['site'][$this->langPrefix.'_'.$view['settings']->CODE.'_DESC'] 
+							= $view['settings']->description;
 					}
 					// ###SITE_CUSTOM_METHODS### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code]['###SITE_CUSTOM_METHODS###'] = $this->setCustomViewCustomItemMethods($view['settings']->main_get, $view['settings']->code);
-					$this->fileContentDynamic[$view['settings']->code]['###SITE_CUSTOM_METHODS###'] .= $this->setCustomViewCustomMethods($view, $view['settings']->code);
+					$this->fileContentDynamic[$view['settings']->code]['###SITE_CUSTOM_METHODS###'] 
+						= $this->setCustomViewCustomItemMethods($view['settings']->main_get, $view['settings']->code);
+					$this->fileContentDynamic[$view['settings']->code]['###SITE_CUSTOM_METHODS###'] 
+						.= $this->setCustomViewCustomMethods($view, $view['settings']->code);
 					// ###SITE_DIPLAY_METHOD### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code]['###SITE_DIPLAY_METHOD###'] = $this->setCustomViewDisplayMethod($view);
+					$this->fileContentDynamic[$view['settings']->code]['###SITE_DIPLAY_METHOD###'] 
+						= $this->setCustomViewDisplayMethod($view);
 					// set document details
 					$this->setPrepareDocument($view);
 					// ###SITE_EXTRA_DIPLAY_METHODS### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code]['###SITE_EXTRA_DIPLAY_METHODS###'] = $this->setCustomViewExtraDisplayMethods($view);
+					$this->fileContentDynamic[$view['settings']->code]['###SITE_EXTRA_DIPLAY_METHODS###'] 
+						= $this->setCustomViewExtraDisplayMethods($view);
 					// ###SITE_CODE_BODY### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$view['settings']->code]['###SITE_CODE_BODY###'] = $this->setCustomViewCodeBody($view);
 					// ###SITE_BODY### <<<DYNAMIC>>>
@@ -992,7 +1063,8 @@ class Infusion extends Interpretation
 				}
 				// set site custom script to helper class
 				// ###SITE_CUSTOM_HELPER_SCRIPT###
-				$this->fileContentStatic['###SITE_CUSTOM_HELPER_SCRIPT###'] = $this->setPlaceholders($this->customScriptBuilder['component_php_helper_site'], $this->placeholders);
+				$this->fileContentStatic['###SITE_CUSTOM_HELPER_SCRIPT###'] 
+					= $this->setPlaceholders($this->customScriptBuilder['component_php_helper_site'], $this->placeholders);
 				// ###SITE_GLOBAL_EVENT_HELPER###
 				$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] = '';
 				// ###SITE_GLOBAL_EVENT###
@@ -1001,14 +1073,17 @@ class Infusion extends Interpretation
 				if ($this->componentData->add_site_event == 1)
 				{
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT###'] = PHP_EOL.PHP_EOL.'// Triger the Global Site Event';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT###'] .= PHP_EOL.$this->fileContentStatic['###Component###'].'Helper::globalEvent($document);';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT###'] 
+						.= PHP_EOL.$this->fileContentStatic['###Component###'].'Helper::globalEvent($document);';
 					// ###SITE_GLOBAL_EVENT_HELPER###
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] = PHP_EOL.PHP_EOL."\t".'/**';
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'*	The Global Site Event Method.';
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'**/';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'public static function globalEvent($document)';
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] 
+						.= PHP_EOL."\t".'public static function globalEvent($document)';
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'{';
-					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['component_php_site_event'], $this->placeholders);
+					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] 
+						.= PHP_EOL.$this->setPlaceholders($this->customScriptBuilder['component_php_site_event'], $this->placeholders);
 					$this->fileContentStatic['###SITE_GLOBAL_EVENT_HELPER###'] .= PHP_EOL."\t".'}';
 				}
 				// setup the layouts
@@ -1042,7 +1117,8 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###CONFIG_FIELDSETS###'] = implode(PHP_EOL,$this->configFieldSets);
 			
 			// check if this has been set
-			if (!isset($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']) || !ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']))
+			if (!isset($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']) 
+				|| !ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']))
 			{
 				$this->fileContentStatic['###ROUTER_BUILD_VIEWS###'] = 0;
 			}

@@ -159,7 +159,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			{
 				JToolBarHelper::custom('joomla_components.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                }
+                } 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_component.import'))
 		{

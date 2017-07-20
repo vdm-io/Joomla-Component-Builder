@@ -1084,6 +1084,24 @@
 						<option value="3">
 							COM_COMPONENTBUILDER_SITE_VIEW_BOTH</option>
 					</field>
+					<!-- Type Field. Type: List. (joomla) -->
+					<field
+						type="list"
+						name="type"
+						label="COM_COMPONENTBUILDER_SITE_VIEW_TYPE_LABEL"
+						description="COM_COMPONENTBUILDER_SITE_VIEW_TYPE_DESCRIPTION"
+						class="list_class"
+						multiple="false"
+						required="false"
+						default="0">
+						<!-- Option Set. -->
+						<option value="0">
+							COM_COMPONENTBUILDER_SITE_VIEW_DEFAULT</option>
+						<option value="1">
+							COM_COMPONENTBUILDER_SITE_VIEW_SELECTION</option>
+						<option value="2">
+							COM_COMPONENTBUILDER_SITE_VIEW_ONLY_FUNCTION</option>
+					</field>
 				</fieldset>
 			</fields>
 		</field>

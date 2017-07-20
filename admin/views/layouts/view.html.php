@@ -149,7 +149,7 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 			{
 				JToolBarHelper::custom('layouts.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                }
+                } 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('layout.import'))
 		{

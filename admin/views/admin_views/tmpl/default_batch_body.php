@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 111 of this MVC
-	@build			7th May, 2017
+	@build			17th July, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_batch_body.php

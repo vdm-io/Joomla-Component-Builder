@@ -149,7 +149,7 @@ class ComponentbuilderViewFieldtypes extends JViewLegacy
 			{
 				JToolBarHelper::custom('fieldtypes.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                }
+                } 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('fieldtype.import'))
 		{

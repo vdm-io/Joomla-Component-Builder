@@ -149,7 +149,7 @@ class ComponentbuilderViewLanguages extends JViewLegacy
 			{
 				JToolBarHelper::custom('languages.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                }
+                } 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('language.import'))
 		{

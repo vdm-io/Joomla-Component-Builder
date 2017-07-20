@@ -142,7 +142,7 @@ class ###Component###View###Views### extends JViewLegacy
                         {
                                 JToolbarHelper::trash('###views###.trash');
                         }###EXPORTBUTTON###
-                }###IMPORTBUTTON###
+                }###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST### ###IMPORTBUTTON###
 
                 // set help url for this view if found
                 $help_url = ###Component###Helper::getHelpUrl('###views###');

@@ -1,4 +1,5 @@
-# Component Builder (2.4.8)
+# Component Builder 
+[![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases) [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
 
 This is a [Joomla 3.x](http://www.joomla.org/) component.
 
@@ -107,12 +108,12 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 3rd July, 2017
++ *Last Build*: 20th July, 2017
 + *Version*: 2.4.8
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **106184**
-+ *File count*: **647**
++ *Line count*: **106254**
++ *File count*: **649**
 + *Folder count*: **115**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).

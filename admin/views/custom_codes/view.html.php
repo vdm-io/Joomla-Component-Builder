@@ -149,7 +149,7 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			{
 				JToolBarHelper::custom('custom_codes.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                }
+                } 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('custom_code.import'))
 		{
