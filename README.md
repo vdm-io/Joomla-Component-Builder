@@ -1,4 +1,4 @@
-# Component Builder 
+# Joomla Component Builder (JCB)
 [![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases) [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
 
 This is a [Joomla 3.x](http://www.joomla.org/) component.
