@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.9
-	@build			24th July, 2017
+	@build			5th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		gettable_left.php

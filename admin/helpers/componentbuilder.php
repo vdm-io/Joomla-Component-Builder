@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.9
-	@build			24th July, 2017
+	@build			5th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -1053,7 +1053,7 @@ abstract class ComponentbuilderHelper
 			$script['ext'][] = "\t * @return  boolean  True on success";
 			$script['ext'][] = "\t *";
 			$script['ext'][] = "\t */";
-			$script['ext'][] = "\tprotected function checkExtention(\$file)";
+			$script['ext'][] = "\tprotected function checkExtension(\$file)";
 			$script['ext'][] = "\t{";
 			$script['ext'][] = "\t\t// check the extention";
 			$script['ext'][] = "\t\tswitch(strtolower(pathinfo(\$file, PATHINFO_EXTENSION)))";
