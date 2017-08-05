@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 51 of this MVC
+	@version		@update number 53 of this MVC
 	@build			5th August, 2017
 	@created		1st February, 2017
 	@package		Component Builder
@@ -37,24 +37,12 @@ JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 ?>
 <?php if ($this->canDo->get('compiler.access')): ?>
-<script type="text/javascript">
-	Joomla.submitbutton = function(task) {
-		if (task === 'compiler.back') {
-			parent.history.back();
-			return false;
-		} else {
-			var form = document.getElementById('adminForm');
-			form.task.value = task;
-			form.submit();
-		}
-	}
-</script>
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=compiler'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
         <input type="hidden" name="task" value="" />
         <?php echo JHtml::_('form.token'); ?>
 </form>
 <script type="text/javascript">
-Joomla.submitbutton2 = function(task)
+Joomla.submitbutton = function(task)
 {
 	if (task == ''){
 		return false;
@@ -67,9 +55,15 @@ Joomla.submitbutton2 = function(task)
 		}
 		if (isValid){
 			jQuery('#form').hide();
-			var form = document.getElementById('compilerForm');
+			// get correct form based on task
+			if (task == 'compiler.compiler') {
+				var form = document.getElementById('compilerForm');
+			} else {
+				var form = document.getElementById('adminForm');
+			}
 			form.task.value = task;
 			form.submit();
+			// some ui movements
 			if (task == 'compiler.compiler'){
 				jQuery('#compiler').show();
 			} else if (task == 'compiler.clearTmp'){
@@ -128,7 +122,7 @@ jQuery(document).ready(function($) {
 				</div>
 				<br />
 				<div class="clearfix"></div>
-				<button class="btn btn-small btn-success" onclick="Joomla.submitbutton2('compiler.compiler')"><span class="icon-cog icon-white"></span>
+				<button class="btn btn-small btn-success" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
 					<?php echo JText::_('COM_COMPONENTBUILDER_COMPILE_COMPONENT'); ?>
 				</button>
 				<input type="hidden" name="version" value="3" />
