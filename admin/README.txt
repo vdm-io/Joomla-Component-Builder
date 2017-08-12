@@ -9,7 +9,7 @@ The Component Builder for [Joomla](http://www.joomla.org/) that is highly advanc
 
 Whether you're a seasoned [Joomla](http://www.joomla.org/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.4.9) with **ALL** its features and **ALL** concepts totally open-source and free!
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.4.10) with **ALL** its features and **ALL** concepts totally open-source and free!
 
 Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
@@ -109,11 +109,11 @@ Component Builder is mapped as a component in itself on my local development env
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
 + *Last Build*: 12th August, 2017
-+ *Version*: 2.4.9
++ *Version*: 2.4.10
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **106280**
-+ *File count*: **650**
++ *Line count*: **106298**
++ *File count*: **651**
 + *Folder count*: **115**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).
