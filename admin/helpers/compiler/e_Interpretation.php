@@ -1772,7 +1772,7 @@ class Interpretation extends Fields
 					{
 						$string = "if (isset(" . $whe['value_key']. ") && ".$this->fileContentStatic['###Component###']."Helper::checkArray(" . $whe['value_key']. "))";
 						$string .= PHP_EOL."\t".$tabe."\t{";
-						$string .= PHP_EOL."\t".$tabe."\t\t\//".$this->setLine(__LINE__)." Get where ".$whe['table_key']." is " . $whe['value_key'];
+						$string .= PHP_EOL."\t".$tabe."\t\t//".$this->setLine(__LINE__)." Get where ".$whe['table_key']." is " . $whe['value_key'];
 						$string .= PHP_EOL."\t".$tabe."\t\t\$query->where('".$whe['table_key']." ".$whe['operator'].$value;
 						$string .= PHP_EOL."\t".$tabe."\t}";
 						$string .= PHP_EOL."\t".$tabe."\telse";
@@ -2950,7 +2950,7 @@ class Interpretation extends Fields
 			{
 				foreach ($view['settings']->custom_buttons as $custom_button)
 				{
-					if ($custom_button['target'] != 2 || $this->target === 'site')
+					if (3 !== $type && ($custom_button['target'] != 2 || $this->target === 'site'))
 					{
 						// Load to lang
 						$keyLang = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($custom_button['name'],'U');
@@ -2971,7 +2971,7 @@ class Interpretation extends Fields
 						$buttons[] = "\t".$tab."\t}";
 					}
 					// load the list button
-					elseif (3 == $type && ($custom_button['target'] == 2 || $custom_button['target'] == 3))
+					elseif (3 == $type && $custom_button['target'] != 1)
 					{
 						// Load to lang
 						$keyLang = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($custom_button['name'],'U');
@@ -12042,8 +12042,17 @@ class Interpretation extends Fields
 						$fieldDefault = ComponentbuilderHelper::getBetween($xmlField,'default="','"');
 						if (isset($field['custom_value']) && ComponentbuilderHelper::checkString($field['custom_value']))
 						{
-							// load the Global checkin defautls
-							$this->paramsBuilder .= ',"'.$fieldName.'":"'.$field['custom_value'].'"';
+							// add array if found
+							if ((strpos($field['custom_value'], '["') !== false) && (strpos($field['custom_value'], '"]') !== false))
+							{
+								// load the Global checkin defautls
+								$this->paramsBuilder .= ',"'.$fieldName.'":'.$field['custom_value'];
+							}
+							else
+							{
+								// load the Global checkin defautls
+								$this->paramsBuilder .= ',"'.$fieldName.'":"'.$field['custom_value'].'"';
+							}
 						}
 						elseif (ComponentbuilderHelper::checkString($fieldDefault))
 						{

@@ -62,6 +62,13 @@ class Fields extends Structure
 	public $layoutBuilder = array();
 	
 	/**
+	 * used to fix the zero order
+	 * 
+	 * @var    array
+	 */
+	private $zeroOrderFix = array();
+	
+	/**
 	 * Site field data
 	 * 
 	 * @var    array
@@ -470,7 +477,6 @@ class Fields extends Structure
 			{
 				$dynamcfields .= $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $spacerCounter, $this->placeholders, $dbkey, true);
 			}
-			
 			// set the defautl fields
 			$fieldSet = array();
 			$fieldSet[] = '<fieldset name="details">';
@@ -1161,6 +1167,26 @@ class Fields extends Structure
 	 */
 	public function setLayoutBuilder(&$viewName,&$tabName,&$name,&$field)
 	{
+		// first fix the zero order
+		// to insure it lands before all the other fields
+		// as zero is expected to behave
+		if ($field['order_edit'] == 0)
+		{
+			if (!isset($this->zeroOrderFix[$viewName]))
+			{
+				$this->zeroOrderFix[$viewName] = array();
+			}
+			if (!isset($this->zeroOrderFix[$viewName][(int) $field['tab']]))
+			{
+				$this->zeroOrderFix[$viewName][(int) $field['tab']] = -999;
+			}
+			else
+			{
+				$this->zeroOrderFix[$viewName][(int) $field['tab']]++;
+			}
+			$field['order_edit'] = $this->zeroOrderFix[$viewName][(int) $field['tab']];
+		}
+		// now build the layout
 		if (ComponentbuilderHelper::checkString($tabName) && $tabName != 'publishing')
 		{
 			$this->tabCounter[$viewName][(int) $field['tab']] = $tabName;
