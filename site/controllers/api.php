@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.10
-	@build			19th August, 2017
+	@build			20th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		api.php
@@ -160,7 +160,7 @@ class ComponentbuilderControllerApi extends JControllerForm
 					// set the subject
 					$subject = JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDER_BACKUP_KEY');
 					// email the message
-					componentbuilderEmail::send($email, $subject, componentbuilderEmail::setHtmlEmailBody($message, $subject), $plainText, 1);
+					componentbuilderEmail::send($email, $subject, componentbuilderEmail::setTableBody($message, $subject), $plainText, 1);
 					$backupNotice[] = JText::_('COM_COMPONENTBUILDER_EMAIL_WITH_THE_NEW_KEY_WAS_SEND');
 				}
 				else

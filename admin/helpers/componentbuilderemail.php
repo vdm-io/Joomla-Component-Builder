@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.10
-	@build			19th August, 2017
+	@build			20th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilderemail.php
@@ -111,6 +111,8 @@ abstract class ComponentbuilderEmail
 			$sendmail	= $globalConf->get('sendmail');
 			$mailfrom	= $globalConf->get('mailfrom');
 			$fromname	= $globalConf->get('fromname');
+			$replyto	= $globalConf->get('replyto');
+			$replytoname	= $globalConf->get('replytoname');
 		}
 		else
 		{
@@ -123,15 +125,15 @@ abstract class ComponentbuilderEmail
 			$sendmail	= $conf->get('sendmail');
 			$mailfrom	= $conf->get('mailfrom');
 			$fromname	= $conf->get('fromname');
-			$mailreply	= $conf->get('mailreply');
-			$replyname	= $conf->get('replyname');
+			$replyto	= $conf->get('replyto');
+			$replytoname	= $conf->get('replytoname');
+		}
 			
-			// set the global reply-to
-			if ($mailreply && $fromname)
-			{
-				$mail->ClearReplyTos();
-				$mail->addReplyTo( array( $mailreply, $replyname ) );
-			}
+		// set the global reply-to if found
+		if ($replyto && $replytoname)
+		{
+			$mail->ClearReplyTos();
+			$mail->addReplyTo( array( $replyto, $replytoname ) );
 		}
 
 		// Set global sender
@@ -275,12 +277,16 @@ abstract class ComponentbuilderEmail
 	}
 
 	/**
-	 * Set the HTML email body
+	 * Set html text (in a row) and subject (as title) to a email table.
+	 *      do not use <p> instead use <br />
+	 *	in your html that you pass to this method
+	 *      since it is a table row it does not
+	 *      work well with paragraphs
 	 *
 	 * @return  string on success
 	 *
 	 */
-	public static function setHtmlEmailBody($html, $subject)
+	public static function setTableBody($html, $subject)
 	{
 		$body = array();
 		$body[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";

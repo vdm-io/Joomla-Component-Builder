@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.10
-	@build			19th August, 2017
+	@build			20th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -1661,7 +1661,7 @@ abstract class ComponentbuilderHelper
 			}
 			else
 			{
-				$query->from($db->quoteName('#__'.$main.'_'.$table));
+				$query->from($db->quoteName('#_'.$main.'_'.$table));
 			}
 			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
 			$db->setQuery($query);

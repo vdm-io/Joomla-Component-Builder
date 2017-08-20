@@ -224,10 +224,10 @@
 			hint="COM_COMPONENTBUILDER_CONFIG_FROMNAME_HINT"
 			showon="mailer:smtp,sendmail,default"
 		/>		
-		<!-- Emailreply Field. Type: Text. (joomla) -->
+		<!-- Email reply to Field. Type: Text. (joomla) -->
 		<field
 			type="text"
-			name="emailreply"
+			name="replyto"
 			label="COM_COMPONENTBUILDER_CONFIG_EMAILREPLY_LABEL"
 			size="60"
 			maxlength="150"
@@ -239,10 +239,10 @@
 			hint="COM_COMPONENTBUILDER_CONFIG_EMAILREPLY_HINT"
 			showon="mailer:smtp,sendmail,default"
 		/>		
-		<!-- Replyname Field. Type: Text. (joomla) -->
+		<!-- Reply to name Field. Type: Text. (joomla) -->
 		<field
 			type="text"
-			name="replyname"
+			name="replytoname"
 			label="COM_COMPONENTBUILDER_CONFIG_REPLYNAME_LABEL"
 			size="60"
 			maxlength="150"

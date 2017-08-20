@@ -12741,10 +12741,10 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				$this->langContent[$this->lang][$lang.'_FROMNAME_LABEL'] = "From Name";
 				$this->langContent[$this->lang][$lang.'_FROMNAME_DESCRIPTION'] = "Text displayed in the header &quot;From:&quot; field when sending a site email. Usually the site name.";
 				$this->langContent[$this->lang][$lang.'_FROMNAME_HINT'] = "From Name Here";
-				$this->langContent[$this->lang][$lang.'_EMAILREPLY_LABEL'] = " Reply Email";
+				$this->langContent[$this->lang][$lang.'_EMAILREPLY_LABEL'] = " Reply to Email";
 				$this->langContent[$this->lang][$lang.'_EMAILREPLY_DESCRIPTION'] = "The global email address that will be used to set as the reply email. (leave blank for none)";
 				$this->langContent[$this->lang][$lang.'_EMAILREPLY_HINT'] = "Email Address Here";
-				$this->langContent[$this->lang][$lang.'_REPLYNAME_LABEL'] = "Reply Name";
+				$this->langContent[$this->lang][$lang.'_REPLYNAME_LABEL'] = "Reply to Name";
 				$this->langContent[$this->lang][$lang.'_REPLYNAME_DESCRIPTION'] = "Text displayed in the header &quot;Reply To:&quot; field when replying to the site email. Usually the the person that receives the response. (leave blank for none)";
 				$this->langContent[$this->lang][$lang.'_REPLYNAME_HINT'] = "Reply Name Here";
 				$this->langContent[$this->lang][$lang.'_SENDMAIL_LABEL'] = "Sendmail Path";
@@ -12836,10 +12836,10 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_FROMNAME_HINT\"";
 				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp,sendmail,default\"";
 				$this->configFieldSets[] = "\t\t/>\t\t";
-				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Emailreply Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Email reply to Field. Type: Text. (joomla) -->";
 				$this->configFieldSets[] = "\t\t<field";
 				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
-				$this->configFieldSets[] = "\t\t\tname=\"emailreply\"";
+				$this->configFieldSets[] = "\t\t\tname=\"replyto\"";
 				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_EMAILREPLY_LABEL\"";
 				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
 				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";
@@ -12851,10 +12851,10 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				$this->configFieldSets[] = "\t\t\thint=\"".$lang."_EMAILREPLY_HINT\"";
 				$this->configFieldSets[] = "\t\t\tshowon=\"mailer:smtp,sendmail,default\"";
 				$this->configFieldSets[] = "\t\t/>\t\t";
-				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Replyname Field. Type: Text. (joomla) -->";
+				$this->configFieldSets[] = "\t\t<!--".$this->setLine(__LINE__)." Reply to name Field. Type: Text. (joomla) -->";
 				$this->configFieldSets[] = "\t\t<field";
 				$this->configFieldSets[] = "\t\t\ttype=\"text\"";
-				$this->configFieldSets[] = "\t\t\tname=\"replyname\"";
+				$this->configFieldSets[] = "\t\t\tname=\"replytoname\"";
 				$this->configFieldSets[] = "\t\t\tlabel=\"".$lang."_REPLYNAME_LABEL\"";
 				$this->configFieldSets[] = "\t\t\tsize=\"60\"";
 				$this->configFieldSets[] = "\t\t\tmaxlength=\"150\"";

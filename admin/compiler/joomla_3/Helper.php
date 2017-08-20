@@ -163,7 +163,7 @@ abstract class ###Component###Helper
 			}
 			else
 			{
-				$query->from($db->quoteName('#__'.$main.'_'.$table));
+				$query->from($db->quoteName('#_'.$main.'_'.$table));
 			}
 			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
 			$db->setQuery($query);
