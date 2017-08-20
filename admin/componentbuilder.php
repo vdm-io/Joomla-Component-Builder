@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.10
-	@build			12th August, 2017
+	@build			19th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -44,6 +44,7 @@ $document->addScript('components/com_componentbuilder/assets/js/admin.js');
 
 // require helper files
 JLoader::register('ComponentbuilderHelper', dirname(__FILE__) . '/helpers/componentbuilder.php'); 
+JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
 JLoader::register('JHtmlBatch_', dirname(__FILE__) . '/helpers/html/batch_.php'); 
 
 // Triger the Global Admin Event

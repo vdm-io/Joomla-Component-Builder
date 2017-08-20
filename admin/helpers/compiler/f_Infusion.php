@@ -1061,6 +1061,11 @@ class Infusion extends Interpretation
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 				}
+				// if no default site view was set, the redirect to root
+				if (!isset($this->fileContentStatic['###SITE_DEFAULT_VIEW###']))
+				{
+					$this->fileContentStatic['###SITE_DEFAULT_VIEW###'] = '';
+				}
 				// set site custom script to helper class
 				// ###SITE_CUSTOM_HELPER_SCRIPT###
 				$this->fileContentStatic['###SITE_CUSTOM_HELPER_SCRIPT###'] 

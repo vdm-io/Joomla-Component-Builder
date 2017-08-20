@@ -108,13 +108,13 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 12th August, 2017
++ *Last Build*: 19th August, 2017
 + *Version*: 2.4.10
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **106298**
-+ *File count*: **651**
-+ *Folder count*: **115**
++ *Line count*: **111624**
++ *File count*: **662**
++ *Folder count*: **117**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).
 > Developed by [Llewellyn van der Merwe](mailto:joomla@vdm.io)

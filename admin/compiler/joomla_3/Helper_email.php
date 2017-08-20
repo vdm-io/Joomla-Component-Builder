@@ -276,4 +276,70 @@ abstract class ###Component###Email
 		
 		return $sendmail;
 	}
+
+	/**
+	 * Set the HTML email body
+	 *
+	 * @return  string on success
+	 *
+	 */
+	public static function setHtmlEmailBody($html, $subject)
+	{
+		$body = array();
+		$body[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
+		$body[] = "<html xmlns=\"http://www.w3.org/1999/xhtml\">";
+		$body[] = "<head>";
+		$body[] = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
+		$body[] = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
+		$body[] = "<title>".$subject."</title>";
+		$body[] = "<style type=\"text/css\">";
+		$body[] = "#outlook a {padding:0;}";
+		$body[] = ".ExternalClass {width:100%;}";
+		$body[] = ".ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} ";
+		$body[] = "p {margin: 0; padding: 0; font-size: 0px; line-height: 0px;} ";
+		$body[] = "table td {border-collapse: collapse;}";
+		$body[] = "table {border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }";
+		$body[] = "img {display: block; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}";
+		$body[] = "a img {border: none;}";
+		$body[] = "a {text-decoration: none; color: #000001;}";
+		$body[] = "a.phone {text-decoration: none; color: #000001 !important; pointer-events: auto; cursor: default;}";
+		$body[] = "span {font-size: 13px; line-height: 17px; font-family: monospace; color: #000001;}";
+		$body[] = "</style>";
+		$body[] = "<!--[if gte mso 9]>";
+		$body[] = "<style>";
+		$body[] = "/* Target Outlook 2007 and 2010 */";
+		$body[] = "</style>";
+		$body[] = "<![endif]-->";
+		$body[] = "</head>";
+		$body[] = "<body style=\"width:100%; margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;\">";
+		$body[] = "\n<!-- body wrapper -->";
+		$body[] = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0; padding:0; width:100%; line-height: 100% !important;\">";
+		$body[] = "<tr>";
+		$body[] = "<td valign=\"top\">";
+		$body[] = "<!-- edge wrapper -->";
+		$body[] = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"800\" >";
+		$body[] = "<tr>";
+		$body[] = "<td valign=\"top\">";
+		$body[] = "<!-- content wrapper -->";
+		$body[] = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"780\">";
+		$body[] = "<tr>";
+		$body[] = "<td valign=\"top\" style=\"vertical-align: top;\">";
+		$body[] = $html;
+		$body[] = "</td>";
+		$body[] = "</tr>";
+		$body[] = "</table>";
+		$body[] = "<!-- / content wrapper -->";
+		$body[] = "</td>";
+		$body[] = "</tr>";
+		$body[] = "</table>";
+		$body[] = "<!-- / edge wrapper -->";
+		$body[] = "</td>";
+		$body[] = "</tr>";
+		$body[] = "</table>";
+		$body[] = "<!-- / page wrapper -->";
+		$body[] = "</body>";
+		$body[] = "</html>";
+
+		return implode("\n", $body);
+	}
 }

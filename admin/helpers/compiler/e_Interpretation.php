@@ -92,6 +92,7 @@ class Interpretation extends Fields
 		{
 			// set email helper in place with component name
 			$component = $this->fileContentStatic['###component###'];
+			$Component = $this->fileContentStatic['###Component###'];
 			$target = array('admin' => 'emailer');
 			$done = $this->buildDynamique($target,'emailer',$component);
 			if ($done)
@@ -99,7 +100,7 @@ class Interpretation extends Fields
 				// the text for the file ###BAKING###
 				$this->fileContentDynamic['emailer_'.$component]['###BAKING###'] = ''; // <<-- to insure it gets updated
 				// return the code need to load the abstract class
-				return PHP_EOL."JLoader::register('".$component."Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/".$component."email.php'); ";
+				return PHP_EOL."JLoader::register('".$Component."Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/".$component."email.php'); ";
 			}
 		}
 		return '';
@@ -3946,7 +3947,7 @@ class Interpretation extends Fields
 		if (ComponentbuilderHelper::checkString($script))
 		{
 			$script .= PHP_EOL."\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
-			$script .= PHP_EOL."\t\t\t\t".'<img src="components/com_'.$component.'/assets/images/component-300.'.$this->componentImageType.'"/>';
+			$script .= PHP_EOL."\t\t\t\t".'<img src="components/com_'.$component.'/assets/images/vdm-component.'.$this->componentImageType.'"/>';
 			$script .= PHP_EOL."\t\t\t\t".'</a>\';';
 			
 			return $script;
@@ -3963,7 +3964,7 @@ class Interpretation extends Fields
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
 			$script .= PHP_EOL."\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
-			$script .= PHP_EOL."\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/component-300.'.$this->componentImageType.'"/>';
+			$script .= PHP_EOL."\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/vdm-component.'.$this->componentImageType.'"/>';
 			$script .= PHP_EOL."\t\t\t\t".'</a>';
 			$script .= PHP_EOL."\t\t\t\t<h3>Upgrade to Version ".$this->fileContentStatic['###VERSION###']." Was Successful! Let us know if anything is not working as expected.</h3>';";
 		}
@@ -11232,7 +11233,7 @@ class Interpretation extends Fields
 		{
 			$imagePath = $this->componentPath.'/admin/assets/images';
 			// move the image to its place
-			JFile::copy(JPATH_SITE.'/'.$path, $imagePath.'/component-300.'.$type,'',true);
+			JFile::copy(JPATH_SITE.'/'.$path, $imagePath.'/vdm-component.'.$type,'',true);
 			// now set the type to global for re-use
 			$this->componentImageType = $type;
 			// return image type

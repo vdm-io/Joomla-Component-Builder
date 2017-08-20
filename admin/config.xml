@@ -75,7 +75,16 @@
 			step="10"
 		/>		
 		<!-- Spacer_hr_a Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_a" hr="true" class="spacer_hr_a" />
+		<field type="spacer" name="spacer_hr_a" hr="true" class="spacer_hr_a" />		
+		<!-- Api Field. Type: User. (joomla) -->
+		<field
+			type="user"
+			name="api"
+			label="COM_COMPONENTBUILDER_CONFIG_API_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_API_DESCRIPTION"
+		/>		
+		<!-- Spacer_hr_b Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_b" hr="true" class="spacer_hr_b" />
 		<field name="autorTitle"
 			type="spacer"
 			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR"
@@ -146,6 +155,340 @@
 				COM_COMPONENTBUILDER_CONFIG_GRADIANT_LOAD</option>"
 		</field>
 	</fieldset>
+
+	<fieldset
+		name="mail_configuration_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_MAIL_CONFIGURATION">
+
+		<!-- Mailonline Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="mailonline"
+			label="COM_COMPONENTBUILDER_CONFIG_MAILONLINE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_MAILONLINE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_ON</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_OFF</option>
+		</field>		
+		<!-- Mailer Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="mailer"
+			label="COM_COMPONENTBUILDER_CONFIG_MAILER_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_MAILER_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			filter="WORD"
+			required="true"
+			default="global">
+			<!-- Option Set. -->
+			<option value="global">
+				COM_COMPONENTBUILDER_CONFIG_GLOBAL</option>
+			<option value="default">
+				COM_COMPONENTBUILDER_CONFIG_PHP_MAIL</option>
+			<option value="sendmail">
+				COM_COMPONENTBUILDER_CONFIG_SENDMAIL</option>
+			<option value="smtp">
+				COM_COMPONENTBUILDER_CONFIG_SMTP</option>
+		</field>		
+		<!-- Emailfrom Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="emailfrom"
+			label="COM_COMPONENTBUILDER_CONFIG_EMAILFROM_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EMAILFROM_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			validate="email"
+			message="Error! Please add email address here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EMAILFROM_HINT"
+			showon="mailer:smtp,sendmail,default"
+		/>		
+		<!-- Fromname Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="fromname"
+			label="COM_COMPONENTBUILDER_CONFIG_FROMNAME_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_FROMNAME_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please add some name here."
+			hint="COM_COMPONENTBUILDER_CONFIG_FROMNAME_HINT"
+			showon="mailer:smtp,sendmail,default"
+		/>		
+		<!-- Emailreply Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="emailreply"
+			label="COM_COMPONENTBUILDER_CONFIG_EMAILREPLY_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_EMAILREPLY_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			validate="email"
+			message="Error! Please add email address here."
+			hint="COM_COMPONENTBUILDER_CONFIG_EMAILREPLY_HINT"
+			showon="mailer:smtp,sendmail,default"
+		/>		
+		<!-- Replyname Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="replyname"
+			label="COM_COMPONENTBUILDER_CONFIG_REPLYNAME_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_REPLYNAME_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please add some name here."
+			hint="COM_COMPONENTBUILDER_CONFIG_REPLYNAME_HINT"
+			showon="mailer:smtp,sendmail,default"
+		/>		
+		<!-- Sendmail Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="sendmail"
+			label="COM_COMPONENTBUILDER_CONFIG_SENDMAIL_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_SENDMAIL_DESCRIPTION"
+			class="text_area"
+			required="false"
+			filter="PATH"
+			message="Error! Please add path to you local sendmail here."
+			hint="COM_COMPONENTBUILDER_CONFIG_SENDMAIL_HINT"
+			showon="mailer:sendmail"
+		/>		
+		<!-- Smtpauth Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="smtpauth"
+			label="COM_COMPONENTBUILDER_CONFIG_SMTPAUTH_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_SMTPAUTH_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			showon="mailer:smtp">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
+		</field>		
+		<!-- Smtpsecure Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="smtpsecure"
+			label="COM_COMPONENTBUILDER_CONFIG_SMTPSECURE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_SMTPSECURE_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			filter="WORD"
+			default="none"
+			showon="mailer:smtp">
+			<!-- Option Set. -->
+			<option value="none">
+				COM_COMPONENTBUILDER_CONFIG_NONE</option>
+			<option value="ssl">
+				COM_COMPONENTBUILDER_CONFIG_SSL</option>
+			<option value="tls">
+				COM_COMPONENTBUILDER_CONFIG_TLS</option>
+		</field>		
+		<!-- Smtpport Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="smtpport"
+			label="COM_COMPONENTBUILDER_CONFIG_SMTPPORT_LABEL"
+			size="60"
+			maxlength="150"
+			default="25"
+			description="COM_COMPONENTBUILDER_CONFIG_SMTPPORT_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="Error! Please add the port number of your SMTP server here."
+			hint="COM_COMPONENTBUILDER_CONFIG_SMTPPORT_HINT"
+			showon="mailer:smtp"
+		/>		
+		<!-- Smtpuser Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="smtpuser"
+			label="COM_COMPONENTBUILDER_CONFIG_SMTPUSER_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_SMTPUSER_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please add the username for SMTP server here."
+			hint="COM_COMPONENTBUILDER_CONFIG_SMTPUSER_HINT"
+			showon="mailer:smtp"
+		/>		
+		<!-- Smtppass Field. Type: Password. (joomla) -->
+		<field
+			type="password"
+			name="smtppass"
+			label="COM_COMPONENTBUILDER_CONFIG_SMTPPASS_LABEL"
+			size="60"
+			description="COM_COMPONENTBUILDER_CONFIG_SMTPPASS_DESCRIPTION"
+			class="text_area"
+			filter="raw"
+			message="Error! Please add the password for SMTP server here."
+			showon="mailer:smtp"
+		/>		
+		<!-- Smtphost Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="smtphost"
+			label="COM_COMPONENTBUILDER_CONFIG_SMTPHOST_LABEL"
+			size="60"
+			maxlength="150"
+			default="localhost"
+			description="COM_COMPONENTBUILDER_CONFIG_SMTPHOST_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please add the name of the SMTP host here."
+			hint="COM_COMPONENTBUILDER_CONFIG_SMTPHOST_HINT"
+			showon="mailer:smtp"
+		/>
+	</fieldset>
+	<fieldset
+		name="dkim_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_DKIM">
+
+		<!-- Dkim Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="dkim"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
+		</field>		
+		<!-- Dkim_domain Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="dkim_domain"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_DOMAIN_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_DOMAIN_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please add DKIM Domain here."
+			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_DOMAIN_HINT"
+			showon="dkim:1"
+			onchange="vdm_dkim();"
+		/>		
+		<!-- Dkim_selector Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="dkim_selector"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_SELECTOR_LABEL"
+			size="60"
+			maxlength="150"
+			default="vdm"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_SELECTOR_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please add DKIM/DNS selector here."
+			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_SELECTOR_HINT"
+			showon="dkim:1"
+			onchange="vdm_dkim();"
+		/>		
+		<!-- Dkim_passphrase Field. Type: Password. (joomla) -->
+		<field
+			type="password"
+			name="dkim_passphrase"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_PASSPHRASE_LABEL"
+			size="60"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_PASSPHRASE_DESCRIPTION"
+			class="text_area"
+			filter="raw"
+			message="Error! Please add  passphrase here."
+			showon="dkim:1"
+		/>		
+		<!-- Dkim_identity Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="dkim_identity"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_IDENTITY_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_IDENTITY_DESCRIPTION"
+			class="text_area"
+			filter="raw"
+			message="Error! Please add  DKIM Identity here."
+			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_IDENTITY_HINT"
+			showon="dkim:1"
+		/>		
+		<!-- Dkim_private_key Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="dkim_private_key"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_PRIVATE_KEY_LABEL"
+			rows="15"
+			cols="5"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_PRIVATE_KEY_DESCRIPTION"
+			class="input-xxlarge span12"
+			showon="dkim:1"
+		/>		
+		<!-- Dkim_public_key Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="dkim_public_key"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_PUBLIC_KEY_LABEL"
+			rows="5"
+			cols="5"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_PUBLIC_KEY_DESCRIPTION"
+			class="input-xxlarge span12"
+			showon="dkim:1"
+			onchange="vdm_dkim();"
+		/>		
+		<!-- Note_dkim_use Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_dkim_use" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DKIM_USE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DKIM_USE_DESCRIPTION" heading="h4" class="note_dkim_use" showon="dkim:1" />		
+		<!-- Dkim_key Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="dkim_key"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_KEY_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_KEY_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please add KEY here."
+			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_KEY_HINT"
+			showon="dkim:1"
+		/>		
+		<!-- Dkim_value Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="dkim_value"
+			label="COM_COMPONENTBUILDER_CONFIG_DKIM_VALUE_LABEL"
+			size="80"
+			maxlength="350"
+			description="COM_COMPONENTBUILDER_CONFIG_DKIM_VALUE_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="Error! Please add TXT record here."
+			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_VALUE_HINT"
+			showon="dkim:1"
+		/>
+	</fieldset>
 	<fieldset
 		name="encryption_config"
 		label="COM_COMPONENTBUILDER_CONFIG_ENCRYPTION_LABEL"
@@ -157,6 +500,62 @@
 			description="COM_COMPONENTBUILDER_CONFIG_BASIC_KEY_DESC"
 			size="60"
 			default=""
+		/>
+	</fieldset>
+	<fieldset
+		name="cronjob_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_CRONJOB">
+
+		<!-- Backupcronjob_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="backupcronjob_note" label="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_DESCRIPTION" heading="h4" class="backupcronjob_note" />		
+		<!-- Cronjob_backup_folder_path Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="cronjob_backup_folder_path"
+			label="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_LABEL"
+			size="70"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="false"
+			filter="PATH"
+			message="Error! Please add some text here."
+			hint="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_HINT"
+		/>		
+		<!-- Backup_email Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="backup_email"
+			label="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			validate="email"
+			message="Error! Please add email address here."
+			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_HINT"
+		/>		
+		<!-- Package_name_plaeholders Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="package_name_plaeholders" label="COM_COMPONENTBUILDER_CONFIG_PACKAGE_NAME_PLAEHOLDERS_LABEL" description="COM_COMPONENTBUILDER_CONFIG_PACKAGE_NAME_PLAEHOLDERS_DESCRIPTION" heading="h4" class="package_name_plaeholders" />		
+		<!-- Backup_package_name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="backup_package_name"
+			label="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_LABEL"
+			size="40"
+			maxlength="150"
+			default="JCB_Backup_[YEAR]_[MONTH]_[DAY]"
+			description="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="STRING"
+			message="Error! Please add name here."
+			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_HINT"
 		/>
 	</fieldset>
 	<fieldset

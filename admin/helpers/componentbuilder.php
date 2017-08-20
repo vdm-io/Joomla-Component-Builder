@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.10
-	@build			12th August, 2017
+	@build			19th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -39,7 +39,28 @@ abstract class ComponentbuilderHelper
 	{
 		// the Session keeps track of all data related to the current session of this user
 		self::loadSession();
-	} 
+	}  
+
+	/*
+	 * get all component IDs
+	 */
+	public static function getComponentIDs()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('id')));
+		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
+		$query->where($db->quoteName('published') . ' >= 1'); // do not backup trash
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{			
+				return $db->loadColumn();
+		}
+		return false;
+	}
 
 	/*
 	 * Autoloader
@@ -77,8 +98,43 @@ abstract class ComponentbuilderHelper
 		// load this for all
 		jimport('joomla.application');
 	}
-
+	
 	/**
+	 * Remove folders with files
+	 * 
+	 * @param   string   $dir  The path to folder to remove
+	 * @param   boolean   $git  if there is a git folder in that must not be removed
+	 *
+	 * @return  boolean   True in all is removed
+	 * 
+	 */
+	public static function removeFolder($dir, $git = false)
+	{
+		if (JFolder::exists($dir))
+		{
+			$it = new RecursiveDirectoryIterator($dir);
+			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+			foreach ($it as $file)
+			{
+				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
+				if ($file->isDir())
+				{
+					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
+					JFolder::delete($file->getPathname());
+				}
+				else
+				{
+					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
+					JFile::delete($file->getPathname());
+				}
+			}
+			if (!$git && JFolder::delete($dir))
+			{
+				return true;
+			}
+		}
+		return false;
+	}	/**
 	* 	The dynamic builder of views, tables and fields
 	**/
 	public static function dynamicBuilder(&$data, $type)
@@ -130,69 +186,39 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-	
-	/**
-	 * Remove folders with files
-	 * 
-	 * @param   string   $dir  The path to folder to remove
-	 * @param   boolean   $git  if there is a git folder in that must not be removed
-	 *
-	 * @return  boolean   True in all is removed
-	 * 
-	 */
-	public static function removeFolder($dir, $git = false)
-	{
-		if (JFolder::exists($dir))
-		{
-			$it = new RecursiveDirectoryIterator($dir);
-			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			foreach ($it as $file)
-			{
-				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
-				if ($file->isDir())
-				{
-					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
-					JFolder::delete($file->getPathname());
-				}
-				else
-				{
-					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
-					JFile::delete($file->getPathname());
-				}
-			}
-			if (!$git && JFolder::delete($dir))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/**
 	* 	Create file and write data to the file
 	**/
 	public static function writeFile($path, $data)
 	{
+		$klaar = false;
+		// open the file
 		$fh = fopen($path, "w");
 		if (!is_resource($fh))
 		{
-			return false;
+			return $klaar;
 		}
+		// write to the file
 		if (fwrite($fh, $data))
 		{
-			// close file.
-			fclose($fh);
-			return true;
+			// has been done
+			$klaar = true;
 		}
 		// close file.
 		fclose($fh);
-		return false;
+		return $klaar;
 	}
 
 	/**
 	* 	The user notice info File Name
 	**/
 	protected static $usernotice = false;
+
+	/**
+	* 	The backup hash file name
+	**/
+	protected static $backuphash = false;
 	
 	public static function getFilePath($type, $name = 'listing', $key = '', $fileType = '.json', $PATH = JPATH_COMPONENT_SITE)
 	{
@@ -1131,7 +1157,31 @@ abstract class ComponentbuilderHelper
 		}
 		return self::$localSession[$key];
 	}
-			  
+			 
+
+	/**
+	* 	check if it is a new hash
+	**/
+	public static function newHash($hash, $name = 'backup', $type = 'hash', $key = '',  $fileType = '.txt')
+	{
+		// make sure we have a hash
+		if (self::checkString($hash))
+		{
+			// first get the file path
+			$path_filename = self::getFilePath($name, $type, $key, $fileType, JPATH_COMPONENT_ADMINISTRATOR);
+			// set as read if not already set
+			if (($content = @file_get_contents($path_filename)) !== FALSE)
+			{
+				if ($hash == $content)
+				{
+					return false;
+				}
+			}
+			// set the hash
+			return self::writeFile($path_filename, $hash);
+		}
+		return false;
+	}
 	/**
 	*	Load the Component xml manifest.
 	**/
@@ -1670,7 +1720,14 @@ abstract class ComponentbuilderHelper
 			$query = $db->getQuery(true);
 
 			$query->select($db->quoteName(array($what)));
-			$query->from($db->quoteName('#_'.$main.'_'.$table));
+			if (empty($table))
+			{
+				$query->from($db->quoteName('#__'.$main));
+			}
+			else
+			{
+				$query->from($db->quoteName('#__'.$main.'_'.$table));
+			}
 			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
 			$db->setQuery($query);
 			$db->execute();
@@ -1953,12 +2010,20 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $component = 'componentbuilder')
 	{
-		// load some joomla helpers
-		JLoader::import('joomla.application.component.model');
 		// load the model file
-		JLoader::import( $name, $path . '/models' );
-		// return instance
-		return JModelLegacy::getInstance( $name, $component.'Model' );
+		JModelLegacy::addIncludePath( $path . '/models' );
+		// get instance
+		$model = JModelLegacy::getInstance( $name, $component.'Model' );
+		// if model not found
+		if ($model == false)
+		{
+			// build class name
+			$class = $prefix.$name;
+			// initilize the model
+			new $class();
+			$model = JModelLegacy::getInstance($name, $prefix);
+		}
+		return $model;
 	}
 	
 	/**
@@ -2165,10 +2230,16 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
+	// typo sorry!
 	public static function sorten($string, $length = 40, $addTip = true)
 	{
+		return self::shorten($string, $length, $addTip);
+	}
+
+	public static function shorten($string, $length = 40, $addTip = true)
+	{
 		if (self::checkString($string))
-        {
+		{
 			$initial = strlen($string);
 			$words = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
 			$words_count = count($words);
@@ -2188,7 +2259,7 @@ abstract class ComponentbuilderHelper
 			$final	= strlen($newString);
 			if ($initial != $final && $addTip)
 			{
-				$title = self::sorten($string, 400 , false);
+				$title = self::shorten($string, 400 , false);
 				return '<span class="hasTip" title="'.$title.'" style="cursor:help">'.trim($newString).'...</span>';
 			}
 			elseif ($initial != $final && !$addTip)
@@ -2287,15 +2358,15 @@ abstract class ComponentbuilderHelper
                 return '';
 	}
 
-        public static function htmlEscape($var, $charset = 'UTF-8', $sorten = false, $length = 40)
+        public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
 		if (self::checkString($var))
 		{
 			$filter = new JFilterInput();
 			$string = $filter->clean(html_entity_decode(htmlentities($var, ENT_COMPAT, $charset)), 'HTML');
-			if ($sorten)
+			if ($shorten)
 			{
-                                return self::sorten($string,$length);
+                                return self::shorten($string,$length);
 			}
 			return $string;
                 }

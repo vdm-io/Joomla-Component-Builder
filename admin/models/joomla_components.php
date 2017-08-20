@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 338 of this MVC
-	@build			7th August, 2017
+	@version		@update number 355 of this MVC
+	@build			19th August, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -56,12 +56,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		parent::__construct($config);
 	}
 
+	public $user;
 	public $packagePath		= false;
-	public $packageName	= false;
+	public $packageName		= false;
 	public $zipPath			= false;
 	public $key			= array();
-	public $exportBuyLinks	= array();
-	public $exportPackageLinks= array();
+	public $exportBuyLinks		= array();
+	public $exportPackageLinks	= array();
 	public $info			= array(
 						'name' => array(),
 						'short_description' => array(),
@@ -74,17 +75,18 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						'copyright' => array(),
 						'getKeyFrom' => null
 						);
+	public $activeType		= 'export';
 
 	protected $params;
 	protected $tempPath;
 	protected $customPath;
-	protected $smartExport	= array();
-	protected $templateIds	= array();
+	protected $smartExport		= array();
+	protected $templateIds		= array();
 	protected $layoutIds		= array();
 	protected $customCodeIds	= array();
-	protected $customCodeM	= array();
+	protected $customCodeM		= array();
 	protected $fieldTypes		= array();
-	protected $isRepeatable	= array();
+	protected $isRepeatable		= array();
 
 	/**
 	* Method to build the export package
@@ -97,22 +99,28 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
 			// Get the user object.
-			$user = JFactory::getUser();
+			if (!ComponentbuilderHelper::checkObject($this->user))
+			{
+				$this->user = JFactory::getUser();
+			}
 			// Create a new query object.
-			$db = JFactory::getDBO();
-			$query = $db->getQuery(true);
+			if (!ComponentbuilderHelper::checkObject($this->_db))
+			{
+				$this->_db = JFactory::getDBO();
+			}
+			$query = $this->_db->getQuery(true);
 
 			// Select some fields
 			$query->select(array('a.*'));
 			
 			// From the componentbuilder_joomla_component table
-			$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
+			$query->from($this->_db->quoteName('#__componentbuilder_joomla_component', 'a'));
 			$query->where('a.id IN (' . implode(',',$pks) . ')');
 			
 			// Implement View Level Access
-			if (!$user->authorise('core.options', 'com_componentbuilder'))
+			if (!$this->user->authorise('core.options', 'com_componentbuilder'))
 			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
+				$groups = implode(',', $this->user->getAuthorisedViewLevels());
 				$query->where('a.access IN (' . $groups . ')');
 			}
 
@@ -120,32 +128,58 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$query->order('a.ordering  ASC');
 
 			// Load the items
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
+			$this->_db->setQuery($query);
+			$this->_db->execute();
+			if ($this->_db->getNumRows())
 			{
 				// load the items from db
-				$items = $db->loadObjectList();
+				$items = $this->_db->loadObjectList();
 				// check if we have items
 				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// set the paths
-					$comConfig = JFactory::getConfig();
-					$this->tempPath = $comConfig->get('tmp_path');
 					// set params
 					$this->params = JComponentHelper::getParams('com_componentbuilder');
 					// set custom folder path
 					$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
-					// set the package path
-					if (count($items) == 1)
+					// check what type of export or backup this is
+					if ('backup' === $this->activeType || 'manualBackup' === $this->activeType)
 					{
-						$this->packageName = 'JCB_' . $this->getPackageName($items);
+						// set the paths
+						if (!$this->backupPath = $this->params->get('cronjob_backup_folder_path', null))
+						{
+							// set the paths
+							$comConfig = JFactory::getConfig();
+							$this->backupPath = $comConfig->get('tmp_path');
+						}
+						// set the date array
+						$date = JFactory::getDate();
+						$placeholderDate = array();
+						$placeholderDate['[YEAR]'] = $date->format('Y');
+						$placeholderDate['[MONTH]'] = $date->format('m');
+						$placeholderDate['[DAY]'] = $date->format('d');
+						$placeholderDate['[HOUR]'] = $date->format('H');
+						$placeholderDate['[MINUTE]'] = $date->format('i');
+						// get the package name
+						$packageName = $this->params->get('backup_package_name', 'JCB_Backup_[YEAR]_[MONTH]_[DAY]');
+						$this->packageName = str_replace(array_keys($placeholderDate), array_values($placeholderDate), $packageName);
 					}
 					else
 					{
-						$this->packageName = 'JCB_smartPackage';
+						// set the paths
+						$comConfig = JFactory::getConfig();
+						$this->backupPath = $comConfig->get('tmp_path');
+						// set the package name
+						if (count($items) == 1)
+						{
+							$this->packageName = 'JCB_' . $this->getPackageName($items);
+						}
+						else
+						{
+							$this->packageName = 'JCB_smartPackage';
+						}
 					}
-					$this->packagePath = $this->tempPath . '/' . $this->packageName;
+					// set the package path
+					$this->packagePath = rtrim($this->backupPath, '/') . '/' . $this->packageName;
 					$this->zipPath = $this->packagePath .'.zip';
 					if (JFolder::exists($this->packagePath))
 					{
@@ -162,13 +196,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$basic = new FOFEncryptAes($basickey, 128);
 					}
 					// add custom code
-					$this->setData($user, $db, 'custom_code', $pks, 'component');
+					$this->setData('custom_code', $pks, 'component');
 					// start loading the components
 					$this->smartExport['joomla_component'] = array();
 					foreach ($items as $nr => &$item)
 					{
 						// check if user has access
-						$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
+						$access = ($this->user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $this->user->authorise('joomla_component.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -227,34 +261,34 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// component image
 						$this->moveIt(array('image' => array($item->image)), 'image');
 						// add config fields
-						$this->setData($user, $db, 'field', $item->addconfig, 'field');
+						$this->setData('field', $item->addconfig, 'field');
 						// add admin views
-						$this->setData($user, $db, 'admin_view', $item->addadmin_views, 'adminview');
+						$this->setData('admin_view', $item->addadmin_views, 'adminview');
 						// add custom admin views
-						$this->setData($user, $db, 'custom_admin_view', $item->addcustom_admin_views, 'customadminview');
+						$this->setData('custom_admin_view', $item->addcustom_admin_views, 'customadminview');
 						// add site views
-						$this->setData($user, $db, 'site_view', $item->addsite_views, 'siteview');
+						$this->setData('site_view', $item->addsite_views, 'siteview');
 						// set the custom code ID's
 						$this->setCustomCodeIds($item, 'joomla_component');
 						// set the language strings for this component
-						$this->setLanguageTranslation($user, $db, $item->id);						
+						$this->setLanguageTranslation($item->id);						
 						// load to global object
 						$this->smartExport['joomla_component'][$item->id] = $item;
 					}
 					// add templates
 					if (ComponentbuilderHelper::checkArray($this->templateIds))
 					{
-						$this->setData($user, $db, 'template', array('template' => $this->templateIds), 'template');
+						$this->setData('template', array('template' => $this->templateIds), 'template');
 					}
 					// add layouts
 					if (ComponentbuilderHelper::checkArray($this->layoutIds))
 					{
-						$this->setData($user, $db, 'layout', array('layout' => $this->layoutIds), 'layout');
+						$this->setData('layout', array('layout' => $this->layoutIds), 'layout');
 					}
 					// add custom code
 					if (ComponentbuilderHelper::checkArray($this->customCodeIds))
 					{
-						$this->setData($user, $db, 'custom_code', array('custom_code' => $this->customCodeIds), 'custom_code');
+						$this->setData('custom_code', array('custom_code' => $this->customCodeIds), 'custom_code');
 					}
 					// has any data been set
 					if (ComponentbuilderHelper::checkArray($this->smartExport['joomla_component']))
@@ -447,17 +481,26 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					if (!JFile::exists($tmpFilePath) && JFile::exists($customFilePath))
 					{
 						// move the file to its place
-						JFile::copy($customFilePath, $tmpFilePath,'',true);
+						JFile::copy($customFilePath, $tmpFilePath);
 					}
 				}
 				if ('image' === $type)
 				{
+					$imageName = basename($item);
+					$imagePath = str_replace($imageName, '', $item);
+					$imageFolderPath = str_replace('//', '/', $this->packagePath.'/'. $imagePath);
+					// check if image folder exist
+					if (!JFolder::exists($imageFolderPath))
+					{
+						// create the folders if not found
+						JFolder::create($imageFolderPath);
+					}
 					$tmpImagePath = str_replace('//', '/', $this->packagePath.'/'.$item);
 					$customImagePath = str_replace('//', '/', JPATH_ROOT.'/'.$item);
 					if (!JFile::exists($tmpImagePath) && JFile::exists($customImagePath))
 					{
 						// move the file to its place
-						JFile::copy($customImagePath, $tmpImagePath,'',true);
+						JFile::copy($customImagePath, $tmpImagePath);
 					}
 				}
 				if ('folder' === $type)
@@ -480,7 +523,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	protected function setData(&$user, &$db, $table, $values, $key)
+	protected function setData($table, $values, $key)
 	{
 		// if json convert to array
 		if (ComponentbuilderHelper::checkJson($values))
@@ -496,13 +539,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			return false;
 		}
-		$query = $db->getQuery(true);
+		$query = $this->_db->getQuery(true);
 
 		// Select some fields
 		$query->select(array('a.*'));
 			
 		// From the componentbuilder_ANY table
-		$query->from($db->quoteName('#__componentbuilder_'. $table, 'a'));
+		$query->from($this->_db->quoteName('#__componentbuilder_'. $table, 'a'));
 		if ('custom_code' === $table && 'component' === $key)
 		{
 			$query->where('a.component IN (' . implode(',',$values) . ')');
@@ -517,9 +560,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		}
 			
 		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		if (!$this->user->authorise('core.options', 'com_componentbuilder'))
 		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$groups = implode(',', $this->user->getAuthorisedViewLevels());
 			$query->where('a.access IN (' . $groups . ')');
 		}
 
@@ -527,11 +570,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$query->order('a.ordering  ASC');
 
 		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
+		$this->_db->setQuery($query);
+		$this->_db->execute();
+		if ($this->_db->getNumRows())
 		{
-			$items = $db->loadObjectList();
+			$items = $this->_db->loadObjectList();
 			// check if we have items
 			if (ComponentbuilderHelper::checkArray($items))
 			{
@@ -569,7 +612,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					if ('admin_view' === $table)
 					{
 						// add fields
-						$this->setData($user, $db, 'field', $item->addfields, 'field');
+						$this->setData('field', $item->addfields, 'field');
 						// admin icon
 						$this->moveIt(array('image' => array($item->icon)), 'image');
 						// admin icon_add
@@ -581,7 +624,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					if ('field' === $table)
 					{
 						// add field types
-						$this->setData($user, $db, 'fieldtype', array('fieldtype' => array($item->fieldtype)), 'fieldtype');
+						$this->setData('fieldtype', array('fieldtype' => array($item->fieldtype)), 'fieldtype');
 						// we must add a repeatable field subfields
 						if ($this->checkRepeatable($item->fieldtype))
 						{
@@ -600,7 +643,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// get fields
 							if (ComponentbuilderHelper::checkArray($fieldsSets))
 							{
-								$this->setData($user, $db, 'field', array('field' => $fieldsSets), 'field');
+								$this->setData('field', array('field' => $fieldsSets), 'field');
 							}
 						}
 					}
@@ -608,40 +651,40 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					if ('site_view' === $table || 'custom_admin_view' === $table)
 					{
 						// search for templates & layouts
-						$this->getTemplateLayout(base64_decode($item->default), $db);
+						$this->getTemplateLayout(base64_decode($item->default));
 						// add search array templates and layouts
 						foreach ($searchArray as $scripter)
 						{
 							if (isset($item->{'add_'.$scripter}) && $item->{'add_'.$scripter} == 1)
 							{
-								$this->getTemplateLayout($item->$scripter, $db);
+								$this->getTemplateLayout($item->$scripter);
 							}
 						}
 						// add dynamic gets
-						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => array($item->main_get)), 'dynamic_get');
-						$this->setData($user, $db, 'dynamic_get', $item->custom_get, 'custom_get');
+						$this->setData('dynamic_get', array('dynamic_get' => array($item->main_get)), 'dynamic_get');
+						$this->setData('dynamic_get', $item->custom_get, 'custom_get');
 						if ('custom_admin_view' === $table && isset($item->icon))
 						{
 							// view icon
 							$this->moveIt(array('image' => array($item->icon)), 'image');
 						}
 						// add snippets
-						$this->setData($user, $db, 'snippet', array('snippet' => array($item->snippet)), 'snippet');
+						$this->setData('snippet', array('snippet' => array($item->snippet)), 'snippet');
 					}
 					// actions to take if table is template and layout
 					if ('layout' === $table || 'template' === $table)
 					{
 						// search for templates & layouts
-						$this->getTemplateLayout(base64_decode($item->$table), $db, $user);
+						$this->getTemplateLayout(base64_decode($item->$table), $this->user);
 						// add search array templates and layouts
 						if (isset($item->add_php_view) && $item->add_php_view == 1)
 						{
-							$this->getTemplateLayout($item->php_view, $db, $user);
+							$this->getTemplateLayout($item->php_view, $this->user);
 						}
 						// add dynamic gets
-						$this->setData($user, $db, 'dynamic_get', array('dynamic_get' => $item->dynamic_get), 'dynamic_get');
+						$this->setData('dynamic_get', array('dynamic_get' => $item->dynamic_get), 'dynamic_get');
 						// add snippets
-						$this->setData($user, $db, 'snippet', array('snippet' => array($item->snippet)), 'snippet');
+						$this->setData('snippet', array('snippet' => array($item->snippet)), 'snippet');
 					}
 				}
 			}
@@ -730,7 +773,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	 * @return  void
 	 * 
 	 */
-	protected function getTemplateLayout($default, &$db, $user = false)
+	protected function getTemplateLayout($default, $user = false)
 	{
 		// set the Template data
 		$temp1 = ComponentbuilderHelper::getAllBetween($default, "\$this->loadTemplate('","')");
@@ -756,7 +799,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			foreach ($templates as $template)
 			{
-				$data = $this->getDataWithAlias($template, 'template', $db);
+				$data = $this->getDataWithAlias($template, 'template');
 				if (ComponentbuilderHelper::checkArray($data))
 				{
 					if (!isset($this->templateIds[$data['id']]))
@@ -791,7 +834,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			foreach ($layouts as $layout)
 			{
-				$data = $this->getDataWithAlias($layout, 'layout', $db);
+				$data = $this->getDataWithAlias($layout, 'layout');
 				if (ComponentbuilderHelper::checkArray($data))
 				{
 					if (!isset($this->layoutIds[$data['id']]))
@@ -808,7 +851,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			foreach ($again as $get)
 			{
-				$this->getTemplateLayout($get, $db);
+				$this->getTemplateLayout($get);
 			}
 		}
 		// Set the Data 
@@ -817,12 +860,12 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			// add templates
 			if (ComponentbuilderHelper::checkArray($this->templateIds))
 			{
-				$this->setData($user, $db, 'template', array('template' => $this->templateIds), 'template');
+				$this->setData('template', array('template' => $this->templateIds), 'template');
 			}
 			// add layouts
 			if (ComponentbuilderHelper::checkArray($this->layoutIds))
 			{
-				$this->setData($user, $db, 'layout', array('layout' => $this->layoutIds), 'layout');
+				$this->setData('layout', array('layout' => $this->layoutIds), 'layout');
 			}
 		}
 	}
@@ -837,14 +880,14 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	 * @return  array The data found with the alias
 	 * 
 	 */
-	protected function getDataWithAlias($n_ame, $table, &$db)
+	protected function getDataWithAlias($n_ame, $table)
 	{
 		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id', 'a.alias', 'a.'.$table, 'a.php_view', 'a.add_php_view')));
+		$query = $this->_db->getQuery(true);
+		$query->select($this->_db->quoteName(array('a.id', 'a.alias', 'a.'.$table, 'a.php_view', 'a.add_php_view')));
 		$query->from('#__componentbuilder_'.$table.' AS a');
-		$db->setQuery($query);
-		$rows = $db->loadObjectList();
+		$this->_db->setQuery($query);
+		$rows = $this->_db->loadObjectList();
 		foreach ($rows as $row)
 		{
 			$k_ey = ComponentbuilderHelper::safeString($row->alias);
@@ -930,16 +973,16 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*  @return  void
 	* 
 	*/
-	protected function setLanguageTranslation(&$user, &$db, &$id)
+	protected function setLanguageTranslation(&$id)
 	{
 		// Create a new query object.
-		$query = $db->getQuery(true);
+		$query = $this->_db->getQuery(true);
 		$query->select(array('a.*'));
 		$query->from('#__componentbuilder_language_translation AS a');
 		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		if (!$this->user->authorise('core.options', 'com_componentbuilder'))
 		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$groups = implode(',', $this->user->getAuthorisedViewLevels());
 			$query->where('a.access IN (' . $groups . ')');
 		}
 
@@ -947,11 +990,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$query->order('a.ordering  ASC');
 
 		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
+		$this->_db->setQuery($query);
+		$this->_db->execute();
+		if ($this->_db->getNumRows())
 		{
-			$items = $db->loadObjectList();
+			$items = $this->_db->loadObjectList();
 			// check if we have items
 			if (ComponentbuilderHelper::checkArray($items))
 			{
@@ -971,7 +1014,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// add languages
 							if (isset($item->translation))
 							{							
-								$this->setData($user, $db, 'language', $item->translation, 'language');
+								$this->setData('language', $item->translation, 'language');
 							}
 						}
 					}

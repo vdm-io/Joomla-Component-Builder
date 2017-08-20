@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.10
-	@build			12th August, 2017
+	@build			19th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_vdm.php
@@ -27,7 +27,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 ?>
-<img alt="<?php echo JText::_('COM_COMPONENTBUILDER'); ?>" src="components/com_componentbuilder/assets/images/component-300.jpg">
+<img alt="<?php echo JText::_('COM_COMPONENTBUILDER'); ?>" src="components/com_componentbuilder/assets/images/vdm-component.jpg">
 <ul class="list-striped">
 	<li><b><?php echo JText::_('COM_COMPONENTBUILDER_VERSION'); ?>:</b> <?php echo $this->manifest->version; ?>&nbsp;&nbsp;<span class="update-notice"></span></li>
 	<li><b><?php echo JText::_('COM_COMPONENTBUILDER_DATE'); ?>:</b> <?php echo $this->manifest->creationDate; ?></li>

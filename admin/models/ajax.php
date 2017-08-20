@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.10
-	@build			12th August, 2017
+	@build			19th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -147,6 +147,33 @@ class ComponentbuilderModelAjax extends JModelList
 		$html[] = '<a href="index.php?option=com_componentbuilder&ref=compiler&view=joomla_components&task=joomla_component.edit&id=' . (int) $object->id . '" class="btn btn-small span12"><span class="icon-edit"></span> ' . JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' .$object->system_name . '</a></p>';
 		// now return the diplay
 		return implode("\n", $html);
+	}
+
+	/**
+	* 	get the component details (html)
+	**/
+	public function getCronPath($type)
+	{
+		$result = array('error' => '<span style="color: red;">' . JText::_('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_SINCE_INCORRECT_TYPE_REQUESTED') . '</span>');
+		if ('backup' === $type)
+		{
+			$result['error'] = '<span style="color: red;">' . JText::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
+			if ($this->hasCurl())
+			{
+				$path = '*/5 * * * * curl -s "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
+			}
+			else
+			{
+				$path = '*/5 * * * * wget "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
+			}
+			$result['path'] =  '<code>' . $path . '</code>';
+		}
+		return $result;
+	}
+	
+	protected function hasCurl()
+	{
+		return function_exists('curl_version');
 	}
 
 	// Used in admin_view

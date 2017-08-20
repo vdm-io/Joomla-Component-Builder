@@ -118,12 +118,23 @@ abstract class ###Component###Helper
 	**/
 	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $component = '###component###')
 	{
-		// load some joomla helpers
-		JLoader::import('joomla.application.component.model');
+		// full path
+		$fullPath = $path . '/models';
 		// load the model file
-		JLoader::import( $name, $path . '/models' );
-		// return instance
-		return JModelLegacy::getInstance( $name, $component.'Model' );
+		JModelLegacy::addIncludePath($fullPath);
+		// get instance
+		$model = JModelLegacy::getInstance( $name, $component.'Model' );
+		// if model not found
+		if ($model == false)
+		{
+			require_once $fullPath.'/'.strtolower($name).'.php';
+			// build class name
+			$class = $prefix.$name;
+			// initialize the model
+			new $class();
+			$model = JModelLegacy::getInstance($name, $prefix);
+		}
+		return $model;
 	}
 	
 	/**
@@ -331,7 +342,14 @@ abstract class ###Component###Helper
 			$query = $db->getQuery(true);
 
 			$query->select($db->quoteName(array($what)));
-			$query->from($db->quoteName('#_'.$main.'_'.$table));
+			if (empty($table))
+			{
+				$query->from($db->quoteName('#__'.$main));
+			}
+			else
+			{
+				$query->from($db->quoteName('#__'.$main.'_'.$table));
+			}
 			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
 			$db->setQuery($query);
 			$db->execute();
@@ -644,7 +662,13 @@ abstract class ###Component###Helper
 		return false;
 	}
 
+	// typo sorry!
 	public static function sorten($string, $length = 40, $addTip = true)
+	{
+		return self::shorten($string, $length, $addTip);
+	}
+
+	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
 		{
@@ -667,7 +691,7 @@ abstract class ###Component###Helper
 			$final	= strlen($newString);
 			if ($initial != $final && $addTip)
 			{
-				$title = self::sorten($string, 400 , false);
+				$title = self::shorten($string, 400 , false);
 				return '<span class="hasTip" title="'.$title.'" style="cursor:help">'.trim($newString).'...</span>';
 			}
 			elseif ($initial != $final && !$addTip)
@@ -766,15 +790,15 @@ abstract class ###Component###Helper
                 return '';
 	}
 
-	public static function htmlEscape($var, $charset = 'UTF-8', $sorten = false, $length = 40)
+	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
 		if (self::checkString($var))
 		{
 			$filter = new JFilterInput();
 			$string = $filter->clean(html_entity_decode(htmlentities($var, ENT_COMPAT, $charset)), 'HTML');
-			if ($sorten)
+			if ($shorten)
 			{
-           		return self::sorten($string,$length);
+           		return self::shorten($string,$length);
 			}
 			return $string;
 		}

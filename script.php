@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.4.10
-	@build			12th August, 2017
+	@build			19th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1714,7 +1714,7 @@ class com_componentbuilderInstallerScript
 
 			// Field to update.
 			$fields = array(
-				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","minify":"0","percentagelanguageadd":"50","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
+				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","minify":"0","percentagelanguageadd":"50","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
 			);
 
 			// Condition.
@@ -1726,7 +1726,7 @@ class com_componentbuilderInstallerScript
 			$db->setQuery($query);
 			$allDone = $db->execute();
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
-				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
+				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>';
 		}
 		// do any updates needed
@@ -2202,7 +2202,7 @@ class com_componentbuilderInstallerScript
 
 
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
-				<img src="components/com_componentbuilder/assets/images/component-300.jpg"/>
+				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
 				<h3>Upgrade to Version 2.4.10 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}

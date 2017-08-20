@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 338 of this MVC
-	@build			7th August, 2017
+	@version		@update number 355 of this MVC
+	@build			19th August, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -144,6 +144,11 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			{
 				// add Import Components button.
 				JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_COMPONENTS', false);
+			}
+			if ($this->user->authorise('joomla_component.backup'))
+			{
+				// add Backup button.
+				JToolBarHelper::custom('joomla_components.backup', 'archive', '', 'COM_COMPONENTBUILDER_BACKUP', false);
 			}
 
                         if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
