@@ -3,13 +3,13 @@
 
 This is a [Joomla 3.x](http://www.joomla.org/) component.
 
- ![Component Builder image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/component-300.jpg "The Component Builder")
+ ![Component Builder image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/vdm-component.jpg "The Component Builder")
 
 The Component Builder for [Joomla](http://www.joomla.org/) that is highly advanced, truly able to build extremely complex components in a fraction of the time.
 
 Whether you're a seasoned [Joomla](http://www.joomla.org/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.4.10) with **ALL** its features and **ALL** concepts totally open-source and free!
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.5.0) with **ALL** its features and **ALL** concepts totally open-source and free!
 
 Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
@@ -109,11 +109,11 @@ Component Builder is mapped as a component in itself on my local development env
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
 + *Last Build*: 20th August, 2017
-+ *Version*: 2.4.10
++ *Version*: 2.5.0
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **111630**
-+ *File count*: **662**
++ *Line count*: **111648**
++ *File count*: **663**
 + *Folder count*: **117**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).
