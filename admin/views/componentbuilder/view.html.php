@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.0
-	@build			20th August, 2017
+	@build			21st August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
