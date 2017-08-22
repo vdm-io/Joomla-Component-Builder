@@ -443,7 +443,7 @@ class Infusion extends Interpretation
                                         $this->fileContentDynamic[$viewName_list]['###ADMIN_CUSTOM_BUTTONS_LIST###']
 						= $this->setCustomButtons($view, 3, "\t");
                                         $this->fileContentDynamic[$viewName_list]['###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST###'] 
-						= $this->setFunctionOnlyButtons();
+						= $this->setFunctionOnlyButtons($viewName_list);
 
                                         // ###GET_ITEMS_METHOD_STRING_FIX### <<<DYNAMIC>>>
                                         $this->fileContentDynamic[$viewName_list]['###GET_ITEMS_METHOD_STRING_FIX###']

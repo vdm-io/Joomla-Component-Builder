@@ -112,7 +112,7 @@ Component Builder is mapped as a component in itself on my local development env
 + *Version*: 2.5.0
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **111712**
++ *Line count*: **111662**
 + *File count*: **663**
 + *Folder count*: **117**
 

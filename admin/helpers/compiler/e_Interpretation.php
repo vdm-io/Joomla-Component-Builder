@@ -3113,11 +3113,15 @@ class Interpretation extends Fields
 						// add cpanel button TODO does not work well on site with permissions
 						if (isset($custom_button['type']) && $custom_button['type'] == 2)
 						{
-							$this->onlyFunctionButton[] = "\t".$tab."if (\$this->user->authorise('".$viewName.".".$keyCode."'))";
-							$this->onlyFunctionButton[] = "\t".$tab."{";
-							$this->onlyFunctionButton[] = "\t".$tab."\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
-							$this->onlyFunctionButton[] = "\t".$tab."\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
-							$this->onlyFunctionButton[] = "\t".$tab."}";
+							if (!isset($this->onlyFunctionButton[$viewsName]))
+							{
+								$this->onlyFunctionButton[$viewsName] = array();
+							}
+							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."if (\$this->user->authorise('".$viewName.".".$keyCode."'))";
+							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."{";
+							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
+							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
+							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."}";
 						}
 						else
 						{
@@ -3182,12 +3186,12 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setFunctionOnlyButtons()
+	public function setFunctionOnlyButtons($viewName_list)
 	{
 		// return buttons if they were build
-		if (isset($this->onlyFunctionButton) && ComponentbuilderHelper::checkArray($this->onlyFunctionButton))
+		if (isset($this->onlyFunctionButton[$viewName_list]) && ComponentbuilderHelper::checkArray($this->onlyFunctionButton[$viewName_list]))
 		{
-			return PHP_EOL.implode(PHP_EOL,$this->onlyFunctionButton);
+			return PHP_EOL.implode(PHP_EOL,$this->onlyFunctionButton[$viewName_list]);
 		}
 		return '';
 	}
