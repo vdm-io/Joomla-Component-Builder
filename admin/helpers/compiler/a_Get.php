@@ -1488,13 +1488,13 @@ class Get
 			// add_sql
 			if ($view->add_sql == 1)
 			{
-				if ($view->source == 1)
+				if ($view->source == 1 && isset($view->tables))
 				{
 					// build and add the SQL dump
 					$this->customScriptBuilder['sql'][$name_single] = $this->buildSqlDump($view->tables,$name_single, $id);
 					unset($view->tables);
 				}
-				elseif ($view->source == 2)
+				elseif ($view->source == 2 && isset($view->sql))
 				{
 					// add the SQL dump string
 					$this->customScriptBuilder['sql'][$name_single] = base64_decode($view->sql);

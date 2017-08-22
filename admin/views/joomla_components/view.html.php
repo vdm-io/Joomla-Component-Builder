@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 355 of this MVC
-	@build			21st August, 2017
+	@version		@update number 357 of this MVC
+	@build			22nd August, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -140,11 +140,6 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 				// add Export Components button.
 				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_COMPONENTS', false);
 			}
-			if ($this->user->authorise('joomla_component.import_components'))
-			{
-				// add Import Components button.
-				JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_COMPONENTS', false);
-			}
 			if ($this->user->authorise('joomla_component.backup'))
 			{
 				// add Backup button.
@@ -164,7 +159,12 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			{
 				JToolBarHelper::custom('joomla_components.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                } 
+                }
+		if ($this->user->authorise('joomla_component.import_components'))
+		{
+			// add Import Components button.
+			JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_COMPONENTS', false);
+		} 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_component.import'))
 		{

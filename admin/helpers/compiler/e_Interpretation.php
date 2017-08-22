@@ -31,27 +31,159 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Interpretation extends Fields
 {	
-	public $theContributors			= '';
-	public $uninstallBuilder		= array();
-	public $updateSQLBuilder		= array();
-	public $listColnrBuilder		= array();
-	public $permissionBuilder		= array();
-	public $permissionDashboard		= array();
-	public $permissionCore			= array();
-	public $customFieldBuilder		= array();
-	public $buildCategories			= array();
-	public $iconBuilder			= array();
-	public $validationFixBuilder		= array();
-	public $editBodyViewScriptBuilder	= array();
-	public $targetRelationControl		= array();
-	public $targetControlsScriptChecker	= array();
-	public $setRouterHelpDone		= array();
-	public $otherWhere			= array();
-	public $DashboardGetCustomData		= array();
-	public $customAdminAdded		= array();
+	/**
+	 * The contributors
+	 * 
+	 * @var    string
+	 */
+	public $theContributors = '';
 	
-	protected $hasCatIdRequest		= array();
-	protected $hasIdRequest			= array();
+	/**
+	 * The unistall builder
+	 * 
+	 * @var    array
+	 */
+	public $uninstallBuilder = array();
+	
+	/**
+	 * The update SQL builder
+	 * 
+	 * @var    array
+	 */
+	public $updateSQLBuilder = array();
+	
+	/**
+	 * The List Column Builder
+	 * 
+	 * @var    array
+	 */
+	public $listColnrBuilder = array();
+	
+	/**
+	 * The permissions Builder
+	 * 
+	 * @var    array
+	 */
+	public $permissionBuilder = array();
+	
+	/**
+	 * The dashboard permissions builder
+	 * 
+	 * @var    array
+	 */
+	public $permissionDashboard = array();
+	
+	/**
+	 * The permissions core
+	 * 
+	 * @var    array
+	 */
+	public $permissionCore = array();
+	
+	/**
+	 * The customs field builder
+	 * 
+	 * @var    array
+	 */
+	public $customFieldBuilder = array();
+	
+	/**
+	 * The category builder
+	 * 
+	 * @var    array
+	 */
+	public $buildCategories = array();
+	
+	/**
+	 * The icon builder
+	 * 
+	 * @var    array
+	 */
+	public $iconBuilder = array();
+	
+	/**
+	 * The validation fix builder
+	 * 
+	 * @var    array
+	 */
+	public $validationFixBuilder = array();
+	
+	/**
+	 * The edit body script builder
+	 * 
+	 * @var    array
+	 */
+	public $editBodyViewScriptBuilder = array();
+	
+	/**
+	 * The target relation control
+	 * 
+	 * @var    array
+	 */
+	public $targetRelationControl = array();
+	
+	/**
+	 * The target control script checker
+	 * 
+	 * @var    array
+	 */
+	public $targetControlsScriptChecker = array();
+	
+	/**
+	 * The router helper
+	 * 
+	 * @var    array
+	 */
+	public $setRouterHelpDone = array();
+	
+	/**
+	 * The other where
+	 * 
+	 * @var    array
+	 */
+	public $otherWhere = array();
+	
+	/**
+	 * The dashboard get custom data
+	 * 
+	 * @var    array
+	 */
+	public $DashboardGetCustomData = array();
+	
+	/**
+	 * The custom admin added
+	 * 
+	 * @var    array
+	 */
+	public $customAdminAdded = array();
+	
+	/**
+	 * The extensions params
+	 * 
+	 * @var    array
+	 */	
+	protected $extensionsParams = array();
+	
+	/**
+	 * The asset rules
+	 * 
+	 * @var    array
+	 */
+	public $assetsRules = array();
+	
+	/**
+	 * View Has Category Request
+	 * 
+	 * @var    array
+	 */
+	protected $hasCatIdRequest = array();
+	
+	/**
+	 * View Has Id Request
+	 * 
+	 * @var    array
+	 */
+	protected $hasIdRequest = array();
 
 	/**
 	 * Constructor
@@ -107,7 +239,7 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 *
+	 * set the lock license (NOT OKAY)
 	*/
 	public function setLockLicense()
 	{
@@ -3917,8 +4049,34 @@ class Interpretation extends Fields
 		
 		// set the component name
 		$component = $this->fileContentStatic['###component###'];
-
-		if (isset($this->paramsBuilder) && ComponentbuilderHelper::checkString($this->paramsBuilder))
+		
+		// add the assets table update for permissions rules
+		if (isset($this->assetsRules) && ComponentbuilderHelper::checkArray($this->assetsRules))
+		{
+			if (ComponentbuilderHelper::checkString($script))
+			{
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion assets permission.";
+			}
+			else
+			{
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Install the global extenstion assets permission.";
+				$script .= PHP_EOL."\t\t\t\$db = JFactory::getDbo();";
+			}
+			$script .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
+			$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Field to update.";
+			$script .= PHP_EOL."\t\t\t\$fields = array(";
+			$script .= PHP_EOL."\t\t\t\t\$db->quoteName('rules') . ' = ' . \$db->quote('{".implode(',', $this->assetsRules)."}'),";
+			$script .= PHP_EOL."\t\t\t);";
+			$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Condition.";
+			$script .= PHP_EOL."\t\t\t\$conditions = array(";
+			$script .= PHP_EOL."\t\t\t\t\$db->quoteName('name') . ' = ' . \$db->quote('com_".$component."')";
+			$script .= PHP_EOL."\t\t\t);";
+			$script .= PHP_EOL."\t\t\t\$query->update(\$db->quoteName('#__assets'))->set(\$fields)->where(\$conditions);";
+			$script .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
+			$script .= PHP_EOL."\t\t\t\$allDone = \$db->execute();".PHP_EOL;
+		}
+		// add the global params for the component global settings
+		if (isset($this->extensionsParams) && ComponentbuilderHelper::checkArray($this->extensionsParams))
 		{
 			if (ComponentbuilderHelper::checkString($script))
 			{
@@ -3930,20 +4088,21 @@ class Interpretation extends Fields
 				$script .= PHP_EOL."\t\t\t\$db = JFactory::getDbo();";
 			}
 			$script .= PHP_EOL."\t\t\t\$query = \$db->getQuery(true);";
-			$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Field to update.";
+			$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Field to update.";
 			$script .= PHP_EOL."\t\t\t\$fields = array(";
-			$script .= PHP_EOL."\t\t\t\t\$db->quoteName('params') . ' = ' . \$db->quote('{".$this->paramsBuilder."}'),";
+			$script .= PHP_EOL."\t\t\t\t\$db->quoteName('params') . ' = ' . \$db->quote('{".implode(',', $this->extensionsParams)."}'),";
 			$script .= PHP_EOL."\t\t\t);";
-			$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Condition.";
+			$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Condition.";
 			$script .= PHP_EOL."\t\t\t\$conditions = array(";
 			$script .= PHP_EOL."\t\t\t\t\$db->quoteName('element') . ' = ' . \$db->quote('com_".$component."')";
 			$script .= PHP_EOL."\t\t\t);";
-			$script .= PHP_EOL.PHP_EOL."\t\t\t\$query->update(\$db->quoteName('#__extensions'))->set(\$fields)->where(\$conditions);";
+			$script .= PHP_EOL."\t\t\t\$query->update(\$db->quoteName('#__extensions'))->set(\$fields)->where(\$conditions);";
 			$script .= PHP_EOL."\t\t\t\$db->setQuery(\$query);";
-			$script .= PHP_EOL."\t\t\t\$allDone = \$db->execute();";
+			$script .= PHP_EOL."\t\t\t\$allDone = \$db->execute();".PHP_EOL;
 		}
 		// add the custom script
 		$script .= $this->getCustomScriptBuilder('php_postflight', 'install', PHP_EOL.PHP_EOL, null, true);
+		// add the component install notice
 		if (ComponentbuilderHelper::checkString($script))
 		{
 			$script .= PHP_EOL."\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
@@ -12015,7 +12174,7 @@ class Interpretation extends Fields
 			// start loading Global params
 			$autorName = ComponentbuilderHelper::htmlEscape($this->componentData->author);
 			$autorEmail = ComponentbuilderHelper::htmlEscape($this->componentData->email);
-			$this->paramsBuilder = '"autorName":"'.$autorName.'","autorEmail":"'.$autorEmail.'"';
+			$this->extensionsParams[] = '"autorName":"'.$autorName.'","autorEmail":"'.$autorEmail.'"';
 			// set the custom fields
 			if (isset($this->componentData->config) && ComponentbuilderHelper::checkArray($this->componentData->config))
 			{
@@ -12047,18 +12206,18 @@ class Interpretation extends Fields
 							if ((strpos($field['custom_value'], '["') !== false) && (strpos($field['custom_value'], '"]') !== false))
 							{
 								// load the Global checkin defautls
-								$this->paramsBuilder .= ',"'.$fieldName.'":'.$field['custom_value'];
+								$this->extensionsParams[] = '"'.$fieldName.'":'.$field['custom_value'];
 							}
 							else
 							{
 								// load the Global checkin defautls
-								$this->paramsBuilder .= ',"'.$fieldName.'":"'.$field['custom_value'].'"';
+								$this->extensionsParams[] = '"'.$fieldName.'":"'.$field['custom_value'].'"';
 							}
 						}
 						elseif (ComponentbuilderHelper::checkString($fieldDefault))
 						{
 							// load the Global checkin defautls
-							$this->paramsBuilder .= ',"'.$fieldName.'":"'.$fieldDefault.'"';
+							$this->extensionsParams[] = '"'.$fieldName.'":"'.$fieldDefault.'"';
 						}
 					}
 				}
@@ -12257,7 +12416,7 @@ class Interpretation extends Fields
 				$this->configFieldSets[] = "\t\t\t".'multiple="true"';
 				$this->configFieldSets[] = "\t\t/>";
 				// set params defaults
-				$this->paramsBuilder .= ',"'.$selector.'":["2"]';
+				$this->extensionsParams[] = '"'.$selector.'":["2"]';
 			}
 			// add custom Target Groups fields
 			if (isset($this->configFieldSetsCustomField['Target Groups']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Target Groups']))
@@ -12357,7 +12516,7 @@ class Interpretation extends Fields
 			$this->langContent[$this->lang][$lang.'_CHECK_TIMER_OPTION_FIVE']	= "Once a week";
 			$this->langContent[$this->lang][$lang.'_CHECK_TIMER_OPTION_SIX']	= "Never";
 			// load the Global checkin defautls
-			$this->paramsBuilder .= ',"check_in":"-1 day"';
+			$this->extensionsParams[] = '"check_in":"-1 day"';
 		}
 		// set history control
 		if ($this->setTagHistory)
@@ -12383,7 +12542,7 @@ class Interpretation extends Fields
 			$this->configFieldSets[] = "\t\t/>";
 			$this->configFieldSets[] = "\t\t".'<field type="spacer" name="spacerHistory" hr="true" />';
 			// load the Global checkin defautls
-			$this->paramsBuilder .= ',"save_history":"1","history_limit":"10"';
+			$this->extensionsParams[] = '"save_history":"1","history_limit":"10"';
 		}
 		// add custom global fields
 		if (isset($this->configFieldSetsCustomField['Global']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Global']))
@@ -12495,12 +12654,12 @@ class Interpretation extends Fields
 				$Counter = ComponentbuilderHelper::safeString($counter,'Ww');
 				$this->langContent[$this->lang][$langCont.'_'.$COUNTER]	= "Contributor ".$Counter;
 				// load the Global checkin defautls
-				$this->paramsBuilder .= ',"titleContributor'.$counter.'":"'.$cbTitle.'"';
-				$this->paramsBuilder .= ',"nameContributor'.$counter.'":"'.$cbName.'"';
-				$this->paramsBuilder .= ',"emailContributor'.$counter.'":"'.$cbEmail.'"';
-				$this->paramsBuilder .= ',"linkContributor'.$counter.'":"'.$cbWebsite.'"';
-				$this->paramsBuilder .= ',"useContributor'.$counter.'":"'.(int) $contributor['use'].'"';
-				$this->paramsBuilder .= ',"showContributor'.$counter.'":"'.(int) $contributor['show'].'"';
+				$this->extensionsParams[] = '"titleContributor'.$counter.'":"'.$cbTitle.'"';
+				$this->extensionsParams[] = '"nameContributor'.$counter.'":"'.$cbName.'"';
+				$this->extensionsParams[] = '"emailContributor'.$counter.'":"'.$cbEmail.'"';
+				$this->extensionsParams[] = '"linkContributor'.$counter.'":"'.$cbWebsite.'"';
+				$this->extensionsParams[] = '"useContributor'.$counter.'":"'.(int) $contributor['use'].'"';
+				$this->extensionsParams[] = '"showContributor'.$counter.'":"'.(int) $contributor['show'].'"';
 			}
 		}
 		// add more contributors if required
@@ -12646,7 +12805,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			$this->configFieldSets[] = "\t\t\t\t".$lang.'_DONT_LOAD</option>"';
 			$this->configFieldSets[] = "\t\t</field>";
 			// set params defaults
-			$this->paramsBuilder .= ',"uikit_load":"1"';
+			$this->extensionsParams[] = '"uikit_load":"1"';
 
 			// set field lang
 			$this->langContent[$this->lang][$lang.'_UIKIT_MIN_LABEL']	= "Load Minified";
@@ -12667,7 +12826,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			$this->configFieldSets[] = "\t\t\t\t".$lang.'_YES</option>"';
 			$this->configFieldSets[] = "\t\t</field>";
 			// set params defaults
-			$this->paramsBuilder .= ',"uikit_min":""';
+			$this->extensionsParams[] = '"uikit_min":""';
 			// set field lang
 			$this->langContent[$this->lang][$lang.'_UIKIT_STYLE_LABEL']	= "css Style";
 			$this->langContent[$this->lang][$lang.'_UIKIT_STYLE_DESC']	= "Set the css style that should be used.";
@@ -12690,7 +12849,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			$this->configFieldSets[] = "\t\t\t\t".$lang.'_GRADIANT_LOAD</option>"';
 			$this->configFieldSets[] = "\t\t</field>";
 			// set params defaults
-			$this->paramsBuilder .= ',"uikit_style":""';
+			$this->extensionsParams[] = '"uikit_style":""';
 			// add custom Uikit Settings fields
 			if (isset($this->configFieldSetsCustomField['Uikit Settings']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Uikit Settings']))
 			{
@@ -13423,7 +13582,7 @@ function vdm_dkim() {
 			$this->configFieldSets[] = "\t</fieldset>";
 
 			// set params defaults
-			$this->paramsBuilder .= ',"admin_chartbackground":"#F7F7FA","admin_mainwidth":"1000","admin_chartareatop":"20","admin_chartarealeft":"20","admin_chartareawidth":"170","admin_legendtextstylefontcolor":"10","admin_legendtextstylefontsize":"20","admin_vaxistextstylefontcolor":"#63B1F2","admin_haxistextstylefontcolor":"#63B1F2","admin_haxistitletextstylefontcolor":"#63B1F2","site_chartbackground":"#F7F7FA","site_mainwidth":"1000","site_chartareatop":"20","site_chartarealeft":"20","site_chartareawidth":"170","site_legendtextstylefontcolor":"10","site_legendtextstylefontsize":"20","site_vaxistextstylefontcolor":"#63B1F2","site_haxistextstylefontcolor":"#63B1F2","site_haxistitletextstylefontcolor":"#63B1F2"';
+			$this->extensionsParams[] = '"admin_chartbackground":"#F7F7FA","admin_mainwidth":"1000","admin_chartareatop":"20","admin_chartarealeft":"20","admin_chartareawidth":"170","admin_legendtextstylefontcolor":"10","admin_legendtextstylefontsize":"20","admin_vaxistextstylefontcolor":"#63B1F2","admin_haxistextstylefontcolor":"#63B1F2","admin_haxistitletextstylefontcolor":"#63B1F2","site_chartbackground":"#F7F7FA","site_mainwidth":"1000","site_chartareatop":"20","site_chartarealeft":"20","site_chartareawidth":"170","site_legendtextstylefontcolor":"10","site_legendtextstylefontsize":"20","site_vaxistextstylefontcolor":"#63B1F2","site_haxistextstylefontcolor":"#63B1F2","site_haxistitletextstylefontcolor":"#63B1F2"';
 
 			// set field lang
 			$this->langContent[$this->lang][$lang.'_CHART_SETTINGS_LABEL']			= "Chart Settings";
@@ -13664,6 +13823,13 @@ function vdm_dkim() {
 					$this->langContent['admin'][$siteTitle]	= $siteName.' (Site) Access';
 					$this->langContent['admin'][$siteDesc]	= ' Allows the users in this group to access site '.ComponentbuilderHelper::safeString($siteName,'w').'.';
 					$this->componentGlobal[$sortKey]              = "\t\t".'<action name="site.'.$siteCode.'.access" title="'.$siteTitle.'" description="'.$siteDesc.'" />';
+					
+					// check if this site view requires access rule to default to public
+					if (isset($site_view['public']) && $site_view['public'] == 1)
+					{
+						// we use one as public group (TODO we see if we run into any issues)
+						$this->assetsRules[] = '"site.'.$siteCode.'.access":{"1":1}';
+					}
 				}
 				// add the custom permissions to use the buttons of this view
 				$this->addCustomButtonPermissions($site_view['settings'], $siteName, $siteCode);

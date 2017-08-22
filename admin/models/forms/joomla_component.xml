@@ -2110,6 +2110,20 @@
 						<option value="0">
 							COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 					</field>
+					<!-- Public Field. Type: Radio. (joomla) -->
+					<field
+						type="radio"
+						name="public"
+						label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PUBLIC_LABEL"
+						description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PUBLIC_DESCRIPTION"
+						default="0"
+						required="false">
+						<!-- Option Set. -->
+						<option value="1">
+							COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+						<option value="0">
+							COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+					</field>
 				</fieldset>
 			</fields>
 		</field>
