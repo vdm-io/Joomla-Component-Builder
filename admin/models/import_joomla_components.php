@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.0
+	@version		2.5.1
 	@build			23rd August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -636,78 +636,76 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected function saveSmartComponents($data, $dir)
 	{
 		// get user object
-		$user = JFactory::getUser();
-		// Get a db connection.
-		$db = JFactory::getDbo();
+		$this->user = JFactory::getUser();
 		// set some defaults
-		$today = JFactory::getDate()->toSql();
+		$this->today = JFactory::getDate()->toSql();
 		// we first store the fieldtype
-		if (!$this->saveSmartItems($data, 'fieldtype', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'fieldtype'))
 		{
 			return false;
 		}
 		// we then store the field
-		if (!$this->saveSmartItems($data, 'field', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'field'))
 		{
 			return false;
 		}
 		// we then store the admin_view
-		if (!$this->saveSmartItems($data, 'admin_view', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'admin_view'))
 		{
 			return false;
 		}
 		// we then store the snippet
-		if (!$this->saveSmartItems($data, 'snippet', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'snippet'))
 		{
 			return false;
 		}
 		// we then store the dynamic_get
-		if (!$this->saveSmartItems($data, 'dynamic_get', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'dynamic_get'))
 		{
 			return false;
 		}
 		// we then store the custom_admin_view
-		if (!$this->saveSmartItems($data, 'custom_admin_view', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'custom_admin_view'))
 		{
 			return false;
 		}
 		// we then store the site_view
-		if (!$this->saveSmartItems($data, 'site_view', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'site_view'))
 		{
 			return false;
 		}
 		// we then store the template
-		if (!$this->saveSmartItems($data, 'template', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'template'))
 		{
 			return false;
 		}
 		// we then store the layout
-		if (!$this->saveSmartItems($data, 'layout', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'layout'))
 		{
 			return false;
 		}
 		// we then store the components
-		if (!$this->saveSmartItems($data, 'joomla_component', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'joomla_component'))
 		{
 			return false;
 		}
 		// we then store the languages
-		if (!$this->saveSmartItems($data, 'language', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'language'))
 		{
 			return false;
 		}
 		// we then store the language translations
-		if (!$this->saveSmartItems($data, 'language_translation', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'language_translation'))
 		{
 			return false;
 		}
 		// we then store the custom_code
-		if (!$this->saveSmartItems($data, 'custom_code', $db, $user, $today))
+		if (!$this->saveSmartItems($data, 'custom_code'))
 		{
 			return false;
 		}
 		// do a after all run on all items that need it
-		$this->updateAfter($db);
+		$this->updateAfter();
 		// lets move all the files to its correct location
 		if (!$this->moveSmartStuff($dir))
 		{
@@ -824,14 +822,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*
 	* @param array   $items  The values to save
 	* @param string  $type    The type of values
-	* @param object $db       The database object
-	* @param object $user    The user object
-	* @param string  $today  The date today
 	*
 	* @return  boolean false on failure
 	*
 	**/
-	protected function saveSmartItems(&$items, $type, &$db, &$user, &$today)
+	protected function saveSmartItems(&$items, $type)
 	{
 		$success = true;
 		if (isset($items[$type]) && ComponentbuilderHelper::checkArray($items[$type]))
@@ -850,7 +845,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				$oldID = $item->id;
 				// first check if exist
-				if ($local = $this->getLocalItem($item, $type, $db, 1))
+				if ($local = $this->getLocalItem($item, $type, 1))
 				{
 					$dbDate = strtotime($item->modified);
 					$localDate = strtotime($local->modified);
@@ -866,7 +861,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						// make sure we have the correct ID set
 						$item->id = $local->id;
 						// yes it is newer, lets update (or is being forced)
-						if ($canEdit && $id = $this->updateLocalItem($item, $type, $db, $user, $today, $canState))
+						if ($canEdit && $id = $this->updateLocalItem($item, $type, $canState))
 						{
 							$this->newID[$type][$oldID] = $id;
 						}
@@ -885,7 +880,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						$this->newID[$type][$oldID] = $local->id;
 					}
 				}
-				elseif ($canCreate && $id = $this->addLocalItem($item, $type, $db, $user, $today))
+				elseif ($canCreate && $id = $this->addLocalItem($item, $type))
 				{
 					// not found in local db so add
 					$this->newID[$type][$oldID] = $id;
@@ -907,12 +902,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	/**
 	* Update some items after all
 	*
-	* @param object $db       The database object
 	*
 	* @return  void
 	*
 	**/
-	protected function updateAfter($db)
+	protected function updateAfter()
 	{
 		if (ComponentbuilderHelper::checkArray($this->updateAfter['field']))
 		{
@@ -969,7 +963,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							$object->id = $field;
 							$object->xml = $xml;
 							// update the field
-							$db->updateObject('#__componentbuilder_field', $object, 'id');
+							$this->_db->updateObject('#__componentbuilder_field', $object, 'id');
 						}
 					}
 				}
@@ -1010,7 +1004,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							$object->id = $adminview;
 							$object->addlinked_views = json_encode($addlinked_views);
 							// update the admin view
-							$db->updateObject('#__componentbuilder_admin_view', $object, 'id');
+							$this->_db->updateObject('#__componentbuilder_admin_view', $object, 'id');
 						}
 					}
 				}
@@ -1023,14 +1017,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*
 	* @param object $item      The item to prep
 	* @param string $type      The type of values
-	* @param object $user      The user object
-	* @param string $today     The date today
+	* @param string $action    The action (add/update)
 	*
 	* @return  mixed           false on failure
-	*                                  object on success
+	*                          object on success
 	*
 	**/
-	protected function prepItem($item, &$type, $action, &$user, &$today)
+	protected function prepItem($item, &$type, $action)
 	{
 		// actions to effect both
 		if (isset($item->asset_id))
@@ -1530,8 +1523,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				{
 					unset($item->created_by);
 				}
-				$item->modified_by = $user->id;
-				$item->modified = $today;
+				$item->modified_by = $this->user->id;
+				$item->modified = $this->today;
 				// return the item
 				return $item;
 			break;
@@ -1539,9 +1532,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// remove the ID
 				unset($item->id);
 				// set values to follow the adding conventions
-				$item->created_by = $user->id;
-				$item->modified_by = $user->id;
-				$item->modified = $today;
+				$item->created_by = $this->user->id;
+				$item->modified_by = $this->user->id;
+				$item->modified = $this->today;
 				// return the item
 				return $item;
 			break;
@@ -1628,19 +1621,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*
 	* @param object $item      The item to update
 	* @param string $type      The type of values
-	* @param object $db        The database object
-	* @param object $user      The user object
-	* @param string $today     The date today
 	* @param bool   $canState  The switch to set state
 	*
 	* @return  mixed           false on failure
 	*                                  ID int on success
 	*
 	**/
-	protected function updateLocalItem(&$item, &$type, &$db, &$user, &$today, &$canState)
+	protected function updateLocalItem(&$item, &$type, &$canState)
 	{
 		// prep the item
-		if ($update = $this->prepItem($item, $type, 'update', $user, $today))
+		if ($update = $this->prepItem($item, $type, 'update'))
 		{
 			// remove the published state if not allowed to edit it
 			if (!$canState && isset($update->published))
@@ -1648,7 +1638,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				unset($update->published);
 			}
 			// update the item
-			if ($result = $db->updateObject('#__componentbuilder_' . $type, $update, 'id'))
+			if ($result = $this->_db->updateObject('#__componentbuilder_' . $type, $update, 'id'))
 			{
 				// return current ID
 				return $update->id;
@@ -1662,23 +1652,20 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*
 	* @param object $item      The item to update
 	* @param string $type      The type of values
-	* @param object $db        The database object
-	* @param object $user      The user object
-	* @param string $today     The date today
 	*
 	* @return  mixed           false on failure
 	*                          ID int on success
 	*
 	**/
-	protected function addLocalItem(&$item, &$type, &$db, &$user, &$today)
+	protected function addLocalItem(&$item, &$type)
 	{
 		// prep the item
-		if ($add = $this->prepItem($item, $type, 'add', $user, $today))
+		if ($add = $this->prepItem($item, $type, 'add'))
 		{
 			// insert/add the item
-			if ($result = $db->insertObject('#__componentbuilder_' . $type, $add))
+			if ($result = $this->_db->insertObject('#__componentbuilder_' . $type, $add))
 			{
-				$aId = $db->insertid();
+				$aId = $this->_db->insertid();
 				// make sure the access of asset is set
 				ComponentbuilderHelper::setAsset($aId, $type);
 				// set new ID
@@ -1693,23 +1680,22 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*
 	* @param object $item      The item to get
 	* @param string $type      The type of values
-	* @param object $db        The database object
 	* @param bool   $retry      The retry switch
 	* @param bool   $get        The query get switch
 	*
 	* @return  mixed           false on failure
-	*                                  ID int on success
+	*                          ID int on success
 	*
 	**/
-	protected function getLocalItem(&$item, &$type, &$db, $retry = false, $get = 1)
+	protected function getLocalItem(&$item, &$type, $retry = false, $get = 1)
 	{
-		$query = $db->getQuery(true);
+		$query = $this->_db->getQuery(true);
 		$query->select('a.*');
-		$query->from($db->quoteName('#__componentbuilder_' . $type, 'a'));
+		$query->from($this->_db->quoteName('#__componentbuilder_' . $type, 'a'));
 		if ($get == 1)
 		{
-			$query->where($db->quoteName('a.created') . ' = '. $db->quote($item->created));
-			$query->where($db->quoteName('a.id') .' = '. (int) $item->id);
+			$query->where($this->_db->quoteName('a.created') . ' = '. $this->_db->quote($item->created));
+			$query->where($this->_db->quoteName('a.id') .' = '. (int) $item->id);
 		}
 		elseif (componentbuilderHelper::checkArray($get))
 		{
@@ -1727,15 +1713,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// load to query
 					if (is_numeric($value) && is_int($value))
 					{
-						$query->where($db->quoteName('a.' . $field) . ' = '. (int) $value);
+						$query->where($this->_db->quoteName('a.' . $field) . ' = '. (int) $value);
 					}
 					elseif (is_numeric($value) && is_float($value))
 					{
-						$query->where($db->quoteName('a.' . $field) . ' = '. (float) $value);
+						$query->where($this->_db->quoteName('a.' . $field) . ' = '. (float) $value);
 					}
 					elseif(componentbuilderHelper::checkString($value)) // do not allow empty strings (since it could be major mis match)
 					{
-						$query->where($db->quoteName('a.' . $field) . ' = '. $db->quote($value));
+						$query->where($this->_db->quoteName('a.' . $field) . ' = '. $this->_db->quote($value));
 					}
 					else
 					{
@@ -1757,7 +1743,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				$value = $this->specialValue[$get];
 			}
-			$query->where($db->quoteName('a.' . $get) . ' = '. $db->quote($value));
+			$query->where($this->_db->quoteName('a.' . $get) . ' = '. $this->_db->quote($value));
 		}
 		elseif (isset($item->$get) && is_numeric($item->$get))
 		{
@@ -1771,11 +1757,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// load to query
 			if (is_int($value))
 			{
-				$query->where($db->quoteName('a.' . $get) . ' = '. (int) $value);
+				$query->where($this->_db->quoteName('a.' . $get) . ' = '. (int) $value);
 			}
 			elseif (is_float($value))
 			{
-				$query->where($db->quoteName('a.' . $get) . ' = '. (float) $value);
+				$query->where($this->_db->quoteName('a.' . $get) . ' = '. (float) $value);
 			}
 			else
 			{
@@ -1787,11 +1773,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			return false;
 		}
 		// see if we get an item
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
+		$this->_db->setQuery($query);
+		$this->_db->execute();
+		if ($this->_db->getNumRows())
 		{
-			return $db->loadObject();
+			return $this->_db->loadObject();
 		}
 		elseif ($retry)
 		{
@@ -1947,7 +1933,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					break;
 			}
 			// we try again
-			return $this->getLocalItem($item, $type, $db, $retryAgain, $getter);
+			return $this->getLocalItem($item, $type, $retryAgain, $getter);
 		}
 		return false;
 	}
@@ -1966,7 +1952,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		if(ComponentbuilderHelper::checkArray($data['array']))
 		{
 			// get user object
-			$user  		= JFactory::getUser();
+			$this->user  	= JFactory::getUser();
 			// remove header if it has headers
 			$id_key 	= $data['target_headers']['id'];
 			$published_key 	= $data['target_headers']['published'];
@@ -1981,12 +1967,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 			
 			// make sure there is still values in array and that it was not only headers
-			if(ComponentbuilderHelper::checkArray($data['array']) && $user->authorise($this->dataType.'.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
+			if(ComponentbuilderHelper::checkArray($data['array']) && $this->user->authorise($this->dataType.'.import', 'com_componentbuilder') && $this->user->authorise('core.import', 'com_componentbuilder'))
 			{
 				// set target.
 				$target	= array_flip($data['target_headers']);
-				// Get a db connection.
-				$db = JFactory::getDbo();
 				// set some defaults
 				$todayDate	= JFactory::getDate()->toSql();
 				// get global action permissions
@@ -2002,24 +1986,24 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					if (isset($row[$id_key]) && is_numeric($row[$id_key]) && $row[$id_key] > 0)
 					{
 						// raw items import & update!
-						$query = $db->getQuery(true);
+						$query = $this->_db->getQuery(true);
 						$query
 							->select('version')
-							->from($db->quoteName('#__componentbuilder_'.$this->dataType))
-							->where($db->quoteName('id') . ' = '. $db->quote($row[$id_key]));
+							->from($this->_db->quoteName('#__componentbuilder_'.$this->dataType))
+							->where($this->_db->quoteName('id') . ' = '. $this->_db->quote($row[$id_key]));
 						// Reset the query using our newly populated query object.
-						$db->setQuery($query);
-						$db->execute();
-						$found = $db->getNumRows();
+						$this->_db->setQuery($query);
+						$this->_db->execute();
+						$found = $this->_db->getNumRows();
 					}
 					
 					if($found && $canEdit)
 					{
 						// update item
 						$id 		= $row[$id_key];
-						$version	= $db->loadResult();
+						$version	= $this->_db->loadResult();
 						// reset all buckets
-						$query 	= $db->getQuery(true);
+						$query 	= $this->_db->getQuery(true);
 						$fields 	= array();
 						// Fields to update.
 						foreach($row as $key => $cell)
@@ -2052,33 +2036,33 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							// set to update array
 							if(in_array($key, $data['target_headers']) && is_numeric($cell))
 							{
-								$fields[] = $db->quoteName($target[$key]) . ' = ' . $cell;
+								$fields[] = $this->_db->quoteName($target[$key]) . ' = ' . $cell;
 							}
 							elseif(in_array($key, $data['target_headers']) && is_string($cell))
 							{
-								$fields[] = $db->quoteName($target[$key]) . ' = ' . $db->quote($cell);
+								$fields[] = $this->_db->quoteName($target[$key]) . ' = ' . $this->_db->quote($cell);
 							}
 							elseif(in_array($key, $data['target_headers']) && is_null($cell))
 							{
 								// if import data is null then set empty
-								$fields[] = $db->quoteName($target[$key]) . " = ''";
+								$fields[] = $this->_db->quoteName($target[$key]) . " = ''";
 							}
 						}
 						// load the defaults
-						$fields[]	= $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
-						$fields[]	= $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
+						$fields[]	= $this->_db->quoteName('modified_by') . ' = ' . $this->_db->quote($this->user->id);
+						$fields[]	= $this->_db->quoteName('modified') . ' = ' . $this->_db->quote($todayDate);
 						// Conditions for which records should be updated.
 						$conditions = array(
-							$db->quoteName('id') . ' = ' . $id
+							$this->_db->quoteName('id') . ' = ' . $id
 						);
-						$query->update($db->quoteName('#__componentbuilder_' . $this->dataType))->set($fields)->where($conditions);
-						$db->setQuery($query);
-						$db->execute();
+						$query->update($this->_db->quoteName('#__componentbuilder_' . $this->dataType))->set($fields)->where($conditions);
+						$this->_db->setQuery($query);
+						$this->_db->execute();
 					}
 					elseif ($canCreate)
 					{
 						// insert item
-						$query = $db->getQuery(true);
+						$query = $this->_db->getQuery(true);
 						// reset all buckets
 						$columns 	= array();
 						$values 	= array();
@@ -2126,7 +2110,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							elseif(in_array($key, $data['target_headers']) && is_string($cell))
 							{
 								$columns[] 	= $target[$key];
-								$values[] 		= $db->quote($cell);
+								$values[] 		= $this->_db->quote($cell);
 							}
 							elseif(in_array($key, $data['target_headers']) && is_null($cell))
 							{
@@ -2137,9 +2121,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 						// load the defaults
 						$columns[] 	= 'created_by';
-						$values[] 		= $db->quote($user->id);
+						$values[] 		= $this->_db->quote($this->user->id);
 						$columns[] 	= 'created';
-						$values[] 		= $db->quote($todayDate);
+						$values[] 		= $this->_db->quote($todayDate);
 						if (!$version)
 						{
 							$columns[] 	= 'version';
@@ -2147,15 +2131,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 						// Prepare the insert query.
 						$query
-							->insert($db->quoteName('#__componentbuilder_'.$this->dataType))
-							->columns($db->quoteName($columns))
+							->insert($this->_db->quoteName('#__componentbuilder_'.$this->dataType))
+							->columns($this->_db->quoteName($columns))
 							->values(implode(',', $values));
 						// Set the query using our newly populated query object and execute it.
-						$db->setQuery($query);
-						$done = $db->execute();
+						$this->_db->setQuery($query);
+						$done = $this->_db->execute();
 						if ($done)
 						{
-							$aId = $db->insertid();
+							$aId = $this->_db->insertid();
 							// make sure the access of asset is set
 							ComponentbuilderHelper::setAsset($aId,$this->dataType);
 						}
