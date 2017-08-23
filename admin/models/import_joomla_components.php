@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.0
-	@build			22nd August, 2017
+	@build			23rd August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -1227,9 +1227,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 			case 'admin_view':
 				// we must clear the demo content (since it was not moved as far as we know) TODO
-				unset($item->add_sql);
-				unset($item->source);
-				unset($item->addtables);
+				if ($item->add_sql == 1 && $item->source == 1)
+				{
+					// only if it is mapped to a table
+					unset($item->add_sql);
+					unset($item->source);
+					unset($item->addtables);
+				}
 				// update the addfields
 				if (isset($item->addfields) && ComponentbuilderHelper::checkJson($item->addfields))
 				{
