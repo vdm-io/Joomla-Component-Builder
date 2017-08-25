@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 359 of this MVC
-	@build			23rd August, 2017
+	@version		@update number 361 of this MVC
+	@build			24th August, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -194,18 +194,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			{
 				// basic decript data whmcs_key.
 				$item->whmcs_key = rtrim($basic->decryptString($item->whmcs_key), "\0");
-			}
-
-			if (!empty($item->sales_server_ftp) && $basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
-			{
-				// basic decript data sales_server_ftp.
-				$item->sales_server_ftp = rtrim($basic->decryptString($item->sales_server_ftp), "\0");
-			}
-
-			if (!empty($item->update_server_ftp) && $basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
-			{
-				// basic decript data update_server_ftp.
-				$item->update_server_ftp = rtrim($basic->decryptString($item->update_server_ftp), "\0");
 			}
 
 			if (!empty($item->export_key) && $basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
@@ -1490,18 +1478,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (isset($data['whmcs_key']) && $basickey)
 		{
 			$data['whmcs_key'] = $basic->encryptString($data['whmcs_key']);
-		}
-
-		// Encript data sales_server_ftp.
-		if (isset($data['sales_server_ftp']) && $basickey)
-		{
-			$data['sales_server_ftp'] = $basic->encryptString($data['sales_server_ftp']);
-		}
-
-		// Encript data update_server_ftp.
-		if (isset($data['update_server_ftp']) && $basickey)
-		{
-			$data['update_server_ftp'] = $basic->encryptString($data['update_server_ftp']);
 		}
 
 		// Encript data export_key.

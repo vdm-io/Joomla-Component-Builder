@@ -244,7 +244,7 @@ class Compiler extends Infusion
 	protected function setUpdateServer()
 	{
 		// move the update server to host
-		if ($this->componentData->add_update_server && $this->componentData->update_server_target == 1 && isset($this->updateServerFileName) && $this->dynamicIntegration)
+		if ($this->componentData->add_update_server == 1 && $this->componentData->update_server_target == 1 && isset($this->updateServerFileName) && $this->dynamicIntegration)
 		{
 			$xml_update_server_path = $this->componentPath.'/'.$this->updateServerFileName.'.xml';
 			// make sure we have the correct file
@@ -423,8 +423,9 @@ class Compiler extends Infusion
 			{
 				JFile::copy($this->filepath, $this->backupPath);
 			}
+			
 			// move to sales server host
-			if ($this->componentData->add_sales_server && $this->dynamicIntegration)
+			if ($this->componentData->add_sales_server == 1 && $this->dynamicIntegration)
 			{
 				// make sure we have the correct file
 				if (isset($this->componentData->sales_server_ftp))
@@ -474,30 +475,31 @@ class Compiler extends Infusion
 	
 	private function getFTP($clientInput)
 	{
-		$signature = md5($clientInput);
-		if (isset($this->FTP[$signature]) && $this->FTP[$signature] instanceof JClientFtp)
+		$s1GnAtnr3 = md5($clientInput);
+		if (isset($this->FTP[$s1GnAtnr3]) && $this->FTP[$s1GnAtnr3] instanceof JClientFtp)
 		{
-			return $this->FTP[$signature];
+			// return the FTP instance
+			return $this->FTP[$s1GnAtnr3];
 		}
 		else
 		{
 			// make sure we have a string and it is not default or empty
 			if (ComponentbuilderHelper::checkString($clientInput))
 			{
-				// turn into vars
-				parse_str($clientInput);
+				// turn into variables
+				parse_str($clientInput); // because of this I am using strand variable naming to avoid any collisions.
 				// set options
 				if (isset($options) && ComponentbuilderHelper::checkArray($options))
 				{
-					foreach ($options as $option => $value)
+					foreach ($options as $o__p0t1on => $vAln3)
 					{
-						if ('timeout' === $option)
+						if ('timeout' === $o__p0t1on)
 						{
-							$options[$option] = (int) $value;
+							$options[$o__p0t1on] = (int) $vAln3;
 						}
-						if ('type' === $option)
+						if ('type' === $o__p0t1on)
 						{
-							$options[$option] = (string) $value;
+							$options[$o__p0t1on] = (string) $vAln3;
 						}
 					}
 				}
@@ -509,8 +511,9 @@ class Compiler extends Infusion
 				if (isset($host) && $host != 'HOSTNAME' && isset($port) && $port != 'PORT_INT' && isset($username) && $username != 'user@name.com' && isset($password) && $password != 'password')
 				{
 					// load for reuse
-					$this->FTP[$signature] = JClientFtp::getInstance($host, $port, $options, $username, $password);
-					return $this->FTP[$signature];
+					$this->FTP[$s1GnAtnr3] = JClientFtp::getInstance($host, $port, $options, $username, $password);
+					// return the FTP instance
+					return $this->FTP[$s1GnAtnr3];
 				}
 			}
 		}

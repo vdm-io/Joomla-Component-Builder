@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.1
-	@build			23rd August, 2017
+	@version		2.5.2
+	@build			25th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -43,7 +43,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
                 // view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.snippet.add', 'png.snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.help_document.add', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.snippet.add', 'png.snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.ftps', 'png.help_document.add', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
@@ -116,6 +116,11 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'languages.access' => 'language.access',
 			'language.access' => 'language.access',
 			'languages.submenu' => 'language.submenu',
+			'ftp.create' => 'ftp.create',
+			'ftps.access' => 'ftp.access',
+			'ftp.access' => 'ftp.access',
+			'ftps.submenu' => 'ftp.submenu',
+			'ftps.dashboard_list' => 'ftp.dashboard_list',
 			'help_document.create' => 'help_document.create',
 			'help_documents.access' => 'help_document.access',
 			'help_document.access' => 'help_document.access',

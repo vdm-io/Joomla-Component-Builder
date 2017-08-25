@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.1
-	@build			23rd August, 2017
+	@version		2.5.2
+	@build			25th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -31,6 +31,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 abstract class ComponentbuilderHelper
 {  
+
+	/**
+	* 	The global params
+	**/
+	protected static $params = false;
 
 	/*
 	 * get all component IDs
@@ -199,31 +204,6 @@ abstract class ComponentbuilderHelper
 		// close file.
 		fclose($fh);
 		return $klaar;
-	}
-
-	/**
-	* 	The user notice info File Name
-	**/
-	protected static $usernotice = false;
-
-	/**
-	* 	The backup hash file name
-	**/
-	protected static $backuphash = false;
-	
-	public static function getFilePath($type, $name = 'listing', $key = '', $fileType = '.json', $PATH = JPATH_COMPONENT_SITE)
-	{
-		if (!self::checkString(self::${$type.$name}))
-		{
-			// Get local key
-			$localkey = self::getLocalKey();
-			// set the name
-			$fileName = md5($type.$name.$localkey.$key);
-			// set file path			
-			self::${$type.$name} = $PATH.'/helpers/'.$fileName.$fileType;
-		}
-		// return the path
-		return self::${$type.$name};
 	}
 	
 	public static function getFieldOptions($value, $type, $settings = array())
@@ -1153,13 +1133,13 @@ abstract class ComponentbuilderHelper
 	/**
 	* 	check if it is a new hash
 	**/
-	public static function newHash($hash, $name = 'backup', $type = 'hash', $key = '',  $fileType = '.txt')
+	public static function newHash($hash, $name = 'backup', $type = 'hash', $key = '',  $fileType = 'txt')
 	{
 		// make sure we have a hash
 		if (self::checkString($hash))
 		{
 			// first get the file path
-			$path_filename = self::getFilePath($name, $type, $key, $fileType, JPATH_COMPONENT_ADMINISTRATOR);
+			$path_filename = self::getFilePath('path', $name.$type, $fileType, $key, JPATH_COMPONENT_ADMINISTRATOR);
 			// set as read if not already set
 			if (($content = @file_get_contents($path_filename)) !== FALSE)
 			{
@@ -1173,6 +1153,71 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
+			
+	/**
+	 * Get the file path or url
+	 * 
+	 * @param  string   $type                  The (url/path) type to return
+	 * @param  string   $target                The Params Target name (if set)
+	 * @param  string   $fileType             The kind of filename to generate (if not set no file name is generated)
+	 * @param  string   $key                   The key to adjust the filename (if not set ignored)
+	 * @param  string   $default              The default path if not set in Params (fallback path)
+	 * @param  bool     $createIfNotSet   The switch to create the folder if not found
+	 *
+	 * @return  string    On success the path or url is returned based on the type requested
+	 * 
+	 */
+	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
+	{
+		// get the global settings
+		if (!self::checkObject(self::$params))
+		{
+			self::$params = JComponentHelper::getParams('com_componentbuilder');
+		}
+		$filePath = self::$params->get($target, $default);
+		// check the file path (revert to default only of not a hidden file path)
+		if ('hiddenfilepath' !== $target && strpos($filePath, JPATH_SITE) === false)
+		{
+			$filePath = JPATH_SITE . '/images/';
+		}
+		jimport('joomla.filesystem.folder');
+		// create the folder if it does not exist
+		if ($createIfNotSet && !JFolder::exists($filePath))
+		{
+			JFolder::create($filePath);
+		}
+		// setup the file name
+		$fileName = '';
+		if (self::checkString($fileType))
+		{
+			// Get basic key
+			$basickey = 'Th!s_iS_n0t_sAfe_buT_b3tter_then_n0thiug';
+			if (method_exists(get_called_class(), "getCryptKey")) 
+			{
+				$basickey = self::getCryptKey('basic', $basickey);
+			}
+			// check the key
+			if (self::checkString($key))
+			{
+				$key = 'vDm';
+			}
+			// set the name
+			$fileName = trim(md5($type.$target.$basickey.$key) . '.' . trim($fileType, '.'));
+		}
+		// return the url
+		if ($type === 'url')
+		{
+			if (strpos($filePath, JPATH_SITE) !== false)
+			{
+				$filePath = trim( str_replace( JPATH_SITE, '', $filePath), '/');
+				return JURI::root() . $filePath . '/' . $fileName;
+			}
+			// since the path is behind the root folder of the site, return only the root url (may be used to build the link)
+			return JURI::root();
+		}
+		// sanitize the path
+		return '/' . trim( $filePath, '/' ) . '/' . $fileName;
+	}			 
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{

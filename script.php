@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.1
-	@build			23rd August, 2017
+	@version		2.5.2
+	@build			25th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1353,6 +1353,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Ftp alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.ftp') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$ftp_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($ftp_found)
+		{
+			// Since there are load the needed  ftp type ids
+			$ftp_ids = $db->loadColumn();
+			// Remove Ftp from the content type table
+			$ftp_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.ftp') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($ftp_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Ftp items
+			$ftp_done = $db->execute();
+			if ($ftp_done);
+			{
+				// If succesfully remove Ftp add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.ftp) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Ftp items from the contentitem tag map table
+			$ftp_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.ftp') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($ftp_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Ftp items
+			$ftp_done = $db->execute();
+			if ($ftp_done);
+			{
+				// If succesfully remove Ftp add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.ftp) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Ftp items from the ucm content table
+			$ftp_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.ftp') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($ftp_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Ftp items
+			$ftp_done = $db->execute();
+			if ($ftp_done);
+			{
+				// If succesfully remove Ftp add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.ftp) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Ftp items are cleared from DB
+			foreach ($ftp_ids as $ftp_id)
+			{
+				// Remove Ftp items from the ucm base table
+				$ftp_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $ftp_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($ftp_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Ftp items
+				$db->execute();
+
+				// Remove Ftp items from the ucm history table
+				$ftp_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $ftp_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($ftp_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Ftp items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Help_document alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.help_document') );
 		$db->setQuery($query);
@@ -1495,6 +1581,90 @@ class com_componentbuilderInstallerScript
 		// do any updates needed
 		if ($type == 'update')
 		{
+		// load the helper class
+		JLoader::register('ComponentbuilderHelper', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/componentbuilder.php');
+		// check the version of JCB
+		$manifest = ComponentbuilderHelper::manifest();
+		if (isset($manifest->version) && strpos($manifest->version, '.') !== false)
+		{
+			$version = explode('.', $manifest->version);
+			// target version less then 2.5.2
+			if (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 1) || ($version[1] < 5)))
+			{
+				// the set values
+				$this->setValues = array();
+				// Get a db connection.
+				$db = JFactory::getDbo();
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				// update all manual and auto links in sermons
+				$query->select($db->quoteName(array('id', 'sales_server_ftp', 'update_server_ftp')));
+				$query->from($db->quoteName('#__componentbuilder_joomla_component'));
+				// Reset the query using our newly populated query object.
+				$db->setQuery($query);
+				$db->execute();
+				if ($db->getNumRows())
+				{
+					$rows = $db->loadObjectList();
+					// Get the basic encryption.
+					$basickey = ComponentbuilderHelper::getCryptKey('basic');
+					// Get the encryption object.
+					$basic = new FOFEncryptAes($basickey, 128);
+					foreach ($rows as $row)
+					{
+						if (ComponentbuilderHelper::checkString($row->sales_server_ftp) || ComponentbuilderHelper::checkString($row->update_server_ftp))
+						{
+							$updatevalue = null;
+							// update the update_server_ftp
+							if (ComponentbuilderHelper::checkString($row->update_server_ftp) && !is_numeric($row->update_server_ftp) && $basickey && $row->update_server_ftp === base64_encode(base64_decode($row->update_server_ftp, true)))
+							{
+								$updatevalue = rtrim($basic->decryptString($row->update_server_ftp), "\0");
+							}
+							elseif (ComponentbuilderHelper::checkString($row->update_server_ftp))
+							{
+								$updatevalue = $row->update_server_ftp;
+							}
+							$salesvalue = null;
+							// update the sales_server_ftp
+							if (ComponentbuilderHelper::checkString($row->sales_server_ftp) && !is_numeric($row->sales_server_ftp) && $basickey && $row->sales_server_ftp === base64_encode(base64_decode($row->sales_server_ftp, true)))
+							{
+								$salesvalue = rtrim($basic->decryptString($row->sales_server_ftp), "\0");
+							}
+							elseif (ComponentbuilderHelper::checkString($row->sales_server_ftp))
+							{
+								$salesvalue = $row->sales_server_ftp;
+							}
+							// set update Values
+							if ($updatevalue)
+							{
+								$hash = md5($updatevalue) . '__update_server_ftp';
+								if (!isset($this->setValues[$hash]))
+								{
+									$this->setValues[$hash] = array();
+									$this->setValues[$hash]['ids'] = array();
+									$this->setValues[$hash]['ftp'] = $updatevalue;
+									$this->setValues[$hash]['signature'] = $row->update_server_ftp;
+								}
+								$this->setValues[$hash]['ids'][] = $row->id;
+							}
+							// set sales Values
+							if ($salesvalue)
+							{
+								$hash = md5($salesvalue) . '__sales_server_ftp';
+								if (!isset($this->setValues[$hash]))
+								{
+									$this->setValues[$hash] = array();
+									$this->setValues[$hash]['ids'] = array();
+									$this->setValues[$hash]['ftp'] = $salesvalue;
+									$this->setValues[$hash]['signature'] = $row->sales_server_ftp;
+								}
+								$this->setValues[$hash]['ids'][] = $row->id;
+							}
+						}
+					}
+				}
+			}
+		}
 		}
 		// do any install needed
 		if ($type == 'install')
@@ -1523,7 +1693,7 @@ class com_componentbuilderInstallerScript
 			$joomla_component->table = '{"special": {"dbtable": "#__componentbuilder_joomla_component","key": "id","type": "Joomla_component","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "readme","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","component_version":"component_version","short_description":"short_description","companyname":"companyname","author":"author","add_update_server":"add_update_server","add_placeholders":"add_placeholders","description":"description","add_admin_event":"add_admin_event","copyright":"copyright","php_postflight_update":"php_postflight_update","debug_linenr":"debug_linenr","mvc_versiondate":"mvc_versiondate","add_site_event":"add_site_event","export_package_link":"export_package_link","php_preflight_update":"php_preflight_update","addfootable":"addfootable","sql":"sql","add_php_helper_both":"add_php_helper_both","email":"email","website":"website","creatuserhelper":"creatuserhelper","add_license":"add_license","css":"css","license_type":"license_type","add_php_helper_admin":"add_php_helper_admin","add_php_helper_site":"add_php_helper_site","whmcs_key":"whmcs_key","add_php_dashboard_methods":"add_php_dashboard_methods","whmcs_url":"whmcs_url","php_preflight_install":"php_preflight_install","license":"license","php_postflight_install":"php_postflight_install","bom":"bom","php_method_uninstall":"php_method_uninstall","image":"image","readme":"readme","sales_server_ftp":"sales_server_ftp","update_server_target":"update_server_target","name":"name","update_server_ftp":"update_server_ftp","not_required":"not_required","buildcomp":"buildcomp","export_key":"export_key","export_buy_link":"export_buy_link","adduikit":"adduikit","add_css":"add_css","add_email_helper":"add_email_helper","php_helper_both":"php_helper_both","php_helper_admin":"php_helper_admin","php_admin_event":"php_admin_event","php_helper_site":"php_helper_site","php_site_event":"php_site_event","php_dashboard_methods":"php_dashboard_methods","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","add_php_postflight_install":"add_php_postflight_install","add_php_postflight_update":"add_php_postflight_update","emptycontributors":"emptycontributors","add_php_method_uninstall":"add_php_method_uninstall","number":"number","add_sql":"add_sql","addreadme":"addreadme","update_server":"update_server","add_sales_server":"add_sales_server","buildcompsql":"buildcompsql"}}';
 			$joomla_component->router = 'ComponentbuilderHelperRoute::getJoomla_componentRoute';
-			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_update_server","add_placeholders","add_admin_event","debug_linenr","mvc_versiondate","add_site_event","addfootable","add_php_helper_both","creatuserhelper","add_license","license_type","add_php_helper_admin","add_php_helper_site","add_php_dashboard_methods","update_server_target","not_required","buildcomp","adduikit","add_css","add_email_helper","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","emptycontributors","add_php_method_uninstall","number","add_sql","addreadme","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_update_server","add_placeholders","add_admin_event","debug_linenr","mvc_versiondate","add_site_event","addfootable","add_php_helper_both","creatuserhelper","add_license","license_type","add_php_helper_admin","add_php_helper_site","add_php_dashboard_methods","sales_server_ftp","update_server_target","update_server_ftp","not_required","buildcomp","adduikit","add_css","add_email_helper","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","emptycontributors","add_php_method_uninstall","number","add_sql","addreadme","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server_ftp","targetTable": "#__componentbuilder_ftp","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server_ftp","targetTable": "#__componentbuilder_ftp","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_component_Inserted = $db->insertObject('#__content_types', $joomla_component);
@@ -1696,6 +1866,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$language_Inserted = $db->insertObject('#__content_types', $language);
 
+			// Create the ftp content type object.
+			$ftp = new stdClass();
+			$ftp->type_title = 'Componentbuilder Ftp';
+			$ftp->type_alias = 'com_componentbuilder.ftp';
+			$ftp->table = '{"special": {"dbtable": "#__componentbuilder_ftp","key": "id","type": "Ftp","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$ftp->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","signature":"signature"}}';
+			$ftp->router = 'ComponentbuilderHelperRoute::getFtpRoute';
+			$ftp->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/ftp.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$ftp_Inserted = $db->insertObject('#__content_types', $ftp);
+
 			// Create the help_document content type object.
 			$help_document = new stdClass();
 			$help_document->type_title = 'Componentbuilder Help_document';
@@ -1741,7 +1923,7 @@ class com_componentbuilderInstallerScript
 			$joomla_component->table = '{"special": {"dbtable": "#__componentbuilder_joomla_component","key": "id","type": "Joomla_component","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "readme","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","component_version":"component_version","short_description":"short_description","companyname":"companyname","author":"author","add_update_server":"add_update_server","add_placeholders":"add_placeholders","description":"description","add_admin_event":"add_admin_event","copyright":"copyright","php_postflight_update":"php_postflight_update","debug_linenr":"debug_linenr","mvc_versiondate":"mvc_versiondate","add_site_event":"add_site_event","export_package_link":"export_package_link","php_preflight_update":"php_preflight_update","addfootable":"addfootable","sql":"sql","add_php_helper_both":"add_php_helper_both","email":"email","website":"website","creatuserhelper":"creatuserhelper","add_license":"add_license","css":"css","license_type":"license_type","add_php_helper_admin":"add_php_helper_admin","add_php_helper_site":"add_php_helper_site","whmcs_key":"whmcs_key","add_php_dashboard_methods":"add_php_dashboard_methods","whmcs_url":"whmcs_url","php_preflight_install":"php_preflight_install","license":"license","php_postflight_install":"php_postflight_install","bom":"bom","php_method_uninstall":"php_method_uninstall","image":"image","readme":"readme","sales_server_ftp":"sales_server_ftp","update_server_target":"update_server_target","name":"name","update_server_ftp":"update_server_ftp","not_required":"not_required","buildcomp":"buildcomp","export_key":"export_key","export_buy_link":"export_buy_link","adduikit":"adduikit","add_css":"add_css","add_email_helper":"add_email_helper","php_helper_both":"php_helper_both","php_helper_admin":"php_helper_admin","php_admin_event":"php_admin_event","php_helper_site":"php_helper_site","php_site_event":"php_site_event","php_dashboard_methods":"php_dashboard_methods","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","add_php_postflight_install":"add_php_postflight_install","add_php_postflight_update":"add_php_postflight_update","emptycontributors":"emptycontributors","add_php_method_uninstall":"add_php_method_uninstall","number":"number","add_sql":"add_sql","addreadme":"addreadme","update_server":"update_server","add_sales_server":"add_sales_server","buildcompsql":"buildcompsql"}}';
 			$joomla_component->router = 'ComponentbuilderHelperRoute::getJoomla_componentRoute';
-			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_update_server","add_placeholders","add_admin_event","debug_linenr","mvc_versiondate","add_site_event","addfootable","add_php_helper_both","creatuserhelper","add_license","license_type","add_php_helper_admin","add_php_helper_site","add_php_dashboard_methods","update_server_target","not_required","buildcomp","adduikit","add_css","add_email_helper","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","emptycontributors","add_php_method_uninstall","number","add_sql","addreadme","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_update_server","add_placeholders","add_admin_event","debug_linenr","mvc_versiondate","add_site_event","addfootable","add_php_helper_both","creatuserhelper","add_license","license_type","add_php_helper_admin","add_php_helper_site","add_php_dashboard_methods","sales_server_ftp","update_server_target","update_server_ftp","not_required","buildcomp","adduikit","add_css","add_email_helper","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","emptycontributors","add_php_method_uninstall","number","add_sql","addreadme","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server_ftp","targetTable": "#__componentbuilder_ftp","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server_ftp","targetTable": "#__componentbuilder_ftp","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if joomla_component type is already in content_type DB.
 			$joomla_component_id = null;
@@ -2169,6 +2351,35 @@ class com_componentbuilderInstallerScript
 				$language_Inserted = $db->insertObject('#__content_types', $language);
 			}
 
+			// Create the ftp content type object.
+			$ftp = new stdClass();
+			$ftp->type_title = 'Componentbuilder Ftp';
+			$ftp->type_alias = 'com_componentbuilder.ftp';
+			$ftp->table = '{"special": {"dbtable": "#__componentbuilder_ftp","key": "id","type": "Ftp","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$ftp->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","signature":"signature"}}';
+			$ftp->router = 'ComponentbuilderHelperRoute::getFtpRoute';
+			$ftp->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/ftp.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if ftp type is already in content_type DB.
+			$ftp_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($ftp->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$ftp->type_id = $db->loadResult();
+				$ftp_Updated = $db->updateObject('#__content_types', $ftp, 'type_id');
+			}
+			else
+			{
+				$ftp_Inserted = $db->insertObject('#__content_types', $ftp);
+			}
+
 			// Create the help_document content type object.
 			$help_document = new stdClass();
 			$help_document->type_title = 'Componentbuilder Help_document';
@@ -2199,10 +2410,81 @@ class com_componentbuilderInstallerScript
 			}
 
 
+
+			// check if any links were found
+			if (isset($this->setValues) && ComponentbuilderHelper::checkArray($this->setValues))
+			{
+				// Get a db connection.
+				$db = JFactory::getDbo();
+				// Get the date
+				$today = JFactory::getDate()->toSql();
+				// Get the user object
+				$user = JFactory::getUser();
+				// build the storage buckets
+				foreach ($this->setValues as $hash => $item)
+				{
+					// get host name
+					$hostusername = ComponentbuilderHelper::getBetween($item['ftp'], 'username=', '&');
+					// get key
+					$keys = explode('__', $hash);
+					$key = $keys[1];
+					if (ComponentbuilderHelper::checkString($hostusername) && $hostusername !== 'user@name.com' && strpos($hostusername, '@') !== false && strpos($hostusername, '.') !== false)
+					{
+						$name = explode('.', $hostusername);
+						// Create an object.
+						$object = new stdClass();
+						$object->signature = $item['signature']; // the still locked version (if there is a basic key)
+						$object->name = str_replace('@', ' ', $name[0]);
+						$object->published = 1;
+						$object->version = 2;
+						$object->created = $today;
+						$object->created_by = (int) $user->id;
+						// safe the FTP server
+						$done = $db->insertObject('#__componentbuilder_ftp', $object);
+						// update the component if stored
+						if ($done)
+						{
+							// get the last ID
+							$newId = $db->insertid();
+							// make sure the access of asset is set
+							ComponentbuilderHelper::setAsset($newId,'ftp');
+							// now update the components
+							if (ComponentbuilderHelper::checkArray($item['ids']))
+							{
+								foreach ($item['ids'] as $compId)
+								{
+									// Create an object.
+									$object = new stdClass();
+									$object->id = $compId;
+									$object->{$key} = $newId;
+									// Update with the object the joomla_component table.
+									$db->updateObject('#__componentbuilder_joomla_component', $object, 'id');
+								}
+							}
+						}
+					}
+					else
+					{
+						// now update the components
+						if (ComponentbuilderHelper::checkArray($item['ids']))
+						{
+							foreach ($item['ids'] as $compId)
+							{
+								// Create an object.
+								$object = new stdClass();
+								$object->id = $compId;
+								$object->{$key} = ''; // remove all values to insure stability
+								// Insert the object into the joomla_component table.
+								$db->updateObject('#__componentbuilder_joomla_component', $object, 'id');
+							}
+						}
+					}
+				}
+			}
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.5.1 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.5.2 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

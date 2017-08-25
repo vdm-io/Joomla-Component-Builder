@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.1
-	@build			23rd August, 2017
+	@version		2.5.2
+	@build			25th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -137,7 +137,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 
 			$text1 = JFormHelper::loadFieldType('text',true);
 			// add the key
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE').'" name="sleutle" type="text" class="text_area" filter="STRING" hint="add key here" '.$required.' />';
+			$xml = '<field type="password" label="'.JText::_('COM_COMPONENTBUILDER_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE').'" name="sleutle" class="text_area" filter="STRING" hint="add key here" '.$required.' />';
 			// prepare the xml
 			$sleutle = new SimpleXMLElement($xml);
 			// set components to form

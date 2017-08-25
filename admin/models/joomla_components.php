@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 359 of this MVC
-	@build			23rd August, 2017
+	@version		@update number 361 of this MVC
+	@build			24th August, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -1340,16 +1340,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 						// decode readme
 						$item->readme = base64_decode($item->readme);
-						if ($basickey && !is_numeric($item->sales_server_ftp) && $item->sales_server_ftp === base64_encode(base64_decode($item->sales_server_ftp, true)))
-						{
-							// decrypt sales_server_ftp
-							$item->sales_server_ftp = $basic->decryptString($item->sales_server_ftp);
-						}
-						if ($basickey && !is_numeric($item->update_server_ftp) && $item->update_server_ftp === base64_encode(base64_decode($item->update_server_ftp, true)))
-						{
-							// decrypt update_server_ftp
-							$item->update_server_ftp = $basic->decryptString($item->update_server_ftp);
-						}
 						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
 						{
 							// decrypt export_key

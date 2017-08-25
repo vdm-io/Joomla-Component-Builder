@@ -618,19 +618,21 @@
 						last="100"
 						step="1"
 					/>
-					<!-- Permission Field. Type: Radio. (joomla) -->
+					<!-- Permission Field. Type: List. (joomla) -->
 					<field
-						type="radio"
+						type="list"
 						name="permission"
 						label="COM_COMPONENTBUILDER_ADMIN_VIEW_PERMISSION_LABEL"
 						description="COM_COMPONENTBUILDER_ADMIN_VIEW_PERMISSION_DESCRIPTION"
-						default="0"
-						required="false">
+						class="list_class"
+						multiple="false"
+						required="false"
+						default="0">
 						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
 						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+							COM_COMPONENTBUILDER_ADMIN_VIEW_NONE</option>
+						<option value=" 1">
+							COM_COMPONENTBUILDER_ADMIN_VIEW_EDITING</option>
 					</field>
 				</fieldset>
 			</fields>

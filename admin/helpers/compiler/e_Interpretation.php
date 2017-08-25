@@ -3117,7 +3117,7 @@ class Interpretation extends Fields
 							{
 								$this->onlyFunctionButton[$viewsName] = array();
 							}
-							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."if (\$this->user->authorise('".$viewName.".".$keyCode."'))";
+							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."if (\$this->user->authorise('".$viewName.".".$keyCode."', 'com_".$this->fileContentStatic['###component###']."'))";
 							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."{";
 							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
 							$this->onlyFunctionButton[$viewsName][] = "\t".$tab."\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
@@ -3125,7 +3125,7 @@ class Interpretation extends Fields
 						}
 						else
 						{
-							$buttons[] = "\t".$tab."\tif (\$this->user->authorise('".$viewName.".".$keyCode."'))";
+							$buttons[] = "\t".$tab."\tif (\$this->user->authorise('".$viewName.".".$keyCode."', 'com_".$this->fileContentStatic['###component###']."'))";
 							$buttons[] = "\t".$tab."\t{";
 							$buttons[] = "\t".$tab."\t\t//".$this->setLine(__LINE__)." add ".$custom_button['name']." button.";
 							$buttons[] = "\t".$tab."\t\tJToolBarHelper::custom('".$viewsName.".".$custom_button['method']."', '".$custom_button['icomoon']."', '', '".$keyLang."', false);";
@@ -6628,7 +6628,7 @@ class Interpretation extends Fields
 
 	/**
 	 * @param $args
-     */
+	*/
 	public function setLinkedView($args)
 	{
 		/**
@@ -6676,22 +6676,44 @@ class Interpretation extends Fields
 			{
 				list($parent_key) = explode('-',$parentKey);
 			}
+			elseif(strpos($parentKey, '-OR>') !== false)
+			{
+				// this is not good... (TODO)
+				$parent_keys = explode('-OR>',$parentKey);
+			}
 			else
 			{
 				$parent_key = $parentKey;
 			}
+			
 			if(strpos($key, '-R>') !== false || strpos($key, '-A>') !== false)
 			{
 				list($_key) = explode('-',$key);
+			}
+			elseif(strpos($key, '-OR>') !== false)
+			{
+				$_key = str_replace('-OR>', '',$key);
 			}
 			else
 			{
 				$_key = $key;
 			}
-			// set the global key
-			$globalKey = ComponentbuilderHelper::safeString($_key.$this->uniquekey(4));
 			// ###LINKEDVIEWGLOBAL### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWGLOBAL###'] .= PHP_EOL."\t\t\$this->".$globalKey." = \$item->".$parent_key.";";
+			if (isset($parent_keys) && ComponentbuilderHelper::checkArray($parent_keys))
+			{
+				$globalKey = array();
+				foreach ($parent_keys as $parent_key)
+				{
+					$globalKey[$parent_key] = ComponentbuilderHelper::safeString($_key.$this->uniquekey(4));
+					$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWGLOBAL###'] .= PHP_EOL."\t\t\$this->".$globalKey[$parent_key]." = \$item->".$parent_key.";";
+				}
+			}
+			else
+			{
+				// set the global key
+				$globalKey = ComponentbuilderHelper::safeString($_key.$this->uniquekey(4));
+				$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWGLOBAL###'] .= PHP_EOL."\t\t\$this->".$globalKey." = \$item->".$parent_key.";";
+			}
 			// ###LINKEDVIEWMETHODS### <<<DYNAMIC>>>
 			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWMETHODS###'] .= $this->setListQueryLinked($single, $list, $functionName, $key, $_key, $parentKey, $parent_key, $globalKey);
 		}
@@ -7221,7 +7243,9 @@ class Interpretation extends Fields
                 $query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, PHP_EOL.PHP_EOL);
 		// add the custom fields query
 		$query .= $this->setCustomQuery($viewName_list, $viewName_single);
-		if ($key && strpos($key,'-R>') === false && strpos($key,'-A>') === false && strpos($parentKey,'-R>') === false && strpos($parentKey,'-A>') === false)
+		if (ComponentbuilderHelper::checkString($globalKey) &&
+			$key && strpos($key,'-R>') === false && strpos($key,'-A>') === false && strpos($key,'-OR>') === false &&
+			$parentKey && strpos($parentKey,'-R>') === false && strpos($parentKey,'-A>') === false && strpos($parentKey,'-OR>') === false)
 		{
 			$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." global.";
 			$query .= PHP_EOL."\t\t\$".$globalKey." = \$this->".$globalKey.";";
@@ -7237,6 +7261,48 @@ class Interpretation extends Fields
 			$query .= PHP_EOL."\t\t{";
 			$query .= PHP_EOL."\t\t\t\$query->where('a.".$key." = -5');";
 			$query .= PHP_EOL."\t\t}";
+		}
+		elseif (strpos($parentKey,'-OR>') !== false || strpos($key,'-OR>') !== false)
+		{
+			// get both strings
+			if (strpos($key,'-OR>') !== false)
+			{
+				$ORarray = explode('-OR>', $key);
+			}
+			else
+			{
+				$ORarray = array($key);
+			}
+			// make sure we have an array
+			if (!ComponentbuilderHelper::checkArray($globalKey))
+			{
+				$globalKey = array($globalKey);
+			}
+			// now load the query (this may be to much... but hey let it write the code :)
+			foreach ($globalKey as $_globalKey)
+			{
+				// now build the query
+				$ORquery = array('s' => array(), 'i' => array());
+				foreach ($ORarray as $ORkey)
+				{
+					$ORquery['i'][] = "a.".$ORkey." = ' . (int) \$".$_globalKey;
+					$ORquery['s'][] = "a.".$ORkey." = ' . \$db->quote(\$".$_globalKey.")";
+				}
+				$query .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Filter by ".$_globalKey." global.";
+				$query .= PHP_EOL."\t\t\$".$_globalKey." = \$this->".$_globalKey.";";
+				$query .= PHP_EOL."\t\tif (is_numeric(\$".$_globalKey." ))";
+				$query .= PHP_EOL."\t\t{";
+				$query .= PHP_EOL."\t\t\t\$query->where('" . implode(" . ' OR ", $ORquery['i']) . ", ' OR');";
+				$query .= PHP_EOL."\t\t}";
+				$query .= PHP_EOL."\t\telseif (is_string(\$".$_globalKey."))";
+				$query .= PHP_EOL."\t\t{";
+				$query .= PHP_EOL."\t\t\t\$query->where('" . implode(" . ' OR ", $ORquery['s']) . ", ' OR');";
+				$query .= PHP_EOL."\t\t}";
+				$query .= PHP_EOL."\t\telse";
+				$query .= PHP_EOL."\t\t{";
+				$query .= PHP_EOL."\t\t\t\$query->where('a.".$ORkey." = -5');";
+				$query .= PHP_EOL."\t\t}";
+			}
 		}
 		if (isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
 		{
@@ -7269,7 +7335,7 @@ class Interpretation extends Fields
 		// ###SELECTIONTRANSLATIONFIX### <<<DYNAMIC>>>
 		$query .= $this->setSelectionTranslationFix($viewName_list,$this->fileContentStatic['###Component###'],"\t");
 		// filter by child repetable field values
-		if ($key && strpos($key,'-R>') !== false && strpos($key,'-A>') === false)
+		if (ComponentbuilderHelper::checkString($globalKey) && $key && strpos($key,'-R>') !== false && strpos($key,'-A>') === false)
 		{
 			list($field,$target) = explode('-R>',$key);
 			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." in this Repetable Field";
@@ -7299,7 +7365,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL."\t\t\t}";
 		}
 		// filter by child array field values
-		if ($key && strpos($key,'-R>') === false && strpos($key,'-A>') !== false)
+		if (ComponentbuilderHelper::checkString($globalKey) && $key && strpos($key,'-R>') === false && strpos($key,'-A>') !== false)
 		{
 			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Array Field";
 			$query .= PHP_EOL."\t\t\t\$".$globalKey." = \$this->".$globalKey.";";
@@ -7347,7 +7413,7 @@ class Interpretation extends Fields
 
 		}
 		// filter by parent repetable field values
-		if ($key && strpos($parentKey,'-R>') !== false && strpos($parentKey,'-A>') === false)
+		if (ComponentbuilderHelper::checkString($globalKey) && $key && strpos($parentKey,'-R>') !== false && strpos($parentKey,'-A>') === false)
 		{
 			list($bin,$target) = explode('-R>',$parentKey);
 			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Filter by ".$_key." Repetable Field";
@@ -7377,7 +7443,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL."\t\t\t}";
 		}
 		// filter by parent array field values
-		if ($key && strpos($parentKey,'-R>') === false && strpos($parentKey,'-A>') !== false)
+		if (ComponentbuilderHelper::checkString($globalKey) && $key && strpos($parentKey,'-R>') === false && strpos($parentKey,'-A>') !== false)
 		{
 			$query .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Filter by ".$globalKey." Array Field";
 			$query .= PHP_EOL."\t\t\t\$".$globalKey." = \$this->".$globalKey.";";

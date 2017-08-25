@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.1
-	@build			23rd August, 2017
+	@version		2.5.2
+	@build			25th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -51,7 +51,7 @@ class ComponentbuilderModelAjax extends JModelList
 	public function isNew($notice)
 	{
 		// first get the file path
-		$path_filename = ComponentbuilderHelper::getFilePath('user', 'notice', JFactory::getUser()->username, $fileType = '.md', JPATH_COMPONENT_ADMINISTRATOR);
+		$path_filename = ComponentbuilderHelper::getFilePath('path', 'usernotice', 'md', JFactory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
 		// check if the file is set
 		if (($content = @file_get_contents($path_filename)) !== FALSE)
 		{
@@ -69,7 +69,7 @@ class ComponentbuilderModelAjax extends JModelList
 	public function isRead($notice)
 	{
 		// first get the file path
-		$path_filename = ComponentbuilderHelper::getFilePath('user', 'notice', JFactory::getUser()->username, $fileType = '.md', JPATH_COMPONENT_ADMINISTRATOR);
+		$path_filename = ComponentbuilderHelper::getFilePath('path', 'usernotice', 'md', JFactory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
 		// set as read if not already set
 		if (($content = @file_get_contents($path_filename)) !== FALSE)
 		{

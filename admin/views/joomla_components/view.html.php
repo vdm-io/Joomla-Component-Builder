@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 359 of this MVC
-	@build			23rd August, 2017
+	@version		@update number 361 of this MVC
+	@build			24th August, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -135,12 +135,12 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
                                 $dhtml = $layout->render(array('title' => $title));
                                 $bar->appendButton('Custom', $dhtml, 'batch');
                         } 
-			if ($this->user->authorise('joomla_component.export_components'))
+			if ($this->user->authorise('joomla_component.export_components', 'com_componentbuilder'))
 			{
 				// add Export Components button.
 				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_COMPONENTS', false);
 			}
-			if ($this->user->authorise('joomla_component.backup'))
+			if ($this->user->authorise('joomla_component.backup', 'com_componentbuilder'))
 			{
 				// add Backup button.
 				JToolBarHelper::custom('joomla_components.backup', 'archive', '', 'COM_COMPONENTBUILDER_BACKUP', false);
@@ -160,7 +160,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 				JToolBarHelper::custom('joomla_components.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
                 }
-		if ($this->user->authorise('joomla_component.import_components'))
+		if ($this->user->authorise('joomla_component.import_components', 'com_componentbuilder'))
 		{
 			// add Import Components button.
 			JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_COMPONENTS', false);

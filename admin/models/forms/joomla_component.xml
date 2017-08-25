@@ -216,7 +216,7 @@
 			class="dashboard_tabs"
 			select="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TAB_SELECT"
 			icon="list"
-			maximum="5"
+			maximum="10"
 			filter="raw">
 			<fields name="dashboard_tab_fields" label="">
 				<fieldset hidden="true" name="dashboard_tab_modal" repeat="true">
@@ -744,19 +744,16 @@
 			filter="raw"
 			required="true"
 		/>
-		<!-- Sales_server_ftp Field. Type: Text. (joomla) -->
+		<!-- Sales_server_ftp Field. Type: Ftps. (custom) -->
 		<field
-			type="text"
+			type="ftps"
 			name="sales_server_ftp"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_FTP_LABEL"
-			size="250"
-			maxlength="250"
-			default="host=HOSTNAME&amp;port=PORT_INT&amp;options[type]=FTP_BINARY&amp;options[timeout]=15&amp;username=user@name.com&amp;password=password"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_FTP_DESCRIPTION"
-			class="text_area span12"
-			filter="STRING"
-			message="Error! Please add some text here."
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_FTP_HINT"
+			class="list_class"
+			multiple="false"
+			default="0"
+			button="true"
 		/>
 		<!-- Update_server_target Field. Type: Radio. (joomla) -->
 		<field
@@ -791,18 +788,16 @@
 			message="Error! Please add component name here."
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_HINT"
 		/>
-		<!-- Update_server_ftp Field. Type: Text. (joomla) -->
+		<!-- Update_server_ftp Field. Type: Ftps. (custom) -->
 		<field
-			type="text"
+			type="ftps"
 			name="update_server_ftp"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_FTP_LABEL"
-			size="250"
-			maxlength="250"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_FTP_DESCRIPTION"
-			class="text_area span12"
-			filter="STRING"
-			message="Error! Please add some text here."
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_FTP_HINT"
+			class="list_class"
+			multiple="false"
+			default="0"
+			button="true"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field
