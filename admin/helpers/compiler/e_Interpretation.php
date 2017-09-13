@@ -5470,7 +5470,14 @@ class Interpretation extends Fields
 				$this->langContent['admin'][$keylang] = $langval;
 			}
 		}
-
+		// check if the both admin array is set
+		if (isset($this->langContent['bothadmin']) && ComponentbuilderHelper::checkArray($this->langContent['bothadmin']))
+		{
+			foreach ($this->langContent['bothadmin'] as $keylang => $langval)
+			{
+				$this->langContent['admin'][$keylang] = $langval;
+			}
+		}
 		if (isset($this->langContent['admin']) && ComponentbuilderHelper::checkArray($this->langContent['admin']))
 		{
 			ksort($this->langContent['admin']);
@@ -5505,11 +5512,20 @@ class Interpretation extends Fields
 		$this->langContent['site'][$this->langPrefix.'_NEW']		= "New";
 		$this->langContent['site'][$this->langPrefix.'_CREATE_NEW_S']	= "Create New %s";
 		$this->langContent['site'][$this->langPrefix.'_EDIT_S']		= "Edit %s";
-
+		$this->langContent['site'][$this->langPrefix.'_NO_ACCESS_GRANTED'] = "No Access Granted!";
+		
 		// check if the both array is set
 		if (isset($this->langContent['both']) && ComponentbuilderHelper::checkArray($this->langContent['both']))
 		{
 			foreach ($this->langContent['both'] as $keylang => $langval)
+			{
+				$this->langContent['site'][$keylang] = $langval;
+			}
+		}
+		// check if the both site array is set
+		if (isset($this->langContent['bothsite']) && ComponentbuilderHelper::checkArray($this->langContent['bothsite']))
+		{
+			foreach ($this->langContent['bothsite'] as $keylang => $langval)
 			{
 				$this->langContent['site'][$keylang] = $langval;
 			}
@@ -5531,7 +5547,16 @@ class Interpretation extends Fields
 	{
 		// add final list of needed lang strings
 		$this->langContent['sitesys'][$this->langPrefix] = ComponentbuilderHelper::safeString($this->componentData->name,'W');
+		$this->langContent['sitesys'][$this->langPrefix.'_NO_ACCESS_GRANTED'] = "No Access Granted!";
 
+		// check if the both site array is set
+		if (isset($this->langContent['bothsite']) && ComponentbuilderHelper::checkArray($this->langContent['bothsite']))
+		{
+			foreach ($this->langContent['bothsite'] as $keylang => $langval)
+			{
+				$this->langContent['sitesys'][$keylang] = $langval;
+			}
+		}
 		if (isset($this->langContent['sitesys']) && ComponentbuilderHelper::checkArray($this->langContent['sitesys']))
 		{
 			ksort($this->langContent['sitesys']);
@@ -5547,6 +5572,14 @@ class Interpretation extends Fields
 
 	public function setLangAdminSys()
 	{
+		// check if the both admin array is set
+		if (isset($this->langContent['bothadmin']) && ComponentbuilderHelper::checkArray($this->langContent['bothadmin']))
+		{
+			foreach ($this->langContent['bothadmin'] as $keylang => $langval)
+			{
+				$this->langContent['adminsys'][$keylang] = $langval;
+			}
+		}
 		if (isset($this->langContent['adminsys']) && ComponentbuilderHelper::checkArray($this->langContent['adminsys']))
 		{
 			ksort($this->langContent['adminsys']);
@@ -13795,27 +13828,27 @@ function vdm_dkim() {
 		{
 			$exportTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Export Data','U');
 			$exportDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Export Data','U').'_DESC';
-			$this->langContent['admin'][$exportTitle]	= 'Export Data';
-			$this->langContent['admin'][$exportDesc]	= ' Allows users in this group to export data.';
+			$this->langContent['bothadmin'][$exportTitle]	= 'Export Data';
+			$this->langContent['bothadmin'][$exportDesc]	= ' Allows users in this group to export data.';
 			$this->componentHead[] = "\t\t".'<action name="core.export" title="'.$exportTitle.'" description="'.$exportDesc.'" />';
 
 			$importTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Import Data','U');
 			$importDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Import Data','U').'_DESC';
-			$this->langContent['admin'][$importTitle]	= 'Import Data';
-			$this->langContent['admin'][$importDesc]	= ' Allows users in this group to import data.';
+			$this->langContent['bothadmin'][$importTitle]	= 'Import Data';
+			$this->langContent['bothadmin'][$importDesc]	= ' Allows users in this group to import data.';
 			$this->componentHead[] = "\t\t".'<action name="core.import" title="'.$importTitle.'" description="'.$importDesc.'" />';
 		}
 		// version permission
 		$batchTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Use Batch','U');
 		$batchDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Use Batch','U').'_DESC';
-		$this->langContent['admin'][$batchTitle]	= 'Use Batch';
-		$this->langContent['admin'][$batchDesc]	= ' Allows users in this group to use batch copy/update method.';
+		$this->langContent['bothadmin'][$batchTitle]	= 'Use Batch';
+		$this->langContent['bothadmin'][$batchDesc]	= ' Allows users in this group to use batch copy/update method.';
 		$this->componentHead[] = "\t\t".'<action name="core.batch" title="'.$batchTitle.'" description="'.$batchDesc.'" />';
 		// version permission
 		$importTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Versions','U');
 		$importDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Versions','U').'_DESC';
-		$this->langContent['admin'][$importTitle]	= 'Edit Version';
-		$this->langContent['admin'][$importDesc]	= ' Allows users in this group to edit versions.';
+		$this->langContent['bothadmin'][$importTitle]	= 'Edit Version';
+		$this->langContent['bothadmin'][$importDesc]	= ' Allows users in this group to edit versions.';
 		$this->componentHead[] = "\t\t".'<action name="core.version" title="'.$importTitle.'" description="'.$importDesc.'" />';
 		// set the defaults
 		$this->componentHead[] = "\t\t".'<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
@@ -13826,14 +13859,14 @@ function vdm_dkim() {
 		// new custom created by permissions
 		$created_byTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Created By','U');
 		$created_byDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Created By','U').'_DESC';
-		$this->langContent['admin'][$created_byTitle]	= 'Edit Created By';
-		$this->langContent['admin'][$created_byDesc]	= ' Allows users in this group to edit created by.';
+		$this->langContent['bothadmin'][$created_byTitle]	= 'Edit Created By';
+		$this->langContent['bothadmin'][$created_byDesc]	= ' Allows users in this group to edit created by.';
 		$this->componentHead[] = "\t\t".'<action name="core.edit.created_by" title="'.$created_byTitle.'" description="'.$created_byDesc.'" />';
 		// new custom created date permissions
 		$createdTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Created Date','U');
 		$createdDesc = $this->langPrefix.'_'.ComponentbuilderHelper::safeString('Edit Created Date','U').'_DESC';
-		$this->langContent['admin'][$createdTitle]	= 'Edit Created Date';
-		$this->langContent['admin'][$createdDesc]	= ' Allows users in this group to edit created date.';
+		$this->langContent['bothadmin'][$createdTitle]	= 'Edit Created Date';
+		$this->langContent['bothadmin'][$createdDesc]	= ' Allows users in this group to edit created date.';
 		$this->componentHead[] = "\t\t".'<action name="core.edit.created" title="'.$createdTitle.'" description="'.$createdDesc.'" />';
 		
 		// set the menu controller lookup
@@ -13849,8 +13882,8 @@ function vdm_dkim() {
                                 $customAdminTitle       = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($customAdminName.' Access','U');
                                 $customAdminDesc        = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($customAdminName.' Access','U').'_DESC';
                                 $sortKey                = ComponentbuilderHelper::safeString($customAdminName.' Access');
-                                $this->langContent['admin'][$customAdminTitle]	= $customAdminName.' Access';
-                                $this->langContent['admin'][$customAdminDesc]	= ' Allows the users in this group to access '.ComponentbuilderHelper::safeString($customAdminName,'w').'.';
+                                $this->langContent['bothadmin'][$customAdminTitle]	= $customAdminName.' Access';
+                                $this->langContent['bothadmin'][$customAdminDesc]	= ' Allows the users in this group to access '.ComponentbuilderHelper::safeString($customAdminName,'w').'.';
                                 $this->componentGlobal[$sortKey]                      = "\t\t".'<action name="'.$customAdminCode.'.access" title="'.$customAdminTitle.'" description="'.$customAdminDesc.'" />';
                                 // add the custom permissions to use the buttons of this view
                                 $this->addCustomButtonPermissions($custom_admin_view['settings'], $customAdminName, $customAdminCode);
@@ -13896,8 +13929,8 @@ function vdm_dkim() {
 				$sortKey        = ComponentbuilderHelper::safeString($siteName.' Access Site');
 				if (isset($site_view['access']) && $site_view['access'] == 1)
 				{
-					$this->langContent['admin'][$siteTitle]	= $siteName.' (Site) Access';
-					$this->langContent['admin'][$siteDesc]	= ' Allows the users in this group to access site '.ComponentbuilderHelper::safeString($siteName,'w').'.';
+					$this->langContent['bothadmin'][$siteTitle]	= $siteName.' (Site) Access';
+					$this->langContent['bothadmin'][$siteDesc]	= ' Allows the users in this group to access site '.ComponentbuilderHelper::safeString($siteName,'w').'.';
 					$this->componentGlobal[$sortKey]              = "\t\t".'<action name="site.'.$siteCode.'.access" title="'.$siteTitle.'" description="'.$siteDesc.'" />';
 					
 					// check if this site view requires access rule to default to public
@@ -14038,8 +14071,8 @@ function vdm_dkim() {
 			        $customButtonTitle = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($nameView.' '.$customButtonName.' Button Access','U');
 			        $customButtonDesc  = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($nameView.' '.$customButtonName.' Button Access','U').'_DESC';
 			        $sortButtonKey     = ComponentbuilderHelper::safeString($nameView.' '.$customButtonName.' Button Access');
-			        $this->langContent['admin'][$customButtonTitle]	= $nameView.' '.$customButtonName.' Button Access';
-			        $this->langContent['admin'][$customButtonDesc]	= ' Allows the users in this group to access the '.ComponentbuilderHelper::safeString($customButtonName,'w').' button.';
+			        $this->langContent['bothadmin'][$customButtonTitle]	= $nameView.' '.$customButtonName.' Button Access';
+			        $this->langContent['bothadmin'][$customButtonDesc]	= ' Allows the users in this group to access the '.ComponentbuilderHelper::safeString($customButtonName,'w').' button.';
 			        $this->componentGlobal[$sortButtonKey]  = "\t\t".'<action name="'.$code.'.'.$customButtonCode.'" title="'.$customButtonTitle.'" description="'.$customButtonDesc.'" />';
 			}
 		}
@@ -14311,8 +14344,8 @@ function vdm_dkim() {
 					}
 				}
 				// set to language file
-				$this->langContent['admin'][$title]		= trim($permission['title']);
-				$this->langContent['admin'][$title.'_DESC']	= trim($permission['description']);
+				$this->langContent['bothadmin'][$title]		= trim($permission['title']);
+				$this->langContent['bothadmin'][$title.'_DESC']	= trim($permission['description']);
 			}
 		}
 	}
