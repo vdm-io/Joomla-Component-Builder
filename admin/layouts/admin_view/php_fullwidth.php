@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.2
-	@build			25th August, 2017
+	@version		2.5.4
+	@build			13th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		php_fullwidth.php
@@ -41,6 +41,8 @@ $fields = $displayData->get('fields') ?: array(
 	'php_getitems_after_all',
 	'add_php_getlistquery',
 	'php_getlistquery',
+	'add_php_before_save',
+	'php_before_save',
 	'add_php_save',
 	'php_save',
 	'add_php_postsavehook',

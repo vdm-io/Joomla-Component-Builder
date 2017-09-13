@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.2
-	@build			25th August, 2017
+	@version		2.5.4
+	@build			13th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -107,13 +107,13 @@ abstract class ComponentbuilderHelper
 	/**
 	 * Remove folders with files
 	 * 
-	 * @param   string   $dir  The path to folder to remove
-	 * @param   boolean   $git  if there is a git folder in that must not be removed
+	 * @param   string   $dir     The path to folder to remove
+	 * @param   boolean  $ignore  The folders and files to ignore and not remove
 	 *
 	 * @return  boolean   True in all is removed
 	 * 
 	 */
-	public static function removeFolder($dir, $git = false)
+	public static function removeFolder($dir, $ignore = false)
 	{
 		if (JFolder::exists($dir))
 		{
@@ -124,22 +124,53 @@ abstract class ComponentbuilderHelper
 				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
 				if ($file->isDir())
 				{
-					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
+					$keeper = false;
+					if (self::checkArray($ignore))
+					{
+						foreach ($ignore as $keep)
+						{
+							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
+							{
+								$keeper = true;
+							}
+						}
+					}
+					if ($keeper)
+					{
+						continue;
+					}
 					JFolder::delete($file->getPathname());
 				}
 				else
 				{
-					if ($git && strpos($file->getPathname(), $dir.'/.git') !== false) continue;
+					$keeper = false;
+					if (self::checkArray($ignore))
+					{
+						foreach ($ignore as $keep)
+						{
+							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
+							{
+								$keeper = true;
+							}
+						}
+					}
+					if ($keeper)
+					{
+						continue;
+					}
 					JFile::delete($file->getPathname());
 				}
 			}
-			if (!$git && JFolder::delete($dir))
+			if (!self::checkArray($ignore))
 			{
-				return true;
+				return JFolder::delete($dir);
 			}
+			return true;
 		}
 		return false;
-	}	/**
+	}
+
+	/**
 	* 	The dynamic builder of views, tables and fields
 	**/
 	public static function dynamicBuilder(&$data, $type)

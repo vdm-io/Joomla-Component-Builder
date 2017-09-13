@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.2
-	@build			25th August, 2017
+	@version		2.5.4
+	@build			13th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		linked_admin_views_fullwidth.php
@@ -28,7 +28,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->waalinked_admin_views;
+$items	= $displayData->wablinked_admin_views;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit	= "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.edit";

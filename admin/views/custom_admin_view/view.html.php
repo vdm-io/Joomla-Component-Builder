@@ -71,7 +71,7 @@ class ComponentbuilderViewCustom_admin_view extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vyilinked_components		= $this->get('Vyilinked_components');
+		$this->vyjlinked_components		= $this->get('Vyjlinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

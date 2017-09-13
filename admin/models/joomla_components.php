@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 361 of this MVC
-	@build			24th August, 2017
+	@version		@update number 366 of this MVC
+	@build			7th September, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -1309,9 +1309,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			{
 				$items = $db->loadObjectList();
 
-				// Get the basic encription key.
+				// Get the basic encryption key.
 				$basickey = ComponentbuilderHelper::getCryptKey('basic');
-				// Get the encription object.
+				// Get the encryption object.
 				$basic = new FOFEncryptAes($basickey, 128);
 
 				// set values to display correctly.
@@ -1319,12 +1319,14 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode php_preflight_update
-						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
+						// decode readme
+						$item->readme = base64_decode($item->readme);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 						// decode css
 						$item->css = base64_decode($item->css);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
@@ -1332,14 +1334,12 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-						// decode readme
-						$item->readme = base64_decode($item->readme);
+						// decode php_preflight_update
+						$item->php_preflight_update = base64_decode($item->php_preflight_update);
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
 						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
 						{
 							// decrypt export_key

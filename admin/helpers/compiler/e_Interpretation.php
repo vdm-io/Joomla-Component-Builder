@@ -379,13 +379,13 @@ class Interpretation extends Fields
 		// make sure we have the correct file
 		if (isset($this->componentData->whmcs_key) && ComponentbuilderHelper::checkString($this->componentData->whmcs_key))
 		{
-			// Get the basic encription.
+			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
-			// Get the encription object.
+			// Get the encryption object.
 			$basic = new FOFEncryptAes($basickey, 128);
 			if (!empty($this->componentData->whmcs_key) && $basickey && !is_numeric($this->componentData->whmcs_key) && $this->componentData->whmcs_key === base64_encode(base64_decode($this->componentData->whmcs_key, true)))
 			{
-				// basic decript data whmcs_key.
+				// basic decrypt data whmcs_key.
 				$this->componentData->whmcs_key = rtrim($basic->decryptString($this->componentData->whmcs_key), "\0");
 				// set the needed string to connect to whmcs
 				$key["kasier"] = $this->componentData->whmcs_url;
@@ -2145,16 +2145,16 @@ class Interpretation extends Fields
 				$script = '';
 				if (isset($this->siteDecrypt['basic'][$code]) && $this->siteDecrypt['basic'][$code])
 				{
-					$script .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the basic encription.";
+					$script .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the basic encryption.";
 					$script .= PHP_EOL."\t".$tab."\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-					$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
+					$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encryption object.";
 					$script .= PHP_EOL."\t".$tab."\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 				}
 				if (isset($this->siteDecrypt['advanced'][$code]) && $this->siteDecrypt['advanced'][$code])
 				{
-					$script .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the advanced encription.";
+					$script .= PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the advanced encryption.";
 					$script .= PHP_EOL."\t".$tab."\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-					$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
+					$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encryption object.";
 					$script .= PHP_EOL."\t".$tab."\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 				}
 				$getItem = $script . $getItem;
@@ -2593,16 +2593,16 @@ class Interpretation extends Fields
 						$script = '';
 						if ($this->siteDecrypt['basic'][$code])
 						{
-							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
+							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encryption.";
 							$script .= PHP_EOL."\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
 							$script .= PHP_EOL."\t\t\$basic = new FOFEncryptAes(\$basickey, 128);".PHP_EOL;
 						}
 						if ($this->siteDecrypt['advanced'][$code])
 						{
-							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encription.";
+							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encryption.";
 							$script .= PHP_EOL."\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
 							$script .= PHP_EOL."\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);".PHP_EOL;
 						}
 						$methods = str_replace('###CRYPT###',$script,$methods);
@@ -2777,16 +2777,16 @@ class Interpretation extends Fields
 			$script = '';
 			if ($this->siteDecrypt['basic'][$code])
 			{
-				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encryption.";
 				$script .= PHP_EOL."\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
 				$script .= PHP_EOL."\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 			}
 			if ($this->siteDecrypt['advanced'][$code])
 			{
-				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encription.";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encryption.";
 				$script .= PHP_EOL."\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
 				$script .= PHP_EOL."\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 			}
 			$getItem = $script . $getItem;
@@ -3787,30 +3787,30 @@ class Interpretation extends Fields
 			$Component	= $this->fileContentStatic['###Component###'];
 			if (isset($this->basicEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder[$view]))
 			{
-				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the basic encription.";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the basic encryption.";
 				$script .= PHP_EOL."\t\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
 				$script .= PHP_EOL."\t\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 				foreach ($this->basicEncryptionBuilder[$view] as $baseString)
 				{
 					$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$baseString.") && \$basickey && !is_numeric(\$item->".$baseString.") && \$item->".$baseString." === base64_encode(base64_decode(\$item->".$baseString.", true)))";
 					$script .= PHP_EOL."\t\t\t{";
-					$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." basic decript data ".$baseString.".";
+					$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." basic decrypt data ".$baseString.".";
 					$script .= PHP_EOL."\t\t\t\t\$item->".$baseString." = rtrim(\$basic->decryptString(\$item->".$baseString."), ".'"\0"'.");";
 					$script .= PHP_EOL."\t\t\t}";
 				}
 			}
 			if (isset($this->advancedEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder[$view]))
 			{
-				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
+				$script .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the advanced encryption key.";
 				$script .= PHP_EOL."\t\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the encription object.";
+				$script .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
 				$script .= PHP_EOL."\t\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 				foreach ($this->advancedEncryptionBuilder[$view] as $baseString)
 				{
 					$script .= PHP_EOL.PHP_EOL."\t\t\tif (!empty(\$item->".$baseString.") && \$advancedkey && !is_numeric(\$item->".$baseString.") && \$item->".$baseString." === base64_encode(base64_decode(\$item->".$baseString.", true)))";
 					$script .= PHP_EOL."\t\t\t{";
-					$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." advanced decript data ".$baseString.".";
+					$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." advanced decrypt data ".$baseString.".";
 					$script .= PHP_EOL."\t\t\t\t\$item->".$baseString." = rtrim(\$advanced->decryptString(\$item->".$baseString."), ".'"\0"'.");";
 					$script .= PHP_EOL."\t\t\t}";
 				}
@@ -3843,6 +3843,8 @@ class Interpretation extends Fields
 	public function setMethodItemSave(&$view)
 	{
 		$script = '';
+		// check if there was script added before modeling of data
+		$script .= $this->getCustomScriptBuilder('php_before_save', $view, PHP_EOL.PHP_EOL);
 		// turn array into JSON string
 		if(isset($this->jsonItemBuilder[$view]) && ComponentbuilderHelper::checkArray($this->jsonItemBuilder[$view]))
 		{
@@ -3892,13 +3894,13 @@ class Interpretation extends Fields
 			$Component	= $this->fileContentStatic['###Component###'];
 			if(isset($this->basicEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder[$view]))
 			{
-				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encription key.";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the basic encryption key.";
 				$script .= PHP_EOL."\t\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encryption object";
 				$script .= PHP_EOL."\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 				foreach ($this->basicEncryptionBuilder[$view] as $baseString)
 				{
-					$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Encript data ".$baseString.".";
+					$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Encrypt data ".$baseString.".";
 					$script .= PHP_EOL."\t\tif (isset(\$data['".$baseString."']) && \$basickey)";
 					$script .= PHP_EOL."\t\t{";
 					$script .= PHP_EOL."\t\t\t\$data['".$baseString."'] = \$basic->encryptString(\$data['".$baseString."']);";
@@ -3907,13 +3909,13 @@ class Interpretation extends Fields
 			}
 			if(isset($this->advancedEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder[$view]))
 			{
-				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
+				$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the advanced encryption key.";
 				$script .= PHP_EOL."\t\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encription object";
+				$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encryption object";
 				$script .= PHP_EOL."\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 				foreach ($this->advancedEncryptionBuilder[$view] as $baseString)
 				{
-					$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Encript data ".$baseString.".";
+					$script .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Encrypt data ".$baseString.".";
 					$script .= PHP_EOL."\t\tif (isset(\$data['".$baseString."']) && \$advancedkey)";
 					$script .= PHP_EOL."\t\t{";
 					$script .= PHP_EOL."\t\t\t\$data['".$baseString."'] = \$advanced->encryptString(\$data['".$baseString."']);";
@@ -11070,7 +11072,7 @@ class Interpretation extends Fields
 	{
 		// add the fix if this view has the need for it
 		$fix = '';
-		// encription switches
+		// encryption switches
 		$basicCrypt = false;
 		$advancedCrypt = false;
 		// setup correct core target
@@ -11334,9 +11336,9 @@ class Interpretation extends Fields
 
 		if ($basicCrypt)
 		{
-			$script = PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the basic encription key.";
+			$script = PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the basic encryption key.";
 			$script .= PHP_EOL."\t".$tab."\t\$basickey = ".$Component."Helper::getCryptKey('basic');";
-			$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
+			$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encryption object.";
 			$script .= PHP_EOL."\t".$tab."\t\$basic = new FOFEncryptAes(\$basickey, 128);";
 			// add the encryption script
 			$fix = $script . $fix;
@@ -11344,9 +11346,9 @@ class Interpretation extends Fields
 
 		if ($advancedCrypt)
 		{
-			$script = PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the advanced encription key.";
+			$script = PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the advanced encryption key.";
 			$script .= PHP_EOL."\t".$tab."\t\$advancedkey = ".$Component."Helper::getCryptKey('advanced');";
-			$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encription object.";
+			$script .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Get the encryption object.";
 			$script .= PHP_EOL."\t".$tab."\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
 			// add the encryption script
 			$fix = $script . $fix;
@@ -13705,7 +13707,7 @@ function vdm_dkim() {
 			$this->configFieldSets[] = "\t\t".'description="'.$lang.'_ENCRYPTION_DESC">';
 			// set tab lang
 			$this->langContent[$this->lang][$lang.'_ENCRYPTION_LABEL']	= "Encryption Settings";
-			$this->langContent[$this->lang][$lang.'_ENCRYPTION_DESC']	= "The encription key for the field encryption is set here.";
+			$this->langContent[$this->lang][$lang.'_ENCRYPTION_DESC']	= "The encryption key for the field encryption is set here.";
 
 			if (isset($this->basicEncryption) && $this->basicEncryption)
 			{

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.2
-	@build			25th August, 2017
+	@version		2.5.4
+	@build			13th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_right.php
@@ -41,6 +41,9 @@ $fields = $displayData->get('fields') ?: array(
 	'note_add_folders',
 	'addfolders',
 	'spacer_hr_f',
+	'to_ignore_note',
+	'toignore',
+	'spacer_hr_g',
 	'jcb_export_package_note',
 	'export_key',
 	'export_package_link',

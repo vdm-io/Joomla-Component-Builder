@@ -1051,6 +1051,23 @@ class Get
 			$component->sales_server_ftp = 0;
 			$component->add_sales_server = 0;
 		}
+		// set the ignore folders for git if found
+		if (isset($component->toignore) && ComponentbuilderHelper::checkString($component->toignore))
+		{
+			if (strpos($component->toignore, ',') !== false)
+			{
+				$component->toignore = array_map('trim', (array) explode(',', $component->toignore));
+			}
+			else
+			{
+				$component->toignore = array(trim($component->toignore));
+			}
+		}
+		else
+		{
+			// the default is to ignore the git folder
+			$component->toignore = array('.git');
+		}
 		
 		// return the found component data
 		return $component;
@@ -1395,7 +1412,7 @@ class Get
 				}
 			}
 			// add_php
-			$addArrayP = array('php_getitem','php_save','php_postsavehook','php_getitems','php_getitems_after_all','php_getlistquery','php_allowedit','php_before_delete','php_after_delete','php_before_publish','php_after_publish','php_batchcopy','php_batchmove','php_document');
+			$addArrayP = array('php_getitem','php_before_save','php_save','php_postsavehook','php_getitems','php_getitems_after_all','php_getlistquery','php_allowedit','php_before_delete','php_after_delete','php_before_publish','php_after_publish','php_batchcopy','php_batchmove','php_document');
 			foreach ($addArrayP as $scripter)
 			{
 				if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1)

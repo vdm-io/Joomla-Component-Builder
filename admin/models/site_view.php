@@ -185,7 +185,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVytlinked_components()
+	public function getVyulinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();

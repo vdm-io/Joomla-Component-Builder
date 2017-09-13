@@ -95,14 +95,14 @@ class ComponentbuilderModelFtp extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			// Get the basic encription.
+			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
-			// Get the encription object.
+			// Get the encryption object.
 			$basic = new FOFEncryptAes($basickey, 128);
 
 			if (!empty($item->signature) && $basickey && !is_numeric($item->signature) && $item->signature === base64_encode(base64_decode($item->signature, true)))
 			{
-				// basic decript data signature.
+				// basic decrypt data signature.
 				$item->signature = rtrim($basic->decryptString($item->signature), "\0");
 			}
 			
@@ -122,7 +122,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWaclinked_components()
+	public function getWadlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -892,12 +892,12 @@ class ComponentbuilderModelFtp extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Get the basic encription key.
+		// Get the basic encryption key.
 		$basickey = ComponentbuilderHelper::getCryptKey('basic');
-		// Get the encription object
+		// Get the encryption object
 		$basic = new FOFEncryptAes($basickey, 128);
 
-		// Encript data signature.
+		// Encrypt data signature.
 		if (isset($data['signature']) && $basickey)
 		{
 			$data['signature'] = $basic->encryptString($data['signature']);

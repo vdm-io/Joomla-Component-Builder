@@ -241,9 +241,9 @@ class ComponentbuilderModelFtps extends JModelList
 			{
 				$items = $db->loadObjectList();
 
-				// Get the basic encription key.
+				// Get the basic encryption key.
 				$basickey = ComponentbuilderHelper::getCryptKey('basic');
-				// Get the encription object.
+				// Get the encryption object.
 				$basic = new FOFEncryptAes($basickey, 128);
 
 				// set values to display correctly.

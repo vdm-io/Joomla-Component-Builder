@@ -408,7 +408,7 @@ class Compiler extends Infusion
 			// set the git path
 			$this->gitPath = $this->gitPath.'/com_'.$this->componentData->sales_name.'__joomla_'.$this->joomlaVersion;
 			// remove old data
-			$this->removeFolder($this->gitPath,true);
+			$this->removeFolder($this->gitPath, $this->componentData->toignore);
 			// set the new data
 			JFolder::copy($this->componentPath, $this->gitPath, '', true);
 		}

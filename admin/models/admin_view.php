@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 111 of this MVC
-	@build			17th July, 2017
+	@version		@update number 114 of this MVC
+	@build			28th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -95,22 +95,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_getitems_after_all))
+			if (!empty($item->php_batchmove))
 			{
-				// base64 Decode php_getitems_after_all.
-				$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
-			}
-
-			if (!empty($item->php_after_publish))
-			{
-				// base64 Decode php_after_publish.
-				$item->php_after_publish = base64_decode($item->php_after_publish);
-			}
-
-			if (!empty($item->php_allowedit))
-			{
-				// base64 Decode php_allowedit.
-				$item->php_allowedit = base64_decode($item->php_allowedit);
+				// base64 Decode php_batchmove.
+				$item->php_batchmove = base64_decode($item->php_batchmove);
 			}
 
 			if (!empty($item->php_save))
@@ -119,16 +107,28 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_save = base64_decode($item->php_save);
 			}
 
-			if (!empty($item->php_batchmove))
-			{
-				// base64 Decode php_batchmove.
-				$item->php_batchmove = base64_decode($item->php_batchmove);
-			}
-
 			if (!empty($item->php_after_delete))
 			{
 				// base64 Decode php_after_delete.
 				$item->php_after_delete = base64_decode($item->php_after_delete);
+			}
+
+			if (!empty($item->php_getlistquery))
+			{
+				// base64 Decode php_getlistquery.
+				$item->php_getlistquery = base64_decode($item->php_getlistquery);
+			}
+
+			if (!empty($item->php_allowedit))
+			{
+				// base64 Decode php_allowedit.
+				$item->php_allowedit = base64_decode($item->php_allowedit);
+			}
+
+			if (!empty($item->php_after_publish))
+			{
+				// base64 Decode php_after_publish.
+				$item->php_after_publish = base64_decode($item->php_after_publish);
 			}
 
 			if (!empty($item->php_getitems))
@@ -137,10 +137,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_getitems = base64_decode($item->php_getitems);
 			}
 
-			if (!empty($item->php_getlistquery))
+			if (!empty($item->php_import))
 			{
-				// base64 Decode php_getlistquery.
-				$item->php_getlistquery = base64_decode($item->php_getlistquery);
+				// base64 Decode php_import.
+				$item->php_import = base64_decode($item->php_import);
+			}
+
+			if (!empty($item->php_getitems_after_all))
+			{
+				// base64 Decode php_getitems_after_all.
+				$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
+			}
+
+			if (!empty($item->php_before_save))
+			{
+				// base64 Decode php_before_save.
+				$item->php_before_save = base64_decode($item->php_before_save);
 			}
 
 			if (!empty($item->php_postsavehook))
@@ -167,12 +179,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_before_delete = base64_decode($item->php_before_delete);
 			}
 
-			if (!empty($item->php_import))
-			{
-				// base64 Decode php_import.
-				$item->php_import = base64_decode($item->php_import);
-			}
-
 			if (!empty($item->php_document))
 			{
 				// base64 Decode php_document.
@@ -185,16 +191,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->sql = base64_decode($item->sql);
 			}
 
-			if (!empty($item->php_getitem))
-			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
-			}
-
 			if (!empty($item->php_import_display))
 			{
 				// base64 Decode php_import_display.
 				$item->php_import_display = base64_decode($item->php_import_display);
+			}
+
+			if (!empty($item->php_getitem))
+			{
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 			if (!empty($item->php_import_save))
@@ -263,16 +269,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_model_list = base64_decode($item->php_model_list);
 			}
 
-			if (!empty($item->html_import_view))
-			{
-				// base64 Decode html_import_view.
-				$item->html_import_view = base64_decode($item->html_import_view);
-			}
-
 			if (!empty($item->php_ajaxmethod))
 			{
 				// base64 Decode php_ajaxmethod.
 				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+			}
+
+			if (!empty($item->html_import_view))
+			{
+				// base64 Decode html_import_view.
+				$item->html_import_view = base64_decode($item->html_import_view);
 			}
 
 			if (!empty($item->php_import_setdata))
@@ -304,7 +310,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxxfields()
+	public function getVxyfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -373,13 +379,13 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxxfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxyfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxxfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxyfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxxfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxyfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxxfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxyfields($item->store, 'store');
 				}
 			}
 
@@ -419,7 +425,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVxxfields($value,$name)
+	public function selectionTranslationVxyfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
@@ -497,7 +503,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxylinked_components()
+	public function getVxzlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -637,6 +643,1343 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$form->setFieldAttribute('created', 'disabled', 'true');
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
+		}
+		// Modify the form based on Edit System Name access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.system_name', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.system_name', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('system_name', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('system_name', 'readonly', 'true');
+			if (!$form->getValue('system_name'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('system_name', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('system_name', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Name Single access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.name_single', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.name_single', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('name_single', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('name_single', 'readonly', 'true');
+			if (!$form->getValue('name_single'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('name_single', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('name_single', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Name List access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.name_list', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.name_list', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('name_list', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('name_list', 'readonly', 'true');
+			if (!$form->getValue('name_list'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('name_list', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('name_list', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Short Description access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.short_description', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.short_description', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('short_description', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('short_description', 'readonly', 'true');
+			if (!$form->getValue('short_description'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('short_description', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('short_description', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Batchmove access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_batchmove', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_batchmove', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_batchmove', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_batchmove', 'readonly', 'true');
+			if (!$form->getValue('php_batchmove'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_batchmove', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_batchmove', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Type access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.type', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.type', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('type', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('type', 'readonly', 'true');
+			if (!$form->getValue('type'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('type', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('type', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Save access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_save', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_save', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_save', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_save', 'readonly', 'true');
+			if (!$form->getValue('php_save'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_save', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_save', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Description access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.description', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.description', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('description', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('description', 'readonly', 'true');
+			if (!$form->getValue('description'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('description', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('description', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php After Delete access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_after_delete', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_after_delete', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_after_delete', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_after_delete', 'readonly', 'true');
+			if (!$form->getValue('php_after_delete'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_after_delete', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_after_delete', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Fadein access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_fadein', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_fadein', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_fadein', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_fadein', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_fadein', 'class', '');
+			$form->setFieldAttribute('add_fadein', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_fadein'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_fadein', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_fadein', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Icon access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.icon', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.icon', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('icon', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('icon', 'readonly', 'true');
+			if (!$form->getValue('icon'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('icon', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('icon', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Getlistquery access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_getlistquery', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_getlistquery', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_getlistquery', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_getlistquery', 'readonly', 'true');
+			if (!$form->getValue('php_getlistquery'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_getlistquery', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_getlistquery', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Icon Add access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.icon_add', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.icon_add', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('icon_add', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('icon_add', 'readonly', 'true');
+			if (!$form->getValue('icon_add'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('icon_add', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('icon_add', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Allowedit access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_allowedit', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_allowedit', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_allowedit', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_allowedit', 'readonly', 'true');
+			if (!$form->getValue('php_allowedit'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_allowedit', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_allowedit', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Icon Category access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.icon_category', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.icon_category', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('icon_category', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('icon_category', 'readonly', 'true');
+			if (!$form->getValue('icon_category'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('icon_category', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('icon_category', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php After Publish access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_after_publish', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_after_publish', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_after_publish', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_after_publish', 'readonly', 'true');
+			if (!$form->getValue('php_after_publish'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_after_publish', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_after_publish', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Source access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.source', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.source', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('source', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('source', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('source', 'class', '');
+			$form->setFieldAttribute('source', 'class', $class.' disabled no-click');
+			if (!$form->getValue('source'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('source', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('source', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Getitems access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_getitems', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_getitems', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_getitems', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_getitems', 'readonly', 'true');
+			if (!$form->getValue('php_getitems'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_getitems', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_getitems', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Import access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_import', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_import', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import', 'readonly', 'true');
+			if (!$form->getValue('php_import'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Addpermissions access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.addpermissions', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.addpermissions', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('addpermissions', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('addpermissions', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('addpermissions', 'class', '');
+			$form->setFieldAttribute('addpermissions', 'class', $class.' disabled no-click');
+			if (!$form->getValue('addpermissions'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('addpermissions', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('addpermissions', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Getitems After All access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_getitems_after_all', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_getitems_after_all', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_getitems_after_all', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_getitems_after_all', 'readonly', 'true');
+			if (!$form->getValue('php_getitems_after_all'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_getitems_after_all', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_getitems_after_all', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Addtabs access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.addtabs', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.addtabs', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('addtabs', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('addtabs', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('addtabs', 'class', '');
+			$form->setFieldAttribute('addtabs', 'class', $class.' disabled no-click');
+			if (!$form->getValue('addtabs'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('addtabs', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('addtabs', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Before Save access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_before_save', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_before_save', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_before_save', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_before_save', 'readonly', 'true');
+			if (!$form->getValue('php_before_save'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_before_save', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_before_save', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Postsavehook access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_postsavehook', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_postsavehook', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_postsavehook', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_postsavehook', 'readonly', 'true');
+			if (!$form->getValue('php_postsavehook'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_postsavehook', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_postsavehook', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Addfields access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.addfields', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.addfields', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('addfields', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('addfields', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('addfields', 'class', '');
+			$form->setFieldAttribute('addfields', 'class', $class.' disabled no-click');
+			if (!$form->getValue('addfields'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('addfields', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('addfields', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Batchcopy access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_batchcopy', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_batchcopy', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_batchcopy', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_batchcopy', 'readonly', 'true');
+			if (!$form->getValue('php_batchcopy'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_batchcopy', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_batchcopy', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Before Publish access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_before_publish', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_before_publish', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_before_publish', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_before_publish', 'readonly', 'true');
+			if (!$form->getValue('php_before_publish'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_before_publish', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_before_publish', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Addconditions access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.addconditions', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.addconditions', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('addconditions', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('addconditions', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('addconditions', 'class', '');
+			$form->setFieldAttribute('addconditions', 'class', $class.' disabled no-click');
+			if (!$form->getValue('addconditions'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('addconditions', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('addconditions', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Before Delete access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_before_delete', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_before_delete', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_before_delete', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_before_delete', 'readonly', 'true');
+			if (!$form->getValue('php_before_delete'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_before_delete', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_before_delete', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Addlinked Views access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.addlinked_views', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.addlinked_views', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('addlinked_views', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('addlinked_views', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('addlinked_views', 'class', '');
+			$form->setFieldAttribute('addlinked_views', 'class', $class.' disabled no-click');
+			if (!$form->getValue('addlinked_views'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('addlinked_views', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('addlinked_views', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Document access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_document', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_document', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_document', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_document', 'readonly', 'true');
+			if (!$form->getValue('php_document'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_document', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_document', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Sql access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.sql', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.sql', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('sql', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('sql', 'readonly', 'true');
+			if (!$form->getValue('sql'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('sql', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('sql', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Import Display access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_import_display', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_import_display', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import_display', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import_display', 'readonly', 'true');
+			if (!$form->getValue('php_import_display'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import_display', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import_display', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Getitem access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_getitem', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_getitem', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_getitem', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_getitem', 'readonly', 'true');
+			if (!$form->getValue('php_getitem'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_getitem', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_getitem', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Import Save access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_import_save', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_import_save', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import_save', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import_save', 'readonly', 'true');
+			if (!$form->getValue('php_import_save'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import_save', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import_save', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Css View access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_css_view', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_css_view', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_css_view', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_css_view', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_css_view', 'class', '');
+			$form->setFieldAttribute('add_css_view', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_css_view'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_css_view', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_css_view', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Css View access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.css_view', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.css_view', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('css_view', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('css_view', 'readonly', 'true');
+			if (!$form->getValue('css_view'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('css_view', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('css_view', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Getitems access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_getitems', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_getitems', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_getitems', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_getitems', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_getitems', 'class', '');
+			$form->setFieldAttribute('add_php_getitems', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_getitems'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_getitems', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_getitems', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Css Views access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_css_views', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_css_views', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_css_views', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_css_views', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_css_views', 'class', '');
+			$form->setFieldAttribute('add_css_views', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_css_views'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_css_views', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_css_views', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Getitems After All access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_getitems_after_all', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_getitems_after_all', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_getitems_after_all', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_getitems_after_all', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_getitems_after_all', 'class', '');
+			$form->setFieldAttribute('add_php_getitems_after_all', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_getitems_after_all'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_getitems_after_all', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_getitems_after_all', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Css Views access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.css_views', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.css_views', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('css_views', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('css_views', 'readonly', 'true');
+			if (!$form->getValue('css_views'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('css_views', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('css_views', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Getlistquery access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_getlistquery', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_getlistquery', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_getlistquery', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_getlistquery', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_getlistquery', 'class', '');
+			$form->setFieldAttribute('add_php_getlistquery', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_getlistquery'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_getlistquery', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_getlistquery', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Javascript View File access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_javascript_view_file', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_javascript_view_file', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_javascript_view_file', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_javascript_view_file', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_javascript_view_file', 'class', '');
+			$form->setFieldAttribute('add_javascript_view_file', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_javascript_view_file'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_javascript_view_file', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_javascript_view_file', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Before Save access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_before_save', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_before_save', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_before_save', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_before_save', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_before_save', 'class', '');
+			$form->setFieldAttribute('add_php_before_save', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_before_save'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_before_save', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_before_save', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Javascript View File access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.javascript_view_file', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.javascript_view_file', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript_view_file', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript_view_file', 'readonly', 'true');
+			if (!$form->getValue('javascript_view_file'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript_view_file', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript_view_file', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Save access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_save', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_save', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_save', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_save', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_save', 'class', '');
+			$form->setFieldAttribute('add_php_save', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_save'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_save', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_save', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Javascript View Footer access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_javascript_view_footer', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_javascript_view_footer', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_javascript_view_footer', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_javascript_view_footer', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_javascript_view_footer', 'class', '');
+			$form->setFieldAttribute('add_javascript_view_footer', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_javascript_view_footer'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_javascript_view_footer', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_javascript_view_footer', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Postsavehook access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_postsavehook', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_postsavehook', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_postsavehook', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_postsavehook', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_postsavehook', 'class', '');
+			$form->setFieldAttribute('add_php_postsavehook', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_postsavehook'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_postsavehook', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_postsavehook', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Javascript View Footer access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.javascript_view_footer', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.javascript_view_footer', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript_view_footer', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript_view_footer', 'readonly', 'true');
+			if (!$form->getValue('javascript_view_footer'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript_view_footer', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript_view_footer', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Allowedit access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_allowedit', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_allowedit', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_allowedit', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_allowedit', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_allowedit', 'class', '');
+			$form->setFieldAttribute('add_php_allowedit', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_allowedit'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_allowedit', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_allowedit', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Javascript Views File access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_javascript_views_file', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_javascript_views_file', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_javascript_views_file', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_javascript_views_file', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_javascript_views_file', 'class', '');
+			$form->setFieldAttribute('add_javascript_views_file', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_javascript_views_file'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_javascript_views_file', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_javascript_views_file', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Batchcopy access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_batchcopy', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_batchcopy', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_batchcopy', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_batchcopy', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_batchcopy', 'class', '');
+			$form->setFieldAttribute('add_php_batchcopy', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_batchcopy'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_batchcopy', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_batchcopy', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Javascript Views File access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.javascript_views_file', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.javascript_views_file', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript_views_file', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript_views_file', 'readonly', 'true');
+			if (!$form->getValue('javascript_views_file'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript_views_file', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript_views_file', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Batchmove access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_batchmove', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_batchmove', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_batchmove', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_batchmove', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_batchmove', 'class', '');
+			$form->setFieldAttribute('add_php_batchmove', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_batchmove'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_batchmove', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_batchmove', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Javascript Views Footer access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_javascript_views_footer', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_javascript_views_footer', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_javascript_views_footer', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_javascript_views_footer', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_javascript_views_footer', 'class', '');
+			$form->setFieldAttribute('add_javascript_views_footer', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_javascript_views_footer'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_javascript_views_footer', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_javascript_views_footer', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Before Publish access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_before_publish', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_before_publish', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_before_publish', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_before_publish', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_before_publish', 'class', '');
+			$form->setFieldAttribute('add_php_before_publish', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_before_publish'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_before_publish', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_before_publish', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Javascript Views Footer access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.javascript_views_footer', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.javascript_views_footer', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript_views_footer', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript_views_footer', 'readonly', 'true');
+			if (!$form->getValue('javascript_views_footer'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript_views_footer', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript_views_footer', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php After Publish access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_after_publish', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_after_publish', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_after_publish', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_after_publish', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_after_publish', 'class', '');
+			$form->setFieldAttribute('add_php_after_publish', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_after_publish'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_after_publish', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_after_publish', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Custom Button access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_custom_button', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_custom_button', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_custom_button', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_custom_button', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_custom_button', 'class', '');
+			$form->setFieldAttribute('add_custom_button', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_custom_button'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_custom_button', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_custom_button', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Before Delete access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_before_delete', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_before_delete', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_before_delete', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_before_delete', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_before_delete', 'class', '');
+			$form->setFieldAttribute('add_php_before_delete', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_before_delete'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_before_delete', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_before_delete', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Custom Button access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.custom_button', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.custom_button', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('custom_button', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('custom_button', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('custom_button', 'class', '');
+			$form->setFieldAttribute('custom_button', 'class', $class.' disabled no-click');
+			if (!$form->getValue('custom_button'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('custom_button', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('custom_button', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php After Delete access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_after_delete', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_after_delete', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_after_delete', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_after_delete', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_after_delete', 'class', '');
+			$form->setFieldAttribute('add_php_after_delete', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_after_delete'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_after_delete', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_after_delete', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Controller access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_controller', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_controller', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_controller', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_controller', 'readonly', 'true');
+			if (!$form->getValue('php_controller'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_controller', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_controller', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Document access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_document', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_document', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_document', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_document', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_document', 'class', '');
+			$form->setFieldAttribute('add_php_document', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_document'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_document', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_document', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Model access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_model', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_model', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_model', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_model', 'readonly', 'true');
+			if (!$form->getValue('php_model'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_model', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_model', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Sql access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_sql', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_sql', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_sql', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_sql', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_sql', 'class', '');
+			$form->setFieldAttribute('add_sql', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_sql'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_sql', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_sql', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Controller List access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_controller_list', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_controller_list', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_controller_list', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_controller_list', 'readonly', 'true');
+			if (!$form->getValue('php_controller_list'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_controller_list', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_controller_list', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Addtables access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.addtables', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.addtables', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('addtables', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('addtables', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('addtables', 'class', '');
+			$form->setFieldAttribute('addtables', 'class', $class.' disabled no-click');
+			if (!$form->getValue('addtables'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('addtables', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('addtables', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Model List access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_model_list', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_model_list', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_model_list', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_model_list', 'readonly', 'true');
+			if (!$form->getValue('php_model_list'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_model_list', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_model_list', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Ajax access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_ajax', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_ajax', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_ajax', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_ajax', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_ajax', 'class', '');
+			$form->setFieldAttribute('add_php_ajax', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_ajax'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_ajax', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_ajax', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Custom Import access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_custom_import', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_custom_import', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_custom_import', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_custom_import', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_custom_import', 'class', '');
+			$form->setFieldAttribute('add_custom_import', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_custom_import'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_custom_import', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_custom_import', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Ajaxmethod access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_ajaxmethod', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_ajaxmethod', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_ajaxmethod', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_ajaxmethod', 'readonly', 'true');
+			if (!$form->getValue('php_ajaxmethod'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_ajaxmethod', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_ajaxmethod', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Html Import View access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.html_import_view', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.html_import_view', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('html_import_view', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('html_import_view', 'readonly', 'true');
+			if (!$form->getValue('html_import_view'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('html_import_view', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('html_import_view', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Ajax Input access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.ajax_input', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.ajax_input', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('ajax_input', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('ajax_input', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('ajax_input', 'class', '');
+			$form->setFieldAttribute('ajax_input', 'class', $class.' disabled no-click');
+			if (!$form->getValue('ajax_input'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('ajax_input', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('ajax_input', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Import Setdata access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_import_setdata', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_import_setdata', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import_setdata', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import_setdata', 'readonly', 'true');
+			if (!$form->getValue('php_import_setdata'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import_setdata', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import_setdata', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Php Getitem access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.add_php_getitem', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.add_php_getitem', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_getitem', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_getitem', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_getitem', 'class', '');
+			$form->setFieldAttribute('add_php_getitem', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_getitem'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_getitem', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_getitem', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Php Import Ext access controls.
+		if ($id != 0 && (!$user->authorise('admin_view.edit.php_import_ext', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.php_import_ext', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import_ext', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_import_ext', 'readonly', 'true');
+			if (!$form->getValue('php_import_ext'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import_ext', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_import_ext', 'required', 'false');
+			}
 		}
 		// Only load these values if no id is found
 		if (0 == $id)
@@ -1278,22 +2621,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_getitems_after_all string to base64 string.
-		if (isset($data['php_getitems_after_all']))
+		// Set the php_batchmove string to base64 string.
+		if (isset($data['php_batchmove']))
 		{
-			$data['php_getitems_after_all'] = base64_encode($data['php_getitems_after_all']);
-		}
-
-		// Set the php_after_publish string to base64 string.
-		if (isset($data['php_after_publish']))
-		{
-			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
-		}
-
-		// Set the php_allowedit string to base64 string.
-		if (isset($data['php_allowedit']))
-		{
-			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
+			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
 		}
 
 		// Set the php_save string to base64 string.
@@ -1302,16 +2633,28 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_save'] = base64_encode($data['php_save']);
 		}
 
-		// Set the php_batchmove string to base64 string.
-		if (isset($data['php_batchmove']))
-		{
-			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
-		}
-
 		// Set the php_after_delete string to base64 string.
 		if (isset($data['php_after_delete']))
 		{
 			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
+		}
+
+		// Set the php_getlistquery string to base64 string.
+		if (isset($data['php_getlistquery']))
+		{
+			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
+		}
+
+		// Set the php_allowedit string to base64 string.
+		if (isset($data['php_allowedit']))
+		{
+			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
+		}
+
+		// Set the php_after_publish string to base64 string.
+		if (isset($data['php_after_publish']))
+		{
+			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
 		}
 
 		// Set the php_getitems string to base64 string.
@@ -1320,10 +2663,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_getitems'] = base64_encode($data['php_getitems']);
 		}
 
-		// Set the php_getlistquery string to base64 string.
-		if (isset($data['php_getlistquery']))
+		// Set the php_import string to base64 string.
+		if (isset($data['php_import']))
 		{
-			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
+			$data['php_import'] = base64_encode($data['php_import']);
+		}
+
+		// Set the php_getitems_after_all string to base64 string.
+		if (isset($data['php_getitems_after_all']))
+		{
+			$data['php_getitems_after_all'] = base64_encode($data['php_getitems_after_all']);
+		}
+
+		// Set the php_before_save string to base64 string.
+		if (isset($data['php_before_save']))
+		{
+			$data['php_before_save'] = base64_encode($data['php_before_save']);
 		}
 
 		// Set the php_postsavehook string to base64 string.
@@ -1350,12 +2705,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_before_delete'] = base64_encode($data['php_before_delete']);
 		}
 
-		// Set the php_import string to base64 string.
-		if (isset($data['php_import']))
-		{
-			$data['php_import'] = base64_encode($data['php_import']);
-		}
-
 		// Set the php_document string to base64 string.
 		if (isset($data['php_document']))
 		{
@@ -1368,16 +2717,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['sql'] = base64_encode($data['sql']);
 		}
 
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
-		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
-		}
-
 		// Set the php_import_display string to base64 string.
 		if (isset($data['php_import_display']))
 		{
 			$data['php_import_display'] = base64_encode($data['php_import_display']);
+		}
+
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
+		{
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_import_save string to base64 string.
@@ -1446,16 +2795,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_model_list'] = base64_encode($data['php_model_list']);
 		}
 
-		// Set the html_import_view string to base64 string.
-		if (isset($data['html_import_view']))
-		{
-			$data['html_import_view'] = base64_encode($data['html_import_view']);
-		}
-
 		// Set the php_ajaxmethod string to base64 string.
 		if (isset($data['php_ajaxmethod']))
 		{
 			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
+		}
+
+		// Set the html_import_view string to base64 string.
+		if (isset($data['html_import_view']))
+		{
+			$data['html_import_view'] = base64_encode($data['html_import_view']);
 		}
 
 		// Set the php_import_setdata string to base64 string.

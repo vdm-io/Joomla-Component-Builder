@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 111 of this MVC
-	@build			17th July, 2017
+	@version		@update number 114 of this MVC
+	@build			28th August, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views.php
@@ -191,7 +191,7 @@ class ComponentbuilderModelAdmin_views extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.name_single LIKE '.$search.' OR a.name_list LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.description LIKE '.$search.' OR a.type LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.name_single LIKE '.$search.' OR a.name_list LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.type LIKE '.$search.' OR a.description LIKE '.$search.')');
 			}
 		}
 
@@ -262,22 +262,26 @@ class ComponentbuilderModelAdmin_views extends JModelList
 							continue;
 						}
 
-						// decode php_getitems_after_all
-						$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
-						// decode php_after_publish
-						$item->php_after_publish = base64_decode($item->php_after_publish);
-						// decode php_allowedit
-						$item->php_allowedit = base64_decode($item->php_allowedit);
-						// decode php_save
-						$item->php_save = base64_decode($item->php_save);
 						// decode php_batchmove
 						$item->php_batchmove = base64_decode($item->php_batchmove);
+						// decode php_save
+						$item->php_save = base64_decode($item->php_save);
 						// decode php_after_delete
 						$item->php_after_delete = base64_decode($item->php_after_delete);
-						// decode php_getitems
-						$item->php_getitems = base64_decode($item->php_getitems);
 						// decode php_getlistquery
 						$item->php_getlistquery = base64_decode($item->php_getlistquery);
+						// decode php_allowedit
+						$item->php_allowedit = base64_decode($item->php_allowedit);
+						// decode php_after_publish
+						$item->php_after_publish = base64_decode($item->php_after_publish);
+						// decode php_getitems
+						$item->php_getitems = base64_decode($item->php_getitems);
+						// decode php_import
+						$item->php_import = base64_decode($item->php_import);
+						// decode php_getitems_after_all
+						$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
+						// decode php_before_save
+						$item->php_before_save = base64_decode($item->php_before_save);
 						// decode php_postsavehook
 						$item->php_postsavehook = base64_decode($item->php_postsavehook);
 						// decode php_batchcopy
@@ -286,16 +290,14 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->php_before_publish = base64_decode($item->php_before_publish);
 						// decode php_before_delete
 						$item->php_before_delete = base64_decode($item->php_before_delete);
-						// decode php_import
-						$item->php_import = base64_decode($item->php_import);
 						// decode php_document
 						$item->php_document = base64_decode($item->php_document);
 						// decode sql
 						$item->sql = base64_decode($item->sql);
-						// decode php_getitem
-						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_import_display
 						$item->php_import_display = base64_decode($item->php_import_display);
+						// decode php_getitem
+						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_import_save
 						$item->php_import_save = base64_decode($item->php_import_save);
 						// decode css_view
@@ -318,10 +320,10 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->php_controller_list = base64_decode($item->php_controller_list);
 						// decode php_model_list
 						$item->php_model_list = base64_decode($item->php_model_list);
-						// decode html_import_view
-						$item->html_import_view = base64_decode($item->html_import_view);
 						// decode php_ajaxmethod
 						$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+						// decode html_import_view
+						$item->html_import_view = base64_decode($item->html_import_view);
 						// decode php_import_setdata
 						$item->php_import_setdata = base64_decode($item->php_import_setdata);
 						// decode php_import_ext
