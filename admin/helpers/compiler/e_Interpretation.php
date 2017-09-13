@@ -1892,6 +1892,10 @@ class Interpretation extends Fields
 						$value = " ".$whe['value_key']."');";
 					}
 				}
+				elseif (ComponentbuilderHelper::checkString($whe['value_key']))
+				{
+					$value = " ".$whe['value_key']."');";
+				}
 				// only load if there is a value
 				if (ComponentbuilderHelper::checkString($value))
 				{

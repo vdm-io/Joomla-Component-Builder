@@ -1076,7 +1076,7 @@ class Get
 	/**
 	 * To limit the SQL Demo date build in the views
 	 * 
-	 * @param   array   $settings  Teaking array.
+	 * @param   array   $settings  Tweaking array.
 	 *
 	 * @return  void
 	 * 
