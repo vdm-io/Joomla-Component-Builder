@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 13 of this MVC
-	@build			13th June, 2017
+	@version		@update number 15 of this MVC
+	@build			17th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -93,6 +93,14 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$registry = new Registry;
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
+			}
+
+			if (!empty($item->properties))
+			{
+				// Convert the properties field to an array.
+				$properties = new Registry;
+				$properties->loadString($item->properties);
+				$item->properties = $properties->toArray();
 			}
 			
 			if (!empty($item->id))
@@ -358,6 +366,70 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$form->setFieldAttribute('created', 'disabled', 'true');
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
+		}
+		// Modify the form based on Edit Name access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.name', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.name', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('name', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('name', 'readonly', 'true');
+			if (!$form->getValue('name'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Description access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.description', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.description', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('description', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('description', 'readonly', 'true');
+			if (!$form->getValue('description'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('description', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('description', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Short Description access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.short_description', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.short_description', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('short_description', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('short_description', 'readonly', 'true');
+			if (!$form->getValue('short_description'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('short_description', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('short_description', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Properties access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.properties', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.properties', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('properties', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('properties', 'readonly', 'true');
+			if (!$form->getValue('properties'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('properties', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('properties', 'required', 'false');
+			}
 		}
 		// Only load these values if no id is found
 		if (0 == $id)
@@ -993,6 +1065,19 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		} 
+
+		// Set the properties items to data.
+		if (isset($data['properties']) && is_array($data['properties']))
+		{
+			$properties = new JRegistry;
+			$properties->loadArray($data['properties']);
+			$data['properties'] = (string) $properties;
+		}
+		elseif (!isset($data['properties']))
+		{
+			// Set the empty properties to data
+			$data['properties'] = '';
+		}
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))

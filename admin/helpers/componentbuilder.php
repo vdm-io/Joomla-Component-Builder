@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.5
-	@build			17th September, 2017
+	@build			18th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -265,20 +265,18 @@ abstract class ComponentbuilderHelper
 		{
 			$result = $db->loadObject();
 			$properties = json_decode($result->properties,true);
-			$pointer = 0;
 			$field = array('values' => "<field ", 'values_description' => '<ul>', 'short_description' => $result->short_description, 'description' => $result->description);
-			foreach ($properties['name'] as $line)
+			foreach ($properties as $property)
 			{
-				$field['values_description'] .= '<li><b>'.$properties['name'][$pointer].'</b> '.$properties['description'][$pointer].'</li>';
-				if(isset($settings[$properties['name'][$pointer]]))
+				$field['values_description'] .= '<li><b>'.$property['name'].'</b> '.$property['description'].'</li>';
+				if(isset($settings[$property['name']]))
 				{
-					$field['values'] .= "\n\t".$properties['name'][$pointer].'="'.$settings[$properties['name'][$pointer]].'" ';
+					$field['values'] .= "\n\t".$property['name'].'="'.$settings[$property['name']].'" ';
 				}
 				else
 				{
-					$field['values'] .= "\n\t".$properties['name'][$pointer].'="'.$properties['example'][$pointer].'" ';
+					$field['values'] .= "\n\t".$property['name'].'="'.$property['example'].'" ';
 				}
-				$pointer++;
 			}
 			$field['values'] .= "\n/>";
 			$field['values_description'] .= '</ul>';

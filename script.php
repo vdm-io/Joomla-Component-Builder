@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.5
-	@build			17th September, 2017
+	@build			18th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1704,6 +1704,52 @@ class com_componentbuilderInstallerScript
 							{
 								$row->translation = '';
 								$db->updateObject('#__componentbuilder_language_translation', $row, 'id');
+							}
+						}
+					}
+				}
+				// update the properties in the field types
+				$query = $db->getQuery(true);
+				// update all JCB lang translations
+				$query->select($db->quoteName(array('id', 'properties')));
+				$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+				// Reset the query using our newly populated query object.
+				$db->setQuery($query);
+				$db->execute();
+				if ($db->getNumRows())
+				{
+					$rows = $db->loadObjectList();
+					foreach ($rows as $row)
+					{
+						// check if it has translations
+						if (ComponentbuilderHelper::checkJson($row->properties))
+						{
+							// open the properties and convert
+							$properties = json_decode($row->properties, true);
+							if (ComponentbuilderHelper::checkArray($properties) 
+							&& isset($properties['name']) && ComponentbuilderHelper::checkArray($properties['name'])
+							&& isset($properties['mandatory']) && ComponentbuilderHelper::checkArray($properties['mandatory']))
+							{
+								$bucket = array();
+								foreach ($properties as $key => $values)
+								{
+									foreach ($values as $nr => $value)
+									{
+										if (!isset($bucket['properties' . $nr]) || !ComponentbuilderHelper::checkArray($bucket['properties' . $nr]))
+										{
+											$bucket['properties' . $nr] = array();
+										}
+										$bucket['properties' . $nr][$key] = $value;
+									}
+								}
+								// set the bucket back to translation
+								$row->properties = json_encode($bucket);
+								$db->updateObject('#__componentbuilder_fieldtype', $row, 'id');
+							}
+							elseif (!ComponentbuilderHelper::checkArray($properties))
+							{
+								$row->properties = '';
+								$db->updateObject('#__componentbuilder_fieldtype', $row, 'id');
 							}
 						}
 					}

@@ -30,8 +30,8 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_add_language_string',
-	'template'
+	'note_on_fields',
+	'properties'
 );
 
 ?>

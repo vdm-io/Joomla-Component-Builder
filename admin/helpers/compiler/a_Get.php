@@ -1753,7 +1753,7 @@ class Get
 
 			// Order it by the ordering field.
 			$query->select('a.*');
-			$query->select($this->db->quoteName(array('c.name', 'c.properties'),array('type_name','type_properties')));
+			$query->select($this->db->quoteName(array('c.name', 'c.properties'),array('type_name','properties')));
 			$query->from('#__componentbuilder_field AS a');
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $this->db->quoteName('a.fieldtype') . ' = ' . $this->db->quoteName('c.id') . ')');
 			$query->where($this->db->quoteName('a.id') . ' = '. $this->db->quote($id));
@@ -1773,19 +1773,8 @@ class Get
 				$field->xml = $this->setDynamicValues(json_decode($field->xml));
 
 				// load the type values form type params
-				$properties = json_decode($field->type_properties,true);
-				unset($field->type_properties);
+				$field->properties = json_decode($field->properties,true);
 
-				if (ComponentbuilderHelper::checkArray($properties))
-				{
-					foreach ($properties as $option => $values)
-					{
-						foreach ($values as $nr => $value)
-						{
-							$field->properties[$nr][$option] = $value;
-						}
-					}
-				}
 				// check if we have advanced encryption
 				if (4 == $field->store &&  (!isset($this->advancedEncryption) || !$this->advancedEncryption))
 				{

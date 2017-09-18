@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.5
-	@build			17th September, 2017
+	@build			18th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_right.php
@@ -30,8 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_on_fields',
-	'properties'
+	'description'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

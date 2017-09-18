@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.5
-	@build			17th September, 2017
+	@build			18th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -88,7 +88,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected $sleutle 		= null;
 	protected $updateAfter 	= array('field' => array(), 'adminview' => array());
 	protected $fieldTypes		= array();
-	protected $isRepeatable	= array();
+	protected $isMultiple		= array();
 	protected $specialValue 	= false;
 
 	/**
@@ -1046,10 +1046,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if (isset($item->fieldtype) && is_numeric($item->fieldtype) && $item->fieldtype > 0 && isset($this->newID['fieldtype'][$item->fieldtype]))
 				{
 					$item->fieldtype = $this->newID['fieldtype'][$item->fieldtype];
-					// update repeatable field values
-					if ($this->checkRepeatable($item->fieldtype))
+					// update multi field values
+					if ($this->checkMultiFields($item->fieldtype))
 					{
-						$this->updateAfter['field'][$item->id] = $item->id; // repeatable
+						$this->updateAfter['field'][$item->id] = $item->id; // multi field
 					}
 				}
 				elseif (!is_numeric($item->fieldtype) || $item->fieldtype == 0)
@@ -1587,31 +1587,33 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		return false;
 	}
 
+
+
 	/**
-	 * Check if a field is a repeatable field
+	 * Check if a field has multiple fields
 	 * 
 	 * @param   string   $typeID  The type ID
 	 *
 	 * @return  bool true on success
 	 * 
 	 */
-	protected function checkRepeatable($typeID)
+	protected function checkMultiFields($typeID)
 	{
-		if(isset($this->isRepeatable[$typeID]))
+		if(isset($this->isMultiple[$typeID]))
 		{
-			return true;
-		}
-		elseif (ComponentbuilderHelper::checkArray($this->isRepeatable))
-		{
-			return false;
+			return $this->isMultiple[$typeID];
 		}
 		elseif ($type = $this->getFieldType($typeID))
 		{
-			if ('repeatable' === $type)
+			if ('repeatable' === $type || 'subform' === $type )
 			{
-				$this->isRepeatable[$typeID] = true;
-				return true;
+				$this->isMultiple[$typeID] = true;
 			}
+			else
+			{
+				$this->isMultiple[$typeID] = false;
+			}
+			return $this->isMultiple[$typeID];
 		}
 		return false;
 	}
@@ -1632,17 +1634,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			if (ComponentbuilderHelper::checkJson($properties))
 			{
 				$properties = json_decode($properties, true);
-				if (isset($properties['name']) && ComponentbuilderHelper::checkArray($properties['name']))
+				foreach ($properties as $property)
 				{
-					foreach ($properties['name'] as $key => $value)
+					if ('type' === $property['name'])
 					{
-						if ('type' === $value)
+						if (isset($property['example'])  && ComponentbuilderHelper::checkString($property['example']))
 						{
-							if (isset($properties['example'][$key])  && ComponentbuilderHelper::checkString($properties['example'][$key]))
-							{
-								$this->fieldTypes[$id] = $properties['example'][$key];
-								break;
-							}
+							$this->fieldTypes[$id] = $property['example'];
+							break;
 						}
 					}
 				}

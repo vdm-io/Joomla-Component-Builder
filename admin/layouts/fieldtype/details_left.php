@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.5
-	@build			17th September, 2017
+	@build			18th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		details_left.php
@@ -32,8 +32,7 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'name',
 	'catid',
-	'short_description',
-	'description'
+	'short_description'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

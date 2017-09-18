@@ -143,107 +143,107 @@
 			message="Error! Please add some short description here."
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_HINT"
 		/>
-		<!-- Properties Field. Type: Repeatable. (joomla) -->
+		<!-- Properties Field. Type: Subform. (joomla) -->
 		<field
-			type="repeatable"
+			type="subform"
 			name="properties"
 			label="COM_COMPONENTBUILDER_FIELDTYPE_PROPERTIES_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_PROPERTIES_DESCRIPTION"
-			id="addproperties"
-			class="addproperty"
-			select="COM_COMPONENTBUILDER_FIELDTYPE_PROPERTIES_SELECT"
 			icon="list"
 			maximum="500">
-			<fields name="properties_fields" label="">
-				<fieldset hidden="true" name="properties_modal" repeat="true">
-					<!-- Name Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="name"
-						label="COM_COMPONENTBUILDER_FIELDTYPE_NAME_LABEL"
-						size="40"
-						maxlength="150"
-						description="COM_COMPONENTBUILDER_FIELDTYPE_NAME_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="STRING"
-						message="Error! Please add name here."
-						hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
-					/>
-					<!-- Example Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="example"
-						label="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_LABEL"
-						size="40"
-						maxlength="150"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="STRING"
-						message="Error! Please add value/example here."
-						hint="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_HINT"
-					/>
-					<!-- Adjustable Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="adjustable"
-						label="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_LABEL"
-						description="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_DESCRIPTION"
-						default="1"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
-					</field>
-					<!-- Mandatory Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="mandatory"
-						label="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_LABEL"
-						description="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
-					</field>
-					<!-- Translatable Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="translatable"
-						label="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_LABEL"
-						description="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
-					</field>
-					<!-- Description Field. Type: Textarea. (joomla) -->
-					<field
-						type="textarea"
-						name="description"
-						label="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_LABEL"
-						rows="5"
-						cols="8"
-						description="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_DESCRIPTION"
-						class="text_area"
-						filter="HTML"
-						hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT"
-						required="false"
-					/>
-				</fieldset>
-			</fields>
+			<form hidden="true" name="list_properties_modal" repeat="true">
+				<!-- Name Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="name"
+					label="COM_COMPONENTBUILDER_FIELDTYPE_NAME_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_FIELDTYPE_NAME_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="STRING"
+					message="Error! Please add name here."
+					hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
+				/>
+				<!-- Example Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="example"
+					label="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_LABEL"
+					size="40"
+					maxlength="150"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="STRING"
+					message="Error! Please add value/example here."
+					hint="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_HINT"
+				/>
+				<!-- Adjustable Field. Type: Radio. (joomla) -->
+				<field
+					type="radio"
+					name="adjustable"
+					label="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_LABEL"
+					description="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_DESCRIPTION"
+					class="btn-group btn-group-yesno"
+					default="1"
+					required="false">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
+					<option value="0">
+						COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
+				</field>
+				<!-- Mandatory Field. Type: Radio. (joomla) -->
+				<field
+					type="radio"
+					name="mandatory"
+					label="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_LABEL"
+					description="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_DESCRIPTION"
+					class="btn-group btn-group-yesno"
+					default="0"
+					required="false">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
+					<option value="0">
+						COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
+				</field>
+				<!-- Translatable Field. Type: Radio. (joomla) -->
+				<field
+					type="radio"
+					name="translatable"
+					label="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_LABEL"
+					description="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_DESCRIPTION"
+					class="btn-group btn-group-yesno"
+					default="0"
+					required="false">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
+					<option value="0">
+						COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
+				</field>
+				<!-- Description Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="description"
+					label="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_LABEL"
+					rows="5"
+					cols="8"
+					description="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_DESCRIPTION"
+					class="text_area"
+					filter="HTML"
+					hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT"
+					required="false"
+				/>
+			</form>
 		</field>
 	</fieldset>
 	
