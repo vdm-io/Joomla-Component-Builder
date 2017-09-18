@@ -104,44 +104,41 @@
 			readonly="true"
 			disabled="true"
 		/>
-		<!-- Translation Field. Type: Repeatable. (joomla) -->
+		<!-- Translation Field. Type: Subform. (joomla) -->
 		<field
-			type="repeatable"
+			type="subform"
 			name="translation"
 			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
 			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_DESCRIPTION"
-			id="translation"
-			class="translations"
-			select="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_SELECT"
 			icon="list"
-			maximum="50">
-			<fields name="translation_fields" label="">
-				<fieldset hidden="true" name="translation_modal" repeat="true">
-					<!-- Translation Field. Type: Textarea. (joomla) -->
-					<field
-						type="textarea"
-						name="translation"
-						label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
-						rows="4"
-						cols="5"
-						class="text_area span12"
-						filter="STRING"
-						hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
-						required="false"
-					/>
-					<!-- Language Field. Type: Lang. (custom) -->
-					<field
-						type="lang"
-						name="language"
-						label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGE_LABEL"
-						class="list_class"
-						multiple="false"
-						default="0"
-						required="false"
-						button="false"
-					/>
-				</fieldset>
-			</fields>
+			maximum="200">
+			<form hidden="true" name="list_translation_modal" repeat="true">
+				<!-- Translation Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="translation"
+					label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
+					rows="4"
+					cols="20"
+					class="text_area translation_text_area"
+					filter="STRING"
+					hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
+					required="false"
+				/>
+				<!-- Language Field. Type: Lang. (custom) -->
+				<field
+					type="lang"
+					name="language"
+					label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGE_LABEL"
+					class="list_class"
+					multiple="false"
+					default="0"
+					required="false"
+					button="false"
+				/>
+			</form>
 		</field>
 		<!-- Components Field. Type: Components. (custom) -->
 		<field

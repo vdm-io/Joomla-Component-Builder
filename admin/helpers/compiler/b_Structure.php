@@ -810,14 +810,14 @@ class Structure extends Get
 	
 	/**
 	 * Set the Static File & Folder
-	 *  
-	 * @param   array   $target  The main target and name
+	 *
+	 * @param   array    $target  The main target and name
 	 * @param   string   $type  The type in the target
 	 * @param   string   $fileName  The custom file name
-	 * @param   array   $cofig  to add more data to the files info
-	 * 
+	 * @param   array    $cofig to add more data to the files info
+	 *
 	 * @return  boolean
-	 * 
+	 *
 	 */
 	public function buildDynamique($target, $type, $fileName = false, $config = false)
 	{
@@ -1099,14 +1099,14 @@ class Structure extends Get
 	/**
 	 * Remove folders with files
 	 * 
-	 * @param   string   $dir  The path to folder to remove
-	 * @param   boolean   $git  if there is a git folder in that must not be removed
+	 * @param   string   $dir     The path to folder to remove
+	 * @param   boolean  $ignore  The files and folders to ignore
 	 *
 	 * @return  boolean   True if all is removed
 	 * 
 	 */
-	protected function removeFolder($dir, $git = false)
+	protected function removeFolder($dir, $ignore = false)
 	{
-		return ComponentbuilderHelper::removeFolder($dir, $git);
+		return ComponentbuilderHelper::removeFolder($dir, $ignore);
 	}
 }

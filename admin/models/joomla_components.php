@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 366 of this MVC
-	@build			7th September, 2017
+	@version		@update number 375 of this MVC
+	@build			17th September, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -530,6 +530,40 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			$values = json_decode($values, true);
 		}
+		// check if the key is an array (targeting subform)
+		if (ComponentbuilderHelper::checkArray($key) && isset($key['subform']) && ComponentbuilderHelper::checkArray($values))
+		{
+			$subform = $key['subform'];
+			$key = $key['key'];
+			$tmpBucket = array($key => array());
+			foreach ($values as $value)
+			{
+				if (isset($value[$subform]))
+				{
+					if ('language' === $subform)
+					{
+						$tmpBucket[$key][] = (int) ComponentbuilderHelper::getVar('language', $value[$subform], 'langtag', 'id');
+					}
+					else
+					{
+						$tmpBucket[$key][] = $value[$subform];
+					}
+				}
+			}
+			if (ComponentbuilderHelper::checkArray($tmpBucket[$key]))
+			{
+				// now set the values back
+				$values = $tmpBucket;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		elseif (ComponentbuilderHelper::checkArray($key))
+		{
+			return false;
+		}
 		// make sure we have an array
 		if (('custom_code' !== $table && 'component' !== $key && 'custom_get' !== $key) && (!ComponentbuilderHelper::checkArray($values) || !isset($values[$key]) || !ComponentbuilderHelper::checkArray($values[$key])))
 		{
@@ -1013,8 +1047,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							$this->smartExport['language_translation'][$item->id] = $item;
 							// add languages
 							if (isset($item->translation))
-							{							
-								$this->setData('language', $item->translation, 'language');
+							{
+								$this->setData('language', $item->translation, array('key' => 'language', 'subform' => 'language'));
 							}
 						}
 					}

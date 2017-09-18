@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 366 of this MVC
-	@build			7th September, 2017
+	@version		@update number 375 of this MVC
+	@build			17th September, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -598,11 +598,15 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 					if (ComponentbuilderHelper::checkJson($item->translation))
 					{
 						$translations = json_decode($item->translation, true);
-						if (ComponentbuilderHelper::checkArray($translations) && isset($translations['language']) && ComponentbuilderHelper::checkArray($translations['language']))
+						if (ComponentbuilderHelper::checkArray($translations))
 						{
-							foreach ($translations['language'] as $language)
+							foreach ($translations as $language)
 							{
-								$langBucket[$language] = $language;
+								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
+								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+								{
+									$langBucket[$language['language']] = $language['language'];
+								}
 							}
 						}
 					}

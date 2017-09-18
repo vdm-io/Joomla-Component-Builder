@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.4
-	@build			13th September, 2017
+	@version		2.5.5
+	@build			17th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -1592,12 +1592,12 @@ class com_componentbuilderInstallerScript
 			if (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 1) || ($version[1] < 5)))
 			{
 				// the set values
-				$this->setValues = array();
+				$this->setFtpValues = array();
 				// Get a db connection.
 				$db = JFactory::getDbo();
 				// Create a new query object.
 				$query = $db->getQuery(true);
-				// update all manual and auto links in sermons
+				// get all Joomla Component FTP values
 				$query->select($db->quoteName(array('id', 'sales_server_ftp', 'update_server_ftp')));
 				$query->from($db->quoteName('#__componentbuilder_joomla_component'));
 				// Reset the query using our newly populated query object.
@@ -1638,27 +1638,72 @@ class com_componentbuilderInstallerScript
 							if ($updatevalue)
 							{
 								$hash = md5($updatevalue) . '__update_server_ftp';
-								if (!isset($this->setValues[$hash]))
+								if (!isset($this->setFtpValues[$hash]))
 								{
-									$this->setValues[$hash] = array();
-									$this->setValues[$hash]['ids'] = array();
-									$this->setValues[$hash]['ftp'] = $updatevalue;
-									$this->setValues[$hash]['signature'] = $row->update_server_ftp;
+									$this->setFtpValues[$hash] = array();
+									$this->setFtpValues[$hash]['ids'] = array();
+									$this->setFtpValues[$hash]['ftp'] = $updatevalue;
+									$this->setFtpValues[$hash]['signature'] = $row->update_server_ftp;
 								}
-								$this->setValues[$hash]['ids'][] = $row->id;
+								$this->setFtpValues[$hash]['ids'][] = $row->id;
 							}
 							// set sales Values
 							if ($salesvalue)
 							{
 								$hash = md5($salesvalue) . '__sales_server_ftp';
-								if (!isset($this->setValues[$hash]))
+								if (!isset($this->setFtpValues[$hash]))
 								{
-									$this->setValues[$hash] = array();
-									$this->setValues[$hash]['ids'] = array();
-									$this->setValues[$hash]['ftp'] = $salesvalue;
-									$this->setValues[$hash]['signature'] = $row->sales_server_ftp;
+									$this->setFtpValues[$hash] = array();
+									$this->setFtpValues[$hash]['ids'] = array();
+									$this->setFtpValues[$hash]['ftp'] = $salesvalue;
+									$this->setFtpValues[$hash]['signature'] = $row->sales_server_ftp;
 								}
-								$this->setValues[$hash]['ids'][] = $row->id;
+								$this->setFtpValues[$hash]['ids'][] = $row->id;
+							}
+						}
+					}
+				}
+			}
+			// target version less then 2.5.5 (we need to change the language translation values)
+			if (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 4) || ($version[1] < 5)))
+			{
+				// Get a db connection.
+				$db = JFactory::getDbo();
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				// update all JCB lang translations
+				$query->select($db->quoteName(array('id', 'translation')));
+				$query->from($db->quoteName('#__componentbuilder_language_translation'));
+				// Reset the query using our newly populated query object.
+				$db->setQuery($query);
+				$db->execute();
+				if ($db->getNumRows())
+				{
+					$rows = $db->loadObjectList();
+					foreach ($rows as $row)
+					{
+						// check if it has translations
+						if (ComponentbuilderHelper::checkJson($row->translation))
+						{
+							// open the translations and convert
+							$translation = json_decode($row->translation, true);
+							if (ComponentbuilderHelper::checkArray($translation) 
+							&& isset($translation['translation']) && ComponentbuilderHelper::checkArray($translation['translation'])
+							&& isset($translation['language']) && ComponentbuilderHelper::checkArray($translation['language']))
+							{
+								$bucket = array();
+								foreach ($translation['translation'] as $nr => $value)
+								{
+									$bucket['translation' . $nr] = array( 'translation' => $value, 'language' => $translation['language'][$nr] );
+								}
+								// set the bucket back to translation
+								$row->translation = json_encode($bucket);
+								$db->updateObject('#__componentbuilder_language_translation', $row, 'id');
+							}
+							elseif (!ComponentbuilderHelper::checkArray($translation))
+							{
+								$row->translation = '';
+								$db->updateObject('#__componentbuilder_language_translation', $row, 'id');
 							}
 						}
 					}
@@ -2412,7 +2457,7 @@ class com_componentbuilderInstallerScript
 
 
 			// check if any links were found
-			if (isset($this->setValues) && ComponentbuilderHelper::checkArray($this->setValues))
+			if (isset($this->setFtpValues) && ComponentbuilderHelper::checkArray($this->setFtpValues))
 			{
 				// Get a db connection.
 				$db = JFactory::getDbo();
@@ -2421,7 +2466,7 @@ class com_componentbuilderInstallerScript
 				// Get the user object
 				$user = JFactory::getUser();
 				// build the storage buckets
-				foreach ($this->setValues as $hash => $item)
+				foreach ($this->setFtpValues as $hash => $item)
 				{
 					// get host name
 					$hostusername = ComponentbuilderHelper::getBetween($item['ftp'], 'username=', '&');
@@ -2484,7 +2529,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.5.4 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.5.5 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

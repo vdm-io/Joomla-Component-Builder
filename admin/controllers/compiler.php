@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 53 of this MVC
-	@build			5th August, 2017
+	@version		@update number 55 of this MVC
+	@build			13th September, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -70,13 +70,13 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$componentId 		= $jinput->post->get('component', 0, 'INT');
 			$version		= $jinput->post->get('version', 0, 'INT');
 			$addBackup		= $jinput->post->get('backup', 0, 'INT');
-			$addGit			= $jinput->post->get('git', 0, 'INT');
+			$addRepo			= $jinput->post->get('repository', 0, 'INT');
 			$addPlaceholders	= $jinput->post->get('placeholders', 2, 'INT');
 			$debugLinenr		= $jinput->post->get('debuglinenr', 2, 'INT');
 			// include component compiler
 			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
 			$model		= $this->getModel('compiler');
-			if ($model->builder($version,$componentId,$addBackup,$addGit,$addPlaceholders,$debugLinenr))
+			if ($model->builder($version,$componentId,$addBackup,$addRepo,$addPlaceholders,$debugLinenr))
 			{
 				$cache = JFactory::getCache('mod_menu');
 				$cache->clean();

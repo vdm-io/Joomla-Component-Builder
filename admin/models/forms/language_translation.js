@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 39 of this MVC
-	@build			7th April, 2017
+	@version		@update number 43 of this MVC
+	@build			16th September, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		language_translation.js
@@ -26,39 +26,9 @@
 
 jQuery(document).ready(function($)
 {
-	// build table of translations
-	var translation = encodeURIComponent(jQuery('#jform_translation').val());
-	if (translation) {
-		getBuildTable(translation,'jform_translation');
-	}
 	// set button to add more languages
 	addButton('language','components');
 });
-			
-function getBuildTable_server(string, idName){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getBuildTable&format=json&vdm="+vastDevMod);
-	if(token.length > 0 && string.length > 0 && idName.length > 0){
-		var request = 'token='+token+'&idName='+idName+'&object='+string;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
-}
-function getBuildTable(string, idName){
-	getBuildTable_server(string, idName).done(function(result) {
-		jQuery('#table_'+idName).remove();
-		if(result){
-			addData(result, '#'+idName);
-		}
-	})
-}
-function addData(result, where){
-	jQuery(where).closest('.control-group').parent().append(result);
-}			 
 function addButton_server(type){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){

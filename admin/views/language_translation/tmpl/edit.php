@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 39 of this MVC
-	@build			7th April, 2017
+	@version		@update number 43 of this MVC
+	@build			16th September, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		edit.php
@@ -119,12 +119,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <script type="text/javascript">
 
 
-jQuery('input.form-field-repeatable').on('value-update', function(e, value){
-	if (value)
-	{
-		getBuildTable(JSON.stringify(value), e.currentTarget.id);
-	}
-});
 			
 <?php
 	$app = JFactory::getApplication();

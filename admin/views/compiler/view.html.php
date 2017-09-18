@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 53 of this MVC
-	@build			5th August, 2017
+	@version		@update number 55 of this MVC
+	@build			13th September, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -93,17 +93,17 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			$radio1->setup($sales,0);
 			
 			$radio2 = JFormHelper::loadFieldType('radio',true);
-			// start building add to git folder xml field
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_TO_GIT_FOLDER').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_THE_COMPONENT_BE_MOVED_TO_YOUR_LOCAL_GIT_FOLDER').'" name="git" type="radio" class="btn-group btn-group-yesno" default="1">';
+			// start building add to repository folder xml field
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_TO_REPOSITORY_FOLDER').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_THE_COMPONENT_BE_MOVED_TO_YOUR_LOCAL_REPOSITORY_FOLDER').'" name="repository" type="radio" class="btn-group btn-group-yesno" default="1">';
 			$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
 			$xml .= "</field>";
 			// prepare the xml
-			$git = new SimpleXMLElement($xml);
+			$repository = new SimpleXMLElement($xml);
 			// set components to form
-			$radio2->setup($git,1);
+			$radio2->setup($repository,1);
 			
 			$radio3 = JFormHelper::loadFieldType('radio',true);
-			// start building add to git folder xml field
+			// start building custom code placeholders
 			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_JCB_INSERT_THE_CUSTOM_CODE_PLACEHOLDERS_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_CUSTOM_CODE').'" name="placeholders" type="radio" class="btn-group btn-group-yesno" default="2">';
 			$xml .= '<option value="2">'.JText::_('COM_COMPONENTBUILDER_GLOBAL').'</option> <option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
 			$xml .= "</field>";
@@ -113,8 +113,8 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			$radio3->setup($placeholder,2);
 			
 			$radio4 = JFormHelper::loadFieldType('radio',true);
-			// start building add to git folder xml field
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS').'" description="'.JText::_('COM_COMPONENTBUILDER_ADD_CORRESPONDING_LINE_NUMBERS_TO_THE_DYNAMIC_COMMENTS_SO_TO_SEE_WHERE_IN_THE_COMPILER_THE_LINES_OF_CODE_WAS_BUILD_THIS_WILL_HELP_IF_YOU_NEED_TO_GET_MORE_TECHNICAL_WITH_AN_ISSUE_ON_GITHUB').'" name="debuglinenr" type="radio" class="btn-group btn-group-yesno" default="2">';
+			// add debug line numbers
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS').'" description="'.JText::_('COM_COMPONENTBUILDER_ADD_CORRESPONDING_LINE_NUMBERS_TO_THE_DYNAMIC_COMMENTS_SO_TO_SEE_WHERE_IN_THE_COMPILER_THE_LINES_OF_CODE_WAS_BUILD_THIS_WILL_HELP_IF_YOU_NEED_TO_GET_MORE_TECHNICAL_WITH_AN_ISSUE_ON_GITHUB_OR_EVEN_FOR_YOUR_OWN_DEBUGGING').'" name="debuglinenr" type="radio" class="btn-group btn-group-yesno" default="2">';
 			$xml .= '<option value="2">'.JText::_('COM_COMPONENTBUILDER_GLOBAL').'</option> <option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
 			$xml .= "</field>";
 			// prepare the xml

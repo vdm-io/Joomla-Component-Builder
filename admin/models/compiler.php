@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 53 of this MVC
-	@build			5th August, 2017
+	@version		@update number 55 of this MVC
+	@build			13th September, 2017
 	@created		1st February, 2017
 	@package		Component Builder
 	@subpackage		compiler.php
@@ -164,12 +164,12 @@ class ComponentbuilderModelCompiler extends JModelList
 		return $db->loadObjectList();
 	}
 	
-	public function builder($version, $id, $backup, $git, $addPlaceholders, $debugLinenr) 
+	public function builder($version, $id, $backup, $repo, $addPlaceholders, $debugLinenr) 
 	{	
 		$set['joomlaVersion']		= $version;
 		$set['componentId']		= $id;
 		$set['addBackup']		= $backup;
-		$set['addGit']			= $git;
+		$set['addRepo']			= $repo;
 		$set['addPlaceholders']	= $addPlaceholders;
 		$set['debugLinenr']		= $debugLinenr;
 		// start up Compiler

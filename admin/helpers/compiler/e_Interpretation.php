@@ -3760,7 +3760,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL."\t\t\t{";
 				$script .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." JSON Decode ".$jsonString.".";
 				if (isset($this->jsonItemBuilderArray[$view])
-					&& ComponentbuilderHelper::checkArray($this->jsonStringBuilderArray[$view])
+					&& ComponentbuilderHelper::checkArray($this->jsonItemBuilderArray[$view])
 					&& in_array($jsonString, $this->jsonItemBuilderArray[$view]))
 				{
 					$makeArray = ',true';

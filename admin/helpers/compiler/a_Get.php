@@ -1051,7 +1051,7 @@ class Get
 			$component->sales_server_ftp = 0;
 			$component->add_sales_server = 0;
 		}
-		// set the ignore folders for git if found
+		// set the ignore folders for repo if found
 		if (isset($component->toignore) && ComponentbuilderHelper::checkString($component->toignore))
 		{
 			if (strpos($component->toignore, ',') !== false)
@@ -1065,7 +1065,7 @@ class Get
 		}
 		else
 		{
-			// the default is to ignore the git folder
+			// the default is to ignore the repo folder
 			$component->toignore = array('.git');
 		}
 		
@@ -3387,26 +3387,24 @@ class Get
 					}
 					// if we have an array continue
 					if (isset($this->multiLangString[$string]['translation']) 
-						&& ComponentbuilderHelper::checkArray($this->multiLangString[$string]['translation']) 
-						&& isset($this->multiLangString[$string]['translation']['translation'])
-						&& isset($this->multiLangString[$string]['translation']['language'])
-						&& ComponentbuilderHelper::checkArray($this->multiLangString[$string]['translation']['language'])
-						&& ComponentbuilderHelper::checkArray($this->multiLangString[$string]['translation']['translation']))
+						&& ComponentbuilderHelper::checkArray($this->multiLangString[$string]['translation']))
 					{
 						// great lets build the multi languages strings
-						foreach ($this->multiLangString[$string]['translation']['translation'] as $at => $lang)
+						foreach ($this->multiLangString[$string]['translation'] as $translations)
 						{
-							$_tag = $this->multiLangString[$string]['translation']['language'][$at];
-							// build arrays
-							if (!isset($this->languages[$_tag]))
+							if (isset($translations['language']) && isset($translations['translation']))
 							{
-								$this->languages[$_tag] = array();
+								// build arrays
+								if (!isset($this->languages[$translations['language']]))
+								{
+									$this->languages[$translations['language']] = array();
+								}
+								if (!isset($this->languages[$translations['language']][$area]))
+								{
+									$this->languages[$translations['language']][$area] = array();
+								}
+								$this->languages[$translations['language']][$area][$placeholder] = $translations['translation'];
 							}
-							if (!isset($this->languages[$_tag][$area]))
-							{
-								$this->languages[$_tag][$area] = array();
-							}
-							$this->languages[$_tag][$area][$placeholder] = $lang;
 						}
 					}
 					else
@@ -3628,7 +3626,7 @@ class Get
 						elseif (ComponentbuilderHelper::checkJson($item['translation']))
 						{
 							$translation = json_decode($item['translation'], true);
-							if (ComponentbuilderHelper::checkArray($translation) && ComponentbuilderHelper::checkArray($translation['translation']))
+							if (ComponentbuilderHelper::checkArray($translation))
 							{
 								// only archive the item and update the string to unlink the current component
 								$this->setUpdateExistingLangStrings($item['id'], $components, 2, $today, $counterUpdate);

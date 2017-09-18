@@ -54,7 +54,7 @@ class Compiler extends Infusion
 	// fixed pathes
 	protected $dynamicIntegration	= false;
 	protected $backupPath		= false;
-	protected $gitPath		= false;
+	protected $repoPath		= false;
 	protected $addCustomCodeAt	= array();
 
 	/**
@@ -76,9 +76,9 @@ class Compiler extends Infusion
 				$this->backupPath		= $this->params->get('backup_folder_path', $this->tempPath).'/'.$this->componentBackupName.'.zip';
 				$this->dynamicIntegration	= true;
 			}
-			if ($config['addGit'])
+			if ($config['addRepo'])
 			{
-				$this->gitPath		= $this->params->get('git_folder_path', null);
+				$this->repoPath		= $this->params->get('git_folder_path', null);
 			}
 			// remove site folder if not needed (TODO add check if custom script was moved to site folder then we must do a more complex cleanup here)
 			if ($this->removeSiteFolder)
@@ -402,15 +402,15 @@ class Compiler extends Infusion
 
 	private function zipComponent()
 	{
-		// before we zip the component we first need to move it to the git folder if set
-		if (ComponentbuilderHelper::checkString($this->gitPath))
+		// before we zip the component we first need to move it to the repo folder if set
+		if (ComponentbuilderHelper::checkString($this->repoPath))
 		{
-			// set the git path
-			$this->gitPath = $this->gitPath.'/com_'.$this->componentData->sales_name.'__joomla_'.$this->joomlaVersion;
+			// set the repo path
+			$repoFullPath = $this->repoPath.'/com_'.$this->componentData->sales_name.'__joomla_'.$this->joomlaVersion;
 			// remove old data
-			$this->removeFolder($this->gitPath, $this->componentData->toignore);
+			$this->removeFolder($repoFullPath, $this->componentData->toignore);
 			// set the new data
-			JFolder::copy($this->componentPath, $this->gitPath, '', true);
+			JFolder::copy($this->componentPath, $repoFullPath, '', true);
 		}
 		// the name of the zip file to create
 		$this->filepath = $this->tempPath.'/'.$this->componentFolderName.'.zip';

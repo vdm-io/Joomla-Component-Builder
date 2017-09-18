@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.4
-	@build			13th September, 2017
+	@version		2.5.5
+	@build			17th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -1487,23 +1487,68 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// merge the translations where needed
 				if (isset($item->translation) && isset($item->localTranslation) 
-					&& ComponentbuilderHelper::checkJson($item->translation) 
+					&& ComponentbuilderHelper::checkJson($item->translation)
 					&& ComponentbuilderHelper::checkJson($item->localTranslation))
 				{
-					$translations = json_decode($item->translation, true);
-					$localTranslations = json_decode($item->localTranslation, true);
-					foreach ($localTranslations['translation'] as $nr => $value)
+					$newTranslations = json_decode($item->translation, true);
+					$localTranslations = json_decode($item->localTranslation, true); // always the new format
+					$translations = array();
+					$pointer = 0;
+					$checker = array();
+					// okay we have the old format lets merge on that basis
+					if (isset($newTranslations['translation']))
 					{
-						// only keep old translation if the new does not have this translation & language
-						if (!in_array($value, $translations['translation']) && !in_array($localTranslations['language'][$nr], $translations['language']))
+						foreach ($localTranslations as $value)
 						{
-							$translations['translation'][] = $value;
-							$translations['language'][] = $localTranslations['language'][$nr];
+							// only keep old translation if the new does not have this translation & language
+							if (!in_array($value['language'], $newTranslations['language']))
+							{
+								$translations['translation' . $pointer] = array('translation' => $value['translation'], 'language' => $value['language']);
+								$pointer++;
+							}
+						}
+						foreach ($newTranslations['translation'] as $nr => $newTrans)
+						{
+							// now convert the new translation array
+							$translations['translation' . $pointer] = array('translation' => $newTrans, 'language' => $newTranslations['language'][$nr]);
+							$pointer++;
 						}
 					}
-					$item->translation = json_encode($translations);
+					// okay this is the new format lets merge on that basis
+					elseif (ComponentbuilderHelper::checkArray($newTranslations))
+					{
+						$translations = $newTranslations;
+						$pointer = count($translations);
+						foreach ($localTranslations as $value)
+						{
+							$keepLocal = true;
+							foreach ($newTranslations as $newValue)
+							{
+								// only keep old translation if the new does not have this translation & language
+								if ($value['language'] === $newValue['language'])
+								{
+									$keepLocal = false;
+								}
+							}
+							if ($keepLocal)
+							{
+								$translations['translation' . $pointer] = array('translation' => $value['translation'], 'language' => $value['language']);
+								$pointer++;
+							}
+						}
+					}
+					// okay seem to only have local translations
+					elseif (ComponentbuilderHelper::checkArray($localTranslations))
+					{
+						$translations = $localTranslations;
+					}
+					// only update if we have translations
+					if (ComponentbuilderHelper::checkArray($translations))
+					{
+						$item->translation = json_encode($translations);
+					}
 				}
-				elseif (isset($item->localTranslation) 	&& ComponentbuilderHelper::checkJson($item->localTranslation))
+				elseif (isset($item->localTranslation) && ComponentbuilderHelper::checkJson($item->localTranslation))
 				{
 					$item->translation = $item->localTranslation;
 				}

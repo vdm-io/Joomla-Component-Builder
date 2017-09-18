@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 39 of this MVC
-	@build			7th April, 2017
+	@version		@update number 43 of this MVC
+	@build			16th September, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		language_translation.php
@@ -98,6 +98,14 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				$registry = new Registry;
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
+			}
+
+			if (!empty($item->translation))
+			{
+				// Convert the translation field to an array.
+				$translation = new Registry;
+				$translation->loadString($item->translation);
+				$item->translation = $translation->toArray();
 			}
 
 			if (!empty($item->components))
@@ -813,6 +821,19 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		} 
+
+		// Set the translation items to data.
+		if (isset($data['translation']) && is_array($data['translation']))
+		{
+			$translation = new JRegistry;
+			$translation->loadArray($data['translation']);
+			$data['translation'] = (string) $translation;
+		}
+		elseif (!isset($data['translation']))
+		{
+			// Set the empty translation to data
+			$data['translation'] = '';
+		}
 
 		// Set the components string to JSON string.
 		if (isset($data['components']))

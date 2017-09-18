@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.4
-	@build			13th September, 2017
+	@version		2.5.5
+	@build			17th September, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_readme_information.php

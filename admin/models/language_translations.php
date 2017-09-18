@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 39 of this MVC
-	@build			7th April, 2017
+	@version		@update number 43 of this MVC
+	@build			16th September, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		language_translations.php
@@ -128,11 +128,15 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					if (ComponentbuilderHelper::checkJson($item->translation))
 					{
 						$translations = json_decode($item->translation, true);
-						if (ComponentbuilderHelper::checkArray($translations) && isset($translations['language']) && ComponentbuilderHelper::checkArray($translations['language']))
+						if (ComponentbuilderHelper::checkArray($translations))
 						{
-							foreach ($translations['language'] as $language)
+							foreach ($translations as $language)
 							{
-								$langBucket[$language] = $language;
+								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
+								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+								{
+									$langBucket[$language['language']] = $language['language'];
+								}
 							}
 						}
 					}
@@ -310,11 +314,15 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					if (ComponentbuilderHelper::checkJson($item->translation))
 					{
 						$translations = json_decode($item->translation, true);
-						if (ComponentbuilderHelper::checkArray($translations) && isset($translations['language']) && ComponentbuilderHelper::checkArray($translations['language']))
+						if (ComponentbuilderHelper::checkArray($translations))
 						{
-							foreach ($translations['language'] as $language)
+							foreach ($translations as $language)
 							{
-								$langBucket[$language] = $language;
+								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
+								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+								{
+									$langBucket[$language['language']] = $language['language'];
+								}
 							}
 						}
 					}
