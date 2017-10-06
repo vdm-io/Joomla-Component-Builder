@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 40 of this MVC
-	@build			1st April, 2017
+	@version		@update number 45 of this MVC
+	@build			27th September, 2017
 	@created		26th May, 2015
 	@package		Component Builder
 	@subpackage		template.js
@@ -23,42 +23,42 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // Some Global Values
-jform_vvvvvyrvyv_required = false;
+jform_vvvvvysvyw_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvyr = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvyr(add_php_view_vvvvvyr);
+	var add_php_view_vvvvvys = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvys(add_php_view_vvvvvys);
 });
 
-// the vvvvvyr function
-function vvvvvyr(add_php_view_vvvvvyr)
+// the vvvvvys function
+function vvvvvys(add_php_view_vvvvvys)
 {
 	// set the function logic
-	if (add_php_view_vvvvvyr == 1)
+	if (add_php_view_vvvvvys == 1)
 	{
 		jQuery('#jform_php_view').closest('.control-group').show();
-		if (jform_vvvvvyrvyv_required)
+		if (jform_vvvvvysvyw_required)
 		{
 			updateFieldRequired('php_view',0);
 			jQuery('#jform_php_view').prop('required','required');
 			jQuery('#jform_php_view').attr('aria-required',true);
 			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvyrvyv_required = false;
+			jform_vvvvvysvyw_required = false;
 		}
 
 	}
 	else
 	{
 		jQuery('#jform_php_view').closest('.control-group').hide();
-		if (!jform_vvvvvyrvyv_required)
+		if (!jform_vvvvvysvyw_required)
 		{
 			updateFieldRequired('php_view',1);
 			jQuery('#jform_php_view').removeAttr('required');
 			jQuery('#jform_php_view').removeAttr('aria-required');
 			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvyrvyv_required = true;
+			jform_vvvvvysvyw_required = true;
 		}
 	}
 }
@@ -99,6 +99,7 @@ function isSet(val)
 	return false;
 }
 
+			
 function getSnippetDetails_server(snippetId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.snippetDetails&format=json";
 	if(token.length > 0 && snippetId > 0){
@@ -143,10 +144,10 @@ function getSnippetDetails(id){
 			jQuery('.snippet-usage').append(usage);
 		}
 	})
-}
-
+}			
+			
 function getDynamicValues_server(dynamicId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.dynamicValues&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getDynamicValues&format=json";
 	if(token.length > 0 && dynamicId > 0){
 		var request = 'token='+token+'&view=template&id='+dynamicId;
 	}
@@ -170,25 +171,10 @@ function getDynamicValues(id){
 			});
 		}
 	})
-} 
-
+}			
+			
 function getLayoutDetails_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.layoutDetails&format=json";
-	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
-}
-
-
-function getLayoutDetails_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.layoutDetails&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json";
 	if(token.length > 0 && id > 0){
 		var request = 'token='+token+'&id='+id;
 	}
@@ -211,8 +197,8 @@ function getLayoutDetails(id){
 			});
 		}
 	})
-} 
-
+}			
+			
 function getTemplateDetails_server(id){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.templateDetails&format=json";
 	if(token.length > 0 && id > 0){
@@ -237,30 +223,4 @@ function getTemplateDetails(id){
 			});
 		}
 	})
-}
-
-function getDynamicFormDetails_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.dynamicFormDetails&format=json";
-	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
-}
-
-function getDynamicFormDetails(id){
-	getDynamicFormDetails_server(id).done(function(result) {
-		if(result){
-			jQuery('#details').append(result);
-			// make sure the code bocks are active
-			jQuery("code").click(function() {
-				jQuery(this).selText().addClass("selected");
-			});
-		}
-	})
-}  
+}			 

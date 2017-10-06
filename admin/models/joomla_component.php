@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 378 of this MVC
-	@build			18th September, 2017
+	@version		@update number 385 of this MVC
+	@build			6th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -95,34 +95,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->readme))
+			if (!empty($item->sql))
 			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
-			}
-
-			if (!empty($item->php_postflight_install))
-			{
-				// base64 Decode php_postflight_install.
-				$item->php_postflight_install = base64_decode($item->php_postflight_install);
-			}
-
-			if (!empty($item->php_preflight_install))
-			{
-				// base64 Decode php_preflight_install.
-				$item->php_preflight_install = base64_decode($item->php_preflight_install);
-			}
-
-			if (!empty($item->php_method_uninstall))
-			{
-				// base64 Decode php_method_uninstall.
-				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-			}
-
-			if (!empty($item->css))
-			{
-				// base64 Decode css.
-				$item->css = base64_decode($item->css);
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
 			}
 
 			if (!empty($item->php_preflight_update))
@@ -137,10 +113,28 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_postflight_update = base64_decode($item->php_postflight_update);
 			}
 
-			if (!empty($item->sql))
+			if (!empty($item->php_preflight_install))
 			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
+			if (!empty($item->php_postflight_install))
+			{
+				// base64 Decode php_postflight_install.
+				$item->php_postflight_install = base64_decode($item->php_postflight_install);
+			}
+
+			if (!empty($item->php_method_uninstall))
+			{
+				// base64 Decode php_method_uninstall.
+				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+			}
+
+			if (!empty($item->readme))
+			{
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
 			}
 
 			if (!empty($item->php_helper_both))
@@ -171,6 +165,18 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			{
 				// base64 Decode php_site_event.
 				$item->php_site_event = base64_decode($item->php_site_event);
+			}
+
+			if (!empty($item->javascript))
+			{
+				// base64 Decode javascript.
+				$item->javascript = base64_decode($item->javascript);
+			}
+
+			if (!empty($item->css))
+			{
+				// base64 Decode css.
+				$item->css = base64_decode($item->css);
 			}
 
 			if (!empty($item->php_dashboard_methods))
@@ -221,7 +227,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwmadmin_views()
+	public function getVwnadmin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -313,7 +319,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwncustom_admin_views()
+	public function getVwocustom_admin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -409,7 +415,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwosite_views()
+	public function getVwpsite_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -505,7 +511,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwptranslation()
+	public function getVwqtranslation()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -803,39 +809,39 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('author', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Readme access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.readme', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.readme', 'com_componentbuilder')))
+		// Modify the form based on Edit Sql access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.sql', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.sql', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('readme', 'disabled', 'true');
+			$form->setFieldAttribute('sql', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('readme', 'readonly', 'true');
-			if (!$form->getValue('readme'))
+			$form->setFieldAttribute('sql', 'readonly', 'true');
+			if (!$form->getValue('sql'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('readme', 'filter', 'unset');
+				$form->setFieldAttribute('sql', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('readme', 'required', 'false');
+				$form->setFieldAttribute('sql', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Add Php Dashboard Methods access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_dashboard_methods', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_dashboard_methods', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Css access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_css', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_css', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('add_php_dashboard_methods', 'disabled', 'true');
+			$form->setFieldAttribute('add_css', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('add_php_dashboard_methods', 'readonly', 'true');
+			$form->setFieldAttribute('add_css', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_php_dashboard_methods', 'class', '');
-			$form->setFieldAttribute('add_php_dashboard_methods', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_php_dashboard_methods'))
+			$class = $form->getFieldAttribute('add_css', 'class', '');
+			$form->setFieldAttribute('add_css', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_css'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_dashboard_methods', 'filter', 'unset');
+				$form->setFieldAttribute('add_css', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_dashboard_methods', 'required', 'false');
+				$form->setFieldAttribute('add_css', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Description access controls.
@@ -854,23 +860,23 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('description', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Add Php Helper Admin access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_helper_admin', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_helper_admin', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Admin Event access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_admin_event', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_admin_event', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('add_php_helper_admin', 'disabled', 'true');
+			$form->setFieldAttribute('add_admin_event', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('add_php_helper_admin', 'readonly', 'true');
+			$form->setFieldAttribute('add_admin_event', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_php_helper_admin', 'class', '');
-			$form->setFieldAttribute('add_php_helper_admin', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_php_helper_admin'))
+			$class = $form->getFieldAttribute('add_admin_event', 'class', '');
+			$form->setFieldAttribute('add_admin_event', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_admin_event'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_helper_admin', 'filter', 'unset');
+				$form->setFieldAttribute('add_admin_event', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_helper_admin', 'required', 'false');
+				$form->setFieldAttribute('add_admin_event', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Copyright access controls.
@@ -889,20 +895,20 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('copyright', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Php Postflight Install access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_postflight_install', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_postflight_install', 'com_componentbuilder')))
+		// Modify the form based on Edit Php Preflight Update access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_preflight_update', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_preflight_update', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('php_postflight_install', 'disabled', 'true');
+			$form->setFieldAttribute('php_preflight_update', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('php_postflight_install', 'readonly', 'true');
-			if (!$form->getValue('php_postflight_install'))
+			$form->setFieldAttribute('php_preflight_update', 'readonly', 'true');
+			if (!$form->getValue('php_preflight_update'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_postflight_install', 'filter', 'unset');
+				$form->setFieldAttribute('php_preflight_update', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_postflight_install', 'required', 'false');
+				$form->setFieldAttribute('php_preflight_update', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Debug Linenr access controls.
@@ -943,55 +949,58 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('mvc_versiondate', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Update Server Ftp access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.update_server_ftp', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.update_server_ftp', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Site Event access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_site_event', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_site_event', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('update_server_ftp', 'disabled', 'true');
+			$form->setFieldAttribute('add_site_event', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('update_server_ftp', 'readonly', 'true');
-			if (!$form->getValue('update_server_ftp'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('update_server_ftp', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('update_server_ftp', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Add Php Helper Site access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_helper_site', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_helper_site', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('add_php_helper_site', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('add_php_helper_site', 'readonly', 'true');
+			$form->setFieldAttribute('add_site_event', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_php_helper_site', 'class', '');
-			$form->setFieldAttribute('add_php_helper_site', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_php_helper_site'))
+			$class = $form->getFieldAttribute('add_site_event', 'class', '');
+			$form->setFieldAttribute('add_site_event', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_site_event'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_helper_site', 'filter', 'unset');
+				$form->setFieldAttribute('add_site_event', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_helper_site', 'required', 'false');
+				$form->setFieldAttribute('add_site_event', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Php Preflight Install access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_preflight_install', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_preflight_install', 'com_componentbuilder')))
+		// Modify the form based on Edit Name access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.name', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.name', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('php_preflight_install', 'disabled', 'true');
+			$form->setFieldAttribute('name', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('php_preflight_install', 'readonly', 'true');
-			if (!$form->getValue('php_preflight_install'))
+			$form->setFieldAttribute('name', 'readonly', 'true');
+			if (!$form->getValue('name'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_preflight_install', 'filter', 'unset');
+				$form->setFieldAttribute('name', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_preflight_install', 'required', 'false');
+				$form->setFieldAttribute('name', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Dashboard Tab access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.dashboard_tab', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.dashboard_tab', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('dashboard_tab', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('dashboard_tab', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('dashboard_tab', 'class', '');
+			$form->setFieldAttribute('dashboard_tab', 'class', $class.' disabled no-click');
+			if (!$form->getValue('dashboard_tab'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('dashboard_tab', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('dashboard_tab', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Creatuserhelper access controls.
@@ -1013,36 +1022,39 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('creatuserhelper', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Php Method Uninstall access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_method_uninstall', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_method_uninstall', 'com_componentbuilder')))
+		// Modify the form based on Edit Php Postflight Update access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_postflight_update', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_postflight_update', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('php_method_uninstall', 'disabled', 'true');
+			$form->setFieldAttribute('php_postflight_update', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('php_method_uninstall', 'readonly', 'true');
-			if (!$form->getValue('php_method_uninstall'))
+			$form->setFieldAttribute('php_postflight_update', 'readonly', 'true');
+			if (!$form->getValue('php_postflight_update'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_method_uninstall', 'filter', 'unset');
+				$form->setFieldAttribute('php_postflight_update', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_method_uninstall', 'required', 'false');
+				$form->setFieldAttribute('php_postflight_update', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Css access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.css', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.css', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Php Helper Both access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_helper_both', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_helper_both', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('css', 'disabled', 'true');
+			$form->setFieldAttribute('add_php_helper_both', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('css', 'readonly', 'true');
-			if (!$form->getValue('css'))
+			$form->setFieldAttribute('add_php_helper_both', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_helper_both', 'class', '');
+			$form->setFieldAttribute('add_php_helper_both', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_helper_both'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('css', 'filter', 'unset');
+				$form->setFieldAttribute('add_php_helper_both', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('css', 'required', 'false');
+				$form->setFieldAttribute('add_php_helper_both', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Version Update access controls.
@@ -1080,23 +1092,20 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('email', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Buildcomp access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.buildcomp', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.buildcomp', 'com_componentbuilder')))
+		// Modify the form based on Edit Sales Server Ftp access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.sales_server_ftp', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.sales_server_ftp', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('buildcomp', 'disabled', 'true');
+			$form->setFieldAttribute('sales_server_ftp', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('buildcomp', 'readonly', 'true');
-			// Disable radio button for display.
-			$class = $form->getFieldAttribute('buildcomp', 'class', '');
-			$form->setFieldAttribute('buildcomp', 'class', $class.' disabled no-click');
-			if (!$form->getValue('buildcomp'))
+			$form->setFieldAttribute('sales_server_ftp', 'readonly', 'true');
+			if (!$form->getValue('sales_server_ftp'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('buildcomp', 'filter', 'unset');
+				$form->setFieldAttribute('sales_server_ftp', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('buildcomp', 'required', 'false');
+				$form->setFieldAttribute('sales_server_ftp', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Website access controls.
@@ -1185,42 +1194,42 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('license_type', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Add Php Helper Both access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_helper_both', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_helper_both', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Php Helper Admin access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_helper_admin', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_helper_admin', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('add_php_helper_both', 'disabled', 'true');
+			$form->setFieldAttribute('add_php_helper_admin', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('add_php_helper_both', 'readonly', 'true');
+			$form->setFieldAttribute('add_php_helper_admin', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_php_helper_both', 'class', '');
-			$form->setFieldAttribute('add_php_helper_both', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_php_helper_both'))
+			$class = $form->getFieldAttribute('add_php_helper_admin', 'class', '');
+			$form->setFieldAttribute('add_php_helper_admin', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_helper_admin'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_helper_both', 'filter', 'unset');
+				$form->setFieldAttribute('add_php_helper_admin', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_helper_both', 'required', 'false');
+				$form->setFieldAttribute('add_php_helper_admin', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Add Admin Event access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_admin_event', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_admin_event', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Php Helper Site access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_helper_site', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_helper_site', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('add_admin_event', 'disabled', 'true');
+			$form->setFieldAttribute('add_php_helper_site', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('add_admin_event', 'readonly', 'true');
+			$form->setFieldAttribute('add_php_helper_site', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_admin_event', 'class', '');
-			$form->setFieldAttribute('add_admin_event', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_admin_event'))
+			$class = $form->getFieldAttribute('add_php_helper_site', 'class', '');
+			$form->setFieldAttribute('add_php_helper_site', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_helper_site'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_admin_event', 'filter', 'unset');
+				$form->setFieldAttribute('add_php_helper_site', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_admin_event', 'required', 'false');
+				$form->setFieldAttribute('add_php_helper_site', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Whmcs Key access controls.
@@ -1239,23 +1248,23 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('whmcs_key', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Add Site Event access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_site_event', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_site_event', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Javascript access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_javascript', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_javascript', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('add_site_event', 'disabled', 'true');
+			$form->setFieldAttribute('add_javascript', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('add_site_event', 'readonly', 'true');
+			$form->setFieldAttribute('add_javascript', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_site_event', 'class', '');
-			$form->setFieldAttribute('add_site_event', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_site_event'))
+			$class = $form->getFieldAttribute('add_javascript', 'class', '');
+			$form->setFieldAttribute('add_javascript', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_javascript'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_site_event', 'filter', 'unset');
+				$form->setFieldAttribute('add_javascript', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_site_event', 'required', 'false');
+				$form->setFieldAttribute('add_javascript', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Whmcs Url access controls.
@@ -1274,23 +1283,23 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('whmcs_url', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Dashboard Tab access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.dashboard_tab', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.dashboard_tab', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Php Dashboard Methods access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_dashboard_methods', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_dashboard_methods', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('dashboard_tab', 'disabled', 'true');
+			$form->setFieldAttribute('add_php_dashboard_methods', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('dashboard_tab', 'readonly', 'true');
+			$form->setFieldAttribute('add_php_dashboard_methods', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('dashboard_tab', 'class', '');
-			$form->setFieldAttribute('dashboard_tab', 'class', $class.' disabled no-click');
-			if (!$form->getValue('dashboard_tab'))
+			$class = $form->getFieldAttribute('add_php_dashboard_methods', 'class', '');
+			$form->setFieldAttribute('add_php_dashboard_methods', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_dashboard_methods'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('dashboard_tab', 'filter', 'unset');
+				$form->setFieldAttribute('add_php_dashboard_methods', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('dashboard_tab', 'required', 'false');
+				$form->setFieldAttribute('add_php_dashboard_methods', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit License access controls.
@@ -1309,20 +1318,20 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('license', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Php Preflight Update access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_preflight_update', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_preflight_update', 'com_componentbuilder')))
+		// Modify the form based on Edit Php Preflight Install access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_preflight_install', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_preflight_install', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('php_preflight_update', 'disabled', 'true');
+			$form->setFieldAttribute('php_preflight_install', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('php_preflight_update', 'readonly', 'true');
-			if (!$form->getValue('php_preflight_update'))
+			$form->setFieldAttribute('php_preflight_install', 'readonly', 'true');
+			if (!$form->getValue('php_preflight_install'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_preflight_update', 'filter', 'unset');
+				$form->setFieldAttribute('php_preflight_install', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_preflight_update', 'required', 'false');
+				$form->setFieldAttribute('php_preflight_install', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Bom access controls.
@@ -1341,20 +1350,20 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('bom', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Php Postflight Update access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_postflight_update', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_postflight_update', 'com_componentbuilder')))
+		// Modify the form based on Edit Php Postflight Install access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_postflight_install', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_postflight_install', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('php_postflight_update', 'disabled', 'true');
+			$form->setFieldAttribute('php_postflight_install', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('php_postflight_update', 'readonly', 'true');
-			if (!$form->getValue('php_postflight_update'))
+			$form->setFieldAttribute('php_postflight_install', 'readonly', 'true');
+			if (!$form->getValue('php_postflight_install'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_postflight_update', 'filter', 'unset');
+				$form->setFieldAttribute('php_postflight_install', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('php_postflight_update', 'required', 'false');
+				$form->setFieldAttribute('php_postflight_install', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Image access controls.
@@ -1373,39 +1382,20 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('image', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Sql access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.sql', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.sql', 'com_componentbuilder')))
+		// Modify the form based on Edit Php Method Uninstall access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_method_uninstall', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_method_uninstall', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('sql', 'disabled', 'true');
+			$form->setFieldAttribute('php_method_uninstall', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('sql', 'readonly', 'true');
-			if (!$form->getValue('sql'))
+			$form->setFieldAttribute('php_method_uninstall', 'readonly', 'true');
+			if (!$form->getValue('php_method_uninstall'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('sql', 'filter', 'unset');
+				$form->setFieldAttribute('php_method_uninstall', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('sql', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Update Server Target access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.update_server_target', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.update_server_target', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('update_server_target', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('update_server_target', 'readonly', 'true');
-			// Disable radio button for display.
-			$class = $form->getFieldAttribute('update_server_target', 'class', '');
-			$form->setFieldAttribute('update_server_target', 'class', $class.' disabled no-click');
-			if (!$form->getValue('update_server_target'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('update_server_target', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('update_server_target', 'required', 'false');
+				$form->setFieldAttribute('php_method_uninstall', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Add Update Server access controls.
@@ -1427,20 +1417,55 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('add_update_server', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Sales Server Ftp access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.sales_server_ftp', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.sales_server_ftp', 'com_componentbuilder')))
+		// Modify the form based on Edit Readme access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.readme', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.readme', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('sales_server_ftp', 'disabled', 'true');
+			$form->setFieldAttribute('readme', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('sales_server_ftp', 'readonly', 'true');
-			if (!$form->getValue('sales_server_ftp'))
+			$form->setFieldAttribute('readme', 'readonly', 'true');
+			if (!$form->getValue('readme'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('sales_server_ftp', 'filter', 'unset');
+				$form->setFieldAttribute('readme', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('sales_server_ftp', 'required', 'false');
+				$form->setFieldAttribute('readme', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Update Server Target access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.update_server_target', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.update_server_target', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('update_server_target', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('update_server_target', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('update_server_target', 'class', '');
+			$form->setFieldAttribute('update_server_target', 'class', $class.' disabled no-click');
+			if (!$form->getValue('update_server_target'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('update_server_target', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('update_server_target', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Update Server Ftp access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.update_server_ftp', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.update_server_ftp', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('update_server_ftp', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('update_server_ftp', 'readonly', 'true');
+			if (!$form->getValue('update_server_ftp'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('update_server_ftp', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('update_server_ftp', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Addadmin Views access controls.
@@ -1462,20 +1487,23 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('addadmin_views', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Name access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.name', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.name', 'com_componentbuilder')))
+		// Modify the form based on Edit Buildcomp access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.buildcomp', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.buildcomp', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('name', 'disabled', 'true');
+			$form->setFieldAttribute('buildcomp', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('name', 'readonly', 'true');
-			if (!$form->getValue('name'))
+			$form->setFieldAttribute('buildcomp', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('buildcomp', 'class', '');
+			$form->setFieldAttribute('buildcomp', 'class', $class.' disabled no-click');
+			if (!$form->getValue('buildcomp'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('name', 'filter', 'unset');
+				$form->setFieldAttribute('buildcomp', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('name', 'required', 'false');
+				$form->setFieldAttribute('buildcomp', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Addcustom Admin Views access controls.
@@ -1567,23 +1595,23 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('adduikit', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Add Css access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_css', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_css', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Email Helper access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_email_helper', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_email_helper', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('add_css', 'disabled', 'true');
+			$form->setFieldAttribute('add_email_helper', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('add_css', 'readonly', 'true');
+			$form->setFieldAttribute('add_email_helper', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_css', 'class', '');
-			$form->setFieldAttribute('add_css', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_css'))
+			$class = $form->getFieldAttribute('add_email_helper', 'class', '');
+			$form->setFieldAttribute('add_email_helper', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_email_helper'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_css', 'filter', 'unset');
+				$form->setFieldAttribute('add_email_helper', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_css', 'required', 'false');
+				$form->setFieldAttribute('add_email_helper', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Sql Tweak access controls.
@@ -1603,25 +1631,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('sql_tweak', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('sql_tweak', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Add Email Helper access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_email_helper', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_email_helper', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('add_email_helper', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('add_email_helper', 'readonly', 'true');
-			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_email_helper', 'class', '');
-			$form->setFieldAttribute('add_email_helper', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_email_helper'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('add_email_helper', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('add_email_helper', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Php Helper Both access controls.
@@ -1656,6 +1665,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('php_helper_admin', 'required', 'false');
 			}
 		}
+		// Modify the form based on Edit Php Admin Event access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_admin_event', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_admin_event', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('php_admin_event', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('php_admin_event', 'readonly', 'true');
+			if (!$form->getValue('php_admin_event'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_admin_event', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('php_admin_event', 'required', 'false');
+			}
+		}
 		// Modify the form based on Edit Addcustommenus access controls.
 		if ($id != 0 && (!$user->authorise('joomla_component.edit.addcustommenus', 'com_componentbuilder.joomla_component.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_component.edit.addcustommenus', 'com_componentbuilder')))
@@ -1673,22 +1698,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('addcustommenus', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('addcustommenus', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Php Admin Event access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_admin_event', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_admin_event', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('php_admin_event', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('php_admin_event', 'readonly', 'true');
-			if (!$form->getValue('php_admin_event'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('php_admin_event', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('php_admin_event', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Php Helper Site access controls.
@@ -1723,6 +1732,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('php_site_event', 'required', 'false');
 			}
 		}
+		// Modify the form based on Edit Javascript access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.javascript', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.javascript', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('javascript', 'readonly', 'true');
+			if (!$form->getValue('javascript'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('javascript', 'required', 'false');
+			}
+		}
 		// Modify the form based on Edit Addconfig access controls.
 		if ($id != 0 && (!$user->authorise('joomla_component.edit.addconfig', 'com_componentbuilder.joomla_component.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_component.edit.addconfig', 'com_componentbuilder')))
@@ -1742,6 +1767,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('addconfig', 'required', 'false');
 			}
 		}
+		// Modify the form based on Edit Css access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.css', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.css', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('css', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('css', 'readonly', 'true');
+			if (!$form->getValue('css'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('css', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('css', 'required', 'false');
+			}
+		}
 		// Modify the form based on Edit Php Dashboard Methods access controls.
 		if ($id != 0 && (!$user->authorise('joomla_component.edit.php_dashboard_methods', 'com_componentbuilder.joomla_component.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_component.edit.php_dashboard_methods', 'com_componentbuilder')))
@@ -1756,25 +1797,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('php_dashboard_methods', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('php_dashboard_methods', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Add Php Preflight Install access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_preflight_install', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_preflight_install', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('add_php_preflight_install', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('add_php_preflight_install', 'readonly', 'true');
-			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_php_preflight_install', 'class', '');
-			$form->setFieldAttribute('add_php_preflight_install', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_php_preflight_install'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_preflight_install', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_preflight_install', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Addcontributors access controls.
@@ -1796,23 +1818,23 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('addcontributors', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Add Php Preflight Update access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_preflight_update', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_preflight_update', 'com_componentbuilder')))
+		// Modify the form based on Edit Add Php Preflight Install access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_preflight_install', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_preflight_install', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('add_php_preflight_update', 'disabled', 'true');
+			$form->setFieldAttribute('add_php_preflight_install', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('add_php_preflight_update', 'readonly', 'true');
+			$form->setFieldAttribute('add_php_preflight_install', 'readonly', 'true');
 			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_php_preflight_update', 'class', '');
-			$form->setFieldAttribute('add_php_preflight_update', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_php_preflight_update'))
+			$class = $form->getFieldAttribute('add_php_preflight_install', 'class', '');
+			$form->setFieldAttribute('add_php_preflight_install', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_preflight_install'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_preflight_update', 'filter', 'unset');
+				$form->setFieldAttribute('add_php_preflight_install', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('add_php_preflight_update', 'required', 'false');
+				$form->setFieldAttribute('add_php_preflight_install', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Emptycontributors access controls.
@@ -1834,6 +1856,41 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('emptycontributors', 'required', 'false');
 			}
 		}
+		// Modify the form based on Edit Add Php Preflight Update access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_preflight_update', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_preflight_update', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_preflight_update', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_php_preflight_update', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_php_preflight_update', 'class', '');
+			$form->setFieldAttribute('add_php_preflight_update', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_php_preflight_update'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_preflight_update', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_php_preflight_update', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Number access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.number', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.number', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('number', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('number', 'readonly', 'true');
+			if (!$form->getValue('number'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('number', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('number', 'required', 'false');
+			}
+		}
 		// Modify the form based on Edit Add Php Postflight Install access controls.
 		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_php_postflight_install', 'com_componentbuilder.joomla_component.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_php_postflight_install', 'com_componentbuilder')))
@@ -1851,22 +1908,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('add_php_postflight_install', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('add_php_postflight_install', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Number access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.number', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.number', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('number', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('number', 'readonly', 'true');
-			if (!$form->getValue('number'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('number', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('number', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Add Php Postflight Update access controls.
@@ -1907,25 +1948,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('add_php_method_uninstall', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Add Sql access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_sql', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_sql', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('add_sql', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('add_sql', 'readonly', 'true');
-			// Disable radio button for display.
-			$class = $form->getFieldAttribute('add_sql', 'class', '');
-			$form->setFieldAttribute('add_sql', 'class', $class.' disabled no-click');
-			if (!$form->getValue('add_sql'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('add_sql', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('add_sql', 'required', 'false');
-			}
-		}
 		// Modify the form based on Edit Addfiles access controls.
 		if ($id != 0 && (!$user->authorise('joomla_component.edit.addfiles', 'com_componentbuilder.joomla_component.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_component.edit.addfiles', 'com_componentbuilder')))
@@ -1943,6 +1965,25 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('addfiles', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('addfiles', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Add Sql access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_sql', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_sql', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('add_sql', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('add_sql', 'readonly', 'true');
+			// Disable radio button for display.
+			$class = $form->getFieldAttribute('add_sql', 'class', '');
+			$form->setFieldAttribute('add_sql', 'class', $class.' disabled no-click');
+			if (!$form->getValue('add_sql'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_sql', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('add_sql', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Addreadme access controls.
@@ -1964,22 +2005,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('addreadme', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Update Server access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.update_server', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.update_server', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('update_server', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('update_server', 'readonly', 'true');
-			if (!$form->getValue('update_server'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('update_server', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('update_server', 'required', 'false');
-			}
-		}
 		// Modify the form based on Edit Addfolders access controls.
 		if ($id != 0 && (!$user->authorise('joomla_component.edit.addfolders', 'com_componentbuilder.joomla_component.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_component.edit.addfolders', 'com_componentbuilder')))
@@ -1999,6 +2024,38 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('addfolders', 'required', 'false');
 			}
 		}
+		// Modify the form based on Edit Update Server access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.update_server', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.update_server', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('update_server', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('update_server', 'readonly', 'true');
+			if (!$form->getValue('update_server'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('update_server', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('update_server', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Toignore access controls.
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.toignore', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.toignore', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('toignore', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('toignore', 'readonly', 'true');
+			if (!$form->getValue('toignore'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('toignore', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('toignore', 'required', 'false');
+			}
+		}
 		// Modify the form based on Edit Add Sales Server access controls.
 		if ($id != 0 && (!$user->authorise('joomla_component.edit.add_sales_server', 'com_componentbuilder.joomla_component.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_component.edit.add_sales_server', 'com_componentbuilder')))
@@ -2016,22 +2073,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setFieldAttribute('add_sales_server', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('add_sales_server', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Toignore access controls.
-		if ($id != 0 && (!$user->authorise('joomla_component.edit.toignore', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('joomla_component.edit.toignore', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('toignore', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('toignore', 'readonly', 'true');
-			if (!$form->getValue('toignore'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('toignore', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('toignore', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Buildcompsql access controls.
@@ -2691,34 +2732,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
 		{
-			$data['readme'] = base64_encode($data['readme']);
-		}
-
-		// Set the php_postflight_install string to base64 string.
-		if (isset($data['php_postflight_install']))
-		{
-			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
-		}
-
-		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
-		{
-			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
-		}
-
-		// Set the php_method_uninstall string to base64 string.
-		if (isset($data['php_method_uninstall']))
-		{
-			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
-		}
-
-		// Set the css string to base64 string.
-		if (isset($data['css']))
-		{
-			$data['css'] = base64_encode($data['css']);
+			$data['sql'] = base64_encode($data['sql']);
 		}
 
 		// Set the php_preflight_update string to base64 string.
@@ -2733,10 +2750,28 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
 		{
-			$data['sql'] = base64_encode($data['sql']);
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
+		// Set the php_postflight_install string to base64 string.
+		if (isset($data['php_postflight_install']))
+		{
+			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
+		}
+
+		// Set the php_method_uninstall string to base64 string.
+		if (isset($data['php_method_uninstall']))
+		{
+			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
+		}
+
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
+		{
+			$data['readme'] = base64_encode($data['readme']);
 		}
 
 		// Set the php_helper_both string to base64 string.
@@ -2767,6 +2802,18 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (isset($data['php_site_event']))
 		{
 			$data['php_site_event'] = base64_encode($data['php_site_event']);
+		}
+
+		// Set the javascript string to base64 string.
+		if (isset($data['javascript']))
+		{
+			$data['javascript'] = base64_encode($data['javascript']);
+		}
+
+		// Set the css string to base64 string.
+		if (isset($data['css']))
+		{
+			$data['css'] = base64_encode($data['css']);
 		}
 
 		// Set the php_dashboard_methods string to base64 string.

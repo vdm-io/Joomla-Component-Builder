@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.5
-	@build			20th September, 2017
+	@version		2.5.6
+	@build			6th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -1012,6 +1012,31 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		}
 	}
 
+	/*
+	 * Convert repeatable field
+	 * 
+	 * @param   array    $array    The array
+	 * @param   string   $name     The main field name
+	 *
+	 * @return  array
+	 */
+	protected function convertRepeatable($array, $name)
+	{
+		$bucket = array();
+		foreach ($array as $key => $values)
+		{
+			foreach ($values as $nr => $value)
+			{
+				if (!isset($bucket[$name . $nr]) || !ComponentbuilderHelper::checkArray($bucket[$name . $nr]))
+				{
+					$bucket[$name . $nr] = array();
+				}
+				$bucket[$name . $nr][$key] = $value;
+			}
+		}
+		return $bucket;
+	}
+
 	/**
 	* Prep the item
 	*
@@ -1081,21 +1106,27 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if (isset($item->join_view_table) && ComponentbuilderHelper::checkJson($item->join_view_table))
 				{
 					$join_view_table = json_decode($item->join_view_table, true);
-					foreach ($join_view_table['view_table'] as $nr => $id)
+					// check if this is old values for repeatable fields
+					if (isset($join_view_table['view_table']))
 					{
+						$join_view_table = $this->convertRepeatable($join_view_table, 'join_view_table');
+					}
+					foreach ($join_view_table as $nr => $join_values)
+					{
+						$id = $join_values['view_table'];
 						if (!is_numeric($id))
 						{
 							continue;
 						}
-						// update the join_view_table
+						// update the id's with local id's
 						if (isset($this->newID['admin_view'][$id]))
 						{
-							$join_view_table['view_table'][$nr] = $this->newID['admin_view'][$id];
+							$join_view_table[$nr]['view_table'] = $this->newID['admin_view'][$id];
 						}
 						else
 						{							
-							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BJOIN_VIEW_TABLE_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BVIEW_TABLEB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
-							$join_view_table['view_table'][$nr] = '';
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BJOIN_VIEW_TABLE_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BJOIN_VIEW_TABLEB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
+							$join_values['view_table'] = '';
 						}
 					}
 					// load it back
@@ -1104,6 +1135,33 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				else
 				{
 					unset($item->join_view_table);
+				}
+				// repeatable fields to update
+				$updaterR = array(
+							'join_db_table' => 'db_table',
+							'order' => 'table_key',
+							'where' => 'table_key',
+							'global' => 'name',
+							'filter' => 'filter_type'
+							);
+				// update the repeatable fields
+				foreach ($updaterR as  $up => $sleutel)
+				{
+					if (isset($item->{$up}) && ComponentbuilderHelper::checkJson($item->{$up}))
+					{
+						$updateArray = json_decode($item->{$up}, true);
+						// check if this is old values for repeatable fields
+						if (isset($updateArray[$sleutel]))
+						{
+							$updateArray = $this->convertRepeatable($updateArray, $up);
+						}
+						// load it back
+						$item->{$up} = json_encode($updateArray);
+					}
+					else
+					{
+						unset($item->{$up});
+					}
 				}
 			break;
 			case 'layout':
@@ -1634,6 +1692,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			if (ComponentbuilderHelper::checkJson($properties))
 			{
 				$properties = json_decode($properties, true);
+				// check if this is old values for repeatable fields
+				if (isset($properties['name']))
+				{
+					$properties = $this->convertRepeatable($properties, 'properties');
+				}
+				// now check to find type
 				foreach ($properties as $property)
 				{
 					if ('type' === $property['name'])

@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.5
-	@build			20th September, 2017
+	@version		2.5.6
+	@build			6th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		gettable_right.php
+	@subpackage		main_left.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -30,12 +30,11 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'join_view_table',
-	'join_db_table',
-	'filter',
-	'where',
-	'order',
-	'global'
+	'main_source',
+	'view_table_main',
+	'view_selection',
+	'db_table_main',
+	'db_selection'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

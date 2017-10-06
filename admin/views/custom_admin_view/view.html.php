@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 22 of this MVC
-	@build			17th July, 2017
+	@version		@update number 27 of this MVC
+	@build			27th September, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -71,7 +71,7 @@ class ComponentbuilderViewCustom_admin_view extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vyjlinked_components		= $this->get('Vyjlinked_components');
+		$this->vyklinked_components		= $this->get('Vyklinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

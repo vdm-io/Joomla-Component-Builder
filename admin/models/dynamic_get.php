@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 84 of this MVC
-	@build			4th May, 2017
+	@version		@update number 94 of this MVC
+	@build			27th September, 2017
 	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		dynamic_get.php
@@ -95,16 +95,64 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_before_getitem))
+			if (!empty($item->filter))
 			{
-				// base64 Decode php_before_getitem.
-				$item->php_before_getitem = base64_decode($item->php_before_getitem);
+				// Convert the filter field to an array.
+				$filter = new Registry;
+				$filter->loadString($item->filter);
+				$item->filter = $filter->toArray();
+			}
+
+			if (!empty($item->where))
+			{
+				// Convert the where field to an array.
+				$where = new Registry;
+				$where->loadString($item->where);
+				$item->where = $where->toArray();
+			}
+
+			if (!empty($item->order))
+			{
+				// Convert the order field to an array.
+				$order = new Registry;
+				$order->loadString($item->order);
+				$item->order = $order->toArray();
+			}
+
+			if (!empty($item->global))
+			{
+				// Convert the global field to an array.
+				$global = new Registry;
+				$global->loadString($item->global);
+				$item->global = $global->toArray();
+			}
+
+			if (!empty($item->join_db_table))
+			{
+				// Convert the join_db_table field to an array.
+				$join_db_table = new Registry;
+				$join_db_table->loadString($item->join_db_table);
+				$item->join_db_table = $join_db_table->toArray();
+			}
+
+			if (!empty($item->join_view_table))
+			{
+				// Convert the join_view_table field to an array.
+				$join_view_table = new Registry;
+				$join_view_table->loadString($item->join_view_table);
+				$item->join_view_table = $join_view_table->toArray();
 			}
 
 			if (!empty($item->php_custom_get))
 			{
 				// base64 Decode php_custom_get.
 				$item->php_custom_get = base64_decode($item->php_custom_get);
+			}
+
+			if (!empty($item->php_before_getitem))
+			{
+				// base64 Decode php_before_getitem.
+				$item->php_before_getitem = base64_decode($item->php_before_getitem);
 			}
 
 			if (!empty($item->php_after_getitem))
@@ -860,16 +908,94 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the php_before_getitem string to base64 string.
-		if (isset($data['php_before_getitem']))
+		// Set the filter items to data.
+		if (isset($data['filter']) && is_array($data['filter']))
 		{
-			$data['php_before_getitem'] = base64_encode($data['php_before_getitem']);
+			$filter = new JRegistry;
+			$filter->loadArray($data['filter']);
+			$data['filter'] = (string) $filter;
+		}
+		elseif (!isset($data['filter']))
+		{
+			// Set the empty filter to data
+			$data['filter'] = '';
+		}
+
+		// Set the where items to data.
+		if (isset($data['where']) && is_array($data['where']))
+		{
+			$where = new JRegistry;
+			$where->loadArray($data['where']);
+			$data['where'] = (string) $where;
+		}
+		elseif (!isset($data['where']))
+		{
+			// Set the empty where to data
+			$data['where'] = '';
+		}
+
+		// Set the order items to data.
+		if (isset($data['order']) && is_array($data['order']))
+		{
+			$order = new JRegistry;
+			$order->loadArray($data['order']);
+			$data['order'] = (string) $order;
+		}
+		elseif (!isset($data['order']))
+		{
+			// Set the empty order to data
+			$data['order'] = '';
+		}
+
+		// Set the global items to data.
+		if (isset($data['global']) && is_array($data['global']))
+		{
+			$global = new JRegistry;
+			$global->loadArray($data['global']);
+			$data['global'] = (string) $global;
+		}
+		elseif (!isset($data['global']))
+		{
+			// Set the empty global to data
+			$data['global'] = '';
+		}
+
+		// Set the join_db_table items to data.
+		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
+		{
+			$join_db_table = new JRegistry;
+			$join_db_table->loadArray($data['join_db_table']);
+			$data['join_db_table'] = (string) $join_db_table;
+		}
+		elseif (!isset($data['join_db_table']))
+		{
+			// Set the empty join_db_table to data
+			$data['join_db_table'] = '';
+		}
+
+		// Set the join_view_table items to data.
+		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
+		{
+			$join_view_table = new JRegistry;
+			$join_view_table->loadArray($data['join_view_table']);
+			$data['join_view_table'] = (string) $join_view_table;
+		}
+		elseif (!isset($data['join_view_table']))
+		{
+			// Set the empty join_view_table to data
+			$data['join_view_table'] = '';
 		}
 
 		// Set the php_custom_get string to base64 string.
 		if (isset($data['php_custom_get']))
 		{
 			$data['php_custom_get'] = base64_encode($data['php_custom_get']);
+		}
+
+		// Set the php_before_getitem string to base64 string.
+		if (isset($data['php_before_getitem']))
+		{
+			$data['php_before_getitem'] = base64_encode($data['php_before_getitem']);
 		}
 
 		// Set the php_after_getitem string to base64 string.

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 84 of this MVC
-	@build			4th May, 2017
+	@version		@update number 94 of this MVC
+	@build			27th September, 2017
 	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		dynamic_gets.php
@@ -321,10 +321,10 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 							continue;
 						}
 
-						// decode php_before_getitem
-						$item->php_before_getitem = base64_decode($item->php_before_getitem);
 						// decode php_custom_get
 						$item->php_custom_get = base64_decode($item->php_custom_get);
+						// decode php_before_getitem
+						$item->php_before_getitem = base64_decode($item->php_before_getitem);
 						// decode php_after_getitem
 						$item->php_after_getitem = base64_decode($item->php_after_getitem);
 						// decode php_getlistquery

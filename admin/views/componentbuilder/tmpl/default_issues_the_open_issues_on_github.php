@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.5
-	@build			20th September, 2017
+	@version		2.5.6
+	@build			6th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		gettable_under.php
+	@subpackage		default_issues_the_open_issues_on_github.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -24,18 +24,7 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-
-defined('_JEXEC') or die('Restricted access');
-
-$form = $displayData->getForm();
-
-$fields = array(
-	'not_required'
-);
+defined('_JEXEC') or die('Restricted access'); 
 
 ?>
-<div class="form-inline form-inline-header">
-	<?php foreach($fields as $field){
-		echo $form->renderField($field);
-	} ?>
-</div>
+<?php echo $this->github->openissues; ?>

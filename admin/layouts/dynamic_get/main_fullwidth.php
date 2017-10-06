@@ -10,11 +10,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.5
-	@build			20th September, 2017
+	@version		2.5.6
+	@build			6th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		default_closed_issues_the_closed_issues_on_github.php
+	@subpackage		main_fullwidth.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -24,7 +24,25 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
+
+defined('_JEXEC') or die('Restricted access');
+
+$form = $displayData->getForm();
+
+$fields = $displayData->get('fields') ?: array(
+	'php_custom_get'
+);
 
 ?>
-<?php echo $this->github->closedissues; ?>
+<div class="form-vertical">
+<?php foreach($fields as $field): ?>
+    <div class="control-group">
+        <div class="control-label">
+            <?php echo $form->getLabel($field); ?>
+        </div>
+        <div class="controls">
+            <?php echo $form->getInput($field); ?>
+        </div>
+    </div>
+<?php endforeach; ?>
+</div>

@@ -887,6 +887,17 @@ class Get
 			unset($old_component);
 		}
 
+		// add_javascript
+		if ($component->add_javascript == 1)
+		{
+			$this->customScriptBuilder['component_js'] = base64_decode($component->javascript);
+		}
+		else
+		{
+			$this->customScriptBuilder['component_js'] = '';
+		}
+		unset($component->javascript);
+
 		// add_css
 		if ($component->add_css == 1)
 		{
@@ -897,6 +908,7 @@ class Get
 			$this->customScriptBuilder['component_css'] = '';
 		}
 		unset($component->css);
+		
 		// set the lang target
 		$this->lang = 'admin';
 		// add PHP in ADMIN
@@ -1184,6 +1196,19 @@ class Get
 			}
 			$this->customScriptBuilder['token'][$name_single] = false;
 			$this->customScriptBuilder['token'][$name_list] = false;
+			// set some placeholders
+			$this->placeholders['###view###'] = ComponentbuilderHelper::safeString($name_single);
+			$this->placeholders['###views###'] = ComponentbuilderHelper::safeString($name_list);
+			$this->placeholders['###View###'] = ComponentbuilderHelper::safeString($name_single, 'F');
+			$this->placeholders['###Views###'] = ComponentbuilderHelper::safeString($name_list, 'F');
+			$this->placeholders['###VIEW###'] = ComponentbuilderHelper::safeString($name_single, 'U');
+			$this->placeholders['###VIEWS###'] = ComponentbuilderHelper::safeString($name_list, 'U');
+			$this->placeholders['[[[view]]]'] = $this->placeholders['###view###'];
+			$this->placeholders['[[[views]]]'] = $this->placeholders['###views###'];
+			$this->placeholders['[[[View]]]'] = $this->placeholders['###View###'];
+			$this->placeholders['[[[Views]]]'] = $this->placeholders['###Views###'];
+			$this->placeholders['[[[VIEW]]]'] = $this->placeholders['###VIEW###'];
+			$this->placeholders['[[[VIEWS]]]'] = $this->placeholders['###VIEWS###'];
 			// load the values form params
 			$permissions		= json_decode($view->addpermissions,true);
 			unset($view->addpermissions);
@@ -1537,6 +1562,19 @@ class Get
 					unset($view->sql);
 				}
 			}
+			// clear placeholders
+			unset($this->placeholders['###view###']);
+			unset($this->placeholders['###views###']);
+			unset($this->placeholders['###View###']);
+			unset($this->placeholders['###Views###']);
+			unset($this->placeholders['###VIEW###']);
+			unset($this->placeholders['###VIEWS###']);
+			unset($this->placeholders['[[[view]]]']);
+			unset($this->placeholders['[[[views]]]']);
+			unset($this->placeholders['[[[View]]]']);
+			unset($this->placeholders['[[[Views]]]']);
+			unset($this->placeholders['[[[VIEW]]]']);
+			unset($this->placeholders['[[[VIEWS]]]']);
 			// store this view to class object
 			$this->_adminViewData[$id] = $view;
 		}
@@ -1617,7 +1655,7 @@ class Get
 		$main_get = $this->setGetData(array($view->main_get),$view->code);
 		$view->main_get = $main_get[0];
 		// set the custom_get data
-		$view->custom_get = $this->setGetData(json_decode($view->custom_get,true),$view->code);
+		$view->custom_get = $this->setGetData(json_decode($view->custom_get, true),$view->code);
 		// set array adding array of scripts
 		$addArray = array('php_view','php_jview','php_jview_display','php_document','js_document','css_document','css');
 		foreach ($addArray as $scripter)
@@ -1932,7 +1970,7 @@ class Get
 	 * @return  oject the get dynamicGet data
 	 * 
 	 */
-	public function setGetData($ids,$view_code)
+	public function setGetData($ids, $view_code)
 	{
 		if (ComponentbuilderHelper::checkArray($ids))
 		{
@@ -2023,14 +2061,14 @@ class Get
 						{
 							case 1:
 							// set the view data
-							$result->main_get[0]['selection'] = $this->setDataSelection($result->key,$view_code,$result->view_selection,$result->view_table_main,'a','','view');
+							$result->main_get[0]['selection'] = $this->setDataSelection($result->key, $view_code, $result->view_selection, $result->view_table_main, 'a', '', 'view');
 							$result->main_get[0]['as'] = 'a';
 							$result->main_get[0]['key'] = $result->key;
 							unset($result->view_selection);
 							break;
 							case 2:
 							// set the database data
-							$result->main_get[0]['selection'] = $this->setDataSelection($result->key,$view_code,$result->db_selection,$result->db_table_main,'a','','db');
+							$result->main_get[0]['selection'] = $this->setDataSelection($result->key, $view_code, $result->db_selection, $result->db_table_main, 'a', '', 'db');
 							$result->main_get[0]['as'] = 'a';
 							$result->main_get[0]['key'] = $result->key;
 							unset($result->db_selection);
@@ -2043,205 +2081,147 @@ class Get
 							break;
 						}
 						// set join_view_table details
-						$join_view_table = json_decode($result->join_view_table,true);
-						unset($result->join_view_table);
-						$result->join_view_table = array();
-						if (ComponentbuilderHelper::checkArray($join_view_table))
+						$result->join_view_table = json_decode($result->join_view_table, true);
+						if (ComponentbuilderHelper::checkArray($result->join_view_table))
 						{
-							foreach ($join_view_table as $option => $values)
+							foreach ($result->join_view_table as $nr => &$option)
 							{
-								foreach ($values as $nr => $value)
+								if (ComponentbuilderHelper::checkString($option['selection']))
 								{
-									if (ComponentbuilderHelper::checkString($value))
+									// convert the type
+									$option['type']		= $typeArray[$option['type']];
+									// convert the operator
+									$option['operator']	= $operatorArray[$option['operator']];
+									// get the on field values
+									$on_field	= array(); // array(on_field_as, on_field)
+									$on_field	= array_map('trim', explode('.',$option['on_field']));
+									// get the join field values
+									$join_field	= array(); // array(join_field_as, join_field) 
+									$join_field	= array_map('trim', explode('.',$option['join_field']));
+									$option['selection'] =
+									$this->setDataSelection($result->key, $view_code, $option['selection'], $option['view_table'], $option['as'], $option['row_type'], 'view');
+									$option['key'] = $result->key;
+									// load to the getters
+									if ($option['row_type'] == 1)
 									{
-										if ($option === 'selection')
+										$result->main_get[] = $option;
+										if ($on_field[0] === 'a')
 										{
-											$on_field_as = '';
-											$on_field = '';
-											list($on_field_as,$on_field) = array_map('trim', explode('.',$result->join_view_table[$nr]['on_field']));
-											$join_field_as = '';
-											$join_field = '';
-											list($join_field_as,$join_field) = array_map('trim', explode('.',$result->join_view_table[$nr]['join_field']));
-											$result->join_view_table[$nr][$option] =
-											$this->setDataSelection($result->key,$view_code,$value,$result->join_view_table[$nr]['view_table'],$result->join_view_table[$nr]['as'],$result->join_view_table[$nr]['row_type'],'view');
-											$result->join_view_table[$nr]['key'] = $result->key;
-											if ($result->join_view_table[$nr]['row_type'] == 1)
-											{
-												$result->main_get[] = $result->join_view_table[$nr];
-												if ($on_field_as === 'a')
-												{
-													$this->siteMainGet[$this->target][$view_code][$result->join_view_table[$nr]['as']] = $result->join_view_table[$nr]['as'];
-												}
-												else
-												{
-													$this->siteDynamicGet[$this->target][$view_code][$result->join_view_table[$nr]['as']][$join_field] = $on_field_as;
-												}
-											}
-											elseif ($result->join_view_table[$nr]['row_type'] == 2)
-											{
-												$result->custom_get[] = $result->join_view_table[$nr];
-												if ($on_field_as != 'a')
-												{
-													$this->siteDynamicGet[$this->target][$view_code][$result->join_view_table[$nr]['as']][$join_field] = $on_field_as;
-												}
-											}
-											unset($result->join_view_table[$nr]);
+											$this->siteMainGet[$this->target][$view_code][$option['as']] = $option['as'];
 										}
 										else
 										{
-											if ($option === 'type')
-											{
-												$value = $typeArray[$value];
-											}
-											if ($option === 'operator')
-											{
-												$value = $operatorArray[$value];
-											}
-											$result->join_view_table[$nr][$option] = $value;
+											$this->siteDynamicGet[$this->target][$view_code][$option['as']][$join_field[1]] = $on_field[0];
+										}
+									}
+									elseif ($option['row_type'] == 2)
+									{
+										$result->custom_get[] = $option;
+										if ($on_field[0] != 'a')
+										{
+											$this->siteDynamicGet[$this->target][$view_code][$option['as']][$join_field[1]] = $on_field[0];
 										}
 									}
 								}
+								unset($result->join_view_table[$nr]);
 							}
 						}
 						unset($result->join_view_table);
 						// set join_db_table details
-						$join_db_table = json_decode($result->join_db_table,true);
-						unset($result->join_db_table);
-						$result->join_db_table = array();
-						if (ComponentbuilderHelper::checkArray($join_db_table))
+						$result->join_db_table = json_decode($result->join_db_table, true);
+						if (ComponentbuilderHelper::checkArray($result->join_db_table))
 						{
-							foreach ($join_db_table as $option => $values)
+							foreach ($result->join_db_table as $nr => &$option1)
 							{
-								foreach ($values as $nr => $value)
+								if (ComponentbuilderHelper::checkString($option1['selection']))
 								{
-									if (ComponentbuilderHelper::checkString($value))
+									// convert the type
+									$option1['type']	= $typeArray[$option1['type']];
+									// convert the operator
+									$option1['operator']	= $operatorArray[$option1['operator']];
+									// get the on field values
+									$on_field	= array(); // array(on_field_as, on_field)
+									$on_field	= array_map('trim', explode('.',$option1['on_field']));
+									// get the join field values
+									$join_field	= array(); // array(join_field_as, join_field) 
+									$join_field	= array_map('trim', explode('.',$option1['join_field']));
+									$option1['selection'] =
+									$this->setDataSelection($result->key, $view_code, $value, $option1['db_table'], $option1['as'], $option1['row_type'], 'db');
+									$option1['key'] = $result->key;
+									// load to the getters
+									if ($option1['row_type'] == 1)
 									{
-										if ($option === 'selection')
+										$result->main_get[] = $option1;
+										if ($on_field[0] === 'a')
 										{
-											$on_field_as = '';
-											$on_field = '';
-											list($on_field_as,$on_field) = array_map('trim', explode('.',$result->join_db_table[$nr]['on_field']));
-											$join_field_as = '';
-											$join_field = '';
-											list($join_field_as,$join_field) = array_map('trim', explode('.',$result->join_db_table[$nr]['join_field']));
-											$result->join_db_table[$nr][$option] =
-											$this->setDataSelection($result->key,$view_code,$value,$result->join_db_table[$nr]['db_table'],$result->join_db_table[$nr]['as'],$result->join_db_table[$nr]['row_type'],'db');
-											$result->join_db_table[$nr]['key'] = $result->key;
-											if ($result->join_db_table[$nr]['row_type'] == 1)
-											{
-												$result->main_get[] = $result->join_db_table[$nr];
-												if ($on_field_as === 'a')
-												{
-													$this->siteMainGet[$this->target][$view_code][$result->join_db_table[$nr]['as']] = $result->join_db_table[$nr]['as'];
-												}
-												else
-												{
-													$this->siteDynamicGet[$this->target][$view_code][$result->join_db_table[$nr]['as']][$join_field] = $on_field_as;
-												}
-											}
-											elseif ($result->join_db_table[$nr]['row_type'] == 2)
-											{
-												$result->custom_get[] = $result->join_db_table[$nr];
-												if ($on_field_as != 'a')
-												{
-													$this->siteDynamicGet[$this->target][$view_code][$result->join_db_table[$nr]['as']][$join_field] = $on_field_as;
-												}
-											}
-											unset($result->join_db_table[$nr]);
+											$this->siteMainGet[$this->target][$view_code][$option1['as']] = $option1['as'];
 										}
 										else
 										{
-											if ($option === 'type')
-											{
-												$value = $typeArray[$value];
-											}
-											if ($option === 'operator')
-											{
-												$value = $operatorArray[$value];
-											}
-											$result->join_db_table[$nr][$option] = $value;
+											$this->siteDynamicGet[$this->target][$view_code][$option1['as']][$join_field[1]] = $on_field[0];
+										}
+									}
+									elseif ($option1['row_type'] == 2)
+									{
+										$result->custom_get[] = $option1;
+										if ($on_field[0] != 'a')
+										{
+											$this->siteDynamicGet[$this->target][$view_code][$option1['as']][$join_field[1]] = $on_field[0];
 										}
 									}
 								}
+								unset($result->join_db_table[$nr]);
 							}
 						}
 						unset($result->join_db_table);
 						// set filter details
-						$filter = json_decode($result->filter,true);
-						unset($result->filter);
-						$result->filter = array();
-						if (ComponentbuilderHelper::checkArray($filter))
+						$result->filter = json_decode($result->filter, true);
+						if (ComponentbuilderHelper::checkArray($result->filter))
 						{
-							foreach ($filter as $option => $values)
+							foreach ($result->filter as $nr => &$option2)
 							{
-								foreach ($values as $nr => $value)
+								if (isset($option2['operator']))
 								{
-									if (ComponentbuilderHelper::checkString($value))
-									{
-										if ($option === 'operator')
-										{
-											$value = $operatorArray[$value];
-											$result->filter[$nr]['key'] = $result->key;
-										}
-										$result->filter[$nr][$option] = $value;
-									}
+									$option2['operator'] = $operatorArray[$option2['operator']];
+									$option2['key'] = $result->key;
 								}
-							}
-						}
-						// set global details
-						$global = json_decode($result->global,true);
-						unset($result->global);
-						$result->global = array();
-						if (ComponentbuilderHelper::checkArray($global))
-						{
-							foreach ($global as $option => $values)
-							{
-								foreach ($values as $nr => $value)
+								else
 								{
-									if (ComponentbuilderHelper::checkString($value))
-									{
-										$result->global[$nr][$option] = $value;
-									}
-								}
-							}
-						}
-						// set order details
-						$order = json_decode($result->order,true);
-						unset($result->order);
-						$result->order = array();
-						if (ComponentbuilderHelper::checkArray($order))
-						{
-							foreach ($order as $option => $values)
-							{
-								foreach ($values as $nr => $value)
-								{
-									if (ComponentbuilderHelper::checkString($value))
-									{
-										$result->order[$nr][$option] = $value;
-									}
+									unset($result->filter[$nr]);
 								}
 							}
 						}
 						// set where details
-						$where = json_decode($result->where,true);
-						unset($result->where);
-						$result->where = array();
-						if (ComponentbuilderHelper::checkArray($where))
+						$result->where = json_decode($result->where, true);
+						if (ComponentbuilderHelper::checkArray($result->where))
 						{
-							foreach ($where as $option => $values)
+							foreach ($result->where as $nr => &$option3)
 							{
-								foreach ($values as $nr => $value)
+								if (isset($option3['operator']))
 								{
-									if (ComponentbuilderHelper::checkString($value))
-									{
-										if ($option === 'operator')
-										{
-											$value = $operatorArray[$value];
-										}
-										$result->where[$nr][$option] = $value;
-									}
+									$option3['operator'] = $operatorArray[$option3['operator']];
+								}
+								else
+								{
+									unset($result->where[$nr]);
 								}
 							}
+						}
+						else
+						{
+							unset($result->where);
+						}
+						// set order details
+						$result->order = json_decode($result->order, true);
+						if (!ComponentbuilderHelper::checkArray($result->order))
+						{
+							unset($result->order);
+						}
+						// set global details
+						$result->global = json_decode($result->global, true);
+						if (!ComponentbuilderHelper::checkArray($result->global))
+						{
+							unset($result->global);
 						}
 					}
 					return $results;
@@ -2688,7 +2668,7 @@ class Get
 	 * @return  array the select query
 	 * 
 	 */
-	public function setDataSelection($method_key,$view_code,$string,$asset,$as,$row_type,$type)
+	public function setDataSelection($method_key, $view_code, $string, $asset, $as, $row_type, $type)
 	{
 		if (ComponentbuilderHelper::checkString($string))
 		{
@@ -3257,7 +3237,7 @@ class Get
 			}
 			// check what type of place holders we should load here
 			$placeholderType = (int) $item['comment_type'].'2';
-			if (stripos($item['code'], '[[[view') !== false || stripos($item['code'], '[[[sview') !== false)
+			if (stripos($item['code'], '[[[view') !== false || stripos($item['code'], '[[[sview') !== false || stripos($item['code'], '[[[arg') !== false)
 			{
 				// if view is being set dynamicly then we can't update this code via IDE (TODO)
 				$placeholderType = 3;

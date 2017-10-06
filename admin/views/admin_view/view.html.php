@@ -71,10 +71,10 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vxyfields		= $this->get('Vxyfields');
+		$this->vxzfields		= $this->get('Vxzfields');
 
 		// Get Linked view data
-		$this->vxzlinked_components		= $this->get('Vxzlinked_components');
+		$this->vyalinked_components		= $this->get('Vyalinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();
