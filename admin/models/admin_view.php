@@ -310,7 +310,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxyfields()
+	public function getVxzfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -379,13 +379,13 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxyfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxzfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxyfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxzfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxyfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxzfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxyfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxzfields($item->store, 'store');
 				}
 			}
 
@@ -425,7 +425,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationVxyfields($value,$name)
+	public function selectionTranslationVxzfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
@@ -503,7 +503,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxzlinked_components()
+	public function getVyalinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();

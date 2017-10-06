@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.5
-	@build			20th September, 2017
+	@version		2.5.6
+	@build			6th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -49,15 +49,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('tableColumns', 'ajax');
 		$this->registerTask('fieldSelectOptions', 'ajax');
 		$this->registerTask('getImportScripts', 'ajax');
-		$this->registerTask('layoutDetails', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
-		$this->registerTask('snippetDetails', 'ajax');
-		$this->registerTask('dynamicValues', 'ajax');
-		$this->registerTask('dynamicFormDetails', 'ajax');
+		$this->registerTask('getLayoutDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
 		$this->registerTask('viewTableColumns', 'ajax');
+		$this->registerTask('getDynamicValues', 'ajax');
 		$this->registerTask('checkFunctionName', 'ajax');
 		$this->registerTask('usedin', 'ajax');
+		$this->registerTask('snippetDetails', 'ajax');
 		$this->registerTask('fieldOptions', 'ajax');
 		$this->registerTask('getButton', 'ajax');
 	}
@@ -340,44 +339,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
-				case 'layoutDetails':
-					try
-					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$idValue = $jinput->get('id', null, 'INT');
-						if($idValue && $user->id != 0)
-						{
-							$result = $this->getModel('ajax')->getLayoutDetails($idValue);
-						}
-						else
-						{
-							$result = false;
-						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
-						{
-							echo $callback . "(".json_encode($result).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($result);
-						}
-						else
-						{
-							echo "(".json_encode($result).");";
-						}
-					}
-					catch(Exception $e)
-					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
-						{
-							echo $callback."(".json_encode($e).");";
-						}
-						else
-						{
-							echo "(".json_encode($e).");";
-						}
-					}
-				break;
 				case 'templateDetails':
 					try
 					{
@@ -416,91 +377,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
-				case 'snippetDetails':
+				case 'getLayoutDetails':
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getSnippetDetails($idValue);
-						}
-						else
-						{
-							$result = false;
-						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
-						{
-							echo $callback . "(".json_encode($result).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($result);
-						}
-						else
-						{
-							echo "(".json_encode($result).");";
-						}
-					}
-					catch(Exception $e)
-					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
-						{
-							echo $callback."(".json_encode($e).");";
-						}
-						else
-						{
-							echo "(".json_encode($e).");";
-						}
-					}
-				break;
-				case 'dynamicValues':
-					try
-					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$idValue = $jinput->get('id', NULL, 'INT');
-						$viewValue = $jinput->get('view', NULL, 'WORD');
-						if($idValue && $viewValue && $user->id != 0)
-						{
-							$result = $this->getModel('ajax')->getDynamicValues($idValue, $viewValue);
-						}
-						else
-						{
-							$result = false;
-						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
-						{
-							echo $callback . "(".json_encode($result).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($result);
-						}
-						else
-						{
-							echo "(".json_encode($result).");";
-						}
-					}
-					catch(Exception $e)
-					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
-						{
-							echo $callback."(".json_encode($e).");";
-						}
-						else
-						{
-							echo "(".json_encode($e).");";
-						}
-					}
-				break;
-				case 'dynamicFormDetails':
-					try
-					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$idValue = $jinput->get('id', NULL, 'INT');
-						if($idValue && $user->id != 0)
-						{
-							$result = $this->getModel('ajax')->getDynamicFormDetails($idValue);
+							$result = $this->getModel('ajax')->getLayoutDetails($idValue);
 						}
 						else
 						{
@@ -611,6 +495,45 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
+				case 'getDynamicValues':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						$viewValue = $jinput->get('view', NULL, 'WORD');
+						if($idValue && $viewValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getDynamicValues($idValue, $viewValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
 				case 'checkFunctionName':
 					try
 					{
@@ -660,6 +583,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($functioNameValue && $idValue && $targetValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->usedin($functioNameValue, $idValue, $targetValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'snippetDetails':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						if($idValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getSnippetDetails($idValue);
 						}
 						else
 						{

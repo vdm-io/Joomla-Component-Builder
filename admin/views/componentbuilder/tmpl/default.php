@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.5
-	@build			20th September, 2017
+	@version		2.5.6
+	@build			6th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default.php
@@ -52,24 +52,27 @@ JHtml::_('behavior.tooltip');
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'open_issues', JText::_('Open Issues', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'wiki', JText::_('Wiki', true)); ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'open_issues_accordian', array('active' => 'one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'open_issues_accordian', 'The open issues on GitHub', 'one'); ?>
-						<?php echo $this->loadTemplate('open_issues_the_open_issues_on_github');?>
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'wiki_accordian', array('active' => 'wiki_one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'wiki_accordian', 'Tutorials', 'wiki_one'); ?>
+						<?php echo $this->loadTemplate('wiki_tutorials');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'closed_issues', JText::_('Closed Issues', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'issues', JText::_('Issues', true)); ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'closed_issues_accordian', array('active' => 'one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'closed_issues_accordian', 'The closed issues on GitHub', 'one'); ?>
-						<?php echo $this->loadTemplate('closed_issues_the_closed_issues_on_github');?>
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'issues_accordian', array('active' => 'issues_one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'issues_accordian', 'The open issues on GitHub', 'issues_one'); ?>
+						<?php echo $this->loadTemplate('issues_the_open_issues_on_github');?>
+					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'issues_accordian', 'The closed issues on GitHub', 'issues_two'); ?>
+						<?php echo $this->loadTemplate('issues_the_closed_issues_on_github');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
@@ -79,8 +82,8 @@ JHtml::_('behavior.tooltip');
 		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'releases', JText::_('Releases', true)); ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'releases_accordian', array('active' => 'one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'releases_accordian', 'Information', 'one'); ?>
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'releases_accordian', array('active' => 'releases_one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'releases_accordian', 'Information', 'releases_one'); ?>
 						<?php echo $this->loadTemplate('releases_information');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
@@ -91,8 +94,8 @@ JHtml::_('behavior.tooltip');
 		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'vast_development_method', JText::_('Vast Development Method', true)); ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'vast_development_method_accordian', array('active' => 'one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'vast_development_method_accordian', 'Notice Board', 'one'); ?>
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'vast_development_method_accordian', array('active' => 'vast_development_method_one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'vast_development_method_accordian', 'Notice Board', 'vast_development_method_one'); ?>
 						<?php echo $this->loadTemplate('vast_development_method_notice_board');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
@@ -103,8 +106,8 @@ JHtml::_('behavior.tooltip');
 		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'readme', JText::_('Readme', true)); ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'readme_accordian', array('active' => 'one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'readme_accordian', 'Information', 'one'); ?>
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'readme_accordian', array('active' => 'readme_one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'readme_accordian', 'Information', 'readme_one'); ?>
 						<?php echo $this->loadTemplate('readme_information');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>

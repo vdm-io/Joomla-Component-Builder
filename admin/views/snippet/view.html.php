@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 16 of this MVC
-	@build			20th October, 2016
+	@version		@update number 17 of this MVC
+	@build			27th September, 2017
 	@created		19th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -192,7 +192,9 @@ class ComponentbuilderViewSnippet extends JViewLegacy
 		$isNew = ($this->item->id < 1);
 		$document = JFactory::getDocument();
 		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_SNIPPET_NEW' : 'COM_COMPONENTBUILDER_SNIPPET_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/snippet.css"); 
+		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/snippet.css");
+		// Add Ajax Token
+		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
 		$document->addScript(JURI::root() . $this->script);
 		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/snippet/submitbutton.js"); 
 		JText::script('view not acceptable. Error');

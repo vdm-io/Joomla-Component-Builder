@@ -11772,14 +11772,14 @@ class Interpretation extends Fields
 				$display[] = PHP_EOL."\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', '".$alias."', JText::_('".$tabname."', true)); ?>";
 				$display[] = "\t\t".'<div class="row-fluid">';
 				$display[] = $tab.'<div class="span12">';
-				$display[] = $tab."\t<?php  echo JHtml::_('bootstrap.startAccordion', '".$alias."_accordian', array('active' => 'one')); ?>";
+				$display[] = $tab."\t<?php  echo JHtml::_('bootstrap.startAccordion', '".$alias."_accordian', array('active' => '".$alias."_one')); ?>";
 				$slidecounter = 1;
 				foreach($accordians as $accordianname => $html)
 				{
 					$ac_alias = ComponentbuilderHelper::safeString($accordianname);
 					$counterName = ComponentbuilderHelper::safeString($slidecounter);
 					$tempName = $alias.'_'.$ac_alias;
-					$display[] = $tab."\t\t<?php  echo JHtml::_('bootstrap.addSlide', '".$alias."_accordian', '".$accordianname."', '".$counterName."'); ?>";
+					$display[] = $tab."\t\t<?php  echo JHtml::_('bootstrap.addSlide', '".$alias."_accordian', '".$accordianname."', '".$alias."_".$counterName."'); ?>";
 					$display[] = $tab."\t\t\t<?php echo \$this->loadTemplate('".$tempName."');?>";
 					$display[] = $tab."\t\t<?php  echo JHtml::_('bootstrap.endSlide'); ?>";
 					$slidecounter++;

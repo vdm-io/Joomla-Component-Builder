@@ -71,7 +71,7 @@ class ComponentbuilderViewField extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->wablinked_admin_views		= $this->get('Wablinked_admin_views');
+		$this->waclinked_admin_views		= $this->get('Waclinked_admin_views');
 
 		// Set the toolbar
 		$this->addToolBar();

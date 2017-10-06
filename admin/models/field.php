@@ -141,7 +141,7 @@ class ComponentbuilderModelField extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWablinked_admin_views()
+	public function getWaclinked_admin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();

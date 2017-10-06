@@ -1,15 +1,15 @@
 # Joomla Component Builder (JCB)
 [![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases) [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
 
-This is a [Joomla 3.x](http://www.joomla.org/) component. [__See In Action__](https://youtu.be/1KBBtQUxMTc)
+This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://youtu.be/1KBBtQUxMTc)
 
  ![Component Builder image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/vdm-component.jpg "The Component Builder")
 
-The Component Builder for [Joomla](http://www.joomla.org/) that is highly advanced, truly able to build extremely complex components in a fraction of the time.
+The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) that is highly advanced, truly able to build extremely complex components in a fraction of the time.
 
-Whether you're a seasoned [Joomla](http://www.joomla.org/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
+Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.5.5) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.5.6) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://youtu.be/1KBBtQUxMTc)
 
@@ -110,12 +110,12 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 20th September, 2017
-+ *Version*: 2.5.5
++ *Last Build*: 6th October, 2017
++ *Version*: 2.5.6
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **120417**
-+ *File count*: **698**
++ *Line count*: **120884**
++ *File count*: **702**
 + *Folder count*: **121**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).

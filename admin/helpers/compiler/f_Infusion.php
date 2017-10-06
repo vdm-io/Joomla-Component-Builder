@@ -143,6 +143,11 @@ class Infusion extends Interpretation
 			$this->setConfigFieldsets(1);
 			$this->lang = $keepLang;
 			
+			// ###ADMINJS###
+			$this->fileContentStatic['###ADMINJS###'] = $this->setPlaceholders($this->customScriptBuilder['component_js'], $this->placeholders);
+			// ###SITEJS###
+			$this->fileContentStatic['###SITEJS###'] = $this->setPlaceholders($this->customScriptBuilder['component_js'], $this->placeholders);
+			
 			// ###ADMINCSS###
 			$this->fileContentStatic['###ADMINCSS###'] = $this->setPlaceholders($this->customScriptBuilder['component_css'], $this->placeholders);
 			// ###SITECSS###

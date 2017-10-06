@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 378 of this MVC
-	@build			18th September, 2017
+	@version		@update number 385 of this MVC
+	@build			6th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -71,16 +71,16 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vwmadmin_views		= $this->get('Vwmadmin_views');
+		$this->vwnadmin_views		= $this->get('Vwnadmin_views');
 
 		// Get Linked view data
-		$this->vwncustom_admin_views		= $this->get('Vwncustom_admin_views');
+		$this->vwocustom_admin_views		= $this->get('Vwocustom_admin_views');
 
 		// Get Linked view data
-		$this->vwosite_views		= $this->get('Vwosite_views');
+		$this->vwpsite_views		= $this->get('Vwpsite_views');
 
 		// Get Linked view data
-		$this->vwptranslation		= $this->get('Vwptranslation');
+		$this->vwqtranslation		= $this->get('Vwqtranslation');
 
 		// Set the toolbar
 		$this->addToolBar();

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.5
-	@build			20th September, 2017
+	@version		2.5.6
+	@build			6th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		scripts_left.php

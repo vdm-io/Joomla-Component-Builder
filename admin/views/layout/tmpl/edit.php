@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 77 of this MVC
-	@build			30th May, 2017
+	@version		@update number 81 of this MVC
+	@build			27th September, 2017
 	@created		18th May, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -139,18 +139,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_vvvvvys function
+// #jform_add_php_view listeners for add_php_view_vvvvvyt function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_vvvvvys = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvys(add_php_view_vvvvvys);
+	var add_php_view_vvvvvyt = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyt(add_php_view_vvvvvyt);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_vvvvvys = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvys(add_php_view_vvvvvys);
+	var add_php_view_vvvvvyt = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyt(add_php_view_vvvvvyt);
 
 });
 
@@ -160,7 +160,7 @@ jQuery(function() {
         jQuery(this).selText().addClass("selected");
     });
 });
-
+			
 jQuery.fn.selText = function() {
     var obj = this[0];
     if (jQuery.browser.msie) {
@@ -178,7 +178,7 @@ jQuery.fn.selText = function() {
         selection.setBaseAndExtent(obj, 0, obj, 1);
     }
     return this;
-}
+}			
 
 jQuery('#adminForm').on('change', '#jform_snippet',function (e) {
 	e.preventDefault();
@@ -208,7 +208,6 @@ jQuery(document).ready(function() {
 
 jQuery(document).ready(function() {
 	// get type value
-	getDynamicFormDetails(9999);
 	getLayoutDetails(<?php echo ($this->item->id) ? $this->item->id:9999; ?>);
 });
 </script>

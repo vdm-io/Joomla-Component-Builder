@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.5
-	@build			20th September, 2017
+	@version		2.5.6
+	@build			6th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		libs_helpers_fullwidth.php
@@ -33,8 +33,6 @@ $fields = $displayData->get('fields') ?: array(
 	'creatuserhelper',
 	'adduikit',
 	'addfootable',
-	'add_css',
-	'css',
 	'add_email_helper',
 	'add_php_helper_both',
 	'php_helper_both',
@@ -45,7 +43,11 @@ $fields = $displayData->get('fields') ?: array(
 	'add_php_helper_site',
 	'php_helper_site',
 	'add_site_event',
-	'php_site_event'
+	'php_site_event',
+	'add_javascript',
+	'javascript',
+	'add_css',
+	'css'
 );
 
 ?>

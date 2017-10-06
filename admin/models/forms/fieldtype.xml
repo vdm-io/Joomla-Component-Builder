@@ -185,51 +185,36 @@
 					message="Error! Please add value/example here."
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_HINT"
 				/>
-				<!-- Adjustable Field. Type: Radio. (joomla) -->
+				<!-- Adjustable Field. Type: Checkbox. (joomla) -->
 				<field
-					type="radio"
+					type="checkbox"
 					name="adjustable"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_LABEL"
+					value="1"
+					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_DESCRIPTION"
-					class="btn-group btn-group-yesno"
-					default="1"
-					required="false">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
-					<option value="0">
-						COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
-				</field>
-				<!-- Mandatory Field. Type: Radio. (joomla) -->
+					class="inputbox"
+				/>
+				<!-- Mandatory Field. Type: Checkbox. (joomla) -->
 				<field
-					type="radio"
+					type="checkbox"
 					name="mandatory"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_LABEL"
+					value="1"
+					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_DESCRIPTION"
-					class="btn-group btn-group-yesno"
-					default="0"
-					required="false">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
-					<option value="0">
-						COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
-				</field>
-				<!-- Translatable Field. Type: Radio. (joomla) -->
+					class="inputbox"
+				/>
+				<!-- Translatable Field. Type: Checkbox. (joomla) -->
 				<field
-					type="radio"
+					type="checkbox"
 					name="translatable"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_LABEL"
+					value="1"
+					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_DESCRIPTION"
-					class="btn-group btn-group-yesno"
-					default="0"
-					required="false">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
-					<option value="0">
-						COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
-				</field>
+					class="inputbox"
+				/>
 				<!-- Description Field. Type: Textarea. (joomla) -->
 				<field
 					type="textarea"

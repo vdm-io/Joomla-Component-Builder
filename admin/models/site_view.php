@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 51 of this MVC
-	@build			17th July, 2017
+	@version		@update number 54 of this MVC
+	@build			27th September, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		site_view.php
@@ -185,7 +185,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyulinked_components()
+	public function getVyvlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
