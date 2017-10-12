@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.6
+	@version		2.5.8
 	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -54,8 +54,6 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'joomla_components.submenu' => 'joomla_component.submenu',
 			'joomla_components.dashboard_list' => 'joomla_component.dashboard_list',
 			'joomla_component.dashboard_add' => 'joomla_component.dashboard_add',
-			'admin_views.access' => 'admin_view.access',
-			'admin_view.access' => 'admin_view.access',
 			'admin_views.submenu' => 'admin_view.submenu',
 			'admin_views.dashboard_list' => 'admin_view.dashboard_list',
 			'admin_view.dashboard_add' => 'admin_view.dashboard_add',

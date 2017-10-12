@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 43 of this MVC
-	@build			16th September, 2017
+	@version		@update number 44 of this MVC
+	@build			12th October, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		language_translations.php
@@ -195,21 +195,6 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 		{
 			$query->where('(a.published = 0 OR a.published = 1)');
 		}
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
 		// Filter by search.
 		$search = $this->getState('filter.search');
 		if (!empty($search))
@@ -261,12 +246,6 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			// From the componentbuilder_language_translation table
 			$query->from($db->quoteName('#__componentbuilder_language_translation', 'a'));
 			$query->where('a.id IN (' . implode(',',$pks) . ')');
-			// Implement View Level Access
-			if (!$user->authorise('core.options', 'com_componentbuilder'))
-			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
-			}
 
 			// Order the results by ordering
 			$query->order('a.ordering  ASC');

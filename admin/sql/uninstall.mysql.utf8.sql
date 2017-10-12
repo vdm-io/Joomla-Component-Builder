@@ -13,3 +13,5 @@ DROP TABLE IF EXISTS `#__componentbuilder_language_translation`;
 DROP TABLE IF EXISTS `#__componentbuilder_language`;
 DROP TABLE IF EXISTS `#__componentbuilder_ftp`;
 DROP TABLE IF EXISTS `#__componentbuilder_help_document`;
+DROP TABLE IF EXISTS `#__componentbuilder_admin_fields`;
+DROP TABLE IF EXISTS `#__componentbuilder_admin_fields_conditions`;

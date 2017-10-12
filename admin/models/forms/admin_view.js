@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 126 of this MVC
-	@build			11th October, 2017
+	@version		@update number 136 of this MVC
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.js
@@ -1178,9 +1178,37 @@ function isSet(val)
 
 jQuery(document).ready(function()
 {    
+	// set button
+	addButtonID('admin_fields','create_edit_buttons'); // <-- first
 	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
 	getImportScripts(valueSwitch);
+	addButtonID('admin_fields_conditions','create_edit_buttons'); // <-- second
 });
+
+function addData(result,where){
+	jQuery(where).closest('.control-group').parent().append(result);
+}
+			
+function addButtonID_server(type){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButtonID&format=json&vdm="+vastDevMod);
+	if(token.length > 0 && type.length > 0){
+		var request = 'token='+token+'&type='+type;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
+function addButtonID(type,where){
+	addButtonID_server(type).done(function(result) {
+		if(result){
+			addData(result,'#jform_'+where);
+		}
+	})
+}			
 
 function getFieldSelectOptions_server(fieldId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json";

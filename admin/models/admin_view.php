@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 126 of this MVC
-	@build			11th October, 2017
+	@version		@update number 136 of this MVC
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -65,6 +65,11 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
+
+	public function getVDM()
+	{
+		return $this->vastDevMod;
+	}
     
 	/**
 	 * Method to get a single record.
@@ -117,22 +122,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$addlinked_views = new Registry;
 				$addlinked_views->loadString($item->addlinked_views);
 				$item->addlinked_views = $addlinked_views->toArray();
-			}
-
-			if (!empty($item->addfields))
-			{
-				// Convert the addfields field to an array.
-				$addfields = new Registry;
-				$addfields->loadString($item->addfields);
-				$item->addfields = $addfields->toArray();
-			}
-
-			if (!empty($item->addconditions))
-			{
-				// Convert the addconditions field to an array.
-				$addconditions = new Registry;
-				$addconditions->loadString($item->addconditions);
-				$item->addconditions = $addconditions->toArray();
 			}
 
 			if (!empty($item->custom_button))
@@ -261,22 +250,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_display = base64_decode($item->php_import_display);
 			}
 
-			if (!empty($item->php_getitem))
+			if (!empty($item->css_view))
 			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
+				// base64 Decode css_view.
+				$item->css_view = base64_decode($item->css_view);
 			}
 
 			if (!empty($item->php_import_save))
 			{
 				// base64 Decode php_import_save.
 				$item->php_import_save = base64_decode($item->php_import_save);
-			}
-
-			if (!empty($item->css_view))
-			{
-				// base64 Decode css_view.
-				$item->css_view = base64_decode($item->css_view);
 			}
 
 			if (!empty($item->css_views))
@@ -351,11 +334,38 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_setdata = base64_decode($item->php_import_setdata);
 			}
 
+			if (!empty($item->php_getitem))
+			{
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
+			}
+
 			if (!empty($item->php_import_ext))
 			{
 				// base64 Decode php_import_ext.
 				$item->php_import_ext = base64_decode($item->php_import_ext);
 			}
+
+			
+			if (empty($item->id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $item->id;
+			}			
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('admin_view__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
+				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
+			}			
 			
 			if (!empty($item->id))
 			{
@@ -1192,32 +1202,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['addlinked_views'] = '';
 		}
 
-		// Set the addfields items to data.
-		if (isset($data['addfields']) && is_array($data['addfields']))
-		{
-			$addfields = new JRegistry;
-			$addfields->loadArray($data['addfields']);
-			$data['addfields'] = (string) $addfields;
-		}
-		elseif (!isset($data['addfields']))
-		{
-			// Set the empty addfields to data
-			$data['addfields'] = '';
-		}
-
-		// Set the addconditions items to data.
-		if (isset($data['addconditions']) && is_array($data['addconditions']))
-		{
-			$addconditions = new JRegistry;
-			$addconditions->loadArray($data['addconditions']);
-			$data['addconditions'] = (string) $addconditions;
-		}
-		elseif (!isset($data['addconditions']))
-		{
-			// Set the empty addconditions to data
-			$data['addconditions'] = '';
-		}
-
 		// Set the custom_button items to data.
 		if (isset($data['custom_button']) && is_array($data['custom_button']))
 		{
@@ -1359,22 +1343,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_import_display'] = base64_encode($data['php_import_display']);
 		}
 
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
+		// Set the css_view string to base64 string.
+		if (isset($data['css_view']))
 		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
+			$data['css_view'] = base64_encode($data['css_view']);
 		}
 
 		// Set the php_import_save string to base64 string.
 		if (isset($data['php_import_save']))
 		{
 			$data['php_import_save'] = base64_encode($data['php_import_save']);
-		}
-
-		// Set the css_view string to base64 string.
-		if (isset($data['css_view']))
-		{
-			$data['css_view'] = base64_encode($data['css_view']);
 		}
 
 		// Set the css_views string to base64 string.
@@ -1447,6 +1425,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_import_setdata']))
 		{
 			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
+		}
+
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
+		{
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_import_ext string to base64 string.

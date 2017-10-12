@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_componentbuilder/models/rules"
+	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
+>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CREATED_DATE_DESC"
+			size="22"
+
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CREATED_BY_LABEL"
+
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_VERSION_DESC"
+			size="6"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Admin_view Field. Type: Adminviews. (custom) -->
+		<field
+			type="adminviews"
+			name="admin_view"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADMIN_VIEW_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADMIN_VIEW_DESCRIPTION"
+			class="fieldMedium"
+			multiple="false"
+			required="true"
+			readonly="true"
+			button="false"
+		/>
+		<!-- Note_on_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_views" label="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_views" close="true" />
+		<!-- Addfields Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addfields"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADDFIELDS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADDFIELDS_DESCRIPTION"
+			icon="list"
+			maximum="800">
+			<form hidden="true" name="list_addfields_modal" repeat="true">
+				<!-- Field Field. Type: Fields. (custom) -->
+				<field
+					type="fields"
+					name="field"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_DESCRIPTION"
+					class="fieldMedium"
+					multiple="false"
+					required="false"
+					button="false"
+				/>
+				<!-- List Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="list"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_LIST_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_LIST_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Order_list Field. Type: Integer. (joomla) -->
+				<field
+					type="integer"
+					name="order_list"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_LIST_LABEL"
+					default="0"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_LIST_DESCRIPTION"
+					class="fieldSmall"
+					required="false"
+					first="0"
+					last="100"
+					step="1"
+				/>
+				<!-- Title Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="title"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_TITLE_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_TITLE_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Alias Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="alias"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIAS_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIAS_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Sort Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="sort"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_SORT_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_SORT_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Search Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="search"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_SEARCH_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_SEARCH_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Filter Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="filter"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_FILTER_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FILTER_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Link Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="link"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_LINK_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_LINK_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Tab Field. Type: Integer. (joomla) -->
+				<field
+					type="integer"
+					name="tab"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_TAB_LABEL"
+					default="1"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_TAB_DESCRIPTION"
+					class="fieldSmall"
+					required="false"
+					first="1"
+					last="15"
+					step="1"
+				/>
+				<!-- Alignment Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="alignment"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIGNMENT_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIGNMENT_DESCRIPTION"
+					class="fieldMedium"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_LEFT_IN_TAB</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RIGHT_IN_TAB</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_FULL_WIDTH_IN_TAB</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_ABOVE_TABS</option>
+					<option value="5">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_UNDERNEATH_TABS</option>
+					<option value="6">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_LEFT_OF_TABS</option>
+					<option value="7">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RIGHT_OF_TABS</option>
+				</field>
+				<!-- Order_edit Field. Type: Integer. (joomla) -->
+				<field
+					type="integer"
+					name="order_edit"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_EDIT_LABEL"
+					default="0"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_EDIT_DESCRIPTION"
+					class="fieldSmall"
+					required="false"
+					first="0"
+					last="100"
+					step="1"
+				/>
+				<!-- Permission Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="permission"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					required="false"
+					default="0">
+					<!-- Option Set. -->
+					<option value="0">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_NONE</option>
+					<option value=" 1">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_EDITING</option>
+				</field>
+			</form>
+		</field>
+	</fieldset>
+	
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this admin_fields"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="admin_fields"
+		/>
+	</fieldset>
+</form>

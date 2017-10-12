@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.6
+	@version		2.5.8
 	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -177,6 +177,131 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in admin_view
+			
+	protected $viewid = array();
+
+	protected function getViewID($call = 'table')
+	{
+		if (!isset($this->viewid[$call]))
+		{
+			// get the vdm key
+			$jinput = JFactory::getApplication()->input;
+			$vdm = $jinput->get('vdm', null, 'WORD');
+			if ($vdm) 
+			{
+				if ($view = ComponentbuilderHelper::get($vdm))
+				{
+					$current = (array) explode('__', $view);
+					if (ComponentbuilderHelper::checkString($current[0]) && isset($current[1]) && is_numeric($current[1]))
+					{
+						// get the view name & id
+						$this->viewid[$call] = array(
+							'a_id' => (int) $current[1],
+							'a_view' => $current[0]
+						);
+					}
+				}
+			}
+		}
+		if (isset($this->viewid[$call]))
+		{
+			return $this->viewid[$call];
+		}
+		return false;
+	}
+			
+	protected $buttonArray = array(
+				'admin_fields' => 'admins_fields',
+				'admin_fields_conditions' => 'admins_fields_conditions',
+				'language' => true);
+			
+	public function getButton($type)
+	{
+		if (isset($this->buttonArray[$type]))
+		{
+			$user = JFactory::getUser();
+			// only add if user allowed to create
+			if ($user->authorise($type.'.create', 'com_componentbuilder'))
+			{
+				// get the view name & id
+				$values = $this->getViewID();
+				// check if new item
+				$ref = '';
+				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
+				{
+					// only load referal if not new item.
+					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
+				}
+				// build the button
+				$button = '<div class="control-group">
+							<div class="control-label">
+								<label>' . ucwords($type) . '</label>
+							</div>
+							<div class="controls">	
+								<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit'.$ref.'\' })" href="javascript:void(0)" >
+								<span class="icon-new icon-white"></span> 
+									' . JText::_('COM_COMPONENTBUILDER_NEW') . '
+								</a>
+							</div>
+						</div>';
+				// return the button attached to input field
+				return $button;
+			}
+			return '';
+		}
+		return false;
+	}			
+			
+	public function getButtonID($type)
+	{
+		if (isset($this->buttonArray[$type]))
+		{
+			$user = JFactory::getUser();
+			// only add if user allowed to create
+			if ($user->authorise($type.'.create', 'com_componentbuilder'))
+			{
+				// get the view name & id
+				$values = $this->getViewID();
+				// check if new item
+				$ref = '';
+				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
+				{
+					// only load referal if not new item.
+					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
+					// get item id
+					if ($id = ComponentbuilderHelper::getVar($type, $values['a_id'], $values['a_view'], 'id'))
+					{
+						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
+						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$this->buttonArray[$type].'&amp;task='.$type.'.edit&amp;id='.$id;
+						$icon = 'icon-apply';
+					}
+					else
+					{
+						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
+						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit';
+						$icon = 'icon-new';
+					}
+					// build the button
+					$button = '<div class="control-group">
+						<div class="control-label">
+							<label>' . ComponentbuilderHelper::safeString($type, 'Ww') . '</label>
+						</div>
+						<div class="controls">	
+								<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" >
+									<span class="'.$icon.' icon-white"></span> 
+									' . $buttonText . '
+								</a>
+						</div>
+					</div>';
+					// return the button attached to input field
+					return $button;
+				}
+				return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w')) . '</div></div>';
+			}
+		}
+		return '';
+	}			
+
 	public static function getImportScripts($type)
 	{
 		// get from global helper
@@ -1006,82 +1131,6 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			// return found field options
 			return $field;
-		}
-		return false;
-	}
-
-	// Used in language_translation
-			
-	protected $viewid = array();
-
-	protected function getViewID($call = 'table')
-	{
-		if (!isset($this->viewid[$call]))
-		{
-			// get the vdm key
-			$jinput = JFactory::getApplication()->input;
-			$vdm = $jinput->get('vdm', null, 'WORD');
-			if ($vdm) 
-			{
-				if ($view = ComponentbuilderHelper::get($vdm))
-				{
-					$current = (array) explode('__', $view);
-					if (ComponentbuilderHelper::checkString($current[0]) && isset($current[1]) && is_numeric($current[1]))
-					{
-						// get the view name & id
-						$this->viewid[$call] = array(
-							'a_id' => (int) $current[1],
-							'a_view' => $current[0]
-						);
-					}
-				}
-			}
-		}
-		if (isset($this->viewid[$call]))
-		{
-			return $this->viewid[$call];
-		}
-		return false;
-	}
-			
-	protected $buttonArray = array(
-				'language' => true);
-
-	public function getButton($type)
-	{
-		if (isset($this->buttonArray[$type]))
-		{
-			$user = JFactory::getUser();
-			// only add if user allowed to create
-			if ($user->authorise($type.'.create', 'com_componentbuilder'))
-			{
-				// get the input from url
-				$jinput = JFactory::getApplication()->input;
-				// get the view name & id
-				$values = $this->getViewID();
-				// check if new item
-				$ref = '';
-				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
-				{
-					// only load referal if not new item.
-					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
-				}
-				// build the button
-				$button = '<div class="control-group">
-					<div class="control-label">
-						<label>' . ucwords($type) . '</label>
-					</div>
-					<div class="controls">	
-							<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit'.$ref.'\' })" href="javascript:void(0)" >
-								<span class="icon-new icon-white"></span> 
-								' . JText::_('COM_COMPONENTBUILDER_NEW') . '
-							</a>
-					</div>
-				</div>';
-				// return the button attached to input field
-				return $button;
-			}
-			return '';
 		}
 		return false;
 	}

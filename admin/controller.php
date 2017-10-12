@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.6
+	@version		2.5.8
 	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -102,7 +102,9 @@ class ComponentbuilderController extends JControllerLegacy
 				'language_translation' => 'language_translations',
 				'language' => 'languages',
 				'ftp' => 'ftps',
-				'help_document' => 'help_documents'
+				'help_document' => 'help_documents',
+				'admin_fields' => 'admins_fields',
+				'admin_fields_conditions' => 'admins_fields_conditions'
                                 );
                         // check if this is a list view
                         if (in_array($view,$views))

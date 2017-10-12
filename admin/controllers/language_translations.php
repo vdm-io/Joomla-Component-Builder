@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 43 of this MVC
-	@build			16th September, 2017
+	@version		@update number 44 of this MVC
+	@build			12th October, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		language_translations.php

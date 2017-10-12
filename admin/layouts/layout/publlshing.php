@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.6
+	@version		2.5.8
 	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -33,7 +33,6 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'published',
 	'ordering',
-	'access',
 	'version',
 	'hits',
 	'id'

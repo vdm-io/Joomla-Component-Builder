@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.6
+	@version		2.5.8
 	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -49,6 +49,8 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('tableColumns', 'ajax');
 		$this->registerTask('fieldSelectOptions', 'ajax');
 		$this->registerTask('getImportScripts', 'ajax');
+		$this->registerTask('getButton', 'ajax');
+		$this->registerTask('getButtonID', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
 		$this->registerTask('getLayoutDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
@@ -58,7 +60,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('usedin', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
 		$this->registerTask('fieldOptions', 'ajax');
-		$this->registerTask('getButton', 'ajax');
 	}
 
 	public function ajax()
@@ -309,6 +310,82 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($typeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getImportScripts($typeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getButton':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$typeValue = $jinput->get('type', NULL, 'WORD');
+						if($typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getButton($typeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getButtonID':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$typeValue = $jinput->get('type', NULL, 'WORD');
+						if($typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getButtonID($typeValue);
 						}
 						else
 						{
@@ -659,44 +736,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($idValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getFieldOptions($idValue);
-						}
-						else
-						{
-							$result = false;
-						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
-						{
-							echo $callback . "(".json_encode($result).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($result);
-						}
-						else
-						{
-							echo "(".json_encode($result).");";
-						}
-					}
-					catch(Exception $e)
-					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
-						{
-							echo $callback."(".json_encode($e).");";
-						}
-						else
-						{
-							echo "(".json_encode($e).");";
-						}
-					}
-				break;
-				case 'getButton':
-					try
-					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$typeValue = $jinput->get('type', NULL, 'WORD');
-						if($typeValue && $user->id != 0)
-						{
-							$result = $this->getModel('ajax')->getButton($typeValue);
 						}
 						else
 						{

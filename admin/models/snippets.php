@@ -203,21 +203,6 @@ class ComponentbuilderModelSnippets extends JModelList
 		{
 			$query->where('(a.published = 0 OR a.published = 1)');
 		}
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
 		// Filter by search.
 		$search = $this->getState('filter.search');
 		if (!empty($search))
@@ -274,12 +259,6 @@ class ComponentbuilderModelSnippets extends JModelList
 			// From the componentbuilder_snippet table
 			$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
 			$query->where('a.id IN (' . implode(',',$pks) . ')');
-			// Implement View Level Access
-			if (!$user->authorise('core.options', 'com_componentbuilder'))
-			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
-			}
 
 			// Order the results by ordering
 			$query->order('a.ordering  ASC');

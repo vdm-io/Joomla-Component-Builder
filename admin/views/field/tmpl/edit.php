@@ -89,7 +89,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php if ($this->canDo->get('admin_view.access')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'linked_admin_views', JText::_('COM_COMPONENTBUILDER_FIELD_LINKED_ADMIN_VIEWS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
@@ -99,7 +98,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php endif; ?>
 
 	<?php if ($this->canDo->get('field.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('field.edit.state') || $this->canDo->get('core.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'publishing', JText::_('COM_COMPONENTBUILDER_FIELD_PUBLISHING', true)); ?>

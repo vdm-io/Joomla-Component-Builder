@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 126 of this MVC
-	@build			11th October, 2017
+	@version		@update number 136 of this MVC
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -210,6 +210,15 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
 
 		$document->addScript(JURI::root() . $this->script);
 		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_view/submitbutton.js"); 
+		// add JavaScripts
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/uikit.min.js' );
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/lightbox.min.js', 'text/javascript', true);
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/notify.min.js', 'text/javascript', true);
+		// add the style sheets
+		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/uikit.gradient.min.css' );
+		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/components/notify.gradient.min.css' );
+		// add var key
+		$document->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';"); 
 		JText::script('view not acceptable. Error');
 	}
 }

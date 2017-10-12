@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 126 of this MVC
-	@build			11th October, 2017
+	@version		@update number 136 of this MVC
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -74,12 +74,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'fields', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_FIELDS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'fields_conditions', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_FIELDS_CONDITIONS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
+			<div class="span6">
+				<?php echo JLayoutHelper::render('admin_view.fields_conditions_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('admin_view.fields_conditions_right', $this); ?>
+			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('admin_view.fields_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('admin_view.fields_conditions_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -735,4 +741,21 @@ jQuery('#jform_add_custom_import').on('change',function() {
 	getImportScripts(valueSwitch);
 
 });
+			
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}			 
 </script>

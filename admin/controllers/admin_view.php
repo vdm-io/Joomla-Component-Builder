@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 126 of this MVC
-	@build			11th October, 2017
+	@version		@update number 136 of this MVC
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -59,14 +59,7 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 	 * @since   1.6
 	 */
 	protected function allowAdd($data = array())
-	{
-		// Access check.
-		$access = JFactory::getUser()->authorise('admin_view.access', 'com_componentbuilder');
-		if (!$access)
-		{
-			return false;
-		}
-		// In the absense of better information, revert to the component permissions.
+	{		// In the absense of better information, revert to the component permissions.
 		return parent::allowAdd($data);
 	}
 

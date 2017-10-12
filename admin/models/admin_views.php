@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 126 of this MVC
-	@build			11th October, 2017
+	@version		@update number 136 of this MVC
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views.php
@@ -148,21 +148,6 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		{
 			$query->where('(a.published = 0 OR a.published = 1)');
 		}
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
 		// Filter by search.
 		$search = $this->getState('filter.search');
 		if (!empty($search))
@@ -214,12 +199,6 @@ class ComponentbuilderModelAdmin_views extends JModelList
 			// From the componentbuilder_admin_view table
 			$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
 			$query->where('a.id IN (' . implode(',',$pks) . ')');
-			// Implement View Level Access
-			if (!$user->authorise('core.options', 'com_componentbuilder'))
-			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
-			}
 
 			// Order the results by ordering
 			$query->order('a.ordering  ASC');
@@ -270,12 +249,10 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->sql = base64_decode($item->sql);
 						// decode php_import_display
 						$item->php_import_display = base64_decode($item->php_import_display);
-						// decode php_getitem
-						$item->php_getitem = base64_decode($item->php_getitem);
-						// decode php_import_save
-						$item->php_import_save = base64_decode($item->php_import_save);
 						// decode css_view
 						$item->css_view = base64_decode($item->css_view);
+						// decode php_import_save
+						$item->php_import_save = base64_decode($item->php_import_save);
 						// decode css_views
 						$item->css_views = base64_decode($item->css_views);
 						// decode javascript_view_file
@@ -300,6 +277,8 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->html_import_view = base64_decode($item->html_import_view);
 						// decode php_import_setdata
 						$item->php_import_setdata = base64_decode($item->php_import_setdata);
+						// decode php_getitem
+						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_import_ext
 						$item->php_import_ext = base64_decode($item->php_import_ext);
 						// unset the values we don't want exported.
