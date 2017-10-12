@@ -499,17 +499,18 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in dynamic_get
-	public function getViewTableColumns($id, $as, $type)
+	public function getViewTableColumns($admin_view, $as, $type)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
 		 
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('addfields', 'name_single')));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->where($db->quoteName('published') . ' = 1');
-		$query->where($db->quoteName('id') . ' = '. $id);
+		$query->select($db->quoteName(array('a.addfields', 'b.name_single')));
+		$query->from($db->quoteName('#__componentbuilder_admin_fields', 'a'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_view', 'b') . ' ON (' . $db->quoteName('a.admin_view') . ' = ' . $db->quoteName('b.id') . ')');
+		$query->where($db->quoteName('b.published') . ' = 1');
+		$query->where($db->quoteName('a.admin_view') . ' = '. (int) $admin_view);
 		 
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
@@ -854,7 +855,7 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 	
-	protected function setListMethodName($names,$table,$as,$type)
+	protected function setListMethodName($names, $table, $as, $type)
 	{
 		$methodNames = array();
 		if (ComponentbuilderHelper::checkArray($names))
@@ -901,21 +902,10 @@ class ComponentbuilderModelAjax extends JModelList
 	
 	protected function getViewName($id)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('name_single')));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->where($db->quoteName('id') . ' = '. (int) $id);
-		 
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
+		// Get the view name
+		if ($name = ComponentbuilderHelper::getVar('admin_view', (int) $id, 'id', 'name_single'))
 		{
-			return $db->loadResult();
+			return $name;
 		}
 		return '';
 	}
