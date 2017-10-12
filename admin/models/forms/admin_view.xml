@@ -149,17 +149,17 @@
 			message="Error! Please add some short description here."
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_HINT"
 		/>
-		<!-- Php_batchmove Field. Type: Textarea. (joomla) -->
+		<!-- Php_after_delete Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_batchmove"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
+			name="php_after_delete"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_HINT"
 			required="true"
 		/>
 		<!-- Type Field. Type: List. (joomla) -->
@@ -202,19 +202,6 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_HINT"
 		/>
-		<!-- Php_after_delete Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_after_delete"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_HINT"
-			required="true"
-		/>
 		<!-- Add_fadein Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -229,6 +216,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_REMOVE</option>
 		</field>
+		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
 		<!-- Icon Field. Type: Media. (joomla) -->
 		<field
 			type="media"
@@ -333,79 +322,79 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HINT"
 			required="true"
 		/>
-		<!-- Addpermissions Field. Type: Repeatable. (joomla) -->
+		<!-- Addpermissions Field. Type: Subform. (joomla) -->
 		<field
-			type="repeatable"
+			type="subform"
 			name="addpermissions"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDPERMISSIONS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDPERMISSIONS_DESCRIPTION"
-			id="addpermissions"
-			class="addpermission"
-			select="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDPERMISSIONS_SELECT"
 			icon="list"
 			maximum="20">
-			<fields name="addpermissions_fields" label="">
-				<fieldset hidden="true" name="addpermissions_modal" repeat="true">
-					<!-- Action Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="action"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ACTION_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ACTION_DESCRIPTION"
-						class="list_class"
-						multiple="false"
-						filter="CMD"
-						required="false">
-						<!-- Option Set. -->
-						<option value="core.edit">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDIT</option>
-						<option value="core.edit.own">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITOWN</option>
-						<option value="core.edit.state">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITSTATE</option>
-						<option value="core.edit.created_by">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITCREATED_BY</option>
-						<option value="core.edit.created">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITCREATED</option>
-						<option value="core.create">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CORECREATE</option>
-						<option value="core.delete">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COREDELETE</option>
-						<option value="view.edit">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDIT</option>
-						<option value="view.edit.own">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITOWN</option>
-						<option value="view.edit.state">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITSTATE</option>
-						<option value="view.edit.created_by">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITCREATED_BY</option>
-						<option value="view.edit.created">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITCREATED</option>
-						<option value="view.create">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWCREATE</option>
-						<option value="view.delete">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWDELETE</option>
-						<option value="view.access">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWACCESS</option>
-					</field>
-					<!-- Implementation Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="implementation"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_IMPLEMENTATION_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_IMPLEMENTATION_DESCRIPTION"
-						default="1"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_IN_RELATION_TO_EACH_RECORD</option>
-						<option value="2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_IN_RELATION_TO_THE_WHOLE_VIEW</option>
-						<option value="3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BOTH</option>
-					</field>
-				</fieldset>
-			</fields>
+			<form hidden="true" name="list_addpermissions_modal" repeat="true">
+				<!-- Action Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="action"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ACTION_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ACTION_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					filter="CMD"
+					required="false">
+					<!-- Option Set. -->
+					<option value="core.edit">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDIT</option>
+					<option value="core.edit.own">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITOWN</option>
+					<option value="core.edit.state">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITSTATE</option>
+					<option value="core.edit.created_by">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITCREATED_BY</option>
+					<option value="core.edit.created">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITCREATED</option>
+					<option value="core.create">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CORECREATE</option>
+					<option value="core.delete">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COREDELETE</option>
+					<option value="view.edit">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDIT</option>
+					<option value="view.edit.own">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITOWN</option>
+					<option value="view.edit.state">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITSTATE</option>
+					<option value="view.edit.created_by">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITCREATED_BY</option>
+					<option value="view.edit.created">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITCREATED</option>
+					<option value="view.create">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWCREATE</option>
+					<option value="view.delete">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWDELETE</option>
+					<option value="view.access">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWACCESS</option>
+				</field>
+				<!-- Implementation Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="implementation"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_IMPLEMENTATION_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_IMPLEMENTATION_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_IN_RELATION_TO_EACH_RECORD</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_IN_RELATION_TO_THE_WHOLE_VIEW</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BOTH</option>
+				</field>
+			</form>
 		</field>
 		<!-- Note_on_tabs Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_on_tabs" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION" heading="h4" class="alert alert-info note_on_tabs" close="true" />
@@ -422,37 +411,34 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_HINT"
 			required="true"
 		/>
-		<!-- Addtabs Field. Type: Repeatable. (joomla) -->
+		<!-- Addtabs Field. Type: Subform. (joomla) -->
 		<field
-			type="repeatable"
+			type="subform"
 			name="addtabs"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABS_DESCRIPTION"
-			id="addtabs"
-			class="addtab"
-			select="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABS_SELECT"
 			icon="list"
 			maximum="15">
-			<fields name="addtabs_fields" label="">
-				<fieldset hidden="true" name="addtabs_modal" repeat="true">
-					<!-- Name Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="name"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LABEL"
-						size="40"
-						maxlength="150"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="STRING"
-						message="Error! Please add name here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_HINT"
-					/>
-				</fieldset>
-			</fields>
+			<form hidden="true" name="list_addtabs_modal" repeat="true">
+				<!-- Name Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="name"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="STRING"
+					message="Error! Please add name here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_HINT"
+				/>
+			</form>
 		</field>
 		<!-- Php_before_save Field. Type: Textarea. (joomla) -->
 		<field
@@ -467,8 +453,85 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_HINT"
 			required="true"
 		/>
-		<!-- Note_on_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_views" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_views" close="true" />
+		<!-- Addlinked_views Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addlinked_views"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDLINKED_VIEWS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDLINKED_VIEWS_DESCRIPTION"
+			icon="list"
+			maximum="500">
+			<form hidden="true" name="list_addlinked_views_modal" repeat="true">
+				<!-- Adminview Field. Type: Adminviews. (custom) -->
+				<field
+					type="adminviews"
+					name="adminview"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADMINVIEW_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADMINVIEW_DESCRIPTION"
+					class="fieldMedium"
+					multiple="false"
+					required="false"
+					button="false"
+				/>
+				<!-- Tab Field. Type: Integer. (joomla) -->
+				<field
+					type="integer"
+					name="tab"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_LABEL"
+					default="1"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_DESCRIPTION"
+					class="fieldSmall"
+					required="false"
+					first="1"
+					last="15"
+					step="1"
+				/>
+				<!-- Key Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="key"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="WORD"
+					message="Error! Please add key here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_HINT"
+				/>
+				<!-- Parentkey Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="parentkey"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="WORD"
+					message="Error! Please add key here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_HINT"
+				/>
+				<!-- Addnew Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="addnew"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDNEW_LABEL"
+					value="1"
+					default="1"
+					required="false"
+					class="inputbox"
+				/>
+			</form>
+		</field>
 		<!-- Php_postsavehook Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -482,213 +545,19 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_HINT"
 			required="true"
 		/>
-		<!-- Addfields Field. Type: Repeatable. (joomla) -->
+		<!-- Php_batchmove Field. Type: Textarea. (joomla) -->
 		<field
-			type="repeatable"
-			name="addfields"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDFIELDS_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDFIELDS_DESCRIPTION"
-			id="addfields"
-			class="addfield"
-			select="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDFIELDS_SELECT"
-			icon="list"
-			maximum="800">
-			<fields name="addfields_fields" label="">
-				<fieldset hidden="true" name="addfields_modal" repeat="true">
-					<!-- Field Field. Type: Fields. (custom) -->
-					<field
-						type="fields"
-						name="field"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_FIELD_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_FIELD_DESCRIPTION"
-						class="fieldMedium"
-						multiple="false"
-						required="false"
-						button="false"
-					/>
-					<!-- List Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="list"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_LIST_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_LIST_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SHOW</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_HIDE</option>
-					</field>
-					<!-- Order_list Field. Type: Integer. (joomla) -->
-					<field
-						type="integer"
-						name="order_list"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_LIST_LABEL"
-						default="0"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_LIST_DESCRIPTION"
-						class="fieldSmall"
-						required="false"
-						first="0"
-						last="100"
-						step="1"
-					/>
-					<!-- Title Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="title"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TITLE_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TITLE_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-					</field>
-					<!-- Alias Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="alias"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-					</field>
-					<!-- Sort Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="sort"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_SORT_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_SORT_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-					</field>
-					<!-- Search Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="search"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_SEARCH_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_SEARCH_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-					</field>
-					<!-- Filter Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="filter"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_FILTER_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_FILTER_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-					</field>
-					<!-- Link Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="link"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_LINK_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_LINK_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-					</field>
-					<!-- Tab Field. Type: Integer. (joomla) -->
-					<field
-						type="integer"
-						name="tab"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_LABEL"
-						default="1"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_DESCRIPTION"
-						class="fieldSmall"
-						required="false"
-						first="1"
-						last="15"
-						step="1"
-					/>
-					<!-- Alignment Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="alignment"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIGNMENT_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIGNMENT_DESCRIPTION"
-						class="fieldMedium"
-						multiple="false"
-						filter="INT"
-						required="false"
-						default="1">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LEFT_IN_TAB</option>
-						<option value="2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_RIGHT_IN_TAB</option>
-						<option value="3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FULL_WIDTH_IN_TAB</option>
-						<option value="4">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ABOVE_TABS</option>
-						<option value="5">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNDERNEATH_TABS</option>
-						<option value="6">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LEFT_OF_TABS</option>
-						<option value="7">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_RIGHT_OF_TABS</option>
-					</field>
-					<!-- Order_edit Field. Type: Integer. (joomla) -->
-					<field
-						type="integer"
-						name="order_edit"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_EDIT_LABEL"
-						default="0"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_EDIT_DESCRIPTION"
-						class="fieldSmall"
-						required="false"
-						first="0"
-						last="100"
-						step="1"
-					/>
-					<!-- Permission Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="permission"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_PERMISSION_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_PERMISSION_DESCRIPTION"
-						class="list_class"
-						multiple="false"
-						required="false"
-						default="0">
-						<!-- Option Set. -->
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NONE</option>
-						<option value=" 1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EDITING</option>
-					</field>
-				</fieldset>
-			</fields>
-		</field>
+			type="textarea"
+			name="php_batchmove"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_HINT"
+			required="true"
+		/>
 		<!-- Php_batchcopy Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -702,8 +571,12 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_HINT"
 			required="true"
 		/>
-		<!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_conditions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_CONDITIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_CONDITIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_conditions" close="true" />
+		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="not_required"
+			default="[]"
+		/>
 		<!-- Php_before_publish Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -717,157 +590,8 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_PUBLISH_HINT"
 			required="true"
 		/>
-		<!-- Addconditions Field. Type: Repeatable. (joomla) -->
-		<field
-			type="repeatable"
-			name="addconditions"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDCONDITIONS_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDCONDITIONS_DESCRIPTION"
-			id="addconditions"
-			class="addcondition"
-			select="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDCONDITIONS_SELECT"
-			icon="list"
-			maximum="500">
-			<fields name="addconditions_fields" label="">
-				<fieldset hidden="true" name="addconditions_modal" repeat="true">
-					<!-- Target_field Field. Type: Fieldsmulti. (custom) -->
-					<field
-						type="fieldsmulti"
-						name="target_field"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_FIELD_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_FIELD_DESCRIPTION"
-						class="fieldMedium"
-						multiple="true"
-						required="false"
-						button="false"
-					/>
-					<!-- Target_behavior Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="target_behavior"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_BEHAVIOR_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_BEHAVIOR_DESCRIPTION"
-						default="1"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SHOW</option>
-						<option value="2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_HIDE</option>
-					</field>
-					<!-- Target_relation Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="target_relation"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_RELATION_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_RELATION_DESCRIPTION"
-						default="0"
-						required="false">
-						<!-- Option Set. -->
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ISOLATE</option>
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CHAIN</option>
-					</field>
-					<!-- Match_field Field. Type: Fields. (custom) -->
-					<field
-						type="fields"
-						name="match_field"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_FIELD_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_FIELD_DESCRIPTION"
-						multiple="false"
-						required="false"
-						button="false"
-					/>
-					<!-- Match_behavior Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="match_behavior"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_BEHAVIOR_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_BEHAVIOR_DESCRIPTION"
-						class="list_class"
-						multiple="false"
-						filter="INT"
-						required="false"
-						default="1">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_IS_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
-						<option value="2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_IS_NOT_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
-						<option value="3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ANY_SELECTION_ONLY_FOUR_LISTRADIOCHECKBOXESDYNAMIC_LIST</option>
-						<option value="4">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ACTIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="5">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNACTIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="6">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ALL_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="7">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ANY_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="8">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ALL_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="9">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ANY_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="10">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MIN_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="11">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MAX_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="12">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EXACT_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-					</field>
-					<!-- Match_behavior Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="match_behavior"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_BEHAVIOR_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_BEHAVIOR_DESCRIPTION"
-						class="list_class"
-						multiple="false"
-						filter="INT"
-						required="false"
-						default="1">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_IS_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
-						<option value="2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_IS_NOT_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
-						<option value="3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ANY_SELECTION_ONLY_FOUR_LISTRADIOCHECKBOXESDYNAMIC_LIST</option>
-						<option value="4">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ACTIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="5">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNACTIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="6">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ALL_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="7">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ANY_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="8">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ALL_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="9">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ANY_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="10">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MIN_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="11">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MAX_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-						<option value="12">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EXACT_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-					</field>
-					<!-- Match_options Field. Type: Textarea. (joomla) -->
-					<field
-						type="textarea"
-						name="match_options"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_OPTIONS_LABEL"
-						rows="10"
-						cols="5"
-						class="text_area"
-						filter="STRING"
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_OPTIONS_HINT"
-						required="false"
-					/>
-				</fieldset>
-			</fields>
-		</field>
+		<!-- Note_on_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_views" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_views" close="true" />
 		<!-- Php_before_delete Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -881,90 +605,181 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_HINT"
 			required="true"
 		/>
-		<!-- Addlinked_views Field. Type: Repeatable. (joomla) -->
+		<!-- Addfields Field. Type: Subform. (joomla) -->
 		<field
-			type="repeatable"
-			name="addlinked_views"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDLINKED_VIEWS_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDLINKED_VIEWS_DESCRIPTION"
-			id="addlinked_views"
-			class="addlinked_view"
-			select="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDLINKED_VIEWS_SELECT"
+			type="subform"
+			name="addfields"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDFIELDS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDFIELDS_DESCRIPTION"
 			icon="list"
-			maximum="500">
-			<fields name="addlinked_views_fields" label="">
-				<fieldset hidden="true" name="addlinked_views_modal" repeat="true">
-					<!-- Adminview Field. Type: Adminviews. (custom) -->
-					<field
-						type="adminviews"
-						name="adminview"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADMINVIEW_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADMINVIEW_DESCRIPTION"
-						class="fieldMedium"
-						multiple="false"
-						required="false"
-						button="false"
-					/>
-					<!-- Tab Field. Type: Integer. (joomla) -->
-					<field
-						type="integer"
-						name="tab"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_LABEL"
-						default="1"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_DESCRIPTION"
-						class="fieldSmall"
-						required="false"
-						first="1"
-						last="15"
-						step="1"
-					/>
-					<!-- Key Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="key"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_LABEL"
-						size="40"
-						maxlength="150"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="WORD"
-						message="Error! Please add key here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_HINT"
-					/>
-					<!-- Parentkey Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="parentkey"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_LABEL"
-						size="40"
-						maxlength="150"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="WORD"
-						message="Error! Please add key here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_HINT"
-					/>
-					<!-- Addnew Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="addnew"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDNEW_LABEL"
-						default="1"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-					</field>
-				</fieldset>
-			</fields>
+			maximum="800">
+			<form hidden="true" name="list_addfields_modal" repeat="true">
+				<!-- Field Field. Type: Fields. (custom) -->
+				<field
+					type="fields"
+					name="field"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_FIELD_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_FIELD_DESCRIPTION"
+					class="fieldMedium"
+					multiple="false"
+					required="false"
+					button="false"
+				/>
+				<!-- List Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="list"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_LIST_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_LIST_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Order_list Field. Type: Integer. (joomla) -->
+				<field
+					type="integer"
+					name="order_list"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_LIST_LABEL"
+					default="0"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_LIST_DESCRIPTION"
+					class="fieldSmall"
+					required="false"
+					first="0"
+					last="100"
+					step="1"
+				/>
+				<!-- Title Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="title"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TITLE_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TITLE_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Alias Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="alias"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Sort Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="sort"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_SORT_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_SORT_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Search Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="search"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_SEARCH_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_SEARCH_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Filter Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="filter"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_FILTER_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_FILTER_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Link Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="link"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_LINK_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_LINK_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Tab Field. Type: Integer. (joomla) -->
+				<field
+					type="integer"
+					name="tab"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_LABEL"
+					default="1"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TAB_DESCRIPTION"
+					class="fieldSmall"
+					required="false"
+					first="1"
+					last="15"
+					step="1"
+				/>
+				<!-- Alignment Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="alignment"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIGNMENT_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIGNMENT_DESCRIPTION"
+					class="fieldMedium"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LEFT_IN_TAB</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_RIGHT_IN_TAB</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FULL_WIDTH_IN_TAB</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ABOVE_TABS</option>
+					<option value="5">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNDERNEATH_TABS</option>
+					<option value="6">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LEFT_OF_TABS</option>
+					<option value="7">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_RIGHT_OF_TABS</option>
+				</field>
+				<!-- Order_edit Field. Type: Integer. (joomla) -->
+				<field
+					type="integer"
+					name="order_edit"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_EDIT_LABEL"
+					default="0"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ORDER_EDIT_DESCRIPTION"
+					class="fieldSmall"
+					required="false"
+					first="0"
+					last="100"
+					step="1"
+				/>
+				<!-- Permission Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="permission"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_PERMISSION_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_PERMISSION_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					required="false"
+					default="0">
+					<!-- Option Set. -->
+					<option value="0">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_NONE</option>
+					<option value=" 1">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EDITING</option>
+				</field>
+			</form>
 		</field>
 		<!-- Php_document Field. Type: Textarea. (joomla) -->
 		<field
@@ -979,8 +794,8 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_DOCUMENT_HINT"
 			required="true"
 		/>
-		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
+		<!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_conditions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_CONDITIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_CONDITIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_conditions" close="true" />
 		<!-- Sql Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -994,12 +809,123 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_HINT"
 			required="true"
 		/>
-		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<!-- Addconditions Field. Type: Subform. (joomla) -->
 		<field
-			type="hidden"
-			name="not_required"
-			default="[]"
-		/>
+			type="subform"
+			name="addconditions"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDCONDITIONS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDCONDITIONS_DESCRIPTION"
+			icon="list"
+			maximum="500">
+			<form hidden="true" name="list_addconditions_modal" repeat="true">
+				<!-- Target_field Field. Type: Fieldsmulti. (custom) -->
+				<field
+					type="fieldsmulti"
+					name="target_field"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_FIELD_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_FIELD_DESCRIPTION"
+					class="fieldMedium"
+					multiple="true"
+					required="false"
+					button="false"
+				/>
+				<!-- Target_behavior Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="target_behavior"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_BEHAVIOR_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_BEHAVIOR_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SHOW</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_HIDE</option>
+				</field>
+				<!-- Target_relation Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="target_relation"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_RELATION_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_RELATION_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="0">
+					<!-- Option Set. -->
+					<option value="0">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ISOLATE</option>
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CHAIN</option>
+				</field>
+				<!-- Match_field Field. Type: Fields. (custom) -->
+				<field
+					type="fields"
+					name="match_field"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_FIELD_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_FIELD_DESCRIPTION"
+					multiple="false"
+					required="false"
+					button="false"
+				/>
+				<!-- Match_behavior Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="match_behavior"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_BEHAVIOR_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_BEHAVIOR_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_IS_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_IS_NOT_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ANY_SELECTION_ONLY_FOUR_LISTRADIOCHECKBOXESDYNAMIC_LIST</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ACTIVE_ONLY_FOUR_TEXT_FIELD</option>
+					<option value="5">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNACTIVE_ONLY_FOUR_TEXT_FIELD</option>
+					<option value="6">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ALL_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
+					<option value="7">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ANY_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
+					<option value="8">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ALL_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
+					<option value="9">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_WORD_ANY_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
+					<option value="10">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MIN_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
+					<option value="11">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MAX_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
+					<option value="12">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EXACT_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
+				</field>
+				<!-- Match_options Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="match_options"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_OPTIONS_LABEL"
+					rows="10"
+					cols="5"
+					class="text_area"
+					filter="STRING"
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_MATCH_OPTIONS_HINT"
+					required="false"
+				/>
+			</form>
+		</field>
 		<!-- Php_import_display Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -1383,517 +1309,514 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Custom_button Field. Type: Repeatable. (joomla) -->
+		<!-- Custom_button Field. Type: Subform. (joomla) -->
 		<field
-			type="repeatable"
+			type="subform"
 			name="custom_button"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTON_LABEL"
-			id="custom_button"
-			class="custom_buttons"
-			select="COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTON_SELECT"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
 			icon="list"
 			maximum="7">
-			<fields name="custom_button_fields" label="">
-				<fieldset hidden="true" name="custom_button_modal" repeat="true">
-					<!-- Icomoon Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="icomoon"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_DESCRIPTION"
-						class="list_class fieldMedium"
-						multiple="false"
-						required="false">
-						<!-- Option Set. -->
-						<option value="joomla">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_JOOMLA</option>
-						<option value="address">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ADDRESS</option>
-						<option value="pencil">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PENCIL</option>
-						<option value="archive">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARCHIVE</option>
-						<option value="arrow-down-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_DOWN_TWO</option>
-						<option value="arrow-down-3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_DOWN_THREE</option>
-						<option value="arrow-down-4">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_DOWN_FOUR</option>
-						<option value="arrow-first">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_FIRST</option>
-						<option value="arrow-last">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LAST</option>
-						<option value="arrow-left-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LEFT_TWO</option>
-						<option value="arrow-left-3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LEFT_THREE</option>
-						<option value="arrow-left-4">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LEFT_FOUR</option>
-						<option value="arrow-right-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_RIGHT_TWO</option>
-						<option value="arrow-right-3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_RIGHT_THREE</option>
-						<option value="arrow-right-4">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_RIGHT_FOUR</option>
-						<option value="arrow-up-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_UP_TWO</option>
-						<option value="arrow-up-3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_UP_THREE</option>
-						<option value="arrow-up-4">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_UP_FOUR</option>
-						<option value="attachment">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ATTACHMENT</option>
-						<option value="reply">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_REPLY</option>
-						<option value="backward-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BACKWARD_CIRCLE</option>
-						<option value="ban-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BAN_CIRCLE</option>
-						<option value="bars">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BARS</option>
-						<option value="basket">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BASKET</option>
-						<option value="book">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BOOK</option>
-						<option value="bookmark">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BOOKMARK</option>
-						<option value="bookmark-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BOOKMARK_TWO</option>
-						<option value="box-add">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BOX_ADD</option>
-						<option value="box-remove">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BOX_REMOVE</option>
-						<option value="briefcase">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BRIEFCASE</option>
-						<option value="wifi">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_WIFI</option>
-						<option value="brush">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BRUSH</option>
-						<option value="calendar">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CALENDAR</option>
-						<option value="calendar-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CALENDAR_TWO</option>
-						<option value="calendar-3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CALENDAR_THREE</option>
-						<option value="camera">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CAMERA</option>
-						<option value="camera-2 / video">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CAMERA_TWO_VIDEO</option>
-						<option value="cancel-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CANCEL_CIRCLE</option>
-						<option value="cart">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CART</option>
-						<option value="chart">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CHART</option>
-						<option value="checkbox-partial">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKBOX_PARTIAL</option>
-						<option value="checkbox-unchecked">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKBOX_UNCHECKED</option>
-						<option value="lock">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LOCK</option>
-						<option value="checkbox">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKBOX</option>
-						<option value="checkmark-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKMARK_TWO</option>
-						<option value="checkmark-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKMARK_CIRCLE</option>
-						<option value="arrow-down">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_DOWN</option>
-						<option value="arrow-left">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LEFT</option>
-						<option value="arrow-right">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_RIGHT</option>
-						<option value="arrow-up">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_UP</option>
-						<option value="circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CIRCLE</option>
-						<option value="clock">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CLOCK</option>
-						<option value="cogs">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COGS</option>
-						<option value="comment">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COMMENT</option>
-						<option value="comments-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COMMENTS_TWO</option>
-						<option value="compass">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COMPASS</option>
-						<option value="contract">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CONTRACT</option>
-						<option value="contract-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CONTRACT_TWO</option>
-						<option value="credit">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CREDIT</option>
-						<option value="credit-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CREDIT_TWO</option>
-						<option value="cube">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CUBE</option>
-						<option value="dashboard">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_DASHBOARD</option>
-						<option value="database">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_DATABASE</option>
-						<option value="delete">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_DELETE</option>
-						<option value="download">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_DOWNLOAD</option>
-						<option value="enter">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ENTER</option>
-						<option value="envelope">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ENVELOPE</option>
-						<option value="envelope-opened">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ENVELOPE_OPENED</option>
-						<option value="equalizer">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EQUALIZER</option>
-						<option value="exit">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EXIT</option>
-						<option value="expand">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EXPAND</option>
-						<option value="expand-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EXPAND_TWO</option>
-						<option value="expired">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EXPIRED</option>
-						<option value="eye-close">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EYE_CLOSE</option>
-						<option value="eye-open">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_EYE_OPEN</option>
-						<option value="featured">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FEATURED</option>
-						<option value="feed">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FEED</option>
-						<option value="file">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FILE</option>
-						<option value="file-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_TWO</option>
-						<option value="file-add">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_ADD</option>
-						<option value="file-check">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_CHECK</option>
-						<option value="file-minus">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_MINUS</option>
-						<option value="file-remove">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_REMOVE</option>
-						<option value="filter">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FILTER</option>
-						<option value="first">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FIRST</option>
-						<option value="flag">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FLAG</option>
-						<option value="flag-3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FLAG_THREE</option>
-						<option value="folder-3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_THREE</option>
-						<option value="folder-close">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_CLOSE</option>
-						<option value="folder-minus">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_MINUS</option>
-						<option value="folder-open">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_OPEN</option>
-						<option value="folder-plus">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_PLUS</option>
-						<option value="folder-plus-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_PLUS_TWO</option>
-						<option value="folder-remove">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_REMOVE</option>
-						<option value="forward-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FORWARD_TWO</option>
-						<option value="forward-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FORWARD_CIRCLE</option>
-						<option value="grid">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_GRID</option>
-						<option value="grid-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_GRID_TWO</option>
-						<option value="health">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_HEALTH</option>
-						<option value="heart">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_HEART</option>
-						<option value="heart-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_HEART_TWO</option>
-						<option value="home">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_HOME</option>
-						<option value="home-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_HOME_TWO</option>
-						<option value="info">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_INFO</option>
-						<option value="info-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_INFO_CIRCLE</option>
-						<option value="key">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_KEY</option>
-						<option value="lamp">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LAMP</option>
-						<option value="last">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LAST</option>
-						<option value="flash">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FLASH</option>
-						<option value="link">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LINK</option>
-						<option value="list">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LIST</option>
-						<option value="list-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LIST_TWO</option>
-						<option value="location">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LOCATION</option>
-						<option value="loop">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LOOP</option>
-						<option value="menu">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MENU</option>
-						<option value="menu-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MENU_TWO</option>
-						<option value="menu-3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MENU_THREE</option>
-						<option value="minus">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MINUS</option>
-						<option value="minus-sign">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MINUS_SIGN</option>
-						<option value="mobile">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MOBILE</option>
-						<option value="move">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MOVE</option>
-						<option value="music">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_MUSIC</option>
-						<option value="plus">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PLUS</option>
-						<option value="next">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NEXT</option>
-						<option value="notification">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NOTIFICATION</option>
-						<option value="notification-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NOTIFICATION_CIRCLE</option>
-						<option value="cog">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_COG</option>
-						<option value="new-tab">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NEW_TAB</option>
-						<option value="new-tab-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NEW_TAB_TWO</option>
-						<option value="palette">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PALETTE</option>
-						<option value="paragraph-center">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PARAGRAPH_CENTER</option>
-						<option value="paragraph-justify">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PARAGRAPH_JUSTIFY</option>
-						<option value="paragraph-left">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PARAGRAPH_LEFT</option>
-						<option value="paragraph-right">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PARAGRAPH_RIGHT</option>
-						<option value="pause">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PAUSE</option>
-						<option value="pause-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PAUSE_CIRCLE</option>
-						<option value="pencil-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PENCIL_TWO</option>
-						<option value="warning">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_WARNING</option>
-						<option value="phone">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PHONE</option>
-						<option value="phone-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PHONE_TWO</option>
-						<option value="image">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_IMAGE</option>
-						<option value="images">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_IMAGES</option>
-						<option value="pie">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PIE</option>
-						<option value="pin">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PIN</option>
-						<option value="play">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PLAY</option>
-						<option value="youtube">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YOUTUBE</option>
-						<option value="play-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PLAY_CIRCLE</option>
-						<option value="plus-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PLUS_CIRCLE</option>
-						<option value="power-cord">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_POWER_CORD</option>
-						<option value="previous">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PREVIOUS</option>
-						<option value="print">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PRINT</option>
-						<option value="publish">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PUBLISH</option>
-						<option value="purge">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PURGE</option>
-						<option value="puzzle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PUZZLE</option>
-						<option value="question">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_QUESTION</option>
-						<option value="question-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_QUESTION_TWO</option>
-						<option value="quotes-left">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_QUOTES_LEFT</option>
-						<option value="quotes-right">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_QUOTES_RIGHT</option>
-						<option value="bubble-quote">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BUBBLE_QUOTE</option>
-						<option value="generic">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_GENERIC</option>
-						<option value="radio-unchecked">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_RADIO_UNCHECKED</option>
-						<option value="save-copy">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SAVE_COPY</option>
-						<option value="save-new">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SAVE_NEW</option>
-						<option value="scissors">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SCISSORS</option>
-						<option value="screen">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SCREEN</option>
-						<option value="screwdriver">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SCREWDRIVER</option>
-						<option value="search">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SEARCH</option>
-						<option value="share">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SHARE</option>
-						<option value="share-alt">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SHARE_ALT</option>
-						<option value="shield">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SHIELD</option>
-						<option value="shuffle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SHUFFLE</option>
-						<option value="signup">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SIGNUP</option>
-						<option value="smiley">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY</option>
-						<option value="smiley-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_TWO</option>
-						<option value="smiley-neutral">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_NEUTRAL</option>
-						<option value="smiley-neutral-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_NEUTRAL_TWO</option>
-						<option value="smiley-sad">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_SAD</option>
-						<option value="smiley-sad-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_SAD_TWO</option>
-						<option value="square">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SQUARE</option>
-						<option value="stack">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_STACK</option>
-						<option value="star-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_STAR_TWO</option>
-						<option value="stop">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_STOP</option>
-						<option value="stop-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_STOP_CIRCLE</option>
-						<option value="support">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SUPPORT</option>
-						<option value="switch">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SWITCH</option>
-						<option value="tablet">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_TABLET</option>
-						<option value="tag">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_TAG</option>
-						<option value="tag-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_TAG_TWO</option>
-						<option value="tags">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_TAGS</option>
-						<option value="tags-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_TAGS_TWO</option>
-						<option value="thumbs-down">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_THUMBS_DOWN</option>
-						<option value="thumbs-up">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_THUMBS_UP</option>
-						<option value="tree">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_TREE</option>
-						<option value="tree-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_TREE_TWO</option>
-						<option value="unarchive">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNARCHIVE</option>
-						<option value="unblock">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNBLOCK</option>
-						<option value="undo">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNDO</option>
-						<option value="undo-2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNDO_TWO</option>
-						<option value="unfeatured">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNFEATURED</option>
-						<option value="unlock">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNLOCK</option>
-						<option value="unpublish">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNPUBLISH</option>
-						<option value="upload">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UPLOAD</option>
-						<option value="user">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_USER</option>
-						<option value="users">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_USERS</option>
-						<option value="vcard">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_VCARD</option>
-						<option value="wand">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_WAND</option>
-						<option value="warning-circle">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_WARNING_CIRCLE</option>
-						<option value="wrench">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_WRENCH</option>
-						<option value="zoom-in">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ZOOM_IN</option>
-						<option value="zoom-out">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ZOOM_OUT</option>
-					</field>
-					<!-- Name Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="name"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LABEL"
-						size="40"
-						maxlength="150"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="STRING"
-						message="Error! Please add name here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_HINT"
-					/>
-					<!-- Method Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="method"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_LABEL"
-						size="40"
-						maxlength="50"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_DESCRIPTION"
-						class="text_area"
-						required="false"
-						filter="CMD"
-						message="Error! Please add controller method name here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_HINT"
-					/>
-					<!-- Target Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="target"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_DESCRIPTION"
-						class="list_class fieldMedium"
-						filter="INT"
-						required="false"
-						default="1">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SINGLE</option>
-						<option value="2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_LIST</option>
-						<option value="3">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BOTH</option>
-					</field>
-					<!-- Type Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="type"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_DESCRIPTION"
-						class="list_class"
-						multiple="false"
-						required="false"
-						default="0">
-						<!-- Option Set. -->
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_DEFAULT</option>
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_SELECTION</option>
-						<option value="2">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ONLY_FUNCTION</option>
-					</field>
-				</fieldset>
-			</fields>
+			<form hidden="true" name="list_custom_button_modal" repeat="true">
+				<!-- Icomoon Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="icomoon"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_DESCRIPTION"
+					class="list_class fieldMedium"
+					multiple="false"
+					required="false">
+					<!-- Option Set. -->
+					<option value="joomla">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_JOOMLA</option>
+					<option value="address">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ADDRESS</option>
+					<option value="pencil">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PENCIL</option>
+					<option value="archive">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARCHIVE</option>
+					<option value="arrow-down-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_DOWN_TWO</option>
+					<option value="arrow-down-3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_DOWN_THREE</option>
+					<option value="arrow-down-4">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_DOWN_FOUR</option>
+					<option value="arrow-first">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_FIRST</option>
+					<option value="arrow-last">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LAST</option>
+					<option value="arrow-left-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LEFT_TWO</option>
+					<option value="arrow-left-3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LEFT_THREE</option>
+					<option value="arrow-left-4">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LEFT_FOUR</option>
+					<option value="arrow-right-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_RIGHT_TWO</option>
+					<option value="arrow-right-3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_RIGHT_THREE</option>
+					<option value="arrow-right-4">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_RIGHT_FOUR</option>
+					<option value="arrow-up-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_UP_TWO</option>
+					<option value="arrow-up-3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_UP_THREE</option>
+					<option value="arrow-up-4">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_UP_FOUR</option>
+					<option value="attachment">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ATTACHMENT</option>
+					<option value="reply">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_REPLY</option>
+					<option value="backward-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BACKWARD_CIRCLE</option>
+					<option value="ban-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BAN_CIRCLE</option>
+					<option value="bars">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BARS</option>
+					<option value="basket">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BASKET</option>
+					<option value="book">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BOOK</option>
+					<option value="bookmark">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BOOKMARK</option>
+					<option value="bookmark-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BOOKMARK_TWO</option>
+					<option value="box-add">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BOX_ADD</option>
+					<option value="box-remove">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BOX_REMOVE</option>
+					<option value="briefcase">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BRIEFCASE</option>
+					<option value="wifi">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_WIFI</option>
+					<option value="brush">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BRUSH</option>
+					<option value="calendar">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CALENDAR</option>
+					<option value="calendar-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CALENDAR_TWO</option>
+					<option value="calendar-3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CALENDAR_THREE</option>
+					<option value="camera">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CAMERA</option>
+					<option value="camera-2 / video">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CAMERA_TWO_VIDEO</option>
+					<option value="cancel-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CANCEL_CIRCLE</option>
+					<option value="cart">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CART</option>
+					<option value="chart">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CHART</option>
+					<option value="checkbox-partial">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKBOX_PARTIAL</option>
+					<option value="checkbox-unchecked">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKBOX_UNCHECKED</option>
+					<option value="lock">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LOCK</option>
+					<option value="checkbox">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKBOX</option>
+					<option value="checkmark-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKMARK_TWO</option>
+					<option value="checkmark-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CHECKMARK_CIRCLE</option>
+					<option value="arrow-down">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_DOWN</option>
+					<option value="arrow-left">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_LEFT</option>
+					<option value="arrow-right">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_RIGHT</option>
+					<option value="arrow-up">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARROW_UP</option>
+					<option value="circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CIRCLE</option>
+					<option value="clock">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CLOCK</option>
+					<option value="cogs">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COGS</option>
+					<option value="comment">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COMMENT</option>
+					<option value="comments-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COMMENTS_TWO</option>
+					<option value="compass">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COMPASS</option>
+					<option value="contract">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CONTRACT</option>
+					<option value="contract-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CONTRACT_TWO</option>
+					<option value="credit">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CREDIT</option>
+					<option value="credit-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CREDIT_TWO</option>
+					<option value="cube">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CUBE</option>
+					<option value="dashboard">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_DASHBOARD</option>
+					<option value="database">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_DATABASE</option>
+					<option value="delete">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_DELETE</option>
+					<option value="download">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_DOWNLOAD</option>
+					<option value="enter">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ENTER</option>
+					<option value="envelope">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ENVELOPE</option>
+					<option value="envelope-opened">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ENVELOPE_OPENED</option>
+					<option value="equalizer">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EQUALIZER</option>
+					<option value="exit">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EXIT</option>
+					<option value="expand">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EXPAND</option>
+					<option value="expand-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EXPAND_TWO</option>
+					<option value="expired">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EXPIRED</option>
+					<option value="eye-close">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EYE_CLOSE</option>
+					<option value="eye-open">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_EYE_OPEN</option>
+					<option value="featured">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FEATURED</option>
+					<option value="feed">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FEED</option>
+					<option value="file">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FILE</option>
+					<option value="file-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_TWO</option>
+					<option value="file-add">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_ADD</option>
+					<option value="file-check">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_CHECK</option>
+					<option value="file-minus">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_MINUS</option>
+					<option value="file-remove">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FILE_REMOVE</option>
+					<option value="filter">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FILTER</option>
+					<option value="first">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FIRST</option>
+					<option value="flag">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FLAG</option>
+					<option value="flag-3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FLAG_THREE</option>
+					<option value="folder-3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_THREE</option>
+					<option value="folder-close">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_CLOSE</option>
+					<option value="folder-minus">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_MINUS</option>
+					<option value="folder-open">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_OPEN</option>
+					<option value="folder-plus">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_PLUS</option>
+					<option value="folder-plus-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_PLUS_TWO</option>
+					<option value="folder-remove">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FOLDER_REMOVE</option>
+					<option value="forward-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FORWARD_TWO</option>
+					<option value="forward-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FORWARD_CIRCLE</option>
+					<option value="grid">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_GRID</option>
+					<option value="grid-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_GRID_TWO</option>
+					<option value="health">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_HEALTH</option>
+					<option value="heart">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_HEART</option>
+					<option value="heart-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_HEART_TWO</option>
+					<option value="home">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_HOME</option>
+					<option value="home-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_HOME_TWO</option>
+					<option value="info">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_INFO</option>
+					<option value="info-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_INFO_CIRCLE</option>
+					<option value="key">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_KEY</option>
+					<option value="lamp">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LAMP</option>
+					<option value="last">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LAST</option>
+					<option value="flash">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FLASH</option>
+					<option value="link">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LINK</option>
+					<option value="list">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LIST</option>
+					<option value="list-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LIST_TWO</option>
+					<option value="location">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LOCATION</option>
+					<option value="loop">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LOOP</option>
+					<option value="menu">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MENU</option>
+					<option value="menu-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MENU_TWO</option>
+					<option value="menu-3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MENU_THREE</option>
+					<option value="minus">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MINUS</option>
+					<option value="minus-sign">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MINUS_SIGN</option>
+					<option value="mobile">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MOBILE</option>
+					<option value="move">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MOVE</option>
+					<option value="music">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_MUSIC</option>
+					<option value="plus">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PLUS</option>
+					<option value="next">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_NEXT</option>
+					<option value="notification">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_NOTIFICATION</option>
+					<option value="notification-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_NOTIFICATION_CIRCLE</option>
+					<option value="cog">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COG</option>
+					<option value="new-tab">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_NEW_TAB</option>
+					<option value="new-tab-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_NEW_TAB_TWO</option>
+					<option value="palette">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PALETTE</option>
+					<option value="paragraph-center">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PARAGRAPH_CENTER</option>
+					<option value="paragraph-justify">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PARAGRAPH_JUSTIFY</option>
+					<option value="paragraph-left">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PARAGRAPH_LEFT</option>
+					<option value="paragraph-right">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PARAGRAPH_RIGHT</option>
+					<option value="pause">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PAUSE</option>
+					<option value="pause-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PAUSE_CIRCLE</option>
+					<option value="pencil-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PENCIL_TWO</option>
+					<option value="warning">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_WARNING</option>
+					<option value="phone">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PHONE</option>
+					<option value="phone-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PHONE_TWO</option>
+					<option value="image">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_IMAGE</option>
+					<option value="images">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_IMAGES</option>
+					<option value="pie">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PIE</option>
+					<option value="pin">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PIN</option>
+					<option value="play">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PLAY</option>
+					<option value="youtube">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_YOUTUBE</option>
+					<option value="play-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PLAY_CIRCLE</option>
+					<option value="plus-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PLUS_CIRCLE</option>
+					<option value="power-cord">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_POWER_CORD</option>
+					<option value="previous">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PREVIOUS</option>
+					<option value="print">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PRINT</option>
+					<option value="publish">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PUBLISH</option>
+					<option value="purge">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PURGE</option>
+					<option value="puzzle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PUZZLE</option>
+					<option value="question">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_QUESTION</option>
+					<option value="question-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_QUESTION_TWO</option>
+					<option value="quotes-left">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_QUOTES_LEFT</option>
+					<option value="quotes-right">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_QUOTES_RIGHT</option>
+					<option value="bubble-quote">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BUBBLE_QUOTE</option>
+					<option value="generic">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_GENERIC</option>
+					<option value="radio-unchecked">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_RADIO_UNCHECKED</option>
+					<option value="save-copy">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SAVE_COPY</option>
+					<option value="save-new">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SAVE_NEW</option>
+					<option value="scissors">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SCISSORS</option>
+					<option value="screen">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SCREEN</option>
+					<option value="screwdriver">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SCREWDRIVER</option>
+					<option value="search">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SEARCH</option>
+					<option value="share">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SHARE</option>
+					<option value="share-alt">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SHARE_ALT</option>
+					<option value="shield">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SHIELD</option>
+					<option value="shuffle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SHUFFLE</option>
+					<option value="signup">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SIGNUP</option>
+					<option value="smiley">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY</option>
+					<option value="smiley-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_TWO</option>
+					<option value="smiley-neutral">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_NEUTRAL</option>
+					<option value="smiley-neutral-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_NEUTRAL_TWO</option>
+					<option value="smiley-sad">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_SAD</option>
+					<option value="smiley-sad-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SMILEY_SAD_TWO</option>
+					<option value="square">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SQUARE</option>
+					<option value="stack">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_STACK</option>
+					<option value="star-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_STAR_TWO</option>
+					<option value="stop">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_STOP</option>
+					<option value="stop-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_STOP_CIRCLE</option>
+					<option value="support">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SUPPORT</option>
+					<option value="switch">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SWITCH</option>
+					<option value="tablet">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_TABLET</option>
+					<option value="tag">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_TAG</option>
+					<option value="tag-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_TAG_TWO</option>
+					<option value="tags">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_TAGS</option>
+					<option value="tags-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_TAGS_TWO</option>
+					<option value="thumbs-down">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_THUMBS_DOWN</option>
+					<option value="thumbs-up">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_THUMBS_UP</option>
+					<option value="tree">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_TREE</option>
+					<option value="tree-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_TREE_TWO</option>
+					<option value="unarchive">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNARCHIVE</option>
+					<option value="unblock">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNBLOCK</option>
+					<option value="undo">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNDO</option>
+					<option value="undo-2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNDO_TWO</option>
+					<option value="unfeatured">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNFEATURED</option>
+					<option value="unlock">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNLOCK</option>
+					<option value="unpublish">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNPUBLISH</option>
+					<option value="upload">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UPLOAD</option>
+					<option value="user">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_USER</option>
+					<option value="users">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_USERS</option>
+					<option value="vcard">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VCARD</option>
+					<option value="wand">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_WAND</option>
+					<option value="warning-circle">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_WARNING_CIRCLE</option>
+					<option value="wrench">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_WRENCH</option>
+					<option value="zoom-in">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ZOOM_IN</option>
+					<option value="zoom-out">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ZOOM_OUT</option>
+				</field>
+				<!-- Name Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="name"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="STRING"
+					message="Error! Please add name here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_HINT"
+				/>
+				<!-- Method Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="method"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_LABEL"
+					size="40"
+					maxlength="50"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_DESCRIPTION"
+					class="text_area"
+					required="false"
+					filter="CMD"
+					message="Error! Please add controller method name here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_HINT"
+				/>
+				<!-- Target Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="target"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TARGET_DESCRIPTION"
+					class="list_class fieldMedium"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SINGLE</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_LIST</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BOTH</option>
+				</field>
+				<!-- Type Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="type"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					required="false"
+					default="0">
+					<!-- Option Set. -->
+					<option value="0">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_DEFAULT</option>
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_SELECTION</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ONLY_FUNCTION</option>
+				</field>
+			</form>
 		</field>
 		<!-- Add_php_after_delete Field. Type: Radio. (joomla) -->
 		<field
@@ -1976,44 +1899,41 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_HINT"
 			required="false"
 		/>
-		<!-- Addtables Field. Type: Repeatable. (joomla) -->
+		<!-- Addtables Field. Type: Subform. (joomla) -->
 		<field
-			type="repeatable"
+			type="subform"
 			name="addtables"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL"
-			id="addtables"
-			class="addtable"
-			select="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_SELECT"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
 			icon="list"
 			maximum="50">
-			<fields name="addtables_fields" label="">
-				<fieldset hidden="true" name="addtables_modal" repeat="true">
-					<!-- Table Field. Type: Dbtables. (custom) -->
-					<field
-						type="dbtables"
-						name="table"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE_LABEL"
-						class="list_class"
-						multiple="false"
-						default="0"
-						required="false"
-						button="false"
-					/>
-					<!-- Sourcemap Field. Type: Textarea. (joomla) -->
-					<field
-						type="textarea"
-						name="sourcemap"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_LABEL"
-						rows="22"
-						cols="30"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_DESCRIPTION"
-						class="text_area span4"
-						filter="HTML"
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_HINT"
-						required="false"
-					/>
-				</fieldset>
-			</fields>
+			<form hidden="true" name="list_addtables_modal" repeat="true">
+				<!-- Table Field. Type: Dbtables. (custom) -->
+				<field
+					type="dbtables"
+					name="table"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE_LABEL"
+					class="list_class"
+					multiple="false"
+					default="0"
+					required="false"
+					button="false"
+				/>
+				<!-- Sourcemap Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="sourcemap"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_LABEL"
+					rows="22"
+					cols="30"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_DESCRIPTION"
+					class="text_area span4"
+					filter="HTML"
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_HINT"
+					required="false"
+				/>
+			</form>
 		</field>
 		<!-- Php_model_list Field. Type: Textarea. (joomla) -->
 		<field
@@ -2085,143 +2005,137 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_HINT"
 			required="true"
 		/>
-		<!-- Ajax_input Field. Type: Repeatable. (joomla) -->
+		<!-- Ajax_input Field. Type: Subform. (joomla) -->
 		<field
-			type="repeatable"
+			type="subform"
 			name="ajax_input"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_AJAX_INPUT_LABEL"
-			id="ajax_input"
-			class="ajax_inputs"
-			select="COM_COMPONENTBUILDER_ADMIN_VIEW_AJAX_INPUT_SELECT"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
 			icon="list"
 			maximum="150">
-			<fields name="ajax_input_fields" label="">
-				<fieldset hidden="true" name="ajax_input_modal" repeat="true">
-					<!-- Value_name Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="value_name"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_VALUE_NAME_LABEL"
-						size="40"
-						maxlength="150"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_VALUE_NAME_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="STRING"
-						message="Error! Please add value name here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_VALUE_NAME_HINT"
-					/>
-					<!-- Task_name Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="task_name"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_TASK_NAME_LABEL"
-						size="40"
-						maxlength="150"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_TASK_NAME_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="WORD"
-						message="Error! Please add task name here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_TASK_NAME_HINT"
-					/>
-					<!-- Input_default Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="input_default"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_DEFAULT_LABEL"
-						size="40"
-						maxlength="150"
-						default="NULL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_DEFAULT_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="STRING"
-						message="Error! Please add default input value here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_DEFAULT_HINT"
-					/>
-					<!-- Input_filter Field. Type: List. (joomla) -->
-					<field
-						type="list"
-						name="input_filter"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_FILTER_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_FILTER_DESCRIPTION"
-						class="list_class"
-						multiple="false"
-						filter="WORD"
-						required="false"
-						default="INT">
-						<!-- Option Set. -->
-						<option value="INT">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_INT</option>
-						<option value="UINT">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UINT</option>
-						<option value="FLOAT">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_FLOAT</option>
-						<option value="BOOLEAN">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BOOLEAN</option>
-						<option value="WORD">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_WORD</option>
-						<option value="ALNUM">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ALNUM</option>
-						<option value="CMD">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_CMD</option>
-						<option value="BASE64">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_BASESIXTY_FOUR</option>
-						<option value="STRING">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_STRING</option>
-						<option value="HTML">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_HTML</option>
-						<option value="ARRAY">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_ARRAY</option>
-						<option value="PATH">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_PATH</option>
-						<option value="USERNAME">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_USERNAME</option>
-						<option value="RAW">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_RAW</option>
-						<option value="unknown">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_UNKNOWN</option>
-					</field>
-					<!-- Method_name Field. Type: Text. (joomla) -->
-					<field
-						type="text"
-						name="method_name"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_NAME_LABEL"
-						size="40"
-						maxlength="150"
-						default="getValueNow"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_NAME_DESCRIPTION"
-						class="text_area"
-						readonly="false"
-						disabled="false"
-						required="false"
-						filter="WORD"
-						message="Error! Please add method name here."
-						hint="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_NAME_HINT"
-					/>
-					<!-- User_check Field. Type: Radio. (joomla) -->
-					<field
-						type="radio"
-						name="user_check"
-						label="COM_COMPONENTBUILDER_ADMIN_VIEW_USER_CHECK_LABEL"
-						description="COM_COMPONENTBUILDER_ADMIN_VIEW_USER_CHECK_DESCRIPTION"
-						default="1"
-						required="false">
-						<!-- Option Set. -->
-						<option value="1">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-						<option value="0">
-							COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-					</field>
-				</fieldset>
-			</fields>
+			<form hidden="true" name="list_ajax_input_modal" repeat="true">
+				<!-- Value_name Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="value_name"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_VALUE_NAME_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_VALUE_NAME_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="STRING"
+					message="Error! Please add value name here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_VALUE_NAME_HINT"
+				/>
+				<!-- Task_name Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="task_name"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TASK_NAME_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_TASK_NAME_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="WORD"
+					message="Error! Please add task name here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_TASK_NAME_HINT"
+				/>
+				<!-- Input_default Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="input_default"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_DEFAULT_LABEL"
+					size="40"
+					maxlength="150"
+					default="NULL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_DEFAULT_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="STRING"
+					message="Error! Please add default input value here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_DEFAULT_HINT"
+				/>
+				<!-- Input_filter Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="input_filter"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_FILTER_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_INPUT_FILTER_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					filter="WORD"
+					required="false"
+					default="INT">
+					<!-- Option Set. -->
+					<option value="INT">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_INT</option>
+					<option value="UINT">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UINT</option>
+					<option value="FLOAT">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_FLOAT</option>
+					<option value="BOOLEAN">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BOOLEAN</option>
+					<option value="WORD">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_WORD</option>
+					<option value="ALNUM">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ALNUM</option>
+					<option value="CMD">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_CMD</option>
+					<option value="BASE64">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_BASESIXTY_FOUR</option>
+					<option value="STRING">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_STRING</option>
+					<option value="HTML">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_HTML</option>
+					<option value="ARRAY">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_ARRAY</option>
+					<option value="PATH">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_PATH</option>
+					<option value="USERNAME">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_USERNAME</option>
+					<option value="RAW">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_RAW</option>
+					<option value="unknown">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_UNKNOWN</option>
+				</field>
+				<!-- Method_name Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="method_name"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_NAME_LABEL"
+					size="40"
+					maxlength="150"
+					default="getValueNow"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_NAME_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="WORD"
+					message="Error! Please add method name here."
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_NAME_HINT"
+				/>
+				<!-- User_check Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="user_check"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_USER_CHECK_LABEL"
+					value="1"
+					default="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_USER_CHECK_DESCRIPTION"
+					class="inputbox"
+				/>
+			</form>
 		</field>
 		<!-- Php_import_setdata Field. Type: Textarea. (joomla) -->
 		<field

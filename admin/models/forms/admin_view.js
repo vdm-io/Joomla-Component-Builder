@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 114 of this MVC
-	@build			28th August, 2017
+	@version		@update number 126 of this MVC
+	@build			11th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.js
@@ -340,7 +340,7 @@ function vvvvvxd(add_php_ajax_vvvvvxd)
 	// set the function logic
 	if (add_php_ajax_vvvvvxd == 1)
 	{
-		jQuery('#jform_ajax_input').closest('.control-group').show();
+		jQuery('#jform_ajax_input-lbl').closest('.control-group').show();
 		jQuery('#jform_php_ajaxmethod').closest('.control-group').show();
 		if (jform_vvvvvxdvwx_required)
 		{
@@ -354,7 +354,7 @@ function vvvvvxd(add_php_ajax_vvvvvxd)
 	}
 	else
 	{
-		jQuery('#jform_ajax_input').closest('.control-group').hide();
+		jQuery('#jform_ajax_input-lbl').closest('.control-group').hide();
 		jQuery('#jform_php_ajaxmethod').closest('.control-group').hide();
 		if (!jform_vvvvvxdvwx_required)
 		{
@@ -900,11 +900,11 @@ function vvvvvxw(source_vvvvvxw,add_sql_vvvvvxw)
 	// set the function logic
 	if (source_vvvvvxw == 1 && add_sql_vvvvvxw == 1)
 	{
-		jQuery('#jform_addtables').closest('.control-group').show();
+		jQuery('#jform_addtables-lbl').closest('.control-group').show();
 	}
 	else
 	{
-		jQuery('#jform_addtables').closest('.control-group').hide();
+		jQuery('#jform_addtables-lbl').closest('.control-group').hide();
 	}
 }
 
@@ -1056,7 +1056,7 @@ function vvvvvya(add_custom_button_vvvvvya)
 	// set the function logic
 	if (add_custom_button_vvvvvya == 1)
 	{
-		jQuery('#jform_custom_button').closest('.control-group').show();
+		jQuery('#jform_custom_button-lbl').closest('.control-group').show();
 		jQuery('#jform_php_controller').closest('.control-group').show();
 		if (jform_vvvvvyavxv_required)
 		{
@@ -1100,7 +1100,7 @@ function vvvvvya(add_custom_button_vvvvvya)
 	}
 	else
 	{
-		jQuery('#jform_custom_button').closest('.control-group').hide();
+		jQuery('#jform_custom_button-lbl').closest('.control-group').hide();
 		jQuery('#jform_php_controller').closest('.control-group').hide();
 		if (!jform_vvvvvyavxv_required)
 		{
@@ -1196,16 +1196,20 @@ function getFieldSelectOptions_server(fieldId){
 	});
 }
 
-function getFieldSelectOptions(id,fieldKey){
-	getFieldSelectOptions_server(id).done(function(result) {
-		if(result){
-			jQuery('textarea#'+fieldKey+'-jform_addconditions_fields_match_options').val(result);
-		}
-		else
-		{
-			jQuery('textarea#'+fieldKey+'-jform_addconditions_fields_match_options').val('');
-		}
-	})
+function getFieldSelectOptions(fieldKey, table_, nr_){
+	// first check if the field is set
+	if(jQuery("#jform_addconditions"+table_+"_addconditions"+fieldKey+nr_+"_match_field").length) {
+		var fieldId = jQuery("#jform_addconditions"+table_+"_addconditions"+fieldKey+nr_+"_match_field option:selected").val();
+		getFieldSelectOptions_server(fieldId).done(function(result) {
+			if(result){
+				jQuery('textarea#jform_addconditions'+table_+'_addconditions'+fieldKey+nr_+'_match_options').val(result);
+			}
+			else
+			{
+				jQuery('textarea#jform_addconditions'+table_+'_addconditions'+fieldKey+nr_+'_match_options').val('');
+			}
+		});
+	}
 }
 
 function getTableColumns_server(tableName){
@@ -1222,16 +1226,21 @@ function getTableColumns_server(tableName){
 	});
 }
 
-function getTableColumns(tableName,fieldKey){
-	getTableColumns_server(tableName).done(function(result) {
-		if(result){
-			jQuery('textarea#'+fieldKey+'-jform_addtables_fields_sourcemap').val(result);
-		}
-		else
-		{
-			jQuery('textarea#'+fieldKey+'-jform_addtables_fields_sourcemap').val('');
-		}
-	})
+function getTableColumns(fieldKey, table_, nr_){
+	// first check if the field is set
+	if(jQuery("#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_table").length) {
+		// get options
+		var tableName = jQuery("#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_table option:selected").val();
+		getTableColumns_server(tableName).done(function(result) {
+			if(result){
+				jQuery("textarea#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_sourcemap").val(result);
+			}
+			else
+			{
+				jQuery("textarea#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_sourcemap").val('');
+			}
+		});
+	}
 }
 
 function getImportScripts_server(typpe){

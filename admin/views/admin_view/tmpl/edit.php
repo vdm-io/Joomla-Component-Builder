@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 114 of this MVC
-	@build			28th August, 2017
+	@version		@update number 126 of this MVC
+	@build			11th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -74,7 +74,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php if ($this->canDo->get('field.access')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'fields', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_FIELDS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
@@ -84,7 +83,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php endif; ?>
 
 	<?php if ($this->canDo->get('joomla_component.access')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'linked_components', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_LINKED_COMPONENTS', true)); ?>
@@ -696,28 +694,43 @@ jQuery('input.form-field-repeatable').on('row-add', function (e) {
 	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
 });
 });
-<?php endforeach; ?><?php $fieldNrs = range(1,500,1); ?>
-jQuery('#jform_addconditions_modal').on('show.bs.modal', function (e) {
- 	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_addconditions_modal').on('change', '#<?php echo $fieldNr ?>-jform_addconditions_fields_match_field',function (e) {
+<?php endforeach; ?><?php $numberAddtables = range(0, count($this->item->addtables) + 3, 1);?>
+<?php $numberAddconditions = range(0, count($this->item->addconditions) + 3, 1);?>
+
+// for the values already set
+jQuery(document).ready(function(){
+<?php foreach($numberAddtables as $fieldNr): ?>
+	jQuery('#adminForm').on('change', '#jform_addtables__addtables<?php echo $fieldNr ?>__table',function (e) {
 		e.preventDefault();
-		// get options
-		var fieldId_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_addconditions_fields_match_field option:selected").val();
-		getFieldSelectOptions(fieldId_<?php echo $fieldNr ?>,<?php echo $fieldNr ?>);
+		getTableColumns(<?php echo $fieldNr ?>, "_", "_");
 	});
-	<?php endforeach; ?>
-});
-jQuery('#jform_addtables_modal').on('show.bs.modal', function (e) {
- 	<?php foreach($fieldNrs as $fieldNr): ?>jQuery('#jform_addtables_modal').on('change', '#<?php echo $fieldNr ?>-jform_addtables_fields_table',function (e) {
+<?php endforeach; ?>
+<?php foreach($numberAddconditions as $fieldNr): ?>
+	jQuery('#adminForm').on('change', '#jform_addconditions__addconditions<?php echo $fieldNr ?>__match_field',function (e) {
 		e.preventDefault();
-		// get options
-		var tableName_<?php echo $fieldNr ?> = jQuery("#<?php echo $fieldNr ?>-jform_addtables_fields_table option:selected").val();
-		getTableColumns(tableName_<?php echo $fieldNr ?>,<?php echo $fieldNr ?>);
+		getFieldSelectOptions(<?php echo $fieldNr ?>, "_", "_");
 	});
-	<?php endforeach; ?>
+<?php endforeach; ?>
+	jQuery(document).on('subform-row-add', function(event, row){
+		var groupName = jQuery(row).data('group');
+		var fieldName = groupName.replace(/([0-9])/g, '');
+		var fieldNr = groupName.replace(/([A-z_])/g, '');
+		if ('addconditions' === fieldName) {
+			jQuery('#adminForm').on('change', '#jform_addconditions_addconditions'+fieldNr+'_match_field',function (e) {
+				e.preventDefault();
+				getFieldSelectOptions(fieldNr, "", "");
+			});
+		} else if ('addtables' === fieldName) {
+			jQuery('#adminForm').on('change', '#jform_addtables_addtables'+fieldNr+'_table',function (e) {
+				e.preventDefault();
+				getTableColumns(fieldNr, "", "");
+			});
+		}
+	});
 });
+
 // #jform_add_custom_import listeners
-jQuery('#jform_add_custom_import').on('change',function()
-{
+jQuery('#jform_add_custom_import').on('change',function() {
 	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
 	getImportScripts(valueSwitch);
 

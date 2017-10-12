@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.6
-	@build			6th October, 2017
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_right.php
@@ -34,10 +34,6 @@ $fields = $displayData->get('fields') ?: array(
 	'addpermissions',
 	'note_on_tabs',
 	'addtabs',
-	'note_on_views',
-	'addfields',
-	'note_on_conditions',
-	'addconditions',
 	'addlinked_views'
 );
 

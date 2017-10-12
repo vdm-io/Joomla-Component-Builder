@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.6
-	@build			6th October, 2017
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -403,29 +403,17 @@ class ComponentbuilderModelAjax extends JModelList
 			{
 				$fields = array();
 				// get data
-				foreach ($addfields as $option => $values)
+				foreach ($addfields as $nr => $value)
 				{
-					foreach ($values as $nr => $value)
+					$tmp = $this->getFieldData((int) $value['field']);
+					if (ComponentbuilderHelper::checkArray($tmp))
 					{
-						if ($option == 'field')
-						{
-							$value = $this->getFieldData((int) $value);
-							if (ComponentbuilderHelper::checkArray($value))
-							{
-								$field[$nr] = $value;
-							}
-						}
-						elseif ($option == 'alias')
-						{
-							if ($value == 1)
-							{
-								$name[$nr] = 'alias';
-							}
-							else
-							{
-								$name[$nr] = '';
-							}
-						}
+						$field[$nr] = $tmp;
+					}
+					// insure it is set to alias if needed
+					if ($value['alias'] == 1)
+					{
+						$field[$nr]['name'] = 'alias';
 					}
 				}
 				// add the basic defaults
@@ -436,10 +424,6 @@ class ComponentbuilderModelAjax extends JModelList
 				{
 					if (ComponentbuilderHelper::checkArray($f))
 					{
-						if (ComponentbuilderHelper::checkString($name[$n]))
-						{
-							$f['name'] = $name[$n];
-						}
 						$fields[] = $as.".".$f['name']." AS ".$tableName.$f['name'];
 					}
 				}

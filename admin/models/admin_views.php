@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 114 of this MVC
-	@build			28th August, 2017
+	@version		@update number 126 of this MVC
+	@build			11th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views.php
@@ -113,24 +113,7 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		$this->checkInNow();
 
 		// load parent items
-		$items = parent::getItems();
-
-		// set values to display correctly.
-		if (ComponentbuilderHelper::checkArray($items))
-		{
-			// get user object.
-			$user = JFactory::getUser();
-			foreach ($items as $nr => &$item)
-			{
-				$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
-				if (!$access)
-				{
-					unset($items[$nr]);
-					continue;
-				}
-
-			}
-		}  
+		$items = parent::getItems();  
         
 		// return items
 		return $items;
@@ -251,23 +234,12 @@ class ComponentbuilderModelAdmin_views extends JModelList
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
-						if (!$access)
-						{
-							unset($items[$nr]);
-							continue;
-						}
-
-						// decode php_batchmove
-						$item->php_batchmove = base64_decode($item->php_batchmove);
-						// decode php_save
-						$item->php_save = base64_decode($item->php_save);
 						// decode php_after_delete
 						$item->php_after_delete = base64_decode($item->php_after_delete);
+						// decode php_save
+						$item->php_save = base64_decode($item->php_save);
 						// decode php_getlistquery
 						$item->php_getlistquery = base64_decode($item->php_getlistquery);
 						// decode php_allowedit
@@ -284,6 +256,8 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->php_before_save = base64_decode($item->php_before_save);
 						// decode php_postsavehook
 						$item->php_postsavehook = base64_decode($item->php_postsavehook);
+						// decode php_batchmove
+						$item->php_batchmove = base64_decode($item->php_batchmove);
 						// decode php_batchcopy
 						$item->php_batchcopy = base64_decode($item->php_batchcopy);
 						// decode php_before_publish

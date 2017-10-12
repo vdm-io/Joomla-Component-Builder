@@ -311,7 +311,7 @@ class Structure extends Get
 	{
 		// first we run the perent constructor
 		if (parent::__construct($config))
-		{			
+		{
 			// set the Joomla version
 			$this->joomlaVersion		= $config['joomlaVersion'];
 			// set the template path

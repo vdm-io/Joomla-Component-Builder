@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 54 of this MVC
-	@build			27th September, 2017
+	@version		@update number 58 of this MVC
+	@build			9th October, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -310,6 +310,21 @@ jQuery('#adminForm').on('change', '#jform_add_custom_button',function (e)
 	e.preventDefault();
 	var add_custom_button_vvvvvyr = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
 	vvvvvyr(add_custom_button_vvvvvyr);
+
+});
+
+// #jform_button_position listeners for button_position_vvvvvys function
+jQuery('#jform_button_position').on('keyup',function()
+{
+	var button_position_vvvvvys = jQuery("#jform_button_position").val();
+	vvvvvys(button_position_vvvvvys);
+
+});
+jQuery('#adminForm').on('change', '#jform_button_position',function (e)
+{
+	e.preventDefault();
+	var button_position_vvvvvys = jQuery("#jform_button_position").val();
+	vvvvvys(button_position_vvvvvys);
 
 });
 

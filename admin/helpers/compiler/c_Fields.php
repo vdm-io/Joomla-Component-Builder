@@ -1526,7 +1526,7 @@ class Fields extends Structure
 				}
 
 				// check if translatable
-				if (ComponentbuilderHelper::checkString($xmlValue) && $property['translatable'] == 1)
+				if (ComponentbuilderHelper::checkString($xmlValue) && isset($property['translatable']) && $property['translatable'] == 1)
 				{
 					// update lable if field use multiple times
 					if ($property['name'] === 'label')
@@ -1550,7 +1550,7 @@ class Fields extends Structure
 					// use lang value
 					$xmlValue = $langValue;
 				}
-				elseif (isset($field['alias']) && $field['alias'] && $property['translatable'] == 1)
+				elseif (isset($field['alias']) && $field['alias'] && isset($property['translatable']) && $property['translatable'] == 1)
 				{
 					if ($property['name'] === 'label')
 					{
@@ -1565,7 +1565,7 @@ class Fields extends Structure
 						$xmlValue = 'JFIELD_ALIAS_PLACEHOLDER';
 					}
 				}
-				elseif (isset($field['title']) && $field['title'] && $property['translatable'] == 1)
+				elseif (isset($field['title']) && $field['title'] && isset($property['translatable']) && $property['translatable'] == 1)
 				{
 					if ($property['name'] === 'label')
 					{
@@ -1577,7 +1577,7 @@ class Fields extends Structure
 					}
 				}
 				// only load value if found or is mandatory
-				if (ComponentbuilderHelper::checkString($xmlValue) || ($property['mandatory'] == 1 && !$setCustom))
+				if (ComponentbuilderHelper::checkString($xmlValue) || (isset($property['mandatory']) && $property['mandatory'] == 1 && !$setCustom))
 				{
 					// make sure mantory fields are added
 					if (!ComponentbuilderHelper::checkString($xmlValue))

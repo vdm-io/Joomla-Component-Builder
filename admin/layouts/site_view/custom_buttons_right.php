@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.6
-	@build			6th October, 2017
+	@build			12th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		custom_buttons_right.php
@@ -30,8 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_custom_toolbar_placeholder',
-	'custom_button'
+	'button_position'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

@@ -131,7 +131,7 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.field');
 			}
 		}
-		$this->addfieldsvvwd = $item->id;
+		$this->addfieldsvvwc = $item->id;
 
 		return $item;
 	}
@@ -141,7 +141,7 @@ class ComponentbuilderModelField extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWaclinked_admin_views()
+	public function getWablinked_admin_views()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -181,32 +181,15 @@ class ComponentbuilderModelField extends JModelAdmin
 		{
 			$items = $db->loadObjectList();
 
-			// set values to display correctly.
-			if (ComponentbuilderHelper::checkArray($items))
-			{
-				// get user object.
-				$user = JFactory::getUser();
-				foreach ($items as $nr => &$item)
-				{
-					$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-
-			// Filter by addfieldsvvwd in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addfieldsvvwd))
+			// Filter by addfieldsvvwc in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addfieldsvvwc))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addfields) && ComponentbuilderHelper::checkJson($item->addfields))
 					{
 						$tmpArray = json_decode($item->addfields,true);
-						if (!isset($tmpArray['field']) || !ComponentbuilderHelper::checkArray($tmpArray['field']) || !in_array($this->addfieldsvvwd, $tmpArray['field']))
+						if (!isset($tmpArray['field']) || !ComponentbuilderHelper::checkArray($tmpArray['field']) || !in_array($this->addfieldsvvwc, $tmpArray['field']))
 						{
 							unset($items[$nr]);
 							continue;

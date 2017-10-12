@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 27 of this MVC
-	@build			27th September, 2017
+	@build			9th October, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_view.php
@@ -103,6 +103,14 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->custom_get = $custom_get->toArray();
 			}
 
+			if (!empty($item->custom_button))
+			{
+				// Convert the custom_button field to an array.
+				$custom_button = new Registry;
+				$custom_button->loadString($item->custom_button);
+				$item->custom_button = $custom_button->toArray();
+			}
+
 			if (!empty($item->php_controller))
 			{
 				// base64 Decode php_controller.
@@ -169,7 +177,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.custom_admin_view');
 			}
 		}
-		$this->addcustom_admin_viewsvvwb = $item->id;
+		$this->addcustom_admin_viewsvvwa = $item->id;
 
 		return $item;
 	}
@@ -179,7 +187,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyklinked_components()
+	public function getVyjlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -219,15 +227,15 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		{
 			$items = $db->loadObjectList();
 
-			// Filter by addcustom_admin_viewsvvwb in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addcustom_admin_viewsvvwb))
+			// Filter by addcustom_admin_viewsvvwa in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addcustom_admin_viewsvvwa))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addcustom_admin_views) && ComponentbuilderHelper::checkJson($item->addcustom_admin_views))
 					{
 						$tmpArray = json_decode($item->addcustom_admin_views,true);
-						if (!isset($tmpArray['customadminview']) || !ComponentbuilderHelper::checkArray($tmpArray['customadminview']) || !in_array($this->addcustom_admin_viewsvvwb, $tmpArray['customadminview']))
+						if (!isset($tmpArray['customadminview']) || !ComponentbuilderHelper::checkArray($tmpArray['customadminview']) || !in_array($this->addcustom_admin_viewsvvwa, $tmpArray['customadminview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -973,6 +981,19 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		{
 			// Set the empty custom_get to data
 			$data['custom_get'] = '';
+		}
+
+		// Set the custom_button items to data.
+		if (isset($data['custom_button']) && is_array($data['custom_button']))
+		{
+			$custom_button = new JRegistry;
+			$custom_button->loadArray($data['custom_button']);
+			$data['custom_button'] = (string) $custom_button;
+		}
+		elseif (!isset($data['custom_button']))
+		{
+			// Set the empty custom_button to data
+			$data['custom_button'] = '';
 		}
 
 		// Set the php_controller string to base64 string.

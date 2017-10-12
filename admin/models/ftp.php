@@ -112,7 +112,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.ftp');
 			}
 		}
-		$this->sales_server_ftpupdate_server_ftp_vvwf = $item->id;
+		$this->sales_server_ftpupdate_server_ftp_vvwe = $item->id;
 
 		return $item;
 	}
@@ -122,7 +122,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWaelinked_components()
+	public function getWadlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -136,15 +136,15 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		// From the componentbuilder_joomla_component table
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
 
-		// Filter by sales_server_ftpupdate_server_ftp_vvwf global.
-		$sales_server_ftpupdate_server_ftp_vvwf = $this->sales_server_ftpupdate_server_ftp_vvwf;
-		if (is_numeric($sales_server_ftpupdate_server_ftp_vvwf ))
+		// Filter by sales_server_ftpupdate_server_ftp_vvwe global.
+		$sales_server_ftpupdate_server_ftp_vvwe = $this->sales_server_ftpupdate_server_ftp_vvwe;
+		if (is_numeric($sales_server_ftpupdate_server_ftp_vvwe ))
 		{
-			$query->where('a.sales_server_ftp = ' . (int) $sales_server_ftpupdate_server_ftp_vvwf . ' OR a.update_server_ftp  = ' . (int) $sales_server_ftpupdate_server_ftp_vvwf, ' OR');
+			$query->where('a.sales_server_ftp = ' . (int) $sales_server_ftpupdate_server_ftp_vvwe . ' OR a.update_server_ftp  = ' . (int) $sales_server_ftpupdate_server_ftp_vvwe, ' OR');
 		}
-		elseif (is_string($sales_server_ftpupdate_server_ftp_vvwf))
+		elseif (is_string($sales_server_ftpupdate_server_ftp_vvwe))
 		{
-			$query->where('a.sales_server_ftp = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvwf) . ' OR a.update_server_ftp  = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvwf), ' OR');
+			$query->where('a.sales_server_ftp = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvwe) . ' OR a.update_server_ftp  = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvwe), ' OR');
 		}
 		else
 		{

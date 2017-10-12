@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 54 of this MVC
-	@build			27th September, 2017
+	@version		@update number 58 of this MVC
+	@build			9th October, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		site_view.php
@@ -103,6 +103,22 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->custom_get = $custom_get->toArray();
 			}
 
+			if (!empty($item->ajax_input))
+			{
+				// Convert the ajax_input field to an array.
+				$ajax_input = new Registry;
+				$ajax_input->loadString($item->ajax_input);
+				$item->ajax_input = $ajax_input->toArray();
+			}
+
+			if (!empty($item->custom_button))
+			{
+				// Convert the custom_button field to an array.
+				$custom_button = new Registry;
+				$custom_button->loadString($item->custom_button);
+				$item->custom_button = $custom_button->toArray();
+			}
+
 			if (!empty($item->css))
 			{
 				// base64 Decode css.
@@ -175,7 +191,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.site_view');
 			}
 		}
-		$this->addsite_viewsvvwc = $item->id;
+		$this->addsite_viewsvvwb = $item->id;
 
 		return $item;
 	}
@@ -185,7 +201,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyvlinked_components()
+	public function getVyulinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -225,15 +241,15 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		{
 			$items = $db->loadObjectList();
 
-			// Filter by addsite_viewsvvwc in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addsite_viewsvvwc))
+			// Filter by addsite_viewsvvwb in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addsite_viewsvvwb))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addsite_views) && ComponentbuilderHelper::checkJson($item->addsite_views))
 					{
 						$tmpArray = json_decode($item->addsite_views,true);
-						if (!isset($tmpArray['siteview']) || !ComponentbuilderHelper::checkArray($tmpArray['siteview']) || !in_array($this->addsite_viewsvvwc, $tmpArray['siteview']))
+						if (!isset($tmpArray['siteview']) || !ComponentbuilderHelper::checkArray($tmpArray['siteview']) || !in_array($this->addsite_viewsvvwb, $tmpArray['siteview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -979,6 +995,32 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		{
 			// Set the empty custom_get to data
 			$data['custom_get'] = '';
+		}
+
+		// Set the ajax_input items to data.
+		if (isset($data['ajax_input']) && is_array($data['ajax_input']))
+		{
+			$ajax_input = new JRegistry;
+			$ajax_input->loadArray($data['ajax_input']);
+			$data['ajax_input'] = (string) $ajax_input;
+		}
+		elseif (!isset($data['ajax_input']))
+		{
+			// Set the empty ajax_input to data
+			$data['ajax_input'] = '';
+		}
+
+		// Set the custom_button items to data.
+		if (isset($data['custom_button']) && is_array($data['custom_button']))
+		{
+			$custom_button = new JRegistry;
+			$custom_button->loadArray($data['custom_button']);
+			$data['custom_button'] = (string) $custom_button;
+		}
+		elseif (!isset($data['custom_button']))
+		{
+			// Set the empty custom_button to data
+			$data['custom_button'] = '';
 		}
 
 		// Set the css string to base64 string.

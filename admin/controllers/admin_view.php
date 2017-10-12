@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 114 of this MVC
-	@build			28th August, 2017
+	@version		@update number 126 of this MVC
+	@build			11th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -87,13 +87,6 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 		// get record id.
 		$recordId	= (int) isset($data[$key]) ? $data[$key] : 0;
 
-
-		// Access check.
-		$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $recordId) &&  $user->authorise('admin_view.access', 'com_componentbuilder'));
-		if (!$access)
-		{
-			return false;
-		}
 
 		if ($recordId)
 		{
