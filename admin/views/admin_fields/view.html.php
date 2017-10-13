@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 16 of this MVC
-	@build			12th October, 2017
+	@version		@update number 21 of this MVC
+	@build			13th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -95,12 +95,12 @@ class ComponentbuilderViewAdmin_fields extends JViewLegacy
 		// Built the actions for new and existing records.
 		if ($this->refid || $this->ref)
 		{
-			if ($this->canDo->get('core.create') && $isNew)
+			if ($this->canDo->get('admin_fields.create') && $isNew)
 			{
 				// We can create the record.
 				JToolBarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
 			}
-			elseif ($this->canDo->get('core.edit'))
+			elseif ($this->canDo->get('admin_fields.edit'))
 			{
 				// We can save the record.
 				JToolBarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
@@ -121,7 +121,7 @@ class ComponentbuilderViewAdmin_fields extends JViewLegacy
 			if ($isNew)
 			{
 				// For new records, check the create permission.
-				if ($this->canDo->get('core.create'))
+				if ($this->canDo->get('admin_fields.create'))
 				{
 					JToolBarHelper::apply('admin_fields.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
@@ -131,24 +131,24 @@ class ComponentbuilderViewAdmin_fields extends JViewLegacy
 			}
 			else
 			{
-				if ($this->canDo->get('core.edit'))
+				if ($this->canDo->get('admin_fields.edit'))
 				{
 					// We can save the new record
 					JToolBarHelper::apply('admin_fields.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
 					// We can save this record, but check the create permission to see
 					// if we can return to make a new one.
-					if ($this->canDo->get('core.create'))
+					if ($this->canDo->get('admin_fields.create'))
 					{
 						JToolBarHelper::custom('admin_fields.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 					}
 				}
 				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('admin_fields.version'));
-				if ($this->state->params->get('save_history', 1) && $this->canDo->get('core.edit') && $canVersion)
+				if ($this->state->params->get('save_history', 1) && $this->canDo->get('admin_fields.edit') && $canVersion)
 				{
 					JToolbarHelper::versions('com_componentbuilder.admin_fields', $this->item->id);
 				}
-				if ($this->canDo->get('core.create'))
+				if ($this->canDo->get('admin_fields.create'))
 				{
 					JToolBarHelper::custom('admin_fields.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}

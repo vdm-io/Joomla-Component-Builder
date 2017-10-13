@@ -11,10 +11,10 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			12th October, 2017
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		settings_right.php
+	@subpackage		details_left.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -30,11 +30,12 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_on_permissions',
-	'addpermissions',
-	'note_on_tabs',
-	'addtabs',
-	'addlinked_views'
+	'name_single',
+	'name_list',
+	'type',
+	'icon',
+	'icon_add',
+	'icon_category'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

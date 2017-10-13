@@ -11,10 +11,10 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			12th October, 2017
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		settings_above.php
+	@subpackage		settings_fullwidth.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -29,13 +29,24 @@ defined('_JEXEC') or die('Restricted access');
 
 $form = $displayData->getForm();
 
-$fields = array(
-	'system_name'
+$fields = $displayData->get('fields') ?: array(
+	'note_on_permissions',
+	'addpermissions',
+	'note_on_tabs',
+	'addtabs',
+	'addlinked_views'
 );
 
 ?>
-<div class="form-inline form-inline-header">
-	<?php foreach($fields as $field){
-		echo $form->renderField($field);
-	} ?>
+<div class="form-vertical">
+<?php foreach($fields as $field): ?>
+    <div class="control-group">
+        <div class="control-label">
+            <?php echo $form->getLabel($field); ?>
+        </div>
+        <div class="controls">
+            <?php echo $form->getInput($field); ?>
+        </div>
+    </div>
+<?php endforeach; ?>
 </div>

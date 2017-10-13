@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 7 of this MVC
-	@build			12th October, 2017
+	@version		@update number 14 of this MVC
+	@build			13th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
 	@subpackage		admin_fields_conditions.php
@@ -102,6 +102,26 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 				$addconditions->loadString($item->addconditions);
 				$item->addconditions = $addconditions->toArray();
 			}
+
+			// check what type of conditions array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->addconditions) && isset($item->addconditions['target_field']))
+			{
+				$bucket = array();
+				foreach($item->addconditions as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['addconditions'.$nr][$option] = $value;
+					}
+				}
+				$item->addconditions = $bucket;
+				// update the fields
+				$conditionsUpdate = new stdClass();
+				$conditionsUpdate->id = (int) $item->id;
+				$conditionsUpdate->addconditions = json_encode($bucket);
+				$this->_db->updateObject('#__componentbuilder_admin_fields_conditions', $conditionsUpdate, 'id');
+			}
 			
 			if (!empty($item->id))
 			{
@@ -150,8 +170,8 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_componentbuilder.admin_fields_conditions.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_componentbuilder')))
+		if ($id != 0 && (!$user->authorise('admin_fields_conditions.edit.state', 'com_componentbuilder.admin_fields_conditions.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_fields_conditions.edit.state', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
@@ -167,7 +187,8 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 			$form->setValue('created_by', null, $user->id);
 		}
 		// Modify the form based on Edit Creaded By access controls.
-		if (!$user->authorise('core.edit.created_by', 'com_componentbuilder'))
+		if ($id != 0 && (!$user->authorise('admin_fields_conditions.edit.created_by', 'com_componentbuilder.admin_fields_conditions.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_fields_conditions.edit.created_by', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created_by', 'disabled', 'true');
@@ -177,7 +198,8 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 			$form->setFieldAttribute('created_by', 'filter', 'unset');
 		}
 		// Modify the form based on Edit Creaded Date access controls.
-		if (!$user->authorise('core.edit.created', 'com_componentbuilder'))
+		if ($id != 0 && (!$user->authorise('admin_fields_conditions.edit.created', 'com_componentbuilder.admin_fields_conditions.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_fields_conditions.edit.created', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created', 'disabled', 'true');
@@ -231,7 +253,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 
 			$user = JFactory::getUser();
 			// The record has been set. Check the record permissions.
-			return $user->authorise('core.delete', 'com_componentbuilder.admin_fields_conditions.' . (int) $record->id);
+			return $user->authorise('admin_fields_conditions.delete', 'com_componentbuilder.admin_fields_conditions.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -253,14 +275,14 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit.state', 'com_componentbuilder.admin_fields_conditions.' . (int) $recordId);
+			$permission = $user->authorise('admin_fields_conditions.edit.state', 'com_componentbuilder.admin_fields_conditions.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
 				return false;
 			}
 		}
 		// In the absense of better information, revert to the component permissions.
-		return parent::canEditState($record);
+		return $user->authorise('admin_fields_conditions.edit.state', 'com_componentbuilder');
 	}
     
 	/**
@@ -275,8 +297,9 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 	protected function allowEdit($data = array(), $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
+		$user = JFactory::getUser();
 
-		return JFactory::getUser()->authorise('core.edit', 'com_componentbuilder.admin_fields_conditions.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or parent::allowEdit($data, $key);
+		return $user->authorise('admin_fields_conditions.edit', 'com_componentbuilder.admin_fields_conditions.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('admin_fields_conditions.edit',  'com_componentbuilder');
 	}
     
 	/**
@@ -528,7 +551,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 			$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_conditions');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('admin_fields_conditions.create') && !$this->canDo->get('admin_fields_conditions.batch'))
 		{
 			return false;
 		}
@@ -543,7 +566,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 		{
 			$values['published'] = 0;
 		}
-		elseif (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		elseif (isset($values['published']) && !$this->canDo->get('admin_fields_conditions.edit.state'))
 		{
 				$values['published'] = 0;
 		}
@@ -560,7 +583,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 
 			// only allow copy if user may edit this item.
 
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('admin_fields_conditions.edit', $contexts[$pk]))
 
 			{
 
@@ -677,14 +700,14 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 			$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_conditions');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('admin_fields_conditions.edit') && !$this->canDo->get('admin_fields_conditions.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
 		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		if (isset($values['published']) && !$this->canDo->get('admin_fields_conditions.edit.state'))
 		{
 			unset($values['published']);
 		}
@@ -694,7 +717,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 		// Parent exists so we proceed
 		foreach ($pks as $pk)
 		{
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('admin_fields_conditions.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 

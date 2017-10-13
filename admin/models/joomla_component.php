@@ -252,6 +252,23 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		{
 			$items = $db->loadObjectList();
 
+			// set values to display correctly.
+			if (ComponentbuilderHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
+
 			// Filter by id Repetable Field
 			$idvvvv = json_decode($this->idvvvv,true);
 			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvv) && ComponentbuilderHelper::checkArray($idvvvv))

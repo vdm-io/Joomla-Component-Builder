@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 7 of this MVC
-	@build			12th October, 2017
+	@version		@update number 14 of this MVC
+	@build			13th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
 	@subpackage		edit.php
@@ -73,7 +73,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php if ($this->canDo->get('core.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.state') || $this->canDo->get('core.edit.created')) : ?>
+	<?php if ($this->canDo->get('admin_fields_conditions.delete') || $this->canDo->get('admin_fields_conditions.edit.created_by') || $this->canDo->get('admin_fields_conditions.edit.state') || $this->canDo->get('admin_fields_conditions.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_fields_conditionsTab', 'publishing', JText::_('COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

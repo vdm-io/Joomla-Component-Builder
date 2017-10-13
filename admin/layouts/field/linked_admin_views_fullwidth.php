@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			12th October, 2017
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		linked_admin_views_fullwidth.php
@@ -68,7 +68,7 @@ $edit	= "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 	?>
 	<tr>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
+			<?php if ($canDo->get('admin_view.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=field&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'admin_views.', $canCheckin); ?>

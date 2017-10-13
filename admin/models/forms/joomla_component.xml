@@ -2475,7 +2475,7 @@
 						name="field"
 						label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_FIELD_LABEL"
 						description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_FIELD_DESCRIPTION"
-						class="fieldMedium"
+						class="list_class"
 						multiple="false"
 						required="false"
 						button="false"

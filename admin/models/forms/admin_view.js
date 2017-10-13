@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 136 of this MVC
-	@build			12th October, 2017
+	@version		@update number 141 of this MVC
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.js
@@ -1209,36 +1209,6 @@ function addButtonID(type,where){
 		}
 	})
 }			
-
-function getFieldSelectOptions_server(fieldId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json";
-	if(token.length > 0 && fieldId > 0){
-		var request = 'token='+token+'&id='+fieldId;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
-}
-
-function getFieldSelectOptions(fieldKey, table_, nr_){
-	// first check if the field is set
-	if(jQuery("#jform_addconditions"+table_+"_addconditions"+fieldKey+nr_+"_match_field").length) {
-		var fieldId = jQuery("#jform_addconditions"+table_+"_addconditions"+fieldKey+nr_+"_match_field option:selected").val();
-		getFieldSelectOptions_server(fieldId).done(function(result) {
-			if(result){
-				jQuery('textarea#jform_addconditions'+table_+'_addconditions'+fieldKey+nr_+'_match_options').val(result);
-			}
-			else
-			{
-				jQuery('textarea#jform_addconditions'+table_+'_addconditions'+fieldKey+nr_+'_match_options').val('');
-			}
-		});
-	}
-}
 
 function getTableColumns_server(tableName){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.tableColumns&format=json";

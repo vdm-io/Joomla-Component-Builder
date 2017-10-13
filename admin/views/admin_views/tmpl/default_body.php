@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 136 of this MVC
-	@build			12th October, 2017
+	@version		@update number 141 of this MVC
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_body.php
@@ -37,7 +37,7 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
-		<?php if ($canDo->get('core.edit.state')): ?>
+		<?php if ($canDo->get('admin_view.edit.state')): ?>
 			<?php
 				if ($this->saveOrder)
 				{
@@ -60,7 +60,7 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center">
-		<?php if ($canDo->get('core.edit')): ?>
+		<?php if ($canDo->get('admin_view.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
@@ -75,7 +75,7 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
+			<?php if ($canDo->get('admin_view.edit')): ?>
 				<div class="name">
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
@@ -96,7 +96,7 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 			<?php echo $this->escape($item->short_description); ?>
 		</td>
 		<td class="center">
-		<?php if ($canDo->get('core.edit.state')) : ?>
+		<?php if ($canDo->get('admin_view.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'admin_views.', true, 'cb'); ?>

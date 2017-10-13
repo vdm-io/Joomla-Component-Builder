@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			12th October, 2017
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views_fullwidth.php
@@ -38,7 +38,7 @@ $can	= ComponentbuilderHelper::getActions('admin_view');
 
 ?>
 <div class="form-vertical">
-<?php if ($can->get('core.create')): ?>
+<?php if ($can->get('admin_view.create')): ?>
 	<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a><br /><br />
 <?php endif; ?>
 <?php if (ComponentbuilderHelper::checkArray($items)): ?>
@@ -74,7 +74,7 @@ $can	= ComponentbuilderHelper::getActions('admin_view');
 	?>
 	<tr>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
+			<?php if ($canDo->get('admin_view.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=joomla_component&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'admin_views.', $canCheckin); ?>

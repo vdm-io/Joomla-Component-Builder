@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 136 of this MVC
-	@build			12th October, 2017
+	@version		@update number 141 of this MVC
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -148,16 +148,28 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->ajax_input = $ajax_input->toArray();
 			}
 
-			if (!empty($item->php_after_delete))
+			if (!empty($item->php_getitems))
 			{
-				// base64 Decode php_after_delete.
-				$item->php_after_delete = base64_decode($item->php_after_delete);
+				// base64 Decode php_getitems.
+				$item->php_getitems = base64_decode($item->php_getitems);
+			}
+
+			if (!empty($item->php_batchmove))
+			{
+				// base64 Decode php_batchmove.
+				$item->php_batchmove = base64_decode($item->php_batchmove);
 			}
 
 			if (!empty($item->php_save))
 			{
 				// base64 Decode php_save.
 				$item->php_save = base64_decode($item->php_save);
+			}
+
+			if (!empty($item->php_after_delete))
+			{
+				// base64 Decode php_after_delete.
+				$item->php_after_delete = base64_decode($item->php_after_delete);
 			}
 
 			if (!empty($item->php_getlistquery))
@@ -176,12 +188,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_after_publish.
 				$item->php_after_publish = base64_decode($item->php_after_publish);
-			}
-
-			if (!empty($item->php_getitems))
-			{
-				// base64 Decode php_getitems.
-				$item->php_getitems = base64_decode($item->php_getitems);
 			}
 
 			if (!empty($item->php_import))
@@ -206,12 +212,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_postsavehook.
 				$item->php_postsavehook = base64_decode($item->php_postsavehook);
-			}
-
-			if (!empty($item->php_batchmove))
-			{
-				// base64 Decode php_batchmove.
-				$item->php_batchmove = base64_decode($item->php_batchmove);
 			}
 
 			if (!empty($item->php_batchcopy))
@@ -383,7 +383,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxzlinked_components()
+	public function getVxzcustom_import()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -490,8 +490,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_componentbuilder.admin_view.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_componentbuilder')))
+		if ($id != 0 && (!$user->authorise('admin_view.edit.state', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.state', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
@@ -507,7 +507,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$form->setValue('created_by', null, $user->id);
 		}
 		// Modify the form based on Edit Creaded By access controls.
-		if (!$user->authorise('core.edit.created_by', 'com_componentbuilder'))
+		if ($id != 0 && (!$user->authorise('admin_view.edit.created_by', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.created_by', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created_by', 'disabled', 'true');
@@ -517,7 +518,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$form->setFieldAttribute('created_by', 'filter', 'unset');
 		}
 		// Modify the form based on Edit Creaded Date access controls.
-		if (!$user->authorise('core.edit.created', 'com_componentbuilder'))
+		if ($id != 0 && (!$user->authorise('admin_view.edit.created', 'com_componentbuilder.admin_view.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('admin_view.edit.created', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created', 'disabled', 'true');
@@ -571,7 +573,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 
 			$user = JFactory::getUser();
 			// The record has been set. Check the record permissions.
-			return $user->authorise('core.delete', 'com_componentbuilder.admin_view.' . (int) $record->id);
+			return $user->authorise('admin_view.delete', 'com_componentbuilder.admin_view.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -593,14 +595,14 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit.state', 'com_componentbuilder.admin_view.' . (int) $recordId);
+			$permission = $user->authorise('admin_view.edit.state', 'com_componentbuilder.admin_view.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
 				return false;
 			}
 		}
 		// In the absense of better information, revert to the component permissions.
-		return parent::canEditState($record);
+		return $user->authorise('admin_view.edit.state', 'com_componentbuilder');
 	}
     
 	/**
@@ -615,8 +617,9 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	protected function allowEdit($data = array(), $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
+		$user = JFactory::getUser();
 
-		return JFactory::getUser()->authorise('core.edit', 'com_componentbuilder.admin_view.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or parent::allowEdit($data, $key);
+		return $user->authorise('admin_view.edit', 'com_componentbuilder.admin_view.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('admin_view.edit',  'com_componentbuilder');
 	}
     
 	/**
@@ -904,7 +907,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$this->canDo		= ComponentbuilderHelper::getActions('admin_view');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('admin_view.create') && !$this->canDo->get('admin_view.batch'))
 		{
 			return false;
 		}
@@ -919,7 +922,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		{
 			$values['published'] = 0;
 		}
-		elseif (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		elseif (isset($values['published']) && !$this->canDo->get('admin_view.edit.state'))
 		{
 				$values['published'] = 0;
 		}
@@ -936,7 +939,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 
 			// only allow copy if user may edit this item.
 
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('admin_view.edit', $contexts[$pk]))
 
 			{
 
@@ -1051,14 +1054,14 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$this->canDo		= ComponentbuilderHelper::getActions('admin_view');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('admin_view.edit') && !$this->canDo->get('admin_view.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
 		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		if (isset($values['published']) && !$this->canDo->get('admin_view.edit.state'))
 		{
 			unset($values['published']);
 		}
@@ -1068,7 +1071,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		// Parent exists so we proceed
 		foreach ($pks as $pk)
 		{
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('admin_view.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 
@@ -1241,16 +1244,28 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['ajax_input'] = '';
 		}
 
-		// Set the php_after_delete string to base64 string.
-		if (isset($data['php_after_delete']))
+		// Set the php_getitems string to base64 string.
+		if (isset($data['php_getitems']))
 		{
-			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
+			$data['php_getitems'] = base64_encode($data['php_getitems']);
+		}
+
+		// Set the php_batchmove string to base64 string.
+		if (isset($data['php_batchmove']))
+		{
+			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
 		}
 
 		// Set the php_save string to base64 string.
 		if (isset($data['php_save']))
 		{
 			$data['php_save'] = base64_encode($data['php_save']);
+		}
+
+		// Set the php_after_delete string to base64 string.
+		if (isset($data['php_after_delete']))
+		{
+			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
 		}
 
 		// Set the php_getlistquery string to base64 string.
@@ -1269,12 +1284,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_after_publish']))
 		{
 			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
-		}
-
-		// Set the php_getitems string to base64 string.
-		if (isset($data['php_getitems']))
-		{
-			$data['php_getitems'] = base64_encode($data['php_getitems']);
 		}
 
 		// Set the php_import string to base64 string.
@@ -1299,12 +1308,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_postsavehook']))
 		{
 			$data['php_postsavehook'] = base64_encode($data['php_postsavehook']);
-		}
-
-		// Set the php_batchmove string to base64 string.
-		if (isset($data['php_batchmove']))
-		{
-			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
 		}
 
 		// Set the php_batchcopy string to base64 string.

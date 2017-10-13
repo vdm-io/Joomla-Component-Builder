@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 7 of this MVC
-	@build			12th October, 2017
+	@version		@update number 14 of this MVC
+	@build			13th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
 	@subpackage		default_body.php
@@ -37,7 +37,7 @@ $edit = "index.php?option=com_componentbuilder&view=admins_fields_conditions&tas
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
-		<?php if ($canDo->get('core.edit.state')): ?>
+		<?php if ($canDo->get('admin_fields_conditions.edit.state')): ?>
 			<?php
 				if ($this->saveOrder)
 				{
@@ -60,7 +60,7 @@ $edit = "index.php?option=com_componentbuilder&view=admins_fields_conditions&tas
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center">
-		<?php if ($canDo->get('core.edit')): ?>
+		<?php if ($canDo->get('admin_fields_conditions.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
@@ -75,7 +75,7 @@ $edit = "index.php?option=com_componentbuilder&view=admins_fields_conditions&tas
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
+			<?php if ($canDo->get('admin_fields_conditions.edit')): ?>
 				<div class="name">
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->admin_view_system_name); ?></a>
 					<?php if ($item->checked_out): ?>
@@ -87,7 +87,7 @@ $edit = "index.php?option=com_componentbuilder&view=admins_fields_conditions&tas
 			<?php endif; ?>
 		</td>
 		<td class="center">
-		<?php if ($canDo->get('core.edit.state')) : ?>
+		<?php if ($canDo->get('admin_fields_conditions.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'admins_fields_conditions.', true, 'cb'); ?>

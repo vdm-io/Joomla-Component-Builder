@@ -140,6 +140,69 @@
 			message="Error! Please add some short description here."
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_HINT"
 		/>
+		<!-- Php_getitems Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_getitems"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_HINT"
+			required="true"
+		/>
+		<!-- Php_batchmove Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_batchmove"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_HINT"
+			required="true"
+		/>
+		<!-- Icon_add Field. Type: Media. (joomla) -->
+		<field
+			type="media"
+			name="icon_add"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_DESCRIPTION"
+			directory=""
+		/>
+		<!-- Php_save Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_HINT"
+			required="true"
+		/>
+		<!-- Icon_category Field. Type: Media. (joomla) -->
+		<field
+			type="media"
+			name="icon_category"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_DESCRIPTION"
+			directory=""
+		/>
+		<!-- Icon Field. Type: Media. (joomla) -->
+		<field
+			type="media"
+			name="icon"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
+			directory=""
+		/>
 		<!-- Php_after_delete Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -151,6 +214,34 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_HINT"
+			required="true"
+		/>
+		<!-- Php_getlistquery Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_getlistquery"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_HINT"
+			required="true"
+		/>
+		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
+		<!-- Php_allowedit Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_allowedit"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_HINT"
 			required="true"
 		/>
 		<!-- Type Field. Type: List. (joomla) -->
@@ -168,17 +259,17 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_READONLY</option>
 		</field>
-		<!-- Php_save Field. Type: Textarea. (joomla) -->
+		<!-- Php_after_publish Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_LABEL"
+			name="php_after_publish"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_HINT"
 			required="true"
 		/>
 		<!-- Description Field. Type: Textarea. (joomla) -->
@@ -193,6 +284,19 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_HINT"
 		/>
+		<!-- Source Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="source"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCE_LABEL"
+			class="btn-group btn-group-yesno"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_DUMP</option>
+		</field>
 		<!-- Add_fadein Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -207,99 +311,6 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_REMOVE</option>
 		</field>
-		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
-		<!-- Icon Field. Type: Media. (joomla) -->
-		<field
-			type="media"
-			name="icon"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
-			directory=""
-		/>
-		<!-- Php_getlistquery Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_getlistquery"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_HINT"
-			required="true"
-		/>
-		<!-- Icon_add Field. Type: Media. (joomla) -->
-		<field
-			type="media"
-			name="icon_add"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_DESCRIPTION"
-			directory=""
-		/>
-		<!-- Php_allowedit Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_allowedit"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_HINT"
-			required="true"
-		/>
-		<!-- Icon_category Field. Type: Media. (joomla) -->
-		<field
-			type="media"
-			name="icon_category"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_DESCRIPTION"
-			directory=""
-		/>
-		<!-- Php_after_publish Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_after_publish"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_HINT"
-			required="true"
-		/>
-		<!-- Note_on_permissions Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_permissions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_permissions" close="true" />
-		<!-- Source Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="source"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCE_LABEL"
-			class="btn-group btn-group-yesno"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_DUMP</option>
-		</field>
-		<!-- Php_getitems Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_getitems"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_HINT"
-			required="true"
-		/>
 		<!-- Php_import Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -311,6 +322,27 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HINT"
+			required="true"
+		/>
+		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="not_required"
+			default="[]"
+		/>
+		<!-- Note_on_permissions Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_permissions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_permissions" close="true" />
+		<!-- Php_getitems_after_all Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_getitems_after_all"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_HINT"
 			required="true"
 		/>
 		<!-- Addpermissions Field. Type: Subform. (joomla) -->
@@ -387,19 +419,32 @@
 				</field>
 			</form>
 		</field>
-		<!-- Note_on_tabs Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_tabs" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION" heading="h4" class="alert alert-info note_on_tabs" close="true" />
-		<!-- Php_getitems_after_all Field. Type: Textarea. (joomla) -->
+		<!-- Php_before_save Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_getitems_after_all"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_LABEL"
+			name="php_before_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_HINT"
+			required="true"
+		/>
+		<!-- Note_on_tabs Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_tabs" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION" heading="h4" class="alert alert-info note_on_tabs" close="true" />
+		<!-- Php_postsavehook Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_postsavehook"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_HINT"
 			required="true"
 		/>
 		<!-- Addtabs Field. Type: Subform. (joomla) -->
@@ -431,17 +476,17 @@
 				/>
 			</form>
 		</field>
-		<!-- Php_before_save Field. Type: Textarea. (joomla) -->
+		<!-- Php_batchcopy Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_before_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_LABEL"
+			name="php_batchcopy"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_HINT"
 			required="true"
 		/>
 		<!-- Addlinked_views Field. Type: Subform. (joomla) -->
@@ -523,51 +568,6 @@
 				/>
 			</form>
 		</field>
-		<!-- Php_postsavehook Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_postsavehook"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_HINT"
-			required="true"
-		/>
-		<!-- Php_batchmove Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_batchmove"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_HINT"
-			required="true"
-		/>
-		<!-- Php_batchcopy Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_batchcopy"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_HINT"
-			required="true"
-		/>
-		<!-- Not_required Field. Type: Hidden. (joomla) -->
-		<field
-			type="hidden"
-			name="not_required"
-			default="[]"
-		/>
 		<!-- Php_before_publish Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"

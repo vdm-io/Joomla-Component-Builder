@@ -126,6 +126,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php if ($this->canDo->get('admin_view.access')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'admin_views', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADMIN_VIEWS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
@@ -135,6 +136,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php endif; ?>
 
 	<?php if ($this->canDo->get('custom_admin_view.access')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'custom_admin_views', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CUSTOM_ADMIN_VIEWS', true)); ?>

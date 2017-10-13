@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 16 of this MVC
-	@build			12th October, 2017
+	@version		@update number 21 of this MVC
+	@build			13th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
 	@subpackage		admins_fields.php
@@ -99,7 +99,24 @@ class ComponentbuilderModelAdmins_fields extends JModelList
 		$this->checkInNow();
 
 		// load parent items
-		$items = parent::getItems();  
+		$items = parent::getItems();
+
+		// set values to display correctly.
+		if (ComponentbuilderHelper::checkArray($items))
+		{
+			// get user object.
+			$user = JFactory::getUser();
+			foreach ($items as $nr => &$item)
+			{
+				$access = ($user->authorise('admin_fields.access', 'com_componentbuilder.admin_fields.' . (int) $item->id) && $user->authorise('admin_fields.access', 'com_componentbuilder'));
+				if (!$access)
+				{
+					unset($items[$nr]);
+					continue;
+				}
+
+			}
+		}  
         
 		// return items
 		return $items;

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 7 of this MVC
-	@build			12th October, 2017
+	@version		@update number 14 of this MVC
+	@build			13th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
 	@subpackage		admin_fields_conditions.php
@@ -59,8 +59,15 @@ class ComponentbuilderControllerAdmin_fields_conditions extends JControllerForm
 	 * @since   1.6
 	 */
 	protected function allowAdd($data = array())
-	{		// In the absense of better information, revert to the component permissions.
-		return parent::allowAdd($data);
+	{
+		// Access check.
+		$access = JFactory::getUser()->authorise('admin_fields_conditions.access', 'com_componentbuilder');
+		if (!$access)
+		{
+			return false;
+		}
+		// In the absense of better information, revert to the component permissions.
+		return JFactory::getUser()->authorise('admin_fields_conditions.create', $this->option);
 	}
 
 	/**
@@ -81,13 +88,20 @@ class ComponentbuilderControllerAdmin_fields_conditions extends JControllerForm
 		$recordId	= (int) isset($data[$key]) ? $data[$key] : 0;
 
 
+		// Access check.
+		$access = ($user->authorise('admin_fields_conditions.access', 'com_componentbuilder.admin_fields_conditions.' . (int) $recordId) &&  $user->authorise('admin_fields_conditions.access', 'com_componentbuilder'));
+		if (!$access)
+		{
+			return false;
+		}
+
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit', 'com_componentbuilder.admin_fields_conditions.' . (int) $recordId);
+			$permission = $user->authorise('admin_fields_conditions.edit', 'com_componentbuilder.admin_fields_conditions.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('core.edit.own', 'com_componentbuilder.admin_fields_conditions.' . $recordId))
+				if ($user->authorise('admin_fields_conditions.edit.own', 'com_componentbuilder.admin_fields_conditions.' . $recordId))
 				{
 					// Now test the owner is the user.
 					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
@@ -106,7 +120,7 @@ class ComponentbuilderControllerAdmin_fields_conditions extends JControllerForm
 					// If the owner matches 'me' then allow.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('core.edit.own', 'com_componentbuilder'))
+						if ($user->authorise('admin_fields_conditions.edit.own', 'com_componentbuilder'))
 						{
 							return true;
 						}
@@ -116,7 +130,7 @@ class ComponentbuilderControllerAdmin_fields_conditions extends JControllerForm
 			}
 		}
 		// Since there is no permission, revert to the component permissions.
-		return parent::allowEdit($data, $key);
+		return $user->authorise('admin_fields_conditions.edit', $this->option);
 	}
 
 	/**

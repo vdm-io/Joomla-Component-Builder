@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 136 of this MVC
-	@build			12th October, 2017
+	@version		@update number 141 of this MVC
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -58,18 +58,28 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('admin_view.settings_above', $this); ?>
+	<?php echo JLayoutHelper::render('admin_view.details_above', $this); ?>
 <div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'admin_viewTab', array('active' => 'settings')); ?>
+	<?php echo JHtml::_('bootstrap.startTabSet', 'admin_viewTab', array('active' => 'details')); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'details', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_DETAILS', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span6">
+				<?php echo JLayoutHelper::render('admin_view.details_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('admin_view.details_right', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'settings', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_SETTINGS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span6">
-				<?php echo JLayoutHelper::render('admin_view.settings_left', $this); ?>
-			</div>
-			<div class="span6">
-				<?php echo JLayoutHelper::render('admin_view.settings_right', $this); ?>
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('admin_view.settings_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -89,18 +99,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
-
-	<?php if ($this->canDo->get('joomla_component.access')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'linked_components', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_LINKED_COMPONENTS', true)); ?>
-		<div class="row-fluid form-horizontal-desktop">
-		</div>
-		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
-				<?php echo JLayoutHelper::render('admin_view.linked_components_fullwidth', $this); ?>
-			</div>
-		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php endif; ?>
 
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'css', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_CSS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
@@ -158,6 +156,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php if ($this->canDo->get('joomla_component.access')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'custom_import', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_IMPORT', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
@@ -167,8 +166,9 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php endif; ?>
 
-	<?php if ($this->canDo->get('core.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.state') || $this->canDo->get('core.edit.created')) : ?>
+	<?php if ($this->canDo->get('admin_view.delete') || $this->canDo->get('admin_view.edit.created_by') || $this->canDo->get('admin_view.edit.state') || $this->canDo->get('admin_view.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'publishing', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
@@ -210,7 +210,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 </div>
 
 <div class="clearfix"></div>
-<?php echo JLayoutHelper::render('admin_view.settings_under', $this); ?>
+<?php echo JLayoutHelper::render('admin_view.details_under', $this); ?>
 </form>
 </div>
 
@@ -701,7 +701,6 @@ jQuery('input.form-field-repeatable').on('row-add', function (e) {
 });
 });
 <?php endforeach; ?><?php $numberAddtables = range(0, count($this->item->addtables) + 3, 1);?>
-<?php $numberAddconditions = range(0, count($this->item->addconditions) + 3, 1);?>
 
 // for the values already set
 jQuery(document).ready(function(){
@@ -711,22 +710,11 @@ jQuery(document).ready(function(){
 		getTableColumns(<?php echo $fieldNr ?>, "_", "_");
 	});
 <?php endforeach; ?>
-<?php foreach($numberAddconditions as $fieldNr): ?>
-	jQuery('#adminForm').on('change', '#jform_addconditions__addconditions<?php echo $fieldNr ?>__match_field',function (e) {
-		e.preventDefault();
-		getFieldSelectOptions(<?php echo $fieldNr ?>, "_", "_");
-	});
-<?php endforeach; ?>
 	jQuery(document).on('subform-row-add', function(event, row){
 		var groupName = jQuery(row).data('group');
 		var fieldName = groupName.replace(/([0-9])/g, '');
 		var fieldNr = groupName.replace(/([A-z_])/g, '');
-		if ('addconditions' === fieldName) {
-			jQuery('#adminForm').on('change', '#jform_addconditions_addconditions'+fieldNr+'_match_field',function (e) {
-				e.preventDefault();
-				getFieldSelectOptions(fieldNr, "", "");
-			});
-		} else if ('addtables' === fieldName) {
+		if ('addtables' === fieldName) {
 			jQuery('#adminForm').on('change', '#jform_addtables_addtables'+fieldNr+'_table',function (e) {
 				e.preventDefault();
 				getTableColumns(fieldNr, "", "");

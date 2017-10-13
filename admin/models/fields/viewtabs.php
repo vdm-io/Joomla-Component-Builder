@@ -14,7 +14,7 @@
 	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		adminviews.php
+	@subpackage		viewtabs.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -31,16 +31,16 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Adminviews Form Field class for the Componentbuilder component
+ * Viewtabs Form Field class for the Componentbuilder component
  */
-class JFormFieldAdminviews extends JFormFieldList
+class JFormFieldViewtabs extends JFormFieldList
 {
 	/**
-	 * The adminviews field type.
+	 * The viewtabs field type.
 	 *
 	 * @var		string
 	 */
-	public $type = 'adminviews'; 
+	public $type = 'viewtabs'; 
 	/**
 	 * Override to add new button
 	 *
@@ -149,22 +149,34 @@ class JFormFieldAdminviews extends JFormFieldList
 	 */
 	public function getOptions()
 	{
+		// get the input from url
+		$jinput = JFactory::getApplication()->input;
+		// get the view name & id
+		$fieldsID = $jinput->getInt('id', 0);
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','adminview_system_name')));
+		$query->select($db->quoteName(array('a.id','a.addtabs'),array('id','addtabs')));
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
-		$query->where($db->quoteName('a.published') . ' = 1');
-		$query->order('a.system_name ASC');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_fields', 'b') . ' ON (' . $db->quoteName('a.id') . ' = ' . $db->quoteName('b.admin_view') . ')');
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->where($db->quoteName('b.id') . '  = ' . (int) $fieldsID);
+		$query->order('a.addtabs ASC');
 		$db->setQuery((string)$query);
-		$items = $db->loadObjectList();
+		$item = $db->loadObject();
 		$options = array();
-		if ($items)
+		if (isset($item->addtabs) && strlen($item->addtabs) > 5)
 		{
-			$options[] = JHtml::_('select.option', '', 'Select an option');
-			foreach($items as $item)
+			$items = json_decode($item->addtabs, true);
+			$nr = 1;
+			foreach($items as $itemName)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->adminview_system_name);
+				$options[] = JHtml::_('select.option', $nr, $itemName['name']);
+				$nr++;
 			}
+		}
+		else
+		{
+			$options[] = JHtml::_('select.option', 1, JText::_('COM_COMPONENTBUILDER_DETAILS'));
 		}
 		return $options;
 	}

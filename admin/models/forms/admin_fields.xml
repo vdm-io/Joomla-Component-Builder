@@ -112,7 +112,7 @@
 					name="field"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_DESCRIPTION"
-					class="fieldMedium"
+					class="list_class"
 					multiple="false"
 					required="false"
 					button="false"
@@ -200,18 +200,17 @@
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_LINK_DESCRIPTION"
 					class="inputbox"
 				/>
-				<!-- Tab Field. Type: Integer. (joomla) -->
+				<!-- Tab Field. Type: Viewtabs. (custom) -->
 				<field
-					type="integer"
+					type="viewtabs"
 					name="tab"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_TAB_LABEL"
-					default="1"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_TAB_DESCRIPTION"
-					class="fieldSmall"
+					class="fieldMedium"
+					multiple="false"
+					default="1"
 					required="false"
-					first="1"
-					last="15"
-					step="1"
+					button="false"
 				/>
 				<!-- Alignment Field. Type: List. (joomla) -->
 				<field
@@ -259,7 +258,7 @@
 					name="permission"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_DESCRIPTION"
-					class="list_class"
+					class="fieldMedium"
 					multiple="false"
 					required="false"
 					default="0">

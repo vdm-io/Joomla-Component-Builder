@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 136 of this MVC
-	@build			12th October, 2017
+	@version		@update number 141 of this MVC
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -63,10 +63,10 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		$this->saveOrder	= $this->listOrder == 'ordering';
                 // get global action permissions
 		$this->canDo		= ComponentbuilderHelper::getActions('admin_view');
-		$this->canEdit		= $this->canDo->get('core.edit');
-		$this->canState		= $this->canDo->get('core.edit.state');
-		$this->canCreate	= $this->canDo->get('core.create');
-		$this->canDelete	= $this->canDo->get('core.delete');
+		$this->canEdit		= $this->canDo->get('admin_view.edit');
+		$this->canState		= $this->canDo->get('admin_view.edit.state');
+		$this->canCreate	= $this->canDo->get('admin_view.create');
+		$this->canDelete	= $this->canDo->get('admin_view.delete');
 		$this->canBatch	= $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.

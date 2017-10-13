@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			12th October, 2017
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -54,6 +54,9 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'joomla_components.submenu' => 'joomla_component.submenu',
 			'joomla_components.dashboard_list' => 'joomla_component.dashboard_list',
 			'joomla_component.dashboard_add' => 'joomla_component.dashboard_add',
+			'admin_view.create' => 'admin_view.create',
+			'admin_views.access' => 'admin_view.access',
+			'admin_view.access' => 'admin_view.access',
 			'admin_views.submenu' => 'admin_view.submenu',
 			'admin_views.dashboard_list' => 'admin_view.dashboard_list',
 			'admin_view.dashboard_add' => 'admin_view.dashboard_add',
@@ -124,7 +127,13 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'help_document.access' => 'help_document.access',
 			'help_documents.submenu' => 'help_document.submenu',
 			'help_documents.dashboard_list' => 'help_document.dashboard_list',
-			'help_document.dashboard_add' => 'help_document.dashboard_add');
+			'help_document.dashboard_add' => 'help_document.dashboard_add',
+			'admin_fields.create' => 'admin_fields.create',
+			'admins_fields.access' => 'admin_fields.access',
+			'admin_fields.access' => 'admin_fields.access',
+			'admin_fields_conditions.create' => 'admin_fields_conditions.create',
+			'admins_fields_conditions.access' => 'admin_fields_conditions.access',
+			'admin_fields_conditions.access' => 'admin_fields_conditions.access');
 		foreach($viewGroups as $group => $views)
                 {
 			$i = 0;
