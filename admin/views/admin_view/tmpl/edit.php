@@ -157,6 +157,17 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php if ($this->canDo->get('joomla_component.access')) : ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'linked_components', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_LINKED_COMPONENTS', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('admin_view.linked_components_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php endif; ?>
+
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'custom_import', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_IMPORT', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
@@ -166,7 +177,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php endif; ?>
 
 	<?php if ($this->canDo->get('admin_view.delete') || $this->canDo->get('admin_view.edit.created_by') || $this->canDo->get('admin_view.edit.state') || $this->canDo->get('admin_view.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'publishing', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_PUBLISHING', true)); ?>

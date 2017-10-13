@@ -383,7 +383,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxzcustom_import()
+	public function getVxzlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();

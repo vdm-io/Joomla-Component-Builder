@@ -71,7 +71,7 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vxzcustom_import		= $this->get('Vxzcustom_import');
+		$this->vxzlinked_components		= $this->get('Vxzlinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();
