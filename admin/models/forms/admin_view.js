@@ -9,7 +9,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 166 of this MVC
+	@version		@update number 178 of this MVC
 	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -1177,16 +1177,16 @@ function isSet(val)
 }
 
 jQuery(document).ready(function()
-{    
+{
 	// set button
-	addButtonID('admin_fields','create_edit_buttons'); // <-- first
+	addButtonID('admin_fields','create_edit_buttons', 1); // <-- first
 	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
 	getImportScripts(valueSwitch);
-	addButtonID('admin_fields_conditions','create_edit_buttons'); // <-- second
-
 	// now load the fields
 	getFieldsDisplay('admin_fields');
 	getFieldsDisplay('admin_fields_conditions');
+	// set button
+	addButtonID('admin_fields_conditions','create_edit_buttons', 1); // <-- second
 });
 
 function getFieldsDisplay(type){
@@ -1194,6 +1194,8 @@ function getFieldsDisplay(type){
 		if(result){
 			jQuery('#display_'+type).html(result);
 		}
+		// set button
+		addButtonID(type,'header_'+type+'_buttons', 2); // <-- little edit button
 	});
 }
 
@@ -1215,10 +1217,10 @@ function addData(result,where){
 	jQuery(where).closest('.control-group').parent().append(result);
 }
 			
-function addButtonID_server(type){
+function addButtonID_server(type, size){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButtonID&format=json&vdm="+vastDevMod);
-	if(token.length > 0 && type.length > 0){
-		var request = 'token='+token+'&type='+type;
+	if(token.length > 0 && type.length > 0 && size > 0){
+		var request = 'token='+token+'&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -1228,10 +1230,14 @@ function addButtonID_server(type){
 		jsonp: 'callback'
 	});
 }
-function addButtonID(type,where){
-	addButtonID_server(type).done(function(result) {
+function addButtonID(type, where, size){
+	addButtonID_server(type, size).done(function(result) {
 		if(result){
-			addData(result,'#jform_'+where);
+			if (1 == size) {
+				addData(result, '#jform_'+where);
+			} else if (2 == size) {
+				jQuery('#'+where).html(result);
+			}
 		}
 	});
 }			

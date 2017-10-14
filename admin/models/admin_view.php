@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 166 of this MVC
+	@version		@update number 178 of this MVC
 	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -250,16 +250,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_display = base64_decode($item->php_import_display);
 			}
 
-			if (!empty($item->css_view))
+			if (!empty($item->php_getitem))
 			{
-				// base64 Decode css_view.
-				$item->css_view = base64_decode($item->css_view);
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 			if (!empty($item->php_import_save))
 			{
 				// base64 Decode php_import_save.
 				$item->php_import_save = base64_decode($item->php_import_save);
+			}
+
+			if (!empty($item->css_view))
+			{
+				// base64 Decode css_view.
+				$item->css_view = base64_decode($item->css_view);
 			}
 
 			if (!empty($item->css_views))
@@ -332,12 +338,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_import_setdata.
 				$item->php_import_setdata = base64_decode($item->php_import_setdata);
-			}
-
-			if (!empty($item->php_getitem))
-			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 			if (!empty($item->php_import_ext))
@@ -465,6 +465,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_admin_view', $objectUpdate, 'id');
 			}
+			// also update the fields and conditions
 			
 			if (!empty($item->id))
 			{
@@ -1445,16 +1446,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_import_display'] = base64_encode($data['php_import_display']);
 		}
 
-		// Set the css_view string to base64 string.
-		if (isset($data['css_view']))
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
 		{
-			$data['css_view'] = base64_encode($data['css_view']);
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_import_save string to base64 string.
 		if (isset($data['php_import_save']))
 		{
 			$data['php_import_save'] = base64_encode($data['php_import_save']);
+		}
+
+		// Set the css_view string to base64 string.
+		if (isset($data['css_view']))
+		{
+			$data['css_view'] = base64_encode($data['css_view']);
 		}
 
 		// Set the css_views string to base64 string.
@@ -1527,12 +1534,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_import_setdata']))
 		{
 			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
-		}
-
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
-		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_import_ext string to base64 string.

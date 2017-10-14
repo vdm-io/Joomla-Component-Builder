@@ -384,9 +384,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
-						if($typeValue && $user->id != 0)
+						$sizeValue = $jinput->get('size', NULL, 'INT');
+						if($typeValue && $sizeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getButtonID($typeValue);
+							$result = $this->getModel('ajax')->getButtonID($typeValue, $sizeValue);
 						}
 						else
 						{

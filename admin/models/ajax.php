@@ -252,7 +252,7 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}			
 			
-	public function getButtonID($type)
+	public function getButtonID($type, $size)
 	{
 		if (isset($this->buttonArray[$type]))
 		{
@@ -272,31 +272,50 @@ class ComponentbuilderModelAjax extends JModelList
 					if ($id = ComponentbuilderHelper::getVar($type, $values['a_id'], $values['a_view'], 'id'))
 					{
 						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
+						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_EDIT');
 						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$this->buttonArray[$type].'&amp;task='.$type.'.edit&amp;id='.$id;
 						$icon = 'icon-apply';
 					}
 					else
 					{
 						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
+						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_CREATE');
 						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit';
 						$icon = 'icon-new';
 					}
 					// build the button
-					$button = '<div class="control-group">
-						<div class="control-label">
-							<label>' . ComponentbuilderHelper::safeString($type, 'Ww') . '</label>
-						</div>
-						<div class="controls">	
-								<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" >
-									<span class="'.$icon.' icon-white"></span> 
-									' . $buttonText . '
-								</a>
-						</div>
-					</div>';
+					$button = array();
+					if (1 == $size)
+					{
+						$button[] = '<div class="control-group">';
+						$button[] = '<div class="control-label">';
+						$button[] = '<label>' . ComponentbuilderHelper::safeString($type, 'Ww') . '</label>';
+						$button[] = '</div>';
+						$button[] = '<div class="controls">';
+					}
+					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" >';
+					if (1 == $size)
+					{
+						$button[] = '<span class="'.$icon.' icon-white"></span>';
+						$button[] = $buttonText;
+						$button[] = '</a>';
+						$button[] = '</div>';
+						$button[] = '</div>';
+					}
+					elseif (2 == $size)
+					{
+						$button[] = '<span class="'.$icon.' icon-white"></span>';
+						$button[] = $buttonTextSmall;
+						$button[] = '</a>';
+					}
 					// return the button attached to input field
-					return $button;
+					return implode("\n", $button);
 				}
-				return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w')) . '</div></div>';
+				// only return notice if big button
+				if (1 == $size)
+				{
+					return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w')) . '</div></div>';
+				}
 			}
 		}
 		return '';
@@ -366,6 +385,8 @@ class ComponentbuilderModelAjax extends JModelList
 				// build table
 				if (ComponentbuilderHelper::checkArray($rows) && ComponentbuilderHelper::checkArray($head))
 				{
+					// set the number of rows
+					$this->rowNumber = count($rows);
 					// return the table
 					return $this->setSubformTable($head, $rows);
 				}
@@ -436,6 +457,8 @@ class ComponentbuilderModelAjax extends JModelList
 	{
 		if (isset($this->fieldsArray[$type]))
 		{
+			// set type name
+			$typeName = ComponentbuilderHelper::safeString($type, 'w');
 			// get the view name & id
 			$values = $this->getViewID();
 			// check if we are in the correct view.
@@ -444,11 +467,23 @@ class ComponentbuilderModelAjax extends JModelList
 				// get the field data
 				if ($fieldsData = ComponentbuilderHelper::getVar($type, (int) $values['a_id'], 'admin_view', $this->fieldsArray[$type]))
 				{
-					// decode the fields
-					return $this->getSubformTable($type, $fieldsData);
+					// get the table
+					$table = $this->getSubformTable($type, $fieldsData);
+					// set notice of bad practice
+					$notice = '';
+					if (isset($this->rowNumber) && $this->rowNumber > 50)
+					{
+						$notice = '<div class="alert alert-warning">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_FIFTY_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $typeName, $typeName, $typeName) . '</div>';
+					}
+					elseif (isset($this->rowNumber))
+					{
+						$notice = '<div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_FIFTY_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $typeName) . '</div>';
+					}
+					// return table
+					return $notice.$table;
 				}
 			}
-			return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', ComponentbuilderHelper::safeString($type, 'w')) . '</div></div>';
+			return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', $typeName) . '</div></div>';
 		}
 		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
 	}

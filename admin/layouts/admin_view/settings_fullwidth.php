@@ -34,6 +34,7 @@ $fields = $displayData->get('fields') ?: array(
 	'addpermissions',
 	'note_on_tabs',
 	'addtabs',
+	'note_on_linked_views',
 	'addlinked_views'
 );
 

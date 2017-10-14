@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 166 of this MVC
+	@version		@update number 178 of this MVC
 	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -85,6 +85,16 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 			<?php else: ?>
 				<div class="name"><?php echo $this->escape($item->system_name); ?></div>
 			<?php endif; ?>
+			
+			<div class="btn-group" style="margin: 5px 0 0 0;">
+				<?php if ($canDo->get('admin_view.edit') && $admin_field_id = ComponentbuilderHelper::getVar('admin_fields', $item->id, 'admin_view', 'id')): ?>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=admins_fields&task=admin_fields.edit&id=<?php echo $admin_field_id; ?>&ref=admin_views" title="<?php echo JText::_('COM_COMPONENTBUILDER_EDIT_THE_ADMIN_FIELDS'); ?>" ><span class="icon-list"></span></a>
+				<?php endif; ?>
+				<?php if ($canDo->get('admin_view.edit') && $admin_condition_id = ComponentbuilderHelper::getVar('admin_fields_conditions', $item->id, 'admin_view', 'id')): ?>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=admins_fields_conditions&task=admin_fields_conditions.edit&id=<?php echo $admin_condition_id; ?>&ref=admin_views" title="<?php echo JText::_('COM_COMPONENTBUILDER_EDIT_THE_ADMIN_FIELDS_CONDITIONS'); ?>" ><span class="icon-shuffle"></span></a>
+				<?php endif; ?>
+			</div>
+			
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->name_single); ?>

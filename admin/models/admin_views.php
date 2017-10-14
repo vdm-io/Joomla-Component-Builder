@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 166 of this MVC
+	@version		@update number 178 of this MVC
 	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -275,10 +275,12 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->sql = base64_decode($item->sql);
 						// decode php_import_display
 						$item->php_import_display = base64_decode($item->php_import_display);
-						// decode css_view
-						$item->css_view = base64_decode($item->css_view);
+						// decode php_getitem
+						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_import_save
 						$item->php_import_save = base64_decode($item->php_import_save);
+						// decode css_view
+						$item->css_view = base64_decode($item->css_view);
 						// decode css_views
 						$item->css_views = base64_decode($item->css_views);
 						// decode javascript_view_file
@@ -303,8 +305,6 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->html_import_view = base64_decode($item->html_import_view);
 						// decode php_import_setdata
 						$item->php_import_setdata = base64_decode($item->php_import_setdata);
-						// decode php_getitem
-						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_import_ext
 						$item->php_import_ext = base64_decode($item->php_import_ext);
 						// unset the values we don't want exported.
