@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 82 of this MVC
-	@build			4th October, 2017
+	@version		@update number 84 of this MVC
+	@build			13th October, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_code.js
@@ -325,6 +325,7 @@ function usedin(functioName, ide) {
 			if (used.in) {
 				jQuery('#usedin-'+used.id).show();
 				jQuery('#area-'+used.id).html(used.in);
+				jQuery.UIkit.notify({message: used.in, timeout: 5000, status: 'success', pos: 'top-right'});
 				found = true;
 			} else {
 				jQuery('#usedin-'+target).hide();

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 27 of this MVC
-	@build			9th October, 2017
+	@version		@update number 31 of this MVC
+	@build			13th October, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_view.php
@@ -169,6 +169,27 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			{
 				// base64 Decode css.
 				$item->css = base64_decode($item->css);
+			}
+
+			// check what type of custom_button array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->custom_button) && isset($item->custom_button['name']))
+			{
+				$bucket = array();
+				foreach($item->custom_button as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['custom_button'.$nr][$option] = $value;
+					}
+				}
+				$item->custom_button = $bucket;
+				// update the fields
+				$objectUpdate = new stdClass();
+				$objectUpdate->id = (int) $item->id;
+				$objectUpdate->custom_button = json_encode($bucket);
+				// be sure to update the table if we found repeatable fields that are still not converted
+				$this->_db->updateObject('#__componentbuilder_custom_admin_view ', $objectUpdate, 'id');
 			}
 			
 			if (!empty($item->id))

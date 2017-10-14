@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 15 of this MVC
-	@build			17th September, 2017
+	@version		@update number 16 of this MVC
+	@build			13th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtype.php
@@ -101,6 +101,26 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$properties = new Registry;
 				$properties->loadString($item->properties);
 				$item->properties = $properties->toArray();
+			}
+
+			// check what type of properties array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->properties) && isset($item->properties['name']))
+			{
+				$bucket = array();
+				foreach($item->properties as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['addfields'.$nr][$option] = $value;
+					}
+				}
+				$item->properties = $bucket;
+				// be sure to update the value in the db
+				$objectUpdate = new stdClass();
+				$objectUpdate->id = (int) $item->id;
+				$objectUpdate->properties = json_encode($bucket);
+				$this->db->updateObject('#__componentbuilder_fieldtype', $objectUpdate, 'id');
 			}
 			
 			if (!empty($item->id))

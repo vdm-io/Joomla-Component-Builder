@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 141 of this MVC
-	@build			13th October, 2017
+	@version		@update number 166 of this MVC
+	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.js
@@ -1183,7 +1183,33 @@ jQuery(document).ready(function()
 	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
 	getImportScripts(valueSwitch);
 	addButtonID('admin_fields_conditions','create_edit_buttons'); // <-- second
+
+	// now load the fields
+	getFieldsDisplay('admin_fields');
+	getFieldsDisplay('admin_fields_conditions');
 });
+
+function getFieldsDisplay(type){
+	getFieldsDisplay_server(type).done(function(result) {
+		if(result){
+			jQuery('#display_'+type).html(result);
+		}
+	});
+}
+
+function getFieldsDisplay_server(type){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getFieldsDisplay&format=json&vdm="+vastDevMod;
+	if(token.length > 0 && type.length > 0){
+		var request = 'token='+token+'&type=' + type;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
 
 function addData(result,where){
 	jQuery(where).closest('.control-group').parent().append(result);
@@ -1207,7 +1233,7 @@ function addButtonID(type,where){
 		if(result){
 			addData(result,'#jform_'+where);
 		}
-	})
+	});
 }			
 
 function getTableColumns_server(tableName){

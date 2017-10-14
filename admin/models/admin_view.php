@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 141 of this MVC
-	@build			13th October, 2017
+	@version		@update number 166 of this MVC
+	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -366,6 +366,105 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
 				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
 			}			
+
+			// update the fields
+			$objectUpdate = new stdClass();
+			$objectUpdate->id = (int) $item->id;
+			// check what type of linked_views array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->addlinked_views) && isset($item->addlinked_views['adminview']))
+			{
+				$bucket = array();
+				foreach($item->addlinked_views as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['addlinked_views'.$nr][$option] = $value;
+					}
+				}
+				$item->addlinked_views = $bucket;
+				$objectUpdate->addconditions = json_encode($bucket);
+			}
+			// check what type of ajax_input array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->ajax_input) && isset($item->ajax_input['value_name']))
+			{
+				$bucket = array();
+				foreach($item->ajax_input as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['ajax_input'.$nr][$option] = $value;
+					}
+				}
+				$item->ajax_input = $bucket;
+				$objectUpdate->ajax_input = json_encode($bucket);
+			}
+			// check what type of custom_button array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->custom_button) && isset($item->custom_button['name']))
+			{
+				$bucket = array();
+				foreach($item->custom_button as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['custom_button'.$nr][$option] = $value;
+					}
+				}
+				$item->custom_button = $bucket;
+				$objectUpdate->custom_button = json_encode($bucket);
+			}
+			// check what type of permissions array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->addpermissions) && isset($item->addpermissions['action']))
+			{
+				$bucket = array();
+				foreach($item->addpermissions as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['addpermissions'.$nr][$option] = $value;
+					}
+				}
+				$item->addpermissions = $bucket;
+				$objectUpdate->addpermissions = json_encode($bucket);
+			}
+			// check what type of table array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->addtables) && isset($item->addtables['table']))
+			{
+				$bucket = array();
+				foreach($item->addtables as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['addtables'.$nr][$option] = $value;
+					}
+				}
+				$item->addtables = $bucket;
+				$objectUpdate->addtables = json_encode($bucket);
+			}
+			// check what type of tabs array we have here (should be subform... but just incase)
+			// This could happen due to huge data sets
+			if (isset($item->addtabs) && isset($item->addtabs['name']))
+			{
+				$bucket = array();
+				foreach($item->addtabs as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket['addtabs'.$nr][$option] = $value;
+					}
+				}
+				$item->addtabs = $bucket;
+				$objectUpdate->addtabs = json_encode($bucket);
+			}
+			// be sure to update the table if we found repeatable fields that are still not converted
+			if (count((array) $objectUpdate) > 1)
+			{
+				$this->_db->updateObject('#__componentbuilder_admin_view', $objectUpdate, 'id');
+			}
 			
 			if (!empty($item->id))
 			{

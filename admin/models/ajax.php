@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			13th October, 2017
+	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -306,6 +306,335 @@ class ComponentbuilderModelAjax extends JModelList
 	{
 		// get from global helper
 		return ComponentbuilderHelper::getImportScripts($type);
+	}
+
+	protected $functionArray = array(
+				'field' => 'setFieldsNames',
+				'list' => 'setYesNo',
+				'title' => 'setYesNo',
+				'alias' => 'setYesNo',
+				'sort' => 'setYesNo',
+				'search' => 'setYesNo',
+				'filter' => 'setYesNo',
+				'link' => 'setYesNo',
+				'permission' => 'setYesNo',
+				'tab' => 'setTabName',
+				'alignment' => 'setAlignmentName',
+				'target_field' => 'setFieldsNames',
+				'target_behavior' => 'setTargetBehavior',
+				'target_relation' => 'setTargetRelation',
+				'match_field' => 'setFieldsNames',
+				'match_behavior' => 'setMatchBehavior',
+				'match_options' => 'setMatchOptions');
+			
+	protected function getSubformTable($idName, $oject)
+	{
+		if (ComponentbuilderHelper::checkJson($oject) && ComponentbuilderHelper::checkString($idName))
+		{
+			$array = json_decode($oject, true);
+			if (ComponentbuilderHelper::checkArray($array))
+			{ 
+				// Build heading
+				$head = array();
+				foreach ($array as $headers)
+				{
+					foreach ($headers as $header => $value)
+					{
+						$head[$header] = '<th>' . ComponentbuilderHelper::safeString($header, 'Ww');
+					}
+				}
+				// build the rows
+				$rows = array();
+				if (ComponentbuilderHelper::checkArray($array) && ComponentbuilderHelper::checkArray($head))
+				{
+					foreach ($array as $nr => $values)
+					{
+						foreach ($head as $key => $t)
+						{
+							// set the value for the row
+							if (isset($values[$key]))
+							{
+								$this->setSubformRows($nr, $this->setSubformValue($key, $values[$key]), $rows);
+							}
+							else
+							{
+								$this->setSubformRows($nr, $this->setSubformValue($key, ''), $rows);
+							}
+						}
+					}
+				}
+				// build table
+				if (ComponentbuilderHelper::checkArray($rows) && ComponentbuilderHelper::checkArray($head))
+				{
+					// return the table
+					return $this->setSubformTable($head, $rows);
+				}
+			}
+		}
+		return false;
+	}
+
+	protected function setSubformTable($head, $rows)
+	{
+		$table[] = "<div class=\"row-fluid\">";
+		$table[] = "\t<div class=\"subform-repeatable-wrapper subform-table-layout subform-table-sublayout-section-byfieldsets\">";
+		$table[] = "\t\t<div class=\"subform-repeatable\">";
+		$table[] = "\t\t\t<table class=\"adminlist table table-striped table-bordered\">";
+		$table[] = "\t\t\t\t<thead>";
+		$table[] = "\t\t\t\t\t<tr>";
+		$table[] = "\t\t\t\t\t\t". implode("", $head);
+		$table[] = "\t\t\t\t\t</tr>";
+		$table[] = "\t\t\t\t</thead>";
+		$table[] = "\t\t\t\t<tbody>";
+		foreach ($rows as $row)
+		{
+			$table[] = "\t\t\t\t\t<tr class=\"subform-repeatable-group\">";
+			$table[] = "\t\t\t\t\t\t" . $row;
+			$table[] = "\t\t\t\t\t</tr>";
+		}
+		$table[] = "\t\t\t\t</tbody>";
+		$table[] = "\t\t\t</table>";
+		$table[] = "\t\t</div>";
+		$table[] = "\t</div>";
+		$table[] = "</div>";
+		// return the table
+		return implode("\n", $table);
+	}
+
+	protected function setSubformValue($header, $value)
+	{
+		if (array_key_exists($header, $this->functionArray) && method_exists($this, $this->functionArray[$header]))
+		{
+			$value = $this->{$this->functionArray[$header]}($header, $value);
+		}
+		// if no value are set
+		if (!ComponentbuilderHelper::checkString($value))
+		{
+			$value = '-';
+		}
+		return $value;
+	}
+
+	protected function setSubformRows($nr, $value, &$rows)
+	{
+		// build rows
+		if (!isset($rows[$nr]))
+		{
+			$rows[$nr] = '<td>'.$value.'</td>';
+		}
+		else
+		{
+			$rows[$nr] .= '<td>'.$value.'</td>';
+		}
+	}			
+
+	protected $fieldsArray = array(
+				'admin_fields' => 'addfields',
+				'admin_fields_conditions' => 'addconditions');
+
+	public function getFieldsDisplay($type)
+	{
+		if (isset($this->fieldsArray[$type]))
+		{
+			// get the view name & id
+			$values = $this->getViewID();
+			// check if we are in the correct view.
+			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && $values['a_view'] === 'admin_view')
+			{
+				// get the field data
+				if ($fieldsData = ComponentbuilderHelper::getVar($type, (int) $values['a_id'], 'admin_view', $this->fieldsArray[$type]))
+				{
+					// decode the fields
+					return $this->getSubformTable($type, $fieldsData);
+				}
+			}
+			return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', ComponentbuilderHelper::safeString($type, 'w')) . '</div></div>';
+		}
+		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
+	}
+
+	protected function setAlignmentName($header, $value)
+	{
+		switch ($value)
+		{
+			case 1:
+				return JText::_('COM_COMPONENTBUILDER_LEFT_IN_TAB');
+			break;
+			case 2:
+				return JText::_('COM_COMPONENTBUILDER_RIGHT_IN_TAB');
+			break;
+			case 3:
+				return JText::_('COM_COMPONENTBUILDER_FULL_WIDTH_IN_TAB');
+			break;
+			case 4:
+				return JText::_('COM_COMPONENTBUILDER_ABOVE_TABS');
+			break;
+			case 5:
+				return JText::_('COM_COMPONENTBUILDER_UNDERNEATH_TABS');
+			break;
+			case 6:
+				return JText::_('COM_COMPONENTBUILDER_LEFT_OF_TABS');
+			break;
+			case 7:
+				return JText::_('COM_COMPONENTBUILDER_RIGHT_OF_TABS');
+			break;
+		}
+		return JText::_('COM_COMPONENTBUILDER_NOT_SET');
+	}
+
+	protected $fieldNames = array();
+
+	protected function setFieldsNames($header, $value)
+	{
+		$bucket = array();
+		if (ComponentbuilderHelper::checkArray($value))
+		{
+			foreach ($value as $field)
+			{
+				if (!isset($this->fieldNames[$field]))
+				{
+					if (!$this->fieldNames[$field] =  ComponentbuilderHelper::getVar('field', (int) $field, 'id', 'name'))
+					{
+						$this->fieldNames[$field] = JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
+					}
+				}
+				$bucket[] = $this->fieldNames[$field];
+			}
+		}
+		elseif (is_numeric($value))
+		{
+			if (!isset($this->fieldNames[$value]))
+			{
+				if (!$this->fieldNames[$value] =  ComponentbuilderHelper::getVar('field', (int) $value, 'id', 'name'))
+				{
+					$this->fieldNames[$value] = JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
+				}
+			}
+			$bucket[] = $this->fieldNames[$value];		
+		}
+		// return found fields
+		if (ComponentbuilderHelper::checkArray($bucket))
+		{
+			return implode('<br />', $bucket);
+		}
+		return JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
+	}
+
+	protected $tabNames = array();
+
+	protected function setTabName($header, $value)
+	{
+		if (ComponentbuilderHelper::checkArray($this->tabNames))
+		{
+			// get the view name & id
+			$values = $this->getViewID();
+			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && $values['a_view'] === 'admin_view')
+			{
+				if ($tabs = ComponentbuilderHelper::getVar('admin_view', $values['a_id'], 'id', 'addtabs'))
+				{
+					$tabs = json_decode($tabs, true);
+					if (ComponentbuilderHelper::checkArray($tabs))
+					{
+						$nr = 1;
+						foreach ($tabs as $tab)
+						{
+							if (ComponentbuilderHelper::checkArray($tab) && isset($tab['name']))
+							{
+								$this->tabNames[$nr] = $tab['name'];
+								$nr++;
+							}
+						}
+					}
+				}
+			}
+		}
+		// has it been set
+		if (ComponentbuilderHelper::checkArray($this->tabNames) && isset($this->tabNames[$value]))
+		{
+			return $this->tabNames[$value];
+		}
+		return JText::_('COM_COMPONENTBUILDER_DETAILS');
+	}
+
+	protected function setYesNo($header, $value)
+	{
+		if (1 == $value)
+		{
+			return JText::_('COM_COMPONENTBUILDER_YES');
+		}
+		return JText::_('COM_COMPONENTBUILDER_NO');
+	}
+
+	protected function setTargetBehavior($header, $value)
+	{
+		if (1 == $value)
+		{
+			return JText::_('COM_COMPONENTBUILDER_SHOW');
+		}
+		return JText::_('COM_COMPONENTBUILDER_HIDE');
+	}
+
+	protected function setTargetRelation($header, $value)
+	{
+		switch ($value)
+		{
+			case 0:
+				return JText::_('COM_COMPONENTBUILDER_ISOLATE');
+			break;
+			case 1:
+				return JText::_('COM_COMPONENTBUILDER_CHAIN');
+			break;
+		}
+		return  JText::_('COM_COMPONENTBUILDER_NOT_SET');
+	}
+
+	protected function setMatchBehavior($header, $value)
+	{
+		switch ($value)
+		{
+			case 1:
+				return JText::_('COM_COMPONENTBUILDER_IS_ONLY_FOUR_LISTRADIOCHECKBOXES');
+			break;
+			case 2:
+				return JText::_('COM_COMPONENTBUILDER_IS_NOT_ONLY_FOUR_LISTRADIOCHECKBOXES');
+			break;
+			case 3:
+				return JText::_('COM_COMPONENTBUILDER_ANY_SELECTION_ONLY_FOUR_LISTRADIOCHECKBOXESDYNAMIC_LIST');
+			break;
+			case 4:
+				return JText::_('COM_COMPONENTBUILDER_ACTIVE_ONLY_FOUR_TEXT_FIELD');
+			break;
+			case 5:
+				return JText::_('COM_COMPONENTBUILDER_UNACTIVE_ONLY_FOUR_TEXT_FIELD');
+			break;
+			case 6:
+				return JText::_('COM_COMPONENTBUILDER_KEY_WORD_ALL_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD');
+			break;
+			case 7:
+				return JText::_('COM_COMPONENTBUILDER_KEY_WORD_ANY_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD');
+			break;
+			case 8:
+				return JText::_('COM_COMPONENTBUILDER_KEY_WORD_ALL_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD');
+			break;
+			case 9:
+				return JText::_('COM_COMPONENTBUILDER_KEY_WORD_ANY_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD');
+			break;
+			case 10:
+				return JText::_('COM_COMPONENTBUILDER_MIN_LENGTH_ONLY_FOUR_TEXT_FIELD');
+			break;
+			case 11:
+				return JText::_('COM_COMPONENTBUILDER_MAX_LENGTH_ONLY_FOUR_TEXT_FIELD');
+			break;
+			case 12:
+				return JText::_('COM_COMPONENTBUILDER_EXACT_LENGTH_ONLY_FOUR_TEXT_FIELD');
+			break;
+		}
+		return  JText::_('COM_COMPONENTBUILDER_NOT_SET');
+	}
+
+	protected function setMatchOptions($header, $value)
+	{
+		return str_replace("\n", "<br />", $value);
 	}
 
 	public function getFieldSelectOptions($id)
@@ -1010,7 +1339,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$query['a']['select'] = array('id', 'system_name', 'php_preflight_install','php_postflight_install',
 			'php_preflight_update','php_postflight_update','php_method_uninstall',
 			'php_helper_admin','php_admin_event','php_helper_both','php_helper_site',
-			'php_site_event','php_dashboard_methods','dashboard_tab');
+			'php_site_event','php_dashboard_methods','dashboard_tab','javascript');
 		$query['a']['not_base64'] = array('dashboard_tab' => 'json');
 		$query['a']['name'] = 'system_name';
 

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			13th October, 2017
+	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -51,6 +51,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getImportScripts', 'ajax');
 		$this->registerTask('getButton', 'ajax');
 		$this->registerTask('getButtonID', 'ajax');
+		$this->registerTask('getFieldsDisplay', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
 		$this->registerTask('getLayoutDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
@@ -386,6 +387,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($typeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getButtonID($typeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getFieldsDisplay':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$typeValue = $jinput->get('type', NULL, 'WORD');
+						if($typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getFieldsDisplay($typeValue);
 						}
 						else
 						{
