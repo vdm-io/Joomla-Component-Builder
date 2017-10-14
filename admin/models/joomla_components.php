@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 388 of this MVC
+	@version		@update number 389 of this MVC
 	@build			14th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -1212,7 +1212,24 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$this->checkInNow();
 
 		// load parent items
-		$items = parent::getItems();  
+		$items = parent::getItems();
+
+		// set values to display correctly.
+		if (ComponentbuilderHelper::checkArray($items))
+		{
+			// get user object.
+			$user = JFactory::getUser();
+			foreach ($items as $nr => &$item)
+			{
+				$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
+				if (!$access)
+				{
+					unset($items[$nr]);
+					continue;
+				}
+
+			}
+		}  
         
 		// return items
 		return $items;
@@ -1348,8 +1365,17 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
+					// get user object.
+					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
+						$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
+						if (!$access)
+						{
+							unset($items[$nr]);
+							continue;
+						}
+
 						// decode sql
 						$item->sql = base64_decode($item->sql);
 						// decode php_preflight_update

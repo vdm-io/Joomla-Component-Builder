@@ -49,6 +49,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$viewAccess = array(
 			'compiler.submenu' => 'compiler.submenu',
 			'compiler.dashboard_list' => 'compiler.dashboard_list',
+			'joomla_component.create' => 'joomla_component.create',
 			'joomla_components.access' => 'joomla_component.access',
 			'joomla_component.access' => 'joomla_component.access',
 			'joomla_components.submenu' => 'joomla_component.submenu',

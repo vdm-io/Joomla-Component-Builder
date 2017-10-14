@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 388 of this MVC
+	@version		@update number 389 of this MVC
 	@build			14th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -106,12 +106,12 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 		// Built the actions for new and existing records.
 		if ($this->refid || $this->ref)
 		{
-			if ($this->canDo->get('core.create') && $isNew)
+			if ($this->canDo->get('joomla_component.create') && $isNew)
 			{
 				// We can create the record.
 				JToolBarHelper::save('joomla_component.save', 'JTOOLBAR_SAVE');
 			}
-			elseif ($this->canDo->get('core.edit'))
+			elseif ($this->canDo->get('joomla_component.edit'))
 			{
 				// We can save the record.
 				JToolBarHelper::save('joomla_component.save', 'JTOOLBAR_SAVE');
@@ -132,7 +132,7 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 			if ($isNew)
 			{
 				// For new records, check the create permission.
-				if ($this->canDo->get('core.create'))
+				if ($this->canDo->get('joomla_component.create'))
 				{
 					JToolBarHelper::apply('joomla_component.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('joomla_component.save', 'JTOOLBAR_SAVE');
@@ -142,24 +142,24 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 			}
 			else
 			{
-				if ($this->canDo->get('core.edit'))
+				if ($this->canDo->get('joomla_component.edit'))
 				{
 					// We can save the new record
 					JToolBarHelper::apply('joomla_component.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('joomla_component.save', 'JTOOLBAR_SAVE');
 					// We can save this record, but check the create permission to see
 					// if we can return to make a new one.
-					if ($this->canDo->get('core.create'))
+					if ($this->canDo->get('joomla_component.create'))
 					{
 						JToolBarHelper::custom('joomla_component.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 					}
 				}
 				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('joomla_component.version'));
-				if ($this->state->params->get('save_history', 1) && $this->canDo->get('core.edit') && $canVersion)
+				if ($this->state->params->get('save_history', 1) && $this->canDo->get('joomla_component.edit') && $canVersion)
 				{
 					JToolbarHelper::versions('com_componentbuilder.joomla_component', $this->item->id);
 				}
-				if ($this->canDo->get('core.create'))
+				if ($this->canDo->get('joomla_component.create'))
 				{
 					JToolBarHelper::custom('joomla_component.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}

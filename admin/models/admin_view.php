@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 184 of this MVC
+	@version		@update number 185 of this MVC
 	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -522,6 +522,23 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if ($db->getNumRows())
 		{
 			$items = $db->loadObjectList();
+
+			// set values to display correctly.
+			if (ComponentbuilderHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
 
 			// Filter by addadmin_viewsvvvz in this Repetable Field
 			if (ComponentbuilderHelper::checkArray($items) && isset($this->addadmin_viewsvvvz))

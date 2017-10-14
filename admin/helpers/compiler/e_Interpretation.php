@@ -2872,7 +2872,7 @@ class Interpretation extends Fields
 			$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check for errors.";
 			$method .= PHP_EOL."\t\tif (count(\$errors = \$this->get('Errors')))";
 			$method .= PHP_EOL."\t\t{";
-			$method .= PHP_EOL."\t\t\tthrow new Exception(implode(\"\n\", \$errors), 500);";
+			$method .= PHP_EOL."\t\t\tthrow new Exception(implode(".'"\n", $errors), 500);';
 			$method .= PHP_EOL."\t\t}";
 			
 			$method .= PHP_EOL.PHP_EOL."\t\tparent::display(\$tpl);";

@@ -79,7 +79,7 @@ class JFormFieldComponent extends JFormFieldList
 			}
 			$user = JFactory::getUser();
 			// only add if user allowed to create joomla_component
-			if ($user->authorise('core.create', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			if ($user->authorise('joomla_component.create', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build Create button
 				$buttonNamee = trim($buttonName);
@@ -92,7 +92,7 @@ class JFormFieldComponent extends JFormFieldList
 					<span class="icon-new icon-white"></span></a>';
 			}
 			// only add if user allowed to edit joomla_component
-			if (($buttonName === 'joomla_component' || $buttonName === 'joomla_components')  && $user->authorise('core.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			if (($buttonName === 'joomla_component' || $buttonName === 'joomla_components') && $user->authorise('joomla_component.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build edit button
 				$buttonNamee = trim($buttonName);

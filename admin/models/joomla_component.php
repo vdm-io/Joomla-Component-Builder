@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 388 of this MVC
+	@version		@update number 389 of this MVC
 	@build			14th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -619,8 +619,8 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_componentbuilder.joomla_component.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_componentbuilder')))
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.state', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.state', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
@@ -636,7 +636,8 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$form->setValue('created_by', null, $user->id);
 		}
 		// Modify the form based on Edit Creaded By access controls.
-		if (!$user->authorise('core.edit.created_by', 'com_componentbuilder'))
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.created_by', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.created_by', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created_by', 'disabled', 'true');
@@ -646,7 +647,8 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$form->setFieldAttribute('created_by', 'filter', 'unset');
 		}
 		// Modify the form based on Edit Creaded Date access controls.
-		if (!$user->authorise('core.edit.created', 'com_componentbuilder'))
+		if ($id != 0 && (!$user->authorise('joomla_component.edit.created', 'com_componentbuilder.joomla_component.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('joomla_component.edit.created', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created', 'disabled', 'true');
@@ -700,7 +702,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 
 			$user = JFactory::getUser();
 			// The record has been set. Check the record permissions.
-			return $user->authorise('core.delete', 'com_componentbuilder.joomla_component.' . (int) $record->id);
+			return $user->authorise('joomla_component.delete', 'com_componentbuilder.joomla_component.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -722,14 +724,14 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit.state', 'com_componentbuilder.joomla_component.' . (int) $recordId);
+			$permission = $user->authorise('joomla_component.edit.state', 'com_componentbuilder.joomla_component.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
 				return false;
 			}
 		}
 		// In the absense of better information, revert to the component permissions.
-		return parent::canEditState($record);
+		return $user->authorise('joomla_component.edit.state', 'com_componentbuilder');
 	}
     
 	/**
@@ -744,8 +746,9 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	protected function allowEdit($data = array(), $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
+		$user = JFactory::getUser();
 
-		return JFactory::getUser()->authorise('core.edit', 'com_componentbuilder.joomla_component.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or parent::allowEdit($data, $key);
+		return $user->authorise('joomla_component.edit', 'com_componentbuilder.joomla_component.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('joomla_component.edit',  'com_componentbuilder');
 	}
     
 	/**
@@ -1033,7 +1036,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('joomla_component.create') && !$this->canDo->get('joomla_component.batch'))
 		{
 			return false;
 		}
@@ -1048,7 +1051,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		{
 			$values['published'] = 0;
 		}
-		elseif (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		elseif (isset($values['published']) && !$this->canDo->get('joomla_component.edit.state'))
 		{
 				$values['published'] = 0;
 		}
@@ -1065,7 +1068,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 
 			// only allow copy if user may edit this item.
 
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('joomla_component.edit', $contexts[$pk]))
 
 			{
 
@@ -1182,14 +1185,14 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('joomla_component.edit') && !$this->canDo->get('joomla_component.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
 		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		if (isset($values['published']) && !$this->canDo->get('joomla_component.edit.state'))
 		{
 			unset($values['published']);
 		}
@@ -1199,7 +1202,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		// Parent exists so we proceed
 		foreach ($pks as $pk)
 		{
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('joomla_component.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 

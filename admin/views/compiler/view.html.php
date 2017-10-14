@@ -70,8 +70,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			throw new Exception(implode("
-", $errors), 500);
+			throw new Exception(implode("\n", $errors), 500);
 		}
 
 		parent::display($tpl);

@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 388 of this MVC
+	@version		@update number 389 of this MVC
 	@build			14th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -56,10 +56,10 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		$this->saveOrder	= $this->listOrder == 'ordering';
                 // get global action permissions
 		$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
-		$this->canEdit		= $this->canDo->get('core.edit');
-		$this->canState		= $this->canDo->get('core.edit.state');
-		$this->canCreate	= $this->canDo->get('core.create');
-		$this->canDelete	= $this->canDo->get('core.delete');
+		$this->canEdit		= $this->canDo->get('joomla_component.edit');
+		$this->canState		= $this->canDo->get('joomla_component.edit.state');
+		$this->canCreate	= $this->canDo->get('joomla_component.create');
+		$this->canDelete	= $this->canDo->get('joomla_component.delete');
 		$this->canBatch	= $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.

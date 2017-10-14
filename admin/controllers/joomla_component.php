@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 388 of this MVC
+	@version		@update number 389 of this MVC
 	@build			14th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
@@ -67,7 +67,7 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 			return false;
 		}
 		// In the absense of better information, revert to the component permissions.
-		return parent::allowAdd($data);
+		return JFactory::getUser()->authorise('joomla_component.create', $this->option);
 	}
 
 	/**
@@ -88,13 +88,20 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 		$recordId	= (int) isset($data[$key]) ? $data[$key] : 0;
 
 
+		// Access check.
+		$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $recordId) &&  $user->authorise('joomla_component.access', 'com_componentbuilder'));
+		if (!$access)
+		{
+			return false;
+		}
+
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit', 'com_componentbuilder.joomla_component.' . (int) $recordId);
+			$permission = $user->authorise('joomla_component.edit', 'com_componentbuilder.joomla_component.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('core.edit.own', 'com_componentbuilder.joomla_component.' . $recordId))
+				if ($user->authorise('joomla_component.edit.own', 'com_componentbuilder.joomla_component.' . $recordId))
 				{
 					// Now test the owner is the user.
 					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
@@ -113,7 +120,7 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 					// If the owner matches 'me' then allow.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('core.edit.own', 'com_componentbuilder'))
+						if ($user->authorise('joomla_component.edit.own', 'com_componentbuilder'))
 						{
 							return true;
 						}
@@ -123,7 +130,7 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 			}
 		}
 		// Since there is no permission, revert to the component permissions.
-		return parent::allowEdit($data, $key);
+		return $user->authorise('joomla_component.edit', $this->option);
 	}
 
 	/**

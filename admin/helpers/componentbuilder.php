@@ -477,11 +477,6 @@ abstract class ComponentbuilderHelper
 			$script['display'][] = "\t\t\t// Include helper submenu";
 			$script['display'][] = "\t\t\t###-#-#-Component###Helper::addSubmenu('import');";
 			$script['display'][] = "\t\t}";
-			$script['display'][] = "\n\t\t// Check for errors.";
-			$script['display'][] = "\t\tif (count(\$errors = \$this->get('Errors'))){";
-			$script['display'][] = "\t\t\tJError::raiseError(500, implode('<br />', \$errors));";
-			$script['display'][] = "\t\t\treturn false;";
-			$script['display'][] = "\t\t}";
 			$script['display'][] = "\n\t\t\$paths = new stdClass;";
 			$script['display'][] = "\t\t\$paths->first = '';";
 			$script['display'][] = "\t\t\$state = \$this->get('state');";
@@ -506,6 +501,10 @@ abstract class ComponentbuilderHelper
 			$script['display'][] = "\t\t\t\$this->headers \t\t= ###-#-#-Component###Helper::getFileHeaders(\$this->dataType);";
 			$script['display'][] = "\t\t\t// clear the data type";
 			$script['display'][] = "\t\t\t\$session->clear('dataType');";
+			$script['display'][] = "\t\t}";
+			$script['display'][] = "\n\t\t// Check for errors.";
+			$script['display'][] = "\t\tif (count(\$errors = \$this->get('Errors'))){";
+			$script['display'][] = "\t\t\tthrow new Exception(implode(".'"\n", $errors), 500);';
 			$script['display'][] = "\t\t}";
 			$script['display'][] = "\n\t\t// Display the template";
 			$script['display'][] = "\t\tparent::display(\$tpl);";
