@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 31 of this MVC
-	@build			13th October, 2017
+	@version		@update number 32 of this MVC
+	@build			14th October, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_view.php
@@ -189,7 +189,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$objectUpdate->id = (int) $item->id;
 				$objectUpdate->custom_button = json_encode($bucket);
 				// be sure to update the table if we found repeatable fields that are still not converted
-				$this->_db->updateObject('#__componentbuilder_custom_admin_view ', $objectUpdate, 'id');
+				$this->_db->updateObject('#__componentbuilder_custom_admin_view', $objectUpdate, 'id');
 			}
 			
 			if (!empty($item->id))
