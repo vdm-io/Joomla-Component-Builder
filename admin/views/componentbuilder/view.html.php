@@ -40,12 +40,6 @@ class ComponentbuilderViewComponentbuilder extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		};
 		// Assign data to the view
 		$this->icons			= $this->get('Icons');
 		$this->contributors		= ComponentbuilderHelper::getContributors();
@@ -59,6 +53,12 @@ class ComponentbuilderViewComponentbuilder extends JViewLegacy
 		
 		// Set the toolbar
 		$this->addToolBar();
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
+		}
 
 		// Display the template
 		parent::display($tpl);

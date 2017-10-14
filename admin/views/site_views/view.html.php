@@ -46,13 +46,6 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 			ComponentbuilderHelper::addSubmenu('site_views');
 		}
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		// Assign data to the view
 		$this->items 		= $this->get('Items');
 		$this->pagination 	= $this->get('Pagination');
@@ -79,6 +72,12 @@ class ComponentbuilderViewSite_views extends JViewLegacy
                         {
                                 $this->batchDisplay = JHtmlBatch_::render();
                         }
+		}
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
 		}
 
 		// Display the template

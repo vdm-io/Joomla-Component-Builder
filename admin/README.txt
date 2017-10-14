@@ -114,8 +114,8 @@ Component Builder is mapped as a component in itself on my local development env
 + *Version*: 2.5.8
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **124646**
-+ *File count*: **742**
++ *Line count*: **124408**
++ *File count*: **741**
 + *Folder count*: **129**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).

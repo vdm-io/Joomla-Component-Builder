@@ -129,7 +129,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->fieldtypevvwd = $item->id;
+		$this->fieldtypevvwc = $item->id;
 
 		return $item;
 	}
@@ -139,7 +139,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWacfields()
+	public function getWabfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -159,15 +159,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','fieldtype_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by fieldtypevvwd global.
-		$fieldtypevvwd = $this->fieldtypevvwd;
-		if (is_numeric($fieldtypevvwd ))
+		// Filter by fieldtypevvwc global.
+		$fieldtypevvwc = $this->fieldtypevvwc;
+		if (is_numeric($fieldtypevvwc ))
 		{
-			$query->where('a.fieldtype = ' . (int) $fieldtypevvwd );
+			$query->where('a.fieldtype = ' . (int) $fieldtypevvwc );
 		}
-		elseif (is_string($fieldtypevvwd))
+		elseif (is_string($fieldtypevvwc))
 		{
-			$query->where('a.fieldtype = ' . $db->quote($fieldtypevvwd));
+			$query->where('a.fieldtype = ' . $db->quote($fieldtypevvwc));
 		}
 		else
 		{
@@ -208,13 +208,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationWacfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationWabfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationWacfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationWabfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationWacfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationWabfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationWacfields($item->store, 'store');
+					$item->store = $this->selectionTranslationWabfields($item->store, 'store');
 				}
 			}
 
@@ -228,7 +228,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationWacfields($value,$name)
+	public function selectionTranslationWabfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')

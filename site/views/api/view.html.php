@@ -36,7 +36,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 {
 	// Overwriting JView display method
 	function display($tpl = null)
-	{
+	{		
 		// get combined params of both component and menu
 		$this->app = JFactory::getApplication();
 		$this->params = $this->app->getParams();
@@ -46,18 +46,18 @@ class ComponentbuilderViewApi extends JViewLegacy
 		// Initialise variables.
 		$this->item	= $this->get('Item');
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
-			JError::raiseError(500, implode(PHP_EOL, $errors));
-			return false;
-		}
-
 		// Set the toolbar
 		$this->addToolBar();
 
 		// set the document
 		$this->_prepareDocument();
+
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("
+", $errors), 500);
+		}
 
 		parent::display($tpl);
 	}

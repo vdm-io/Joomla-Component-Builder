@@ -40,13 +40,6 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		// Assign the variables
 		$this->form 		= $this->get('Form');
 		$this->item 		= $this->get('Item');
@@ -71,10 +64,16 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->wacfields		= $this->get('Wacfields');
+		$this->wabfields		= $this->get('Wabfields');
 
 		// Set the toolbar
 		$this->addToolBar();
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
+		}
 
 		// Display the template
 		parent::display($tpl);

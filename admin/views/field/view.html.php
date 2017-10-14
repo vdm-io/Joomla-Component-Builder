@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 38 of this MVC
-	@build			28th May, 2017
+	@version		@update number 39 of this MVC
+	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -40,13 +40,6 @@ class ComponentbuilderViewField extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		// Assign the variables
 		$this->form 		= $this->get('Form');
 		$this->item 		= $this->get('Item');
@@ -70,11 +63,14 @@ class ComponentbuilderViewField extends JViewLegacy
                         $this->referral = '&ref='.(string)$this->ref;
                 }
 
-		// Get Linked view data
-		$this->wablinked_admin_views		= $this->get('Wablinked_admin_views');
-
 		// Set the toolbar
 		$this->addToolBar();
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
+		}
 
 		// Display the template
 		parent::display($tpl);
@@ -198,16 +194,6 @@ class ComponentbuilderViewField extends JViewLegacy
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/field.css");
 		// Add Ajax Token
 		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-
-		// Add the CSS for Footable
-		$document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.standalone.min.css');
-		// Add the JavaScript for Footable (adding all funtions)
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.min.js');
-
-		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
-		$document->addScriptDeclaration($footable);
-
 		$document->addScript(JURI::root() . $this->script);
 		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/field/submitbutton.js"); 
 		JText::script('view not acceptable. Error');

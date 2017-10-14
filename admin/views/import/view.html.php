@@ -41,18 +41,11 @@ class ComponentbuilderViewImport extends JViewLegacy
 	protected $dataType;
 
 	public function display($tpl = null)
-	{
+	{		
 		if ($this->getLayout() !== 'modal')
 		{
 			// Include helper submenu
 			ComponentbuilderHelper::addSubmenu('import');
-		}
-
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
 		}
 
 		$paths = new stdClass;
@@ -82,6 +75,12 @@ class ComponentbuilderViewImport extends JViewLegacy
 			$this->headers 		= ComponentbuilderHelper::getFileHeaders($this->dataType);
 			// clear the data type
 			$session->clear('dataType');
+		}
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
 		}
 
 		// Display the template

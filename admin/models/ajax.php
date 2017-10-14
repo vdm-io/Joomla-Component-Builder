@@ -449,6 +449,7 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 	}			
 
+	protected $ref;
 	protected $fieldsArray = array(
 				'admin_fields' => 'addfields',
 				'admin_fields_conditions' => 'addconditions');
@@ -464,6 +465,7 @@ class ComponentbuilderModelAjax extends JModelList
 			// check if we are in the correct view.
 			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && $values['a_view'] === 'admin_view')
 			{
+				$this->ref = '&ref=admin_view&refid=' . $values['a_id'];
 				// get the field data
 				if ($fieldsData = ComponentbuilderHelper::getVar($type, (int) $values['a_id'], 'admin_view', $this->fieldsArray[$type]))
 				{
@@ -533,7 +535,7 @@ class ComponentbuilderModelAjax extends JModelList
 						$this->fieldNames[$field] = JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
 					}
 				}
-				$bucket[] = $this->fieldNames[$field];
+				$bucket[] = $this->fieldNames[$field] . $this->addEditLink($field, 'field', 'fields');
 			}
 		}
 		elseif (is_numeric($value))
@@ -545,7 +547,7 @@ class ComponentbuilderModelAjax extends JModelList
 					$this->fieldNames[$value] = JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
 				}
 			}
-			$bucket[] = $this->fieldNames[$value];		
+			$bucket[] = $this->fieldNames[$value] . $this->addEditLink($value, 'field', 'fields');
 		}
 		// return found fields
 		if (ComponentbuilderHelper::checkArray($bucket))
@@ -553,6 +555,30 @@ class ComponentbuilderModelAjax extends JModelList
 			return implode('<br />', $bucket);
 		}
 		return JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
+	}
+
+	protected function addEditLink($id, $view, $views)
+	{
+		// can edit
+		if ($this->canEdit($id))
+		{
+			$edit = "index.php?option=com_componentbuilder&view=".$views."&task=".$view.".edit&id=".$id.$this->ref;
+			return ' <a onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$edit.'\' })"  href="javascript:void(0)" class="uk-icon-pencil"></a>';
+			
+		}
+		return '';
+	}
+
+	protected $user;
+
+	protected function canEdit($id, $view = 'admin_fields')
+	{
+		// load field permission check
+		if (!ComponentbuilderHelper::checkObject($this->user)) // TODO && $this->user instanceof JUser)
+		{
+			$this->user = JFactory::getUser();
+		}
+		return $this->user->authorise($view.'.edit', 'com_componentbuilder.'.$view.'.' . (int) $id);
 	}
 
 	protected $tabNames = array();

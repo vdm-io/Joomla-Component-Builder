@@ -39,7 +39,7 @@ class ###Component###View###SView### extends JViewLegacy
 {
 	// Overwriting JView display method
 	function display($tpl = null)
-	{
+	{		
 		// get combined params of both component and menu
 		$this->app = JFactory::getApplication();
 		$this->params = $this->app->getParams();

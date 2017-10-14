@@ -50,12 +50,6 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			ComponentbuilderHelper::addSubmenu('import');
 		}
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors'))){
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		$paths = new stdClass;
 		$paths->first = '';
 		$state = $this->get('state');
@@ -95,6 +89,13 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			$this->packageInfo = json_decode($session->get('smart_package_info', false), true);
 			$this->formPackage = $this->getForm();
 		}
+
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
+		}
+
 		// Display the template
 		parent::display($tpl);
 	}

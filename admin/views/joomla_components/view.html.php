@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 387 of this MVC
-	@build			11th October, 2017
+	@version		@update number 388 of this MVC
+	@build			14th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -46,13 +46,6 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			ComponentbuilderHelper::addSubmenu('joomla_components');
 		}
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		// Assign data to the view
 		$this->items 		= $this->get('Items');
 		$this->pagination 	= $this->get('Pagination');
@@ -79,6 +72,12 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
                         {
                                 $this->batchDisplay = JHtmlBatch_::render();
                         }
+		}
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
 		}
 
 		// Display the template

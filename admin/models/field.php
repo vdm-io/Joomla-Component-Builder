@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 38 of this MVC
-	@build			28th May, 2017
+	@version		@update number 39 of this MVC
+	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		field.php
@@ -131,86 +131,8 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.field');
 			}
 		}
-		$this->addfieldsvvwc = $item->id;
 
 		return $item;
-	}
-
-	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getWablinked_admin_views()
-	{
-		// Get the user object.
-		$user = JFactory::getUser();
-		// Create a new query object.
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-
-		// Select some fields
-		$query->select('a.*');
-
-		// From the componentbuilder_admin_view table
-		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
-
-		// Order the results by ordering
-		$query->order('a.published  ASC');
-		$query->order('a.ordering  ASC');
-
-		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$items = $db->loadObjectList();
-
-			// set values to display correctly.
-			if (ComponentbuilderHelper::checkArray($items))
-			{
-				// get user object.
-				$user = JFactory::getUser();
-				foreach ($items as $nr => &$item)
-				{
-					$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-
-			// Filter by addfieldsvvwc in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addfieldsvvwc))
-			{
-				foreach ($items as $nr => &$item)
-				{
-					if (isset($item->addfields) && ComponentbuilderHelper::checkJson($item->addfields))
-					{
-						$tmpArray = json_decode($item->addfields,true);
-						if (!isset($tmpArray['field']) || !ComponentbuilderHelper::checkArray($tmpArray['field']) || !in_array($this->addfieldsvvwc, $tmpArray['field']))
-						{
-							unset($items[$nr]);
-							continue;
-						}
-					}
-					else
-					{
-						unset($items[$nr]);
-						continue;
-					}
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return $items;
-		}
-		return false;
 	} 
 
 	/**

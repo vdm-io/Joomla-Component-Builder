@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 178 of this MVC
+	@version		@update number 184 of this MVC
 	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -46,13 +46,6 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 			ComponentbuilderHelper::addSubmenu('admin_views');
 		}
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		// Assign data to the view
 		$this->items 		= $this->get('Items');
 		$this->pagination 	= $this->get('Pagination');
@@ -79,6 +72,12 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
                         {
                                 $this->batchDisplay = JHtmlBatch_::render();
                         }
+		}
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
 		}
 
 		// Display the template

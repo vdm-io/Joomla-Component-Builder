@@ -2840,13 +2840,6 @@ class Interpretation extends Fields
 					$method .= PHP_EOL."\t\t\$this->".ComponentbuilderHelper::safeString($custom_get_name)."\t= \$this->get('".$custom_get_name."');";
 				}
 			}
-
-			$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check for errors.";
-			$method .= PHP_EOL."\t\tif (count(\$errors = \$this->get('Errors')))";
-			$method .= PHP_EOL."\t\t{";
-			$method .= PHP_EOL."\t\t\tJError::raiseError(500, ".'implode(PHP_EOL, $errors));';
-			$method .= PHP_EOL."\t\t\treturn false;";
-			$method .= PHP_EOL."\t\t}";
 			// add custom script
 			if ($view['settings']->add_php_jview_display == 1)
 			{
@@ -2875,6 +2868,13 @@ class Interpretation extends Fields
 				$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." set the document";
 				$method .= PHP_EOL."\t\t\$this->setDocument();";
 			}
+
+			$method .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Check for errors.";
+			$method .= PHP_EOL."\t\tif (count(\$errors = \$this->get('Errors')))";
+			$method .= PHP_EOL."\t\t{";
+			$method .= PHP_EOL."\t\t\tthrow new Exception(implode(\"\n\", \$errors), 500);";
+			$method .= PHP_EOL."\t\t}";
+			
 			$method .= PHP_EOL.PHP_EOL."\t\tparent::display(\$tpl);";
 		}
 		return $method;

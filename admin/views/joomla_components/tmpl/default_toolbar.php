@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 387 of this MVC
-	@build			11th October, 2017
+	@version		@update number 388 of this MVC
+	@build			14th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		default_toolbar.php

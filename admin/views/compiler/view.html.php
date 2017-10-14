@@ -47,13 +47,6 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		$this->canDo	= ComponentbuilderHelper::getActions('compiler');
 		// Initialise variables.
 		$this->items	= $this->get('Items');
-
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
-			JError::raiseError(500, implode(PHP_EOL, $errors));
-			return false;
-		}
 		if ($this->getLayout() !== 'modal')
 		{
 			// Include helper submenu
@@ -73,6 +66,13 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 
 		// set the document
 		$this->setDocument();
+
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("
+", $errors), 500);
+		}
 
 		parent::display($tpl);
 	}

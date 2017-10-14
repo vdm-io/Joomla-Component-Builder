@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 38 of this MVC
-	@build			28th May, 2017
+	@version		@update number 39 of this MVC
+	@build			14th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -88,18 +88,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
-
-	<?php if ($this->canDo->get('admin_view.access')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'linked_admin_views', JText::_('COM_COMPONENTBUILDER_FIELD_LINKED_ADMIN_VIEWS', true)); ?>
-		<div class="row-fluid form-horizontal-desktop">
-		</div>
-		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
-				<?php echo JLayoutHelper::render('field.linked_admin_views_fullwidth', $this); ?>
-			</div>
-		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php endif; ?>
 
 	<?php if ($this->canDo->get('field.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('field.edit.state') || $this->canDo->get('core.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'publishing', JText::_('COM_COMPONENTBUILDER_FIELD_PUBLISHING', true)); ?>
