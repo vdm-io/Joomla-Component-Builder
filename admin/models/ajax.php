@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			14th October, 2017
+	@build			16th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -213,6 +213,7 @@ class ComponentbuilderModelAjax extends JModelList
 	protected $buttonArray = array(
 				'admin_fields' => 'admins_fields',
 				'admin_fields_conditions' => 'admins_fields_conditions',
+				'field' => 'fields',
 				'language' => true);
 			
 	public function getButton($type)
@@ -346,58 +347,60 @@ class ComponentbuilderModelAjax extends JModelList
 				'match_behavior' => 'setMatchBehavior',
 				'match_options' => 'setMatchOptions');
 			
-	protected function getSubformTable($idName, $oject)
+	protected function getSubformTable($idName, $data)
 	{
-		if (ComponentbuilderHelper::checkJson($oject) && ComponentbuilderHelper::checkString($idName))
+		// make sure we convert the json to array
+		if (ComponentbuilderHelper::checkJson($data))
 		{
-			$array = json_decode($oject, true);
-			if (ComponentbuilderHelper::checkArray($array))
-			{ 
-				// Build heading
-				$head = array();
-				foreach ($array as $headers)
+			$data = json_decode($data, true);
+		}
+		// make sure we have an array
+		if (ComponentbuilderHelper::checkArray($data) && ComponentbuilderHelper::checkString($idName))
+		{ 
+			// Build heading
+			$head = array();
+			foreach ($data as $headers)
+			{
+				foreach ($headers as $header => $value)
 				{
-					foreach ($headers as $header => $value)
-					{
-						$head[$header] = '<th>' . ComponentbuilderHelper::safeString($header, 'Ww');
-					}
+					$head[$header] = '<th>' . ComponentbuilderHelper::safeString($header, 'Ww');
 				}
-				// build the rows
-				$rows = array();
-				if (ComponentbuilderHelper::checkArray($array) && ComponentbuilderHelper::checkArray($head))
+			}
+			// build the rows
+			$rows = array();
+			if (ComponentbuilderHelper::checkArray($data) && ComponentbuilderHelper::checkArray($head))
+			{
+				foreach ($data as $nr => $values)
 				{
-					foreach ($array as $nr => $values)
+					foreach ($head as $key => $t)
 					{
-						foreach ($head as $key => $t)
+						// set the value for the row
+						if (isset($values[$key]))
 						{
-							// set the value for the row
-							if (isset($values[$key]))
-							{
-								$this->setSubformRows($nr, $this->setSubformValue($key, $values[$key]), $rows);
-							}
-							else
-							{
-								$this->setSubformRows($nr, $this->setSubformValue($key, ''), $rows);
-							}
+							$this->setSubformRows($nr, $this->setSubformValue($key, $values[$key]), $rows);
+						}
+						else
+						{
+							$this->setSubformRows($nr, $this->setSubformValue($key, ''), $rows);
 						}
 					}
 				}
-				// build table
-				if (ComponentbuilderHelper::checkArray($rows) && ComponentbuilderHelper::checkArray($head))
-				{
-					// set the number of rows
-					$this->rowNumber = count($rows);
-					// return the table
-					return $this->setSubformTable($head, $rows);
-				}
+			}
+			// build table
+			if (ComponentbuilderHelper::checkArray($rows) && ComponentbuilderHelper::checkArray($head))
+			{
+				// set the number of rows
+				$this->rowNumber = count($rows);
+				// return the table
+				return $this->setSubformTable($head, $rows, $idName);
 			}
 		}
 		return false;
 	}
 
-	protected function setSubformTable($head, $rows)
+	protected function setSubformTable($head, $rows, $idName)
 	{
-		$table[] = "<div class=\"row-fluid\">";
+		$table[] = "<div class=\"row-fluid\" id=\"vdm_table_display_".$idName."\">";
 		$table[] = "\t<div class=\"subform-repeatable-wrapper subform-table-layout subform-table-sublayout-section-byfieldsets\">";
 		$table[] = "\t\t<div class=\"subform-repeatable\">";
 		$table[] = "\t\t\t<table class=\"adminlist table table-striped table-bordered\">";
@@ -469,6 +472,8 @@ class ComponentbuilderModelAjax extends JModelList
 				// get the field data
 				if ($fieldsData = ComponentbuilderHelper::getVar($type, (int) $values['a_id'], 'admin_view', $this->fieldsArray[$type]))
 				{
+					// check repeatable conversion
+					$this->checkRepeatableConversion($fieldsData, $type, $values['a_id']);
 					// get the table
 					$table = $this->getSubformTable($type, $fieldsData);
 					// set notice of bad practice
@@ -488,6 +493,35 @@ class ComponentbuilderModelAjax extends JModelList
 			return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', $typeName) . '</div></div>';
 		}
 		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
+	}
+
+	protected $conversionCheck = array(
+				'addfields' => 'field',
+				'addconditions' => 'target_field');
+
+	protected function checkRepeatableConversion(&$fieldsData, $type, $id)
+	{
+		if (ComponentbuilderHelper::checkJson($fieldsData))
+		{
+			$fieldsData = json_decode($fieldsData, true);
+			if (isset($fieldsData[$this->conversionCheck[$this->fieldsArray[$type]]]))
+			{
+				$bucket = array();
+				foreach($fieldsData as $option => $values)
+				{
+					foreach($values as $nr => $value)
+					{
+						$bucket[$this->fieldsArray[$type].$nr][$option] = $value;
+					}
+				}
+				$fieldsData = json_encode($bucket);
+				// update the fields
+				$objectUpdate = new stdClass();
+				$objectUpdate->admin_view = (int) $id;
+				$objectUpdate->{$this->fieldsArray[$type]} = $fieldsData;
+				JFactory::getDbo()->updateObject('#__componentbuilder_'.$type, $objectUpdate, 'admin_view');
+			}
+		}
 	}
 
 	protected function setAlignmentName($header, $value)
@@ -585,7 +619,7 @@ class ComponentbuilderModelAjax extends JModelList
 
 	protected function setTabName($header, $value)
 	{
-		if (ComponentbuilderHelper::checkArray($this->tabNames))
+		if (!ComponentbuilderHelper::checkArray($this->tabNames))
 		{
 			// get the view name & id
 			$values = $this->getViewID();

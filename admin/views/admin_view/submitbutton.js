@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 185 of this MVC
-	@build			14th October, 2017
+	@version		@update number 191 of this MVC
+	@build			16th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		submitbutton.js

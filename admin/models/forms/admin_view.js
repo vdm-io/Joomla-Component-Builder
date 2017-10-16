@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 185 of this MVC
-	@build			14th October, 2017
+	@version		@update number 191 of this MVC
+	@build			16th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.js
@@ -1187,6 +1187,8 @@ jQuery(document).ready(function()
 	getFieldsDisplay('admin_fields_conditions');
 	// set button
 	addButtonID('admin_fields_conditions','create_edit_buttons', 1); // <-- second
+	// set button to add more languages
+	addButton('field','create_edit_buttons'); // <-- third
 });
 
 function getFieldsDisplay(type){
@@ -1240,6 +1242,27 @@ function addButtonID(type, where, size){
 			}
 		}
 	});
+}			
+			
+function addButton_server(type){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
+	if(token.length > 0 && type.length > 0){
+		var request = 'token='+token+'&type='+type;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
+function addButton(type,where){
+	addButton_server(type).done(function(result) {
+		if(result){
+			addData(result,'#jform_'+where);
+		}
+	})
 }			
 
 function getTableColumns_server(tableName){

@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 44 of this MVC
-	@build			12th October, 2017
+	@version		@update number 45 of this MVC
+	@build			14th October, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		language_translation.js
@@ -29,6 +29,10 @@ jQuery(document).ready(function($)
 	// set button to add more languages
 	addButton('language','components');
 });
+function addData(result,where){
+	jQuery(where).closest('.control-group').parent().append(result);
+}
+			
 function addButton_server(type){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
@@ -42,13 +46,10 @@ function addButton_server(type){
 		jsonp: 'callback'
 	});
 }
-function addButton(type, where){
+function addButton(type,where){
 	addButton_server(type).done(function(result) {
 		if(result){
-			setButton(result, '#jform_'+where);
+			addData(result,'#jform_'+where);
 		}
-	});
-}
-function setButton(result, where){
-	jQuery(where).closest('.control-group').append(result);
-} 
+	})
+}			 

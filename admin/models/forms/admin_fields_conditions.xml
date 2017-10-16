@@ -106,9 +106,9 @@
 			icon="list"
 			maximum="500">
 			<form hidden="true" name="list_addconditions_modal" repeat="true">
-				<!-- Target_field Field. Type: Fieldsmulti. (custom) -->
+				<!-- Target_field Field. Type: Targetfields. (custom) -->
 				<field
-					type="fieldsmulti"
+					type="targetfields"
 					name="target_field"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_FIELD_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_FIELD_DESCRIPTION"
@@ -151,9 +151,9 @@
 					<option value="1">
 						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CHAIN</option>
 				</field>
-				<!-- Match_field Field. Type: Fields. (custom) -->
+				<!-- Match_field Field. Type: Matchfield. (custom) -->
 				<field
-					type="fields"
+					type="matchfield"
 					name="match_field"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_DESCRIPTION"

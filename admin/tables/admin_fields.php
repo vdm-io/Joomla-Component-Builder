@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 22 of this MVC
-	@build			13th October, 2017
+	@build			15th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
 	@subpackage		admin_fields.php

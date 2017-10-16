@@ -787,7 +787,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
-	`addfields` TEXT NOT NULL,
+	`addfields` MEDIUMTEXT NOT NULL,
 	`admin_view` INT(11) NOT NULL DEFAULT 0,
 	`params` text NOT NULL DEFAULT '',
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
@@ -811,7 +811,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_conditions` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
-	`addconditions` TEXT NOT NULL,
+	`addconditions` MEDIUMTEXT NOT NULL,
 	`admin_view` INT(11) NOT NULL DEFAULT 0,
 	`params` text NOT NULL DEFAULT '',
 	`published` TINYINT(3) NOT NULL DEFAULT 1,

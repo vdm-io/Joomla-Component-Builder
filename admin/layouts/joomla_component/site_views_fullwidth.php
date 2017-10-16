@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			14th October, 2017
+	@build			16th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		site_views_fullwidth.php

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 185 of this MVC
-	@build			14th October, 2017
+	@version		@update number 191 of this MVC
+	@build			16th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -465,7 +465,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_admin_view', $objectUpdate, 'id');
 			}
-			// also update the fields and conditions
 			
 			if (!empty($item->id))
 			{

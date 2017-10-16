@@ -11,10 +11,10 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			14th October, 2017
+	@build			16th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		fieldsmulti.php
+	@subpackage		targetfields.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -31,16 +31,16 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Fieldsmulti Form Field class for the Componentbuilder component
+ * Targetfields Form Field class for the Componentbuilder component
  */
-class JFormFieldFieldsmulti extends JFormFieldList
+class JFormFieldTargetfields extends JFormFieldList
 {
 	/**
-	 * The fieldsmulti field type.
+	 * The targetfields field type.
 	 *
 	 * @var		string
 	 */
-	public $type = 'fieldsmulti'; 
+	public $type = 'targetfields'; 
 	/**
 	 * Override to add new button
 	 *
@@ -149,23 +149,61 @@ class JFormFieldFieldsmulti extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$db = JFactory::getDBO();
+		// load the db opbject
+		$db = JFactory::getDBO();		
+		// get the input from url
+		$jinput = JFactory::getApplication()->input;
+		// get the id
+		$ID = $jinput->getInt('id', 0);
+		// rest the fields ids
+		$fieldIds = array();
+		if (is_numeric($ID) && $ID >= 1)
+		{
+			// get the admin view ID
+			if ($adminView = ComponentbuilderHelper::getVar('admin_fields_conditions', (int) $ID, 'id', 'admin_view'))
+			{
+				// get all the fields linked to the admin view
+				if ($addFields = ComponentbuilderHelper::getVar('admin_fields', (int) $adminView, 'admin_view', 'addfields'))
+				{
+					if (ComponentbuilderHelper::checkJson($addFields))
+					{
+						$addFields = json_decode($addFields, true);
+						if (ComponentbuilderHelper::checkArray($addFields))
+						{
+							foreach($addFields as $addField)
+							{
+								if (isset($addField['field']))
+								{
+									$fieldIds[] = (int) $addField['field'];
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','target_field_name')));
+		$query->select($db->quoteName(array('a.id','a.name'),array('id','name')));
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
-		$query->where($db->quoteName('a.published') . ' = 1');
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		// filter by fields linked
+		if (ComponentbuilderHelper::checkArray($fieldIds))
+		{
+			// only load these fields
+			$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $fieldIds) . ')');
+		}
 		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
 		$options = array();
 		if ($items)
 		{
-			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->target_field_name);
+				$options[] = JHtml::_('select.option', $item->id, $item->name);
 			}
 		}
+		
 		return $options;
 	}
 }
