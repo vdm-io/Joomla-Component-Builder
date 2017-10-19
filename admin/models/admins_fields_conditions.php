@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 15 of this MVC
+	@version		@update number 16 of this MVC
 	@build			16th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
@@ -154,6 +154,21 @@ class ComponentbuilderModelAdmins_fields_conditions extends JModelList
 		elseif ($published === '')
 		{
 			$query->where('(a.published = 0 OR a.published = 1)');
+		}
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
 		}
 
 		// Add the list ordering clause.

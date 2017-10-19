@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 191 of this MVC
+	@version		@update number 192 of this MVC
 	@build			16th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
@@ -165,6 +165,21 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		{
 			$query->where('(a.published = 0 OR a.published = 1)');
 		}
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
 		// Filter by search.
 		$search = $this->getState('filter.search');
 		if (!empty($search))
@@ -216,6 +231,12 @@ class ComponentbuilderModelAdmin_views extends JModelList
 			// From the componentbuilder_admin_view table
 			$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
 			$query->where('a.id IN (' . implode(',',$pks) . ')');
+			// Implement View Level Access
+			if (!$user->authorise('core.options', 'com_componentbuilder'))
+			{
+				$groups = implode(',', $user->getAuthorisedViewLevels());
+				$query->where('a.access IN (' . $groups . ')');
+			}
 
 			// Order the results by ordering
 			$query->order('a.ordering  ASC');

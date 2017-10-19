@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 412 of this MVC
-	@build			16th October, 2017
+	@version		@update number 439 of this MVC
+	@build			18th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -241,6 +241,21 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		// From the componentbuilder_admin_view table
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
 
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
 		// Order the results by ordering
 		$query->order('a.published  ASC');
 		$query->order('a.ordering  ASC');
@@ -321,6 +336,21 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		// From the componentbuilder_snippet table.
 		$query->select($db->quoteName('g.name','snippet_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet', 'g') . ' ON (' . $db->quoteName('a.snippet') . ' = ' . $db->quoteName('g.id') . ')');
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
 
 		// Order the results by ordering
 		$query->order('a.published  ASC');
@@ -403,6 +433,21 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		$query->select($db->quoteName('g.name','snippet_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet', 'g') . ' ON (' . $db->quoteName('a.snippet') . ' = ' . $db->quoteName('g.id') . ')');
 
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
 		// Order the results by ordering
 		$query->order('a.published  ASC');
 		$query->order('a.ordering  ASC');
@@ -479,6 +524,21 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 
 		// From the componentbuilder_language_translation table
 		$query->from($db->quoteName('#__componentbuilder_language_translation', 'a'));
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
 
 		// Order the results by ordering
 		$query->order('a.published  ASC');

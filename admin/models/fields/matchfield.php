@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			16th October, 2017
+	@build			18th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		matchfield.php
@@ -160,22 +160,28 @@ class JFormFieldMatchfield extends JFormFieldList
 		if (is_numeric($ID) && $ID >= 1)
 		{
 			// get the admin view ID
-			if ($adminView = ComponentbuilderHelper::getVar('admin_fields_conditions', (int) $ID, 'id', 'admin_view'))
+			$adminView = ComponentbuilderHelper::getVar('admin_fields_conditions', (int) $ID, 'id', 'admin_view');
+		}
+		else
+		{
+			// get the admin view ID
+			$adminView = $jinput->getInt('refid', 0);
+		}
+		if (is_numeric($adminView) && $adminView >= 1)
+		{
+			// get all the fields linked to the admin view
+			if ($addFields = ComponentbuilderHelper::getVar('admin_fields', (int) $adminView, 'admin_view', 'addfields'))
 			{
-				// get all the fields linked to the admin view
-				if ($addFields = ComponentbuilderHelper::getVar('admin_fields', (int) $adminView, 'admin_view', 'addfields'))
+				if (ComponentbuilderHelper::checkJson($addFields))
 				{
-					if (ComponentbuilderHelper::checkJson($addFields))
+					$addFields = json_decode($addFields, true);
+					if (ComponentbuilderHelper::checkArray($addFields))
 					{
-						$addFields = json_decode($addFields, true);
-						if (ComponentbuilderHelper::checkArray($addFields))
+						foreach($addFields as $addField)
 						{
-							foreach($addFields as $addField)
+							if (isset($addField['field']))
 							{
-								if (isset($addField['field']))
-								{
-									$fieldIds[] = (int) $addField['field'];
-								}
+								$fieldIds[] = (int) $addField['field'];
 							}
 						}
 					}

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			16th October, 2017
+	@build			18th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		publlshing.php
@@ -33,6 +33,7 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'published',
 	'ordering',
+	'access',
 	'version',
 	'hits',
 	'id'

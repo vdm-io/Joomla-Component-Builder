@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			16th October, 2017
+	@build			18th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -81,15 +81,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 	
 	protected $app;
-	protected $target 		= false;
-	protected $newID 		= array();
-	protected $forceUpdate 	= 0;
-	protected $hasKey 		= 0;
-	protected $sleutle 		= null;
-	protected $updateAfter 	= array('field' => array(), 'adminview' => array());
-	protected $fieldTypes		= array();
-	protected $isMultiple		= array();
-	protected $specialValue 	= false;
+	protected $target 		 	= false;
+	protected $newID 		 	= array();
+	protected $forceUpdate 	 	= 0;
+	protected $hasKey 		 	= 0;
+	protected $sleutle 		 	= null;
+	protected $updateAfter 	 	= array('field' => array(), 'adminview' => array());
+	protected $divergedDataMover 	= array();
+	protected $fieldTypes		 	= array();
+	protected $isMultiple		 	= array();
+	protected $specialValue 	 	= false;
 
 	/**
 	 * Import an spreadsheet from either folder, url or upload.
@@ -716,6 +717,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		}
 		// do a after all run on all items that need it
 		$this->updateAfter();
+		// finally move the old datasets
+		$this->moveDivergedData();
 		// lets move all the files to its correct location
 		if (!$this->moveSmartStuff($dir))
 		{
@@ -991,31 +994,53 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// get the field from db
 				if ($addlinked_views = ComponentbuilderHelper::getVar('admin_view', $adminview, 'id', 'addlinked_views'))
-				{
+				{					
 					if (ComponentbuilderHelper::checkJson($addlinked_views))
 					{
 						$addlinked_views = json_decode($addlinked_views, true);
-						if (ComponentbuilderHelper::checkArray($addlinked_views['adminview']))
+						// convert Repetable Fields
+						if (ComponentbuilderHelper::checkArray($addlinked_views) && isset($addlinked_views['adminview']))
 						{
-							foreach ($addlinked_views['adminview'] as $nr => $admin)
-							{
-								if (isset($this->newID['admin_view'][$admin]))
-								{
-									$addlinked_views['adminview'][$nr] = $this->newID['admin_view'][$admin];
-								}
-								else
-								{
-									$addlinked_views['adminview'][$nr] = '';
-									$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BLINKED_VIEWB_IDS_MISMATCH_IN_BADMIN_VIEWSB_AND_WAS_EMREMOVEDEM_FROM_THE_LINKED_VIEWS', $admin, $adminview), 'warning');
-								}
-							}
-							// update the fields
-							$object = new stdClass;
-							$object->id = $adminview;
-							$object->addlinked_views = json_encode($addlinked_views);
-							// update the admin view
-							$this->_db->updateObject('#__componentbuilder_admin_view', $object, 'id');
+							$addlinked_views = $this->convertRepeatable($addlinked_views, 'addlinked_views');
 						}
+						// update the view IDs
+						if (ComponentbuilderHelper::checkArray($addlinked_views))
+						{
+							// only update the view IDs
+							$addlinked_views = $this->updateSubformIDs($addlinked_views, 'admin_view', array('adminview' => 'admin_view'));
+						}						
+						// update the fields
+						$object = new stdClass;
+						$object->id = $adminview;
+						$object->addlinked_views = json_encode($addlinked_views);
+						// update the admin view
+						$this->_db->updateObject('#__componentbuilder_admin_view', $object, 'id');
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	* Moving of diverged data
+	*
+	* @return  void
+	*
+	**/
+	protected function moveDivergedData()
+	{
+		// check if there is data to move
+		if (ComponentbuilderHelper::checkArray($this->divergedDataMover))
+		{
+			foreach($this->divergedDataMover as $table => $values)
+			{
+				foreach($values as $value)
+				{
+					// first check if exist (only add if it does not)
+					if (!$this->getLocalItem($value, $table, 1))
+					{
+						// add the diverged data
+						$this->addLocalItem($value, $table);
 					}
 				}
 			}
@@ -1025,8 +1050,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	/*
 	 * Convert repeatable field to subform
 	 * 
-	 * @param   array    $array    The array
-	 * @param   string   $name     The main field name
+	 * @param   array    $array       The array to convert
+	 * @param   string   $name      The main field name
+	 * @param   array   $updater    The updater (dynamic) option
 	 *
 	 * @return  array
 	 */
@@ -1045,6 +1071,138 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		return $bucket;
+	}
+
+	/*
+	 * Convert repeatable field to subform
+	 * 
+	 * @param   object   $item          The item to update
+	 * @param   json      $updater    The fields to check and update
+	 *
+	 * @return void
+	 */
+	protected function convertRepeatableFields(&$item, $updater)
+	{
+		// update the repeatable fields
+		foreach ($updater as  $up => $sleutel)
+		{
+			if (isset($item->{$up}) && ComponentbuilderHelper::checkJson($item->{$up}))
+			{
+				$updateArray = json_decode($item->{$up}, true);
+				// check if this is old values for repeatable fields
+				if (ComponentbuilderHelper::checkArray($updateArray) && isset($updateArray[$sleutel]))
+				{
+					// load it back
+					$item->{$up} = json_encode($this->convertRepeatable($updateArray, $up));
+				}
+			}
+			elseif (isset($item->{$up}))
+			{
+				unset($item->{$up});
+			}
+		}
+	}
+
+	/**
+	* Update Many Subform IDs
+	*
+	* @param array           $values      The values to update the IDs in
+	* @param string          $table         The table these values belong to
+	* @param array          $targets       The target to update and its type
+	*
+	* @return void
+	*/
+	protected function updateSubformsIDs(&$item, $table, $targets)
+	{
+		// update the repeatable fields
+		foreach ($targets as  $field => $targetArray)
+		{
+			if (isset($item->{$field}) && ComponentbuilderHelper::checkJson($item->{$field}))
+			{
+				$updateArray = json_decode($item->{$field}, true);
+				if (ComponentbuilderHelper::checkArray($updateArray))
+				{
+					// load it back
+					$item->{$field} = json_encode($this->updateSubformIDs($updateArray, $table, $targetArray));
+				}
+			}
+		}
+	}
+
+	/**
+	* Update One Subform IDs
+	*
+	* @param array           $values      The values to update the IDs in
+	* @param string          $table         The table these values belong to
+	* @param array          $targets       The target to update and its type
+	*
+	* @return void
+	*/
+	protected function updateSubformIDs($values, $table, $targets)
+	{
+		$isJson = false;
+		if (ComponentbuilderHelper::checkJson($values))
+		{
+			$values = json_decode($values, true);
+			$isJson = true;
+		}
+		// now update the fields
+		if (ComponentbuilderHelper::checkArray($values))
+		{
+			foreach ($values as $nr => &$value)
+			{
+				foreach ($targets as $target => $target_type)
+				{
+					if (isset($value[$target]))
+					{
+						// update the target
+						if (!ComponentbuilderHelper::checkArray($value[$target]))
+						{
+							if (isset($this->newID[$target_type][$value[$target]]))
+							{
+								$value[$target] = $this->newID[$target_type][$value[$target]];
+							}
+							else
+							{
+								$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_ID_MISMATCH_SO_THE_IDS_WAS_REMOVED', ComponentbuilderHelper::safeString($target_type, 'Ww') . '->' . ComponentbuilderHelper::safeString($target, 'Ww') .' in ('.ComponentbuilderHelper::safeString($table, 'w').':'.$item->id.')', $value[$target]), 'warning');
+								$value[$target] = '';
+							}
+						}
+						elseif (ComponentbuilderHelper::checkArray($value[$target]))
+						{
+							// the bucket to load the items back
+							$bucket = array();
+							foreach ($value[$target] as $id)
+							{
+								if (!is_numeric($id))
+								{
+									continue;
+								}
+								if (isset($this->newID[$target_type][$id]))
+								{
+									$bucket[] = $this->newID[$target_type][$id];
+								}
+								else
+								{
+									$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_ID_MISMATCH_SO_THE_IDS_WAS_REMOVED', ComponentbuilderHelper::safeString($target_type, 'Ww') . '->' . ComponentbuilderHelper::safeString($target, 'Ww') .' in ('.ComponentbuilderHelper::safeString($table, 'w').':'.$item->id.')', $id), 'warning');
+									$bucket[] = '';
+								}
+							}
+							// set ids back
+							if (ComponentbuilderHelper::checkArray($bucket))
+							{
+								$value[$target] = $bucket;
+							}
+						}
+					}
+				}
+			}
+		}
+		if ($isJson)
+		{
+			return json_encode($values);
+		}
+		return $values;
 	}
 
 	/**
@@ -1076,6 +1234,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// do the id fix for the new ids		
 		switch($type)
 		{
+			case 'fieldtype':
+				// repeatable fields to update
+				$updaterR = array(
+					// repeatablefield => checker
+					'properties' => 'name'
+				);
+				// update the repeatable fields
+				$this->convertRepeatableFields($item, $updaterR);
+			break;
 			case 'field':
 				// update the fieldtype
 				if (isset($item->fieldtype) && is_numeric($item->fieldtype) && $item->fieldtype > 0 && isset($this->newID['fieldtype'][$item->fieldtype]))
@@ -1112,42 +1279,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						return false;
 					}
 				}
-				// update the join_view_table
-				if (isset($item->join_view_table) && ComponentbuilderHelper::checkJson($item->join_view_table))
-				{
-					$join_view_table = json_decode($item->join_view_table, true);
-					// check if this is old values for repeatable fields
-					if (isset($join_view_table['view_table']))
-					{
-						$join_view_table = $this->convertRepeatable($join_view_table, 'join_view_table');
-					}
-					foreach ($join_view_table as $nr => $join_values)
-					{
-						$id = $join_values['view_table'];
-						if (!is_numeric($id))
-						{
-							continue;
-						}
-						// update the id's with local id's
-						if (isset($this->newID['admin_view'][$id]))
-						{
-							$join_view_table[$nr]['view_table'] = $this->newID['admin_view'][$id];
-						}
-						else
-						{							
-							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BJOIN_VIEW_TABLE_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BJOIN_VIEW_TABLEB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
-							$join_values['view_table'] = '';
-						}
-					}
-					// load it back
-					$item->join_view_table = json_encode($join_view_table);
-				}
-				else
-				{
-					unset($item->join_view_table);
-				}
 				// repeatable fields to update
 				$updaterR = array(
+							// repeatablefield => checker
+							'join_view_table' => 'view_table',
 							'join_db_table' => 'db_table',
 							'order' => 'table_key',
 							'where' => 'table_key',
@@ -1155,24 +1290,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							'filter' => 'filter_type'
 							);
 				// update the repeatable fields
-				foreach ($updaterR as  $up => $sleutel)
-				{
-					if (isset($item->{$up}) && ComponentbuilderHelper::checkJson($item->{$up}))
-					{
-						$updateArray = json_decode($item->{$up}, true);
-						// check if this is old values for repeatable fields
-						if (isset($updateArray[$sleutel]))
-						{
-							$updateArray = $this->convertRepeatable($updateArray, $up);
-							// load it back
-							$item->{$up} = json_encode($updateArray);
-						}
-					}
-					elseif (isset($item->{$up}))
-					{
-						unset($item->{$up});
-					}
-				}
+				$this->convertRepeatableFields($item, $updaterR);
+				// subform fields to target
+				$updaterT = array(
+							// subformfield => field => type_value
+							'join_view_table' => array('view_table' => 'admin_view')
+							);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'dynamic_get', $updaterT);
 			break;
 			case 'layout':
 			case 'template':
@@ -1287,28 +1412,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
+							// repeatablefield => checker
 							'ajax_input' => 'value_name',
 							'custom_button' => 'name'
 							);
-				// update the repeatable fields
-				foreach ($updaterR as  $up => $sleutel)
-				{
-					if (isset($item->{$up}) && ComponentbuilderHelper::checkJson($item->{$up}))
-					{
-						$updateArray = json_decode($item->{$up}, true);
-						// check if this is old values for repeatable fields
-						if (isset($updateArray[$sleutel]))
-						{
-							$updateArray = $this->convertRepeatable($updateArray, $up);
-							// load it back
-							$item->{$up} = json_encode($updateArray);
-						}
-					}
-					elseif (isset($item->{$up}))
-					{
-						unset($item->{$up});
-					}
-				}
+				// update the repeatable fields				
+				$this->convertRepeatableFields($item, $updaterR);
 			break;
 			case 'admin_view':
 				// we must clear the demo content (since it was not moved as far as we know) TODO
@@ -1322,16 +1431,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// update the addfields (old dataset)
 				if (isset($item->addfields) && ComponentbuilderHelper::checkJson($item->addfields))
 				{
-					// set the targets
-					$targets = array('field' => 'field');
-					// set the anchors
-					$anchor = array('admin_view' => $item->id);
+					// set the anchors getters
+					$getter = array('admin_view' => $item->id);
 					// move the old data
-					$this->moveData($item->addfields, 'admin_fields', 'addfields', 'target_field', $targets, $anchor);
+					$this->setDivergedDataMover($item->addfields, 'admin_fields', 'addfields', $getter);
 					// remove from this dataset
 					unset($item->addfields);
 				}
-				else
+				elseif (isset($item->addfields))
 				{
 					unset($item->addfields);
 				}
@@ -1340,28 +1447,27 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				{
 					$this->updateAfter['adminview'][$item->id] = $item->id; // addlinked_views
 				}
-				else
+				elseif (isset($item->addlinked_views))
 				{
 					unset($item->addlinked_views);
 				}
 				// update the addconditions (old dataset)
-				if (isset($item->addconditions))
+				if (isset($item->addconditions) && ComponentbuilderHelper::checkJson($item->addconditions))
 				{
-					// set the targets
-					$targets = array('target_field' => 'field', 'match_field' => 'field');
-					// set the anchors
-					$anchor = array('admin_view' => $item->id);
+					// set the getters anchors
+					$getter = array('admin_view' => $item->id);
 					// move the old data
-					$this->moveData($item->addconditions, 'admin_fields_conditions', 'addconditions', 'target_field', $targets, $anchor);
+					$this->setDivergedDataMover($item->addconditions, 'admin_fields_conditions', 'addconditions', $getter);
 					// remove from this dataset
 					unset($item->addconditions);
 				}
-				else
+				elseif (isset($item->addconditions))
 				{
 					unset($item->addconditions);
 				}
 				// repeatable fields to update
 				$updaterR = array(
+						// repeatablefield => checker
 						'ajax_input' => 'value_name',
 						'custom_button' => 'name',
 						'addtables' => 'table',
@@ -1370,24 +1476,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						'addpermissions' => 'action'
 					);
 				// update the repeatable fields
-				foreach ($updaterR as  $up => $sleutel)
-				{
-					if (isset($item->{$up}) && ComponentbuilderHelper::checkJson($item->{$up}))
-					{
-						$updateArray = json_decode($item->{$up}, true);
-						// check if this is old values for repeatable fields
-						if (isset($updateArray[$sleutel]))
-						{
-							$updateArray = $this->convertRepeatable($updateArray, $up);
-							// load it back
-							$item->{$up} = json_encode($updateArray);
-						}
-					}
-					elseif (isset($item->{$up}))
-					{
-						unset($item->{$up});
-					}
-				}
+				$this->convertRepeatableFields($item, $updaterR);
 			break;
 			case 'joomla_component':
 				// update the addconfig
@@ -1633,6 +1722,58 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					unset($item->localTranslation);
 				}
 			break;
+			case 'admin_fields':
+			case 'admin_fields_conditions':
+				// update the admin_view ID where needed
+				if (isset($item->admin_view) && $item->admin_view > 0)
+				{
+					if (isset($this->newID['admin_view'][$item->admin_view]))
+					{
+						$item->admin_view = $this->newID['admin_view'][$item->admin_view];
+					}
+					else
+					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BFIELD_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BADMIN_VIEWB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $item->admin_view), 'warning');
+						unset($item->admin_view);
+					}
+				}
+				if ('admin_fields' === $type)
+				{
+					// repeatable fields to update
+					$updaterR = array(
+						// repeatablefield => checker
+						'addfields' => 'field'
+					);
+					// subform fields to target
+					$updaterT = array(
+						// subformfield => field => type_value
+						'addfields' => array('field' => 'field')
+					);
+					// little tweak... oops
+					if (isset($item->addconditions))
+					{
+						unset($item->addconditions);
+					}
+				}
+				else
+				{
+					// repeatable fields to update
+					$updaterR = array(
+						// repeatablefield => checker
+						'addconditions' => 'target_field'
+					);
+					// subform fields to target
+					$updaterT = array(
+						// subformfield => field => type_value
+						'addconditions' => array('target_field' => 'field', 'match_field' => 'field')
+					);
+				}
+
+				// update the repeatable fields
+				$this->convertRepeatableFields($item, $updaterR);
+				
+				// update the subform ids
+				$this->updateSubformsIDs($item, $type, $updaterT);
 		}
 		// final action prep
 		switch($action)
@@ -1663,6 +1804,45 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 
 	/**
+	* Set the data that should be moved
+	*
+	* @param array/json    $values      The values/data to move
+	* @param string          $table         The table to move the values to
+	* @param string          $type          The type of values
+	* @param array          $getters       The get values used to anchor the values to the new table
+	*
+	* @return bool
+	*/
+	protected function setDivergedDataMover($values, $table, $type, $getters)
+	{
+		// we need to move this to the new $table based on anchors
+		if (ComponentbuilderHelper::checkArray($getters))
+		{
+			if (!isset($this->divergedDataMover[$table]))
+			{
+				$this->divergedDataMover[$table] = array();
+			}
+			// set unique key
+			$uniqueKey = md5(serialize($getters));
+			if (!isset($this->divergedDataMover[$table][$uniqueKey]))
+			{
+				$this->divergedDataMover[$table][$uniqueKey] = new stdClass;
+				foreach ($getters as $name => $value)
+				{
+					$this->divergedDataMover[$table][$uniqueKey]->{$name} = $value;
+				}
+			}
+			// add the data to the mover
+			$this->divergedDataMover[$table][$uniqueKey]->{$type} = $values;
+			// success
+			return true;
+		}
+		$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_WE_FAILED_TO_MOVE_BSB', ComponentbuilderHelper::safeString($type, 'Ww') . ' to ('.ComponentbuilderHelper::safeString($table, 'w').')'), 'warning');
+		// failure
+		return false;
+	}
+
+	/**
 	 * Check if a field has multiple fields
 	 * 
 	 * @param   string   $typeID  The type ID
@@ -1689,116 +1869,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			return $this->isMultiple[$typeID];
 		}
 		return false;
-	}
-
-	/**
-	* Move old repeatable field to new subform field, and new table
-	*
-	* @param array/json    $values      The values to move
-	* @param string          $table         The table to move the values to
-	* @param string          $type          The type of values
-	* @param string          $checker     The key to check if this is a repeatable field
-	* @param array          $targets       The target to update and its type
-	* @param array          $anchor       The fields to use in anchoring to the new table
-	*
-	* @return void
-	*/
-	protected function moveData($values, $table, $type, $checker, $targets, $anchor)
-	{
-		if (ComponentbuilderHelper::checkJson($values))
-		{
-			$values = json_decode($values, true);
-		}
-		// check if this is old values for repeatable fields
-		if (ComponentbuilderHelper::checkArray($values) && isset($values[$checker]))
-		{
-			$values = $this->convertRepeatable($values, $type);
-		}
-		// now update the fields
-		if (ComponentbuilderHelper::checkArray($values))
-		{
-			foreach ($values as $nr => &$value)
-			{
-				foreach ($targets as $target => $target_type)
-				{
-					if (isset($value[$target]))
-					{
-						// update the target
-						if (!ComponentbuilderHelper::checkArray($value[$target]))
-						{
-							if (isset($this->newID[$target_type][$value[$target]]))
-							{
-								$value[$target] = $this->newID[$target_type][$value[$target]];
-							}
-							else
-							{
-								$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_ID_MISMATCH_SO_THE_IDS_WAS_REMOVED', ComponentbuilderHelper::safeString($target_type, 'Ww') . '->' . ComponentbuilderHelper::safeString($target, 'Ww') .' in ('.ComponentbuilderHelper::safeString($table, 'w').':'.$item->id.')', $value[$target]), 'warning');
-								$value[$target] = '';
-							}
-						}
-						elseif (ComponentbuilderHelper::checkArray($value[$target]))
-						{
-							// the bucket to load the items back
-							$bucket = array();
-							foreach ($value[$target] as $id)
-							{
-								if (!is_numeric($id))
-								{
-									continue;
-								}
-								if (isset($this->newID[$target_type][$id]))
-								{
-									$bucket[] = $this->newID[$target_type][$id];
-								}
-								else
-								{
-									$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_ID_MISMATCH_SO_THE_IDS_WAS_REMOVED', ComponentbuilderHelper::safeString($target_type, 'Ww') . '->' . ComponentbuilderHelper::safeString($target, 'Ww') .' in ('.ComponentbuilderHelper::safeString($table, 'w').':'.$item->id.')', $id), 'warning');
-									$bucket[] = '';
-								}
-							}
-							// set ids back
-							if (ComponentbuilderHelper::checkArray($bucket))
-							{
-								$value[$target] = $bucket;
-							}
-						}
-					}
-				}
-			}
-		}
-		// we need to move this to the new $table based on anchors
-		if (ComponentbuilderHelper::checkArray($anchor))
-		{
-			$anchorArray = array();
-			foreach ($anchor as $name => $id)
-			{
-				$updated = false;
-				if (isset($this->newID[$name]) && isset($this->newID[$name][$id]))
-				{
-					$id = $this->newID[$name][$id];
-					$updated = true;
-				}
-				// set the values
-				$anchorArray[$name] = array('value' => $id, 'updated' => $updated);
-			}
-			if (!isset($this->dataMover[$table]))
-			{
-				$this->dataMover[$table] = array();
-			}
-			// set unique key
-			$uniqueKey = md5(serialize($anchorArray));
-			if (!isset($this->dataMover[$table][$uniqueKey]))
-			{
-				$this->dataMover[$table][$uniqueKey] = array();
-				$this->dataMover[$table][$uniqueKey]['<(--AnCh0r'] = $anchorArray;
-			}
-			// add the data to the mover
-			$this->dataMover[$table][$uniqueKey][$type] = json_encode($values);
-		}
-		else
-		{
-			$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_WE_FAILED_TO_MOVE_BSB', ComponentbuilderHelper::safeString($type, 'Ww') . ' to ('.ComponentbuilderHelper::safeString($table, 'w').')'), 'warning');
-		}
 	}
 
 	/**
@@ -1925,19 +1995,22 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$query = $this->_db->getQuery(true);
 		$query->select('a.*');
 		$query->from($this->_db->quoteName('#__componentbuilder_' . $type, 'a'));
-		if ($get == 1)
+		// only run query if where is set
+		$runQuery = false;
+		if ($get == 1 && isset($item->created) && isset($item->id))
 		{
 			$query->where($this->_db->quoteName('a.created') . ' = '. $this->_db->quote($item->created));
 			$query->where($this->_db->quoteName('a.id') .' = '. (int) $item->id);
+			$runQuery = true;
 		}
 		elseif (componentbuilderHelper::checkArray($get))
 		{
 			foreach ($get as $field)
 			{
-				if (isset($item->$field))
+				if (isset($item->{$field}))
 				{
 					// set the value
-					$value = $item->$field;
+					$value = $item->{$field};
 					// check if we have special value
 					if ($this->specialValue && ComponentbuilderHelper::checkArray($this->specialValue) && isset($this->specialValue[$field]))
 					{
@@ -1960,6 +2033,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					{
 						return false;
 					}
+					$runQuery = true;
 				}
 				else
 				{
@@ -1967,21 +2041,22 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 			}
 		}
-		elseif (isset($item->$get) && componentbuilderHelper::checkString($item->$get)) // do not allow empty strings (since it could be major mis match)
+		elseif (isset($item->{$get}) && componentbuilderHelper::checkString($item->{$get})) // do not allow empty strings (since it could be major mis match)
 		{
 			// set the value
-			$value = $item->$get;
+			$value = $item->{$get};
 			// check if we have special value
 			if ($this->specialValue && ComponentbuilderHelper::checkArray($this->specialValue) && isset($this->specialValue[$get]))
 			{
 				$value = $this->specialValue[$get];
 			}
 			$query->where($this->_db->quoteName('a.' . $get) . ' = '. $this->_db->quote($value));
+			$runQuery = true;
 		}
-		elseif (isset($item->$get) && is_numeric($item->$get))
+		elseif (isset($item->{$get}) && is_numeric($item->{$get}))
 		{
 			// set the value
-			$value = $item->$get;
+			$value = $item->{$get};
 			// check if we have special value
 			if ($this->specialValue && ComponentbuilderHelper::checkArray($this->specialValue) && isset($this->specialValue[$get]))
 			{
@@ -2000,19 +2075,21 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				return false; // really not needed but who knows for sure...
 			}
+			$runQuery = true;
 		}
-		else
+		// since where has been set run the query
+		if ($runQuery)
 		{
-			return false;
+			// see if we get an item
+			$this->_db->setQuery($query);
+			$this->_db->execute();
+			if ($this->_db->getNumRows())
+			{
+				return $this->_db->loadObject();
+			}
 		}
-		// see if we get an item
-		$this->_db->setQuery($query);
-		$this->_db->execute();
-		if ($this->_db->getNumRows())
-		{
-			return $this->_db->loadObject();
-		}
-		elseif ($retry)
+		// retry to get the item
+		if ($retry)
 		{
 			$retryAgain = false;
 			$this->specialValue = false;
@@ -2022,12 +2099,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'admin_fields':
 				case 'admin_fields_conditions':
 					// get by admin_view (since there should only be one of each name)
-					$getter = 'admin_view';
-					// update the admin_view with the local ID
-					if (isset($this->newID[$getter]) && isset($this->newID[$getter][$item->admin_view]))
-					{
-						$item->{$getter} = (int) $this->newID[$getter][$item->{$getter}];
-					}
+					$getter = array('admin_view');
+					$this->specialValue = array();
+					$this->specialValue['admin_view'] = $this->newID['admin_view'][$item->admin_view];
 					break;
 				case 'fieldtype':
 					// get by name (since there should only be one of each name)

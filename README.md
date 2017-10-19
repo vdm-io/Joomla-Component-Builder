@@ -5,7 +5,7 @@ This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder
 
  ![Component Builder image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/vdm-component.jpg "The Component Builder")
 
-The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) that is highly advanced, truly able to build extremely complex components in a fraction of the time.
+The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
@@ -110,11 +110,11 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 16th October, 2017
++ *Last Build*: 18th October, 2017
 + *Version*: 2.5.8
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **125041**
++ *Line count*: **125731**
 + *File count*: **742**
 + *Folder count*: **129**
 

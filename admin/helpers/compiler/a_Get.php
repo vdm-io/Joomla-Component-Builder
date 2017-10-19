@@ -1953,7 +1953,7 @@ class Get
 				$field->xml = $this->setDynamicValues(json_decode($field->xml));
 
 				// load the type values form type params
-				$properties = json_decode($field->properties,true);
+				$properties = json_decode($field->properties, true);
 				// check what type of field array we have here (should be subform... but just incase)
 				// This could happen due to huge data sets
 				if (isset($properties['name']))

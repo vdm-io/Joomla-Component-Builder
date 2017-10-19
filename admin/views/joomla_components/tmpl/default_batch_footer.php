@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 412 of this MVC
-	@build			16th October, 2017
+	@version		@update number 439 of this MVC
+	@build			18th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		default_batch_footer.php

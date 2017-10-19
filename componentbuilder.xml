@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>16th October, 2017</creationDate>
+	<creationDate>18th October, 2017</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>http://vdm.bz/component-builder</authorUrl>
@@ -11,7 +11,7 @@
 	<description><![CDATA[
 		<h1>Component Builder (v.2.5.8)</h1>
 		<div style="clear: both;"></div>
-		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) that is highly advanced, truly able to build extremely complex components in a fraction of the time.
+		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!</p>
 		<p>Created by <a href="http://vdm.bz/component-builder" target="_blank">Llewellyn van der Merwe</a><br /><small>Development started 30th April, 2015</small></p>

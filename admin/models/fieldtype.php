@@ -174,6 +174,21 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$query->where('a.fieldtype = -5');
 		}
 
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
 		// Order the results by ordering
 		$query->order('a.published  ASC');
 		$query->order('a.ordering  ASC');
