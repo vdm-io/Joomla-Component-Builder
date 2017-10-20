@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			18th October, 2017
+	@build			20th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -81,6 +81,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 	
 	protected $app;
+	protected $dir 		 		= false;
+	protected $data 		 		= false;
 	protected $target 		 	= false;
 	protected $newID 		 	= array();
 	protected $forceUpdate 	 	= 0;
@@ -241,11 +243,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// get the zip adapter
 				$zip = JArchive::getAdapter('zip');
 				// set the directory name
-				$dir = JFile::stripExt($package['dir']);
+				$this->dir = JFile::stripExt($package['dir']);
 				// unzip the package
-				$zip->extract($package['dir'], $dir);
+				$zip->extract($package['dir'], $this->dir);
 				// check for database file
-				$infoFile = $dir . '/info.vdm';
+				$infoFile = $this->dir . '/info.vdm';
 				if (JFile::exists($infoFile))
 				{
 					// load the data
@@ -264,7 +266,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 					}
 				}
-				ComponentbuilderHelper::removeFolder($dir);
+				ComponentbuilderHelper::removeFolder($this->dir);
 			}
 		}
 		return false;
@@ -549,15 +551,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if (JFile::exists($package['dir']))
 				{
 					// set the directory name
-					$dir = JFile::stripExt($package['dir']);
+					$this->dir = JFile::stripExt($package['dir']);
 					// check for database file
-					$dbFile = $dir . '/db.vdm';
+					$dbFile = $this->dir . '/db.vdm';
 					if (!JFile::exists($dbFile))
 					{
 						// get the zip adapter
 						$zip = JArchive::getAdapter('zip');
 						// unzip the package
-						$zip->extract($package['dir'], $dir);
+						$zip->extract($package['dir'], $this->dir);
 					}
 					// check again
 					if (JFile::exists($dbFile))
@@ -566,21 +568,21 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						if ($data = @file_get_contents($dbFile))
 						{
 							// prep the data
-							if ($data = $this->extractData($data))
+							if ($this->extractData($data))
 							{
-								if (isset($data['joomla_component']) && ComponentbuilderHelper::checkArray($data['joomla_component']))
+								if (isset($this->data['joomla_component']) && ComponentbuilderHelper::checkArray($this->data['joomla_component']))
 								{
 									// save the smart data
-									if ($this->saveSmartComponents($data, $dir))
+									if ($this->saveSmartComponents())
 									{
-										ComponentbuilderHelper::removeFolder($dir);
+										ComponentbuilderHelper::removeFolder($this->dir);
 										return true;
 									}
 								}
 							}
 						}
 					}
-					ComponentbuilderHelper::removeFolder($dir);
+					ComponentbuilderHelper::removeFolder($this->dir);
 				}
 			}
 		}
@@ -617,7 +619,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			$data = @unserialize($data);
 			if ($data !== false)
 			{
-				return $data;
+				// set the data global
+				$this->data = $data;
+				return true;
 			}
 			$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWODATA_IS_CORRUPTHTWOTHIS_COULD_BE_DUE_TO_KEY_ERROR_OR_BROKEN_PACKAGE'), 'error');
 			return false;
@@ -629,89 +633,87 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	/**
 	* Save the smart components
 	*
-	* @param array  $data The values to save
-	*
 	* @return  boolean false on failure
 	*
 	**/
-	protected function saveSmartComponents($data, $dir)
+	protected function saveSmartComponents()
 	{
 		// get user object
 		$this->user = JFactory::getUser();
 		// set some defaults
 		$this->today = JFactory::getDate()->toSql();
 		// we first store the fieldtype
-		if (!$this->saveSmartItems($data, 'fieldtype'))
+		if (!$this->saveSmartItems('fieldtype'))
 		{
 			return false;
 		}
 		// we then store the field
-		if (!$this->saveSmartItems($data, 'field'))
+		if (!$this->saveSmartItems('field'))
 		{
 			return false;
 		}
 		// we then store the admin_view
-		if (!$this->saveSmartItems($data, 'admin_view'))
-		{
-			return false;
-		}
-		// we then store the admin_fields
-		if (!$this->saveSmartItems($data, 'admin_fields'))
-		{
-			return false;
-		}
-		// we then store the admin_fields_conditions
-		if (!$this->saveSmartItems($data, 'admin_fields_conditions'))
+		if (!$this->saveSmartItems('admin_view'))
 		{
 			return false;
 		}
 		// we then store the snippet
-		if (!$this->saveSmartItems($data, 'snippet'))
+		if (!$this->saveSmartItems('snippet'))
 		{
 			return false;
 		}
 		// we then store the dynamic_get
-		if (!$this->saveSmartItems($data, 'dynamic_get'))
+		if (!$this->saveSmartItems('dynamic_get'))
 		{
 			return false;
 		}
 		// we then store the custom_admin_view
-		if (!$this->saveSmartItems($data, 'custom_admin_view'))
+		if (!$this->saveSmartItems('custom_admin_view'))
 		{
 			return false;
 		}
 		// we then store the site_view
-		if (!$this->saveSmartItems($data, 'site_view'))
+		if (!$this->saveSmartItems('site_view'))
 		{
 			return false;
 		}
 		// we then store the template
-		if (!$this->saveSmartItems($data, 'template'))
+		if (!$this->saveSmartItems('template'))
 		{
 			return false;
 		}
 		// we then store the layout
-		if (!$this->saveSmartItems($data, 'layout'))
+		if (!$this->saveSmartItems('layout'))
 		{
 			return false;
 		}
 		// we then store the components
-		if (!$this->saveSmartItems($data, 'joomla_component'))
+		if (!$this->saveSmartItems('joomla_component'))
 		{
 			return false;
 		}
 		// we then store the languages
-		if (!$this->saveSmartItems($data, 'language'))
+		if (!$this->saveSmartItems('language'))
 		{
 			return false;
 		}
 		// we then store the language translations
-		if (!$this->saveSmartItems($data, 'language_translation'))
+		if (!$this->saveSmartItems('language_translation'))
 		{
 			return false;
 		}
 		// we then store the custom_code
-		if (!$this->saveSmartItems($data, 'custom_code'))
+		if (!$this->saveSmartItems('custom_code'))
+		{
+			return false;
+		}
+		// we then store the admin_fields
+		if (!$this->saveSmartItems('admin_fields'))
+		{
+			return false;
+		}
+		// we then store the admin_fields_conditions
+		if (!$this->saveSmartItems('admin_fields_conditions'))
 		{
 			return false;
 		}
@@ -720,7 +722,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// finally move the old datasets
 		$this->moveDivergedData();
 		// lets move all the files to its correct location
-		if (!$this->moveSmartStuff($dir))
+		if (!$this->moveSmartStuff())
 		{
 			return false;
 		}
@@ -728,17 +730,102 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 
 	/**
-	* Move the smart content (files & folders) into place
+	* Save the smart items
 	*
-	* @param string  $dir    The path to the folders
+	* @param string  $type    The type of values
 	*
 	* @return  boolean false on failure
 	*
 	**/
-	protected function moveSmartStuff($dir)
+	protected function saveSmartItems($table)
+	{
+		$success = true;
+		if (isset($this->data[$table]) && ComponentbuilderHelper::checkArray($this->data[$table]))
+		{
+			// get global action permissions
+			$canDo		= ComponentbuilderHelper::getActions($table);
+			$canEdit		= $canDo->get('core.edit');
+			$canState		= $canDo->get('core.edit.state');
+			$canCreate	= $canDo->get('core.create');
+			// set id keeper
+			if (!isset($this->newID[$table]))
+			{
+				$this->newID[$table] = array();
+			}
+			foreach ($this->data[$table] as $item)
+			{
+				$oldID = (int) $item->id;
+				// first check if exist
+				if ($local = $this->getLocalItem($item, $table, 1))
+				{
+					$dbDate = strtotime($item->modified);
+					$localDate = strtotime($local->modified);
+					// okay we have it local (check if the version is newer)
+					if ($this->forceUpdate == 1 || $dbDate > $localDate)
+					{
+						// add some local values to item to combine
+						if ($table === 'language_translation')
+						{
+							$item->localComponents = $local->components;
+							$item->localTranslation = $local->translation;
+						}
+						// make sure we have the correct ID set
+						$item->id = $local->id;
+						// yes it is newer, lets update (or is being forced)
+						if ($canEdit && $id = $this->updateLocalItem($item, $table, $canState))
+						{
+							// we had success in
+							$this->newID[$table][$oldID] = (int) $id;
+							// to debug if your mismatching is to much (TODO) we can add a debugging switch later
+							// $this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_BEEN_UPDATED', $table.' id:'.$oldID . '->' . $id), 'success');
+						}
+						else
+						{
+							$notice = '!';
+							if (!$canEdit)
+							{
+								$notice = JText::sprintf("COM_COMPONENTBUILDER__SINCE_YOU_DONT_HAVE_PERMISSION_TO_EDIT_S", $table);
+							}
+							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_COULD_NOT_BE_IMPORTEDS', $table.' id:'.$oldID, $notice), 'error');
+						}
+					}
+					// insure to load the local ID to link imported values with it
+					if (!isset($this->newID[$table][$oldID]))
+					{
+						$this->newID[$table][$oldID] = (int) $local->id;
+					}
+				}
+				elseif ($canCreate && $id = $this->addLocalItem($item, $table))
+				{
+					// not found in local db so add
+					$this->newID[$table][$oldID] = (int) $id;
+					// to debug if your mismatching is to much
+					// $this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_BEEN_IMPORTED', $table.' id:'.$oldID . '->' . $id), 'success');
+				}
+				else
+				{
+					$notice = '!';
+					if (!$canCreate)
+					{
+						$notice = JText::sprintf("COM_COMPONENTBUILDER__SINCE_YOU_DONT_HAVE_PERMISSION_TO_CREATE_S", $table);
+					}
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_COULD_NOT_BE_IMPORTEDS', $table.' id:'.$oldID, $notice), 'error');
+				}
+			}
+		}
+		return $success;
+	}
+
+	/**
+	* Move the smart content (files & folders) into place
+	*
+	* @return  boolean false on failure
+	*
+	**/
+	protected function moveSmartStuff()
 	{
 		// make sure to first unlock files
-		$this->unLockFiles($dir);
+		$this->unLockFiles($this->dir);
 		// set params
 		$params = JComponentHelper::getParams('com_componentbuilder');
 		// set custom folder path
@@ -746,7 +833,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$imagesPath = str_replace('//', '/', JPATH_SITE . '/images');
 		$success = true;
 		// check if we have custom files
-		$customDir = str_replace('//', '/', $dir . '/custom');
+		$customDir = str_replace('//', '/', $this->dir . '/custom');
 		if (JFolder::exists($customDir))
 		{
 			// great we have some custom stuff lets move it
@@ -757,7 +844,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		// check if we have images
-		$imageDir = str_replace('//', '/', $dir . '/images');
+		$imageDir = str_replace('//', '/', $this->dir . '/images');
 		if (JFolder::exists($imageDir))
 		{
 			// great we have some images lets move them
@@ -775,7 +862,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*
 	* @return void
 	*/
-	protected function unLockFiles(&$dir)
+	protected function unLockFiles()
 	{
 		// lock the data if set
 		if(ComponentbuilderHelper::checkString($this->sleutle) && strlen($this->sleutle) == 32)
@@ -784,14 +871,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// we must first store the current working directory
 			$joomla = getcwd();
 			// setup the type path
-			$customPath = str_replace('//', '/', $dir . '/custom');
+			$customPath = str_replace('//', '/', $this->dir . '/custom');
 			// go to the custom folder if found
 			if (JFolder::exists($customPath))
 			{
 				$this->unlock($customPath, $unlocker);
 			}
 			// setup the type path
-			$imagesPath = str_replace('//', '/', $dir . '/images');
+			$imagesPath = str_replace('//', '/', $this->dir . '/images');
 			// go to the custom folder if found
 			if (JFolder::exists($imagesPath))
 			{
@@ -831,90 +918,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 
 	/**
-	* Save the smart items
-	*
-	* @param array   $items  The values to save
-	* @param string  $type    The type of values
-	*
-	* @return  boolean false on failure
-	*
-	**/
-	protected function saveSmartItems(&$items, $type)
-	{
-		$success = true;
-		if (isset($items[$type]) && ComponentbuilderHelper::checkArray($items[$type]))
-		{
-			// get global action permissions
-			$canDo		= ComponentbuilderHelper::getActions($type);
-			$canEdit		= $canDo->get('core.edit');
-			$canState		= $canDo->get('core.edit.state');
-			$canCreate	= $canDo->get('core.create');
-			// set id keeper
-			if (!isset($this->newID[$type]))
-			{
-				$this->newID[$type] = array();
-			}
-			foreach ($items[$type] as $item)
-			{
-				$oldID = $item->id;
-				// first check if exist
-				if ($local = $this->getLocalItem($item, $type, 1))
-				{
-					$dbDate = strtotime($item->modified);
-					$localDate = strtotime($local->modified);
-					// okay we have it local (check if the version is newer)
-					if ($this->forceUpdate == 1 || $dbDate > $localDate)
-					{
-						// add some local values to item to combine
-						if ($type === 'language_translation')
-						{
-							$item->localComponents = $local->components;
-							$item->localTranslation = $local->translation;
-						}
-						// make sure we have the correct ID set
-						$item->id = $local->id;
-						// yes it is newer, lets update (or is being forced)
-						if ($canEdit && $id = $this->updateLocalItem($item, $type, $canState))
-						{
-							$this->newID[$type][$oldID] = $id;
-						}
-						else
-						{
-							$notice = '!';
-							if (!$canEdit)
-							{
-								$notice = JText::sprintf("COM_COMPONENTBUILDER__SINCE_YOU_DONT_HAVE_PERMISSION_TO_EDIT_S", $type);
-							}
-							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_COULD_NOT_BE_IMPORTEDS', $type.' id:'.$oldID, $notice), 'error');
-						}
-					}
-					else
-					{
-						$this->newID[$type][$oldID] = $local->id;
-					}
-				}
-				elseif ($canCreate && $id = $this->addLocalItem($item, $type))
-				{
-					// not found in local db so add
-					$this->newID[$type][$oldID] = $id;
-				}
-				else
-				{
-					$notice = '!';
-					if (!$canCreate)
-					{
-						$notice = JText::sprintf("COM_COMPONENTBUILDER__SINCE_YOU_DONT_HAVE_PERMISSION_TO_CREATE_S", $type);
-					}
-					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_COULD_NOT_BE_IMPORTEDS', $type.' id:'.$oldID, $notice), 'error');
-				}
-			}
-		}
-		return $success;
-	}
-
-	/**
 	* Update some items after all
-	*
 	*
 	* @return  void
 	*
@@ -954,13 +958,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							$bucket = array();
 							foreach ($fieldsSets as $id)
 							{
-								if (isset($this->newID['field'][$id]))
+								if (isset($this->newID['field'][(int) $id]))
 								{
-									$bucket[] = $this->newID['field'][$id];
+									$bucket[] = $this->newID['field'][(int) $id];
 								}
 								else
 								{
-									$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BREPEATABLEB_IDS_MISMATCH_IN_BFIELDSB_AND_WAS_EMREMOVEDEM_FROM_THE_FIELD', $id, $field), 'warning');
+									$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BMULTIPLE_FIELD_REPEATABLE_MODEB_IDS_MISMATCH_IN_BFIELDSB_AND_WAS_EMREMOVEDEM_FROM_THE_FIELD', $id, $field), 'warning');
 								}
 							}
 							if (ComponentbuilderHelper::checkArray($bucket))
@@ -988,9 +992,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// update the addlinked_views
 			foreach ($this->updateAfter['adminview'] as $adminview)
 			{
-				if (isset($this->newID['admin_view'][$adminview]))
+				if (isset($this->newID['admin_view'][(int) $adminview]))
 				{
-					$adminview = $this->newID['admin_view'][$adminview];
+					$adminview = $this->newID['admin_view'][(int) $adminview];
 				}
 				// get the field from db
 				if ($addlinked_views = ComponentbuilderHelper::getVar('admin_view', $adminview, 'id', 'addlinked_views'))
@@ -1050,27 +1054,32 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	/*
 	 * Convert repeatable field to subform
 	 * 
-	 * @param   array    $array       The array to convert
+	 * @param   array    $item       The array to convert
 	 * @param   string   $name      The main field name
 	 * @param   array   $updater    The updater (dynamic) option
 	 *
 	 * @return  array
 	 */
-	protected function convertRepeatable($array, $name)
+	protected function convertRepeatable($item, $name)
 	{
-		$bucket = array();
-		foreach ($array as $key => $values)
+		// continue only if we have an array
+		if (ComponentbuilderHelper::checkArray($item))
 		{
-			foreach ($values as $nr => $value)
+			$bucket = array();
+			foreach ($item as $key => $values)
 			{
-				if (!isset($bucket[$name . $nr]) || !ComponentbuilderHelper::checkArray($bucket[$name . $nr]))
+				foreach ($values as $nr => $value)
 				{
-					$bucket[$name . $nr] = array();
+					if (!isset($bucket[$name . $nr]) || !ComponentbuilderHelper::checkArray($bucket[$name . $nr]))
+					{
+						$bucket[$name . $nr] = array();
+					}
+					$bucket[$name . $nr][$key] = $value;
 				}
-				$bucket[$name . $nr][$key] = $value;
 			}
+			return $bucket;
 		}
-		return $bucket;
+		return $item;
 	}
 
 	/*
@@ -1081,26 +1090,27 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	 *
 	 * @return void
 	 */
-	protected function convertRepeatableFields(&$item, $updater)
+	protected function convertRepeatableFields($object, $updater)
 	{
 		// update the repeatable fields
 		foreach ($updater as  $up => $sleutel)
 		{
-			if (isset($item->{$up}) && ComponentbuilderHelper::checkJson($item->{$up}))
+			if (isset($object->{$up}) && ComponentbuilderHelper::checkJson($object->{$up}))
 			{
-				$updateArray = json_decode($item->{$up}, true);
+				$updateArray = json_decode($object->{$up}, true);
 				// check if this is old values for repeatable fields
 				if (ComponentbuilderHelper::checkArray($updateArray) && isset($updateArray[$sleutel]))
 				{
 					// load it back
-					$item->{$up} = json_encode($this->convertRepeatable($updateArray, $up));
+					$object->{$up} = json_encode($this->convertRepeatable($updateArray, $up));
 				}
 			}
-			elseif (isset($item->{$up}))
+			elseif (isset($object->{$up}))
 			{
-				unset($item->{$up});
+				unset($object->{$up});
 			}
 		}
+		return $object;
 	}
 
 	/**
@@ -1155,45 +1165,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				{
 					if (isset($value[$target]))
 					{
-						// update the target
-						if (!ComponentbuilderHelper::checkArray($value[$target]))
-						{
-							if (isset($this->newID[$target_type][$value[$target]]))
-							{
-								$value[$target] = $this->newID[$target_type][$value[$target]];
-							}
-							else
-							{
-								$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_ID_MISMATCH_SO_THE_IDS_WAS_REMOVED', ComponentbuilderHelper::safeString($target_type, 'Ww') . '->' . ComponentbuilderHelper::safeString($target, 'Ww') .' in ('.ComponentbuilderHelper::safeString($table, 'w').':'.$item->id.')', $value[$target]), 'warning');
-								$value[$target] = '';
-							}
-						}
-						elseif (ComponentbuilderHelper::checkArray($value[$target]))
-						{
-							// the bucket to load the items back
-							$bucket = array();
-							foreach ($value[$target] as $id)
-							{
-								if (!is_numeric($id))
-								{
-									continue;
-								}
-								if (isset($this->newID[$target_type][$id]))
-								{
-									$bucket[] = $this->newID[$target_type][$id];
-								}
-								else
-								{
-									$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_ID_MISMATCH_SO_THE_IDS_WAS_REMOVED', ComponentbuilderHelper::safeString($target_type, 'Ww') . '->' . ComponentbuilderHelper::safeString($target, 'Ww') .' in ('.ComponentbuilderHelper::safeString($table, 'w').':'.$item->id.')', $id), 'warning');
-									$bucket[] = '';
-								}
-							}
-							// set ids back
-							if (ComponentbuilderHelper::checkArray($bucket))
-							{
-								$value[$target] = $bucket;
-							}
-						}
+						$value = $this->setNewID($value, $target, $target_type, $table);
 					}
 				}
 			}
@@ -1203,6 +1175,169 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			return json_encode($values);
 		}
 		return $values;
+	}
+
+	/**
+	 * Set the new ID
+	 *
+	 * @param array          $item        The values to update the IDs in
+	 * @param string         $target      The target field
+	 * @param string         $type        The table of that field
+	 * @param string         $table       The table these values belong to
+	 *
+	 * @return  boolean  True on success
+	 *
+	 */
+	protected function setNewID($item, $target, $type, $table)
+	{
+		$isJson = false;
+		if (ComponentbuilderHelper::checkJson($item))
+		{
+			$item = json_decode($item, true);
+			$isJson = true;
+		}
+		if (ComponentbuilderHelper::checkArray($item))
+		{
+			// set item ID
+			$itemId = (isset($item['id'])) ? $item['id'] :  'newItem';
+			// check if it is json
+			$isJsonTarget = false;
+			if (ComponentbuilderHelper::checkJson($item[$target]))
+			{
+				$item[$target] = json_decode($item[$target], true);
+				$isJsonTarget = true;
+			}
+			// update the target
+			if (ComponentbuilderHelper::checkString($item[$target]) || is_numeric($item[$target]))
+			{
+				if ($item[$target] == 0)
+				{
+					$item[$target] = '';
+				}
+				elseif (isset($this->newID[$type][(int) $item[$target]]))
+				{
+					$item[$target] = $this->newID[$type][(int) $item[$target]];
+				}
+				else
+				{
+					$this->enqueueIdMismatchMessage($item[$target], $itemId, $target, $type, $table);
+					$item[$target] = '';
+				}
+			}
+			elseif (ComponentbuilderHelper::checkArray($item[$target]))
+			{
+				// the bucket to load the items back
+				$bucket = array();
+				foreach ($item[$target] as $nr => $id)
+				{
+					if ($id == 0)
+					{
+						continue;
+					}
+					elseif ((ComponentbuilderHelper::checkString($id) || is_numeric($id)) && isset($this->newID[$type][(int) $id]))
+					{
+						$bucket[] = $this->newID[$type][(int) $id];
+					}
+					else
+					{
+						$this->enqueueIdMismatchMessage($id, $itemId, $target, $type, $table);
+					}
+				}
+				// set ids back
+				if (ComponentbuilderHelper::checkArray($bucket))
+				{
+					$item[$target] = $bucket;
+				}
+			}
+			// convert back to json
+			if ($isJsonTarget)
+			{
+				$item[$target] = json_encode($item[$target]);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkObject($item))
+		{
+			// set item ID
+			$itemId = (isset($item->id)) ? $item->id : 'newItem';
+			// check if it is json
+			$isJsonTarget = false;
+			if (ComponentbuilderHelper::checkJson($item->{$target}))
+			{
+				$item->{$target} = json_decode($item->{$target}, true);
+				$isJsonTarget = true;
+			}
+			// update the target
+			if (ComponentbuilderHelper::checkString($item->{$target}) || is_numeric($item->{$target}))
+			{
+				if ($item->{$target} == 0)
+				{
+					$item->{$target} = '';
+				}
+				elseif (isset($this->newID[$type][(int) $item->{$target}]))
+				{
+					$item->{$target} = $this->newID[$type][(int) $item->{$target}];
+				}
+				else
+				{
+					$this->enqueueIdMismatchMessage($item->{$target}, $itemId, $target, $type, $table);
+					$item->{$target} = '';
+				}
+			}
+			elseif (ComponentbuilderHelper::checkArray($item->{$target}))
+			{
+				// the bucket to load the items back
+				$bucket = array();
+				foreach ($item->{$target} as $id)
+				{
+					if ($id == 0)
+					{
+						continue;
+					}
+					elseif ((ComponentbuilderHelper::checkString($id) || is_numeric($id)) && isset($this->newID[$type][(int) $id]))
+					{
+						$bucket[] = $this->newID[$type][(int) $id];
+					}
+					else
+					{
+						$this->enqueueIdMismatchMessage($id, $itemId, $target, $type, $table);
+						$bucket[] = '';
+					}
+				}
+				// set ids back
+				if (ComponentbuilderHelper::checkArray($bucket))
+				{
+					$item->{$target} = $bucket;
+				}
+			}
+			// convert back to json
+			if ($isJsonTarget)
+			{
+				$item->{$target} = json_encode($item->{$target});
+			}
+		}
+		// return as json if received as json
+		if ($isJson)
+		{
+			return json_encode($item);
+		}
+		return $item;
+	}
+
+	/**
+	 * Set the new ID
+	 *
+	 * @param int             $id             The field ID
+	 * @param int             $itemId      The item ID
+	 * @param string         $target      The target field
+	 * @param string         $type        The table of that field
+	 * @param string         $table       The table these values belong to
+	 *
+	 * @return  void
+	 *
+	 */
+	protected function enqueueIdMismatchMessage($id, $itemId, $target, $type, $table)
+	{
+		$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSBS_IN_BSB_HAS_ID_MISMATCH_SO_THE_BSB_WAS_REMOVED', ComponentbuilderHelper::safeString($type, 'Ww'), ComponentbuilderHelper::safeString($target, 'Ww') , ComponentbuilderHelper::safeString($table, 'w').':'.$itemId, $type . ':' . $id), 'warning');
 	}
 
 	/**
@@ -1241,13 +1376,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					'properties' => 'name'
 				);
 				// update the repeatable fields
-				$this->convertRepeatableFields($item, $updaterR);
+				$item = $this->convertRepeatableFields($item, $updaterR);
 			break;
 			case 'field':
 				// update the fieldtype
-				if (isset($item->fieldtype) && is_numeric($item->fieldtype) && $item->fieldtype > 0 && isset($this->newID['fieldtype'][$item->fieldtype]))
+				if (isset($item->fieldtype) && is_numeric($item->fieldtype) && $item->fieldtype > 0 && isset($this->newID['fieldtype'][(int) $item->fieldtype]))
 				{
-					$item->fieldtype = $this->newID['fieldtype'][$item->fieldtype];
+					$item->fieldtype = $this->newID['fieldtype'][(int) $item->fieldtype];
 					// update multi field values
 					if ($this->checkMultiFields($item->fieldtype))
 					{
@@ -1267,17 +1402,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 			case 'dynamic_get':
 				// update the view_table_main ID
-				if (isset($item->main_source) && $item->main_source == 1 && isset($item->view_table_main) && is_numeric($item->view_table_main) && $item->view_table_main > 0)
+				if (isset($item->main_source) && $item->main_source == 1)
 				{
-					if (isset($this->newID['admin_view'][$item->view_table_main]))
-					{
-						$item->view_table_main = $this->newID['admin_view'][$item->view_table_main];
-					}
-					else
-					{
-						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BVIEW_TABLE_MAINB_IDS_MISMATCH_IN_BSB', $item->view_table_main, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'error');
-						return false;
-					}
+					$item = $this->setNewID($item, 'view_table_main', 'admin_view', $type);
 				}
 				// repeatable fields to update
 				$updaterR = array(
@@ -1290,7 +1417,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							'filter' => 'filter_type'
 							);
 				// update the repeatable fields
-				$this->convertRepeatableFields($item, $updaterR);
+				$item = $this->convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
 							// subformfield => field => type_value
@@ -1302,114 +1429,20 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			case 'layout':
 			case 'template':
 				// update the dynamic_get
-				if (isset($item->dynamic_get) && is_numeric($item->dynamic_get) && $item->dynamic_get > 0 && isset($this->newID['dynamic_get'][$item->dynamic_get]))
-				{
-					$item->dynamic_get = $this->newID['dynamic_get'][$item->dynamic_get];
-				}
-				elseif (!is_numeric($item->dynamic_get) || $item->dynamic_get == 0)
-				{
-					unset($item->dynamic_get);
-				}
-				else
-				{
-					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BDYNAMIC_GETB_IDS_MISMATCH_IN_BSB', $item->dynamic_get, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'warning');
-					unset($item->dynamic_get);
-				}
+				$item = $this->setNewID($item, 'dynamic_get', 'dynamic_get', $type);
 				// update the snippet
-				if (isset($item->snippet) && is_numeric($item->snippet) && $item->snippet > 0 && isset($this->newID['snippet'][$item->snippet]))
-				{
-					$item->snippet = $this->newID['snippet'][$item->snippet];
-				}
-				elseif (!is_numeric($item->snippet) || $item->snippet == 0)
-				{
-					unset($item->snippet);
-				}
-				else
-				{
-					// $this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSNIPPETB_IDS_MISMATCH_IN_BSB', $item->snippet, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'warning');
-					// unset($item->snippet);
-				}
+				$item = $this->setNewID($item, 'snippet', 'snippet', $type);
 			break;
 			case 'custom_admin_view':
 			case 'site_view':
 				// update the main_get
-				if (isset($item->main_get) && is_numeric($item->main_get) && $item->main_get > 0 && isset($this->newID['dynamic_get'][$item->main_get]))
-				{
-					$item->main_get = $this->newID['dynamic_get'][$item->main_get];
-				}
-				elseif (!is_numeric($item->main_get) || $item->main_get == 0)
-				{
-					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BMAIN_GETB_NOT_SET_FOR_BSB', ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'warning');
-					unset($item->main_get);
-				}
-				else
-				{
-					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BMAIN_GETB_IDS_MISMATCH_IN_BSB', $item->main_get, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'error');
-					return false;
-				}
+				$item = $this->setNewID($item, 'main_get', 'dynamic_get', $type);
 				// update the dynamic_get
-				if (isset($item->dynamic_get) && is_numeric($item->dynamic_get) && $item->dynamic_get > 0 && isset($this->newID['dynamic_get'][$item->dynamic_get]))
-				{
-					$item->dynamic_get = $this->newID['dynamic_get'][$item->dynamic_get];
-				}
-				elseif (!is_numeric($item->dynamic_get) || $item->dynamic_get == 0)
-				{
-					unset($item->dynamic_get);
-				}
-				else
-				{
-					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BDYNAMIC_GETB_IDS_MISMATCH_IN_BSB', $item->dynamic_get, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'warning');
-					unset($item->dynamic_get);
-				}
+				$item = $this->setNewID($item, 'dynamic_get', 'dynamic_get', $type);
 				// update the custom_get
-				if (isset($item->custom_get) && ComponentbuilderHelper::checkJson($item->custom_get))
-				{
-					$custom_get = json_decode($item->custom_get, true);
-					foreach ($custom_get as $nr => $get)
-					{
-						if (!is_numeric($get))
-						{
-							continue;
-						}
-						// update the custom_get
-						if (isset($this->newID['dynamic_get'][$get]))
-						{
-							$custom_get[$nr] = $this->newID['dynamic_get'][$get];
-						}
-						else
-						{
-							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BCUSTOM_GET_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BDYNAMIC_GETB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $get), 'warning');
-							unset($custom_get[$nr]);
-						}
-					}
-					// load it back if there is any remaining
-					if (ComponentbuilderHelper::checkArray($custom_get))
-					{
-						$item->custom_get = json_encode( (object) $custom_get);
-					}
-					else
-					{
-						unset($item->custom_get);
-					}
-				}
-				else
-				{
-					unset($item->custom_get);
-				}
+				$item = $this->setNewID($item, 'custom_get', 'dynamic_get', $type);
 				// update the snippet
-				if (isset($item->snippet) && is_numeric($item->snippet) && $item->snippet > 0 && isset($this->newID['snippet'][$item->snippet]))
-				{
-					$item->snippet = $this->newID['snippet'][$item->snippet];
-				}
-				elseif (!is_numeric($item->snippet) || $item->snippet == 0)
-				{
-					unset($item->snippet);
-				}
-				else
-				{
-					// $this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSNIPPETB_IDS_MISMATCH_IN_BSB', $item->snippet, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'warning');
-					// unset($item->snippet);
-				}
+				$item = $this->setNewID($item, 'snippet', 'snippet', $type);
 				// repeatable fields to update
 				$updaterR = array(
 							// repeatablefield => checker
@@ -1417,7 +1450,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							'custom_button' => 'name'
 							);
 				// update the repeatable fields				
-				$this->convertRepeatableFields($item, $updaterR);
+				$item = $this->convertRepeatableFields($item, $updaterR);
 			break;
 			case 'admin_view':
 				// we must clear the demo content (since it was not moved as far as we know) TODO
@@ -1476,7 +1509,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						'addpermissions' => 'action'
 					);
 				// update the repeatable fields
-				$this->convertRepeatableFields($item, $updaterR);
+				$item = $this->convertRepeatableFields($item, $updaterR);
 			break;
 			case 'joomla_component':
 				// update the addconfig
@@ -1490,9 +1523,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							continue;
 						}
 						// update the addconfig
-						if (isset($this->newID['field'][$id]))
+						if (isset($this->newID['field'][(int) $id]))
 						{
-							$addconfig['field'][$nr] = $this->newID['field'][$id];
+							$addconfig['field'][$nr] = $this->newID['field'][(int) $id];
 						}
 						else
 						{
@@ -1514,9 +1547,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							continue;
 						}
 						// update the addadmin_views
-						if (isset($this->newID['admin_view'][$id]))
+						if (isset($this->newID['admin_view'][(int) $id]))
 						{
-							$addadmin_views['adminview'][$nr] = $this->newID['admin_view'][$id];
+							$addadmin_views['adminview'][$nr] = $this->newID['admin_view'][(int) $id];
 						}
 						else
 						{
@@ -1542,9 +1575,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							continue;
 						}
 						// update the addcustom_admin_views
-						if (isset($this->newID['custom_admin_view'][$id]))
+						if (isset($this->newID['custom_admin_view'][(int) $id]))
 						{
-							$addcustom_admin_views['customadminview'][$nr] = $this->newID['custom_admin_view'][$id];
+							$addcustom_admin_views['customadminview'][$nr] = $this->newID['custom_admin_view'][(int) $id];
 						}
 						else
 						{
@@ -1566,9 +1599,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							continue;
 						}
 						// update the addsite_views
-						if (isset($this->newID['site_view'][$id]))
+						if (isset($this->newID['site_view'][(int) $id]))
 						{
-							$addsite_views['siteview'][$nr] = $this->newID['site_view'][$id];
+							$addsite_views['siteview'][$nr] = $this->newID['site_view'][(int) $id];
 						}
 						else
 						{
@@ -1582,47 +1615,18 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 			case 'custom_code':
 				// update the component ID where needed
-				if (isset($item->component) && $item->component > 0)
-				{
-					if (isset($this->newID['joomla_component'][$item->component]))
-					{
-						$item->component = $this->newID['joomla_component'][$item->component];
-					}
-					else
-					{
-						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BCOMPONENT_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BCOMPONENTB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $item->component), 'warning');
-						unset($item->component);
-					}
-				}
+				$item = $this->setNewID($item, 'component', 'joomla_component', $type);
 			break;
 			case 'language_translation':
 				// update the component ID where needed
-				if (isset($item->components) && ComponentbuilderHelper::checkJson($item->components))
-				{
-					$components = json_decode($item->components, true);
-					foreach ($components as $nr => $id)
-					{
-						if (!is_numeric($id))
-						{
-							continue;
-						}
-						// update the components
-						if (isset($this->newID['joomla_component'][$id]))
-						{
-							$components[$nr] = $this->newID['joomla_component'][$id];
-						}
-						else
-						{
-							unset($components[$nr]);
-						}
-					}
-				}
+				$item = $this->setNewID($item, 'component', 'joomla_component', $type);
 				// load the local components if found
 				if (isset($item->localComponents) && ComponentbuilderHelper::checkJson($item->localComponents))
 				{
-					if (!isset($components))
+					$components = array();
+					if (isset($item->components) && ComponentbuilderHelper::checkJson($item->components))
 					{
-						$components= array();
+						$components = json_decode($item->components, true);
 					}
 					$localComponents = json_decode($item->localComponents, true);
 					foreach ($localComponents as $lid)
@@ -1725,18 +1729,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			case 'admin_fields':
 			case 'admin_fields_conditions':
 				// update the admin_view ID where needed
-				if (isset($item->admin_view) && $item->admin_view > 0)
-				{
-					if (isset($this->newID['admin_view'][$item->admin_view]))
-					{
-						$item->admin_view = $this->newID['admin_view'][$item->admin_view];
-					}
-					else
-					{
-						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BFIELD_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BADMIN_VIEWB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $item->admin_view), 'warning');
-						unset($item->admin_view);
-					}
-				}
+				$item = $this->setNewID($item, 'admin_view', 'admin_view', $type);
+				// set the updater
 				if ('admin_fields' === $type)
 				{
 					// repeatable fields to update
@@ -1770,7 +1764,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 
 				// update the repeatable fields
-				$this->convertRepeatableFields($item, $updaterR);
+				$item = $this->convertRepeatableFields($item, $updaterR);
 				
 				// update the subform ids
 				$this->updateSubformsIDs($item, $type, $updaterT);
@@ -1791,7 +1785,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 			case 'add':
 				// remove the ID
-				unset($item->id);
+				if (isset($item->id))
+				{
+					unset($item->id);
+				}
 				// set values to follow the adding conventions
 				$item->created_by = $this->user->id;
 				$item->modified_by = $this->user->id;
@@ -2101,7 +2098,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// get by admin_view (since there should only be one of each name)
 					$getter = array('admin_view');
 					$this->specialValue = array();
-					$this->specialValue['admin_view'] = $this->newID['admin_view'][$item->admin_view];
+					$this->specialValue['admin_view'] = $this->newID['admin_view'][(int) $item->admin_view];
 					break;
 				case 'fieldtype':
 					// get by name (since there should only be one of each name)
@@ -2119,11 +2116,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						// get by id name..
 						$getter = array('name','datatype','store','indexes','null_switch');
 						// lets try to add the fieldtype
-						if (isset($item->fieldtype) && is_numeric($item->fieldtype) && $item->fieldtype > 0 && isset($this->newID['fieldtype'][$item->fieldtype]) && $this->newID['fieldtype'][$item->fieldtype] > 0)
+						if (isset($item->fieldtype) && is_numeric($item->fieldtype) && $item->fieldtype > 0 && isset($this->newID['fieldtype'][(int) $item->fieldtype]) && $this->newID['fieldtype'][(int) $item->fieldtype] > 0)
 						{
 							$getter[] = 'fieldtype';
 							$this->specialValue = array();
-							$this->specialValue['fieldtype'] = $this->newID['fieldtype'][$item->fieldtype];
+							$this->specialValue['fieldtype'] = $this->newID['fieldtype'][(int) $item->fieldtype];
 							$retryAgain = 2;
 						}
 						else
@@ -2137,11 +2134,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// get by name, system_name and codename
 					$getter = array('name', 'system_name', 'codename');
 					// lets try to add the main_get
-					if (isset($item->main_get) && is_numeric($item->main_get) && $item->main_get > 0 && isset($this->newID['dynamic_get'][$item->main_get]) && $this->newID['dynamic_get'][$item->main_get] > 0)
+					if (isset($item->main_get) && is_numeric($item->main_get) && $item->main_get > 0 && isset($this->newID['dynamic_get'][(int) $item->main_get]) && $this->newID['dynamic_get'][(int) $item->main_get] > 0)
 					{
 						$getter[] = 'main_get';
 						$this->specialValue = array();
-						$this->specialValue['main_get'] = $this->newID['dynamic_get'][$item->main_get];
+						$this->specialValue['main_get'] = $this->newID['dynamic_get'][(int) $item->main_get];
 					}
 					break;
 				case 'template':

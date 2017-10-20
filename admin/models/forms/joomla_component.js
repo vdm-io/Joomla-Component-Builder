@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 439 of this MVC
-	@build			18th October, 2017
+	@version		@update number 473 of this MVC
+	@build			20th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.js

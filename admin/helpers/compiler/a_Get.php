@@ -1703,7 +1703,7 @@ class Get
 	 * 
 	 * @param   int      $id  The view ID
 	 * @param   string   $table  The view table
-	 *
+	 * 
 	 * @return  oject The view data
 	 * 
 	 */

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			18th October, 2017
+	@build			20th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -1169,7 +1169,7 @@ class ComponentbuilderModelAjax extends JModelList
 				unset($result->php_calculation);
 			}
 			// name the main var based on view
-			if ($view == 'template')
+			if ('template' === $view || 'site_view' === $view)
 			{
 				switch ($result->gettype)
 				{
