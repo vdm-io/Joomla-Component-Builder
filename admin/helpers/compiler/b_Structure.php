@@ -320,6 +320,7 @@ class Structure extends Get
 			$this->componentSalesName	= 'com_'.$this->componentData->sales_name.'__J'.$this->joomlaVersion;
 			$this->componentBackupName	= 'com_'.$this->componentData->sales_name.'_v'.str_replace('.','_',$this->componentData->component_version).'__J'.$this->joomlaVersion;
 			$this->componentFolderName	= 'com_'.$this->componentData->name_code.'_v'.str_replace('.','_',$this->componentData->component_version).'__J'.$this->joomlaVersion;
+			
 			// set component folder path
 			$this->componentPath		= $this->compilerPath.'/'.$this->componentFolderName;
 			// set the template path for custom
