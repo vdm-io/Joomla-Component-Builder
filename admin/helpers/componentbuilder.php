@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			20th October, 2017
+	@build			21st October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -39,7 +39,104 @@ abstract class ComponentbuilderHelper
 	{
 		// the Session keeps track of all data related to the current session of this user
 		self::loadSession();
-	}  
+	} 
+
+	/**
+	 * Copy Any Item
+	 * 
+	 * @param   int        $id         The item to copy
+	 * @param   string   $table     The table and model to copy from and with
+	 * @param   array    $config   The values that should change
+	 *
+	 * @return  boolean   True if success
+	 * 
+	 */
+	public static function copyItem($id, $type, $config = array())
+	{
+		// only continue if we have an id
+		if ((int) $id > 0)
+		{
+			// get the model
+			$model = self::getModel($type);
+			$app   = \JFactory::getApplication();
+			// get item
+			if ($item = $model->getItem($id))
+			{
+				// update values that should change
+				if (self::checkArray($config))
+				{
+					foreach($config as $key => $value)
+					{
+						if (isset($item->{$key}))
+						{
+							$item->{$key} = $value;
+						}
+					}
+				}
+				// clone the object
+				$data = array();
+				foreach ($item as $key => $value)
+				{
+					$data[$key] = $value;
+				}			
+				// reset some values
+				$data['id'] = 0;
+				$data['version'] = 1;
+				if (isset($data['tags']))
+				{
+					$data['tags'] = null;
+				}
+				if (isset($data['associations']))
+				{
+					$data['associations'] = array();
+				}
+				// remove some unneeded values
+				unset($data['params']);
+				unset($data['asset_id']);
+				unset($data['checked_out']);
+				unset($data['checked_out_time']);
+				// get the form
+				$form = $model->getForm($data, false);
+				// make sure we have the form
+				if (!$form)
+				{
+					$app->enqueueMessage($model->getError(), 'error');
+
+					return false;
+				}
+
+				// Test whether the data is valid.
+				$validData = $model->validate($form, $data);
+
+				// Check for validation errors.
+				if ($validData === false)
+				{
+					// Get the validation messages.
+					$errors = $model->getErrors();
+
+					// Push up to three validation messages out to the user.
+					for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
+					{
+						if ($errors[$i] instanceof \Exception)
+						{
+							$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+						}
+						else
+						{
+							$app->enqueueMessage($errors[$i], 'warning');
+						}
+					}
+					return false;
+				}
+				// Attempt to save the data.
+				if ($model->save($validData))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	} 
 
 	/**
 	* 	The global params

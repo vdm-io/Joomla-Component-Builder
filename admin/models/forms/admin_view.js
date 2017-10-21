@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 192 of this MVC
-	@build			16th October, 2017
+	@version		@update number 202 of this MVC
+	@build			21st October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.js

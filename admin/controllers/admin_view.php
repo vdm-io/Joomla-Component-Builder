@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 192 of this MVC
-	@build			16th October, 2017
+	@version		@update number 202 of this MVC
+	@build			21st October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -320,6 +320,29 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 	 */
 	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{
+		// get the state object (Joomla\CMS\Object\CMSObject)
+		$state = $model->get('state');
+		// if we save2copy we need to also copy admin_fields & admin_fields_conditions if found!
+		if ($state->task === 'save2copy' && $state->{'admin_view.new'})
+		{
+			// get new ID
+			$newID = $state->{'admin_view.id'};
+			// get old ID
+			$oldID = $this->input->get('id', 0, 'INT');
+			// get the linked ID
+			if ($field = ComponentbuilderHelper::getVar('admin_fields', $oldID, 'admin_view', 'id'))
+			{
+				// copy fields to new admin view
+				ComponentbuilderHelper::copyItem(/*id->*/ $field, /*table->*/ 'admin_fields', /*change->*/ array('admin_view' => $newID));
+			}
+			// get the linked ID
+			if ($condition = ComponentbuilderHelper::getVar('admin_fields_conditions', $oldID, 'admin_view', 'id'))
+			{
+				// copy conditions to new admin view
+				ComponentbuilderHelper::copyItem(/*id->*/ $condition, /*table->*/ 'admin_fields_conditions', /*change->*/ array('admin_view' => $newID));
+			}
+		}
+
 		return;
 	}
 

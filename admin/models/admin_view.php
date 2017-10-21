@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 192 of this MVC
-	@build			16th October, 2017
+	@version		@update number 202 of this MVC
+	@build			21st October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -879,6 +879,27 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		{
 			return false;
 		}
+
+		// we must also delete the linked admin fields and admin fields conditions
+		if (ComponentbuilderHelper::checkArray($pks))
+		{
+			// get the linked IDs
+			if ($fields = ComponentbuilderHelper::getVars('admin_fields', $pks, 'admin_view', 'id'))
+			{
+				// load the model
+				$fieldModel = ComponentbuilderHelper::getModel('admin_fields');
+				// delete the linked field
+				$fieldModel->delete($fields);
+			}
+			// get the linked IDs
+			if ($conditions = ComponentbuilderHelper::getVars('admin_fields_conditions', $pks, 'admin_view', 'id'))
+			{
+				// load the model			
+				$conditionModel = ComponentbuilderHelper::getModel('admin_fields_conditions');
+				// delete the linked field
+				$conditionModel->delete($conditions);
+			}
+		}
 		
 		return true;
 	}
@@ -898,6 +919,27 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (!parent::publish($pks, $value))
 		{
 			return false;
+		}
+
+		// we must also delete the linked admin fields and admin fields conditions
+		if (ComponentbuilderHelper::checkArray($pks))
+		{
+			// get the linked IDs
+			if ($fields = ComponentbuilderHelper::getVars('admin_fields', $pks, 'admin_view', 'id'))
+			{
+				// load the model
+				$fieldModel = ComponentbuilderHelper::getModel('admin_fields');
+				// change publish state
+				$fieldModel->publish($fields, $value);
+			}
+			// get the linked IDs
+			if ($conditions = ComponentbuilderHelper::getVars('admin_fields_conditions', $pks, 'admin_view', 'id'))
+			{
+				// load the model			
+				$conditionModel = ComponentbuilderHelper::getModel('admin_fields_conditions');
+				// change publish state
+				$conditionModel->publish($conditions, $value);
+			}
 		}
 		
 		return true;
@@ -1139,6 +1181,26 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			// Add the new ID to the array
 			$newIds[$pk] = $newId;
 		}
+			
+		if (ComponentbuilderHelper::checkArray($newIds))
+		{
+			foreach($newIds as $oldID => $newID)
+			{
+				// get the linked ID
+				if ($field = ComponentbuilderHelper::getVar('admin_fields', $oldID, 'admin_view', 'id'))
+				{
+					// copy fields to new admin view
+					ComponentbuilderHelper::copyItem(/*id->*/ $field, /*table->*/ 'admin_fields', /*change->*/ array('admin_view' => $newID));
+				}
+				// get the linked ID
+				if ($condition = ComponentbuilderHelper::getVar('admin_fields_conditions', $oldID, 'admin_view', 'id'))
+				{
+					// copy conditions to new admin view
+					ComponentbuilderHelper::copyItem(/*id->*/ $condition, /*table->*/ 'admin_fields_conditions', /*change->*/ array('admin_view' => $newID));
+				}
+			}
+		}		
+			
 
 		// Clean the cache
 		$this->cleanCache();

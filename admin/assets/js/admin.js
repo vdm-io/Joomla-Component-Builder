@@ -10,7 +10,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.8
-	@build			20th October, 2017
+	@build			21st October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin.js
