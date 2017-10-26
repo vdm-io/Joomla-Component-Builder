@@ -305,7 +305,8 @@ abstract class ComponentbuilderHelper
 		return $indenter->indent($html);
 	}
 
-	public static function checkFileType($file, $sufix) {
+	public static function checkFileType($file, $sufix)
+	{
 		// now check if the file ends with the sufix
 		return $sufix === "" || ($sufix == substr(strrchr($file, "."), -strlen($sufix)));
 	}
@@ -407,7 +408,7 @@ abstract class ComponentbuilderHelper
 				'chromestyle','contenttype','databaseconnection','editors','email','file',
 				'filelist','folderlist','groupedlist','hidden','file','headertag','helpsite',
 				'imagelist','integer','language','list','media','menu','note','password',
-				'plugins','range','radio','repeatable','rules','sessionhandler','spacer','sql','tag',
+				'plugins','range','radio','repeatable','rules','subform','sessionhandler','spacer','sql','tag',
 				'tel','menuitem','modulelayout','meter','moduleorder','moduleposition','moduletag',
 				'templatestyle','text','textarea','timezone','url','user','usergroup'
 			), 

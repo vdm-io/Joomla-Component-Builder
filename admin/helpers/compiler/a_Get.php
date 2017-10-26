@@ -1270,7 +1270,7 @@ class Get
 			// if Details tab is not set, then set it here
 			if (!isset($view->tabs[1]))
 			{
-				$view->tabs[1] = 'details';
+				$view->tabs[1] = 'Details';
 			}
 			// always make sure that publishing is lowercase
 			if (($removeKey = array_search('publishing', array_map('strtolower', $view->tabs))) !== false)

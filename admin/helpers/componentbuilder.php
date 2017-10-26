@@ -42,7 +42,7 @@ abstract class ComponentbuilderHelper
 	} 
 
 	/**
-	 * Copy Any Item
+	 * Copy Any Item (only use for direct database copying)
 	 * 
 	 * @param   int        $id         The item to copy
 	 * @param   string   $table     The table and model to copy from and with
@@ -95,41 +95,8 @@ abstract class ComponentbuilderHelper
 				unset($data['asset_id']);
 				unset($data['checked_out']);
 				unset($data['checked_out_time']);
-				// get the form
-				$form = $model->getForm($data, false);
-				// make sure we have the form
-				if (!$form)
-				{
-					$app->enqueueMessage($model->getError(), 'error');
-
-					return false;
-				}
-
-				// Test whether the data is valid.
-				$validData = $model->validate($form, $data);
-
-				// Check for validation errors.
-				if ($validData === false)
-				{
-					// Get the validation messages.
-					$errors = $model->getErrors();
-
-					// Push up to three validation messages out to the user.
-					for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
-					{
-						if ($errors[$i] instanceof \Exception)
-						{
-							$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
-						}
-						else
-						{
-							$app->enqueueMessage($errors[$i], 'warning');
-						}
-					}
-					return false;
-				}
 				// Attempt to save the data.
-				if ($model->save($validData))
+				if ($model->save($data))
 				{
 					return true;
 				}
@@ -411,7 +378,8 @@ abstract class ComponentbuilderHelper
 		return $indenter->indent($html);
 	}
 
-	public static function checkFileType($file, $sufix) {
+	public static function checkFileType($file, $sufix)
+	{
 		// now check if the file ends with the sufix
 		return $sufix === "" || ($sufix == substr(strrchr($file, "."), -strlen($sufix)));
 	}
@@ -513,7 +481,7 @@ abstract class ComponentbuilderHelper
 				'chromestyle','contenttype','databaseconnection','editors','email','file',
 				'filelist','folderlist','groupedlist','hidden','file','headertag','helpsite',
 				'imagelist','integer','language','list','media','menu','note','password',
-				'plugins','range','radio','repeatable','rules','sessionhandler','spacer','sql','tag',
+				'plugins','range','radio','repeatable','rules','subform','sessionhandler','spacer','sql','tag',
 				'tel','menuitem','modulelayout','meter','moduleorder','moduleposition','moduletag',
 				'templatestyle','text','textarea','timezone','url','user','usergroup'
 			), 

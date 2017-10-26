@@ -617,7 +617,7 @@ class ComponentbuilderModelAjax extends JModelList
 						$this->customadminviewNames[$view] = JText::_('COM_COMPONENTBUILDER_NO_CUSTOM_ADMIN_VIEW_FOUND');
 					}
 				}
-				$bucket[] = $this->customadminviewNames[$view] . $this->addEditLink($value, 'custom_admin_view', 'custom_admin_views');
+				$bucket[] = $this->customadminviewNames[$view] . $this->addEditLink($view, 'custom_admin_view', 'custom_admin_views');
 			}
 		}
 		elseif (is_numeric($value))
@@ -655,7 +655,7 @@ class ComponentbuilderModelAjax extends JModelList
 						$this->adminviewNames[$view] = JText::_('COM_COMPONENTBUILDER_NO_ADMIN_VIEW_FOUND');
 					}
 				}
-				$bucket[] = $this->adminviewNames[$view] . $this->addEditLink($value, 'admin_view', 'admin_views');
+				$bucket[] = $this->adminviewNames[$view] . $this->addEditLink($view, 'admin_view', 'admin_views');
 			}
 		}
 		elseif (is_numeric($value))
@@ -693,7 +693,7 @@ class ComponentbuilderModelAjax extends JModelList
 						$this->siteviewNames[$view] = JText::_('COM_COMPONENTBUILDER_NO_SITE_VIEW_FOUND');
 					}
 				}
-				$bucket[] = $this->siteviewNames[$view] . $this->addEditLink($value, 'site_view', 'site_views');
+				$bucket[] = $this->siteviewNames[$view] . $this->addEditLink($view, 'site_view', 'site_views');
 			}
 		}
 		elseif (is_numeric($value))
