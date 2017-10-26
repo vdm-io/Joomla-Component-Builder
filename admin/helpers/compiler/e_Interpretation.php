@@ -6119,8 +6119,8 @@ class Interpretation extends Fields
 			}
 			// start tab set
 			$bucket = array();
-			$leftside 	= '';
-			$rightside 	= '';
+			$leftside = '';
+			$rightside = '';
 			$footer = '';
 			$header = '';
 			$mainwidth = 12;
@@ -6398,21 +6398,52 @@ class Interpretation extends Fields
 			{
 				$this->langContent[$this->lang][$tabLangName] = 'Publishing';
 			}
-			// TODO add new publishing fields <-- nice to have, but no time now to do this
-			// $this->newPublishingFields[$viewName_single]
 			// the default publishing items
-			$items = array();
-			foreach ($this->defaultFields as $defaultField)
+			$items = array('left' => array(), 'right' => array());
+			// Setup the default (custom) fields
+			// only load (1 => 'left', 2 => 'right')
+			$fieldsAddedRight = false;
+			if (isset($this->newPublishingFields[$viewName_single]))
 			{
-				if (!isset($this->movedPublishingFields[$viewName_single][$defaultField]))
+				foreach($this->newPublishingFields[$viewName_single] as $df_alignment => $df_items)
 				{
-					if ($defaultField != 'access')
+					foreach($df_items as $df_order => $df_name)
 					{
-						$items[] = $defaultField;
+						if ($df_alignment == 2 || $df_alignment == 1)
+						{
+							$items[$alignmentNames[$df_alignment]][$df_order] = $df_name;
+						}
+						else
+						{
+							$this->app->enqueueMessage(JText::sprintf('Your <b>%s</b> field could not be added, since the <b>%s</b> alignment position is not available in the %s (publishing) tab. Please only target <b>Left or right</b> in the publishing tab.', $df_name, $alignmentNames[$df_alignment], $viewName_single), 'warning');
+						}
 					}
-					elseif ($defaultField === 'access' && isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
+				}
+				// set switch to trigger notice if custom fields added to right
+				if (ComponentbuilderHelper::checkArray($items['right']))
+				{
+					$fieldsAddedRight = true;
+				}
+			}
+			// load all defaults
+			$loadDefaultFields = array(
+				'left' => array('created', 'created_by', 'modified', 'modified_by'),
+				'right' => array('published', 'ordering', 'access', 'version', 'hits', 'id')
+				);
+			foreach ($loadDefaultFields as $d_alignment => $defaultFields)
+			{
+				foreach($defaultFields as $defaultField)
+				{
+					if (!isset($this->movedPublishingFields[$viewName_single][$defaultField]))
 					{
-						$items[] = $defaultField;
+						if ($defaultField != 'access')
+						{
+							$items[$d_alignment][] = $defaultField;
+						}
+						elseif ($defaultField === 'access' && isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
+						{
+							$items[$d_alignment][] = $defaultField;
+						}
 					}
 				}
 			}
@@ -6423,10 +6454,32 @@ class Interpretation extends Fields
 				$tabCodeNameLeft = 'publishing';
 				$tabCodeNameRight = 'metadata';
 				// the default publishing tiems
-				if (ComponentbuilderHelper::checkArray($items))
+				if (ComponentbuilderHelper::checkArray($items['left']) || ComponentbuilderHelper::checkArray($items['right']))
 				{
-					// load all items
-					$items_one = "'". implode("',".PHP_EOL."\t'", $items)."'";
+					$items_one = '';
+					// load the items into one side
+					if (ComponentbuilderHelper::checkArray($items['left']))
+					{
+						$items_one .= "'". implode("',".PHP_EOL."\t'", $items['left'])."'";
+					}
+					if (ComponentbuilderHelper::checkArray($items['right']))
+					{
+						// there is already fields just add these
+						if (strlen($items_one) > 3)
+						{
+							$items_one .= ",".PHP_EOL."\t'". implode("',".PHP_EOL."\t'", $items['right'])."'";
+						}
+						// no fields has been added yet
+						else
+						{
+							$items_one .= "'". implode("',".PHP_EOL."\t'", $items['right'])."'";
+						}
+					}
+					// only triger the info notice if there were custom fields targeted to the right alignment position.
+					if ($fieldsAddedRight)
+					{
+						$this->app->enqueueMessage(JText::sprintf('Your field/s added to the <b>right</b> alignment position in the %s (publishing) tab was added to the <b>left</b>. Since we have metadata fields on the right. Fields can only be loaded to the right of the publishing tab if there is no metadata fields.', $viewName_single), 'Notice');
+					}
 					// set the publishing layout
 					$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
 					$items_one = true;
@@ -6445,40 +6498,22 @@ class Interpretation extends Fields
 				$tabCodeNameLeft = 'publishing';
 				$tabCodeNameRight = 'publlshing';
 				// the default publishing tiems
-				if (ComponentbuilderHelper::checkArray($items))
+				if (ComponentbuilderHelper::checkArray($items['left']) || ComponentbuilderHelper::checkArray($items['right']))
 				{
-					
-					$items_one = array('created', 'created_by', 'modified', 'modified_by');
-					$items_two = array('published', 'ordering', 'access', 'version', 'hits', 'id');
-					// check all items
-					foreach ($items_one as $key_one => $item_one)
-					{
-						if (!in_array($item_one, $items))
-						{
-							unset($items_one[$key_one]);
-						}
-					}
-					foreach ($items_two as $key_two => $item_two)
-					{
-						if (!in_array($item_two, $items))
-						{
-							unset($items_two[$key_two]);
-						}
-					}
-					// load all items that remain
-					if (ComponentbuilderHelper::checkArray($items_one))
+					// load left items that remain
+					if (ComponentbuilderHelper::checkArray($items['left']))
 					{
 						// load all items
-						$items_one = "'". implode("',".PHP_EOL."\t'", $items_one)."'";
+						$items_one = "'". implode("',".PHP_EOL."\t'", $items['left'])."'";
 						// set the publishing layout
 						$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
 						$items_one = true;
 					}
-					// load all items that remain
-					if (ComponentbuilderHelper::checkArray($items_two))
+					// load right items that remain
+					if (ComponentbuilderHelper::checkArray($items['right']))
 					{
 						// load all items
-						$items_two = "'". implode("',".PHP_EOL."\t'", $items_two)."'";
+						$items_two = "'". implode("',".PHP_EOL."\t'", $items['right'])."'";
 						// set the publishing layout
 						$this->setLayout($viewName_single, $tabCodeNameRight, $items_two, 'layoutpublished');
 						$items_two = true;

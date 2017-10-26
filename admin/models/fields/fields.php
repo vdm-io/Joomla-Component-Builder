@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields.php
@@ -153,7 +153,7 @@ class JFormFieldFields extends JFormFieldList
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.name'),array('id','field_name')));
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
-		$query->where($db->quoteName('a.published') . ' = 1');
+		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();

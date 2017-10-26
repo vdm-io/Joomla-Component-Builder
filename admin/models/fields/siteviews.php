@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		siteviews.php
@@ -153,13 +153,14 @@ class JFormFieldSiteviews extends JFormFieldList
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','siteview_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_site_view', 'a'));
-		$query->where($db->quoteName('a.published') . ' = 1');
+		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.system_name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
 		$options = array();
 		if ($items)
 		{
+			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
 				$options[] = JHtml::_('select.option', $item->id, $item->siteview_system_name);

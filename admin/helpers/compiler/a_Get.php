@@ -32,6 +32,13 @@ defined('_JEXEC') or die('Restricted access');
 class Get
 {
 	/**
+	 * The app
+	 * 
+	 * @var     object
+	 */
+	public $app;
+	
+	/**
 	 * The Params
 	 * 
 	 * @var     object
@@ -498,6 +505,8 @@ class Get
 	{
 		if (isset($config) && count($config))
 		{
+			// load application
+			$this->app = JFactory::getApplication();
 			// Set the params
 			$this->params			= JComponentHelper::getParams('com_componentbuilder');
 			// load the compiler path
@@ -1254,10 +1263,22 @@ class Get
 				$nr = 1;
 				foreach ($view->addtabs as $tab)
 				{
-					$view->tabs[$nr] = $tab['name'];
+					$view->tabs[$nr] = trim($tab['name']);
 					$nr++;
 				}
 			}
+			// if Details tab is not set, then set it here
+			if (!isset($view->tabs[1]))
+			{
+				$view->tabs[1] = 'details';
+			}
+			// always make sure that publishing is lowercase
+			if (($removeKey = array_search('publishing', array_map('strtolower', $view->tabs))) !== false)
+			{
+				$view->tabs[$removeKey] = 'publishing';
+			}
+			// make sure to set the publishing tab (just incase we need it)
+			$view->tabs[15] = 'publishing';
 			unset($view->addtabs);
 			// add permissions
 			$view->addpermissions = json_decode($view->addpermissions,true);
@@ -2150,7 +2171,7 @@ class Get
 					$results = $this->db->loadObjectList();
 					$typeArray = array(1 => 'LEFT', 2 => 'LEFT OUTER', 3 => 'INNER', 4 => 'RIGHT', 5 => 'RIGHT OUTER');
 					$operatorArray = array(1 => '=', 2 => '!=', 3 => '<>', 4 => '>', 5 => '<', 6 => '>=', 7 => '<=', 8 => '!<', 9 => '!>', 10 => 'IN', 11 => 'NOT IN');
-					foreach ($results as $nr => &$result)
+					foreach ($results as $_nr => &$result)
 					{
 						// add calculations if set
 						if($result->addcalculation == 1 && ComponentbuilderHelper::checkString($result->php_calculation))
@@ -2307,7 +2328,7 @@ class Get
 									$join_field	= array(); // array(join_field_as, join_field) 
 									$join_field	= array_map('trim', explode('.',$option1['join_field']));
 									$option1['selection'] =
-									$this->setDataSelection($result->key, $view_code, $value, $option1['db_table'], $option1['as'], $option1['row_type'], 'db');
+									$this->setDataSelection($result->key, $view_code, $option1['selection'], $option1['db_table'], $option1['as'], $option1['row_type'], 'db');
 									$option1['key'] = $result->key;
 									// load to the getters
 									if ($option1['row_type'] == 1)

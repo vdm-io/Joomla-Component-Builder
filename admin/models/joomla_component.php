@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 473 of this MVC
-	@build			20th October, 2017
+	@version		@update number 501 of this MVC
+	@build			26th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -65,6 +65,11 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
+
+	public function getVDM()
+	{
+		return $this->vastDevMod;
+	}
     
 	/**
 	 * Method to get a single record.
@@ -95,16 +100,24 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->sql))
+			if (!empty($item->addcontributors))
 			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
+				// Convert the addcontributors field to an array.
+				$addcontributors = new Registry;
+				$addcontributors->loadString($item->addcontributors);
+				$item->addcontributors = $addcontributors->toArray();
 			}
 
 			if (!empty($item->php_preflight_update))
 			{
 				// base64 Decode php_preflight_update.
 				$item->php_preflight_update = base64_decode($item->php_preflight_update);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
 			}
 
 			if (!empty($item->php_postflight_update))
@@ -179,12 +192,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->css = base64_decode($item->css);
 			}
 
-			if (!empty($item->php_dashboard_methods))
-			{
-				// base64 Decode php_dashboard_methods.
-				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
-			}
-
 			if (!empty($item->buildcompsql))
 			{
 				// base64 Decode buildcompsql.
@@ -207,6 +214,58 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				// basic decrypt data export_key.
 				$item->export_key = rtrim($basic->decryptString($item->export_key), "\0");
 			}
+
+			
+			if (empty($item->id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $item->id;
+			}			
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('joomla_component__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_component__'.$id);
+				ComponentbuilderHelper::set('joomla_component__'.$id, $this->vastDevMod);
+			}			
+
+			// update the fields
+			$objectUpdate = new stdClass();
+			$objectUpdate->id = (int) $item->id;
+			// repeatable values to check
+			$arrayChecker = array(
+				'addcontributors' => 'name'
+			);
+			foreach ($arrayChecker as $_value => $checker)
+			{
+				// check what type of array we have here (should be subform... but just in case)
+				// This could happen due to huge data sets
+				if (isset($item->{$_value}) && isset($item->{$_value}[$checker]))
+				{
+					$bucket = array();
+					foreach($item->{$_value} as $option => $values)
+					{
+						foreach($values as $nr => $value)
+						{
+							$bucket[$_value.$nr][$option] = $value;
+						}
+					}
+					$item->{$_value} = $bucket;
+					$objectUpdate->{$_value} = json_encode($bucket);
+				}
+			}
+			// be sure to update the table if we found repeatable fields that are still not converted
+			if (count((array) $objectUpdate) > 1)
+			{
+				$this->_db->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'id');
+			}
 			
 			if (!empty($item->id))
 			{
@@ -214,10 +273,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.joomla_component');
 			}
 		}
-		$this->idvvvv = $item->addadmin_views;
-		$this->idvvvw = $item->addcustom_admin_views;
-		$this->idvvvx = $item->addsite_views;
-		$this->componentsvvvy = $item->id;
+		$this->componentsvvvv = $item->id;
 
 		return $item;
 	}
@@ -227,291 +283,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVwnadmin_views()
-	{
-		// Get the user object.
-		$user = JFactory::getUser();
-		// Create a new query object.
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-
-		// Select some fields
-		$query->select('a.*');
-
-		// From the componentbuilder_admin_view table
-		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
-
-		// Order the results by ordering
-		$query->order('a.published  ASC');
-		$query->order('a.ordering  ASC');
-
-		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$items = $db->loadObjectList();
-
-			// set values to display correctly.
-			if (ComponentbuilderHelper::checkArray($items))
-			{
-				// get user object.
-				$user = JFactory::getUser();
-				foreach ($items as $nr => &$item)
-				{
-					$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-
-			// Filter by id Repetable Field
-			$idvvvv = json_decode($this->idvvvv,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvv) && ComponentbuilderHelper::checkArray($idvvvv))
-			{
-				foreach ($items as $nr => &$item)
-				{
-					if ($item->id && isset($idvvvv['adminview']) && ComponentbuilderHelper::checkArray($idvvvv['adminview']))
-					{
-						if (!in_array($item->id,$idvvvv['adminview']))
-						{
-							unset($items[$nr]);
-							continue;
-						}
-					}
-					else
-					{
-						unset($items[$nr]);
-						continue;
-					}
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return $items;
-		}
-		return false;
-	}
-
-	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getVwocustom_admin_views()
-	{
-		// Get the user object.
-		$user = JFactory::getUser();
-		// Create a new query object.
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-
-		// Select some fields
-		$query->select('a.*');
-
-		// From the componentbuilder_custom_admin_view table
-		$query->from($db->quoteName('#__componentbuilder_custom_admin_view', 'a'));
-
-		// From the componentbuilder_snippet table.
-		$query->select($db->quoteName('g.name','snippet_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet', 'g') . ' ON (' . $db->quoteName('a.snippet') . ' = ' . $db->quoteName('g.id') . ')');
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
-
-		// Order the results by ordering
-		$query->order('a.published  ASC');
-		$query->order('a.ordering  ASC');
-
-		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$items = $db->loadObjectList();
-
-			// set values to display correctly.
-			if (ComponentbuilderHelper::checkArray($items))
-			{
-				// get user object.
-				$user = JFactory::getUser();
-				foreach ($items as $nr => &$item)
-				{
-					$access = ($user->authorise('custom_admin_view.access', 'com_componentbuilder.custom_admin_view.' . (int) $item->id) && $user->authorise('custom_admin_view.access', 'com_componentbuilder'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-
-			// Filter by id Repetable Field
-			$idvvvw = json_decode($this->idvvvw,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvw) && ComponentbuilderHelper::checkArray($idvvvw))
-			{
-				foreach ($items as $nr => &$item)
-				{
-					if ($item->id && isset($idvvvw['customadminview']) && ComponentbuilderHelper::checkArray($idvvvw['customadminview']))
-					{
-						if (!in_array($item->id,$idvvvw['customadminview']))
-						{
-							unset($items[$nr]);
-							continue;
-						}
-					}
-					else
-					{
-						unset($items[$nr]);
-						continue;
-					}
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return $items;
-		}
-		return false;
-	}
-
-	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getVwpsite_views()
-	{
-		// Get the user object.
-		$user = JFactory::getUser();
-		// Create a new query object.
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-
-		// Select some fields
-		$query->select('a.*');
-
-		// From the componentbuilder_site_view table
-		$query->from($db->quoteName('#__componentbuilder_site_view', 'a'));
-
-		// From the componentbuilder_snippet table.
-		$query->select($db->quoteName('g.name','snippet_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet', 'g') . ' ON (' . $db->quoteName('a.snippet') . ' = ' . $db->quoteName('g.id') . ')');
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
-
-		// Order the results by ordering
-		$query->order('a.published  ASC');
-		$query->order('a.ordering  ASC');
-
-		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$items = $db->loadObjectList();
-
-			// set values to display correctly.
-			if (ComponentbuilderHelper::checkArray($items))
-			{
-				// get user object.
-				$user = JFactory::getUser();
-				foreach ($items as $nr => &$item)
-				{
-					$access = ($user->authorise('site_view.access', 'com_componentbuilder.site_view.' . (int) $item->id) && $user->authorise('site_view.access', 'com_componentbuilder'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-
-			// Filter by id Repetable Field
-			$idvvvx = json_decode($this->idvvvx,true);
-			if (ComponentbuilderHelper::checkArray($items) && isset($idvvvx) && ComponentbuilderHelper::checkArray($idvvvx))
-			{
-				foreach ($items as $nr => &$item)
-				{
-					if ($item->id && isset($idvvvx['siteview']) && ComponentbuilderHelper::checkArray($idvvvx['siteview']))
-					{
-						if (!in_array($item->id,$idvvvx['siteview']))
-						{
-							unset($items[$nr]);
-							continue;
-						}
-					}
-					else
-					{
-						unset($items[$nr]);
-						continue;
-					}
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return $items;
-		}
-		return false;
-	}
-
-	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getVwqtranslation()
+	public function getVwmtranslation()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -568,9 +340,9 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				}
 			}
 
-			// Filter by componentsvvvy Array Field
-			$componentsvvvy = $this->componentsvvvy;
-			if (ComponentbuilderHelper::checkArray($items) && $componentsvvvy)
+			// Filter by componentsvvvv Array Field
+			$componentsvvvv = $this->componentsvvvv;
+			if (ComponentbuilderHelper::checkArray($items) && $componentsvvvv)
 			{
 				foreach ($items as $nr => &$item)
 				{
@@ -583,7 +355,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 						unset($items[$nr]);
 						continue;
 					}
-					if (!in_array($componentsvvvy,$item->components))
+					if (!in_array($componentsvvvv,$item->components))
 					{
 						unset($items[$nr]);
 						continue;
@@ -952,6 +724,33 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		{
 			return false;
 		}
+
+		// we must also delete the linked tables found
+		if (ComponentbuilderHelper::checkArray($pks))
+		{
+			$_tablesArray = array(
+				'component_admin_views',
+				'component_site_views',
+				'component_custom_admin_views',
+				'component_updates',
+				'component_mysql_tweaks',
+				'component_custom_admin_menus',
+				'component_config',
+				'component_dashboard',
+				'component_files_folders'
+			);
+			foreach($_tablesArray as $_updateTable)
+			{
+				// get the linked IDs
+				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'joomla_component', 'id'))
+				{
+					// load the model
+					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					// change publish state
+					$_Model->delete($_pks);
+				}
+			}
+		}
 		
 		return true;
 	}
@@ -971,6 +770,33 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (!parent::publish($pks, $value))
 		{
 			return false;
+		}
+
+		// we must also update all linked tables
+		if (ComponentbuilderHelper::checkArray($pks))
+		{
+			$_tablesArray = array(
+				'component_admin_views',
+				'component_site_views',
+				'component_custom_admin_views',
+				'component_updates',
+				'component_mysql_tweaks',
+				'component_custom_admin_menus',
+				'component_config',
+				'component_dashboard',
+				'component_files_folders'
+			);
+			foreach($_tablesArray as $_updateTable)
+			{
+				// get the linked IDs
+				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'joomla_component', 'id'))
+				{
+					// load the model
+					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					// change publish state
+					$_Model->publish($_pks, $value);
+				}
+			}
 		}
 		
 		return true;
@@ -1158,7 +984,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				}
 			}
 
-			$this->table->name = $this->generateUniqe('name',$this->table->name);
+			$this->table->system_name = $this->generateUniqe('system_name',$this->table->system_name);
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -1357,16 +1183,29 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
+		// Set the addcontributors items to data.
+		if (isset($data['addcontributors']) && is_array($data['addcontributors']))
 		{
-			$data['sql'] = base64_encode($data['sql']);
+			$addcontributors = new JRegistry;
+			$addcontributors->loadArray($data['addcontributors']);
+			$data['addcontributors'] = (string) $addcontributors;
+		}
+		elseif (!isset($data['addcontributors']))
+		{
+			// Set the empty addcontributors to data
+			$data['addcontributors'] = '';
 		}
 
 		// Set the php_preflight_update string to base64 string.
 		if (isset($data['php_preflight_update']))
 		{
 			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
 		}
 
 		// Set the php_postflight_update string to base64 string.
@@ -1439,12 +1278,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (isset($data['css']))
 		{
 			$data['css'] = base64_encode($data['css']);
-		}
-
-		// Set the php_dashboard_methods string to base64 string.
-		if (isset($data['php_dashboard_methods']))
-		{
-			$data['php_dashboard_methods'] = base64_encode($data['php_dashboard_methods']);
 		}
 
 		// Set the buildcompsql string to base64 string.

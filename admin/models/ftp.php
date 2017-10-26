@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 11 of this MVC
-	@build			16th October, 2017
+	@build			25th October, 2017
 	@created		23rd August, 2017
 	@package		Component Builder
 	@subpackage		ftp.php
@@ -112,7 +112,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.ftp');
 			}
 		}
-		$this->sales_server_ftpupdate_server_ftp_vvwd = $item->id;
+		$this->sales_server_ftpupdate_server_ftp_vvwa = $item->id;
 
 		return $item;
 	}
@@ -122,7 +122,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWaclinked_components()
+	public function getVzylinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -136,15 +136,15 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		// From the componentbuilder_joomla_component table
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
 
-		// Filter by sales_server_ftpupdate_server_ftp_vvwd global.
-		$sales_server_ftpupdate_server_ftp_vvwd = $this->sales_server_ftpupdate_server_ftp_vvwd;
-		if (is_numeric($sales_server_ftpupdate_server_ftp_vvwd ))
+		// Filter by sales_server_ftpupdate_server_ftp_vvwa global.
+		$sales_server_ftpupdate_server_ftp_vvwa = $this->sales_server_ftpupdate_server_ftp_vvwa;
+		if (is_numeric($sales_server_ftpupdate_server_ftp_vvwa ))
 		{
-			$query->where('a.sales_server_ftp = ' . (int) $sales_server_ftpupdate_server_ftp_vvwd . ' OR a.update_server_ftp  = ' . (int) $sales_server_ftpupdate_server_ftp_vvwd, ' OR');
+			$query->where('a.sales_server_ftp = ' . (int) $sales_server_ftpupdate_server_ftp_vvwa . ' OR a.update_server_ftp  = ' . (int) $sales_server_ftpupdate_server_ftp_vvwa, ' OR');
 		}
-		elseif (is_string($sales_server_ftpupdate_server_ftp_vvwd))
+		elseif (is_string($sales_server_ftpupdate_server_ftp_vvwa))
 		{
-			$query->where('a.sales_server_ftp = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvwd) . ' OR a.update_server_ftp  = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvwd), ' OR');
+			$query->where('a.sales_server_ftp = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvwa) . ' OR a.update_server_ftp  = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvwa), ' OR');
 		}
 		else
 		{

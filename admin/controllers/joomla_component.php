@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 473 of this MVC
-	@build			20th October, 2017
+	@version		@update number 501 of this MVC
+	@build			26th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_component.php
@@ -320,6 +320,38 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 	 */
 	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{
+		// get the state object (Joomla\CMS\Object\CMSObject)
+		$state = $model->get('state');
+		// if we save2copy we need to also copy linked tables found!
+		if ($state->task === 'save2copy' && $state->{'joomla_component.new'})
+		{
+			// get new ID
+			$newID = $state->{'joomla_component.id'};
+			// get old ID
+			$oldID = $this->input->get('id', 0, 'INT');
+			// linked tables to update
+			$_tablesArray = array(
+				'component_admin_views',
+				'component_site_views',
+				'component_custom_admin_views',
+				'component_updates',
+				'component_mysql_tweaks',
+				'component_custom_admin_menus',
+				'component_config',
+				'component_dashboard',
+				'component_files_folders'
+			);
+			foreach($_tablesArray as $_updateTable)
+			{
+				// get the linked ID
+				if ($_value = ComponentbuilderHelper::getVar($_updateTable, $oldID, 'joomla_component', 'id'))
+				{
+					// copy fields to new linked table
+					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array('joomla_component' => $newID));
+				}
+			}
+		}
+
 		return;
 	}
 

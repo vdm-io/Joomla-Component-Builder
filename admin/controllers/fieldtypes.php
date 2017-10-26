@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 16 of this MVC
-	@build			13th October, 2017
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fieldtypes.php

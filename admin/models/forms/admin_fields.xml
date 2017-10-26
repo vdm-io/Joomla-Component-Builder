@@ -96,14 +96,14 @@
 			name="admin_view"
 			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADMIN_VIEW_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADMIN_VIEW_DESCRIPTION"
-			class="fieldMedium"
+			class="list_class"
 			multiple="false"
 			required="true"
 			readonly="true"
 			button="false"
 		/>
 		<!-- Note_on_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_views" label="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_views" close="true" />
+		<field type="note" name="note_on_views" label="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_views" />
 		<!-- Addfields Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"

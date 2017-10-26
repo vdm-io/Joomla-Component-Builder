@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_views_fullwidth.php
@@ -27,112 +27,23 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-// set the defaults
-$items	= $displayData->vwocustom_admin_views;
-$user	= JFactory::getUser();
-$id	= $displayData->item->id;
-$edit	= "index.php?option=com_componentbuilder&view=custom_admin_views&task=custom_admin_view.edit";
-$ref	= ($id) ? "&ref=joomla_component&refid=".$id : "";
-$new	= "index.php?option=com_componentbuilder&view=custom_admin_view&layout=edit".$ref;
-$can	= ComponentbuilderHelper::getActions('custom_admin_view');
+$form = $displayData->getForm();
+
+$fields = $displayData->get('fields') ?: array(
+	'note_on_custom_admin_views',
+	'note_display_component_custom_admin_views'
+);
 
 ?>
 <div class="form-vertical">
-<?php if ($can->get('core.create')): ?>
-	<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a><br /><br />
-<?php endif; ?>
-<?php if (ComponentbuilderHelper::checkArray($items)): ?>
-<table class="footable table data custom_admin_views" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
-<thead>
-	<tr>
-		<th data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DESCRIPTION_LABEL'); ?>
-		</th>
-		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SNIPPET_LABEL'); ?>
-		</th>
-		<th width="10" data-breakpoints="xs sm md">
-			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_STATUS'); ?>
-		</th>
-		<th width="5" data-type="number" data-breakpoints="xs sm md">
-			<?php echo JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ID'); ?>
-		</th>
-	</tr>
-</thead>
-<tbody>
-<?php foreach ($items as $i => $item): ?>
-	<?php
-		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $user->id || $item->checked_out == 0;
-		$userChkOut = JFactory::getUser($item->checked_out);
-		$canDo = ComponentbuilderHelper::getActions('custom_admin_view',$item,'custom_admin_views');
-	?>
-	<tr>
-		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=joomla_component&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
-					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'custom_admin_views.', $canCheckin); ?>
-					<?php endif; ?>
-			<?php else: ?>
-				<div class="name"><?php echo $displayData->escape($item->system_name); ?></div>
-			<?php endif; ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->name); ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->codename); ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->description); ?>
-		</td>
-		<td>
-			<?php echo $displayData->escape($item->snippet_name); ?>
-		</td>
-		<?php if ($item->published == 1):?>
-			<td class="center"  data-sort-value="1">
-				<span class="status-metro status-published" title="<?php echo JText::_('PUBLISHED');  ?>">
-					<?php echo JText::_('PUBLISHED'); ?>
-				</span>
-			</td>
-		<?php elseif ($item->published == 0):?>
-			<td class="center"  data-sort-value="2">
-				<span class="status-metro status-inactive" title="<?php echo JText::_('INACTIVE');  ?>">
-					<?php echo JText::_('INACTIVE'); ?>
-				</span>
-			</td>
-		<?php elseif ($item->published == 2):?>
-			<td class="center"  data-sort-value="3">
-				<span class="status-metro status-archived" title="<?php echo JText::_('ARCHIVED');  ?>">
-					<?php echo JText::_('ARCHIVED'); ?>
-				</span>
-			</td>
-		<?php elseif ($item->published == -2):?>
-			<td class="center"  data-sort-value="4">
-				<span class="status-metro status-trashed" title="<?php echo JText::_('ARCHIVED');  ?>">
-					<?php echo JText::_('ARCHIVED'); ?>
-				</span>
-			</td>
-		<?php endif; ?>
-		<td class="nowrap center hidden-phone">
-			<?php echo $item->id; ?>
-		</td>
-	</tr>
+<?php foreach($fields as $field): ?>
+    <div class="control-group">
+        <div class="control-label">
+            <?php echo $form->getLabel($field); ?>
+        </div>
+        <div class="controls">
+            <?php echo $form->getInput($field); ?>
+        </div>
+    </div>
 <?php endforeach; ?>
-</tbody>
-</table>
-<?php else: ?>
-	<div class="alert alert-no-items">
-		<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
-	</div>
-<?php endif; ?>
 </div>

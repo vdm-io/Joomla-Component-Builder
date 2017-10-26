@@ -1206,7 +1206,7 @@ class Fields extends Structure
 				$this->movedPublishingFields[$viewName][$name] = $name;
 			}
 		}
-		elseif ($tabName === 'publishing')
+		elseif ($tabName === 'publishing' || $tabName === 'Publishing' )
 		{
 			if (!in_array($name, $this->defaultFields))
 			{

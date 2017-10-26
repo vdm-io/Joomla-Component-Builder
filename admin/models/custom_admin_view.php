@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 32 of this MVC
-	@build			20th October, 2017
+	@build			25th October, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_view.php
@@ -198,7 +198,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.custom_admin_view');
 			}
 		}
-		$this->addcustom_admin_viewsvvwa = $item->id;
+		$this->addcustom_admin_viewsvvvx = $item->id;
 
 		return $item;
 	}
@@ -208,7 +208,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyjlinked_components()
+	public function getVyflinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -265,15 +265,15 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				}
 			}
 
-			// Filter by addcustom_admin_viewsvvwa in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addcustom_admin_viewsvvwa))
+			// Filter by addcustom_admin_viewsvvvx in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addcustom_admin_viewsvvvx))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addcustom_admin_views) && ComponentbuilderHelper::checkJson($item->addcustom_admin_views))
 					{
 						$tmpArray = json_decode($item->addcustom_admin_views,true);
-						if (!isset($tmpArray['customadminview']) || !ComponentbuilderHelper::checkArray($tmpArray['customadminview']) || !in_array($this->addcustom_admin_viewsvvwa, $tmpArray['customadminview']))
+						if (!isset($tmpArray['customadminview']) || !ComponentbuilderHelper::checkArray($tmpArray['customadminview']) || !in_array($this->addcustom_admin_viewsvvvx, $tmpArray['customadminview']))
 						{
 							unset($items[$nr]);
 							continue;

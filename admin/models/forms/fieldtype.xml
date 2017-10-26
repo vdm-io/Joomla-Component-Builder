@@ -107,7 +107,7 @@
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
 		/>
 		<!-- Note_on_fields Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_fields" label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_ON_FIELDS_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_ON_FIELDS_DESCRIPTION" heading="h4" class="alert alert-info note_on_fields" close="true" />
+		<field type="note" name="note_on_fields" label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_ON_FIELDS_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_ON_FIELDS_DESCRIPTION" heading="h4" class="alert alert-info note_on_fields" />
 		<!-- Catid Field. Type: Category. (joomla) -->
 		<field
 			type="category"

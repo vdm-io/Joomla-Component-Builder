@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 81 of this MVC
-	@build			27th September, 2017
+	@build			25th October, 2017
 	@created		18th May, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -139,18 +139,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_vvvvvyu function
+// #jform_add_php_view listeners for add_php_view_vvvvvyt function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_vvvvvyu = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvyu(add_php_view_vvvvvyu);
+	var add_php_view_vvvvvyt = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyt(add_php_view_vvvvvyt);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_vvvvvyu = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvyu(add_php_view_vvvvvyu);
+	var add_php_view_vvvvvyt = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyt(add_php_view_vvvvvyt);
 
 });
 

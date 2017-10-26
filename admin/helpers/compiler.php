@@ -105,6 +105,35 @@ class Compiler extends Infusion
 			}
 			// set the lang data now
 			$this->setLangFileData();
+			// set the language notice if it was set
+			if (ComponentbuilderHelper::checkArray($this->langNot) || ComponentbuilderHelper::checkArray($this->langSet))
+			{
+				if (ComponentbuilderHelper::checkArray($this->langNot))
+				{
+					foreach ($this->langNot as $tag => $percentage)
+					{
+						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> language has %s&#37; translated, you will need to translate %s&#37; of the language strings before it will be added.', 
+									$tag, $percentage, $this->percentageLanguageAdd), 'Warning');
+					}
+					$this->app->enqueueMessage(JText::sprintf('<b>You can change this percentage of translated strings required in the global options of JCB.</b><br />Please watch this <a href=%s>tutorial for more help surrounding the JCB translations manager</a>.', 
+									'"https://youtu.be/zzAcVkn_cWU?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE" target="_blank" title="JCB Tutorial surrounding Translation Manager"'), 'Notice');
+				}
+				// set why the strings were added
+				$whyAddedLang = JText::sprintf('because more then %s&#37; of the strings have been translated.', $this->percentageLanguageAdd);
+				if ($this->debugLinenr)
+				{
+					$whyAddedLang = JText::_('because the debugging mode is on. (debug line numbers)');
+				}
+				// show languages that were added
+				if (ComponentbuilderHelper::checkArray($this->langSet))
+				{
+					foreach ($this->langSet as $tag => $percentage)
+					{
+						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> language has %s&#37; translated. Was addeded %s', 
+									$tag, $percentage, $whyAddedLang), 'Notice');
+					}
+				}
+			}
 			// move the update server into place
 			$this->setUpdateServer();
 			// set the global counters
@@ -522,8 +551,6 @@ class Compiler extends Infusion
 	
 	protected function addCustomCode()
 	{
-		// load error messages incase code can not be added
-		$app = JFactory::getApplication();
 		// reset all these
 		$this->clearFromPlaceHolders('view');
 		$this->clearFromPlaceHolders('arg');
@@ -636,20 +663,20 @@ class Compiler extends Infusion
 						{
 							// Load escaped code since the target endhash has changed
 							$this->loadEscapedCode($file, $target, $lineBites);
-							$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'warning');
+							$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'warning');
 						}
 					}
 					else
 					{
 						// Load escaped code since the target hash has changed
 						$this->loadEscapedCode($file, $target, $lineBites);
-						$app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'warning');
+						$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'warning');
 					}
 				}
 				else
 				{
 					// Give developer a notice that file is not found.
-					$app->enqueueMessage(JText::sprintf('File <b>%s</b> could not be found, so the custom code for this file could not be addded.', $target['path']), 'warning');
+					$this->app->enqueueMessage(JText::sprintf('File <b>%s</b> could not be found, so the custom code for this file could not be addded.', $target['path']), 'warning');
 				}
 			}
 		}

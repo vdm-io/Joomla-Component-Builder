@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 45 of this MVC
-	@build			14th October, 2017
+	@version		@update number 46 of this MVC
+	@build			26th October, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		edit.php
@@ -58,7 +58,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('language_translation.details_above', $this); ?>
 <div class="form-horizontal">
 
 	<?php echo JHtml::_('bootstrap.startTabSet', 'language_translationTab', array('active' => 'details')); ?>

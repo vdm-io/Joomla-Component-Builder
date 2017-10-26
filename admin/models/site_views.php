@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 63 of this MVC
-	@build			20th October, 2017
+	@build			25th October, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		site_views.php

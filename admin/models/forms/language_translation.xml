@@ -149,7 +149,7 @@
 			multiple="true"
 			default="0"
 			required="true"
-			button="true"
+			button="false"
 		/>
 	</fieldset>
 	

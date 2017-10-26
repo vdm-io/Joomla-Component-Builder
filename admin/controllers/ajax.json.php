@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -51,7 +51,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getImportScripts', 'ajax');
 		$this->registerTask('getButton', 'ajax');
 		$this->registerTask('getButtonID', 'ajax');
-		$this->registerTask('getFieldsDisplay', 'ajax');
+		$this->registerTask('getAjaxDisplay', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
 		$this->registerTask('getLayoutDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
@@ -418,14 +418,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
-				case 'getFieldsDisplay':
+				case 'getAjaxDisplay':
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($typeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getFieldsDisplay($typeValue);
+							$result = $this->getModel('ajax')->getAjaxDisplay($typeValue);
 						}
 						else
 						{

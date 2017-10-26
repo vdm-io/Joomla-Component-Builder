@@ -340,7 +340,7 @@
 			default="[]"
 		/>
 		<!-- Note_on_permissions Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_permissions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_permissions" close="true" />
+		<field type="note" name="note_on_permissions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_permissions" />
 		<!-- Php_getitems_after_all Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -442,7 +442,7 @@
 			required="true"
 		/>
 		<!-- Note_on_tabs Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_tabs" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION" heading="h4" class="alert alert-info note_on_tabs" close="true" />
+		<field type="note" name="note_on_tabs" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION" heading="h4" class="alert alert-info note_on_tabs" />
 		<!-- Php_postsavehook Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -465,7 +465,7 @@
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABS_DESCRIPTION"
 			icon="list"
-			maximum="15">
+			maximum="14">
 			<form hidden="true" name="list_addtabs_modal" repeat="true">
 				<!-- Name Field. Type: Text. (joomla) -->
 				<field
@@ -499,7 +499,7 @@
 			required="true"
 		/>
 		<!-- Note_on_linked_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_linked_views" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_LINKED_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_LINKED_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_linked_views" close="true" />
+		<field type="note" name="note_on_linked_views" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_LINKED_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_LINKED_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_linked_views" />
 		<!-- Php_before_publish Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -545,7 +545,7 @@
 					class="fieldSmall"
 					required="false"
 					first="1"
-					last="15"
+					last="14"
 					step="1"
 				/>
 				<!-- Key Field. Type: Text. (joomla) -->
@@ -606,7 +606,7 @@
 			required="true"
 		/>
 		<!-- Note_create_edit_notice Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_create_edit_notice" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_DESCRIPTION" heading="h4" class="alert alert-success note_create_edit_notice" />
+		<field type="note" name="note_create_edit_notice" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_DESCRIPTION" heading="h4" class="alert alert-info note_create_edit_notice" />
 		<!-- Php_document Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 63 of this MVC
-	@build			20th October, 2017
+	@build			25th October, 2017
 	@created		29th May, 2015
 	@package		Component Builder
 	@subpackage		site_view.php
@@ -230,7 +230,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.site_view');
 			}
 		}
-		$this->addsite_viewsvvwb = $item->id;
+		$this->addsite_viewsvvvy = $item->id;
 
 		return $item;
 	}
@@ -240,7 +240,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyulinked_components()
+	public function getVyqlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -297,15 +297,15 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				}
 			}
 
-			// Filter by addsite_viewsvvwb in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addsite_viewsvvwb))
+			// Filter by addsite_viewsvvvy in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addsite_viewsvvvy))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addsite_views) && ComponentbuilderHelper::checkJson($item->addsite_views))
 					{
 						$tmpArray = json_decode($item->addsite_views,true);
-						if (!isset($tmpArray['siteview']) || !ComponentbuilderHelper::checkArray($tmpArray['siteview']) || !in_array($this->addsite_viewsvvwb, $tmpArray['siteview']))
+						if (!isset($tmpArray['siteview']) || !ComponentbuilderHelper::checkArray($tmpArray['siteview']) || !in_array($this->addsite_viewsvvvy, $tmpArray['siteview']))
 						{
 							unset($items[$nr]);
 							continue;

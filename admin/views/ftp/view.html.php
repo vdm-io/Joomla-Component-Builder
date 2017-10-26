@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 11 of this MVC
-	@build			16th October, 2017
+	@build			25th October, 2017
 	@created		23rd August, 2017
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -64,7 +64,7 @@ class ComponentbuilderViewFtp extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->waclinked_components		= $this->get('Waclinked_components');
+		$this->vzylinked_components		= $this->get('Vzylinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

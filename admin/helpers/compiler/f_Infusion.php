@@ -36,6 +36,8 @@ class Infusion extends Interpretation
 	public $importCustomScripts = array();
 	public $langFiles = array();
 	public $removeSiteFolder = false;
+	public $langNot = array();
+	public $langSet = array();
 
 	/**
 	 * Constructor
@@ -1199,18 +1201,28 @@ class Infusion extends Interpretation
 			{
 				foreach ($areas as $area => $languageStrings)
 				{
-					// force load if debug lines are added
-					if (!$this->debugLinenr)
+					// only log messages for none en-GB translations
+					if ('en-GB' !== $tag)
 					{
-						// check if we sould install this translation
-						$dif = bcdiv(count($languageStrings), $mainLangLoader[$area]);
-						$percentage = bcmul($dif, 100);
-						if ($percentage < $this->percentageLanguageAdd)
+						$langStringNr = count($languageStrings);
+						$langStringSum = bcmul($langStringNr, 100);
+						$percentage = bcdiv($langStringSum, $mainLangLoader[$area]);
+						$stringNAme = ($langStringNr == 1) ? '(string ' . $tag . ' translated)' : '(strings ' . $tag . ' translated)';
+						// force load if debug lines are added
+						if (!$this->debugLinenr)
 						{
-							// dont add
-							continue;
+							// check if we sould install this translation
+							if ($percentage < $this->percentageLanguageAdd)
+							{
+								// dont add
+								$this->langNot[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total en-GB strings) only <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
+								continue;
+							}
 						}
+						// show if it was added as well
+						$this->langSet[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total en-GB strings) and <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
 					}
+					// set naming convention
 					$p = 'admin';
 					$t = '';
 					if (strpos($area, 'site') !== false)

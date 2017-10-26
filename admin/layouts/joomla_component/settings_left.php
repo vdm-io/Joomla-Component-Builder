@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_left.php
@@ -30,19 +30,13 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_on_views',
-	'addadmin_views',
-	'addcustom_admin_views',
-	'addsite_views',
+	'note_moved_views',
 	'spacer_hr_a',
 	'note_mysql_tweak_options',
-	'sql_tweak',
 	'spacer_hr_b',
 	'note_add_custom_menus',
-	'addcustommenus',
 	'spacer_hr_c',
-	'note_add_config',
-	'addconfig'
+	'note_add_config'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

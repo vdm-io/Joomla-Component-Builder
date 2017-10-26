@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 473 of this MVC
-	@build			20th October, 2017
+	@version		@update number 501 of this MVC
+	@build			26th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -1447,10 +1447,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							continue;
 						}
 
-						// decode sql
-						$item->sql = base64_decode($item->sql);
 						// decode php_preflight_update
 						$item->php_preflight_update = base64_decode($item->php_preflight_update);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
 						// decode php_postflight_update
 						$item->php_postflight_update = base64_decode($item->php_postflight_update);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
@@ -1466,11 +1466,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 						// decode readme
 						$item->readme = base64_decode($item->readme);
-						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
-						{
-							// decrypt export_key
-							$item->export_key = $basic->decryptString($item->export_key);
-						}
 						// decode php_helper_both
 						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_helper_admin
@@ -1485,8 +1480,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$item->javascript = base64_decode($item->javascript);
 						// decode css
 						$item->css = base64_decode($item->css);
-						// decode php_dashboard_methods
-						$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
+						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
+						{
+							// decrypt export_key
+							$item->export_key = $basic->decryptString($item->export_key);
+						}
 						// decode buildcompsql
 						$item->buildcompsql = base64_decode($item->buildcompsql);
 						// unset the values we don't want exported.

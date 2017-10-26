@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 473 of this MVC
-	@build			20th October, 2017
+	@version		@update number 501 of this MVC
+	@build			26th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -64,16 +64,7 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vwnadmin_views		= $this->get('Vwnadmin_views');
-
-		// Get Linked view data
-		$this->vwocustom_admin_views		= $this->get('Vwocustom_admin_views');
-
-		// Get Linked view data
-		$this->vwpsite_views		= $this->get('Vwpsite_views');
-
-		// Get Linked view data
-		$this->vwqtranslation		= $this->get('Vwqtranslation');
+		$this->vwmtranslation		= $this->get('Vwmtranslation');
 
 		// Set the toolbar
 		$this->addToolBar();
@@ -218,6 +209,15 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 
 		$document->addScript(JURI::root() . $this->script);
 		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/joomla_component/submitbutton.js"); 
+		// add JavaScripts
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/uikit.min.js' );
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/lightbox.min.js', 'text/javascript', true);
+		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/notify.min.js', 'text/javascript', true);
+		// add the style sheets
+		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/uikit.gradient.min.css' );
+		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/components/notify.gradient.min.css' );
+		// add var key
+		$document->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';"); 
 		JText::script('view not acceptable. Error');
 	}
 }

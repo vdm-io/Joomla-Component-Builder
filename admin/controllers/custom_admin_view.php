@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 32 of this MVC
-	@build			20th October, 2017
+	@build			25th October, 2017
 	@created		13th August, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_view.php

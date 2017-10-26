@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		settings_right.php
@@ -30,20 +30,11 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_on_contributors',
-	'addcontributors',
-	'emptycontributors',
-	'number',
-	'spacer_hr_d',
-	'note_add_files',
-	'addfiles',
+	'note_component_files_folders',
 	'spacer_hr_e',
-	'note_add_folders',
-	'addfolders',
-	'spacer_hr_f',
 	'to_ignore_note',
 	'toignore',
-	'spacer_hr_g',
+	'spacer_hr_f',
 	'jcb_export_package_note',
 	'export_key',
 	'export_package_link',

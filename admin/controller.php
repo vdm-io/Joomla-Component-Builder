@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		controller.php
@@ -104,7 +104,16 @@ class ComponentbuilderController extends JControllerLegacy
 				'ftp' => 'ftps',
 				'help_document' => 'help_documents',
 				'admin_fields' => 'admins_fields',
-				'admin_fields_conditions' => 'admins_fields_conditions'
+				'admin_fields_conditions' => 'admins_fields_conditions',
+				'component_admin_views' => 'components_admin_views',
+				'component_site_views' => 'components_site_views',
+				'component_custom_admin_views' => 'components_custom_admin_views',
+				'component_updates' => 'components_updates',
+				'component_mysql_tweaks' => 'components_mysql_tweaks',
+				'component_custom_admin_menus' => 'components_custom_admin_menus',
+				'component_config' => 'components_config',
+				'component_dashboard' => 'components_dashboard',
+				'component_files_folders' => 'components_files_folders'
                                 );
                         // check if this is a list view
                         if (in_array($view,$views))

@@ -1,4 +1,3 @@
-<?php
 /*--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
     __      __       _     _____                 _                                  _     __  __      _   _               _
     \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
@@ -10,11 +9,11 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
-	@created		30th April, 2015
+	@version		@update number 7 of this MVC
+	@build			26th October, 2017
+	@created		22nd October, 2017
 	@package		Component Builder
-	@subpackage		details_above.php
+	@subpackage		components_updates.css
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -23,19 +22,6 @@
                                                              
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
-// No direct access to this file
+/* CSS Document */
 
-defined('_JEXEC') or die('Restricted access');
 
-$form = $displayData->getForm();
-
-$fields = array(
-	'components'
-);
-
-?>
-<div class="form-inline form-inline-header">
-	<?php foreach($fields as $field){
-		echo $form->renderField($field);
-	} ?>
-</div>

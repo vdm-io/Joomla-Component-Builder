@@ -10,7 +10,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		@update number 40 of this MVC
-	@build			18th October, 2017
+	@build			25th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		submitbutton.js

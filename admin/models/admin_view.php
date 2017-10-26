@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 202 of this MVC
-	@build			21st October, 2017
+	@version		@update number 228 of this MVC
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -370,95 +370,32 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			// update the fields
 			$objectUpdate = new stdClass();
 			$objectUpdate->id = (int) $item->id;
-			// check what type of linked_views array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->addlinked_views) && isset($item->addlinked_views['adminview']))
+			// repeatable values to check
+			$arrayChecker = array(
+				'addlinked_views' => 'adminview',
+				'ajax_input' => 'value_name',
+				'custom_button' => 'name',
+				'addpermissions' => 'action',
+				'addtables' => 'table',
+				'addtabs' => 'name'
+			);
+			foreach ($arrayChecker as $_value => $checker)
 			{
-				$bucket = array();
-				foreach($item->addlinked_views as $option => $values)
+				// check what type of array we have here (should be subform... but just in case)
+				// This could happen due to huge data sets
+				if (isset($item->{$_value}) && isset($item->{$_value}[$checker]))
 				{
-					foreach($values as $nr => $value)
+					$bucket = array();
+					foreach($item->{$_value} as $option => $values)
 					{
-						$bucket['addlinked_views'.$nr][$option] = $value;
+						foreach($values as $nr => $value)
+						{
+							$bucket[$_value.$nr][$option] = $value;
+						}
 					}
+					$item->{$_value} = $bucket;
+					$objectUpdate->{$_value} = json_encode($bucket);
 				}
-				$item->addlinked_views = $bucket;
-				$objectUpdate->addconditions = json_encode($bucket);
-			}
-			// check what type of ajax_input array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->ajax_input) && isset($item->ajax_input['value_name']))
-			{
-				$bucket = array();
-				foreach($item->ajax_input as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['ajax_input'.$nr][$option] = $value;
-					}
-				}
-				$item->ajax_input = $bucket;
-				$objectUpdate->ajax_input = json_encode($bucket);
-			}
-			// check what type of custom_button array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->custom_button) && isset($item->custom_button['name']))
-			{
-				$bucket = array();
-				foreach($item->custom_button as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['custom_button'.$nr][$option] = $value;
-					}
-				}
-				$item->custom_button = $bucket;
-				$objectUpdate->custom_button = json_encode($bucket);
-			}
-			// check what type of permissions array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->addpermissions) && isset($item->addpermissions['action']))
-			{
-				$bucket = array();
-				foreach($item->addpermissions as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['addpermissions'.$nr][$option] = $value;
-					}
-				}
-				$item->addpermissions = $bucket;
-				$objectUpdate->addpermissions = json_encode($bucket);
-			}
-			// check what type of table array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->addtables) && isset($item->addtables['table']))
-			{
-				$bucket = array();
-				foreach($item->addtables as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['addtables'.$nr][$option] = $value;
-					}
-				}
-				$item->addtables = $bucket;
-				$objectUpdate->addtables = json_encode($bucket);
-			}
-			// check what type of tabs array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->addtabs) && isset($item->addtabs['name']))
-			{
-				$bucket = array();
-				foreach($item->addtabs as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['addtabs'.$nr][$option] = $value;
-					}
-				}
-				$item->addtabs = $bucket;
-				$objectUpdate->addtabs = json_encode($bucket);
 			}
 			// be sure to update the table if we found repeatable fields that are still not converted
 			if (count((array) $objectUpdate) > 1)
@@ -472,7 +409,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_view');
 			}
 		}
-		$this->addadmin_viewsvvvz = $item->id;
+		$this->addadmin_viewsvvvw = $item->id;
 
 		return $item;
 	}
@@ -482,7 +419,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVxzlinked_components()
+	public function getVxvlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -539,15 +476,15 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				}
 			}
 
-			// Filter by addadmin_viewsvvvz in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addadmin_viewsvvvz))
+			// Filter by addadmin_viewsvvvw in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addadmin_viewsvvvw))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addadmin_views) && ComponentbuilderHelper::checkJson($item->addadmin_views))
 					{
 						$tmpArray = json_decode($item->addadmin_views,true);
-						if (!isset($tmpArray['adminview']) || !ComponentbuilderHelper::checkArray($tmpArray['adminview']) || !in_array($this->addadmin_viewsvvvz, $tmpArray['adminview']))
+						if (!isset($tmpArray['adminview']) || !ComponentbuilderHelper::checkArray($tmpArray['adminview']) || !in_array($this->addadmin_viewsvvvw, $tmpArray['adminview']))
 						{
 							unset($items[$nr]);
 							continue;
@@ -880,24 +817,23 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			return false;
 		}
 
-		// we must also delete the linked admin fields and admin fields conditions
+		// we must also delete the linked tables found
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
-			// get the linked IDs
-			if ($fields = ComponentbuilderHelper::getVars('admin_fields', $pks, 'admin_view', 'id'))
+			$_tablesArray = array(
+				'admin_fields',
+				'admin_fields_conditions'
+			);
+			foreach($_tablesArray as $_updateTable)
 			{
-				// load the model
-				$fieldModel = ComponentbuilderHelper::getModel('admin_fields');
-				// delete the linked field
-				$fieldModel->delete($fields);
-			}
-			// get the linked IDs
-			if ($conditions = ComponentbuilderHelper::getVars('admin_fields_conditions', $pks, 'admin_view', 'id'))
-			{
-				// load the model			
-				$conditionModel = ComponentbuilderHelper::getModel('admin_fields_conditions');
-				// delete the linked field
-				$conditionModel->delete($conditions);
+				// get the linked IDs
+				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'admin_view', 'id'))
+				{
+					// load the model
+					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					// change publish state
+					$_Model->delete($_pks);
+				}
 			}
 		}
 		
@@ -921,24 +857,23 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			return false;
 		}
 
-		// we must also delete the linked admin fields and admin fields conditions
+		// we must also update all linked tables
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
-			// get the linked IDs
-			if ($fields = ComponentbuilderHelper::getVars('admin_fields', $pks, 'admin_view', 'id'))
+			$_tablesArray = array(
+				'admin_fields',
+				'admin_fields_conditions'
+			);
+			foreach($_tablesArray as $_updateTable)
 			{
-				// load the model
-				$fieldModel = ComponentbuilderHelper::getModel('admin_fields');
-				// change publish state
-				$fieldModel->publish($fields, $value);
-			}
-			// get the linked IDs
-			if ($conditions = ComponentbuilderHelper::getVars('admin_fields_conditions', $pks, 'admin_view', 'id'))
-			{
-				// load the model			
-				$conditionModel = ComponentbuilderHelper::getModel('admin_fields_conditions');
-				// change publish state
-				$conditionModel->publish($conditions, $value);
+				// get the linked IDs
+				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'admin_view', 'id'))
+				{
+					// load the model
+					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					// change publish state
+					$_Model->publish($_pks, $value);
+				}
 			}
 		}
 		

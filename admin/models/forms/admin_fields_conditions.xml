@@ -96,7 +96,7 @@
 			name="admin_view"
 			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADMIN_VIEW_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADMIN_VIEW_DESCRIPTION"
-			class="fieldMedium"
+			class="list_class"
 			multiple="false"
 			required="true"
 			readonly="true"

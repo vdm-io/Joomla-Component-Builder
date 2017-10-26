@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 23 of this MVC
-	@build			16th October, 2017
+	@version		@update number 25 of this MVC
+	@build			26th October, 2017
 	@created		12th October, 2017
 	@package		Component Builder
 	@subpackage		admin_fields.php
@@ -811,6 +811,16 @@ class ComponentbuilderModelAdmin_fields extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		} 
+
+		if (isset($data['addfields']) && ComponentbuilderHelper::checkArray($data['addfields']))
+		{
+			// Sort fields by 'Tab' ASC, 'Alignment' ASC, 'Order in Edit' ASC
+			usort($data['addfields'], function ($a, $b) {
+				$val_a = sprintf('%02u', $a['tab']) . sprintf('%02u', $a['alignment']) . sprintf('%03u', $a['order_edit']);
+				$val_b = sprintf('%02u', $b['tab']) . sprintf('%02u', $b['alignment']) . sprintf('%03u', $b['order_edit']);
+				return strcmp($val_a, $val_b);
+			});
+		}
 
 		// Set the addfields items to data.
 		if (isset($data['addfields']) && is_array($data['addfields']))

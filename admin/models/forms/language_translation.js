@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 45 of this MVC
-	@build			14th October, 2017
+	@version		@update number 46 of this MVC
+	@build			26th October, 2017
 	@created		3rd April, 2017
 	@package		Component Builder
 	@subpackage		language_translation.js
@@ -27,10 +27,10 @@
 jQuery(document).ready(function($)
 {
 	// set button to add more languages
-	addButton('language','components');
+	addButton('language','entranslation');
 });
 function addData(result,where){
-	jQuery(where).closest('.control-group').parent().append(result);
+	jQuery(result).insertAfter(jQuery(where).closest('.control-group'));
 }
 			
 function addButton_server(type){

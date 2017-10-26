@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		php_fullwidth.php
@@ -30,9 +30,6 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'add_php_dashboard_methods',
-	'php_dashboard_methods',
-	'dashboard_tab',
 	'add_php_preflight_install',
 	'php_preflight_install',
 	'add_php_preflight_update',

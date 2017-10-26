@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		viewtabs.php
@@ -178,6 +178,8 @@ class JFormFieldViewtabs extends JFormFieldList
 		{
 			$options[] = JHtml::_('select.option', 1, JText::_('COM_COMPONENTBUILDER_DETAILS'));
 		}
+		// add the default publish tab as an option
+		$options[] = JHtml::_('select.option', 15, JText::_('COM_COMPONENTBUILDER_PUBLISHING'));
 		return $options;
 	}
 }

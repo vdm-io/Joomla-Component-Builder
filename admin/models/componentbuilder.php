@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.5.8
-	@build			21st October, 2017
+	@version		2.5.9
+	@build			26th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -134,7 +134,34 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'admin_fields.access' => 'admin_fields.access',
 			'admin_fields_conditions.create' => 'admin_fields_conditions.create',
 			'admins_fields_conditions.access' => 'admin_fields_conditions.access',
-			'admin_fields_conditions.access' => 'admin_fields_conditions.access');
+			'admin_fields_conditions.access' => 'admin_fields_conditions.access',
+			'component_admin_views.create' => 'component_admin_views.create',
+			'components_admin_views.access' => 'component_admin_views.access',
+			'component_admin_views.access' => 'component_admin_views.access',
+			'component_site_views.create' => 'component_site_views.create',
+			'components_site_views.access' => 'component_site_views.access',
+			'component_site_views.access' => 'component_site_views.access',
+			'component_custom_admin_views.create' => 'component_custom_admin_views.create',
+			'components_custom_admin_views.access' => 'component_custom_admin_views.access',
+			'component_custom_admin_views.access' => 'component_custom_admin_views.access',
+			'component_updates.create' => 'component_updates.create',
+			'components_updates.access' => 'component_updates.access',
+			'component_updates.access' => 'component_updates.access',
+			'component_mysql_tweaks.create' => 'component_mysql_tweaks.create',
+			'components_mysql_tweaks.access' => 'component_mysql_tweaks.access',
+			'component_mysql_tweaks.access' => 'component_mysql_tweaks.access',
+			'component_custom_admin_menus.create' => 'component_custom_admin_menus.create',
+			'components_custom_admin_menus.access' => 'component_custom_admin_menus.access',
+			'component_custom_admin_menus.access' => 'component_custom_admin_menus.access',
+			'component_config.create' => 'component_config.create',
+			'components_config.access' => 'component_config.access',
+			'component_config.access' => 'component_config.access',
+			'component_dashboard.create' => 'component_dashboard.create',
+			'components_dashboard.access' => 'component_dashboard.access',
+			'component_dashboard.access' => 'component_dashboard.access',
+			'component_files_folders.create' => 'component_files_folders.create',
+			'components_files_folders.access' => 'component_files_folders.access',
+			'component_files_folders.access' => 'component_files_folders.access');
 		foreach($viewGroups as $group => $views)
                 {
 			$i = 0;

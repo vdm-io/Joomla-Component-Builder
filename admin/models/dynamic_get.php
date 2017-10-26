@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 98 of this MVC
-	@build			20th October, 2017
+	@version		@update number 101 of this MVC
+	@build			26th October, 2017
 	@created		21st May, 2015
 	@package		Component Builder
 	@subpackage		dynamic_get.php
@@ -183,6 +183,42 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			{
 				// base64 Decode php_calculation.
 				$item->php_calculation = base64_decode($item->php_calculation);
+			}
+
+			// update the fields
+			$objectUpdate = new stdClass();
+			$objectUpdate->id = (int) $item->id;
+			// repeatable values to check
+			$arrayChecker = array(
+				'join_view_table' => 'view_table',
+				'join_db_table' => 'db_table',
+				'filter' => 'filter_type',
+				'where' => 'table_key',
+				'order' => 'table_key',
+				'global' => 'name'
+			);
+			foreach ($arrayChecker as $_value => $checker)
+			{
+				// check what type of array we have here (should be subform... but just in case)
+				// This could happen due to huge data sets
+				if (isset($item->{$_value}) && isset($item->{$_value}[$checker]))
+				{
+					$bucket = array();
+					foreach($item->{$_value} as $option => $values)
+					{
+						foreach($values as $nr => $value)
+						{
+							$bucket[$_value.$nr][$option] = $value;
+						}
+					}
+					$item->{$_value} = $bucket;
+					$objectUpdate->{$_value} = json_encode($bucket);
+				}
+			}
+			// be sure to update the table if we found repeatable fields that are still not converted
+			if (count((array) $objectUpdate) > 1)
+			{
+				$this->_db->updateObject('#__componentbuilder_dynamic_get', $objectUpdate, 'id');
 			}
 			
 			if (!empty($item->id))
