@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.9
-	@build			26th October, 2017
+	@build			27th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -339,7 +339,7 @@ class ComponentbuilderModelAjax extends JModelList
 
 	protected $functionArray = array(
 				// Admin View
-				'field' => 'setFieldsNames',
+				'field' => 'setItemNames',
 				'list' => 'setYesNo',
 				'title' => 'setYesNo',
 				'alias' => 'setYesNo',
@@ -350,10 +350,10 @@ class ComponentbuilderModelAjax extends JModelList
 				'permission' => 'setYesNo',
 				'tab' => 'setTabName',
 				'alignment' => 'setAlignmentName',
-				'target_field' => 'setFieldsNames',
+				'target_field' => 'setItemNames',
 				'target_behavior' => 'setTargetBehavior',
 				'target_relation' => 'setTargetRelation',
-				'match_field' => 'setFieldsNames',
+				'match_field' => 'setItemNames',
 				'match_behavior' => 'setMatchBehavior',
 				'match_options' => 'setMatchOptions',
 				// Joomla Component
@@ -369,12 +369,12 @@ class ComponentbuilderModelAjax extends JModelList
 				'history' => 'setYesNo',
 				'port' => 'setYesNo',
 				'edit_create_site_view' => 'setYesNo',
-				'customadminview' => 'setCustomadminviewNames',
-				'adminviews' => 'setAdminviewNames',
-				'adminview' => 'setAdminviewNames',
-				'siteview' => 'setSiteviewNames',
 				'icomoon' => 'setIcoMoon',
-				'before' => 'setAdminviewNames');
+				'customadminview' => 'setItemNames',
+				'adminviews' => 'setItemNames',
+				'adminview' => 'setItemNames',
+				'siteview' => 'setItemNames',
+				'before' => 'setItemNames');
 			
 	protected function getSubformTable($idName, $data)
 	{
@@ -563,6 +563,77 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 	}
 
+	protected $itemNames = array(
+			'field' => array(),
+			'admin_view' => array(),
+			'site_view' => array(),
+			'custom_admin_view' => array()			
+		);
+
+	protected $itemKeys = array(
+			// admin view
+			'field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field'),
+			'target_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field'),
+			'match_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field'),
+			// joomla component view
+			'siteview' => array('table' => 'site_view', 'tables' => 'site_views', 'id' => 'id', 'name' => 'name', 'text' => 'Site View'),
+			'customadminview' => array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Custom Admin View'),
+			'adminviews' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View'),
+			'adminview' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View'),
+			'before' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View')	
+		);
+
+	protected function setItemNames($header, $value)
+	{
+		if (isset($this->itemKeys[$header]) && isset($this->itemKeys[$header]['table']) && isset($this->itemNames[$this->itemKeys[$header]['table']]))
+		{
+			// reset bucket
+			$bucket = array();
+			if (ComponentbuilderHelper::checkArray($value))
+			{
+				foreach ($value as $item)
+				{
+					$edit = true;
+					if (!isset($this->itemNames[$this->itemKeys[$header]['table']][$item]))
+					{
+						if (!$this->itemNames[$this->itemKeys[$header]['table']][$item] =  ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], (int) $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name']))
+						{
+							$this->itemNames[$this->itemKeys[$header]['table']][$item] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+							$edit = false;
+						}
+					}
+					// set edit link
+					$link = ($edit) ? $this->addEditLink($item, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables']) : '';
+					// load item
+					$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$item] . $link;
+				}
+			}
+			elseif (is_numeric($value))
+			{
+				$edit = true;
+				if (!isset($this->itemNames[$this->itemKeys[$header]['table']][$value]))
+				{
+					if (!$this->itemNames[$this->itemKeys[$header]['table']][$value] =  ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], (int) $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name']))
+					{
+						$this->itemNames[$this->itemKeys[$header]['table']][$value] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+						$edit = false;
+					}
+				}
+				// set edit link
+				$link = ($edit) ? $this->addEditLink($value, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables']) : '';
+				// load item
+				$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$value] . $link;
+			}
+			// return found items
+			if (ComponentbuilderHelper::checkArray($bucket))
+			{
+				return implode('<br />', $bucket);
+			}
+			return JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+		}
+		return JText::_('COM_COMPONENTBUILDER_NO_ITEM_FOUND');
+	}
+
 	protected function setIcoMoon($header, $value)
 	{
 		if (ComponentbuilderHelper::checkString($value))
@@ -599,158 +670,6 @@ class ComponentbuilderModelAjax extends JModelList
 			break;
 		}
 		return JText::_('COM_COMPONENTBUILDER_NOT_SET');
-	}
-
-	protected $customadminviewNames = array();
-
-	protected function setCustomadminviewNames($header, $value)
-	{
-		$bucket = array();
-		if (ComponentbuilderHelper::checkArray($value))
-		{
-			foreach ($value as $view)
-			{
-				if (!isset($this->customadminviewNames[$view]))
-				{
-					if (!$this->customadminviewNames[$view] =  ComponentbuilderHelper::getVar('custom_admin_view', (int) $view, 'id', 'system_name'))
-					{
-						$this->customadminviewNames[$view] = JText::_('COM_COMPONENTBUILDER_NO_CUSTOM_ADMIN_VIEW_FOUND');
-					}
-				}
-				$bucket[] = $this->customadminviewNames[$view] . $this->addEditLink($view, 'custom_admin_view', 'custom_admin_views');
-			}
-		}
-		elseif (is_numeric($value))
-		{
-			if (!isset($this->customadminviewNames[$value]))
-			{
-				if (!$this->customadminviewNames[$value] =  ComponentbuilderHelper::getVar('custom_admin_view', (int) $value, 'id', 'system_name'))
-				{
-					$this->customadminviewNames[$value] = JText::_('COM_COMPONENTBUILDER_NO_CUSTOM_ADMIN_VIEW_FOUND');
-				}
-			}
-			$bucket[] = $this->customadminviewNames[$value] . $this->addEditLink($value, 'custom_admin_view', 'custom_admin_views');
-		}
-		// return found fields
-		if (ComponentbuilderHelper::checkArray($bucket))
-		{
-			return implode('<br />', $bucket);
-		}
-		return JText::_('COM_COMPONENTBUILDER_NO_CUSTOM_ADMIN_VIEW_FOUND');
-	}
-
-	protected $adminviewNames = array();
-
-	protected function setAdminviewNames($header, $value)
-	{
-		$bucket = array();
-		if (ComponentbuilderHelper::checkArray($value))
-		{
-			foreach ($value as $view)
-			{
-				if (!isset($this->adminviewNames[$view]))
-				{
-					if (!$this->adminviewNames[$view] =  ComponentbuilderHelper::getVar('admin_view', (int) $view, 'id', 'system_name'))
-					{
-						$this->adminviewNames[$view] = JText::_('COM_COMPONENTBUILDER_NO_ADMIN_VIEW_FOUND');
-					}
-				}
-				$bucket[] = $this->adminviewNames[$view] . $this->addEditLink($view, 'admin_view', 'admin_views');
-			}
-		}
-		elseif (is_numeric($value))
-		{
-			if (!isset($this->adminviewNames[$value]))
-			{
-				if (!$this->adminviewNames[$value] =  ComponentbuilderHelper::getVar('admin_view', (int) $value, 'id', 'system_name'))
-				{
-					$this->adminviewNames[$value] = JText::_('COM_COMPONENTBUILDER_NO_ADMIN_VIEW_FOUND');
-				}
-			}
-			$bucket[] = $this->adminviewNames[$value] . $this->addEditLink($value, 'admin_view', 'admin_views');
-		}
-		// return found fields
-		if (ComponentbuilderHelper::checkArray($bucket))
-		{
-			return implode('<br />', $bucket);
-		}
-		return JText::_('COM_COMPONENTBUILDER_NO_ADMIN_VIEW_FOUND');
-	}
-
-	protected $siteviewNames = array();
-
-	protected function setSiteviewNames($header, $value)
-	{
-		$bucket = array();
-		if (ComponentbuilderHelper::checkArray($value))
-		{
-			foreach ($value as $view)
-			{
-				if (!isset($this->siteviewNames[$view]))
-				{
-					if (!$this->siteviewNames[$view] =  ComponentbuilderHelper::getVar('site_view', (int) $view, 'id', 'system_name'))
-					{
-						$this->siteviewNames[$view] = JText::_('COM_COMPONENTBUILDER_NO_SITE_VIEW_FOUND');
-					}
-				}
-				$bucket[] = $this->siteviewNames[$view] . $this->addEditLink($view, 'site_view', 'site_views');
-			}
-		}
-		elseif (is_numeric($value))
-		{
-			if (!isset($this->siteviewNames[$value]))
-			{
-				if (!$this->siteviewNames[$value] =  ComponentbuilderHelper::getVar('site_view', (int) $value, 'id', 'system_name'))
-				{
-					$this->siteviewNames[$value] = JText::_('COM_COMPONENTBUILDER_NO_SITE_VIEW_FOUND');
-				}
-			}
-			$bucket[] = $this->siteviewNames[$value] . $this->addEditLink($value, 'site_view', 'site_views');
-		}
-		// return found fields
-		if (ComponentbuilderHelper::checkArray($bucket))
-		{
-			return implode('<br />', $bucket);
-		}
-		return JText::_('COM_COMPONENTBUILDER_NO_SITE_VIEW_FOUND');
-	}
-
-	protected $fieldNames = array();
-
-	protected function setFieldsNames($header, $value)
-	{
-		$bucket = array();
-		if (ComponentbuilderHelper::checkArray($value))
-		{
-			foreach ($value as $field)
-			{
-				if (!isset($this->fieldNames[$field]))
-				{
-					if (!$this->fieldNames[$field] =  ComponentbuilderHelper::getVar('field', (int) $field, 'id', 'name'))
-					{
-						$this->fieldNames[$field] = JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
-					}
-				}
-				$bucket[] = $this->fieldNames[$field] . $this->addEditLink($field, 'field', 'fields');
-			}
-		}
-		elseif (is_numeric($value))
-		{
-			if (!isset($this->fieldNames[$value]))
-			{
-				if (!$this->fieldNames[$value] =  ComponentbuilderHelper::getVar('field', (int) $value, 'id', 'name'))
-				{
-					$this->fieldNames[$value] = JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
-				}
-			}
-			$bucket[] = $this->fieldNames[$value] . $this->addEditLink($value, 'field', 'fields');
-		}
-		// return found fields
-		if (ComponentbuilderHelper::checkArray($bucket))
-		{
-			return implode('<br />', $bucket);
-		}
-		return JText::_('COM_COMPONENTBUILDER_NO_FIELD_FOUND');
 	}
 
 	protected function addEditLink($id, $view, $views)
@@ -822,9 +741,9 @@ class ComponentbuilderModelAjax extends JModelList
 	{
 		if (1 == $value)
 		{
-			return JText::_('COM_COMPONENTBUILDER_YES');
+			return '<span style="color: #46A546;" class="icon-ok"></span>';
 		}
-		return JText::_('COM_COMPONENTBUILDER_NO');
+		return '<span style="color: #de9494;" class="icon-delete"></span>';
 	}
 
 	protected function setTargetBehavior($header, $value)
