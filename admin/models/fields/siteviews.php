@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.9
-	@build			27th October, 2017
+	@build			28th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		siteviews.php

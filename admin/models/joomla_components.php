@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 501 of this MVC
-	@build			26th October, 2017
+	@version		@update number 505 of this MVC
+	@build			27th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -186,15 +186,15 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					}
 					// create the folders
 					JFolder::create($this->packagePath);
-					// Get the basic encription.
+					// Get the basic encryption.
 					$basickey = ComponentbuilderHelper::getCryptKey('basic');
 					// Get the encription object.
 					if ($basickey)
 					{
 						$basic = new FOFEncryptAes($basickey, 128);
 					}
-					// add custom code
-					$this->setData('custom_code', $pks, 'component');
+					// update $pks with returned IDs
+					$pks = array();
 					// start loading the components
 					$this->smartExport['joomla_component'] = array();
 					foreach ($items as $nr => &$item)
@@ -252,27 +252,28 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// keep the key locked for exported data set
 							$this->exportPackageLinks[$keyName] = $item->export_package_link;
 						}
-						// build files
-						$this->moveIt($item->addfiles, 'file');
-						// build folders
-						$this->moveIt($item->addfolders, 'folder');
 						// component image
-						$this->moveIt(array('image' => array($item->image)), 'image');
-						// add config fields
-						$this->setData('field', $this->getIds($item->addconfig, 'repeatable', 'field'), 'id');
-						// add admin views
-						$this->setData('admin_view', $this->getIds($item->addadmin_views, 'repeatable', 'adminview'), 'id');
-						// add custom admin views
-						$this->setData('custom_admin_view', $this->getIds($item->addcustom_admin_views, 'repeatable', 'customadminview'), 'id');
-						// add site views
-						$this->setData('site_view', $this->getIds($item->addsite_views, 'repeatable', 'siteview'), 'id');
+						$this->moveIt(array($item->image), 'image');
 						// set the custom code ID's
 						$this->setCustomCodeIds($item, 'joomla_component');
 						// set the language strings for this component
 						$this->setLanguageTranslation($item->id);						
 						// load to global object
 						$this->smartExport['joomla_component'][$item->id] = $item;
+						// add to pks
+						$pks[] = $item->id;
 					}
+					// load all tables linked to joomla_component
+					$this->setData('custom_code', $pks, 'component');
+					$this->setData('component_files_folders', $pks, 'joomla_component');
+					$this->setData('component_admin_views', $pks, 'joomla_component');
+					$this->setData('component_config', $pks, 'joomla_component');
+					$this->setData('component_site_views', $pks, 'joomla_component');
+					$this->setData('component_custom_admin_views', $pks, 'joomla_component');
+					$this->setData('component_updates', $pks, 'joomla_component');
+					$this->setData('component_mysql_tweaks', $pks, 'joomla_component');
+					$this->setData('component_custom_admin_menus', $pks, 'joomla_component');
+					$this->setData('component_dashboard', $pks, 'joomla_component');
 					// add fields and conditions
 					if (isset($this->exportIDs['admin_view']) && ComponentbuilderHelper::checkArray($this->exportIDs['admin_view']))
 					{
@@ -356,11 +357,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	}
 
 	/**
-	* Method to get ids.
+	* Method to get values from repeatable or subform.
 	*
-	* @return mixed  An array of ids on success, false on failure.
+	* @return mixed  An array of values on success, false on failure.
 	*/
-	protected function getIds($values, $type, $key = null)
+	protected function getValues($values, $type, $key = null, $prep = 'table')
 	{
 		// the ids bucket
 		$bucket = array();
@@ -385,7 +386,14 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						}
 						elseif (ComponentbuilderHelper::checkString($value[$key]))
 						{
-							$bucket[] = $this->_db->quote($value[$key]);
+							if ('table' === $prep)
+							{
+								$bucket[] = $this->_db->quote($value[$key]);
+							}
+							else
+							{
+								$bucket[] = $value[$key];
+							}
 						}
 					}
 				}
@@ -396,19 +404,26 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					return array_unique($bucket);
 				}
 			}
-			// check if the key is an array (targeting subform)
+			// check if the key is an array (targeting repeatable)
 			if ('repeatable' === $type && $key)
 			{
 				if (isset($values[$key]))
 				{
-					return array_map(function($id) {
-						if (is_numeric($id))
+					return array_map(function($value) use($prep){
+						if (is_numeric($value))
 						{
-							return $id;
+							return $value;
 						}
-						elseif (ComponentbuilderHelper::checkString($id))
+						elseif (ComponentbuilderHelper::checkString($value))
 						{
-							return  $this->_db->quote($id);
+							if ('table' === $prep)
+							{
+								return  $this->_db->quote($value);
+							}
+							else
+							{
+								return $value;
+							}
 						}
 					}, array_unique($values[$key]) );
 				}
@@ -489,23 +504,55 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					$this->smartExport[$table][$item->id] = $item;
 					// set the custom code ID's
 					$this->setCustomCodeIds($item, $table);
+					// actions to take if table is component_files_folders
+					if ('component_files_folders' === $table)
+					{
+						// build files
+						$this->moveIt($this->getValues($item->addfiles, 'subform', 'file', null), 'file');
+						// build folders
+						$this->moveIt($this->getValues($item->addfolders, 'subform', 'folder', null), 'folder');
+					}
+					// actions to take if table is component_config
+					if ('component_config' === $table)
+					{
+						// add config fields
+						$this->setData('field', $this->getValues($item->addconfig, 'subform', 'field'), 'id');
+					}
+					// actions to take if table is component_admin_views
+					if ('component_admin_views' === $table)
+					{
+						// add admin views
+						$this->setData('admin_view', $this->getValues($item->addadmin_views, 'subform', 'adminview'), 'id');
+					}
+					// actions to take if table is component_site_views
+					if ('component_site_views' === $table)
+					{
+						// add site views
+						$this->setData('site_view', $this->getValues($item->addsite_views, 'subform', 'siteview'), 'id');
+					}
+					// actions to take if table is component_custom_admin_views
+					if ('component_custom_admin_views' === $table)
+					{
+						// add custom admin views
+						$this->setData('custom_admin_view', $this->getValues($item->addcustom_admin_views, 'subform', 'customadminview'), 'id');
+					}
 					// actions to take if table is admin_view
 					if ('admin_view' === $table)
 					{
 						// add fields & conditions
 						$this->setExportIDs($item->id, 'admin_view');
 						// admin icon
-						$this->moveIt(array('image' => array($item->icon)), 'image');
+						$this->moveIt(array($item->icon), 'image');
 						// admin icon_add
-						$this->moveIt(array('image' => array($item->icon_add)), 'image');
+						$this->moveIt(array($item->icon_add), 'image');
 						// admin icon_category
-						$this->moveIt(array('image' => array($item->icon_category)), 'image');
+						$this->moveIt(array($item->icon_category), 'image');
 					}
 					// actions to take if table is admin_fields
 					if ('admin_fields' === $table)
 					{
 						// add fields
-						$this->setData('field', $this->getIds($item->addfields, 'subform', 'field'), 'id');
+						$this->setData('field', $this->getValues($item->addfields, 'subform', 'field'), 'id');
 					}
 					// actions to take if table is field
 					if ('field' === $table)
@@ -555,7 +602,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						if ('custom_admin_view' === $table && isset($item->icon))
 						{
 							// view icon
-							$this->moveIt(array('image' => array($item->icon)), 'image');
+							$this->moveIt(array($item->icon), 'image');
 						}
 						// add snippets
 						$this->setExportIDs((int) $item->snippet, 'snippet');
@@ -718,29 +765,24 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*
 	* @return bool
 	*/
-	protected function moveIt($data, $type)
+	protected function moveIt($paths, $type)
 	{
-		// if json convert to array
-		if (ComponentbuilderHelper::checkJson($data))
-		{
-			$data = json_decode($data, true);
-		}
 		// make sure we have an array
-		if (!ComponentbuilderHelper::checkArray($data) || !isset($data[$type]) || !ComponentbuilderHelper::checkArray($data[$type]))
+		if (!ComponentbuilderHelper::checkArray($paths))
 		{
 			return false;
 		}
 		// set the name of the folder
 		if ('file' === $type || 'folder' === $type)
 		{
-			$name = 'custom';
+			$folderName = 'custom';
 		}
 		if ('image' === $type)
 		{
-			$name = 'images';
+			$folderName = 'images';
 		}
 		// setup the type path
-		$tmpPath = str_replace('//', '/', $this->packagePath . '/' . $name);
+		$tmpPath = str_replace('//', '/', $this->packagePath . '/' . $folderName);
 		// create type path if not set
 		if (!JFolder::exists($tmpPath))
 		{
@@ -748,7 +790,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			JFolder::create($tmpPath);
 		}
 		// now move it
-		foreach ($data[$type] as $item)
+		foreach ($paths as $item)
 		{
 			if (ComponentbuilderHelper::checkString($item))
 			{
@@ -1116,7 +1158,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// add languages
 							if (isset($item->translation))
 							{
-								$this->setData('language', $this->getIds($item->translation, 'subform', 'language'), 'langtag');
+								$this->setData('language', $this->getValues($item->translation, 'subform', 'language'), 'langtag');
 							}
 						}
 					}
@@ -1159,15 +1201,20 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	protected function getCodeSearchKeys($target)
 	{
 		$targets = array();
-		// #__componentbuilder_joomla_component as a
+		// #__componentbuilder_joomla_component
 		$targets['joomla_component'] = array();
 		$targets['joomla_component']['search'] = array('php_preflight_install','php_postflight_install',
 			'php_preflight_update','php_postflight_update','php_method_uninstall',
 			'php_helper_admin','php_admin_event','php_helper_both','php_helper_site',
-			'php_site_event','php_dashboard_methods','dashboard_tab');
-		$targets['joomla_component']['not_base64'] = array('dashboard_tab' => 'json');
+			'php_site_event');
+		$targets['joomla_component']['not_base64'] = array();
 
-		// #__componentbuilder_admin_view as b
+		// #__componentbuilder_component_dashboard
+		$targets['component_dashboard'] = array();
+		$targets['component_dashboard']['search'] = array('php_dashboard_methods','dashboard_tab');
+		$targets['component_dashboard']['not_base64'] = array('dashboard_tab' => 'json');
+
+		// #__componentbuilder_admin_view
 		$targets['admin_view'] = array();
 		$targets['admin_view']['search'] = array('javascript_view_file','javascript_view_footer','javascript_views_file',
 			'javascript_views_footer','php_getitem','php_save','php_postsavehook','php_getitems',
@@ -1177,35 +1224,35 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'php_import','php_import_setdata','php_import_save','html_import_view','php_ajaxmethod');
 		$targets['admin_view']['not_base64'] = array();
 
-		// #__componentbuilder_custom_admin_view as c
+		// #__componentbuilder_custom_admin_view
 		$targets['custom_admin_view'] = array();
 		$targets['custom_admin_view']['search'] = array('default','php_view','php_jview','php_jview_display','php_document',
 			'js_document','css_document','css','php_model','php_controller');
 		$targets['custom_admin_view']['not_base64'] = array();
 
-		// #__componentbuilder_site_view as d
+		// #__componentbuilder_site_view
 		$targets['site_view'] = array();
 		$targets['site_view']['search'] = array('default','php_view','php_jview','php_jview_display','php_document',
 			'js_document','css_document','css','php_ajaxmethod','php_model','php_controller');
 		$targets['site_view']['not_base64'] = array();
 
-		// #__componentbuilder_field as e
+		// #__componentbuilder_field
 		$targets['field'] = array();
 		$targets['field']['search'] = array('xml','javascript_view_footer','javascript_views_footer');
 		$targets['field']['not_base64'] = array('xml' => 'json');
 
-		// #__componentbuilder_dynamic_get as f
+		// #__componentbuilder_dynamic_get
 		$targets['dynamic_get'] = array();
 		$targets['dynamic_get']['search'] = array('php_before_getitem','php_after_getitem','php_before_getitems','php_after_getitems',
 			'php_getlistquery');
 		$targets['dynamic_get']['not_base64'] = array();
 
-		// #__componentbuilder_template as g
+		// #__componentbuilder_template
 		$targets['template'] = array();
 		$targets['template']['search'] = array('php_view','template');
 		$targets['template']['not_base64'] = array();
 
-		// #__componentbuilder_layout as h
+		// #__componentbuilder_layout
 		$targets['layout'] = array();
 		$targets['layout']['search'] = array('php_view','layout');
 		$targets['layout']['not_base64'] = array();

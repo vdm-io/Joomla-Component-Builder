@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.9
-	@build			27th October, 2017
+	@build			28th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -375,6 +375,66 @@ class ComponentbuilderModelAjax extends JModelList
 				'adminview' => 'setItemNames',
 				'siteview' => 'setItemNames',
 				'before' => 'setItemNames');
+
+	protected function getLanguage($key)
+	{
+		$language = array(
+			// Admin View (fields)
+			'field' => JText::_('COM_COMPONENTBUILDER_FIELD'),
+			'list' => JText::_('COM_COMPONENTBUILDER_ADMIN_LIST'),
+			'order_list' => JText::_('COM_COMPONENTBUILDER_ORDER_IN_LIST_VIEWS'),
+			'title' => JText::_('COM_COMPONENTBUILDER_TITLE'),
+			'alias' => JText::_('COM_COMPONENTBUILDER_ALIAS'),
+			'sort' => JText::_('COM_COMPONENTBUILDER_SORTABLE'),
+			'search' => JText::_('COM_COMPONENTBUILDER_SEARCHABLE'),
+			'filter' => JText::_('COM_COMPONENTBUILDER_FILTER'),
+			'link' => JText::_('COM_COMPONENTBUILDER_LINK'),
+			'permission' => JText::_('COM_COMPONENTBUILDER_PERMISSIONS'),
+			'tab' => JText::_('COM_COMPONENTBUILDER_TAB'),
+			'alignment' => JText::_('COM_COMPONENTBUILDER_ALIGNMENT'),
+			'order_edit' => JText::_('COM_COMPONENTBUILDER_ORDER_IN_EDIT'),
+			// Admin View (conditions)
+			'target_field' => JText::_('COM_COMPONENTBUILDER_TARGET_FIELDS'),
+			'target_behavior' => JText::_('COM_COMPONENTBUILDER_TARGET_BEHAVIOR'),
+			'target_relation' => JText::_('COM_COMPONENTBUILDER_TARGET_RELATION'),
+			'match_field' => JText::_('COM_COMPONENTBUILDER_MATCH_FIELD'),
+			'match_behavior' => JText::_('COM_COMPONENTBUILDER_MATCH_BEHAVIOR'),
+			'match_options' => JText::_('COM_COMPONENTBUILDER_MATCH_OPTIONS'),
+			// Joomla Component
+			'menu' => JText::_('COM_COMPONENTBUILDER_ADD_MENU'),
+			'metadata' => JText::_('COM_COMPONENTBUILDER_HAS_METADATA'),
+			'default_view' => JText::_('COM_COMPONENTBUILDER_DEFAULT_VIEW'),
+			'access' => JText::_('COM_COMPONENTBUILDER_ADD_ACCESS'),
+			'component_site_views|=VDM=|access' => JText::_('COM_COMPONENTBUILDER_PUBLIC_ACCESS'),
+			'mainmenu' => JText::_('COM_COMPONENTBUILDER_MAIN_MENU'),
+			'dashboard_list' => JText::_('COM_COMPONENTBUILDER_DASHBOARD_LIST_OF_RECORDS'),
+			'dashboard_add' => JText::_('COM_COMPONENTBUILDER_DASHBOARD_ADD_RECORD'),
+			'submenu' => JText::_('COM_COMPONENTBUILDER_SUBMENU'),
+			'checkin' => JText::_('COM_COMPONENTBUILDER_AUTO_CHECKIN'),
+			'history' => JText::_('COM_COMPONENTBUILDER_KEEP_HISTORY'),
+			'port' => JText::_('COM_COMPONENTBUILDER_EXPORTIMPORT_DATA'),
+			'edit_create_site_view' => JText::_('COM_COMPONENTBUILDER_EDITCREATE_SITE_VIEW'),
+			'icomoon' => JText::_('COM_COMPONENTBUILDER_ICON'),
+			'customadminview' => JText::_('COM_COMPONENTBUILDER_VIEW'),
+			'adminviews' => JText::_('COM_COMPONENTBUILDER_VIEWS'),
+			'adminview' => JText::_('COM_COMPONENTBUILDER_VIEW'),
+			'siteview' => JText::_('COM_COMPONENTBUILDER_VIEW'),
+			'before' => JText::_('COM_COMPONENTBUILDER_ORDER_BEFORE')
+		);
+		// check if a unique value is available
+		if (isset($language[$key]))
+		{
+			return $language[$key];
+		}
+		// check a shared value is available
+		$keys = explode('|=VDM=|', $key);
+		if (isset($language[$keys[1]]))
+		{
+			return $language[$keys[1]];
+		}
+		return ComponentbuilderHelper::safeString($keys[1], 'Ww');
+	}
+
 			
 	protected function getSubformTable($idName, $data)
 	{
@@ -392,7 +452,10 @@ class ComponentbuilderModelAjax extends JModelList
 			{
 				foreach ($headers as $header => $value)
 				{
-					$head[$header] = '<th>' . ComponentbuilderHelper::safeString($header, 'Ww');
+					if (!isset($head[$header]))
+					{
+						$head[$header] = $this->getLanguage($idName . '|=VDM=|' . $header);
+					}
 				}
 			}
 			// build the rows
@@ -401,16 +464,16 @@ class ComponentbuilderModelAjax extends JModelList
 			{
 				foreach ($data as $nr => $values)
 				{
-					foreach ($head as $key => $t)
+					foreach ($head as $key => $_header)
 					{
 						// set the value for the row
 						if (isset($values[$key]))
 						{
-							$this->setSubformRows($nr, $this->setSubformValue($key, $values[$key]), $rows);
+							$this->setSubformRows($nr, $this->setSubformValue($key, $values[$key]), $rows, $_header);
 						}
 						else
 						{
-							$this->setSubformRows($nr, $this->setSubformValue($key, ''), $rows);
+							$this->setSubformRows($nr, $this->setSubformValue($key, ''), $rows, $_header);
 						}
 					}
 				}
@@ -435,7 +498,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$table[] = "\t\t\t<table class=\"adminlist table table-striped table-bordered\">";
 		$table[] = "\t\t\t\t<thead>";
 		$table[] = "\t\t\t\t\t<tr>";
-		$table[] = "\t\t\t\t\t\t". implode("", $head);
+		$table[] = "\t\t\t\t\t\t<th>" .  implode("</th><th>", $head) . "</th>";
 		$table[] = "\t\t\t\t\t</tr>";
 		$table[] = "\t\t\t\t</thead>";
 		$table[] = "\t\t\t\t<tbody>";
@@ -468,16 +531,16 @@ class ComponentbuilderModelAjax extends JModelList
 		return $value;
 	}
 
-	protected function setSubformRows($nr, $value, &$rows)
+	protected function setSubformRows($nr, $value, &$rows, $_header)
 	{
 		// build rows
 		if (!isset($rows[$nr]))
 		{
-			$rows[$nr] = '<td>'.$value.'</td>';
+			$rows[$nr] = '<td data-column=" '.$_header.' ">'.$value.'</td>';
 		}
 		else
 		{
-			$rows[$nr] .= '<td>'.$value.'</td>';
+			$rows[$nr] .= '<td data-column=" '.$_header.' ">'.$value.'</td>';
 		}
 	}			
 
@@ -743,7 +806,7 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			return '<span style="color: #46A546;" class="icon-ok"></span>';
 		}
-		return '<span style="color: #de9494;" class="icon-delete"></span>';
+		return '<span style="color: #e6e6e6;" class="icon-delete"></span>';
 	}
 
 	protected function setTargetBehavior($header, $value)
@@ -1520,8 +1583,8 @@ class ComponentbuilderModelAjax extends JModelList
 		$query['a']['select'] = array('id', 'system_name', 'php_preflight_install','php_postflight_install',
 			'php_preflight_update','php_postflight_update','php_method_uninstall',
 			'php_helper_admin','php_admin_event','php_helper_both','php_helper_site',
-			'php_site_event','php_dashboard_methods','dashboard_tab','javascript');
-		$query['a']['not_base64'] = array('dashboard_tab' => 'json');
+			'php_site_event','javascript');
+		$query['a']['not_base64'] = array();
 		$query['a']['name'] = 'system_name';
 
 		// #__componentbuilder_admin_view as b
@@ -1587,6 +1650,15 @@ class ComponentbuilderModelAjax extends JModelList
 		$query['h']['select'] = array('id', 'name', 'php_view','layout');
 		$query['h']['not_base64'] = array();
 		$query['h']['name'] = 'name';
+
+		$query = array();
+		// #__componentbuilder_component_dashboard as i
+		$query['i'] = array();
+		$query['i']['table'] = 'component_dashboard';
+		$query['i']['view'] = 'components_dashboard';
+		$query['i']['select'] = array('id', 'joomla_component', 'php_dashboard_methods','dashboard_tab');
+		$query['i']['not_base64'] = array('dashboard_tab' => 'json');
+		$query['i']['name'] = 'joomla_component';
 
 		// return the query string to search
 		if (isset($query[$target]))
