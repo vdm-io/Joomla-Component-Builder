@@ -601,7 +601,49 @@ class Get
 		$query = $this->db->getQuery(true);
 
 		$query->select('a.*');
+		$query->select(
+			$this->db->quoteName(
+				array(
+					'b.addadmin_views',
+					'b.id',
+					'h.addconfig',
+					'd.addcustom_admin_views',
+					'g.addcustommenus',
+					'j.addfiles',
+					'j.addfolders',
+					'c.addsite_views',
+					'i.dashboard_tab',
+					'i.php_dashboard_methods',
+					'f.sql_tweak',
+					'e.version_update'
+					), 
+				array(
+					'addadmin_views',
+					'addadmin_views_id',
+					'addconfig',
+					'addcustom_admin_views',
+					'addcustommenus',
+					'addfiles',
+					'addfolders',
+					'addsite_views',
+					'dashboard_tab',
+					'php_dashboard_methods',
+					'sql_tweak',
+					'version_update'
+					)
+				)
+			);
+		// from these tables
 		$query->from('#__componentbuilder_joomla_component AS a');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_admin_views', 'b') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('b.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_site_views', 'c') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('c.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_custom_admin_views', 'd') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('d.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_updates', 'e') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('e.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_mysql_tweaks', 'f') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('f.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_custom_admin_menus', 'g') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('g.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_config', 'h') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('h.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_dashboard', 'i') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('i.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_files_folders', 'j') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('j.joomla_component') . ')');
 		$query->where($this->db->quoteName('a.id') . ' = '. (int) $this->componentID);
 
 		// Reset the query using our newly populated query object.
@@ -610,6 +652,42 @@ class Get
 		// Load the results as a list of stdClass objects
 		$component = $this->db->loadObject();
 		
+		// set upater
+		$updater = array(
+			'unique' => array(
+				'addadmin_views' => array('table' => 'component_admin_views', 'val' => (int) $component->addadmin_views_id, 'key' => 'id'),
+				'addconfig' => array('table' => 'component_config', 'val' => (int) $this->componentID, 'key' => 'joomla_component'),
+				'addcustom_admin_views' => array('table' => 'component_custom_admin_views', 'val' => (int) $this->componentID, 'key' => 'joomla_component'),
+				'addcustommenus' => array('table' => 'component_custom_admin_menus', 'val' => (int) $this->componentID, 'key' => 'joomla_component'),
+				'addfiles' => array('table' => 'component_files_folders', 'val' => (int) $this->componentID, 'key' => 'joomla_component'),
+				'addfolders' => array('table' => 'component_files_folders', 'val' => (int) $this->componentID, 'key' => 'joomla_component'),
+				'addsite_views' => array('table' => 'component_site_views', 'val' => (int) $this->componentID, 'key' => 'joomla_component'),
+				'dashboard_tab' => array('table' => 'component_dashboard', 'val' => (int) $this->componentID, 'key' => 'joomla_component'),
+				'sql_tweak' => array('table' => 'component_mysql_tweaks', 'val' => (int) $this->componentID, 'key' => 'joomla_component'),
+				'version_update' => array('table' => 'component_updates', 'val' => (int) $this->componentID, 'key' => 'joomla_component')
+			),
+			'table' => 'joomla_component',
+			'key' => 'id',
+			'val' => (int) $this->componentID
+		);
+		// repeatable fields to update
+		$searchRepeatables = array(
+			// repeatablefield => checker
+			'addadmin_views' => 'adminview',
+			'addconfig' => 'field',
+			'addcontributors' => 'name',
+			'addcustom_admin_views' => 'customadminview',
+			'addcustommenus' => 'name',
+			'addfiles' => 'file',
+			'addfolders' => 'folder',
+			'addsite_views' => 'siteview',
+			'dashboard_tab' => 'name',
+			'sql_tweak' => 'adminview',
+			'version_update' => 'version'
+		);
+		// update the repeatable fields
+		$component = ComponentbuilderHelper::convertRepeatableFields($component, $searchRepeatables, $updater);
+		
 		// set component place holders
 		$this->placeholders['###component###'] = ComponentbuilderHelper::safeString($component->name_code);
 		$this->placeholders['###Component###'] = ComponentbuilderHelper::safeString($component->name_code, 'F');
@@ -617,37 +695,29 @@ class Get
 		$this->placeholders['[[[component]]]'] = $this->placeholders['###component###'];
 		$this->placeholders['[[[Component]]]'] = $this->placeholders['###Component###'];
 		$this->placeholders['[[[COMPONENT]]]'] = $this->placeholders['###COMPONENT###'];
+		
 		// set component sales name
 		$component->sales_name = ComponentbuilderHelper::safeString($component->system_name);
+		
 		// ensure version naming is correct
 		$this->component_version = preg_replace('/[^0-9.]+/', '', $component->component_version);
-		// ser the addfolders data
-		$addfolders	= json_decode($component->addfolders,true);
-		if (ComponentbuilderHelper::checkArray($addfolders))
-		{
-			foreach ($addfolders as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$component->folders[$nr][$option] = $value;
-				}
-			}
-			unset($component->addfolders);
-		}
 		
-		// ser the addfiles data
-		$addfiles	= json_decode($component->addfiles,true);
-		if (ComponentbuilderHelper::checkArray($addfiles))
+		// set the addfolders data
+		(isset($component->addfolders)) ? $component->addfolders = json_decode($component->addfolders,true):null;
+		if (isset($component->addfolders) && ComponentbuilderHelper::checkArray($component->addfolders))
 		{
-			foreach ($addfiles as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$component->files[$nr][$option] = $value;
-				}
-			}
-			unset($component->addfiles);
+			$component->folders = array_values($component->addfolders);
 		}
+		unset($component->addfolders);
+		
+		// set the addfiles data
+		(isset($component->addfiles)) ? $component->addfiles = json_decode($component->addfiles,true):null;
+		if (isset($component->addfiles) && ComponentbuilderHelper::checkArray($component->addfiles))
+		{
+			$component->files = array_values($component->addfiles);
+		}
+		unset($component->addfiles);
+		
 		// set the uikit switch
 		if ($component->adduikit)
 		{
@@ -660,67 +730,39 @@ class Get
 			// add the version
 			$this->footableVersion = (1 == $component->addfootable || 2 == $component->addfootable) ? 2 : $component->addfootable;
 		}
-
-		// ser the addcustommenu data
-		$addcustommenus	= json_decode($component->addcustommenus,true);
-		if (ComponentbuilderHelper::checkArray($addcustommenus))
-		{
-			foreach ($addcustommenus as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$component->custommenus[$nr][$option] = $value;
-				}
-			}
-			unset($component->addcustommenus);
-		}
 		
-		// tweak the mysql dump settings if needed
-		$sql_tweak	= json_decode($component->sql_tweak,true);
-		if (ComponentbuilderHelper::checkArray($sql_tweak))
+		// set the addcustommenus data
+		(isset($component->addcustommenus)) ? $component->addcustommenus = json_decode($component->addcustommenus,true):null;
+		if (isset($component->addcustommenus) && ComponentbuilderHelper::checkArray($component->addcustommenus))
 		{
-			$component->sql_tweak = array();
-			foreach ($sql_tweak as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					if ((string)(int)$value == $value)
-					{
-						$component->sql_tweak[$nr][$option] = (int) $value;
-					}
-					else
-					{
-						$component->sql_tweak[$nr][$option] = $value;
-					}
-				}
-			}
-			// build the tweak settings
-			$this->setSqlTweaking($component->sql_tweak);
-			unset($component->sql_tweak);
+			$component->custommenus = array_values($component->addcustommenus);
 		}
+		unset($component->addcustommenus);
+		
+		// set the sql_tweak data
+		(isset($component->sql_tweak)) ? $component->sql_tweak = json_decode($component->sql_tweak,true):null;
+		if (isset($component->sql_tweak) && ComponentbuilderHelper::checkArray($component->sql_tweak))
+		{
+			// build the tweak settings
+			$this->setSqlTweaking(array_map(function($array) {
+				return array_map(function($value) {
+					if (!ComponentbuilderHelper::checkArray($value) && !ComponentbuilderHelper::checkObject($value)
+						&& strval($value) === strval(intval($value)))
+					{
+						return (int) $value;
+					}
+					return $value;
+				}, $array);
+			}, array_values($component->sql_tweak)));
+		}
+		unset($component->sql_tweak);
 		
 		// set the admin_view data
-		$admin_views	= json_decode($component->addadmin_views,true);
-		
-		if (ComponentbuilderHelper::checkArray($admin_views))
+		(isset($component->addadmin_views)) ? $component->addadmin_views = json_decode($component->addadmin_views,true):null;
+		if (isset($component->addadmin_views) && ComponentbuilderHelper::checkArray($component->addadmin_views))
 		{
-			foreach ($admin_views as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					if ((string)(int)$value == $value)
-					{
-						$component->admin_views[$nr][$option] = (int) $value;
-					}
-					else
-					{
-						$component->admin_views[$nr][$option] = $value;
-					}
-				}
-			}
-			unset($component->addadmin_views);
 			// sort the views acording to order
-			usort($component->admin_views, function($a, $b)
+			usort($component->addadmin_views, function($a, $b)
 			{
 				if ($a['order'] != 0 && $b['order'] != 0)
 				{
@@ -736,154 +778,121 @@ class Get
 				}
 				return 1;
 			});
-			// load the view and field data
-			foreach ($component->admin_views as $key => &$view)
-			{
-				if ($view['port'] && !$this->addEximport)
+			// build the admin_views settings
+			$component->admin_views = array_map(function($array) {
+				$array = array_map(function($value) {
+					if (!ComponentbuilderHelper::checkArray($value) && !ComponentbuilderHelper::checkObject($value)
+						&& strval($value) === strval(intval($value)))
+					{
+						return (int) $value;
+					}
+					return $value;
+				}, $array);
+				// has become a lacacy issue, can't remove this
+				$array['view'] = $array['adminview'];
+				$array['settings'] = $this->getAdminViewData($array['view']);
+				if ($array['port'] && !$this->addEximport)
 				{
 					$this->addEximport = true;
 				}
-				if ($view['history'] && !$this->setTagHistory)
+				if ($array['history'] && !$this->setTagHistory)
 				{
 					$this->setTagHistory = true;
 				}
-				if ($view['edit_create_site_view'])
+				if ($array['edit_create_site_view'])
 				{
-					$this->siteEditView[$view['adminview']] = true;
+					$this->siteEditView[$array['adminview']] = true;
 				}
-				// TODO this is a temp fix until front view is added
-				$view['view'] = $view['adminview'];
-				$view['settings'] = $this->getAdminViewData($view['view']);
-			}
-			unset($component->addadmin_view);
+				return $array;
+			}, array_values($component->addadmin_views));
 		}
 
 		// set the site_view data
-		$site_views = json_decode($component->addsite_views,true);
-		if (ComponentbuilderHelper::checkArray($site_views))
+		(isset($component->addsite_views)) ? $component->addsite_views = json_decode($component->addsite_views,true):null;
+		if (isset($component->addsite_views) && ComponentbuilderHelper::checkArray($component->addsite_views))
 		{
-			foreach ($site_views as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					if ((string)(int)$value == $value)
-					{
-						$component->site_views[$nr][$option] = (int) $value;
-					}
-					else
-					{
-						$component->site_views[$nr][$option] = $value;
-					}
-				}
-			}
-			unset($component->addsite_views);
 			$this->lang = 'site';
 			$this->target = 'site';
-			// load the view and field data
-			if (isset($component->site_views) && ComponentbuilderHelper::checkArray($component->site_views))
-			{
-				foreach ($component->site_views as $key => &$view)
-				{
-					// has become a lacacy issue, can't remove this
-					$view['view'] = $view['siteview'];
-					$view['settings'] = $this->getCustomViewData($view['view']);
-				}
-			}
+			// build the site_views settings
+			$component->site_views = array_map(function($array) {
+				// has become a lacacy issue, can't remove this
+				$array['view'] = $array['siteview'];
+				$array['settings'] = $this->getCustomViewData($array['view']);
+				return array_map(function($value) {
+					if (!ComponentbuilderHelper::checkArray($value) && !ComponentbuilderHelper::checkObject($value)
+						&& strval($value) === strval(intval($value)))
+					{
+						return (int) $value;
+					}
+					return $value;
+				}, $array);
+			}, array_values($component->addsite_views));
+			// unset original value
+			unset($component->addsite_views);
 		}
 
 		// set the custom_admin_views data
-		$custom_admin_views	= json_decode($component->addcustom_admin_views,true);
-		if (ComponentbuilderHelper::checkArray($custom_admin_views))
+		(isset($component->addcustom_admin_views)) ? $component->addcustom_admin_views = json_decode($component->addcustom_admin_views,true):null;
+		if (isset($component->addcustom_admin_views) && ComponentbuilderHelper::checkArray($component->addcustom_admin_views))
 		{
-			foreach ($custom_admin_views as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					if ((string)(int)$value == $value)
-					{
-						$component->custom_admin_views[$nr][$option] = (int) $value;
-					}
-					else
-					{
-						$component->custom_admin_views[$nr][$option] = $value;
-					}
-				}
-			}
-			unset($component->addcustom_admin_views);
 			$this->lang = 'admin';
 			$this->target = 'custom_admin';
-			// load the view and field data
-			if (isset($component->custom_admin_views) && ComponentbuilderHelper::checkArray($component->custom_admin_views))
-			{
-				foreach ($component->custom_admin_views as $key => &$view)
-				{
-					// has become a lacacy issue, can't remove this
-					$view['view'] = $view['customadminview'];
-					$view['settings'] = $this->getCustomViewData($view['view'], 'custom_admin_view');
-				}
-			}
+			// build the custom_admin_views settings
+			$component->custom_admin_views = array_map(function($array) {
+				// has become a lacacy issue, can't remove this
+				$array['view'] = $array['customadminview'];
+				$array['settings'] = $this->getCustomViewData($array['view'], 'custom_admin_view');
+				return array_map(function($value) {
+					if (!ComponentbuilderHelper::checkArray($value) && !ComponentbuilderHelper::checkObject($value)
+						&& strval($value) === strval(intval($value)))
+					{
+						return (int) $value;
+					}
+					return $value;
+				}, $array);
+			}, array_values($component->addcustom_admin_views));
+			// unset original value
+			unset($component->addcustom_admin_views);
 		}
 
 		// ser the config data
-		$addconfig	= json_decode($component->addconfig,true);
-		if (ComponentbuilderHelper::checkArray($addconfig))
+		(isset($component->addconfig)) ? $component->addconfig = json_decode($component->addconfig,true):null;
+		if (isset($component->addconfig) && ComponentbuilderHelper::checkArray($component->addconfig))
 		{
-			foreach ($addconfig as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$component->config[$nr]['alias'] = 0;
-					$component->config[$nr]['title'] = 0;
-					if ($option === 'field')
-					{
-						// load the field data
-						$component->config[$nr]['settings'] = $this->getFieldData($value);
-					}
-					else
-					{
-						$component->config[$nr][$option] = $value;
-					}
-				}
-			}
+			$component->config = array_map(function($array) {
+				$array['alias'] = 0;
+				$array['title'] = 0;
+				$array['settings'] = $this->getFieldData($array['field']);
+				return $array;
+			}, array_values($component->addconfig));
+			// unset original value
 			unset($component->addconfig);
 		}
-
-		// check if any contributors is to be added
-		$contributors = json_decode($component->addcontributors,true);
-		if (ComponentbuilderHelper::checkArray($contributors))
+		
+		// set the addcustommenus data
+		(isset($component->addcontributors)) ? $component->addcontributors = json_decode($component->addcontributors,true):null;
+		if (isset($component->addcontributors) && ComponentbuilderHelper::checkArray($component->addcontributors))
 		{
 			$this->addContributors = true;
-			foreach ($contributors as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$component->contributors[$nr][$option] = $value;
-				}
-			}
-			unset($component->addcontributors);
+			$component->contributors = array_values($component->addcontributors);
 		}
-
-		// check if version updating is set
-		$version_update = json_decode($component->version_update,true);
-		if (ComponentbuilderHelper::checkArray($version_update))
+		unset($component->addcontributors);
+		
+		// set the addcustommenus data
+		(isset($component->version_update)) ? $component->version_update = json_decode($component->version_update,true):null;
+		if (isset($component->version_update) && ComponentbuilderHelper::checkArray($component->version_update))
 		{
-			$component->version_update = array();
-			foreach ($version_update as $option => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					$component->version_update[$nr][$option] = $value;
-				}
-			}
-		}		
+			$component->version_update = array_values($component->version_update);
+		}
 		
 		// build update SQL
-		if ($old_component = $this->getHistoryWatch('joomla_component', $this->componentID))
+		if ($old_component = $this->getHistoryWatch('joomla_component', $this->componentID) && 
+			$old_admin_views = $this->getHistoryWatch('component_admin_views', $component->addadmin_views_id))
 		{
 			// add new views if found
-			if (isset($old_component->addadmin_views) && ComponentbuilderHelper::checkJson($old_component->addadmin_views))
+			if (isset($old_admin_views->addadmin_views) && ComponentbuilderHelper::checkJson($old_admin_views->addadmin_views))
 			{
-				$this->setUpdateSQL(json_decode($old_component->addadmin_views, true), $admin_views, 'adminview');
+				$this->setUpdateSQL(json_decode($old_admin_views->addadmin_views, true), $component->addadmin_views, 'adminview');
 			}
 			// check if a new version was manualy set
 			$old_component_version = preg_replace('/[^0-9.]+/', '', $old_component->component_version);
@@ -895,6 +904,8 @@ class Get
 			// clear this data
 			unset($old_component);
 		}
+		// unset original value
+		unset($component->addadmin_views);
 
 		// add_javascript
 		if ($component->add_javascript == 1)
@@ -1019,39 +1030,31 @@ class Get
 		}
 		
 		// dashboard methods
-		if ($component->add_php_dashboard_methods && ComponentbuilderHelper::checkString($component->php_dashboard_methods))
-		{
+		(isset($component->dashboard_tab)) ? $component->dashboard_tab = json_decode($component->dashboard_tab,true):null;
+		if (isset($component->dashboard_tab) && ComponentbuilderHelper::checkArray($component->dashboard_tab))
+		{			
 			$nowLang = $this->lang;
 			$this->lang = 'admin';
+			$component->dashboard_tab = array_map( function($array) {
+				$array['html'] = $this->setDynamicValues($array['html']);
+				return $array;
+			}, array_values($component->dashboard_tab));
+		}
+		else
+		{
+			$component->dashboard_tab = '';
+		}
+		// add the php of the dashboard if set
+		if (ComponentbuilderHelper::checkString($component->php_dashboard_methods))
+		{
 			// load the php for the dashboard model
 			$component->php_dashboard_methods = $this->setDynamicValues(base64_decode($component->php_dashboard_methods));
-			// check if dashboard_tab is set
-			$dashboard_tab = json_decode($component->dashboard_tab,true);
-			if (ComponentbuilderHelper::checkArray($dashboard_tab))
-			{
-				$component->dashboard_tab = array();
-				foreach ($dashboard_tab as $option => $values)
-				{
-					foreach ($values as $nr => $value)
-					{
-						if ('html' === $option)
-						{	
-							$value = $this->setDynamicValues($value);
-						}
-						$component->dashboard_tab[$nr][$option] = $value;
-					}
-				}
-			}
-			else
-			{
-				$component->dashboard_tab = '';
-			}
+			// reset back to nowlang
 			$this->lang = $nowLang;
 		}
 		else
 		{
 			$component->php_dashboard_methods = '';
-			$component->dashboard_tab = '';
 		}
 		// add the update FTP server sig
 		if ($component->add_update_server == 1 && is_numeric($component->update_server_ftp) && $component->update_server_ftp > 0)
@@ -1095,81 +1098,6 @@ class Get
 	}
 	
 	/**
-	 * To limit the SQL Demo date build in the views
-	 * 
-	 * @param   array   $settings  Tweaking array.
-	 *
-	 * @return  void
-	 * 
-	 */	
-	public function setSqlTweaking($settings)
-	{
-		if (ComponentbuilderHelper::checkArray($settings))
-		{
-			foreach($settings as $setting)
-			{
-				// should sql dump be added
-				if (1 == $setting['add_sql'])
-				{
-					// add sql (by option)
-					if (2 == $setting['add_sql_options'])
-					{
-						// rest always 
-						$id_array = array();
-						// by id (first remove backups)
-						$ids = $setting['ids'];
-						// now get the ids
-						if (strpos($ids, ',') !== false)
-						{
-							$id_array = (array) array_map('trim',explode(',', $ids));
-						}
-						else
-						{
-							$id_array[] = trim($ids);
-						}
-						$id_array_new = array();
-						// check for ranges
-						foreach ($id_array as $key => $id)
-						{
-							if (strpos($id, '=>') !== false)
-							{
-								$id_range = (array) array_map('trim', explode('=>', $id));
-								unset($id_array[$key]);
-								// build range
-								if (count($id_range) == 2)
-								{
-									$range = range($id_range[0],$id_range[1]);
-									$id_array_new = array_merge($id_array_new,$range);
-								}
-							}
-						}
-						if (ComponentbuilderHelper::checkArray($id_array_new))
-						{
-							$id_array = array_merge($id_array_new, $id_array);
-						}
-						// final fixing to array
-						if (ComponentbuilderHelper::checkArray($id_array))
-						{
-							// uniqe
-							$id_array = array_unique($id_array, SORT_NUMERIC);
-							// sort
-							sort($id_array, SORT_NUMERIC);
-							// now set it to global
-							$this->sqlTweak[ (int) $setting['adminview']]['where'] = implode(',', $id_array);
-						}
-					}
-				}
-				else
-				{
-					// remove all sql dump options
-					$this->sqlTweak[ (int) $setting['adminview']]['remove'] = true;
-					
-				}
-			}
-		}
-	}
-	
-	/**
 	 * Get all Admin View Data
 	 * 
 	 * @param   int   $id  The view ID
@@ -1185,7 +1113,25 @@ class Get
 			$query = $this->db->getQuery(true);
 
 			$query->select('a.*');
+			$query->select(
+				$this->db->quoteName(
+					array(
+						'b.addfields',
+						'b.id',
+						'c.addconditions',
+						'c.id'
+						), 
+					array(
+						'addfields',
+						'addfields_id',
+						'addconditions',
+						'addconditions_id'
+						)
+					)
+				);
 			$query->from('#__componentbuilder_admin_view AS a');
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields', 'b') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('b.admin_view') . ')');
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields_conditions', 'c') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('c.admin_view') . ')');
 			$query->where($this->db->quoteName('a.id') . ' = '. (int) $id);
 
 			// Reset the query using our newly populated query object.
@@ -1196,9 +1142,32 @@ class Get
 			// setup view name to use in storing the data
 			$name_single = ComponentbuilderHelper::safeString($view->name_single);
 			$name_list = ComponentbuilderHelper::safeString($view->name_list);
-			// be sure to update the value in the db
-			$objectUpdate = new stdClass();
-			$objectUpdate->id = (int) $id;
+			
+			// set upater
+			$updater = array(
+				'unique' => array(
+					'addfields' => array('table' => 'admin_fields', 'val' => (int) $view->addfields_id, 'key' => 'id'),
+					'addconditions' => array('table' => 'admin_fields_conditions', 'val' => (int) $view->addconditions_id, 'key' => 'id')
+				),
+				'table' => 'admin_view',
+				'key' => 'id',
+				'val' => (int) $id
+			);
+			// repeatable fields to update
+			$searchRepeatables = array(
+				// repeatablefield => checker
+				'addfields' => 'field',
+				'addconditions' => 'target_field',
+				'ajax_input' => 'value_name',
+				'custom_button' => 'name',
+				'addlinked_views' => 'adminview',				
+				'addtables' => 'table',
+				'addtabs' => 'name',				
+				'addpermissions' => 'action'
+			);
+			// update the repeatable fields
+			$view = ComponentbuilderHelper::convertRepeatableFields($view, $searchRepeatables, $updater);
+			
 			// setup token check
 			if (!isset($this->customScriptBuilder['token']))
 			{
@@ -1220,45 +1189,15 @@ class Get
 			$this->placeholders['[[[VIEW]]]'] = $this->placeholders['###VIEW###'];
 			$this->placeholders['[[[VIEWS]]]'] = $this->placeholders['###VIEWS###'];			
 			// add the tables
-			$view->addtables = json_decode($view->addtables,true);
-			// check what type of table array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($view->addtables['table']))
-			{
-				$bucket = array();
-				foreach($view->addtables as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['addtables'.$nr][$option] = $value;
-					}
-				}
-				$view->addtables = $bucket;
-				$objectUpdate->addtables = json_encode($bucket);
-			}
-			if (ComponentbuilderHelper::checkArray($view->addtables))
+			(isset($view->addtables)) ? $view->addtables = json_decode($view->addtables,true):null;
+			if (isset($view->addtables) && ComponentbuilderHelper::checkArray($view->addtables))
 			{
 				$view->tables = array_values($view->addtables);
 			}
 			unset($view->addtables);
 			// add the tabs
-			$view->addtabs = json_decode($view->addtabs,true);
-			// check what type of tabs array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($view->addtabs['name']))
-			{
-				$bucket = array();
-				foreach($view->addtabs as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['addtabs'.$nr][$option] = $value;
-					}
-				}
-				$view->addtabs = $bucket;
-				$objectUpdate->addtabs = json_encode($bucket);
-			}
-			if (ComponentbuilderHelper::checkArray($view->addtabs))
+			(isset($view->addtabs)) ? $view->addtabs = json_decode($view->addtabs,true):null;
+			if (isset($view->addtabs) && ComponentbuilderHelper::checkArray($view->addtabs))
 			{
 				$nr = 1;
 				foreach ($view->addtabs as $tab)
@@ -1281,23 +1220,8 @@ class Get
 			$view->tabs[15] = 'publishing';
 			unset($view->addtabs);
 			// add permissions
-			$view->addpermissions = json_decode($view->addpermissions,true);
-			// check what type of permissions array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($view->addpermissions['action']))
-			{
-				$bucket = array();
-				foreach($view->addpermissions as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['addpermissions'.$nr][$option] = $value;
-					}
-				}
-				$view->addpermissions = $bucket;
-				$objectUpdate->addpermissions = json_encode($bucket);
-			}
-			if (ComponentbuilderHelper::checkArray($view->addpermissions))
+			(isset($view->addpermissions)) ? $view->addpermissions = json_decode($view->addpermissions,true):null;
+			if (isset($view->addpermissions) && ComponentbuilderHelper::checkArray($view->addpermissions))
 			{
 				$view->permissions = array_values($view->addpermissions);
 			}
@@ -1305,32 +1229,11 @@ class Get
 			// reset fields
 			$view->fields = array();
 			// set fields
-			if ($addfields = ComponentbuilderHelper::getVar('admin_fields', $id, 'admin_view', 'addfields'))
+			(isset($view->addfields)) ? $view->addfields = json_decode($view->addfields,true):null;
+			if (isset($view->addfields) && ComponentbuilderHelper::checkArray($view->addfields))
 			{
-				$view->addfields = json_decode($addfields,true);
-				// get the admin fields id
-				$fieldID = ComponentbuilderHelper::getVar('admin_fields', $id, 'admin_view', 'id');
-				// check what type of field array we have here (should be subform... but just incase)
-				// This could happen due to huge data sets
-				if (isset($view->addfields['field']))
-				{
-					$bucket = array();
-					foreach($view->addfields as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket['addfields'.$nr][$option] = $value;
-						}
-					}
-					$view->addfields = $bucket;
-					// update the fields
-					$fieldsUpdate = new stdClass();
-					$fieldsUpdate->id = (int) $fieldID;
-					$fieldsUpdate->addfields = json_encode($bucket);
-					$this->db->updateObject('#__componentbuilder_admin_fields', $fieldsUpdate, 'id');
-				}
 				// build update SQL
-				if ($old_view = $this->getHistoryWatch('admin_fields', $fieldID))
+				if ($old_view = $this->getHistoryWatch('admin_fields', $view->addfields_id))
 				{
 					// add new fields were added
 					if (isset($old_view->addfields) && ComponentbuilderHelper::checkJson($old_view->addfields))
@@ -1342,7 +1245,11 @@ class Get
 				}
 				if (ComponentbuilderHelper::checkArray($view->addfields))
 				{
-					$view->fields = array_values($view->addfields);
+					// load the field data
+					$view->fields = array_map( function($array) use($name_single, $name_list){
+						$array['settings'] = $this->getFieldData($array['field'], $name_single, $name_list);
+						return $array;
+					}, array_values($view->addfields));
 					// sort the fields acording to order
 					usort($view->fields, function($a, $b)
 					{
@@ -1364,14 +1271,9 @@ class Get
 						}
 						return 0;
 					});
-					// load the field data
-					foreach ($view->fields as $key => &$field)
-					{
-						$field['settings'] = $this->getFieldData($field['field'], $name_single, $name_list);
-					}
 				}
-				unset($view->addfields);
-			}			
+			}
+			unset($view->addfields);		
 			// build update SQL
 			if ($old_view = $this->getHistoryWatch('admin_view', $id))
 			{
@@ -1384,124 +1286,85 @@ class Get
 				unset($old_view);
 			}			
 			// set the conditions
-			if ($addconditions = ComponentbuilderHelper::getVar('admin_fields_conditions', $id, 'admin_view', 'addconditions'))
+			(isset($view->addconditions)) ? $view->addconditions = json_decode($view->addconditions,true):null;
+			if (isset($view->addconditions) && ComponentbuilderHelper::checkArray($view->addconditions))
 			{
-				$view->addconditions = json_decode($addconditions,true);
-				// get the admin fields id
-				$conditionsID = ComponentbuilderHelper::getVar('admin_fields_conditions', $id, 'admin_view', 'id');
-				// check what type of conditions array we have here (should be subform... but just incase)
-				// This could happen due to huge data sets
-				if (isset($view->addconditions['target_field']))
+				$view->conditions = array();
+				$ne = 0;
+				foreach ($view->addconditions as $nr => $conditionValue)
 				{
-					$bucket = array();
-					foreach($view->addconditions as $option => $values)
+					if (ComponentbuilderHelper::checkArray($conditionValue['target_field']) && ComponentbuilderHelper::checkArray($view->fields))
 					{
-						foreach($values as $nr => $value)
+						foreach ($conditionValue['target_field'] as $fieldKey => $fieldId)
 						{
-							$bucket['addconditions'.$nr][$option] = $value;
-						}
-					}
-					$view->addconditions = $bucket;
-					// update the fields
-					$conditionsUpdate = new stdClass();
-					$conditionsUpdate->id = (int) $conditionsID;
-					$conditionsUpdate->addconditions = json_encode($bucket);
-					$this->db->updateObject('#__componentbuilder_admin_fields_conditions', $conditionsUpdate, 'id');
-				}
-				if (ComponentbuilderHelper::checkArray($view->addconditions))
-				{
-					$view->conditions = array();
-					$ne = 0;
-					foreach ($view->addconditions as $nr => $conditionValue)
-					{
-						if (ComponentbuilderHelper::checkArray($conditionValue['target_field']) && ComponentbuilderHelper::checkArray($view->fields))
-						{
-							foreach ($conditionValue['target_field'] as $fieldKey => $fieldId)
+							foreach ($view->fields as $fieldValues)
 							{
-								foreach ($view->fields as $fieldValues)
+								if ((int) $fieldValues['field'] == (int) $fieldId)
 								{
-									if ((int) $fieldValues['field'] == (int) $fieldId)
-									{
-										// load the field details
-										$required	= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'required="','"');
-										$required	= ($required == true) ? 'yes' : 'no';
-										$filter		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'filter="','"');
-										$filter		= ComponentbuilderHelper::checkString($filter) ? $filter : 'none';
-										// get name
-										$name		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'name="','"');
-										$name		= ComponentbuilderHelper::checkString($name) ? $name : $fieldValues['settings']->name;
-										// get type
-										$type		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'type="','"');
-										$type		= ComponentbuilderHelper::checkString($type) ? $type : $fieldValues['settings']->type_name;
-										// set the field name
-										$conditionValue['target_field'][$fieldKey] = array(
-											'name' => ComponentbuilderHelper::safeString($name),
-											'type' => ComponentbuilderHelper::safeString($type),
-											'required' => $required,
-											'filter' => $filter
-											);
-										break;
-									}
-								}
-							}
-						}
-
-						// load match field
-						if (ComponentbuilderHelper::checkArray($view->fields) && isset($conditionValue['match_field']))
-						{
-							foreach ($view->fields as $fieldValue)
-							{
-								if ((int) $fieldValue['field'] == (int) $conditionValue['match_field'])
-								{
+									// load the field details
+									$required	= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'required="','"');
+									$required	= ($required == true) ? 'yes' : 'no';
+									$filter		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'filter="','"');
+									$filter		= ComponentbuilderHelper::checkString($filter) ? $filter : 'none';
 									// get name
-									$name = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'name="','"');
-									$name = ComponentbuilderHelper::checkString($name) ? $name : $fieldValue['settings']->name;
+									$name		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'name="','"');
+									$name		= ComponentbuilderHelper::checkString($name) ? $name : $fieldValues['settings']->name;
 									// get type
-									$type = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'type="','"');
-									$type = ComponentbuilderHelper::checkString($type) ? $type : $fieldValue['settings']->type_name;
-									// set the field details
-									$conditionValue['match_name']	= ComponentbuilderHelper::safeString($name);
-									$conditionValue['match_type']	= ComponentbuilderHelper::safeString($type);
-									$conditionValue['match_xml']	= $fieldValue['settings']->xml;
-									// if custom field load field being extended
-									if (!ComponentbuilderHelper::typeField($type))
-									{
-										$conditionValue['match_extends'] = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'extends="','"');
-									}
-									else
-									{
-										$conditionValue['match_extends'] = '';
-									}
+									$type		= ComponentbuilderHelper::getBetween($fieldValues['settings']->xml,'type="','"');
+									$type		= ComponentbuilderHelper::checkString($type) ? $type : $fieldValues['settings']->type_name;
+									// set the field name
+									$conditionValue['target_field'][$fieldKey] = array(
+										'name' => ComponentbuilderHelper::safeString($name),
+										'type' => ComponentbuilderHelper::safeString($type),
+										'required' => $required,
+										'filter' => $filter
+										);
 									break;
 								}
 							}
 						}
-						// set condition values
-						$view->conditions[$ne] = $conditionValue;
-						$ne++;
 					}
+
+					// load match field
+					if (ComponentbuilderHelper::checkArray($view->fields) && isset($conditionValue['match_field']))
+					{
+						foreach ($view->fields as $fieldValue)
+						{
+							if ((int) $fieldValue['field'] == (int) $conditionValue['match_field'])
+							{
+								// get name
+								$name = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'name="','"');
+								$name = ComponentbuilderHelper::checkString($name) ? $name : $fieldValue['settings']->name;
+								// get type
+								$type = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'type="','"');
+								$type = ComponentbuilderHelper::checkString($type) ? $type : $fieldValue['settings']->type_name;
+								// set the field details
+								$conditionValue['match_name']	= ComponentbuilderHelper::safeString($name);
+								$conditionValue['match_type']	= ComponentbuilderHelper::safeString($type);
+								$conditionValue['match_xml']	= $fieldValue['settings']->xml;
+								// if custom field load field being extended
+								if (!ComponentbuilderHelper::typeField($type))
+								{
+									$conditionValue['match_extends'] = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml,'extends="','"');
+								}
+								else
+								{
+									$conditionValue['match_extends'] = '';
+								}
+								break;
+							}
+						}
+					}
+					// set condition values
+					$view->conditions[$ne] = $conditionValue;
+					$ne++;
 				}
-				unset($view->addconditions);
 			}
+			unset($view->addconditions);
 			// set linked views
 			$this->linkedAdminViews[$name_single] = null;
-			$view->addlinked_views = json_decode($view->addlinked_views,true);
-			// check what type of linked_views array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($view->addlinked_views['adminview']))
-			{
-				$bucket = array();
-				foreach($view->addlinked_views as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['addlinked_views'.$nr][$option] = $value;
-					}
-				}
-				$view->addlinked_views = $bucket;
-				$objectUpdate->addlinked_views = json_encode($bucket);
-			}
-			if (ComponentbuilderHelper::checkArray($view->addlinked_views))
+			(isset($view->addlinked_views)) ? $view->addlinked_views = json_decode($view->addlinked_views,true):null;
+			if (isset($view->addlinked_views) && ComponentbuilderHelper::checkArray($view->addlinked_views))
 			{
 				// setup linked views to global data sets
 				$this->linkedAdminViews[$name_single] = array_values($view->addlinked_views);
@@ -1582,24 +1445,8 @@ class Get
 					$view->php_controller_list = $this->setDynamicValues(base64_decode($view->php_controller_list));
 				}
                                 // set the button array
-                                $view->custom_button = json_decode($view->custom_button,true);
-				// check what type of custom_button array we have here (should be subform... but just incase)
-				// This could happen due to huge data sets
-				if (isset($view->custom_button['name']))
-				{
-					$bucket = array();
-					foreach($view->custom_button as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket['custom_button'.$nr][$option] = $value;
-						}
-					}
-					$view->custom_button = $bucket;
-					$objectUpdate->custom_button = json_encode($bucket);
-				}
-                                // sort the values
-                                if (ComponentbuilderHelper::checkArray($view->custom_button))
+				(isset($view->custom_button)) ? $view->custom_button = json_decode($view->custom_button,true):null;
+				if (isset($view->custom_button) && ComponentbuilderHelper::checkArray($view->custom_button))
                                 {
                                         $view->custom_buttons = array_values($view->custom_button);
                                 }
@@ -1640,23 +1487,8 @@ class Get
 					}
 				}
 				// check if controller input as been set
-				$view->ajax_input = json_decode($view->ajax_input,true);
-				// check what type of ajax_input array we have here (should be subform... but just incase)
-				// This could happen due to huge data sets
-				if (isset($view->ajax_input['value_name']))
-				{
-					$bucket = array();
-					foreach($view->ajax_input as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket['ajax_input'.$nr][$option] = $value;
-						}
-					}
-					$view->ajax_input = $bucket;
-					$objectUpdate->ajax_input = json_encode($bucket);
-				}
-				if (ComponentbuilderHelper::checkArray($view->ajax_input))
+				(isset($view->ajax_input)) ? $view->ajax_input = json_decode($view->ajax_input,true):null;
+				if (isset($view->ajax_input) && ComponentbuilderHelper::checkArray($view->ajax_input))
 				{
 					if ($addAjaxSite)
 					{
@@ -1709,11 +1541,6 @@ class Get
 			unset($this->placeholders['[[[VIEWS]]]']);
 			// store this view to class object
 			$this->_adminViewData[$id] = $view;
-			// be sure to update the table if we found repeatable fields that are still not converted
-			if (count((array) $objectUpdate) > 1)
-			{
-				$this->db->updateObject('#__componentbuilder_admin_view', $objectUpdate, 'id');
-			}
 		}
 		// return the found view data
 		return $this->_adminViewData[$id];
@@ -1745,14 +1572,31 @@ class Get
 		if ($table === 'site_view')
 		{
 			$this->lang = 'site';
+			// repeatable fields to update
+			$searchRepeatables = array(
+				// repeatablefield => checker
+				'ajax_input' => 'value_name',
+				'custom_button' => 'name'
+			);
 		}
 		else
 		{
 			$this->lang = 'admin';
+			// repeatable fields to update
+			$searchRepeatables = array(
+				// repeatablefield => checker
+				'custom_button' => 'name'
+			);
 		}
-		// be sure to update the value in the db
-		$objectUpdate = new stdClass();
-		$objectUpdate->id = (int) $id;
+		// set upater
+		$updater = array(
+			'table' => $table,
+			'key' => 'id',
+			'val' => (int) $id
+		);		
+		// update the repeatable fields
+		$view = ComponentbuilderHelper::convertRepeatableFields($view, $searchRepeatables, $updater);
+		
 		// set the default data
 		$view->default = $this->setDynamicValues(base64_decode($view->default));
 		// fix alias to use in code
@@ -1861,28 +1705,14 @@ class Get
 		if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 		{
 			// check if controller input as been set
-			$view->ajax_input = json_decode($view->ajax_input,true);
-			// check what type of ajax_input array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($view->ajax_input['value_name']))
-			{
-				$bucket = array();
-				foreach($view->ajax_input as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['ajax_input'.$nr][$option] = $value;
-					}
-				}
-				$view->ajax_input = $bucket;
-				$objectUpdate->ajax_input = json_encode($bucket);
-			}
-			if (ComponentbuilderHelper::checkArray($view->ajax_input))
+			(isset($view->ajax_input)) ? $view->ajax_input = json_decode($view->ajax_input,true):null;
+			if (isset($view->ajax_input) && ComponentbuilderHelper::checkArray($view->ajax_input))
 			{
 				$this->customScriptBuilder[$this->target]['ajax_controller'][$view->code] = array_values($view->ajax_input);
 				$this->addSiteAjax = true;
-				unset($view->ajax_input);
 			}
+			unset($view->ajax_input);
+			// load the ajax class mathods (if set)
 			if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
 			{
 				
@@ -1903,33 +1733,12 @@ class Get
 			$view->php_controller = base64_decode($view->php_controller);
 			$view->php_controller = $this->setDynamicValues($view->php_controller);
 			// set the button array
-			$view->custom_button = json_decode($view->custom_button,true);
-			// check what type of custom_button array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($view->custom_button['name']))
-			{
-				$bucket = array();
-				foreach($view->custom_button as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['custom_button'.$nr][$option] = $value;
-					}
-				}
-				$view->custom_button = array_values($bucket);
-				$objectUpdate->custom_button = json_encode($bucket);
-			}
-			// sort the values
-			if (ComponentbuilderHelper::checkArray($view->custom_button))
+			(isset($view->custom_button)) ? $view->custom_button = json_decode($view->custom_button,true):null;
+			if (isset($view->custom_button) && ComponentbuilderHelper::checkArray($view->custom_button))
 			{
 				$view->custom_buttons = array_values($view->custom_button);
 			}
 			unset($view->custom_button);
-		}
-		// be sure to update the table if we found repeatable fields that are still not converted
-		if (count((array) $objectUpdate) > 1)
-		{
-			$this->db->updateObject('#__componentbuilder_'.$table, $objectUpdate, 'id');
 		}
 		// return the found view data
 		return $view;
@@ -1947,7 +1756,7 @@ class Get
 	 */
 	public function getFieldData($id, $name_single = null, $name_list = null)
 	{
-		if (!isset($this->_fieldData[$id]) && $id > 0)
+		if ($id > 0 && !isset($this->_fieldData[$id]))
 		{
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
@@ -1969,32 +1778,30 @@ class Get
 
 				// adding a fix for the changed name of type to fieldtype
 				$field->type = $field->fieldtype;
+				
+				// repeatable fields to update
+				$searchRepeatables = array(
+					// repeatablefield => checker
+					'properties' => 'name'
+				);
+				// set upater
+				$updater = array(
+					'table' => 'fieldtype',
+					'key' => 'id',
+					'val' => (int) $id
+				);
+				// update the repeatable fields
+				$field = ComponentbuilderHelper::convertRepeatableFields($field, $searchRepeatables, $updater);
 
 				// load the values form params
 				$field->xml = $this->setDynamicValues(json_decode($field->xml));
 
 				// load the type values form type params
-				$properties = json_decode($field->properties, true);
-				// check what type of field array we have here (should be subform... but just incase)
-				// This could happen due to huge data sets
-				if (isset($properties['name']))
+				(isset($field->properties)) ? $field->properties = json_decode($field->properties, true):null;
+				if (isset($field->properties) && ComponentbuilderHelper::checkArray($field->properties))
 				{
-					$bucket = array();
-					foreach($properties as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket['addfields'.$nr][$option] = $value;
-						}
-					}
-					$properties = $bucket;
-					// be sure to update the value in the db
-					$objectUpdate = new stdClass();
-					$objectUpdate->id = $field->fieldtype;
-					$objectUpdate->properties = json_encode($bucket);
-					$this->db->updateObject('#__componentbuilder_fieldtype', $objectUpdate, 'id');
+					$field->properties = array_values($field->properties);
 				}
-				$field->properties = array_values($properties);
 				// check if we have advanced encryption
 				if (4 == $field->store &&  (!isset($this->advancedEncryption) || !$this->advancedEncryption))
 				{
@@ -2017,7 +1824,7 @@ class Get
 			}
 		}
 		// check if the script should be added to the view each time this field is called
-		if (isset($this->_fieldData[$id]) && $id > 0)
+		if ($id > 0 && isset($this->_fieldData[$id]))
 		{
 			// check if we should load scripts for single view
 			if (ComponentbuilderHelper::checkString($name_single) && !isset($this->customFieldScript[$name_single][$id]))
@@ -2135,7 +1942,7 @@ class Get
 				$this->customFieldScript[$name_list][$id] = true;
 			}
 		}
-		if (isset($this->_fieldData[$id]) && $id > 0)
+		if ($id > 0 && isset($this->_fieldData[$id]))
 		{
 			// return the found field data
 			return $this->_fieldData[$id];
@@ -2411,6 +2218,81 @@ class Get
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * To limit the SQL Demo date build in the views
+	 * 
+	 * @param   array   $settings  Tweaking array.
+	 *
+	 * @return  void
+	 * 
+	 */	
+	public function setSqlTweaking($settings)
+	{
+		if (ComponentbuilderHelper::checkArray($settings))
+		{
+			foreach($settings as $setting)
+			{
+				// should sql dump be added
+				if (1 == $setting['add_sql'])
+				{
+					// add sql (by option)
+					if (2 == $setting['add_sql_options'])
+					{
+						// rest always 
+						$id_array = array();
+						// by id (first remove backups)
+						$ids = $setting['ids'];
+						// now get the ids
+						if (strpos($ids, ',') !== false)
+						{
+							$id_array = (array) array_map('trim',explode(',', $ids));
+						}
+						else
+						{
+							$id_array[] = trim($ids);
+						}
+						$id_array_new = array();
+						// check for ranges
+						foreach ($id_array as $key => $id)
+						{
+							if (strpos($id, '=>') !== false)
+							{
+								$id_range = (array) array_map('trim', explode('=>', $id));
+								unset($id_array[$key]);
+								// build range
+								if (count($id_range) == 2)
+								{
+									$range = range($id_range[0],$id_range[1]);
+									$id_array_new = array_merge($id_array_new,$range);
+								}
+							}
+						}
+						if (ComponentbuilderHelper::checkArray($id_array_new))
+						{
+							$id_array = array_merge($id_array_new, $id_array);
+						}
+						// final fixing to array
+						if (ComponentbuilderHelper::checkArray($id_array))
+						{
+							// uniqe
+							$id_array = array_unique($id_array, SORT_NUMERIC);
+							// sort
+							sort($id_array, SORT_NUMERIC);
+							// now set it to global
+							$this->sqlTweak[ (int) $setting['adminview']]['where'] = implode(',', $id_array);
+						}
+					}
+				}
+				else
+				{
+					// remove all sql dump options
+					$this->sqlTweak[ (int) $setting['adminview']]['remove'] = true;
+					
+				}
+			}
+		}
 	}
 	
 	/**

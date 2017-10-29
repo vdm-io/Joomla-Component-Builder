@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.9
-	@build			28th October, 2017
+	@build			29th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import_joomla_components.php
@@ -1005,7 +1005,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						// convert Repetable Fields
 						if (ComponentbuilderHelper::checkArray($addlinked_views) && isset($addlinked_views['adminview']))
 						{
-							$addlinked_views = $this->convertRepeatable($addlinked_views, 'addlinked_views');
+							$addlinked_views = ComponentbuilderHelper::convertRepeatable($addlinked_views, 'addlinked_views');
 						}
 						// update the view IDs
 						if (ComponentbuilderHelper::checkArray($addlinked_views))
@@ -1049,68 +1049,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 			}
 		}
-	}
-
-	/*
-	 * Convert repeatable field to subform
-	 * 
-	 * @param   array    $item       The array to convert
-	 * @param   string   $name      The main field name
-	 * @param   array   $updater    The updater (dynamic) option
-	 *
-	 * @return  array
-	 */
-	protected function convertRepeatable($item, $name)
-	{
-		// continue only if we have an array
-		if (ComponentbuilderHelper::checkArray($item))
-		{
-			$bucket = array();
-			foreach ($item as $key => $values)
-			{
-				foreach ($values as $nr => $value)
-				{
-					if (!isset($bucket[$name . $nr]) || !ComponentbuilderHelper::checkArray($bucket[$name . $nr]))
-					{
-						$bucket[$name . $nr] = array();
-					}
-					$bucket[$name . $nr][$key] = $value;
-				}
-			}
-			return $bucket;
-		}
-		return $item;
-	}
-
-	/*
-	 * Convert repeatable field to subform
-	 * 
-	 * @param   object   $item          The item to update
-	 * @param   json      $updater    The fields to check and update
-	 *
-	 * @return void
-	 */
-	protected function convertRepeatableFields($object, $updater)
-	{
-		// update the repeatable fields
-		foreach ($updater as  $up => $sleutel)
-		{
-			if (isset($object->{$up}) && ComponentbuilderHelper::checkJson($object->{$up}))
-			{
-				$updateArray = json_decode($object->{$up}, true);
-				// check if this is old values for repeatable fields
-				if (ComponentbuilderHelper::checkArray($updateArray) && isset($updateArray[$sleutel]))
-				{
-					// load it back
-					$object->{$up} = json_encode($this->convertRepeatable($updateArray, $up));
-				}
-			}
-			elseif (isset($object->{$up}))
-			{
-				unset($object->{$up});
-			}
-		}
-		return $object;
 	}
 
 	/**
@@ -1376,7 +1314,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					'properties' => 'name'
 				);
 				// update the repeatable fields
-				$item = $this->convertRepeatableFields($item, $updaterR);
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'field':
 				// update the fieldtype
@@ -1417,7 +1355,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							'filter' => 'filter_type'
 							);
 				// update the repeatable fields
-				$item = $this->convertRepeatableFields($item, $updaterR);
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
 							// subformfield => field => type_value
@@ -1450,7 +1388,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							'custom_button' => 'name'
 							);
 				// update the repeatable fields				
-				$item = $this->convertRepeatableFields($item, $updaterR);
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'admin_view':
 				// we must clear the demo content (since it was not moved as far as we know) TODO
@@ -1509,7 +1447,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						'addpermissions' => 'action'
 					);
 				// update the repeatable fields
-				$item = $this->convertRepeatableFields($item, $updaterR);
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'joomla_component':
 				// update the addconfig
@@ -1764,7 +1702,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 
 				// update the repeatable fields
-				$item = $this->convertRepeatableFields($item, $updaterR);
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				
 				// update the subform ids
 				$this->updateSubformsIDs($item, $type, $updaterT);
@@ -1887,7 +1825,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// check if this is old values for repeatable fields
 				if (isset($properties['name']))
 				{
-					$properties = $this->convertRepeatable($properties, 'properties');
+					$properties = ComponentbuilderHelper::convertRepeatable($properties, 'properties');
 				}
 				// now check to find type
 				foreach ($properties as $property)

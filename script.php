@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.9
-	@build			28th October, 2017
+	@build			29th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -2722,8 +2722,10 @@ class com_componentbuilderInstallerScript
 					)
 				);
 			}
+			// get table columns to confirm that this is an old installation
+			$activeColumns = $db->getTableColumns('#__componentbuilder_admin_view');
 			// target version less then 2.5.7
-			if (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 6) || ($version[1] < 5)))
+			if (isset($activeColumns['addfields']) && (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 6) || ($version[1] < 5))))
 			{
 				// do some conversions in the admin_view table
 				$convertRepeatable($db, 'admin_view', array('id', 'ajax_input', 'custom_button', 'addtables', 'addlinked_views', 'addconditions', 'addfields', 'addtabs', 'addpermissions'),
@@ -2756,8 +2758,10 @@ class com_componentbuilderInstallerScript
 			}
 			// the set move values
 			$this->setMoveValues = array();
-			// target version less then 2.5.9
-			if (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 8) || ($version[1] < 5)))
+			// get table columns to confirm that this is an old installation
+			$activeColumns = $db->getTableColumns('#__componentbuilder_joomla_component');
+			// target version less then 2.6.0
+			if (isset($activeColumns['addadmin_views']) && (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 9) || ($version[1] < 6))))
 			{
 				// do some conversions in the admin_view table
 				$convertRepeatable($db, 'joomla_component', array('id', 'addadmin_views', 'addconfig', 'addcontributors', 'addcustom_admin_views', 'addcustommenus', 'addfiles', 'addfolders', 'addsite_views', 'dashboard_tab', 'sql_tweak', 'version_update'),

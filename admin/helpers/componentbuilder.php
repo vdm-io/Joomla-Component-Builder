@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.9
-	@build			28th October, 2017
+	@build			29th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		componentbuilder.php
@@ -40,6 +40,146 @@ abstract class ComponentbuilderHelper
 		// the Session keeps track of all data related to the current session of this user
 		self::loadSession();
 	} 
+
+	/*
+	 * Convert repeatable field to subform
+	 * 
+	 * @param   array    $item       The array to convert
+	 * @param   string   $name      The main field name
+	 * @param   array   $updater    The updater (dynamic) option
+	 *
+	 * @return  array
+	 */
+	public static function convertRepeatable($item, $name)
+	{
+		// continue only if we have an array
+		if (self::checkArray($item))
+		{
+			$bucket = array();
+			foreach ($item as $key => $values)
+			{
+				foreach ($values as $nr => $value)
+				{
+					if (!isset($bucket[$name . $nr]) || !self::checkArray($bucket[$name . $nr]))
+					{
+						$bucket[$name . $nr] = array();
+					}
+					$bucket[$name . $nr][$key] = $value;
+				}
+			}
+			return $bucket;
+		}
+		return $item;
+	}
+
+	/**
+	* 	The global updater
+	**/
+	protected static $globalUpdater = array();
+
+	/*
+	 * Convert repeatable field to subform
+	 * 
+	 * @param   object     $item            The item to update
+	 * @param   array      $searcher        The fields to check and update
+	 * @param   array      $updater         To update the local table
+	 *
+	 * @return void
+	 */
+	public static function convertRepeatableFields($object, $searcher, $updater = array())
+	{
+		// update the repeatable fields
+		foreach ($searcher as  $key => $sleutel)
+		{
+			$isJson = false;
+			if (isset($object->{$key}) && self::checkJson($object->{$key}))
+			{
+				$object->{$key} = json_decode($object->{$key}, true);
+				$isJson = true;
+			}
+			// check if this is old values for repeatable fields
+			if (self::checkArray($object->{$key}) && isset($object->{$key}[$sleutel]))
+			{
+				// load it back
+				$object->{$key} = self::convertRepeatable($object->{$key}, $key);
+				// add to global updater
+				if (
+					self::checkArray($object->{$key}) && self::checkArray($updater) && 
+					(
+						( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) ) || 
+						( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
+					)
+				   )
+				{
+					$_key = null;
+					$_value = null;
+					$_table = null;
+					// check if we have unique id table for this repeatable/subform field
+					if ( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
+					{
+						$_key = $updater['unique'][$key]['key'];
+						$_value = $updater['unique'][$key]['val'];
+						$_table = $updater['unique'][$key]['table'];
+					}
+					elseif ( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) )
+					{
+						$_key = $updater['key'];
+						$_value = $updater['val'];
+						$_table = $updater['table'];
+					}
+					// continue only if values are valid
+					if (self::checkString($_table) && self::checkString($_key) && $_value > 0)
+					{
+						// set target table & item
+						$target = trim($_table) . '.' . trim($_key) . '.' . trim($_value);
+						if (!isset(self::$globalUpdater[$target]))
+						{
+							self::$globalUpdater[$target] = new stdClass;
+							self::$globalUpdater[$target]->{$_key} = (int) $_value;
+						}
+						// load the new subform values to global updater
+						self::$globalUpdater[$target]->{$key} = json_encode($object->{$key});
+					}
+				}
+			}
+			// no set back to json if came in as json
+			if (isset($object->{$key}) && $isJson && self::checkArray($object->{$key}))
+			{
+				$object->{$key} = json_encode($object->{$key}); 
+			}
+			// remove if not json or array
+			elseif (isset($object->{$key}) && !self::checkArray($object->{$key}) && !self::checkJson($object->{$key}))
+			{
+				unset($object->{$key});
+			}
+		}
+		return $object;
+	}
+
+	/**
+	 * Run Global Updater if any are set
+	 * 
+	 * @return  void
+	 * 
+	 */
+	public static function runGlobalUpdater()
+	{
+		// check if any updates are set to run
+		if (self::checkArray(self::$globalUpdater))
+		{
+			// get the database object
+			$db = JFactory::getDbo();
+			foreach (self::$globalUpdater as $tableKeyID => $object)
+			{
+				// get the table
+				$table = explode('.', $tableKeyID);
+				// update the item
+				$db->updateObject('#__componentbuilder_' . (string) $table[0] , $object, (string) $table[1]);
+			}
+			// rest updater
+			self::$globalUpdater = array();
+		}
+	}
 
 	/**
 	 * Copy Any Item (only use for direct database copying)
