@@ -642,80 +642,22 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$this->user = JFactory::getUser();
 		// set some defaults
 		$this->today = JFactory::getDate()->toSql();
-		// we first store the fieldtype
-		if (!$this->saveSmartItems('fieldtype'))
+		// the array of tables to store
+		$tables = array(
+			'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
+			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
+			'admin_fields', 'admin_fields_conditions', 'component_admin_views', 'component_site_views',
+			'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
+			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
+		);
+		// smart table loop
+		foreach ($tables as $table)
 		{
-			return false;
-		}
-		// we then store the field
-		if (!$this->saveSmartItems('field'))
-		{
-			return false;
-		}
-		// we then store the admin_view
-		if (!$this->saveSmartItems('admin_view'))
-		{
-			return false;
-		}
-		// we then store the snippet
-		if (!$this->saveSmartItems('snippet'))
-		{
-			return false;
-		}
-		// we then store the dynamic_get
-		if (!$this->saveSmartItems('dynamic_get'))
-		{
-			return false;
-		}
-		// we then store the custom_admin_view
-		if (!$this->saveSmartItems('custom_admin_view'))
-		{
-			return false;
-		}
-		// we then store the site_view
-		if (!$this->saveSmartItems('site_view'))
-		{
-			return false;
-		}
-		// we then store the template
-		if (!$this->saveSmartItems('template'))
-		{
-			return false;
-		}
-		// we then store the layout
-		if (!$this->saveSmartItems('layout'))
-		{
-			return false;
-		}
-		// we then store the components
-		if (!$this->saveSmartItems('joomla_component'))
-		{
-			return false;
-		}
-		// we then store the languages
-		if (!$this->saveSmartItems('language'))
-		{
-			return false;
-		}
-		// we then store the language translations
-		if (!$this->saveSmartItems('language_translation'))
-		{
-			return false;
-		}
-		// we then store the custom_code
-		if (!$this->saveSmartItems('custom_code'))
-		{
-			return false;
-		}
-		// we then store the admin_fields
-		if (!$this->saveSmartItems('admin_fields'))
-		{
-			return false;
-		}
-		// we then store the admin_fields_conditions
-		if (!$this->saveSmartItems('admin_fields_conditions'))
-		{
-			return false;
+			// save the table to database
+			if (!$this->saveSmartItems($table))
+			{
+				return false;
+			}
 		}
 		// do a after all run on all items that need it
 		$this->updateAfter();
@@ -1391,6 +1333,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'admin_view':
+				// set the getters anchors
+				$getter = array('admin_view' => $item->id);
 				// we must clear the demo content (since it was not moved as far as we know) TODO
 				if ($item->add_sql == 1 && $item->source == 1)
 				{
@@ -1402,17 +1346,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// update the addfields (old dataset)
 				if (isset($item->addfields) && ComponentbuilderHelper::checkJson($item->addfields))
 				{
-					// set the anchors getters
-					$getter = array('admin_view' => $item->id);
 					// move the old data
 					$this->setDivergedDataMover($item->addfields, 'admin_fields', 'addfields', $getter);
-					// remove from this dataset
-					unset($item->addfields);
 				}
-				elseif (isset($item->addfields))
-				{
-					unset($item->addfields);
-				}
+				// remove from this dataset
+				unset($item->addfields);
 				// update the addlinked_views
 				if (isset($item->addlinked_views) && ComponentbuilderHelper::checkJson($item->addlinked_views))
 				{
@@ -1425,17 +1363,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// update the addconditions (old dataset)
 				if (isset($item->addconditions) && ComponentbuilderHelper::checkJson($item->addconditions))
 				{
-					// set the getters anchors
-					$getter = array('admin_view' => $item->id);
 					// move the old data
 					$this->setDivergedDataMover($item->addconditions, 'admin_fields_conditions', 'addconditions', $getter);
-					// remove from this dataset
-					unset($item->addconditions);
 				}
-				elseif (isset($item->addconditions))
-				{
-					unset($item->addconditions);
-				}
+				// remove from this dataset
+				unset($item->addconditions);
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1450,106 +1382,246 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'joomla_component':
+				// set the anchors getters
+				$getter = array('joomla_component' => $item->id);
 				// update the addconfig
 				if (isset($item->addconfig) && ComponentbuilderHelper::checkJson($item->addconfig))
 				{
-					$addconfig = json_decode($item->addconfig, true);
-					foreach ($addconfig['field'] as $nr => $id)
-					{
-						if (!is_numeric($id))
-						{
-							continue;
-						}
-						// update the addconfig
-						if (isset($this->newID['field'][(int) $id]))
-						{
-							$addconfig['field'][$nr] = $this->newID['field'][(int) $id];
-						}
-						else
-						{
-							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BCONFIG_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BFIELDB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
-							$addconfig['field'][$nr] = '';
-						}
-					}
-					// load it back
-					$item->addconfig = json_encode($addconfig);
+					// move the old data
+					$this->setDivergedDataMover($item->addconfig, 'component_config', 'addconfig', $getter);
 				}
+				// remove from this dataset
+				unset($item->addconfig);
 				// update the addadmin_views
 				if (isset($item->addadmin_views) && ComponentbuilderHelper::checkJson($item->addadmin_views))
 				{
-					$addadmin_views = json_decode($item->addadmin_views, true);
-					foreach ($addadmin_views['adminview'] as $nr => $id)
-					{
-						if (!is_numeric($id))
-						{
-							continue;
-						}
-						// update the addadmin_views
-						if (isset($this->newID['admin_view'][(int) $id]))
-						{
-							$addadmin_views['adminview'][$nr] = $this->newID['admin_view'][(int) $id];
-						}
-						else
-						{
-							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BADMIN_VIEW_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BADMIN_VIEWB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
-							$addadmin_views['adminview'][$nr] = '';
-						}
-					}
-					// load it back
-					$item->addadmin_views = json_encode($addadmin_views);
+					// move the old data
+					$this->setDivergedDataMover($item->addadmin_views, 'component_admin_views', 'addadmin_views', $getter);
 				}
-				else
-				{
-					unset($item->addadmin_views);
-				}
+				// remove from this dataset
+				unset($item->addadmin_views);
 				// update the addcustom_admin_views
 				if (isset($item->addcustom_admin_views) && ComponentbuilderHelper::checkJson($item->addcustom_admin_views))
 				{
-					$addcustom_admin_views = json_decode($item->addcustom_admin_views, true);
-					foreach ($addcustom_admin_views['customadminview'] as $nr => $id)
-					{
-						if (!is_numeric($id))
-						{
-							continue;
-						}
-						// update the addcustom_admin_views
-						if (isset($this->newID['custom_admin_view'][(int) $id]))
-						{
-							$addcustom_admin_views['customadminview'][$nr] = $this->newID['custom_admin_view'][(int) $id];
-						}
-						else
-						{
-							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BCUSTOM_ADMIN_VIEW_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BCUSTOM_ADMIN_VIEWB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
-							$addcustom_admin_views['customadminview'][$nr] = '';
-						}
-					}
-					// load it back
-					$item->addcustom_admin_views = json_encode($addcustom_admin_views);
+					// move the old data
+					$this->setDivergedDataMover($item->addcustom_admin_views, 'component_custom_admin_views', 'addcustom_admin_views', $getter);
 				}
+				// remove from this dataset
+				unset($item->addcustom_admin_views);
 				// update the addsite_views
 				if (isset($item->addsite_views) && ComponentbuilderHelper::checkJson($item->addsite_views))
 				{
-					$addsite_views = json_decode($item->addsite_views, true);
-					foreach ($addsite_views['siteview'] as $nr => $id)
-					{
-						if (!is_numeric($id))
-						{
-							continue;
-						}
-						// update the addsite_views
-						if (isset($this->newID['site_view'][(int) $id]))
-						{
-							$addsite_views['siteview'][$nr] = $this->newID['site_view'][(int) $id];
-						}
-						else
-						{
-							$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSITE_VIEW_IN_SB_HAS_ID_MISMATCH_OF_SELECTED_BSITE_VIEWB_SO_THE_IDS_WAS_REMOVED', '('.ComponentbuilderHelper::safeString($type, 'w').':'.$item->id.')', $id), 'warning');
-							$addsite_views['siteview'][$nr] = '';
-						}
-					}
-					// load it back
-					$item->addsite_views = json_encode($addsite_views);
+					// move the old data
+					$this->setDivergedDataMover($item->addsite_views, 'component_site_views', 'addsite_views', $getter);
 				}
+				// remove from this dataset
+				unset($item->addsite_views);
+				// update the version_update
+				if (isset($item->version_update) && ComponentbuilderHelper::checkJson($item->version_update))
+				{
+					// move the old data
+					$this->setDivergedDataMover($item->version_update, 'component_updates', 'version_update', $getter);
+				}
+				// remove from this dataset
+				unset($item->version_update);
+				// update the sql_tweak
+				if (isset($item->sql_tweak) && ComponentbuilderHelper::checkJson($item->sql_tweak))
+				{
+					// move the old data
+					$this->setDivergedDataMover($item->sql_tweak, 'component_mysql_tweaks', 'sql_tweak', $getter);
+				}
+				// remove from this dataset
+				unset($item->sql_tweak);
+				// update the addcustommenus
+				if (isset($item->addcustommenus) && ComponentbuilderHelper::checkJson($item->addcustommenus))
+				{
+					// move the old data
+					$this->setDivergedDataMover($item->addcustommenus, 'component_custom_admin_menus', 'addcustommenus', $getter);
+				}
+				// remove from this dataset
+				unset($item->addcustommenus);
+				// update the dashboard_tab
+				if (isset($item->dashboard_tab) && ComponentbuilderHelper::checkJson($item->dashboard_tab))
+				{
+					// move the old data
+					$this->setDivergedDataMover($item->dashboard_tab, 'component_dashboard', 'dashboard_tab', $getter);
+				}
+				// remove from this dataset
+				unset($item->dashboard_tab);
+				// update the php_dashboard_methods
+				if (isset($item->php_dashboard_methods))
+				{
+					// move the old data
+					$this->setDivergedDataMover($item->php_dashboard_methods, 'component_dashboard', 'php_dashboard_methods', $getter);
+				}
+				// remove from this dataset
+				unset($item->php_dashboard_methods);
+				unset($item->add_php_dashboard_methods);
+				// update the addfiles
+				if (isset($item->addfiles) && ComponentbuilderHelper::checkJson($item->addfiles))
+				{
+					// move the old data
+					$this->setDivergedDataMover($item->addfiles, 'component_files_folders', 'addfiles', $getter);
+				}
+				// remove from this dataset
+				unset($item->addfiles);
+				// update the addfolders
+				if (isset($item->addfolders) && ComponentbuilderHelper::checkJson($item->addfolders))
+				{
+					// move the old data
+					$this->setDivergedDataMover($item->addfolders, 'component_files_folders', 'addfolders', $getter);
+				}
+				// remove from this dataset
+				unset($item->addfolders);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'addcontributors' => 'name'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+			break;
+			case 'component_admin_views':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'addadmin_views' => 'adminview'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// subform fields to target
+				$updaterT = array(
+							// subformfield => array( field => type_value )
+							'addadmin_views' => array('adminview' => 'admin_view')
+							);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_admin_views', $updaterT);
+			break;
+			case 'component_site_views':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'addsite_views' => 'siteview'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// subform fields to target
+				$updaterT = array(
+							// subformfield => array( field => type_value )
+							'addsite_views' => array('siteview' => 'site_view')
+							);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_site_views', $updaterT);
+			break;
+			case 'component_custom_admin_views':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'addcustom_admin_views' => 'customadminview'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// subform fields to target
+				$updaterT = array(
+							// subformfield => array( field => type_value )
+							'addcustom_admin_views' => array('customadminview' => 'custom_admin_view')
+							);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_custom_admin_views', $updaterT);
+			break;
+			case 'component_updates':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'version_update' => 'version'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+			break;
+			case 'component_mysql_tweaks':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'sql_tweak' => 'adminview'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// subform fields to target
+				$updaterT = array(
+							// subformfield => array( field => type_value )
+							'sql_tweak' => array('adminview' => 'admin_view')
+							);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_mysql_tweaks', $updaterT);
+			break;
+			case 'component_custom_admin_menus':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'addcustommenus' => 'name'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// subform fields to target
+				$updaterT = array(
+							// subformfield => array( field => type_value )
+							'addcustommenus' => array('before' => 'admin_view')
+							);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_custom_admin_menus', $updaterT);
+			break;
+			case 'component_config':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'addconfig' => 'field'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// subform fields to target
+				$updaterT = array(
+							// subformfield => array( field => type_value )
+							'addconfig' => array('field' => 'field')
+							);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_config', $updaterT);
+			break;
+			case 'component_dashboard':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'dashboard_tab' => 'name'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+			break;
+			case 'component_files_folders':
+				// update the joomla_component ID where needed
+				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// repeatable fields to update
+				$updaterR = array(
+						// repeatablefield => checker
+						'addfiles' => 'file',
+						'addfolders' => 'folder'
+					);
+				// update the repeatable fields
+				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'custom_code':
 				// update the component ID where needed
@@ -2170,6 +2242,20 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						$getter = array('id', 'name', 'name_code', 'short_description', 'author', 'component_version', 'companyname', 'system_name'); // risky will look at this again
 						$retryAgain = 2;
 					}
+					break;
+				case 'component_admin_views':
+				case 'component_site_views':
+				case 'component_custom_admin_views':
+				case 'component_updates':
+				case 'component_mysql_tweaks':
+				case 'component_custom_admin_menus':
+				case 'component_config':
+				case 'component_dashboard':
+				case 'component_files_folders':
+					// get by admin_view (since there should only be one of each name)
+					$getter = array('joomla_component');
+					$this->specialValue = array();
+					$this->specialValue['joomla_component'] = $this->newID['joomla_component'][(int) $item->joomla_component];
 					break;
 				case 'language_translation':
 						// get by English translation since there should just be one
