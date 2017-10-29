@@ -703,16 +703,16 @@ class Get
 		$this->component_version = preg_replace('/[^0-9.]+/', '', $component->component_version);
 		
 		// set the addfolders data
-		(isset($component->addfolders)) ? $component->addfolders = json_decode($component->addfolders,true):null;
-		if (isset($component->addfolders) && ComponentbuilderHelper::checkArray($component->addfolders))
+		$component->addfolders = (isset($component->addfolders) && ComponentbuilderHelper::checkJson($component->addfolders)) ? json_decode($component->addfolders,true):null;
+		if (ComponentbuilderHelper::checkArray($component->addfolders))
 		{
 			$component->folders = array_values($component->addfolders);
 		}
 		unset($component->addfolders);
 		
 		// set the addfiles data
-		(isset($component->addfiles)) ? $component->addfiles = json_decode($component->addfiles,true):null;
-		if (isset($component->addfiles) && ComponentbuilderHelper::checkArray($component->addfiles))
+		$component->addfiles = (isset($component->addfiles) && ComponentbuilderHelper::checkJson($component->addfiles)) ? json_decode($component->addfiles,true):null;
+		if (ComponentbuilderHelper::checkArray($component->addfiles))
 		{
 			$component->files = array_values($component->addfiles);
 		}
@@ -732,16 +732,16 @@ class Get
 		}
 		
 		// set the addcustommenus data
-		(isset($component->addcustommenus)) ? $component->addcustommenus = json_decode($component->addcustommenus,true):null;
-		if (isset($component->addcustommenus) && ComponentbuilderHelper::checkArray($component->addcustommenus))
+		$component->addcustommenus = (isset($component->addcustommenus) && ComponentbuilderHelper::checkJson($component->addcustommenus)) ? json_decode($component->addcustommenus,true):null;
+		if (ComponentbuilderHelper::checkArray($component->addcustommenus))
 		{
 			$component->custommenus = array_values($component->addcustommenus);
 		}
 		unset($component->addcustommenus);
 		
 		// set the sql_tweak data
-		(isset($component->sql_tweak)) ? $component->sql_tweak = json_decode($component->sql_tweak,true):null;
-		if (isset($component->sql_tweak) && ComponentbuilderHelper::checkArray($component->sql_tweak))
+		$component->sql_tweak = (isset($component->sql_tweak) && ComponentbuilderHelper::checkJson($component->sql_tweak)) ? json_decode($component->sql_tweak,true):null;
+		if (ComponentbuilderHelper::checkArray($component->sql_tweak))
 		{
 			// build the tweak settings
 			$this->setSqlTweaking(array_map(function($array) {
@@ -758,8 +758,8 @@ class Get
 		unset($component->sql_tweak);
 		
 		// set the admin_view data
-		(isset($component->addadmin_views)) ? $component->addadmin_views = json_decode($component->addadmin_views,true):null;
-		if (isset($component->addadmin_views) && ComponentbuilderHelper::checkArray($component->addadmin_views))
+		$component->addadmin_views = (isset($component->addadmin_views) && ComponentbuilderHelper::checkJson($component->addadmin_views)) ? json_decode($component->addadmin_views,true):null;
+		if (ComponentbuilderHelper::checkArray($component->addadmin_views))
 		{
 			// sort the views acording to order
 			usort($component->addadmin_views, function($a, $b)
@@ -808,8 +808,8 @@ class Get
 		}
 
 		// set the site_view data
-		(isset($component->addsite_views)) ? $component->addsite_views = json_decode($component->addsite_views,true):null;
-		if (isset($component->addsite_views) && ComponentbuilderHelper::checkArray($component->addsite_views))
+		$component->addsite_views = (isset($component->addsite_views) && ComponentbuilderHelper::checkJson($component->addsite_views)) ? json_decode($component->addsite_views,true):null;
+		if (ComponentbuilderHelper::checkArray($component->addsite_views))
 		{
 			$this->lang = 'site';
 			$this->target = 'site';
@@ -832,8 +832,8 @@ class Get
 		}
 
 		// set the custom_admin_views data
-		(isset($component->addcustom_admin_views)) ? $component->addcustom_admin_views = json_decode($component->addcustom_admin_views,true):null;
-		if (isset($component->addcustom_admin_views) && ComponentbuilderHelper::checkArray($component->addcustom_admin_views))
+		$component->addcustom_admin_views = (isset($component->addcustom_admin_views) && ComponentbuilderHelper::checkJson($component->addcustom_admin_views)) ? json_decode($component->addcustom_admin_views,true):null;
+		if (ComponentbuilderHelper::checkArray($component->addcustom_admin_views))
 		{
 			$this->lang = 'admin';
 			$this->target = 'custom_admin';
@@ -856,8 +856,8 @@ class Get
 		}
 
 		// ser the config data
-		(isset($component->addconfig)) ? $component->addconfig = json_decode($component->addconfig,true):null;
-		if (isset($component->addconfig) && ComponentbuilderHelper::checkArray($component->addconfig))
+		$component->addconfig = (isset($component->addconfig) && ComponentbuilderHelper::checkJson($component->addconfig)) ? json_decode($component->addconfig,true):null;
+		if (ComponentbuilderHelper::checkArray($component->addconfig))
 		{
 			$component->config = array_map(function($array) {
 				$array['alias'] = 0;
@@ -870,8 +870,8 @@ class Get
 		}
 		
 		// set the addcustommenus data
-		(isset($component->addcontributors)) ? $component->addcontributors = json_decode($component->addcontributors,true):null;
-		if (isset($component->addcontributors) && ComponentbuilderHelper::checkArray($component->addcontributors))
+		$component->addcontributors = (isset($component->addcontributors) && ComponentbuilderHelper::checkJson($component->addcontributors)) ? json_decode($component->addcontributors,true):null;
+		if (ComponentbuilderHelper::checkArray($component->addcontributors))
 		{
 			$this->addContributors = true;
 			$component->contributors = array_values($component->addcontributors);
@@ -879,8 +879,8 @@ class Get
 		unset($component->addcontributors);
 		
 		// set the addcustommenus data
-		(isset($component->version_update)) ? $component->version_update = json_decode($component->version_update,true):null;
-		if (isset($component->version_update) && ComponentbuilderHelper::checkArray($component->version_update))
+		$component->version_update = (isset($component->version_update) && ComponentbuilderHelper::checkJson($component->version_update)) ? json_decode($component->version_update,true):null;
+		if (ComponentbuilderHelper::checkArray($component->version_update))
 		{
 			$component->version_update = array_values($component->version_update);
 		}
@@ -1030,8 +1030,8 @@ class Get
 		}
 		
 		// dashboard methods
-		(isset($component->dashboard_tab)) ? $component->dashboard_tab = json_decode($component->dashboard_tab,true):null;
-		if (isset($component->dashboard_tab) && ComponentbuilderHelper::checkArray($component->dashboard_tab))
+		$component->dashboard_tab = (isset($component->dashboard_tab) && ComponentbuilderHelper::checkJson($component->dashboard_tab)) ? json_decode($component->dashboard_tab,true):null;
+		if (ComponentbuilderHelper::checkArray($component->dashboard_tab))
 		{			
 			$nowLang = $this->lang;
 			$this->lang = 'admin';
@@ -1045,7 +1045,7 @@ class Get
 			$component->dashboard_tab = '';
 		}
 		// add the php of the dashboard if set
-		if (ComponentbuilderHelper::checkString($component->php_dashboard_methods))
+		if (isset($component->php_dashboard_methods) && ComponentbuilderHelper::checkString($component->php_dashboard_methods))
 		{
 			// load the php for the dashboard model
 			$component->php_dashboard_methods = $this->setDynamicValues(base64_decode($component->php_dashboard_methods));
@@ -1056,6 +1056,7 @@ class Get
 		{
 			$component->php_dashboard_methods = '';
 		}
+		
 		// add the update FTP server sig
 		if ($component->add_update_server == 1 && is_numeric($component->update_server_ftp) && $component->update_server_ftp > 0)
 		{
@@ -1189,15 +1190,15 @@ class Get
 			$this->placeholders['[[[VIEW]]]'] = $this->placeholders['###VIEW###'];
 			$this->placeholders['[[[VIEWS]]]'] = $this->placeholders['###VIEWS###'];			
 			// add the tables
-			(isset($view->addtables)) ? $view->addtables = json_decode($view->addtables,true):null;
-			if (isset($view->addtables) && ComponentbuilderHelper::checkArray($view->addtables))
+			$view->addtables = (isset($view->addtables) && ComponentbuilderHelper::checkJson($view->addtables)) ? json_decode($view->addtables,true):null;
+			if (ComponentbuilderHelper::checkArray($view->addtables))
 			{
 				$view->tables = array_values($view->addtables);
 			}
 			unset($view->addtables);
 			// add the tabs
-			(isset($view->addtabs)) ? $view->addtabs = json_decode($view->addtabs,true):null;
-			if (isset($view->addtabs) && ComponentbuilderHelper::checkArray($view->addtabs))
+			$view->addtabs = (isset($view->addtabs) && ComponentbuilderHelper::checkJson($view->addtabs)) ? json_decode($view->addtabs,true):null;
+			if (ComponentbuilderHelper::checkArray($view->addtabs))
 			{
 				$nr = 1;
 				foreach ($view->addtabs as $tab)
@@ -1220,8 +1221,8 @@ class Get
 			$view->tabs[15] = 'publishing';
 			unset($view->addtabs);
 			// add permissions
-			(isset($view->addpermissions)) ? $view->addpermissions = json_decode($view->addpermissions,true):null;
-			if (isset($view->addpermissions) && ComponentbuilderHelper::checkArray($view->addpermissions))
+			$view->addpermissions = (isset($view->addpermissions) && ComponentbuilderHelper::checkJson($view->addpermissions)) ? json_decode($view->addpermissions,true):null;
+			if (ComponentbuilderHelper::checkArray($view->addpermissions))
 			{
 				$view->permissions = array_values($view->addpermissions);
 			}
@@ -1229,8 +1230,8 @@ class Get
 			// reset fields
 			$view->fields = array();
 			// set fields
-			(isset($view->addfields)) ? $view->addfields = json_decode($view->addfields,true):null;
-			if (isset($view->addfields) && ComponentbuilderHelper::checkArray($view->addfields))
+			$view->addfields = (isset($view->addfields) && ComponentbuilderHelper::checkJson($view->addfields)) ? json_decode($view->addfields,true):null;
+			if (ComponentbuilderHelper::checkArray($view->addfields))
 			{
 				// build update SQL
 				if ($old_view = $this->getHistoryWatch('admin_fields', $view->addfields_id))
@@ -1286,8 +1287,8 @@ class Get
 				unset($old_view);
 			}			
 			// set the conditions
-			(isset($view->addconditions)) ? $view->addconditions = json_decode($view->addconditions,true):null;
-			if (isset($view->addconditions) && ComponentbuilderHelper::checkArray($view->addconditions))
+			$view->addconditions = (isset($view->addconditions) && ComponentbuilderHelper::checkJson($view->addconditions)) ? json_decode($view->addconditions,true):null;
+			if (ComponentbuilderHelper::checkArray($view->addconditions))
 			{
 				$view->conditions = array();
 				$ne = 0;
@@ -1363,8 +1364,8 @@ class Get
 			unset($view->addconditions);
 			// set linked views
 			$this->linkedAdminViews[$name_single] = null;
-			(isset($view->addlinked_views)) ? $view->addlinked_views = json_decode($view->addlinked_views,true):null;
-			if (isset($view->addlinked_views) && ComponentbuilderHelper::checkArray($view->addlinked_views))
+			$view->addlinked_views = (isset($view->addlinked_views) && ComponentbuilderHelper::checkJson($view->addlinked_views)) ? json_decode($view->addlinked_views,true):null;
+			if (ComponentbuilderHelper::checkArray($view->addlinked_views))
 			{
 				// setup linked views to global data sets
 				$this->linkedAdminViews[$name_single] = array_values($view->addlinked_views);
@@ -1445,8 +1446,8 @@ class Get
 					$view->php_controller_list = $this->setDynamicValues(base64_decode($view->php_controller_list));
 				}
                                 // set the button array
-				(isset($view->custom_button)) ? $view->custom_button = json_decode($view->custom_button,true):null;
-				if (isset($view->custom_button) && ComponentbuilderHelper::checkArray($view->custom_button))
+				$view->custom_button = (isset($view->custom_button) && ComponentbuilderHelper::checkJson($view->custom_button)) ? json_decode($view->custom_button,true):null;
+				if (ComponentbuilderHelper::checkArray($view->custom_button))
                                 {
                                         $view->custom_buttons = array_values($view->custom_button);
                                 }
@@ -1487,8 +1488,8 @@ class Get
 					}
 				}
 				// check if controller input as been set
-				(isset($view->ajax_input)) ? $view->ajax_input = json_decode($view->ajax_input,true):null;
-				if (isset($view->ajax_input) && ComponentbuilderHelper::checkArray($view->ajax_input))
+				$view->ajax_input = (isset($view->ajax_input) && ComponentbuilderHelper::checkJson($view->ajax_input)) ? json_decode($view->ajax_input,true):null;
+				if (ComponentbuilderHelper::checkArray($view->ajax_input))
 				{
 					if ($addAjaxSite)
 					{
@@ -1705,8 +1706,8 @@ class Get
 		if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 		{
 			// check if controller input as been set
-			(isset($view->ajax_input)) ? $view->ajax_input = json_decode($view->ajax_input,true):null;
-			if (isset($view->ajax_input) && ComponentbuilderHelper::checkArray($view->ajax_input))
+			$view->ajax_input = (isset($view->ajax_input) && ComponentbuilderHelper::checkJson($view->ajax_input)) ? json_decode($view->ajax_input,true):null;
+			if (ComponentbuilderHelper::checkArray($view->ajax_input))
 			{
 				$this->customScriptBuilder[$this->target]['ajax_controller'][$view->code] = array_values($view->ajax_input);
 				$this->addSiteAjax = true;
@@ -1733,8 +1734,8 @@ class Get
 			$view->php_controller = base64_decode($view->php_controller);
 			$view->php_controller = $this->setDynamicValues($view->php_controller);
 			// set the button array
-			(isset($view->custom_button)) ? $view->custom_button = json_decode($view->custom_button,true):null;
-			if (isset($view->custom_button) && ComponentbuilderHelper::checkArray($view->custom_button))
+			$view->custom_button = (isset($view->custom_button) && ComponentbuilderHelper::checkJson($view->custom_button)) ? json_decode($view->custom_button,true):null;
+			if (ComponentbuilderHelper::checkArray($view->custom_button))
 			{
 				$view->custom_buttons = array_values($view->custom_button);
 			}
@@ -1797,8 +1798,8 @@ class Get
 				$field->xml = $this->setDynamicValues(json_decode($field->xml));
 
 				// load the type values form type params
-				(isset($field->properties)) ? $field->properties = json_decode($field->properties, true):null;
-				if (isset($field->properties) && ComponentbuilderHelper::checkArray($field->properties))
+				$field->properties = (isset($field->properties) && ComponentbuilderHelper::checkJson($field->properties)) ? json_decode($field->properties, true):null;
+				if (ComponentbuilderHelper::checkArray($field->properties))
 				{
 					$field->properties = array_values($field->properties);
 				}
