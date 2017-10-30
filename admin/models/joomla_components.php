@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 516 of this MVC
-	@build			29th October, 2017
+	@version		@update number 517 of this MVC
+	@build			30th October, 2017
 	@created		6th May, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
@@ -981,7 +981,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				$data = $this->getDataWithAlias($layout, 'layout');
 				if (ComponentbuilderHelper::checkArray($data))
 				{
-					if (!isset($this->exportIDs['layout']) && !isset($this->exportIDs['layout'][$data['id']]))
+					if (!isset($this->exportIDs['layout']) || !isset($this->exportIDs['layout'][$data['id']]))
 					{
 						$this->setExportIDs($data['id'], 'layout');
 						// call self to get child data
