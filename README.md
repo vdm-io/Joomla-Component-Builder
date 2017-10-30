@@ -1,5 +1,6 @@
 # Joomla Component Builder (JCB)
-[![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
+[![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases) [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
+
 
 This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://youtu.be/1KBBtQUxMTc)
 
@@ -114,7 +115,7 @@ Component Builder is mapped as a component in itself on my local development env
 + *Version*: 2.5.9
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **159671**
++ *Line count*: **159673**
 + *File count*: **1000**
 + *Folder count*: **165**
 
