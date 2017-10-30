@@ -684,9 +684,20 @@ class Compiler extends Infusion
 
 	protected function loadEscapedCode($file, $target, $lineBites)
 	{
+		// get comment type
+		if ($target['comment_type'] == 1)
+		{
+			$commentType = "// ";
+			$_commentType = "";
+		}
+		else
+		{
+			$commentType = "<!--";
+			$_commentType = " -->";
+		}
 		// escape the code
 		$code = explode(PHP_EOL, $target['code']);
-		$code = PHP_EOL."// " .implode(PHP_EOL."// ",$code). PHP_EOL;
+		$code = PHP_EOL . $commentType . implode($_commentType . PHP_EOL . $commentType, $code) . $_commentType . PHP_EOL;
 		// get place holders
 		$placeholder	= $this->getPlaceHolder((int) $target['comment_type'].$target['type'], $target['id']);
 		// build the data

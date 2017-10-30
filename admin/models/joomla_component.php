@@ -108,22 +108,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->addcontributors = $addcontributors->toArray();
 			}
 
-			if (!empty($item->php_preflight_update))
+			if (!empty($item->php_postflight_install))
 			{
-				// base64 Decode php_preflight_update.
-				$item->php_preflight_update = base64_decode($item->php_preflight_update);
+				// base64 Decode php_postflight_install.
+				$item->php_postflight_install = base64_decode($item->php_postflight_install);
 			}
 
-			if (!empty($item->sql))
+			if (!empty($item->readme))
 			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
-			}
-
-			if (!empty($item->php_postflight_update))
-			{
-				// base64 Decode php_postflight_update.
-				$item->php_postflight_update = base64_decode($item->php_postflight_update);
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
 			}
 
 			if (!empty($item->php_preflight_install))
@@ -132,22 +126,28 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_preflight_install = base64_decode($item->php_preflight_install);
 			}
 
-			if (!empty($item->php_postflight_install))
-			{
-				// base64 Decode php_postflight_install.
-				$item->php_postflight_install = base64_decode($item->php_postflight_install);
-			}
-
 			if (!empty($item->php_method_uninstall))
 			{
 				// base64 Decode php_method_uninstall.
 				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 			}
 
-			if (!empty($item->readme))
+			if (!empty($item->php_preflight_update))
 			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
+				// base64 Decode php_preflight_update.
+				$item->php_preflight_update = base64_decode($item->php_preflight_update);
+			}
+
+			if (!empty($item->php_postflight_update))
+			{
+				// base64 Decode php_postflight_update.
+				$item->php_postflight_update = base64_decode($item->php_postflight_update);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
 			}
 
 			if (!empty($item->php_helper_both))
@@ -1196,22 +1196,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['addcontributors'] = '';
 		}
 
-		// Set the php_preflight_update string to base64 string.
-		if (isset($data['php_preflight_update']))
+		// Set the php_postflight_install string to base64 string.
+		if (isset($data['php_postflight_install']))
 		{
-			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
+			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
 		}
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
 		{
-			$data['sql'] = base64_encode($data['sql']);
-		}
-
-		// Set the php_postflight_update string to base64 string.
-		if (isset($data['php_postflight_update']))
-		{
-			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
+			$data['readme'] = base64_encode($data['readme']);
 		}
 
 		// Set the php_preflight_install string to base64 string.
@@ -1220,22 +1214,28 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
 		}
 
-		// Set the php_postflight_install string to base64 string.
-		if (isset($data['php_postflight_install']))
-		{
-			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
-		}
-
 		// Set the php_method_uninstall string to base64 string.
 		if (isset($data['php_method_uninstall']))
 		{
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
+		// Set the php_preflight_update string to base64 string.
+		if (isset($data['php_preflight_update']))
 		{
-			$data['readme'] = base64_encode($data['readme']);
+			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
+		}
+
+		// Set the php_postflight_update string to base64 string.
+		if (isset($data['php_postflight_update']))
+		{
+			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
 		}
 
 		// Set the php_helper_both string to base64 string.

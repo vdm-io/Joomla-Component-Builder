@@ -1805,7 +1805,7 @@ class Fields extends Structure
 				// build unique keys of this view for db
 				$this->dbUniqueKeys[$viewName][] = $name;
 			}
-			elseif (($field['settings']->indexes == 2 || $field['alias'] || $field['title'] || $typeName === 'category') && !in_array($field['settings']->datatype, $textKeys))
+			elseif (($field['settings']->indexes == 2 || (isset($field['alias']) && $field['alias']) || (isset($field['title']) && $field['title']) || $typeName === 'category') && !in_array($field['settings']->datatype, $textKeys))
 			{
 				// build keys of this view for db
 				$this->dbKeys[$viewName][] = $name;
@@ -1817,12 +1817,12 @@ class Fields extends Structure
 			$this->historyBuilder[$viewName] = $viewName;
 		}
 		// set Alias (only one title per view)
-		if ($field['alias'])
+		if (isset($field['alias']) && $field['alias'])
 		{
 			$this->aliasBuilder[$viewName] = $name;
 		}
 		// set Titles (only one title per view)
-		if ($field['title'])
+		if (isset($field['title']) && $field['title'])
 		{
 			$this->titleBuilder[$viewName] = $name;
 		}
@@ -1855,17 +1855,17 @@ class Fields extends Structure
 			}
 		}
 		// build the list values
-		if ($field['list'] == 1 && $typeName != 'repeatable' && $typeName != 'subform')
+		if ((isset($field['list']) && $field['list'] == 1) && $typeName != 'repeatable' && $typeName != 'subform')
 		{
 			// load to list builder
 			$this->listBuilder[$listViewName][] = array(
 			    'type' => $typeName,
 			    'code' => $name,
 			    'lang' => $listLangName,
-			    'title' => ($field['title']) ? true : false,
-			    'alias' => ($field['alias']) ? true : false,
-			    'link' => ($field['link']) ? true : false,
-			    'sort' => ($field['sort']) ? true : false,
+			    'title' => (isset($field['title']) && $field['title']) ? true : false,
+			    'alias' => (isset($field['alias']) && $field['alias']) ? true : false,
+			    'link' => (isset($field['link']) && $field['link']) ? true : false,
+			    'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
 			    'custom' => $custom,
 			    'multiple' => $multiple,
 			    'options' => $options);
@@ -2004,7 +2004,7 @@ class Fields extends Structure
 			}
 
 			// load the json list display fix
-			if ($field['list'] == 1 && $typeName != 'repeatable' && $typeName != 'subform')
+			if ((isset($field['list']) && $field['list'] == 1) && $typeName != 'repeatable' && $typeName != 'subform')
 			{
 				if (ComponentbuilderHelper::checkArray($options))
 				{
@@ -2031,22 +2031,23 @@ class Fields extends Structure
 		// check if field should be added to uikit
 		$this->buildSiteFieldData($viewName, $name, 'uikit', $typeName);
 		// load the selection translation fix
-		if (ComponentbuilderHelper::checkArray($options) && $field['list'] == 1 && $typeName != 'repeatable' && $typeName != 'subform')
+		if (ComponentbuilderHelper::checkArray($options) && (isset($field['list']) && $field['list'] == 1) && $typeName != 'repeatable' && $typeName != 'subform')
 		{
 			$this->selectionTranslationFixBuilder[$listViewName][$name] = $options;
 		}
 		// build the sort values
-		if ($field['sort'] == 1 && $field['list'] == 1 && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
+		if ((isset($field['sort']) && $field['sort'] == 1) && (isset($field['list']) && $field['list'] == 1) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
 		{
 			$this->sortBuilder[$listViewName][] = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'custom' => $custom, 'options' => $options);
 		}
 		// build the search values
-		if ($field['search'] == 1)
+		if (isset($field['search']) && $field['search'] == 1)
 		{
-			$this->searchBuilder[$listViewName][] = array('type' => $typeName, 'code' => $name, 'custom' => $custom, 'list' => $field['list']);
+			$_list = (!isset($field['list'])) ? $field['list'] : 0;
+			$this->searchBuilder[$listViewName][] = array('type' => $typeName, 'code' => $name, 'custom' => $custom, 'list' => $_list);
 		}
 		// build the filter values
-		if ($field['filter'] == 1 && $field['list'] == 1 && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
+		if ((isset($field['filter']) && $field['filter'] == 1) && (isset($field['list']) && $field['list'] == 1) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
 		{
 			$this->filterBuilder[$listViewName][] = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'database' => $viewName, 'function' => ComponentbuilderHelper::safeString($name, 'F'), 'custom' => $custom, 'options' => $options);
 		}

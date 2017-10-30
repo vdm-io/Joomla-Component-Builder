@@ -11607,7 +11607,7 @@ class Interpretation extends Fields
 					$this->langContent[$this->lang][$langKey] = $langName;
 					$counter++;
 				}
-				if ($view['dashboard_list'] == 1)
+				if (isset($view['dashboard_list']) && $view['dashboard_list'] == 1)
 				{
 					$type = ComponentbuilderHelper::imageInfo($view['settings']->icon);
 					if ($type)
@@ -14004,7 +14004,7 @@ function vdm_dkim() {
 					foreach ($menuControllers  as $menuController)
 					{
 						// add menu controll view that has menus options
-						if ($view[$menuController])
+						if (isset($view[$menuController]) && $view[$menuController])
 						{
 							$targetView_ = 'views.';
 							if ($menuController === 'dashboard_add')

@@ -414,7 +414,7 @@ class Infusion extends Interpretation
                                         $this->placeholders['[[[VIEWS]]]'] = $viewsName_u;
 
                                         // set the export/import option
-                                        if ($view['port'])
+                                        if (isset($view['port']) && $view['port'])
                                         {
                                                 $this->eximportView[$viewName_list] = true;
                                                 if (1 == $view['settings']->add_custom_import)
@@ -430,7 +430,7 @@ class Infusion extends Interpretation
                                         }
 
                                         // set Autocheckin function
-                                        if ($view['checkin'] == 1)
+                                        if (isset($view['checkin']) && $view['checkin'] == 1)
                                         {
                                                 // ###AUTOCHECKIN### <<<DYNAMIC>>>
                                                 $this->fileContentDynamic[$viewName_list]['###AUTOCHECKIN###']
@@ -933,12 +933,12 @@ class Infusion extends Interpretation
 					$this->setLockLicensePer($view['settings']->code, $this->target);
 					
 					// set the site default view
-					if ($view['default_view'] == 1)
+					if (isset($view['default_view']) && $view['default_view'] == 1)
 					{
 						$this->fileContentStatic['###SITE_DEFAULT_VIEW###'] = $view['settings']->code;
 					}
 					// add site menu
-					if ($view['menu'] == 1)
+					if (isset($view['menu']) && $view['menu'] == 1)
 					{
 						// ###SITE_MENU_XML### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###SITE_MENU_XML###'] = $this->setCustomViewMenu($view);

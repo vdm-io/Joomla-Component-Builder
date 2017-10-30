@@ -888,8 +888,9 @@ class Get
 		}
 		
 		// build update SQL
-		if ($old_component = $this->getHistoryWatch('joomla_component', $this->componentID) ||
-			$old_admin_views = $this->getHistoryWatch('component_admin_views', $component->addadmin_views_id))
+		$old_admin_views = $this->getHistoryWatch('component_admin_views', $component->addadmin_views_id);
+		$old_component = $this->getHistoryWatch('joomla_component', $this->componentID);
+		if ($old_component || $old_admin_views)
 		{
 			if (ComponentbuilderHelper::checkObject($old_admin_views))
 			{
@@ -4385,10 +4386,10 @@ class Get
 		{
 			switch($commentType)
 			{
-				case 1:
+				case 1: // the PHP & JS type
 					$startReplace .= '/*'.$id.'*/';
 				break;
-				case 2:
+				case 2: // the HTML type
 					$startReplace .= '<!--'.$id.'-->';
 				break;
 			}
