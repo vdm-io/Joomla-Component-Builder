@@ -92,7 +92,7 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_SITE_VIEWS'), 'stack');
+		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_SITE_VIEWS'), 'palette');
 		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=site_views');
                 JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 

@@ -92,7 +92,7 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS'), 'stack');
+		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS'), 'screen');
 		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=custom_admin_views');
                 JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 

@@ -227,7 +227,7 @@ class Infusion extends Interpretation
                                 $viewName_single = ComponentbuilderHelper::safeString($view['settings']->name_single);
                                 $viewName_list = ComponentbuilderHelper::safeString($view['settings']->name_list);
                                 // set site edit view array
-                                if ($view['edit_create_site_view'])
+                                if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
                                 {
                                         $site_edit_view_array[] = "\t\t\t\t'".$viewName_single."'";
                                         $this->lang = 'both';
@@ -379,7 +379,7 @@ class Infusion extends Interpretation
                                                 $this->fileContentDynamic[$viewName_single]['###VIEWCSS###'] = '';
                                         }
                                         // add css to front end
-                                        if ($view['edit_create_site_view'])
+                                        if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
                                         {
                                                 $this->fileContentDynamic[$viewName_single]['###SITE_VIEWCSS###'] 
 							= $this->fileContentDynamic[$viewName_single]['###VIEWCSS###'];
@@ -603,7 +603,7 @@ class Infusion extends Interpretation
                                 }
                                 $this->fileContentStatic['###ROUTEHELPER###'] .= $this->setRouterHelp($viewName_single, $viewName_list);
 
-                                if ($view['edit_create_site_view'])
+                                if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
                                 {
                                         // add needed router stuff for front edit views
                                         $this->fileContentStatic['###ROUTER_PARSE_SWITCH###'] .= $this->routerParseSwitch($viewName_single, null, false);

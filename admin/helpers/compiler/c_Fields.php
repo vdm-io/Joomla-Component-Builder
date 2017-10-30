@@ -403,12 +403,12 @@ class Fields extends Structure
 			$this->placeholders['[[[VIEWS]]]'] = $this->placeholders['###VIEWS###'];
 			$this->placeholders['[[[Views]]]'] = $this->placeholders['###Views###'];
 			// add metadata to the view
-			if ($view['metadata'])
+			if (isset($view['metadata']) && $view['metadata'])
 			{
 				$this->metadataBuilder[$viewName] = $viewName;
 			}
 			// add access to the view
-			if ($view['access'])
+			if (isset($view['access']) && $view['access'])
 			{
 				$this->accessBuilder[$viewName] = $viewName;
 			}
@@ -1812,7 +1812,7 @@ class Fields extends Structure
 			}
 		}
 		// add history to this view
-		if ($view['history'])
+		if (isset($view['history']) && $view['history'])
 		{
 			$this->historyBuilder[$viewName] = $viewName;
 		}

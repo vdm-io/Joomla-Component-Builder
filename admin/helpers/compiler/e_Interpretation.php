@@ -728,25 +728,30 @@ class Interpretation extends Fields
 		if (ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
 		{
 			$buket = array();
-			$buket['version'] = array();
-			$buket['mysql'] = array();
-			$buket['url'] = array();
+			$nr = 0;
 			foreach ($this->componentData->version_update as $values)
 			{
-				foreach ($values as $key => $value)
-				{
-					$buket[$key][] = $value;
-				}
-			}
-			$new = array();
-			$new['id'] = (int) $this->componentID;
-			$new['component_version'] = $this->componentData->component_version;
-			$new['version_update'] = json_encode($buket);
+				$buket['version_update'.$nr] = $values;
+				$nr++;
+			}			
+			// update the joomla component table
+			$newJ = array();
+			$newJ['id'] = (int) $this->componentID;
+			$newJ['component_version'] = $this->componentData->component_version;
 			// update the component with the new dynamic SQL
-			$model = ComponentbuilderHelper::getModel('joomla_component');
-			$model->save($new); // <-- to insure the history is also updated
+			$modelJ = ComponentbuilderHelper::getModel('joomla_component');
+			$modelJ->save($newJ); // <-- to insure the history is also updated
+
 			// reset the watch here
 			$this->getHistoryWatch('joomla_component', $this->componentID);
+
+			// update the component update table
+			$newU = array();
+			$newU['id'] = (int) $this->componentData->version_update_id;
+			$newU['version_update'] = json_encode($buket);
+			// update the component with the new dynamic SQL
+			$modelU = ComponentbuilderHelper::getModel('component_updates');
+			$modelU->save($newU); // <-- to insure the history is also updated
 		}
 	}	
 	
@@ -3253,11 +3258,11 @@ class Interpretation extends Fields
 
 	public function setDocumentMetadata(&$view)
 	{
-		if ($view['settings']->main_get->gettype == 1 && $view['metadata'] == 1)
+		if ($view['settings']->main_get->gettype == 1 && isset($view['metadata']) && $view['metadata'] == 1)
 		{
 			return $this->setMetadataItem();
 		}
-		elseif ($view['metadata'] == 1)
+		elseif (isset($view['metadata']) && $view['metadata'] == 1)
 		{
 			// lets check if we have a custom get method that has the same name as the view
 			// if we do then it posibly can be that the metadata is loaded via that method
@@ -5419,6 +5424,10 @@ class Interpretation extends Fields
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_STATE']           = "- Keep Original State -";
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_ACCESS']          = "- Keep Original Access -";
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_CATEGORY']        = "- Keep Original Category -";
+		$this->langContent['admin'][$this->langPrefix.'_PUBLISHED']			= 'Published';
+		$this->langContent['admin'][$this->langPrefix.'_INACTIVE']			= 'Inactive';
+		$this->langContent['admin'][$this->langPrefix.'_ARCHIVED']			= 'Archived';
+		$this->langContent['admin'][$this->langPrefix.'_TRASHED']			= 'Trashed';
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
 			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>Lincense not set for ".$componentName.".</h1><p>Notify your administrator!<br />The lincense can be obtained from ".$this->componentData->companyname.".</p></center>";
@@ -7098,32 +7107,32 @@ class Interpretation extends Fields
 			}
 			$counter = $counter + 2;
 			$data_value =  (3 == $this->footableVersion) ? 'data-sort-value':'data-value';
-			// add the defaults
+			// add the defaults 
 			$body .= PHP_EOL."\t\t<?php if (\$item->published == 1):?>";
                         $body .= PHP_EOL."\t\t\t".'<td class="center"  '.$data_value.'="1">';
-                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-published" title="<?php echo JText::_('."'PUBLISHED'".');  ?>">';
-                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'PUBLISHED'".'); ?>';
+                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-published" title="<?php echo JText::_('."'".$this->langPrefix."_PUBLISHED'".');  ?>">';
+                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'".$this->langPrefix."_PUBLISHED'".'); ?>';
                         $body .= PHP_EOL."\t\t\t\t".'</span>';
                         $body .= PHP_EOL."\t\t\t".'</td>';
 
 			$body .= PHP_EOL."\t\t<?php elseif (\$item->published == 0):?>";
                         $body .= PHP_EOL."\t\t\t".'<td class="center"  '.$data_value.'="2">';
-                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-inactive" title="<?php echo JText::_('."'INACTIVE'".');  ?>">';
-                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'INACTIVE'".'); ?>';
+                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-inactive" title="<?php echo JText::_('."'".$this->langPrefix."_INACTIVE'".');  ?>">';
+                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'".$this->langPrefix."_INACTIVE'".'); ?>';
                         $body .= PHP_EOL."\t\t\t\t".'</span>';
                         $body .= PHP_EOL."\t\t\t".'</td>';
 
 			$body .= PHP_EOL."\t\t<?php elseif (\$item->published == 2):?>";
                         $body .= PHP_EOL."\t\t\t".'<td class="center"  '.$data_value.'="3">';
-                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-archived" title="<?php echo JText::_('."'ARCHIVED'".');  ?>">';
-                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'ARCHIVED'".'); ?>';
+                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-archived" title="<?php echo JText::_('."'".$this->langPrefix."_ARCHIVED'".');  ?>">';
+                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'".$this->langPrefix."_ARCHIVED'".'); ?>';
                         $body .= PHP_EOL."\t\t\t\t".'</span>';
                         $body .= PHP_EOL."\t\t\t".'</td>';
 
 			$body .= PHP_EOL."\t\t<?php elseif (\$item->published == -2):?>";
                         $body .= PHP_EOL."\t\t\t".'<td class="center"  '.$data_value.'="4">';
-                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-trashed" title="<?php echo JText::_('."'ARCHIVED'".');  ?>">';
-                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'ARCHIVED'".'); ?>';
+                        $body .= PHP_EOL."\t\t\t\t".'<span class="status-metro status-trashed" title="<?php echo JText::_('."'".$this->langPrefix."_TRASHED'".');  ?>">';
+                        $body .= PHP_EOL."\t\t\t\t\t".'<?php echo JText::_('."'".$this->langPrefix."_TRASHED'".'); ?>';
                         $body .= PHP_EOL."\t\t\t\t".'</span>';
                         $body .= PHP_EOL."\t\t\t".'</td>';
                         $body .= PHP_EOL."\t\t".'<?php endif; ?>';
@@ -11570,7 +11579,7 @@ class Interpretation extends Fields
 				$name_list = ComponentbuilderHelper::safeString($view['settings']->name_list);
 
 				$icons .= $this->addCustomDashboardIcons($view,$counter);
-				if ($view['dashboard_add'] == 1)
+				if (isset($view['dashboard_add']) && $view['dashboard_add'] == 1)
 				{
 					$type = ComponentbuilderHelper::imageInfo($view['settings']->icon_add);
 					if ($type)
@@ -11999,7 +12008,7 @@ class Interpretation extends Fields
 			{
 				// set custom menu
 				$menus .= $this->addCustomSubMenu($view,$codeName,$lang);
-				if ($view['submenu'] == 1)
+				if (isset($view['submenu']) && $view['submenu'] == 1)
 				{
 					// setup access defaults
 					$tab = "";
@@ -12213,7 +12222,7 @@ class Interpretation extends Fields
 			{
 				// set custom menu
 				$menus .= $this->addCustomMainMenu($view,$codeName,$lang);
-				if ($view['mainmenu'] == 1)
+				if (isset($view['mainmenu']) && $view['mainmenu'] == 1)
 				{
 					$nameList	= ComponentbuilderHelper::safeString($view['settings']->name_list);
 					$nameUpper	= ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');

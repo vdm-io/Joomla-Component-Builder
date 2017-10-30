@@ -619,7 +619,7 @@ class Structure extends Get
 						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
 						$this->buildDynamique($target,'single', false, $config);
 					}
-					if($view['edit_create_site_view'])
+					if ( isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
 					{
 						// setup the front site edit-view files
 						$target = array('site' => $view['settings']->name_single);
@@ -628,7 +628,7 @@ class Structure extends Get
 					}
 				}
 				// quick set of checkin once
-				if ($view['checkin'] == 1 && !$this->addCheckin)
+				if (isset($view['checkin']) && $view['checkin'] == 1 && !$this->addCheckin)
 				{
 					// switch to add checking to config
 					$this->addCheckin = true;

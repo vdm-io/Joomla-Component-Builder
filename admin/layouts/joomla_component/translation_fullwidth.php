@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.5.9
-	@build			29th October, 2017
+	@build			30th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		translation_fullwidth.php
@@ -70,26 +70,26 @@ $edit	= "index.php?option=com_componentbuilder&view=language_translations&task=l
 		</td>
 		<?php if ($item->published == 1):?>
 			<td class="center"  data-sort-value="1">
-				<span class="status-metro status-published" title="<?php echo JText::_('PUBLISHED');  ?>">
-					<?php echo JText::_('PUBLISHED'); ?>
+				<span class="status-metro status-published" title="<?php echo JText::_('COM_COMPONENTBUILDER_PUBLISHED');  ?>">
+					<?php echo JText::_('COM_COMPONENTBUILDER_PUBLISHED'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == 0):?>
 			<td class="center"  data-sort-value="2">
-				<span class="status-metro status-inactive" title="<?php echo JText::_('INACTIVE');  ?>">
-					<?php echo JText::_('INACTIVE'); ?>
+				<span class="status-metro status-inactive" title="<?php echo JText::_('COM_COMPONENTBUILDER_INACTIVE');  ?>">
+					<?php echo JText::_('COM_COMPONENTBUILDER_INACTIVE'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == 2):?>
 			<td class="center"  data-sort-value="3">
-				<span class="status-metro status-archived" title="<?php echo JText::_('ARCHIVED');  ?>">
-					<?php echo JText::_('ARCHIVED'); ?>
+				<span class="status-metro status-archived" title="<?php echo JText::_('COM_COMPONENTBUILDER_ARCHIVED');  ?>">
+					<?php echo JText::_('COM_COMPONENTBUILDER_ARCHIVED'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == -2):?>
 			<td class="center"  data-sort-value="4">
-				<span class="status-metro status-trashed" title="<?php echo JText::_('ARCHIVED');  ?>">
-					<?php echo JText::_('ARCHIVED'); ?>
+				<span class="status-metro status-trashed" title="<?php echo JText::_('COM_COMPONENTBUILDER_TRASHED');  ?>">
+					<?php echo JText::_('COM_COMPONENTBUILDER_TRASHED'); ?>
 				</span>
 			</td>
 		<?php endif; ?>

@@ -615,7 +615,8 @@ class Get
 					'i.dashboard_tab',
 					'i.php_dashboard_methods',
 					'f.sql_tweak',
-					'e.version_update'
+					'e.version_update',
+					'e.id'
 					), 
 				array(
 					'addadmin_views',
@@ -629,7 +630,8 @@ class Get
 					'dashboard_tab',
 					'php_dashboard_methods',
 					'sql_tweak',
-					'version_update'
+					'version_update',
+					'version_update_id'
 					)
 				)
 			);
@@ -791,15 +793,15 @@ class Get
 				// has become a lacacy issue, can't remove this
 				$array['view'] = $array['adminview'];
 				$array['settings'] = $this->getAdminViewData($array['view']);
-				if ($array['port'] && !$this->addEximport)
+				if (isset($array['port']) && $array['port'] && !$this->addEximport)
 				{
 					$this->addEximport = true;
 				}
-				if ($array['history'] && !$this->setTagHistory)
+				if (isset($array['history']) && $array['history'] && !$this->setTagHistory)
 				{
 					$this->setTagHistory = true;
 				}
-				if ($array['edit_create_site_view'])
+				if (isset($array['edit_create_site_view']) && $array['edit_create_site_view'])
 				{
 					$this->siteEditView[$array['adminview']] = true;
 				}
@@ -886,23 +888,31 @@ class Get
 		}
 		
 		// build update SQL
-		if ($old_component = $this->getHistoryWatch('joomla_component', $this->componentID) && 
+		if ($old_component = $this->getHistoryWatch('joomla_component', $this->componentID) ||
 			$old_admin_views = $this->getHistoryWatch('component_admin_views', $component->addadmin_views_id))
 		{
-			// add new views if found
-			if (isset($old_admin_views->addadmin_views) && ComponentbuilderHelper::checkJson($old_admin_views->addadmin_views))
+			if (ComponentbuilderHelper::checkObject($old_admin_views))
 			{
-				$this->setUpdateSQL(json_decode($old_admin_views->addadmin_views, true), $component->addadmin_views, 'adminview');
+				// add new views if found
+				if (isset($old_admin_views->addadmin_views) && ComponentbuilderHelper::checkJson($old_admin_views->addadmin_views))
+				{
+					$this->setUpdateSQL(json_decode($old_admin_views->addadmin_views, true), $component->addadmin_views, 'adminview');
+				}
+				// check if a new version was manualy set
+				if (ComponentbuilderHelper::checkObject($old_component))
+				{
+					$old_component_version = preg_replace('/[^0-9.]+/', '', $old_component->component_version);
+					if ($old_component_version != $this->component_version)
+					{
+						// yes, this is a new version, this mean there may be manual sql and must be checked and updated
+						$component->old_component_version = $old_component_version;
+					}
+					// clear this data
+					unset($old_component);
+				}
+				// clear this data
+				unset($old_admin_views);
 			}
-			// check if a new version was manualy set
-			$old_component_version = preg_replace('/[^0-9.]+/', '', $old_component->component_version);
-			if ($old_component_version != $this->component_version)
-			{
-				// yes, this is a new version, this mean there may be manual sql and must be checked and updated
-				$component->old_component_version = $old_component_version;
-			}
-			// clear this data
-			unset($old_component);
 		}
 		// unset original value
 		unset($component->addadmin_views);
