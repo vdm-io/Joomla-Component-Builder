@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 244 of this MVC
-	@build			29th October, 2017
+	@version		@update number 247 of this MVC
+	@build			30th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_views.php
@@ -262,20 +262,20 @@ class ComponentbuilderModelAdmin_views extends JModelList
 							continue;
 						}
 
-						// decode php_getitems
-						$item->php_getitems = base64_decode($item->php_getitems);
-						// decode php_batchmove
-						$item->php_batchmove = base64_decode($item->php_batchmove);
-						// decode php_save
-						$item->php_save = base64_decode($item->php_save);
 						// decode php_after_delete
 						$item->php_after_delete = base64_decode($item->php_after_delete);
+						// decode php_save
+						$item->php_save = base64_decode($item->php_save);
+						// decode php_batchmove
+						$item->php_batchmove = base64_decode($item->php_batchmove);
 						// decode php_getlistquery
 						$item->php_getlistquery = base64_decode($item->php_getlistquery);
 						// decode php_allowedit
 						$item->php_allowedit = base64_decode($item->php_allowedit);
 						// decode php_after_publish
 						$item->php_after_publish = base64_decode($item->php_after_publish);
+						// decode php_getitems
+						$item->php_getitems = base64_decode($item->php_getitems);
 						// decode php_import
 						$item->php_import = base64_decode($item->php_import);
 						// decode php_getitems_after_all

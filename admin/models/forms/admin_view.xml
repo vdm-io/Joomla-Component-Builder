@@ -149,31 +149,34 @@
 			message="Error! Please add some short description here."
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_HINT"
 		/>
-		<!-- Php_getitems Field. Type: Textarea. (joomla) -->
+		<!-- Icon Field. Type: Media. (joomla) -->
+		<field
+			type="media"
+			name="icon"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
+			directory=""
+		/>
+		<!-- Php_after_delete Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_getitems"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL"
+			name="php_after_delete"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_HINT"
 			required="true"
 		/>
-		<!-- Php_batchmove Field. Type: Textarea. (joomla) -->
+		<!-- Icon_category Field. Type: Media. (joomla) -->
 		<field
-			type="textarea"
-			name="php_batchmove"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_HINT"
-			required="true"
+			type="media"
+			name="icon_category"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_DESCRIPTION"
+			directory=""
 		/>
 		<!-- Icon_add Field. Type: Media. (joomla) -->
 		<field
@@ -196,63 +199,6 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_HINT"
 			required="true"
 		/>
-		<!-- Icon_category Field. Type: Media. (joomla) -->
-		<field
-			type="media"
-			name="icon_category"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_DESCRIPTION"
-			directory=""
-		/>
-		<!-- Icon Field. Type: Media. (joomla) -->
-		<field
-			type="media"
-			name="icon"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
-			directory=""
-		/>
-		<!-- Php_after_delete Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_after_delete"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_DELETE_HINT"
-			required="true"
-		/>
-		<!-- Php_getlistquery Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_getlistquery"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_HINT"
-			required="true"
-		/>
-		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
-		<!-- Php_allowedit Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_allowedit"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_HINT"
-			required="true"
-		/>
 		<!-- Type Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -268,17 +214,30 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_READONLY</option>
 		</field>
-		<!-- Php_after_publish Field. Type: Textarea. (joomla) -->
+		<!-- Php_batchmove Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_after_publish"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_LABEL"
+			name="php_batchmove"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_HINT"
+			required="true"
+		/>
+		<!-- Php_getlistquery Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_getlistquery"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_HINT"
 			required="true"
 		/>
 		<!-- Description Field. Type: Textarea. (joomla) -->
@@ -293,19 +252,19 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_HINT"
 		/>
-		<!-- Source Field. Type: Radio. (joomla) -->
+		<!-- Php_allowedit Field. Type: Textarea. (joomla) -->
 		<field
-			type="radio"
-			name="source"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCE_LABEL"
-			class="btn-group btn-group-yesno"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_DUMP</option>
-		</field>
+			type="textarea"
+			name="php_allowedit"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_HINT"
+			required="true"
+		/>
 		<!-- Add_fadein Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -320,6 +279,47 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_REMOVE</option>
 		</field>
+		<!-- Php_after_publish Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_after_publish"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AFTER_PUBLISH_HINT"
+			required="true"
+		/>
+		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
+		<!-- Source Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="source"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCE_LABEL"
+			class="btn-group btn-group-yesno"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_DUMP</option>
+		</field>
+		<!-- Php_getitems Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_getitems"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_HINT"
+			required="true"
+		/>
 		<!-- Php_import Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"

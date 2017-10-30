@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 244 of this MVC
-	@build			29th October, 2017
+	@version		@update number 247 of this MVC
+	@build			30th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -62,9 +62,6 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
                         // return to the list view that refered to this item
                         $this->referral = '&ref='.(string)$this->ref;
                 }
-
-		// Get Linked view data
-		$this->vxvlinked_components		= $this->get('Vxvlinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();
@@ -197,16 +194,6 @@ class ComponentbuilderViewAdmin_view extends JViewLegacy
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_view.css");
 		// Add Ajax Token
 		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-
-		// Add the CSS for Footable
-		$document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.standalone.min.css');
-		// Add the JavaScript for Footable (adding all funtions)
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.min.js');
-
-		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
-		$document->addScriptDeclaration($footable);
-
 		$document->addScript(JURI::root() . $this->script);
 		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_view/submitbutton.js"); 
 		// add JavaScripts

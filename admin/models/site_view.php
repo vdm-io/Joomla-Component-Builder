@@ -230,7 +230,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.site_view');
 			}
 		}
-		$this->addsite_viewsvvvy = $item->id;
+		$this->addsite_viewsvvvx = $item->id;
 
 		return $item;
 	}
@@ -240,7 +240,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVyqlinked_components()
+	public function getVyplinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -297,15 +297,15 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				}
 			}
 
-			// Filter by addsite_viewsvvvy in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addsite_viewsvvvy))
+			// Filter by addsite_viewsvvvx in this Repetable Field
+			if (ComponentbuilderHelper::checkArray($items) && isset($this->addsite_viewsvvvx))
 			{
 				foreach ($items as $nr => &$item)
 				{
 					if (isset($item->addsite_views) && ComponentbuilderHelper::checkJson($item->addsite_views))
 					{
 						$tmpArray = json_decode($item->addsite_views,true);
-						if (!isset($tmpArray['siteview']) || !ComponentbuilderHelper::checkArray($tmpArray['siteview']) || !in_array($this->addsite_viewsvvvy, $tmpArray['siteview']))
+						if (!isset($tmpArray['siteview']) || !ComponentbuilderHelper::checkArray($tmpArray['siteview']) || !in_array($this->addsite_viewsvvvx, $tmpArray['siteview']))
 						{
 							unset($items[$nr]);
 							continue;

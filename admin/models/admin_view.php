@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 244 of this MVC
-	@build			29th October, 2017
+	@version		@update number 247 of this MVC
+	@build			30th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		admin_view.php
@@ -148,16 +148,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->ajax_input = $ajax_input->toArray();
 			}
 
-			if (!empty($item->php_getitems))
+			if (!empty($item->php_after_delete))
 			{
-				// base64 Decode php_getitems.
-				$item->php_getitems = base64_decode($item->php_getitems);
-			}
-
-			if (!empty($item->php_batchmove))
-			{
-				// base64 Decode php_batchmove.
-				$item->php_batchmove = base64_decode($item->php_batchmove);
+				// base64 Decode php_after_delete.
+				$item->php_after_delete = base64_decode($item->php_after_delete);
 			}
 
 			if (!empty($item->php_save))
@@ -166,10 +160,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_save = base64_decode($item->php_save);
 			}
 
-			if (!empty($item->php_after_delete))
+			if (!empty($item->php_batchmove))
 			{
-				// base64 Decode php_after_delete.
-				$item->php_after_delete = base64_decode($item->php_after_delete);
+				// base64 Decode php_batchmove.
+				$item->php_batchmove = base64_decode($item->php_batchmove);
 			}
 
 			if (!empty($item->php_getlistquery))
@@ -188,6 +182,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_after_publish.
 				$item->php_after_publish = base64_decode($item->php_after_publish);
+			}
+
+			if (!empty($item->php_getitems))
+			{
+				// base64 Decode php_getitems.
+				$item->php_getitems = base64_decode($item->php_getitems);
 			}
 
 			if (!empty($item->php_import))
@@ -409,101 +409,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_view');
 			}
 		}
-		$this->addadmin_viewsvvvw = $item->id;
 
 		return $item;
-	}
-
-	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getVxvlinked_components()
-	{
-		// Get the user object.
-		$user = JFactory::getUser();
-		// Create a new query object.
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-
-		// Select some fields
-		$query->select('a.*');
-
-		// From the componentbuilder_joomla_component table
-		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
-
-		// Order the results by ordering
-		$query->order('a.published  ASC');
-		$query->order('a.ordering  ASC');
-
-		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$items = $db->loadObjectList();
-
-			// set values to display correctly.
-			if (ComponentbuilderHelper::checkArray($items))
-			{
-				// get user object.
-				$user = JFactory::getUser();
-				foreach ($items as $nr => &$item)
-				{
-					$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-
-			// Filter by addadmin_viewsvvvw in this Repetable Field
-			if (ComponentbuilderHelper::checkArray($items) && isset($this->addadmin_viewsvvvw))
-			{
-				foreach ($items as $nr => &$item)
-				{
-					if (isset($item->addadmin_views) && ComponentbuilderHelper::checkJson($item->addadmin_views))
-					{
-						$tmpArray = json_decode($item->addadmin_views,true);
-						if (!isset($tmpArray['adminview']) || !ComponentbuilderHelper::checkArray($tmpArray['adminview']) || !in_array($this->addadmin_viewsvvvw, $tmpArray['adminview']))
-						{
-							unset($items[$nr]);
-							continue;
-						}
-					}
-					else
-					{
-						unset($items[$nr]);
-						continue;
-					}
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return $items;
-		}
-		return false;
 	} 
 
 	/**
@@ -1357,16 +1264,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['ajax_input'] = '';
 		}
 
-		// Set the php_getitems string to base64 string.
-		if (isset($data['php_getitems']))
+		// Set the php_after_delete string to base64 string.
+		if (isset($data['php_after_delete']))
 		{
-			$data['php_getitems'] = base64_encode($data['php_getitems']);
-		}
-
-		// Set the php_batchmove string to base64 string.
-		if (isset($data['php_batchmove']))
-		{
-			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
+			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
 		}
 
 		// Set the php_save string to base64 string.
@@ -1375,10 +1276,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_save'] = base64_encode($data['php_save']);
 		}
 
-		// Set the php_after_delete string to base64 string.
-		if (isset($data['php_after_delete']))
+		// Set the php_batchmove string to base64 string.
+		if (isset($data['php_batchmove']))
 		{
-			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
+			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
 		}
 
 		// Set the php_getlistquery string to base64 string.
@@ -1397,6 +1298,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_after_publish']))
 		{
 			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
+		}
+
+		// Set the php_getitems string to base64 string.
+		if (isset($data['php_getitems']))
+		{
+			$data['php_getitems'] = base64_encode($data['php_getitems']);
 		}
 
 		// Set the php_import string to base64 string.

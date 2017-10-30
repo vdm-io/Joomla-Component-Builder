@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 244 of this MVC
-	@build			29th October, 2017
+	@version		@update number 247 of this MVC
+	@build			30th October, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		edit.php
@@ -155,18 +155,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
-
-	<?php if ($this->canDo->get('joomla_component.access')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'linked_components', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_LINKED_COMPONENTS', true)); ?>
-		<div class="row-fluid form-horizontal-desktop">
-		</div>
-		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
-				<?php echo JLayoutHelper::render('admin_view.linked_components_fullwidth', $this); ?>
-			</div>
-		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php endif; ?>
 
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'custom_import', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_IMPORT', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
