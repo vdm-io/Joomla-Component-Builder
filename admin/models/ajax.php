@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.6.0
-	@build			31st October, 2017
+	@build			1st November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -1110,7 +1110,7 @@ class ComponentbuilderModelAjax extends JModelList
 						$field[$nr] = $tmp;
 					}
 					// insure it is set to alias if needed
-					if ($value['alias'] == 1)
+					if (isset($value['alias']) && $value['alias'] == 1)
 					{
 						$field[$nr]['name'] = 'alias';
 					}
@@ -1318,7 +1318,7 @@ class ComponentbuilderModelAjax extends JModelList
 				unset($result->php_calculation);
 			}
 			// name the main var based on view
-			if ('template' === $view || 'site_view' === $view)
+			if ('template' === $view || 'site_view' === $view || 'custom_admin_view' === $view)
 			{
 				switch ($result->gettype)
 				{
@@ -1516,7 +1516,22 @@ class ComponentbuilderModelAjax extends JModelList
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true)
 				->select($db->quoteName($target['select']))
-				->from($db->quoteName('#__componentbuilder_' . $target['table']));
+				->from($db->quoteName('#__componentbuilder_' . $target['table'], 'a'));
+			if (strpos($target['name'], '->') !== false && strpos($target['name'], ':') !== false && strpos($target['name'], '.') !== false)
+			{
+				// joomla_component->id:joomla_component.system_name (example)
+				$targetJoin = explode('->', $target['name']);
+				// get keys
+				$targetKeys = explode(':', $targetJoin[1]);
+				// get table.name
+				$table_name = explode('.', $targetKeys[1]);
+				// select the correct name
+				$query->select($db->quoteName(array('c.'.$table_name[1]), array($targetJoin[0])));
+				// add some special fetch
+				$query->join('LEFT', $db->quoteName('#__componentbuilder_' . $table_name[0], 'c') . ' ON (' . $db->quoteName('a.'.$targetJoin[0]) . ' = ' . $db->quoteName('c.'.$targetKeys[0]) . ')');
+				// set the correct name
+				$target['name'] = $targetJoin[0];
+			}
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->loadRowList())
@@ -1651,18 +1666,20 @@ class ComponentbuilderModelAjax extends JModelList
 		$query['h']['not_base64'] = array();
 		$query['h']['name'] = 'name';
 
-		$query = array();
 		// #__componentbuilder_component_dashboard as i
 		$query['i'] = array();
 		$query['i']['table'] = 'component_dashboard';
 		$query['i']['view'] = 'components_dashboard';
 		$query['i']['select'] = array('id', 'joomla_component', 'php_dashboard_methods','dashboard_tab');
 		$query['i']['not_base64'] = array('dashboard_tab' => 'json');
-		$query['i']['name'] = 'joomla_component';
+		$query['i']['name'] = 'joomla_component->id:joomla_component.system_name';
 
 		// return the query string to search
 		if (isset($query[$target]))
 		{
+			// add the .a to the selection array
+			$query[$target]['select'] = array_map( function($select) { return 'a.'.$select; },$query[$target]['select']);
+			// return
 			return $query[$target];
 		}
 		return false;

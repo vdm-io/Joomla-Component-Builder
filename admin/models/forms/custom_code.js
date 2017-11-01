@@ -9,8 +9,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 86 of this MVC
-	@build			27th October, 2017
+	@version		@update number 90 of this MVC
+	@build			31st October, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		custom_code.js
@@ -330,7 +330,7 @@ function usedin(functioName, ide) {
 			} else {
 				jQuery('#usedin-'+target).hide();
 			}
-			if (target === 'h') {
+			if (target === 'i') {
 				jQuery('#loading-usedin').hide();
 				if (found) {
 					jQuery('#note-usedin-found').show();
@@ -339,7 +339,7 @@ function usedin(functioName, ide) {
 				}
 			}
 		});
-		if (run == 7) {
+		if (run == 8) {
 			clearInterval(usedinChecker);
 		}
 		run++;

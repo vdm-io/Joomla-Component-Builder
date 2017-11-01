@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.6.0
-	@build			31st October, 2017
+	@build			1st November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		scripts_left.php

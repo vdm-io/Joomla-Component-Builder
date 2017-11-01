@@ -9318,6 +9318,7 @@ class Interpretation extends Fields
 			$input = array();
 			$valueArray = array();
 			$getModel = array();
+			$userCheck = array();
 			foreach ($this->customScriptBuilder[$target]['ajax_controller'] as $view)
 			{
 				foreach ($view as $task)
@@ -9327,7 +9328,7 @@ class Interpretation extends Fields
 					$getModel[$task['task_name']] = PHP_EOL."\t\t\t\t\t\t\t\$result = \$this->getModel('ajax')->".$task['method_name']."([[[valueArray]]]);";
 					
 					// see user check is needed
-					if (!isset($task['user_check']) || 1 == $task['user_check'])
+					if (isset($task['user_check']) && 1 == $task['user_check'])
 					{
 						// add it since this means it was not set, and in the old method we assumed it was inplace
 						// or it is set and 1 means we still want it inplace

@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 86 of this MVC
-	@build			27th October, 2017
+	@version		@update number 90 of this MVC
+	@build			31st October, 2017
 	@created		11th October, 2016
 	@package		Component Builder
 	@subpackage		default_batch_body.php

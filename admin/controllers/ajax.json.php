@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.6.0
-	@build			31st October, 2017
+	@build			1st November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.json.php
@@ -773,7 +773,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
-						if($idValue && $user->id != 0)
+						if($idValue)
 						{
 							$result = $this->getModel('ajax')->getFieldOptions($idValue);
 						}
