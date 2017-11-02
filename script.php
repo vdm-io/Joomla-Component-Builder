@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.0
-	@build			1st November, 2017
+	@version		2.6.1
+	@build			2nd November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
@@ -4139,7 +4139,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.6.0 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.6.1 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

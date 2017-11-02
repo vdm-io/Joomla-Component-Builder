@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.0
-	@build			1st November, 2017
+	@version		2.6.1
+	@build			2nd November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		ajax.php
@@ -635,9 +635,9 @@ class ComponentbuilderModelAjax extends JModelList
 
 	protected $itemKeys = array(
 			// admin view
-			'field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field'),
-			'target_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field'),
-			'match_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field'),
+			'field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'target_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'match_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
 			// joomla component view
 			'siteview' => array('table' => 'site_view', 'tables' => 'site_views', 'id' => 'id', 'name' => 'name', 'text' => 'Site View'),
 			'customadminview' => array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Custom Admin View'),
@@ -664,6 +664,15 @@ class ComponentbuilderModelAjax extends JModelList
 							$this->itemNames[$this->itemKeys[$header]['table']][$item] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 							$edit = false;
 						}
+						// check if we should load a type
+						if ($edit && isset($this->itemKeys[$header]['type']) && ComponentbuilderHelper::checkArray($this->itemKeys[$header]['type']) && isset($this->itemKeys[$header]['type']['table']))
+						{
+							// get the linked value 
+							if ($_key = ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], (int) $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['type']['key']))
+							{
+								$this->itemNames[$this->itemKeys[$header]['table']][$item] .=  ' [' . ComponentbuilderHelper::getVar($this->itemKeys[$header]['type']['table'], (int) $_key,  $this->itemKeys[$header]['type']['field'], $this->itemKeys[$header]['type']['get']) .']';
+							}
+						}
 					}
 					// set edit link
 					$link = ($edit) ? $this->addEditLink($item, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables']) : '';
@@ -680,6 +689,15 @@ class ComponentbuilderModelAjax extends JModelList
 					{
 						$this->itemNames[$this->itemKeys[$header]['table']][$value] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 						$edit = false;
+					}
+					// check if we should load a type
+					if ($edit && isset($this->itemKeys[$header]['type']) && ComponentbuilderHelper::checkArray($this->itemKeys[$header]['type']) && isset($this->itemKeys[$header]['type']['table']))
+					{
+						// get the linked value 
+						if ($_key = ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], (int) $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['type']['key']))
+						{
+							$this->itemNames[$this->itemKeys[$header]['table']][$value] .=  ' [' . ComponentbuilderHelper::getVar($this->itemKeys[$header]['type']['table'], (int) $_key,  $this->itemKeys[$header]['type']['field'], $this->itemKeys[$header]['type']['get']) .']';
+						}
 					}
 				}
 				// set edit link

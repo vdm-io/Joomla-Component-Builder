@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.0
-	@build			1st November, 2017
+	@version		2.6.1
+	@build			2nd November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		import.php

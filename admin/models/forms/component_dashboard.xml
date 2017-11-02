@@ -113,7 +113,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_HINT"
-			required="true"
+			required="false"
 		/>
 		<!-- Dashboard_tab Field. Type: Subform. (joomla) -->
 		<field

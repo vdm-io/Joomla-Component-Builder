@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.0
-	@build			1st November, 2017
+	@version		2.6.1
+	@build			2nd November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		fields.php
@@ -151,8 +151,9 @@ class JFormFieldFields extends JFormFieldList
 	{
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','field_name')));
+		$query->select($db->quoteName(array('a.id','a.name','b.name'),array('id','field_name','type')));
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
+		$query->join('LEFT', '#__componentbuilder_fieldtype AS b ON b.id = a.fieldtype');
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
@@ -163,7 +164,7 @@ class JFormFieldFields extends JFormFieldList
 			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->field_name);
+				$options[] = JHtml::_('select.option', $item->id, $item->field_name . ' [' . $item->type . ']');
 			}
 		}
 		return $options;
