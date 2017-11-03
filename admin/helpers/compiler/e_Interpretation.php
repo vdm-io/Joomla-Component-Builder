@@ -3539,7 +3539,7 @@ class Interpretation extends Fields
 					$this->placeholders['[[[LIMITBOX]]]'] = '<?php echo $this->pagination->getLimitBox(); ?>';
 				}
 				$body[] = $this->setPlaceholders($view['settings']->default, $this->placeholders);
-				$body[] = PHP_EOL.'<?php if (isset($this->items) && '.$this->fileContentStatic['###component###'].'Helper::checkArray($this->items) && count($this->items) > 4): ?>';
+				$body[] = PHP_EOL.'<?php if (isset($this->items) && isset($this->pagination) && isset($this->pagination->pagesTotal) && $this->pagination->pagesTotal > 1): ?>';
 				$body[] = '<form name="adminForm" method="post">';
 				$body[] = "\t".'<div class="pagination">';
 				$body[] = "\t\t".'<?php if ($this->params->def(\'show_pagination_results\', 1)) : ?>';

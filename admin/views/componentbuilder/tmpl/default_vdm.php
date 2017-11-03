@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.6.1
-	@build			2nd November, 2017
+	@build			3rd November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_vdm.php
