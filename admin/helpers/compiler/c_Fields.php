@@ -1267,7 +1267,7 @@ class Fields extends Structure
 					$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']] = array('decode' => $set, 'type' => $type);
 				}
 				// set the uikit checker
-				if (in_array($type,$uikit))
+				if ($this->uikit && in_array($type,$uikit))
 				{
 					$this->siteFieldData['uikit'][$array['site']][$code][$array['as']][$array['key']] = $array;
 				}

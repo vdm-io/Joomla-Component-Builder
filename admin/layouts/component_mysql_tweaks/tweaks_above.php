@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		2.6.1
-	@build			3rd November, 2017
+	@build			4th November, 2017
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		tweaks_above.php

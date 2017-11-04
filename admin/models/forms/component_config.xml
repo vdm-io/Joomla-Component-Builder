@@ -112,7 +112,7 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_CONFIG_ADDCONFIG_DESCRIPTION"
 			icon="list"
 			maximum="500"
-			filter="SAFEHTML">
+			filter="ARRAY">
 			<form hidden="true" name="list_addconfig_modal" repeat="true">
 				<!-- Field Field. Type: Fields. (custom) -->
 				<field
