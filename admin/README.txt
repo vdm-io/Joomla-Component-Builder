@@ -2,7 +2,7 @@
 [![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases) [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
 
 
-This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://youtu.be/1KBBtQUxMTc)
+This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
  ![Component Builder image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/vdm-component.jpg "The Component Builder")
 
@@ -10,9 +10,9 @@ The Component Builder for [Joomla](https://extensions.joomla.org/extension/compo
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.6.x) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.6.2) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
-> Watch Quick Build of a Hello World component in [JCB on Youtube](https://youtu.be/1KBBtQUxMTc)
+> Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
 Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
@@ -112,7 +112,7 @@ Component Builder is mapped as a component in itself on my local development env
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
 + *Last Build*: 6th November, 2017
-+ *Version*: 2.6.x
++ *Version*: 2.6.2
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
 + *Line count*: **159511**
