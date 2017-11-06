@@ -8,14 +8,14 @@
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
                                                         | |                                                                 
                                                         |_| 				
-/-------------------------------------------------------------------------------------------------------------------------------/
+/----------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 17 of this MVC
-	@build			25th October, 2017
-	@created		19th May, 2015
+	@version		2.6.x
+	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_body.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
+	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	

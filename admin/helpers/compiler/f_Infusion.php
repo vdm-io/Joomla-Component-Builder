@@ -118,6 +118,27 @@ class Infusion extends Interpretation
 
 			// ###VERSION###
 			$this->fileContentStatic['###VERSION###'] = trim($this->componentData->component_version);
+			// set the actual global version
+			$this->fileContentStatic['###ACTUALVERSION###'] = $this->fileContentStatic['###VERSION###'];
+			
+			// do some Tweaks to the version based on selected options
+			if (strpos($this->fileContentStatic['###VERSION###'], '.') !== false)
+			{
+				$versionArray = explode('.', $this->fileContentStatic['###VERSION###']);
+			}			
+			// load only first two values
+			if (isset($versionArray) && ComponentbuilderHelper::checkArray($versionArray) && $this->componentData->mvc_versiondate == 2)
+			{
+				$this->fileContentStatic['###VERSION###'] = $versionArray[0] . '.' . $versionArray[1] . '.x';
+			}
+			// load only the first value
+			elseif (isset($versionArray) && ComponentbuilderHelper::checkArray($versionArray) && $this->componentData->mvc_versiondate == 3)
+			{
+				$this->fileContentStatic['###VERSION###'] = $versionArray[0]. '.x.x';
+			}
+			unset($versionArray);
+			
+			// set the global version in case			
 			$this->fileContentStatic['###VERSION###GLOBAL'] = $this->fileContentStatic['###VERSION###'];
 
 			// ###Component_name###

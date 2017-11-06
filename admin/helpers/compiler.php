@@ -298,7 +298,7 @@ class Compiler extends Infusion
 	protected function fixLicenseValues($data)
 	{
 		// check if these files have its own config data)
-		if (isset($data['config']) && ComponentbuilderHelper::checkArray($data['config']) && (!isset($this->componentData->mvc_versiondate) || $this->componentData->mvc_versiondate == 1))
+		if (isset($data['config']) && ComponentbuilderHelper::checkArray($data['config']) && $this->componentData->mvc_versiondate == 1)
 		{
 			foreach ($data['config'] as $key => $value)
 			{

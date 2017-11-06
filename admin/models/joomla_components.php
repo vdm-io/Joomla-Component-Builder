@@ -8,14 +8,14 @@
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
                                                         | |                                                                 
                                                         |_| 				
-/-------------------------------------------------------------------------------------------------------------------------------/
+/----------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 517 of this MVC
-	@build			30th October, 2017
-	@created		6th May, 2015
+	@version		2.6.x
+	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		joomla_components.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
+	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -1494,25 +1494,25 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							continue;
 						}
 
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode readme
-						$item->readme = base64_decode($item->readme);
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
+						// decode php_preflight_update
+						$item->php_preflight_update = base64_decode($item->php_preflight_update);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
 						// decode php_preflight_install
 						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
-						// decode php_preflight_update
-						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode readme
+						$item->readme = base64_decode($item->readme);
 						// decode php_helper_both
 						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_helper_admin

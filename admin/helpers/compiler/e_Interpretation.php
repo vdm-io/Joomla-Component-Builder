@@ -747,7 +747,14 @@ class Interpretation extends Fields
 
 			// update the component update table
 			$newU = array();
-			$newU['id'] = (int) $this->componentData->version_update_id;
+			if (isset($this->componentData->version_update_id) && $this->componentData->version_update_id > 0)
+			{
+				$newU['id'] = (int) $this->componentData->version_update_id;
+			}
+			else
+			{
+				$newU['joomla_component'] = (int) $this->componentID;
+			}
 			$newU['version_update'] = json_encode($buket);
 			// update the component with the new dynamic SQL
 			$modelU = ComponentbuilderHelper::getModel('component_updates');
@@ -4140,7 +4147,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL."\t\t\t".'echo \'<a target="_blank" href="'.$this->fileContentStatic['###AUTHORWEBSITE###'].'" title="'.$this->fileContentStatic['###Component_name###'].'">';
 			$script .= PHP_EOL."\t\t\t\t".'<img src="components/com_'.$this->fileContentStatic['###component###'].'/assets/images/vdm-component.'.$this->componentImageType.'"/>';
 			$script .= PHP_EOL."\t\t\t\t".'</a>';
-			$script .= PHP_EOL."\t\t\t\t<h3>Upgrade to Version ".$this->fileContentStatic['###VERSION###']." Was Successful! Let us know if anything is not working as expected.</h3>';";
+			$script .= PHP_EOL."\t\t\t\t<h3>Upgrade to Version ".$this->fileContentStatic['###ACTUALVERSION###']." Was Successful! Let us know if anything is not working as expected.</h3>';";
 		}
 
 		if (ComponentbuilderHelper::checkString($script))

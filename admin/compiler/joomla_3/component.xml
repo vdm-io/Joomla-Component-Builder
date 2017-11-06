@@ -7,9 +7,9 @@
 	<authorUrl>###AUTHORWEBSITE###</authorUrl>
 	<copyright>###COPYRIGHT###</copyright>
 	<license>###LICENSE###</license>
-	<version>###VERSION###</version>
+	<version>###ACTUALVERSION###</version>
 	<description><![CDATA[
-		<h1>###Component_name### (v.###VERSION###)</h1>
+		<h1>###Component_name### (v.###ACTUALVERSION###)</h1>
 		<div style="clear: both;"></div>
 		<p>###DESCRIPTION###</p>
 		<p>Created by <a href="###AUTHORWEBSITE###" target="_blank">###AUTHOR###</a><br /><small>Development started ###CREATIONDATE###</small></p>
