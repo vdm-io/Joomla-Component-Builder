@@ -103,7 +103,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_LANGUAGE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_LANGUAGE_NAME_HINT"
 		/>
 		<!-- Langtag Field. Type: Text. (joomla) -->
@@ -116,7 +116,7 @@
 			description="COM_COMPONENTBUILDER_LANGUAGE_LANGTAG_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
-			message="Error! Please add language tag here."
+			message="COM_COMPONENTBUILDER_LANGUAGE_LANGTAG_MESSAGE"
 			hint="COM_COMPONENTBUILDER_LANGUAGE_LANGTAG_HINT"
 		/>
 	</fieldset>

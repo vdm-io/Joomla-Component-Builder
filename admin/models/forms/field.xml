@@ -103,7 +103,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_FIELD_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELD_NAME_HINT"
 		/>
 		<!-- Fieldtype Field. Type: Fieldtypes. (custom) -->
@@ -201,7 +201,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add other data length/values here."
+			message="COM_COMPONENTBUILDER_FIELD_DATALENGHT_OTHER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELD_DATALENGHT_OTHER_HINT"
 		/>
 		<!-- Datadefault Field. Type: List. (joomla) -->
@@ -253,7 +253,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add other default here."
+			message="COM_COMPONENTBUILDER_FIELD_DATADEFAULT_OTHER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELD_DATADEFAULT_OTHER_HINT"
 		/>
 		<!-- Note_filter_information Field. Type: Note. A None Database Field. (joomla) -->

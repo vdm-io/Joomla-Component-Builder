@@ -103,7 +103,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_DYNAMIC_GET_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_NAME_HINT"
 		/>
 		<!-- Main_source Field. Type: List. (joomla) -->
@@ -262,7 +262,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add state key here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_STATE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_STATE_KEY_HINT"
 				/>
 				<!-- Operator Field. Type: List. (joomla) -->
@@ -313,7 +313,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add table key here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
 				/>
 			</form>
@@ -351,7 +351,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add table key here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
 				/>
 				<!-- Operator Field. Type: List. (joomla) -->
@@ -402,7 +402,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add value key here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_VALUE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_VALUE_KEY_HINT"
 				/>
 			</form>
@@ -445,7 +445,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add table key here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
 				/>
 				<!-- Direction Field. Type: List. (joomla) -->
@@ -499,7 +499,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add variable name here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_NAME_HINT"
 				/>
 				<!-- Key Field. Type: Text. (joomla) -->
@@ -515,7 +515,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add table as name here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_KEY_HINT"
 				/>
 				<!-- As Field. Type: List. (joomla) -->
@@ -852,7 +852,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add field name here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_HINT"
 				/>
 				<!-- Operator Field. Type: List. (joomla) -->
@@ -903,7 +903,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add field name here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_HINT"
 				/>
 				<!-- Selection Field. Type: Textarea. (joomla) -->
@@ -1014,7 +1014,7 @@
 			disabled="false"
 			required="true"
 			filter="WORD"
-			message="Error! Please add method name here."
+			message="COM_COMPONENTBUILDER_DYNAMIC_GET_GETCUSTOM_MESSAGE"
 			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_GETCUSTOM_HINT"
 		/>
 		<!-- Php_before_getitems Field. Type: Textarea. (joomla) -->
@@ -1253,7 +1253,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add field name here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_HINT"
 				/>
 				<!-- Operator Field. Type: List. (joomla) -->
@@ -1304,7 +1304,7 @@
 					disabled="false"
 					required="false"
 					filter="CMD"
-					message="Error! Please add field name here."
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_HINT"
 				/>
 				<!-- Selection Field. Type: Textarea. (joomla) -->

@@ -521,7 +521,7 @@
 			disabled="false"
 			required="false"
 			filter="PATH"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_HINT"
 		/>		
 		<!-- Backup_email Field. Type: Text. (joomla) -->
@@ -535,7 +535,7 @@
 			class="text_area"
 			filter="STRING"
 			validate="email"
-			message="Error! Please add email address here."
+			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_HINT"
 		/>		
 		<!-- Package_name_plaeholders Field. Type: Note. A None Database Field. (joomla) -->
@@ -554,7 +554,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_HINT"
 		/>
 	</fieldset>
@@ -577,7 +577,7 @@
 			disabled="false"
 			required="false"
 			filter="PATH"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_HINT"
 		/>		
 		<!-- Note_custom_folder_path Field. Type: Note. A None Database Field. (joomla) -->
@@ -595,7 +595,7 @@
 			disabled="false"
 			required="false"
 			filter="PATH"
-			message="Error! Please add folder path here."
+			message="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_HINT"
 		/>		
 		<!-- Note_backup_folder_path Field. Type: Note. A None Database Field. (joomla) -->
@@ -613,7 +613,7 @@
 			disabled="false"
 			required="false"
 			filter="PATH"
-			message="Error! Please add folder path here."
+			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_HINT"
 		/>		
 		<!-- Note_git_folder_path Field. Type: Note. A None Database Field. (joomla) -->
@@ -631,7 +631,7 @@
 			disabled="false"
 			required="false"
 			filter="PATH"
-			message="Error! Please add folder path here."
+			message="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_HINT"
 		/>
 	</fieldset>
@@ -652,7 +652,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add company name here."
+			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_HINT"
 		/>		
 		<!-- Export_owner Field. Type: Text. (joomla) -->
@@ -668,7 +668,7 @@
 			disabled="false"
 			required="true"
 			filter="HTML"
-			message="Error! Please add owner name here."
+			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_HINT"
 		/>		
 		<!-- Export_email Field. Type: Text. (joomla) -->
@@ -683,7 +683,7 @@
 			required="true"
 			filter="STRING"
 			validate="email"
-			message="Error! Please email address here."
+			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_HINT"
 		/>		
 		<!-- Export_website Field. Type: Url. (joomla) -->
@@ -698,7 +698,7 @@
 			required="true"
 			filter="url"
 			validated="url"
-			message="Error! Please add website here."
+			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_HINT"
 		/>		
 		<!-- Export_license Field. Type: Textarea. (joomla) -->
@@ -741,7 +741,7 @@
 			required="false"
 			filter="url"
 			validated="url"
-			message="Error! Please add link here."
+			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_HINT"
 		/>
 	</fieldset>

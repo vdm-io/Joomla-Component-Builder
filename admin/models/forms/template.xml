@@ -103,7 +103,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_TEMPLATE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_TEMPLATE_NAME_HINT"
 		/>
 		<!-- Alias Field. Type: Text. (joomla) -->
@@ -116,7 +116,7 @@
 			description="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_DESCRIPTION"
 			class="text_area"
 			filter="CMD"
-			message="Error! Please add name in code here."
+			message="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_MESSAGE"
 			hint="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_HINT"
 		/>
 		<!-- Description Field. Type: Text. (joomla) -->
@@ -132,7 +132,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add description here."
+			message="COM_COMPONENTBUILDER_TEMPLATE_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_TEMPLATE_DESCRIPTION_HINT"
 		/>
 		<!-- Snippet Field. Type: Snippets. (custom) -->

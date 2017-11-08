@@ -1345,10 +1345,10 @@ class Interpretation extends Fields
 			$xml .= PHP_EOL."\t".'</layout>';
 			if (isset($this->hasIdRequest[$view['settings']->code]) || isset($this->hasCatIdRequest[$view['settings']->code]))
 			{
-				
 				$xml .= PHP_EOL."\t".'<!--'.$this->setLine(__LINE__).' Add fields to the request variables for the layout. -->';
 				$xml .= PHP_EOL."\t".'<fields name="request">';
 				$xml .= PHP_EOL."\t\t".'<fieldset name="request"';
+				$xml .= PHP_EOL."\t\t\t".'addrulepath="/administrator/components/com_'.$this->fileContentStatic['###component###'].'/models/rules"';
 				$xml .= PHP_EOL."\t\t\t".'addfieldpath="/administrator/components/com_'.$this->fileContentStatic['###component###'].'/models/fields">';
 				if (isset($this->hasIdRequest[$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->hasIdRequest[$view['settings']->code]))
 				{
@@ -1376,7 +1376,9 @@ class Interpretation extends Fields
 				{
 					$xml .= PHP_EOL."\t".'<!--'.$this->setLine(__LINE__).' Adding page parameters -->';
 					$xml .= PHP_EOL."\t".'<fields name="params">';
-					$xml .= PHP_EOL."\t\t".'<fieldset name="basic" label="COM_'.$this->fileContentStatic['###COMPONENT###'].'">';
+					$xml .= PHP_EOL."\t\t".'<fieldset name="basic" label="COM_'.$this->fileContentStatic['###COMPONENT###'].'"';
+					$xml .= PHP_EOL."\t\t\t".'addrulepath="/administrator/components/com_'.$this->fileContentStatic['###component###'].'/models/rules"';
+					$xml .= PHP_EOL."\t\t\t".'addfieldpath="/administrator/components/com_'.$this->fileContentStatic['###component###'].'/models/fields">';
 					$xml .= implode("\t\t\t",$params);
 					$xml .= PHP_EOL."\t\t".'</fieldset>';
 					$xml .= PHP_EOL."\t".'</fields>';

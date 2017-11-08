@@ -118,7 +118,7 @@
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_HINT"
 		/>
 		<!-- Name_code Field. Type: Text. (joomla) -->
@@ -132,7 +132,7 @@
 			class="text_area"
 			required="true"
 			filter="CMD"
-			message="Error! Please add name in code here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_CODE_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_CODE_HINT"
 		/>
 		<!-- Component_version Field. Type: Text. (joomla) -->
@@ -147,7 +147,7 @@
 			class="text_area"
 			required="true"
 			filter="CMD"
-			message="Error! Please add version here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_HINT"
 		/>
 		<!-- Short_description Field. Type: Text. (joomla) -->
@@ -161,7 +161,7 @@
 			class="text_area"
 			required="true"
 			filter="HTML"
-			message="Error! Please add some short description here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SHORT_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SHORT_DESCRIPTION_HINT"
 		/>
 		<!-- Companyname Field. Type: Text. (joomla) -->
@@ -177,7 +177,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add company name here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_HINT"
 		/>
 		<!-- Author Field. Type: Text. (joomla) -->
@@ -193,7 +193,7 @@
 			disabled="false"
 			required="true"
 			filter="HTML"
-			message="Error! Please add author name here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_HINT"
 		/>
 		<!-- Add_update_server Field. Type: Radio. (joomla) -->
@@ -433,7 +433,7 @@
 			required="true"
 			filter="STRING"
 			validate="email"
-			message="Error! Please author email address here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_HINT"
 		/>
 		<!-- Add_php_helper_both Field. Type: Radio. (joomla) -->
@@ -462,7 +462,7 @@
 			required="true"
 			filter="url"
 			validated="url"
-			message="Error! Please add website here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_HINT"
 		/>
 		<!-- Add_admin_event Field. Type: Radio. (joomla) -->
@@ -568,7 +568,7 @@
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_KEY_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
-			message="Error! Please add some secret key here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_KEY_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_KEY_HINT"
 		/>
 		<!-- Php_postflight_install Field. Type: Textarea. (joomla) -->
@@ -595,7 +595,7 @@
 			class="text_area"
 			filter="url"
 			validated="url"
-			message="Error! Please add website here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_URL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_URL_HINT"
 		/>
 		<!-- Php_method_uninstall Field. Type: Textarea. (joomla) -->
@@ -697,7 +697,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add component name here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_HINT"
 		/>
 		<!-- Buildcomp Field. Type: Radio. (joomla) -->
@@ -936,7 +936,7 @@
 			class="text_area"
 			required="false"
 			filter="STRING"
-			message="Error! Please add export key here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_KEY_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_KEY_HINT"
 		/>
 		<!-- Add_php_postflight_update Field. Type: Radio. (joomla) -->
@@ -965,7 +965,7 @@
 			required="false"
 			filter="url"
 			validated="url"
-			message="Error! Please add link here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_PACKAGE_LINK_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_PACKAGE_LINK_HINT"
 		/>
 		<!-- Add_php_method_uninstall Field. Type: Radio. (joomla) -->
@@ -994,7 +994,7 @@
 			required="false"
 			filter="url"
 			validated="url"
-			message="Error! Please add link here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_BUY_LINK_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_BUY_LINK_HINT"
 		/>
 		<!-- Add_sql Field. Type: Radio. (joomla) -->
@@ -1054,7 +1054,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add name here."
+					message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_HINT"
 				/>
 				<!-- Title Field. Type: Text. (joomla) -->
@@ -1070,7 +1070,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add some text here."
+					message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TITLE_MESSAGE"
 					hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TITLE_HINT"
 				/>
 				<!-- Email Field. Type: Text. (joomla) -->
@@ -1085,7 +1085,7 @@
 					required="false"
 					filter="STRING"
 					validate="email"
-					message="Error! Please add email address here."
+					message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_MESSAGE"
 					hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_HINT"
 				/>
 				<!-- Website Field. Type: Url. (joomla) -->
@@ -1100,7 +1100,7 @@
 					required="false"
 					filter="url"
 					validated="url"
-					message="Error! Please add website here."
+					message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_MESSAGE"
 					hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_HINT"
 				/>
 				<!-- Use Field. Type: List. (joomla) -->
@@ -1154,7 +1154,7 @@
 			class="text_area span12"
 			filter="url"
 			validated="url"
-			message="Error! Please add url here."
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_HINT"
 		/>
 		<!-- Emptycontributors Field. Type: Radio. (joomla) -->

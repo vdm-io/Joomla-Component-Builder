@@ -139,7 +139,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add name here."
+					message="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NAME_HINT"
 				/>
 				<!-- Header Field. Type: Text. (joomla) -->
@@ -155,7 +155,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add header here."
+					message="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HEADER_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HEADER_HINT"
 				/>
 				<!-- Html Field. Type: Textarea. (joomla) -->

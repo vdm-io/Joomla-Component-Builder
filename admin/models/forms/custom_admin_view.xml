@@ -100,7 +100,7 @@
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_HINT"
 		/>
 		<!-- Name Field. Type: Text. (joomla) -->
@@ -116,7 +116,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_HINT"
 		/>
 		<!-- Codename Field. Type: Text. (joomla) -->
@@ -129,7 +129,7 @@
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_DESCRIPTION"
 			class="text_area"
 			filter="CMD"
-			message="Error! Please add name in code here."
+			message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_HINT"
 		/>
 		<!-- Description Field. Type: Text. (joomla) -->
@@ -145,7 +145,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add description here."
+			message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DESCRIPTION_HINT"
 		/>
 		<!-- Snippet Field. Type: Snippets. (custom) -->
@@ -889,7 +889,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add name here."
+					message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_HINT"
 				/>
 				<!-- Method Field. Type: Text. (joomla) -->
@@ -903,7 +903,7 @@
 					class="text_area"
 					required="false"
 					filter="CMD"
-					message="Error! Please add controller method name here."
+					message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_HINT"
 				/>
 				<!-- Target Field. Type: List. (joomla) -->

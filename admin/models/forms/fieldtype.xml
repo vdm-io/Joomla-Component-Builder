@@ -103,7 +103,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_FIELDTYPE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
 		/>
 		<!-- Note_on_fields Field. Type: Note. A None Database Field. (joomla) -->
@@ -140,7 +140,7 @@
 			class="text_area"
 			required="true"
 			filter="HTML"
-			message="Error! Please add some short description here."
+			message="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_HINT"
 		/>
 		<!-- Properties Field. Type: Subform. (joomla) -->
@@ -167,7 +167,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add name here."
+					message="COM_COMPONENTBUILDER_FIELDTYPE_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
 				/>
 				<!-- Example Field. Type: Text. (joomla) -->
@@ -182,7 +182,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add value/example here."
+					message="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_MESSAGE"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_HINT"
 				/>
 				<!-- Adjustable Field. Type: Checkbox. (joomla) -->

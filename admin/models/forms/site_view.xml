@@ -100,7 +100,7 @@
 			description="COM_COMPONENTBUILDER_SITE_VIEW_SYSTEM_NAME_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_SITE_VIEW_SYSTEM_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SITE_VIEW_SYSTEM_NAME_HINT"
 		/>
 		<!-- Name Field. Type: Text. (joomla) -->
@@ -116,7 +116,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_SITE_VIEW_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SITE_VIEW_NAME_HINT"
 		/>
 		<!-- Codename Field. Type: Text. (joomla) -->
@@ -129,7 +129,7 @@
 			description="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_DESCRIPTION"
 			class="text_area"
 			filter="CMD"
-			message="Error! Please add name in code here."
+			message="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_HINT"
 		/>
 		<!-- Description Field. Type: Text. (joomla) -->
@@ -145,7 +145,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add description here."
+			message="COM_COMPONENTBUILDER_SITE_VIEW_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SITE_VIEW_DESCRIPTION_HINT"
 		/>
 		<!-- Snippet Field. Type: Snippets. (custom) -->
@@ -425,7 +425,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add value name here."
+					message="COM_COMPONENTBUILDER_SITE_VIEW_VALUE_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_VALUE_NAME_HINT"
 				/>
 				<!-- Task_name Field. Type: Text. (joomla) -->
@@ -441,7 +441,7 @@
 					disabled="false"
 					required="false"
 					filter="WORD"
-					message="Error! Please add task name here."
+					message="COM_COMPONENTBUILDER_SITE_VIEW_TASK_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_TASK_NAME_HINT"
 				/>
 				<!-- Input_default Field. Type: Text. (joomla) -->
@@ -458,7 +458,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add default input value here."
+					message="COM_COMPONENTBUILDER_SITE_VIEW_INPUT_DEFAULT_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_INPUT_DEFAULT_HINT"
 				/>
 				<!-- Input_filter Field. Type: List. (joomla) -->
@@ -518,7 +518,7 @@
 					disabled="false"
 					required="false"
 					filter="WORD"
-					message="Error! Please add method name here."
+					message="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_NAME_HINT"
 				/>
 				<!-- User_check Field. Type: Checkbox. (joomla) -->
@@ -1041,7 +1041,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add name here."
+					message="COM_COMPONENTBUILDER_SITE_VIEW_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_NAME_HINT"
 				/>
 				<!-- Method Field. Type: Text. (joomla) -->
@@ -1055,7 +1055,7 @@
 					class="text_area"
 					required="false"
 					filter="CMD"
-					message="Error! Please add controller method name here."
+					message="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_HINT"
 				/>
 				<!-- Target Field. Type: List. (joomla) -->

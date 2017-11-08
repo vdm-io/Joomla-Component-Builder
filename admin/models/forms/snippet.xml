@@ -103,7 +103,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_SNIPPET_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SNIPPET_NAME_HINT"
 		/>
 		<!-- Url Field. Type: Url. (joomla) -->
@@ -118,7 +118,7 @@
 			required="true"
 			filter="url"
 			validated="url"
-			message="Error! Please add url here."
+			message="COM_COMPONENTBUILDER_SNIPPET_URL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SNIPPET_URL_HINT"
 		/>
 		<!-- Type Field. Type: List. (joomla) -->
@@ -156,7 +156,7 @@
 			class="text_area"
 			required="true"
 			filter="HTML"
-			message="Error! Please add some short heading here."
+			message="COM_COMPONENTBUILDER_SNIPPET_HEADING_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SNIPPET_HEADING_HINT"
 		/>
 		<!-- Description Field. Type: Textarea. (joomla) -->

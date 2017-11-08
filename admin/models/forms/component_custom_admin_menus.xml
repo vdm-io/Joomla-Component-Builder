@@ -125,7 +125,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add name here."
+					message="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_HINT"
 				/>
 				<!-- Name_code Field. Type: Text. (joomla) -->
@@ -139,7 +139,7 @@
 					class="text_area"
 					required="false"
 					filter="CMD"
-					message="Error! Please add name in code here."
+					message="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_CODE_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_CODE_HINT"
 				/>
 				<!-- Link Field. Type: Text. (joomla) -->
@@ -155,7 +155,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add menu link."
+					message="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_LINK_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_LINK_HINT"
 				/>
 				<!-- Icon Field. Type: Filelist. (joomla) -->

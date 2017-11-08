@@ -153,7 +153,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add tab name here."
+					message="COM_COMPONENTBUILDER_COMPONENT_CONFIG_TABNAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_CONFIG_TABNAME_HINT"
 				/>
 			</form>

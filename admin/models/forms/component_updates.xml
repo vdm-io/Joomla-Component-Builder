@@ -126,7 +126,7 @@
 					disabled="false"
 					required="false"
 					filter="STRING"
-					message="Error! Please add some text here."
+					message="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_HINT"
 				/>
 				<!-- Mysql Field. Type: Textarea. (joomla) -->
@@ -154,7 +154,7 @@
 					required="false"
 					filter="raw"
 					validated="url"
-					message="Error! Please add url here."
+					message="COM_COMPONENTBUILDER_COMPONENT_UPDATES_URL_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_UPDATES_URL_HINT"
 				/>
 			</form>

@@ -113,7 +113,7 @@
 			class="text_area span12"
 			required="true"
 			filter="PATH"
-			message="Error! Please add target path."
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_HINT"
 		/>
 		<!-- Target Field. Type: Radio. (joomla) -->
@@ -170,7 +170,7 @@
 			class="text_area"
 			readonly="true"
 			filter="STRING"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_HINT"
 		/>
 		<!-- Code Field. Type: Textarea. (joomla) -->
@@ -197,7 +197,7 @@
 			class="text_area"
 			readonly="true"
 			filter="STRING"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHENDTARGET_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHENDTARGET_HINT"
 		/>
 		<!-- To_line Field. Type: Text. (joomla) -->
@@ -210,7 +210,7 @@
 			description="COM_COMPONENTBUILDER_CUSTOM_CODE_TO_LINE_DESCRIPTION"
 			class="text_area"
 			filter="FLOAT"
-			message="Error! Please add line number here."
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_TO_LINE_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_TO_LINE_HINT"
 			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
 		/>
@@ -236,7 +236,7 @@
 			description="COM_COMPONENTBUILDER_CUSTOM_CODE_FROM_LINE_DESCRIPTION"
 			class="text_area"
 			filter="FLOAT"
-			message="Error! Please add amount paid here."
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_FROM_LINE_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_FROM_LINE_HINT"
 			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
 		/>
@@ -250,7 +250,7 @@
 			description="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_HINT"
 		/>
 		<!-- Note_jcb_placeholder Field. Type: Note. A None Database Field. (joomla) -->

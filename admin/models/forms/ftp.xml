@@ -103,7 +103,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_COMPONENTBUILDER_FTP_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FTP_NAME_HINT"
 		/>
 		<!-- Note_ftp_signature Field. Type: Note. A None Database Field. (joomla) -->
@@ -119,7 +119,7 @@
 			class="text_area span12"
 			required="true"
 			filter="STRING"
-			message="Error! Please add some text here."
+			message="COM_COMPONENTBUILDER_FTP_SIGNATURE_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FTP_SIGNATURE_HINT"
 			autocomplete="off"
 		/>

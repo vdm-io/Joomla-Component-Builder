@@ -142,7 +142,7 @@
 					disabled="false"
 					required="false"
 					filter="PATH"
-					message="Error! Please add target path."
+					message="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_PATH_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_PATH_HINT"
 				/>
 				<!-- Notnew Field. Type: Checkbox. (joomla) -->
@@ -193,7 +193,7 @@
 					disabled="false"
 					required="false"
 					filter="PATH"
-					message="Error! Please add target path."
+					message="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_PATH_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_PATH_HINT"
 				/>
 				<!-- Rename Field. Type: Checkbox. (joomla) -->

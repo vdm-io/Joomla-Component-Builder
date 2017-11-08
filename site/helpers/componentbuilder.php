@@ -94,7 +94,7 @@ abstract class ComponentbuilderHelper
 		// load this for all
 		jimport('joomla.application');
 	}
-	
+			
 	/**
 	 * Remove folders with files
 	 * 
@@ -160,7 +160,7 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-
+			
 	/**
 	* 	The dynamic builder of views, tables and fields
 	**/
@@ -169,10 +169,16 @@ abstract class ComponentbuilderHelper
 		self::autoLoader('extrusion');
 		$extruder = new Extrusion($data);
 	}
-
+			
 	/**
-	* 	The zipper method
-	**/
+	 * The zipper method
+	 * 
+	 * @param  string   $workingDIR    The directory where the items must be zipped
+	 * @param  string   $filepath          The path to where the zip file must be placed
+	 *
+	 * @return  bool true   On success
+	 * 
+	 */
 	public static function zip($workingDIR, &$filepath)
 	{
 		// store the current joomla working directory
@@ -213,30 +219,40 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-
+			
+			
 	/**
-	* 	Create file and write data to the file
-	**/
+	 * Write a file to the server
+	 * 
+	 * @param  string   $path    The path and file name where to safe the data
+	 * @param  string   $data    The data to safe
+	 *
+	 * @return  bool true   On success
+	 * 
+	 */
 	public static function writeFile($path, $data)
 	{
 		$klaar = false;
-		// open the file
-		$fh = fopen($path, "w");
-		if (!is_resource($fh))
+		if (self::checkString($data))
 		{
-			return $klaar;
+			// open the file
+			$fh = fopen($path, "w");
+			if (!is_resource($fh))
+			{
+				return $klaar;
+			}
+			// write to the file
+			if (fwrite($fh, $data))
+			{
+				// has been done
+				$klaar = true;
+			}
+			// close file.
+			fclose($fh);
 		}
-		// write to the file
-		if (fwrite($fh, $data))
-		{
-			// has been done
-			$klaar = true;
-		}
-		// close file.
-		fclose($fh);
 		return $klaar;
 	}
-	
+				
 	public static function getFieldOptions($value, $type, $settings = array())
 	{
 		// Get a db connection.
@@ -1157,8 +1173,7 @@ abstract class ComponentbuilderHelper
 		}
 		return self::$localSession[$key];
 	}
-			 
-
+			
 	/**
 	* 	check if it is a new hash
 	**/
@@ -1186,12 +1201,12 @@ abstract class ComponentbuilderHelper
 	/**
 	 * Get the file path or url
 	 * 
-	 * @param  string   $type                  The (url/path) type to return
-	 * @param  string   $target                The Params Target name (if set)
-	 * @param  string   $fileType             The kind of filename to generate (if not set no file name is generated)
-	 * @param  string   $key                   The key to adjust the filename (if not set ignored)
-	 * @param  string   $default              The default path if not set in Params (fallback path)
-	 * @param  bool     $createIfNotSet   The switch to create the folder if not found
+	 * @param  string   $type              The (url/path) type to return
+	 * @param  string   $target            The Params Target name (if set)
+	 * @param  string   $fileType          The kind of filename to generate (if not set no file name is generated)
+	 * @param  string   $key               The key to adjust the filename (if not set ignored)
+	 * @param  string   $default           The default path if not set in Params (fallback path)
+	 * @param  bool     $createIfNotSet    The switch to create the folder if not found
 	 *
 	 * @return  string    On success the path or url is returned based on the type requested
 	 * 
@@ -1207,7 +1222,7 @@ abstract class ComponentbuilderHelper
 		// check the file path (revert to default only of not a hidden file path)
 		if ('hiddenfilepath' !== $target && strpos($filePath, JPATH_SITE) === false)
 		{
-			$filePath = JPATH_SITE . '/images/';
+			$filePath = $default;
 		}
 		jimport('joomla.filesystem.folder');
 		// create the folder if it does not exist
@@ -1217,24 +1232,29 @@ abstract class ComponentbuilderHelper
 		}
 		// setup the file name
 		$fileName = '';
+		// Get basic key
+		$basickey = 'Th!s_iS_n0t_sAfe_buT_b3tter_then_n0thiug';
+		if (method_exists(get_called_class(), "getCryptKey")) 
+		{
+			$basickey = self::getCryptKey('basic', $basickey);
+		}
+		// check the key
+		if (!self::checkString($key))
+		{
+			$key = 'vDm';
+		}
+		// set the file name
 		if (self::checkString($fileType))
 		{
-			// Get basic key
-			$basickey = 'Th!s_iS_n0t_sAfe_buT_b3tter_then_n0thiug';
-			if (method_exists(get_called_class(), "getCryptKey")) 
-			{
-				$basickey = self::getCryptKey('basic', $basickey);
-			}
-			// check the key
-			if (self::checkString($key))
-			{
-				$key = 'vDm';
-			}
 			// set the name
 			$fileName = trim(md5($type.$target.$basickey.$key) . '.' . trim($fileType, '.'));
 		}
+		else
+		{
+			$fileName = trim(md5($type.$target.$basickey.$key)) . '.txt';
+		}
 		// return the url
-		if ($type === 'url')
+		if ('url' === $type)
 		{
 			if (strpos($filePath, JPATH_SITE) !== false)
 			{
@@ -1246,7 +1266,8 @@ abstract class ComponentbuilderHelper
 		}
 		// sanitize the path
 		return '/' . trim( $filePath, '/' ) . '/' . $fileName;
-	}			 
+	}
+			 
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{

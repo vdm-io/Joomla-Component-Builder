@@ -103,7 +103,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add title here."
+			message="COM_COMPONENTBUILDER_HELP_DOCUMENT_TITLE_MESSAGE"
 			hint="COM_COMPONENTBUILDER_HELP_DOCUMENT_TITLE_HINT"
 		/>
 		<!-- Type Field. Type: List. (joomla) -->
@@ -226,7 +226,7 @@
 			required="true"
 			filter="url"
 			validated="url"
-			message="Error! Please add url here."
+			message="COM_COMPONENTBUILDER_HELP_DOCUMENT_URL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_HELP_DOCUMENT_URL_HINT"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
