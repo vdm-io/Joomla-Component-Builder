@@ -1233,7 +1233,27 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	**/
 	protected function prepItem($item, &$type, $action)
 	{
-		// actions to effect both
+		// remove access
+		if (isset($item->access))
+		{
+			unset($item->access);
+		}
+		// remove metadata
+		if (isset($item->metadata))
+		{
+			unset($item->metadata);
+		}
+		// remove metadesc
+		if (isset($item->metadesc))
+		{
+			unset($item->metadesc);
+		}
+		// remove metakey
+		if (isset($item->metakey))
+		{
+			unset($item->metakey);
+		}
+		// actions to effect all
 		if (isset($item->asset_id))
 		{
 			unset($item->asset_id);
