@@ -113,7 +113,9 @@ class ComponentbuilderController extends JControllerLegacy
 				'component_custom_admin_menus' => 'components_custom_admin_menus',
 				'component_config' => 'components_config',
 				'component_dashboard' => 'components_dashboard',
-				'component_files_folders' => 'components_files_folders'
+				'component_files_folders' => 'components_files_folders',
+				'snippet_type' => 'snippet_types',
+				'library' => 'libraries'
                                 );
                         // check if this is a list view
                         if (in_array($view,$views))

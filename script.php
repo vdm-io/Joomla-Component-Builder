@@ -2466,6 +2466,178 @@ class com_componentbuilderInstallerScript
 			}
 		}
 
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Snippet_type alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet_type') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$snippet_type_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($snippet_type_found)
+		{
+			// Since there are load the needed  snippet_type type ids
+			$snippet_type_ids = $db->loadColumn();
+			// Remove Snippet_type from the content type table
+			$snippet_type_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($snippet_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Snippet_type items
+			$snippet_type_done = $db->execute();
+			if ($snippet_type_done);
+			{
+				// If succesfully remove Snippet_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Snippet_type items from the contentitem tag map table
+			$snippet_type_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($snippet_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Snippet_type items
+			$snippet_type_done = $db->execute();
+			if ($snippet_type_done);
+			{
+				// If succesfully remove Snippet_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Snippet_type items from the ucm content table
+			$snippet_type_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.snippet_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($snippet_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Snippet_type items
+			$snippet_type_done = $db->execute();
+			if ($snippet_type_done);
+			{
+				// If succesfully remove Snippet_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Snippet_type items are cleared from DB
+			foreach ($snippet_type_ids as $snippet_type_id)
+			{
+				// Remove Snippet_type items from the ucm base table
+				$snippet_type_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $snippet_type_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($snippet_type_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Snippet_type items
+				$db->execute();
+
+				// Remove Snippet_type items from the ucm history table
+				$snippet_type_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $snippet_type_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($snippet_type_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Snippet_type items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Library alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$library_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($library_found)
+		{
+			// Since there are load the needed  library type ids
+			$library_ids = $db->loadColumn();
+			// Remove Library from the content type table
+			$library_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($library_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Library items
+			$library_done = $db->execute();
+			if ($library_done);
+			{
+				// If succesfully remove Library add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Library items from the contentitem tag map table
+			$library_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($library_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Library items
+			$library_done = $db->execute();
+			if ($library_done);
+			{
+				// If succesfully remove Library add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Library items from the ucm content table
+			$library_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.library') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($library_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Library items
+			$library_done = $db->execute();
+			if ($library_done);
+			{
+				// If succesfully remove Library add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Library items are cleared from DB
+			foreach ($library_ids as $library_id)
+			{
+				// Remove Library items from the ucm base table
+				$library_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $library_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($library_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Library items
+				$db->execute();
+
+				// Remove Library items from the ucm history table
+				$library_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $library_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($library_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Library items
+				$db->execute();
+			}
+		}
+
 		// If All related items was removed queued success message.
 		$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_base</b> table'));
 		$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_history</b> table'));
@@ -2478,8 +2650,8 @@ class com_componentbuilderInstallerScript
 		$query->delete($db->quoteName('#__assets'));
 		$query->where($componentbuilder_condition);
 		$db->setQuery($query);
-		$component_files_folders_done = $db->execute();
-		if ($component_files_folders_done);
+		$library_done = $db->execute();
+		if ($library_done);
 		{
 			// If succesfully remove componentbuilder add queued success message.
 			$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));
@@ -2958,9 +3130,9 @@ class com_componentbuilderInstallerScript
 			$snippet->type_title = 'Componentbuilder Snippet';
 			$snippet->type_alias = 'com_componentbuilder.snippet';
 			$snippet->table = '{"special": {"dbtable": "#__componentbuilder_snippet","key": "id","type": "Snippet","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","description":"description","usage":"usage","snippet":"snippet"}}';
+			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","library":"library","description":"description","snippet":"snippet","usage":"usage"}}';
 			$snippet->router = 'ComponentbuilderHelperRoute::getSnippetRoute';
-			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_snippet_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$snippet_Inserted = $db->insertObject('#__content_types', $snippet);
@@ -3192,6 +3364,30 @@ class com_componentbuilderInstallerScript
 
 			// Set the object into the content types table.
 			$component_files_folders_Inserted = $db->insertObject('#__content_types', $component_files_folders);
+
+			// Create the snippet_type content type object.
+			$snippet_type = new stdClass();
+			$snippet_type->type_title = 'Componentbuilder Snippet_type';
+			$snippet_type->type_alias = 'com_componentbuilder.snippet_type';
+			$snippet_type->table = '{"special": {"dbtable": "#__componentbuilder_snippet_type","key": "id","type": "Snippet_type","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$snippet_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description"}}';
+			$snippet_type->router = 'ComponentbuilderHelperRoute::getSnippet_typeRoute';
+			$snippet_type->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$snippet_type_Inserted = $db->insertObject('#__content_types', $snippet_type);
+
+			// Create the library content type object.
+			$library = new stdClass();
+			$library->type_title = 'Componentbuilder Library';
+			$library->type_alias = 'com_componentbuilder.library';
+			$library->table = '{"special": {"dbtable": "#__componentbuilder_library","key": "id","type": "Library","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$library->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description"}}';
+			$library->router = 'ComponentbuilderHelperRoute::getLibraryRoute';
+			$library->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$library_Inserted = $db->insertObject('#__content_types', $library);
 
 
 			// Install the global extenstion params.
@@ -3456,9 +3652,9 @@ class com_componentbuilderInstallerScript
 			$snippet->type_title = 'Componentbuilder Snippet';
 			$snippet->type_alias = 'com_componentbuilder.snippet';
 			$snippet->table = '{"special": {"dbtable": "#__componentbuilder_snippet","key": "id","type": "Snippet","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","description":"description","usage":"usage","snippet":"snippet"}}';
+			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","library":"library","description":"description","snippet":"snippet","usage":"usage"}}';
 			$snippet->router = 'ComponentbuilderHelperRoute::getSnippetRoute';
-			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_snippet_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if snippet type is already in content_type DB.
 			$snippet_id = null;
@@ -4031,6 +4227,64 @@ class com_componentbuilderInstallerScript
 				$component_files_folders_Inserted = $db->insertObject('#__content_types', $component_files_folders);
 			}
 
+			// Create the snippet_type content type object.
+			$snippet_type = new stdClass();
+			$snippet_type->type_title = 'Componentbuilder Snippet_type';
+			$snippet_type->type_alias = 'com_componentbuilder.snippet_type';
+			$snippet_type->table = '{"special": {"dbtable": "#__componentbuilder_snippet_type","key": "id","type": "Snippet_type","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$snippet_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description"}}';
+			$snippet_type->router = 'ComponentbuilderHelperRoute::getSnippet_typeRoute';
+			$snippet_type->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if snippet_type type is already in content_type DB.
+			$snippet_type_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($snippet_type->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$snippet_type->type_id = $db->loadResult();
+				$snippet_type_Updated = $db->updateObject('#__content_types', $snippet_type, 'type_id');
+			}
+			else
+			{
+				$snippet_type_Inserted = $db->insertObject('#__content_types', $snippet_type);
+			}
+
+			// Create the library content type object.
+			$library = new stdClass();
+			$library->type_title = 'Componentbuilder Library';
+			$library->type_alias = 'com_componentbuilder.library';
+			$library->table = '{"special": {"dbtable": "#__componentbuilder_library","key": "id","type": "Library","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$library->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description"}}';
+			$library->router = 'ComponentbuilderHelperRoute::getLibraryRoute';
+			$library->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if library type is already in content_type DB.
+			$library_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($library->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$library->type_id = $db->loadResult();
+				$library_Updated = $db->updateObject('#__content_types', $library, 'type_id');
+			}
+			else
+			{
+				$library_Inserted = $db->insertObject('#__content_types', $library);
+			}
+
 
 
 			// set some defaults
@@ -4139,7 +4393,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.6.3 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.6.4 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

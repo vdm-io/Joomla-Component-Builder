@@ -28,5 +28,5 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <tr>
-	<td colspan="8"><?php echo $this->pagination->getListFooter(); ?></td>
+	<td colspan="9"><?php echo $this->pagination->getListFooter(); ?></td>
 </tr>

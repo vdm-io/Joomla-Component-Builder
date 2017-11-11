@@ -121,30 +121,16 @@
 			message="COM_COMPONENTBUILDER_SNIPPET_URL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SNIPPET_URL_HINT"
 		/>
-		<!-- Type Field. Type: List. (joomla) -->
+		<!-- Type Field. Type: Snippettype. (custom) -->
 		<field
-			type="list"
+			type="snippettype"
 			name="type"
 			label="COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL"
 			description="COM_COMPONENTBUILDER_SNIPPET_TYPE_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			filter="INT"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_SNIPPET_LAYOUT</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_SNIPPET_NAVIGATIONS</option>
-			<option value="3">
-				COM_COMPONENTBUILDER_SNIPPET_ELEMENTS</option>
-			<option value="4">
-				COM_COMPONENTBUILDER_SNIPPET_COMMON</option>
-			<option value="5">
-				COM_COMPONENTBUILDER_SNIPPET_JAVASCRIPT</option>
-			<option value="6">
-				COM_COMPONENTBUILDER_SNIPPET_CHARTS</option>
-		</field>
+			default="0"
+		/>
 		<!-- Heading Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -159,6 +145,17 @@
 			message="COM_COMPONENTBUILDER_SNIPPET_HEADING_MESSAGE"
 			hint="COM_COMPONENTBUILDER_SNIPPET_HEADING_HINT"
 		/>
+		<!-- Library Field. Type: Library. (custom) -->
+		<field
+			type="library"
+			name="library"
+			label="COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL"
+			description="COM_COMPONENTBUILDER_SNIPPET_LIBRARY_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="0"
+			button="true"
+		/>
 		<!-- Description Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -171,18 +168,6 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_HINT"
 		/>
-		<!-- Usage Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="usage"
-			label="COM_COMPONENTBUILDER_SNIPPET_USAGE_LABEL"
-			rows="11"
-			cols="10"
-			description="COM_COMPONENTBUILDER_SNIPPET_USAGE_DESCRIPTION"
-			class="text_area span12"
-			filter="STRING"
-			hint="COM_COMPONENTBUILDER_SNIPPET_USAGE_HINT"
-		/>
 		<!-- Snippet Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -194,6 +179,18 @@
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_HINT"
 			required="true"
+		/>
+		<!-- Usage Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="usage"
+			label="COM_COMPONENTBUILDER_SNIPPET_USAGE_LABEL"
+			rows="11"
+			cols="10"
+			description="COM_COMPONENTBUILDER_SNIPPET_USAGE_DESCRIPTION"
+			class="text_area span12"
+			filter="STRING"
+			hint="COM_COMPONENTBUILDER_SNIPPET_USAGE_HINT"
 		/>
 	</fieldset>
 	

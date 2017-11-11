@@ -161,7 +161,13 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'component_dashboard.access' => 'component_dashboard.access',
 			'component_files_folders.create' => 'component_files_folders.create',
 			'components_files_folders.access' => 'component_files_folders.access',
-			'component_files_folders.access' => 'component_files_folders.access');
+			'component_files_folders.access' => 'component_files_folders.access',
+			'snippet_type.create' => 'snippet_type.create',
+			'snippet_types.access' => 'snippet_type.access',
+			'snippet_type.access' => 'snippet_type.access',
+			'library.create' => 'library.create',
+			'libraries.access' => 'library.access',
+			'library.access' => 'library.access');
 		foreach($viewGroups as $group => $views)
                 {
 			$i = 0;

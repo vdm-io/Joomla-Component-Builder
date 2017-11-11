@@ -201,24 +201,46 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 			);
                 }  
 
-		// Set Type Selection
-		$this->typeOptions = $this->getTheTypeSelections();
-		if ($this->typeOptions)
+		// Set Type Name Selection
+		$this->typeNameOptions = JFormHelper::loadFieldType('Snippettype')->getOptions();
+		if ($this->typeNameOptions)
 		{
-			// Type Filter
+			// Type Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL').' -',
 				'filter_type',
-				JHtml::_('select.options', $this->typeOptions, 'value', 'text', $this->state->get('filter.type'))
+				JHtml::_('select.options', $this->typeNameOptions, 'value', 'text', $this->state->get('filter.type'))
 			);
 
 			if ($this->canBatch && $this->canCreate && $this->canEdit)
 			{
-				// Type Batch Selection
+				// Type Name Batch Selection
 				JHtmlBatch_::addListSelection(
 					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL').' -',
 					'batch[type]',
-					JHtml::_('select.options', $this->typeOptions, 'value', 'text')
+					JHtml::_('select.options', $this->typeNameOptions, 'value', 'text')
+				);
+			}
+		}
+
+		// Set Library Name Selection
+		$this->libraryNameOptions = JFormHelper::loadFieldType('Library')->getOptions();
+		if ($this->libraryNameOptions)
+		{
+			// Library Name Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL').' -',
+				'filter_library',
+				JHtml::_('select.options', $this->libraryNameOptions, 'value', 'text', $this->state->get('filter.library'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Library Name Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL').' -',
+					'batch[library]',
+					JHtml::_('select.options', $this->libraryNameOptions, 'value', 'text')
 				);
 			}
 		}
@@ -266,45 +288,10 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_SNIPPET_NAME_LABEL'),
 			'a.url' => JText::_('COM_COMPONENTBUILDER_SNIPPET_URL_LABEL'),
-			'a.type' => JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL'),
+			'g.name' => JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL'),
 			'a.heading' => JText::_('COM_COMPONENTBUILDER_SNIPPET_HEADING_LABEL'),
+			'h.name' => JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	} 
-
-	protected function getTheTypeSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('type'));
-		$query->from($db->quoteName('#__componentbuilder_snippet'));
-		$query->order($db->quoteName('type') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $type)
-			{
-				// Translate the type selection
-				$text = $model->selectionTranslation($type,'type');
-				// Now add the type and its text to the options array
-				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
 }

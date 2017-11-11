@@ -90,10 +90,13 @@ $edit = "index.php?option=com_componentbuilder&view=snippets&task=snippet.edit";
 			<?php echo $this->escape($item->url); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JText::_($item->type); ?>
+			<?php echo $this->escape($item->type_name); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->heading); ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo $this->escape($item->library_name); ?>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('core.edit.state')) : ?>

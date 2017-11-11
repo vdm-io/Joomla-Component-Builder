@@ -47,7 +47,8 @@ class ComponentbuilderModelSnippets extends JModelList
 				'a.name','name',
 				'a.url','url',
 				'a.type','type',
-				'a.heading','heading'
+				'a.heading','heading',
+				'a.library','library'
 			);
 		}
 
@@ -79,6 +80,9 @@ class ComponentbuilderModelSnippets extends JModelList
 
 		$heading = $this->getUserStateFromRequest($this->context . '.filter.heading', 'filter_heading');
 		$this->setState('filter.heading', $heading);
+
+		$library = $this->getUserStateFromRequest($this->context . '.filter.library', 'filter_library');
+		$this->setState('filter.library', $library);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -130,48 +134,10 @@ class ComponentbuilderModelSnippets extends JModelList
 				}
 
 			}
-		} 
-
-		// set selection value to a translatable value
-		if (ComponentbuilderHelper::checkArray($items))
-		{
-			foreach ($items as $nr => &$item)
-			{
-				// convert type
-				$item->type = $this->selectionTranslation($item->type, 'type');
-			}
-		}
- 
+		}  
         
 		// return items
 		return $items;
-	}
-
-	/**
-	* Method to convert selection values to translatable string.
-	*
-	* @return translatable string
-	*/
-	public function selectionTranslation($value,$name)
-	{
-		// Array of type language strings
-		if ($name === 'type')
-		{
-			$typeArray = array(
-				1 => 'COM_COMPONENTBUILDER_SNIPPET_LAYOUT',
-				2 => 'COM_COMPONENTBUILDER_SNIPPET_NAVIGATIONS',
-				3 => 'COM_COMPONENTBUILDER_SNIPPET_ELEMENTS',
-				4 => 'COM_COMPONENTBUILDER_SNIPPET_COMMON',
-				5 => 'COM_COMPONENTBUILDER_SNIPPET_JAVASCRIPT',
-				6 => 'COM_COMPONENTBUILDER_SNIPPET_CHARTS'
-			);
-			// Now check if value is found in this array
-			if (isset($typeArray[$value]) && ComponentbuilderHelper::checkString($typeArray[$value]))
-			{
-				return $typeArray[$value];
-			}
-		}
-		return $value;
 	}
 	
 	/**
@@ -192,6 +158,14 @@ class ComponentbuilderModelSnippets extends JModelList
 
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
+
+		// From the componentbuilder_snippet_type table.
+		$query->select($db->quoteName('g.name','type_name'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
+
+		// From the componentbuilder_library table.
+		$query->select($db->quoteName('h.name','library_name'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'h') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('h.id') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -229,14 +203,19 @@ class ComponentbuilderModelSnippets extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.url LIKE '.$search.' OR a.type LIKE '.$search.' OR a.heading LIKE '.$search.' OR a.description LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.url LIKE '.$search.' OR a.type LIKE '.$search.' OR a.heading LIKE '.$search.' OR a.library LIKE '.$search.' OR a.description LIKE '.$search.')');
 			}
 		}
 
-		// Filter by Type.
+		// Filter by type.
 		if ($type = $this->getState('filter.type'))
 		{
 			$query->where('a.type = ' . $db->quote($db->escape($type)));
+		}
+		// Filter by library.
+		if ($library = $this->getState('filter.library'))
+		{
+			$query->where('a.library = ' . $db->quote($db->escape($library)));
 		}
 
 		// Add the list ordering clause.
@@ -371,6 +350,7 @@ class ComponentbuilderModelSnippets extends JModelList
 		$id .= ':' . $this->getState('filter.url');
 		$id .= ':' . $this->getState('filter.type');
 		$id .= ':' . $this->getState('filter.heading');
+		$id .= ':' . $this->getState('filter.library');
 
 		return parent::getStoreId($id);
 	}

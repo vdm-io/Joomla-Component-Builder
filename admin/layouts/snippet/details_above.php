@@ -32,7 +32,7 @@ $form = $displayData->getForm();
 $fields = array(
 	'name',
 	'url',
-	'type'
+	'library'
 );
 
 ?>

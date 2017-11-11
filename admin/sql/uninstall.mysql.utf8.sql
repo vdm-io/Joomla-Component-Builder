@@ -24,3 +24,5 @@ DROP TABLE IF EXISTS `#__componentbuilder_component_custom_admin_menus`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_config`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_dashboard`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_files_folders`;
+DROP TABLE IF EXISTS `#__componentbuilder_snippet_type`;
+DROP TABLE IF EXISTS `#__componentbuilder_library`;
