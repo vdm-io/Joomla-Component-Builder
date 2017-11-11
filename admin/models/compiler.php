@@ -117,7 +117,7 @@ class ComponentbuilderModelCompiler extends JModelList
 			{
 				// Always create a slug for sef URL's
 				$item->slug = (isset($item->alias) && isset($item->id)) ? $item->id.':'.$item->alias : $item->id;
-				// Make sure the content prepare plugins fire on copyright.
+				// Make sure the content prepare plugins fire on copyright (TODO)
 				$item->copyright = JHtml::_('content.prepare',$item->copyright);
 				// Checking if copyright has uikit components that must be loaded.
 				$this->uikitComp = ComponentbuilderHelper::getUikitComp($item->copyright,$this->uikitComp);

@@ -1253,7 +1253,7 @@ class Fields extends Structure
 	 * @return  void
 	 * 
 	 */
-	public function buildSiteFieldData($view,$field,$set,$type)
+	public function buildSiteFieldData($view, $field, $set, $type)
 	{
 		$decode = array('json','base64','basic_encryption','advance_encryption');
 		$uikit = array('textarea','editor');
@@ -1267,7 +1267,7 @@ class Fields extends Structure
 					$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']] = array('decode' => $set, 'type' => $type);
 				}
 				// set the uikit checker
-				if ($this->uikit && in_array($type,$uikit))
+				if ((2 == $this->uikit || 1 == $this->uikit) && in_array($type, $uikit))
 				{
 					$this->siteFieldData['uikit'][$array['site']][$code][$array['as']][$array['key']] = $array;
 				}
@@ -2027,9 +2027,8 @@ class Fields extends Structure
 		{
 			$this->getItemsMethodEximportStringFixBuilder[$viewName][] = array('name' => $name, 'type' => $typeName, 'translation' => false, 'custom' => $custom, 'method' => $field['settings']->store);
 		}
-
 		// check if field should be added to uikit
-		$this->buildSiteFieldData($viewName, $name, 'uikit', $typeName);
+		$this->buildSiteFieldData($viewName, $name, 'uikit', $typeName);		
 		// load the selection translation fix
 		if (ComponentbuilderHelper::checkArray($options) && (isset($field['list']) && $field['list'] == 1) && $typeName != 'repeatable' && $typeName != 'subform')
 		{

@@ -3,7 +3,7 @@
 				Vast Development Method
 /-------------------------------------------------------------------------------------------------------/
 
-	@version			2.0.0 - 03rd November, 2016
+	@version		2.0.0 - 03rd November, 2016
 	@package		Dropbox API 2
 	@subpackage		dropbox.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>

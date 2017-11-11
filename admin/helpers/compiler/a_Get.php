@@ -258,7 +258,7 @@ class Get
 	 * 
 	 * @var	boolean
 	 */
-	public $uikit = false;
+	public $uikit = 0;
 	
 	/**
 	 * The UIKIT component checker
@@ -721,10 +721,8 @@ class Get
 		unset($component->addfiles);
 		
 		// set the uikit switch
-		if ($component->adduikit)
-		{
-			$this->uikit = true;
-		}
+		$this->uikit = $component->adduikit;
+		
 		// set the footable switch
 		if ($component->addfootable)
 		{
@@ -1616,11 +1614,14 @@ class Get
 		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
 		$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');
 		// insure the uikit components are loaded
-		if (!isset($this->uikitComp[$view->code]))
+		if (2 == $this->uikit || 1 == $this->uikit)
 		{
-			$this->uikitComp[$view->code] = array();
+			if (!isset($this->uikitComp[$view->code]))
+			{
+				$this->uikitComp[$view->code] = array();
+			}
+			$this->uikitComp[$view->code] = ComponentbuilderHelper::getUikitComp($view->default,$this->uikitComp[$view->code]);
 		}
-		$this->uikitComp[$view->code] = ComponentbuilderHelper::getUikitComp($view->default,$this->uikitComp[$view->code]);
 		// check for footable
 		if (!isset($this->footableScripts[$this->target][$view->code]) || !$this->footableScripts[$this->target][$view->code])
 		{
@@ -1659,8 +1660,11 @@ class Get
 			if (isset($view->{'add_'.$scripter}) && $view->{'add_'.$scripter} == 1 && ComponentbuilderHelper::checkString($view->$scripter))
 			{
 				$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
-				// set uikit to views
-				$this->uikitComp[$view->code] = ComponentbuilderHelper::getUikitComp($view->$scripter,$this->uikitComp[$view->code]);
+				if (2 == $this->uikit || 1 == $this->uikit)
+				{
+					// set uikit to views
+					$this->uikitComp[$view->code] = ComponentbuilderHelper::getUikitComp($view->$scripter,$this->uikitComp[$view->code]);
+				}
 				
 				$this->setTemplateAndLayoutData($view->$scripter,$view->code);
 				
@@ -2743,8 +2747,11 @@ class Get
 					$php_view = $this->setDynamicValues(base64_decode($row->php_view));
 				}
 				$contnent = $this->setDynamicValues(base64_decode($row->{$table}));
-				// set uikit to views
-				$this->uikitComp[$view] = ComponentbuilderHelper::getUikitComp($contnent,$this->uikitComp[$view]);
+				if (2 == $this->uikit || 1 == $this->uikit)
+				{
+					// set uikit to views
+					$this->uikitComp[$view] = ComponentbuilderHelper::getUikitComp($contnent,$this->uikitComp[$view]);
+				}
 				// set footable to views and turn it on
 				if (!isset($this->footableScripts[$this->target][$view]) || !$this->footableScripts[$this->target][$view])
 				{

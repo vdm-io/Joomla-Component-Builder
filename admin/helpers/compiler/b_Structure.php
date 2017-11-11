@@ -923,10 +923,16 @@ class Structure extends Get
 				$PHPExcel = array( 'folder' => 'PHPExcel', 'path' => 'admin/helpers', 'rename' => 0);
 				$this->componentData->folders[] = $PHPExcel;
 			}
-			if ($this->uikit)
+			if (2 == $this->uikit || 1 == $this->uikit)
 			{
 				// move the UIKIT Folder into place
 				$uikit = array( 'folder' => 'uikit', 'path' => 'media', 'rename' => 0);
+				$this->componentData->folders[] = $uikit;
+			}			
+			if (2 == $this->uikit || 3 == $this->uikit)
+			{
+				// move the UIKIT-3 Folder into place
+				$uikit = array( 'folder' => 'uikit-3', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $uikit;
 			}
 			if ($this->footable && (!isset($this->footableVersion) || 2 == $this->footableVersion))
@@ -954,7 +960,7 @@ class Structure extends Get
 				$firstFolder = array_values($pathArray)[0];
 				$lastFolder = end($pathArray);
 				// only rename folder if last has folder name
-				if ($custom['rename'] == 1)
+				if (isset($custom['rename']) && $custom['rename'] == 1)
 				{
 					$custom['path'] = str_replace('/'.$lastFolder,'',$custom['path']);
 					$rename = 'new';
@@ -1062,7 +1068,7 @@ class Structure extends Get
 					$name = $custom['file'];
 				}
 				// check if file should be updated
-				if (isset($custom['notnew']) && $custom['notnew'] == 0)
+				if (!isset($custom['notnew']) || $custom['notnew'] == 0 || $custom['notnew'] != 1)
 				{
 					$this->notNew[] = $key_pointer;
 				}

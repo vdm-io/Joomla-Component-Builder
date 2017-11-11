@@ -1650,7 +1650,7 @@ class Interpretation extends Fields
 		return $fieldDecode;
 	}
 
-	public function setCustomViewFieldUikitChecker(&$get,$checker,$string,$code,$tab = '')
+	public function setCustomViewFieldUikitChecker(&$get, $checker, $string, $code, $tab = '')
 	{
 		$fieldUikit = '';
 		foreach ($checker as $field => $array)
@@ -1658,10 +1658,14 @@ class Interpretation extends Fields
 			if (strpos($get['selection']['select'], $field) !== false)
 			{
 				// build decoder string
-				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field.".";
+				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field." (TODO)";
 				$fieldUikit .= PHP_EOL."\t".$tab."\t".$string."->".$field." = JHtml::_('content.prepare',".$string."->".$field.");";
-				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Checking if ".$field." has uikit components that must be loaded.";
-				$fieldUikit .= PHP_EOL."\t".$tab."\t\$this->uikitComp = ".$this->fileContentStatic['###Component###']."Helper::getUikitComp(".$string."->".$field.",\$this->uikitComp);";
+				// only load for uikit version 2 (TODO) we may need to add another check here
+				if (2 == $this->uikit || 1 == $this->uikit)
+				{
+					$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Checking if ".$field." has uikit components that must be loaded.";
+					$fieldUikit .= PHP_EOL."\t".$tab."\t\$this->uikitComp = ".$this->fileContentStatic['###Component###']."Helper::getUikitComp(".$string."->".$field.",\$this->uikitComp);";
+				}
 			}
 		}
 		return $fieldUikit;
@@ -2150,7 +2154,7 @@ class Interpretation extends Fields
 						if (ComponentbuilderHelper::checkArray($uikitChecker))
 						{
 							// set uikit checkers on needed fields
-							$getItem .= $this->setCustomViewFieldUikitChecker($main_get,$uikitChecker,'$data',$code,$tab);
+							$getItem .= $this->setCustomViewFieldUikitChecker($main_get, $uikitChecker, '$data', $code, $tab);
 						}
 					}
 					$asBucket[] = $main_get['as'];
@@ -2278,7 +2282,8 @@ class Interpretation extends Fields
 
 	public function setUikitHelperMethods()
 	{
-		if ($this->uikit)
+		// only load for uikit version 2
+		if (2 == $this->uikit || 1 == $this->uikit)
 		{
 			// build uikit get method
 			$ukit = array();
@@ -2393,7 +2398,8 @@ class Interpretation extends Fields
 	public function setUikitGetMethod()
 	{
 		$method = '';
-		if ($this->uikit)
+		// only load for uikit version 2
+		if (2 == $this->uikit || 1 == $this->uikit)
 		{
 			// build uikit get method
 			$method .= PHP_EOL.PHP_EOL."\t/**";
@@ -2901,10 +2907,10 @@ class Interpretation extends Fields
 		// set uikit ###'.$TARGET.'_UIKIT_LOADER###
 		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_UIKIT_LOADER###'] = $this->setUikitLoader($view);
 
-		// set uikit ###'.$TARGET.'_GOOGLECHART_LOADER###
+		// set Google Charts ###'.$TARGET.'_GOOGLECHART_LOADER###
 		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_GOOGLECHART_LOADER###'] = $this->setGoogleChartLoader($view);
 
-		// set uikit ###FOOTABLE_LOADER###
+		// set Footable ###FOOTABLE_LOADER###
 		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_FOOTABLE_LOADER###'] = $this->setFootableScriptsLoader($view);
 
 		// set metadata ###DOCUMENT_METADATA###
@@ -3416,111 +3422,152 @@ class Interpretation extends Fields
 		$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Initialize the header checker.";
 		$setter .= PHP_EOL."\t\t\$HeaderCheck = new ".$this->fileContentStatic['###component###']."HeaderCheck;";
 		// load the defaults needed
-		if ($this->uikit)
+		if ($this->uikit > 0)
 		{
 			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load uikit options.";
 			$setter .= PHP_EOL."\t\t\$uikit = \$this->params->get('uikit_load');";
 			$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set script size.";
 			$setter .= PHP_EOL."\t\t\$size = \$this->params->get('uikit_min');";
-			$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Set css style.";
-			$setter .= PHP_EOL."\t\t\$style = \$this->params->get('uikit_style');";
+			$tabV = "";
+			// if both versions should be loaded then add some more logic
+			if (2 == $this->uikit)
+			{
+				$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load uikit version.";
+				$setter .= PHP_EOL."\t\t\$uikitVersion = \$this->params->get('uikit_version', 2);";
+				$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Use Uikit Version 2";
+				$setter .= PHP_EOL."\t\tif (2 == \$uikitVersion)";
+				$setter .= PHP_EOL."\t\t{";
+				$tabV = "\t";
+			}
+		}
+		// load the defaults needed
+		if (2 == $this->uikit || 1 == $this->uikit)
+		{
+			$setter .= PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." Set css style.";
+			$setter .= PHP_EOL.$tabV."\t\t\$style = \$this->params->get('uikit_style');";
 
-			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." The uikit css.";
-			$setter .= PHP_EOL."\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
-			$setter .= PHP_EOL."\t\t{";
-			$setter .= PHP_EOL."\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/uikit'.\$style.\$size.'.css');";
-			$setter .= PHP_EOL."\t\t}";
-			$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." The uikit js.";
-			$setter .= PHP_EOL."\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
-			$setter .= PHP_EOL."\t\t{";
-			$setter .= PHP_EOL."\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/uikit'.\$size.'.js');";
-			$setter .= PHP_EOL."\t\t}";
+			$setter .= PHP_EOL.PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." The uikit css.";
+			$setter .= PHP_EOL.$tabV."\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
+			$setter .= PHP_EOL.$tabV."\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/uikit'.\$style.\$size.'.css');";
+			$setter .= PHP_EOL.$tabV."\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." The uikit js.";
+			$setter .= PHP_EOL.$tabV."\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
+			$setter .= PHP_EOL.$tabV."\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/uikit'.\$size.'.js');";
+			$setter .= PHP_EOL.$tabV."\t\t}";
 		}
 		// load the components need
-		if ($this->uikit && isset($this->uikitComp[$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->uikitComp[$view['settings']->code]))
+		if ((2 == $this->uikit || 1 == $this->uikit) && isset($this->uikitComp[$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->uikitComp[$view['settings']->code]))
 		{
-			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load the script to find all uikit components needed.";
-			$setter .= PHP_EOL."\t\tif (\$uikit != 2)";
-			$setter .= PHP_EOL."\t\t{";
-			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Set the default uikit components in this view.";
-			$setter .= PHP_EOL."\t\t\t\$uikitComp = array();";
+			$setter .= PHP_EOL.PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." Load the script to find all uikit components needed.";
+			$setter .= PHP_EOL.$tabV."\t\tif (\$uikit != 2)";
+			$setter .= PHP_EOL.$tabV."\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t//".$this->setLine(__LINE__)." Set the default uikit components in this view.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$uikitComp = array();";
 			foreach ($this->uikitComp[$view['settings']->code] as $class)
 			{
-				$setter .= PHP_EOL."\t\t\t\$uikitComp[] = '".$class."';";
+				$setter .= PHP_EOL.$tabV."\t\t\t\$uikitComp[] = '".$class."';";
 			}
 			// check content for more needed components
 			if (isset($this->siteFieldData['uikit'][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->siteFieldData['uikit'][$view['settings']->code]))
 			{
-				$setter .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get field uikit components needed in this view.";
-				$setter .= PHP_EOL."\t\t\t\$uikitFieldComp = \$this->get('UikitComp');";
-				$setter .= PHP_EOL."\t\t\tif (isset(\$uikitFieldComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitFieldComp))";
-				$setter .= PHP_EOL."\t\t\t{";
-				$setter .= PHP_EOL."\t\t\t\tif (isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
-				$setter .= PHP_EOL."\t\t\t\t{";
-				$setter .= PHP_EOL."\t\t\t\t\t\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
-				$setter .= PHP_EOL."\t\t\t\t\t\$uikitComp = array_unique(\$uikitComp);";
-				$setter .= PHP_EOL."\t\t\t\t}";
-				$setter .= PHP_EOL."\t\t\t\telse";
-				$setter .= PHP_EOL."\t\t\t\t{";
-				$setter .= PHP_EOL."\t\t\t\t\t\$uikitComp = \$uikitFieldComp;";
-				$setter .= PHP_EOL."\t\t\t\t}";
-				$setter .= PHP_EOL."\t\t\t}";
+				$setter .= PHP_EOL.PHP_EOL.$tabV."\t\t\t//".$this->setLine(__LINE__)." Get field uikit components needed in this view.";
+				$setter .= PHP_EOL.$tabV."\t\t\t\$uikitFieldComp = \$this->get('UikitComp');";
+				$setter .= PHP_EOL.$tabV."\t\t\tif (isset(\$uikitFieldComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitFieldComp))";
+				$setter .= PHP_EOL.$tabV."\t\t\t{";
+				$setter .= PHP_EOL.$tabV."\t\t\t\tif (isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
+				$setter .= PHP_EOL.$tabV."\t\t\t\t{";
+				$setter .= PHP_EOL.$tabV."\t\t\t\t\t\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
+				$setter .= PHP_EOL.$tabV."\t\t\t\t\t\$uikitComp = array_unique(\$uikitComp);";
+				$setter .= PHP_EOL.$tabV."\t\t\t\t}";
+				$setter .= PHP_EOL.$tabV."\t\t\t\telse";
+				$setter .= PHP_EOL.$tabV."\t\t\t\t{";
+				$setter .= PHP_EOL.$tabV."\t\t\t\t\t\$uikitComp = \$uikitFieldComp;";
+				$setter .= PHP_EOL.$tabV."\t\t\t\t}";
+				$setter .= PHP_EOL.$tabV."\t\t\t}";
 			}
-			$setter .= PHP_EOL."\t\t}";
-			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
-			$setter .= PHP_EOL."\t\tif (\$uikit != 2 && isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
-			$setter .= PHP_EOL."\t\t{";
-			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." load just in case.";
-			$setter .= PHP_EOL."\t\t\tjimport('joomla.filesystem.file');";
-			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." loading...";
-			$setter .= PHP_EOL."\t\t\tforeach (\$uikitComp as \$class)";
-			$setter .= PHP_EOL."\t\t\t{";
-			$setter .= PHP_EOL."\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
-			$setter .= PHP_EOL."\t\t\t\t{";
-			$setter .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
-			$setter .= PHP_EOL."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
-			$setter .= PHP_EOL."\t\t\t\t\t{";
-			$setter .= PHP_EOL."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
-			$setter .= PHP_EOL."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
-			$setter .= PHP_EOL."\t\t\t\t\t}";
-			$setter .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
-			$setter .= PHP_EOL."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
-			$setter .= PHP_EOL."\t\t\t\t\t{";
-			$setter .= PHP_EOL."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
-			$setter .= PHP_EOL."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
-			$setter .= PHP_EOL."\t\t\t\t\t}";
-			$setter .= PHP_EOL."\t\t\t\t}";
-			$setter .= PHP_EOL."\t\t\t}";
-			$setter .= PHP_EOL."\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t}";
+			$setter .= PHP_EOL.PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
+			$setter .= PHP_EOL.$tabV."\t\tif (\$uikit != 2 && isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
+			$setter .= PHP_EOL.$tabV."\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t//".$this->setLine(__LINE__)." load just in case.";
+			$setter .= PHP_EOL.$tabV."\t\t\tjimport('joomla.filesystem.file');";
+			$setter .= PHP_EOL.$tabV."\t\t\t//".$this->setLine(__LINE__)." loading...";
+			$setter .= PHP_EOL.$tabV."\t\t\tforeach (\$uikitComp as \$class)";
+			$setter .= PHP_EOL.$tabV."\t\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t}";
 		}
-		elseif ($this->uikit && isset($this->siteFieldData['uikit'][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->siteFieldData['uikit'][$view['settings']->code]))
+		elseif ((2 == $this->uikit || 1 == $this->uikit) && isset($this->siteFieldData['uikit'][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->siteFieldData['uikit'][$view['settings']->code]))
 		{
-			$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
-			$setter .= PHP_EOL."\t\t\$uikitComp = \$this->get('UikitComp');";
-			$setter .= PHP_EOL."\t\tif (\$uikit != 2 && isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
-			$setter .= PHP_EOL."\t\t{";
-			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." load just in case.";
-			$setter .= PHP_EOL."\t\t\tjimport('joomla.filesystem.file');";
-			$setter .= PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." loading...";
-			$setter .= PHP_EOL."\t\t\tforeach (\$uikitComp as \$class)";
-			$setter .= PHP_EOL."\t\t\t{";
-			$setter .= PHP_EOL."\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
-			$setter .= PHP_EOL."\t\t\t\t{";
-			$setter .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
-			$setter .= PHP_EOL."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
-			$setter .= PHP_EOL."\t\t\t\t\t{";
-			$setter .= PHP_EOL."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
-			$setter .= PHP_EOL."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
-			$setter .= PHP_EOL."\t\t\t\t\t}";
-			$setter .= PHP_EOL."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
-			$setter .= PHP_EOL."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
-			$setter .= PHP_EOL."\t\t\t\t\t{";
-			$setter .= PHP_EOL."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
-			$setter .= PHP_EOL."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
-			$setter .= PHP_EOL."\t\t\t\t\t}";
-			$setter .= PHP_EOL."\t\t\t\t}";
-			$setter .= PHP_EOL."\t\t\t}";
-			$setter .= PHP_EOL."\t\t}";
+			$setter .= PHP_EOL.PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." Load the needed uikit components in this view.";
+			$setter .= PHP_EOL.$tabV."\t\t\$uikitComp = \$this->get('UikitComp');";
+			$setter .= PHP_EOL.$tabV."\t\tif (\$uikit != 2 && isset(\$uikitComp) && ".$this->fileContentStatic['###Component###']."Helper::checkArray(\$uikitComp))";
+			$setter .= PHP_EOL.$tabV."\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t//".$this->setLine(__LINE__)." load just in case.";
+			$setter .= PHP_EOL.$tabV."\t\t\tjimport('joomla.filesystem.file');";
+			$setter .= PHP_EOL.$tabV."\t\t\t//".$this->setLine(__LINE__)." loading...";
+			$setter .= PHP_EOL.$tabV."\t\t\tforeach (\$uikitComp as \$class)";
+			$setter .= PHP_EOL.$tabV."\t\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t}";
+		}		
+		// now set the version 3	
+		if (2 == $this->uikit || 3 == $this->uikit)
+		{
+			if (2 == $this->uikit)
+			{
+				$setter .= PHP_EOL."\t\t}";
+				$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Use Uikit Version 3";
+				$setter .= PHP_EOL."\t\telseif (3 == \$uikitVersion)";
+				$setter .= PHP_EOL."\t\t{";
+			}
+			// add version 3 fiels to page
+			$setter .= PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." The uikit css.";
+			$setter .= PHP_EOL.$tabV."\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
+			$setter .= PHP_EOL.$tabV."\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-3/css/uikit'.\$size.'.css');";
+			$setter .= PHP_EOL.$tabV."\t\t}";
+			$setter .= PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." The uikit js.";
+			$setter .= PHP_EOL.$tabV."\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
+			$setter .= PHP_EOL.$tabV."\t\t{";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-3/js/uikit'.\$size.'.js');";
+			$setter .= PHP_EOL.$tabV."\t\t}";
+			if (2 == $this->uikit)
+			{
+				$setter .= PHP_EOL."\t\t}";
+			}
 		}
 		return $setter;
 	}
@@ -12929,7 +12976,7 @@ class Interpretation extends Fields
 	
 	public function setUikitConfigFieldsets($lang)
 	{
-		if ($this->uikit)
+		if ($this->uikit > 0)
 		{
 			// main lang prefix
 			$lang = $lang.'';
@@ -12939,10 +12986,50 @@ class Interpretation extends Fields
 			$this->configFieldSets[] = "\t\t".'label="'.$lang.'_UIKIT_LABEL"';
 			$this->configFieldSets[] = "\t\t".'description="'.$lang.'_UIKIT_DESC">';
 			// set tab lang
-			$this->langContent[$this->lang][$lang.'_UIKIT_LABEL']	= "Uikit Settings";
-			$this->langContent[$this->lang][$lang.'_UIKIT_DESC']	= "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href=\"http://getuikit.com/\" >http://getuikit.com/</a>";
-
+			if (1 == $this->uikit)
+			{
+				$this->langContent[$this->lang][$lang.'_UIKIT_LABEL']	= "Uikit2 Settings";
+				$this->langContent[$this->lang][$lang.'_UIKIT_DESC']	= "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
+for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/v2/\" target=\"_blank\">https://getuikit.com/v2/</a>";
+			}
+			elseif (2  == $this->uikit)
+			{
+				$this->langContent[$this->lang][$lang.'_UIKIT_LABEL']	= "Uikit2 and Uikit3 Settings";
+				$this->langContent[$this->lang][$lang.'_UIKIT_DESC']	= "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
+for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/v2/\" target=\"_blank\">version 2</a> or <a href=\"https://getuikit.com/\" target=\"_blank\">version 3</a>";
+			}
+			elseif (3  == $this->uikit)
+			{
+				$this->langContent[$this->lang][$lang.'_UIKIT_LABEL']	= "Uikit3 Settings";
+				$this->langContent[$this->lang][$lang.'_UIKIT_DESC']	= "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
+for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/\" target=\"_blank\">https://getuikit.com/</a>";
+			}
+			
+			// add version selection
+			if (2 == $this->uikit)
+			{
+				// set field lang
+				$this->langContent[$this->lang][$lang.'_UIKIT_VERSION_LABEL']	= "Uikit Versions";
+				$this->langContent[$this->lang][$lang.'_UIKIT_VERSION_DESC']	= "Select what version you would like to use";
+				$this->langContent[$this->lang][$lang.'_UIKIT_V2']		= "Version 2";
+				$this->langContent[$this->lang][$lang.'_UIKIT_V3']		= "Version 3";
+				// set the field
+				$this->configFieldSets[] = "\t\t".'<field name="uikit_version"';
+				$this->configFieldSets[] = "\t\t\t".'type="radio"';
+				$this->configFieldSets[] = "\t\t\t".'label="'.$lang.'_UIKIT_VERSION_LABEL"';
+				$this->configFieldSets[] = "\t\t\t".'description="'.$lang.'_UIKIT_VERSION_DESC"';
+				$this->configFieldSets[] = "\t\t\t".'class="btn-group btn-group-yesno"';
+				$this->configFieldSets[] = "\t\t\t".'default="2">';
+				$this->configFieldSets[] = "\t\t\t".'<!--'.$this->setLine(__LINE__).' Option Set. -->';
+				$this->configFieldSets[] = "\t\t\t".'<option value="2">';
+				$this->configFieldSets[] = "\t\t\t\t".$lang.'_UIKIT_V2</option>"';
+				$this->configFieldSets[] = "\t\t\t".'<option value="3">';
+				$this->configFieldSets[] = "\t\t\t\t".$lang.'_UIKIT_V3</option>"';
+				$this->configFieldSets[] = "\t\t</field>";
+				// set params defaults
+				$this->extensionsParams[] = '"uikit_version":"2"';
+			}
+			
 			// set field lang
 			$this->langContent[$this->lang][$lang.'_UIKIT_LOAD_LABEL']	= "Loading Options";
 			$this->langContent[$this->lang][$lang.'_UIKIT_LOAD_DESC']	= "Set the uikit loading option.";
@@ -12962,14 +13049,17 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			$this->configFieldSets[] = "\t\t\t\t".$lang.'_AUTO_LOAD</option>"';
 			$this->configFieldSets[] = "\t\t\t".'<option value="1">';
 			$this->configFieldSets[] = "\t\t\t\t".$lang.'_FORCE_LOAD</option>"';
-			$this->configFieldSets[] = "\t\t\t".'<option value="3">';
-			$this->configFieldSets[] = "\t\t\t\t".$lang.'_ONLY_EXTRA</option>"';
+			if (2  == $this->uikit || 1 == $this->uikit)
+			{
+				$this->configFieldSets[] = "\t\t\t".'<option value="3">';
+				$this->configFieldSets[] = "\t\t\t\t".$lang.'_ONLY_EXTRA</option>"';
+			}
 			$this->configFieldSets[] = "\t\t\t".'<option value="2">';
 			$this->configFieldSets[] = "\t\t\t\t".$lang.'_DONT_LOAD</option>"';
 			$this->configFieldSets[] = "\t\t</field>";
 			// set params defaults
 			$this->extensionsParams[] = '"uikit_load":"1"';
-
+			
 			// set field lang
 			$this->langContent[$this->lang][$lang.'_UIKIT_MIN_LABEL']	= "Load Minified";
 			$this->langContent[$this->lang][$lang.'_UIKIT_MIN_DESC']	= "Should the minified version of uikit files be loaded?";
@@ -12990,29 +13080,37 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			$this->configFieldSets[] = "\t\t</field>";
 			// set params defaults
 			$this->extensionsParams[] = '"uikit_min":""';
-			// set field lang
-			$this->langContent[$this->lang][$lang.'_UIKIT_STYLE_LABEL']	= "css Style";
-			$this->langContent[$this->lang][$lang.'_UIKIT_STYLE_DESC']	= "Set the css style that should be used.";
-			$this->langContent[$this->lang][$lang.'_FLAT_LOAD']		= "Flat";
-			$this->langContent[$this->lang][$lang.'_ALMOST_FLAT_LOAD']	= "Almost Flat";
-			$this->langContent[$this->lang][$lang.'_GRADIANT_LOAD']		= "Gradient";
-			// set the field
-			$this->configFieldSets[] = "\t\t".'<field name="uikit_style"';
-			$this->configFieldSets[] = "\t\t\t".'type="radio"';
-			$this->configFieldSets[] = "\t\t\t".'label="'.$lang.'_UIKIT_STYLE_LABEL"';
-			$this->configFieldSets[] = "\t\t\t".'description="'.$lang.'_UIKIT_STYLE_DESC"';
-			$this->configFieldSets[] = "\t\t\t".'class="btn-group btn-group-yesno"';
-			$this->configFieldSets[] = "\t\t\t".'default="">';
-			$this->configFieldSets[] = "\t\t\t".'<!--'.$this->setLine(__LINE__).' Option Set. -->';
-			$this->configFieldSets[] = "\t\t\t".'<option value="">';
-			$this->configFieldSets[] = "\t\t\t\t".$lang.'_FLAT_LOAD</option>"';
-			$this->configFieldSets[] = "\t\t\t".'<option value=".almost-flat">';
-			$this->configFieldSets[] = "\t\t\t\t".$lang.'_ALMOST_FLAT_LOAD</option>"';
-			$this->configFieldSets[] = "\t\t\t".'<option value=".gradient">';
-			$this->configFieldSets[] = "\t\t\t\t".$lang.'_GRADIANT_LOAD</option>"';
-			$this->configFieldSets[] = "\t\t</field>";
-			// set params defaults
-			$this->extensionsParams[] = '"uikit_style":""';
+			
+			if (2  == $this->uikit || 1 == $this->uikit)
+			{
+				// set field lang
+				$this->langContent[$this->lang][$lang.'_UIKIT_STYLE_LABEL']	= "css Style";
+				$this->langContent[$this->lang][$lang.'_UIKIT_STYLE_DESC']	= "Set the css style that should be used.";
+				$this->langContent[$this->lang][$lang.'_FLAT_LOAD']		= "Flat";
+				$this->langContent[$this->lang][$lang.'_ALMOST_FLAT_LOAD']	= "Almost Flat";
+				$this->langContent[$this->lang][$lang.'_GRADIANT_LOAD']		= "Gradient";
+				// set the field
+				$this->configFieldSets[] = "\t\t".'<field name="uikit_style"';
+				$this->configFieldSets[] = "\t\t\t".'type="radio"';
+				$this->configFieldSets[] = "\t\t\t".'label="'.$lang.'_UIKIT_STYLE_LABEL"';
+				$this->configFieldSets[] = "\t\t\t".'description="'.$lang.'_UIKIT_STYLE_DESC"';
+				$this->configFieldSets[] = "\t\t\t".'class="btn-group btn-group-yesno"';
+				if (2  == $this->uikit)
+				{
+					$this->configFieldSets[] = "\t\t\t".'showon="uikit_version:2"';
+				}
+				$this->configFieldSets[] = "\t\t\t".'default="">';
+				$this->configFieldSets[] = "\t\t\t".'<!--'.$this->setLine(__LINE__).' Option Set. -->';
+				$this->configFieldSets[] = "\t\t\t".'<option value="">';
+				$this->configFieldSets[] = "\t\t\t\t".$lang.'_FLAT_LOAD</option>"';
+				$this->configFieldSets[] = "\t\t\t".'<option value=".almost-flat">';
+				$this->configFieldSets[] = "\t\t\t\t".$lang.'_ALMOST_FLAT_LOAD</option>"';
+				$this->configFieldSets[] = "\t\t\t".'<option value=".gradient">';
+				$this->configFieldSets[] = "\t\t\t\t".$lang.'_GRADIANT_LOAD</option>"';
+				$this->configFieldSets[] = "\t\t</field>";
+				// set params defaults
+				$this->extensionsParams[] = '"uikit_style":""';
+			}
 			// add custom Uikit Settings fields
 			if (isset($this->configFieldSetsCustomField['Uikit Settings']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Uikit Settings']))
 			{
@@ -13791,7 +13889,7 @@ function vdm_dkim() {
 		// Add encryption if needed
 		if ((isset($this->basicEncryption) && $this->basicEncryption) || (isset($this->advancedEncryption) && $this->advancedEncryption))
 		{
-			// start building field set for uikit functions
+			// start building field set for encryption functions
 			$this->configFieldSets[] = "\t<fieldset";
 			$this->configFieldSets[] = "\t\t".'name="encryption_config"';
 			$this->configFieldSets[] = "\t\t".'label="'.$lang.'_ENCRYPTION_LABEL"';
