@@ -1305,7 +1305,7 @@ class Infusion extends Interpretation
 				// build xml path
 				$xmlPath = $this->componentPath . '/'. $this->fileContentStatic['###component###']. '.xml';
 				// get the content in xml
-				$componentXML = file_get_contents($xmlPath);
+				$componentXML = ComponentbuilderHelper::getFileContents($xmlPath);
 				// update the xml content
 				$componentXML = $this->setPlaceholders($componentXML, $replace);
 				// store the values back to xml

@@ -134,6 +134,11 @@ class ComponentbuilderViewSnippets extends JViewLegacy
                                 $dhtml = $layout->render(array('title' => $title));
                                 $bar->appendButton('Custom', $dhtml, 'batch');
                         } 
+			if ($this->user->authorise('snippet.share_snippets', 'com_componentbuilder'))
+			{
+				// add Share Snippets button.
+				JToolBarHelper::custom('snippets.shareSnippets', 'share', '', 'COM_COMPONENTBUILDER_SHARE_SNIPPETS', false);
+			}
 
                         if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
                         {
@@ -148,7 +153,12 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 			{
 				JToolBarHelper::custom('snippets.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                } 
+                }
+		if ($this->user->authorise('snippet.get_snippets', 'com_componentbuilder'))
+		{
+			// add Get Snippets button.
+			JToolBarHelper::custom('snippets.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
+		} 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('snippet.import'))
 		{

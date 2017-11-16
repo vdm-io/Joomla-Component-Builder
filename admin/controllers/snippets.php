@@ -108,4 +108,53 @@ class ComponentbuilderControllerSnippets extends JControllerAdmin
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=snippets', false), $message, 'error');
 		return;
 	}  
+
+	public function getSnippets()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the import snippets custom admin view
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=get_snippets', false));
+		return;
+	}
+
+	public function shareSnippets()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// Get the model
+		$model = $this->getModel('snippets');
+		// check if import is allowed for this user.
+		$model->user = JFactory::getUser();
+		if ($model->user->authorise('snippet.import', 'com_componentbuilder') && $model->user->authorise('core.export', 'com_componentbuilder'))
+		{			
+			// Get the input
+			$input = JFactory::getApplication()->input;
+			$pks = $input->post->get('cid', array(), 'array');
+			// Sanitize the input
+			JArrayHelper::toInteger($pks);
+			// check if there is any selections
+			if (!ComponentbuilderHelper::checkArray($pks))
+			{
+				// Redirect to the list screen with error.
+				$message = JText::_('COM_COMPONENTBUILDER_NO_SNIPPETS_WERE_SELECTED_PLEASE_MAKE_A_SELECTION_AND_TRY_AGAIN');
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=snippets', false), $message, 'error');
+				return;
+			}
+			// set auto loader
+			ComponentbuilderHelper::autoLoader('smart');
+			// get the data to export
+			if ($model->shareSnippets($pks))
+			{
+				// Redirect to the list screen with success
+				$message = JText::_('COM_COMPONENTBUILDER_SNIPPETS_HAVE_BEEN_EXPORTED_AND_ZIPPED_READY_TO_SHARE_PLEASE_WATCH_THE_FOLLOWING_A_HREF_TARGET_BLANKVIDEO_TUTORIALA_THAT_SHOWS_YOU_HOW_TO_SHARE_THESE_SNIPPETS_WITH_THE_REST_OF_THE_JCB_COMMUNITY');
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=snippets', false), $message);
+				return;
+			}
+		}
+		// Redirect to the list screen with error.
+		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_SHARE_THE_SNIPPETS_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=snippets', false), $message, 'error');
+		return;
+	}  
 }

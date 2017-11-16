@@ -114,8 +114,8 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
-		$model->user = JFactory::getUser();
-		if ($model->user->authorise('joomla_component.import', 'com_componentbuilder') && $model->user->authorise('core.import', 'com_componentbuilder'))
+		$user = JFactory::getUser();
+		if ($user->authorise('joomla_component.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
 			$session = JFactory::getSession();
 			$session->set('backto_VDM_IMPORT', 'joomla_components');

@@ -3742,7 +3742,7 @@ class Interpretation extends Fields
 				{
 					if (JFile::exists($file['path']))
 					{
-						$string = file_get_contents($file['path']);
+						$string = ComponentbuilderHelper::getFileContents($file['path']);
 						$buket['static'][] = $this->getInbetweenStrings($string);
 					}
 				}
@@ -3754,7 +3754,7 @@ class Interpretation extends Fields
 						{
 							if (JFile::exists($doc['path']))
 							{
-								$string = file_get_contents($doc['path']);
+								$string = ComponentbuilderHelper::getFileContents($doc['path']);
 								$buket[$view][] = $this->getInbetweenStrings($string);
 							}
 						}

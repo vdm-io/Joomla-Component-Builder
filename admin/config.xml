@@ -83,6 +83,57 @@
 			label="COM_COMPONENTBUILDER_CONFIG_API_LABEL"
 			description="COM_COMPONENTBUILDER_CONFIG_API_DESCRIPTION"
 		/>		
+		<!-- Set_browser_storage Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="set_browser_storage"
+			label="COM_COMPONENTBUILDER_CONFIG_SET_BROWSER_STORAGE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_SET_BROWSER_STORAGE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_ACTIVE</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_INACTIVE</option>
+		</field>		
+		<!-- Storage_time_to_live Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="storage_time_to_live"
+			label="COM_COMPONENTBUILDER_CONFIG_STORAGE_TIME_TO_LIVE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_STORAGE_TIME_TO_LIVE_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="global"
+			showon="set_browser_storage:1">
+			<!-- Option Set. -->
+			<option value="global">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_SESSION</option>
+			<option value="30">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_THIRTY_SECONDS</option>
+			<option value="60">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_MINUTE</option>
+			<option value="300">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_FIVE_MINUTES</option>
+			<option value="900">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_FIFTEEN_MINUTES</option>
+			<option value="1800">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_THIRTY_MINUTES</option>
+			<option value="3600">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_HOUR</option>
+			<option value="18000">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_FIVE_HOURS</option>
+			<option value="36000">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_TEN_HOURS</option>
+			<option value="86400">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_DAY</option>
+			<option value="604800">
+				COM_COMPONENTBUILDER_CONFIG_EVERY_WEEK</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NEVER_UPDATE</option>
+		</field>		
 		<!-- Spacer_hr_b Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_b" hr="true" class="spacer_hr_b" />
 		<field name="autorTitle"

@@ -910,7 +910,7 @@ class Structure extends Get
 	private function setJoomlaVersionData()
 	{
 		// set the version data
-		$versionData = json_decode(file_get_contents($this->templatePath.'/settings.json'));
+		$versionData = json_decode(ComponentbuilderHelper::getFileContents($this->templatePath.'/settings.json'));
 		// add custom folders
 		if ((isset($this->componentData->folders) && ComponentbuilderHelper::checkArray($this->componentData->folders)) || $this->addEximport || $this->uikit || $this->footable)
 		{

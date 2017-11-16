@@ -739,13 +739,13 @@
 			default="0">
 			<!-- Option Set. -->
 			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DO_NOT_ADD</option>
 			<option value="2">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BOTH</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_BOTH_VTWO_AMP_VTHREE</option>
 			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_VTWO</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UIKIT_VTWO</option>
 			<option value="3">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_VTHREE</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UIKIT_VTHREE</option>
 		</field>
 		<!-- Note_mysql_tweak_options Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_mysql_tweak_options" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_MYSQL_TWEAK_OPTIONS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_MYSQL_TWEAK_OPTIONS_DESCRIPTION" heading="h4" class="alert alert-info note_mysql_tweak_options" />

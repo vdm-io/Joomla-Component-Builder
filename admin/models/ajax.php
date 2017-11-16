@@ -1711,20 +1711,22 @@ class ComponentbuilderModelAjax extends JModelList
 		 
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('name', 'heading', 'usage', 'description', 'type', 'snippet', 'url')));
-		$query->from($db->quoteName('#__componentbuilder_snippet'));
-		$query->where($db->quoteName('published') . ' = 1');
-		$query->where($db->quoteName('id') . ' = '. (int) $id);
+		$query->select($db->quoteName(array('a.name', 'a.heading', 'a.usage', 'a.description', 'b.name', 'a.snippet', 'a.url', 'c.name'), array('name', 'heading', 'usage', 'description', 'type', 'snippet', 'url', 'library')));
+		$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
+		// From the componentbuilder_snippet_type table.
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'b') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('b.id') . ')');
+		// From the componentbuilder_library table.
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'c') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('c.id') . ')');
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->where($db->quoteName('a.id') . ' = '. (int) $id);
 		 
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 		$db->execute();
 		if ($db->getNumRows())
 		{
-			$model = ComponentbuilderHelper::getModel('snippets');
 			$snippet = $db->loadObject();
-			$snippet->type = JText::_($model->selectionTranslation($snippet->type,'type'));
-			$snippet->snippet = base64_decode($snippet->snippet);			
+			$snippet->snippet = base64_decode($snippet->snippet);
 			// return found snippet settings
 			return $snippet;
 		}

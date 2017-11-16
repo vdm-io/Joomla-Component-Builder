@@ -37,7 +37,7 @@ abstract class ComponentbuilderHelper
 	**/
 	protected static $params = false;
 
-	/*
+	/**
 	 * get all component IDs
 	 */
 	public static function getComponentIDs()
@@ -58,7 +58,7 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	/*
+	/**
 	 * Autoloader
 	 */
 	public static function autoLoader($type = 'compiler')
@@ -171,14 +171,14 @@ abstract class ComponentbuilderHelper
 	}
 			
 	/**
-	 * The zipper method
-	 * 
-	 * @param  string   $workingDIR    The directory where the items must be zipped
-	 * @param  string   $filepath          The path to where the zip file must be placed
-	 *
-	 * @return  bool true   On success
-	 * 
-	 */
+	*	The zipper method
+	* 
+	*	@param  string   $workingDIR    The directory where the items must be zipped
+	*	@param  string   $filepath          The path to where the zip file must be placed
+	*
+	*	@return  bool true   On success
+	* 
+	*/
 	public static function zip($workingDIR, &$filepath)
 	{
 		// store the current joomla working directory
@@ -222,14 +222,14 @@ abstract class ComponentbuilderHelper
 			
 			
 	/**
-	 * Write a file to the server
-	 * 
-	 * @param  string   $path    The path and file name where to safe the data
-	 * @param  string   $data    The data to safe
-	 *
-	 * @return  bool true   On success
-	 * 
-	 */
+	*	Write a file to the server
+	* 
+	*	@param  string   $path    The path and file name where to safe the data
+	*	@param  string   $data    The data to safe
+	*
+	*	@return  bool true   On success
+	* 
+	*/
 	public static function writeFile($path, $data)
 	{
 		$klaar = false;
@@ -1185,7 +1185,7 @@ abstract class ComponentbuilderHelper
 			// first get the file path
 			$path_filename = self::getFilePath('path', $name.$type, $fileType, $key, JPATH_COMPONENT_ADMINISTRATOR);
 			// set as read if not already set
-			if (($content = @file_get_contents($path_filename)) !== FALSE)
+			if ($content = self::getFileContents($path_filename, false))
 			{
 				if ($hash == $content)
 				{
@@ -1199,18 +1199,18 @@ abstract class ComponentbuilderHelper
 	}
 			
 	/**
-	 * Get the file path or url
-	 * 
-	 * @param  string   $type              The (url/path) type to return
-	 * @param  string   $target            The Params Target name (if set)
-	 * @param  string   $fileType          The kind of filename to generate (if not set no file name is generated)
-	 * @param  string   $key               The key to adjust the filename (if not set ignored)
-	 * @param  string   $default           The default path if not set in Params (fallback path)
-	 * @param  bool     $createIfNotSet    The switch to create the folder if not found
-	 *
-	 * @return  string    On success the path or url is returned based on the type requested
-	 * 
-	 */
+	*	Get the file path or url
+	* 
+	*	@param  string   $type              The (url/path) type to return
+	*	@param  string   $target            The Params Target name (if set)
+	*	@param  string   $fileType          The kind of filename to generate (if not set no file name is generated)
+	*	@param  string   $key               The key to adjust the filename (if not set ignored)
+	*	@param  string   $default           The default path if not set in Params (fallback path)
+	*	@param  bool     $createIfNotSet    The switch to create the folder if not found
+	*
+	*	@return  string    On success the path or url is returned based on the type requested
+	* 
+	*/
 	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
 	{
 		// get the global settings
@@ -1267,7 +1267,94 @@ abstract class ComponentbuilderHelper
 		// sanitize the path
 		return '/' . trim( $filePath, '/' ) . '/' . $fileName;
 	}
-			 
+			
+			
+	/**
+	*	Get the file path or url
+	* 
+	*	@param  string   $type              The (url/path) type to return
+	*	@param  string   $target            The Params Target name (if set)
+	*	@param  string   $default           The default path if not set in Params (fallback path)
+	*	@param  bool     $createIfNotSet    The switch to create the folder if not found
+	*
+	*	@return  string    On success the path or url is returned based on the type requested
+	* 
+	*/
+	public static function getFolderPath($type = 'path', $target = 'folderpath', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
+	{
+		// get the global settings
+		if (!self::checkObject(self::$params))
+		{
+			self::$params = JComponentHelper::getParams('com_componentbuilder');
+		}
+		$folderPath = self::$params->get($target, $default);
+		jimport('joomla.filesystem.folder');
+		// create the folder if it does not exist
+		if ($createIfNotSet && !JFolder::exists($folderPath))
+		{
+			JFolder::create($folderPath);
+		}
+		// return the url
+		if ('url' === $type)
+		{
+			if (strpos($folderPath, JPATH_SITE) !== false)
+			{
+				$folderPath = trim( str_replace( JPATH_SITE, '', $folderPath), '/');
+				return JURI::root() . $folderPath . '/';
+			}
+			// since the path is behind the root folder of the site, return only the root url (may be used to build the link)
+			return JURI::root();
+		}
+		// sanitize the path
+		return '/' . trim( $folderPath, '/' ) . '/';
+	}
+			
+			
+	/**
+	*	get the content of a file
+	* 
+	*	@param  string          $path    The path to the file
+	*	@param  string/bool   $none   The return value if no content was found
+	*
+	*	@return  string   On success
+	* 
+	*/
+	public static function getFileContents($path, $none = '')
+	{
+		if (self::checkString($path))
+		{
+			// use basic file get content for now
+			if (($content = @file_get_contents($path)) !== FALSE)
+			{
+				return $content;
+			}
+			// use curl if available
+			elseif (function_exists('curl_version'))
+			{
+				// start curl
+				$ch = curl_init();
+				// set the options
+				$options = array();
+				$options[CURLOPT_URL] = $path;
+				$options[CURLOPT_USERAGENT] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12';
+				$options[CURLOPT_RETURNTRANSFER] = TRUE;
+				$options[CURLOPT_SSL_VERIFYPEER] = FALSE;
+				// load the options
+				curl_setopt_array($ch, $options);
+				// get the content
+				$content = curl_exec($ch);
+				// close the connection
+				curl_close($ch);
+				// return if found
+				if (self::checkString($content))
+				{
+					return $content;
+				}
+			}
+		}
+		return $none;
+	}
+			
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{

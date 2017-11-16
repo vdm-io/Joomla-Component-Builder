@@ -2881,6 +2881,7 @@ class Get
 				}
 				$gets = array();
 				$keys = array();
+				// first load all options
 				foreach ($lines as $line)
 				{
 					if (strpos($line,'AS') !== false)
@@ -2896,13 +2897,16 @@ class Get
 						$get = $line;
 						$key = null;
 					}
+					// set the get and key
 					$get = trim($get);
 					$key = trim($key);
-					// only add the view
-					if ('a' != $as && 1 == $row_type && 'view' === $type && strpos('#'.$key,'#'.$view.'_') === false)
+					// only add the view (we must adapt this)
+					if (isset($this->getAsLookup[$method_key][$get]) && 'a' != $as && 1 == $row_type && 'view' === $type && strpos('#'.$key,'#'.$view.'_') === false)
 					{
+						// this is a problem (TODO) since we may want to not add the view name.
 						$key = $view.'_'.trim($key);
 					}
+					// continue only if we have get
 					if (ComponentbuilderHelper::checkString($get))
 					{
 						$gets[] = $this->db->quote($get);

@@ -87,7 +87,7 @@ class Compiler extends Infusion
 				$this->removeFolder($this->componentPath . '/site');
 				// clear form component xml
 				$xmlPath = $this->componentPath . '/'. $this->fileContentStatic['###component###']. '.xml';
-				$componentXML = file_get_contents($xmlPath);
+				$componentXML = ComponentbuilderHelper::getFileContents($xmlPath);
 				$textToSite = ComponentbuilderHelper::getBetween($componentXML,'<files folder="site">','</files>');
 				$textToSiteLang = ComponentbuilderHelper::getBetween($componentXML,'<languages folder="site">','</languages>');
 				$componentXML = str_replace(array('<files folder="site">'.$textToSite."</files>", '<languages folder="site">'.$textToSiteLang."</languages>"), array('',''), $componentXML);
@@ -183,7 +183,7 @@ class Compiler extends Infusion
 		if (isset($this->newFiles['static']) && ComponentbuilderHelper::checkArray($this->newFiles['static']) && isset($this->newFiles['dynamic']) && ComponentbuilderHelper::checkArray($this->newFiles['dynamic']))
 		{
 			// get the bom file
-			$bom = file_get_contents($this->bomPath);
+			$bom = ComponentbuilderHelper::getFileContents($this->bomPath);
 			// first we do the static files
 			foreach ($this->newFiles['static'] as $static)
 			{
@@ -195,7 +195,7 @@ class Compiler extends Infusion
 					{
 						$php = "<?php\n";
 					}
-					$string = file_get_contents($static['path']);
+					$string = ComponentbuilderHelper::getFileContents($static['path']);
 					if (strpos($string,'###BOM###') !== false)
 					{
 						list($wast,$code) = explode('###BOM###',$string);
@@ -232,7 +232,7 @@ class Compiler extends Infusion
 								{
 									$php = "<?php\n";
 								}
-								$string = file_get_contents($file['path']);
+								$string = ComponentbuilderHelper::getFileContents($file['path']);
 								if (strpos($string,'###BOM###') !== false)
 								{
 									list($bin,$code) = explode('###BOM###',$string);
@@ -385,7 +385,7 @@ class Compiler extends Infusion
 			$this->buildReadMeData();
 		}
 		// get the file
-		$string = file_get_contents($path);
+		$string = ComponentbuilderHelper::getFileContents($path);
 		// update the file
 		$answer = $this->setPlaceholders($string, $this->fileContentStatic);
 		// add to zip array

@@ -587,7 +587,7 @@ jQuery(document).ready(function(){
 		var groupName = jQuery(row).data('group');
 		var fieldName = groupName.replace('join_', '').replace('_table', '').replace(/([0-9])/g, '');
 		var fieldNr = groupName.replace(/([A-z_])/g, '');
-		updateSubItems(fieldName, fieldNr, '', '');
+		updateSubItems(fieldName, fieldNr, '_', '_');
 	});
 
 });

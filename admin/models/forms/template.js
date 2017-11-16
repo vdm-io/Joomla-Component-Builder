@@ -118,11 +118,14 @@ function getSnippetDetails(id){
 	getSnippetDetails_server(id).done(function(result) {
 		if(result.snippet){
 			var description = '';
-			if (result.description.length > 0)
-			{
+			if (result.description.length > 0) {
 				description = '<p>'+result.description+'</p>';
 			}
-			var code = '<div id="snippet-code"><b>'+result.name+' ('+result.type+')</b> <a href="'+result.url+'" target="_blank" >see more details</a><br /><em>'+result.heading+'</em><br /><textarea  id="snippet" class="span12" rows="11">'+result.snippet+'</textarea></div>';
+			var library = '';
+			if (result.library.length > 0) {
+				library = ' <b>('+result.library+')</b>';
+			}
+			var code = '<div id="snippet-code"><b>'+result.name+' ('+result.type+')</b> <a href="'+result.url+'" target="_blank" >see more details'+library+'</a><br /><em>'+result.heading+'</em><br /><textarea  id="snippet" class="span12" rows="11">'+result.snippet+'</textarea></div>';
 			jQuery('#snippet-code').remove();
 			jQuery('.snippet-code').append(code);
 			// make sure the code block is active
