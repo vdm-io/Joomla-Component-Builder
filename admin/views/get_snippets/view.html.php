@@ -177,6 +177,12 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		}
 		// token
 		$this->document->addScriptDeclaration("var token = '". JSession::getFormToken() ."';");
+		// add some global items buckets for bulk updating
+		$this->document->addScriptDeclaration("var bulkItems = {};");
+		$this->document->addScriptDeclaration("bulkItems.new = [];");
+		$this->document->addScriptDeclaration("bulkItems.diverged = [];");
+		$this->document->addScriptDeclaration("bulkItems.ahead = [];");
+		$this->document->addScriptDeclaration("bulkItems.behind = [];");
 		// set an error message if needed
 		$this->document->addScriptDeclaration("var returnError = '<div class=\"uk-alert uk-alert-warning\"><h1>".JText::_('COM_COMPONENTBUILDER_AN_ERROR_HAS_OCCURRED')."!</h1><p>".JText::_('COM_COMPONENTBUILDER_PLEASE_TRY_AGAIN_LATER').".</p></div>';");
 		// need to add some language strings
@@ -352,6 +358,10 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				var keyID = getKeyID(key);
 				// get the status
 				var status = getSnippetStatus(snippet, key);
+				// add to bulk updater
+				if ('equal' !== status) {
+					bulkItems[status].push(key);
+				}
 				// build the snippet display
 				var html = '<div id=\"'+keyID+'-panel\" class=\"uk-panel\" data-uk-filter=\"'+status+'\" data-snippet-libraries=\"'+snippet.library+'\" data-snippet-types=\"'+snippet.type+'\" data-snippet-name=\"'+snippet.name+'\">';
 				html += '<div class=\"uk-panel uk-panel-box uk-width-1-1\">';

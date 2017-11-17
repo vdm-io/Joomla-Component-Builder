@@ -57,7 +57,7 @@ JHtml::_('behavior.keepalive');
 	<nav class="uk-navbar">
 		<a href="https://github.com/vdm-io/Joomla-Component-Builder-Snippets" class="uk-navbar-brand" target="_blank"><i class="uk-icon-github"></i> gitHub</a>
 		<ul class="uk-navbar-nav uk-hidden-small snippets-menu">
-			<li data-uk-filter=""><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_ALL'); ?></a></li>
+			<li data-uk-filter="" class="uk-active"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_ALL'); ?></a></li>
 			<li data-uk-filter="equal"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_IN_SYNC'); ?></a></li>
 			<li data-uk-filter="behind"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE'); ?></a></li>
 			<li data-uk-filter="new"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a></li>
@@ -70,7 +70,13 @@ JHtml::_('behavior.keepalive');
 			<li data-uk-sort="snippet-types"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_TYPE_ASC'); ?></a></li>
 			<li data-uk-sort="snippet-types:desc"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_TYPE_DESC'); ?></a></li>
 		</ul>
+		<div class="uk-navbar-flip">
+			<ul class="uk-navbar-nav">
+				<li><a data-uk-toggle="{target:'#bulk-updater', animation:'uk-animation-slide-left, uk-animation-slide-bottom'}"><i class="uk-icon-cog"></i> <?php echo JText::_('COM_COMPONENTBUILDER_BULK'); ?></a></li>
+			</li>
+		</div>
 	</nav>
+	<div id="bulk-updater" class="uk-hidden"><br /><h2>Really this is getting way to smart now.. still working on this area.</h2></div>
 	<br />
 	<div id="snippets-grid" class="uk-grid uk-grid-preserve uk-grid-width-small-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4" data-uk-grid="{gutter:10, controls: '.snippets-menu'}" data-uk-check-display></div>
 </div>
