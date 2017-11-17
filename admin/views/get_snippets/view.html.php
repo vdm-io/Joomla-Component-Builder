@@ -103,6 +103,8 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		{
 			// Set the default uikit components in this view.
 			$uikitComp = array();
+			$uikitComp[] = 'UIkit.notify';
+			$uikitComp[] = 'data-uk-tooltip';
 			$uikitComp[] = 'data-uk-grid';
 		}
 
@@ -177,6 +179,52 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		$this->document->addScriptDeclaration("var token = '". JSession::getFormToken() ."';");
 		// set an error message if needed
 		$this->document->addScriptDeclaration("var returnError = '<div class=\"uk-alert uk-alert-warning\"><h1>".JText::_('COM_COMPONENTBUILDER_AN_ERROR_HAS_OCCURRED')."!</h1><p>".JText::_('COM_COMPONENTBUILDER_PLEASE_TRY_AGAIN_LATER').".</p></div>';");
+		// need to add some language strings
+		$this->document->addScriptDeclaration("var lang_Snippets = '".JText::_('COM_COMPONENTBUILDER_SNIPPETS')."';");
+		$this->document->addScriptDeclaration("var lang_Snippet = '".JText::_('COM_COMPONENTBUILDER_SNIPPET')."';");
+		$this->document->addScriptDeclaration("var lang_Snippet_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_SNIPPET_OF_COMMUNITY_VERSION')."';");
+		$this->document->addScriptDeclaration("var lang_Get_Snippet = '".JText::_('COM_COMPONENTBUILDER_GET_SNIPPET')."';");
+		$this->document->addScriptDeclaration("var lang_Get_Snippet_Tooltip = '".JText::_('COM_COMPONENTBUILDER_GET_THE_SNIPPET_FROM_GITHUB_AND_UPDATE_THE_LOCAL_VERSION')."';");
+		$this->document->addScriptDeclaration("var lang_Get_Snippet_New_Tooltip = '".JText::_('COM_COMPONENTBUILDER_GET_THE_SNIPPET_FROM_GITHUB_AND_INSTALL_IT_LOCALLY')."';");
+		$this->document->addScriptDeclaration("var lang_Get_Snippet_Dont_Tooltip = '".JText::_('COM_COMPONENTBUILDER_NO_NEED_TO_GET_IT_SINCE_IT_IS_ALREADY_IN_SYNC_WITH_YOUR_LOCAL_VERSION')."';");
+		$this->document->addScriptDeclaration("var lang_Usage = '".JText::_('COM_COMPONENTBUILDER_USAGE')."';");
+		$this->document->addScriptDeclaration("var lang_Usage_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_USAGE_OF_COMMUNITY_VERSION')."';");
+		$this->document->addScriptDeclaration("var lang_Description = '".JText::_('COM_COMPONENTBUILDER_DESCRIPTION')."';");
+		$this->document->addScriptDeclaration("var lang_Description_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_DESCRIPTION_OF_COMMUNITY_VERSION')."';");
+		$this->document->addScriptDeclaration("var lang_View_Blame = '".JText::_('COM_COMPONENTBUILDER_VIEW_BLAME')."';");
+		$this->document->addScriptDeclaration("var lang_View_Blame_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_WHO_CONTRIBUTED_TO_THIS_SNIPPET')."';");
+		$this->document->addScriptDeclaration("var lang_URL_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_SNIPPET_REFERENCE_URL')."';");
+		$this->document->addScriptDeclaration("var lang_Update_Error_Tooltip = '".JText::_('COM_COMPONENTBUILDER_SNIPPET_COULD_NOT_BE_UPDATEDSAVED')."';");
+		$this->document->addScriptDeclaration("var lang_Contributor_URL_Tooltip = '".JText::_('COM_COMPONENTBUILDER_LINK_TO_THE_CONTRIBUTOR')."';");
+		$this->document->addScriptDeclaration("var lang_Contributor_Modal_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_THE_CONTRIBUTOR_DETAILS')."';");
+		$this->document->addScriptDeclaration("var lang_JCB_Community = '".JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY')."';");
+		$this->document->addScriptDeclaration("var lang_Company_Name = '".JText::_('COM_COMPONENTBUILDER_COMPANY_NAME')."';");
+		$this->document->addScriptDeclaration("var lang_Author_Name = '".JText::_('COM_COMPONENTBUILDER_AUTHOR_NAME')."';");
+		$this->document->addScriptDeclaration("var lang_Author_Email = '".JText::_('COM_COMPONENTBUILDER_AUTHOR_EMAIL')."';");
+		$this->document->addScriptDeclaration("var lang_Author_Website = '".JText::_('COM_COMPONENTBUILDER_AUTHOR_WEBSITE')."';");
+		// add some lang verfy messages
+		$this->document->addScriptDeclaration("
+			// set the snippet from gitHub
+			function getConfirmUpdate(status) {
+				switch(status) {
+					case 'new':
+						return '".JText::_('COM_COMPONENTBUILDER_ARE_YOU_SURE_YOU_WOULD_LIKE_TO_ADD_THIS_NEW_JCB_COMMUNITY_SNIPPET_TO_YOUR_LOCAL_SNIPPETS')."';
+					break;
+					case 'behind':
+						return '".JText::_('COM_COMPONENTBUILDER_ARE_YOU_SURE_YOU_WOULD_LIKE_TO_UPDATE_YOUR_LOCAL_SNIPPET_WITH_THIS_NEWER_JCB_COMMUNITY_SNIPPET')."';
+					break;
+					case 'ahead':
+						return '".JText::_('COM_COMPONENTBUILDER_ARE_YOU_SURE_YOU_WOULD_LIKE_TO_UPDATE_YOUR_LOCAL_SNIPPET_WITH_THIS_OLDER_JCB_COMMUNITY_SNIPPET')."';
+					break;
+					case 'diverged':
+						return '".JText::_('COM_COMPONENTBUILDER_ARE_YOU_SURE_YOU_WOULD_LIKE_TO_REPLACE_YOUR_LOCAL_SNIPPET_WITH_THIS_JCB_COMMUNITY_SNIPPET')."';
+					break;
+					default:
+						return '".JText::_('COM_COMPONENTBUILDER_ARE_YOU_SURE_YOU_WOULD_LIKE_TO_CONTINUE')."';
+					break;
+				}
+			}
+		");
 		// Set the Time To Live To JavaScript
 		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
 		// load the local snippets
@@ -194,7 +242,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				getSnippets('https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master');
 			});
 			jQuery(document).ready(function(){
-				jQuery('body').on('click','.getmodal',function(){
+				jQuery('body').on('click','.getreaction',function(){
 					// Ajax request
 					var btn = jQuery(this);
 					btn.prop('disabled', true);
@@ -203,7 +251,12 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 					}, 3000);
 					var path = btn.data('path');
 					var type = btn.data('type');
-					getSnippetModal(path, type);
+					if ('get' === type) {
+						var status = btn.data('status');
+						setSnippetGithub(path, status);
+					} else {
+						getSnippetModal(path, type);
+					}
 				});
 			});
 			// load every thing once ready
@@ -211,7 +264,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				if (0 === jQuery.active) {
 					setTimeout( function() {
 						//do something special
-						jQuery('#snippets-github').html('<h1>Snippets</h1>');
+						jQuery('#snippets-github').html('<h1>'+lang_Snippets+'</h1>');
 						jQuery('#snippets-display').show();
 						jQuery('#snippets-grid').trigger('display.uk.check');
 					}, 1000);
@@ -240,9 +293,9 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 						if (local_modified == modified) {
 							return 'equal';
 						} else if (local_modified > modified) {
-							return 'behind';
-						} else if (local_modified < modified) {
 							return 'ahead';
+						} else if (local_modified < modified) {
+							return 'behind';
 						}
 					}
 					return 'diverged';
@@ -255,7 +308,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				var _paths = jQuery.jStorage.get('JCB-Snippets-Paths', null);
 				if (_paths) {
 					setSnippets(_paths);
-					jQuery('#snippets-github').html('<h1>Snippets</h1>');
+					jQuery('#snippets-github').html('<h1>'+lang_Snippets+'</h1>');
 					jQuery('#snippets-display').show();
 				} else {
 					jQuery.get(path)
@@ -295,24 +348,137 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			
 			// set the snippets
 			function setSnippet(snippet, key) {
+				// get useful ID
+				var keyID = getKeyID(key);
 				// get the status
 				var status = getSnippetStatus(snippet, key);
 				// build the snippet display
-				var html = '<div class=\"uk-panel\" data-uk-filter=\"'+status+'\" data-snippet-libraries=\"'+snippet.library+'\" data-snippet-types=\"'+snippet.type+'\" data-snippet-name=\"'+snippet.name+'\">';
+				var html = '<div id=\"'+keyID+'-panel\" class=\"uk-panel\" data-uk-filter=\"'+status+'\" data-snippet-libraries=\"'+snippet.library+'\" data-snippet-types=\"'+snippet.type+'\" data-snippet-name=\"'+snippet.name+'\">';
 				html += '<div class=\"uk-panel uk-panel-box uk-width-1-1\">';
-				html += '<div class=\"uk-panel-badge uk-badge\">'+status+'</div><br />';
+				html += '<div id=\"'+keyID+'-badge\" class=\"uk-panel-badge uk-badge\">'+status+'</div><br />';
 				html += '<h3 class=\"uk-panel-title\">' + snippet.library+ ' - (' + snippet.type + ') ' + snippet.name + '</h3>';
 				html += snippet.heading + '<hr />';
-				html += '<div class=\"uk-button-group uk-width-1-1 uk-margin-small-bottom\">';
-				html += '<button class=\"uk-button uk-button-success uk-width-1-3 getmodal\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"usage\">Usage</button>';
-				html += '<button class=\"uk-button uk-button-success uk-width-1-3 getmodal\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"description\">Description</button>';
-				html += '<button class=\"uk-button uk-button-success uk-width-1-3 getmodal\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"snippet\">Snippet</button>';
-				html += '</div>';
-				html += '<div><a class=\"uk-button uk-button-mini uk-button-success uk-width-1-1\" href=\"'+snippet.url+'\" target=\"_blank\">' + snippet.name + '</a></div>';
+				// set the data buttons
+				html += setDataButtons(snippet, key, status)
+				// set the snippet ref button
+				html += setRefButtons(snippet, key, status, keyID)
+				// set the contributor buttons
+				html += setContributorButtons(snippet, key);
+				// close the box panel
 				html += '</div>';
 				html += '</div>';
 				// now we have the snippet
 				jQuery('#snippets-grid').append(html);
+			}
+			
+			function setDataButtons(snippet, key, status) {
+				var html = '<div class=\"uk-button-group uk-width-1-1 uk-margin-small-bottom\">';
+				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"usage\" data-uk-tooltip title=\"'+lang_Usage_Tooltip+'\"><i class=\"uk-icon-info\"></i> '+lang_Usage+'</button>';
+				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"description\" data-uk-tooltip title=\"'+lang_Description_Tooltip+'\"><i class=\"uk-icon-sticky-note-o\"></i> '+lang_Description+'</button>';
+				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"snippet\" data-uk-tooltip title=\"'+lang_Snippet_Tooltip+'\"><i class=\"uk-icon-code\"></i> '+lang_Snippet+'</button>';
+				html += '</div>';
+				// return data buttons
+				return html;
+			}
+			
+			function setRefButtons(snippet, key, status, keyID) {
+				var html = '<div><a class=\"uk-button uk-button-mini uk-button-success uk-margin-small-bottom uk-width-1-1\" href=\"'+snippet.url+'\" target=\"_blank\" data-uk-tooltip title=\"'+lang_URL_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> ' + snippet.name + '</a></div>';
+				// set the update and review button
+				html += '<div class=\"uk-button-group uk-width-1-1 uk-margin-small-bottom\">';
+				html += '<a class=\"uk-button uk-button-small uk-button-primary uk-width-1-2\" href=\"https://github.com/vdm-io/Joomla-Component-Builder-Snippets/blame/master/'+key+'\" target=\"_blank\" data-uk-tooltip title=\"'+lang_View_Blame_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> '+lang_View_Blame+'</a>';
+				if ('equal' !== status) {
+					if ('new' === status) {
+						var tooltip = lang_Get_Snippet_New_Tooltip;
+					} else {
+						var tooltip = lang_Get_Snippet_Tooltip;
+					}
+					html += '<button id=\"'+keyID+'-getbutton\" class=\"uk-button uk-button-small uk-button-primary uk-width-1-2 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"get\"  data-uk-tooltip title=\"'+tooltip+'\"><i class=\"uk-icon-cloud-download\"></i> '+lang_Get_Snippet+'</button>';
+				} else {
+					html += '<button class=\"uk-button uk-button-small uk-width-1-2\" type=\"button\" disabled data-uk-tooltip title=\"'+lang_Get_Snippet_Dont_Tooltip+'\"><i class=\"uk-icon-cloud-download\"></i> '+lang_Get_Snippet+'</button>';
+				}
+				html += '</div>';
+				// return data buttons
+				return html;
+			}
+			
+			function setContributorButtons(snippet, key) {
+				// set the contributor name
+				if (snippet.contributor_company) {
+					var contributor_name = snippet.contributor_company;
+				} else if (snippet.contributor_name) {
+					var contributor_name = snippet.contributor_name;
+				} else {
+					var contributor_name = lang_JCB_Community;
+				}
+				// set the contributor url
+				if (snippet.contributor_website) {
+					var contributor_url = snippet.contributor_website;
+				} else if (snippet.contributor_email) {
+					var contributor_url = 'mailto:'+snippet.contributor_email;
+				} else {
+					var contributor_url = 'https://github.com/vdm-io/Joomla-Component-Builder-Snippets';
+				}
+				var html = '<div class=\"uk-button-group uk-width-1-1\">';
+				html += '<button class=\"uk-button uk-width-1-5 uk-button-mini getreaction\" data-type=\"contributor\" data-path=\"'+key+'\" data-uk-tooltip title=\"'+lang_Contributor_Modal_Tooltip+'\"><i class=\"uk-icon-user\"></i></button>';
+				html += '<a  class=\"uk-button uk-width-4-5 uk-button-mini\" href=\"'+contributor_url+'\" target=\"_blank\"  data-uk-tooltip title=\"'+lang_Contributor_URL_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> ' + contributor_name + '</a>';
+				html += '</div>';
+				// return contributor buttons
+				return html;
+			}
+			
+			// set the snippet from gitHub
+			function setSnippetGithub(key, status) {
+				var message = getConfirmUpdate(status);
+				UIkit.modal.confirm(message, function(){
+					// will be executed on confirm.
+					setSnippetGithub_server(key, status).done(function(result) {
+						if (result.message) {
+							UIkit.notify(result.message, {status: result.status});
+							if ('success' === result.status) {
+								// get key ID
+								var keyID = getKeyID(key);
+								// update snippet if we can
+								updateSnippetDisplay(keyID, 'equal');
+							}
+						} else {
+							UIkit.notify(lang_Update_Error_Tooltip, {status:'danger'});
+						}
+					});
+				});
+			}
+			
+			function setSnippetGithub_server(path, status) {
+				var getUrl = \"index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json\";
+				if (token.length > 0 && path.length > 0 && status.length > 0) {
+					var request = 'token='+token+'&path='+path+'&status='+status;
+				}
+				return jQuery.ajax({
+					type: 'POST',
+					url: getUrl,
+					dataType: 'jsonp',
+					data: request,
+					jsonp: 'callback'
+				});
+			}
+			
+			// update the snippet display
+			function updateSnippetDisplay(keyID, status) {
+				// update badge
+				jQuery('#'+keyID+'-badge').html(status);
+				// update button
+				if ('equal' === status) {
+					// update notice
+					jQuery('#'+keyID+'-getbutton').attr('title', lang_Get_Snippet_Dont_Tooltip);
+					jQuery('#'+keyID+'-getbutton').prop('disabled', true);
+					// counter delay just incase
+					setTimeout(function(){
+						jQuery('#'+keyID+'-getbutton').prop('disabled', true);
+					}, 2000);
+				}
+				// update the data filter
+				jQuery('#'+keyID+'-panel').attr('data-uk-filter', status);
+				// tell the grid to update
+				jQuery('#snippets-grid').trigger('display.uk.check');
 			}
 			
 			// set the modal
@@ -341,13 +507,45 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				var html = '<div class=\"uk-modal-dialog uk-modal-dialog-lightbox\">';
 				html += '<a href=\"\" class=\"uk-modal-close uk-close uk-close-alt\"></a>';
 				html += '<h3>' + snippet.library + ' - (' + snippet.type + ') ' + snippet.name + '</h3>';
-				html += '<br /><textarea class=\"uk-width-1-1\" rows=\"15\">'+snippet[type]+'</textarea>';
+				if ('contributor' === type) {
+					html += '<dl class=\"uk-description-list-line\">';
+					html += '<dt><i class=\"uk-icon-institution\"></i> '+lang_Company_Name+'</dt>';
+					html += '<dd>'+snippet.contributor_company+'</dd>';
+					html += '<dt><i class=\"uk-icon-user\"></i> '+lang_Author_Name+'</dt>';
+					html += '<dd>'+snippet.contributor_name+'</dd>';
+					html += '<dt><i class=\"uk-icon-envelope-o\"></i> '+lang_Author_Email+'</dt>';
+					html += '<dd>'+snippet.contributor_email+'</dd>';
+					html += '<dt><i class=\"uk-icon-laptop\"></i> '+lang_Author_Website+'</dt>';
+					html += '<dd>'+snippet.contributor_website+'</dd>';
+					html += '</dl>';
+				} else {
+					html += '<br /><textarea class=\"uk-width-1-1\" rows=\"15\" readonly>'+snippet[type]+'</textarea>';
+				}
 				html += '<br /><small>C: ' + snippet.created + ' | M: ' + snippet.modified + '</small>';
 				html += '</div>';
+				// get current page position
+				var scroll = jQuery(window).scrollTop();
 				// add html to modal
-				var modal = UIkit.modal.blockUI(html);
+				var modal = UIkit.modal.blockUI(html, {center:true, bgclose:true}).on({
+					'hide.uk.modal': function(){
+						// scroll fix since the modal pops to the top of the page
+						jQuery(window).scrollTop(scroll);
+					}
+				});
 				// show modal
 				modal.show();
+			}
+			
+			// get key ID
+			function getKeyID(key) {
+				// get useful ID
+				keyID = key.replace('-', '');
+				keyID = keyID.replace('.json', '');
+				keyID = keyID.replace(/\s+/ig, '-');
+				keyID = keyID.replace(/\(/g, '');
+				keyID = keyID.replace(/\)/g, '');
+				// return the id build
+				return keyID;
 			}
 		");
         }

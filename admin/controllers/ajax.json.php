@@ -60,6 +60,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('checkFunctionName', 'ajax');
 		$this->registerTask('usedin', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
+		$this->registerTask('setSnippetGithub', 'ajax');
 		$this->registerTask('fieldOptions', 'ajax');
 	}
 
@@ -738,6 +739,45 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($idValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getSnippetDetails($idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'setSnippetGithub':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$pathValue = $jinput->get('path', NULL, 'STRING');
+						$statusValue = $jinput->get('status', NULL, 'WORD');
+						if($pathValue && $statusValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->setSnippetGithub($pathValue, $statusValue);
 						}
 						else
 						{

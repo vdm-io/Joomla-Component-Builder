@@ -1733,6 +1733,140 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 
+	public function setSnippetGithub($path, $status)
+	{
+		// get user
+		$user = JFactory::getUser();
+		$access = $user->authorise('snippet.access', 'com_componentbuilder');
+		if ($access)
+		{
+			// secure path
+			$path = ComponentbuilderHelper::safeString(str_replace('.json','',$path), 'filename', '', false).'.json';
+			// set url
+			$url = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/'.rawurlencode(basename($path));
+			// get the snippets
+			$snippet = ComponentbuilderHelper::getFileContents($url);
+			if (ComponentbuilderHelper::checkJson($snippet))
+			{
+				return $this->saveSnippet(json_decode($snippet, true), $status, $user);
+			}
+			return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_THE_PATH_HAS_A_MISMATCH_AND_COULD_THEREFORE_NOT_RETRIEVE_THE_SNIPPET_FROM_GITHUB'), 'status' => 'danger');
+		}
+		return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_YOU_DO_NOT_HAVE_ACCESS_TO_THE_SNIPPETS'), 'status' => 'danger');
+	}
+
+	protected function saveSnippet($item, $status, $user)
+	{
+		// set some defaults
+		$todayDate = JFactory::getDate()->toSql();
+		// get the type id
+		$item['type'] = ($id = ComponentbuilderHelper::getVar('snippet_type', $item['type'], 'name', 'id')) ? $id : $this->createNew($item['type'], 'snippet_type', $user, $todayDate);
+		// get the library id
+		$item['library'] = ($id = ComponentbuilderHelper::getVar('library', $item['library'], 'name', 'id')) ? $id : $this->createNew($item['library'], 'library', $user, $todayDate);
+		// remove type if zero
+		if ($item['type'] == 0)
+		{
+			unset($item['type']);
+		}
+		// remove library if zero
+		if ($item['library'] == 0)
+		{
+			unset($item['library']);
+		}
+		// get the snippet ID
+		$item['id'] = $this->getSnippetId($item);
+		if ($item['id'] == 0)
+		{
+			$canCreate = $user->authorise('snippet.create', 'com_componentbuilder');
+			if ('new' === $status && !$canCreate)
+			{
+				return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_YOU_DO_NOT_HAVE_PERMISSION_TO_CREATE_THE_SNIPPET'), 'status' => 'danger');
+			}
+		}
+		// get the snippet model
+		$model = ComponentbuilderHelper::getModel('snippet', JPATH_COMPONENT_ADMINISTRATOR);
+		// save the snippet
+		if ($model->save($item))
+		{
+			if ($item['id'] == 0)
+			{
+				// get the saved item
+				$updatedItem = $model->getItem();
+				$item['id']= $updatedItem->get('id');
+			}
+			// we have to force modified date since the model does not allow you
+			if ($this->forchDateFix($item))
+			{
+				return array('message' => JText::_('COM_COMPONENTBUILDER_SUCCESS_THE_SNIPPET_WAS_SAVED'), 'status' => 'success');
+			}
+			// return error
+			return array('message' => JText::_('COM_COMPONENTBUILDER_SUCCESS_THE_SNIPPET_WAS_SAVED_BUT_THE_MODIFIED_DATE_COULD_NOT_BE_ADJUSTED_BR_BR_BTHIS_MEANS_THE_SNIPPETS_WILL_CONTINUE_TO_APPEAR_OUT_OF_DATEB'), 'status' => 'warning');
+		}
+		// return error
+		return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_THE_SNIPPET_IS_FAULTY_AND_COULD_NOT_BE_SAVED'), 'status' => 'danger');
+	}
+
+	protected function forchDateFix($item)
+	{
+		$object = new stdClass();
+		$object->id = (int) $item['id'];
+		$object->created = $item['created'];
+		$object->modified = $item['modified'];
+		// force update
+		return JFactory::getDbo()->updateObject('#__componentbuilder_snippet', $object, 'id');
+	}
+
+	protected function getSnippetId($item)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		 
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id')));
+		$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
+		$query->where($db->quoteName('a.name') . ' = ' . (string) $db->quote($item['name']));
+		if (is_numeric($item['type']))
+		{
+			$query->where($db->quoteName('a.type') . ' = ' . (int) $item['type']);
+		}
+		if (is_numeric($item['library']))
+		{
+			$query->where($db->quoteName('a.library') . ' = ' . (int) $item['library']);
+		}
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			return $db->loadResult();
+		}
+		return 0;
+	}
+
+	protected function createNew($name, $type, $user, $todayDate)
+	{
+		// verify that we can continue
+		if (ComponentbuilderHelper::getActions($type)->get('core.create'))
+		{
+			// get the snippet model
+			$model = ComponentbuilderHelper::getModel($type, JPATH_COMPONENT_ADMINISTRATOR);
+			// build array to save
+			$item['id'] = 0;
+			$item['name'] = $name;
+			$item['published'] = 1;
+			$item['version'] = 1;
+			$item['created'] = $todayDate;
+			$item['created_by'] = $user->id;
+			// save the new
+			$model->save($item);
+			// get the saved item
+			$item = $model->getItem();
+			return $item->get('id');
+		}
+		return 0;
+	}
+
 	// Used in field
 	public function getFieldOptions($id)
 	{

@@ -55,7 +55,7 @@ JHtml::_('behavior.keepalive');
 </div>
 <div id="snippets-display" style="display: none;">
 	<nav class="uk-navbar">
-		<a href="https://github.com/vdm-io/Joomla-Component-Builder-Snippets" class="uk-navbar-brand uk-hidden-small" target="_blank"><i class="uk-icon-github"></i> gitHub</a>
+		<a href="https://github.com/vdm-io/Joomla-Component-Builder-Snippets" class="uk-navbar-brand" target="_blank"><i class="uk-icon-github"></i> gitHub</a>
 		<ul class="uk-navbar-nav uk-hidden-small snippets-menu">
 			<li data-uk-filter=""><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_ALL'); ?></a></li>
 			<li data-uk-filter="equal"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_IN_SYNC'); ?></a></li>
@@ -70,22 +70,9 @@ JHtml::_('behavior.keepalive');
 			<li data-uk-sort="snippet-types"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_TYPE_ASC'); ?></a></li>
 			<li data-uk-sort="snippet-types:desc"><a href=""><?php echo JText::_('COM_COMPONENTBUILDER_TYPE_DESC'); ?></a></li>
 		</ul>
-		<a href="#small-snippets-menu" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
 	</nav>
 	<br />
 	<div id="snippets-grid" class="uk-grid uk-grid-preserve uk-grid-width-small-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4" data-uk-grid="{gutter:10, controls: '.snippets-menu'}" data-uk-check-display></div>
-</div>
-<div id="small-snippets-menu" class="uk-offcanvas">
-	<div class="uk-offcanvas-bar">
-		<ul class="uk-nav uk-nav-offcanvas" data-uk-nav>
-			<li data-uk-filter=""><a href="" class="uk-offcanvas-close"><?php echo JText::_('COM_COMPONENTBUILDER_ALL'); ?></a></li>
-			<li data-uk-filter="equal"><a href="" class="uk-offcanvas-close"><?php echo JText::_('COM_COMPONENTBUILDER_IN_SYNC'); ?></a></li>
-			<li data-uk-filter="behind"><a href="" class="uk-offcanvas-close"><?php echo JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE'); ?></a></li>
-			<li data-uk-filter="new"><a href="" class="uk-offcanvas-close"><?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a></li>
-			<li data-uk-filter="diverged"><a href="" class="uk-offcanvas-close"><?php echo JText::_('COM_COMPONENTBUILDER_DIVERGED'); ?></a></li>
-			<li data-uk-filter="ahead"><a href="" class="uk-offcanvas-close"><?php echo JText::_('COM_COMPONENTBUILDER_AHEAD'); ?></a></li>
-		</ul>
-	</div>
 </div>
 <script type="text/javascript">
 			
