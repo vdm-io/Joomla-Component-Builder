@@ -130,6 +130,7 @@
 			class="list_class"
 			multiple="false"
 			default="0"
+			required="true"
 		/>
 		<!-- Heading Field. Type: Text. (joomla) -->
 		<field
@@ -154,31 +155,36 @@
 			class="list_class"
 			multiple="false"
 			default="0"
+			required="true"
 			button="true"
 		/>
-		<!-- Description Field. Type: Textarea. (joomla) -->
+		<!-- Contributor_email Field. Type: Text. (joomla) -->
 		<field
-			type="textarea"
-			name="description"
-			label="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_LABEL"
-			rows="11"
-			cols="10"
-			description="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_DESCRIPTION"
-			class="text_area span12"
-			filter="HTML"
-			hint="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_HINT"
+			type="text"
+			name="contributor_email"
+			label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_HINT"
 		/>
-		<!-- Snippet Field. Type: Textarea. (joomla) -->
+		<!-- Contributor_website Field. Type: Text. (joomla) -->
 		<field
-			type="textarea"
-			name="snippet"
-			label="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_LABEL"
-			rows="27"
-			cols="10"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_HINT"
-			required="true"
+			type="text"
+			name="contributor_website"
+			label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_HINT"
 		/>
 		<!-- Usage Field. Type: Textarea. (joomla) -->
 		<field
@@ -192,6 +198,60 @@
 			filter="STRING"
 			hint="COM_COMPONENTBUILDER_SNIPPET_USAGE_HINT"
 		/>
+		<!-- Snippet Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="snippet"
+			label="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_LABEL"
+			rows="27"
+			cols="10"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_HINT"
+			required="true"
+		/>
+		<!-- Description Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="description"
+			label="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_LABEL"
+			rows="11"
+			cols="10"
+			description="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_DESCRIPTION"
+			class="text_area span12"
+			filter="HTML"
+			hint="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_HINT"
+		/>
+		<!-- Contributor_name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="contributor_name"
+			label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_HINT"
+		/>
+		<!-- Contributor_company Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="contributor_company"
+			label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_HINT"
+		/>
+		<!-- Note_contributor_details Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_contributor_details" label="COM_COMPONENTBUILDER_SNIPPET_NOTE_CONTRIBUTOR_DETAILS_LABEL" description="COM_COMPONENTBUILDER_SNIPPET_NOTE_CONTRIBUTOR_DETAILS_DESCRIPTION" heading="h4" class="alert alert-info note_contributor_details" />
 	</fieldset>
 	
 	<!-- Access Control Fields. -->

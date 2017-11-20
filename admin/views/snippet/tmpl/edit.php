@@ -52,6 +52,22 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php echo JHtml::_('bootstrap.addTab', 'snippetTab', 'contributor', JText::_('COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span6">
+				<?php echo JLayoutHelper::render('snippet.contributor_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('snippet.contributor_right', $this); ?>
+			</div>
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('snippet.contributor_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
 	<?php if ($this->canDo->get('core.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.state') || $this->canDo->get('core.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'snippetTab', 'publishing', JText::_('COM_COMPONENTBUILDER_SNIPPET_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
@@ -94,3 +110,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 </div>
 </form>
 </div>
+
+<script type="text/javascript">
+
+
+
+<?php 
+	// setup the return url
+	$uri = (string) JUri::getInstance();
+	$return = urlencode(base64_encode($uri));
+	$optionsURL = 'index.php?option=com_config&view=component&component=com_componentbuilder&return='.$return;
+?>
+jQuery(function() {
+	jQuery('#contributor-global-settings').html("<a class='btn btn-small options-link' href='<?php echo $optionsURL;?>'><span class='icon-options'></span><?php echo JText::_('COM_COMPONENTBUILDER_OPTIONS'); ?></a>");
+});
+</script>

@@ -1743,7 +1743,7 @@ class ComponentbuilderModelAjax extends JModelList
 			// secure path
 			$path = ComponentbuilderHelper::safeString(str_replace('.json','',$path), 'filename', '', false).'.json';
 			// set url
-			$url = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/'.rawurlencode(basename($path));
+			$url = ComponentbuilderHelper::$snippetPath.rawurlencode(basename($path));
 			// get the snippets
 			$snippet = ComponentbuilderHelper::getFileContents($url);
 			if (ComponentbuilderHelper::checkJson($snippet))

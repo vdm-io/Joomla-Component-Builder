@@ -148,7 +148,12 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 			{
 				JToolBarHelper::custom('custom_admin_views.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                } 
+                }
+		if ($this->user->authorise('custom_admin_view.get_snippets', 'com_componentbuilder'))
+		{
+			// add Get Snippets button.
+			JToolBarHelper::custom('custom_admin_views.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
+		} 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('custom_admin_view.import'))
 		{

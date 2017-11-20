@@ -63,9 +63,6 @@ class ComponentbuilderViewCustom_admin_view extends JViewLegacy
                         $this->referral = '&ref='.(string)$this->ref;
                 }
 
-		// Get Linked view data
-		$this->vyelinked_components		= $this->get('Vyelinked_components');
-
 		// Set the toolbar
 		$this->addToolBar();
 		
@@ -197,16 +194,6 @@ class ComponentbuilderViewCustom_admin_view extends JViewLegacy
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/custom_admin_view.css");
 		// Add Ajax Token
 		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-
-		// Add the CSS for Footable
-		$document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.standalone.min.css');
-		// Add the JavaScript for Footable (adding all funtions)
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.min.js');
-
-		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
-		$document->addScriptDeclaration($footable);
-
 		$document->addScript(JURI::root() . $this->script);
 		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/custom_admin_view/submitbutton.js"); 
 		JText::script('view not acceptable. Error');

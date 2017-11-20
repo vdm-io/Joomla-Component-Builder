@@ -788,6 +788,24 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
+		// set the contributor details if not set
+		if (strlen($data['contributor_company']) < 1 || strlen($data['contributor_name']) < 1 || strlen($data['contributor_email']) < 3 || strlen($data['contributor_website']) < 3)
+		{
+			// get the library name
+			$library = ($name = ComponentbuilderHelper::getVar('library', $item['library'], 'id', 'name')) ? $name:'Common';
+			// get the library name
+			$type = ($name = ComponentbuilderHelper::getVar('snippet_type', $item['type'], 'id', 'name')) ? $name:'No Library';
+			// build the filename
+			$filename = ComponentbuilderHelper::safeString($library . ' - (' . $type . ') ' . $item['name'], 'filename', '', false). '.json';
+			// now get the contributor details (slow)
+			$contributor = ComponentbuilderHelper::getContributorDetails($filename);
+			// now update the local snippet contributor details
+			$data['contributor_company'] = $contributor['contributor_company'];
+			$data['contributor_name'] = $contributor['contributor_name'];
+			$data['contributor_email'] = $contributor['contributor_email'];
+			$data['contributor_website'] = $contributor['contributor_website'];
+		}
+
 		// Set the snippet string to base64 string.
 		if (isset($data['snippet']))
 		{

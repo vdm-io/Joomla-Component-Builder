@@ -146,8 +146,32 @@ class ComponentbuilderControllerSnippets extends JControllerAdmin
 			// get the data to export
 			if ($model->shareSnippets($pks))
 			{
-				// Redirect to the list screen with success
-				$message = JText::_('COM_COMPONENTBUILDER_SNIPPETS_HAVE_BEEN_EXPORTED_AND_ZIPPED_READY_TO_SHARE_PLEASE_WATCH_THE_FOLLOWING_A_HREF_TARGET_BLANKVIDEO_TUTORIALA_THAT_SHOWS_YOU_HOW_TO_SHARE_THESE_SNIPPETS_WITH_THE_REST_OF_THE_JCB_COMMUNITY');
+				// Message of successful build
+				if (count($pks) > 1)
+				{
+					$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_THE_SNIPPETS_WERE_SUCCESSFULLY_EXPORTED') . '</h1>';
+					$message .= '<p>' . JText::sprintf('To share these snippets with the rest of the JCB community,');
+				}
+				else
+				{
+					$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_THE_SNIPPET_WAS_SUCCESSFULLY_EXPORTED') . '</h1>';
+					$message .= '<p>' . JText::sprintf('To share this snippet with the rest of the JCB community,');
+				}
+				$message .= JText::sprintf('COM_COMPONENTBUILDER_YOU_WILL_NEED_TO_KNOW_HOW_S_WORKS_BASIC_YOU_WILL_ALSO_NEED_A_S_ACCOUNT_AND_KNOW_HOW_TO_MAKE_A_PULL_REQUEST_ON_GITHUB', 
+					'<a href="https://try.github.io" target="_blank">git</a>',
+					'<a href="https://github.com/join" target="_blank">github.com</a>') . '</p>';
+
+				$message .= '<h2>' . JText::_('COM_COMPONENTBUILDER_NEED_HELP') . '</h2>';
+				$message .= '<ul>';
+				$message .= '<li>'.JText::sprintf('COM_COMPONENTBUILDER_GENERAL_OVERVIEW_OF_HOW_THINGS_WORK_BSB', '<a href="https://www.youtube.com" target="_blank">https://www.youtube.com</a>').'</li>';
+				$message .= '<li>'.JText::sprintf('COM_COMPONENTBUILDER_BASIC_TUTORIAL_ON_GIT_BSB', '<a href="https://www.udemy.com/git-quick-start/" target="_blank">https://www.udemy.com/git-quick-start/</a>').'</li>';
+				$message .= '<li>'.JText::sprintf('COM_COMPONENTBUILDER_GET_AN_ACCOUNT_WITH_GITHUB_BSB', '<a href="https://github.com/join" target="_blank">https://github.com/join</a>').'</li>';
+				$message .= '<li>'.JText::sprintf('COM_COMPONENTBUILDER_TUTORIAL_ON_FORKING_JCB_SNIPPETS_BSB', '<a href="https://www.youtube.com" target="_blank">https://www.youtube.com</a>').'</li>';
+				$message .= '<li>'.JText::sprintf('COM_COMPONENTBUILDER_TUTORIAL_ON_MAKING_A_PULL_REQUEST_BSB', '<a href="https://www.youtube.com" target="_blank">https://www.youtube.com</a>').'</li>';
+				$message .= '<li>'.JText::sprintf('COM_COMPONENTBUILDER_REPORT_AN_ISSUE_BSB', '<a href="https://github.com/vdm-io/Joomla-Component-Builder-Snippets/issues" target="_blank">https://github.com/vdm-io/Joomla-Component-Builder-Snippets/issues</a>').'</li>';
+				$message .= '</ul>';
+				$message .= '<h2>' . JText::_('COM_COMPONENTBUILDER_ZIPPED_FILE_LOCATION') . '</h2>';
+				$message .= '<p>' . JText::sprintf('COM_COMPONENTBUILDER_PATH_CODESCODE', $model->zipPath). '</p>';
 				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=snippets', false), $message);
 				return;
 			}

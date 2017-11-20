@@ -38,6 +38,75 @@ abstract class ComponentbuilderHelper
 	protected static $params = false;
 
 	/**
+	* 	The local company details
+	**/
+	protected static $localCompany = array();
+
+	/**
+	* 	The snippet paths
+	**/
+	public static $snippetPath = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/';
+	public static $snippetsPath = 'https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master';
+
+	/**
+	*	Get the snippet contributor details
+	* 
+	*	@param  string   $filename   The file name
+	*	@param  string   $type         The type of file
+	*
+	*	@return  array    On success the contributor details
+	* 
+	*/
+	public static function getContributorDetails($filename, $type = 'snippet')
+	{
+		// start loading he contributor details
+		$contributor = array();
+		// get the path & content
+		switch ($type)
+		{
+			case 'snippet':
+				$path = $snippetPath.$filename;
+				// get the file if available
+				$content = self::getFileContents($path);
+				if (self::checkJson($content))
+				{
+					$content = json_decode($content, true);
+				}
+			break;
+			default:
+				// only allow types that are being targeted
+				return false;
+			break;
+		}
+		// see if we have content and all needed details
+		if (isset($content) && self::checkArray($content)
+				&& isset($content['contributor_company'])
+				&& isset($content['contributor_name'])
+				&& isset($content['contributor_email'])
+				&& isset($content['contributor_website']))
+		{
+			// got the details from file
+			return array('contributor_company' => $content['contributor_company'] ,'contributor_name' => $content['contributor_name'], 'contributor_email' => $content['contributor_email'], 'contributor_website' => $content['contributor_website'], 'origin' => 'file');
+		}
+		// get the global settings
+		if (!self::checkObject(self::$params))
+		{
+			self::$params = JComponentHelper::getParams('com_componentbuilder');
+		}
+		// get the global company details
+		if (!self::checkArray(self::$localCompany))
+		{
+			// Set the person sharing information (default VDM ;)
+			self::$localCompany['company']		= self::$params->get('export_company', 'Vast Development Method');
+			self::$localCompany['owner']		= self::$params->get('export_owner', 'Llewellyn van der Merwe');
+			self::$localCompany['email']		= self::$params->get('export_email', 'joomla@vdm.io');
+			self::$localCompany['website']		= self::$params->get('export_website', 'https://www.vdm.io/');
+		}
+		// default global
+		return array('contributor_company' => self::$localCompany['company']	,'contributor_name' => self::$localCompany['owner'], 'contributor_email' => self::$localCompany['email'], 'contributor_website' => self::$localCompany['website'], 'origin' => 'global');
+	}
+
+	/**
 	 * get all component IDs
 	 */
 	public static function getComponentIDs()

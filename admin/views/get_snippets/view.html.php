@@ -145,6 +145,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		// Add the JavaScript for JStore
 		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jquery.json.min.js');
 		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jstorage.min.js');
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/strtotime.js');
 		// check if we should use browser storage
 		$setBrowserStorage = $this->params->get('set_browser_storage', null);
 		if ($setBrowserStorage)
@@ -174,6 +175,9 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			// set to use no storage
 			$expire = 30000;
 		}
+		// set snippet path
+		$this->document->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
+		$this->document->addScriptDeclaration("var snippetsPath = '". ComponentbuilderHelper::$snippetsPath ."';");
 		// token
 		$this->document->addScriptDeclaration("var token = '". JSession::getFormToken() ."';");
 		// add some global items buckets for bulk updating
@@ -185,6 +189,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		// set an error message if needed
 		$this->document->addScriptDeclaration("var returnError = '<div class=\"uk-alert uk-alert-warning\"><h1>".JText::_('COM_COMPONENTBUILDER_AN_ERROR_HAS_OCCURRED')."!</h1><p>".JText::_('COM_COMPONENTBUILDER_PLEASE_TRY_AGAIN_LATER').".</p></div>';");
 		// need to add some language strings
+		$this->document->addScriptDeclaration("var lang_Community_Snippets = '".JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_SNIPPETS')."';");
 		$this->document->addScriptDeclaration("var lang_Snippets = '".JText::_('COM_COMPONENTBUILDER_SNIPPETS')."';");
 		$this->document->addScriptDeclaration("var lang_Snippet = '".JText::_('COM_COMPONENTBUILDER_SNIPPET')."';");
 		$this->document->addScriptDeclaration("var lang_Snippet_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_SNIPPET_OF_COMMUNITY_VERSION')."';");
@@ -201,6 +206,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		$this->document->addScriptDeclaration("var lang_View_Blame_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_WHO_CONTRIBUTED_TO_THIS_SNIPPET')."';");
 		$this->document->addScriptDeclaration("var lang_URL_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_SNIPPET_REFERENCE_URL')."';");
 		$this->document->addScriptDeclaration("var lang_Update_Error_Tooltip = '".JText::_('COM_COMPONENTBUILDER_SNIPPET_COULD_NOT_BE_UPDATEDSAVED')."';");
+		$this->document->addScriptDeclaration("var lang_Updates_Error_Tooltip = '".JText::_('COM_COMPONENTBUILDER_SNIPPETS_COULD_NOT_BE_UPDATEDSAVED')."';");
 		$this->document->addScriptDeclaration("var lang_Contributor_URL_Tooltip = '".JText::_('COM_COMPONENTBUILDER_LINK_TO_THE_CONTRIBUTOR')."';");
 		$this->document->addScriptDeclaration("var lang_Contributor_Modal_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_THE_CONTRIBUTOR_DETAILS')."';");
 		$this->document->addScriptDeclaration("var lang_JCB_Community = '".JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY')."';");
@@ -250,7 +256,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		$this->document->addScriptDeclaration("
 			// start the moment the document is ready
 			jQuery(document).ready(function () {
-				getSnippets('https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master');
+				getSnippets(snippetsPath);
 			});
 			jQuery(document).ready(function(){
 				jQuery('body').on('click','.getreaction',function(){
@@ -282,30 +288,23 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				if (0 === jQuery.active) {
 					setTimeout( function() {
 						//do something special
-						jQuery('#snippets-github').html('<h1>'+lang_Snippets+'</h1>');
+						jQuery('#snippets-github').html('<h1>'+lang_Community_Snippets+'</h1>');
 						jQuery('#snippets-display').show();
 						jQuery('#snippets-grid').trigger('display.uk.check');
 					}, 1000);
 				}
 			});
 			
-			// get unix time stamp
-			function unixTimeStamp(_theDate) {
-				// check if JCB already has this snippet
-				var aDate = new Date(_theDate);
-				return Math.round(aDate.getTime()/1000);
-			}
-			
 			// set the snippet status
 			function getSnippetStatus(snippet, key) {
 				// check if JCB already has this snippet
 				if(local_snippets.hasOwnProperty(key)){
 					// first get local time stamp
-					var local_created = unixTimeStamp(local_snippets[key].created);
-					var local_modified = unixTimeStamp(local_snippets[key].modified);
+					var local_created = strtotime(local_snippets[key].created);
+					var local_modified = strtotime(local_snippets[key].modified);
 					// now get github time stamps					
-					var created = unixTimeStamp(snippet.created);
-					var modified = unixTimeStamp(snippet.modified);
+					var created = strtotime(snippet.created);
+					var modified = strtotime(snippet.modified);
 					// work out the status
 					if (local_created == created) {
 						if (local_modified == modified) {
@@ -326,7 +325,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				var _paths = jQuery.jStorage.get('JCB-Snippets-Paths', null);
 				if (_paths) {
 					setSnippets(_paths);
-					jQuery('#snippets-github').html('<h1>'+lang_Snippets+'</h1>');
+					jQuery('#snippets-github').html('<h1>'+lang_Community_Snippets+'</h1>');
 					jQuery('#snippets-display').show();
 				} else {
 					jQuery.get(path)
@@ -349,7 +348,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 							setSnippet(_snippet, value.path);
 							jQuery('#snippets-grid').trigger('display.uk.check');
 						} else {
-							jQuery.get('https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/'+value.path)
+							jQuery.get(snippetPath+value.path)
 							.success(function(snippet) {
 								// convert the string to json.object
 								snippet = jQuery.parseJSON(snippet);
@@ -377,7 +376,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				// build the snippet display
 				var html = '<div id=\"'+keyID+'-panel\" class=\"uk-panel\" data-uk-filter=\"'+status+'\" data-snippet-libraries=\"'+snippet.library+'\" data-snippet-types=\"'+snippet.type+'\" data-snippet-name=\"'+snippet.name+'\">';
 				html += '<div class=\"uk-panel uk-panel-box uk-width-1-1\">';
-				html += '<div id=\"'+keyID+'-badge\" class=\"uk-panel-badge uk-badge\">'+status+'</div><br />';
+				html += '<div class=\"uk-panel-badge uk-badge\" ><a id=\"'+keyID+'-badge\" href=\"#'+status+'-meaning\" data-uk-offcanvas class=\"uk-text-uppercase uk-text-contrast\"><i class=\"uk-icon-info\"></i> '+status+'</a></div><br />';
 				html += '<h3 class=\"uk-panel-title\">' + snippet.library+ ' - (' + snippet.type + ') ' + snippet.name + '</h3>';
 				html += snippet.heading + '<hr />';
 				// set the data buttons
@@ -405,18 +404,17 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			
 			function setRefButtons(snippet, key, status, keyID) {
 				var html = '<div><a class=\"uk-button uk-button-mini uk-button-success uk-margin-small-bottom uk-width-1-1\" href=\"'+snippet.url+'\" target=\"_blank\" title=\"'+lang_URL_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> ' + snippet.name + '</a></div>';
-				// set the update and review button
-				html += '<div class=\"uk-button-group uk-width-1-1 uk-margin-small-bottom\">';
-				html += '<a class=\"uk-button uk-button-small uk-button-primary uk-width-1-2\" href=\"https://github.com/vdm-io/Joomla-Component-Builder-Snippets/blame/master/'+key+'\" target=\"_blank\" title=\"'+lang_View_Blame_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> '+lang_View_Blame+'</a>';
+				// set the update button	
+				html += '<div>';
 				if ('equal' !== status) {
 					if ('new' === status) {
 						var tooltip = lang_Get_Snippet_New_Tooltip;
 					} else {
 						var tooltip = lang_Get_Snippet_Tooltip;
 					}
-					html += '<button id=\"'+keyID+'-getbutton\" class=\"uk-button uk-button-small uk-button-primary uk-width-1-2 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"get\"  title=\"'+tooltip+'\"><i class=\"uk-icon-cloud-download\"></i> '+lang_Get_Snippet+'</button>';
+					html += '<button id=\"'+keyID+'-getbutton\" class=\"uk-button uk-button-small uk-button-primary uk-width-1-1 uk-margin-small-bottom getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"get\"  title=\"'+tooltip+'\"><i class=\"uk-icon-cloud-download\"></i> '+lang_Get_Snippet+'</button>';
 				} else {
-					html += '<button class=\"uk-button uk-button-small uk-width-1-2\" type=\"button\" disabled title=\"'+lang_Get_Snippet_Dont_Tooltip+'\"><i class=\"uk-icon-check-square-o\"></i> '+lang_Dont_Get_Snippet+'</button>';
+					html += '<button class=\"uk-button uk-button-small uk-width-1-1 uk-margin-small-bottom\" type=\"button\" disabled title=\"'+lang_Get_Snippet_Dont_Tooltip+'\"><i class=\"uk-icon-check-square-o\"></i> '+lang_Dont_Get_Snippet+'</button>';
 				}
 				html += '</div>';
 				// return data buttons
@@ -441,8 +439,9 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 					var contributor_url = 'https://github.com/vdm-io/Joomla-Component-Builder-Snippets';
 				}
 				var html = '<div class=\"uk-button-group uk-width-1-1\">';
-				html += '<button class=\"uk-button uk-width-1-5 uk-button-mini getreaction\" data-type=\"contributor\" data-path=\"'+key+'\" title=\"'+lang_Contributor_Modal_Tooltip+'\"><i class=\"uk-icon-user\"></i></button>';
-				html += '<a  class=\"uk-button uk-width-4-5 uk-button-mini\" href=\"'+contributor_url+'\" target=\"_blank\"  title=\"'+lang_Contributor_URL_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> ' + contributor_name + '</a>';
+				html += '<button class=\"uk-button uk-button-primary uk-width-1-10 uk-button-mini getreaction\" data-type=\"contributor\" data-path=\"'+key+'\" title=\"'+lang_Contributor_Modal_Tooltip+'\"><i class=\"uk-icon-user\"></i></button>';
+				html += '<a  class=\"uk-button uk-button-primary uk-width-5-10 uk-button-mini\" href=\"'+contributor_url+'\" target=\"_blank\"  title=\"'+lang_Contributor_URL_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> ' + contributor_name + '</a>';
+				html += '<a class=\"uk-button uk-button-primary uk-width-4-10 uk-button-mini\" href=\"https://github.com/vdm-io/Joomla-Component-Builder-Snippets/blame/master/'+key+'\" target=\"_blank\" title=\"'+lang_View_Blame_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> '+lang_View_Blame+'</a>';
 				html += '</div>';
 				// return contributor buttons
 				return html;
@@ -484,12 +483,53 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			
 			// do a bulk update
 			function bulkSnippetGithub(status) {
-				UIkit.notify('<b>The Bulk Tool Does not Work Yet!</b><br />We should have the bulk tools ready soon!<br /><br />Check out the console!', {status:'warning'});
+				// if all then trigger those with values
 				if ('all' === status) {
-					console.log(bulkItems);
-				} else {
-					console.log(bulkItems[status]);
+					bulkSnippetGithub('behind');
+					bulkSnippetGithub('new');
+					bulkSnippetGithub('ahead');
+					bulkSnippetGithub('diverged');
+				} else if (bulkItems[status].length > 0) {
+					jQuery.each(bulkItems[status], function(i, key){
+						setTimeout(function(){
+							doBulkUpdate_server(key, status).done(function(result) {
+								if (result.message) {
+									// only show errors
+									if ('error' === result.status || 'warning' === result.status) {
+										UIkit.notify(result.message, {status: result.status});
+									}
+									// update local items
+									if ('success' === result.status) {
+										// get key ID
+										var keyID = getKeyID(key);
+										// update snippet if we can
+										updateSnippetDisplay(keyID, 'equal');
+									}
+								} else {
+									UIkit.notify(lang_Update_Error_Tooltip, {status:'danger'});
+								}
+							});
+						}, 200);
+					});
+					// reset array
+					bulkItems[status].length = 0;
+					// update the buttons (since we only do the bulk update once)
+					checkBulkSnippetGithub();
 				}
+			}
+			
+			function doBulkUpdate_server(path, status) {
+				var getUrl = \"index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json\";
+				if (token.length > 0 && path.length > 0 && status.length > 0) {
+					var request = 'token='+token+'&path='+path+'&status='+status;
+				}
+				return jQuery.ajax({
+					type: 'POST',
+					url: getUrl,
+					dataType: 'jsonp',
+					data: request,
+					jsonp: 'callback'
+				});
 			}
 			
 			// set the snippet from gitHub
@@ -530,7 +570,8 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			// update the snippet display
 			function updateSnippetDisplay(keyID, status) {
 				// update badge
-				jQuery('#'+keyID+'-badge').html(status);
+				jQuery('#'+keyID+'-badge').html('<i class=\"uk-icon-info\"></i> ' +status);
+				jQuery('#'+keyID+'-badge').attr('href' , '#'+status+'-meaning');
 				// update button
 				if ('equal' === status) {
 					// update notice
@@ -630,6 +671,26 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
                 // JToolBarHelper::custom('get_snippets.back', 'undo-2', '', 'COM_COMPONENTBUILDER_BACK', false);
                 // add cpanel button
 		JToolBarHelper::custom('get_snippets.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
+		if ($this->canDo->get('get_snippets.custom_admin_views'))
+		{
+			// add Custom Admin Views button.
+			JToolBarHelper::custom('get_snippets.openCustomAdminViews', 'screen', '', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS', false);
+		}
+		if ($this->canDo->get('get_snippets.site_views'))
+		{
+			// add Site Views button.
+			JToolBarHelper::custom('get_snippets.openSiteViews', 'palette', '', 'COM_COMPONENTBUILDER_SITE_VIEWS', false);
+		}
+		if ($this->canDo->get('get_snippets.templates'))
+		{
+			// add Templates button.
+			JToolBarHelper::custom('get_snippets.openTemplates', 'brush', '', 'COM_COMPONENTBUILDER_TEMPLATES', false);
+		}
+		if ($this->canDo->get('get_snippets.layouts'))
+		{
+			// add Layouts button.
+			JToolBarHelper::custom('get_snippets.openLayouts', 'brush', '', 'COM_COMPONENTBUILDER_LAYOUTS', false);
+		}
 		if ($this->canDo->get('get_snippets.snippets'))
 		{
 			// add Snippets button.

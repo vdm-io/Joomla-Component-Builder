@@ -2699,315 +2699,315 @@ class com_componentbuilderInstallerScript
 		// do any updates needed
 		if ($type == 'update')
 		{
-		// load the helper class
-		JLoader::register('ComponentbuilderHelper', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/componentbuilder.php');
-		// check the version of JCB
-		$manifest = ComponentbuilderHelper::manifest();
-		if (isset($manifest->version) && strpos($manifest->version, '.') !== false)
-		{
-			// get the version
-			$version = explode('.', $manifest->version);
-			// Get a db connection.
-			$db = JFactory::getDbo();
-
-			// target version less then 2.5.2
-			if (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 1) || ($version[1] < 5)))
+			// load the helper class
+			JLoader::register('ComponentbuilderHelper', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/componentbuilder.php');
+			// check the version of JCB
+			$manifest = ComponentbuilderHelper::manifest();
+			if (isset($manifest->version) && strpos($manifest->version, '.') !== false)
 			{
-				// the set values
-				$this->setFtpValues = array();
-				// Create a new query object.
-				$query = $db->getQuery(true);
-				// get all Joomla Component FTP values
-				$query->select($db->quoteName(array('id', 'sales_server_ftp', 'update_server_ftp')));
-				$query->from($db->quoteName('#__componentbuilder_joomla_component'));
-				// Reset the query using our newly populated query object.
-				$db->setQuery($query);
-				$db->execute();
-				if ($db->getNumRows())
+				// get the version
+				$this->JCBversion = explode('.', $manifest->version);
+				// Get a db connection.
+				$db = JFactory::getDbo();
+
+				// target version less then 2.5.2
+				if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 1) || ($this->JCBversion[1] < 5)))
 				{
-					$rows = $db->loadObjectList();
-					// Get the basic encryption.
-					$basickey = ComponentbuilderHelper::getCryptKey('basic');
-					// Get the encryption object.
-					$basic = new FOFEncryptAes($basickey, 128);
-					foreach ($rows as $row)
+					// the set values
+					$this->setFtpValues = array();
+					// Create a new query object.
+					$query = $db->getQuery(true);
+					// get all Joomla Component FTP values
+					$query->select($db->quoteName(array('id', 'sales_server_ftp', 'update_server_ftp')));
+					$query->from($db->quoteName('#__componentbuilder_joomla_component'));
+					// Reset the query using our newly populated query object.
+					$db->setQuery($query);
+					$db->execute();
+					if ($db->getNumRows())
 					{
-						if (ComponentbuilderHelper::checkString($row->sales_server_ftp) || ComponentbuilderHelper::checkString($row->update_server_ftp))
+						$rows = $db->loadObjectList();
+						// Get the basic encryption.
+						$basickey = ComponentbuilderHelper::getCryptKey('basic');
+						// Get the encryption object.
+						$basic = new FOFEncryptAes($basickey, 128);
+						foreach ($rows as $row)
 						{
-							$updatevalue = null;
-							// update the update_server_ftp
-							if (ComponentbuilderHelper::checkString($row->update_server_ftp) && !is_numeric($row->update_server_ftp) && $basickey && $row->update_server_ftp === base64_encode(base64_decode($row->update_server_ftp, true)))
+							if (ComponentbuilderHelper::checkString($row->sales_server_ftp) || ComponentbuilderHelper::checkString($row->update_server_ftp))
 							{
-								$updatevalue = rtrim($basic->decryptString($row->update_server_ftp), "\0");
-							}
-							elseif (ComponentbuilderHelper::checkString($row->update_server_ftp))
-							{
-								$updatevalue = $row->update_server_ftp;
-							}
-							$salesvalue = null;
-							// update the sales_server_ftp
-							if (ComponentbuilderHelper::checkString($row->sales_server_ftp) && !is_numeric($row->sales_server_ftp) && $basickey && $row->sales_server_ftp === base64_encode(base64_decode($row->sales_server_ftp, true)))
-							{
-								$salesvalue = rtrim($basic->decryptString($row->sales_server_ftp), "\0");
-							}
-							elseif (ComponentbuilderHelper::checkString($row->sales_server_ftp))
-							{
-								$salesvalue = $row->sales_server_ftp;
-							}
-							// set update Values
-							if ($updatevalue)
-							{
-								$hash = md5($updatevalue) . '__update_server_ftp';
-								if (!isset($this->setFtpValues[$hash]))
+								$updatevalue = null;
+								// update the update_server_ftp
+								if (ComponentbuilderHelper::checkString($row->update_server_ftp) && !is_numeric($row->update_server_ftp) && $basickey && $row->update_server_ftp === base64_encode(base64_decode($row->update_server_ftp, true)))
 								{
-									$this->setFtpValues[$hash] = array();
-									$this->setFtpValues[$hash]['ids'] = array();
-									$this->setFtpValues[$hash]['ftp'] = $updatevalue;
-									$this->setFtpValues[$hash]['signature'] = $row->update_server_ftp;
+									$updatevalue = rtrim($basic->decryptString($row->update_server_ftp), "\0");
 								}
-								$this->setFtpValues[$hash]['ids'][] = $row->id;
-							}
-							// set sales Values
-							if ($salesvalue)
-							{
-								$hash = md5($salesvalue) . '__sales_server_ftp';
-								if (!isset($this->setFtpValues[$hash]))
+								elseif (ComponentbuilderHelper::checkString($row->update_server_ftp))
 								{
-									$this->setFtpValues[$hash] = array();
-									$this->setFtpValues[$hash]['ids'] = array();
-									$this->setFtpValues[$hash]['ftp'] = $salesvalue;
-									$this->setFtpValues[$hash]['signature'] = $row->sales_server_ftp;
+									$updatevalue = $row->update_server_ftp;
 								}
-								$this->setFtpValues[$hash]['ids'][] = $row->id;
+								$salesvalue = null;
+								// update the sales_server_ftp
+								if (ComponentbuilderHelper::checkString($row->sales_server_ftp) && !is_numeric($row->sales_server_ftp) && $basickey && $row->sales_server_ftp === base64_encode(base64_decode($row->sales_server_ftp, true)))
+								{
+									$salesvalue = rtrim($basic->decryptString($row->sales_server_ftp), "\0");
+								}
+								elseif (ComponentbuilderHelper::checkString($row->sales_server_ftp))
+								{
+									$salesvalue = $row->sales_server_ftp;
+								}
+								// set update Values
+								if ($updatevalue)
+								{
+									$hash = md5($updatevalue) . '__update_server_ftp';
+									if (!isset($this->setFtpValues[$hash]))
+									{
+										$this->setFtpValues[$hash] = array();
+										$this->setFtpValues[$hash]['ids'] = array();
+										$this->setFtpValues[$hash]['ftp'] = $updatevalue;
+										$this->setFtpValues[$hash]['signature'] = $row->update_server_ftp;
+									}
+									$this->setFtpValues[$hash]['ids'][] = $row->id;
+								}
+								// set sales Values
+								if ($salesvalue)
+								{
+									$hash = md5($salesvalue) . '__sales_server_ftp';
+									if (!isset($this->setFtpValues[$hash]))
+									{
+										$this->setFtpValues[$hash] = array();
+										$this->setFtpValues[$hash]['ids'] = array();
+										$this->setFtpValues[$hash]['ftp'] = $salesvalue;
+										$this->setFtpValues[$hash]['signature'] = $row->sales_server_ftp;
+									}
+									$this->setFtpValues[$hash]['ids'][] = $row->id;
+								}
 							}
 						}
 					}
 				}
-			}
-			/*
-			 * Convert repeatable fields in a table
-			 * 
-			 * @param   string   $table    The table where the fields are updated
-			 * @param   array    $select   The fields +id that should be updated
-			 * @param   array    $convert  The array options used to convert the fields
-			 *                             check => the array of values in the repeatable field that must exist
-			 *                             key   => the name of the field
-			 *
-			 * @return  void
-			 */
-			$convertRepeatable = function($db, $table, $select, $convert)
-			{
-				// update the properties in the field types
-				$query = $db->getQuery(true);
-				// update all JCB fieldtype properties
-				$query->select($db->quoteName($select));
-				$query->from($db->quoteName('#__componentbuilder_' . $table));
-				// Reset the query using our newly populated query object.
-				$db->setQuery($query);
-				$db->execute();
-				if ($db->getNumRows())
+				/*
+				 * Convert repeatable fields in a table
+				 * 
+				 * @param   string   $table    The table where the fields are updated
+				 * @param   array    $select   The fields +id that should be updated
+				 * @param   array    $convert  The array options used to convert the fields
+				 *                             check => the array of values in the repeatable field that must exist
+				 *                             key   => the name of the field
+				 *
+				 * @return  void
+				 */
+				$convertRepeatable = function($db, $table, $select, $convert)
 				{
-					$rows = $db->loadObjectList();
-					foreach ($rows as $row)
+					// update the properties in the field types
+					$query = $db->getQuery(true);
+					// update all JCB fieldtype properties
+					$query->select($db->quoteName($select));
+					$query->from($db->quoteName('#__componentbuilder_' . $table));
+					// Reset the query using our newly populated query object.
+					$db->setQuery($query);
+					$db->execute();
+					if ($db->getNumRows())
 					{
-						$update = false;
-						foreach ($convert as $target => $field)
+						$rows = $db->loadObjectList();
+						foreach ($rows as $row)
 						{
-							// check if it has needed values (it should but just in case)
-							$continue = false;
-							if (isset($row->{$target}) && ComponentbuilderHelper::checkJson($row->{$target}))
+							$update = false;
+							foreach ($convert as $target => $field)
 							{
-								// open the target and convert
-								$jsonArray = json_decode($row->{$target}, true);
-								// test if we can do conversion
-								$continue = true;
-								if (ComponentbuilderHelper::checkArray($jsonArray))
+								// check if it has needed values (it should but just in case)
+								$continue = false;
+								if (isset($row->{$target}) && ComponentbuilderHelper::checkJson($row->{$target}))
 								{
-									foreach($field['check'] as $check)
+									// open the target and convert
+									$jsonArray = json_decode($row->{$target}, true);
+									// test if we can do conversion
+									$continue = true;
+									if (ComponentbuilderHelper::checkArray($jsonArray))
 									{
-										if (!isset($jsonArray[$check]) || !ComponentbuilderHelper::checkArray($jsonArray[$check]))
+										foreach($field['check'] as $check)
 										{
-											$continue = false;
-										}
-										// if found but not an array, then clear out the target
-										if (isset($jsonArray[$check]) && !ComponentbuilderHelper::checkArray($jsonArray[$check]))
-										{
-											$row->{$target} = '';
-											$update = true;
+											if (!isset($jsonArray[$check]) || !ComponentbuilderHelper::checkArray($jsonArray[$check]))
+											{
+												$continue = false;
+											}
+											// if found but not an array, then clear out the target
+											if (isset($jsonArray[$check]) && !ComponentbuilderHelper::checkArray($jsonArray[$check]))
+											{
+												$row->{$target} = '';
+												$update = true;
+											}
 										}
 									}
+									else
+									{
+										$row->{$target} = '';
+										$update = true;
+									}
 								}
-								else
+								// do the conversion
+								if ($continue)
 								{
-									$row->{$target} = '';
+									$bucket = array();
+									foreach ($jsonArray as $key => $values)
+									{
+										foreach ($values as $nr => $value)
+										{
+											if (!isset($bucket[$field['key'] . $nr]) || !ComponentbuilderHelper::checkArray($bucket[$field['key'] . $nr]))
+											{
+												$bucket[$field['key'] . $nr] = array();
+											}
+											$bucket[$field['key'] . $nr][$key] = $value;
+										}
+									}
+									// set the bucket back to properties
+									$row->{$target} = json_encode($bucket);
 									$update = true;
 								}
 							}
-							// do the conversion
-							if ($continue)
+							// update with the new values
+							if ($update)
 							{
-								$bucket = array();
-								foreach ($jsonArray as $key => $values)
-								{
-									foreach ($values as $nr => $value)
-									{
-										if (!isset($bucket[$field['key'] . $nr]) || !ComponentbuilderHelper::checkArray($bucket[$field['key'] . $nr]))
-										{
-											$bucket[$field['key'] . $nr] = array();
-										}
-										$bucket[$field['key'] . $nr][$key] = $value;
-									}
-								}
-								// set the bucket back to properties
-								$row->{$target} = json_encode($bucket);
-								$update = true;
+								$db->updateObject('#__componentbuilder_' . $table, $row, 'id');
 							}
 						}
-						// update with the new values
-						if ($update)
-						{
-							$db->updateObject('#__componentbuilder_' . $table, $row, 'id');
-						}
 					}
-				}
-			};
-			// target version less then 2.5.5 (we need to change the language translation values & the fieldtype properties)
-			if (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 4) || ($version[1] < 5)))
-			{
-				// do some conversions in the translations table
-				$convertRepeatable($db, 'language_translation', array('id', 'translation'), array('translation' => array('check' => array('translation'), 'key' => 'translation')));
-				// do some conversions in the fieldtype table
-				$convertRepeatable($db, 'fieldtype', array('id', 'properties'), array('properties' => array('check' => array('name'), 'key' => 'properties')));
-			}
-			// target version less then 2.5.6
-			if (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 5) || ($version[1] < 5)))
-			{
-				// do some conversions in the dynamic get table
-				$convertRepeatable($db, 'dynamic_get', array('id', 'join_view_table', 'join_db_table', 'filter', 'where', 'order', 'global'),
-					array(
-						'join_view_table' => array('check' => array('view_table'), 'key' => 'join_view_table'),
-						'join_db_table' => array('check' => array('db_table'), 'key' => 'join_db_table'),
-						'filter' => array('check' => array('filter_type'), 'key' => 'filter'),
-						'where' => array('check' => array('table_key'), 'key' => 'where'),
-						'order' => array('check' => array('table_key'), 'key' => 'order'),
-						'global' => array('check' => array('name'), 'key' => 'global')
-					)
-				);
-			}
-			// get table columns to confirm that this is an old installation
-			$activeColumns = $db->getTableColumns('#__componentbuilder_admin_view');
-			// target version less then 2.5.7
-			if (isset($activeColumns['addfields']) && (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 6) || ($version[1] < 5))))
-			{
-				// do some conversions in the admin_view table
-				$convertRepeatable($db, 'admin_view', array('id', 'ajax_input', 'custom_button', 'addtables', 'addlinked_views', 'addconditions', 'addfields', 'addtabs', 'addpermissions'),
-					array(
-						'ajax_input' => array('check' => array('value_name'), 'key' => 'ajax_input'),
-						'custom_button' => array('check' => array('name'), 'key' => 'custom_button'),
-						'addtables' =>  array('check' => array('table'), 'key' => 'addtables'),
-						'addlinked_views' =>  array('check' => array('adminview'), 'key' => 'addlinked_views'),
-						'addconditions' =>  array('check' => array('target_field'), 'key' => 'addconditions'),
-						'addfields' =>  array('check' => array('field'), 'key' => 'addfields'),
-						'addtabs' =>  array('check' => array('name'), 'key' => 'addtabs'),
-						'addpermissions' =>  array('check' => array('action'), 'key' => 'addpermissions')
-					)
-				);
-
-				// do some conversions in the site_view table
-				$convertRepeatable($db, 'site_view', array('id', 'ajax_input', 'custom_button'),
-					array(
-						'ajax_input' => array('check' => array('value_name'), 'key' => 'ajax_input'),
-						'custom_button' => array('check' => array('name'), 'key' => 'custom_button')
-					)
-				);
-
-				// do some conversions in the custom_admin_view table
-				$convertRepeatable($db, 'custom_admin_view', array('id', 'custom_button'),
-					array(
-						'custom_button' => array('check' => array('name'), 'key' => 'custom_button')
-					)
-				);
-			}
-			// the set move values
-			$this->setMoveValues = array();
-			// get table columns to confirm that this is an old installation
-			$activeColumns = $db->getTableColumns('#__componentbuilder_joomla_component');
-			// target version less then 2.6.0
-			if (isset($activeColumns['addadmin_views']) && (count($version) == 3 && $version[0] <= 2 && $version[1] <= 5 && (($version[1] == 5 && $version[2] <= 9) || ($version[1] < 6))))
-			{
-				// do some conversions in the admin_view table
-				$convertRepeatable($db, 'joomla_component', array('id', 'addadmin_views', 'addconfig', 'addcontributors', 'addcustom_admin_views', 'addcustommenus', 'addfiles', 'addfolders', 'addsite_views', 'dashboard_tab', 'sql_tweak', 'version_update'),
-					array(
-						'addadmin_views' => array('check' => array('adminview'), 'key' => 'addadmin_views'),
-						'addconfig' => array('check' => array('field'), 'key' => 'addconfig'),
-						'addcontributors' => array('check' => array('name'), 'key' => 'addcontributors'),
-						'addcustom_admin_views' => array('check' => array('customadminview'), 'key' => 'addcustom_admin_views'),
-						'addcustommenus' => array('check' => array('name'), 'key' => 'addcustommenus'),
-						'addfiles' => array('check' => array('file'), 'key' => 'addfiles'),
-						'addfolders' => array('check' => array('folder'), 'key' => 'addfolders'),
-						'addsite_views' => array('check' => array('siteview'), 'key' => 'addsite_views'),
-						'dashboard_tab' => array('check' => array('name'), 'key' => 'dashboard_tab'),
-						'sql_tweak' => array('check' => array('adminview'), 'key' => 'sql_tweak'),
-						'version_update' => array('check' => array('version'), 'key' => 'version_update')
-					)
-				);
-				// move values to their own tables
-				$tables = array(
-					'admin_fields' => array('id' => 'admin_view', 'addfields' => 'addfields'),
-					'admin_fields_conditions' => array('id' => 'admin_view', 'addconditions' => 'addconditions'),
-					'component_admin_views' => array('id' => 'joomla_component', 'addadmin_views' => 'addadmin_views'),
-					'component_site_views' => array('id' => 'joomla_component', 'addsite_views' => 'addsite_views'),
-					'component_custom_admin_views' => array('id' => 'joomla_component', 'addcustom_admin_views' => 'addcustom_admin_views'),
-					'component_updates' => array('id' => 'joomla_component', 'version_update' => 'version_update'),
-					'component_mysql_tweaks' => array('id' => 'joomla_component', 'sql_tweak' => 'sql_tweak'),
-					'component_custom_admin_menus' => array('id' => 'joomla_component', 'addcustommenus' => 'addcustommenus'),
-					'component_config' => array('id' => 'joomla_component', 'addconfig' => 'addconfig'),
-					'component_dashboard' => array('id' => 'joomla_component', 'dashboard_tab' => 'dashboard_tab', 'php_dashboard_methods' => 'php_dashboard_methods'),
-					'component_files_folders' => array('id' => 'joomla_component', 'addfiles' => 'addfiles', 'addfolders' => 'addfolders')
-				);
-				$this->dynamicTable = array(
-					'admin_fields' => 'admin_view',
-					'admin_fields_conditions' => 'admin_view',
-					'component_admin_views' => 'joomla_component',
-					'component_site_views' => 'joomla_component',
-					'component_custom_admin_views' => 'joomla_component',
-					'component_updates' => 'joomla_component',
-					'component_mysql_tweaks' => 'joomla_component',
-					'component_custom_admin_menus' => 'joomla_component',
-					'component_config' => 'joomla_component',
-					'component_dashboard' => 'joomla_component',
-					'component_files_folders' => 'joomla_component');
-				foreach ($tables as $move => $array)
+				};
+				// target version less then 2.5.5 (we need to change the language translation values & the fieldtype properties)
+				if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 4) || ($this->JCBversion[1] < 5)))
 				{
-					// we must first check if the fields are still there
-					$columns = $db->getTableColumns('#__componentbuilder_'.$this->dynamicTable[$move]);
-					foreach ($array as $column => $as)
+					// do some conversions in the translations table
+					$convertRepeatable($db, 'language_translation', array('id', 'translation'), array('translation' => array('check' => array('translation'), 'key' => 'translation')));
+					// do some conversions in the fieldtype table
+					$convertRepeatable($db, 'fieldtype', array('id', 'properties'), array('properties' => array('check' => array('name'), 'key' => 'properties')));
+				}
+				// target version less then 2.5.6
+				if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 5) || ($this->JCBversion[1] < 5)))
+				{
+					// do some conversions in the dynamic get table
+					$convertRepeatable($db, 'dynamic_get', array('id', 'join_view_table', 'join_db_table', 'filter', 'where', 'order', 'global'),
+						array(
+							'join_view_table' => array('check' => array('view_table'), 'key' => 'join_view_table'),
+							'join_db_table' => array('check' => array('db_table'), 'key' => 'join_db_table'),
+							'filter' => array('check' => array('filter_type'), 'key' => 'filter'),
+							'where' => array('check' => array('table_key'), 'key' => 'where'),
+							'order' => array('check' => array('table_key'), 'key' => 'order'),
+							'global' => array('check' => array('name'), 'key' => 'global')
+						)
+					);
+				}
+				// get table columns to confirm that this is an old installation
+				$activeColumns = $db->getTableColumns('#__componentbuilder_admin_view');
+				// target version less then 2.5.7
+				if (isset($activeColumns['addfields']) && (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 6) || ($this->JCBversion[1] < 5))))
+				{
+					// do some conversions in the admin_view table
+					$convertRepeatable($db, 'admin_view', array('id', 'ajax_input', 'custom_button', 'addtables', 'addlinked_views', 'addconditions', 'addfields', 'addtabs', 'addpermissions'),
+						array(
+							'ajax_input' => array('check' => array('value_name'), 'key' => 'ajax_input'),
+							'custom_button' => array('check' => array('name'), 'key' => 'custom_button'),
+							'addtables' =>  array('check' => array('table'), 'key' => 'addtables'),
+							'addlinked_views' =>  array('check' => array('adminview'), 'key' => 'addlinked_views'),
+							'addconditions' =>  array('check' => array('target_field'), 'key' => 'addconditions'),
+							'addfields' =>  array('check' => array('field'), 'key' => 'addfields'),
+							'addtabs' =>  array('check' => array('name'), 'key' => 'addtabs'),
+							'addpermissions' =>  array('check' => array('action'), 'key' => 'addpermissions')
+						)
+					);
+
+					// do some conversions in the site_view table
+					$convertRepeatable($db, 'site_view', array('id', 'ajax_input', 'custom_button'),
+						array(
+							'ajax_input' => array('check' => array('value_name'), 'key' => 'ajax_input'),
+							'custom_button' => array('check' => array('name'), 'key' => 'custom_button')
+						)
+					);
+
+					// do some conversions in the custom_admin_view table
+					$convertRepeatable($db, 'custom_admin_view', array('id', 'custom_button'),
+						array(
+							'custom_button' => array('check' => array('name'), 'key' => 'custom_button')
+						)
+					);
+				}
+				// the set move values
+				$this->setMoveValues = array();
+				// get table columns to confirm that this is an old installation
+				$activeColumns = $db->getTableColumns('#__componentbuilder_joomla_component');
+				// target version less then 2.6.0
+				if (isset($activeColumns['addadmin_views']) && (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 9) || ($this->JCBversion[1] < 6))))
+				{
+					// do some conversions in the admin_view table
+					$convertRepeatable($db, 'joomla_component', array('id', 'addadmin_views', 'addconfig', 'addcontributors', 'addcustom_admin_views', 'addcustommenus', 'addfiles', 'addfolders', 'addsite_views', 'dashboard_tab', 'sql_tweak', 'version_update'),
+						array(
+							'addadmin_views' => array('check' => array('adminview'), 'key' => 'addadmin_views'),
+							'addconfig' => array('check' => array('field'), 'key' => 'addconfig'),
+							'addcontributors' => array('check' => array('name'), 'key' => 'addcontributors'),
+							'addcustom_admin_views' => array('check' => array('customadminview'), 'key' => 'addcustom_admin_views'),
+							'addcustommenus' => array('check' => array('name'), 'key' => 'addcustommenus'),
+							'addfiles' => array('check' => array('file'), 'key' => 'addfiles'),
+							'addfolders' => array('check' => array('folder'), 'key' => 'addfolders'),
+							'addsite_views' => array('check' => array('siteview'), 'key' => 'addsite_views'),
+							'dashboard_tab' => array('check' => array('name'), 'key' => 'dashboard_tab'),
+							'sql_tweak' => array('check' => array('adminview'), 'key' => 'sql_tweak'),
+							'version_update' => array('check' => array('version'), 'key' => 'version_update')
+						)
+					);
+					// move values to their own tables
+					$tables = array(
+						'admin_fields' => array('id' => 'admin_view', 'addfields' => 'addfields'),
+						'admin_fields_conditions' => array('id' => 'admin_view', 'addconditions' => 'addconditions'),
+						'component_admin_views' => array('id' => 'joomla_component', 'addadmin_views' => 'addadmin_views'),
+						'component_site_views' => array('id' => 'joomla_component', 'addsite_views' => 'addsite_views'),
+						'component_custom_admin_views' => array('id' => 'joomla_component', 'addcustom_admin_views' => 'addcustom_admin_views'),
+						'component_updates' => array('id' => 'joomla_component', 'version_update' => 'version_update'),
+						'component_mysql_tweaks' => array('id' => 'joomla_component', 'sql_tweak' => 'sql_tweak'),
+						'component_custom_admin_menus' => array('id' => 'joomla_component', 'addcustommenus' => 'addcustommenus'),
+						'component_config' => array('id' => 'joomla_component', 'addconfig' => 'addconfig'),
+						'component_dashboard' => array('id' => 'joomla_component', 'dashboard_tab' => 'dashboard_tab', 'php_dashboard_methods' => 'php_dashboard_methods'),
+						'component_files_folders' => array('id' => 'joomla_component', 'addfiles' => 'addfiles', 'addfolders' => 'addfolders')
+					);
+					$this->dynamicTable = array(
+						'admin_fields' => 'admin_view',
+						'admin_fields_conditions' => 'admin_view',
+						'component_admin_views' => 'joomla_component',
+						'component_site_views' => 'joomla_component',
+						'component_custom_admin_views' => 'joomla_component',
+						'component_updates' => 'joomla_component',
+						'component_mysql_tweaks' => 'joomla_component',
+						'component_custom_admin_menus' => 'joomla_component',
+						'component_config' => 'joomla_component',
+						'component_dashboard' => 'joomla_component',
+						'component_files_folders' => 'joomla_component');
+					foreach ($tables as $move => $array)
 					{
-						if (!isset($columns[$column]))
+						// we must first check if the fields are still there
+						$columns = $db->getTableColumns('#__componentbuilder_'.$this->dynamicTable[$move]);
+						foreach ($array as $column => $as)
 						{
-							// remove this column since it is no longer found
-							unset($array[$column]);
+							if (!isset($columns[$column]))
+							{
+								// remove this column since it is no longer found
+								unset($array[$column]);
+							}
 						}
-					}
-					// do we still need to move any
-					if (ComponentbuilderHelper::checkArray($array))
-					{
-						// move all diverged data
-						$query = $db->getQuery(true);
-						// update all JCB fieldtype properties
-						$query->select($db->quoteName(array_keys($array),array_values($array)));
-						$query->from($db->quoteName('#__componentbuilder_'.$this->dynamicTable[$move]));
-						// Reset the query using our newly populated query object.
-						$db->setQuery($query);
-						$db->execute();
-						if ($db->getNumRows())
+						// do we still need to move any
+						if (ComponentbuilderHelper::checkArray($array))
 						{
-							$this->setMoveValues[$move] = $db->loadObjectList();
+							// move all diverged data
+							$query = $db->getQuery(true);
+							// update all JCB fieldtype properties
+							$query->select($db->quoteName(array_keys($array),array_values($array)));
+							$query->from($db->quoteName('#__componentbuilder_'.$this->dynamicTable[$move]));
+							// Reset the query using our newly populated query object.
+							$db->setQuery($query);
+							$db->execute();
+							if ($db->getNumRows())
+							{
+								$this->setMoveValues[$move] = $db->loadObjectList();
+							}
 						}
 					}
 				}
 			}
-		}
 		}
 		// do any install needed
 		if ($type == 'install')
@@ -3130,7 +3130,7 @@ class com_componentbuilderInstallerScript
 			$snippet->type_title = 'Componentbuilder Snippet';
 			$snippet->type_alias = 'com_componentbuilder.snippet';
 			$snippet->table = '{"special": {"dbtable": "#__componentbuilder_snippet","key": "id","type": "Snippet","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","library":"library","description":"description","snippet":"snippet","usage":"usage"}}';
+			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","library":"library","contributor_email":"contributor_email","contributor_website":"contributor_website","usage":"usage","snippet":"snippet","description":"description","contributor_name":"contributor_name","contributor_company":"contributor_company"}}';
 			$snippet->router = 'ComponentbuilderHelperRoute::getSnippetRoute';
 			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_snippet_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -3652,7 +3652,7 @@ class com_componentbuilderInstallerScript
 			$snippet->type_title = 'Componentbuilder Snippet';
 			$snippet->type_alias = 'com_componentbuilder.snippet';
 			$snippet->table = '{"special": {"dbtable": "#__componentbuilder_snippet","key": "id","type": "Snippet","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","library":"library","description":"description","snippet":"snippet","usage":"usage"}}';
+			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","library":"library","contributor_email":"contributor_email","contributor_website":"contributor_website","usage":"usage","snippet":"snippet","description":"description","contributor_name":"contributor_name","contributor_company":"contributor_company"}}';
 			$snippet->router = 'ComponentbuilderHelperRoute::getSnippetRoute';
 			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_snippet_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -4287,6 +4287,90 @@ class com_componentbuilderInstallerScript
 
 
 
+			// target version less then 2.6.5
+			if ((count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 6 && (($this->JCBversion[1] == 6 && $this->JCBversion[2] <= 4) || ($this->JCBversion[1] < 6))))
+			{
+				// add libraries to the snippets
+				$libraries = array(
+					2 => array('have' => array('getbootstrap.com/docs/4.0', 'v4-alpha.getbootstrap.com')),  // Bootstrap v4
+					3 => array('have' => array('getuikit.com/docs/'), 'not' => '.html'),  // Uikit v3
+					4 => array('have' => array('getuikit.com/docs/', 'getuikit.com/v2/'), 'and' => '.html'),  // Uikit v2
+					5 => array('have' => array('fooplugins.com/footable-demos'))  // FooTable
+				);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				// get all Joomla Component FTP values
+				$query->select($db->quoteName(array('id', 'url')));
+				$query->from($db->quoteName('#__componentbuilder_snippet'));
+				$query->where($db->quoteName('library') . ' < 1'); // only snippets with no lib set
+				// Reset the query using our newly populated query object.
+				$db->setQuery($query);
+				$db->execute();
+				if ($db->getNumRows())
+				{
+					$updater = array();
+					$rows = $db->loadObjectList();
+					foreach ($rows as $row)
+					{
+						foreach ($libraries as $id => $library)
+						{
+							if (!isset($updater[$row->id]) && ComponentbuilderHelper::checkString($row->url))
+							{
+								foreach($library['have'] as $url)
+								{
+									if (strpos($row->url, $url) !== false)
+									{
+										if (isset($library['not']))
+										{
+											if (strpos($row->url, $library['not']) === false)
+											{
+												// Create an object.
+												$updater[$row->id] = new stdClass();
+												$updater[$row->id]->id = $row->id;
+												$updater[$row->id]->library = $id;
+											}
+										}
+										elseif (isset($library['and']))
+										{
+											if (strpos($row->url, $library['and']) !== false)
+											{
+												// Create an object.
+												$updater[$row->id] = new stdClass();
+												$updater[$row->id]->id = $row->id;
+												$updater[$row->id]->library = $id;
+											}
+										}
+										else
+										{
+											// Create an object.
+											$updater[$row->id] = new stdClass();
+											$updater[$row->id]->id = $row->id;
+											$updater[$row->id]->library = $id;
+										}
+									}
+								}
+							}
+						}
+						// if still not found
+						if (!isset($updater[$row->id]))
+						{
+							// Create an object.
+							$updater[$row->id] = new stdClass();
+							$updater[$row->id]->id = $row->id;
+							$updater[$row->id]->library = 1; // default (no library)
+						}
+					}
+					// update if set
+					if (ComponentbuilderHelper::checkArray($updater))
+					{
+						foreach($updater as $item)
+						{
+							// update the snippets table with the new library ids
+							$db->updateObject('#__componentbuilder_snippet', $item, 'id');
+						}
+					}
+				}
+			}
 			// set some defaults
 			if ((isset($this->setFtpValues) && ComponentbuilderHelper::checkArray($this->setFtpValues)) || (isset($this->setMoveValues) && ComponentbuilderHelper::checkArray($this->setMoveValues)))
 			{
@@ -4393,7 +4477,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.6.4 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.6.5 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

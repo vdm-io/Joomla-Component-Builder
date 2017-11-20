@@ -56,6 +56,7 @@ class ComponentbuilderModelSnippets extends JModelList
 	}
 
 	public $user;
+	public $zipPath;
 
 	/**
 	*	Method to build the export package
@@ -81,8 +82,8 @@ class ComponentbuilderModelSnippets extends JModelList
 
 			// Select some fields
 			$query->select($this->_db->quoteName(
-				array('a.name','a.heading','a.description','a.usage','a.snippet','a.url','b.name','c.name','a.created','a.modified'),
-				array('name','heading','description','usage','snippet','url','type','library','created','modified')
+				array('a.name','a.heading','a.description','a.usage','a.snippet','a.url','b.name','c.name','a.created','a.modified','a.contributor_company','a.contributor_name','a.contributor_email','a.contributor_website'),
+				array('name','heading','description','usage','snippet','url','type','library','created','modified','contributor_company','contributor_name','contributor_email','contributor_website')
 			));
 			
 			// From the componentbuilder_snippet table
@@ -131,26 +132,25 @@ class ComponentbuilderModelSnippets extends JModelList
 						// remove file if found
 						JFile::delete($this->zipPath);
 					}
-					// set params
-					$this->params = JComponentHelper::getParams('com_componentbuilder');
-					// Set the person sharing information (default VDM ;)
-					$info = array();
-					$info['company']		= $this->params->get('export_company', 'Vast Development Method');
-					$info['owner']		= $this->params->get('export_owner', 'Llewellyn van der Merwe');
-					$info['email']		= $this->params->get('export_email', 'joomla@vdm.io');
-					$info['website']		= $this->params->get('export_website', 'https://www.vdm.io/');
 					// prep the item
 					foreach($items as $item)
 					{
 						// just unlock the snippet
 						$item->snippet = base64_decode($item->snippet);
-						// load the company detail to each snippet
-						$item->contributor_company = $info['company'];
-						$item->contributor_name = $info['owner'];
-						$item->contributor_email = $info['email'];
-						$item->contributor_website = $info['website'];
+						// build filename
+						$fileName = ComponentbuilderHelper::safeString($item->library . ' - (' . $item->type . ') ' . $item->name, 'filename', '', false) . '.json';
+						// if the snippet has its own contributor details set, then do not change
+						if (!strlen($item->contributor_company) || !strlen($item->contributor_name) || !strlen($item->contributor_email) || !strlen($item->contributor_website))
+						{
+							// load the correct contributor details to each snippet (this is very slow)
+							$_contributor = ComponentbuilderHelper::getContributorDetails($fileName);
+							$item->contributor_company = $_contributor['contributor_company'];
+							$item->contributor_name = $_contributor['contributor_name'];
+							$item->contributor_email = $_contributor['contributor_email'];
+							$item->contributor_website = $_contributor['contributor_website'];
+						}
 						// now store the snippet info
-						ComponentbuilderHelper::writeFile($this->fullPath . '/' .ComponentbuilderHelper::safeString($item->library . ' - (' . $item->type . ') ' . $item->name, 'filename', '', false). '.json', json_encode($item, JSON_PRETTY_PRINT));
+						ComponentbuilderHelper::writeFile($this->fullPath . '/' . $fileName, json_encode($item, JSON_PRETTY_PRINT));
 					}
 					// zip the folder
 					if (!ComponentbuilderHelper::zip($this->fullPath, $this->zipPath))

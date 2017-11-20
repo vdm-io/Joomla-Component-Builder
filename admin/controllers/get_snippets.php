@@ -60,4 +60,40 @@ class ComponentbuilderControllerGet_snippets extends JControllerAdmin
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=snippets', false));
 		return;
 	}
+
+	public function openSiteViews()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the snippets admin view
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=site_views', false));
+		return;
+	}
+
+	public function openCustomAdminViews()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the snippets admin view
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_admin_views', false));
+		return;
+	}
+
+	public function openTemplates()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the snippets admin view
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=templates', false));
+		return;
+	}
+
+	public function openLayouts()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the snippets admin view
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=layouts', false));
+		return;
+	}
 }

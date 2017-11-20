@@ -148,7 +148,12 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 			{
 				JToolBarHelper::custom('templates.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-                } 
+                }
+		if ($this->user->authorise('template.get_snippets', 'com_componentbuilder'))
+		{
+			// add Get Snippets button.
+			JToolBarHelper::custom('templates.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
+		} 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('template.import'))
 		{
