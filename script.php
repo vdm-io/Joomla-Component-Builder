@@ -4365,6 +4365,14 @@ class com_componentbuilderInstallerScript
 					{
 						foreach($updater as $item)
 						{
+							// add contributor details to those made by JCB
+							if ($item->id < 94)
+							{
+								$item->contributor_company = 'Vast Development Method';
+								$item->contributor_name = 'Llewellyn van der Merwe';
+								$item->contributor_email = 'joomla@vdm.io';
+								$item->contributor_website = 'https://www.vdm.io/';
+							}
 							// update the snippets table with the new library ids
 							$db->updateObject('#__componentbuilder_snippet', $item, 'id');
 						}
