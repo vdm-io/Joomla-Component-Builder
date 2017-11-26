@@ -79,7 +79,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params))
+			if (!empty($item->params) && !is_array($item->params))
 			{
 				// Convert the params field to an array.
 				$registry = new Registry;
@@ -122,7 +122,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVzvlinked_components()
+	public function getVzxlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();

@@ -155,10 +155,19 @@ jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 });
 
 
+
 jQuery(function() {
+	jQuery('#open-libraries').html('<a href="index.php?option=com_componentbuilder&view=libraries"><?php echo JText::_('COM_COMPONENTBUILDER_LIBRARIES'); ?></a>');
+});
+jQuery('#jform_snippet').closest('.input-append').addClass('jform_snippet_input_width');
+jQuery('#jform_dynamic_get').closest('.input-append').addClass('jform_dynamic_get_input_width');jQuery(function() {
     jQuery("code").click(function() {
         jQuery(this).selText().addClass("selected");
     });
+});
+jQuery('#adminForm').on('change', '#jform_libraries',function (e) {
+	e.preventDefault();
+	getSnippets();
 });
 			
 jQuery.fn.selText = function() {
@@ -211,4 +220,7 @@ jQuery(document).ready(function() {
 	getLayoutDetails(9999);
 	getTemplateDetails(<?php echo ($this->item->id) ? $this->item->id:9999; ?>);
 });
+// some lang strings
+var select_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
+var create_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
 </script>

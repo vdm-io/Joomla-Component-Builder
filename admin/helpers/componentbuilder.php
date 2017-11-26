@@ -246,6 +246,11 @@ abstract class ComponentbuilderHelper
 	} 
 
 	/**
+	* 	Locked Libraries (we can not have these change)
+	**/
+	public static $libraryNames = array(1 => 'No Library', 2 => 'Bootstrap v4', 3 => 'Uikit v3', 4 => 'Uikit v2', 5 => 'FooTable v2', 6 => 'FooTable v3');
+
+	/**
 	* 	The global params
 	**/
 	protected static $params = false;
@@ -317,6 +322,104 @@ abstract class ComponentbuilderHelper
 		}
 		// default global
 		return array('contributor_company' => self::$localCompany['company']	,'contributor_name' => self::$localCompany['owner'], 'contributor_email' => self::$localCompany['email'], 'contributor_website' => self::$localCompany['website'], 'origin' => 'global');
+	}
+
+	/**
+	*	Get the library files
+	* 
+	*	@param  int   $id   The library id to target
+	*
+	*	@return  array    On success the contributor details
+	* 
+	*/
+	public static function getLibraryFiles($id)
+	{
+		// get the library files, folders, and urls
+		$files = array();
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('addurls','addfolders','addfiles')));
+		$query->from($db->quoteName('#__componentbuilder_library_files_folders_urls'));
+		$query->where($db->quoteName('library') . ' = ' . (int) $id);
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{			
+			// prepare the files
+ 			$result = $db->loadObject();
+ 			// first we load the URLs
+			if (self::checkJson($result->addurls))
+			{
+				// convert to array
+				$result->addurls = json_decode($result->addurls, true);
+				// set urls
+				if (self::checkArray($result->addurls))
+				{
+					foreach($result->addurls as $url)
+					{
+						if (isset($url['url']) && isset($url['type']))
+						{
+							switch ($url['type'])
+							{
+								case 1:
+									// link only
+									$files['1'.$url['url']] = '(' . JText::_('COM_COMPONENTBUILDER_URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LINK');
+								break;
+								case 2:
+									// local
+									$files['2'.$url['url']] = '(' . JText::_('COM_COMPONENTBUILDER_URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LOCAL');
+								break;
+								case 3:
+									// link and local
+									$files['1'.$url['url']] = '(' . JText::_('COM_COMPONENTBUILDER_URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LINK');
+									$files['2'.$url['url']] = '(' . JText::_('COM_COMPONENTBUILDER_URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LOCAL');
+								break;
+							}
+						}
+					}
+				}
+			}
+ 			// load the local files
+			if (self::checkJson($result->addfiles))
+			{
+				// convert to array
+				$result->addfiles = json_decode($result->addfiles, true);
+				// set files
+				if (self::checkArray($result->addfiles))
+				{
+					foreach($result->addfiles as $file)
+					{
+						if (isset($file['file']) && isset($file['path']))
+						{
+							$files['3'.$file['path'].$file['file']] = '(' . JText::_('COM_COMPONENTBUILDER_FILE') . ') ' . $file['file'];
+						}
+					}
+				}
+			}
+ 			// load the files in the folder	
+			if (self::checkJson($result->addfolders))
+			{
+				// convert to array
+				$result->addfolders = json_decode($result->addfolders, true);
+				// set folder
+				if (self::checkArray($result->addfolders))
+				{
+					foreach($result->addfolders as $folder)
+					{
+						// not yet set
+					}
+					$files['4folders'] = '(' . JText::_('COM_COMPONENTBUILDER_FOLDERS') . ') not yet able to deal with folders';
+				}
+			}
+			// return files if found
+			if (self::checkArray($files))
+			{
+				return $files;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1801,6 +1904,10 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('custom_code.access', 'com_componentbuilder') && $user->authorise('custom_code.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_CODES'), 'index.php?option=com_componentbuilder&view=custom_codes', $submenu === 'custom_codes');
+		}
+		if ($user->authorise('library.access', 'com_componentbuilder') && $user->authorise('library.submenu', 'com_componentbuilder'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_LIBRARIES'), 'index.php?option=com_componentbuilder&view=libraries', $submenu === 'libraries');
 		}
 		if ($user->authorise('snippet.access', 'com_componentbuilder') && $user->authorise('snippet.submenu', 'com_componentbuilder'))
 		{

@@ -165,11 +165,11 @@ class JFormFieldSnippets extends JFormFieldList
 		$options = array();
 		if ($items)
 		{
-			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$lib = (ComponentbuilderHelper::checkString($item->library)) ? ' (' . $item->library . ')' :'';
-				$options[] = JHtml::_('select.option', $item->id, $item->type . ' - ' . $item->snippet_name . $lib );
+				$lib = (isset($item->library) && ComponentbuilderHelper::checkString($item->library)) ? ' (' . $item->library . ')' :'';
+				$type = (isset($item->type) && ComponentbuilderHelper::checkString($item->type)) ? $item->type :JText::_('COM_COMPONENTBUILDER_NO_TYPE');
+				$options[] = JHtml::_('select.option', $item->id, $type . ' - ' . $item->snippet_name . $lib );
 			}
 		}
 		return $options;

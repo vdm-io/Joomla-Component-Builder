@@ -90,9 +90,9 @@
 			filter="unset"
 		/>
 		<!-- Dynamic Fields. -->
-		<!-- Admin_view Field. Type: Adminviews. (custom) -->
+		<!-- Admin_view Field. Type: Adminviewsreadonly. (custom) -->
 		<field
-			type="adminviews"
+			type="adminviewsreadonly"
 			name="admin_view"
 			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADMIN_VIEW_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADMIN_VIEW_DESCRIPTION"

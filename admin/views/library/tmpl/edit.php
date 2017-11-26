@@ -58,17 +58,40 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
+	<?php echo JLayoutHelper::render('library.behaviour_above', $this); ?>
 <div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'libraryTab', array('active' => 'details')); ?>
+	<?php echo JHtml::_('bootstrap.startTabSet', 'libraryTab', array('active' => 'behaviour')); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'libraryTab', 'details', JText::_('COM_COMPONENTBUILDER_LIBRARY_DETAILS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'libraryTab', 'behaviour', JText::_('COM_COMPONENTBUILDER_LIBRARY_BEHAVIOUR', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span6">
-				<?php echo JLayoutHelper::render('library.details_left', $this); ?>
+			<div class="span12">
+				<?php echo JLayoutHelper::render('library.behaviour_right', $this); ?>
 			</div>
-			<div class="span6">
-				<?php echo JLayoutHelper::render('library.details_right', $this); ?>
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('library.behaviour_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'libraryTab', 'files_folders_urls', JText::_('COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('library.files_folders_urls_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'libraryTab', 'config', JText::_('COM_COMPONENTBUILDER_LIBRARY_CONFIG', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('library.config_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -113,5 +136,155 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 	</div>
 	</div>
 </div>
+
+<div class="clearfix"></div>
+<?php echo JLayoutHelper::render('library.behaviour_under', $this); ?>
 </form>
 </div>
+
+<script type="text/javascript">
+
+// #jform_how listeners for how_vvvvvzu function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvvzu = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzu(how_vvvvvzu);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvvzu = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzu(how_vvvvvzu);
+
+});
+
+// #jform_how listeners for how_vvvvvzv function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvvzv = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzv(how_vvvvvzv);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvvzv = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzv(how_vvvvvzv);
+
+});
+
+// #jform_how listeners for how_vvvvvzw function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvvzw = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzw(how_vvvvvzw);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvvzw = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzw(how_vvvvvzw);
+
+});
+
+// #jform_how listeners for how_vvvvvzx function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvvzx = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzx(how_vvvvvzx);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvvzx = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzx(how_vvvvvzx);
+
+});
+
+// #jform_how listeners for how_vvvvvzy function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvvzy = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzy(how_vvvvvzy);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvvzy = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzy(how_vvvvvzy);
+
+});
+
+// #jform_how listeners for how_vvvvvzz function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvvzz = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzz(how_vvvvvzz);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvvzz = jQuery("#jform_how input[type='radio']:checked").val();
+	vvvvvzz(how_vvvvvzz);
+
+});
+
+
+<?php $numberAddconditions = range(0, count($this->item->addconditions) + 3, 1);?>
+
+// for the values already set
+jQuery(document).ready(function(){
+<?php foreach($numberAddconditions as $fieldNr): ?>
+	jQuery('#adminForm').on('change', '#jform_addconditions__addconditions<?php echo $fieldNr ?>__option_field',function (e) {
+		e.preventDefault();
+		getFieldSelectOptions(<?php echo $fieldNr ?>);
+	});
+<?php endforeach; ?>
+	jQuery(document).on('subform-row-add', function(event, row){
+		var groupName = jQuery(row).data('group');
+		var fieldName = groupName.replace(/([0-9])/g, '');
+		var fieldNr = groupName.replace(/([A-z_])/g, '');
+		if ('addconditions' === fieldName) {
+			jQuery('#adminForm').on('change', '#jform_addconditions__addconditions'+fieldNr+'__option_field',function (e) {
+				e.preventDefault();
+				getFieldSelectOptions(fieldNr);
+			});
+		}
+	});
+});
+			
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}			
+			
+// nice little dot trick :)
+jQuery(document).ready( function($) {
+  var x=0;
+  setInterval(function() {
+	var dots = "";
+	x++;
+	for (var y=0; y < x%8; y++) {
+		dots+=".";
+	}
+	$(".loading-dots").text(dots);
+  } , 500);
+});			 
+</script>

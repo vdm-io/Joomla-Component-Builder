@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_componentbuilder/models/rules"
+	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
+>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_CREATED_DATE_DESC"
+			size="22"
+
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_CREATED_BY_LABEL"
+
+			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_VERSION_DESC"
+			size="6"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Library Field. Type: Libraryreadonly. (custom) -->
+		<field
+			type="libraryreadonly"
+			name="library"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_LIBRARY_LABEL"
+			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_LIBRARY_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="true"
+			readonly="true"
+		/>
+		<!-- Note_add_folders Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_folders" label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTE_ADD_FOLDERS_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTE_ADD_FOLDERS_DESCRIPTION" heading="h4" class="alert alert-info note_add_folders" />
+		<!-- Addurls Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addurls"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDURLS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDURLS_DESCRIPTION"
+			icon="list"
+			maximum="500">
+			<form hidden="true" name="list_addurls_modal" repeat="true">
+				<!-- Url Field. Type: Url. (joomla) -->
+				<field
+					type="url"
+					name="url"
+					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_URL_LABEL"
+					size="150"
+					maxlength="250"
+					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_URL_DESCRIPTION"
+					class="text_area"
+					required="false"
+					filter="url"
+					validated="url"
+					message="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_URL_MESSAGE"
+					hint="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_URL_HINT"
+				/>
+				<!-- Type Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="type"
+					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_TYPE_LABEL"
+					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_TYPE_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_DEFAULT_LINK</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_LOCAL_GET</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_LINK_LOCAL_DYNAMIC</option>
+				</field>
+			</form>
+		</field>
+		<!-- Note_add_urls Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_urls" label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTE_ADD_URLS_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTE_ADD_URLS_DESCRIPTION" heading="h4" class="alert alert-info note_add_urls" />
+		<!-- Note_add_files Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_files" label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTE_ADD_FILES_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTE_ADD_FILES_DESCRIPTION" heading="h4" class="alert alert-info note_add_files" />
+		<!-- Addfolders Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addfolders"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDFOLDERS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDFOLDERS_DESCRIPTION"
+			icon="list"
+			maximum="500">
+			<form hidden="true" name="list_addfolders_modal" repeat="true">
+				<!-- Folder Field. Type: Customfolderlist. (custom) -->
+				<field
+					type="customfolderlist"
+					name="folder"
+					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_FOLDER_LABEL"
+					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_FOLDER_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					default="0"
+					required="false"
+					button="false"
+				/>
+				<!-- Path Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="path"
+					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_MESSAGE"
+					hint="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_HINT"
+				/>
+				<!-- Rename Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="rename"
+					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_RENAME_LABEL"
+					value="1"
+					required="false"
+					class="inputbox"
+				/>
+			</form>
+		</field>
+		<!-- Addfiles Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addfiles"
+			label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDFILES_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDFILES_DESCRIPTION"
+			icon="list"
+			maximum="500">
+			<form hidden="true" name="list_addfiles_modal" repeat="true">
+				<!-- File Field. Type: Customfilelist. (custom) -->
+				<field
+					type="customfilelist"
+					name="file"
+					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_FILE_LABEL"
+					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_FILE_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					default="0"
+					required="false"
+					button="false"
+				/>
+				<!-- Path Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="path"
+					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_MESSAGE"
+					hint="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_HINT"
+				/>
+				<!-- Notnew Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="notnew"
+					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
+					class="inputbox"
+				/>
+			</form>
+		</field>
+	</fieldset>
+	
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this library_files_folders_urls"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="library_files_folders_urls"
+		/>
+	</fieldset>
+</form>

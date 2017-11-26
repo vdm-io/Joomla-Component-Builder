@@ -95,8 +95,14 @@ $edit = "index.php?option=com_componentbuilder&view=snippets&task=snippet.edit";
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->heading); ?>
 		</td>
-		<td class="hidden-phone">
-			<?php echo $this->escape($item->library_name); ?>
+		<td class="nowrap">
+			<?php if ($this->user->authorise('library.edit', 'com_componentbuilder.library.' . (int)$item->library)): ?>
+				<div class="name">
+					<a href="index.php?option=com_componentbuilder&view=libraries&task=library.edit&id=<?php echo $item->library; ?>&ref=snippets"><?php echo $this->escape($item->library_name); ?></a>
+				</div>
+			<?php else: ?>
+				<div class="name"><?php echo $this->escape($item->library_name); ?></div>
+			<?php endif; ?>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('core.edit.state')) : ?>

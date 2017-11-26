@@ -38,17 +38,17 @@ function getFieldSelectOptions_server(fieldId){
 	});
 }
 
-function getFieldSelectOptions(fieldKey, table_, nr_){
+function getFieldSelectOptions(fieldKey){
 	// first check if the field is set
-	if(jQuery("#jform_addconditions"+table_+"_addconditions"+fieldKey+nr_+"_match_field").length) {
-		var fieldId = jQuery("#jform_addconditions"+table_+"_addconditions"+fieldKey+nr_+"_match_field option:selected").val();
+	if(jQuery("#jform_addconditions__addconditions"+fieldKey+"__match_field").length) {
+		var fieldId = jQuery("#jform_addconditions__addconditions"+fieldKey+"__match_field option:selected").val();
 		getFieldSelectOptions_server(fieldId).done(function(result) {
 			if(result){
-				jQuery('textarea#jform_addconditions'+table_+'_addconditions'+fieldKey+nr_+'_match_options').val(result);
+				jQuery('textarea#jform_addconditions__addconditions'+fieldKey+'__match_options').val(result);
 			}
 			else
 			{
-				jQuery('textarea#jform_addconditions'+table_+'_addconditions'+fieldKey+nr_+'_match_options').val('');
+				jQuery('textarea#jform_addconditions__addconditions'+fieldKey+'__match_options').val('');
 			}
 		});
 	}

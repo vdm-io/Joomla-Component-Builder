@@ -146,7 +146,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CONFIG_TABNAME_LABEL"
 					size="40"
 					maxlength="150"
-					default="Global"
+					default="Library"
 					description="COM_COMPONENTBUILDER_COMPONENT_CONFIG_TABNAME_DESCRIPTION"
 					class="text_area"
 					readonly="false"

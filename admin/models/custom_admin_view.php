@@ -79,7 +79,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params))
+			if (!empty($item->params) && !is_array($item->params))
 			{
 				// Convert the params field to an array.
 				$registry = new Registry;
@@ -95,12 +95,12 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->custom_get))
+			if (!empty($item->libraries))
 			{
-				// Convert the custom_get field to an array.
-				$custom_get = new Registry;
-				$custom_get->loadString($item->custom_get);
-				$item->custom_get = $custom_get->toArray();
+				// Convert the libraries field to an array.
+				$libraries = new Registry;
+				$libraries->loadString($item->libraries);
+				$item->libraries = $libraries->toArray();
 			}
 
 			if (!empty($item->custom_button))
@@ -109,6 +109,14 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$custom_button = new Registry;
 				$custom_button->loadString($item->custom_button);
 				$item->custom_button = $custom_button->toArray();
+			}
+
+			if (!empty($item->custom_get))
+			{
+				// Convert the custom_get field to an array.
+				$custom_get = new Registry;
+				$custom_get->loadString($item->custom_get);
+				$item->custom_get = $custom_get->toArray();
 			}
 
 			if (!empty($item->php_controller))
@@ -915,17 +923,17 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the custom_get items to data.
-		if (isset($data['custom_get']) && is_array($data['custom_get']))
+		// Set the libraries items to data.
+		if (isset($data['libraries']) && is_array($data['libraries']))
 		{
-			$custom_get = new JRegistry;
-			$custom_get->loadArray($data['custom_get']);
-			$data['custom_get'] = (string) $custom_get;
+			$libraries = new JRegistry;
+			$libraries->loadArray($data['libraries']);
+			$data['libraries'] = (string) $libraries;
 		}
-		elseif (!isset($data['custom_get']))
+		elseif (!isset($data['libraries']))
 		{
-			// Set the empty custom_get to data
-			$data['custom_get'] = '';
+			// Set the empty libraries to data
+			$data['libraries'] = '';
 		}
 
 		// Set the custom_button items to data.
@@ -939,6 +947,19 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		{
 			// Set the empty custom_button to data
 			$data['custom_button'] = '';
+		}
+
+		// Set the custom_get items to data.
+		if (isset($data['custom_get']) && is_array($data['custom_get']))
+		{
+			$custom_get = new JRegistry;
+			$custom_get->loadArray($data['custom_get']);
+			$data['custom_get'] = (string) $custom_get;
+		}
+		elseif (!isset($data['custom_get']))
+		{
+			// Set the empty custom_get to data
+			$data['custom_get'] = '';
 		}
 
 		// Set the php_controller string to base64 string.

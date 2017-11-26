@@ -43,7 +43,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
                 // view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.snippet.add', 'png.snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.ftps', 'png.help_document.add', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.libraries', 'png.snippet.add', 'png.snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.ftps', 'png.help_document.add', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
@@ -92,6 +92,11 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'custom_code.access' => 'custom_code.access',
 			'custom_codes.submenu' => 'custom_code.submenu',
 			'custom_codes.dashboard_list' => 'custom_code.dashboard_list',
+			'library.create' => 'library.create',
+			'libraries.access' => 'library.access',
+			'library.access' => 'library.access',
+			'libraries.submenu' => 'library.submenu',
+			'libraries.dashboard_list' => 'library.dashboard_list',
 			'snippets.access' => 'snippet.access',
 			'snippet.access' => 'snippet.access',
 			'snippets.submenu' => 'snippet.submenu',
@@ -165,9 +170,12 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'snippet_type.create' => 'snippet_type.create',
 			'snippet_types.access' => 'snippet_type.access',
 			'snippet_type.access' => 'snippet_type.access',
-			'library.create' => 'library.create',
-			'libraries.access' => 'library.access',
-			'library.access' => 'library.access');
+			'library_config.create' => 'library_config.create',
+			'libraries_config.access' => 'library_config.access',
+			'library_config.access' => 'library_config.access',
+			'library_files_folders_urls.create' => 'library_files_folders_urls.create',
+			'libraries_files_folders_urls.access' => 'library_files_folders_urls.access',
+			'library_files_folders_urls.access' => 'library_files_folders_urls.access');
 		foreach($viewGroups as $group => $views)
                 {
 			$i = 0;

@@ -55,7 +55,7 @@ defined('_JEXEC') or die('Restricted access');
 	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_SNIPPET_HEADING_LABEL', 'heading', $this->listDirn, $this->listOrder); ?>
 	</th>
-	<th class="nowrap hidden-phone" >
+	<th class="nowrap" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL', 'library_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>

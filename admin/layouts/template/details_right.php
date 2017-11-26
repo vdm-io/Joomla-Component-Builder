@@ -30,7 +30,9 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_uikit_snippet'
+	'snippet',
+	'note_uikit_snippet',
+	'note_snippet_usage'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

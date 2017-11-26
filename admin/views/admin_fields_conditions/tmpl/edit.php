@@ -126,7 +126,7 @@ jQuery(document).ready(function(){
 <?php foreach($numberAddconditions as $fieldNr): ?>
 	jQuery('#adminForm').on('change', '#jform_addconditions__addconditions<?php echo $fieldNr ?>__match_field',function (e) {
 		e.preventDefault();
-		getFieldSelectOptions(<?php echo $fieldNr ?>, "_", "_");
+		getFieldSelectOptions(<?php echo $fieldNr ?>);
 	});
 <?php endforeach; ?>
 	jQuery(document).on('subform-row-add', function(event, row){
@@ -134,9 +134,9 @@ jQuery(document).ready(function(){
 		var fieldName = groupName.replace(/([0-9])/g, '');
 		var fieldNr = groupName.replace(/([A-z_])/g, '');
 		if ('addconditions' === fieldName) {
-			jQuery('#adminForm').on('change', '#jform_addconditions_addconditions'+fieldNr+'_match_field',function (e) {
+			jQuery('#adminForm').on('change', '#jform_addconditions__addconditions'+fieldNr+'__match_field',function (e) {
 				e.preventDefault();
-				getFieldSelectOptions(fieldNr, "", "");
+				getFieldSelectOptions(fieldNr);
 			});
 		}
 	});

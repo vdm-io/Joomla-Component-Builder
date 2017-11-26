@@ -493,4 +493,76 @@ function getTemplateDetails(id){
 			});
 		}
 	})
+}			
+			
+// set snippets that are on the page
+var snippetIds = [];
+var snippets = {};
+var snippet = 0;
+jQuery(document).ready(function($)
+{
+	jQuery("#jform_snippet option").each(function()
+	{
+		var key =  jQuery(this).val();
+		var text =  jQuery(this).text();
+		snippets[key] = text;
+		snippetIds.push(key);
+	});
+	snippet = jQuery("#jform_snippet").val();
+	getSnippets();
+});
+
+function getSnippets_server(libraries){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getSnippets&format=json";
+	if(token.length > 0 && libraries.length > 0){
+		var request = 'token='+token+'&libraries='+JSON.stringify(libraries);
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
+function getSnippets(){
+	jQuery("#loading").show();
+	// clear the selection
+	jQuery('#jform_snippet').find('option').remove().end();
+	jQuery('#jform_snippet').trigger('liszt:updated');
+	// get country value if set
+	var libraries = jQuery("#jform_libraries").val();
+	if (libraries) {
+		getSnippets_server(libraries).done(function(result) {
+			setSnippets(result);
+			jQuery("#loading").hide();
+			if (typeof snippetButton !== 'undefined') {
+				// ensure button is correct
+				var snippet = jQuery('#jform_snippet').val();
+				snippetButton(snippet);
+			}
+		});
+	}
+	else
+	{
+		// load all snippets in none is selected
+		setSnippets(snippetIds);
+		jQuery("#loading").hide();
+	}
+}
+function setSnippets(array){
+	if (array) {
+		jQuery('#jform_snippet').append('<option value="">'+select_a_snippet+'</option>');
+		jQuery.each( array, function( i, id ) {
+			if (id in snippets) {
+				jQuery('#jform_snippet').append('<option value="'+id+'">'+snippets[id]+'</option>');
+			}
+			if (id == snippet) {
+				jQuery('#jform_snippet').val(id);
+			}
+		});
+	} else {
+		jQuery('#jform_snippet').append('<option value="">'+create_a_snippet+'</option>');
+	}
+	jQuery('#jform_snippet').trigger('liszt:updated');
 }			 

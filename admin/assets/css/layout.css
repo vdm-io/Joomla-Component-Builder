@@ -25,3 +25,15 @@
 /* CSS Document */
 
 
+#jform_snippet_chzn {
+width: 100% !important;
+}
+.jform_snippet_input_width {
+width: 90% !important;
+}
+#jform_dynamic_get_chzn {
+width: 100% !important;
+}
+.jform_dynamic_get_input_width {
+width: 90% !important;
+}

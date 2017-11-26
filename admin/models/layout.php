@@ -79,7 +79,7 @@ class ComponentbuilderModelLayout extends JModelAdmin
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params))
+			if (!empty($item->params) && !is_array($item->params))
 			{
 				// Convert the params field to an array.
 				$registry = new Registry;
@@ -93,6 +93,14 @@ class ComponentbuilderModelLayout extends JModelAdmin
 				$registry = new Registry;
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
+			}
+
+			if (!empty($item->libraries))
+			{
+				// Convert the libraries field to an array.
+				$libraries = new Registry;
+				$libraries->loadString($item->libraries);
+				$item->libraries = $libraries->toArray();
 			}
 
 			if (!empty($item->layout))
@@ -829,6 +837,19 @@ class ComponentbuilderModelLayout extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		} 
+
+		// Set the libraries items to data.
+		if (isset($data['libraries']) && is_array($data['libraries']))
+		{
+			$libraries = new JRegistry;
+			$libraries->loadArray($data['libraries']);
+			$data['libraries'] = (string) $libraries;
+		}
+		elseif (!isset($data['libraries']))
+		{
+			// Set the empty libraries to data
+			$data['libraries'] = '';
+		}
 
 		// Set the layout string to base64 string.
 		if (isset($data['layout']))

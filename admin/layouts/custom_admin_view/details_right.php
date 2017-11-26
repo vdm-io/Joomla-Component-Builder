@@ -31,7 +31,9 @@ $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
 	'icon',
-	'note_uikit_snippet'
+	'snippet',
+	'note_uikit_snippet',
+	'note_snippet_usage'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

@@ -96,6 +96,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'layout' => 'layouts',
 				'dynamic_get' => 'dynamic_gets',
 				'custom_code' => 'custom_codes',
+				'library' => 'libraries',
 				'snippet' => 'snippets',
 				'field' => 'fields',
 				'fieldtype' => 'fieldtypes',
@@ -115,7 +116,8 @@ class ComponentbuilderController extends JControllerLegacy
 				'component_dashboard' => 'components_dashboard',
 				'component_files_folders' => 'components_files_folders',
 				'snippet_type' => 'snippet_types',
-				'library' => 'libraries'
+				'library_config' => 'libraries_config',
+				'library_files_folders_urls' => 'libraries_files_folders_urls'
                                 );
                         // check if this is a list view
                         if (in_array($view,$views))

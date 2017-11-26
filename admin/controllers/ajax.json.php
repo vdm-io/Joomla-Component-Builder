@@ -52,6 +52,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getButton', 'ajax');
 		$this->registerTask('getButtonID', 'ajax');
 		$this->registerTask('getAjaxDisplay', 'ajax');
+		$this->registerTask('getSnippets', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
 		$this->registerTask('getLayoutDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
@@ -427,6 +428,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($typeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getAjaxDisplay($typeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getSnippets':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$librariesValue = $jinput->get('libraries', NULL, 'STRING');
+						if($librariesValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getSnippets($librariesValue);
 						}
 						else
 						{

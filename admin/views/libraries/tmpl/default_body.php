@@ -89,6 +89,9 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->description); ?>
 		</td>
+		<td class="hidden-phone">
+			<?php echo JText::_($item->how); ?>
+		</td>
 		<td class="center">
 		<?php if ($canDo->get('library.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>

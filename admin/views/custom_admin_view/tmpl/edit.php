@@ -275,6 +275,12 @@ jQuery('#adminForm').on('change', '#jform_add_css',function (e)
 
 
 
+jQuery(function() {
+	jQuery('#open-libraries').html('<a href="index.php?option=com_componentbuilder&view=libraries"><?php echo JText::_('COM_COMPONENTBUILDER_LIBRARIES'); ?></a>');
+});
+jQuery('#jform_snippet').closest('.input-append').addClass('jform_snippet_input_width');
+jQuery('#jform_main_get').closest('.input-append').addClass('jform_main_get_input_width');
+jQuery('#jform_dynamic_get').closest('.input-append').addClass('jform_dynamic_get_input_width');
 <?php $fieldNrs = range(1,7,1); ?>
 <?php foreach($fieldNrs as $nr): ?>jQuery('#jform_custom_button_modal').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
 	// update the icon if changed
@@ -303,6 +309,10 @@ jQuery('input.form-field-repeatable').on('row-add', function (e) {
     jQuery("code").click(function() {
         jQuery(this).selText().addClass("selected");
     });
+});
+jQuery('#adminForm').on('change', '#jform_libraries',function (e) {
+	e.preventDefault();
+	getSnippets();
 });
 			
 jQuery.fn.selText = function() {
@@ -355,4 +365,7 @@ jQuery(document).ready(function() {
 	getLayoutDetails(9999);
 	getTemplateDetails(9999);
 });
+// some lang strings
+var select_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
+var create_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
 </script>

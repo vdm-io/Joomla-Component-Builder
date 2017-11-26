@@ -725,7 +725,6 @@ jQuery(document).ready(function(){
 jQuery('#jform_add_custom_import').on('change',function() {
 	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
 	getImportScripts(valueSwitch);
-
 });
 			
 <?php

@@ -153,7 +153,6 @@ class JFormFieldJoomlacomponents extends JFormFieldList
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','joomla_component_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
-		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.system_name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();

@@ -33,8 +33,9 @@ $fields = $displayData->get('fields') ?: array(
 	'name',
 	'alias',
 	'description',
-	'snippet',
-	'note_snippet_usage'
+	'note_libraries_selection',
+	'libraries',
+	'note_add_language_string'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

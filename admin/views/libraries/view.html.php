@@ -92,7 +92,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_LIBRARIES'), 'joomla');
+		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_LIBRARIES'), 'puzzle');
 		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=libraries');
                 JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 

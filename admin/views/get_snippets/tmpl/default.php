@@ -51,7 +51,7 @@ JHtml::_('behavior.keepalive');
 </form>
 <div id="snippets-github" class="bulk-updater-toggler">
 	<br /><br /><br />
-	<center><h1> <?php echo JText::_('COM_COMPONENTBUILDER_THE_SNIPPETS_IS'); ?> <br /><?php echo JText::_('COM_COMPONENTBUILDER_LOADING'); ?>.<span class="loading-dots">.</span></h1></center>
+	<center><h1> <?php echo JText::_('COM_COMPONENTBUILDER_THE_SNIPPETS_ARE'); ?> <br /><?php echo JText::_('COM_COMPONENTBUILDER_LOADING'); ?>.<span class="loading-dots">.</span></h1></center>
 </div>
 <div class="bulk-updater-toggler uk-hidden">
 		<h1><?php echo JText::_('COM_COMPONENTBUILDER_BULK_TOOLS'); ?></h1>

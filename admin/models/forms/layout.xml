@@ -150,10 +150,25 @@
 			type="snippets"
 			name="snippet"
 			label="COM_COMPONENTBUILDER_LAYOUT_SNIPPET_LABEL"
+			description="COM_COMPONENTBUILDER_LAYOUT_SNIPPET_DESCRIPTION"
 			class="list_class"
 			multiple="false"
 			required="false"
 			button="true"
+		/>
+		<!-- Note_libraries_selection Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_libraries_selection" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_LIBRARIES_SELECTION_LABEL" description="COM_COMPONENTBUILDER_LAYOUT_NOTE_LIBRARIES_SELECTION_DESCRIPTION" heading="h4" class="alert alert-info note_libraries_selection" />
+		<!-- Layout Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="layout"
+			label="COM_COMPONENTBUILDER_LAYOUT_LAYOUT_LABEL"
+			rows="20"
+			cols="15"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_LAYOUT_LAYOUT_HINT"
+			required="true"
 		/>
 		<!-- Add_php_view Field. Type: Radio. (joomla) -->
 		<field
@@ -169,32 +184,32 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_LAYOUT_NO</option>
 		</field>
-		<!-- Layout Field. Type: Textarea. (joomla) -->
+		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_language_string" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_ADD_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_LAYOUT_NOTE_ADD_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_language_string" />
+		<!-- Libraries Field. Type: Libraries. (custom) -->
 		<field
-			type="textarea"
-			name="layout"
-			label="COM_COMPONENTBUILDER_LAYOUT_LAYOUT_LABEL"
-			rows="20"
-			cols="15"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_LAYOUT_LAYOUT_HINT"
-			required="true"
+			type="libraries"
+			name="libraries"
+			label="COM_COMPONENTBUILDER_LAYOUT_LIBRARIES_LABEL"
+			description="COM_COMPONENTBUILDER_LAYOUT_LIBRARIES_DESCRIPTION"
+			class="list_class"
+			multiple="true"
+			default="0"
+			required="false"
+			button="true"
 		/>
-		<!-- Note_snippet_usage Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_snippet_usage" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_SNIPPET_USAGE_LABEL" heading="h4" class="snippet-usage note_snippet_usage" />
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field
 			type="hidden"
 			name="not_required"
 			default="[]"
 		/>
-		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_uikit_snippet" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_UIKIT_SNIPPET_LABEL" heading="h4" class="snippet-code note_uikit_snippet" />
+		<!-- Note_snippet_usage Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_snippet_usage" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_SNIPPET_USAGE_LABEL" heading="h4" class="snippet-usage note_snippet_usage" />
 		<!-- Dynamic_values Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="dynamic_values" label="COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_VALUES_LABEL" description="COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_VALUES_DESCRIPTION" heading="h4" class="dynamic_values" />
-		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_add_language_string" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_ADD_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_LAYOUT_NOTE_ADD_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_language_string" />
+		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_uikit_snippet" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_UIKIT_SNIPPET_LABEL" heading="h4" class="snippet-code note_uikit_snippet" />
 		<!-- Php_view Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"

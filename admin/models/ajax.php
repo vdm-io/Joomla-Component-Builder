@@ -211,6 +211,8 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 			
 	protected $buttonArray = array(
+				'library_config' => 'libraries_config',
+				'library_files_folders_urls' => 'libraries_files_folders_urls',
 				'admin_fields' => 'admins_fields',
 				'admin_fields_conditions' => 'admins_fields_conditions',
 				'field' => 'fields',
@@ -338,6 +340,10 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	protected $functionArray = array(
+				// Library
+				'rename' => 'setYesNo',
+				'update' => 'setYesNo',
+				'type' => 'setURLType',
 				// Admin View
 				'field' => 'setItemNames',
 				'list' => 'setYesNo',
@@ -379,6 +385,10 @@ class ComponentbuilderModelAjax extends JModelList
 	protected function getLanguage($key)
 	{
 		$language = array(
+			// Library (folder file url)
+			'rename' => JText::_('COM_COMPONENTBUILDER_RENAME'),
+			'path' => JText::_('COM_COMPONENTBUILDER_TARGET_PATH'),
+			'update' => JText::_('COM_COMPONENTBUILDER_UPDATE'),
 			// Admin View (fields)
 			'field' => JText::_('COM_COMPONENTBUILDER_FIELD'),
 			'list' => JText::_('COM_COMPONENTBUILDER_ADMIN_LIST'),
@@ -546,11 +556,17 @@ class ComponentbuilderModelAjax extends JModelList
 
 	protected $ref;
 	protected $fieldsArray = array(
+				'library_config' => 'addconfig',
+				'library_files_folders_urls' => array('addurls','addfiles','addfolders'),
 				'admin_fields' => 'addfields',
 				'admin_fields_conditions' => 'addconditions',
 				'component_admin_views' =>  'addadmin_views',
 				'component_site_views' =>  'addsite_views',
 				'component_custom_admin_views' =>  'addcustom_admin_views');
+	protected $allowedViewsArray = array(
+				'admin_view',
+				'joomla_component',
+				'library');
 
 	public function getAjaxDisplay($type)
 	{
@@ -561,33 +577,69 @@ class ComponentbuilderModelAjax extends JModelList
 			// get the view name & id
 			$values = $this->getViewID();
 			// check if we are in the correct view.
-			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && ($values['a_view'] === 'admin_view' || $values['a_view'] === 'joomla_component'))
+			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
 			{
 				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'];
-				// get the field data
-				if ($fieldsData = ComponentbuilderHelper::getVar($type, (int) $values['a_id'], $values['a_view'], $this->fieldsArray[$type]))
+				// load the results
+				$result = array();
+				// return field table
+				if (ComponentbuilderHelper::checkArray($this->fieldsArray[$type]))
 				{
-					// check repeatable conversion
-					$this->checkRepeatableConversion($fieldsData, $type, $values['a_id'], $values['a_view']);
-					// get the table
-					$table = $this->getSubformTable($type, $fieldsData);
-					// set notice of bad practice
-					$notice = '';
-					if ($values['a_view'] === 'admin_view' && isset($this->rowNumber) && $this->rowNumber > 50)
+					foreach ($this->fieldsArray[$type] as $fieldName)
 					{
-						$notice = '<div class="alert alert-warning">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_FIFTY_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $typeName, $typeName, $typeName) . '</div>';
+						if ($table = $this->getFieldTable($type, $values['a_id'], $values['a_view'], $fieldName, $typeName))
+						{
+							$result[] = $table;
+						}
 					}
-					elseif ($values['a_view'] === 'admin_view' && isset($this->rowNumber))
+				}
+				elseif (ComponentbuilderHelper::checkString($this->fieldsArray[$type]))
+				{
+					if ($table = $this->getFieldTable($type, $values['a_id'], $values['a_view'], $this->fieldsArray[$type], $typeName))
 					{
-						$notice = '<div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_FIFTY_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $typeName) . '</div>';
+						$result[] = $table;
 					}
-					// return table
-					return $notice.$table;
+				}
+				// check if we have results
+				if (ComponentbuilderHelper::checkArray($result) && count($result) == 1)
+				{
+					// return the display
+					return implode('', $result);
+				}
+				elseif (ComponentbuilderHelper::checkArray($result))
+				{
+					// return the display
+					return '<div>' . implode('</div><div>', $result) . '</div>';
 				}
 			}
 			return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', $typeName) . '</div></div>';
 		}
 		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
+	}
+
+	protected function getFieldTable($type, $id, $idName, $fieldName, $typeName)
+	{
+		// get the field data
+		if ($fieldsData = ComponentbuilderHelper::getVar($type, (int) $id, $idName, $fieldName))
+		{
+			// check repeatable conversion
+			$this->checkRepeatableConversion($fieldsData, $fieldName, $id, $idName);
+			// get the table
+			$table = $this->getSubformTable($type, $fieldsData);
+			// set notice of bad practice
+			$notice = '';
+			if ($idName === 'admin_view' && isset($this->rowNumber) && $this->rowNumber > 50)
+			{
+				$notice = '<div class="alert alert-warning">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_FIFTY_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $typeName, $typeName, $typeName) . '</div>';
+			}
+			elseif ($idName === 'admin_view' && isset($this->rowNumber))
+			{
+				$notice = '<div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_FIFTY_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $typeName) . '</div>';
+			}
+			// return table
+			return $notice.$table;
+		}
+		return false;
 	}
 
 	protected $conversionCheck = array(
@@ -601,26 +653,26 @@ class ComponentbuilderModelAjax extends JModelList
 				'sql_tweak' => 'adminview',
 				'version_update' => 'version');
 
-	protected function checkRepeatableConversion(&$fieldsData, $type, $id, $linked_id_name)
+	protected function checkRepeatableConversion(&$fieldsData, $fieldsArrayType, $id, $linked_id_name)
 	{
-		if (ComponentbuilderHelper::checkJson($fieldsData))
+		if (ComponentbuilderHelper::checkJson($fieldsData) && isset($this->conversionCheck[$fieldsArrayType]))
 		{
 			$fieldsData = json_decode($fieldsData, true);
-			if (isset($fieldsData[$this->conversionCheck[$this->fieldsArray[$type]]]))
+			if (isset($fieldsData[$this->conversionCheck[$fieldsArrayType]]))
 			{
 				$bucket = array();
 				foreach($fieldsData as $option => $values)
 				{
 					foreach($values as $nr => $value)
 					{
-						$bucket[$this->fieldsArray[$type].$nr][$option] = $value;
+						$bucket[$fieldsArrayType.$nr][$option] = $value;
 					}
 				}
 				$fieldsData = json_encode($bucket);
 				// update the fields
 				$objectUpdate = new stdClass();
 				$objectUpdate->{$linked_id_name} = (int) $id;
-				$objectUpdate->{$this->fieldsArray[$type]} = $fieldsData;
+				$objectUpdate->{$fieldsArrayType} = $fieldsData;
 				JFactory::getDbo()->updateObject('#__componentbuilder_'.$type, $objectUpdate, 'admin_view');
 			}
 		}
@@ -713,6 +765,23 @@ class ComponentbuilderModelAjax extends JModelList
 			return JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 		}
 		return JText::_('COM_COMPONENTBUILDER_NO_ITEM_FOUND');
+	}
+
+	protected function setURLType($header, $value)
+	{
+		switch ($value)
+		{
+			case 1:
+				return JText::_('COM_COMPONENTBUILDER_DEFAULT_LINK');
+			break;
+			case 2:
+				return JText::_('COM_COMPONENTBUILDER_LOCAL_GET');
+			break;
+			case 3:
+				return JText::_('COM_COMPONENTBUILDER_LINK_LOCAL_DYNAMIC');
+			break;
+		}
+		return JText::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	protected function setIcoMoon($header, $value)
@@ -1002,6 +1071,39 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 		return false;
 	}
+
+	// Used in site_view
+			
+	public function getSnippets($libraries)
+	{
+		if (ComponentbuilderHelper::checkJson($libraries))
+		{
+			$libraries = json_decode($libraries, true);
+		}
+		// check if we have an array
+		if (ComponentbuilderHelper::checkArray($libraries))
+		{
+			// insure we only have int values
+			$libraries = array_map( function($id){ return (int) $id; }, $libraries);
+			// Get a db connection.
+			$db = JFactory::getDbo();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName( array('a.id') ));
+			$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
+			$query->where($db->quoteName('a.published') . ' = 1');
+			// check for country and region
+			$query->where($db->quoteName('a.library') . ' IN ('. implode(',',$libraries) .')');
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				return $db->loadColumn();
+			}
+		}
+		return false;
+	}
+			
 
 	// Used in template
 	public function getTemplateDetails($id)

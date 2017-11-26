@@ -122,10 +122,46 @@ class ComponentbuilderModelLibraries extends JModelList
 				}
 
 			}
-		}  
+		} 
+
+		// set selection value to a translatable value
+		if (ComponentbuilderHelper::checkArray($items))
+		{
+			foreach ($items as $nr => &$item)
+			{
+				// convert how
+				$item->how = $this->selectionTranslation($item->how, 'how');
+			}
+		}
+ 
         
 		// return items
 		return $items;
+	}
+
+	/**
+	* Method to convert selection values to translatable string.
+	*
+	* @return translatable string
+	*/
+	public function selectionTranslation($value,$name)
+	{
+		// Array of how language strings
+		if ($name === 'how')
+		{
+			$howArray = array(
+				1 => 'COM_COMPONENTBUILDER_LIBRARY_ALWAYS_ADD',
+				2 => 'COM_COMPONENTBUILDER_LIBRARY_CONDITIONS',
+				3 => 'COM_COMPONENTBUILDER_LIBRARY_CUSTOM_SCRIPT',
+				0 => 'COM_COMPONENTBUILDER_LIBRARY_DO_NOT_ADD'
+			);
+			// Now check if value is found in this array
+			if (isset($howArray[$value]) && ComponentbuilderHelper::checkString($howArray[$value]))
+			{
+				return $howArray[$value];
+			}
+		}
+		return $value;
 	}
 	
 	/**

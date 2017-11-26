@@ -65,6 +65,11 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
+
+	public function getVDM()
+	{
+		return $this->vastDevMod;
+	}
     
 	/**
 	 * Method to get a single record.
@@ -79,7 +84,7 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params))
+			if (!empty($item->params) && !is_array($item->params))
 			{
 				// Convert the params field to an array.
 				$registry = new Registry;
@@ -94,6 +99,47 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
 			}
+
+			if (!empty($item->addconditions))
+			{
+				// Convert the addconditions field to an array.
+				$addconditions = new Registry;
+				$addconditions->loadString($item->addconditions);
+				$item->addconditions = $addconditions->toArray();
+			}
+
+			if (!empty($item->php_setdocument))
+			{
+				// base64 Decode php_setdocument.
+				$item->php_setdocument = base64_decode($item->php_setdocument);
+			}
+
+			if (!empty($item->php_preparedocument))
+			{
+				// base64 Decode php_preparedocument.
+				$item->php_preparedocument = base64_decode($item->php_preparedocument);
+			}
+
+			
+			if (empty($item->id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $item->id;
+			}			
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('library__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'library__'.$id);
+				ComponentbuilderHelper::set('library__'.$id, $this->vastDevMod);
+			}			
 			
 			if (!empty($item->id))
 			{
@@ -348,6 +394,42 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 		}
 
 		return $data;
+	}
+
+	/**
+	* Method to validate the form data.
+	*
+	* @param   JForm   $form   The form to validate against.
+	* @param   array   $data   The data to validate.
+	* @param   string  $group  The name of the field group to validate.
+	*
+	* @return  mixed  Array of filtered data if valid, false otherwise.
+	*
+	* @see     JFormRule
+	* @see     JFilterInput
+	* @since   12.2
+	*/
+	public function validate($form, $data, $group = null)
+	{
+		// check if the not_required field is set
+		if (ComponentbuilderHelper::checkString($data['not_required']))
+		{
+			$requiredFields = (array) explode(',',(string) $data['not_required']);
+			$requiredFields = array_unique($requiredFields);
+			// now change the required field attributes value
+			foreach ($requiredFields as $requiredField)
+			{
+				// make sure there is a string value
+				if (ComponentbuilderHelper::checkString($requiredField))
+				{
+					// change to false
+					$form->setFieldAttribute($requiredField, 'required', 'false');
+					// also clear the data set
+					$data[$requiredField] = '';
+				}
+			}
+		}
+		return parent::validate($form, $data, $group);
 	} 
 
 	/**
@@ -373,9 +455,48 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 	 */
 	public function delete(&$pks)
 	{
+		// insure the locked library are not deleted
+		$app = JFactory::getApplication();
+		foreach ($pks as $nr => $pk)
+		{
+			// remove if it is a locked library
+			if ($pk > 0 && isset(ComponentbuilderHelper::$libraryNames[$pk]))
+			{
+				// do not allow delete
+				unset($pks[$nr]);
+				// set a message to remind them not to delete these libraries (since they are locked)
+				$app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_LIBRARY_CAN_NOT_BE_DELETED_OR_THINGS_WILL_BREAK', ComponentbuilderHelper::$libraryNames[$pk]), 'warning');
+			}
+		}
+		// check if we can still continue
+		if (!ComponentbuilderHelper::checkArray($pks))
+		{
+			return false;
+		}
 		if (!parent::delete($pks))
 		{
 			return false;
+		}
+
+		// we must also delete the linked tables found
+		if (ComponentbuilderHelper::checkArray($pks))
+		{
+			$_tablesArray = array(
+				'snippet',
+				'library_config',
+				'library_files_folders_urls'
+			);
+			foreach($_tablesArray as $_updateTable)
+			{
+				// get the linked IDs
+				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'library', 'id'))
+				{
+					// load the model
+					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					// change publish state
+					$_Model->delete($_pks);
+				}
+			}
 		}
 		
 		return true;
@@ -396,6 +517,27 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 		if (!parent::publish($pks, $value))
 		{
 			return false;
+		}
+
+		// we must also update all linked tables
+		if (ComponentbuilderHelper::checkArray($pks))
+		{
+			$_tablesArray = array(
+				'snippet',
+				'library_config',
+				'library_files_folders_urls'
+			);
+			foreach($_tablesArray as $_updateTable)
+			{
+				// get the linked IDs
+				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'library', 'id'))
+				{
+					// load the model
+					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					// change publish state
+					$_Model->publish($_pks, $value);
+				}
+			}
 		}
 		
 		return true;
@@ -781,6 +923,46 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		} 
+
+		// Set the addconditions items to data.
+		if (isset($data['addconditions']) && is_array($data['addconditions']))
+		{
+			$addconditions = new JRegistry;
+			$addconditions->loadArray($data['addconditions']);
+			$data['addconditions'] = (string) $addconditions;
+		}
+		elseif (!isset($data['addconditions']))
+		{
+			// Set the empty addconditions to data
+			$data['addconditions'] = '';
+		}
+
+		// Set the php_setdocument string to base64 string.
+		if (isset($data['php_setdocument']))
+		{
+			$data['php_setdocument'] = base64_encode($data['php_setdocument']);
+		}
+
+		// Set the php_preparedocument string to base64 string.
+		if (isset($data['php_preparedocument']))
+		{
+			$data['php_preparedocument'] = base64_encode($data['php_preparedocument']);
+		}
+
+		// insure the locked library names are not changed
+		if ($data['id'] > 0 && isset(ComponentbuilderHelper::$libraryNames[$data['id']]))
+		{
+			// check if it has or is being changed
+			if (ComponentbuilderHelper::$libraryNames[$data['id']] !== $data['name'])
+			{
+				// the wrong name
+				$name_ = $data['name'];
+				// change it back
+				$data['name'] = ComponentbuilderHelper::$libraryNames[$data['id']];
+				// give a notice that the name can not be changed
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_NAME_OF_THIS_LIBRARY_BSB_CAN_NOT_BE_CHANGED_TO_BSB_OR_THINGS_WILL_BREAK', $data['name'], $name_), 'warning');
+			}
+		}
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))

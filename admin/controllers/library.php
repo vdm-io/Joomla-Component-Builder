@@ -320,6 +320,31 @@ class ComponentbuilderControllerLibrary extends JControllerForm
 	 */
 	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{
+		// get the state object (Joomla\CMS\Object\CMSObject)
+		$state = $model->get('state');
+		// if we save2copy we need to also copy linked tables found!
+		if ($state->task === 'save2copy' && $state->{'library.new'})
+		{
+			// get new ID
+			$newID = $state->{'library.id'};
+			// get old ID
+			$oldID = $this->input->get('id', 0, 'INT');
+			// linked tables to update
+			$_tablesArray = array(
+				'library_config',
+				'library_files_folders_urls'
+			);
+			foreach($_tablesArray as $_updateTable)
+			{
+				// get the linked ID
+				if ($_value = ComponentbuilderHelper::getVar($_updateTable, $oldID, 'library', 'id'))
+				{
+					// copy fields to new linked table
+					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array('library' => $newID));
+				}
+			}
+		}
+
 		return;
 	}
 
