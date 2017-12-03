@@ -45,7 +45,9 @@ class ComponentbuilderModelLibraries extends JModelList
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.name','name',
-				'a.description','description'
+				'a.description','description',
+				'a.type','type',
+				'a.how','how'
 			);
 		}
 
@@ -71,6 +73,12 @@ class ComponentbuilderModelLibraries extends JModelList
 
 		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
 		$this->setState('filter.description', $description);
+
+		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
+		$this->setState('filter.type', $type);
+
+		$how = $this->getUserStateFromRequest($this->context . '.filter.how', 'filter_how');
+		$this->setState('filter.how', $how);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -131,6 +139,8 @@ class ComponentbuilderModelLibraries extends JModelList
 			{
 				// convert how
 				$item->how = $this->selectionTranslation($item->how, 'how');
+				// convert type
+				$item->type = $this->selectionTranslation($item->type, 'type');
 			}
 		}
  
@@ -159,6 +169,19 @@ class ComponentbuilderModelLibraries extends JModelList
 			if (isset($howArray[$value]) && ComponentbuilderHelper::checkString($howArray[$value]))
 			{
 				return $howArray[$value];
+			}
+		}
+		// Array of type language strings
+		if ($name === 'type')
+		{
+			$typeArray = array(
+				1 => 'COM_COMPONENTBUILDER_LIBRARY_MAIN',
+				2 => 'COM_COMPONENTBUILDER_LIBRARY_BUNDLE'
+			);
+			// Now check if value is found in this array
+			if (isset($typeArray[$value]) && ComponentbuilderHelper::checkString($typeArray[$value]))
+			{
+				return $typeArray[$value];
 			}
 		}
 		return $value;
@@ -223,6 +246,16 @@ class ComponentbuilderModelLibraries extends JModelList
 			}
 		}
 
+		// Filter by How.
+		if ($how = $this->getState('filter.how'))
+		{
+			$query->where('a.how = ' . $db->quote($db->escape($how)));
+		}
+		// Filter by Type.
+		if ($type = $this->getState('filter.type'))
+		{
+			$query->where('a.type = ' . $db->quote($db->escape($type)));
+		}
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
@@ -252,6 +285,8 @@ class ComponentbuilderModelLibraries extends JModelList
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.description');
+		$id .= ':' . $this->getState('filter.type');
+		$id .= ':' . $this->getState('filter.how');
 
 		return parent::getStoreId($id);
 	}

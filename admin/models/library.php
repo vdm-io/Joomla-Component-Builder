@@ -108,6 +108,14 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$item->addconditions = $addconditions->toArray();
 			}
 
+			if (!empty($item->libraries))
+			{
+				// Convert the libraries field to an array.
+				$libraries = new Registry;
+				$libraries->loadString($item->libraries);
+				$item->libraries = $libraries->toArray();
+			}
+
 			if (!empty($item->php_setdocument))
 			{
 				// base64 Decode php_setdocument.
@@ -441,7 +449,9 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 	 */
 	protected function getUniqeFields()
 	{
-		return false;
+			
+		return array('name');
+			
 	}
 	
 	/**
@@ -937,6 +947,19 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 			$data['addconditions'] = '';
 		}
 
+		// Set the libraries items to data.
+		if (isset($data['libraries']) && is_array($data['libraries']))
+		{
+			$libraries = new JRegistry;
+			$libraries->loadArray($data['libraries']);
+			$data['libraries'] = (string) $libraries;
+		}
+		elseif (!isset($data['libraries']))
+		{
+			// Set the empty libraries to data
+			$data['libraries'] = '';
+		}
+
 		// Set the php_setdocument string to base64 string.
 		if (isset($data['php_setdocument']))
 		{
@@ -962,6 +985,13 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				// give a notice that the name can not be changed
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_NAME_OF_THIS_LIBRARY_BSB_CAN_NOT_BE_CHANGED_TO_BSB_OR_THINGS_WILL_BREAK', $data['name'], $name_), 'warning');
 			}
+			// always insure they remain set a main libraries
+			$data['type'] = 1;
+		}
+		// also check to insure these names are not used again
+		if (!isset(ComponentbuilderHelper::$libraryNames[$data['id']]) && in_array($data['name'], ComponentbuilderHelper::$libraryNames))
+		{
+			$data['name'] = $this->generateUniqe('name', $data['name']);
 		}
         
 		// Set the Params Items to data

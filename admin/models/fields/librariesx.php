@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		library.php
+	@subpackage		librariesx.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -31,16 +31,16 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Library Form Field class for the Componentbuilder component
+ * Librariesx Form Field class for the Componentbuilder component
  */
-class JFormFieldLibrary extends JFormFieldList
+class JFormFieldLibrariesx extends JFormFieldList
 {
 	/**
-	 * The library field type.
+	 * The librariesx field type.
 	 *
 	 * @var		string
 	 */
-	public $type = 'library'; 
+	public $type = 'librariesx'; 
 	/**
 	 * Override to add new button
 	 *
@@ -149,22 +149,28 @@ class JFormFieldLibrary extends JFormFieldList
 	 */
 	public function getOptions()
 	{
+		// get the input from url
+		$jinput = JFactory::getApplication()->input;
+		// get the library id
+		$libID = $jinput->getInt('id', 0);
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','library_name')));
+		$query->select($db->quoteName(array('a.id','a.name'),array('id','libraries_name')));
 		$query->from($db->quoteName('#__componentbuilder_library', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->where($db->quoteName('a.type') . ' = 1');
+		if ($libID > 0)
+		{
+			$query->where($db->quoteName('a.id') . ' != ' . (int) $libID);
+		}
 		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
 		$options = array();
 		if ($items)
 		{
-			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->library_name);
+				$options[] = JHtml::_('select.option', $item->id, $item->libraries_name);
 			}
 		}
 		return $options;

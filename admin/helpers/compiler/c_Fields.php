@@ -1048,83 +1048,92 @@ class Fields extends Structure
 				$fieldsSet = array();
 				foreach ($fieldAttributes as $property => $value)
 				{
-					if ($property != 'fields')
+					if ($property != 'fields' && $property != 'formsource')
 					{
 						$fieldSet .= PHP_EOL."\t\t\t" . $property . '="' . $value . '"';
 					}
 				}
-				$fieldSet .= ">";
-				$fieldSet .= PHP_EOL."\t\t\t" . '<form hidden="true" name="list_' . $fieldAttributes['name'] . '_modal" repeat="true">';
-				if (strpos($fieldAttributes['fields'], ',') !== false)
+				// if we detect formsource we do not add the form
+				if (isset($fieldAttributes['formsource']) && ComponentbuilderHelper::checkString($fieldAttributes['formsource']))
 				{
-					// mulitpal fields
-					$fieldsSets = (array) explode(',', $fieldAttributes['fields']);
+					$fieldSet .= PHP_EOL."\t\t\tformsource". '="' . $fieldAttributes['formsource'] . '"';
+					$fieldSet .= PHP_EOL."\t\t />";
 				}
-				elseif (is_numeric($fieldAttributes['fields']))
+				else
 				{
-					// single field
-					$fieldsSets[] = (int) $fieldAttributes['fields'];
-				}
-				// only continue if we have a field set
-				if (ComponentbuilderHelper::checkArray($fieldsSets))
-				{
-					foreach ($fieldsSets as $fieldId)
+					$fieldSet .= ">";
+					$fieldSet .= PHP_EOL."\t\t\t" . '<form hidden="true" name="list_' . $fieldAttributes['name'] . '_modal" repeat="true">';
+					if (strpos($fieldAttributes['fields'], ',') !== false)
 					{
-						// get the field data
-                                                $fieldData = array();
-						$fieldData['settings'] = $this->getFieldData($fieldId, $viewName);
-						if (ComponentbuilderHelper::checkObject($fieldData['settings']))
+						// mulitpal fields
+						$fieldsSets = (array) explode(',', $fieldAttributes['fields']);
+					}
+					elseif (is_numeric($fieldAttributes['fields']))
+					{
+						// single field
+						$fieldsSets[] = (int) $fieldAttributes['fields'];
+					}
+					// only continue if we have a field set
+					if (ComponentbuilderHelper::checkArray($fieldsSets))
+					{
+						foreach ($fieldsSets as $fieldId)
 						{
-							$r_name = ComponentbuilderHelper::safeString($fieldData['settings']->name);
-							$r_typeName = ComponentbuilderHelper::safeString($fieldData['settings']->type_name);
-							$r_multiple = false;
-							$r_langLabel = '';
-							// add the tabs needed
-							$taber = "\t\t";
-							// get field values
-							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders, true);
-							// check if values were set
-							if (ComponentbuilderHelper::checkArray($r_fieldValues))
+							// get the field data
+							$fieldData = array();
+							$fieldData['settings'] = $this->getFieldData($fieldId, $viewName);
+							if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 							{
-								//reset options array
-								$r_optionArray = array();
-								if ($this->defaultField($r_typeName, 'option'))
+								$r_name = ComponentbuilderHelper::safeString($fieldData['settings']->name);
+								$r_typeName = ComponentbuilderHelper::safeString($fieldData['settings']->type_name);
+								$r_multiple = false;
+								$r_langLabel = '';
+								// add the tabs needed
+								$taber = "\t\t";
+								// get field values
+								$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders, true);
+								// check if values were set
+								if (ComponentbuilderHelper::checkArray($r_fieldValues))
 								{
-									// now add to the field set
-									$fieldSet .= $this->setField('option', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
-								}
-								elseif ($this->defaultField($r_typeName, 'plain'))
-								{
-									// now add to the field set
-									$fieldSet .= $this->setField('plain', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
-								}
-								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
-								{
-									// add to custom
-									$custom = $r_fieldValues['custom'];
-									unset($r_fieldValues['custom']);
-									// now add to the field set
-									$fieldSet .= $this->setField('custom', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
-									// set lang (just incase)
-									$r_listLangName = $langView . '_' . ComponentbuilderHelper::safeString($r_name, 'U');
-									// add to lang array
-									$this->langContent[$this->lang][$r_listLangName] = ComponentbuilderHelper::safeString($r_name, 'W');
-									// if label was set use instead
-									if (ComponentbuilderHelper::checkString($r_langLabel))
+									//reset options array
+									$r_optionArray = array();
+									if ($this->defaultField($r_typeName, 'option'))
 									{
-										$r_listLangName = $r_langLabel;
+										// now add to the field set
+										$fieldSet .= $this->setField('option', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
 									}
-									// set the custom array
-									$data = array('type' => $r_typeName, 'code' => $r_name, 'lang' => $r_listLangName, 'custom' => $custom);
-									// set the custom field file
-									$this->setCustomFieldTypeFile($data, $listViewName, $viewName);
+									elseif ($this->defaultField($r_typeName, 'plain'))
+									{
+										// now add to the field set
+										$fieldSet .= $this->setField('plain', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
+									}
+									elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
+									{
+										// add to custom
+										$custom = $r_fieldValues['custom'];
+										unset($r_fieldValues['custom']);
+										// now add to the field set
+										$fieldSet .= $this->setField('custom', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
+										// set lang (just incase)
+										$r_listLangName = $langView . '_' . ComponentbuilderHelper::safeString($r_name, 'U');
+										// add to lang array
+										$this->langContent[$this->lang][$r_listLangName] = ComponentbuilderHelper::safeString($r_name, 'W');
+										// if label was set use instead
+										if (ComponentbuilderHelper::checkString($r_langLabel))
+										{
+											$r_listLangName = $r_langLabel;
+										}
+										// set the custom array
+										$data = array('type' => $r_typeName, 'code' => $r_name, 'lang' => $r_listLangName, 'custom' => $custom);
+										// set the custom field file
+										$this->setCustomFieldTypeFile($data, $listViewName, $viewName);
+									}
 								}
 							}
 						}
 					}
+					$fieldSet .= PHP_EOL."\t\t\t</form>";
+					$fieldSet .= PHP_EOL."\t\t</field>";
 				}
-				$fieldSet .= PHP_EOL."\t\t\t</form>";
-				$fieldSet .= PHP_EOL."\t\t</field>";
 			}
 		}
 		elseif ($setType === 'custom')
@@ -1419,7 +1428,7 @@ class Fields extends Structure
 						$name = $this->setPlaceholders($xmlValue, $placeholders);
 					}
 				}
-				elseif ($property['name'] === 'extension' || $property['name'] === 'directory')
+				elseif ($property['name'] === 'extension' || $property['name'] === 'directory' || $property['name'] === 'formsource')
 				{
 					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 					// replace the placeholders

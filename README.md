@@ -111,12 +111,12 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](http://vdm.bz/component-builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 26th November, 2017
++ *Last Build*: 3rd December, 2017
 + *Version*: 2.6.6
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **178893**
-+ *File count*: **1139**
++ *Line count*: **179770**
++ *File count*: **1141**
 + *Folder count*: **184**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).
@@ -126,5 +126,5 @@ Component Builder is mapped as a component in itself on my local development env
 
 Come on buy me a coffee :)
  * PayPal: [paypal.me/payvdm](https://www.paypal.me/payvdm)
- * Bitcoin: 1FLxiT6wyxgZ3boeviLkYJ1DRpp41uzpxa
- * Ethereum: 0x243392daa3c9c8bc841fcacf7c7f72541cb16823
+ * Bitcoin: 18vURxYpPFjvNk8BnUy1ovCAyQmY3MzkSf
+ * Ethereum: 0x9548144662b47327c954f3e214edb96662d51218

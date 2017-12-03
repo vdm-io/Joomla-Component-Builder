@@ -173,7 +173,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		else
 		{
 			// set to use no storage
-			$expire = 30000;
+			$expire = 30000; // only 30 seconds
 		}
 		// set snippet path
 		$this->document->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
@@ -219,6 +219,8 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		$this->document->addScriptDeclaration("var lang_Get_Snippets_Ahead_Tooltip = '".JText::_('COM_COMPONENTBUILDER_THERE_ARE_NO_AHEAD_SNIPPETS_AT_THIS_TIME')."';");
 		$this->document->addScriptDeclaration("var lang_Get_Snippets_Behind_Tooltip = '".JText::_('COM_COMPONENTBUILDER_THERE_ARE_NO_OUT_OF_DATE_SNIPPETS_AT_THIS_TIME')."';");
 		$this->document->addScriptDeclaration("var lang_Get_Snippets_All_Tooltip = '".JText::_('COM_COMPONENTBUILDER_THERE_ARE_NO_SNIPPETS_TO_UPDATE_AT_THIS_TIME')."';");
+		$this->document->addScriptDeclaration("var lang_Available_Libraries = '".JText::_('COM_COMPONENTBUILDER_AVAILABLE_LIBRARIES')."';");
+		$this->document->addScriptDeclaration("var lang_Open_Lib_Snippets = '".JText::_('COM_COMPONENTBUILDER_OPEN_LIBRARY_SNIPPETS')."';");
 		// add some lang verfy messages
 		$this->document->addScriptDeclaration("
 			// set the snippet from gitHub
@@ -256,8 +258,14 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		$this->document->addScriptDeclaration("
 			// start the moment the document is ready
 			jQuery(document).ready(function () {
-				getSnippets(snippetsPath);
+				// just get the available libraries
+				getLibraries(snippetsPath);
 			});
+			
+			// add an ajax call tracker
+			var ajaxcall = null;
+			var fromLocal = false;
+			
 			jQuery(document).ready(function(){
 				jQuery('body').on('click','.getreaction',function(){
 					// Ajax request
@@ -267,10 +275,15 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 						btn.prop('disabled', false);
 					}, 3000);
 					var type = btn.data('type');
-					if ('all' === type) {
+					if ('getLibraries' === type) {
+						getLibraries(snippetsPath);
+					} else if ('getSnippets' === type) {
+						var name = btn.data('name');
+						getSnippets(snippetsPath, name);
+					} else if ('all' === type) {
 						var status = btn.data('status');
 						bulkSnippetGithub(status);
-					}  else if ('bulk' === type) {
+					} else if ('bulk' === type) {
 						checkBulkSnippetGithub();
 					} else if ('get' === type) {
 						var path = btn.data('path');
@@ -286,52 +299,35 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			// load every thing once ready
 			jQuery(document).ajaxStop(function () {
 				if (0 === jQuery.active) {
-					setTimeout( function() {
-						//do something special
-						jQuery('#snippets-github').html('<h1>'+lang_Community_Snippets+'</h1>');
-						jQuery('#snippets-display').show();
-						jQuery('#snippets-grid').trigger('display.uk.check');
-					}, 1000);
+					//do something special
+					if ('snippets' === ajaxcall) {
+						setTimeout( function() {
+							jQuery('#snippets-github').html('<h1>'+lang_Community_Snippets+'</h1>');
+							jQuery('#snippets-display').show();
+							jQuery('#snippets-grid').trigger('display.uk.check');
+							jQuery('#loading').hide();
+						}, 1000);
+					} 
 				}
 			});
 			
-			// set the snippet status
-			function getSnippetStatus(snippet, key) {
-				// check if JCB already has this snippet
-				if(local_snippets.hasOwnProperty(key)){
-					// first get local time stamp
-					var local_created = strtotime(local_snippets[key].created);
-					var local_modified = strtotime(local_snippets[key].modified);
-					// now get github time stamps					
-					var created = strtotime(snippet.created);
-					var modified = strtotime(snippet.modified);
-					// work out the status
-					if (local_created == created) {
-						if (local_modified == modified) {
-							return 'equal';
-						} else if (local_modified > modified) {
-							return 'ahead';
-						} else if (local_modified < modified) {
-							return 'behind';
-						}
-					}
-					return 'diverged';
-				}
-				return 'new';
-			}
-			
-			// get the snippets
-			function getSnippets(path) {
+			// get the libraries
+			function getLibraries(path) {
 				var _paths = jQuery.jStorage.get('JCB-Snippets-Paths', null);
+				// always hide the snippets display
+				jQuery('#snippets-display').hide();
+				// always reset the grid
+				jQuery('#libraries-grid').html('');
+				// set the ajax scope
+				ajaxcall = 'libraries';
 				if (_paths) {
-					setSnippets(_paths);
-					jQuery('#snippets-github').html('<h1>'+lang_Community_Snippets+'</h1>');
-					jQuery('#snippets-display').show();
+					buildLibraries(_paths);
 				} else {
 					jQuery.get(path)
 					.success(function(paths) {
+						// load only this library paths
 						jQuery.jStorage.set('JCB-Snippets-Paths', paths, {TTL: expire});
-						setSnippets(paths);
+						buildLibraries(paths);
 					})
 					.error(function(jqXHR, textStatus, errorThrown) { 
 						jQuery('#snippets-github').html(returnError);
@@ -339,14 +335,105 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				}
 			}
 			
+			// build the ibraries object
+			function buildLibraries(paths) {
+				var _temp = jQuery.jStorage.get('JCB-Libraries', null);
+				if (_temp) {
+					setLibraries(_temp);
+				} else {
+					var temp = {};
+					jQuery.each(paths.tree, function(key,value) {
+						if (value.path.match(\".json$\")) {
+							var libName = value.path.split(/ -(.+)/)[0];
+							libName = libName.trim()
+							temp[libName] = libName;
+						}
+					});
+					// load only this library paths
+					jQuery.jStorage.set('JCB-Libraries', temp, {TTL: expire});
+					setLibraries(temp);
+				}
+			}
+			
+			// set the libraries
+			function setLibraries(names) {
+				// now load the lib buttons
+				jQuery.each(names, function(value) {
+					setLibrary(value);
+				});
+				setTimeout( function() {
+					jQuery('#snippets-github').html('<h1>'+lang_Available_Libraries+'</h1>');
+					jQuery('#libraries-display').show();
+					jQuery('#libraries-grid').trigger('display.uk.check');
+				}, 1000);
+			}
+			
 			// set the snippets
-			function setSnippets(paths) {
-				jQuery.each(paths.tree, function(key,value){
-					if (value.path.indexOf('.json') >= 0) {
+			function setLibrary(name) {
+				// get useful ID
+				var keyID = getKeyID(name);
+				// build the library display
+				var html = '<div id=\"'+keyID+'-panel\" class=\"uk-panel\">';
+				html += '<div class=\"uk-panel uk-panel-box uk-width-1-1\">';
+				html += '<h3 class=\"uk-panel-title\">' + name + '</h3>';
+				html += '<hr />';
+				// set the data buttons
+				html += setLibButtons(name);
+				// close the box panel
+				html += '</div>';
+				html += '</div>';
+				// now we have the library
+				jQuery('#libraries-grid').append(html);
+			}
+			
+			function setLibButtons(name) {
+				return  '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-1 getreaction\" data-name=\"'+name+'\" data-type=\"getSnippets\" title=\"'+lang_Description_Tooltip+'\"><i class=\"uk-icon-thumb-tack\"></i><span class=\"uk-hidden-small\"> '+lang_Open_Lib_Snippets+'</span></button>';
+			}
+			
+			// get the snippets
+			function getSnippets(path, libraryName) {
+				jQuery('#loading').show();
+				// get local values if set
+				var _paths = jQuery.jStorage.get('JCB-Snippets-Paths', null);
+				// always reset the grid
+				jQuery('#snippets-grid').html('');
+				// always hide libraries
+				jQuery('#libraries-display').hide();
+				// set the ajax scope
+				ajaxcall = 'snippets';
+				fromLocal = false;
+				if (_paths) {
+					setSnippets(_paths, libraryName);
+					jQuery('#snippets-github').html('<h1>'+lang_Community_Snippets+'</h1>');
+				} else {
+					jQuery.get(path)
+					.success(function(paths) {
+						// load only this library paths
+						jQuery.jStorage.set('JCB-Snippets-Paths', paths, {TTL: expire});
+						setSnippets(paths, libraryName);
+					})
+					.error(function(jqXHR, textStatus, errorThrown) { 
+						jQuery('#snippets-github').html(returnError);
+					});
+				}
+				// only use if loading localy
+				if (fromLocal) {
+					jQuery('#snippets-display').show();
+					jQuery('#snippets-grid').trigger('display.uk.check');
+					jQuery('#loading').hide();
+				}
+			}
+			
+			// set the snippets
+			function setSnippets(paths, libraryName) {
+				// set the ajax scope
+				ajaxcall = 'snippets';
+				jQuery.each(paths.tree, function(key,value) {
+					if (value.path.match(\".json$\") && value.path.match(\"^\"+libraryName)) {
 						var _snippet = jQuery.jStorage.get(value.path, null);
 						if (_snippet) {
 							setSnippet(_snippet, value.path);
-							jQuery('#snippets-grid').trigger('display.uk.check');
+							fromLocal = true;
 						} else {
 							jQuery.get(snippetPath+value.path)
 							.success(function(snippet) {
@@ -380,9 +467,9 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				html += '<h3 class=\"uk-panel-title\">' + snippet.library+ ' - (' + snippet.type + ') ' + snippet.name + '</h3>';
 				html += snippet.heading + '<hr />';
 				// set the data buttons
-				html += setDataButtons(snippet, key, status)
+				html += setDataButtons(snippet, key, status);
 				// set the snippet ref button
-				html += setRefButtons(snippet, key, status, keyID)
+				html += setRefButtons(snippet, key, status, keyID);
 				// set the contributor buttons
 				html += setContributorButtons(snippet, key);
 				// close the box panel
@@ -390,6 +477,31 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				html += '</div>';
 				// now we have the snippet
 				jQuery('#snippets-grid').append(html);
+			}
+			
+			// set the snippet status
+			function getSnippetStatus(snippet, key) {
+				// check if JCB already has this snippet
+				if(local_snippets.hasOwnProperty(key)){
+					// first get local time stamp
+					var local_created = strtotime(local_snippets[key].created);
+					var local_modified = strtotime(local_snippets[key].modified);
+					// now get github time stamps					
+					var created = strtotime(snippet.created);
+					var modified = strtotime(snippet.modified);
+					// work out the status
+					if (local_created == created) {
+						if (local_modified == modified) {
+							return 'equal';
+						} else if (local_modified > modified) {
+							return 'ahead';
+						} else if (local_modified < modified) {
+							return 'behind';
+						}
+					}
+					return 'diverged';
+				}
+				return 'new';
 			}
 			
 			function setDataButtons(snippet, key, status) {
@@ -519,6 +631,8 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			}
 			
 			function doBulkUpdate_server(path, status) {
+				// set the ajax scope
+				ajaxcall = null;
 				var getUrl = \"index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json\";
 				if (token.length > 0 && path.length > 0 && status.length > 0) {
 					var request = 'token='+token+'&path='+path+'&status='+status;
@@ -554,6 +668,8 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			}
 			
 			function setSnippetGithub_server(path, status) {
+				// set the ajax scope
+				ajaxcall = null;
 				var getUrl = \"index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json\";
 				if (token.length > 0 && path.length > 0 && status.length > 0) {
 					var request = 'token='+token+'&path='+path+'&status='+status;
@@ -591,6 +707,8 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			
 			// set the modal
 			function getSnippetModal(key, type) {
+				// set the ajax scope
+				ajaxcall = 'snippets';
 				var _snippet = jQuery.jStorage.get(key, null);
 				if (_snippet) {
 					// show modal
@@ -647,7 +765,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			// get key ID
 			function getKeyID(key) {
 				// get useful ID
-				keyID = key.replace('-', '');
+				var keyID = key.replace('-', '');
 				keyID = keyID.replace('.json', '');
 				keyID = keyID.replace(/\s+/ig, '-');
 				keyID = keyID.replace(/\(/g, '');
@@ -695,6 +813,11 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		{
 			// add Snippets button.
 			JToolBarHelper::custom('get_snippets.openSnippets', 'pin', '', 'COM_COMPONENTBUILDER_SNIPPETS', false);
+		}
+		if ($this->canDo->get('get_snippets.libraries'))
+		{
+			// add Libraries button.
+			JToolBarHelper::custom('get_snippets.openLibraries', 'puzzle', '', 'COM_COMPONENTBUILDER_LIBRARIES', false);
 		}
 
 		// set help url for this view if found

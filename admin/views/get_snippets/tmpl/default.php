@@ -51,10 +51,14 @@ JHtml::_('behavior.keepalive');
 </form>
 <div id="snippets-github" class="bulk-updater-toggler">
 	<br /><br /><br />
-	<center><h1> <?php echo JText::_('COM_COMPONENTBUILDER_THE_SNIPPETS_ARE'); ?> <br /><?php echo JText::_('COM_COMPONENTBUILDER_LOADING'); ?>.<span class="loading-dots">.</span></h1></center>
+	<center><h1> <?php echo JText::_('COM_COMPONENTBUILDER_GETTING_AVAILABLE_LIBRARIES'); ?> <br /><?php echo JText::_('COM_COMPONENTBUILDER_LOADING'); ?>.<span class="loading-dots">.</span></h1></center>
+</div>
+<div id="libraries-display" style="display: none;">
+	<div id="libraries-grid" class="uk-grid uk-grid-preserve uk-grid-width-small-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4" data-uk-grid="{gutter:10}" data-uk-check-display>
+	</div>
 </div>
 <div class="bulk-updater-toggler uk-hidden">
-		<h1><?php echo JText::_('COM_COMPONENTBUILDER_BULK_TOOLS'); ?></h1>
+	<h1><?php echo JText::_('COM_COMPONENTBUILDER_BULK_TOOLS'); ?></h1>
 </div>
 <div id="snippets-display" style="display: none;">
 	<div class="uk-hidden-small">
@@ -81,20 +85,6 @@ JHtml::_('behavior.keepalive');
 						<span class="uk-visible-medium"> <?php echo JText::_('COM_COMPONENTBUILDER_NAME'); ?></span>
 					</a>
 				</li>
-				<li data-uk-sort="snippet-libraries">
-					<a href="">
-						<i class="uk-icon-sort-amount-asc"></i>
-						<span class="uk-hidden-medium"> <?php echo JText::_('COM_COMPONENTBUILDER_LIBRARY_ASC'); ?></span>
-						<span class="uk-visible-medium"> <?php echo JText::_('COM_COMPONENTBUILDER_LIBRARY'); ?></span>
-					</a>
-				</li>
-				<li data-uk-sort="snippet-libraries:desc">
-					<a href="">
-						<i class="uk-icon-sort-amount-desc"></i>
-						<span class="uk-hidden-medium"> <?php echo JText::_('COM_COMPONENTBUILDER_LIBRARY_DESC'); ?></span>
-						<span class="uk-visible-medium"> <?php echo JText::_('COM_COMPONENTBUILDER_LIBRARY'); ?></span>
-					</a>
-				</li>
 				<li data-uk-sort="snippet-types">
 					<a href="">
 						<i class="uk-icon-sort-amount-asc"></i>
@@ -112,6 +102,12 @@ JHtml::_('behavior.keepalive');
 			</ul>
 			<div class="uk-navbar-flip">
 				<ul class="uk-navbar-nav">
+					<li class="bulk-updater-toggler">
+						<a class="getreaction" data-type="getLibraries" title="<?php echo JText::_('COM_COMPONENTBUILDER_BACK_TO_LIBRARIES'); ?>">
+							<i class="uk-icon-puzzle-piece"></i>
+							<span class="uk-hidden-medium"><?php echo JText::_('COM_COMPONENTBUILDER_LIBRARIES'); ?></span>
+						</a>
+					</li>
 					<li>
 						<a class="getreaction" data-uk-toggle="{target:'.bulk-updater-toggler', animation:'uk-animation-slide-bottom, uk-animation-slide-bottom'}" data-type="bulk" title="<?php echo JText::_('COM_COMPONENTBUILDER_ACCESS_BULK_TOOLS'); ?>">
 							<i class="uk-icon-cog"></i>
@@ -131,6 +127,7 @@ JHtml::_('behavior.keepalive');
 				<li data-uk-filter="new"><a href=""><i class="uk-icon-coffee"></i></a></li>
 				<li data-uk-filter="diverged"><a href=""><i class="uk-icon-code-fork"></i></a></li>
 				<li data-uk-filter="ahead"><a href=""><i class="uk-icon-joomla"></i></a></li>
+				<li class="bulk-updater-toggler"><a class="getreaction" data-type="getLibraries" title="<?php echo JText::_('COM_COMPONENTBUILDER_BACK_TO_LIBRARIES'); ?>"><i class="uk-icon-puzzle-piece"></i></a></li>
 				<li><a class="getreaction" data-uk-toggle="{target:'.bulk-updater-toggler', animation:'uk-animation-slide-bottom, uk-animation-slide-bottom'}" data-type="bulk" title="<?php echo JText::_('COM_COMPONENTBUILDER_ACCESS_BULK_TOOLS'); ?>"><i class="uk-icon-cog"></i></a></li>
 			</ul>
 		</nav>
@@ -229,6 +226,7 @@ JHtml::_('behavior.keepalive');
 		<p><?php echo JText::_('COM_COMPONENTBUILDER_WE_DID_NOT_CHECK_THE_SNIPPET_IT_SELF_TO_SEE_IF_IT_CHANGED_WE_ONLY_WORK_ON_DATES'); ?></p>
 	</div></div>
 </div>
+<div id="loading" style="display: none;"><br /><h3><?php echo JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT_LOADING'); ?>.<span class="loading-dots">.</span></h3></div>
 <script type="text/javascript">
 			
 // nice little dot trick :)

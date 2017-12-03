@@ -143,7 +143,12 @@ class ComponentbuilderViewLibraries extends JViewLegacy
                         {
                                 JToolbarHelper::trash('libraries.trash');
                         }
-                } 
+                }
+		if ($this->user->authorise('library.get_snippets', 'com_componentbuilder'))
+		{
+			// add Get Snippets button.
+			JToolBarHelper::custom('libraries.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
+		} 
 
                 // set help url for this view if found
                 $help_url = ComponentbuilderHelper::getHelpUrl('libraries');
@@ -190,6 +195,50 @@ class ComponentbuilderViewLibraries extends JViewLegacy
                                 JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
                 }  
+
+		// Set How Selection
+		$this->howOptions = $this->getTheHowSelections();
+		if ($this->howOptions)
+		{
+			// How Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL').' -',
+				'filter_how',
+				JHtml::_('select.options', $this->howOptions, 'value', 'text', $this->state->get('filter.how'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// How Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL').' -',
+					'batch[how]',
+					JHtml::_('select.options', $this->howOptions, 'value', 'text')
+				);
+			}
+		}
+
+		// Set Type Selection
+		$this->typeOptions = $this->getTheTypeSelections();
+		if ($this->typeOptions)
+		{
+			// Type Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL').' -',
+				'filter_type',
+				JHtml::_('select.options', $this->typeOptions, 'value', 'text', $this->state->get('filter.type'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Type Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL').' -',
+					'batch[type]',
+					JHtml::_('select.options', $this->typeOptions, 'value', 'text')
+				);
+			}
+		}
 	}
 
 	/**
@@ -234,7 +283,80 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_LIBRARY_NAME_LABEL'),
 			'a.description' => JText::_('COM_COMPONENTBUILDER_LIBRARY_DESCRIPTION_LABEL'),
+			'a.type' => JText::_('COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	} 
+
+	protected function getTheHowSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('how'));
+		$query->from($db->quoteName('#__componentbuilder_library'));
+		$query->order($db->quoteName('how') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $how)
+			{
+				// Translate the how selection
+				$text = $model->selectionTranslation($how,'how');
+				// Now add the how and its text to the options array
+				$_filter[] = JHtml::_('select.option', $how, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
+	}
+
+	protected function getTheTypeSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('type'));
+		$query->from($db->quoteName('#__componentbuilder_library'));
+		$query->order($db->quoteName('type') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $type)
+			{
+				// Translate the type selection
+				$text = $model->selectionTranslation($type,'type');
+				// Now add the type and its text to the options array
+				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
+	}
 }

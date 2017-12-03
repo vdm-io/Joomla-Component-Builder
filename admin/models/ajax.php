@@ -1084,26 +1084,79 @@ class ComponentbuilderModelAjax extends JModelList
 		if (ComponentbuilderHelper::checkArray($libraries))
 		{
 			// insure we only have int values
-			$libraries = array_map( function($id){ return (int) $id; }, $libraries);
-			// Get a db connection.
-			$db = JFactory::getDbo();
-			// Create a new query object.
-			$query = $db->getQuery(true);
-			$query->select($db->quoteName( array('a.id') ));
-			$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
-			$query->where($db->quoteName('a.published') . ' = 1');
-			// check for country and region
-			$query->where($db->quoteName('a.library') . ' IN ('. implode(',',$libraries) .')');
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
+			if ($libraries = $this->checkLibraries($libraries))
 			{
-				return $db->loadColumn();
+				// Get a db connection.
+				$db = JFactory::getDbo();
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->select($db->quoteName( array('a.id') ));
+				$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
+				$query->where($db->quoteName('a.published') . ' = 1');
+				// check for country and region
+				$query->where($db->quoteName('a.library') . ' IN ('. implode(',',$libraries) .')');
+				$db->setQuery($query);
+				$db->execute();
+				if ($db->getNumRows())
+				{
+					return $db->loadColumn();
+				}
 			}
 		}
 		return false;
 	}
-			
+
+	protected function checkLibraries($libraries)
+	{
+		$bucket = array();
+		$libraries = array_map( function($id) use (&$bucket) { 
+			// now get bundled libraries
+			$type = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'type');
+			if (2 == $type && $bundled = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'libraries'))
+			{
+				// make sure we have an array if it was json
+				if (ComponentbuilderHelper::checkJson($bundled))
+				{
+					$bundled = json_decode($bundled, true);
+				}
+				// load in the values if we have an array
+				if (ComponentbuilderHelper::checkArray($bundled))
+				{
+					foreach ($bundled as $lib)
+					{
+						$bucket[$lib] = $lib;
+					}
+				}
+				elseif (is_numeric($bundled))
+				{
+					$bucket[(int) $bundled] = (int) $bundled;
+				}
+			}
+			else
+			{
+				return (int) $id;
+			}
+		}, $libraries);
+		// check if we have any bundled libraries
+		if (ComponentbuilderHelper::checkArray($bucket))
+		{
+			foreach ($bucket as $lib)
+			{
+				$libraries[] = (int) $lib;
+			}
+		}
+		// check that we have libraries
+		if (ComponentbuilderHelper::checkArray($libraries))
+		{
+			$libraries = array_values(array_unique(array_filter($libraries, function($id){return is_int($id);})));
+			// check if we have any libraries remaining
+			if (ComponentbuilderHelper::checkArray($libraries))
+			{
+				return $libraries;
+			}
+		}
+		return false;
+	}			
 
 	// Used in template
 	public function getTemplateDetails($id)

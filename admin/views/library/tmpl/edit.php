@@ -65,7 +65,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 	<?php echo JHtml::_('bootstrap.addTab', 'libraryTab', 'behaviour', JText::_('COM_COMPONENTBUILDER_LIBRARY_BEHAVIOUR', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
+			<div class="span6">
+				<?php echo JLayoutHelper::render('library.behaviour_left', $this); ?>
+			</div>
+			<div class="span6">
 				<?php echo JLayoutHelper::render('library.behaviour_right', $this); ?>
 			</div>
 		</div>
@@ -147,14 +150,14 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 // #jform_how listeners for how_vvvvvzu function
 jQuery('#jform_how').on('keyup',function()
 {
-	var how_vvvvvzu = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzu = jQuery("#jform_how").val();
 	vvvvvzu(how_vvvvvzu);
 
 });
 jQuery('#adminForm').on('change', '#jform_how',function (e)
 {
 	e.preventDefault();
-	var how_vvvvvzu = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzu = jQuery("#jform_how").val();
 	vvvvvzu(how_vvvvvzu);
 
 });
@@ -162,14 +165,14 @@ jQuery('#adminForm').on('change', '#jform_how',function (e)
 // #jform_how listeners for how_vvvvvzv function
 jQuery('#jform_how').on('keyup',function()
 {
-	var how_vvvvvzv = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzv = jQuery("#jform_how").val();
 	vvvvvzv(how_vvvvvzv);
 
 });
 jQuery('#adminForm').on('change', '#jform_how',function (e)
 {
 	e.preventDefault();
-	var how_vvvvvzv = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzv = jQuery("#jform_how").val();
 	vvvvvzv(how_vvvvvzv);
 
 });
@@ -177,14 +180,14 @@ jQuery('#adminForm').on('change', '#jform_how',function (e)
 // #jform_how listeners for how_vvvvvzw function
 jQuery('#jform_how').on('keyup',function()
 {
-	var how_vvvvvzw = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzw = jQuery("#jform_how").val();
 	vvvvvzw(how_vvvvvzw);
 
 });
 jQuery('#adminForm').on('change', '#jform_how',function (e)
 {
 	e.preventDefault();
-	var how_vvvvvzw = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzw = jQuery("#jform_how").val();
 	vvvvvzw(how_vvvvvzw);
 
 });
@@ -192,14 +195,14 @@ jQuery('#adminForm').on('change', '#jform_how',function (e)
 // #jform_how listeners for how_vvvvvzx function
 jQuery('#jform_how').on('keyup',function()
 {
-	var how_vvvvvzx = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzx = jQuery("#jform_how").val();
 	vvvvvzx(how_vvvvvzx);
 
 });
 jQuery('#adminForm').on('change', '#jform_how',function (e)
 {
 	e.preventDefault();
-	var how_vvvvvzx = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzx = jQuery("#jform_how").val();
 	vvvvvzx(how_vvvvvzx);
 
 });
@@ -207,14 +210,14 @@ jQuery('#adminForm').on('change', '#jform_how',function (e)
 // #jform_how listeners for how_vvvvvzy function
 jQuery('#jform_how').on('keyup',function()
 {
-	var how_vvvvvzy = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzy = jQuery("#jform_how").val();
 	vvvvvzy(how_vvvvvzy);
 
 });
 jQuery('#adminForm').on('change', '#jform_how',function (e)
 {
 	e.preventDefault();
-	var how_vvvvvzy = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzy = jQuery("#jform_how").val();
 	vvvvvzy(how_vvvvvzy);
 
 });
@@ -222,15 +225,30 @@ jQuery('#adminForm').on('change', '#jform_how',function (e)
 // #jform_how listeners for how_vvvvvzz function
 jQuery('#jform_how').on('keyup',function()
 {
-	var how_vvvvvzz = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzz = jQuery("#jform_how").val();
 	vvvvvzz(how_vvvvvzz);
 
 });
 jQuery('#adminForm').on('change', '#jform_how',function (e)
 {
 	e.preventDefault();
-	var how_vvvvvzz = jQuery("#jform_how input[type='radio']:checked").val();
+	var how_vvvvvzz = jQuery("#jform_how").val();
 	vvvvvzz(how_vvvvvzz);
+
+});
+
+// #jform_type listeners for type_vvvvwaa function
+jQuery('#jform_type').on('keyup',function()
+{
+	var type_vvvvwaa = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwaa(type_vvvvwaa);
+
+});
+jQuery('#adminForm').on('change', '#jform_type',function (e)
+{
+	e.preventDefault();
+	var type_vvvvwaa = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwaa(type_vvvvwaa);
 
 });
 

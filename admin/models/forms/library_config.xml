@@ -107,12 +107,10 @@
 			type="subform"
 			name="addconfig"
 			label="COM_COMPONENTBUILDER_LIBRARY_CONFIG_ADDCONFIG_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_CONFIG_ADDCONFIG_DESCRIPTION"
 			icon="list"
-			maximum="500"
-			filter="ARRAY">
+			maximum="500">
 			<form hidden="true" name="list_addconfig_modal" repeat="true">
 				<!-- Field Field. Type: Fields. (custom) -->
 				<field
@@ -146,7 +144,7 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_CONFIG_TABNAME_LABEL"
 					size="40"
 					maxlength="150"
-					default="Library"
+					default="Global"
 					description="COM_COMPONENTBUILDER_LIBRARY_CONFIG_TABNAME_DESCRIPTION"
 					class="text_area"
 					readonly="false"

@@ -52,6 +52,9 @@ defined('_JEXEC') or die('Restricted access');
 	<th class="nowrap hidden-phone" >
 			<?php echo JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL'); ?>
 	</th>
+	<th class="nowrap hidden-phone" >
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL', 'type', $this->listDirn, $this->listOrder); ?>
+	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LIBRARY_STATUS', 'published', $this->listDirn, $this->listOrder); ?>

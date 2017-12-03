@@ -45,4 +45,13 @@ class ComponentbuilderControllerLibraries extends JControllerAdmin
 		
 		return $model;
 	}  
+
+	public function getSnippets()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the import snippets custom admin view
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=get_snippets', false));
+		return;
+	}
 }

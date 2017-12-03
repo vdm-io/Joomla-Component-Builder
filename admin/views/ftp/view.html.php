@@ -64,7 +64,7 @@ class ComponentbuilderViewFtp extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vzxlinked_components		= $this->get('Vzxlinked_components');
+		$this->vzylinked_components		= $this->get('Vzylinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

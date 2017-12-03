@@ -838,6 +838,9 @@ class ComponentbuilderModelLayout extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
+		// always reset the snippets
+		$data['snippet'] = 0;
+
 		// Set the libraries items to data.
 		if (isset($data['libraries']) && is_array($data['libraries']))
 		{

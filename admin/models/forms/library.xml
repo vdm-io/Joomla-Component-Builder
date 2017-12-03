@@ -122,15 +122,17 @@
 			message="COM_COMPONENTBUILDER_LIBRARY_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_LIBRARY_DESCRIPTION_HINT"
 		/>
-		<!-- How Field. Type: Radio. (joomla) -->
+		<!-- How Field. Type: List. (joomla) -->
 		<field
-			type="radio"
+			type="list"
 			name="how"
 			label="COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL"
 			description="COM_COMPONENTBUILDER_LIBRARY_HOW_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="2"
-			required="true">
+			class="list_class"
+			multiple="false"
+			filter="INT"
+			required="true"
+			default="1">
 			<!-- Option Set. -->
 			<option value="1">
 				COM_COMPONENTBUILDER_LIBRARY_ALWAYS_ADD</option>
@@ -141,8 +143,29 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_LIBRARY_DO_NOT_ADD</option>
 		</field>
-		<!-- Note_display_library_files_folders_urls Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_display_library_files_folders_urls" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_DISPLAY_LIBRARY_FILES_FOLDERS_URLS_DESCRIPTION" class="note_display_library_files_folders_urls" />
+		<!-- Type Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="type"
+			label="COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL"
+			description="COM_COMPONENTBUILDER_LIBRARY_TYPE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_LIBRARY_MAIN</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_LIBRARY_BUNDLE</option>
+		</field>
+		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="not_required"
+			default="[]"
+		/>
+		<!-- Note_yes_behaviour_two Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_yes_behaviour_two" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_TWO_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_TWO_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_two" />
 		<!-- Php_setdocument Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -154,6 +177,21 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_LIBRARY_PHP_SETDOCUMENT_HINT"
+			required="true"
+		/>
+		<!-- Note_display_library_files_folders_urls Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_display_library_files_folders_urls" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_DISPLAY_LIBRARY_FILES_FOLDERS_URLS_DESCRIPTION" class="note_display_library_files_folders_urls" />
+		<!-- Php_preparedocument Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_preparedocument"
+			label="COM_COMPONENTBUILDER_LIBRARY_PHP_PREPAREDOCUMENT_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_LIBRARY_PHP_PREPAREDOCUMENT_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_LIBRARY_PHP_PREPAREDOCUMENT_HINT"
 			required="true"
 		/>
 		<!-- Addconditions Field. Type: Subform. (joomla) -->
@@ -274,35 +312,26 @@
 				/>
 			</form>
 		</field>
-		<!-- Php_preparedocument Field. Type: Textarea. (joomla) -->
+		<!-- Libraries Field. Type: Librariesx. (custom) -->
 		<field
-			type="textarea"
-			name="php_preparedocument"
-			label="COM_COMPONENTBUILDER_LIBRARY_PHP_PREPAREDOCUMENT_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_LIBRARY_PHP_PREPAREDOCUMENT_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_LIBRARY_PHP_PREPAREDOCUMENT_HINT"
-			required="true"
+			type="librariesx"
+			name="libraries"
+			label="COM_COMPONENTBUILDER_LIBRARY_LIBRARIES_LABEL"
+			description="COM_COMPONENTBUILDER_LIBRARY_LIBRARIES_DESCRIPTION"
+			class="list_class"
+			multiple="true"
+			default="0"
+			required="false"
+			button="true"
 		/>
-		<!-- Note_yes_behaviour_two Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_yes_behaviour_two" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_TWO_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_TWO_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_two" />
-		<!-- Note_yes_behaviour_one Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_yes_behaviour_one" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_one" />
 		<!-- Note_no_behaviour_three Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_no_behaviour_three" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_THREE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_THREE_DESCRIPTION" heading="h4" class="alert alert-error note_no_behaviour_three" />
 		<!-- Note_no_behaviour_one Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_no_behaviour_one" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_ONE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_ONE_DESCRIPTION" heading="h4" class="alert alert-error note_no_behaviour_one" />
 		<!-- Note_no_behaviour_two Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_no_behaviour_two" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_TWO_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_TWO_DESCRIPTION" heading="h4" class="alert alert-error note_no_behaviour_two" />
-		<!-- Not_required Field. Type: Hidden. (joomla) -->
-		<field
-			type="hidden"
-			name="not_required"
-			default="[]"
-		/>
+		<!-- Note_yes_behaviour_one Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_yes_behaviour_one" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_one" />
 		<!-- Note_display_library_config Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_display_library_config" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_DISPLAY_LIBRARY_CONFIG_DESCRIPTION" class="note_display_library_config" />
 	</fieldset>

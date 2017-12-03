@@ -52,11 +52,20 @@ class ComponentbuilderControllerGet_snippets extends JControllerAdmin
 		return;
 	}
 
+	public function openLibraries()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the libraries
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=libraries', false));
+		return;
+	}
+
 	public function openSnippets()
 	{
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		// redirect to the snippets admin view
+		// redirect to the snippets
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=snippets', false));
 		return;
 	}
@@ -65,7 +74,7 @@ class ComponentbuilderControllerGet_snippets extends JControllerAdmin
 	{
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		// redirect to the snippets admin view
+		// redirect to the site views
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=site_views', false));
 		return;
 	}
@@ -74,7 +83,7 @@ class ComponentbuilderControllerGet_snippets extends JControllerAdmin
 	{
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		// redirect to the snippets admin view
+		// redirect to the custom admin views
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_admin_views', false));
 		return;
 	}
@@ -83,7 +92,7 @@ class ComponentbuilderControllerGet_snippets extends JControllerAdmin
 	{
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		// redirect to the snippets admin view
+		// redirect to the templates
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=templates', false));
 		return;
 	}
@@ -92,7 +101,7 @@ class ComponentbuilderControllerGet_snippets extends JControllerAdmin
 	{
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		// redirect to the snippets admin view
+		// redirect to the layouts
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=layouts', false));
 		return;
 	}
