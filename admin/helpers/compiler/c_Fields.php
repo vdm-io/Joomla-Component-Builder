@@ -1357,7 +1357,6 @@ class Fields extends Structure
 		// setup a default field
 		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
 		{
-			$xml = new SimpleXMLElement($field['settings']->xml);
 			foreach ($field['settings']->properties as $property)
 			{
 				// reset
@@ -1367,7 +1366,7 @@ class Fields extends Structure
 				{
 					if ($typeName === 'custom' || $typeName === 'customuser')
 					{
-						$xmlValue = ComponentbuilderHelper::safeString($xml->attributes()->type);
+						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
 					}
 					// use field core type only if not found
 					elseif (ComponentbuilderHelper::checkString($typeName))
@@ -1382,7 +1381,7 @@ class Fields extends Structure
 					// fall back on the xml settings
 					else
 					{
-						$xmlValue = ComponentbuilderHelper::safeString($xml->attributes()->type);
+						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
 					}
 
 					// check if the value is set
@@ -1411,7 +1410,7 @@ class Fields extends Structure
 					if ($typeName === 'category')
 					{
 						// quick check if this is a category linked to view page
-						$requeSt_id = $xml->attributes()->name;
+						$requeSt_id = ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"');
 						if (strpos($requeSt_id, '_request_id') !== false || strpos($requeSt_id, '_request_catid') !== false)
 						{
 							// keep it then, don't change
@@ -1422,9 +1421,9 @@ class Fields extends Structure
 							$xmlValue = 'catid';
 						}
 						// check if we should use another Text Name as this views name
-						$otherName = $xml->attributes()->othername;
-						$otherViews = $xml->attributes()->views;
-						$otherView = $xml->attributes()->view;
+						$otherName = ComponentbuilderHelper::getBetween($field['settings']->xml, 'othername="', '"');
+						$otherViews = ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"');
+						$otherView = ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"');
 						if (ComponentbuilderHelper::checkString($otherName) && ComponentbuilderHelper::checkString($otherViews) && ComponentbuilderHelper::checkString($otherView))
 						{
 							$this->catOtherName[$listViewName] = array(
@@ -1451,7 +1450,7 @@ class Fields extends Structure
 					}
 					else
 					{
-						$xmlValue = ComponentbuilderHelper::safeString($xml->attributes()->name);
+						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
 					}
 
 					// use field core name only if not found in xml
@@ -1471,7 +1470,7 @@ class Fields extends Structure
 				}
 				elseif ($property['name'] === 'extension' || $property['name'] === 'directory')
 				{
-					$xmlValue = $xml->attributes()->{$property['name']};
+					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 					// replace the placeholders
 					$xmlValue = $this->setPlaceholders($xmlValue, $placeholders);
 				}
@@ -1480,53 +1479,53 @@ class Fields extends Structure
 					// set the line number
 					$phpLine = (int) str_replace('type_php_', '', $property['name']);
 					// load the php for the custom field file
-					$fieldAttributes['custom']['php'][$phpLine] = $xml->attributes()->{$property['name']};
+					$fieldAttributes['custom']['php'][$phpLine] = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 				}
 				elseif (strpos($property['name'], 'type_phpx_') !== false && $setCustom)
 				{
 					// set the line number
 					$phpLine = (int) str_replace('type_phpx_', '', $property['name']);
 					// load the php for the custom field file
-					$fieldAttributes['custom']['phpx'][$phpLine] = $xml->attributes()->{$property['name']};
+					$fieldAttributes['custom']['php'][$phpLine] = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 				}
 				elseif ($property['name'] === 'extends' && $setCustom)
 				{
 					// load the class that is being extended
-					$fieldAttributes['custom']['extends'] = $xml->attributes()->extends;
+					$fieldAttributes['custom']['extends'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'extends="', '"');
 				}
 				elseif ($property['name'] === 'view' && $setCustom)
 				{
 					// load the view name
-					$fieldAttributes['custom']['view'] = ComponentbuilderHelper::safeString($xml->attributes()->view);
+					$fieldAttributes['custom']['view'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"'));
 				}
 				elseif ($property['name'] === 'views' && $setCustom)
 				{
 					// load the views name
-					$fieldAttributes['custom']['views'] = ComponentbuilderHelper::safeString($xml->attributes()->views);
+					$fieldAttributes['custom']['views'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"'));
 				}
 				elseif ($property['name'] === 'component' && $setCustom)
 				{
 					// load the component name
-					$fieldAttributes['custom']['component'] = $xml->attributes()->component;
+					$fieldAttributes['custom']['component'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'component="', '"');
 					// replace the placeholders
 					$fieldAttributes['custom']['component'] = $this->setPlaceholders($fieldAttributes['custom']['component'], $placeholders);
 				}
 				elseif ($property['name'] === 'table' && $setCustom)
 				{
 					// load the main table that is queried
-					$fieldAttributes['custom']['table'] = $xml->attributes()->table;
+					$fieldAttributes['custom']['table'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'table="', '"');
 					// replace the placeholders
 					$fieldAttributes['custom']['table'] = $this->setPlaceholders($fieldAttributes['custom']['table'], $placeholders);
 				}
 				elseif ($property['name'] === 'value_field' && $setCustom)
 				{
 					// load the text key
-					$fieldAttributes['custom']['text'] = ComponentbuilderHelper::safeString($xml->attributes()->value_field);
+					$fieldAttributes['custom']['text'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'value_field="', '"'));
 				}
 				elseif ($property['name'] === 'key_field' && $setCustom)
 				{
 					// load the id key
-					$fieldAttributes['custom']['id'] = ComponentbuilderHelper::safeString($xml->attributes()->key_field);
+					$fieldAttributes['custom']['id'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'key_field="', '"'));
 				}
 				elseif ($property['name'] === 'button' && $repeatable && $setCustom)
 				{
@@ -1545,7 +1544,7 @@ class Fields extends Structure
 				}
 				elseif ($property['name'] === 'multiple')
 				{
-					$xmlValue = (string) $xml->attributes()->{$property['name']};
+					$xmlValue = (string) ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 					// add the multipal
 					if ('true' === $xmlValue)
 					{
@@ -1555,7 +1554,7 @@ class Fields extends Structure
 				// make sure the name is added as a cless name for use in javascript
 				elseif ($property['name'] === 'class' && ($typeName === 'note' || $typeName === 'spacer'))
 				{
-					$xmlValue = $xml->attributes()->class;
+					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, 'class="', '"');
 					// add the type class
 					if (ComponentbuilderHelper::checkString($xmlValue))
 					{
@@ -1572,7 +1571,7 @@ class Fields extends Structure
 				else
 				{
 					// set the rest of the fields
-					$xmlValue = (string) $xml->attributes()->{$property['name']};
+					$xmlValue = (string) ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 				}
 
 				// check if translatable
@@ -1654,13 +1653,13 @@ class Fields extends Structure
 			if (isset($fieldAttributes['name']))
 			{
 				// check if we find reason to remove this field from being escaped
-				$escaped = $xml->attributes()->escape;
+				$escaped = ComponentbuilderHelper::getBetween($field['settings']->xml, 'escape="', '"');
 				if (ComponentbuilderHelper::checkString($escaped))
 				{
 					$this->doNotEscape[$listViewName][] = $fieldAttributes['name'];
 				}
 				// check if we have display switch for dynamic placment
-				$display = $xml->attributes()->display;
+				$display = ComponentbuilderHelper::getBetween($field['settings']->xml, 'display="', '"');
 				if (ComponentbuilderHelper::checkString($display))
 				{
 					$fieldAttributes['display'] = $display;
@@ -1718,7 +1717,7 @@ class Fields extends Structure
 					}
 					else
 					{
-						$xmlValue = ComponentbuilderHelper::safeString($xml->attributes()->name);
+						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
 					}
 
 					// use field core name only if not found in xml
