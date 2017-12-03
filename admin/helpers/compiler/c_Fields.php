@@ -2334,7 +2334,11 @@ class Fields extends Structure
 	{
 		$dom = dom_import_simplexml($xml)->ownerDocument;
 		$dom->formatOutput = true;
-		return $dom->saveXML($dom->getElementsByTagName($nodename)->item(0));
+		$xmlString = $dom->saveXML($dom->getElementsByTagName($nodename)->item(0));
+		$tidy = new Tidy();
+		$tidy->parseString($xmlString,array('indent'=>true,'indent-spaces'=>8,'input-xml'=>true,'output-xml'=>true,'indent-attributes'=>true,'wrap-attributes'=>true,'wrap'=>false));
+		$tidy->cleanRepair();
+		return $tidy;
 	}
 
 }
