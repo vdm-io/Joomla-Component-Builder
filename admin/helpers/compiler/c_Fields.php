@@ -2286,6 +2286,15 @@ class Fields extends Structure
 		return false;
 	}
 
+	/**
+	 * xmlComment
+	 *
+	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
+	 * @param   string  $comment The comment to inject
+	 *
+	 * @return  null
+	 *
+	 */
 	public function xmlComment(&$xml, $comment)
 	{
 		$domXML = dom_import_simplexml($xml);
@@ -2295,6 +2304,15 @@ class Fields extends Structure
 		$xml = simplexml_import_dom($domXML);
 	}
 
+	/**
+	 * xmlAddAttributes
+	 *
+	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
+	 * @param   array  $attributes The attributes to apply to the XML element
+	 *
+	 * @return  null
+	 *
+	 */
 	public function xmlAddAttributes(&$xml, $attributes = array())
 	{
 		foreach ($attributes as $key => $value)
@@ -2303,6 +2321,15 @@ class Fields extends Structure
 		}
 	}
 
+	/**
+	 * xmlAppend
+	 *
+	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
+	 * @param   mixed  $node A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
+	 *
+	 * @return  null
+	 *
+	 */
 	public function xmlAppend(&$xml, $node)
 	{
 		if (!$node)
@@ -2330,6 +2357,15 @@ class Fields extends Structure
 		}
 	}
 
+	/**
+	 * xmlPrettyPrint
+	 *
+	 * @param   SimpleXMLElement   $xml The XML element containing a node to be output
+	 * @param   string  $nodename node name of the input xml element to print out.  this is done to omit the <?xml... tag
+	 *
+	 * @return  string XML output
+	 *
+	 */
 	public function xmlPrettyPrint($xml, $nodename)
 	{
 		$dom = dom_import_simplexml($xml)->ownerDocument;
@@ -2338,7 +2374,32 @@ class Fields extends Structure
 		$tidy = new Tidy();
 		$tidy->parseString($xmlString,array('indent'=>true,'indent-spaces'=>8,'input-xml'=>true,'output-xml'=>true,'indent-attributes'=>true,'wrap-attributes'=>true,'wrap'=>false));
 		$tidy->cleanRepair();
-		return $tidy;
+		return $this->xmlIndent((string)$tidy,' ',8,true,false);
+	}
+	
+	/**
+	 * xmlIndent
+	 *
+	 * @param   string  $string The XML input
+	 * @param   string  $char  Character or characters to use as the repeated indent
+	 * @param   integer $depth number of times to repeat the indent character
+	 * @param   boolean $skipfirst Skip the first line of the input.
+	 * @param   boolean $skiplast Skip the last line of the input;
+	 *
+	 * @return  string XML output
+	 *
+	 */
+	public function xmlIndent($string,$char=' ',$depth=0,$skipfirst=false,$skiplast=false) {
+		$output = array();
+		$lines = explode("\n",$string);
+		$first = true;
+		$last = count($lines)-1;
+		foreach($lines as $i=>$line)
+		{
+			$output[] = (($first&&$skipfirst)||$i===$last&&$skiplast)?$line:str_repeat($char,$depth).$line;
+			$first = false;
+		}
+		return implode("\n",$output);
 	}
 
 }
