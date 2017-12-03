@@ -30,8 +30,8 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Compiler class
  */
-class Fields extends Structure {
-
+class Fields extends Structure
+{
 	/**
 	 * Metadate Switch
 	 *
