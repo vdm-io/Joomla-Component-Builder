@@ -487,6 +487,7 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['id']))
 			{
 				$attributes = array(
+				    'name' => 'id',
 				    'type' => 'text',
 				    'class' => 'readonly',
 				    'label' => 'JGLOBAL_FIELD_ID_LABEL',
