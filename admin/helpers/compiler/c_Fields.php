@@ -34,352 +34,351 @@ class Fields extends Structure
 {
 	/**
 	 * Metadate Switch
-	 * 
+	 *
 	 * @var    array
 	 */
-
 	public $metadataBuilder = array();
 
 	/**
 	 * View access Switch
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $accessBuilder = array();
-	
+
 	/**
 	 * edit view tabs counter
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $tabCounter = array();
-	
+
 	/**
 	 * layout builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $layoutBuilder = array();
-	
+
 	/**
 	 * used to fix the zero order
-	 * 
+	 *
 	 * @var    array
 	 */
 	private $zeroOrderFix = array();
-	
+
 	/**
 	 * Site field data
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $siteFieldData = array();
-	
+
 	/**
 	 * Category other name bucket
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $catOtherName = array();
-	
+
 	/**
 	 * list of fields that are not being escaped
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $doNotEscape = array();
-	
+
 	/**
 	 * tags builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $tagsBuilder = array();
-	
+
 	/**
 	 * query builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $queryBuilder = array();
-	
+
 	/**
 	 * unique keys for database field
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $dbUniqueKeys = array();
-	
+
 	/**
 	 * keys for database field
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $dbKeys = array();
-	
+
 	/**
 	 * history builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $historyBuilder = array();
-	
+
 	/**
 	 * alias builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $aliasBuilder = array();
-	
+
 	/**
 	 * title builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $titleBuilder = array();
-	
+
 	/**
 	 * list builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $listBuilder = array();
-	
+
 	/**
 	 * custom Builder List
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $customBuilderList = array();
-	
+
 	/**
 	 * Hidden Fields Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $hiddenFieldsBuilder = array();
-	
+
 	/**
 	 * INT Field Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $intFieldsBuilder = array();
-	
+
 	/**
 	 * Dynamic Fields Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $dynamicfieldsBuilder = array();
-	
+
 	/**
 	 * Main text Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $maintextBuilder = array();
-	
+
 	/**
 	 * Custom Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $customBuilder = array();
-	
+
 	/**
 	 * Custom Field Links Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $customFieldLinksBuilder = array();
-	
+
 	/**
 	 * Set Script for User Switch
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $setScriptUserSwitch = array();
-	
+
 	/**
 	 * Set Script for Media Switch
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $setScriptMediaSwitch = array();
-	
+
 	/**
 	 * Category builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $categoryBuilder = array();
-	
+
 	/**
 	 * Category Code builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $catCodeBuilder = array();
-	
+
 	/**
 	 * Check Box builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $checkboxBuilder = array();
-	
+
 	/**
 	 * Json String Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $jsonStringBuilder = array();
-	
+
 	/**
 	 * Json String Builder for return values to array
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $jsonItemBuilderArray = array();
-	
+
 	/**
 	 * Json Item Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $jsonItemBuilder = array();
-	
+
 	/**
 	 * Base 64 Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $base64Builder = array();
-	
+
 	/**
 	 * Basic Encryption Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $basicEncryptionBuilder = array();
-	
+
 	/**
 	 * Advnaced Encryption Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $advancedEncryptionBuilder = array();
-	
+
 	/**
 	 * Get Items Method List String Fix Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $getItemsMethodListStringFixBuilder = array();
-	
+
 	/**
 	 * Get Items Method Eximport String Fix Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $getItemsMethodEximportStringFixBuilder = array();
-	
+
 	/**
 	 * Selection Translation Fix Builder
-	 * 
+	 *
 	 * @var    array
 	 */
-	public $selectionTranslationFixBuilder	= array();
-	
+	public $selectionTranslationFixBuilder = array();
+
 	/**
 	 * Sort Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $sortBuilder = array();
-	
+
 	/**
 	 * Search Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $searchBuilder = array();
-	
+
 	/**
 	 * Filter Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $filterBuilder = array();
-	
+
 	/**
 	 * Set Group Control
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $setGroupControl = array();
-	
+
 	/**
 	 * Set Field Names
-	 * 
+	 *
 	 * @var    array
 	 */
-	public $fieldsNames = array();	
-	
+	public $fieldsNames = array();
+
 	/**
 	 * Set unique Names
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $uniqueNames = array();
-	
+
 	/**
 	 * Default Fields
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $defaultFields = array('created', 'created_by', 'modified', 'modified_by', 'published', 'ordering', 'access', 'version', 'hits', 'id');
-	
+
 	/**
 	 * Default Fields set to publishing
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $newPublishingFields = array();
-	
+
 	/**
 	 * Default Fields set to publishing
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $movedPublishingFields = array();
-	
+
 	/**
 	 * Set the line number in comments
-	 * 
+	 *
 	 * @param   int   $nr  The line number
-	 * 
+	 *
 	 * @return  void
-	 * 
+	 *
 	 */
 	private function setLine($nr)
 	{
 		if ($this->debugLinenr)
 		{
-			return ' [Fields '.$nr.']';	
+			return ' [Fields '.$nr.']';
 		}
 		return '';
 	}
 
 	/**
 	 * set the Field set of a view
-	 * 
+	 *
 	 * @param   array    $view  The view data
 	 * @param   string   $component The component name
 	 *
 	 * @return  string The fields set in xml
-	 * 
+	 *
 	 */
 	public function setFieldSet($view, $component)
 	{
@@ -395,7 +394,7 @@ class Fields extends Structure
 			$this->placeholders['###View###'] = ucfirst($viewName);
 			$this->placeholders['[[[view]]]'] = $this->placeholders['###view###'];
 			$this->placeholders['[[[VIEW]]]'] = $this->placeholders['###VIEW###'];
-			$this->placeholders['[[[View]]]'] = $this->placeholders['###View###'];			
+			$this->placeholders['[[[View]]]'] = $this->placeholders['###View###'];
 			$this->placeholders['###views###'] = $listViewName;
 			$this->placeholders['###VIEWS###'] = strtoupper($listViewName);
 			$this->placeholders['###Views###'] = ucfirst($listViewName);
@@ -413,10 +412,11 @@ class Fields extends Structure
 				$this->accessBuilder[$viewName] = $viewName;
 			}
 			// set the read only
-			$readOnly = "";
+			$readOnlyXML = array();
 			if ($view['settings']->type == 2)
 			{
-				$readOnly = "\t\t\t" . 'readonly="true"' . PHP_EOL."\t\t\t" . 'disabled="true"';
+				$readOnlyXML['readonly'] = true;
+				$readOnlyXML['disabled'] = true;
 			}
 			// main lang prefix
 			$langView = $this->langPrefix . '_' . $this->placeholders['###VIEW###'];
@@ -460,7 +460,7 @@ class Fields extends Structure
 			$this->langContent[$this->lang][$langView . '_VERSION_LABEL'] = "Revision";
 			$this->langContent[$this->lang][$langView . '_VERSION_DESC'] = "A count of the number of times this " . $view['settings']->name_single . " has been revised.";
 			$this->langContent[$this->lang][$langView . '_SAVE_WARNING'] = "Alias already existed so a number was added at the end. You can re-edit the " . $view['settings']->name_single . " to customise the alias.";
-			
+
 			// check if the same field is added multiple times
 			foreach ($view['settings']->fields as $field)
 			{
@@ -468,220 +468,277 @@ class Fields extends Structure
 				$this->setUniqueNameKeeper($field, $view['settings']->type, $name, $viewName);
 			}
 			// start adding dynamc fields
-			$dynamcfields = '';
+			$dynamicFieldsXML = array();
 			$spacerCounter = 'a';
 			// set the custom table key
 			$dbkey = 'g';
 			// TODO we should add the global and local view switch if field for front end
 			foreach ($view['settings']->fields as $field)
 			{
-				$dynamcfields .= $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $spacerCounter, $this->placeholders, $dbkey, true);
+				$dynamicFieldsXML[] = $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $spacerCounter, $this->placeholders, $dbkey, true);
 			}
-			// set the defautl fields
-			$fieldSet = array();
-			$fieldSet[] = '<fieldset name="details">';
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Default Fields. -->";
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Id Field. Type: Text (joomla) -->";
+			// set the default fields
+			$XML = new simpleXMLElement('<a/>');
+			$fieldSetXML = $XML->addChild('fieldset');
+			$fieldSetXML->addAttribute('name', 'details');
+			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Default Fields.");
+			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Id Field. Type: Text (joomla)");
 			// if id is not set
 			if (!isset($this->fieldsNames[$viewName]['id']))
 			{
-				$fieldSet[] = "\t\t<field";
-				$fieldSet[] = "\t\t\tname=" . '"id"';
-				$fieldSet[] = "\t\t\t" . 'type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"';
-				$fieldSet[] = "\t\t\t" . 'description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"';
-				$fieldSet[] = "\t\t\t" . 'readonly="true"';
-				$fieldSet[] = "\t\t/>";
+				$attributes = array(
+				    'name' => 'id',
+				    'type' => 'text',
+				    'class' => 'readonly',
+				    'label' => 'JGLOBAL_FIELD_ID_LABEL',
+				    'description' => 'JGLOBAL_FIELD_ID_DESC',
+				    'size' => 10,
+				    'default' => 0
+				);
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// if created is not set
 			if (!isset($this->fieldsNames[$viewName]['created']))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla) -->";
-				$fieldSet[] = "\t\t<field";
-				$fieldSet[] = "\t\t\tname=" . '"created"';
-				$fieldSet[] = "\t\t\ttype=" . '"calendar"';
-				$fieldSet[] = "\t\t\tlabel=" . '"' . $langView . '_CREATED_DATE_LABEL"';
-				$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_CREATED_DATE_DESC"';
-				$fieldSet[] = "\t\t\tsize=" . '"22"';
-				$fieldSet[] = $readOnly;
-				$fieldSet[] = "\t\t\tformat=" . '"%Y-%m-%d %H:%M:%S"';
-				$fieldSet[] = "\t\t\tfilter=" . '"user_utc"';
-				$fieldSet[] = "\t\t/>";
+				$attributes = array(
+				    'name' => 'created',
+				    'type' => 'calendar',
+				    'label' => $langView . '_CREATED_DATE_LABEL',
+				    'description' => $langView . '_CREATED_DATE_DESC',
+				    'size' => 22,
+				    'format' => '%Y-%m-%d %H:%M:%S',
+				    'filter' => 'user_utc'
+				);
+				$attributes = array_merge($attributes, $readOnlyXML);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// if created_by is not set
 			if (!isset($this->fieldsNames[$viewName]['created_by']))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " User Created Field. Type: User (joomla) -->";
-				$fieldSet[] = "\t\t<field";
-				$fieldSet[] = "\t\t\tname=" . '"created_by"';
-				$fieldSet[] = "\t\t\ttype=" . '"user"';
-				$fieldSet[] = "\t\t\tlabel=" . '"' . $langView . '_CREATED_BY_LABEL"';
-				$fieldSet[] = $readOnly;
-				$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_CREATED_BY_DESC"';
-				$fieldSet[] = "\t\t/>";
+				$attributes = array(
+				    'name' => 'created_by',
+				    'type' => 'user',
+				    'label' => $langView . '_CREATED_BY_LABEL',
+				    'description' => $langView . '_CREATED_BY_DESC',
+				);
+				$attributes = array_merge($attributes, $readOnlyXML);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Created Field. Type: User (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// if published is not set
 			if (!isset($this->fieldsNames[$viewName]['published']))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Published Field. Type: List (joomla) -->";
-				$fieldSet[] = "\t\t<field name=" . '"published" type="list" label="JSTATUS"';
-				$fieldSet[] = "\t\t\tdescription=" . '"JFIELD_PUBLISHED_DESC" class="chzn-color-state"';
-				$fieldSet[] = $readOnly;
-				$fieldSet[] = "\t\t\tfilter=" . '"intval" size="1" default="1" >';
-				$fieldSet[] = "\t\t\t<option value=" . '"1">';
-				$fieldSet[] = "\t\t\t\tJPUBLISHED</option>";
-				$fieldSet[] = "\t\t\t<option value=" . '"0">';
-				$fieldSet[] = "\t\t\t\tJUNPUBLISHED</option>";
-				$fieldSet[] = "\t\t\t<option value=" . '"2">';
-				$fieldSet[] = "\t\t\t\tJARCHIVED</option>";
-				$fieldSet[] = "\t\t\t<option value=" . '"-2">';
-				$fieldSet[] = "\t\t\t\tJTRASHED</option>";
-				$fieldSet[] = "\t\t</field>";
+				$attributes = array(
+				    'name' => 'published',
+				    'type' => 'list',
+				    'label' => 'JSTATUS'
+				);
+				$attributes = array_merge($attributes, $readOnlyXML);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Published Field. Type: List (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
+				foreach (array('JPUBLISHED' => 1, 'JUNPUBLISHED' => 0, 'JARCHIVED' => 2, 'JTRASHED' => -2) as $text => $value)
+				{
+					$optionXML = $fieldXML->addChild('option');
+					$optionXML->addAttribute('value', $value);
+					$optionXML[] = $text;
+				}
 			}
 			// if modified is not set
 			if (!isset($this->fieldsNames[$viewName]['modified']))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla) -->";
-				$fieldSet[] = "\t\t" . '<field name="modified" type="calendar" class="readonly"';
-				$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_MODIFIED_DATE_LABEL" description="' . $langView . '_MODIFIED_DATE_DESC"';
-				$fieldSet[] = "\t\t\t" . 'size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />';
+				$attributes = array(
+				    'name' => 'modified',
+				    'type' => 'calendar',
+				    'class' => 'readonly',
+				    'label' => $langView . '_MODIFIED_DATE_LABEL',
+				    'description' => $langView . '_MODIFIED_DATE_DESC',
+				    'size' => 22,
+				    'readonly' => "true",
+				    'format' => '%Y-%m-%d %H:%M:%S',
+				    'filter' => 'user_utc'
+				);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// if modified_by is not set
 			if (!isset($this->fieldsNames[$viewName]['modified_by']))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla) -->";
-				$fieldSet[] = "\t\t" . '<field name="modified_by" type="user"';
-				$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_MODIFIED_BY_LABEL"';
-				$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_MODIFIED_BY_DESC"';
-				$fieldSet[] = "\t\t\t" . 'class="readonly"';
-				$fieldSet[] = "\t\t\t" . 'readonly="true"';
-				$fieldSet[] = "\t\t\t" . 'filter="unset"';
-				$fieldSet[] = "\t\t/>";
+				$attributes = array(
+				    'name' => 'modified_by',
+				    'type' => 'user',
+				    'label' => $langView . '_MODIFIED_BY_LABEL',
+				    'description' => $langView . '_MODIFIED_BY_DESC',
+				    'class' => 'readonly',
+				    'readonly' => 'true',
+				    'filter' => 'unset'
+				);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// check if view has access
 			if (isset($this->accessBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName]) && !isset($this->fieldsNames[$viewName]['access']))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla) -->";
-				$fieldSet[] = "\t\t" . '<field name="access"';
-				$fieldSet[] = "\t\t\t" . 'type="accesslevel"';
-				$fieldSet[] = "\t\t\t" . 'label="JFIELD_ACCESS_LABEL"';
-				$fieldSet[] = "\t\t\t" . 'description="JFIELD_ACCESS_DESC"';
-				$fieldSet[] = "\t\t\t" . 'default="1"';
-				$fieldSet[] = $readOnly;
-				$fieldSet[] = "\t\t\t" . 'required="false"';
-				$fieldSet[] = "\t\t/>";
+				$attributes = array(
+				    'name' => 'access',
+				    'type' => 'accesslevel',
+				    'label' => 'JFIELD_ACCESS_LABEL',
+				    'description' => 'JFIELD_ACCESS_DESC',
+				    'default' => 1,
+				    'required' => "false"
+				);
+				$attributes = array_merge($attributes, $readOnlyXML);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// if ordering is not set
 			if (!isset($this->fieldsNames[$viewName]['ordering']))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla) -->";
-				$fieldSet[] = "\t\t<field";
-				$fieldSet[] = "\t\t\t" . 'name="ordering"';
-				$fieldSet[] = "\t\t\t" . 'type="number"';
-				$fieldSet[] = "\t\t\t" . 'class="inputbox validate-ordering"';
-				$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_ORDERING_LABEL' . '"';
-				$fieldSet[] = "\t\t\t" . 'description=""';
-				$fieldSet[] = "\t\t\t" . 'default="0"';
-				$fieldSet[] = "\t\t\t" . 'size="6"';
-				$fieldSet[] = $readOnly;
-				$fieldSet[] = "\t\t\t" . 'required="false"';
-				$fieldSet[] = "\t\t/>";
+				$attributes = array(
+				    'name' => 'ordering',
+				    'type' => 'number',
+				    'class' => 'inputbox validate-ordering',
+				    'label' => $langView . '_ORDERING_LABEL',
+				    'description' => '',
+				    'default' => 0,
+				    'size' => 6,
+				    'required' => "false"
+				);
+				$attributes = array_merge($attributes, $readOnlyXML);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// if version is not set
 			if (!isset($this->fieldsNames[$viewName]['version']))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Version Field. Type: Text (joomla) -->";
-				$fieldSet[] = "\t\t<field";
-				$fieldSet[] = "\t\t\t" . 'name="version"';
-				$fieldSet[] = "\t\t\t" . 'type="text"';
-				$fieldSet[] = "\t\t\t" . 'class="readonly"';
-				$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_VERSION_LABEL"';
-				$fieldSet[] = "\t\t\t" . 'description="' . $langView . '_VERSION_DESC"';
-				$fieldSet[] = "\t\t\t" . 'size="6"';
-				$fieldSet[] = "\t\t\t" . 'readonly="true"';
-				$fieldSet[] = "\t\t\t" . 'filter="unset"';
-				$fieldSet[] = "\t\t/>";
+				$attributes = array(
+				    'name' => 'version',
+				    'type' => 'text',
+				    'class' => 'readonly',
+				    'label' => $langView . '_VERSION_LABEL',
+				    'description' => $langView . '_VERSION_DESC',
+				    'size' => 6,
+				    'readonly' => "true",
+				    'filter' => 'unset'
+				);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Version Field. Type: Text (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// check if metadata is added to this view
 			if (isset($this->metadataBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName]))
 			{
 				// metakey
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla) -->";
-				$fieldSet[] = "\t\t<field";
-				$fieldSet[] = "\t\t\t" . 'name="metakey"';
-				$fieldSet[] = "\t\t\t" . 'type="textarea"';
-				$fieldSet[] = "\t\t\t" . 'label="JFIELD_META_KEYWORDS_LABEL"';
-				$fieldSet[] = "\t\t\t" . 'description="JFIELD_META_KEYWORDS_DESC"';
-				$fieldSet[] = "\t\t\t" . 'rows="3"';
-				$fieldSet[] = "\t\t\t" . 'cols="30"';
-				$fieldSet[] = "\t\t/>";
+				$attributes = array(
+				    'name' => 'metakey',
+				    'type' => 'textarea',
+				    'label' => 'JFIELD_META_KEYWORDS_LABEL',
+				    'description' => 'JFIELD_META_KEYWORDS_DESC',
+				    'rows' => 3,
+				    'cols' => 30
+				);
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 				// metadesc
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla) -->";
-				$fieldSet[] = "\t\t<field";
-				$fieldSet[] = "\t\t\t" . 'name="metadesc"';
-				$fieldSet[] = "\t\t\t" . 'type="textarea"';
-				$fieldSet[] = "\t\t\t" . 'label="JFIELD_META_DESCRIPTION_LABEL"';
-				$fieldSet[] = "\t\t\t" . 'description="JFIELD_META_DESCRIPTION_DESC"';
-				$fieldSet[] = "\t\t\t" . 'rows="3"';
-				$fieldSet[] = "\t\t\t" . 'cols="30"';
-				$fieldSet[] = "\t\t/>";
+				$attributes['name'] = 'metadesc';
+				$attributes['label'] = 'JFIELD_META_DESCRIPTION_LABEL';
+				$attributes['description'] = 'JFIELD_META_DESCRIPTION_DESC';
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				$this->xmlAddAttributes($fieldXML, $attributes);
 			}
 			// load the dynamic fields now
-			if (ComponentbuilderHelper::checkString($dynamcfields))
+			if (count($dynamicFieldsXML))
 			{
-				$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Dynamic Fields. -->" . $dynamcfields;
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Dynamic Fields.");
+				foreach ($dynamicFieldsXML as $dynamicfield)
+				{
+					$this->xmlAppend($fieldSetXML, $dynamicfield);
+				}
 			}
-			// close fieldset
-			$fieldSet[] = "\t</fieldset>";
 			// check if metadata is added to this view
 			if (isset($this->metadataBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName]))
 			{
-				$fieldSet[] = PHP_EOL."\t<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
-				$fieldSet[] = "\t<fields" . ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
-				$fieldSet[] = "\t\t" . '<fieldset name="vdmmetadata"';
-				$fieldSet[] = "\t\t\t" . 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
+				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadata Fields");
+				$fieldsXML = $fieldSetXML->addChild('fields');
+				$fieldsXML->addAttribute('name', 'metadata');
+				$fieldsXML->addAttribute('label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS');
+				$fieldsFieldSetXML = $fieldsXML->addChild('fieldset');
+				$fieldsFieldSetXML->addAttribute('name', 'vdmmetadata');
+				$fieldsFieldSetXML->addAttribute('label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS');
 				// robots
-				$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Robots Field. Type: List (joomla) -->";
-				$fieldSet[] = "\t\t\t" . '<field name="robots"';
-				$fieldSet[] = "\t\t\t\t" . 'type="list"';
-				$fieldSet[] = "\t\t\t\t" . 'label="JFIELD_METADATA_ROBOTS_LABEL"';
-				$fieldSet[] = "\t\t\t\t" . 'description="JFIELD_METADATA_ROBOTS_DESC" >';
-				$fieldSet[] = "\t\t\t\t" . '<option value="">JGLOBAL_USE_GLOBAL</option>';
-				$fieldSet[] = "\t\t\t\t" . '<option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>';
-				$fieldSet[] = "\t\t\t\t" . '<option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>';
-				$fieldSet[] = "\t\t\t\t" . '<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>';
-				$fieldSet[] = "\t\t\t\t" . '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
-				$fieldSet[] = "\t\t\t" . '</field>';
+				$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Robots Field. Type: List (joomla)");
+				$robots = $fieldsFieldSetXML->addChild('field');
+				$attributes = array(
+				    'name' => 'robots',
+				    'type' => 'list',
+				    'label' => 'JFIELD_METADATA_ROBOTS_LABEL',
+				    'description' => 'JFIELD_METADATA_ROBOTS_DESC'
+				);
+				$this->xmlAddAttributes($robots, $attributes);
+				$options = array(
+				    'JGLOBAL_USE_GLOBAL' => '',
+				    'JGLOBAL_INDEX_FOLLOW' => 'index, follow',
+				    'JGLOBAL_NOINDEX_FOLLOW' => 'noindex, follow',
+				    'JGLOBAL_INDEX_NOFOLLOW' => 'index, nofollow',
+				    'JGLOBAL_NOINDEX_NOFOLLOW' => 'noindex, nofollow',
+				);
+				foreach ($options as $text => $value)
+				{
+					$option = $robots->addChild('option');
+					$option->addAttribute('value', $value);
+					$option[] = $text;
+				}
 				// author
-				$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Author Field. Type: Text (joomla) -->";
-				$fieldSet[] = "\t\t\t" . '<field name="author"';
-				$fieldSet[] = "\t\t\t\t" . 'type="text"';
-				$fieldSet[] = "\t\t\t\t" . 'label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"';
-				$fieldSet[] = "\t\t\t\t" . 'size="20"';
-				$fieldSet[] = "\t\t\t/>";
+				$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Author Field. Type: Text (joomla)");
+				$author = $fieldsFieldSetXML->addChild('field');
+				$attributes = array(
+				    'name' => 'author',
+				    'type' => 'text',
+				    'label' => 'JAUTHOR',
+				    'description' => 'JFIELD_METADATA_AUTHOR_DESC',
+				    'size' => 20
+				);
+				$this->xmlAddAttributes($author, $attributes);
 				// rights
-				$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla) -->";
-				$fieldSet[] = "\t\t\t" . '<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"';
-				$fieldSet[] = "\t\t\t\t" . 'description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"';
-				$fieldSet[] = "\t\t\t\t" . 'cols="30" rows="2"';
-				$fieldSet[] = "\t\t\t/>";
-				$fieldSet[] = "\t\t</fieldset>";
-				$fieldSet[] = "\t</fields>";
+				$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla)");
+				$rights = $fieldsFieldSetXML->addChild('field');
+				$attributes = array(
+				    'name' => 'rights',
+				    'type' => 'textarea',
+				    'label' => 'JFIELD_META_RIGHTS_LABEL',
+				    'description' => 'JFIELD_META_RIGHTS_DESC',
+				    'required' => 'false',
+				    'filter' => 'string',
+				    'cols' => 30,
+				    'rows' => 2
+				);
+				$this->xmlAddAttributes($rights, $attributes);
 			}
 			// just to be safe, lets clear the view placeholders
 			$this->clearFromPlaceHolders('view');
-			// retunr the set
-			return implode(PHP_EOL, $fieldSet);
+			// return the set
+			return $this->xmlPrettyPrint($XML, 'fieldset');
 		}
 		return '';
 	}
-		
+
 	/**
 	 * set Field Names
-	 * 
+	 *
 	 * @param   string   $view    View the field belongs to
 	 * @param   string    $name    The name of the field
 	 *
-	 * 
+	 *
 	 */
 	public function setFieldsNames(&$view, &$name)
 	{
@@ -690,7 +747,7 @@ class Fields extends Structure
 
 	/**
 	 * set Dynamic field
-	 * 
+	 *
 	 * @param   array    $field  The field data
 	 * @param   array    $view The view data
 	 * @param   int      $viewType The view type
@@ -702,21 +759,20 @@ class Fields extends Structure
 	 * @param   string   $dbkey The the custom table key
 	 * @param   boolean  $build The switch to set the build option
 	 *
-	 * @return  string The complete field in xml
-	 * 
+	 * @return  SimpleXMLElement The complete field in xml
+	 *
 	 */
 	public function setDynamicField(&$field, &$view, &$viewType, &$langView, &$viewName, &$listViewName, &$spacerCounter, &$placeholders, &$dbkey, $build)
 	{
 		if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']))
 		{
-                        // reset some values
+			// reset some values
 			$name = ComponentbuilderHelper::safeString($field['settings']->name);
 			$typeName = ComponentbuilderHelper::safeString($field['settings']->type_name);
 			$multiple = false;
 			$langLabel = '';
-			$taber = '';
 			$fieldSet = '';
-                        $fieldAttributes = array();
+			$fieldAttributes = array();
 			// set field attributes
 			$fieldAttributes = $this->setFieldAttributes($field, $viewType, $name, $typeName, $multiple, $langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders);
 			// check if values were set
@@ -724,13 +780,13 @@ class Fields extends Structure
 			{
 				// set the array of field names
 				$this->setFieldsNames($viewName,$fieldAttributes['name']);
-
+				
 				if ($this->defaultField($typeName, 'option'))
 				{
 					//reset options array
 					$optionArray = array();
 					// now add to the field set
-					$fieldSet .= $this->setField('option', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+					$xmlElement = $this->setField('option', $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
 					if ($build)
 					{
 						// set builders
@@ -745,7 +801,7 @@ class Fields extends Structure
 						$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple);
 					}
 					// now add to the field set
-					$fieldSet .= $this->setField('plain', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+					$xmlElement = $this->setField('plain', $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
 				}
 				elseif ($this->defaultField($typeName, 'spacer'))
 				{
@@ -765,7 +821,7 @@ class Fields extends Structure
 						$this->setLayoutBuilder($viewName, $tabName, $name, $field);
 					}
 					// now add to the field set
-					$fieldSet .= $this->setField('spacer', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+					$xmlElement = $this->setField('spacer', $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
 					// increment spacer counter
 					if ($typeName === 'spacer')
 					{
@@ -783,7 +839,7 @@ class Fields extends Structure
 							$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, false);
 						}
 						// now add to the field set
-						$fieldSet .= $this->setField('special', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
+						$xmlElement = $this->setField('special', $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
 					}
 				}
 				elseif (ComponentbuilderHelper::checkArray($fieldAttributes['custom']))
@@ -801,19 +857,18 @@ class Fields extends Structure
 						$this->setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, $custom);
 					}
 					// now add to the field set
-					$fieldSet .= $this->setField('custom', $taber, $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray, $custom);
+					$xmlElement = $this->setField('custom', $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray, $custom);
 				}
 			}
-			return $fieldSet;
+			return $xmlElement;
 		}
-		return '';
+		return false;
 	}
 
 	/**
 	 * set a field
-	 * 
+	 *
 	 * @param   string   $setType  The set of fields type
-	 * @param   string   $taber The tabs to add in layout
 	 * @param   array    $fieldAttributes The field values
 	 * @param   string   $name The field name
 	 * @param   string   $typeName The field type
@@ -824,33 +879,34 @@ class Fields extends Structure
 	 * @param   string   $optionArray The option bucket array used to set the field options if needed.
 	 * @param   arra	     $custom Used when field is from config
 	 *
-	 * @return  string The field in xml
-	 * 
+	 * @return  SimpleXMLElement The field in xml
+	 *
 	 */
-	private function setField($setType, $taber, &$fieldAttributes, &$name, &$typeName, &$langView, &$viewName, &$listViewName, $placeholders, &$optionArray, $custom = null)
+	private function setField($setType, &$fieldAttributes, &$name, &$typeName, &$langView, &$viewName, &$listViewName, $placeholders, &$optionArray, $custom = null)
 	{
-		$fieldSet = '';
+		$r = new stdClass();
 		if ($setType === 'option')
 		{
 			// now add to the field set
-			$fieldSet .= PHP_EOL."\t" . $taber . "\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-			$fieldSet .= PHP_EOL."\t" . $taber . "\t<field";
-			$optionSet = '';
+			$r->fieldXML = new SimpleXMLElement('<field/>');
+			$r->comment = $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla)";
+
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$fieldSet .= PHP_EOL."\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$r->fieldXML->addAttribute($property, $value);
 				}
 				elseif ($property === 'option')
 				{
-					$optionSet = '';
+					$this->xmlComment($r->fieldXML, $this->setLine(__LINE__) . " Option Set.");
 					if (strpos($value, ',') !== false)
 					{
 						// mulitpal options
 						$options = explode(',', $value);
 						foreach ($options as $option)
 						{
+							$optionXML = $r->fieldXML->addChild('option');
 							if (strpos($option, '|') !== false)
 							{
 								// has other value then text
@@ -859,7 +915,7 @@ class Fields extends Structure
 								// add to lang array
 								$this->langContent[$this->lang][$langValue] = $t;
 								// no add to option set
-								$optionSet .= PHP_EOL."\t" . $taber . "\t\t" . '<option value="' . $v . '">' . PHP_EOL."\t" . $taber . "\t\t\t" . $langValue . '</option>';
+								$optionXML->addAttribute('value', $v);
 								$optionArray[$v] = $langValue;
 							}
 							else
@@ -869,14 +925,16 @@ class Fields extends Structure
 								// add to lang array
 								$this->langContent[$this->lang][$langValue] = $option;
 								// no add to option set
-								$optionSet .= PHP_EOL."\t\t" . $taber . "\t" . '<option value="' . $option . '">' . PHP_EOL."\t\t" . $taber . "\t\t" . $langValue . '</option>';
+								$optionXML->addAttribute('value', $option);
 								$optionArray[$option] = $langValue;
 							}
+							$optionXML[] = $langValue;
 						}
 					}
 					else
 					{
 						// one option
+						$optionXML = $r->fieldXML->addChild('option');
 						if (strpos($value, '|') !== false)
 						{
 							// has other value then text
@@ -885,7 +943,7 @@ class Fields extends Structure
 							// add to lang array
 							$this->langContent[$this->lang][$langValue] = $t;
 							// no add to option set
-							$optionSet .= PHP_EOL."\t\t" . $taber . "\t" . '<option value="' . $v . '">' . PHP_EOL."\t\t" . $taber . "\t\t" . $langValue . '</option>';
+							$optionXML->addAttribute('value', $v);
 							$optionArray[$v] = $langValue;
 						}
 						else
@@ -895,58 +953,45 @@ class Fields extends Structure
 							// add to lang array
 							$this->langContent[$this->lang][$langValue] = $value;
 							// no add to option set
-							$optionSet .= PHP_EOL."\t\t" . $taber . "\t" . '<option value="' . $value . '">' . PHP_EOL."\t\t" . $taber . "\t\t" . $langValue . '</option>';
+							$optionXML->addAttribute('value', $value);
 							$optionArray[$value] = $langValue;
 						}
+						$optionXML[] = $langValue;
 					}
 				}
 			}
-			if (ComponentbuilderHelper::checkString($optionSet))
+			if (!$r->fieldXML->count())
 			{
-				$fieldSet .= '>';
-				$fieldSet .= PHP_EOL."\t\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " Option Set. -->";
-				$fieldSet .= $optionSet;
-				$fieldSet .= PHP_EOL."\t\t" . $taber . "</field>";
-			}
-			elseif ($typeName === 'sql')
-			{
-				$optionArray = false;
-				$fieldSet .= PHP_EOL."\t\t" . $taber . "/>";
-			}
-			else
-			{
-				$optionArray = false;
-				$fieldSet .= PHP_EOL."\t\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->";
-				$fieldSet .= PHP_EOL."\t\t" . $taber . "/>";
+				$this->xmlComment($r->fieldXML, $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings.");
 			}
 		}
 		elseif ($setType === 'plain')
 		{
 			// now add to the field set
-			$fieldSet .= PHP_EOL."\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-			$fieldSet .= PHP_EOL."\t\t" . $taber . "<field";
+			$r->fieldXML = new SimpleXMLElement('<field/>');
+			$r->comment = $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla)";
+
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$fieldSet .= PHP_EOL."\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$r->fieldXML->addAttribute($property, $value);
 				}
 			}
-			$fieldSet .= PHP_EOL."\t\t" . $taber . "/>";
 		}
 		elseif ($setType === 'spacer')
 		{
 			// now add to the field set
-			$fieldSet .= PHP_EOL."\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". A None Database Field. (joomla) -->";
-			$fieldSet .= PHP_EOL."\t\t<field";
+			$r->fieldXML = new SimpleXMLElement('<field/>');
+			$r->comment = $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". A None Database Field. (joomla)";
+
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$fieldSet .= " " . $property . '="' . $value . '"';
+					$r->fieldXML->addAttribute($property, $value);
 				}
 			}
-			$fieldSet .= " />";
 		}
 		elseif ($setType === 'special')
 		{
@@ -954,19 +999,24 @@ class Fields extends Structure
 			if ($typeName === 'repeatable')
 			{
 				// now add to the field set
-				$fieldSet .= PHP_EOL."\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-				$fieldSet .= PHP_EOL."\t\t<field";
-				$fieldsSet = array();
+				$r->fieldXML = new SimpleXMLElement('<field/>');
+				$r->comment = $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla)";
+
 				foreach ($fieldAttributes as $property => $value)
 				{
 					if ($property != 'fields')
 					{
-						$fieldSet .= PHP_EOL."\t\t\t" . $property . '="' . $value . '"';
+						$r->fieldXML->addAttribute($property, $value);
 					}
 				}
-				$fieldSet .= ">";
-				$fieldSet .= PHP_EOL."\t\t\t" . '<fields name="' . $fieldAttributes['name'] . '_fields" label="">';
-				$fieldSet .= PHP_EOL."\t\t\t\t" . '<fieldset hidden="true" name="' . $fieldAttributes['name'] . '_modal" repeat="true">';
+				$fieldsXML = $r->fieldXML->addChild('fields');
+				$fieldsXML->addAttribute('name', $fieldAttributes['name'] . '_fields');
+				$fieldsXML->addAttribute('label', '');
+				$fieldSetXML = $fieldsXML->addChild('fieldset');
+				$fieldSetXML->addAttribute('hidden', 'true');
+				$fieldSetXML->addAttribute('name', $fieldAttributes['name'] . '_modal');
+				$fieldSetXML->addAttribute('repeat', 'true');
+
 				if (strpos($fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
@@ -983,7 +1033,7 @@ class Fields extends Structure
 					foreach ($fieldsSets as $fieldId)
 					{
 						// get the field data
-                                                $fieldData = array();
+						$fieldData = array();
 						$fieldData['settings'] = $this->getFieldData($fieldId, $viewName);
 						if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 						{
@@ -991,8 +1041,6 @@ class Fields extends Structure
 							$r_typeName = ComponentbuilderHelper::safeString($fieldData['settings']->type_name);
 							$r_multiple = false;
 							$r_langLabel = '';
-							// add the tabs needed
-							$taber = "\t\t\t";
 							// get field values
 							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders, true);
 							// check if values were set
@@ -1003,12 +1051,12 @@ class Fields extends Structure
 								if ($this->defaultField($r_typeName, 'option'))
 								{
 									// now add to the field set
-									$fieldSet .= $this->setField('option', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
+									$this->xmlAppend($fieldSetXML, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray));
 								}
 								elseif ($this->defaultField($r_typeName, 'plain'))
 								{
 									// now add to the field set
-									$fieldSet .= $this->setField('plain', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
+									$this->xmlAppend($fieldSetXML, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray));
 								}
 								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 								{
@@ -1016,7 +1064,7 @@ class Fields extends Structure
 									$custom = $r_fieldValues['custom'];
 									unset($r_fieldValues['custom']);
 									// now add to the field set
-									$fieldSet .= $this->setField('custom', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
+									$this->xmlAppend($fieldSetXML, $this->setField('custom', $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray));
 									// set lang (just incase)
 									$r_listLangName = $langView . '_' . ComponentbuilderHelper::safeString($r_name, 'U');
 									// add to lang array
@@ -1035,111 +1083,113 @@ class Fields extends Structure
 						}
 					}
 				}
-				$fieldSet .= PHP_EOL."\t\t\t\t</fieldset>";
-				$fieldSet .= PHP_EOL."\t\t\t</fields>";
-				$fieldSet .= PHP_EOL."\t\t</field>";
 			}
-			// set the subform fields (it is a repeatable without the modal) 
+			// set the subform fields (it is a repeatable without the modal)
 			elseif ($typeName === 'subform')
 			{
 				// now add to the field set
-				$fieldSet .= PHP_EOL."\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-				$fieldSet .= PHP_EOL."\t\t<field";
-				$fieldsSet = array();
+				$r->fieldXML = new SimpleXMLElement('<field/>');
+				$r->comment = $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla)";
+
 				foreach ($fieldAttributes as $property => $value)
 				{
 					if ($property != 'fields')
 					{
-						$fieldSet .= PHP_EOL."\t\t\t" . $property . '="' . $value . '"';
+						$r->fieldXML->addAttribute($property, $value);
 					}
 				}
-				$fieldSet .= ">";
-				$fieldSet .= PHP_EOL."\t\t\t" . '<form hidden="true" name="list_' . $fieldAttributes['name'] . '_modal" repeat="true">';
-				if (strpos($fieldAttributes['fields'], ',') !== false)
+				// if we do not detect formsource we add the form
+				if (!isset($fieldAttributes['formsource']))
 				{
-					// mulitpal fields
-					$fieldsSets = (array) explode(',', $fieldAttributes['fields']);
-				}
-				elseif (is_numeric($fieldAttributes['fields']))
-				{
-					// single field
-					$fieldsSets[] = (int) $fieldAttributes['fields'];
-				}
-				// only continue if we have a field set
-				if (ComponentbuilderHelper::checkArray($fieldsSets))
-				{
-					foreach ($fieldsSets as $fieldId)
+					$form = $r->fieldXML->addChild('form');
+					$attributes = array(
+					    'hidden' => 'true',
+					    'name' => 'list_' . $fieldAttributes['name'] . '_modal',
+					    'repeat' => 'true'
+					);
+					$this->xmlAddAttributes($form, $attributes);
+
+					if (strpos($fieldAttributes['fields'], ',') !== false)
 					{
-						// get the field data
-                                                $fieldData = array();
-						$fieldData['settings'] = $this->getFieldData($fieldId, $viewName);
-						if (ComponentbuilderHelper::checkObject($fieldData['settings']))
+						// multiple fields
+						$fieldsSets = (array) explode(',', $fieldAttributes['fields']);
+					}
+					elseif (is_numeric($fieldAttributes['fields']))
+					{
+						// single field
+						$fieldsSets[] = (int) $fieldAttributes['fields'];
+					}
+					// only continue if we have a field set
+					if (ComponentbuilderHelper::checkArray($fieldsSets))
+					{
+						foreach ($fieldsSets as $fieldId)
 						{
-							$r_name = ComponentbuilderHelper::safeString($fieldData['settings']->name);
-							$r_typeName = ComponentbuilderHelper::safeString($fieldData['settings']->type_name);
-							$r_multiple = false;
-							$r_langLabel = '';
-							// add the tabs needed
-							$taber = "\t\t";
-							// get field values
-							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders, true);
-							// check if values were set
-							if (ComponentbuilderHelper::checkArray($r_fieldValues))
+							// get the field data
+							$fieldData = array();
+							$fieldData['settings'] = $this->getFieldData($fieldId, $viewName);
+							if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 							{
-								//reset options array
-								$r_optionArray = array();
-								if ($this->defaultField($r_typeName, 'option'))
+								$r_name = ComponentbuilderHelper::safeString($fieldData['settings']->name);
+								$r_typeName = ComponentbuilderHelper::safeString($fieldData['settings']->type_name);
+								$r_multiple = false;
+								$r_langLabel = '';
+								// get field values
+								$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders, true);
+								// check if values were set
+								if (ComponentbuilderHelper::checkArray($r_fieldValues))
 								{
-									// now add to the field set
-									$fieldSet .= $this->setField('option', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
-								}
-								elseif ($this->defaultField($r_typeName, 'plain'))
-								{
-									// now add to the field set
-									$fieldSet .= $this->setField('plain', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
-								}
-								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
-								{
-									// add to custom
-									$custom = $r_fieldValues['custom'];
-									unset($r_fieldValues['custom']);
-									// now add to the field set
-									$fieldSet .= $this->setField('custom', $taber, $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray);
-									// set lang (just incase)
-									$r_listLangName = $langView . '_' . ComponentbuilderHelper::safeString($r_name, 'U');
-									// add to lang array
-									$this->langContent[$this->lang][$r_listLangName] = ComponentbuilderHelper::safeString($r_name, 'W');
-									// if label was set use instead
-									if (ComponentbuilderHelper::checkString($r_langLabel))
+									//reset options array
+									$r_optionArray = array();
+									if ($this->defaultField($r_typeName, 'option'))
 									{
-										$r_listLangName = $r_langLabel;
+										// now add to the field set
+										$this->xmlAppend($form, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray));
 									}
-									// set the custom array
-									$data = array('type' => $r_typeName, 'code' => $r_name, 'lang' => $r_listLangName, 'custom' => $custom);
-									// set the custom field file
-									$this->setCustomFieldTypeFile($data, $listViewName, $viewName);
+									elseif ($this->defaultField($r_typeName, 'plain'))
+									{
+										// now add to the field set
+										$this->xmlAppend($form, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray));
+									}
+									elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
+									{
+										// add to custom
+										$custom = $r_fieldValues['custom'];
+										unset($r_fieldValues['custom']);
+										// now add to the field set
+										$this->xmlAppend($form, $this->setField('custom', $r_fieldValues, $r_name, $r_typeName, $langView, $viewName, $listViewName, $placeholders, $r_optionArray));
+										// set lang (just incase)
+										$r_listLangName = $langView . '_' . ComponentbuilderHelper::safeString($r_name, 'U');
+										// add to lang array
+										$this->langContent[$this->lang][$r_listLangName] = ComponentbuilderHelper::safeString($r_name, 'W');
+										// if label was set use instead
+										if (ComponentbuilderHelper::checkString($r_langLabel))
+										{
+											$r_listLangName = $r_langLabel;
+										}
+										// set the custom array
+										$data = array('type' => $r_typeName, 'code' => $r_name, 'lang' => $r_listLangName, 'custom' => $custom);
+										// set the custom field file
+										$this->setCustomFieldTypeFile($data, $listViewName, $viewName);
+									}
 								}
 							}
 						}
 					}
 				}
-				$fieldSet .= PHP_EOL."\t\t\t</form>";
-				$fieldSet .= PHP_EOL."\t\t</field>";
 			}
 		}
 		elseif ($setType === 'custom')
 		{
 			// now add to the field set
-			$fieldSet .= PHP_EOL."\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (custom) -->";
-			$fieldSet .= PHP_EOL."\t\t" . $taber . "<field";
+			$r->fieldXML = new SimpleXMLElement('<field/>');
+			$r->comment = $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (custom)";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$fieldSet .= PHP_EOL."\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$r->fieldXML->addAttribute($property, $value);
 				}
 			}
-			$fieldSet .= PHP_EOL."\t\t" . $taber . "/>";
 			// incase the field is in the config and has not been set
 			if ('config' === $viewName && 'configs' === $listViewName)
 			{
@@ -1151,19 +1201,19 @@ class Fields extends Structure
 				$this->setCustomFieldTypeFile($data, $listViewName, $viewName);
 			}
 		}
-		return $fieldSet;
+		return $r;
 	}
 
 	/**
 	 * set the layout builder
-	 * 
+	 *
 	 * @param   string   $viewName  The single edit view code name
 	 * @param   string   $tabName The tab code name
 	 * @param   string   $name The field code name
 	 * @param   array    $field The field details
 	 *
 	 * @return  void
-	 * 
+	 *
 	 */
 	public function setLayoutBuilder(&$viewName,&$tabName,&$name,&$field)
 	{
@@ -1182,7 +1232,7 @@ class Fields extends Structure
 			}
 			else
 			{
-				$this->zeroOrderFix[$viewName][(int) $field['tab']]++;
+				$this->zeroOrderFix[$viewName][(int) $field['tab']] ++;
 			}
 			$field['order_edit'] = $this->zeroOrderFix[$viewName][(int) $field['tab']];
 		}
@@ -1206,7 +1256,7 @@ class Fields extends Structure
 				$this->movedPublishingFields[$viewName][$name] = $name;
 			}
 		}
-		elseif ($tabName === 'publishing' || $tabName === 'Publishing' )
+		elseif ($tabName === 'publishing' || $tabName === 'Publishing')
 		{
 			if (!in_array($name, $this->defaultFields))
 			{
@@ -1244,14 +1294,14 @@ class Fields extends Structure
 
 	/**
 	 * build the site field data needed
-	 * 
+	 *
 	 * @param   string   $view  The single edit view code name
 	 * @param   string   $field The field name
 	 * @param   string   $set The decoding set this field belongs to
 	 * @param   string   $type The field type
 	 *
 	 * @return  void
-	 * 
+	 *
 	 */
 	public function buildSiteFieldData($view, $field, $set, $type)
 	{
@@ -1277,7 +1327,7 @@ class Fields extends Structure
 
 	/**
 	 * set field attributes
-	 * 
+	 *
 	 * @param   array    $field         The field data
 	 * @param   int      $viewType      The view type
 	 * @param   string   $name          The field name
@@ -1292,7 +1342,7 @@ class Fields extends Structure
 	 * @param   boolean  $repeatable    The repeatable field switch
 	 *
 	 * @return  array The field attributes
-	 * 
+	 *
 	 */
 	private function setFieldAttributes(&$field, &$viewType, &$name, &$typeName, &$multiple, &$langLabel, $langView, &$spacerCounter, $listViewName, $viewName, $placeholders, $repeatable = false)
 	{
@@ -1437,7 +1487,7 @@ class Fields extends Structure
 					// set the line number
 					$phpLine = (int) str_replace('type_phpx_', '', $property['name']);
 					// load the php for the custom field file
-					$fieldAttributes['custom']['phpx'][$phpLine] = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
+					$fieldAttributes['custom']['php'][$phpLine] = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 				}
 				elseif ($property['name'] === 'extends' && $setCustom)
 				{
@@ -1528,7 +1578,7 @@ class Fields extends Structure
 				// check if translatable
 				if (ComponentbuilderHelper::checkString($xmlValue) && isset($property['translatable']) && $property['translatable'] == 1)
 				{
-					// update lable if field use multiple times
+					// update label if field use multiple times
 					if ($property['name'] === 'label')
 					{
 						if (isset($fieldAttributes['name']) && isset($this->uniqueNames[$viewName]['names'][$fieldAttributes['name']]))
@@ -1622,18 +1672,19 @@ class Fields extends Structure
 
 	/**
 	 * Keep track of the field names, to see if it used multiple times
-	 * 
+	 *
 	 * @param   array    $field     The field data
 	 * @param   string   $typeName  The field type
 	 * @param   string   $name      The field name
 	 * @param   string   $viewName  The singel view name
 	 *
 	 * @return  void
-	 * 
+	 *
 	 */
 	protected function setUniqueNameKeeper(&$field, &$typeName, &$name, $viewName)
 	{
 		// setup a default field
+		$xml = new SimpleXMLElement($field['settings']->xml);
 		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
 		{
 			foreach ($field['settings']->properties as $property)
@@ -1681,15 +1732,15 @@ class Fields extends Structure
 			}
 		}
 	}
-	
+
 	/**
 	 * Count how many times the same field is used per view
-	 * 
+	 *
 	 * @param   string   $name The name of the field
 	 * @param   string   $view The name of the view
 	 *
 	 * @return  void
-	 * 
+	 *
 	 */
 	protected function setUniqueNameCounter($name, $view)
 	{
@@ -1708,15 +1759,15 @@ class Fields extends Structure
 		$this->uniqueNames[$view]['counter'][$name]++;
 		return;
 	}
-	
+
 	/**
 	 * Naming each field with an unique name
-	 * 
+	 *
 	 * @param   string   $name The name of the field
 	 * @param   string   $view The name of the view
 	 *
 	 * @return  string   the name
-	 * 
+	 *
 	 */
 	protected function uniqueName($name, $view)
 	{
@@ -1737,10 +1788,10 @@ class Fields extends Structure
 		return $name;
 	}
 
-
+	
 	/**
 	 * set Builders
-	 * 
+	 *
 	 * @param   string   $langLabel The language string for field label
 	 * @param   string   $langView The language string of the view
 	 * @param   string   $viewName The singel view name
@@ -1754,7 +1805,7 @@ class Fields extends Structure
 	 * @param   boolean  $options The options switch
 	 *
 	 * @return  void
-	 * 
+	 *
 	 */
 	public function setBuilders($langLabel, $langView, $viewName, $listViewName, $name, $view, $field, $typeName, $multiple, $custom = false, $options = false)
 	{
@@ -1784,21 +1835,21 @@ class Fields extends Structure
 			// don't use these as index or uniqe keys
 			$textKeys = array('TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB');
 			// build the query values
-			$this->queryBuilder[$viewName][$name]['type']           = $field['settings']->datatype;
-                        if (!in_array($field['settings']->datatype, $textKeys))
+			$this->queryBuilder[$viewName][$name]['type'] = $field['settings']->datatype;
+			if (!in_array($field['settings']->datatype, $textKeys))
 			{
-                                $this->queryBuilder[$viewName][$name]['lenght']         = $field['settings']->datalenght;
-                                $this->queryBuilder[$viewName][$name]['lenght_other']   = $field['settings']->datalenght_other;
-                                $this->queryBuilder[$viewName][$name]['default']        = $field['settings']->datadefault;
-                                $this->queryBuilder[$viewName][$name]['other']          = $field['settings']->datadefault_other;
-                        }
-                        else
-                        {
-                                $this->queryBuilder[$viewName][$name]['default']        = 'EMPTY';
-                        }
+				$this->queryBuilder[$viewName][$name]['lenght'] = $field['settings']->datalenght;
+				$this->queryBuilder[$viewName][$name]['lenght_other'] = $field['settings']->datalenght_other;
+				$this->queryBuilder[$viewName][$name]['default'] = $field['settings']->datadefault;
+				$this->queryBuilder[$viewName][$name]['other'] = $field['settings']->datadefault_other;
+			}
+			else
+			{
+				$this->queryBuilder[$viewName][$name]['default'] = 'EMPTY';
+			}
 			// to identify the field
-			$this->queryBuilder[$viewName][$name]['ID']		= $field['settings']->id;
-                        $this->queryBuilder[$viewName][$name]['null_switch']    = $field['settings']->null_switch;
+			$this->queryBuilder[$viewName][$name]['ID'] = $field['settings']->id;
+			$this->queryBuilder[$viewName][$name]['null_switch'] = $field['settings']->null_switch;
 			// set index types
 			if ($field['settings']->indexes == 1 && !in_array($field['settings']->datatype, $textKeys))
 			{
@@ -2015,7 +2066,7 @@ class Fields extends Structure
 					$this->getItemsMethodListStringFixBuilder[$viewName][] = array('name' => $name, 'type' => $typeName, 'translation' => false, 'custom' => $custom, 'method' => $field['settings']->store);
 				}
 			}
-			
+
 			// if subform the values must revert to array
 			if ('subform' === $typeName)
 			{
@@ -2028,7 +2079,7 @@ class Fields extends Structure
 			$this->getItemsMethodEximportStringFixBuilder[$viewName][] = array('name' => $name, 'type' => $typeName, 'translation' => false, 'custom' => $custom, 'method' => $field['settings']->store);
 		}
 		// check if field should be added to uikit
-		$this->buildSiteFieldData($viewName, $name, 'uikit', $typeName);		
+		$this->buildSiteFieldData($viewName, $name, 'uikit', $typeName);
 		// load the selection translation fix
 		if (ComponentbuilderHelper::checkArray($options) && (isset($field['list']) && $field['list'] == 1) && $typeName != 'repeatable' && $typeName != 'subform')
 		{
@@ -2064,7 +2115,7 @@ class Fields extends Structure
 		}
 		$this->setLayoutBuilder($viewName, $tabName, $name, $field);
 	}
-	
+
 	public function setCustomFieldTypeFile($data, $viewName_list, $viewName_single)
 	{
 		// make sure it is not already been build
@@ -2072,11 +2123,11 @@ class Fields extends Structure
 		{
 			// first build the custom field type file
 			$target = array('admin' => 'customfield');
-			$this->buildDynamique($target,'field'.$data['custom']['extends'],$data['custom']['type']);
+			$this->buildDynamique($target,'field'.$data['custom']['extends'], $data['custom']['type']);
 			// set tab and break replacements
 			$tabBreak = array(
-				'\t' => "\t",
-				'\n' => PHP_EOL
+			    '\t' => "\t",
+			    '\n' => PHP_EOL
 			);
 			// make field dynamic
 			$replace = array(
@@ -2140,7 +2191,7 @@ class Fields extends Structure
 							}
 							else
 							{
-								$phpxCode .= PHP_EOL."\t\t".$this->setPlaceholders($code, $tabBreak);
+								$phpxCode .= PHP_EOL . "\t\t" . $this->setPlaceholders($code, $tabBreak);
 							}
 						}
 					}
@@ -2185,15 +2236,15 @@ class Fields extends Structure
 
 	/**
 	 * default Fields
-	 * 
+	 *
 	 * @param   string   $type The field type
 	 * @param   boolean  $option The field grouping
 	 *
 	 * @return  boolean if the field was found
-	 * 
+	 *
 	 */
 	public function defaultField($type, $option = 'default')
-	{
+	{	
 		// list of default fields
 		// https://docs.joomla.org/Form_field
 		$defaults = array(
@@ -2233,6 +2284,122 @@ class Fields extends Structure
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * xmlComment
+	 *
+	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
+	 * @param   string  $comment The comment to inject
+	 *
+	 * @return  null
+	 *
+	 */
+	public function xmlComment(&$xml, $comment)
+	{
+		$domXML = dom_import_simplexml($xml);
+		$domComment = new DOMComment($comment);
+		$nodeTarget = $domXML->ownerDocument->importNode($domComment, true);
+		$domXML->appendChild($nodeTarget);
+		$xml = simplexml_import_dom($domXML);
+	}
+
+	/**
+	 * xmlAddAttributes
+	 *
+	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
+	 * @param   array  $attributes The attributes to apply to the XML element
+	 *
+	 * @return  null
+	 *
+	 */
+	public function xmlAddAttributes(&$xml, $attributes = array())
+	{
+		foreach ($attributes as $key => $value)
+		{
+			$xml->addAttribute($key, $value);
+		}
+	}
+
+	/**
+	 * xmlAppend
+	 *
+	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
+	 * @param   mixed  $node A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
+	 *
+	 * @return  null
+	 *
+	 */
+	public function xmlAppend(&$xml, $node)
+	{
+		if (!$node)
+		{ // element was not returned
+			return;
+		}
+		switch (get_class($node))
+		{
+			case 'stdClass':
+				if (property_exists($node, 'comment'))
+				{
+					$this->xmlComment($xml, $node->comment);
+				}
+				if (property_exists($node, 'fieldXML'))
+				{
+					$this->xmlAppend($xml, $node->fieldXML);
+				}
+				break;
+			case 'SimpleXMLElement':
+				$domXML = dom_import_simplexml($xml);
+				$domNode = dom_import_simplexml($node);
+				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
+				$xml = simplexml_import_dom($domXML);
+				break;
+		}
+	}
+
+	/**
+	 * xmlPrettyPrint
+	 *
+	 * @param   SimpleXMLElement   $xml The XML element containing a node to be output
+	 * @param   string  $nodename node name of the input xml element to print out.  this is done to omit the <?xml... tag
+	 *
+	 * @return  string XML output
+	 *
+	 */
+	public function xmlPrettyPrint($xml, $nodename)
+	{
+		$dom = dom_import_simplexml($xml)->ownerDocument;
+		$dom->formatOutput = true;
+		$xmlString = $dom->saveXML($dom->getElementsByTagName($nodename)->item(0));
+		$tidy = new Tidy();
+		$tidy->parseString($xmlString,array('indent'=>true,'indent-spaces'=>8,'input-xml'=>true,'output-xml'=>true,'indent-attributes'=>true,'wrap-attributes'=>true,'wrap'=>false));
+		$tidy->cleanRepair();
+		return $this->xmlIndent((string)$tidy,' ',8,true,false);
+	}
+	
+	/**
+	 * xmlIndent
+	 *
+	 * @param   string  $string The XML input
+	 * @param   string  $char  Character or characters to use as the repeated indent
+	 * @param   integer $depth number of times to repeat the indent character
+	 * @param   boolean $skipfirst Skip the first line of the input.
+	 * @param   boolean $skiplast Skip the last line of the input;
+	 *
+	 * @return  string XML output
+	 *
+	 */
+	public function xmlIndent($string,$char=' ',$depth=0,$skipfirst=false,$skiplast=false) {
+		$output = array();
+		$lines = explode("\n",$string);
+		$first = true;
+		$last = count($lines)-1;
+		foreach($lines as $i=>$line)
+		{
+			$output[] = (($first&&$skipfirst)||$i===$last&&$skiplast)?$line:str_repeat($char,$depth).$line;
+			$first = false;
+		}
+		return implode("\n",$output);
 	}
 
 }
