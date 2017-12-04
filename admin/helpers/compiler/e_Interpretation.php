@@ -1660,7 +1660,7 @@ class Interpretation extends Fields
 			{
 				// build decoder string
 				if(!$runplugins) {
-					$runplugins  = PHP_EOL."\t".$tab."\tJPluginHelper::importPlugin('content');\n";
+					$runplugins  = PHP_EOL."\t".$tab."\tJPluginHelper::importPlugin('content');";
 					$runplugins .= PHP_EOL."\t".$tab."\t".'$dispatcher = JEventDispatcher::getInstance();';
 				}
 				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field;
