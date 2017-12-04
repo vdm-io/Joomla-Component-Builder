@@ -1654,12 +1654,6 @@ class Interpretation extends Fields
 	{
 		$fieldUikit = '';
 		$runplugins = false;
-		$context = array();
-		foreach(array('###component###','###view###') as $key) {
-			if(array_key_exists($key,$this->fileContentStatic)) {
-				$context[] = $this->fileContentStatic[$key];
-			}
-		}
 		foreach ($checker as $field => $array)
 		{
 			if (strpos($get['selection']['select'], $field) !== false)
@@ -1670,7 +1664,7 @@ class Interpretation extends Fields
 					$runplugins .= PHP_EOL."\t".$tab."\t".'$dispatcher = JEventDispatcher::getInstance();';
 				}
 				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field;
-				$fieldUikit .= PHP_EOL."\t".$tab."\t".'$dispatcher->trigger("onContentPrepare",array("com_'.implode('.',$context).'",&'.$string.'->'.$field.',$item->params));';
+				$fieldUikit .= PHP_EOL."\t".$tab."\t".'$dispatcher->trigger("onContentPrepare",array($this->_context,&'.$string.'->'.$field.',$item->params));';
 				// only load for uikit version 2 (TODO) we may need to add another check here
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
