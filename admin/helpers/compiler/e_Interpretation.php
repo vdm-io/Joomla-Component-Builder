@@ -1653,13 +1653,19 @@ class Interpretation extends Fields
 	public function setCustomViewFieldUikitChecker(&$get, $checker, $string, $code, $tab = '')
 	{
 		$fieldUikit = '';
+		$runplugins = false;
 		foreach ($checker as $field => $array)
 		{
 			if (strpos($get['selection']['select'], $field) !== false)
 			{
 				// build decoder string
-				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field." (TODO)";
-				$fieldUikit .= PHP_EOL."\t".$tab."\t".$string."->".$field." = JHtml::_('content.prepare',".$string."->".$field.");";
+				if(!$runplugins) {
+					$runplugins = PHP_EOL.$tab."\t//".$this->setLine(__LINE__)." Load the JEvent Dispatcher";
+					$runplugins .= PHP_EOL.$tab."\tJPluginHelper::importPlugin('content');";
+					$runplugins .= PHP_EOL.$tab."\t".'$this->_dispatcher = JEventDispatcher::getInstance();';
+				}
+				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field;
+				$fieldUikit .= PHP_EOL."\t".$tab."\t".'$this->_dispatcher->trigger("onContentPrepare",array($this->_context,&'.$string.'->'.$field.',$item->params));';
 				// only load for uikit version 2 (TODO) we may need to add another check here
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
@@ -1668,6 +1674,9 @@ class Interpretation extends Fields
 				}
 			}
 		}
+		// load dispatcher
+		$this->JEventDispatcher = array('###DISPATCHER###' => ($runplugins?:''));
+		// return UIKIT fix
 		return $fieldUikit;
 	}
 
@@ -2123,6 +2132,8 @@ class Interpretation extends Fields
 				$getItem .= PHP_EOL."\t".$tab."\t\treturn false;";
 			}
 			$getItem .= PHP_EOL."\t".$tab."\t}";
+			// dispatcher placholder
+			$getItem .= "###DISPATCHER###";
 			if (ComponentbuilderHelper::checkArray($get->main_get))
 			{
 				$asBucket = array();
@@ -2203,7 +2214,8 @@ class Interpretation extends Fields
 				$getItem .=  PHP_EOL.PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." set data object to item.";
 				$getItem .=  PHP_EOL."\t".$tab."\t\$this->_item[\$pk] = \$data;";
 			}
-			return $getItem;
+			// check if the dispather should be added
+			return str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
 		}
 		return PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)."add your custom code here.";
 	}
@@ -2526,6 +2538,8 @@ class Interpretation extends Fields
 					$methods .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." check if there was data returned";
 					$methods .= PHP_EOL."\t\tif (\$db->getNumRows())";
 					$methods .= PHP_EOL."\t\t{";
+					// set dispatcher placeholder
+					$methods .= "###DISPATCHER###";
 					// set decoding of needed fields
 					if (isset($this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']]))
 					{
@@ -2629,13 +2643,15 @@ class Interpretation extends Fields
 							$script .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
 							$script .= PHP_EOL."\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);".PHP_EOL;
 						}
-						$methods = str_replace('###CRYPT###',$script,$methods);
+						$methods = str_replace('###CRYPT###', $script, $methods);
 					}
 				}
+				// insure the crypt placeholder is removed
 				$methods = str_replace('###CRYPT###','',$methods);
 			}
 		}
-		return $methods.PHP_EOL;
+		// check if the dispatcher must be set
+		return str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $methods).PHP_EOL;
 	}
 
 	public function setCustomViewMethodDefaults($get,$code)
@@ -2734,6 +2750,7 @@ class Interpretation extends Fields
 			$getItem .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
 			$getItem .= PHP_EOL."\t\tif (".$Component."Helper::checkArray(\$items))";
 			$getItem .= PHP_EOL."\t\t{";
+			$getItem .= "###DISPATCHER###";
 			$getItem .= PHP_EOL."\t\t\tforeach (\$items as \$nr => &\$item)";
 			$getItem .= PHP_EOL."\t\t\t{";
 			$getItem .= PHP_EOL."\t\t\t\t//".$this->setLine(__LINE__)." Always create a slug for sef URL's";
@@ -2773,6 +2790,8 @@ class Interpretation extends Fields
 					$asBucket[] = $main_get['as'];
 				}
 			}
+			// check if we should load the dispatcher
+			$getItem = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
 			// setup Globals
 			$getItem .= $this->setCustomViewGlobals($get->global,'$item',$asBucket,"\t\t");
 			// setup the custom gets that returns multipal values
