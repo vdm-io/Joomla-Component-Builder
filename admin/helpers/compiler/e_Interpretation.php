@@ -1653,13 +1653,18 @@ class Interpretation extends Fields
 	public function setCustomViewFieldUikitChecker(&$get, $checker, $string, $code, $tab = '')
 	{
 		$fieldUikit = '';
+		$runplugins = false;
 		foreach ($checker as $field => $array)
 		{
 			if (strpos($get['selection']['select'], $field) !== false)
 			{
 				// build decoder string
-				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field." (TODO)";
-				$fieldUikit .= PHP_EOL."\t".$tab."\t".$string."->".$field." = JHtml::_('content.prepare',".$string."->".$field.");";
+				if(!$runplugins) {
+					$runplugins  = PHP_EOL."\t".$tab."\tJPluginHelper::importPlugin('content');";
+					$runplugins .= PHP_EOL."\t".$tab."\t".'$dispatcher = JEventDispatcher::getInstance();';
+				}
+				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field;
+				$fieldUikit .= PHP_EOL."\t".$tab."\t".'$dispatcher->trigger("onContentPrepare",array($this->_context,&'.$string.'->'.$field.',$item->params));';
 				// only load for uikit version 2 (TODO) we may need to add another check here
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
@@ -1668,7 +1673,7 @@ class Interpretation extends Fields
 				}
 			}
 		}
-		return $fieldUikit;
+		return ($runplugins?:'').$fieldUikit;
 	}
 
 	public function setCustomViewCustomJoin(&$gets,$string,$code,&$asBucket,$tab = '')
