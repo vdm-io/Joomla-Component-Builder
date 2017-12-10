@@ -12629,6 +12629,8 @@ class Interpretation extends Fields
 						$nameList	= ComponentbuilderHelper::safeString($menu['name']);
 						$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
 						$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $menu['name'];
+						// urlencode
+						$menu['link']	= htmlspecialchars($menu['link'], ENT_XML1, 'UTF-8');
 						// add custom menu
 						$customMenu .= PHP_EOL."\t\t\t".'<menu link="'.$menu['link'].'">'.$lang.'_'.$nameUpper.'</menu>';
 					}
@@ -12648,6 +12650,8 @@ class Interpretation extends Fields
 						$nameList	= ComponentbuilderHelper::safeString($menu['name']);
 						$nameUpper	= ComponentbuilderHelper::safeString($menu['name'], 'U');
 						$this->langContent['adminsys'][$lang.'_'.$nameUpper] = $menu['name'];
+						// urlencode
+						$menu['link']	= htmlspecialchars($menu['link'], ENT_XML1, 'UTF-8');
 						// add custom menu
 						$this->lastCustomMainMenu[$nr] = PHP_EOL."\t\t\t".'<menu link="'.$menu['link'].'">'.$lang.'_'.$nameUpper.'</menu>';
 					}
