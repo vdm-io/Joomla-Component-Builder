@@ -199,9 +199,12 @@ class ComponentbuilderViewComponents_files_folders extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_FILES_FOLDERS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_files_folders.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_FILES_FOLDERS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_files_folders.css");
 	}
 
         /**

@@ -1847,6 +1847,14 @@ class ComponentbuilderModelAjax extends JModelList
 		$query['i']['not_base64'] = array('dashboard_tab' => 'json');
 		$query['i']['name'] = 'joomla_component->id:joomla_component.system_name';
 
+		// #__componentbuilder_library as j
+		$query['j'] = array();
+		$query['j']['table'] = 'library';
+		$query['j']['view'] = 'libraries';
+		$query['j']['select'] = array('id', 'name', 'php_setdocument');
+		$query['j']['not_base64'] = array();
+		$query['j']['name'] = 'name';
+
 		// return the query string to search
 		if (isset($query[$target]))
 		{

@@ -32,6 +32,7 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'note_no_behaviour_two',
 	'note_yes_behaviour_two',
+	'note_build_in_behaviour_two',
 	'note_display_library_config'
 );
 

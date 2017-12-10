@@ -47,95 +47,78 @@
 		/>
 		<field type="spacer" name="spacerHistory" hr="true" />
 
-		<!-- Minify Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="minify"
-			label="COM_COMPONENTBUILDER_CONFIG_MINIFY_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_MINIFY_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="0">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>		
-		<!-- Percentagelanguageadd Field. Type: Number. (joomla) -->
-		<field
-			type="number"
-			name="percentagelanguageadd"
-			label="COM_COMPONENTBUILDER_CONFIG_PERCENTAGELANGUAGEADD_LABEL"
-			default="50"
-			description="COM_COMPONENTBUILDER_CONFIG_PERCENTAGELANGUAGEADD_DESCRIPTION"
-			class="text_area"
-			required="true"
-			min="10"
-			max="100"
-			step="10"
-		/>		
-		<!-- Spacer_hr_a Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_a" hr="true" class="spacer_hr_a" />		
-		<!-- Api Field. Type: User. (joomla) -->
-		<field
-			type="user"
-			name="api"
-			label="COM_COMPONENTBUILDER_CONFIG_API_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_API_DESCRIPTION"
-		/>		
-		<!-- Set_browser_storage Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="set_browser_storage"
-			label="COM_COMPONENTBUILDER_CONFIG_SET_BROWSER_STORAGE_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_SET_BROWSER_STORAGE_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_ACTIVE</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_INACTIVE</option>
-		</field>		
-		<!-- Storage_time_to_live Field. Type: List. (joomla) -->
-		<field
-			type="list"
-			name="storage_time_to_live"
-			label="COM_COMPONENTBUILDER_CONFIG_STORAGE_TIME_TO_LIVE_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_STORAGE_TIME_TO_LIVE_DESCRIPTION"
-			class="list_class"
-			multiple="false"
-			default="global"
-			showon="set_browser_storage:1">
-			<!-- Option Set. -->
-			<option value="global">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_SESSION</option>
-			<option value="30">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_THIRTY_SECONDS</option>
-			<option value="60">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_MINUTE</option>
-			<option value="300">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_FIVE_MINUTES</option>
-			<option value="900">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_FIFTEEN_MINUTES</option>
-			<option value="1800">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_THIRTY_MINUTES</option>
-			<option value="3600">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_HOUR</option>
-			<option value="18000">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_FIVE_HOURS</option>
-			<option value="36000">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_TEN_HOURS</option>
-			<option value="86400">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_DAY</option>
-			<option value="604800">
-				COM_COMPONENTBUILDER_CONFIG_EVERY_WEEK</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NEVER_UPDATE</option>
-		</field>		
-		<!-- Spacer_hr_b Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_b" hr="true" class="spacer_hr_b" />
+	<!--  Minify Field. Type: Radio. (joomla) -->
+	<field type="radio"
+               name="minify"
+               label="COM_COMPONENTBUILDER_CONFIG_MINIFY_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_MINIFY_DESCRIPTION"
+               class="btn-group btn-group-yesno"
+               default="0">
+                <!-- Option Set.-->
+                <option value="1">COM_COMPONENTBUILDER_CONFIG_YES</option>
+                <option value="0">COM_COMPONENTBUILDER_CONFIG_NO</option>
+        </field>		
+	<!--  Percentagelanguageadd Field. Type: Number. (joomla) -->
+	<field type="number"
+               name="percentagelanguageadd"
+               label="COM_COMPONENTBUILDER_CONFIG_PERCENTAGELANGUAGEADD_LABEL"
+               default="50"
+               description="COM_COMPONENTBUILDER_CONFIG_PERCENTAGELANGUAGEADD_DESCRIPTION"
+               class="text_area"
+               required="true"
+               min="10"
+               max="100"
+               step="10" />		
+	<!--  Spacer_hr_a Field. Type: Spacer. A None Database Field. (joomla) -->
+	<field type="spacer"
+               name="spacer_hr_a"
+               hr="true"
+               class="spacer_hr_a" />		
+	<!--  Api Field. Type: User. (joomla) -->
+	<field type="user"
+               name="api"
+               label="COM_COMPONENTBUILDER_CONFIG_API_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_API_DESCRIPTION" />		
+	<!--  Set_browser_storage Field. Type: Radio. (joomla) -->
+	<field type="radio"
+               name="set_browser_storage"
+               label="COM_COMPONENTBUILDER_CONFIG_SET_BROWSER_STORAGE_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_SET_BROWSER_STORAGE_DESCRIPTION"
+               class="btn-group btn-group-yesno"
+               default="1"
+               required="true">
+                <!-- Option Set.-->
+                <option value="1">COM_COMPONENTBUILDER_CONFIG_ACTIVE</option>
+                <option value="0">COM_COMPONENTBUILDER_CONFIG_INACTIVE</option>
+        </field>		
+	<!--  Storage_time_to_live Field. Type: List. (joomla) -->
+	<field type="list"
+               name="storage_time_to_live"
+               label="COM_COMPONENTBUILDER_CONFIG_STORAGE_TIME_TO_LIVE_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_STORAGE_TIME_TO_LIVE_DESCRIPTION"
+               class="list_class"
+               multiple="false"
+               default="global"
+               showon="set_browser_storage:1">
+                <!-- Option Set.-->
+                <option value="global">COM_COMPONENTBUILDER_CONFIG_EVERY_SESSION</option>
+                <option value="30">COM_COMPONENTBUILDER_CONFIG_EVERY_THIRTY_SECONDS</option>
+                <option value="60">COM_COMPONENTBUILDER_CONFIG_EVERY_MINUTE</option>
+                <option value="300">COM_COMPONENTBUILDER_CONFIG_EVERY_FIVE_MINUTES</option>
+                <option value="900">COM_COMPONENTBUILDER_CONFIG_EVERY_FIFTEEN_MINUTES</option>
+                <option value="1800">COM_COMPONENTBUILDER_CONFIG_EVERY_THIRTY_MINUTES</option>
+                <option value="3600">COM_COMPONENTBUILDER_CONFIG_EVERY_HOUR</option>
+                <option value="18000">COM_COMPONENTBUILDER_CONFIG_EVERY_FIVE_HOURS</option>
+                <option value="36000">COM_COMPONENTBUILDER_CONFIG_EVERY_TEN_HOURS</option>
+                <option value="86400">COM_COMPONENTBUILDER_CONFIG_EVERY_DAY</option>
+                <option value="604800">COM_COMPONENTBUILDER_CONFIG_EVERY_WEEK</option>
+                <option value="0">COM_COMPONENTBUILDER_CONFIG_NEVER_UPDATE</option>
+        </field>		
+	<!--  Spacer_hr_b Field. Type: Spacer. A None Database Field. (joomla) -->
+	<field type="spacer"
+               name="spacer_hr_b"
+               hr="true"
+               class="spacer_hr_b" />
 		<field name="autorTitle"
 			type="spacer"
 			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR"
@@ -557,244 +540,246 @@
 		name="cronjob_custom_config"
 		label="COM_COMPONENTBUILDER_CONFIG_CRONJOB">
 
-		<!-- Backupcronjob_note Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="backupcronjob_note" label="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_DESCRIPTION" heading="h4" class="backupcronjob_note" />		
-		<!-- Cronjob_backup_folder_path Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="cronjob_backup_folder_path"
-			label="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_LABEL"
-			size="70"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="false"
-			filter="PATH"
-			message="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_HINT"
-		/>		
-		<!-- Backup_email Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="backup_email"
-			label="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_LABEL"
-			size="10"
-			maxlength="50"
-			description="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_DESCRIPTION"
-			class="text_area"
-			filter="STRING"
-			validate="email"
-			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_HINT"
-		/>		
-		<!-- Package_name_plaeholders Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="package_name_plaeholders" label="COM_COMPONENTBUILDER_CONFIG_PACKAGE_NAME_PLAEHOLDERS_LABEL" description="COM_COMPONENTBUILDER_CONFIG_PACKAGE_NAME_PLAEHOLDERS_DESCRIPTION" heading="h4" class="package_name_plaeholders" />		
-		<!-- Backup_package_name Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="backup_package_name"
-			label="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_LABEL"
-			size="40"
-			maxlength="150"
-			default="JCB_Backup_[YEAR]_[MONTH]_[DAY]"
-			description="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="true"
-			filter="STRING"
-			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_HINT"
-		/>
+	<!--  Backupcronjob_note Field. Type: Note. A None Database Field. (joomla) -->
+	<field type="note"
+               name="backupcronjob_note"
+               label="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_DESCRIPTION"
+               heading="h4"
+               class="backupcronjob_note" />		
+	<!--  Cronjob_backup_folder_path Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="cronjob_backup_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_LABEL"
+               size="70"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_DESCRIPTION"
+               class="text_area"
+               readonly="false"
+               disabled="false"
+               required="false"
+               filter="PATH"
+               message="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_HINT" />		
+	<!--  Backup_email Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="backup_email"
+               label="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_LABEL"
+               size="10"
+               maxlength="50"
+               description="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_DESCRIPTION"
+               class="text_area"
+               filter="STRING"
+               validate="email"
+               message="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_HINT" />		
+	<!--  Package_name_plaeholders Field. Type: Note. A None Database Field. (joomla) -->
+	<field type="note"
+               name="package_name_plaeholders"
+               label="COM_COMPONENTBUILDER_CONFIG_PACKAGE_NAME_PLAEHOLDERS_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_PACKAGE_NAME_PLAEHOLDERS_DESCRIPTION"
+               heading="h4"
+               class="package_name_plaeholders" />		
+	<!--  Backup_package_name Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="backup_package_name"
+               label="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_LABEL"
+               size="40"
+               maxlength="150"
+               default="JCB_Backup_[YEAR]_[MONTH]_[DAY]"
+               description="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_DESCRIPTION"
+               class="text_area"
+               readonly="false"
+               disabled="false"
+               required="true"
+               filter="STRING"
+               message="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_HINT" />
 	</fieldset>
 	<fieldset
 		name="folder_paths_custom_config"
 		label="COM_COMPONENTBUILDER_CONFIG_FOLDER_PATHS">
 
-		<!-- Note_compiler_folder_path Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_compiler_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_COMPILER_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_COMPILER_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_compiler_folder_path" />		
-		<!-- Compiler_folder_path Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="compiler_folder_path"
-			label="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_LABEL"
-			size="70"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="false"
-			filter="PATH"
-			message="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_HINT"
-		/>		
-		<!-- Note_custom_folder_path Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_custom_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_CUSTOM_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_CUSTOM_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_custom_folder_path" />		
-		<!-- Custom_folder_path Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="custom_folder_path"
-			label="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_LABEL"
-			size="70"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="false"
-			filter="PATH"
-			message="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_HINT"
-		/>		
-		<!-- Note_backup_folder_path Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_backup_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_BACKUP_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_BACKUP_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_backup_folder_path" />		
-		<!-- Backup_folder_path Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="backup_folder_path"
-			label="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_LABEL"
-			size="70"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="false"
-			filter="PATH"
-			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_HINT"
-		/>		
-		<!-- Note_git_folder_path Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_git_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_GIT_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_GIT_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_git_folder_path" />		
-		<!-- Git_folder_path Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="git_folder_path"
-			label="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_LABEL"
-			size="70"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="false"
-			filter="PATH"
-			message="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_HINT"
-		/>
+	<!--  Note_compiler_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+	<field type="note"
+               name="note_compiler_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_NOTE_COMPILER_FOLDER_PATH_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_NOTE_COMPILER_FOLDER_PATH_DESCRIPTION"
+               heading="h4"
+               class="alert alert-info note_compiler_folder_path" />		
+	<!--  Compiler_folder_path Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="compiler_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_LABEL"
+               size="70"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_DESCRIPTION"
+               class="text_area"
+               readonly="false"
+               disabled="false"
+               required="false"
+               filter="PATH"
+               message="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_COMPILER_FOLDER_PATH_HINT" />		
+	<!--  Note_custom_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+	<field type="note"
+               name="note_custom_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_NOTE_CUSTOM_FOLDER_PATH_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_NOTE_CUSTOM_FOLDER_PATH_DESCRIPTION"
+               heading="h4"
+               class="alert alert-info note_custom_folder_path" />		
+	<!--  Custom_folder_path Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="custom_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_LABEL"
+               size="70"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_DESCRIPTION"
+               class="text_area"
+               readonly="false"
+               disabled="false"
+               required="false"
+               filter="PATH"
+               message="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_CUSTOM_FOLDER_PATH_HINT" />		
+	<!--  Note_backup_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+	<field type="note"
+               name="note_backup_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_NOTE_BACKUP_FOLDER_PATH_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_NOTE_BACKUP_FOLDER_PATH_DESCRIPTION"
+               heading="h4"
+               class="alert alert-info note_backup_folder_path" />		
+	<!--  Backup_folder_path Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="backup_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_LABEL"
+               size="70"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_DESCRIPTION"
+               class="text_area"
+               readonly="false"
+               disabled="false"
+               required="false"
+               filter="PATH"
+               message="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_FOLDER_PATH_HINT" />		
+	<!--  Note_git_folder_path Field. Type: Note. A None Database Field. (joomla) -->
+	<field type="note"
+               name="note_git_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_NOTE_GIT_FOLDER_PATH_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_NOTE_GIT_FOLDER_PATH_DESCRIPTION"
+               heading="h4"
+               class="alert alert-info note_git_folder_path" />		
+	<!--  Git_folder_path Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="git_folder_path"
+               label="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_LABEL"
+               size="70"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_DESCRIPTION"
+               class="text_area"
+               readonly="false"
+               disabled="false"
+               required="false"
+               filter="PATH"
+               message="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_GIT_FOLDER_PATH_HINT" />
 	</fieldset>
 	<fieldset
 		name="company_custom_config"
 		label="COM_COMPONENTBUILDER_CONFIG_COMPANY">
 
-		<!-- Export_company Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="export_company"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_LABEL"
-			size="40"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="true"
-			filter="STRING"
-			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_HINT"
-		/>		
-		<!-- Export_owner Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="export_owner"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_LABEL"
-			size="10"
-			maxlength="120"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="true"
-			filter="HTML"
-			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_HINT"
-		/>		
-		<!-- Export_email Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="export_email"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_LABEL"
-			size="40"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_DESCRIPTION"
-			class="text_area"
-			required="true"
-			filter="STRING"
-			validate="email"
-			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_HINT"
-		/>		
-		<!-- Export_website Field. Type: Url. (joomla) -->
-		<field
-			type="url"
-			name="export_website"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_LABEL"
-			size="60"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_DESCRIPTION"
-			class="text_area"
-			required="true"
-			filter="url"
-			validated="url"
-			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_HINT"
-		/>		
-		<!-- Export_license Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="export_license"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_LABEL"
-			rows="7"
-			cols="10"
-			default="GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_DESCRIPTION"
-			class="text_area span12"
-			filter="HTML"
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_HINT"
-			required="true"
-		/>		
-		<!-- Export_copyright Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="export_copyright"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_LABEL"
-			rows="7"
-			cols="10"
-			default="Copyright (C) 2015. All Rights Reserved"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_DESCRIPTION"
-			class="text_area span12"
-			filter="HTML"
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_HINT"
-			required="true"
-		/>		
-		<!-- Export_buy_link Field. Type: Url. (joomla) -->
-		<field
-			type="url"
-			name="export_buy_link"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_LABEL"
-			size="60"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_DESCRIPTION"
-			class="text_area"
-			required="false"
-			filter="url"
-			validated="url"
-			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_HINT"
-		/>
+	<!--  Export_company Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="export_company"
+               label="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_LABEL"
+               size="40"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_DESCRIPTION"
+               class="text_area"
+               readonly="false"
+               disabled="false"
+               required="true"
+               filter="STRING"
+               message="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_HINT" />		
+	<!--  Export_owner Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="export_owner"
+               label="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_LABEL"
+               size="10"
+               maxlength="120"
+               description="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_DESCRIPTION"
+               class="text_area"
+               readonly="false"
+               disabled="false"
+               required="true"
+               filter="HTML"
+               message="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_HINT" />		
+	<!--  Export_email Field. Type: Text. (joomla) -->
+	<field type="text"
+               name="export_email"
+               label="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_LABEL"
+               size="40"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_DESCRIPTION"
+               class="text_area"
+               required="true"
+               filter="STRING"
+               validate="email"
+               message="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_HINT" />		
+	<!--  Export_website Field. Type: Url. (joomla) -->
+	<field type="url"
+               name="export_website"
+               label="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_LABEL"
+               size="60"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_DESCRIPTION"
+               class="text_area"
+               required="true"
+               filter="url"
+               validated="url"
+               message="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_HINT" />		
+	<!--  Export_license Field. Type: Textarea. (joomla) -->
+	<field type="textarea"
+               name="export_license"
+               label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_LABEL"
+               rows="7"
+               cols="10"
+               default="GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html"
+               description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_DESCRIPTION"
+               class="text_area span12"
+               filter="HTML"
+               hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_LICENSE_HINT"
+               required="true" />		
+	<!--  Export_copyright Field. Type: Textarea. (joomla) -->
+	<field type="textarea"
+               name="export_copyright"
+               label="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_LABEL"
+               rows="7"
+               cols="10"
+               default="Copyright (C) 2015. All Rights Reserved"
+               description="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_DESCRIPTION"
+               class="text_area span12"
+               filter="HTML"
+               hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_COPYRIGHT_HINT"
+               required="true" />		
+	<!--  Export_buy_link Field. Type: Url. (joomla) -->
+	<field type="url"
+               name="export_buy_link"
+               label="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_LABEL"
+               size="60"
+               maxlength="150"
+               description="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_DESCRIPTION"
+               class="text_area"
+               required="false"
+               filter="url"
+               validated="url"
+               message="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_MESSAGE"
+               hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_HINT" />
 	</fieldset>
 	<fieldset
 		name="permissions"

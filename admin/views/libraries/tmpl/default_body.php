@@ -90,7 +90,7 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 			<?php echo $this->escape($item->description); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JText::_($item->how); ?>
+			<?php echo $this->escape($item->how); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo JText::_($item->type); ?>

@@ -268,9 +268,12 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENTS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/joomla_components.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENTS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/joomla_components.css");
 	}
 
         /**

@@ -136,6 +136,9 @@ class ComponentbuilderModelApi extends JModelItem
 					$app->redirect(JURI::root());
 					return false;
 				}
+			// Load the JEvent Dispatcher
+			JPluginHelper::importPlugin('content');
+			$this->_dispatcher = JEventDispatcher::getInstance();
 
 				// set data object to item.
 				$this->_item[$pk] = $data;

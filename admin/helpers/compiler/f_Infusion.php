@@ -318,6 +318,7 @@ class Infusion extends Interpretation
 						&& ComponentbuilderHelper::checkString($this->customScriptBuilder['php_document'][$viewName_single]))
                                         {
                                                 // ###DOCUMENT_CUSTOM_PHP### <<<DYNAMIC>>>
+						$this->customScriptBuilder['php_document'][$viewName_single] = str_replace('$document->', '$this->document->', $this->customScriptBuilder['php_document'][$viewName_single]);
                                                 $this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] 
                                                         = PHP_EOL.$this->setPlaceholders(
 								$this->customScriptBuilder['php_document'][$viewName_single], 

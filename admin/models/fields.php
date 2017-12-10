@@ -312,7 +312,7 @@ class ComponentbuilderModelFields extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.fieldtype LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.xml LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.store LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.fieldtype LIKE '.$search.' OR g.name LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.xml LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.store LIKE '.$search.')');
 			}
 		}
 

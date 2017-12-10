@@ -199,9 +199,12 @@ class ComponentbuilderViewAdmins_fields extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_ADMINS_FIELDS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admins_fields.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_ADMINS_FIELDS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admins_fields.css");
 	}
 
         /**

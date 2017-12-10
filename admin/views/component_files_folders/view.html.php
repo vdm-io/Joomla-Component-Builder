@@ -189,11 +189,14 @@ class ComponentbuilderViewComponent_files_folders extends JViewLegacy
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_files_folders.css"); 
-		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_files_folders/submitbutton.js"); 
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_EDIT'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_files_folders.css"); 
+		$this->document->addScript(JURI::root() . $this->script);
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_files_folders/submitbutton.js"); 
 		JText::script('view not acceptable. Error');
 	}
 }

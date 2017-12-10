@@ -197,9 +197,12 @@ class ###Component###View###Views### extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_###COMPONENT###_###VIEWS###'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/###views###.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_###COMPONENT###_###VIEWS###'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/###views###.css");
 	}
 
         /**

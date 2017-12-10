@@ -336,9 +336,12 @@ class ComponentbuilderViewFields extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_FIELDS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/fields.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_FIELDS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/fields.css");
 	}
 
         /**

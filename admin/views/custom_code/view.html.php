@@ -189,19 +189,22 @@ class ComponentbuilderViewCustom_code extends JViewLegacy
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_CUSTOM_CODE_NEW' : 'COM_COMPONENTBUILDER_CUSTOM_CODE_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/custom_code.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_CUSTOM_CODE_NEW' : 'COM_COMPONENTBUILDER_CUSTOM_CODE_EDIT'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/custom_code.css");
 		// Add Ajax Token
-		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/custom_code/submitbutton.js"); 
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
+		$this->document->addScript(JURI::root() . $this->script);
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/custom_code/submitbutton.js"); 
 		// add JavaScripts
-		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/uikit.min.js' );
-		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/notify.min.js', 'text/javascript', true);
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' );
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', 'text/javascript', true);
 		// add the style sheets
-		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/uikit.gradient.min.css' );
-		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/components/notify.gradient.min.css' );
+		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css' );
+		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css' );
 		JText::script('view not acceptable. Error');
 	}
 }

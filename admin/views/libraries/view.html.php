@@ -197,7 +197,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
                 }  
 
 		// Set How Selection
-		$this->howOptions = $this->getTheHowSelections();
+		$this->howOptions = JFormHelper::loadFieldType('Filebehaviour')->getOptions();
 		if ($this->howOptions)
 		{
 			// How Filter
@@ -248,9 +248,12 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_LIBRARIES'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/libraries.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_LIBRARIES'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/libraries.css");
 	}
 
         /**
@@ -287,42 +290,6 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	} 
-
-	protected function getTheHowSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('how'));
-		$query->from($db->quoteName('#__componentbuilder_library'));
-		$query->order($db->quoteName('how') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $how)
-			{
-				// Translate the how selection
-				$text = $model->selectionTranslation($how,'how');
-				// Now add the how and its text to the options array
-				$_filter[] = JHtml::_('select.option', $how, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
 
 	protected function getTheTypeSelections()
 	{

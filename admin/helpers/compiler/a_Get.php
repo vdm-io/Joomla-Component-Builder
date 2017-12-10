@@ -1051,13 +1051,14 @@ class Get
 		{
 			$component->readme = '';
 		}
+		// set lang now
+		$nowLang = $this->lang;
+		$this->lang = 'admin';
 		
 		// dashboard methods
 		$component->dashboard_tab = (isset($component->dashboard_tab) && ComponentbuilderHelper::checkJson($component->dashboard_tab)) ? json_decode($component->dashboard_tab,true):null;
 		if (ComponentbuilderHelper::checkArray($component->dashboard_tab))
-		{			
-			$nowLang = $this->lang;
-			$this->lang = 'admin';
+		{
 			$component->dashboard_tab = array_map( function($array) {
 				$array['html'] = $this->setDynamicValues($array['html']);
 				return $array;
@@ -1072,13 +1073,13 @@ class Get
 		{
 			// load the php for the dashboard model
 			$component->php_dashboard_methods = $this->setDynamicValues(base64_decode($component->php_dashboard_methods));
-			// reset back to nowlang
-			$this->lang = $nowLang;
 		}
 		else
 		{
 			$component->php_dashboard_methods = '';
 		}
+		// reset back to nowlang
+		$this->lang = $nowLang;
 		
 		// add the update FTP server sig
 		if ($component->add_update_server == 1 && is_numeric($component->update_server_ftp) && $component->update_server_ftp > 0)
@@ -1626,7 +1627,46 @@ class Get
 		// fix alias to use in code
 		$view->code = $this->uniqueCode(ComponentbuilderHelper::safeString($view->codename));
 		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
-		$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');
+		$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');		
+		// load the library
+		if (!isset($this->libManager[$this->target]))
+		{
+			$this->libManager[$this->target] = array();
+		}
+		if (!isset($this->libManager[$this->target][$view->code]))
+		{
+			$this->libManager[$this->target][$view->code] = array();
+		}
+		// make sure json become array
+		if (ComponentbuilderHelper::checkJson($view->libraries))
+		{
+			$view->libraries = json_decode($view->libraries, true);
+		}
+		// if we have an array add it
+		if (ComponentbuilderHelper::checkArray($view->libraries))
+		{
+			foreach ($view->libraries as $library)
+			{
+				if (!isset($this->libManager[$this->target][$view->code][$library]))
+				{
+					if ($this->getLibrary((int) $library))
+					{
+						$this->libManager[$this->target][$view->code][(int) $library] = true;
+					}
+				}
+			}
+		}
+		elseif (is_numeric($view->libraries) && !isset($this->libManager[$this->target][$view->code][(int) $view->libraries]))
+		{
+			if ($this->getLibrary((int) $view->libraries))
+			{
+				$this->libManager[$this->target][$view->code][(int) $view->libraries] = true;
+			}
+		}
+		// setup template array
+		$this->templateData[$this->target][$view->code] = array();
+		// setup template and layout data
+		$this->setTemplateAndLayoutData($view->default,$view->code);
 		// insure the uikit components are loaded
 		if (2 == $this->uikit || 1 == $this->uikit)
 		{
@@ -1658,10 +1698,6 @@ class Get
 				$this->getModule[$this->target][$view->code] = true;
 			}
 		}
-		// setup template array
-		$this->templateData[$this->target][$view->code] = array();
-		// setup template and layout data
-		$this->setTemplateAndLayoutData($view->default,$view->code);
 		// set the main get data
 		$main_get = $this->setGetData(array($view->main_get),$view->code);
 		$view->main_get = $main_get[0];
@@ -1729,45 +1765,6 @@ class Get
 //						$this->customScriptBuilder['token'][$this->target.$view->code] = true;
 //					}
 //				}
-			}
-		}
-		// load the library
-		if (!isset($this->libManager[$this->target]) || !isset($this->libManager[$this->target][$view->code]))
-		{
-			// prep array
-			if (!isset($this->libManager[$this->target]))
-			{
-				$this->libManager[$this->target] = array();
-			}
-			if (!isset($this->libManager[$this->target][$view->code]))
-			{
-				$this->libManager[$this->target][$view->code] = array();
-			}
-			// make sure json become array
-			if (ComponentbuilderHelper::checkJson($view->libraries))
-			{
-				$view->libraries = json_decode($view->libraries, true);
-			}
-			// if we have an array add it
-			if (ComponentbuilderHelper::checkArray($view->libraries))
-			{
-				foreach ($view->libraries as $library)
-				{
-					if (!isset($this->libManager[$this->target][$view->code][$library]))
-					{
-						if ($this->getLibrary($library))
-						{
-							$this->libManager[$this->target][$view->code][$library] = true;
-						}
-					}
-				}
-			}
-			elseif (is_numeric($view->libraries) && !isset($this->libManager[$this->target][$view->code][(int) $view->libraries]))
-			{
-				if ($this->getLibrary((int) $view->libraries))
-				{
-					$this->libManager[$this->target][$view->code][(int) $view->libraries] = true;
-				}
 			}
 		}
 		// add_Ajax for this view
@@ -2800,6 +2797,42 @@ class Get
 					$php_view = $this->setDynamicValues(base64_decode($row->php_view));
 				}
 				$contnent = $this->setDynamicValues(base64_decode($row->{$table}));
+				// load the library
+				if (!isset($this->libManager[$this->target]))
+				{
+					$this->libManager[$this->target] = array();
+				}
+				if (!isset($this->libManager[$this->target][$view]))
+				{
+					$this->libManager[$this->target][$view] = array();
+				}
+				// make sure json become array
+				if (ComponentbuilderHelper::checkJson($row->libraries))
+				{
+					$row->libraries = json_decode($row->libraries, true);
+				}
+				// if we have an array add it
+				if (ComponentbuilderHelper::checkArray($row->libraries))
+				{
+					foreach ($row->libraries as $library)
+					{
+						if (!isset($this->libManager[$this->target][$view][$library]))
+						{
+							if ($this->getLibrary((int) $library))
+							{
+								$this->libManager[$this->target][$view][(int) $library] = true;
+							}
+						}
+					}
+				}
+				elseif (is_numeric($row->libraries) && !isset($this->libManager[$this->target][$view][(int) $row->libraries]))
+				{
+					if ($this->getLibrary((int) $row->libraries))
+					{
+						$this->libManager[$this->target][$view][(int) $row->libraries] = true;
+					}
+				}
+				// load UIKIT if needed
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
 					// set uikit to views
@@ -2842,45 +2875,6 @@ class Get
 						$this->getModule[$this->target][$view] = true;
 					}
 				}
-				// load the library
-				if (!isset($this->libManager[$this->target]) || !isset($this->libManager[$this->target][$view]))
-				{
-					// prep array
-					if (!isset($this->libManager[$this->target]))
-					{
-						$this->libManager[$this->target] = array();
-					}
-					if (!isset($this->libManager[$this->target][$view]))
-					{
-						$this->libManager[$this->target][$view] = array();
-					}
-					// make sure json become array
-					if (ComponentbuilderHelper::checkJson($row->libraries))
-					{
-						$row->libraries = json_decode($row->libraries, true);
-					}
-					// if we have an array add it
-					if (ComponentbuilderHelper::checkArray($row->libraries))
-					{
-						foreach ($row->libraries as $library)
-						{
-							if (!isset($this->libManager[$this->target][$view][$library]))
-							{
-								if ($this->getLibrary($library))
-								{
-									$this->libManager[$this->target][$view][$library] = true;
-								}
-							}
-						}
-					}
-					elseif (is_numeric($row->libraries) && !isset($this->libManager[$this->target][$view][(int) $row->libraries]))
-					{
-						if ($this->getLibrary((int) $row->libraries))
-						{
-							$this->libManager[$this->target][$view][(int) $row->libraries] = true;
-						}
-					}
-				}
 				return array('id' => $row->id, 'html' => $contnent, 'php_view' => $php_view);
 			}
 		}
@@ -2897,6 +2891,46 @@ class Get
 	 */
 	protected function getLibrary($id)
 	{
+		
+		// check if the lib has already been set
+		if (!isset($this->libraries[$id]))
+		{
+			// make sure we should continue and that the lib is not already bein loaded
+			switch ($id)
+			{
+				case 1: // No Library
+					return false;
+				break;
+				case 3: // Uikit v3
+					if (2 == $this->uikit || 3 == $this->uikit)
+					{
+						// already being loaded
+						$this->libraries[$id] = false;
+					}
+				break;
+				case 4: // Uikit v2
+					if (2 == $this->uikit || 1 == $this->uikit)
+					{
+						// already being loaded
+						$this->libraries[$id] = false;
+					}
+				break;
+				case 5: // FooTable v2
+					if (!isset($this->footableVersion) || 2 == $this->footableVersion)
+					{
+						// already being loaded
+						$this->libraries[$id] = false;
+					}
+				break;
+				case 6: // FooTable v3
+					if (3 == $this->footableVersion)
+					{
+						// already being loaded
+						$this->libraries[$id] = false;
+					}
+				break;
+			}
+		}
 		// check if the lib has already been set
 		if (!isset($this->libraries[$id]))
 		{
@@ -2915,7 +2949,6 @@ class Get
 						'c.addfiles',
 						'c.addfolders',
 						'c.addurls',
-						'a.php_preparedocument',
 						'a.php_setdocument'
 						), 
 					array(
@@ -2928,7 +2961,6 @@ class Get
 						'addfiles',
 						'addfolders',
 						'addurls',
-						'php_preparedocument',
 						'php_setdocument'
 						)
 					)
@@ -2945,36 +2977,48 @@ class Get
 			// Load the results as a list of stdClass objects
 			$library = $this->db->loadObject();
 			
+			// check if this lib uses build-in behaviour
+			if ($library->how == 4)
+			{
+				// fall back on build-in features
+				$buildin = array(3 => array('uikit' => 3), 4 => array('uikit' => 1), 5 => array('footableVersion' => 2, 'footable' => true), 6 => array('footableVersion' => 3, 'footable' => true));
+				if (isset($buildin[$library->id]) && ComponentbuilderHelper::checkArray($buildin[$library->id]))
+				{
+					// set the lib switch
+					foreach ($buildin[$library->id] as $lib => $val)
+					{
+						$this->{$lib} = $val;
+					}
+					// since we are falling back on build-in feature
+					$library->how = 0;
+				}
+				else
+				{
+					// since we did not find build in behaviour we must load always.
+					$library->how = 1;
+				}
+			}
 			// check if this lib has dynamic behaviour
 			if ($library->how > 0)
 			{
-				// unset original value
-				unset($library->addconfig);
-
 				// set the addfolders data
 				$library->addfolders = (isset($library->addfolders) && ComponentbuilderHelper::checkJson($library->addfolders)) ? json_decode($library->addfolders,true):null;
 				if (ComponentbuilderHelper::checkArray($library->addfolders))
 				{
 					$library->folders = array_values($library->addfolders);
 				}
-				unset($library->addfolders);
-
 				// set the addfiles data
 				$library->addfiles = (isset($library->addfiles) && ComponentbuilderHelper::checkJson($library->addfiles)) ? json_decode($library->addfiles,true):null;
 				if (ComponentbuilderHelper::checkArray($library->addfiles))
 				{
 					$library->files = array_values($library->addfiles);
 				}
-				unset($library->addfiles);
-
 				// set the addurls data
 				$library->addurls = (isset($library->addurls) && ComponentbuilderHelper::checkJson($library->addurls)) ? json_decode($library->addurls,true):null;
 				if (ComponentbuilderHelper::checkArray($library->addurls))
 				{
 					$library->urls = array_values($library->addurls);
-				}
-				unset($library->addurls);
-				
+				}				
 				// add config fields only if needed
 				if ($library->how > 1)
 				{
@@ -2990,18 +3034,13 @@ class Get
 						}, array_values($library->addconfig));
 					}
 				}
-
 				// if this lib is controlled by custom script
 				if (3 == $library->how)
 				{
 					// set Needed PHP
-					$phpMethods = array('preparedocument', 'setdocument');	
-					foreach ($phpMethods as $method)
+					if (isset($library->php_setdocument) && ComponentbuilderHelper::checkString($library->php_setdocument))
 					{
-						if (isset($library->{'php_'.$method}) && ComponentbuilderHelper::checkString($library->{'php_'.$method}))
-						{
-							$library->{$method} = $this->setDynamicValues(base64_decode($library->{'php_'.$method}));
-						}
+						$library->document = $this->setDynamicValues(base64_decode($library->php_setdocument));
 					}
 				}
 				// if this lib is controlled by conditions
@@ -3014,14 +3053,14 @@ class Get
 						$library->conditions = array_values($library->addconditions);
 					}
 				}
-				// if this lib is always being added
-				else
-				{
-					
-				}
-				unset($library->php_preparedocument);
 				unset($library->php_setdocument);
 				unset($library->addconditions);
+				unset($library->addconfig);
+				unset($library->addfolders);
+				unset($library->addfiles);
+				unset($library->addurls);
+				// load to global lib
+				$this->libraries[$id] = $library;
 			}
 			else
 			{

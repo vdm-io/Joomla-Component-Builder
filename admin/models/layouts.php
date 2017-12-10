@@ -195,7 +195,7 @@ class ComponentbuilderModelLayouts extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.alias LIKE '.$search.' OR a.description LIKE '.$search.' OR a.dynamic_get LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.alias LIKE '.$search.' OR a.description LIKE '.$search.' OR a.dynamic_get LIKE '.$search.' OR g.name LIKE '.$search.')');
 			}
 		}
 

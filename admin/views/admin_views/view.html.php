@@ -209,9 +209,12 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_ADMIN_VIEWS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_views.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_ADMIN_VIEWS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_views.css");
 	}
 
         /**

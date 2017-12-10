@@ -189,11 +189,14 @@ class ComponentbuilderViewComponent_mysql_tweaks extends JViewLegacy
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_mysql_tweaks.css"); 
-		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_mysql_tweaks/submitbutton.js"); 
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_EDIT'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_mysql_tweaks.css"); 
+		$this->document->addScript(JURI::root() . $this->script);
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_mysql_tweaks/submitbutton.js"); 
 		JText::script('view not acceptable. Error');
 	}
 }

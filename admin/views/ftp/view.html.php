@@ -64,7 +64,7 @@ class ComponentbuilderViewFtp extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vzylinked_components		= $this->get('Vzylinked_components');
+		$this->vzxlinked_components		= $this->get('Vzxlinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();
@@ -192,21 +192,24 @@ class ComponentbuilderViewFtp extends JViewLegacy
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_FTP_NEW' : 'COM_COMPONENTBUILDER_FTP_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/ftp.css"); 
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_FTP_NEW' : 'COM_COMPONENTBUILDER_FTP_EDIT'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/ftp.css"); 
 
 		// Add the CSS for Footable
-		$document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.standalone.min.css');
+		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
+		$this->document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css');
 		// Add the JavaScript for Footable (adding all funtions)
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.min.js');
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/footable-v3/js/footable.min.js');
 
 		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
-		$document->addScriptDeclaration($footable);
+		$this->document->addScriptDeclaration($footable);
 
-		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/ftp/submitbutton.js"); 
+		$this->document->addScript(JURI::root() . $this->script);
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/ftp/submitbutton.js"); 
 		JText::script('view not acceptable. Error');
 	}
 }

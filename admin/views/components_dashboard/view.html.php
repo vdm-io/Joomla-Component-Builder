@@ -199,9 +199,12 @@ class ComponentbuilderViewComponents_dashboard extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_DASHBOARD'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_dashboard.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_DASHBOARD'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_dashboard.css");
 	}
 
         /**

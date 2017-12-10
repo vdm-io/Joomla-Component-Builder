@@ -1311,7 +1311,7 @@ class Fields extends Structure
 	public function buildSiteFieldData($view, $field, $set, $type)
 	{
 		$decode = array('json','base64','basic_encryption','advance_encryption');
-		$uikit = array('textarea','editor');
+		$textareas = array('textarea','editor');
 		if (isset($this->siteFields[$view][$field]) && ComponentbuilderHelper::checkArray($this->siteFields[$view][$field]))
 		{
 			foreach ($this->siteFields[$view][$field] as $code => $array)
@@ -1322,9 +1322,14 @@ class Fields extends Structure
 					$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']] = array('decode' => $set, 'type' => $type);
 				}
 				// set the uikit checker
-				if ((2 == $this->uikit || 1 == $this->uikit) && in_array($type, $uikit))
+				if ((2 == $this->uikit || 1 == $this->uikit) && in_array($type, $textareas))
 				{
 					$this->siteFieldData['uikit'][$array['site']][$code][$array['as']][$array['key']] = $array;
+				}
+				// set the textareas checker
+				if (in_array($type, $textareas))
+				{
+					$this->siteFieldData['textareas'][$array['site']][$code][$array['as']][$array['key']] = $array;
 				}
 			}
 		}
@@ -2097,7 +2102,7 @@ class Fields extends Structure
 		// build the search values
 		if (isset($field['search']) && $field['search'] == 1)
 		{
-			$_list = (!isset($field['list'])) ? $field['list'] : 0;
+			$_list = (isset($field['list'])) ? $field['list'] : 0;
 			$this->searchBuilder[$listViewName][] = array('type' => $typeName, 'code' => $name, 'custom' => $custom, 'list' => $_list);
 		}
 		// build the filter values

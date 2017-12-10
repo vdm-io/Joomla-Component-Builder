@@ -54,7 +54,7 @@ class ###Component###View###SView### extends JViewLegacy
 	 * Prepares the document
 	 */
 	protected function setDocument()
-	{###CUSTOM_ADMIN_DOCUMENT_METADATA### ###CUSTOM_ADMIN_UIKIT_LOADER### ###CUSTOM_ADMIN_GOOGLECHART_LOADER### ###CUSTOM_ADMIN_FOOTABLE_LOADER### ###CUSTOM_ADMIN_DOCUMENT_CUSTOM_PHP###
+	{###CUSTOM_ADMIN_LIBRARIES_LOADER### ###CUSTOM_ADMIN_DOCUMENT_METADATA### ###CUSTOM_ADMIN_UIKIT_LOADER### ###CUSTOM_ADMIN_GOOGLECHART_LOADER### ###CUSTOM_ADMIN_FOOTABLE_LOADER### ###CUSTOM_ADMIN_DOCUMENT_CUSTOM_PHP###
                 // add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_###component###/assets/css/###sview###.css');###CUSTOM_ADMIN_DOCUMENT_CUSTOM_CSS### ###CUSTOM_ADMIN_DOCUMENT_CUSTOM_JS###
         }

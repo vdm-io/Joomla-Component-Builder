@@ -237,18 +237,33 @@ jQuery('#adminForm').on('change', '#jform_how',function (e)
 
 });
 
-// #jform_type listeners for type_vvvvwaa function
+// #jform_how listeners for how_vvvvwaa function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvwaa = jQuery("#jform_how").val();
+	vvvvwaa(how_vvvvwaa);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvwaa = jQuery("#jform_how").val();
+	vvvvwaa(how_vvvvwaa);
+
+});
+
+// #jform_type listeners for type_vvvvwab function
 jQuery('#jform_type').on('keyup',function()
 {
-	var type_vvvvwaa = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwaa(type_vvvvwaa);
+	var type_vvvvwab = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwab(type_vvvvwab);
 
 });
 jQuery('#adminForm').on('change', '#jform_type',function (e)
 {
 	e.preventDefault();
-	var type_vvvvwaa = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwaa(type_vvvvwaa);
+	var type_vvvvwab = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwab(type_vvvvwab);
 
 });
 

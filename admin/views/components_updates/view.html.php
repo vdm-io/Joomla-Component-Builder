@@ -199,9 +199,12 @@ class ComponentbuilderViewComponents_updates extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_UPDATES'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_updates.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_UPDATES'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_updates.css");
 	}
 
         /**

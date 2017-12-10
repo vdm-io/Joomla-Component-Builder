@@ -280,7 +280,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.component LIKE '.$search.' OR a.path LIKE '.$search.' OR a.comment_type LIKE '.$search.' OR a.function_name LIKE '.$search.' OR a.system_name LIKE '.$search.')');
+				$query->where('(a.component LIKE '.$search.' OR g.system_name LIKE '.$search.' OR a.path LIKE '.$search.' OR a.comment_type LIKE '.$search.' OR a.function_name LIKE '.$search.' OR a.system_name LIKE '.$search.')');
 			}
 		}
 

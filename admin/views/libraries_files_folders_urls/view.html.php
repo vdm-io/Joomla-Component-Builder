@@ -199,9 +199,12 @@ class ComponentbuilderViewLibraries_files_folders_urls extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_LIBRARIES_FILES_FOLDERS_URLS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/libraries_files_folders_urls.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_LIBRARIES_FILES_FOLDERS_URLS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/libraries_files_folders_urls.css");
 	}
 
         /**

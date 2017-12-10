@@ -110,15 +110,21 @@ class ComponentbuilderModelCompiler extends JModelList
 		// Get the global params
 		$globalParams = JComponentHelper::getParams('com_componentbuilder', true);
 
-		// Convert the parameter fields into objects.
+		// Insure all item fields are adapted where needed.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Load the JEvent Dispatcher
+			JPluginHelper::importPlugin('content');
+			$this->_dispatcher = JEventDispatcher::getInstance();
 			foreach ($items as $nr => &$item)
 			{
 				// Always create a slug for sef URL's
 				$item->slug = (isset($item->alias) && isset($item->id)) ? $item->id.':'.$item->alias : $item->id;
-				// Make sure the content prepare plugins fire on copyright (TODO)
-				$item->copyright = JHtml::_('content.prepare',$item->copyright);
+				// Make sure the content prepare plugins fire on copyright
+				$_copyright = new stdClass();
+				$_copyright->text =& $item->copyright; // value must be in text
+				// Since all values are now in text (Joomla Limitation), we also add the field name (copyright) to context
+				$this->_dispatcher->trigger("onContentPrepare",array('com_componentbuilder.compiler.copyright',&$_copyright,&$this->params));
 				// Checking if copyright has uikit components that must be loaded.
 				$this->uikitComp = ComponentbuilderHelper::getUikitComp($item->copyright,$this->uikitComp);
 			}

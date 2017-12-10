@@ -199,9 +199,12 @@ class ComponentbuilderViewComponents_custom_admin_menus extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_CUSTOM_ADMIN_MENUS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_custom_admin_menus.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_CUSTOM_ADMIN_MENUS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_custom_admin_menus.css");
 	}
 
         /**

@@ -189,13 +189,16 @@ class ComponentbuilderViewAdmin_fields_conditions extends JViewLegacy
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_fields_conditions.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_EDIT'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_fields_conditions.css");
 		// Add Ajax Token
-		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_fields_conditions/submitbutton.js"); 
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
+		$this->document->addScript(JURI::root() . $this->script);
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_fields_conditions/submitbutton.js"); 
 		JText::script('view not acceptable. Error');
 	}
 }

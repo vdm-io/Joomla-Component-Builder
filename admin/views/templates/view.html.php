@@ -214,9 +214,12 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_COMPONENTBUILDER_TEMPLATES'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/templates.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_TEMPLATES'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/templates.css");
 	}
 
         /**

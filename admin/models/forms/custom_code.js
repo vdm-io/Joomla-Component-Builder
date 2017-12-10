@@ -317,7 +317,7 @@ function usedin(functioName, ide) {
 	jQuery('#note-usedin-not').hide();
 	jQuery('#note-usedin-found').hide();
 	jQuery('#loading-usedin').show();
-	var targets = ['a','b','c','d','e','f','g','h','i'];
+	var targets = ['a','b','c','d','e','f','g','h','i','j'];
 	var run = 0;
 	var usedinChecker = setInterval(function(){ 
 		var target = targets[run];
@@ -339,7 +339,7 @@ function usedin(functioName, ide) {
 				}
 			}
 		});
-		if (run == 8) {
+		if (run == 9) {
 			clearInterval(usedinChecker);
 		}
 		run++;

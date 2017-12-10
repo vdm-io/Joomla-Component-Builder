@@ -4,224 +4,193 @@
 	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
 >
 	<fieldset name="details">
-		<!-- Default Fields. -->
-		<!-- Id Field. Type: Text (joomla) -->
-		<field
-			name="id"
-			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
-			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
-			readonly="true"
-		/>
-		<!-- Date Created Field. Type: Calendar (joomla) -->
-		<field
-			name="created"
-			type="calendar"
-			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CREATED_DATE_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CREATED_DATE_DESC"
-			size="22"
-
-			format="%Y-%m-%d %H:%M:%S"
-			filter="user_utc"
-		/>
-		<!-- User Created Field. Type: User (joomla) -->
-		<field
-			name="created_by"
-			type="user"
-			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CREATED_BY_LABEL"
-
-			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CREATED_BY_DESC"
-		/>
-		<!-- Published Field. Type: List (joomla) -->
-		<field name="published" type="list" label="JSTATUS"
-			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
-
-			filter="intval" size="1" default="1" >
-			<option value="1">
-				JPUBLISHED</option>
-			<option value="0">
-				JUNPUBLISHED</option>
-			<option value="2">
-				JARCHIVED</option>
-			<option value="-2">
-				JTRASHED</option>
-		</field>
-		<!-- Date Modified Field. Type: Calendar (joomla) -->
-		<field name="modified" type="calendar" class="readonly"
-			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MODIFIED_DATE_DESC"
-			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
-		<!-- User Modified Field. Type: User (joomla) -->
-		<field name="modified_by" type="user"
-			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MODIFIED_BY_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MODIFIED_BY_DESC"
-			class="readonly"
-			readonly="true"
-			filter="unset"
-		/>
-		<!-- Access Field. Type: Accesslevel (joomla) -->
-		<field name="access"
-			type="accesslevel"
-			label="JFIELD_ACCESS_LABEL"
-			description="JFIELD_ACCESS_DESC"
-			default="1"
-
-			required="false"
-		/>
-		<!-- Ordering Field. Type: Numbers (joomla) -->
-		<field
-			name="ordering"
-			type="number"
-			class="inputbox validate-ordering"
-			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ORDERING_LABEL"
-			description=""
-			default="0"
-			size="6"
-
-			required="false"
-		/>
-		<!-- Version Field. Type: Text (joomla) -->
-		<field
-			name="version"
-			type="text"
-			class="readonly"
-			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_VERSION_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_VERSION_DESC"
-			size="6"
-			readonly="true"
-			filter="unset"
-		/>
-		<!-- Dynamic Fields. -->
-		<!-- Admin_view Field. Type: Adminviewsreadonly. (custom) -->
-		<field
-			type="adminviewsreadonly"
-			name="admin_view"
-			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADMIN_VIEW_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADMIN_VIEW_DESCRIPTION"
-			class="list_class"
-			multiple="false"
-			required="true"
-			readonly="true"
-			button="false"
-		/>
-		<!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_conditions" label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_conditions" close="true" />
-		<!-- Addconditions Field. Type: Subform. (joomla) -->
-		<field
-			type="subform"
-			name="addconditions"
-			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
-			multiple="true"
-			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS_DESCRIPTION"
-			icon="list"
-			maximum="500">
-			<form hidden="true" name="list_addconditions_modal" repeat="true">
-				<!-- Target_field Field. Type: Targetfields. (custom) -->
-				<field
-					type="targetfields"
-					name="target_field"
-					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_FIELD_LABEL"
-					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_FIELD_DESCRIPTION"
-					class="fieldMedium"
-					multiple="true"
-					required="false"
-					button="false"
-				/>
-				<!-- Target_behavior Field. Type: List. (joomla) -->
-				<field
-					type="list"
-					name="target_behavior"
-					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_BEHAVIOR_LABEL"
-					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_BEHAVIOR_DESCRIPTION"
-					class="list_class"
-					multiple="false"
-					filter="INT"
-					required="false"
-					default="1">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_SHOW</option>
-					<option value="2">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_HIDE</option>
-				</field>
-				<!-- Target_relation Field. Type: List. (joomla) -->
-				<field
-					type="list"
-					name="target_relation"
-					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_RELATION_LABEL"
-					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_RELATION_DESCRIPTION"
-					class="list_class"
-					multiple="false"
-					filter="INT"
-					required="false"
-					default="0">
-					<!-- Option Set. -->
-					<option value="0">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ISOLATE</option>
-					<option value="1">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CHAIN</option>
-				</field>
-				<!-- Match_field Field. Type: Matchfield. (custom) -->
-				<field
-					type="matchfield"
-					name="match_field"
-					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_LABEL"
-					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_DESCRIPTION"
-					multiple="false"
-					required="false"
-					button="false"
-				/>
-				<!-- Match_behavior Field. Type: List. (joomla) -->
-				<field
-					type="list"
-					name="match_behavior"
-					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_BEHAVIOR_LABEL"
-					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_BEHAVIOR_DESCRIPTION"
-					class="list_class"
-					multiple="false"
-					filter="INT"
-					required="false"
-					default="1">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_IS_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
-					<option value="2">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_IS_NOT_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
-					<option value="3">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ANY_SELECTION_ONLY_FOUR_LISTRADIOCHECKBOXESDYNAMIC_LIST</option>
-					<option value="4">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ACTIVE_ONLY_FOUR_TEXT_FIELD</option>
-					<option value="5">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_UNACTIVE_ONLY_FOUR_TEXT_FIELD</option>
-					<option value="6">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_KEY_WORD_ALL_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-					<option value="7">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_KEY_WORD_ANY_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-					<option value="8">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_KEY_WORD_ALL_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-					<option value="9">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_KEY_WORD_ANY_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
-					<option value="10">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MIN_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-					<option value="11">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MAX_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-					<option value="12">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_EXACT_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
-				</field>
-				<!-- Match_options Field. Type: Textarea. (joomla) -->
-				<field
-					type="textarea"
-					name="match_options"
-					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_OPTIONS_LABEL"
-					rows="10"
-					cols="5"
-					class="text_area"
-					filter="STRING"
-					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_OPTIONS_HINT"
-					required="false"
-				/>
-			</form>
-		</field>
-	</fieldset>
+                <!-- Default Fields.-->
+                <!-- Id Field. Type: Text (joomla)-->
+                <field name="id"
+                       type="text"
+                       class="readonly"
+                       label="JGLOBAL_FIELD_ID_LABEL"
+                       description="JGLOBAL_FIELD_ID_DESC"
+                       size="10"
+                       default="0" />
+                <!-- Date Created Field. Type: Calendar (joomla)-->
+                <field name="created"
+                       type="calendar"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CREATED_DATE_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CREATED_DATE_DESC"
+                       size="22"
+                       format="%Y-%m-%d %H:%M:%S"
+                       filter="user_utc" />
+                <!-- User Created Field. Type: User (joomla)-->
+                <field name="created_by"
+                       type="user"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CREATED_BY_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CREATED_BY_DESC" />
+                <!-- Published Field. Type: List (joomla)-->
+                <field name="published"
+                       type="list"
+                       label="JSTATUS">
+                        <option value="1">JPUBLISHED</option>
+                        <option value="0">JUNPUBLISHED</option>
+                        <option value="2">JARCHIVED</option>
+                        <option value="-2">JTRASHED</option>
+                </field>
+                <!-- Date Modified Field. Type: Calendar (joomla)-->
+                <field name="modified"
+                       type="calendar"
+                       class="readonly"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MODIFIED_DATE_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MODIFIED_DATE_DESC"
+                       size="22"
+                       readonly="true"
+                       format="%Y-%m-%d %H:%M:%S"
+                       filter="user_utc" />
+                <!-- User Modified Field. Type: User (joomla)-->
+                <field name="modified_by"
+                       type="user"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MODIFIED_BY_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MODIFIED_BY_DESC"
+                       class="readonly"
+                       readonly="true"
+                       filter="unset" />
+                <!-- Access Field. Type: Accesslevel (joomla)-->
+                <field name="access"
+                       type="accesslevel"
+                       label="JFIELD_ACCESS_LABEL"
+                       description="JFIELD_ACCESS_DESC"
+                       default="1"
+                       required="false" />
+                <!-- Ordering Field. Type: Numbers (joomla)-->
+                <field name="ordering"
+                       type="number"
+                       class="inputbox validate-ordering"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ORDERING_LABEL"
+                       description=""
+                       default="0"
+                       size="6"
+                       required="false" />
+                <!-- Version Field. Type: Text (joomla)-->
+                <field name="version"
+                       type="text"
+                       class="readonly"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_VERSION_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_VERSION_DESC"
+                       size="6"
+                       readonly="true"
+                       filter="unset" />
+                <!-- Dynamic Fields.-->
+                <!-- Admin_view Field. Type: Adminviewsreadonly. (custom)-->
+                <field type="adminviewsreadonly"
+                       name="admin_view"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADMIN_VIEW_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADMIN_VIEW_DESCRIPTION"
+                       class="list_class"
+                       multiple="false"
+                       required="true"
+                       readonly="true"
+                       button="false" />
+                <!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_on_conditions"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_on_conditions"
+                       close="true" />
+                <!-- Addconditions Field. Type: Subform. (joomla)-->
+                <field type="subform"
+                       name="addconditions"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS_LABEL"
+                       layout="joomla.form.field.subform.repeatable-table"
+                       multiple="true"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS_DESCRIPTION"
+                       icon="list"
+                       maximum="500">
+                        <form hidden="true"
+                              name="list_addconditions_modal"
+                              repeat="true">
+                                <!-- Target_field Field. Type: Targetfields. (custom)-->
+                                <field type="targetfields"
+                                       name="target_field"
+                                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_FIELD_LABEL"
+                                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_FIELD_DESCRIPTION"
+                                       class="fieldMedium"
+                                       multiple="true"
+                                       required="false"
+                                       button="false" />
+                                <!-- Target_behavior Field. Type: List. (joomla)-->
+                                <field type="list"
+                                       name="target_behavior"
+                                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_BEHAVIOR_LABEL"
+                                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_BEHAVIOR_DESCRIPTION"
+                                       class="list_class"
+                                       multiple="false"
+                                       filter="INT"
+                                       required="false"
+                                       default="1">
+                                        <!-- Option Set.-->
+                                        <option value="1">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_SHOW</option>
+                                        <option value="2">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_HIDE</option>
+                                </field>
+                                <!-- Target_relation Field. Type: List. (joomla)-->
+                                <field type="list"
+                                       name="target_relation"
+                                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_RELATION_LABEL"
+                                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_RELATION_DESCRIPTION"
+                                       class="list_class"
+                                       multiple="false"
+                                       filter="INT"
+                                       required="false"
+                                       default="0">
+                                        <!-- Option Set.-->
+                                        <option value="0">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ISOLATE</option>
+                                        <option value="1">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_CHAIN</option>
+                                </field>
+                                <!-- Match_field Field. Type: Matchfield. (custom)-->
+                                <field type="matchfield"
+                                       name="match_field"
+                                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_LABEL"
+                                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_DESCRIPTION"
+                                       multiple="false"
+                                       required="false"
+                                       button="false" />
+                                <!-- Match_behavior Field. Type: List. (joomla)-->
+                                <field type="list"
+                                       name="match_behavior"
+                                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_BEHAVIOR_LABEL"
+                                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_BEHAVIOR_DESCRIPTION"
+                                       class="list_class"
+                                       multiple="false"
+                                       filter="INT"
+                                       required="false"
+                                       default="1">
+                                        <!-- Option Set.-->
+                                        <option value="1">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_IS_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
+                                        <option value="2">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_IS_NOT_ONLY_FOUR_LISTRADIOCHECKBOXES</option>
+                                        <option value="3">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ANY_SELECTION_ONLY_FOUR_LISTRADIOCHECKBOXESDYNAMIC_LIST</option>
+                                        <option value="4">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ACTIVE_ONLY_FOUR_TEXT_FIELD</option>
+                                        <option value="5">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_UNACTIVE_ONLY_FOUR_TEXT_FIELD</option>
+                                        <option value="6">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_KEY_WORD_ALL_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
+                                        <option value="7">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_KEY_WORD_ANY_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
+                                        <option value="8">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_KEY_WORD_ALL_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
+                                        <option value="9">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_KEY_WORD_ANY_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD</option>
+                                        <option value="10">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MIN_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
+                                        <option value="11">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MAX_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
+                                        <option value="12">COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_EXACT_LENGTH_ONLY_FOUR_TEXT_FIELD</option>
+                                </field>
+                                <!-- Match_options Field. Type: Textarea. (joomla)-->
+                                <field type="textarea"
+                                       name="match_options"
+                                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_OPTIONS_LABEL"
+                                       rows="10"
+                                       cols="5"
+                                       class="text_area"
+                                       filter="STRING"
+                                       hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_OPTIONS_HINT"
+                                       required="false" />
+                        </form>
+                </field>
+        </fieldset>
 	
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">

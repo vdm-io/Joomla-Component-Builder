@@ -32,9 +32,9 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'note_no_behaviour_one',
 	'note_yes_behaviour_one',
+	'note_build_in_behaviour_one',
 	'addconditions',
-	'php_setdocument',
-	'php_preparedocument'
+	'php_setdocument'
 );
 
 ?>

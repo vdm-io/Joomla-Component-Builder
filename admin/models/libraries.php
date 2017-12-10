@@ -137,10 +137,12 @@ class ComponentbuilderModelLibraries extends JModelList
 		{
 			foreach ($items as $nr => &$item)
 			{
-				// convert how
-				$item->how = $this->selectionTranslation($item->how, 'how');
 				// convert type
 				$item->type = $this->selectionTranslation($item->type, 'type');
+			
+				// convert how
+				$item->how = $this->selectionTranslation($item->how, 'how');
+			
 			}
 		}
  
@@ -156,21 +158,6 @@ class ComponentbuilderModelLibraries extends JModelList
 	*/
 	public function selectionTranslation($value,$name)
 	{
-		// Array of how language strings
-		if ($name === 'how')
-		{
-			$howArray = array(
-				1 => 'COM_COMPONENTBUILDER_LIBRARY_ALWAYS_ADD',
-				2 => 'COM_COMPONENTBUILDER_LIBRARY_CONDITIONS',
-				3 => 'COM_COMPONENTBUILDER_LIBRARY_CUSTOM_SCRIPT',
-				0 => 'COM_COMPONENTBUILDER_LIBRARY_DO_NOT_ADD'
-			);
-			// Now check if value is found in this array
-			if (isset($howArray[$value]) && ComponentbuilderHelper::checkString($howArray[$value]))
-			{
-				return $howArray[$value];
-			}
-		}
 		// Array of type language strings
 		if ($name === 'type')
 		{
@@ -184,6 +171,24 @@ class ComponentbuilderModelLibraries extends JModelList
 				return $typeArray[$value];
 			}
 		}
+			
+		// Array of how language strings
+		if ($name === 'how')
+		{
+			$howArray = array(
+				1 => 'COM_COMPONENTBUILDER_ALWAYS_ADD',
+				2 => 'COM_COMPONENTBUILDER_CONDITIONS',
+				3 => 'COM_COMPONENTBUILDER_CUSTOM_SCRIPT',
+				4 => 'COM_COMPONENTBUILDER_BUILDIN',
+				0 => 'COM_COMPONENTBUILDER_DO_NOT_ADD'
+			);
+			// Now check if value is found in this array
+			if (isset($howArray[$value]) && ComponentbuilderHelper::checkString($howArray[$value]))
+			{
+				return JText::_($howArray[$value]);
+			}
+		}
+			
 		return $value;
 	}
 	
@@ -246,7 +251,7 @@ class ComponentbuilderModelLibraries extends JModelList
 			}
 		}
 
-		// Filter by How.
+		// Filter by how.
 		if ($how = $this->getState('filter.how'))
 		{
 			$query->where('a.how = ' . $db->quote($db->escape($how)));

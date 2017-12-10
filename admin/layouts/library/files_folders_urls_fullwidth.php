@@ -31,6 +31,7 @@ $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
 	'note_no_behaviour_three',
+	'note_build_in_behaviour_three',
 	'note_display_library_files_folders_urls'
 );
 

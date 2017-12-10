@@ -118,9 +118,12 @@ class ComponentbuilderModelGet_snippets extends JModelList
 		// Get the global params
 		$globalParams = JComponentHelper::getParams('com_componentbuilder', true);
 
-		// Convert the parameter fields into objects.
+		// Insure all item fields are adapted where needed.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Load the JEvent Dispatcher
+			JPluginHelper::importPlugin('content');
+			$this->_dispatcher = JEventDispatcher::getInstance();
 			foreach ($items as $nr => &$item)
 			{
 				// Always create a slug for sef URL's

@@ -184,6 +184,8 @@ class Interpretation extends Fields
 	 * @var    array
 	 */
 	protected $hasIdRequest = array();
+	
+	protected $libwarning = array();
 
 	/**
 	 * Constructor
@@ -1650,10 +1652,11 @@ class Interpretation extends Fields
 		return $fieldDecode;
 	}
 
-	public function setCustomViewFieldUikitChecker(&$get, $checker, $string, $code, $tab = '')
+	public function setCustomViewFieldonContentPrepareChecker(&$get, $checker, $string, $code, $tab = '')
 	{
-		$fieldUikit = '';
+		$fieldPrepare = '';
 		$runplugins = false;
+		$context = 'com_'.$this->fileContentStatic['###component###'].'.'.$code;
 		foreach ($checker as $field => $array)
 		{
 			if (strpos($get['selection']['select'], $field) !== false)
@@ -1664,8 +1667,26 @@ class Interpretation extends Fields
 					$runplugins .= PHP_EOL.$tab."\tJPluginHelper::importPlugin('content');";
 					$runplugins .= PHP_EOL.$tab."\t".'$this->_dispatcher = JEventDispatcher::getInstance();';
 				}
-				$fieldUikit .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field;
-				$fieldUikit .= PHP_EOL."\t".$tab."\t".'$this->_dispatcher->trigger("onContentPrepare",array($this->_context,&'.$string.'->'.$field.',$item->params));';
+				$fieldPrepare .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Make sure the content prepare plugins fire on ".$field;
+				$fieldPrepare .= PHP_EOL."\t".$tab."\t\$_".$field." = new stdClass();";
+				$fieldPrepare .= PHP_EOL."\t".$tab."\t\$_".$field.'->text =& '.$string.'->'.$field.'; //'.$this->setLine(__LINE__).' value must be in text';
+				$fieldPrepare .= PHP_EOL."\t".$tab."\t//".$this->setLine(__LINE__)." Since all values are now in text (Joomla Limitation), we also add the field name (".$field.") to context";
+				$fieldPrepare .= PHP_EOL."\t".$tab."\t".'$this->_dispatcher->trigger("onContentPrepare",array(\''.$context.'.'.$field.'\',&$_'.$field.',&$this->params));'; // we can improve the params later (TODO)
+			}
+		}
+		// load dispatcher
+		$this->JEventDispatcher = array('###DISPATCHER###' => ($runplugins?:''));
+		// return content prepare fix
+		return $fieldPrepare;
+	}
+
+	public function setCustomViewFieldUikitChecker(&$get, $checker, $string, $code, $tab = '')
+	{
+		$fieldUikit = '';
+		foreach ($checker as $field => $array)
+		{
+			if (strpos($get['selection']['select'], $field) !== false)
+			{
 				// only load for uikit version 2 (TODO) we may need to add another check here
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
@@ -1674,8 +1695,6 @@ class Interpretation extends Fields
 				}
 			}
 		}
-		// load dispatcher
-		$this->JEventDispatcher = array('###DISPATCHER###' => ($runplugins?:''));
 		// return UIKIT fix
 		return $fieldUikit;
 	}
@@ -2158,6 +2177,16 @@ class Interpretation extends Fields
 							$getItem .= $this->setCustomViewFieldDecodeFilter($main_get,$decodeFilter,'$data','$data',$code,$tab);
 						}
 					}
+					
+					if (isset($this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']]))
+					{
+						$contentprepareChecker = $this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']];
+						if (ComponentbuilderHelper::checkArray($contentprepareChecker))
+						{
+							// set contentprepare checkers on needed fields
+							$getItem .= $this->setCustomViewFieldonContentPrepareChecker($main_get, $contentprepareChecker, '$data', $code, $tab);
+						}
+					}
 						
 					if (isset($this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']]))
 					{
@@ -2555,12 +2584,18 @@ class Interpretation extends Fields
 					{
 						$uikitChecker = $this->siteFieldData['uikit'][$default['code']][$get['key']][$default['as']];
 					}
+					// set contnetprepare on needed fields
+					if (isset($this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']]))
+					{
+						$contentprepareChecker = $this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']];
+					}
 					// set joined values
 					$placeholders = array('###TAB###' => "\t\t", '###STRING###' => '$item');
 					$joinedChecker = (isset($this->otherJoin[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherJoin[$this->target][$default['code']][$default['as']])) ? $this->otherJoin[$this->target][$default['code']][$default['as']] : '';
 					if (	(isset($decodeChecker) && ComponentbuilderHelper::checkArray($decodeChecker)) || 
 						(isset($uikitChecker) && ComponentbuilderHelper::checkArray($uikitChecker)) || 
 						(isset($decodeFilter) && ComponentbuilderHelper::checkArray($decodeFilter)) || 
+						(isset($contentprepareChecker) && ComponentbuilderHelper::checkArray($contentprepareChecker)) || 
 						ComponentbuilderHelper::checkArray($joinedChecker))
 					{
 						$decoder = '';
@@ -2573,6 +2608,11 @@ class Interpretation extends Fields
 						if (isset($decodeFilter) && ComponentbuilderHelper::checkArray($decodeFilter))
 						{
 							$decoder_filter = $this->setCustomViewFieldDecodeFilter($get,$decodeFilter,'$item','$items[$nr]',$default['code'],"\t\t");
+						}
+						$contnetprepare = '';
+						if (isset($contentprepareChecker) && ComponentbuilderHelper::checkArray($contentprepareChecker))
+						{
+							$contnetprepare = $this->setCustomViewFieldonContentPrepareChecker($get,$contentprepareChecker,'$item',$default['code'],"\t\t");
 						}
 						$uikit = '';
 						if (isset($uikitChecker) && ComponentbuilderHelper::checkArray($uikitChecker))
@@ -2587,7 +2627,7 @@ class Interpretation extends Fields
 								$joine .= $this->setPlaceholders($joinedString, $placeholders);
 							}
 						}
-						if (ComponentbuilderHelper::checkString($decoder) || ComponentbuilderHelper::checkString($uikit) || ComponentbuilderHelper::checkString($decoder_filter) || ComponentbuilderHelper::checkString($joine))
+						if (ComponentbuilderHelper::checkString($decoder) || ComponentbuilderHelper::checkString($contnetprepare) || ComponentbuilderHelper::checkString($uikit) || ComponentbuilderHelper::checkString($decoder_filter) || ComponentbuilderHelper::checkString($joine))
 						{
 							$methods .= PHP_EOL."\t\t\t\$items = \$db->loadObjectList();";
 							$methods .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
@@ -2600,6 +2640,10 @@ class Interpretation extends Fields
 							if (ComponentbuilderHelper::checkString($decoder_filter))
 							{
 								$methods .= $decoder_filter;
+							}
+							if (ComponentbuilderHelper::checkString($contnetprepare))
+							{
+								$methods .= $contnetprepare;
 							}
 							if (ComponentbuilderHelper::checkString($uikit))
 							{
@@ -2738,7 +2782,7 @@ class Interpretation extends Fields
 	 * @param $get
 	 * @param $code
 	 * @return string
-     */
+	*/
 	public function setCustomViewGetItems(&$get, $code)
 	{
 		$getItem = '';
@@ -2747,7 +2791,7 @@ class Interpretation extends Fields
 		$Component = $this->fileContentStatic['###Component###'];
 		if (ComponentbuilderHelper::checkObject($get))
 		{
-			$getItem .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
+			$getItem .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Insure all item fields are adapted where needed.";
 			$getItem .= PHP_EOL."\t\tif (".$Component."Helper::checkArray(\$items))";
 			$getItem .= PHP_EOL."\t\t{";
 			$getItem .= "###DISPATCHER###";
@@ -2776,6 +2820,15 @@ class Interpretation extends Fields
 						if (ComponentbuilderHelper::checkArray($decodeFilter))
 						{
 							$getItem .= $this->setCustomViewFieldDecodeFilter($main_get,$decodeFilter,"\$item",'$items[$nr]',$code,"\t\t");
+						}
+					}
+					if (isset($this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']]))
+					{
+						$contentprepareChecker = $this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']];
+						if (ComponentbuilderHelper::checkArray($contentprepareChecker))
+						{
+							// set contentprepare checkers on needed fields
+							$getItem .= $this->setCustomViewFieldonContentPrepareChecker($main_get,$contentprepareChecker,"\$item",$code,"\t\t");
 						}
 					}
 					if (isset($this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']]))
@@ -2923,6 +2976,10 @@ class Interpretation extends Fields
 	{
 		// ensure correct target is set
 		$TARGET = ComponentbuilderHelper::safeString($this->target,'U');
+		
+		// set libraries ###'.$TARGET.'_LIBRARIES_LOADER###
+		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_LIBRARIES_LOADER###'] = $this->setLibrariesLoader($view);
+		
 		// set uikit ###'.$TARGET.'_UIKIT_LOADER###
 		$this->fileContentDynamic[$view['settings']->code]['###'.$TARGET.'_UIKIT_LOADER###'] = $this->setUikitLoader($view);
 
@@ -3285,7 +3342,7 @@ class Interpretation extends Fields
 	{
 		if (isset($this->footableScripts[$this->target][$view['settings']->code]) && $this->footableScripts[$this->target][$view['settings']->code])
 		{
-			return $this->setFootableScripts(false,'$this->document');
+			return $this->setFootableScripts(false);
 		}
 		return '';
 	}
@@ -3419,13 +3476,11 @@ class Interpretation extends Fields
 		}
 		return '';
 	}
-
-	public function setUikitLoader(&$view)
+	
+	public function setLibrariesLoader($view)
 	{
-		// reset buktes
+		// reset bucket
 		$setter = '';
-		$loader['css'] = array();
-		$loader['js'] = array();
 		// allways load these in
 		$setter .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." always make sure jquery is loaded.";
 		$setter .= PHP_EOL."\t\tJHtml::_('jquery.framework');";
@@ -3440,6 +3495,229 @@ class Interpretation extends Fields
 		}
 		$setter .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Initialize the header checker.";
 		$setter .= PHP_EOL."\t\t\$HeaderCheck = new ".$this->fileContentStatic['###component###']."HeaderCheck;";
+		// check if this view should get libraries
+		if (isset($this->libManager[$this->target][$view['settings']->code]) 
+			&& ComponentbuilderHelper::checkArray($this->libManager[$this->target][$view['settings']->code]))
+		{
+			foreach ($this->libManager[$this->target][$view['settings']->code] as $id => $true)
+			{
+				if (isset($this->libraries[$id]) && ComponentbuilderHelper::checkObject($this->libraries[$id]) 
+					&& isset($this->libraries[$id]->document) && ComponentbuilderHelper::checkString($this->libraries[$id]->document))
+				{
+					$setter .= PHP_EOL.PHP_EOL.$this->setPlaceholders(
+						str_replace('$document->', '$this->document->', $this->libraries[$id]->document), 
+						$this->placeholders);
+				}
+				elseif (isset($this->libraries[$id]) && ComponentbuilderHelper::checkObject($this->libraries[$id]) 
+					&& isset($this->libraries[$id]->how))
+				{
+					$setter .= $this->setLibraryDocument($id);
+				}
+			}
+		}
+		return $setter;
+	}
+
+	protected function setLibraryDocument($id)
+	{
+		if (2 == $this->libraries[$id]->how && isset($this->libraries[$id]->conditions)
+			&& ComponentbuilderHelper::checkArray($this->libraries[$id]->conditions))
+		{
+			// build document with the conditions values
+			$this->setLibraryDocConditions($id, $this->setLibraryScripts($id, false));
+		}
+		elseif (1 == $this->libraries[$id]->how)
+		{
+			// build document to allways add all files and urls
+			$this->setLibraryScripts($id);
+		}
+		// check if the document was build
+		if (isset($this->libraries[$id]->document) && ComponentbuilderHelper::checkString($this->libraries[$id]->document))
+		{
+			return PHP_EOL.PHP_EOL.$this->libraries[$id]->document;
+		}
+		return '';
+	}
+
+	protected function setLibraryDocConditions($id, $scripts)
+	{
+		$document = '';
+		// Start script builder for library files
+		if (!isset($this->libwarning[$id]))
+		{
+			$this->app->enqueueMessage(JText::sprintf('The conditional script builder for <b>%s</b> is not ready, will only be ready in the next update to v2.6.7', $this->libraries[$id]->name), 'warning');
+			// set the warning only once
+			$this->libwarning[$id] = true;
+		}
+		// if there was any code added to document then set globaly
+		if (ComponentbuilderHelper::checkString($document))
+		{
+			$this->libraries[$id]->document = $document;
+		}
+	}
+
+	protected function setLibraryScripts($id, $buildDoc = true)
+	{
+		$scripts = array();
+		// load the urls if found
+		if (isset($this->libraries[$id]->urls) && ComponentbuilderHelper::checkArray($this->libraries[$id]->urls))
+		{
+			// set all the files
+			foreach ($this->libraries[$id]->urls as $url)
+			{
+				// if local path is set, then use it first
+				if (isset($url['path']))
+				{
+					// update the root path
+					$path = $this->getScriptRootPath($url['path']);
+					// load document script
+					$scripts[md5($url['path'])] = $this->setIncludeLibScript($path);
+					// load url also if not building document
+					if (!$buildDoc)
+					{
+						// load document script
+						$scripts[md5($url['url'])] = $this->setIncludeLibScript($url['url'], false);
+					}
+				}
+				else
+				{
+					// load document script
+					$scripts[md5($url['url'])] = $this->setIncludeLibScript($url['url'], false);
+				}
+			}
+		}
+		// load the local files if found
+		if (isset($this->libraries[$id]->files) && ComponentbuilderHelper::checkArray($this->libraries[$id]->files))
+		{
+			// set all the files
+			foreach ($this->libraries[$id]->files as $file)
+			{
+				$path = '/'.trim($file['path'], '/');
+				// check if path has new file name (has extetion)
+				$pathInfo = pathinfo($path);
+				// update the root path
+				$_path = $this->getScriptRootPath($path);
+				if (isset($pathInfo['extension']) && $pathInfo['extension'])
+				{
+					// load document script
+					$scripts[md5($path)] = $this->setIncludeLibScript($_path, false, $pathInfo);
+				}
+				else
+				{
+					// load document script
+					$scripts[md5($path.'/'.trim($file['file'],'/'))] = $this->setIncludeLibScript($_path.'/'.trim($file['file'],'/'));
+				}
+			}
+		}
+		// load the local folders if found
+		if (isset($this->libraries[$id]->folders) && ComponentbuilderHelper::checkArray($this->libraries[$id]->folders))
+		{
+			// get all the file paths
+			foreach ($this->libraries[$id]->folders as $folder)
+			{
+				if (isset($folder['path']) && isset($folder['folder']))
+				{
+					$path = '/'.trim($folder['path'], '/');
+					if (isset($folder['rename']) && 1 == $folder['rename'])
+					{
+						if ($_paths = ComponentbuilderHelper::getAllFilePaths($this->componentPath.$path))
+						{
+							$files[$path] = $_paths;
+						}
+					}
+					else
+					{
+						$path = $path.'/'.trim($folder['folder'], '/');
+						if ($_paths = ComponentbuilderHelper::getAllFilePaths($this->componentPath.$path))
+						{
+							$files[$path] = $_paths;
+						}
+					}
+				}
+			}
+			// now load the script
+			foreach ($files as $root => $paths)
+			{
+				// update the root path
+				$_root = $this->getScriptRootPath($root);
+				// load per path
+				foreach($paths as $path)
+				{
+					$scripts[md5($root.'/'.trim($path, '/'))] = $this->setIncludeLibScript($_root.'/'.trim($path, '/'));
+				}
+			}
+		}
+		// if there was any code added to document then set globaly
+		if ($buildDoc && ComponentbuilderHelper::checkArray($scripts))
+		{
+			$this->libraries[$id]->document = "\t\t//".$this->setLine(__LINE__)." always load these files.".PHP_EOL."\t\t".implode(PHP_EOL."\t\t", $scripts);
+			// success
+			return true;
+		}
+		elseif (ComponentbuilderHelper::checkArray($scripts))
+		{
+			return $scripts;
+		}
+		return false;
+	}
+
+	protected function setIncludeLibScript($path, $local = true, $pathInfo = false)
+	{
+		// insure we have the path info
+		if (!$pathInfo)
+		{
+			$pathInfo = pathinfo($path);
+		}
+		// set the local string
+		$JURI = '';
+		if ($local)
+		{
+			$JURI = 'JURI::root(true) . ';
+		}
+		// use the path info to build the script
+		if (isset($pathInfo['extension']) && $pathInfo['extension'])
+		{
+			switch($pathInfo['extension'])
+			{
+				case 'js':
+					return '$this->document->addScript('.$JURI.'"'.$path.'");';
+				break;
+				case 'css':
+				case 'less':
+					return '$this->document->addStyleSheet('.$JURI.'"'.$path.'");';
+				break;
+				case 'php':
+					if (strpos($path, 'http') === false)
+					{
+						return 'require_once("'.$path.'");';
+					}
+				break;		
+			}
+		}
+		return '';
+	}
+
+	protected function getScriptRootPath($root)
+	{
+		if (strpos($root, '/media/') !== false && strpos($root, '/admin/') === false && strpos($root, '/site/') === false)
+		{
+			return str_replace('/media/', '/media/com_'.$this->fileContentStatic['###component###'] .'/', $root);
+		}
+		elseif (strpos($root, '/media/') === false && strpos($root, '/admin/') !== false && strpos($root, '/site/') === false)
+		{
+			return str_replace('/admin/', '/administrator/components/com_'.$this->fileContentStatic['###component###'] .'/', $root);
+		}
+		elseif (strpos($root, '/media/') === false && strpos($root, '/admin/') === false && strpos($root, '/site/') !== false)
+		{
+			return str_replace('/site/', '/components/com_'.$this->fileContentStatic['###component###'] .'/', $root);
+		}
+		return $root;
+	}
+
+	public function setUikitLoader(&$view)
+	{
+		// reset setter
+		$setter = '';
 		// load the defaults needed
 		if ($this->uikit > 0)
 		{
@@ -3468,12 +3746,12 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL.PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." The uikit css.";
 			$setter .= PHP_EOL.$tabV."\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL.$tabV."\t\t{";
-			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/uikit'.\$style.\$size.'.css');";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/css/uikit'.\$style.\$size.'.css');";
 			$setter .= PHP_EOL.$tabV."\t\t}";
 			$setter .= PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." The uikit js.";
 			$setter .= PHP_EOL.$tabV."\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL.$tabV."\t\t{";
-			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/uikit'.\$size.'.js');";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/js/uikit'.\$size.'.js');";
 			$setter .= PHP_EOL.$tabV."\t\t}";
 		}
 		// load the components need
@@ -3518,16 +3796,16 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL.$tabV."\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t{";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
-			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t{";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
-			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/css/components/'.\$name.\$style.\$size.'.css');";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t}";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
-			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t{";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
-			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t}";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t}";
 			$setter .= PHP_EOL.$tabV."\t\t\t}";
@@ -3547,16 +3825,16 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL.$tabV."\t\t\t\tforeach (".$this->fileContentStatic['###Component###']."Helper::\$uk_components[\$class] as \$name)";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t{";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the CSS file exists.";
-			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css'))";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t{";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the css.";
-			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/css/components/'.\$name.\$style.\$size.'.css');";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/css/components/'.\$name.\$style.\$size.'.css');";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t}";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t//".$this->setLine(__LINE__)." check if the JavaScript file exists.";
-			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js'))";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t{";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t//".$this->setLine(__LINE__)." load the js.";
-			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
+			$setter .= PHP_EOL.$tabV."\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-v2/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t\t}";
 			$setter .= PHP_EOL.$tabV."\t\t\t\t}";
 			$setter .= PHP_EOL.$tabV."\t\t\t}";
@@ -3576,12 +3854,12 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." The uikit css.";
 			$setter .= PHP_EOL.$tabV."\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL.$tabV."\t\t{";
-			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-3/css/uikit'.\$size.'.css');";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-v3/css/uikit'.\$size.'.css');";
 			$setter .= PHP_EOL.$tabV."\t\t}";
 			$setter .= PHP_EOL.$tabV."\t\t//".$this->setLine(__LINE__)." The uikit js.";
 			$setter .= PHP_EOL.$tabV."\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL.$tabV."\t\t{";
-			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-3/js/uikit'.\$size.'.js');";
+			$setter .= PHP_EOL.$tabV."\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_".$this->fileContentStatic['###component###']."/uikit-v3/js/uikit'.\$size.'.js');";
 			$setter .= PHP_EOL.$tabV."\t\t}";
 			if (2 == $this->uikit)
 			{
@@ -3806,11 +4084,6 @@ class Interpretation extends Fields
 		{
 			echo $echo.'<br />';
 		}
-	}
-
-	public function writeFile($path, $data)
-	{
-		return ComponentbuilderHelper::writeFile($path, $data);
 	}
 
 	public function setMethodGetItem(&$view)
@@ -5683,11 +5956,11 @@ class Interpretation extends Fields
 		{
 			foreach ($this->componentData->custom_admin_views as $custom_admin_view)
 			{
-				if (ComponentbuilderHelper::checkArray($custom_admin_view['adminviews']))
+				if (isset($custom_admin_view['adminviews']) && ComponentbuilderHelper::checkArray($custom_admin_view['adminviews']))
 				{
 					foreach ($custom_admin_view['adminviews'] as $adminview)
 					{
-						if ($view['adminview'] == $adminview)
+						if (isset($view['adminview']) && $view['adminview'] == $adminview)
 						{
 							// set the needed keys
 							$setId = false;
@@ -6884,48 +7157,47 @@ class Interpretation extends Fields
 
 	/**
 	 * @param bool $init
-	 * @param string $document
 	 * @return string
-     */
-	public function setFootableScripts($init = true, $document = '$document')
+	 */
+	public function setFootableScripts($init = true)
 	{
 		if (!isset($this->footableVersion) || 2 == $this->footableVersion) // loading version 2
 		{
 			$foo = PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable.";
-			$foo .= PHP_EOL."\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.core.min.css');";
+			$foo .= PHP_EOL."\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v2/css/footable.core.min.css');";
 			$foo .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Use the Metro Style";
 			$foo .= PHP_EOL."\t\tif (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL."\t\t{";
-			$foo .= PHP_EOL."\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.metro.min.css');";
+			$foo .= PHP_EOL."\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v2/css/footable.metro.min.css');";
 			$foo .= PHP_EOL."\t\t}";
 			$foo .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Use the Legacy Style.";
 			$foo .= PHP_EOL."\t\telseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL."\t\t{";
-			$foo .= PHP_EOL."\t\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
+			$foo .= PHP_EOL."\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v2/css/footable.standalone.min.css');";
 			$foo .= PHP_EOL."\t\t}";
 			$foo .= PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable";
-			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.js');";
-			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.sort.js');";
-			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.filter.js');";
-			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.paginate.js');";
+			$foo .= PHP_EOL."\t\t\$this->document->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v2/js/footable.js');";
+			$foo .= PHP_EOL."\t\t\$this->document->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v2/js/footable.sort.js');";
+			$foo .= PHP_EOL."\t\t\$this->document->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v2/js/footable.filter.js');";
+			$foo .= PHP_EOL."\t\t\$this->document->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v2/js/footable.paginate.js');";
 			if ($init)
 			{
 				$foo .= PHP_EOL.PHP_EOL."\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable(); }); jQuery('."'.nav-tabs'".').on('."'click'".', '."'li'".', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('."'.footable'".').trigger('."'footable_resize'".'); }";';
-				$foo .= PHP_EOL."\t\t\$document->addScriptDeclaration(\$footable);".PHP_EOL;
+				$foo .= PHP_EOL."\t\t\$this->document->addScriptDeclaration(\$footable);".PHP_EOL;
 			}
 		}
 		elseif (3 == $this->footableVersion) // loading version 3
 		{
 			
 			$foo = PHP_EOL.PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the CSS for Footable";
-			$foo .= PHP_EOL."\t\t".$document."->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
-			$foo .= PHP_EOL."\t\t".$document."->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/css/footable.standalone.min.css');";
+			$foo .= PHP_EOL."\t\t\$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
+			$foo .= PHP_EOL."\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v3/css/footable.standalone.min.css');";
 			$foo .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add the JavaScript for Footable (adding all funtions)";
-			$foo .= PHP_EOL."\t\t".$document."->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable/js/footable.min.js');";
+			$foo .= PHP_EOL."\t\t\$this->document->addScript(JURI::root() .'media/com_".$this->fileContentStatic['###component###']."/footable-v3/js/footable.min.js');";
 			if ($init)
 			{
 				$foo .= PHP_EOL.PHP_EOL."\t\t".'$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('."'.footable'".').footable();});});";';
-				$foo .= PHP_EOL."\t\t\$document->addScriptDeclaration(\$footable);".PHP_EOL;
+				$foo .= PHP_EOL."\t\t\$this->document->addScriptDeclaration(\$footable);".PHP_EOL;
 			}
 		}
 		return $foo;
@@ -9356,7 +9628,7 @@ class Interpretation extends Fields
 		if (isset($this->customScriptBuilder['token'][$view]) && $this->customScriptBuilder['token'][$view])
 		{
 			$fix .= PHP_EOL."\t\t//".$this->setLine(__LINE__)." Add Ajax Token";
-			$fix .= PHP_EOL."\t\t\$document->addScriptDeclaration(\"var token = '\".JSession::getFormToken().\"';\");";
+			$fix .= PHP_EOL."\t\t\$this->document->addScriptDeclaration(\"var token = '\".JSession::getFormToken().\"';\");";
 		}
 		return $fix;
 	}
@@ -12421,9 +12693,14 @@ class Interpretation extends Fields
 				$dbkey = 'g';
 				foreach ($this->componentData->config as $field)
 				{
-					$xmlField = $this->setDynamicField($field, $view, $viewType, $lang, $viewName, $listViewName, $spacerCounter, $placeholders, $dbkey, false);
-
-					if (ComponentbuilderHelper::checkString($xmlField))
+					$newxmlField = $this->setDynamicField($field, $view, $viewType, $lang, $viewName, $listViewName, $spacerCounter, $placeholders, $dbkey, false);
+					// tmp hack untill this whole area is also done in xml (TODO)
+					if (isset($newxmlField->fieldXML))
+					{
+						$xmlField = dom_import_simplexml($newxmlField->fieldXML);
+						$xmlField = PHP_EOL."\t<!-- ".$newxmlField->comment.' -->'.PHP_EOL."\t".$this->xmlPrettyPrint($xmlField, 'field');
+					}
+					if (isset($xmlField) && ComponentbuilderHelper::checkString($xmlField))
 					{
 						$this->configFieldSetsCustomField[$field['tabname']][] = $xmlField;
 						// set global params to db on install

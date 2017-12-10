@@ -336,6 +336,8 @@ class Structure extends Get
 			{
 				return false;
 			}
+			// load the libraries files/folders and url's
+			$this->setLibaries();
 			// set all static folders and files
 			if (!$this->setStatic())
 			{
@@ -367,6 +369,122 @@ class Structure extends Get
 			return ' [Structure '.$nr.']';	
 		}
 		return '';
+	}
+	
+	/**
+	 * Build the Libraries files, folders, url's and config
+	 * 
+	 * @return  void
+	 * 
+	 */
+	private function setLibaries()
+	{
+		if (ComponentbuilderHelper::checkArray($this->libraries))
+		{
+			foreach($this->libraries as $id => &$library)
+			{
+				if (ComponentbuilderHelper::checkObject($library))
+				{
+					// check if this lib has files
+					if (isset($library->files) && ComponentbuilderHelper::checkArray($library->files))
+					{
+						// add to component files
+						foreach ($library->files as $file)
+						{
+							$this->componentData->files[] = $file;
+						}
+					}
+					// check if this lib has folders
+					if (isset($library->folders) && ComponentbuilderHelper::checkArray($library->folders))
+					{
+						// add to component folders
+						foreach ($library->folders as $folder)
+						{
+							$this->componentData->folders[] = $folder;
+						}
+					}
+					// check if this lib has urls
+					if (isset($library->urls) && ComponentbuilderHelper::checkArray($library->urls))
+					{
+						// build media folder path
+						$mediaPath = '/media/' . strtolower( preg_replace('/\s+/', '-', ComponentbuilderHelper::safeString($library->name, 'filename', ' ', false)));
+						// create media path if not set
+						if (!JFolder::exists( $this->componentPath . $mediaPath))
+						{
+							JFolder::create($this->componentPath . $mediaPath);
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($mediaPath);
+						}
+						// add to component urls
+						foreach ($library->urls as $n => &$url)
+						{
+							if (isset($url['type']) && $url['type'] > 1 && isset($url['url']) && ComponentbuilderHelper::checkString($url['url']))
+							{
+								$fileName = basename($url['url']);
+								// get the file contents
+								$data = ComponentbuilderHelper::getFileContents($url['url']);
+								// build sub path
+								if (strpos($fileName, '.js') !== false)
+								{
+									$path = '/js';
+								}
+								elseif (strpos($fileName, '.css') !== false)
+								{
+									$path = '/css';
+								}
+								else
+								{
+									$path = '';
+								}
+								// create sub media path if not set
+								if (!JFolder::exists($this->componentPath . $mediaPath . $path))
+								{
+									JFolder::create($this->componentPath . $mediaPath . $path);
+									// count the folder created
+									$this->folderCount++;
+									$this->indexHTML($mediaPath . $path);
+								}
+								// set the path to library file
+								$url['path'] = $mediaPath . $path . '/' . $fileName; // we need this for later
+								// set full path
+								$path = $this->componentPath . $url['path'];
+								// write data to path
+								$this->writeFile($path, $data);
+								// count the file created
+								$this->fileCount++;
+							}
+						}
+					}
+					// if config fields are found load into component config (avoiding dublicates)
+					if (isset($library->how) && $library->how > 1 && isset($library->config) && ComponentbuilderHelper::checkArray($library->config))
+					{
+						foreach ($library->config as $cofig)
+						{
+							$found = array_filter($this->componentData->config, function($item) use($cofig) {
+								return $item['field'] == $cofig['field'];
+							});
+							// set the config data if not found
+							if (!ComponentbuilderHelper::checkArray($found))
+							{
+								$this->componentData->config[] = $cofig;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Write data to file
+	 * 
+	 * @return  bool true on success
+	 * 
+	 */
+	public function writeFile($path, $data)
+	{
+		return ComponentbuilderHelper::writeFile($path, $data);
 	}
 	
 	/**
@@ -926,25 +1044,25 @@ class Structure extends Get
 			if (2 == $this->uikit || 1 == $this->uikit)
 			{
 				// move the UIKIT Folder into place
-				$uikit = array( 'folder' => 'uikit', 'path' => 'media', 'rename' => 0);
+				$uikit = array( 'folder' => 'uikit-v2', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $uikit;
 			}			
 			if (2 == $this->uikit || 3 == $this->uikit)
 			{
 				// move the UIKIT-3 Folder into place
-				$uikit = array( 'folder' => 'uikit-3', 'path' => 'media', 'rename' => 0);
+				$uikit = array( 'folder' => 'uikit-v3', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $uikit;
 			}
 			if ($this->footable && (!isset($this->footableVersion) || 2 == $this->footableVersion))
 			{
 				// move the footable folder into place
-				$footable = array( 'folder' => 'footable2', 'path' => 'media/footable', 'rename' => 1);
+				$footable = array( 'folder' => 'footable-v2', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $footable;
 			}
 			elseif ($this->footable && 3 == $this->footableVersion)
 			{
 				// move the footable folder into place
-				$footable = array( 'folder' => 'footable3', 'path' => 'media/footable', 'rename' => 1);
+				$footable = array( 'folder' => 'footable-v3', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $footable;
 			}
 			

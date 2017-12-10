@@ -192,32 +192,35 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/joomla_component.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EDIT'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/joomla_component.css");
 		// Add Ajax Token
-		$document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
 
 		// Add the CSS for Footable
-		$document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		$document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable/css/footable.standalone.min.css');
+		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
+		$this->document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css');
 		// Add the JavaScript for Footable (adding all funtions)
-		$document->addScript(JURI::root() .'media/com_componentbuilder/footable/js/footable.min.js');
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/footable-v3/js/footable.min.js');
 
 		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
-		$document->addScriptDeclaration($footable);
+		$this->document->addScriptDeclaration($footable);
 
-		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/joomla_component/submitbutton.js"); 
+		$this->document->addScript(JURI::root() . $this->script);
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/joomla_component/submitbutton.js"); 
 		// add JavaScripts
-		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/uikit.min.js' );
-		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/lightbox.min.js', 'text/javascript', true);
-		$document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit/js/components/notify.min.js', 'text/javascript', true);
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' );
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', 'text/javascript', true);
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', 'text/javascript', true);
 		// add the style sheets
-		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/uikit.gradient.min.css' );
-		$document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit/css/components/notify.gradient.min.css' );
+		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css' );
+		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css' );
 		// add var key
-		$document->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';"); 
+		$this->document->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';"); 
 		JText::script('view not acceptable. Error');
 	}
 }

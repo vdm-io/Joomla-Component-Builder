@@ -329,7 +329,7 @@ abstract class ComponentbuilderHelper
 	* 
 	*	@param  int   $id   The library id to target
 	*
-	*	@return  array    On success the contributor details
+	*	@return  array    On success the array of files that belong to this library
 	* 
 	*/
 	public static function getLibraryFiles($id)
@@ -340,9 +340,10 @@ abstract class ComponentbuilderHelper
 		$db = JFactory::getDbo();
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('addurls','addfolders','addfiles')));
-		$query->from($db->quoteName('#__componentbuilder_library_files_folders_urls'));
-		$query->where($db->quoteName('library') . ' = ' . (int) $id);
+		$query->select($db->quoteName(array('b.name','a.addurls','a.addfolders','a.addfiles')));
+		$query->from($db->quoteName('#__componentbuilder_library_files_folders_urls','a'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'b') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('b.id') . ')');
+		$query->where($db->quoteName('a.library') . ' = ' . (int) $id);
 		$db->setQuery($query);
 		$db->execute();
 		if ($db->getNumRows())
@@ -357,31 +358,46 @@ abstract class ComponentbuilderHelper
 				// set urls
 				if (self::checkArray($result->addurls))
 				{
+					// build media folder path
+					$mediaPath = '/media/' . strtolower( preg_replace('/\s+/', '-', self::safeString($result->name, 'filename', ' ', false)));
+					// load the urls
 					foreach($result->addurls as $url)
 					{
-						if (isset($url['url']) && isset($url['type']))
+						if (isset($url['url']) && self::checkString($url['url']))
 						{
-							switch ($url['type'])
+							// set the path if needed
+							if (isset($url['type']) && $url['type'] > 1)
 							{
-								case 1:
-									// link only
-									$files['1'.$url['url']] = '(' . JText::_('COM_COMPONENTBUILDER_URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LINK');
-								break;
-								case 2:
-									// local
-									$files['2'.$url['url']] = '(' . JText::_('COM_COMPONENTBUILDER_URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LOCAL');
-								break;
-								case 3:
-									// link and local
-									$files['1'.$url['url']] = '(' . JText::_('COM_COMPONENTBUILDER_URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LINK');
-									$files['2'.$url['url']] = '(' . JText::_('COM_COMPONENTBUILDER_URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LOCAL');
-								break;
+								$fileName = basename($url['url']);
+								// build sub path
+								if (strpos($fileName, '.js') !== false)
+								{
+									$path = '/js';
+								}
+								elseif (strpos($fileName, '.css') !== false)
+								{
+									$path = '/css';
+								}
+								else
+								{
+									$path = '';
+								}
+								// set the path to library file
+								$url['path'] = $mediaPath . $path . '/' . $fileName; // we need this for later
 							}
+							// if local path is set, then use it first
+							if (isset($url['path']))
+							{
+								// load document script
+								$files[md5($url['path'])] =  '(' . JText::_('URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LOCAL');
+							}
+							// load url also if not building document
+							$files[md5($url['url'])] = '(' . JText::_('URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LINK');
 						}
 					}
 				}
 			}
- 			// load the local files
+			// load the local files
 			if (self::checkJson($result->addfiles))
 			{
 				// convert to array
@@ -393,7 +409,19 @@ abstract class ComponentbuilderHelper
 					{
 						if (isset($file['file']) && isset($file['path']))
 						{
-							$files['3'.$file['path'].$file['file']] = '(' . JText::_('COM_COMPONENTBUILDER_FILE') . ') ' . $file['file'];
+							$path = '/'.trim($file['path'], '/');
+							// check if path has new file name (has extetion)
+							$pathInfo = pathinfo($path);
+							if (isset($pathInfo['extension']) && $pathInfo['extension'])
+							{
+								// load document script
+								$files[md5($path)] = '(' . JText::_('COM_COMPONENTBUILDER_FILE') . ') ' . $file['file'];
+							}
+							else
+							{
+								// load document script
+								$files[md5($path.'/'.trim($file['file'],'/'))] = '(' . JText::_('COM_COMPONENTBUILDER_FILE') . ') ' . $file['file'];
+							}
 						}
 					}
 				}
@@ -406,11 +434,51 @@ abstract class ComponentbuilderHelper
 				// set folder
 				if (self::checkArray($result->addfolders))
 				{
-					foreach($result->addfolders as $folder)
+					// get the global settings
+					if (!self::checkObject(self::$params))
 					{
-						// not yet set
+						self::$params = JComponentHelper::getParams('com_componentbuilder');
 					}
-					$files['4folders'] = '(' . JText::_('COM_COMPONENTBUILDER_FOLDERS') . ') not yet able to deal with folders';
+					// reset bucket
+					$bucket = array();
+					// get custom folder path
+					$customPath = '/'.trim(self::$params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom'), '/');
+					// get all the file paths
+					foreach ($result->addfolders as $folder)
+					{
+						if (isset($folder['path']) && isset($folder['folder']))
+						{
+							$_path = '/'.trim($folder['path'], '/');
+							$customFolder = '/'.trim($folder['folder'], '/');
+							if (isset($folder['rename']) && 1 == $folder['rename'])
+							{
+								if ($_paths = self::getAllFilePaths($customPath.$customFolder))
+								{
+									$bucket[$_path] = $_paths;
+								}
+							}
+							else
+							{
+								$path = $_path.$customFolder;
+								if ($_paths = self::getAllFilePaths($customPath.$customFolder))
+								{
+									$bucket[$path] = $_paths;
+								}
+							}
+						}
+					}
+					// now load the script
+					if (self::checkArray($bucket))
+					{
+						foreach ($bucket as $root => $paths)
+						{
+							// load per path
+							foreach($paths as $path)
+							{
+								$files[md5($root.'/'.trim($path, '/'))] = '(' . JText::_('COM_COMPONENTBUILDER_FOLDER') . ') ' . basename($path);
+							}
+						}
+					}
 				}
 			}
 			// return files if found
@@ -418,6 +486,37 @@ abstract class ComponentbuilderHelper
 			{
 				return $files;
 			}
+		}
+		return false;
+	}
+	
+	/**
+	 * get all the file paths in folder and sub folders
+	 * 
+	 * @param   string  $folder     The local path to parse
+	 * @param   array   $fileTypes  The type of files to get
+	 *
+	 * @return  void
+	 * 
+	 */
+	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'))
+	{
+		if (JFolder::exists($folder))
+		{
+			// we must first store the current woking directory
+			$joomla = getcwd();
+			// we are changing the working directory to the componet path
+			chdir($folder);
+			// get the files
+			foreach ($fileTypes as $type)
+			{
+				// get a list of files in the current directory tree
+				$files[] = JFolder::files('.', $type, true, true);
+			}
+			// change back to Joomla working directory
+			chdir($joomla);
+			// return array of files
+			return array_map( function($file) { return str_replace('./', '/', $file); }, (array) self::mergeArrays($files));
 		}
 		return false;
 	}
@@ -2777,6 +2876,31 @@ abstract class ComponentbuilderHelper
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	*	Check if we are connected
+	*	Thanks https://stackoverflow.com/a/4860432/1429677
+	*
+	*	@returns bool true on success
+	**/
+	public static function isConnected()
+	{
+		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
+		$connected = @fsockopen("www.example.com", 80); 
+                // website, port  (try 80 or 443)
+		if ($connected)
+		{
+			//action when connected
+			$is_conn = true;
+			fclose($connected);
+		}
+		else
+		{
+			//action in connection failure
+			$is_conn = false;
+		}
+		return $is_conn;
 	}
 
 	public static function mergeArrays($arrays)

@@ -122,7 +122,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVzylinked_components()
+	public function getVzxlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();

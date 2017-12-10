@@ -4,156 +4,138 @@
 	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
 >
 	<fieldset name="details">
-		<!-- Default Fields. -->
-		<!-- Id Field. Type: Text (joomla) -->
-		<field
-			name="id"
-			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
-			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
-			readonly="true"
-		/>
-		<!-- Date Created Field. Type: Calendar (joomla) -->
-		<field
-			name="created"
-			type="calendar"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_DATE_LABEL"
-			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_DATE_DESC"
-			size="22"
-
-			format="%Y-%m-%d %H:%M:%S"
-			filter="user_utc"
-		/>
-		<!-- User Created Field. Type: User (joomla) -->
-		<field
-			name="created_by"
-			type="user"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_BY_LABEL"
-
-			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_BY_DESC"
-		/>
-		<!-- Published Field. Type: List (joomla) -->
-		<field name="published" type="list" label="JSTATUS"
-			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
-
-			filter="intval" size="1" default="1" >
-			<option value="1">
-				JPUBLISHED</option>
-			<option value="0">
-				JUNPUBLISHED</option>
-			<option value="2">
-				JARCHIVED</option>
-			<option value="-2">
-				JTRASHED</option>
-		</field>
-		<!-- Date Modified Field. Type: Calendar (joomla) -->
-		<field name="modified" type="calendar" class="readonly"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_DATE_DESC"
-			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
-		<!-- User Modified Field. Type: User (joomla) -->
-		<field name="modified_by" type="user"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_BY_LABEL"
-			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_BY_DESC"
-			class="readonly"
-			readonly="true"
-			filter="unset"
-		/>
-		<!-- Access Field. Type: Accesslevel (joomla) -->
-		<field name="access"
-			type="accesslevel"
-			label="JFIELD_ACCESS_LABEL"
-			description="JFIELD_ACCESS_DESC"
-			default="1"
-
-			required="false"
-		/>
-		<!-- Ordering Field. Type: Numbers (joomla) -->
-		<field
-			name="ordering"
-			type="number"
-			class="inputbox validate-ordering"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ORDERING_LABEL"
-			description=""
-			default="0"
-			size="6"
-
-			required="false"
-		/>
-		<!-- Version Field. Type: Text (joomla) -->
-		<field
-			name="version"
-			type="text"
-			class="readonly"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_VERSION_LABEL"
-			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_VERSION_DESC"
-			size="6"
-			readonly="true"
-			filter="unset"
-		/>
-		<!-- Dynamic Fields. -->
-		<!-- Entranslation Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="entranslation"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL"
-			rows="4"
-			cols="5"
-			description="JFIELD_TITLE_DESC"
-			message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_MESSAGE"
-			class="text_area span12"
-			filter="STRING"
-			hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_HINT"
-			readonly="true"
-			disabled="true"
-		/>
-		<!-- Translation Field. Type: Subform. (joomla) -->
-		<field
-			type="subform"
-			name="translation"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
-			multiple="true"
-			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_DESCRIPTION"
-			icon="list"
-			maximum="200">
-			<form hidden="true" name="list_translation_modal" repeat="true">
-				<!-- Translation Field. Type: Textarea. (joomla) -->
-				<field
-					type="textarea"
-					name="translation"
-					label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
-					rows="4"
-					cols="20"
-					message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_MESSAGE"
-					class="text_area translation_text_area"
-					filter="STRING"
-					hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
-					required="false"
-				/>
-				<!-- Language Field. Type: Lang. (custom) -->
-				<field
-					type="lang"
-					name="language"
-					label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGE_LABEL"
-					class="list_class"
-					multiple="false"
-					default="0"
-					required="false"
-					button="false"
-				/>
-			</form>
-		</field>
-		<!-- Components Field. Type: Components. (custom) -->
-		<field
-			type="components"
-			name="components"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
-			class="list_class"
-			multiple="true"
-			default="0"
-			required="true"
-			button="false"
-		/>
-	</fieldset>
+                <!-- Default Fields.-->
+                <!-- Id Field. Type: Text (joomla)-->
+                <field name="id"
+                       type="text"
+                       class="readonly"
+                       label="JGLOBAL_FIELD_ID_LABEL"
+                       description="JGLOBAL_FIELD_ID_DESC"
+                       size="10"
+                       default="0" />
+                <!-- Date Created Field. Type: Calendar (joomla)-->
+                <field name="created"
+                       type="calendar"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_DATE_LABEL"
+                       description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_DATE_DESC"
+                       size="22"
+                       format="%Y-%m-%d %H:%M:%S"
+                       filter="user_utc" />
+                <!-- User Created Field. Type: User (joomla)-->
+                <field name="created_by"
+                       type="user"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_BY_LABEL"
+                       description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_CREATED_BY_DESC" />
+                <!-- Published Field. Type: List (joomla)-->
+                <field name="published"
+                       type="list"
+                       label="JSTATUS">
+                        <option value="1">JPUBLISHED</option>
+                        <option value="0">JUNPUBLISHED</option>
+                        <option value="2">JARCHIVED</option>
+                        <option value="-2">JTRASHED</option>
+                </field>
+                <!-- Date Modified Field. Type: Calendar (joomla)-->
+                <field name="modified"
+                       type="calendar"
+                       class="readonly"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_DATE_LABEL"
+                       description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_DATE_DESC"
+                       size="22"
+                       readonly="true"
+                       format="%Y-%m-%d %H:%M:%S"
+                       filter="user_utc" />
+                <!-- User Modified Field. Type: User (joomla)-->
+                <field name="modified_by"
+                       type="user"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_BY_LABEL"
+                       description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODIFIED_BY_DESC"
+                       class="readonly"
+                       readonly="true"
+                       filter="unset" />
+                <!-- Access Field. Type: Accesslevel (joomla)-->
+                <field name="access"
+                       type="accesslevel"
+                       label="JFIELD_ACCESS_LABEL"
+                       description="JFIELD_ACCESS_DESC"
+                       default="1"
+                       required="false" />
+                <!-- Ordering Field. Type: Numbers (joomla)-->
+                <field name="ordering"
+                       type="number"
+                       class="inputbox validate-ordering"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ORDERING_LABEL"
+                       description=""
+                       default="0"
+                       size="6"
+                       required="false" />
+                <!-- Version Field. Type: Text (joomla)-->
+                <field name="version"
+                       type="text"
+                       class="readonly"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_VERSION_LABEL"
+                       description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_VERSION_DESC"
+                       size="6"
+                       readonly="true"
+                       filter="unset" />
+                <!-- Dynamic Fields.-->
+                <!-- Entranslation Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="entranslation"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL"
+                       rows="4"
+                       cols="5"
+                       description="JFIELD_TITLE_DESC"
+                       message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_MESSAGE"
+                       class="text_area span12"
+                       filter="STRING"
+                       hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_HINT"
+                       readonly="true"
+                       disabled="true" />
+                <!-- Translation Field. Type: Subform. (joomla)-->
+                <field type="subform"
+                       name="translation"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
+                       layout="joomla.form.field.subform.repeatable-table"
+                       multiple="true"
+                       description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_DESCRIPTION"
+                       icon="list"
+                       maximum="200">
+                        <form hidden="true"
+                              name="list_translation_modal"
+                              repeat="true">
+                                <!-- Translation Field. Type: Textarea. (joomla)-->
+                                <field type="textarea"
+                                       name="translation"
+                                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_LABEL"
+                                       rows="4"
+                                       cols="20"
+                                       message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_MESSAGE"
+                                       class="text_area translation_text_area"
+                                       filter="STRING"
+                                       hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
+                                       required="false" />
+                                <!-- Language Field. Type: Lang. (custom)-->
+                                <field type="lang"
+                                       name="language"
+                                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGE_LABEL"
+                                       class="list_class"
+                                       multiple="false"
+                                       default="0"
+                                       required="false"
+                                       button="false" />
+                        </form>
+                </field>
+                <!-- Components Field. Type: Components. (custom)-->
+                <field type="components"
+                       name="components"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
+                       class="list_class"
+                       multiple="true"
+                       default="0"
+                       required="true"
+                       button="false" />
+        </fieldset>
 	
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">

@@ -121,16 +121,19 @@ class ###Component###View###View### extends JViewLegacy
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
 		// we need this to fix the form display
-		$document->addStyleSheet(JURI::root()."administrator/templates/isis/css/template.css");
-		$document->addScript(JURI::root()."administrator/templates/isis/js/template.js");
+		$this->document->addStyleSheet(JURI::root()."administrator/templates/isis/css/template.css");
+		$this->document->addScript(JURI::root()."administrator/templates/isis/js/template.js");
 		// the default style of this view
-		$document->addStyleSheet(JURI::root()."components/com_###component###/assets/css/###view###.css");###AJAXTOKE### ###LINKEDVIEWTABLESCRIPTS###
+		$this->document->addStyleSheet(JURI::root()."components/com_###component###/assets/css/###view###.css");###AJAXTOKE### ###LINKEDVIEWTABLESCRIPTS###
 		// default javascript of this view
-		$document->addScript(JURI::root().$this->script);
-		$document->addScript(JURI::root(). "components/com_###component###/views/###view###/submitbutton.js"); ###DOCUMENT_CUSTOM_PHP###
+		$this->document->addScript(JURI::root().$this->script);
+		$this->document->addScript(JURI::root(). "components/com_###component###/views/###view###/submitbutton.js"); ###DOCUMENT_CUSTOM_PHP###
 		JText::script('view not acceptable. Error');
 	}
 }

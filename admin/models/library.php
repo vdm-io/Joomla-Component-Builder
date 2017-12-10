@@ -122,12 +122,6 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$item->php_setdocument = base64_decode($item->php_setdocument);
 			}
 
-			if (!empty($item->php_preparedocument))
-			{
-				// base64 Decode php_preparedocument.
-				$item->php_preparedocument = base64_decode($item->php_preparedocument);
-			}
-
 			
 			if (empty($item->id))
 			{
@@ -964,12 +958,6 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 		if (isset($data['php_setdocument']))
 		{
 			$data['php_setdocument'] = base64_encode($data['php_setdocument']);
-		}
-
-		// Set the php_preparedocument string to base64 string.
-		if (isset($data['php_preparedocument']))
-		{
-			$data['php_preparedocument'] = base64_encode($data['php_preparedocument']);
 		}
 
 		// insure the locked library names are not changed

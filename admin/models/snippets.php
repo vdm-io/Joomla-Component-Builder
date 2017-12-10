@@ -317,7 +317,7 @@ class ComponentbuilderModelSnippets extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.url LIKE '.$search.' OR a.type LIKE '.$search.' OR a.heading LIKE '.$search.' OR a.library LIKE '.$search.' OR a.description LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.url LIKE '.$search.' OR a.type LIKE '.$search.' OR g.name LIKE '.$search.' OR a.heading LIKE '.$search.' OR a.library LIKE '.$search.' OR h.name LIKE '.$search.' OR a.description LIKE '.$search.')');
 			}
 		}
 
