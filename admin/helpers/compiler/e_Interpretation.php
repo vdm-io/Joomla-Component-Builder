@@ -251,9 +251,9 @@ class Interpretation extends Fields
 			{
 				$_VDM = '_'.ComponentbuilderHelper::safeString($this->uniquekey(10),'U');
 				// add it to the system
-				$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'site');
-				$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = $this->setHelperLincenseLock($_VDM,'admin');
-				$this->fileContentStatic['###LICENSE_LOCKED_INT###'] = $this->setInitLincenseLock($_VDM);
+				$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = $this->setHelperLicenseLock($_VDM,'site');
+				$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = $this->setHelperLicenseLock($_VDM,'admin');
+				$this->fileContentStatic['###LICENSE_LOCKED_INT###'] = $this->setInitLicenseLock($_VDM);
 				$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = PHP_EOL.PHP_EOL.'defined(\''.$_VDM.'\') or die(JText::_(\'NIE_REG_NIE\'));';
 			}
 		}
@@ -279,7 +279,7 @@ class Interpretation extends Fields
 				$boolMethod	= 'get'.ComponentbuilderHelper::safeString($this->uniquekey(3, false, 'ddd'), 'W');
 				$globalbool	= 'set'.ComponentbuilderHelper::safeString($this->uniquekey(3), 'W');
 				// add it to the system
-				$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###']	= $this->setBoolLincenseLock($boolMethod,$globalbool);
+				$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###']	= $this->setBoolLicenseLock($boolMethod,$globalbool);
 				$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###']		= $this->checkStatmentLicenseLocked($boolMethod);
 				$this->fileContentDynamic[$view]['###LICENSE_TABLE_LOCKED_CHECK###']	= $this->checkStatmentLicenseLocked($boolMethod, '$table');
 				$this->fileContentDynamic[$view]['###BOOLMETHOD###']			= $boolMethod;
@@ -307,7 +307,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $statment);
 	}
 	
-	public function setBoolLincenseLock($boolMethod,$globalbool)
+	public function setBoolLicenseLock($boolMethod,$globalbool)
 	{
 		$bool[] = PHP_EOL.PHP_EOL."\t/**";
 		$bool[] = "\t* The private bool.";
@@ -339,7 +339,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $bool);
 	}
 	
-	public function setHelperLincenseLock($_VDM,$target)
+	public function setHelperLicenseLock($_VDM,$target)
 	{
 		$helper[] = PHP_EOL.PHP_EOL."\t/**";
 		$helper[] = "\t* Check if this install has a license.";
@@ -362,7 +362,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $helper);
 	}
 	
-	public function setInitLincenseLock($_VDM)
+	public function setInitLicenseLock($_VDM)
 	{
 		$init[] = PHP_EOL."if (!defined('".$_VDM."'))";
 		$init[] = "{";
@@ -2609,10 +2609,10 @@ class Interpretation extends Fields
 						{
 							$decoder_filter = $this->setCustomViewFieldDecodeFilter($get,$decodeFilter,'$item','$items[$nr]',$default['code'],"\t\t");
 						}
-						$contnetprepare = '';
+						$contentprepare = '';
 						if (isset($contentprepareChecker) && ComponentbuilderHelper::checkArray($contentprepareChecker))
 						{
-							$contnetprepare = $this->setCustomViewFieldonContentPrepareChecker($get,$contentprepareChecker,'$item',$default['code'],"\t\t");
+							$contentprepare = $this->setCustomViewFieldonContentPrepareChecker($get,$contentprepareChecker,'$item',$default['code'],"\t\t");
 						}
 						$uikit = '';
 						if (isset($uikitChecker) && ComponentbuilderHelper::checkArray($uikitChecker))
@@ -2627,7 +2627,7 @@ class Interpretation extends Fields
 								$joine .= $this->setPlaceholders($joinedString, $placeholders);
 							}
 						}
-						if (ComponentbuilderHelper::checkString($decoder) || ComponentbuilderHelper::checkString($contnetprepare) || ComponentbuilderHelper::checkString($uikit) || ComponentbuilderHelper::checkString($decoder_filter) || ComponentbuilderHelper::checkString($joine))
+						if (ComponentbuilderHelper::checkString($decoder) || ComponentbuilderHelper::checkString($contentprepare) || ComponentbuilderHelper::checkString($uikit) || ComponentbuilderHelper::checkString($decoder_filter) || ComponentbuilderHelper::checkString($joine))
 						{
 							$methods .= PHP_EOL."\t\t\t\$items = \$db->loadObjectList();";
 							$methods .= PHP_EOL.PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Convert the parameter fields into objects.";
@@ -2641,9 +2641,9 @@ class Interpretation extends Fields
 							{
 								$methods .= $decoder_filter;
 							}
-							if (ComponentbuilderHelper::checkString($contnetprepare))
+							if (ComponentbuilderHelper::checkString($contentprepare))
 							{
-								$methods .= $contnetprepare;
+								$methods .= $contentprepare;
 							}
 							if (ComponentbuilderHelper::checkString($uikit))
 							{
@@ -5778,7 +5778,7 @@ class Interpretation extends Fields
 		$this->langContent['admin'][$this->langPrefix.'_TRASHED']			= 'Trashed';
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>Lincense not set for ".$componentName.".</h1><p>Notify your administrator!<br />The lincense can be obtained from ".$this->componentData->companyname.".</p></center>";
+			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>License not set for ".$componentName.".</h1><p>Notify your administrator!<br />The license can be obtained from ".$this->componentData->companyname.".</p></center>";
 		}
 		// add the langug files needed to import and export data
 		if ($this->addEximport)
