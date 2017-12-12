@@ -327,17 +327,17 @@ class Structure extends Get
 			$this->componentPath		= $this->compilerPath.'/'.$this->componentFolderName;
 			// set the template path for custom
 			$this->templatePathCustom	= $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
-			// set the Joomla Version Data
-			$this->joomlaVersionData	= $this->setJoomlaVersionData();
 			// make sure there is no old build
 			$this->removeFolder($this->componentPath);
+			// load the libraries files/folders and url's
+			$this->setLibaries();
+			// set the Joomla Version Data
+			$this->joomlaVersionData	= $this->setJoomlaVersionData();
 			// set the new folders
 			if (!$this->setFolders())
 			{
 				return false;
 			}
-			// load the libraries files/folders and url's
-			$this->setLibaries();
 			// set all static folders and files
 			if (!$this->setStatic())
 			{
@@ -348,7 +348,6 @@ class Structure extends Get
 			{
 				return false;
 			}
-			
 			return true;
 		}
 		return false;
@@ -381,6 +380,22 @@ class Structure extends Get
 	{
 		if (ComponentbuilderHelper::checkArray($this->libraries))
 		{
+			// creat the main component folder
+			if (!JFolder::exists($this->componentPath))
+			{
+				JFolder::create($this->componentPath);
+				// count the folder created
+				$this->folderCount++;
+				$this->indexHTML('');
+			}
+			// create media path if not set
+			if (!JFolder::exists( $this->componentPath . '/media'))
+			{
+				JFolder::create($this->componentPath . '/media');
+				// count the folder created
+				$this->folderCount++;
+				$this->indexHTML('/media');
+			}
 			foreach($this->libraries as $id => &$library)
 			{
 				if (ComponentbuilderHelper::checkObject($library))
@@ -407,20 +422,26 @@ class Structure extends Get
 					if (isset($library->urls) && ComponentbuilderHelper::checkArray($library->urls))
 					{
 						// build media folder path
-						$mediaPath = '/media/' . strtolower( preg_replace('/\s+/', '-', ComponentbuilderHelper::safeString($library->name, 'filename', ' ', false)));
-						// create media path if not set
-						if (!JFolder::exists( $this->componentPath . $mediaPath))
-						{
-							JFolder::create($this->componentPath . $mediaPath);
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML($mediaPath);
-						}
+						$libFolder = strtolower( preg_replace('/\s+/', '-', ComponentbuilderHelper::safeString($library->name, 'filename', ' ', false)));
+						$mediaPath = '/media/' . $libFolder;
+						// should we add the local folder
+						$addLocalFolder = false;
 						// add to component urls
 						foreach ($library->urls as $n => &$url)
 						{
 							if (isset($url['type']) && $url['type'] > 1 && isset($url['url']) && ComponentbuilderHelper::checkString($url['url']))
 							{
+								// create media/lib path if not set
+								if (!JFolder::exists( $this->componentPath . $mediaPath))
+								{
+									JFolder::create($this->componentPath . $mediaPath);
+									// count the folder created
+									$this->folderCount++;
+									$this->indexHTML($mediaPath);
+								}
+								// add local folder
+								$addLocalFolder = true;
+								// set file name
 								$fileName = basename($url['url']);
 								// get the file contents
 								$data = ComponentbuilderHelper::getFileContents($url['url']);
@@ -454,6 +475,16 @@ class Structure extends Get
 								// count the file created
 								$this->fileCount++;
 							}
+						}
+						// only add if local
+						if ($addLocalFolder)
+						{
+							// check if we sould add it to the media xml list
+							if (!isset($this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###']))
+							{
+								$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] = '';
+							}
+							$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL."\t\t<folder>".$libFolder."</folder>";
 						}
 					}
 					// if config fields are found load into component config (avoiding dublicates)
@@ -497,7 +528,7 @@ class Structure extends Get
 	{
 		if (ComponentbuilderHelper::checkObject($this->joomlaVersionData->create))
 		{
-			// creat the main componet folder
+			// creat the main component folder
 			if (!JFolder::exists($this->componentPath))
 			{
 				JFolder::create($this->componentPath);
@@ -1099,7 +1130,7 @@ class Structure extends Get
 				{
 					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] = '';
 				}
-				if (count($pathArray) == 1 && $firstFolder === 'media')
+				if (count($pathArray) >= 1 && $firstFolder === 'media')
 				{
 					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL."\t\t<folder>".$lastFolder."</folder>";
 				}
