@@ -511,6 +511,20 @@ class Get
 	 * @var    array
 	 */
 	public $libraries = array();
+	
+	/**
+	 * Is Tidy Enabled
+	 * 
+	 * @var    bool
+	 */
+	public $tidy = false;
+	
+	/**
+	 * Set Tidy warning once switch
+	 * 
+	 * @var    bool
+	 */
+	public $setTidyWarning = false;
 
 	/***
 	 * Constructor
@@ -520,7 +534,9 @@ class Get
 		if (isset($config) && count($config))
 		{
 			// load application
-			$this->app = JFactory::getApplication();
+			$this->app			= JFactory::getApplication();
+			// check if we have Tidy enabled
+			$this->tidy			= extension_loaded('Tidy');
 			// Set the params
 			$this->params			= JComponentHelper::getParams('com_componentbuilder');
 			// load the compiler path
@@ -1712,6 +1728,10 @@ class Get
 				$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
+					if (!isset($this->uikitComp[$view->code]))
+					{
+						$this->uikitComp[$view->code] = array();
+					}
 					// set uikit to views
 					$this->uikitComp[$view->code] = ComponentbuilderHelper::getUikitComp($view->$scripter,$this->uikitComp[$view->code]);
 				}
@@ -2835,6 +2855,10 @@ class Get
 				// load UIKIT if needed
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
+					if (!isset($this->uikitComp[$view]))
+					{
+						$this->uikitComp[$view] = array();
+					}
 					// set uikit to views
 					$this->uikitComp[$view] = ComponentbuilderHelper::getUikitComp($contnent,$this->uikitComp[$view]);
 				}

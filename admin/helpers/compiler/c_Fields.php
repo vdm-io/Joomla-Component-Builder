@@ -2380,10 +2380,23 @@ class Fields extends Structure
 		$dom = dom_import_simplexml($xml)->ownerDocument;
 		$dom->formatOutput = true;
 		$xmlString = $dom->saveXML($dom->getElementsByTagName($nodename)->item(0));
-		$tidy = new Tidy();
-		$tidy->parseString($xmlString,array('indent'=>true,'indent-spaces'=>8,'input-xml'=>true,'output-xml'=>true,'indent-attributes'=>true,'wrap-attributes'=>true,'wrap'=>false));
-		$tidy->cleanRepair();
-		return $this->xmlIndent((string)$tidy,' ',8,true,false);
+		// make sure Tidy is enabled
+		if ($this->tidy)
+		{
+			$tidy = new Tidy();
+			$tidy->parseString($xmlString,array('indent'=>true,'indent-spaces'=>8,'input-xml'=>true,'output-xml'=>true,'indent-attributes'=>true,'wrap-attributes'=>true,'wrap'=>false));
+			$tidy->cleanRepair();
+			return $this->xmlIndent((string)$tidy,' ',8,true,false);
+		}
+		// set tidy waring atleast once
+		elseif (!$this->setTidyWarning)
+		{
+			// set the warning only once
+			$this->setTidyWarning = true;
+			// now set the warning
+			$this->app->enqueueMessage(JText::_('You must enable the <b>Tidy</b> extension in your php.ini file so we can tidy up your xml! If you need help please <a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/197#issuecomment-351181754" target="_blank">start here</a>!'), 'error');
+		}
+		return $xmlString;
 	}
 	
 	/**
