@@ -1130,7 +1130,7 @@ class Structure extends Get
 				{
 					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] = '';
 				}
-				if (count($pathArray) >= 1 && $firstFolder === 'media')
+				if (count($pathArray) == 1 && $firstFolder === 'media')
 				{
 					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL."\t\t<folder>".$lastFolder."</folder>";
 				}
