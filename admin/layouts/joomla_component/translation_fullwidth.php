@@ -31,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 $items	= $displayData->vwmtranslation;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
-$edit	= "index.php?option=com_componentbuilder&view=language_translations&task=language_translation.edit";
+$edit = "index.php?option=com_componentbuilder&view=language_translations&task=language_translation.edit";
 
 ?>
 <div class="form-vertical">

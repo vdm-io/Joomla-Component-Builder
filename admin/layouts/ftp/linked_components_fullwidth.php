@@ -31,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 $items	= $displayData->vzxlinked_components;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
-$edit	= "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";
+$edit = "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";
 
 ?>
 <div class="form-vertical">

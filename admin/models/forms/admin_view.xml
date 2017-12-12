@@ -509,14 +509,22 @@
                                        filter="WORD"
                                        message="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_MESSAGE"
                                        hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PARENTKEY_HINT" />
-                                <!-- Addnew Field. Type: Checkbox. (joomla)-->
-                                <field type="checkbox"
+                                <!-- Addnew Field. Type: List. (joomla)-->
+                                <field type="list"
                                        name="addnew"
                                        label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDNEW_LABEL"
-                                       value="1"
-                                       default="1"
+                                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDNEW_DESCRIPTION"
+                                       class="list_class"
+                                       multiple="false"
+                                       filter="int"
                                        required="false"
-                                       class="inputbox" />
+                                       default="0">
+                                        <!-- Option Set.-->
+                                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NONE</option>
+                                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_NEW_BUTTON</option>
+                                        <option value="2">COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_NEW_NEW_CLOSE_BUTTON</option>
+                                        <option value="3">COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_NEW_CLOSE_BUTTON</option>
+                                </field>
                         </form>
                 </field>
                 <!-- Php_before_delete Field. Type: Textarea. (joomla)-->

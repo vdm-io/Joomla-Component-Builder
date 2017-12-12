@@ -31,10 +31,10 @@ defined('_JEXEC') or die('Restricted access');
 $items	= $displayData->vzwfields;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
-$edit	= "index.php?option=com_componentbuilder&view=fields&task=field.edit";
-$ref	= ($id) ? "&ref=fieldtype&refid=".$id : "";
-$new	= "index.php?option=com_componentbuilder&view=field&layout=edit".$ref;
-$can	= ComponentbuilderHelper::getActions('field');
+$edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
+$ref = ($id) ? "&ref=fieldtype&refid=".$id : "";
+$new = "index.php?option=com_componentbuilder&view=field&layout=edit".$ref;
+$can = ComponentbuilderHelper::getActions('field');
 
 ?>
 <div class="form-vertical">

@@ -5767,6 +5767,7 @@ class Interpretation extends Fields
 		$this->langContent['admin'][$this->langPrefix.'_SAVE_WARNING']			= "The value already existed so please select another.";
 		$this->langContent['admin'][$this->langPrefix.'_HELP_MANAGER']			= "Help";
 		$this->langContent['admin'][$this->langPrefix.'_NEW']				= "New";
+		$this->langContent['admin'][$this->langPrefix.'_CLOSE_NEW']			= "Close & New";
 		$this->langContent['admin'][$this->langPrefix.'_CREATE_NEW_S']			= "Create New %s";
 		$this->langContent['admin'][$this->langPrefix.'_EDIT_S']			= "Edit %s";
 		$this->langContent['admin'][$this->langPrefix.'_KEEP_ORIGINAL_STATE']           = "- Keep Original State -";
@@ -7085,18 +7086,27 @@ class Interpretation extends Fields
 		}
 		if (ComponentbuilderHelper::checkString($single) && ComponentbuilderHelper::checkString($list))
 		{
-			$head = $this->setListHeadLinked($single,$list,$addNewButon);
-			$body = $this->setListBodyLinked($single,$list,$viewName_single);
+			$head = $this->setListHeadLinked($single, $list, $addNewButon, $viewName_single);
+			$body = $this->setListBodyLinked($single, $list, $viewName_single);
 			$functionName = ComponentbuilderHelper::safeString($codeName,'F');
 			// ###LAYOUTITEMSTABLE### <<<DYNAMIC>>>
 			$this->fileContentDynamic[$viewName_single.'_'.$layoutCodeName]['###LAYOUTITEMSTABLE###'] = $head.$body;
 			// ###LAYOUTITEMSHEADER### <<<DYNAMIC>>>
-			$headerscript = '$edit	= "index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$list.'&task='.$single.'.edit";';
-			if ($addNewButon)
+			$headerscript = '$edit = "index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$list.'&task='.$single.'.edit";';
+			if ($addNewButon > 0)
 			{
-				$headerscript .= PHP_EOL.'$ref	= ($id) ? "&ref='.$viewName_single.'&refid=".$id : "";';
-				$headerscript .= PHP_EOL.'$new	= "index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$single.'&layout=edit".$ref;';
-				$headerscript .= PHP_EOL.'$can	= '.$this->fileContentStatic['###Component###'].'Helper::getActions('."'".$single."'".');';
+				// add the link for new
+				if ($addNewButon == 1 || $addNewButon == 2)
+				{
+					$headerscript .= PHP_EOL.'$ref = ($id) ? "&ref='.$viewName_single.'&refid=".$id : "";';
+					$headerscript .= PHP_EOL.'$new = "index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$single.'&layout=edit".$ref;';
+				}
+				// and the link for close and new
+				if ($addNewButon == 2 || $addNewButon == 3)
+				{
+					$headerscript .= PHP_EOL.'$close_new = "index.php?option=com_'.$this->fileContentStatic['###component###'].'&view='.$single.'&layout=edit";';
+				}
+				$headerscript .= PHP_EOL.'$can = '.$this->fileContentStatic['###Component###'].'Helper::getActions('."'".$single."'".');';
 			}
 			$this->fileContentDynamic[$viewName_single.'_'.$layoutCodeName]['###LAYOUTITEMSHEADER###'] = $headerscript;
 			// ###LINKEDVIEWITEMS### <<<DYNAMIC>>>
@@ -7512,7 +7522,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setListHeadLinked($viewName_single,$viewName_list,$addNewButon)
+	public function setListHeadLinked($viewName_single, $viewName_list, $addNewButon, $refview)
 	{
 		if (isset($this->listBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listBuilder[$viewName_list]))
 		{
@@ -7520,7 +7530,7 @@ class Interpretation extends Fields
 			$Helper = $this->fileContentStatic['###Component###'].'Helper';
 			$head = '';
 			// only add new button if set
-			if ($addNewButon)
+			if ($addNewButon > 0)
 			{
 				// setup correct core target
 				$coreLoad = false;
@@ -7542,7 +7552,32 @@ class Interpretation extends Fields
 				}
 				// add a button for new
 				$head = '<?php if ('.$accessCheck.'): ?>';
-				$head .= PHP_EOL."\t".'<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('."'".$this->langPrefix."_NEW'".'); ?></a><br /><br />';
+				// make group button if needed
+				$tabB = "";
+				if ($addNewButon == 2)
+				{
+					$head .= PHP_EOL."\t".'<div class="btn-group">';
+					$tabB = "\t";
+				}
+				// add the new buttons
+				if ($addNewButon == 1 || $addNewButon == 2)
+				{
+					$head .= PHP_EOL.$tabB."\t".'<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('."'".$this->langPrefix."_NEW'".'); ?></a>';
+				}
+				// add the close and new button
+				if ($addNewButon == 2 || $addNewButon == 3)
+				{
+					$head .= PHP_EOL.$tabB."\t".'<a class="btn btn-small" onclick="Joomla.submitbutton(\''.$refview.'.cancel\');" href="<?php echo $close_new; ?>"><span class="icon-new"></span> <?php echo JText::_('."'".$this->langPrefix."_CLOSE_NEW'".'); ?></a>';
+				}
+				// close group button if needed
+				if ($addNewButon == 2)
+				{
+					$head .= PHP_EOL."\t".'</div><br /><br />';
+				}
+				else
+				{
+					$head .= '<br /><br />';
+				}
 				$head .= PHP_EOL.'<?php endif; ?>'.PHP_EOL;
 			}
 			$head .= '<?php if ('.$Helper.'::checkArray($items)): ?>';
