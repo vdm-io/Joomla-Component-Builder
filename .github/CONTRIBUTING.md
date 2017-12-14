@@ -2,7 +2,7 @@ Contributing to the Joomla Component Builder (JCB)
 ===============
 You are welcome to submit a contribution for review and possible inclusion in the Joomla Component Builder but, before it will be accepted, we ask that you follow these simple steps:
 
-1) Please watch [these tutorials](https://www.youtube.com/watch?v=4pNBMOYoJpI&list=PLQRGFI8XZ_wsfz3NdKawCiYsALuZ-GhwJ)
+1) Please watch [these tutorials](https://www.youtube.com/watch?v=lLOfx9YA7VQ&list=PLQRGFI8XZ_wsfz3NdKawCiYsALuZ-GhwJ)
 
 2) Open an issue on GitHub. If you can, please provide a fix and create a pull request (PR) instead; this will automatically create an issue for you so you do not have to create an issue if you are creating a pull request.
 

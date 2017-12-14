@@ -189,7 +189,6 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		// set an error message if needed
 		$this->document->addScriptDeclaration("var returnError = '<div class=\"uk-alert uk-alert-warning\"><h1>".JText::_('COM_COMPONENTBUILDER_AN_ERROR_HAS_OCCURRED')."!</h1><p>".JText::_('COM_COMPONENTBUILDER_PLEASE_TRY_AGAIN_LATER').".</p></div>';");
 		// need to add some language strings
-		JText::script('COM_COMPONENTBUILDER_JCB_COMMUNITY_SNIPPETS');
 		JText::script('COM_COMPONENTBUILDER_SNIPPETS');
 		JText::script('COM_COMPONENTBUILDER_SNIPPET');
 		JText::script('COM_COMPONENTBUILDER_VIEW_SNIPPET_OF_COMMUNITY_VERSION');
