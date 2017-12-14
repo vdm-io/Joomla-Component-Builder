@@ -53,15 +53,15 @@ class ComponentbuilderViewComponent_site_views extends JViewLegacy
 		$this->refid            = $jinput->get('refid', 0, 'int');
 		$this->referral         = '';
 		if ($this->refid)
-                {
-                        // return to the item that refered to this item
-                        $this->referral = '&ref='.(string)$this->ref.'&refid='.(int)$this->refid;
-                }
-                elseif($this->ref)
-                {
-                        // return to the list view that refered to this item
-                        $this->referral = '&ref='.(string)$this->ref;
-                }
+		{
+				// return to the item that refered to this item
+				$this->referral = '&ref='.(string)$this->ref.'&refid='.(int)$this->refid;
+		}
+		elseif($this->ref)
+		{
+				// return to the list view that refered to this item
+				$this->referral = '&ref='.(string)$this->ref;
+		}
 
 		// Set the toolbar
 		$this->addToolBar();
@@ -163,7 +163,7 @@ class ComponentbuilderViewComponent_site_views extends JViewLegacy
 		}
 	}
 
-        /**
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var  The output to escape.
@@ -177,7 +177,7 @@ class ComponentbuilderViewComponent_site_views extends JViewLegacy
     		// use the helper htmlEscape method instead and shorten the string
 			return ComponentbuilderHelper::htmlEscape($var, $this->_charset, true, 30);
 		}
-                // use the helper htmlEscape method instead.
+		// use the helper htmlEscape method instead.
 		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
 	}
 

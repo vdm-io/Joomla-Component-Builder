@@ -34,16 +34,16 @@ jimport('joomla.application.component.modellist');
  */
 class ComponentbuilderModelCompiler extends JModelList
 {
-        /**
+	/**
 	 * Model user data.
 	 *
-	 * @var        strings
+	 * @var  strings
 	 */
-        protected $user;
-        protected $userId;
-        protected $guest;
-        protected $groups;
-        protected $levels;
+	protected $user;
+	protected $userId;
+	protected $guest;
+	protected $groups;
+	protected $levels;
 	protected $app;
 	protected $input;
 	protected $uikitComp;
@@ -55,14 +55,14 @@ class ComponentbuilderModelCompiler extends JModelList
 	 */
 	protected function getListQuery()
 	{
-                // Get the current user for authorisation checks
-		$this->user		= JFactory::getUser();
+		// Get the current user for authorisation checks
+		$this->user			= JFactory::getUser();
 		$this->userId		= $this->user->get('id');
 		$this->guest		= $this->user->get('guest');
-                $this->groups		= $this->user->get('groups');
-                $this->authorisedGroups	= $this->user->getAuthorisedGroups();
+		$this->groups		= $this->user->get('groups');
+		$this->authorisedGroups	= $this->user->getAuthorisedGroups();
 		$this->levels		= $this->user->getAuthorisedViewLevels();
-		$this->app		= JFactory::getApplication();
+		$this->app			= JFactory::getApplication();
 		$this->input		= $this->app->input;
 		$this->initSet		= true; 
 		// Make sure all records load, since no pagination allowed.
@@ -94,16 +94,16 @@ class ComponentbuilderModelCompiler extends JModelList
 	 */
 	public function getItems()
 	{
-                $user = JFactory::getUser();
-                // check if this user has permission to access items
-                if (!$user->authorise('compiler.access', 'com_componentbuilder'))
-                {
+		$user = JFactory::getUser();
+		// check if this user has permission to access items
+		if (!$user->authorise('compiler.access', 'com_componentbuilder'))
+		{
 			$app = JFactory::getApplication();
 			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
 			// redirect away if not a correct (TODO for now we go to default view)
 			$app->redirect('index.php?option=com_componentbuilder');
 			return false;
-                } 
+		} 
 		// load parent items
 		$items = parent::getItems();
 

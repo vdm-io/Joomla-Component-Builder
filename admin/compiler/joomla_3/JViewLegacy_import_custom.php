@@ -52,10 +52,10 @@ class ###Component###View###View### extends JViewLegacy
 		}
 
 		// set help url for this view if found
-                $help_url = ###Component###Helper::getHelpUrl('###view###');
-                if (###Component###Helper::checkString($help_url))
-                {
-                       JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $help_url);
-                }
+		$help_url = ###Component###Helper::getHelpUrl('###view###');
+		if (###Component###Helper::checkString($help_url))
+		{
+			   JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $help_url);
+		}
 	}
 }

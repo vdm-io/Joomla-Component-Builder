@@ -73,10 +73,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
 		if($token == $call_token)
-                {
+		{
 			$task = $this->getTask();
 			switch($task)
-                        {
+			{
 				case 'isNew':
 					try
 					{
@@ -887,14 +887,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				break;
 			}
 		}
-                else
-                {
+		else
+		{
 			if($callback = $jinput->get('callback', null, 'CMD'))
-                        {
+			{
 				echo $callback."(".json_encode(false).");";
 			}
-                        else
-                        {
+			else
+			{
 				echo "(".json_encode(false).");";
 			}
 		}

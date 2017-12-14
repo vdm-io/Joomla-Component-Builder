@@ -1,27 +1,28 @@
 <?php
-/**--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
-    __      __       _     _____                 _                                  _     __  __      _   _               _
-    \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
-     \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
-      \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
-       \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
-        \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
-/-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.0
-	@created		30th April, 2015
-	@package		Component Builder
-	@subpackage		compiler.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
-	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Builds Complex Joomla Components 
-                                                             
-/-----------------------------------------------------------------------------------------------------------------------------*/
+/* --------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
+  __      __       _     _____                 _                                  _     __  __      _   _               _
+  \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
+   \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
+    \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
+     \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
+      \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
+                                                      | |
+                                                      |_|
+  /-------------------------------------------------------------------------------------------------------------------------------/
+
+  @version		2.6.x
+  @created		30th April, 2015
+  @package		Component Builder
+  @subpackage	compiler.php
+  @author		Llewellyn van der Merwe <http://www.vdm.io>
+  @my wife		Roline van der Merwe <http://www.vdm.io/>
+  @copyright	Copyright (C) 2015. All Rights Reserved
+  @license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+  Builds Complex Joomla Components
+
+  /----------------------------------------------------------------------------------------------------------------------------- */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
@@ -30,291 +31,292 @@ defined('_JEXEC') or die('Restricted access');
  * Structure class
  */
 class Structure extends Get
-{		
+{
+
 	/**
 	 * The foulder counter
 	 * 
 	 * @var     int
 	 */
 	public $folderCount = 0;
-	
+
 	/**
 	 * The foulder counter
 	 * 
 	 * @var     int
 	 */
 	public $fileCount = 0;
-	
+
 	/**
 	 * The page counter
 	 * 
 	 * @var     int
 	 */
 	public $pageCount = 0;
-	
+
 	/**
 	 * The line counter
 	 * 
 	 * @var     int
 	 */
 	public $lineCount = 0;
-	
+
 	/**
 	 * The field counter
 	 * 
 	 * @var     int
 	 */
 	public $fieldCount = 0;
-	
+
 	/**
 	 * The seconds counter
 	 * 
 	 * @var     int
 	 */
 	public $seconds = 0;
-	
+
 	/**
 	 * The actual seconds counter
 	 * 
 	 * @var     int
 	 */
 	public $actualSeconds = 0;
-	
+
 	/**
 	 * The folder seconds counter
 	 * 
 	 * @var     int
 	 */
 	public $folderSeconds = 0;
-	
+
 	/**
 	 * The file seconds counter
 	 * 
 	 * @var     int
 	 */
 	public $fileSeconds = 0;
-	
+
 	/**
 	 * The line seconds counter
 	 * 
 	 * @var     int
 	 */
 	public $lineSeconds = 0;
-	
+
 	/**
 	 * The seconds debugging counter
 	 * 
 	 * @var     int
 	 */
 	public $secondsDebugging = 0;
-	
+
 	/**
 	 * The seconds planning counter
 	 * 
 	 * @var     int
 	 */
 	public $secondsPlanning = 0;
-	
+
 	/**
 	 * The seconds mapping counter
 	 * 
 	 * @var     int
 	 */
 	public $secondsMapping = 0;
-	
+
 	/**
 	 * The seconds office counter
 	 * 
 	 * @var     int
 	 */
 	public $secondsOffice = 0;
-	
+
 	/**
 	 * The total hours counter
 	 * 
 	 * @var     int
 	 */
 	public $totalHours = 0;
-	
+
 	/**
 	 * The debugging hours counter
 	 * 
 	 * @var     int
 	 */
 	public $debuggingHours = 0;
-	
+
 	/**
 	 * The planning hours counter
 	 * 
 	 * @var     int
 	 */
 	public $planningHours = 0;
-	
+
 	/**
 	 * The mapping hours counter
 	 * 
 	 * @var     int
 	 */
 	public $mappingHours = 0;
-	
+
 	/**
 	 * The office hours counter
 	 * 
 	 * @var     int
 	 */
 	public $officeHours = 0;
-	
+
 	/**
 	 * The actual Total Hours counter
 	 * 
 	 * @var     int
 	 */
 	public $actualTotalHours = 0;
-	
+
 	/**
 	 * The actual hours spent counter
 	 * 
 	 * @var     int
 	 */
 	public $actualHoursSpent = 0;
-	
+
 	/**
 	 * The actual days spent counter
 	 * 
 	 * @var     int
 	 */
 	public $actualDaysSpent = 0;
-	
+
 	/**
 	 * The total days counter
 	 * 
 	 * @var     int
 	 */
 	public $totalDays = 0;
-	
+
 	/**
 	 * The actual Total Days counter
 	 * 
 	 * @var     int
 	 */
 	public $actualTotalDays = 0;
-	
+
 	/**
 	 * The project week time counter
 	 * 
 	 * @var     int
 	 */
 	public $projectWeekTime = 0;
-	
+
 	/**
 	 * The project month time counter
 	 * 
 	 * @var     int
 	 */
 	public $projectMonthTime = 0;
-	
+
 	/**
 	 * The Joomla Version
 	 * 
 	 * @var     string
 	 */
 	public $joomlaVersion;
-	
+
 	/**
 	 * The template path
 	 * 
 	 * @var     string
 	 */
 	public $templatePath;
-	
+
 	/**
 	 * The custom template path
 	 * 
 	 * @var     string
 	 */
 	public $templatePathCustom;
-	
+
 	/**
 	 * The Joomla Version Data
 	 * 
 	 * @var      object
 	 */
 	public $joomlaVersionData;
-	
+
 	/**
 	 * Static File Content
 	 * 
 	 * @var      array
 	 */
 	public $fileContentStatic = array();
-	
+
 	/**
 	 * Dynamic File Content
 	 * 
 	 * @var      array
 	 */
 	public $fileContentDynamic = array();
-	
+
 	/**
 	 * The Component Sales name
 	 * 
 	 * @var      string
 	 */
 	public $componentSalesName;
-	
+
 	/**
 	 * The Component Backup name
 	 * 
 	 * @var      string
 	 */
 	public $componentBackupName;
-	
+
 	/**
 	 * The Component Folder name
 	 * 
 	 * @var      string
 	 */
 	public $componentFolderName;
-	
+
 	/**
 	 * The Component path
 	 * 
 	 * @var      string
 	 */
 	public $componentPath;
-	
+
 	/**
 	 * The not new static items
 	 * 
 	 * @var      array
 	 */
 	public $notNew = array();
-	
+
 	/**
 	 * The new files
 	 * 
 	 * @var     array
 	 */
 	public $newFiles = array();
-	
+
 	/**
 	 * The Checkin Switch
 	 * 
 	 * @var     boolean
 	 */
 	public $addCheckin = false;
-	
+
 	/**
 	 * The array of last modified dates
 	 * 
 	 * @var     array
 	 */
 	protected $lastModifiedDate = array();
-	
+
 	/**
 	 * Constructor
 	 */
-	public function __construct($config = array ())
+	public function __construct($config = array())
 	{
 		// first we run the perent constructor
 		if (parent::__construct($config))
@@ -322,24 +324,24 @@ class Structure extends Get
 			// run global updater
 			ComponentbuilderHelper::runGlobalUpdater();
 			// set the Joomla version
-			$this->joomlaVersion		= $config['joomlaVersion'];
+			$this->joomlaVersion = $config['joomlaVersion'];
 			// set the template path
-			$this->templatePath		= $this->compilerPath.'/joomla_'.$config['joomlaVersion'];
+			$this->templatePath = $this->compilerPath . '/joomla_' . $config['joomlaVersion'];
 			// set some default names
-			$this->componentSalesName	= 'com_'.$this->componentData->sales_name.'__J'.$this->joomlaVersion;
-			$this->componentBackupName	= 'com_'.$this->componentData->sales_name.'_v'.str_replace('.','_',$this->componentData->component_version).'__J'.$this->joomlaVersion;
-			$this->componentFolderName	= 'com_'.$this->componentData->name_code.'_v'.str_replace('.','_',$this->componentData->component_version).'__J'.$this->joomlaVersion;
-			
+			$this->componentSalesName = 'com_' . $this->componentData->sales_name . '__J' . $this->joomlaVersion;
+			$this->componentBackupName = 'com_' . $this->componentData->sales_name . '_v' . str_replace('.', '_', $this->componentData->component_version) . '__J' . $this->joomlaVersion;
+			$this->componentFolderName = 'com_' . $this->componentData->name_code . '_v' . str_replace('.', '_', $this->componentData->component_version) . '__J' . $this->joomlaVersion;
+
 			// set component folder path
-			$this->componentPath		= $this->compilerPath.'/'.$this->componentFolderName;
+			$this->componentPath = $this->compilerPath . '/' . $this->componentFolderName;
 			// set the template path for custom
-			$this->templatePathCustom	= $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
+			$this->templatePathCustom = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/custom');
 			// make sure there is no old build
 			$this->removeFolder($this->componentPath);
 			// load the libraries files/folders and url's
 			$this->setLibaries();
 			// set the Joomla Version Data
-			$this->joomlaVersionData	= $this->setJoomlaVersionData();
+			$this->joomlaVersionData = $this->setJoomlaVersionData();
 			// set the new folders
 			if (!$this->setFolders())
 			{
@@ -359,7 +361,7 @@ class Structure extends Get
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Set the line number in comments
 	 * 
@@ -372,11 +374,11 @@ class Structure extends Get
 	{
 		if ($this->debugLinenr)
 		{
-			return ' [Structure '.$nr.']';	
+			return ' [Structure ' . $nr . ']';
 		}
 		return '';
 	}
-	
+
 	/**
 	 * Build the Libraries files, folders, url's and config
 	 * 
@@ -396,14 +398,14 @@ class Structure extends Get
 				$this->indexHTML('');
 			}
 			// create media path if not set
-			if (!JFolder::exists( $this->componentPath . '/media'))
+			if (!JFolder::exists($this->componentPath . '/media'))
 			{
 				JFolder::create($this->componentPath . '/media');
 				// count the folder created
 				$this->folderCount++;
 				$this->indexHTML('/media');
 			}
-			foreach($this->libraries as $id => &$library)
+			foreach ($this->libraries as $id => &$library)
 			{
 				if (ComponentbuilderHelper::checkObject($library))
 				{
@@ -429,7 +431,7 @@ class Structure extends Get
 					if (isset($library->urls) && ComponentbuilderHelper::checkArray($library->urls))
 					{
 						// build media folder path
-						$libFolder = strtolower( preg_replace('/\s+/', '-', ComponentbuilderHelper::safeString($library->name, 'filename', ' ', false)));
+						$libFolder = strtolower(preg_replace('/\s+/', '-', ComponentbuilderHelper::safeString($library->name, 'filename', ' ', false)));
 						$mediaPath = '/media/' . $libFolder;
 						// should we add the local folder
 						$addLocalFolder = false;
@@ -439,7 +441,7 @@ class Structure extends Get
 							if (isset($url['type']) && $url['type'] > 1 && isset($url['url']) && ComponentbuilderHelper::checkString($url['url']))
 							{
 								// create media/lib path if not set
-								if (!JFolder::exists( $this->componentPath . $mediaPath))
+								if (!JFolder::exists($this->componentPath . $mediaPath))
 								{
 									JFolder::create($this->componentPath . $mediaPath);
 									// count the folder created
@@ -491,7 +493,7 @@ class Structure extends Get
 							{
 								$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] = '';
 							}
-							$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL."\t\t<folder>".$libFolder."</folder>";
+							$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL . "\t\t<folder>" . $libFolder . "</folder>";
 						}
 					}
 					// if config fields are found load into component config (avoiding dublicates)
@@ -499,7 +501,8 @@ class Structure extends Get
 					{
 						foreach ($library->config as $cofig)
 						{
-							$found = array_filter($this->componentData->config, function($item) use($cofig) {
+							$found = array_filter($this->componentData->config, function($item) use($cofig)
+							{
 								return $item['field'] == $cofig['field'];
 							});
 							// set the config data if not found
@@ -513,7 +516,7 @@ class Structure extends Get
 			}
 		}
 	}
-	
+
 	/**
 	 * Write data to file
 	 * 
@@ -524,7 +527,7 @@ class Structure extends Get
 	{
 		return ComponentbuilderHelper::writeFile($path, $data);
 	}
-	
+
 	/**
 	 * Build the Initial Folders
 	 * 
@@ -546,9 +549,9 @@ class Structure extends Get
 			// now build all folders needed for this component
 			foreach ($this->joomlaVersionData->create as $main => $folders)
 			{
-				if (!JFolder::exists($this->componentPath.'/'.$main))
+				if (!JFolder::exists($this->componentPath . '/' . $main))
 				{
-					JFolder::create($this->componentPath.'/'.$main);
+					JFolder::create($this->componentPath . '/' . $main);
 					// count the folder created
 					$this->folderCount++;
 					$this->indexHTML($main);
@@ -557,79 +560,79 @@ class Structure extends Get
 				{
 					foreach ($folders as $sub => $subFolders)
 					{
-						if (!JFolder::exists($this->componentPath.'/'.$main.'/'.$sub))
+						if (!JFolder::exists($this->componentPath . '/' . $main . '/' . $sub))
 						{
-							JFolder::create($this->componentPath.'/'.$main.'/'.$sub);
+							JFolder::create($this->componentPath . '/' . $main . '/' . $sub);
 							// count the folder created
 							$this->folderCount++;
-							$this->indexHTML($main.'/'.$sub);
+							$this->indexHTML($main . '/' . $sub);
 						}
 						if (ComponentbuilderHelper::checkObject($subFolders))
 						{
 							foreach ($subFolders as $sub_2 => $subFolders_2)
 							{
-								if (!JFolder::exists($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2))
+								if (!JFolder::exists($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2))
 								{
-									JFolder::create($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2);
+									JFolder::create($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2);
 									// count the folder created
 									$this->folderCount++;
-									$this->indexHTML($main.'/'.$sub.'/'.$sub_2);
+									$this->indexHTML($main . '/' . $sub . '/' . $sub_2);
 								}
 								if (ComponentbuilderHelper::checkObject($subFolders_2))
 								{
 									foreach ($subFolders_2 as $sub_3 => $subFolders_3)
 									{
 
-										if (!JFolder::exists($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3))
+										if (!JFolder::exists($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3))
 										{
-											JFolder::create($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3);
+											JFolder::create($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3);
 											// count the folder created
 											$this->folderCount++;
-											$this->indexHTML($main.'/'.$sub.'/'.$sub_2.'/'.$sub_3);
+											$this->indexHTML($main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3);
 										}
 										if (ComponentbuilderHelper::checkObject($subFolders_3))
 										{
 											foreach ($subFolders_3 as $sub_4 => $subFolders_4)
 											{
-												if (!JFolder::exists($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4))
+												if (!JFolder::exists($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4))
 												{
-													JFolder::create($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4);
+													JFolder::create($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4);
 													// count the folder created
 													$this->folderCount++;
-													$this->indexHTML($main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4);
+													$this->indexHTML($main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4);
 												}
 												if (ComponentbuilderHelper::checkObject($subFolders_4))
 												{
 													foreach ($subFolders_4 as $sub_5 => $subFolders_5)
 													{
-														if (!JFolder::exists($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5))
+														if (!JFolder::exists($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5))
 														{
-															JFolder::create($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5);
+															JFolder::create($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5);
 															// count the folder created
 															$this->folderCount++;
-															$this->indexHTML($main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5);
+															$this->indexHTML($main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5);
 														}
 														if (ComponentbuilderHelper::checkObject($subFolders_5))
 														{
 															foreach ($subFolders_5 as $sub_6 => $subFolders_6)
 															{
-																if (!JFolder::exists($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5.'/'.$sub_6))
+																if (!JFolder::exists($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5 . '/' . $sub_6))
 																{
-																	JFolder::create($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5.'/'.$sub_6);
+																	JFolder::create($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5 . '/' . $sub_6);
 																	// count the folder created
 																	$this->folderCount++;
-																	$this->indexHTML($main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5.'/'.$sub_6);
+																	$this->indexHTML($main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5 . '/' . $sub_6);
 																}
 																if (ComponentbuilderHelper::checkObject($subFolders_6))
 																{
 																	foreach ($subFolders_6 as $sub_7 => $subFolders_7)
 																	{
-																		if (!JFolder::exists($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5.'/'.$sub_6.'/'.$sub_7))
+																		if (!JFolder::exists($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5 . '/' . $sub_6 . '/' . $sub_7))
 																		{
-																			JFolder::create($this->componentPath.'/'.$main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5.'/'.$sub_6.'/'.$sub_7);
+																			JFolder::create($this->componentPath . '/' . $main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5 . '/' . $sub_6 . '/' . $sub_7);
 																			// count the folder created
 																			$this->folderCount++;
-																			$this->indexHTML($main.'/'.$sub.'/'.$sub_2.'/'.$sub_3.'/'.$sub_4.'/'.$sub_5.'/'.$sub_6.'/'.$sub_7);
+																			$this->indexHTML($main . '/' . $sub . '/' . $sub_2 . '/' . $sub_3 . '/' . $sub_4 . '/' . $sub_5 . '/' . $sub_6 . '/' . $sub_7);
 																		}
 																	}
 																}
@@ -650,7 +653,7 @@ class Structure extends Get
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Set the Static File & Folder
 	 *  
@@ -668,12 +671,12 @@ class Structure extends Get
 			// do license check
 			$LICENSE = false;
 			$licenseChecker = strtolower($this->componentData->license);
-			if (strpos($licenseChecker,'gnu') !== false && strpos($licenseChecker,'gpl') !== false)
+			if (strpos($licenseChecker, 'gnu') !== false && strpos($licenseChecker, 'gpl') !== false)
 			{
 				$LICENSE = true;
 			}
 			// do README check
-			$README = false;			
+			$README = false;
 			// add the README file if needed
 			if ($this->componentData->addreadme)
 			{
@@ -711,27 +714,27 @@ class Structure extends Get
 					continue;
 				}
 				// set destination path
-				$zipPath	= str_replace('c0mp0n3nt/','', $details->path);
-				$path		= str_replace('c0mp0n3nt/',$this->componentPath.'/', $details->path);
+				$zipPath = str_replace('c0mp0n3nt/', '', $details->path);
+				$path = str_replace('c0mp0n3nt/', $this->componentPath . '/', $details->path);
 				// set the template folder path
 				$templatePath = (isset($details->custom) && $details->custom) ? $this->templatePathCustom : $this->templatePath;
 				// now mov the file
 				if ($details->type === 'file')
 				{
 					// move the file to its place
-					JFile::copy($templatePath.'/'.$item, $path.'/'.$new);
+					JFile::copy($templatePath . '/' . $item, $path . '/' . $new);
 					// count the file created
 					$this->fileCount++;
 					// store the new files
-					if (!in_array($ftem,$this->notNew))
+					if (!in_array($ftem, $this->notNew))
 					{
-						$this->newFiles['static'][] = array( 'path' => $path.'/'.$new, 'name' => $new, 'zip' => $zipPath.'/'.$new );
+						$this->newFiles['static'][] = array('path' => $path . '/' . $new, 'name' => $new, 'zip' => $zipPath . '/' . $new);
 					}
 				}
 				elseif ($details->type === 'folder')
 				{
 					// move the folder to its place
-					JFolder::copy($templatePath.'/'.$item, $path.'/'.$new);
+					JFolder::copy($templatePath . '/' . $item, $path . '/' . $new);
 					// count the folder created
 					$this->folderCount++;
 				}
@@ -740,7 +743,7 @@ class Structure extends Get
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Set the Dynamic File & Folder
 	 *  
@@ -755,7 +758,7 @@ class Structure extends Get
 		{
 			// setup dashboard
 			$target = array('admin' => $this->componentData->name_code);
-			$this->buildDynamique($target,'dashboard');
+			$this->buildDynamique($target, 'dashboard');
 			// now the rest of the views
 			foreach ($this->componentData->admin_views as $nr => $view)
 			{
@@ -766,21 +769,21 @@ class Structure extends Get
 					if ($view['settings']->name_list != 'null')
 					{
 						$target = array('admin' => $view['settings']->name_list);
-						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
-						$this->buildDynamique($target,'list', false, $config);
+						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+						$this->buildDynamique($target, 'list', false, $config);
 					}
 					if ($view['settings']->name_single != 'null')
 					{
 						$target = array('admin' => $view['settings']->name_single);
-						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
-						$this->buildDynamique($target,'single', false, $config);
+						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+						$this->buildDynamique($target, 'single', false, $config);
 					}
-					if ( isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
+					if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
 					{
 						// setup the front site edit-view files
 						$target = array('site' => $view['settings']->name_single);
-						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
-						$this->buildDynamique($target,'edit', false, $config);
+						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+						$this->buildDynamique($target, 'edit', false, $config);
 					}
 				}
 				// quick set of checkin once
@@ -803,15 +806,15 @@ class Structure extends Get
 				{
 					// set list view
 					$target = array('site' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
-					$this->buildDynamique($target,'list', false, $config);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+					$this->buildDynamique($target, 'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('site' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
-					$this->buildDynamique($target,'single', false, $config);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
 			$front = true;
@@ -826,14 +829,14 @@ class Structure extends Get
 				{
 					// set list view$view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
-					$this->buildDynamique($target,'list', false, $config);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+					$this->buildDynamique($target, 'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified,'###VERSION###' => $view['settings']->version);
+					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
 					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
@@ -846,7 +849,7 @@ class Structure extends Get
 		}
 		return false;
 	}
-	
+
 	/**
 	 * get the created date of the (view)
 	 *  
@@ -856,7 +859,7 @@ class Structure extends Get
 	 * 
 	 */
 	public function getCreatedDate($view)
-	{		
+	{
 		if (isset($view['settings']->created) && ComponentbuilderHelper::checkString($view['settings']->created))
 		{
 			// first set the main date
@@ -869,7 +872,7 @@ class Structure extends Get
 		}
 		return JFactory::getDate($date)->format('jS F, Y');
 	}
-	
+
 	/**
 	 * get the last modified date of a MVC (view)
 	 *  
@@ -881,9 +884,7 @@ class Structure extends Get
 	public function getLastModifiedDate($view)
 	{
 		// first set the main date
-		if (isset($view['settings']->modified) 
-			&& ComponentbuilderHelper::checkString($view['settings']->modified) 
-			&& '0000-00-00 00:00:00' !== $view['settings']->modified)
+		if (isset($view['settings']->modified) && ComponentbuilderHelper::checkString($view['settings']->modified) && '0000-00-00 00:00:00' !== $view['settings']->modified)
 		{
 			$date = strtotime($view['settings']->modified);
 		}
@@ -895,7 +896,7 @@ class Structure extends Get
 		// search for the last modified date
 		if (isset($view['adminview']))
 		{
-			$id = $view['adminview'].'admin';
+			$id = $view['adminview'] . 'admin';
 			// now check if value has been set
 			if (!isset($this->lastModifiedDate[$id]))
 			{
@@ -903,9 +904,7 @@ class Structure extends Get
 				{
 					foreach ($view['settings']->fields as $field)
 					{
-						if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']) 
-							&& isset($field['settings']->modified) && ComponentbuilderHelper::checkString($field['settings']->modified) 
-							&& '0000-00-00 00:00:00' !== $field['settings']->modified)
+						if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']) && isset($field['settings']->modified) && ComponentbuilderHelper::checkString($field['settings']->modified) && '0000-00-00 00:00:00' !== $field['settings']->modified)
 						{
 							$anotherDate = strtotime($field['settings']->modified);
 							if ($anotherDate > $date)
@@ -918,14 +917,12 @@ class Structure extends Get
 			}
 		}
 		elseif (isset($view['siteview']))
-		{			
-			$id = $view['siteview'].'site';
+		{
+			$id = $view['siteview'] . 'site';
 			// now check if value has been set
 			if (!isset($this->lastModifiedDate[$id]))
 			{
-				if (isset($view['settings']->main_get->modified)
-					&& ComponentbuilderHelper::checkString($view['settings']->main_get->modified) 
-					&& '0000-00-00 00:00:00' !== $view['settings']->main_get->modified)
+				if (isset($view['settings']->main_get->modified) && ComponentbuilderHelper::checkString($view['settings']->main_get->modified) && '0000-00-00 00:00:00' !== $view['settings']->main_get->modified)
 				{
 					$anotherDate = strtotime($view['settings']->main_get->modified);
 					if ($anotherDate > $date)
@@ -936,14 +933,12 @@ class Structure extends Get
 			}
 		}
 		elseif (isset($view['customadminview']))
-		{			
-			$id = $view['customadminview'].'customadmin';
+		{
+			$id = $view['customadminview'] . 'customadmin';
 			// now check if value has been set
 			if (!isset($this->lastModifiedDate[$id]))
 			{
-				if (isset($view['settings']->main_get->modified)
-					&& ComponentbuilderHelper::checkString($view['settings']->main_get->modified) 
-					&& '0000-00-00 00:00:00' !== $view['settings']->main_get->modified)
+				if (isset($view['settings']->main_get->modified) && ComponentbuilderHelper::checkString($view['settings']->main_get->modified) && '0000-00-00 00:00:00' !== $view['settings']->main_get->modified)
 				{
 					$anotherDate = strtotime($view['settings']->main_get->modified);
 					if ($anotherDate > $date)
@@ -963,10 +958,10 @@ class Structure extends Get
 		{
 			$this->lastModifiedDate[$id] = $date;
 		}
-		
+
 		return JFactory::getDate($this->lastModifiedDate[$id])->format('jS F, Y');
 	}
-	
+
 	/**
 	 * Set the Static File & Folder
 	 *
@@ -982,7 +977,7 @@ class Structure extends Get
 	{
 		if (ComponentbuilderHelper::checkArray($target))
 		{
-			foreach ($target as  $main => $name)
+			foreach ($target as $main => $name)
 			{
 				// make sure it is lower case
 				$name = ComponentbuilderHelper::safeString($name);
@@ -992,17 +987,17 @@ class Structure extends Get
 					if ($details->type == $type)
 					{
 						// set destination path
-						$path =  '';
-						if (strpos($details->path,'VIEW') !== false)
+						$path = '';
+						if (strpos($details->path, 'VIEW') !== false)
 						{
-							$path = str_replace('VIEW',$name,$details->path);
+							$path = str_replace('VIEW', $name, $details->path);
 						}
 						else
 						{
 							$path = $details->path;
 						}
-						$zipPath	= str_replace('c0mp0n3nt/','', $path);
-						$path		= str_replace('c0mp0n3nt/',$this->componentPath.'/', $path);
+						$zipPath = str_replace('c0mp0n3nt/', '', $path);
+						$path = str_replace('c0mp0n3nt/', $this->componentPath . '/', $path);
 
 						// setup the folder
 						if (!JFolder::exists($path))
@@ -1018,7 +1013,7 @@ class Structure extends Get
 							if ($fileName)
 							{
 								$new = str_replace($details->rename, $fileName, $item);
-								$name = $name.'_'.$fileName;
+								$name = $name . '_' . $fileName;
 							}
 							elseif ($details->rename === 'new')
 							{
@@ -1033,15 +1028,15 @@ class Structure extends Get
 						{
 							$new = $item;
 						}
-						if (!JFile::exists($path.'/'.$new))
+						if (!JFile::exists($path . '/' . $new))
 						{
 							// move the file to its place
-							JFile::copy($this->templatePath.'/'.$item, $path.'/'.$new,'',true);
+							JFile::copy($this->templatePath . '/' . $item, $path . '/' . $new, '', true);
 							// count the file created
 							$this->fileCount++;
 						}
 						// setup array for new file
-						$newFIle = array( 'path' => $path.'/'.$new, 'name' => $new , 'view' => $name, 'zip' => $zipPath.'/'.$new);
+						$newFIle = array('path' => $path . '/' . $new, 'name' => $new, 'view' => $name, 'zip' => $zipPath . '/' . $new);
 						if (ComponentbuilderHelper::checkArray($config))
 						{
 							$newFIle['config'] = $config;
@@ -1055,7 +1050,7 @@ class Structure extends Get
 		}
 		return false;
 	}
-	
+
 	/**
 	 * set the Joomla Version Data
 	 * 
@@ -1066,44 +1061,44 @@ class Structure extends Get
 	private function setJoomlaVersionData()
 	{
 		// set the version data
-		$versionData = json_decode(ComponentbuilderHelper::getFileContents($this->templatePath.'/settings.json'));
+		$versionData = json_decode(ComponentbuilderHelper::getFileContents($this->templatePath . '/settings.json'));
 		// add custom folders
 		if ((isset($this->componentData->folders) && ComponentbuilderHelper::checkArray($this->componentData->folders)) || $this->addEximport || $this->uikit || $this->footable)
 		{
 			if ($this->addEximport)
 			{
 				// move the import view folder in place
-				$importView = array( 'folder' => 'importViews', 'path' => 'admin/views/import', 'rename' => 1);
+				$importView = array('folder' => 'importViews', 'path' => 'admin/views/import', 'rename' => 1);
 				$this->componentData->folders[] = $importView;
 				// move the PHPExel Folder
-				$PHPExcel = array( 'folder' => 'PHPExcel', 'path' => 'admin/helpers', 'rename' => 0);
+				$PHPExcel = array('folder' => 'PHPExcel', 'path' => 'admin/helpers', 'rename' => 0);
 				$this->componentData->folders[] = $PHPExcel;
 			}
 			if (2 == $this->uikit || 1 == $this->uikit)
 			{
 				// move the UIKIT Folder into place
-				$uikit = array( 'folder' => 'uikit-v2', 'path' => 'media', 'rename' => 0);
+				$uikit = array('folder' => 'uikit-v2', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $uikit;
-			}			
+			}
 			if (2 == $this->uikit || 3 == $this->uikit)
 			{
 				// move the UIKIT-3 Folder into place
-				$uikit = array( 'folder' => 'uikit-v3', 'path' => 'media', 'rename' => 0);
+				$uikit = array('folder' => 'uikit-v3', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $uikit;
 			}
 			if ($this->footable && (!isset($this->footableVersion) || 2 == $this->footableVersion))
 			{
 				// move the footable folder into place
-				$footable = array( 'folder' => 'footable-v2', 'path' => 'media', 'rename' => 0);
+				$footable = array('folder' => 'footable-v2', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $footable;
 			}
 			elseif ($this->footable && 3 == $this->footableVersion)
 			{
 				// move the footable folder into place
-				$footable = array( 'folder' => 'footable-v3', 'path' => 'media', 'rename' => 0);
+				$footable = array('folder' => 'footable-v3', 'path' => 'media', 'rename' => 0);
 				$this->componentData->folders[] = $footable;
 			}
-			
+
 			// pointer tracker
 			$pointer_tracker = 'h';
 			foreach ($this->componentData->folders as $custom)
@@ -1112,16 +1107,16 @@ class Structure extends Get
 				$custom['path'] = rtrim($custom['path'], '/');
 				$custom['path'] = ltrim($custom['path'], '/');
 				// make sure we use the correct name
-				$pathArray = (array) explode('/',$custom['path']);
+				$pathArray = (array) explode('/', $custom['path']);
 				$firstFolder = array_values($pathArray)[0];
 				$lastFolder = end($pathArray);
 				// only rename folder if last has folder name
 				if (isset($custom['rename']) && $custom['rename'] == 1)
 				{
-					$custom['path'] = str_replace('/'.$lastFolder,'',$custom['path']);
+					$custom['path'] = str_replace('/' . $lastFolder, '', $custom['path']);
 					$rename = 'new';
 					$newname = $lastFolder;
-					if(($tkey = array_search($lastFolder, $pathArray)) !== false)
+					if (($tkey = array_search($lastFolder, $pathArray)) !== false)
 					{
 						unset($pathArray[$tkey]);
 					}
@@ -1139,7 +1134,7 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'media')
 				{
-					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL."\t\t<folder>".$lastFolder."</folder>";
+					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL . "\t\t<folder>" . $lastFolder . "</folder>";
 				}
 				// check if we sould add it to the site xml list
 				if (!isset($this->fileContentStatic['###EXSTRA_SITE_FOLDERS###']))
@@ -1148,7 +1143,7 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'site')
 				{
-					$this->fileContentStatic['###EXSTRA_SITE_FOLDERS###'] .= PHP_EOL."\t\t<folder>".$lastFolder."</folder>";
+					$this->fileContentStatic['###EXSTRA_SITE_FOLDERS###'] .= PHP_EOL . "\t\t<folder>" . $lastFolder . "</folder>";
 				}
 				// check if we sould add it to the admin xml list
 				if (!isset($this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###']))
@@ -1157,15 +1152,15 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'admin')
 				{
-					$this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###'] .= PHP_EOL."\t\t\t<folder>".$lastFolder."</folder>";
+					$this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###'] .= PHP_EOL . "\t\t\t<folder>" . $lastFolder . "</folder>";
 				}
 				// make we have not duplicates
-				$key_pointer = ComponentbuilderHelper::safeString($custom['folder']).'_f'.$pointer_tracker;
+				$key_pointer = ComponentbuilderHelper::safeString($custom['folder']) . '_f' . $pointer_tracker;
 				$pointer_tracker++;
 				// set new folder to object
 				$versionData->move->static->$key_pointer = new stdClass();
 				$versionData->move->static->$key_pointer->naam = $custom['folder'];
-				$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/'.$custom['path'];
+				$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
 				$versionData->move->static->$key_pointer->rename = $rename;
 				$versionData->move->static->$key_pointer->newName = $newname;
 				$versionData->move->static->$key_pointer->type = 'folder';
@@ -1180,24 +1175,24 @@ class Structure extends Get
 			if ($this->addEximport)
 			{
 				// move the PHPExel main file
-				$PHPExcel = array( 'file' => 'PHPExcel.php', 'path' => 'admin/helpers', 'rename' => 0);
+				$PHPExcel = array('file' => 'PHPExcel.php', 'path' => 'admin/helpers', 'rename' => 0);
 				$this->componentData->files[] = $PHPExcel;
 			}
 			if ($this->googlechart)
 			{
 				// move the google chart files
-				$googleChart = array( 'file' => 'google.jsapi.js', 'path' => 'media/js', 'rename' => 0);
+				$googleChart = array('file' => 'google.jsapi.js', 'path' => 'media/js', 'rename' => 0);
 				$this->componentData->files[] = $googleChart;
-				$googleChart = array( 'file' => 'chartbuilder.php', 'path' => 'admin/helpers', 'rename' => 0);
+				$googleChart = array('file' => 'chartbuilder.php', 'path' => 'admin/helpers', 'rename' => 0);
 				$this->componentData->files[] = $googleChart;
 			}
-			
+
 			// pointer tracker
 			$pointer_tracker = 'h';
 			foreach ($this->componentData->files as $custom)
 			{
 				// make we have not duplicates
-				$key_pointer = ComponentbuilderHelper::safeString($custom['file']).'_g'.$pointer_tracker;
+				$key_pointer = ComponentbuilderHelper::safeString($custom['file']) . '_g' . $pointer_tracker;
 				$pointer_tracker++;
 				// set new file to object
 				$versionData->move->static->$key_pointer = new stdClass();
@@ -1208,7 +1203,7 @@ class Structure extends Get
 				{
 					$pathInfo['dirname'] = rtrim($pathInfo['dirname'], '/');
 					$pathInfo['dirname'] = ltrim($pathInfo['dirname'], '/');
-					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/'.$pathInfo['dirname'];
+					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $pathInfo['dirname'];
 					$versionData->move->static->$key_pointer->rename = 'new';
 					$versionData->move->static->$key_pointer->newName = $pathInfo['basename'];
 					// set the name
@@ -1218,7 +1213,7 @@ class Structure extends Get
 				{
 					$custom['path'] = rtrim($custom['path'], '/');
 					$custom['path'] = ltrim($custom['path'], '/');
-					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/'.$custom['path'];
+					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
 					$versionData->move->static->$key_pointer->rename = false;
 					// set the name
 					$name = $custom['file'];
@@ -1236,7 +1231,7 @@ class Structure extends Get
 		}
 		return $versionData;
 	}
-	
+
 	/**
 	 * set the index.html file in a folder path
 	 * 
@@ -1249,18 +1244,18 @@ class Structure extends Get
 	{
 		if (strlen($path) > 0)
 		{
-			JFile::copy($this->templatePath.'/index.html', $this->componentPath.'/'.$path.'/index.html');
+			JFile::copy($this->templatePath . '/index.html', $this->componentPath . '/' . $path . '/index.html');
 			// count the file created
 			$this->fileCount++;
 		}
 		else
 		{
-			JFile::copy($this->templatePath.'/index.html', $this->componentPath.'/index.html');
+			JFile::copy($this->templatePath . '/index.html', $this->componentPath . '/index.html');
 			// count the file created
 			$this->fileCount++;
 		}
 	}
-	
+
 	/**
 	 * Remove folders with files
 	 * 

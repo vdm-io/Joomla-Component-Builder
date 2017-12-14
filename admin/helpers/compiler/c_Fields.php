@@ -1,27 +1,28 @@
 <?php
-/**--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
-    __      __       _     _____                 _                                  _     __  __      _   _               _
-    \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
-     \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
-      \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
-       \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
-        \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
-/-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.0
-	@created		30th April, 2015
-	@package		Component Builder
-	@subpackage		compiler.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
-	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Builds Complex Joomla Components 
-                                                             
-/-----------------------------------------------------------------------------------------------------------------------------*/
+/* --------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
+  __      __       _     _____                 _                                  _     __  __      _   _               _
+  \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
+   \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
+    \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
+     \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
+      \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
+                                                      | |
+                                                      |_|
+  /-------------------------------------------------------------------------------------------------------------------------------/
+
+  @version		2.6.x
+  @created		30th April, 2015
+  @package		Component Builder
+  @subpackage	compiler.php
+  @author		Llewellyn van der Merwe <http://www.vdm.io>
+  @my wife		Roline van der Merwe <http://www.vdm.io/>
+  @copyright	Copyright (C) 2015. All Rights Reserved
+  @license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+  Builds Complex Joomla Components
+
+  /----------------------------------------------------------------------------------------------------------------------------- */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
@@ -31,12 +32,12 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Fields extends Structure
 {
+
 	/**
 	 * Metadate Switch
 	 * 
 	 * @var    array
 	 */
-
 	public $metadataBuilder = array();
 
 	/**
@@ -45,315 +46,315 @@ class Fields extends Structure
 	 * @var    array
 	 */
 	public $accessBuilder = array();
-	
+
 	/**
 	 * edit view tabs counter
 	 * 
 	 * @var    array
 	 */
 	public $tabCounter = array();
-	
+
 	/**
 	 * layout builder
 	 * 
 	 * @var    array
 	 */
 	public $layoutBuilder = array();
-	
+
 	/**
 	 * used to fix the zero order
 	 * 
 	 * @var    array
 	 */
 	private $zeroOrderFix = array();
-	
+
 	/**
 	 * Site field data
 	 * 
 	 * @var    array
 	 */
 	public $siteFieldData = array();
-	
+
 	/**
 	 * Category other name bucket
 	 * 
 	 * @var    array
 	 */
 	public $catOtherName = array();
-	
+
 	/**
 	 * list of fields that are not being escaped
 	 * 
 	 * @var    array
 	 */
 	public $doNotEscape = array();
-	
+
 	/**
 	 * tags builder
 	 * 
 	 * @var    array
 	 */
 	public $tagsBuilder = array();
-	
+
 	/**
 	 * query builder
 	 * 
 	 * @var    array
 	 */
 	public $queryBuilder = array();
-	
+
 	/**
 	 * unique keys for database field
 	 * 
 	 * @var    array
 	 */
 	public $dbUniqueKeys = array();
-	
+
 	/**
 	 * keys for database field
 	 * 
 	 * @var    array
 	 */
 	public $dbKeys = array();
-	
+
 	/**
 	 * history builder
 	 * 
 	 * @var    array
 	 */
 	public $historyBuilder = array();
-	
+
 	/**
 	 * alias builder
 	 * 
 	 * @var    array
 	 */
 	public $aliasBuilder = array();
-	
+
 	/**
 	 * title builder
 	 * 
 	 * @var    array
 	 */
 	public $titleBuilder = array();
-	
+
 	/**
 	 * list builder
 	 * 
 	 * @var    array
 	 */
 	public $listBuilder = array();
-	
+
 	/**
 	 * custom Builder List
 	 * 
 	 * @var    array
 	 */
 	public $customBuilderList = array();
-	
+
 	/**
 	 * Hidden Fields Builder
 	 * 
 	 * @var    array
 	 */
 	public $hiddenFieldsBuilder = array();
-	
+
 	/**
 	 * INT Field Builder
 	 * 
 	 * @var    array
 	 */
 	public $intFieldsBuilder = array();
-	
+
 	/**
 	 * Dynamic Fields Builder
 	 * 
 	 * @var    array
 	 */
 	public $dynamicfieldsBuilder = array();
-	
+
 	/**
 	 * Main text Builder
 	 * 
 	 * @var    array
 	 */
 	public $maintextBuilder = array();
-	
+
 	/**
 	 * Custom Builder
 	 * 
 	 * @var    array
 	 */
 	public $customBuilder = array();
-	
+
 	/**
 	 * Custom Field Links Builder
 	 * 
 	 * @var    array
 	 */
 	public $customFieldLinksBuilder = array();
-	
+
 	/**
 	 * Set Script for User Switch
 	 * 
 	 * @var    array
 	 */
 	public $setScriptUserSwitch = array();
-	
+
 	/**
 	 * Set Script for Media Switch
 	 * 
 	 * @var    array
 	 */
 	public $setScriptMediaSwitch = array();
-	
+
 	/**
 	 * Category builder
 	 * 
 	 * @var    array
 	 */
 	public $categoryBuilder = array();
-	
+
 	/**
 	 * Category Code builder
 	 * 
 	 * @var    array
 	 */
 	public $catCodeBuilder = array();
-	
+
 	/**
 	 * Check Box builder
 	 * 
 	 * @var    array
 	 */
 	public $checkboxBuilder = array();
-	
+
 	/**
 	 * Json String Builder
 	 * 
 	 * @var    array
 	 */
 	public $jsonStringBuilder = array();
-	
+
 	/**
 	 * Json String Builder for return values to array
 	 * 
 	 * @var    array
 	 */
 	public $jsonItemBuilderArray = array();
-	
+
 	/**
 	 * Json Item Builder
 	 * 
 	 * @var    array
 	 */
 	public $jsonItemBuilder = array();
-	
+
 	/**
 	 * Base 64 Builder
 	 * 
 	 * @var    array
 	 */
 	public $base64Builder = array();
-	
+
 	/**
 	 * Basic Encryption Builder
 	 * 
 	 * @var    array
 	 */
 	public $basicEncryptionBuilder = array();
-	
+
 	/**
 	 * Advnaced Encryption Builder
 	 * 
 	 * @var    array
 	 */
 	public $advancedEncryptionBuilder = array();
-	
+
 	/**
 	 * Get Items Method List String Fix Builder
 	 * 
 	 * @var    array
 	 */
 	public $getItemsMethodListStringFixBuilder = array();
-	
+
 	/**
 	 * Get Items Method Eximport String Fix Builder
 	 * 
 	 * @var    array
 	 */
 	public $getItemsMethodEximportStringFixBuilder = array();
-	
+
 	/**
 	 * Selection Translation Fix Builder
 	 * 
 	 * @var    array
 	 */
-	public $selectionTranslationFixBuilder	= array();
-	
+	public $selectionTranslationFixBuilder = array();
+
 	/**
 	 * Sort Builder
 	 * 
 	 * @var    array
 	 */
 	public $sortBuilder = array();
-	
+
 	/**
 	 * Search Builder
 	 * 
 	 * @var    array
 	 */
 	public $searchBuilder = array();
-	
+
 	/**
 	 * Filter Builder
 	 * 
 	 * @var    array
 	 */
 	public $filterBuilder = array();
-	
+
 	/**
 	 * Set Group Control
 	 * 
 	 * @var    array
 	 */
 	public $setGroupControl = array();
-	
+
 	/**
 	 * Set Field Names
 	 * 
 	 * @var    array
 	 */
-	public $fieldsNames = array();	
-	
+	public $fieldsNames = array();
+
 	/**
 	 * Set unique Names
 	 * 
 	 * @var    array
 	 */
 	public $uniqueNames = array();
-	
+
 	/**
 	 * Default Fields
 	 * 
 	 * @var    array
 	 */
 	public $defaultFields = array('created', 'created_by', 'modified', 'modified_by', 'published', 'ordering', 'access', 'version', 'hits', 'id');
-	
+
 	/**
 	 * Default Fields set to publishing
 	 * 
 	 * @var    array
 	 */
 	public $newPublishingFields = array();
-	
+
 	/**
 	 * Default Fields set to publishing
 	 * 
 	 * @var    array
 	 */
 	public $movedPublishingFields = array();
-	
+
 	/**
 	 * Set the line number in comments
 	 * 
@@ -366,7 +367,7 @@ class Fields extends Structure
 	{
 		if ($this->debugLinenr)
 		{
-			return ' [Fields '.$nr.']';	
+			return ' [Fields ' . $nr . ']';
 		}
 		return '';
 	}
@@ -487,13 +488,13 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['id']))
 			{
 				$attributes = array(
-				    'name' => 'id',
-				    'type' => 'text',
-				    'class' => 'readonly',
-				    'label' => 'JGLOBAL_FIELD_ID_LABEL',
-				    'description' => 'JGLOBAL_FIELD_ID_DESC',
-				    'size' => 10,
-				    'default' => 0
+					'name' => 'id',
+					'type' => 'text',
+					'class' => 'readonly',
+					'label' => 'JGLOBAL_FIELD_ID_LABEL',
+					'description' => 'JGLOBAL_FIELD_ID_DESC',
+					'size' => 10,
+					'default' => 0
 				);
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
@@ -504,13 +505,13 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['created']))
 			{
 				$attributes = array(
-				    'name' => 'created',
-				    'type' => 'calendar',
-				    'label' => $langView . '_CREATED_DATE_LABEL',
-				    'description' => $langView . '_CREATED_DATE_DESC',
-				    'size' => 22,
-				    'format' => '%Y-%m-%d %H:%M:%S',
-				    'filter' => 'user_utc'
+					'name' => 'created',
+					'type' => 'calendar',
+					'label' => $langView . '_CREATED_DATE_LABEL',
+					'description' => $langView . '_CREATED_DATE_DESC',
+					'size' => 22,
+					'format' => '%Y-%m-%d %H:%M:%S',
+					'filter' => 'user_utc'
 				);
 				$attributes = array_merge($attributes, $readOnlyXML);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla)");
@@ -523,10 +524,10 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['created_by']))
 			{
 				$attributes = array(
-				    'name' => 'created_by',
-				    'type' => 'user',
-				    'label' => $langView . '_CREATED_BY_LABEL',
-				    'description' => $langView . '_CREATED_BY_DESC',
+					'name' => 'created_by',
+					'type' => 'user',
+					'label' => $langView . '_CREATED_BY_LABEL',
+					'description' => $langView . '_CREATED_BY_DESC',
 				);
 				$attributes = array_merge($attributes, $readOnlyXML);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Created Field. Type: User (joomla)");
@@ -539,9 +540,9 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['published']))
 			{
 				$attributes = array(
-				    'name' => 'published',
-				    'type' => 'list',
-				    'label' => 'JSTATUS'
+					'name' => 'published',
+					'type' => 'list',
+					'label' => 'JSTATUS'
 				);
 				$attributes = array_merge($attributes, $readOnlyXML);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Published Field. Type: List (joomla)");
@@ -560,15 +561,15 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['modified']))
 			{
 				$attributes = array(
-				    'name' => 'modified',
-				    'type' => 'calendar',
-				    'class' => 'readonly',
-				    'label' => $langView . '_MODIFIED_DATE_LABEL',
-				    'description' => $langView . '_MODIFIED_DATE_DESC',
-				    'size' => 22,
-				    'readonly' => "true",
-				    'format' => '%Y-%m-%d %H:%M:%S',
-				    'filter' => 'user_utc'
+					'name' => 'modified',
+					'type' => 'calendar',
+					'class' => 'readonly',
+					'label' => $langView . '_MODIFIED_DATE_LABEL',
+					'description' => $langView . '_MODIFIED_DATE_DESC',
+					'size' => 22,
+					'readonly' => "true",
+					'format' => '%Y-%m-%d %H:%M:%S',
+					'filter' => 'user_utc'
 				);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
@@ -580,13 +581,13 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['modified_by']))
 			{
 				$attributes = array(
-				    'name' => 'modified_by',
-				    'type' => 'user',
-				    'label' => $langView . '_MODIFIED_BY_LABEL',
-				    'description' => $langView . '_MODIFIED_BY_DESC',
-				    'class' => 'readonly',
-				    'readonly' => 'true',
-				    'filter' => 'unset'
+					'name' => 'modified_by',
+					'type' => 'user',
+					'label' => $langView . '_MODIFIED_BY_LABEL',
+					'description' => $langView . '_MODIFIED_BY_DESC',
+					'class' => 'readonly',
+					'readonly' => 'true',
+					'filter' => 'unset'
 				);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
@@ -598,12 +599,12 @@ class Fields extends Structure
 			if (isset($this->accessBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName]) && !isset($this->fieldsNames[$viewName]['access']))
 			{
 				$attributes = array(
-				    'name' => 'access',
-				    'type' => 'accesslevel',
-				    'label' => 'JFIELD_ACCESS_LABEL',
-				    'description' => 'JFIELD_ACCESS_DESC',
-				    'default' => 1,
-				    'required' => "false"
+					'name' => 'access',
+					'type' => 'accesslevel',
+					'label' => 'JFIELD_ACCESS_LABEL',
+					'description' => 'JFIELD_ACCESS_DESC',
+					'default' => 1,
+					'required' => "false"
 				);
 				$attributes = array_merge($attributes, $readOnlyXML);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla)");
@@ -616,14 +617,14 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['ordering']))
 			{
 				$attributes = array(
-				    'name' => 'ordering',
-				    'type' => 'number',
-				    'class' => 'inputbox validate-ordering',
-				    'label' => $langView . '_ORDERING_LABEL',
-				    'description' => '',
-				    'default' => 0,
-				    'size' => 6,
-				    'required' => "false"
+					'name' => 'ordering',
+					'type' => 'number',
+					'class' => 'inputbox validate-ordering',
+					'label' => $langView . '_ORDERING_LABEL',
+					'description' => '',
+					'default' => 0,
+					'size' => 6,
+					'required' => "false"
 				);
 				$attributes = array_merge($attributes, $readOnlyXML);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla)");
@@ -636,14 +637,14 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$viewName]['version']))
 			{
 				$attributes = array(
-				    'name' => 'version',
-				    'type' => 'text',
-				    'class' => 'readonly',
-				    'label' => $langView . '_VERSION_LABEL',
-				    'description' => $langView . '_VERSION_DESC',
-				    'size' => 6,
-				    'readonly' => "true",
-				    'filter' => 'unset'
+					'name' => 'version',
+					'type' => 'text',
+					'class' => 'readonly',
+					'label' => $langView . '_VERSION_LABEL',
+					'description' => $langView . '_VERSION_DESC',
+					'size' => 6,
+					'readonly' => "true",
+					'filter' => 'unset'
 				);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Version Field. Type: Text (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
@@ -656,12 +657,12 @@ class Fields extends Structure
 			{
 				// metakey
 				$attributes = array(
-				    'name' => 'metakey',
-				    'type' => 'textarea',
-				    'label' => 'JFIELD_META_KEYWORDS_LABEL',
-				    'description' => 'JFIELD_META_KEYWORDS_DESC',
-				    'rows' => 3,
-				    'cols' => 30
+					'name' => 'metakey',
+					'type' => 'textarea',
+					'label' => 'JFIELD_META_KEYWORDS_LABEL',
+					'description' => 'JFIELD_META_KEYWORDS_DESC',
+					'rows' => 3,
+					'cols' => 30
 				);
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
@@ -701,20 +702,20 @@ class Fields extends Structure
 				$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Robots Field. Type: List (joomla)");
 				$robots = $fieldsFieldSetXML->addChild('field');
 				$attributes = array(
-				    'name' => 'robots',
-				    'type' => 'list',
-				    'label' => 'JFIELD_METADATA_ROBOTS_LABEL',
-				    'description' => 'JFIELD_METADATA_ROBOTS_DESC'
+					'name' => 'robots',
+					'type' => 'list',
+					'label' => 'JFIELD_METADATA_ROBOTS_LABEL',
+					'description' => 'JFIELD_METADATA_ROBOTS_DESC'
 				);
 				$this->xmlAddAttributes($robots, $attributes);
 				// count the static field created
 				$this->fieldCount++;
 				$options = array(
-				    'JGLOBAL_USE_GLOBAL' => '',
-				    'JGLOBAL_INDEX_FOLLOW' => 'index, follow',
-				    'JGLOBAL_NOINDEX_FOLLOW' => 'noindex, follow',
-				    'JGLOBAL_INDEX_NOFOLLOW' => 'index, nofollow',
-				    'JGLOBAL_NOINDEX_NOFOLLOW' => 'noindex, nofollow',
+					'JGLOBAL_USE_GLOBAL' => '',
+					'JGLOBAL_INDEX_FOLLOW' => 'index, follow',
+					'JGLOBAL_NOINDEX_FOLLOW' => 'noindex, follow',
+					'JGLOBAL_INDEX_NOFOLLOW' => 'index, nofollow',
+					'JGLOBAL_NOINDEX_NOFOLLOW' => 'noindex, nofollow',
 				);
 				foreach ($options as $text => $value)
 				{
@@ -726,11 +727,11 @@ class Fields extends Structure
 				$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Author Field. Type: Text (joomla)");
 				$author = $fieldsFieldSetXML->addChild('field');
 				$attributes = array(
-				    'name' => 'author',
-				    'type' => 'text',
-				    'label' => 'JAUTHOR',
-				    'description' => 'JFIELD_METADATA_AUTHOR_DESC',
-				    'size' => 20
+					'name' => 'author',
+					'type' => 'text',
+					'label' => 'JAUTHOR',
+					'description' => 'JFIELD_METADATA_AUTHOR_DESC',
+					'size' => 20
 				);
 				$this->xmlAddAttributes($author, $attributes);
 				// count the static field created
@@ -739,14 +740,14 @@ class Fields extends Structure
 				$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla)");
 				$rights = $fieldsFieldSetXML->addChild('field');
 				$attributes = array(
-				    'name' => 'rights',
-				    'type' => 'textarea',
-				    'label' => 'JFIELD_META_RIGHTS_LABEL',
-				    'description' => 'JFIELD_META_RIGHTS_DESC',
-				    'required' => 'false',
-				    'filter' => 'string',
-				    'cols' => 30,
-				    'rows' => 2
+					'name' => 'rights',
+					'type' => 'textarea',
+					'label' => 'JFIELD_META_RIGHTS_LABEL',
+					'description' => 'JFIELD_META_RIGHTS_DESC',
+					'required' => 'false',
+					'filter' => 'string',
+					'cols' => 30,
+					'rows' => 2
 				);
 				$this->xmlAddAttributes($rights, $attributes);
 				// count the static field created
@@ -807,8 +808,8 @@ class Fields extends Structure
 			if (ComponentbuilderHelper::checkArray($fieldAttributes))
 			{
 				// set the array of field names
-				$this->setFieldsNames($viewName,$fieldAttributes['name']);
-				
+				$this->setFieldsNames($viewName, $fieldAttributes['name']);
+
 				if ($this->defaultField($typeName, 'option'))
 				{
 					//reset options array
@@ -1136,9 +1137,9 @@ class Fields extends Structure
 				{
 					$form = $field->fieldXML->addChild('form');
 					$attributes = array(
-					    'hidden' => 'true',
-					    'name' => 'list_' . $fieldAttributes['name'] . '_modal',
-					    'repeat' => 'true'
+						'hidden' => 'true',
+						'name' => 'list_' . $fieldAttributes['name'] . '_modal',
+						'repeat' => 'true'
 					);
 					$this->xmlAddAttributes($form, $attributes);
 
@@ -1248,7 +1249,7 @@ class Fields extends Structure
 	 * @return  void
 	 *
 	 */
-	public function setLayoutBuilder(&$viewName,&$tabName,&$name,&$field)
+	public function setLayoutBuilder(&$viewName, &$tabName, &$name, &$field)
 	{
 		// first fix the zero order
 		// to insure it lands before all the other fields
@@ -1338,14 +1339,14 @@ class Fields extends Structure
 	 */
 	public function buildSiteFieldData($view, $field, $set, $type)
 	{
-		$decode = array('json','base64','basic_encryption','advance_encryption');
-		$textareas = array('textarea','editor');
+		$decode = array('json', 'base64', 'basic_encryption', 'advance_encryption');
+		$textareas = array('textarea', 'editor');
 		if (isset($this->siteFields[$view][$field]) && ComponentbuilderHelper::checkArray($this->siteFields[$view][$field]))
 		{
 			foreach ($this->siteFields[$view][$field] as $code => $array)
 			{
 				// set the decoding methods
-				if (in_array($set,$decode))
+				if (in_array($set, $decode))
 				{
 					$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']] = array('decode' => $set, 'type' => $type);
 				}
@@ -1466,9 +1467,9 @@ class Fields extends Structure
 						if (ComponentbuilderHelper::checkString($otherName) && ComponentbuilderHelper::checkString($otherViews) && ComponentbuilderHelper::checkString($otherView))
 						{
 							$this->catOtherName[$listViewName] = array(
-							    'name' => ComponentbuilderHelper::safeString($otherName),
-							    'views' => ComponentbuilderHelper::safeString($otherViews),
-							    'view' => ComponentbuilderHelper::safeString($otherView)
+								'name' => ComponentbuilderHelper::safeString($otherName),
+								'views' => ComponentbuilderHelper::safeString($otherViews),
+								'view' => ComponentbuilderHelper::safeString($otherView)
 							);
 						}
 					}
@@ -1793,7 +1794,7 @@ class Fields extends Structure
 			return;
 		}
 		// count how many times the field is used
-		$this->uniqueNames[$view]['counter'][$name]++;
+		$this->uniqueNames[$view]['counter'][$name] ++;
 		return;
 	}
 
@@ -1825,7 +1826,6 @@ class Fields extends Structure
 		return $name;
 	}
 
-	
 	/**
 	 * set Builders
 	 *
@@ -1947,16 +1947,16 @@ class Fields extends Structure
 		{
 			// load to list builder
 			$this->listBuilder[$listViewName][] = array(
-			    'type' => $typeName,
-			    'code' => $name,
-			    'lang' => $listLangName,
-			    'title' => (isset($field['title']) && $field['title']) ? true : false,
-			    'alias' => (isset($field['alias']) && $field['alias']) ? true : false,
-			    'link' => (isset($field['link']) && $field['link']) ? true : false,
-			    'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
-			    'custom' => $custom,
-			    'multiple' => $multiple,
-			    'options' => $options);
+				'type' => $typeName,
+				'code' => $name,
+				'lang' => $listLangName,
+				'title' => (isset($field['title']) && $field['title']) ? true : false,
+				'alias' => (isset($field['alias']) && $field['alias']) ? true : false,
+				'link' => (isset($field['link']) && $field['link']) ? true : false,
+				'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
+				'custom' => $custom,
+				'multiple' => $multiple,
+				'options' => $options);
 
 			$this->customBuilderList[$listViewName][] = $name;
 		}
@@ -2156,26 +2156,26 @@ class Fields extends Structure
 	public function setCustomFieldTypeFile($data, $viewName_list, $viewName_single)
 	{
 		// make sure it is not already been build
-		if (!isset($this->fileContentDynamic['customfield_'.$data['type']]) || !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_'.$data['type']]))
+		if (!isset($this->fileContentDynamic['customfield_' . $data['type']]) || !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_' . $data['type']]))
 		{
 			// first build the custom field type file
 			$target = array('admin' => 'customfield');
-			$this->buildDynamique($target,'field'.$data['custom']['extends'], $data['custom']['type']);
+			$this->buildDynamique($target, 'field' . $data['custom']['extends'], $data['custom']['type']);
 			// set tab and break replacements
 			$tabBreak = array(
-			    '\t' => "\t",
-			    '\n' => PHP_EOL
+				'\t' => "\t",
+				'\n' => PHP_EOL
 			);
 			// make field dynamic
 			$replace = array(
 				'###TABLE###' => $data['custom']['table'],
 				'###ID###' => $data['custom']['id'],
 				'###TEXT###' => $data['custom']['text'],
-				'###CODE_TEXT###' => $data['code'].'_'.$data['custom']['text'],
+				'###CODE_TEXT###' => $data['code'] . '_' . $data['custom']['text'],
 				'###CODE###' => $data['code'],
 				'###component###' => $this->fileContentStatic['###component###'],
 				'###Component###' => $this->fileContentStatic['###Component###'],
-				'###view_type###' => $viewName_single.'_'.$data['type'],
+				'###view_type###' => $viewName_single . '_' . $data['type'],
 				'###type###' => $data['type'],
 				'###view###' => $viewName_single,
 				'###views###' => $viewName_list
@@ -2195,7 +2195,7 @@ class Fields extends Structure
 						}
 						else
 						{
-							$phpCode .= PHP_EOL."\t\t".$this->setPlaceholders($code, $tabBreak);
+							$phpCode .= PHP_EOL . "\t\t" . $this->setPlaceholders($code, $tabBreak);
 						}
 					}
 				}
@@ -2244,30 +2244,30 @@ class Fields extends Structure
 					$phpxCode = 'return null;';
 				}
 				// temp holder for name
-				$tempName = $data['custom']['label'].' Group';
+				$tempName = $data['custom']['label'] . ' Group';
 				// set lang
-				$groupLangName = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($tempName,'U');
+				$groupLangName = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($tempName, 'U');
 				// add to lang array
-				$this->langContent[$this->lang][$groupLangName] = ComponentbuilderHelper::safeString($tempName,'W');
+				$this->langContent[$this->lang][$groupLangName] = ComponentbuilderHelper::safeString($tempName, 'W');
 				// build the Group Control
 				$this->setGroupControl[$data['type']] = $groupLangName;
 				// ###JFORM_GETGROUPS_PHP### <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_'.$data['type']]['###JFORM_GETGROUPS_PHP###'] = $phpCode;
+				$this->fileContentDynamic['customfield_' . $data['type']]['###JFORM_GETGROUPS_PHP###'] = $phpCode;
 
 				// ###JFORM_GETEXCLUDED_PHP### <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_'.$data['type']]['###JFORM_GETEXCLUDED_PHP###'] = $phpxCode;
+				$this->fileContentDynamic['customfield_' . $data['type']]['###JFORM_GETEXCLUDED_PHP###'] = $phpxCode;
 			}
 			else
 			{
 				// ###JFORM_GETOPTIONS_PHP### <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_'.$data['type']]['###JFORM_GETOPTIONS_PHP###'] = $phpCode;
+				$this->fileContentDynamic['customfield_' . $data['type']]['###JFORM_GETOPTIONS_PHP###'] = $phpCode;
 			}
 			// ###Type### <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_'.$data['type']]['###Type###'] = ComponentbuilderHelper::safeString($data['custom']['type'],'F');
+			$this->fileContentDynamic['customfield_' . $data['type']]['###Type###'] = ComponentbuilderHelper::safeString($data['custom']['type'], 'F');
 			// ###type### <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_'.$data['type']]['###type###'] = $data['custom']['type'];
+			$this->fileContentDynamic['customfield_' . $data['type']]['###type###'] = $data['custom']['type'];
 			// ###type### <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_'.$data['type']]['###ADD_BUTTON###'] = $this->setAddButttonToListField($data['custom']['view'],$data['custom']['views']);
+			$this->fileContentDynamic['customfield_' . $data['type']]['###ADD_BUTTON###'] = $this->setAddButttonToListField($data['custom']['view'], $data['custom']['views']);
 		}
 	}
 
@@ -2281,39 +2281,39 @@ class Fields extends Structure
 	 *
 	 */
 	public function defaultField($type, $option = 'default')
-	{	
+	{
 		// list of default fields
 		// https://docs.joomla.org/Form_field
 		$defaults = array(
-		    'default' => array(
-			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox',
-			'checkboxes', 'color', 'combo', 'componentlayout', 'contentlanguage', 'editor',
-			'chromestyle', 'contenttype', 'databaseconnection', 'editors', 'email', 'file',
-			'filelist', 'folderlist', 'groupedlist', 'hidden', 'file', 'headertag', 'helpsite',
-			'imagelist', 'integer', 'language', 'list', 'media', 'menu', 'note', 'number', 'password',
-			'plugins', 'radio', 'repeatable', 'range', 'rules', 'subform', 'sessionhandler', 'spacer', 'sql', 'tag',
-			'tel', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition', 'moduletag',
-			'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
-		    ),
-		    'plain' => array(
-			'accesslevel', 'checkbox', 'cachehandler', 'calendar', 'category', 'chromestyle', 'color',
-			'contenttype', 'combo', 'componentlayout', 'databaseconnection', 'editor', 'editors',
-			'email', 'file', 'filelist', 'folderlist', 'headertag', 'helpsite',
-			'hidden', 'imagelist', 'integer', 'language', 'media', 'menu',
-			'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules',
-			'sessionhandler', 'tag', 'tel', 'text', 'textarea',
-			'timezone', 'url', 'user', 'usergroup'
-		    ),
-		    'spacer' => array(
-			'note', 'spacer'
-		    ),
-		    'option' => array(
-			'plugins', 'checkboxes', 'contentlanguage', 'list', 'radio', 'sql'
-		    ),
-		    'special' => array(
-			'contentlanguage', 'groupedlist', 'moduleposition', 'plugin',
-			'repeatable', 'templatestyle', 'subform'
-		    )
+			'default' => array(
+				'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox',
+				'checkboxes', 'color', 'combo', 'componentlayout', 'contentlanguage', 'editor',
+				'chromestyle', 'contenttype', 'databaseconnection', 'editors', 'email', 'file',
+				'filelist', 'folderlist', 'groupedlist', 'hidden', 'file', 'headertag', 'helpsite',
+				'imagelist', 'integer', 'language', 'list', 'media', 'menu', 'note', 'number', 'password',
+				'plugins', 'radio', 'repeatable', 'range', 'rules', 'subform', 'sessionhandler', 'spacer', 'sql', 'tag',
+				'tel', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition', 'moduletag',
+				'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
+			),
+			'plain' => array(
+				'accesslevel', 'checkbox', 'cachehandler', 'calendar', 'category', 'chromestyle', 'color',
+				'contenttype', 'combo', 'componentlayout', 'databaseconnection', 'editor', 'editors',
+				'email', 'file', 'filelist', 'folderlist', 'headertag', 'helpsite',
+				'hidden', 'imagelist', 'integer', 'language', 'media', 'menu',
+				'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules',
+				'sessionhandler', 'tag', 'tel', 'text', 'textarea',
+				'timezone', 'url', 'user', 'usergroup'
+			),
+			'spacer' => array(
+				'note', 'spacer'
+			),
+			'option' => array(
+				'plugins', 'checkboxes', 'contentlanguage', 'list', 'radio', 'sql'
+			),
+			'special' => array(
+				'contentlanguage', 'groupedlist', 'moduleposition', 'plugin',
+				'repeatable', 'templatestyle', 'subform'
+			)
 		);
 
 		if (in_array($type, $defaults[$option]))
@@ -2415,9 +2415,9 @@ class Fields extends Structure
 		if ($this->tidy)
 		{
 			$tidy = new Tidy();
-			$tidy->parseString($xmlString,array('indent'=>true,'indent-spaces'=>8,'input-xml'=>true,'output-xml'=>true,'indent-attributes'=>true,'wrap-attributes'=>true,'wrap'=>false));
+			$tidy->parseString($xmlString, array('indent' => true, 'indent-spaces' => 8, 'input-xml' => true, 'output-xml' => true, 'indent-attributes' => true, 'wrap-attributes' => true, 'wrap' => false));
 			$tidy->cleanRepair();
-			return $this->xmlIndent((string)$tidy,' ',8,true,false);
+			return $this->xmlIndent((string) $tidy, ' ', 8, true, false);
 		}
 		// set tidy waring atleast once
 		elseif (!$this->setTidyWarning)
@@ -2429,7 +2429,7 @@ class Fields extends Structure
 		}
 		return $xmlString;
 	}
-	
+
 	/**
 	 * xmlIndent
 	 *
@@ -2442,18 +2442,18 @@ class Fields extends Structure
 	 * @return  string XML output
 	 *
 	 */
-	public function xmlIndent($string,$char=' ',$depth=0,$skipfirst=false,$skiplast=false)
+	public function xmlIndent($string, $char = ' ', $depth = 0, $skipfirst = false, $skiplast = false)
 	{
 		$output = array();
-		$lines = explode("\n",$string);
+		$lines = explode("\n", $string);
 		$first = true;
-		$last = count($lines)-1;
-		foreach($lines as $i=>$line)
+		$last = count($lines) - 1;
+		foreach ($lines as $i => $line)
 		{
-			$output[] = (($first&&$skipfirst)||$i===$last&&$skiplast)?$line:str_repeat($char,$depth).$line;
+			$output[] = (($first && $skipfirst) || $i === $last && $skiplast) ? $line : str_repeat($char, $depth) . $line;
 			$first = false;
 		}
-		return implode("\n",$output);
+		return implode("\n", $output);
 	}
 
 }

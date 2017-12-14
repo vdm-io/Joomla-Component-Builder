@@ -37,13 +37,13 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 	// Overwriting JView display method
 	function display($tpl = null)
 	{
-                // get component params
+		// get component params
 		$this->params	= JComponentHelper::getParams('com_componentbuilder');
 		// get the application
 		$this->app	= JFactory::getApplication();
 		// get the user object
 		$this->user	= JFactory::getUser();
-                // get global action permissions
+		// get global action permissions
 		$this->canDo	= ComponentbuilderHelper::getActions('compiler');
 		// Initialise variables.
 		$this->items	= $this->get('Items');
@@ -139,7 +139,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		return false;
 	}
 
-        /**
+	/**
 	 * Prepares the document
 	 */
 	protected function setDocument()
@@ -198,7 +198,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		}   
 		// add marked library
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
-                // add the document default css file
+		// add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/compiler.css');
 		// Set the Custom CSS script to view
 		$this->document->addStyleDeclaration("
@@ -267,7 +267,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 				});
 			}
 		");
-        }
+	}
 
 	/**
 	 * Setting the toolbar
@@ -275,12 +275,12 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 	protected function addToolBar()
 	{
 		// hide the main menu
-                $this->app->input->set('hidemainmenu', true);
+		$this->app->input->set('hidemainmenu', true);
 		// add title to the page
 		JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_COMPILER'),'cogs');
-                // add the back button
-                // JToolBarHelper::custom('compiler.back', 'undo-2', '', 'COM_COMPONENTBUILDER_BACK', false);
-                // add cpanel button
+		// add the back button
+		// JToolBarHelper::custom('compiler.back', 'undo-2', '', 'COM_COMPONENTBUILDER_BACK', false);
+		// add cpanel button
 		JToolBarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('compiler.clear_tmp'))
 		{
@@ -289,20 +289,20 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		}
 
 		// set help url for this view if found
-                $help_url = ComponentbuilderHelper::getHelpUrl('compiler');
-                if (ComponentbuilderHelper::checkString($help_url))
-                {
-                        JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
-                }
+		$help_url = ComponentbuilderHelper::getHelpUrl('compiler');
+		if (ComponentbuilderHelper::checkString($help_url))
+		{
+			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+		}
 
-                // add the options comp button
-                if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
+		// add the options comp button
+		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 	}
 
-        /**
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var  The output to escape.
@@ -311,7 +311,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 	 */
 	public function escape($var)
 	{
-                // use the helper htmlEscape method instead.
+		// use the helper htmlEscape method instead.
 		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
 	}
 }

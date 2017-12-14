@@ -272,6 +272,14 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 						$item->default = base64_decode($item->default);
 						// decode php_model
 						$item->php_model = base64_decode($item->php_model);
+						// decode js_document
+						$item->js_document = base64_decode($item->js_document);
+						// decode javascript_file
+						$item->javascript_file = base64_decode($item->javascript_file);
+						// decode css_document
+						$item->css_document = base64_decode($item->css_document);
+						// decode css
+						$item->css = base64_decode($item->css);
 						// decode php_document
 						$item->php_document = base64_decode($item->php_document);
 						// decode php_view
@@ -280,12 +288,6 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 						$item->php_jview_display = base64_decode($item->php_jview_display);
 						// decode php_jview
 						$item->php_jview = base64_decode($item->php_jview);
-						// decode js_document
-						$item->js_document = base64_decode($item->js_document);
-						// decode css_document
-						$item->css_document = base64_decode($item->css_document);
-						// decode css
-						$item->css = base64_decode($item->css);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

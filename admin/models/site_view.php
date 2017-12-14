@@ -127,16 +127,16 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->custom_button = $custom_button->toArray();
 			}
 
-			if (!empty($item->js_document))
-			{
-				// base64 Decode js_document.
-				$item->js_document = base64_decode($item->js_document);
-			}
-
 			if (!empty($item->css))
 			{
 				// base64 Decode css.
 				$item->css = base64_decode($item->css);
+			}
+
+			if (!empty($item->js_document))
+			{
+				// base64 Decode js_document.
+				$item->js_document = base64_decode($item->js_document);
 			}
 
 			if (!empty($item->css_document))
@@ -145,28 +145,28 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->css_document = base64_decode($item->css_document);
 			}
 
-			if (!empty($item->php_ajaxmethod))
-			{
-				// base64 Decode php_ajaxmethod.
-				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
-			}
-
 			if (!empty($item->default))
 			{
 				// base64 Decode default.
 				$item->default = base64_decode($item->default);
 			}
 
+			if (!empty($item->php_ajaxmethod))
+			{
+				// base64 Decode php_ajaxmethod.
+				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+			}
+
+			if (!empty($item->javascript_file))
+			{
+				// base64 Decode javascript_file.
+				$item->javascript_file = base64_decode($item->javascript_file);
+			}
+
 			if (!empty($item->php_model))
 			{
 				// base64 Decode php_model.
 				$item->php_model = base64_decode($item->php_model);
-			}
-
-			if (!empty($item->php_controller))
-			{
-				// base64 Decode php_controller.
-				$item->php_controller = base64_decode($item->php_controller);
 			}
 
 			if (!empty($item->php_document))
@@ -185,6 +185,12 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			{
 				// base64 Decode php_jview_display.
 				$item->php_jview_display = base64_decode($item->php_jview_display);
+			}
+
+			if (!empty($item->php_controller))
+			{
+				// base64 Decode php_controller.
+				$item->php_controller = base64_decode($item->php_controller);
 			}
 
 			if (!empty($item->php_jview))
@@ -1010,16 +1016,16 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$data['custom_button'] = '';
 		}
 
-		// Set the js_document string to base64 string.
-		if (isset($data['js_document']))
-		{
-			$data['js_document'] = base64_encode($data['js_document']);
-		}
-
 		// Set the css string to base64 string.
 		if (isset($data['css']))
 		{
 			$data['css'] = base64_encode($data['css']);
+		}
+
+		// Set the js_document string to base64 string.
+		if (isset($data['js_document']))
+		{
+			$data['js_document'] = base64_encode($data['js_document']);
 		}
 
 		// Set the css_document string to base64 string.
@@ -1028,28 +1034,28 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$data['css_document'] = base64_encode($data['css_document']);
 		}
 
-		// Set the php_ajaxmethod string to base64 string.
-		if (isset($data['php_ajaxmethod']))
-		{
-			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
-		}
-
 		// Set the default string to base64 string.
 		if (isset($data['default']))
 		{
 			$data['default'] = base64_encode($data['default']);
 		}
 
+		// Set the php_ajaxmethod string to base64 string.
+		if (isset($data['php_ajaxmethod']))
+		{
+			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
+		}
+
+		// Set the javascript_file string to base64 string.
+		if (isset($data['javascript_file']))
+		{
+			$data['javascript_file'] = base64_encode($data['javascript_file']);
+		}
+
 		// Set the php_model string to base64 string.
 		if (isset($data['php_model']))
 		{
 			$data['php_model'] = base64_encode($data['php_model']);
-		}
-
-		// Set the php_controller string to base64 string.
-		if (isset($data['php_controller']))
-		{
-			$data['php_controller'] = base64_encode($data['php_controller']);
 		}
 
 		// Set the php_document string to base64 string.
@@ -1068,6 +1074,12 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		if (isset($data['php_jview_display']))
 		{
 			$data['php_jview_display'] = base64_encode($data['php_jview_display']);
+		}
+
+		// Set the php_controller string to base64 string.
+		if (isset($data['php_controller']))
+		{
+			$data['php_controller'] = base64_encode($data['php_controller']);
 		}
 
 		// Set the php_jview string to base64 string.

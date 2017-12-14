@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		custom_script_fullwidth.php
+	@subpackage		php_fullwidth.php
 	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -37,13 +37,7 @@ $fields = $displayData->get('fields') ?: array(
 	'add_php_jview_display',
 	'php_jview_display',
 	'add_php_jview',
-	'php_jview',
-	'add_js_document',
-	'js_document',
-	'add_css_document',
-	'css_document',
-	'add_css',
-	'css'
+	'php_jview'
 );
 
 ?>

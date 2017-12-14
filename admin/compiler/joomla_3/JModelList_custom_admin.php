@@ -37,16 +37,16 @@ jimport('joomla.application.component.modellist');
  */
 class ###Component###Model###SViews### extends JModelList
 {
-        /**
+	/**
 	 * Model user data.
 	 *
-	 * @var        strings
+	 * @var  strings
 	 */
-        protected $user;
-        protected $userId;
-        protected $guest;
-        protected $groups;
-        protected $levels;
+	protected $user;
+	protected $userId;
+	protected $guest;
+	protected $groups;
+	protected $levels;
 	protected $app;
 	protected $input;
 	protected $uikitComp;
@@ -58,14 +58,14 @@ class ###Component###Model###SViews### extends JModelList
 	 */
 	protected function getListQuery()
 	{
-                // Get the current user for authorisation checks
-		$this->user		= JFactory::getUser();
+		// Get the current user for authorisation checks
+		$this->user			= JFactory::getUser();
 		$this->userId		= $this->user->get('id');
 		$this->guest		= $this->user->get('guest');
-                $this->groups		= $this->user->get('groups');
-                $this->authorisedGroups	= $this->user->getAuthorisedGroups();
+		$this->groups		= $this->user->get('groups');
+		$this->authorisedGroups	= $this->user->getAuthorisedGroups();
 		$this->levels		= $this->user->getAuthorisedViewLevels();
-		$this->app		= JFactory::getApplication();
+		$this->app			= JFactory::getApplication();
 		$this->input		= $this->app->input;
 		$this->initSet		= true; ###CUSTOM_ADMIN_GET_LIST_QUERY###
 	}
@@ -77,16 +77,16 @@ class ###Component###Model###SViews### extends JModelList
 	 */
 	public function getItems()
 	{
-                $user = JFactory::getUser();
-                // check if this user has permission to access items
-                if (!$user->authorise('###sviews###.access', 'com_###component###'))
-                {
+		$user = JFactory::getUser();
+		// check if this user has permission to access items
+		if (!$user->authorise('###sviews###.access', 'com_###component###'))
+		{
 			$app = JFactory::getApplication();
 			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
 			// redirect away if not a correct (TODO for now we go to default view)
 			$app->redirect('index.php?option=com_###component###');
 			return false;
-                }###LICENSE_LOCKED_CHECK### ###CUSTOM_ADMIN_BEFORE_GET_ITEMS###
+		}###LICENSE_LOCKED_CHECK### ###CUSTOM_ADMIN_BEFORE_GET_ITEMS###
 		// load parent items
 		$items = parent::getItems();
 

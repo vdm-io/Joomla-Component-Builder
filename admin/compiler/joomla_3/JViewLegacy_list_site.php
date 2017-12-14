@@ -48,14 +48,14 @@ class ###Component###View###SViews### extends JViewLegacy
 		$this->user = JFactory::getUser();###SITE_DIPLAY_METHOD###
 	}###SITE_EXTRA_DIPLAY_METHODS###
 
-        /**
+	/**
 	 * Prepares the document
 	 */
 	protected function _prepareDocument()
 	{###SITE_LIBRARIES_LOADER### ###SITE_UIKIT_LOADER### ###SITE_GOOGLECHART_LOADER### ###SITE_FOOTABLE_LOADER### ###SITE_DOCUMENT_METADATA### ###SITE_DOCUMENT_CUSTOM_PHP###
 		// add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/components/com_###component###/assets/css/###sview###.css');###SITE_DOCUMENT_CUSTOM_CSS### ###SITE_DOCUMENT_CUSTOM_JS###
-        }
+	}
 
 	/**
 	 * Setting the toolbar
@@ -75,7 +75,7 @@ class ###Component###View###SViews### extends JViewLegacy
 		$this->toolbar = JToolbar::getInstance();
 	}###SITE_GET_MODULE###
 
-        /**
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var  The output to escape.
@@ -84,7 +84,7 @@ class ###Component###View###SViews### extends JViewLegacy
 	 */
 	public function escape($var, $sorten = false, $length = 40)
 	{
-                // use the helper htmlEscape method instead.
+		// use the helper htmlEscape method instead.
 		return ###Component###Helper::htmlEscape($var, $this->_charset, $sorten, $length);
 	}
 }

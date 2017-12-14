@@ -61,7 +61,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 		parent::display($tpl);
 	}
 
-        /**
+	/**
 	 * Prepares the document
 	 */
 	protected function _prepareDocument()
@@ -93,7 +93,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 		}     
 		// add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/components/com_componentbuilder/assets/css/api.css'); 
-        }
+	}
 
 	/**
 	 * Setting the toolbar
@@ -102,7 +102,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 	{
 		// adding the joomla toolbar to the front
 		JLoader::register('JToolbarHelper', JPATH_ADMINISTRATOR.'/includes/toolbar.php');
-		
+
 		// set help url for this view if found
 		$help_url = ComponentbuilderHelper::getHelpUrl('api');
 		if (ComponentbuilderHelper::checkString($help_url))
@@ -113,7 +113,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 		$this->toolbar = JToolbar::getInstance();
 	}
 
-        /**
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var  The output to escape.
@@ -122,7 +122,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 	 */
 	public function escape($var, $sorten = false, $length = 40)
 	{
-                // use the helper htmlEscape method instead.
+		// use the helper htmlEscape method instead.
 		return ComponentbuilderHelper::htmlEscape($var, $this->_charset, $sorten, $length);
 	}
 }

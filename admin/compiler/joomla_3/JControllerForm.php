@@ -105,10 +105,10 @@ class ###Component###Controller###View### extends JControllerForm
                 {
 			$append .= '&ref='.(string)$ref.'&refid='.(int)$refid;
 		}
-                elseif ($ref)
-                {
+		elseif ($ref)
+		{
 			$append .= '&ref='.(string)$ref;
-                }
+		}
 
 		if ($tmpl)
 		{
@@ -220,11 +220,11 @@ class ###Component###Controller###View### extends JControllerForm
 		$this->ref 		= $this->input->get('ref', 0, 'word');
 		$this->refid 	= $this->input->get('refid', 0, 'int');
 
-                if ($this->ref || $this->refid)
-                {
-                        // to make sure the item is checkedin on redirect
-                        $this->task = 'save';
-                }
+		if ($this->ref || $this->refid)
+		{
+			// to make sure the item is checkedin on redirect
+			$this->task = 'save';
+		}
 
 		$saved = parent::save($key, $urlVar);
 

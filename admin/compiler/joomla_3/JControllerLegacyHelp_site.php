@@ -51,7 +51,8 @@ class ###Component###ControllerHelp extends JControllerLegacy
 		// Check Token!
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
-		if($token == $call_token){
+		if($token == $call_token)
+		{
 			$task = $this->getTask();
 			switch($task){
 				case 'getText':
@@ -67,25 +68,25 @@ class ###Component###ControllerHelp extends JControllerLegacy
 							$result = '';
 						}
 						echo $result;
-                                                // stop execution gracefully
-                                                jexit();
+						// stop execution gracefully
+						jexit();
 					}
 					catch(Exception $e)
 					{
-                                                // stop execution gracefully
+						// stop execution gracefully
 						jexit();
 					}
 				break;
 			}
 		}
-                else
-                {
-                        // stop execution gracefully
+		else
+		{
+			// stop execution gracefully
 			jexit();
 		}
 	}
 
-        protected function getHelpDocumentText($id)
+	protected function getHelpDocumentText($id)
 	{
 		$db	= JFactory::getDbo();
 		$query	= $db->getQuery(true);

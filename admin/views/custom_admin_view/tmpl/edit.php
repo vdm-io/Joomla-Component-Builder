@@ -93,12 +93,22 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'custom_admin_viewTab', 'custom_script', JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CUSTOM_SCRIPT', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'custom_admin_viewTab', 'javascript_css', JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_JAVASCRIPT_CSS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('custom_admin_view.custom_script_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('custom_admin_view.javascript_css_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'custom_admin_viewTab', 'php', JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('custom_admin_view.php_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -228,48 +238,63 @@ jQuery('#adminForm').on('change', '#jform_add_css_document',function (e)
 
 });
 
-// #jform_add_js_document listeners for add_js_document_vvvvvyf function
+// #jform_add_javascript_file listeners for add_javascript_file_vvvvvyf function
+jQuery('#jform_add_javascript_file').on('keyup',function()
+{
+	var add_javascript_file_vvvvvyf = jQuery("#jform_add_javascript_file input[type='radio']:checked").val();
+	vvvvvyf(add_javascript_file_vvvvvyf);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_javascript_file',function (e)
+{
+	e.preventDefault();
+	var add_javascript_file_vvvvvyf = jQuery("#jform_add_javascript_file input[type='radio']:checked").val();
+	vvvvvyf(add_javascript_file_vvvvvyf);
+
+});
+
+// #jform_add_js_document listeners for add_js_document_vvvvvyg function
 jQuery('#jform_add_js_document').on('keyup',function()
 {
-	var add_js_document_vvvvvyf = jQuery("#jform_add_js_document input[type='radio']:checked").val();
-	vvvvvyf(add_js_document_vvvvvyf);
+	var add_js_document_vvvvvyg = jQuery("#jform_add_js_document input[type='radio']:checked").val();
+	vvvvvyg(add_js_document_vvvvvyg);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_js_document',function (e)
 {
 	e.preventDefault();
-	var add_js_document_vvvvvyf = jQuery("#jform_add_js_document input[type='radio']:checked").val();
-	vvvvvyf(add_js_document_vvvvvyf);
+	var add_js_document_vvvvvyg = jQuery("#jform_add_js_document input[type='radio']:checked").val();
+	vvvvvyg(add_js_document_vvvvvyg);
 
 });
 
-// #jform_add_custom_button listeners for add_custom_button_vvvvvyg function
+// #jform_add_custom_button listeners for add_custom_button_vvvvvyh function
 jQuery('#jform_add_custom_button').on('keyup',function()
 {
-	var add_custom_button_vvvvvyg = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vvvvvyg(add_custom_button_vvvvvyg);
+	var add_custom_button_vvvvvyh = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvvyh(add_custom_button_vvvvvyh);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_custom_button',function (e)
 {
 	e.preventDefault();
-	var add_custom_button_vvvvvyg = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vvvvvyg(add_custom_button_vvvvvyg);
+	var add_custom_button_vvvvvyh = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvvyh(add_custom_button_vvvvvyh);
 
 });
 
-// #jform_add_css listeners for add_css_vvvvvyh function
+// #jform_add_css listeners for add_css_vvvvvyi function
 jQuery('#jform_add_css').on('keyup',function()
 {
-	var add_css_vvvvvyh = jQuery("#jform_add_css input[type='radio']:checked").val();
-	vvvvvyh(add_css_vvvvvyh);
+	var add_css_vvvvvyi = jQuery("#jform_add_css input[type='radio']:checked").val();
+	vvvvvyi(add_css_vvvvvyi);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_css',function (e)
 {
 	e.preventDefault();
-	var add_css_vvvvvyh = jQuery("#jform_add_css input[type='radio']:checked").val();
-	vvvvvyh(add_css_vvvvvyh);
+	var add_css_vvvvvyi = jQuery("#jform_add_css input[type='radio']:checked").val();
+	vvvvvyi(add_css_vvvvvyi);
 
 });
 

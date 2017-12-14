@@ -55,20 +55,20 @@ class ###Component###ControllerAjax extends JControllerLegacy
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
 		if($token == $call_token)
-                {
+		{
 			$task = $this->getTask();
 			switch($task)
-                        {###AJAX_INPUT_RETURN###
+			{###AJAX_INPUT_RETURN###
 			}
 		}
-                else
-                {
+		else
+		{
 			if($callback = $jinput->get('callback', null, 'CMD'))
-                        {
+			{
 				echo $callback."(".json_encode(false).");";
 			}
-                        else
-                        {
+			else
+			{
 				echo "(".json_encode(false).");";
 			}
 		}

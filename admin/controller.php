@@ -39,7 +39,7 @@ class ComponentbuilderController extends JControllerLegacy
 	 *
 	 * @return void
 	 */
-        function display($cachable = false, $urlparams = false)
+	function display($cachable = false, $urlparams = false)
 	{
 		// set default view if not set
 		$view   = $this->input->getCmd('view', 'Componentbuilder');
@@ -48,46 +48,46 @@ class ComponentbuilderController extends JControllerLegacy
 		$id    	= $this->input->getInt('id');
 
 		// Check for edit form.
-                if(ComponentbuilderHelper::checkArray($data))
-                {
-                    if ($data['edit'] && $layout == 'edit' && !$this->checkEditId('com_componentbuilder.edit.'.$data['view'], $id))
-                    {
-                        // Somehow the person just went to the form - we don't allow that.
-                        $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
-                        $this->setMessage($this->getError(), 'error');
-                        // check if item was opend from other then its own list view
-                        $ref 	= $this->input->getCmd('ref', 0);
-                        $refid 	= $this->input->getInt('refid', 0);
-                        // set redirect
-                        if ($refid > 0 && ComponentbuilderHelper::checkString($ref))
-                        {
-                            // redirect to item of ref
-                            $this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view='.(string)$ref.'&layout=edit&id='.(int)$refid, false));
-                        }
-                        elseif (ComponentbuilderHelper::checkString($ref))
-                        {
+		if(ComponentbuilderHelper::checkArray($data))
+		{
+			if ($data['edit'] && $layout == 'edit' && !$this->checkEditId('com_componentbuilder.edit.'.$data['view'], $id))
+			{
+				// Somehow the person just went to the form - we don't allow that.
+				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+				$this->setMessage($this->getError(), 'error');
+				// check if item was opend from other then its own list view
+				$ref 	= $this->input->getCmd('ref', 0);
+				$refid 	= $this->input->getInt('refid', 0);
+				// set redirect
+				if ($refid > 0 && ComponentbuilderHelper::checkString($ref))
+				{
+					// redirect to item of ref
+					$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view='.(string)$ref.'&layout=edit&id='.(int)$refid, false));
+				}
+				elseif (ComponentbuilderHelper::checkString($ref))
+				{
 
-                            // redirect to ref
-                            $this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view='.(string)$ref, false));
-                        }
-                        else
-                        {
-                            // normal redirect back to the list view
-                            $this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view='.$data['views'], false));
-                        }
+					// redirect to ref
+					$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view='.(string)$ref, false));
+				}
+				else
+				{
+					// normal redirect back to the list view
+					$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view='.$data['views'], false));
+				}
 
-                        return false;
-                    }
-                }
+				return false;
+			}
+		}
 
 		return parent::display($cachable, $urlparams);
 	}
 
 	protected function getViewRelation($view)
 	{
-                if (ComponentbuilderHelper::checkString($view))
-                {
-                        $views = array(
+		if (ComponentbuilderHelper::checkString($view))
+		{
+			$views = array(
 				'joomla_component' => 'joomla_components',
 				'admin_view' => 'admin_views',
 				'custom_admin_view' => 'custom_admin_views',
@@ -118,18 +118,18 @@ class ComponentbuilderController extends JControllerLegacy
 				'snippet_type' => 'snippet_types',
 				'library_config' => 'libraries_config',
 				'library_files_folders_urls' => 'libraries_files_folders_urls'
-                                );
-                        // check if this is a list view
-                        if (in_array($view,$views))
-                        {
-                            return array('edit' => false, 'view' => array_search($view,$views), 'views' => $view);
-                        }
-                        // check if it is an edit view
-                        elseif (array_key_exists($view,$views))
-                        {
-                                return array('edit' => true, 'view' => $view, 'views' => $views[$view]);
-                        }
-                }
+					);
+			// check if this is a list view
+			if (in_array($view,$views))
+			{
+				return array('edit' => false, 'view' => array_search($view,$views), 'views' => $view);
+			}
+			// check if it is an edit view
+			elseif (array_key_exists($view,$views))
+			{
+				return array('edit' => true, 'view' => $view, 'views' => $views[$view]);
+			}
+		}
 		return false;
 	}
 }

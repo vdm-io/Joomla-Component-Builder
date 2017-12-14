@@ -10,10 +10,12 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
+	@version		2.6.x
+	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		componentbuilder.php
-	@author			Llewellyn van der Merwe <https://www.vdm.io/joomla-component-builder>
-	@my wife		Roline van der Merwe <http://www.vdm.io/>	
+	@subpackage		javascript_css_fullwidth.php
+	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
+	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
 	
@@ -22,29 +24,32 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
+
 defined('_JEXEC') or die('Restricted access');
+
+$form = $displayData->getForm();
+
+$fields = $displayData->get('fields') ?: array(
+	'add_js_document',
+	'js_document',
+	'add_javascript_file',
+	'javascript_file',
+	'add_css_document',
+	'css_document',
+	'add_css',
+	'css'
+);
+
 ?>
-###BOM###
-
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access');
-
-// import Joomla controllerform library
-jimport('joomla.application.component.controller');
-
-/**
- * ###Component### ###SView### Controller
- */
-class ###Component###Controller###SView### extends JControllerLegacy
-{
-	public function __construct($config)
-	{
-		parent::__construct($config);
-	}
-
-	public function dashboard()
-	{
-		$this->setRedirect(JRoute::_('index.php?option=com_###component###', false));
-		return;
-	}###CUSTOM_ADMIN_CUSTOM_BUTTONS_CONTROLLER###
-}
+<div class="form-vertical">
+<?php foreach($fields as $field): ?>
+    <div class="control-group">
+        <div class="control-label">
+            <?php echo $form->getLabel($field); ?>
+        </div>
+        <div class="controls">
+            <?php echo $form->getInput($field); ?>
+        </div>
+    </div>
+<?php endforeach; ?>
+</div>

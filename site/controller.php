@@ -39,18 +39,18 @@ class ComponentbuilderController extends JControllerLegacy
 	 *
 	 * @return void
 	 */
-        function display($cachable = false, $urlparams = false)
+	function display($cachable = false, $urlparams = false)
 	{
 		// set default view if not set
 		$view		= $this->input->getCmd('view', '');
 		$isEdit		= $this->checkEditView($view);
 		$layout		= $this->input->get('layout', null, 'WORD');
-		$id		= $this->input->getInt('id');
+		$id			= $this->input->getInt('id');
 		$cachable	= true;
 		
 		// Check for edit form.
-                if($isEdit)
-                {
+		if($isEdit)
+		{
 			if ($layout == 'edit' && !$this->checkEditId('com_componentbuilder.edit.'.$view, $id))
 			{
 				// Somehow the person just went to the form - we don't allow that.
@@ -67,7 +67,6 @@ class ComponentbuilderController extends JControllerLegacy
 				}
 				elseif (ComponentbuilderHelper::checkString($ref))
 				{
-
 					// redirect to ref
 					 $this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view='.(string)$ref, false));
 				}
@@ -78,24 +77,24 @@ class ComponentbuilderController extends JControllerLegacy
 				}
 				return false;
 			}
-                }
+		}
 
 		return parent::display($cachable, $urlparams);
 	}
 
 	protected function checkEditView($view)
 	{
-                if (ComponentbuilderHelper::checkString($view))
-                {
-                        $views = array(
+		if (ComponentbuilderHelper::checkString($view))
+		{
+			$views = array(
 
-                                );
-                        // check if this is a edit view
-                        if (in_array($view,$views))
-                        {
-                                return true;
-                        }
-                }
+				);
+			// check if this is a edit view
+			if (in_array($view,$views))
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 }
