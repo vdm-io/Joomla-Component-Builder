@@ -189,38 +189,38 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		// set an error message if needed
 		$this->document->addScriptDeclaration("var returnError = '<div class=\"uk-alert uk-alert-warning\"><h1>".JText::_('COM_COMPONENTBUILDER_AN_ERROR_HAS_OCCURRED')."!</h1><p>".JText::_('COM_COMPONENTBUILDER_PLEASE_TRY_AGAIN_LATER').".</p></div>';");
 		// need to add some language strings
-		$this->document->addScriptDeclaration("var lang_Community_Snippets = '".JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_SNIPPETS')."';");
-		$this->document->addScriptDeclaration("var lang_Snippets = '".JText::_('COM_COMPONENTBUILDER_SNIPPETS')."';");
-		$this->document->addScriptDeclaration("var lang_Snippet = '".JText::_('COM_COMPONENTBUILDER_SNIPPET')."';");
-		$this->document->addScriptDeclaration("var lang_Snippet_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_SNIPPET_OF_COMMUNITY_VERSION')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippet = '".JText::_('COM_COMPONENTBUILDER_GET_SNIPPET')."';");
-		$this->document->addScriptDeclaration("var lang_Dont_Get_Snippet = '".JText::_('COM_COMPONENTBUILDER_LOCAL_SNIPPET')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippet_Tooltip = '".JText::_('COM_COMPONENTBUILDER_GET_THE_SNIPPET_FROM_GITHUB_AND_UPDATE_THE_LOCAL_VERSION')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippet_New_Tooltip = '".JText::_('COM_COMPONENTBUILDER_GET_THE_SNIPPET_FROM_GITHUB_AND_INSTALL_IT_LOCALLY')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippet_Dont_Tooltip = '".JText::_('COM_COMPONENTBUILDER_NO_NEED_TO_GET_IT_SINCE_IT_IS_ALREADY_IN_SYNC_WITH_YOUR_LOCAL_VERSION')."';");
-		$this->document->addScriptDeclaration("var lang_Usage = '".JText::_('COM_COMPONENTBUILDER_USAGE')."';");
-		$this->document->addScriptDeclaration("var lang_Usage_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_USAGE_OF_COMMUNITY_VERSION')."';");
-		$this->document->addScriptDeclaration("var lang_Description = '".JText::_('COM_COMPONENTBUILDER_DESCRIPTION')."';");
-		$this->document->addScriptDeclaration("var lang_Description_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_DESCRIPTION_OF_COMMUNITY_VERSION')."';");
-		$this->document->addScriptDeclaration("var lang_View_Blame = '".JText::_('COM_COMPONENTBUILDER_VIEW_BLAME')."';");
-		$this->document->addScriptDeclaration("var lang_View_Blame_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_WHO_CONTRIBUTED_TO_THIS_SNIPPET')."';");
-		$this->document->addScriptDeclaration("var lang_URL_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_SNIPPET_REFERENCE_URL')."';");
-		$this->document->addScriptDeclaration("var lang_Update_Error_Tooltip = '".JText::_('COM_COMPONENTBUILDER_SNIPPET_COULD_NOT_BE_UPDATEDSAVED')."';");
-		$this->document->addScriptDeclaration("var lang_Updates_Error_Tooltip = '".JText::_('COM_COMPONENTBUILDER_SNIPPETS_COULD_NOT_BE_UPDATEDSAVED')."';");
-		$this->document->addScriptDeclaration("var lang_Contributor_URL_Tooltip = '".JText::_('COM_COMPONENTBUILDER_LINK_TO_THE_CONTRIBUTOR')."';");
-		$this->document->addScriptDeclaration("var lang_Contributor_Modal_Tooltip = '".JText::_('COM_COMPONENTBUILDER_VIEW_THE_CONTRIBUTOR_DETAILS')."';");
-		$this->document->addScriptDeclaration("var lang_JCB_Community = '".JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY')."';");
-		$this->document->addScriptDeclaration("var lang_Company_Name = '".JText::_('COM_COMPONENTBUILDER_COMPANY_NAME')."';");
-		$this->document->addScriptDeclaration("var lang_Author_Name = '".JText::_('COM_COMPONENTBUILDER_AUTHOR_NAME')."';");
-		$this->document->addScriptDeclaration("var lang_Author_Email = '".JText::_('COM_COMPONENTBUILDER_AUTHOR_EMAIL')."';");
-		$this->document->addScriptDeclaration("var lang_Author_Website = '".JText::_('COM_COMPONENTBUILDER_AUTHOR_WEBSITE')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippets_New_Tooltip = '".JText::_('COM_COMPONENTBUILDER_THERE_ARE_NO_NEW_SNIPPETS_AT_THIS_TIME')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippets_Diverged_Tooltip = '".JText::_('COM_COMPONENTBUILDER_THERE_ARE_NO_DIVERGED_SNIPPETS_AT_THIS_TIME')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippets_Ahead_Tooltip = '".JText::_('COM_COMPONENTBUILDER_THERE_ARE_NO_AHEAD_SNIPPETS_AT_THIS_TIME')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippets_Behind_Tooltip = '".JText::_('COM_COMPONENTBUILDER_THERE_ARE_NO_OUT_OF_DATE_SNIPPETS_AT_THIS_TIME')."';");
-		$this->document->addScriptDeclaration("var lang_Get_Snippets_All_Tooltip = '".JText::_('COM_COMPONENTBUILDER_THERE_ARE_NO_SNIPPETS_TO_UPDATE_AT_THIS_TIME')."';");
-		$this->document->addScriptDeclaration("var lang_Available_Libraries = '".JText::_('COM_COMPONENTBUILDER_AVAILABLE_LIBRARIES')."';");
-		$this->document->addScriptDeclaration("var lang_Open_Lib_Snippets = '".JText::_('COM_COMPONENTBUILDER_OPEN_LIBRARY_SNIPPETS')."';");
+		JText::script('COM_COMPONENTBUILDER_JCB_COMMUNITY_SNIPPETS');
+		JText::script('COM_COMPONENTBUILDER_SNIPPETS');
+		JText::script('COM_COMPONENTBUILDER_SNIPPET');
+		JText::script('COM_COMPONENTBUILDER_VIEW_SNIPPET_OF_COMMUNITY_VERSION');
+		JText::script('COM_COMPONENTBUILDER_GET_SNIPPET');
+		JText::script('COM_COMPONENTBUILDER_LOCAL_SNIPPET');
+		JText::script('COM_COMPONENTBUILDER_GET_THE_SNIPPET_FROM_GITHUB_AND_UPDATE_THE_LOCAL_VERSION');
+		JText::script('COM_COMPONENTBUILDER_GET_THE_SNIPPET_FROM_GITHUB_AND_INSTALL_IT_LOCALLY');
+		JText::script('COM_COMPONENTBUILDER_NO_NEED_TO_GET_IT_SINCE_IT_IS_ALREADY_IN_SYNC_WITH_YOUR_LOCAL_VERSION');
+		JText::script('COM_COMPONENTBUILDER_USAGE');
+		JText::script('COM_COMPONENTBUILDER_VIEW_USAGE_OF_COMMUNITY_VERSION');
+		JText::script('COM_COMPONENTBUILDER_DESCRIPTION');
+		JText::script('COM_COMPONENTBUILDER_VIEW_DESCRIPTION_OF_COMMUNITY_VERSION');
+		JText::script('COM_COMPONENTBUILDER_VIEW_BLAME');
+		JText::script('COM_COMPONENTBUILDER_VIEW_WHO_CONTRIBUTED_TO_THIS_SNIPPET');
+		JText::script('COM_COMPONENTBUILDER_VIEW_SNIPPET_REFERENCE_URL');
+		JText::script('COM_COMPONENTBUILDER_SNIPPET_COULD_NOT_BE_UPDATEDSAVED');
+		JText::script('COM_COMPONENTBUILDER_SNIPPETS_COULD_NOT_BE_UPDATEDSAVED');
+		JText::script('COM_COMPONENTBUILDER_LINK_TO_THE_CONTRIBUTOR');
+		JText::script('COM_COMPONENTBUILDER_VIEW_THE_CONTRIBUTOR_DETAILS');
+		JText::script('COM_COMPONENTBUILDER_JCB_COMMUNITY');
+		JText::script('COM_COMPONENTBUILDER_COMPANY_NAME');
+		JText::script('COM_COMPONENTBUILDER_AUTHOR_NAME');
+		JText::script('COM_COMPONENTBUILDER_AUTHOR_EMAIL');
+		JText::script('COM_COMPONENTBUILDER_AUTHOR_WEBSITE');
+		JText::script('COM_COMPONENTBUILDER_THERE_ARE_NO_NEW_SNIPPETS_AT_THIS_TIME');
+		JText::script('COM_COMPONENTBUILDER_THERE_ARE_NO_DIVERGED_SNIPPETS_AT_THIS_TIME');
+		JText::script('COM_COMPONENTBUILDER_THERE_ARE_NO_AHEAD_SNIPPETS_AT_THIS_TIME');
+		JText::script('COM_COMPONENTBUILDER_THERE_ARE_NO_OUT_OF_DATE_SNIPPETS_AT_THIS_TIME');
+		JText::script('COM_COMPONENTBUILDER_THERE_ARE_NO_SNIPPETS_TO_UPDATE_AT_THIS_TIME');
+		JText::script('COM_COMPONENTBUILDER_AVAILABLE_LIBRARIES');
+		JText::script('COM_COMPONENTBUILDER_OPEN_LIBRARY_SNIPPETS');
 		// add some lang verfy messages
 		$this->document->addScriptDeclaration("
 			// set the snippet from gitHub
@@ -302,7 +302,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 					//do something special
 					if ('snippets' === ajaxcall) {
 						setTimeout( function() {
-							jQuery('#snippets-github').html('<h1>'+lang_Community_Snippets+'</h1>');
+							jQuery('#snippets-github').html('<h1>'+Joomla.JText._('COM_COMPONENTBUILDER_JCB_COMMUNITY_SNIPPETS')+'</h1>');
 							jQuery('#snippets-display').show();
 							jQuery('#snippets-grid').trigger('display.uk.check');
 							jQuery('#loading').hide();
@@ -362,7 +362,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 					setLibrary(value);
 				});
 				setTimeout( function() {
-					jQuery('#snippets-github').html('<h1>'+lang_Available_Libraries+'</h1>');
+					jQuery('#snippets-github').html('<h1>'+Joomla.JText._('COM_COMPONENTBUILDER_AVAILABLE_LIBRARIES')+'</h1>');
 					jQuery('#libraries-display').show();
 					jQuery('#libraries-grid').trigger('display.uk.check');
 				}, 1000);
@@ -387,7 +387,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			}
 			
 			function setLibButtons(name) {
-				return  '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-1 getreaction\" data-name=\"'+name+'\" data-type=\"getSnippets\" title=\"'+lang_Description_Tooltip+'\"><i class=\"uk-icon-thumb-tack\"></i><span class=\"uk-hidden-small\"> '+lang_Open_Lib_Snippets+'</span></button>';
+				return  '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-1 getreaction\" data-name=\"'+name+'\" data-type=\"getSnippets\" title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_DESCRIPTION_OF_COMMUNITY_VERSION')+'\"><i class=\"uk-icon-thumb-tack\"></i><span class=\"uk-hidden-small\"> '+Joomla.JText._('COM_COMPONENTBUILDER_OPEN_LIBRARY_SNIPPETS')+'</span></button>';
 			}
 			
 			// get the snippets
@@ -404,7 +404,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				fromLocal = false;
 				if (_paths) {
 					setSnippets(_paths, libraryName);
-					jQuery('#snippets-github').html('<h1>'+lang_Community_Snippets+'</h1>');
+					jQuery('#snippets-github').html('<h1>'+Joomla.JText._('COM_COMPONENTBUILDER_JCB_COMMUNITY_SNIPPETS')+'</h1>');
 				} else {
 					jQuery.get(path)
 					.success(function(paths) {
@@ -506,27 +506,27 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			
 			function setDataButtons(snippet, key, status) {
 				var html = '<div class=\"uk-button-group uk-width-1-1 uk-margin-small-bottom\">';
-				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"usage\" title=\"'+lang_Usage_Tooltip+'\"><i class=\"uk-icon-info\"></i><span class=\"uk-hidden-small\"> '+lang_Usage+'</span></button>';
-				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"description\" title=\"'+lang_Description_Tooltip+'\"><i class=\"uk-icon-sticky-note-o\"></i><span class=\"uk-hidden-small\"> '+lang_Description+'</span></button>';
-				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"snippet\" title=\"'+lang_Snippet_Tooltip+'\"><i class=\"uk-icon-code\"></i><span class=\"uk-hidden-small\"> '+lang_Snippet+'</span></button>';
+				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"usage\" title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_USAGE_OF_COMMUNITY_VERSION')+'\"><i class=\"uk-icon-info\"></i><span class=\"uk-hidden-small\"> '+Joomla.JText._('COM_COMPONENTBUILDER_USAGE')+'</span></button>';
+				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"description\" title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_DESCRIPTION_OF_COMMUNITY_VERSION')+'\"><i class=\"uk-icon-sticky-note-o\"></i><span class=\"uk-hidden-small\"> '+Joomla.JText._('COM_COMPONENTBUILDER_DESCRIPTION')+'</span></button>';
+				html += '<button class=\"uk-button uk-button-small uk-button-success uk-width-1-3 getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"snippet\" title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_SNIPPET_OF_COMMUNITY_VERSION')+'\"><i class=\"uk-icon-code\"></i><span class=\"uk-hidden-small\"> '+Joomla.JText._('COM_COMPONENTBUILDER_SNIPPET')+'</span></button>';
 				html += '</div>';
 				// return data buttons
 				return html;
 			}
 			
 			function setRefButtons(snippet, key, status, keyID) {
-				var html = '<div><a class=\"uk-button uk-button-mini uk-button-success uk-margin-small-bottom uk-width-1-1\" href=\"'+snippet.url+'\" target=\"_blank\" title=\"'+lang_URL_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> ' + snippet.name + '</a></div>';
+				var html = '<div><a class=\"uk-button uk-button-mini uk-button-success uk-margin-small-bottom uk-width-1-1\" href=\"'+snippet.url+'\" target=\"_blank\" title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_SNIPPET_REFERENCE_URL')+'\"><i class=\"uk-icon-external-link\"></i> ' + snippet.name + '</a></div>';
 				// set the update button	
 				html += '<div>';
 				if ('equal' !== status) {
 					if ('new' === status) {
-						var tooltip = lang_Get_Snippet_New_Tooltip;
+						var tooltip = Joomla.JText._('COM_COMPONENTBUILDER_GET_THE_SNIPPET_FROM_GITHUB_AND_INSTALL_IT_LOCALLY');
 					} else {
-						var tooltip = lang_Get_Snippet_Tooltip;
+						var tooltip = Joomla.JText._('COM_COMPONENTBUILDER_GET_THE_SNIPPET_FROM_GITHUB_AND_UPDATE_THE_LOCAL_VERSION');
 					}
-					html += '<button id=\"'+keyID+'-getbutton\" class=\"uk-button uk-button-small uk-button-primary uk-width-1-1 uk-margin-small-bottom getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"get\"  title=\"'+tooltip+'\"><i class=\"uk-icon-cloud-download\"></i> '+lang_Get_Snippet+'</button>';
+					html += '<button id=\"'+keyID+'-getbutton\" class=\"uk-button uk-button-small uk-button-primary uk-width-1-1 uk-margin-small-bottom getreaction\" data-status=\"'+status+'\" data-path=\"'+key+'\" data-type=\"get\"  title=\"'+tooltip+'\"><i class=\"uk-icon-cloud-download\"></i> '+Joomla.JText._('COM_COMPONENTBUILDER_GET_SNIPPET')+'</button>';
 				} else {
-					html += '<button class=\"uk-button uk-button-small uk-width-1-1 uk-margin-small-bottom\" type=\"button\" disabled title=\"'+lang_Get_Snippet_Dont_Tooltip+'\"><i class=\"uk-icon-check-square-o\"></i> '+lang_Dont_Get_Snippet+'</button>';
+					html += '<button class=\"uk-button uk-button-small uk-width-1-1 uk-margin-small-bottom\" type=\"button\" disabled title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_NO_NEED_TO_GET_IT_SINCE_IT_IS_ALREADY_IN_SYNC_WITH_YOUR_LOCAL_VERSION')+'\"><i class=\"uk-icon-check-square-o\"></i> '+Joomla.JText._('COM_COMPONENTBUILDER_LOCAL_SNIPPET')+'</button>';
 				}
 				html += '</div>';
 				// return data buttons
@@ -540,7 +540,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				} else if (snippet.contributor_name) {
 					var contributor_name = snippet.contributor_name;
 				} else {
-					var contributor_name = lang_JCB_Community;
+					var contributor_name = Joomla.JText._('COM_COMPONENTBUILDER_JCB_COMMUNITY');
 				}
 				// set the contributor url
 				if (snippet.contributor_website) {
@@ -551,9 +551,9 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 					var contributor_url = 'https://github.com/vdm-io/Joomla-Component-Builder-Snippets';
 				}
 				var html = '<div class=\"uk-button-group uk-width-1-1\">';
-				html += '<button class=\"uk-button uk-button-primary uk-width-1-10 uk-button-mini getreaction\" data-type=\"contributor\" data-path=\"'+key+'\" title=\"'+lang_Contributor_Modal_Tooltip+'\"><i class=\"uk-icon-user\"></i></button>';
-				html += '<a  class=\"uk-button uk-button-primary uk-width-5-10 uk-button-mini\" href=\"'+contributor_url+'\" target=\"_blank\"  title=\"'+lang_Contributor_URL_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> ' + contributor_name + '</a>';
-				html += '<a class=\"uk-button uk-button-primary uk-width-4-10 uk-button-mini\" href=\"https://github.com/vdm-io/Joomla-Component-Builder-Snippets/blame/master/'+key+'\" target=\"_blank\" title=\"'+lang_View_Blame_Tooltip+'\"><i class=\"uk-icon-external-link\"></i> '+lang_View_Blame+'</a>';
+				html += '<button class=\"uk-button uk-button-primary uk-width-1-10 uk-button-mini getreaction\" data-type=\"contributor\" data-path=\"'+key+'\" title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_THE_CONTRIBUTOR_DETAILS')+'\"><i class=\"uk-icon-user\"></i></button>';
+				html += '<a  class=\"uk-button uk-button-primary uk-width-5-10 uk-button-mini\" href=\"'+contributor_url+'\" target=\"_blank\"  title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_LINK_TO_THE_CONTRIBUTOR')+'\"><i class=\"uk-icon-external-link\"></i> ' + contributor_name + '</a>';
+				html += '<a class=\"uk-button uk-button-primary uk-width-4-10 uk-button-mini\" href=\"https://github.com/vdm-io/Joomla-Component-Builder-Snippets/blame/master/'+key+'\" target=\"_blank\" title=\"'+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_WHO_CONTRIBUTED_TO_THIS_SNIPPET')+'\"><i class=\"uk-icon-external-link\"></i> '+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_BLAME')+'</a>';
 				html += '</div>';
 				// return contributor buttons
 				return html;
@@ -564,31 +564,31 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				// check if there is new items
 				if (bulkItems.new.length === 0) {
 					jQuery('#bulk-button-new').prop('disabled', true);
-					jQuery('#bulk-button-new').attr('title', lang_Get_Snippets_New_Tooltip);
+					jQuery('#bulk-button-new').attr('title', Joomla.JText._('COM_COMPONENTBUILDER_THERE_ARE_NO_NEW_SNIPPETS_AT_THIS_TIME'));
 					jQuery('#bulk-notice-new').show();
 				}
 				// check if there is diverged items
 				if (bulkItems.diverged.length === 0) {
 					jQuery('#bulk-button-diverged').prop('disabled', true);
-					jQuery('#bulk-button-diverged').attr('title', lang_Get_Snippets_Diverged_Tooltip);
+					jQuery('#bulk-button-diverged').attr('title', Joomla.JText._('COM_COMPONENTBUILDER_THERE_ARE_NO_DIVERGED_SNIPPETS_AT_THIS_TIME'));
 					jQuery('#bulk-notice-diverged').show();
 				}
 				// check if there is ahead items
 				if (bulkItems.ahead.length === 0) {
 					jQuery('#bulk-button-ahead').prop('disabled', true);
-					jQuery('#bulk-button-ahead').attr('title', lang_Get_Snippets_Ahead_Tooltip);
+					jQuery('#bulk-button-ahead').attr('title', Joomla.JText._('COM_COMPONENTBUILDER_THERE_ARE_NO_AHEAD_SNIPPETS_AT_THIS_TIME'));
 					jQuery('#bulk-notice-ahead').show();
 				}
 				// check if there is behind items
 				if (bulkItems.behind.length === 0) {
 					jQuery('#bulk-button-behind').prop('disabled', true);
-					jQuery('#bulk-button-behind').attr('title', lang_Get_Snippets_Behind_Tooltip);
+					jQuery('#bulk-button-behind').attr('title', Joomla.JText._('COM_COMPONENTBUILDER_THERE_ARE_NO_OUT_OF_DATE_SNIPPETS_AT_THIS_TIME'));
 					jQuery('#bulk-notice-behind').show();
 				}
 				// check if all we should close the all button
 				if (bulkItems.behind.length === 0 && bulkItems.new.length === 0 && bulkItems.ahead.length === 0 && bulkItems.diverged.length === 0) {
 					jQuery('#bulk-button-all').prop('disabled', true);
-					jQuery('#bulk-button-all').attr('title', lang_Get_Snippets_All_Tooltip);
+					jQuery('#bulk-button-all').attr('title', Joomla.JText._('COM_COMPONENTBUILDER_THERE_ARE_NO_SNIPPETS_TO_UPDATE_AT_THIS_TIME'));
 					jQuery('#bulk-notice-all').show();
 				}
 			}
@@ -618,7 +618,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 										updateSnippetDisplay(keyID, 'equal');
 									}
 								} else {
-									UIkit.notify(lang_Update_Error_Tooltip, {status:'danger'});
+									UIkit.notify(Joomla.JText._('COM_COMPONENTBUILDER_SNIPPET_COULD_NOT_BE_UPDATEDSAVED'), {status:'danger'});
 								}
 							});
 						}, 200);
@@ -661,7 +661,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 								updateSnippetDisplay(keyID, 'equal');
 							}
 						} else {
-							UIkit.notify(lang_Update_Error_Tooltip, {status:'danger'});
+							UIkit.notify(Joomla.JText._('COM_COMPONENTBUILDER_SNIPPET_COULD_NOT_BE_UPDATEDSAVED'), {status:'danger'});
 						}
 					});
 				});
@@ -691,9 +691,9 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				// update button
 				if ('equal' === status) {
 					// update notice
-					jQuery('#'+keyID+'-getbutton').attr('title', lang_Get_Snippet_Dont_Tooltip);
+					jQuery('#'+keyID+'-getbutton').attr('title', Joomla.JText._('COM_COMPONENTBUILDER_NO_NEED_TO_GET_IT_SINCE_IT_IS_ALREADY_IN_SYNC_WITH_YOUR_LOCAL_VERSION'));
 					jQuery('#'+keyID+'-getbutton').prop('disabled', true);
-					jQuery('#'+keyID+'-getbutton').html('<i class=\"uk-icon-check-square-o\"></i> ' + lang_Dont_Get_Snippet);
+					jQuery('#'+keyID+'-getbutton').html('<i class=\"uk-icon-check-square-o\"></i> ' + Joomla.JText._('COM_COMPONENTBUILDER_LOCAL_SNIPPET'));
 					// counter delay just incase
 					setTimeout(function(){
 						jQuery('#'+keyID+'-getbutton').prop('disabled', true);
@@ -735,13 +735,13 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				html += '<h3>' + snippet.library + ' - (' + snippet.type + ') ' + snippet.name + '</h3>';
 				if ('contributor' === type) {
 					html += '<dl class=\"uk-description-list-line\">';
-					html += '<dt><i class=\"uk-icon-institution\"></i> '+lang_Company_Name+'</dt>';
+					html += '<dt><i class=\"uk-icon-institution\"></i> '+Joomla.JText._('COM_COMPONENTBUILDER_COMPANY_NAME')+'</dt>';
 					html += '<dd>'+snippet.contributor_company+'</dd>';
-					html += '<dt><i class=\"uk-icon-user\"></i> '+lang_Author_Name+'</dt>';
+					html += '<dt><i class=\"uk-icon-user\"></i> '+Joomla.JText._('COM_COMPONENTBUILDER_AUTHOR_NAME')+'</dt>';
 					html += '<dd>'+snippet.contributor_name+'</dd>';
-					html += '<dt><i class=\"uk-icon-envelope-o\"></i> '+lang_Author_Email+'</dt>';
+					html += '<dt><i class=\"uk-icon-envelope-o\"></i> '+Joomla.JText._('COM_COMPONENTBUILDER_AUTHOR_EMAIL')+'</dt>';
 					html += '<dd>'+snippet.contributor_email+'</dd>';
-					html += '<dt><i class=\"uk-icon-laptop\"></i> '+lang_Author_Website+'</dt>';
+					html += '<dt><i class=\"uk-icon-laptop\"></i> '+Joomla.JText._('COM_COMPONENTBUILDER_AUTHOR_WEBSITE')+'</dt>';
 					html += '<dd>'+snippet.contributor_website+'</dd>';
 					html += '</dl>';
 				} else {

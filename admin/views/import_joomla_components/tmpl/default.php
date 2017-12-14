@@ -159,7 +159,7 @@ jQuery(document).ready(function($) {
 	<?php if ($this->hasPackage && ComponentbuilderHelper::checkArray($this->headerList) && ComponentbuilderHelper::checkArray($this->headers)) : ?>
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => $this->activeTab)); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'basic', JText::_('Basic Method', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'basic', JText::_('COM_COMPONENTBUILDER_BASIC_METHOD', true)); ?>
 		<fieldset class="uploadform">
 			<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_LINK_FILE_TO_TABLE_COLUMNS'); ?></legend>
 			<div class="control-group">

@@ -497,6 +497,8 @@ class Fields extends Structure
 				);
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// if created is not set
 			if (!isset($this->fieldsNames[$viewName]['created']))
@@ -514,6 +516,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// if created_by is not set
 			if (!isset($this->fieldsNames[$viewName]['created_by']))
@@ -528,6 +532,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Created Field. Type: User (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// if published is not set
 			if (!isset($this->fieldsNames[$viewName]['published']))
@@ -541,6 +547,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Published Field. Type: List (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 				foreach (array('JPUBLISHED' => 1, 'JUNPUBLISHED' => 0, 'JARCHIVED' => 2, 'JTRASHED' => -2) as $text => $value)
 				{
 					$optionXML = $fieldXML->addChild('option');
@@ -565,6 +573,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// if modified_by is not set
 			if (!isset($this->fieldsNames[$viewName]['modified_by']))
@@ -581,6 +591,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// check if view has access
 			if (isset($this->accessBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName]) && !isset($this->fieldsNames[$viewName]['access']))
@@ -597,6 +609,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// if ordering is not set
 			if (!isset($this->fieldsNames[$viewName]['ordering']))
@@ -615,6 +629,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// if version is not set
 			if (!isset($this->fieldsNames[$viewName]['version']))
@@ -632,6 +648,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Version Field. Type: Text (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// check if metadata is added to this view
 			if (isset($this->metadataBuilder[$viewName]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName]))
@@ -648,6 +666,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 				// metadesc
 				$attributes['name'] = 'metadesc';
 				$attributes['label'] = 'JFIELD_META_DESCRIPTION_LABEL';
@@ -655,6 +675,8 @@ class Fields extends Structure
 				$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla)");
 				$fieldXML = $fieldSetXML->addChild('field');
 				$this->xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// load the dynamic fields now
 			if (count($dynamicFieldsXML))
@@ -685,6 +707,8 @@ class Fields extends Structure
 				    'description' => 'JFIELD_METADATA_ROBOTS_DESC'
 				);
 				$this->xmlAddAttributes($robots, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 				$options = array(
 				    'JGLOBAL_USE_GLOBAL' => '',
 				    'JGLOBAL_INDEX_FOLLOW' => 'index, follow',
@@ -709,6 +733,8 @@ class Fields extends Structure
 				    'size' => 20
 				);
 				$this->xmlAddAttributes($author, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 				// rights
 				$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla)");
 				$rights = $fieldsFieldSetXML->addChild('field');
@@ -723,6 +749,8 @@ class Fields extends Structure
 				    'rows' => 2
 				);
 				$this->xmlAddAttributes($rights, $attributes);
+				// count the static field created
+				$this->fieldCount++;
 			}
 			// just to be safe, lets clear the view placeholders
 			$this->clearFromPlaceHolders('view');
@@ -2342,7 +2370,8 @@ class Fields extends Structure
 	public function xmlAppend(&$xml, $node)
 	{
 		if (!$node)
-		{ // element was not returned
+		{
+			// element was not returned
 			return;
 		}
 		switch (get_class($node))
@@ -2364,6 +2393,8 @@ class Fields extends Structure
 				$xml = simplexml_import_dom($domXML);
 				break;
 		}
+		// count the dynamic fields created
+		$this->fieldCount++;
 	}
 
 	/**

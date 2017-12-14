@@ -150,12 +150,12 @@ class ComponentbuilderControllerSnippets extends JControllerAdmin
 				if (count($pks) > 1)
 				{
 					$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_THE_SNIPPETS_WERE_SUCCESSFULLY_EXPORTED') . '</h1>';
-					$message .= '<p>' . JText::sprintf('To share these snippets with the rest of the JCB community,');
+					$message .= '<p>' . JText::sprintf('COM_COMPONENTBUILDER_TO_SHARE_THESE_SNIPPETS_WITH_THE_REST_OF_THE_JCB_COMMUNITY');
 				}
 				else
 				{
 					$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_THE_SNIPPET_WAS_SUCCESSFULLY_EXPORTED') . '</h1>';
-					$message .= '<p>' . JText::sprintf('To share this snippet with the rest of the JCB community,');
+					$message .= '<p>' . JText::sprintf('COM_COMPONENTBUILDER_TO_SHARE_THIS_SNIPPET_WITH_THE_REST_OF_THE_JCB_COMMUNITY');
 				}
 				$message .= JText::sprintf('COM_COMPONENTBUILDER_YOU_WILL_NEED_TO_KNOW_HOW_S_WORKS_BASIC_YOU_WILL_ALSO_NEED_A_S_ACCOUNT_AND_KNOW_HOW_TO_MAKE_A_PULL_REQUEST_ON_GITHUB', 
 					'<a href="https://try.github.io" target="_blank">git</a>',

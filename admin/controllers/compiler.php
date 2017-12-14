@@ -105,6 +105,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$message .= '<ul>';
 				$message .= '<li>Total folders created: <b>'.$model->compiler->folderCount.'</b></li>';
 				$message .= '<li>Total files created: <b>'.$model->compiler->fileCount.'</b></li>';
+				$message .= '<li>Total fields created: <b>'.$model->compiler->fieldCount.'</b></li>';
 				$message .= '<li>Total lines written: <b>'.$model->compiler->lineCount.'</b></li>';
 				$message .= '<li>A4 Book of: <b>'.$model->compiler->pageCount.' pages</b></li>';
 				$message .= '</ul>';

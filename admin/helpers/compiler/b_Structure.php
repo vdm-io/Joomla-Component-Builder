@@ -60,6 +60,13 @@ class Structure extends Get
 	public $lineCount = 0;
 	
 	/**
+	 * The field counter
+	 * 
+	 * @var     int
+	 */
+	public $fieldCount = 0;
+	
+	/**
 	 * The seconds counter
 	 * 
 	 * @var     int

@@ -146,6 +146,38 @@ class Compiler extends Infusion
 				// done with error
 				return false;
 			}
+			// do lang mismatch check
+			if (ComponentbuilderHelper::checkArray($this->langMismatch))
+			{
+				if (ComponentbuilderHelper::checkArray($this->langMatch))
+				{
+					$mismatch = array_diff(array_unique($this->langMismatch), array_unique($this->langMatch));
+				}
+				else
+				{
+					$mismatch = array_unique($this->langMismatch);
+				}
+				// set a notice if we have a mismatch
+				if (ComponentbuilderHelper::checkArray($mismatch))
+				{
+					if (count($mismatch) > 1)
+					{
+						$this->app->enqueueMessage(JText::_('<h3>Please check the following mismatching Joomla.JText language constants.</h3>'), 'Warning');
+					}
+					else
+					{
+						$this->app->enqueueMessage(JText::_('<h3>Please check the following mismatch Joomla.JText language constant.</h3>'), 'Warning');
+					}
+					// add the mismatching issues
+					foreach ($mismatch as $string)
+					{
+						$constant = $this->langPrefix.'_'.ComponentbuilderHelper::safeString($string,'U');
+						$this->app->enqueueMessage(JText::sprintf('The <b>Joomla.JText._(\'%s\')</b> language constant for (%s) does not have a corresponding JText::Script() decalaration.', 
+									$constant, $string), 'Warning');
+					}
+					$this->app->enqueueMessage('<hr />', 'Warning');
+				}
+			}
 			// end the timer here
 			$this->time_end = microtime(true);
 			$this->secondsCompiled = $this->time_end - $this->time_start;
@@ -396,6 +428,7 @@ class Compiler extends Infusion
 	{
 		// set some defaults
 		$this->fileContentStatic['###LINE_COUNT###']		= $this->lineCount;
+		$this->fileContentStatic['###FIELD_COUNT###']		= $this->fieldCount;
 		$this->fileContentStatic['###FILE_COUNT###']		= $this->fileCount;
 		$this->fileContentStatic['###FOLDER_COUNT###']		= $this->folderCount;
 		$this->fileContentStatic['###PAGE_COUNT###']		= $this->pageCount;

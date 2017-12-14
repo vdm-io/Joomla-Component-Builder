@@ -219,6 +219,32 @@ class Get
 	protected $existingLangStrings = array();
 	
 	/**
+	 * The Language JS matching check
+	 * 
+	 * @var      array
+	 */
+	public $langMismatch = array();
+	
+	/**
+	 * The Language SC matching check
+	 * 
+	 * @var      array
+	 */
+	public $langMatch = array();
+	
+	/**
+	 * The Language string targets
+	 * 
+	 * @var      array
+	 */
+	public $langStringTargets = array(
+		'Joomla.JText._(',
+		'JText::script(',
+		'JText::_(',
+		'JText::sprintf('
+		);
+	
+	/**
 	 * The Component Code Name
 	 * 
 	 * @var      string
@@ -1773,18 +1799,6 @@ class Get
 						$this->getModule[$this->target][$view->code] = true;
 					}
 				}
-				// (TODO) we may want to automate this .... lets see if someone asks
-//				if (strpos($view->$scripter,"token") !== false || strpos($view->$scripter,"task=ajax") !== false)
-//				{
-//					if(!isset($this->customScriptBuilder['token']))
-//					{
-//						$this->customScriptBuilder['token'] = array();
-//					}
-//					if (!isset($this->customScriptBuilder['token'][$this->target.$view->code]) || !$this->customScriptBuilder['token'][$this->target.$view->code])
-//					{
-//						$this->customScriptBuilder['token'][$this->target.$view->code] = true;
-//					}
-//				}
 			}
 		}
 		// add_Ajax for this view
@@ -3109,18 +3123,64 @@ class Get
 	 */
 	public function setLangStrings($content)
 	{
-		// first check if we should continue
-		if (strpos($content, 'JText::_(') !== false || strpos($content, 'JText::sprintf(') !== false)
+		// get targets to search for
+		$langStringTargets = array_filter(
+			$this->langStringTargets,
+			function($get) use($content){
+				if (strpos($content, $get) !== false)
+				{
+					return true;
+				}
+				return false;
+			});
+		// check if we should continue
+		if (ComponentbuilderHelper::checkArray($langStringTargets))
 		{
 			// insure string is not broken
 			$content = str_replace('COM_###COMPONENT###',$this->langPrefix,$content);
+			// first get the Joomla.JText._()
+			if (in_array('Joomla.JText._(',$langStringTargets))
+			{
+				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, "Joomla.JText._('","'");
+				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'Joomla.JText._("','"');
+				// combine into one array
+				$jsTEXT = ComponentbuilderHelper::mergeArrays($jsTEXT);
+				// we need to add a check to insure these JavaScript lang matchup
+				if (ComponentbuilderHelper::checkArray($jsTEXT)) //<-- not really needed hmmm
+				{
+					// load the JS text to mismatch array
+					$langCheck[] = $jsTEXT;
+					$this->langMismatch = ComponentbuilderHelper::mergeArrays(array($jsTEXT, $this->langMismatch));
+				}
+			}
+			// now get the JText::script()
+			if (in_array('JText::script(',$langStringTargets))
+			{
+				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, "JText::script('","'");
+				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'JText::script("','"');
+				// combine into one array
+				$scTEXT = ComponentbuilderHelper::mergeArrays($scTEXT);
+				// we need to add a check to insure these JavaScript lang matchup
+				if (ComponentbuilderHelper::checkArray($scTEXT)) //<-- not really needed hmmm
+				{
+					// load the Script text to match array
+					$langCheck[] = $scTEXT;
+					$this->langMatch = ComponentbuilderHelper::mergeArrays(array($scTEXT, $this->langMatch));
+				}
+			}
 			// set language data
-			$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::_('","'");
-			$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::_("','"');
-			$langCheck[] = ComponentbuilderHelper::getAllBetween($content, "JText::sprintf('","'");
-			$langCheck[] = ComponentbuilderHelper::getAllBetween($content, 'JText::sprintf("','"');
+			foreach($langStringTargets as $langStringTarget)
+			{
+				// need some special treatment here
+				if ($langStringTarget === 'Joomla.JText._(' || $langStringTarget === 'JText::script(')
+				{
+					continue;
+				}
+				$langCheck[] = ComponentbuilderHelper::getAllBetween($content, $langStringTarget."'","'");
+				$langCheck[] = ComponentbuilderHelper::getAllBetween($content, $langStringTarget.'"','"');
+			}
 			$langArray = ComponentbuilderHelper::mergeArrays($langCheck);
-			if (ComponentbuilderHelper::checkArray($langArray))
+			if (ComponentbuilderHelper::checkArray($langArray)) //<-- not really needed hmmm
 			{
 				foreach ($langArray as $string)
 				{
@@ -3135,10 +3195,12 @@ class Get
 					{
 						$this->langContent[$this->lang][$keyLang] = trim($string);
 					}
-					$langHolders["JText::_('".$string."')"] = "JText::_('".$keyLang."')";
-					$langHolders['JText::_("'.$string.'")'] = 'JText::_("'.$keyLang.'")';
-					$langHolders["JText::sprintf('".$string."',"] = "JText::sprintf('".$keyLang."',";
-					$langHolders['JText::sprintf("'.$string.'",'] = 'JText::sprintf("'.$keyLang.'",';
+					// load the language targets
+					foreach($langStringTargets as $langStringTarget)
+					{
+						$langHolders[$langStringTarget."'".$string."'"] = $langStringTarget."'".$keyLang."'";
+						$langHolders[$langStringTarget.'"'.$string.'"'] = $langStringTarget.'"'.$keyLang.'"';
+					}
 				}
 				// only continue if we have value to replace
 				if (isset($langHolders) && ComponentbuilderHelper::checkArray($langHolders))
@@ -4772,21 +4834,33 @@ class Get
 	 */
 	protected function setReverseLangPlaceholders($updateString, $string)
 	{
-		if (strpos($string, 'JText::_(') !== false || strpos($string, 'JText::sprintf(') !== false)
+		// get targets to search for
+		$langStringTargets = array_filter(
+			$this->langStringTargets,
+			function($get) use($string){
+				if (strpos($string, $get) !== false)
+				{
+					return true;
+				}
+				return false;
+			});
+		// check if we should continue
+		if (ComponentbuilderHelper::checkArray($langStringTargets))
 		{
 			$langHolders = array();
 			// set the lang for both since we don't know what area is being targeted
 			$_tmp = $this->lang;
 			$this->lang = 'both';
 			// set language data
-			$langCheck[] = ComponentbuilderHelper::getAllBetween($string, "JText::_('","'");
-			$langCheck[] = ComponentbuilderHelper::getAllBetween($string, 'JText::_("','"');
-			$langCheck[] = ComponentbuilderHelper::getAllBetween($string, "JText::sprintf('","'");
-			$langCheck[] = ComponentbuilderHelper::getAllBetween($string, 'JText::sprintf("','"');
+			foreach($langStringTargets as $langStringTarget)
+			{
+				$langCheck[] = ComponentbuilderHelper::getAllBetween($string, $langStringTarget."'","'");
+				$langCheck[] = ComponentbuilderHelper::getAllBetween($string, $langStringTarget."'","'");
+			}
 			// merge arrays
 			$langArray = ComponentbuilderHelper::mergeArrays($langCheck);
 			// continue only if strings were found
-			if (ComponentbuilderHelper::checkArray($langArray))
+			if (ComponentbuilderHelper::checkArray($langArray)) //<-- not really needed hmmm
 			{
 				foreach ($langArray as $lang)
 				{
@@ -4803,10 +4877,11 @@ class Get
 						$this->langContent[$this->lang][$keyLang] = trim($lang);
 					}
 					// reverse the placeholders
-					$langHolders["JText::_('".$keyLang."')"] = "JText::_('".$lang."')";
-					$langHolders['JText::_("'.$keyLang.'")'] = 'JText::_("'.$lang.'")';
-					$langHolders["JText::sprintf('".$keyLang."',"] = "JText::sprintf('".$lang."',";
-					$langHolders['JText::sprintf("'.$keyLang.'",'] = 'JText::sprintf("'.$lang.'",';
+					foreach($langStringTargets as $langStringTarget)
+					{
+						$langHolders[$langStringTarget."'".$keyLang."'"] = $langStringTarget."'".$lang."'";
+						$langHolders[$langStringTarget.'"'.$keyLang.'"'] = $langStringTarget.'"'.$lang.'"';
+					}
 				}
 				// return the found placeholders
 				$updateString = $this->setPlaceholders($updateString, $langHolders);
