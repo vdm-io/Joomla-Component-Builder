@@ -59,8 +59,8 @@ class ###Component###Model###View### extends JModelLegacy
 	/**
 	 * Import Settings
 	 */
-	protected $getType 	= NULL;
-	protected $dataType	= NULL;
+	protected $getType = NULL;
+	protected $dataType = NULL;
 	
 	/**
 	 * Method to auto-populate the model state.
@@ -92,8 +92,8 @@ class ###Component###Model###View### extends JModelLegacy
 	protected function _getPackageFromUpload()
 	{		
 		// Get the uploaded file information
-		$app	= JFactory::getApplication();
-		$input	= $app->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See JInputFiles::get.
 		$userfile = $input->files->get('import_package', null, 'raw');
@@ -120,9 +120,9 @@ class ###Component###Model###View### extends JModelLegacy
 		}
 
 		// Build the appropriate paths
-		$config		= JFactory::getConfig();
-		$tmp_dest	= $config->get('tmp_path') . '/' . $userfile['name'];
-		$tmp_src	= $userfile['tmp_name'];
+		$config = JFactory::getConfig();
+		$tmp_dest = $config->get('tmp_path') . '/' . $userfile['name'];
+		$tmp_src = $userfile['tmp_name'];
 
 		// Move uploaded file
 		jimport('joomla.filesystem.file');
@@ -153,8 +153,8 @@ class ###Component###Model###View### extends JModelLegacy
 	 */
 	protected function _getPackageFromFolder()
 	{
-		$app	= JFactory::getApplication();
-		$input	= $app->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Get the path to the package to import
 		$p_dir = $input->getString('import_directory');
@@ -184,8 +184,8 @@ class ###Component###Model###View### extends JModelLegacy
 		}
 		
 		$package['packagename'] = null;
-		$package['dir'] 	= $p_dir;
-		$package['type'] 	= $type;
+		$package['dir'] = $p_dir;
+		$package['type'] = $type;
 
 		return $package;
 	}
@@ -198,8 +198,8 @@ class ###Component###Model###View### extends JModelLegacy
 	 */
 	protected function _getPackageFromUrl()
 	{
-		$app	= JFactory::getApplication();
-		$input	= $app->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Get the URL of the package to import
 		$url = $input->getString('import_url');
@@ -238,7 +238,7 @@ class ###Component###Model###View### extends JModelLegacy
 	 */
 	protected function check($archivename)
 	{
-		$app	= JFactory::getApplication();
+		$app = JFactory::getApplication();
 		// Clean the name
 		$archivename = JPath::clean($archivename);
 		
@@ -251,15 +251,15 @@ class ###Component###Model###View### extends JModelLegacy
 			return false;
 		}
 		
-		$config			= JFactory::getConfig();
+		$config = JFactory::getConfig();
 		// set Package Name
-		$check['packagename']	= $archivename;
+		$check['packagename'] = $archivename;
 		
 		// set directory
-		$check['dir']		= $config->get('tmp_path'). '/' .$archivename;
+		$check['dir'] = $config->get('tmp_path'). '/' .$archivename;
 		
 		// set type
-		$check['type']		= $this->getType;
+		$check['type'] = $this->getType;
 		
 		return $check;
 	}
@@ -277,8 +277,8 @@ class ###Component###Model###View### extends JModelLegacy
 	{
 		jimport('joomla.filesystem.file');
 		
-		$config		= JFactory::getConfig();
-		$package	= $config->get('tmp_path'). '/' .$package;
+		$config = JFactory::getConfig();
+		$package = $config->get('tmp_path'). '/' .$package;
 
 		// Is the package file a valid file?
 		if (is_file($package))

@@ -47,20 +47,20 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		}
 
 		// Assign data to the view
-		$this->items 		= $this->get('Items');
-		$this->pagination 	= $this->get('Pagination');
-		$this->state		= $this->get('State');
-		$this->user 		= JFactory::getUser();
-		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
-		$this->listDirn		= $this->escape($this->state->get('list.direction'));
-		$this->saveOrder	= $this->listOrder == 'ordering';
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->state = $this->get('State');
+		$this->user = JFactory::getUser();
+		$this->listOrder = $this->escape($this->state->get('list.ordering'));
+		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		$this->saveOrder = $this->listOrder == 'ordering';
 		// get global action permissions
-		$this->canDo		= ComponentbuilderHelper::getActions('dynamic_get');
-		$this->canEdit		= $this->canDo->get('dynamic_get.edit');
-		$this->canState		= $this->canDo->get('dynamic_get.edit.state');
-		$this->canCreate	= $this->canDo->get('dynamic_get.create');
-		$this->canDelete	= $this->canDo->get('dynamic_get.delete');
-		$this->canBatch	= $this->canDo->get('core.batch');
+		$this->canDo = ComponentbuilderHelper::getActions('dynamic_get');
+		$this->canEdit = $this->canDo->get('dynamic_get.edit');
+		$this->canState = $this->canDo->get('dynamic_get.edit.state');
+		$this->canCreate = $this->canDo->get('dynamic_get.create');
+		$this->canDelete = $this->canDo->get('dynamic_get.delete');
+		$this->canBatch = $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -159,7 +159,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		$help_url = ComponentbuilderHelper::getHelpUrl('dynamic_gets');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
 		}
 
 		// add the options comp button

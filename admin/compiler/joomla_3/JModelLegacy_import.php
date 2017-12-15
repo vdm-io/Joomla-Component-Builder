@@ -92,10 +92,10 @@ class ###Component###ModelImport extends JModelLegacy
 	public function import()
 	{
 		$this->setState('action', 'import');
-		$app 		= JFactory::getApplication();
-		$session 	= JFactory::getSession();
-		$package 	= null;
-		$continue	= false;
+		$app = JFactory::getApplication();
+		$session = JFactory::getSession();
+		$package = null;
+		$continue = false;
 		// get import type
 		$this->getType = $app->input->getString('gettype', NULL);
 		// get import type
@@ -150,7 +150,7 @@ class ###Component###ModelImport extends JModelLegacy
 		
 		// first link data to table headers
 		if(!$continue){
-			$package	= json_encode($package);
+			$package = json_encode($package);
 			$session->set('package', $package);
 			$session->set('dataType', $this->dataType);
 			$session->set('hasPackage', true);
@@ -202,8 +202,8 @@ class ###Component###ModelImport extends JModelLegacy
 	protected function _getPackageFromUpload()
 	{		
 		// Get the uploaded file information
-		$app	= JFactory::getApplication();
-		$input	= $app->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See JInputFiles::get.
 		$userfile = $input->files->get('import_package', null, 'raw');
@@ -230,9 +230,9 @@ class ###Component###ModelImport extends JModelLegacy
 		}
 
 		// Build the appropriate paths
-		$config		= JFactory::getConfig();
-		$tmp_dest	= $config->get('tmp_path') . '/' . $userfile['name'];
-		$tmp_src	= $userfile['tmp_name'];
+		$config = JFactory::getConfig();
+		$tmp_dest = $config->get('tmp_path') . '/' . $userfile['name'];
+		$tmp_src = $userfile['tmp_name'];
 
 		// Move uploaded file
 		jimport('joomla.filesystem.file');
@@ -263,8 +263,8 @@ class ###Component###ModelImport extends JModelLegacy
 	 */
 	protected function _getPackageFromFolder()
 	{
-		$app	= JFactory::getApplication();
-		$input	= $app->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Get the path to the package to import
 		$p_dir = $input->getString('import_directory');
@@ -294,8 +294,8 @@ class ###Component###ModelImport extends JModelLegacy
 		}
 		
 		$package['packagename'] = null;
-		$package['dir'] 	= $p_dir;
-		$package['type'] 	= $type;
+		$package['dir'] = $p_dir;
+		$package['type'] = $type;
 
 		return $package;
 	}
@@ -308,8 +308,8 @@ class ###Component###ModelImport extends JModelLegacy
 	 */
 	protected function _getPackageFromUrl()
 	{
-		$app	= JFactory::getApplication();
-		$input	= $app->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		
 		// Get the URL of the package to import
 		$url = $input->getString('import_url');
@@ -348,7 +348,7 @@ class ###Component###ModelImport extends JModelLegacy
 	 */
 	protected function check($archivename)
 	{
-		$app	= JFactory::getApplication();
+		$app = JFactory::getApplication();
 		// Clean the name
 		$archivename = JPath::clean($archivename);
 		
@@ -361,15 +361,15 @@ class ###Component###ModelImport extends JModelLegacy
 			return false;
 		}
 		
-		$config			= JFactory::getConfig();
+		$config = JFactory::getConfig();
 		// set Package Name
-		$check['packagename']	= $archivename;
+		$check['packagename'] = $archivename;
 		
 		// set directory
-		$check['dir']		= $config->get('tmp_path'). '/' .$archivename;
+		$check['dir'] = $config->get('tmp_path'). '/' .$archivename;
 		
 		// set type
-		$check['type']		= $this->getType;
+		$check['type'] = $this->getType;
 		
 		return $check;
 	}
@@ -408,8 +408,8 @@ class ###Component###ModelImport extends JModelLegacy
 	{
 		jimport('joomla.filesystem.file');
 		
-		$config		= JFactory::getConfig();
-		$package	= $config->get('tmp_path'). '/' .$package;
+		$config = JFactory::getConfig();
+		$package = $config->get('tmp_path'). '/' .$package;
 
 		// Is the package file a valid file?
 		if (is_file($package))
@@ -472,11 +472,11 @@ class ###Component###ModelImport extends JModelLegacy
 		if(###Component###Helper::checkArray($data['array']))
 		{
 			// get user object
-			$user  		= JFactory::getUser();
+			$user = JFactory::getUser();
 			// remove header if it has headers
-			$id_key 	= $data['target_headers']['id'];
-			$published_key 	= $data['target_headers']['published'];
-			$ordering_key 	= $data['target_headers']['ordering'];
+			$id_key = $data['target_headers']['id'];
+			$published_key = $data['target_headers']['published'];
+			$ordering_key = $data['target_headers']['ordering'];
 			// get the first array set
 			$firstSet = reset($data['array']);
             
@@ -494,13 +494,13 @@ class ###Component###ModelImport extends JModelLegacy
 				// Get a db connection.
 				$db = JFactory::getDbo();
 				// set some defaults
-				$todayDate		= JFactory::getDate()->toSql();
+				$todayDate = JFactory::getDate()->toSql();
 				// get global action permissions
-				$canDo			= ###Component###Helper::getActions($table);
-				$canEdit		= $canDo->get('core.edit');
-				$canState		= $canDo->get('core.edit.state');
-				$canCreate		= $canDo->get('core.create');
-				$hasAlias		= $this->getAliasesUsed($table);
+				$canDo = ###Component###Helper::getActions($table);
+				$canEdit = $canDo->get('core.edit');
+				$canState = $canDo->get('core.edit.state');
+				$canCreate = $canDo->get('core.create');
+				$hasAlias = $this->getAliasesUsed($table);
 				// prosses the data
 				foreach($data['array'] as $row)
 				{
@@ -522,11 +522,11 @@ class ###Component###ModelImport extends JModelLegacy
 					if($found && $canEdit)
 					{
 						// update item
-						$id 		= $row[$id_key];
-						$version	= $db->loadResult();
+						$id = $row[$id_key];
+						$version = $db->loadResult();
 						// reset all buckets
-						$query 		= $db->getQuery(true);
-						$fields 	= array();
+						$query = $db->getQuery(true);
+						$fields = array();
 						// Fields to update.
 						foreach($row as $key => $cell)
 						{
@@ -571,8 +571,8 @@ class ###Component###ModelImport extends JModelLegacy
 							}
 						}
 						// load the defaults
-						$fields[]	= $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
-						$fields[]	= $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
+						$fields[] = $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
+						$fields[] = $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
 						// Conditions for which records should be updated.
 						$conditions = array(
 							$db->quoteName('id') . ' = ' . $id
@@ -587,9 +587,9 @@ class ###Component###ModelImport extends JModelLegacy
 						// insert item
 						$query = $db->getQuery(true);
 						// reset all buckets
-						$columns 	= array();
-						$values 	= array();
-						$version	= false;
+						$columns = array();
+						$values = array();
+						$version = false;
 						// Insert columns. Insert values.
 						foreach($row as $key => $cell)
 						{
@@ -627,30 +627,30 @@ class ###Component###ModelImport extends JModelLegacy
 							// set to insert array
 							if(in_array($key, $data['target_headers']) && is_numeric($cell))
 							{
-								$columns[] 	= $target[$key];
-								$values[] 	= $cell;
+								$columns[] = $target[$key];
+								$values[] = $cell;
 							}
 							elseif(in_array($key, $data['target_headers']) && is_string($cell))
 							{
-								$columns[] 	= $target[$key];
-								$values[] 	= $db->quote($cell);
+								$columns[] = $target[$key];
+								$values[] = $db->quote($cell);
 							}
 							elseif(in_array($key, $data['target_headers']) && is_null($cell))
 							{
 								// if import data is null then set empty
-								$columns[] 	= $target[$key];
-								$values[] 	= "''";
+								$columns[] = $target[$key];
+								$values[] = "''";
 							}
 						}
 						// load the defaults
-						$columns[] 	= 'created_by';
-						$values[] 	= $db->quote($user->id);
-						$columns[] 	= 'created';
-						$values[] 	= $db->quote($todayDate);
+						$columns[] = 'created_by';
+						$values[] = $db->quote($user->id);
+						$columns[] = 'created';
+						$values[] = $db->quote($todayDate);
 						if (!$version)
 						{
-							$columns[] 	= 'version';
-							$values[] 	= 1;
+							$columns[] = 'version';
+							$values[] = 1;
 						}
 						// Prepare the insert query.
 						$query

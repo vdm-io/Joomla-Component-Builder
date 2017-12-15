@@ -47,20 +47,20 @@ class ComponentbuilderViewFieldtypes extends JViewLegacy
 		}
 
 		// Assign data to the view
-		$this->items 		= $this->get('Items');
-		$this->pagination 	= $this->get('Pagination');
-		$this->state		= $this->get('State');
-		$this->user 		= JFactory::getUser();
-		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
-		$this->listDirn		= $this->escape($this->state->get('list.direction'));
-		$this->saveOrder	= $this->listOrder == 'ordering';
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->state = $this->get('State');
+		$this->user = JFactory::getUser();
+		$this->listOrder = $this->escape($this->state->get('list.ordering'));
+		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		$this->saveOrder = $this->listOrder == 'ordering';
 		// get global action permissions
-		$this->canDo		= ComponentbuilderHelper::getActions('fieldtype');
-		$this->canEdit		= $this->canDo->get('fieldtype.edit');
-		$this->canState		= $this->canDo->get('fieldtype.edit.state');
-		$this->canCreate	= $this->canDo->get('fieldtype.create');
-		$this->canDelete	= $this->canDo->get('fieldtype.delete');
-		$this->canBatch	= $this->canDo->get('core.batch');
+		$this->canDo = ComponentbuilderHelper::getActions('fieldtype');
+		$this->canEdit = $this->canDo->get('fieldtype.edit');
+		$this->canState = $this->canDo->get('fieldtype.edit.state');
+		$this->canCreate = $this->canDo->get('fieldtype.create');
+		$this->canDelete = $this->canDo->get('fieldtype.delete');
+		$this->canBatch = $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -159,7 +159,7 @@ class ComponentbuilderViewFieldtypes extends JViewLegacy
 		$help_url = ComponentbuilderHelper::getHelpUrl('fieldtypes');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
 		}
 
 		// add the options comp button

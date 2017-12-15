@@ -74,10 +74,10 @@ class ###Component###Model###SView### extends JModelItem
 	 */
 	protected function populateState()
 	{
-		$this->app	= JFactory::getApplication();
-		$this->input 	= $this->app->input;
+		$this->app = JFactory::getApplication();
+		$this->input = $this->app->input;
 		// Get the itme main id
-		$id		= $this->input->getInt('id', null);
+		$id = $this->input->getInt('id', null);
 		$this->setState('###sview###.id', $id);
 
 		// Load the parameters.
@@ -95,13 +95,13 @@ class ###Component###Model###SView### extends JModelItem
 	 */
 	public function getItem($pk = null)
 	{
-		$this->user		= JFactory::getUser();###USER_PERMISSION_CHECK_ACCESS###
-		$this->userId		= $this->user->get('id');
-		$this->guest		= $this->user->get('guest');
-                $this->groups		= $this->user->get('groups');
-                $this->authorisedGroups	= $this->user->getAuthorisedGroups();
-		$this->levels		= $this->user->getAuthorisedViewLevels();
-		$this->initSet		= true;
+		$this->user = JFactory::getUser();###USER_PERMISSION_CHECK_ACCESS###
+		$this->userId = $this->user->get('id');
+		$this->guest = $this->user->get('guest');
+		$this->groups = $this->user->get('groups');
+		$this->authorisedGroups = $this->user->getAuthorisedGroups();
+		$this->levels = $this->user->getAuthorisedViewLevels();
+		$this->initSet = true;
 
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('###sview###.id');###SITE_BEFORE_GET_ITEM###
 		

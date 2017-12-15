@@ -2897,17 +2897,17 @@ class Interpretation extends Fields
 			{
 				// for single views
 				$method .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Initialise variables.";
-				$method .= PHP_EOL . "\t\t\$this->item\t= \$this->get('Item');";
+				$method .= PHP_EOL . "\t\t\$this->item = \$this->get('Item');";
 			}
 			elseif ($view['settings']->main_get->gettype == 2)
 			{
 				// for list views
 				$method .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Initialise variables.";
-				$method .= PHP_EOL . "\t\t\$this->items\t= \$this->get('Items');";
+				$method .= PHP_EOL . "\t\t\$this->items = \$this->get('Items');";
 				// only add if pagination is requered
 				if ($view['settings']->main_get->pagination == 1)
 				{
-					$method .= PHP_EOL . "\t\t\$this->pagination\t= \$this->get('Pagination');";
+					$method .= PHP_EOL . "\t\t\$this->pagination = \$this->get('Pagination');";
 				}
 				// add id to list view
 				if (isset($this->customAdminViewListId[$view['settings']->code]))
@@ -2927,7 +2927,7 @@ class Interpretation extends Fields
 				foreach ($view['settings']->custom_get as $custom_get)
 				{
 					$custom_get_name = str_replace('get', '', $custom_get->getcustom);
-					$method .= PHP_EOL . "\t\t\$this->" . ComponentbuilderHelper::safeString($custom_get_name) . "\t= \$this->get('" . $custom_get_name . "');";
+					$method .= PHP_EOL . "\t\t\$this->" . ComponentbuilderHelper::safeString($custom_get_name) . " = \$this->get('" . $custom_get_name . "');";
 				}
 			}
 			// add custom script
@@ -7111,7 +7111,7 @@ class Interpretation extends Fields
 			}
 			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName]['###LAYOUTITEMSHEADER###'] = $headerscript;
 			// ###LINKEDVIEWITEMS### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWITEMS###'] .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get Linked view data" . PHP_EOL . "\t\t\$this->" . $codeName . "\t\t= \$this->get('" . $functionName . "');";
+			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWITEMS###'] .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get Linked view data" . PHP_EOL . "\t\t\$this->" . $codeName . " = \$this->get('" . $functionName . "');";
 			// ###LINKEDVIEWTABLESCRIPTS### <<<DYNAMIC>>>
 			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWTABLESCRIPTS###'] = $this->setFootableScripts();
 			if (strpos($parentKey, '-R>') !== false || strpos($parentKey, '-A>') !== false)
@@ -10898,47 +10898,47 @@ class Interpretation extends Fields
 		// check if the item has permissions for edit.
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.edit']]))
 		{
-			$allow[] = PHP_EOL . "\t\t\$this->canEdit\t\t= \$this->canDo->get('" . $core['core.edit'] . "');";
+			$allow[] = PHP_EOL . "\t\t\$this->canEdit = \$this->canDo->get('" . $core['core.edit'] . "');";
 		}
 		else
 		{
-			$allow[] = PHP_EOL . "\t\t\$this->canEdit\t\t= \$this->canDo->get('core.edit');";
+			$allow[] = PHP_EOL . "\t\t\$this->canEdit = \$this->canDo->get('core.edit');";
 		}
 		// check if the item has permissions for edit state.
 		if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder['global'][$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit.state']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.edit.state']]))
 		{
-			$allow[] = "\t\t\$this->canState\t\t= \$this->canDo->get('" . $core['core.edit.state'] . "');";
+			$allow[] = "\t\t\$this->canState = \$this->canDo->get('" . $core['core.edit.state'] . "');";
 		}
 		else
 		{
-			$allow[] = "\t\t\$this->canState\t\t= \$this->canDo->get('core.edit.state');";
+			$allow[] = "\t\t\$this->canState = \$this->canDo->get('core.edit.state');";
 		}
 		// check if the item has permissions for create.
 		if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.create']]))
 		{
-			$allow[] = "\t\t\$this->canCreate\t= \$this->canDo->get('" . $core['core.create'] . "');";
+			$allow[] = "\t\t\$this->canCreate = \$this->canDo->get('" . $core['core.create'] . "');";
 		}
 		else
 		{
-			$allow[] = "\t\t\$this->canCreate\t= \$this->canDo->get('core.create');";
+			$allow[] = "\t\t\$this->canCreate = \$this->canDo->get('core.create');";
 		}
 		// check if the item has permissions for delete.
 		if ($coreLoad && isset($core['core.delete']) && isset($this->permissionBuilder['global'][$core['core.delete']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.delete']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.delete']]))
 		{
-			$allow[] = "\t\t\$this->canDelete\t= \$this->canDo->get('" . $core['core.delete'] . "');";
+			$allow[] = "\t\t\$this->canDelete = \$this->canDo->get('" . $core['core.delete'] . "');";
 		}
 		else
 		{
-			$allow[] = "\t\t\$this->canDelete\t= \$this->canDo->get('core.delete');";
+			$allow[] = "\t\t\$this->canDelete = \$this->canDo->get('core.delete');";
 		}
 		// check if the item has permissions for batch.
 		if ($coreLoad && isset($core['core.batch']) && isset($this->permissionBuilder['global']['global'][$core['core.batch']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global']['global'][$core['core.batch']]) && in_array($viewName_single, $this->permissionBuilder['global']['global'][$core['core.delete']]))
 		{
-			$allow[] = "\t\t\$this->canBatch\t= (\$this->canDo->get('" . $core['core.batch'] . "') && \$this->canDo->get('core.batch'));";
+			$allow[] = "\t\t\$this->canBatch = (\$this->canDo->get('" . $core['core.batch'] . "') && \$this->canDo->get('core.batch'));";
 		}
 		else
 		{
-			$allow[] = "\t\t\$this->canBatch\t= \$this->canDo->get('core.batch');";
+			$allow[] = "\t\t\$this->canBatch = \$this->canDo->get('core.batch');";
 		}
 
 		return implode(PHP_EOL, $allow);

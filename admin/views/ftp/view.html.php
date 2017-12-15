@@ -41,17 +41,17 @@ class ComponentbuilderViewFtp extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Assign the variables
-		$this->form 		= $this->get('Form');
-		$this->item 		= $this->get('Item');
-		$this->script 		= $this->get('Script');
-		$this->state		= $this->get('State');
+		$this->form = $this->get('Form');
+		$this->item = $this->get('Item');
+		$this->script = $this->get('Script');
+		$this->state = $this->get('State');
 		// get action permissions
-		$this->canDo		= ComponentbuilderHelper::getActions('ftp',$this->item);
+		$this->canDo = ComponentbuilderHelper::getActions('ftp',$this->item);
 		// get input
-		$jinput				= JFactory::getApplication()->input;
-		$this->ref 			= $jinput->get('ref', 0, 'word');
-		$this->refid		= $jinput->get('refid', 0, 'int');
-		$this->referral		= '';
+		$jinput = JFactory::getApplication()->input;
+		$this->ref = $jinput->get('ref', 0, 'word');
+		$this->refid = $jinput->get('refid', 0, 'int');
+		$this->referral = '';
 		if ($this->refid)
 		{
 			// return to the item that refered to this item
@@ -64,7 +64,7 @@ class ComponentbuilderViewFtp extends JViewLegacy
 		}
 
 		// Get Linked view data
-		$this->vzzlinked_components		= $this->get('Vzzlinked_components');
+		$this->vzzlinked_components = $this->get('Vzzlinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

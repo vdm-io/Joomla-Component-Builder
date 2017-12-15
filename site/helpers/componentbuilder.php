@@ -1629,9 +1629,9 @@ abstract class ComponentbuilderHelper
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{
-                // check if string is JSON
-                $result = json_decode($value, true);
-                if (json_last_error() === JSON_ERROR_NONE)
+		// check if string is JSON
+		$result = json_decode($value, true);
+		if (json_last_error() === JSON_ERROR_NONE)
 		{
 			// is JSON
 			if (self::checkArray($result))
@@ -1661,10 +1661,10 @@ abstract class ComponentbuilderHelper
 	/**
 	*	Load the Component xml manifest.
 	**/
-        public static function manifest()
-        {
-                $manifestUrl = JPATH_ADMINISTRATOR."/components/com_componentbuilder/componentbuilder.xml";
-                return simplexml_load_file($manifestUrl);
+	public static function manifest()
+	{
+		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_componentbuilder/componentbuilder.xml";
+		return simplexml_load_file($manifestUrl);
 	}
 
 	/**
@@ -1679,9 +1679,9 @@ abstract class ComponentbuilderHelper
 		// get all Contributors (max 20)
 		$searchArray = range('0','20');
 		foreach($searchArray as $nr)
-                {
+		{
 			if ((NULL !== $params->get("showContributor".$nr)) && ($params->get("showContributor".$nr) == 2 || $params->get("showContributor".$nr) == 3))
-                        {
+			{
 				// set link based of selected option
 				if($params->get("useContributor".$nr) == 1)
                                 {
@@ -2134,7 +2134,7 @@ abstract class ComponentbuilderHelper
 	public static function isPublished($id,$type)
 	{
 		if ($type == 'raw')
-                {
+		{
 			$type = 'item';
 		}
 		$db = JFactory::getDbo();
@@ -2147,7 +2147,7 @@ abstract class ComponentbuilderHelper
 		$db->execute();
 		$found = $db->getNumRows();
 		if($found)
-                {
+		{
 			return true;
 		}
 		return false;
@@ -2164,7 +2164,7 @@ abstract class ComponentbuilderHelper
 		$db->execute();
 		$found = $db->getNumRows();
 		if($found)
-                {
+		{
 			return $db->loadResult();
 		}
 		return $id;
@@ -2173,24 +2173,24 @@ abstract class ComponentbuilderHelper
 	/**
 	*	Get the actions permissions
 	**/
-        public static function getActions($view,&$record = null,$views = null)
+	public static function getActions($view,&$record = null,$views = null)
 	{
 		jimport('joomla.access.access');
 
 		$user	= JFactory::getUser();
 		$result	= new JObject;
 		$view	= self::safeString($view);
-                if (self::checkString($views))
-                {
+		if (self::checkString($views))
+		{
 			$views = self::safeString($views);
-                }
+		}
 		// get all actions from component
 		$actions = JAccess::getActions('com_componentbuilder', 'component');
-                // set acctions only set in component settiongs
-                $componentActions = array('core.admin','core.manage','core.options','core.export');
+		// set acctions only set in component settiongs
+		$componentActions = array('core.admin','core.manage','core.options','core.export');
 		// loop the actions and set the permissions
 		foreach ($actions as $action)
-                {
+		{
 			// set to use component default
 			$fallback = true;
 			if (self::checkObject($record) && isset($record->id) && $record->id > 0 && !in_array($action->name,$componentActions))
@@ -2269,17 +2269,17 @@ abstract class ComponentbuilderHelper
 				}
 				elseif (self::checkString($views) && isset($record->catid) && $record->catid > 0)
 				{
-                                        // make sure we use the core. action check for the categories
-                                        if (strpos($action->name,$view) !== false && strpos($action->name,'core.') === false ) {
-                                                $coreCheck		= explode('.',$action->name);
-                                                $coreCheck[0]	= 'core';
-                                                $categoryCheck	= implode('.',$coreCheck);
-                                        }
-                                        else
-                                        {
-                                                $categoryCheck = $action->name;
-                                        }
-                                        // The record has a category. Check the category permissions.
+					// make sure we use the core. action check for the categories
+					if (strpos($action->name,$view) !== false && strpos($action->name,'core.') === false ) {
+						$coreCheck		= explode('.',$action->name);
+						$coreCheck[0]	= 'core';
+						$categoryCheck	= implode('.',$coreCheck);
+					}
+					else
+					{
+						$categoryCheck = $action->name;
+					}
+					// The record has a category. Check the category permissions.
 					$catpermission = $user->authorise($categoryCheck, 'com_componentbuilder.'.$views.'.category.' . (int) $record->catid);
 					if (!$catpermission && !is_null($catpermission))
 					{
@@ -2421,7 +2421,7 @@ abstract class ComponentbuilderHelper
 	{
 		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
 		$connected = @fsockopen("www.example.com", 80); 
-                // website, port  (try 80 or 443)
+			// website, port  (try 80 or 443)
 		if ($connected)
 		{
 			//action when connected
@@ -2501,8 +2501,8 @@ abstract class ComponentbuilderHelper
 			$string = self::replaceNumbers($string);
 		}
 		// 0nly continue if we have a string
-                if (self::checkString($string))
-                {
+		if (self::checkString($string))
+		{
 			// create file name without the extention that is safe
 			if ($type === 'filename')
 			{
@@ -2525,12 +2525,12 @@ abstract class ComponentbuilderHelper
 			$string = preg_replace("/[^A-Za-z ]/", '', $string);
 			// select final adaptations
 			if ($type === 'L' || $type === 'strtolower')
-                        {
-                                // replace white space with underscore
-                                $string = preg_replace('/\s+/', $spacer, $string);
-                                // default is to return lower
-                                return strtolower($string);
-                        }
+			{
+				// replace white space with underscore
+				$string = preg_replace('/\s+/', $spacer, $string);
+				// default is to return lower
+				return strtolower($string);
+			}
 			elseif ($type === 'W')
 			{
 				// return a string with all first letter of each word uppercase(no undersocre)
@@ -2551,21 +2551,21 @@ abstract class ComponentbuilderHelper
 				// return a string with all the uppercase(no undersocre)
 				return strtoupper($string);
 			}
-                        elseif ($type === 'U' || $type === 'strtoupper')
-                        {
-                                // replace white space with underscore
-                                $string = preg_replace('/\s+/', $spacer, $string);
-                                // return all upper
-                                return strtoupper($string);
-                        }
-                        elseif ($type === 'F' || $type === 'ucfirst')
-                        {
-                                // replace white space with underscore
-                                $string = preg_replace('/\s+/', $spacer, $string);
-                                // return with first caracter to upper
-                                return ucfirst(strtolower($string));
-                        }
-                        elseif ($type === 'cA' || $type === 'cAmel' || $type === 'camelcase')
+			elseif ($type === 'U' || $type === 'strtoupper')
+			{
+				// replace white space with underscore
+				$string = preg_replace('/\s+/', $spacer, $string);
+				// return all upper
+				return strtoupper($string);
+			}
+			elseif ($type === 'F' || $type === 'ucfirst')
+			{
+				// replace white space with underscore
+				$string = preg_replace('/\s+/', $spacer, $string);
+				// return with first caracter to upper
+				return ucfirst(strtolower($string));
+			}
+			elseif ($type === 'cA' || $type === 'cAmel' || $type === 'camelcase')
 			{
 				// convert all words to first letter uppercase
 				$string = ucwords(strtolower($string));
@@ -2574,11 +2574,11 @@ abstract class ComponentbuilderHelper
 				// now return first letter lowercase
 				return lcfirst($string);
 			}
-                        // return string
-                        return $string;
-                }
-                // not a string
-                return '';
+			// return string
+			return $string;
+		}
+		// not a string
+		return '';
 	}
 
 	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)

@@ -41,13 +41,13 @@ class ###Component###View###SView### extends JViewLegacy
 	function display($tpl = null)
 	{
 		// get component params
-		$this->params	= JComponentHelper::getParams('com_###component###');
+		$this->params = JComponentHelper::getParams('com_###component###');
 		// get the application
-		$this->app	= JFactory::getApplication();
+		$this->app = JFactory::getApplication();
 		// get the user object
-		$this->user	= JFactory::getUser();
+		$this->user = JFactory::getUser();
 		// get global action permissions
-		$this->canDo	= ###Component###Helper::getActions('###sview###');###CUSTOM_ADMIN_DIPLAY_METHOD###
+		$this->canDo = ###Component###Helper::getActions('###sview###');###CUSTOM_ADMIN_DIPLAY_METHOD###
 	}###CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS###
 
 	/**

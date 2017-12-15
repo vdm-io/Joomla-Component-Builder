@@ -190,8 +190,7 @@ abstract class ###Component###Email
 		
 		// load the bounce email as sender if set
 		if (!is_null($bounce_email))
-		{
-		
+		{		
 			$mail->Sender = $bounce_email;
 		}
 		

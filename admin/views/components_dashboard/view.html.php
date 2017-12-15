@@ -47,20 +47,20 @@ class ComponentbuilderViewComponents_dashboard extends JViewLegacy
 		}
 
 		// Assign data to the view
-		$this->items 		= $this->get('Items');
-		$this->pagination 	= $this->get('Pagination');
-		$this->state		= $this->get('State');
-		$this->user 		= JFactory::getUser();
-		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
-		$this->listDirn		= $this->escape($this->state->get('list.direction'));
-		$this->saveOrder	= $this->listOrder == 'ordering';
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->state = $this->get('State');
+		$this->user = JFactory::getUser();
+		$this->listOrder = $this->escape($this->state->get('list.ordering'));
+		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		$this->saveOrder = $this->listOrder == 'ordering';
 		// get global action permissions
-		$this->canDo		= ComponentbuilderHelper::getActions('component_dashboard');
-		$this->canEdit		= $this->canDo->get('component_dashboard.edit');
-		$this->canState		= $this->canDo->get('component_dashboard.edit.state');
-		$this->canCreate	= $this->canDo->get('component_dashboard.create');
-		$this->canDelete	= $this->canDo->get('component_dashboard.delete');
-		$this->canBatch	= $this->canDo->get('core.batch');
+		$this->canDo = ComponentbuilderHelper::getActions('component_dashboard');
+		$this->canEdit = $this->canDo->get('component_dashboard.edit');
+		$this->canState = $this->canDo->get('component_dashboard.edit.state');
+		$this->canCreate = $this->canDo->get('component_dashboard.create');
+		$this->canDelete = $this->canDo->get('component_dashboard.delete');
+		$this->canBatch = $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -149,7 +149,7 @@ class ComponentbuilderViewComponents_dashboard extends JViewLegacy
 		$help_url = ComponentbuilderHelper::getHelpUrl('components_dashboard');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
 		}
 
 		// add the options comp button

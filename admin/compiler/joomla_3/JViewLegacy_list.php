@@ -50,15 +50,15 @@ class ###Component###View###Views### extends JViewLegacy
 		}
 
 		// Assign data to the view
-		$this->items 		= $this->get('Items');
-		$this->pagination 	= $this->get('Pagination');
-		$this->state		= $this->get('State');
-		$this->user 		= JFactory::getUser();
-		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
-		$this->listDirn		= $this->escape($this->state->get('list.direction'));
-		$this->saveOrder	= $this->listOrder == 'ordering';
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->state = $this->get('State');
+		$this->user = JFactory::getUser();
+		$this->listOrder = $this->escape($this->state->get('list.ordering'));
+		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		$this->saveOrder = $this->listOrder == 'ordering';
 		// get global action permissions
-		$this->canDo		= ###Component###Helper::getActions('###view###');###JVIEWLISTCANDO###
+		$this->canDo = ###Component###Helper::getActions('###view###');###JVIEWLISTCANDO###
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -153,7 +153,7 @@ class ###Component###View###Views### extends JViewLegacy
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-				JToolBarHelper::preferences('com_###component###');
+			JToolBarHelper::preferences('com_###component###');
 		}
 
 		if ($this->canState)

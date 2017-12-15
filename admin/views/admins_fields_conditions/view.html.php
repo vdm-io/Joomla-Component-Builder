@@ -47,20 +47,20 @@ class ComponentbuilderViewAdmins_fields_conditions extends JViewLegacy
 		}
 
 		// Assign data to the view
-		$this->items 		= $this->get('Items');
-		$this->pagination 	= $this->get('Pagination');
-		$this->state		= $this->get('State');
-		$this->user 		= JFactory::getUser();
-		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
-		$this->listDirn		= $this->escape($this->state->get('list.direction'));
-		$this->saveOrder	= $this->listOrder == 'ordering';
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->state = $this->get('State');
+		$this->user = JFactory::getUser();
+		$this->listOrder = $this->escape($this->state->get('list.ordering'));
+		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		$this->saveOrder = $this->listOrder == 'ordering';
 		// get global action permissions
-		$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_conditions');
-		$this->canEdit		= $this->canDo->get('admin_fields_conditions.edit');
-		$this->canState		= $this->canDo->get('admin_fields_conditions.edit.state');
-		$this->canCreate	= $this->canDo->get('admin_fields_conditions.create');
-		$this->canDelete	= $this->canDo->get('admin_fields_conditions.delete');
-		$this->canBatch	= $this->canDo->get('core.batch');
+		$this->canDo = ComponentbuilderHelper::getActions('admin_fields_conditions');
+		$this->canEdit = $this->canDo->get('admin_fields_conditions.edit');
+		$this->canState = $this->canDo->get('admin_fields_conditions.edit.state');
+		$this->canCreate = $this->canDo->get('admin_fields_conditions.create');
+		$this->canDelete = $this->canDo->get('admin_fields_conditions.delete');
+		$this->canBatch = $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -149,7 +149,7 @@ class ComponentbuilderViewAdmins_fields_conditions extends JViewLegacy
 		$help_url = ComponentbuilderHelper::getHelpUrl('admins_fields_conditions');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
 		}
 
 		// add the options comp button

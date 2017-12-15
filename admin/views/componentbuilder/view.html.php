@@ -75,15 +75,15 @@ class ComponentbuilderViewComponentbuilder extends JViewLegacy
 		$canDo = ComponentbuilderHelper::getActions('componentbuilder');
 		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_DASHBOARD'), 'grid-2');
 
-                // set help url for this view if found
-                $help_url = ComponentbuilderHelper::getHelpUrl('componentbuilder');
-                if (ComponentbuilderHelper::checkString($help_url))
-                {
+		// set help url for this view if found
+		$help_url = ComponentbuilderHelper::getHelpUrl('componentbuilder');
+		if (ComponentbuilderHelper::checkString($help_url))
+		{
 			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
-                }
+		}
 
 		if ($canDo->get('core.admin') || $canDo->get('core.options'))
-                {
+		{
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 	}

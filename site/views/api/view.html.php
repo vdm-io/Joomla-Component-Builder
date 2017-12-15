@@ -44,7 +44,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 		// get the user object
 		$this->user = JFactory::getUser();
 		// Initialise variables.
-		$this->item	= $this->get('Item');
+		$this->item = $this->get('Item');
 
 		// Set the toolbar
 		$this->addToolBar();

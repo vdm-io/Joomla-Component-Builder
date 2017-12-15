@@ -38,15 +38,15 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 	function display($tpl = null)
 	{
 		// get component params
-		$this->params	= JComponentHelper::getParams('com_componentbuilder');
+		$this->params = JComponentHelper::getParams('com_componentbuilder');
 		// get the application
-		$this->app	= JFactory::getApplication();
+		$this->app = JFactory::getApplication();
 		// get the user object
 		$this->user	= JFactory::getUser();
 		// get global action permissions
-		$this->canDo	= ComponentbuilderHelper::getActions('get_snippets');
+		$this->canDo = ComponentbuilderHelper::getActions('get_snippets');
 		// Initialise variables.
-		$this->items	= $this->get('Items');
+		$this->items = $this->get('Items');
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

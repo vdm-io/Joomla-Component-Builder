@@ -49,11 +49,11 @@ class ###Component###Model###SView### extends JModelItem
 	 *
 	 * @var        strings
 	 */
-        protected $user;
-        protected $userId;
-        protected $guest;
-        protected $groups;
-        protected $levels;
+	protected $user;
+	protected $userId;
+	protected $guest;
+	protected $groups;
+	protected $levels;
 	protected $app;
 	protected $input;
 	protected $uikitComp;
@@ -74,10 +74,10 @@ class ###Component###Model###SView### extends JModelItem
 	 */
 	protected function populateState()
 	{
-		$this->app	= JFactory::getApplication();
-		$this->input 	= $this->app->input;
+		$this->app = JFactory::getApplication();
+		$this->input = $this->app->input;
 		// Get the item main id
-		$id		= $this->input->getInt('id', null);
+		$id = $this->input->getInt('id', null);
 		$this->setState('###sview###.id', $id);
 
 		// Load the parameters.
@@ -94,21 +94,21 @@ class ###Component###Model###SView### extends JModelItem
 	public function getItem($pk = null)
 	{
 		$this->user	= JFactory::getUser();
-                // check if this user has permission to access item
-                if (!$this->user->authorise('###sview###.access', 'com_###component###'))
-                {
+		// check if this user has permission to access item
+		if (!$this->user->authorise('###sview###.access', 'com_###component###'))
+		{
 			$app = JFactory::getApplication();
 			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
 			// redirect away if not a correct to cPanel/default view
 			$app->redirect('index.php?option=com_###component###');
 			return false;
-                }
-		$this->userId		= $this->user->get('id');
-		$this->guest		= $this->user->get('guest');
-                $this->groups		= $this->user->get('groups');
-                $this->authorisedGroups	= $this->user->getAuthorisedGroups();
-		$this->levels		= $this->user->getAuthorisedViewLevels();
-		$this->initSet		= true;
+		}
+		$this->userId = $this->user->get('id');
+		$this->guest = $this->user->get('guest');
+		$this->groups = $this->user->get('groups');
+		$this->authorisedGroups = $this->user->getAuthorisedGroups();
+		$this->levels = $this->user->getAuthorisedViewLevels();
+		$this->initSet = true;
 
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('###sview###.id');###CUSTOM_ADMIN_BEFORE_GET_ITEM###
 		

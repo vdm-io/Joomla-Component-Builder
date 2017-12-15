@@ -74,15 +74,15 @@ class ###Component###View###Component### extends JViewLegacy
 		$canDo = ###Component###Helper::getActions('###component###');
 		JToolBarHelper::title(JText::_('COM_###COMPONENT###_DASHBOARD'), 'grid-2');
 
-                // set help url for this view if found
-                $help_url = ###Component###Helper::getHelpUrl('###component###');
-                if (###Component###Helper::checkString($help_url))
-                {
+		// set help url for this view if found
+		$help_url = ###Component###Helper::getHelpUrl('###component###');
+		if (###Component###Helper::checkString($help_url))
+		{
 			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $help_url);
-                }
+		}
 
 		if ($canDo->get('core.admin') || $canDo->get('core.options'))
-                {
+		{
 			JToolBarHelper::preferences('com_###component###');
 		}
 	}

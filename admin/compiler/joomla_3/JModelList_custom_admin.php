@@ -59,15 +59,15 @@ class ###Component###Model###SViews### extends JModelList
 	protected function getListQuery()
 	{
 		// Get the current user for authorisation checks
-		$this->user			= JFactory::getUser();
-		$this->userId		= $this->user->get('id');
-		$this->guest		= $this->user->get('guest');
-		$this->groups		= $this->user->get('groups');
+		$this->user = JFactory::getUser();
+		$this->userId = $this->user->get('id');
+		$this->guest = $this->user->get('guest');
+		$this->groups = $this->user->get('groups');
 		$this->authorisedGroups	= $this->user->getAuthorisedGroups();
-		$this->levels		= $this->user->getAuthorisedViewLevels();
-		$this->app			= JFactory::getApplication();
-		$this->input		= $this->app->input;
-		$this->initSet		= true; ###CUSTOM_ADMIN_GET_LIST_QUERY###
+		$this->levels = $this->user->getAuthorisedViewLevels();
+		$this->app = JFactory::getApplication();
+		$this->input = $this->app->input;
+		$this->initSet = true; ###CUSTOM_ADMIN_GET_LIST_QUERY###
 	}
 
 	/**
