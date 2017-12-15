@@ -56,6 +56,7 @@ class ###Component###View###Views### extends JViewLegacy
 		$this->user 		= JFactory::getUser();
 		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
 		$this->listDirn		= $this->escape($this->state->get('list.direction'));
+		$this->saveOrder	= $this->listOrder == 'ordering';
 		// get global action permissions
 		$this->canDo		= ###Component###Helper::getActions('###view###');###JVIEWLISTCANDO###
 

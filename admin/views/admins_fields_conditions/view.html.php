@@ -53,6 +53,7 @@ class ComponentbuilderViewAdmins_fields_conditions extends JViewLegacy
 		$this->user 		= JFactory::getUser();
 		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
 		$this->listDirn		= $this->escape($this->state->get('list.direction'));
+		$this->saveOrder	= $this->listOrder == 'ordering';
 		// get global action permissions
 		$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_conditions');
 		$this->canEdit		= $this->canDo->get('admin_fields_conditions.edit');
@@ -148,13 +149,13 @@ class ComponentbuilderViewAdmins_fields_conditions extends JViewLegacy
 		$help_url = ComponentbuilderHelper::getHelpUrl('admins_fields_conditions');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
-				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-				JToolBarHelper::preferences('com_componentbuilder');
+			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
 		if ($this->canState)

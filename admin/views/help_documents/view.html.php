@@ -53,6 +53,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		$this->user 		= JFactory::getUser();
 		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
 		$this->listDirn		= $this->escape($this->state->get('list.direction'));
+		$this->saveOrder	= $this->listOrder == 'ordering';
 		// get global action permissions
 		$this->canDo		= ComponentbuilderHelper::getActions('help_document');
 		$this->canEdit		= $this->canDo->get('help_document.edit');
@@ -158,13 +159,13 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		$help_url = ComponentbuilderHelper::getHelpUrl('help_documents');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
-				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-				JToolBarHelper::preferences('com_componentbuilder');
+			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
 		if ($this->canState)

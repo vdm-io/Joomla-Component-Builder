@@ -48,22 +48,22 @@ class ###Component###View###View### extends JViewLegacy
 		$this->item 		= $this->get('Item');
 		$this->script 		= $this->get('Script');
 		$this->state		= $this->get('State');
-                // get action permissions
+		// get action permissions
 		$this->canDo		= ###Component###Helper::getActions('###view###',$this->item);
 		// get input
 		$jinput = JFactory::getApplication()->input;
-		$this->ref 		= $jinput->get('ref', 0, 'word');
-		$this->refid            = $jinput->get('refid', 0, 'int');
-		$this->referral         = '';
+		$this->ref 			= $jinput->get('ref', 0, 'word');
+		$this->refid		= $jinput->get('refid', 0, 'int');
+		$this->referral		= '';
 		if ($this->refid)
 		{
-				// return to the item that refered to this item
-				$this->referral = '&ref='.(string)$this->ref.'&refid='.(int)$this->refid;
+			// return to the item that refered to this item
+			$this->referral = '&ref='.(string)$this->ref.'&refid='.(int)$this->refid;
 		}
 		elseif($this->ref)
 		{
-				// return to the list view that refered to this item
-				$this->referral = '&ref='.(string)$this->ref;
+			// return to the list view that refered to this item
+			$this->referral = '&ref='.(string)$this->ref;
 		}###LINKEDVIEWITEMS###
 
 		// Set the toolbar

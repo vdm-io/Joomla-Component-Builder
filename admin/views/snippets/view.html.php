@@ -53,6 +53,7 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		$this->user 		= JFactory::getUser();
 		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
 		$this->listDirn		= $this->escape($this->state->get('list.direction'));
+		$this->saveOrder	= $this->listOrder == 'ordering';
 		// get global action permissions
 		$this->canDo		= ComponentbuilderHelper::getActions('snippet');
 		$this->canEdit		= $this->canDo->get('core.edit');
@@ -168,13 +169,13 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		$help_url = ComponentbuilderHelper::getHelpUrl('snippets');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
-				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-				JToolBarHelper::preferences('com_componentbuilder');
+			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
 		if ($this->canState)
