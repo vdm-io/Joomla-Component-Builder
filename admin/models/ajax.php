@@ -1072,6 +1072,103 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 
+	/**
+	 * Get Linked to
+	 * 
+	 * @param   string   $type  Item Name
+	 * @param   int        $id     Item ID
+	 *
+	 * @return  string      The table of the linked to result
+	 * 
+	 */
+	protected function getLinked($to)
+	{
+		// get the view name & id
+		$values = $this->getViewID();
+		// check if item is set
+		if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
+		{
+			// get linked to
+			$linkedToArray = (array) explode('__', $to);
+			// check if item is linked to component
+			if (in_array('component', $linkedToArray))
+			{
+				if (!$components = getComponentLinked($values['a_view'], $values['a_id']))
+				{
+					$linkedToString =  implode(', ', array_map( function($name) { return ComponentbuilderHelper::safeString($name, 'w'); }, $linkedToArray));
+					return '<div class="control-group"><div class="alert alert-info"><h4>' . JText::sprintf('COM_COMPONENTBUILDER_S_NOT_LINKED', ComponentbuilderHelper::safeString($values['a_view'], 'Ww')) . '</h4><p>' . JText::sprintf('COM_COMPONENTBUILDER_THIS_BSB_IS_NOT_LINKED_TO_ANY_S', $values['a_view'], $linkedToString) . '</p></div></div>';
+				}
+			}
+			// if fields and components found get admin views
+			
+		}
+		// no view or id found in session, or view not allowed to access area
+		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_WAS_A_PROBLEM_BNO_VIEW_OR_ID_FOUND_IN_SESSION_OR_VIEW_NOT_ALLOWED_TO_ACCESS_AREAB_WE_COULD_NOT_LOAD_ANY_LINKED_TO_VALUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR') . '</p></div></div>';
+	}
+
+	/**
+	 * Get Component Linked to Item
+	 * 
+	 * @param   string   $type  Item Name
+	 * @param   int        $id     Item ID
+	 *
+	 * @return  array       Components Id if found
+	 * 
+	 */
+	protected function getComponentLinked($type, $id)
+	{
+		// reset bucket
+		$componentsLinked = array();
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+		// get all history values
+		$query->select('h.*');
+		$query->from('#__ucm_history AS h');
+		$query->where($this->db->quoteName('h.ucm_item_id') . ' = ' . (int) $id);
+		// Join over the content type for the type id
+		$query->join('LEFT', '#__content_types AS ct ON ct.type_id = h.ucm_type_id');
+		$query->where('ct.type_alias = ' . $this->db->quote('com_componentbuilder.' . $type));
+		$this->db->setQuery($query);
+		$this->db->execute();
+		if ($this->db->getNumRows())
+		{
+			// load all item history
+			$items = $db->loadObjectList();
+			// load the components ids
+			foreach ($items as $item)
+			{
+				// only work with those who have notes
+				if (ComponentbuilderHelper::checkJson($item->version_note))
+				{
+					$note = json_decode($item->version_note, true);
+					if (ComponentbuilderHelper::checkArray($note))
+					{
+						foreach($note as $ids)
+						{
+							if (ComponentbuilderHelper::checkArray($ids))
+							{
+								foreach ($ids as $_id)
+								{
+									$componentsLinked[(int) $_id] = array('component' => (int) $_id);
+								}
+							}
+							elseif (is_numeric($ids))
+							{
+								$componentsLinked[(int) $ids] = array('component' => (int) $ids);
+							}
+						}
+					}
+				}
+			}
+			// check if we found any
+			if (ComponentbuilderHelper::checkArray($componentLinked))
+			{
+				return $componentLinked;
+			}
+		}
+		return false;
+	}
+
 	// Used in site_view
 			
 	public function getSnippets($libraries)

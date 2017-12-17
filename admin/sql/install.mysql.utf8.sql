@@ -1260,7 +1260,7 @@ INSERT INTO `#__componentbuilder_dynamic_get` (`id`, `add_php_after_getitem`, `a
 
 INSERT INTO `#__componentbuilder_library` (`id`, `addconditions`, `description`, `type`, `how`, `name`, `php_setdocument`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
 (1, '', '', 1, '', 'No Library', '', 1, '2017-11-11 22:08:33', '2017-12-08 15:51:34', 4, '', 1),
-(2, '', '', 1, 1, 'Bootstrap v4', '', 1, '2017-11-12 02:08:39', '2017-12-10 15:09:48', 14, '', 2),
+(2, '', '', 1, 1, 'Bootstrap v4', '', 1, '2017-11-12 02:08:39', '2017-12-17 09:04:10', 18, '', 2),
 (3, '', '', 1, 1, 'Uikit v3', '', 1, '2017-11-11 22:08:45', '2017-12-10 15:55:35', 18, '', 3),
 (4, '', '', 1, 4, 'Uikit v2', '', 1, '2017-11-11 22:08:51', '2017-12-10 15:53:17', 5, '', 4),
 (5, '', '', 1, 4, 'FooTable v2', '', 1, '2017-11-11 22:08:57', '2017-12-11 20:07:32', 9, '', 5),
@@ -1471,7 +1471,7 @@ INSERT INTO `#__componentbuilder_snippet_type` (`id`, `name`, `description`, `pa
 --
 
 INSERT INTO `#__componentbuilder_library_config` (`id`, `addconfig`, `library`, `params`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
-(1, '', 2, '', 1, '2017-11-25 02:59:38', '2017-11-26 20:48:15', 10, '', 1),
+(1, '', 2, '', 1, '2017-11-25 02:59:38', '2017-12-17 09:04:04', 12, '', 1),
 (2, '', 3, '', 1, '2017-11-25 21:51:25', '2017-12-10 15:08:32', 6, '', 2);
 
 --
@@ -1480,10 +1480,10 @@ INSERT INTO `#__componentbuilder_library_config` (`id`, `addconfig`, `library`, 
 
 INSERT INTO `#__componentbuilder_library_files_folders_urls` (`id`, `addfiles`, `addfolders`, `addurls`, `library`, `params`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
 (1, '', '{\"addfolders0\":{\"folder\":\"uikit-v2\",\"path\":\"\\/media\\/\"}}', '', 4, '', 1, '2017-11-25 00:09:15', '2017-12-10 15:10:31', 8, '', 1),
-(2, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/js\\/bootstrap.min.js\",\"type\":\"1\"},\"addurls1\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/css\\/bootstrap.min.css\",\"type\":\"1\"}}', 2, '', 1, '2017-11-25 16:17:36', '2017-11-26 20:48:33', 6, '', 2),
+(2, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/js\\/bootstrap.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/css\\/bootstrap.min.css\",\"type\":\"2\"}}', 2, '', 1, '2017-11-25 16:17:36', '2017-12-15 11:53:43', 9, '', 2),
 (3, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit-icons.min.js\",\"type\":\"2\"},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/css\\/uikit.min.css\",\"type\":\"2\"}}', 3, '', 1, '2017-11-25 21:47:40', '2017-12-10 15:09:17', 7, '', 3),
 (4, '', '', '', 5, '', 1, '2017-11-25 22:00:43', '2017-12-10 15:53:54', 3, '', 4),
-(5, '', '', '', 6, '', 1, '2017-11-25 22:12:42', '2017-12-10 15:54:36', 2, '', 5);
+(5, '', '', '', 6, '', 1, '2017-11-25 22:12:42', '2017-12-15 11:37:37', 4, '', 5);
 
 
 

@@ -379,9 +379,21 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 				// set the update notice while we are at it
 				var activeVersion = tagreleases[0].tag_name.substring(1);
 				if (activeVersion === manifest.version) {
+					// local version is in sync with latest release
 					jQuery(".update-notice").html("<small><span style=\'color:green;\'><span class=\'icon-shield\'></span>'.JText::_('COM_COMPONENTBUILDER_UP_TO_DATE').'</span></small>");
 				} else {
-					jQuery(".update-notice").html("<small><span style=\'color:red;\'><span class=\'icon-warning-circle\'></span>'.JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE').'</span></small>");
+					// split versions in to array
+					var activeVersionArray = activeVersion.split(".");
+					var localVersionArray = manifest.version.split(".");
+					if (localVersionArray[0] > activeVersionArray[0] || 
+					(localVersionArray[0] == activeVersionArray[0] && localVersionArray[1] > activeVersionArray[1]) || 
+					(localVersionArray[0] == activeVersionArray[0] && localVersionArray[1] == activeVersionArray[1] && localVersionArray[2] > activeVersionArray[2])) {
+						// local version head latest release
+						jQuery(".update-notice").html("<small><span style=\'color:#F7B033;\'><span class=\'icon-wrench\'></span>'.JText::_('COM_COMPONENTBUILDER_BETA_RELEASE').'</span></small>");
+					} else {
+						// local version behind latest release
+						jQuery(".update-notice").html("<small><span style=\'color:red;\'><span class=\'icon-warning-circle\'></span>'.JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE').'</span></small>");
+					}
 				}
 				// set the taged releases
 				jQuery("#tagreleases").html("");

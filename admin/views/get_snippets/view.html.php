@@ -79,6 +79,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
 		$HeaderCheck = new componentbuilderHeaderCheck;
+
 		// Add View JavaScript File
 		$this->document->addScript(JURI::root(true) . "/administrator/components/com_componentbuilder/assets/js/get_snippets.js"); 
 

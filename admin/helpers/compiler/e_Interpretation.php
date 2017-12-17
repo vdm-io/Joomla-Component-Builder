@@ -3341,7 +3341,7 @@ class Interpretation extends Fields
 			// add script to file
 			$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_JAVASCRIPT_FILE###'] = $view['settings']->javascript_file;
 			// add script to view
-			return PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add View JavaScript File" . PHP_EOL . "\t\t" . $this->setIncludeLibScript($path);
+			return PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add View JavaScript File" . PHP_EOL . "\t\t" . $this->setIncludeLibScript($path);
 		}
 		return '';
 	}
@@ -3563,7 +3563,7 @@ class Interpretation extends Fields
 		// Start script builder for library files
 		if (!isset($this->libwarning[$id]))
 		{
-			$this->app->enqueueMessage(JText::sprintf('The conditional script builder for <b>%s</b> is not ready, will only be ready in the next update to v2.6.7', $this->libraries[$id]->name), 'warning');
+			$this->app->enqueueMessage(JText::sprintf('The conditional script builder for <b>%s</b> is not ready, sorry!', $this->libraries[$id]->name), 'warning');
 			// set the warning only once
 			$this->libwarning[$id] = true;
 		}
