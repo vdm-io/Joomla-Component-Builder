@@ -214,7 +214,7 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_ADMIN_VIEWS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_views.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_views.css", array('version' => 'auto'));
 	}
 
 	/**

@@ -194,9 +194,9 @@ class ComponentbuilderViewComponent_dashboard extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_dashboard.css"); 
-		$this->document->addScript(JURI::root() . $this->script);
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_dashboard/submitbutton.js"); 
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_dashboard.css", array('version' => 'auto')); 
+		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_dashboard/submitbutton.js", array('version' => 'auto')); 
 		JText::script('view not acceptable. Error');
 	}
 }

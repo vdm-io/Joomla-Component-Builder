@@ -194,11 +194,11 @@ class ComponentbuilderViewLayout extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_LAYOUT_NEW' : 'COM_COMPONENTBUILDER_LAYOUT_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/layout.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/layout.css", array('version' => 'auto'));
 		// Add Ajax Token
 		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-		$this->document->addScript(JURI::root() . $this->script);
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/layout/submitbutton.js"); 
+		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/layout/submitbutton.js", array('version' => 'auto')); 
 		JText::script('view not acceptable. Error');
 	}
 }

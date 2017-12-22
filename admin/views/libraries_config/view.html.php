@@ -204,7 +204,7 @@ class ComponentbuilderViewLibraries_config extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_LIBRARIES_CONFIG'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/libraries_config.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/libraries_config.css", array('version' => 'auto'));
 	}
 
 	/**

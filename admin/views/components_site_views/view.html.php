@@ -204,7 +204,7 @@ class ComponentbuilderViewComponents_site_views extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_SITE_VIEWS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_site_views.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_site_views.css", array('version' => 'auto'));
 	}
 
 	/**

@@ -194,11 +194,11 @@ class ComponentbuilderViewLanguage_translation extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_NEW' : 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/language_translation.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/language_translation.css", array('version' => 'auto'));
 		// Add Ajax Token
 		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-		$this->document->addScript(JURI::root() . $this->script);
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/language_translation/submitbutton.js"); 
+		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/language_translation/submitbutton.js", array('version' => 'auto')); 
 		// add JavaScripts
 		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' );
 		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', 'text/javascript', true);

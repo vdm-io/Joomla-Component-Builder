@@ -241,7 +241,7 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_LAYOUTS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/layouts.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/layouts.css", array('version' => 'auto'));
 	}
 
 	/**

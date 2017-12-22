@@ -194,9 +194,9 @@ class ComponentbuilderViewLibrary_config extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_LIBRARY_CONFIG_NEW' : 'COM_COMPONENTBUILDER_LIBRARY_CONFIG_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/library_config.css"); 
-		$this->document->addScript(JURI::root() . $this->script);
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/library_config/submitbutton.js"); 
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/library_config.css", array('version' => 'auto')); 
+		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/library_config/submitbutton.js", array('version' => 'auto')); 
 		JText::script('view not acceptable. Error');
 	}
 }

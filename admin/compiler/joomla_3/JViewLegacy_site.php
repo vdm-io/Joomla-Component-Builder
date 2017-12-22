@@ -54,7 +54,7 @@ class ###Component###View###SView### extends JViewLegacy
 	protected function _prepareDocument()
 	{###SITE_LIBRARIES_LOADER### ###SITE_UIKIT_LOADER### ###SITE_GOOGLECHART_LOADER### ###SITE_FOOTABLE_LOADER### ###SITE_DOCUMENT_METADATA### ###SITE_DOCUMENT_CUSTOM_PHP### 
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/components/com_###component###/assets/css/###sview###.css');###SITE_DOCUMENT_CUSTOM_CSS### ###SITE_DOCUMENT_CUSTOM_JS###
+		$this->document->addStyleSheet(JURI::root(true) .'/components/com_###component###/assets/css/###sview###.css', array('version' => 'auto'));###SITE_DOCUMENT_CUSTOM_CSS### ###SITE_DOCUMENT_CUSTOM_JS###
 	}
 
 	/**

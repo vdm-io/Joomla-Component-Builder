@@ -194,11 +194,11 @@ class ComponentbuilderViewSite_view extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_SITE_VIEW_NEW' : 'COM_COMPONENTBUILDER_SITE_VIEW_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/site_view.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/site_view.css", array('version' => 'auto'));
 		// Add Ajax Token
 		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-		$this->document->addScript(JURI::root() . $this->script);
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/site_view/submitbutton.js"); 
+		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/site_view/submitbutton.js", array('version' => 'auto')); 
 		JText::script('view not acceptable. Error');
 	}
 }

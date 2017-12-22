@@ -194,11 +194,11 @@ class ComponentbuilderViewAdmin_fields_conditions extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_fields_conditions.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_fields_conditions.css", array('version' => 'auto'));
 		// Add Ajax Token
 		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-		$this->document->addScript(JURI::root() . $this->script);
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_fields_conditions/submitbutton.js"); 
+		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_fields_conditions/submitbutton.js", array('version' => 'auto')); 
 		JText::script('view not acceptable. Error');
 	}
 }

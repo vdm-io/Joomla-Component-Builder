@@ -231,7 +231,7 @@ class ComponentbuilderViewFieldtypes extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_FIELDTYPES'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/fieldtypes.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/fieldtypes.css", array('version' => 'auto'));
 	}
 
 	/**

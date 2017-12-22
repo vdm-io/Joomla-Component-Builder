@@ -302,7 +302,7 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_CUSTOM_CODES'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/custom_codes.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/custom_codes.css", array('version' => 'auto'));
 	}
 
 	/**

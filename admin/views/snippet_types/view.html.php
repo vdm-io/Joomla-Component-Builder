@@ -204,7 +204,7 @@ class ComponentbuilderViewSnippet_types extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPES'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/snippet_types.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/snippet_types.css", array('version' => 'auto'));
 	}
 
 	/**

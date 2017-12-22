@@ -56,7 +56,7 @@ class ###Component###View###SViews### extends JViewLegacy
 	protected function setDocument()
 	{###CUSTOM_ADMIN_LIBRARIES_LOADER### ###CUSTOM_ADMIN_UIKIT_LOADER### ###CUSTOM_ADMIN_GOOGLECHART_LOADER### ###CUSTOM_ADMIN_FOOTABLE_LOADER### ###CUSTOM_ADMIN_DOCUMENT_CUSTOM_PHP###
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_###component###/assets/css/###sviews###.css');###CUSTOM_ADMIN_DOCUMENT_CUSTOM_CSS### ###CUSTOM_ADMIN_DOCUMENT_CUSTOM_JS###
+		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_###component###/assets/css/###sviews###.css', array('version' => 'auto'));###CUSTOM_ADMIN_DOCUMENT_CUSTOM_CSS### ###CUSTOM_ADMIN_DOCUMENT_CUSTOM_JS###
 	}
 
 	/**

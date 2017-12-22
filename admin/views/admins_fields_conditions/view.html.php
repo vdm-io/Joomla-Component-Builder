@@ -204,7 +204,7 @@ class ComponentbuilderViewAdmins_fields_conditions extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_ADMINS_FIELDS_CONDITIONS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admins_fields_conditions.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admins_fields_conditions.css", array('version' => 'auto'));
 	}
 
 	/**

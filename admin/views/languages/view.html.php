@@ -214,7 +214,7 @@ class ComponentbuilderViewLanguages extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_LANGUAGES'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/languages.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/languages.css", array('version' => 'auto'));
 	}
 
 	/**

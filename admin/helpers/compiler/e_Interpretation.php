@@ -3492,9 +3492,9 @@ class Interpretation extends Fields
 			$chart[] = PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " add the google chart builder class.";
 			$chart[] = "\t\trequire_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/chartbuilder.php';";
 			$chart[] = "\t\t//" . $this->setLine(__LINE__) . " load the google chart js.";
-			$chart[] = "\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/js/google.jsapi.js');";
-			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js');";
-			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/canvg.js');";
+			$chart[] = "\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/js/google.jsapi.js', array('version' => 'auto'));";
+			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js', array('version' => 'auto'));";
+			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/canvg.js', array('version' => 'auto'));";
 			return implode(PHP_EOL, $chart);
 		}
 		return '';
@@ -3698,11 +3698,11 @@ class Interpretation extends Fields
 			switch ($pathInfo['extension'])
 			{
 				case 'js':
-					return '$this->document->addScript(' . $JURI . '"' . $path . '");';
+					return '$this->document->addScript(' . $JURI . '"' . $path . '", array("version" => "auto"));';
 					break;
 				case 'css':
 				case 'less':
-					return '$this->document->addStyleSheet(' . $JURI . '"' . $path . '");';
+					return '$this->document->addStyleSheet(' . $JURI . '"' . $path . '", array("version" => "auto"));';
 					break;
 				case 'php':
 					if (strpos($path, 'http') === false)
@@ -3764,12 +3764,12 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " The uikit css.";
 			$setter .= PHP_EOL . $tabV . "\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/uikit'.\$style.\$size.'.css');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/uikit'.\$style.\$size.'.css', array('version' => 'auto'));";
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " The uikit js.";
 			$setter .= PHP_EOL . $tabV . "\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/uikit'.\$size.'.js');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/uikit'.\$size.'.js', array('version' => 'auto'));";
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 		}
 		// load the components need
@@ -3817,13 +3817,13 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t//" . $this->setLine(__LINE__) . " load the css.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', array('version' => 'auto'));";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t//" . $this->setLine(__LINE__) . " check if the JavaScript file exists.";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t//" . $this->setLine(__LINE__) . " load the js.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js', array('version' => 'auto'), array('type' => 'text/javascript', 'async' => 'async'));";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t}";
@@ -3846,13 +3846,13 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t//" . $this->setLine(__LINE__) . " load the css.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', array('version' => 'auto'));";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t//" . $this->setLine(__LINE__) . " check if the JavaScript file exists.";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t//" . $this->setLine(__LINE__) . " load the js.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js', 'text/javascript', true);";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js', array('version' => 'auto'), array('type' => 'text/javascript', 'async' => 'async'));";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t}";
@@ -3872,12 +3872,12 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " The uikit css.";
 			$setter .= PHP_EOL . $tabV . "\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v3/css/uikit'.\$size.'.css');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v3/css/uikit'.\$size.'.css', array('version' => 'auto'));";
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " The uikit js.";
 			$setter .= PHP_EOL . $tabV . "\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v3/js/uikit'.\$size.'.js');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v3/js/uikit'.\$size.'.js', array('version' => 'auto'));";
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 			if (2 == $this->uikit)
 			{
@@ -7175,22 +7175,22 @@ class Interpretation extends Fields
 		if (!isset($this->footableVersion) || 2 == $this->footableVersion) // loading version 2
 		{
 			$foo = PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add the CSS for Footable.";
-			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.core.min.css');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.core.min.css', array('version' => 'auto'));";
 			$foo .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Use the Metro Style";
 			$foo .= PHP_EOL . "\t\tif (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . "\t\t{";
-			$foo .= PHP_EOL . "\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.metro.min.css');";
+			$foo .= PHP_EOL . "\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.metro.min.css', array('version' => 'auto'));";
 			$foo .= PHP_EOL . "\t\t}";
 			$foo .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Use the Legacy Style.";
 			$foo .= PHP_EOL . "\t\telseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . "\t\t{";
-			$foo .= PHP_EOL . "\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.standalone.min.css');";
+			$foo .= PHP_EOL . "\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.standalone.min.css', array('version' => 'auto'));";
 			$foo .= PHP_EOL . "\t\t}";
 			$foo .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add the JavaScript for Footable";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.js');";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.sort.js');";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.filter.js');";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.paginate.js');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.js', array('version' => 'auto'));";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.sort.js', array('version' => 'auto'));";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.filter.js', array('version' => 'auto'));";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.paginate.js', array('version' => 'auto'));";
 			if ($init)
 			{
 				$foo .= PHP_EOL . PHP_EOL . "\t\t" . '$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery(' . "'.footable'" . ').footable(); }); jQuery(' . "'.nav-tabs'" . ').on(' . "'click'" . ', ' . "'li'" . ', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery(' . "'.footable'" . ').trigger(' . "'footable_resize'" . '); }";';
@@ -7202,9 +7202,9 @@ class Interpretation extends Fields
 
 			$foo = PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add the CSS for Footable";
 			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
-			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v3/css/footable.standalone.min.css');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v3/css/footable.standalone.min.css', array('version' => 'auto'));";
 			$foo .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add the JavaScript for Footable (adding all funtions)";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v3/js/footable.min.js');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v3/js/footable.min.js', array('version' => 'auto'));";
 			if ($init)
 			{
 				$foo .= PHP_EOL . PHP_EOL . "\t\t" . '$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery(' . "'.footable'" . ').footable();});});";';

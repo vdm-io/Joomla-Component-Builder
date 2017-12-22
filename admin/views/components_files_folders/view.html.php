@@ -204,7 +204,7 @@ class ComponentbuilderViewComponents_files_folders extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_FILES_FOLDERS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_files_folders.css");
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_files_folders.css", array('version' => 'auto'));
 	}
 
 	/**
