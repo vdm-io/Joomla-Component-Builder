@@ -1,4 +1,5 @@
 <?php
+
 /*----------------------------------------------------------------------------------|  www.vdm.io  |----/
 				Vast Development Method
 /-------------------------------------------------------------------------------------------------------/
@@ -20,15 +21,16 @@ defined('_JEXEC') or die;
  */
 class Dropbox
 {
+
 	/**
 	 * final url
 	 */
 	protected $url;
-	
+
 	/**
 	 * The array for the post url
 	 */
-	protected $postUrl = array( 
+	protected $postUrl = array(
 		"protocol" => "https://",
 		"suddomain" => "api.",
 		"domain" => "dropboxapi.com",
@@ -37,8 +39,8 @@ class Dropbox
 
 	/**
 	 * the verious pathes we need
-	 */	
-	protected $domainpath = array( 
+	 */
+	protected $domainpath = array(
 		"list_folder" => "files/list_folder",
 		"list_folder_continue" => "files/list_folder/continue",
 		"create_shared_link" => "sharing/create_shared_link",
@@ -48,58 +50,58 @@ class Dropbox
 
 	/**
 	 * the target pathe to get
-	 */	
+	 */
 	protected $targetPath = false;
 	protected $targetPathOriginal = false;
 
 	/**
 	 * oauth token
-	 */	
+	 */
 	protected $oauthToken;
 
 	/**
 	 * the verious pathes we need
-	 */	
+	 */
 	protected $permissionType;
 
 	/**
 	 * The loop controller in calling Dropbox API
-	 */	
+	 */
 	protected $continueCalling = array();
 
 	/**
 	 * the success switch
-	 */	
+	 */
 	protected $succes;
 
 	/**
 	 * the type call
-	 */	
+	 */
 	protected $type;
 
 	/**
 	 * the query for the call
-	 */	
+	 */
 	protected $query;
 
 	/**
 	 * the query for the call
-	 */	
+	 */
 	protected $model;
 
 	/**
 	 * the mediaData bucket
-	 */	
+	 */
 	public $mediaData = array();
 
 	/**
 	 * the error messages
-	 */	
+	 */
 	public $error_summary = array();
-	
+
 	/**
-	* 	force the update to reset
-	**/
+	 * 	force the update to reset
+	 * */
 	public $forceReset = false;
 
 	/**
@@ -108,7 +110,7 @@ class Dropbox
 	public function __construct(JModelLegacy $model, $buildType)
 	{
 		// set the url at this point for now
-		$this->url = $this->postUrl["protocol"].$this->postUrl["suddomain"].$this->postUrl["domain"].$this->postUrl["path"];
+		$this->url = $this->postUrl["protocol"] . $this->postUrl["suddomain"] . $this->postUrl["domain"] . $this->postUrl["path"];
 		// set the local model
 		$this->model = $model;
 		// set the build type
@@ -133,10 +135,10 @@ class Dropbox
 		ini_set('max_execution_time', 500);
 		// set the oauth toke
 		$this->oauthToken = $token;
-		
+
 		// set the permission type
 		$this->permissionType = $permissiontype;
-		
+
 		// set the details
 		if ($this->checkArray($details))
 		{
@@ -145,13 +147,13 @@ class Dropbox
 				$this->$detail = $value;
 			}
 		}
-		
+
 		// set the curent folder path
 		if (!$this->setFolderPath())
 		{
 			return false;
 		}
-		
+
 		// start the main factory that calles for the folder data
 		$this->query = array("path" => $this->targetPath, "recursive" => true, "include_media_info" => true);
 		$this->type = 'list_folder';
@@ -160,7 +162,7 @@ class Dropbox
 			return true;
 		}
 	}
-	
+
 	public function revokeToken($token = null)
 	{
 		if ($token)
@@ -177,7 +179,7 @@ class Dropbox
 		}
 		return false;
 	}
-	
+
 	protected function setFolderPath()
 	{
 		if ('full' == $this->permissionType && isset($this->dropboxOption) && isset($this->dropboxTarget) && $this->checkString($this->dropboxTarget))
@@ -185,8 +187,8 @@ class Dropbox
 			if (2 == $this->dropboxOption)
 			{
 				// simply set the path
-				$this->targetPath = '/'.trim(strtolower($this->dropboxTarget), '/');
-				
+				$this->targetPath = '/' . trim(strtolower($this->dropboxTarget), '/');
+
 				return true;
 			}
 			elseif (1 == $this->dropboxOption)
@@ -203,12 +205,12 @@ class Dropbox
 		elseif ('app' == $this->permissionType)
 		{
 			$this->targetPath = "";
-			
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	protected function makeCall()
 	{
 		if ($this->_isCurl())
@@ -220,48 +222,49 @@ class Dropbox
 			return $this->makeGetCall();
 		}
 	}
-	
+
 	protected function makeGetCall()
 	{
-		
 		$options = array(
 			'http' => array(
-				'header' => "Content-Type: application/json\r\n".
-					"Authorization: Bearer ".$this->oauthToken,
-				'method'  => "POST"
+				'header' => "Content-Type: application/json\r\n" .
+				"Authorization: Bearer " . $this->oauthToken,
+				'method' => "POST"
 			),
 		);
-		
+
 		if ($this->checkArray($this->query))
 		{
 			$this->query = json_encode($this->query);
 		}
 		$options['http']['content'] = $this->query;
-		
+
 		$context = stream_context_create($options);
-		$response = file_get_contents($this->url.$this->domainpath[$this->type], false, $context);
+		$response = file_get_contents($this->url . $this->domainpath[$this->type], false, $context);
 
+		// store the result
+		return $this->getCallResult($response);
+	}
 
+	protected function getCallResult($response)
+	{
 		if ($response === FALSE)
 		{
-			$this->error_summary[] = $this->type.'_error';
+			$this->error_summary[] = $this->type . '_error';
 			return false;
 		}
-		else
-		{
-			// store the result
-			return $this->setTheResult(json_decode($response));
-		}
+		// store the result
+		return $this->setTheResult(json_decode($response));
 	}
-	
+
 	protected function makeCurlCall()
 	{
-		$headers = array('Authorization: Bearer '. $this->oauthToken,
-		    'Content-Type: application/json'
+		$headers = array('Authorization: Bearer ' . $this->oauthToken,
+			'Content-Type: application/json'
 		);
-		
-		$ch = curl_init($this->url.$this->domainpath[$this->type]);
-		
+
+		$ch = curl_init($this->url . $this->domainpath[$this->type]);
+
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		// check if query is set		
 		if ($this->checkArray($this->query))
@@ -272,11 +275,17 @@ class Dropbox
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		// curl_setopt($ch, CURLOPT_VERBOSE, 1); // debug
-		
+
 		$response = curl_exec($ch);
-		
+
 		curl_close($ch);
-		
+
+		// store the result
+		return $this->curlCallResult($response);
+	}
+
+	public function curlCallResult($response)
+	{
 		if ($this->checkJson($response))
 		{
 			$response = json_decode($response);
@@ -284,7 +293,7 @@ class Dropbox
 		// store the result
 		return $this->setTheResult($response);
 	}
-	
+
 	protected function setTheResult($data)
 	{
 		// if there was an error stop!!!
@@ -294,11 +303,11 @@ class Dropbox
 			$this->forceReset = true;
 			return false;
 		}
-		
+
 		// deal with each type
 		switch ($this->type)
 		{
-			case "list_folder":			
+			case "list_folder":
 			case "list_folder_continue":
 				if (isset($data->entries) && $this->checkArray($data->entries))
 				{
@@ -318,15 +327,15 @@ class Dropbox
 						return true;
 					}
 				}
-				$this->error_summary[] = $this->type.'_error';
+				$this->error_summary[] = $this->type . '_error';
 				break;
 			case "create_shared_link":
-				if (isset($data->url) && isset($data->path) && $this->storeSharedLink($this->fixPath($data->path), str_replace('?dl=0','?dl=1',$data->url)))
+				if (isset($data->url) && isset($data->path) && $this->storeSharedLink($this->fixPath($data->path), str_replace('?dl=0', '?dl=1', $data->url)))
 				{
 					// we stored the link
 					return true;
 				}
-				$this->error_summary[] = $this->type.'_error';
+				$this->error_summary[] = $this->type . '_error';
 				break;
 			case "get_shared_link_metadata":
 				if (isset($data->path_lower))
@@ -334,33 +343,33 @@ class Dropbox
 					$this->targetPath = $data->path_lower;
 					return true;
 				}
-				$this->error_summary[]	= $this->type.'_error';
+				$this->error_summary[] = $this->type . '_error';
 				break;
 			case "revoke":
 				if (is_null($data))
 				{
 					return true;
 				}
-				$this->error_summary[] = $this->type.'_error';
+				$this->error_summary[] = $this->type . '_error';
 				break;
 		}
 		$this->forceReset = true;
 		return false;
 	}
-	
+
 	protected function storeSharedLink($path, $url)
 	{
 		// we need to store the url to DB
 		if (isset($this->mediaData[$path]))
 		{
-			$localListing				= array();
-			$localListing['id']			= 0;
-			$localListing['name']			= $this->mediaData[$path]['name'];
-			$localListing['size']			= $this->mediaData[$path]['size'];
-			$localListing['key']			= $path;
-			$localListing['url']			= $url;
-			$localListing['build']			= $this->build;
-			$localListing['external_source']	= (int) $this->sourceID;
+			$localListing = array();
+			$localListing['id'] = 0;
+			$localListing['name'] = $this->mediaData[$path]['name'];
+			$localListing['size'] = $this->mediaData[$path]['size'];
+			$localListing['key'] = $path;
+			$localListing['url'] = $url;
+			$localListing['build'] = $this->build;
+			$localListing['external_source'] = (int) $this->sourceID;
 			// free some memory
 			unset($this->mediaData[$path]);
 			// check if item already set
@@ -375,9 +384,9 @@ class Dropbox
 	}
 
 	protected function storeFiles($entries)
-	{		
+	{
 		foreach ($entries as $item)
-		{			
+		{
 			if (isset($item->{'.tag'}) && 'file' == $item->{'.tag'} && isset($item->name))
 			{
 				$addLink = false;
@@ -386,7 +395,7 @@ class Dropbox
 				{
 					foreach ($this->addTypes as $add)
 					{
-						if (strpos($item->name,$add) !== false)
+						if (strpos($item->name, $add) !== false)
 						{
 							$addLink = true;
 						}
@@ -408,7 +417,7 @@ class Dropbox
 		}
 		return true;
 	}
-	
+
 	protected function fixPath($path)
 	{
 		if ($this->checkString($this->targetPath))
@@ -417,7 +426,7 @@ class Dropbox
 		}
 		else
 		{
-			$path = 'VDM_pLeK_h0uEr'.$path;
+			$path = 'VDM_pLeK_h0uEr' . $path;
 		}
 		return $path;
 	}
@@ -439,7 +448,7 @@ class Dropbox
 		}
 		return false;
 	}
-	
+
 	protected function checkJson($string)
 	{
 		if ($this->checkString($string))
@@ -458,7 +467,7 @@ class Dropbox
 		}
 		return false;
 	}
-	
+
 	protected function _isCurl()
 	{
 		return function_exists('curl_version');

@@ -958,7 +958,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						// update the fields
 						$object = new stdClass;
 						$object->id = $adminview;
-						$object->addlinked_views = json_encode($addlinked_views);
+						$object->addlinked_views = json_encode($addlinked_views, JSON_FORCE_OBJECT);
 						// update the admin view
 						$this->_db->updateObject('#__componentbuilder_admin_view', $object, 'id');
 					}
@@ -1013,7 +1013,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if (ComponentbuilderHelper::checkArray($updateArray))
 				{
 					// load it back
-					$item->{$field} = json_encode($this->updateSubformIDs($updateArray, $table, $targetArray));
+					$item->{$field} = json_encode($this->updateSubformIDs($updateArray, $table, $targetArray), JSON_FORCE_OBJECT);
 				}
 			}
 		}
@@ -1052,7 +1052,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		}
 		if ($isJson)
 		{
-			return json_encode($values);
+			return json_encode($values, JSON_FORCE_OBJECT);
 		}
 		return $values;
 	}
@@ -1076,7 +1076,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			$item = json_decode($item, true);
 			$isJson = true;
 		}
-		if (ComponentbuilderHelper::checkArray($item))
+		if (ComponentbuilderHelper::checkArray($item) && isset($item[$target]))
 		{
 			// set item ID
 			$itemId = (isset($item['id'])) ? $item['id'] :  'newItem';
@@ -1135,7 +1135,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item[$target] = json_encode($item[$target]);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkObject($item))
+		elseif (ComponentbuilderHelper::checkObject($item) && isset($item->{$target}))
 		{
 			// set item ID
 			$itemId = (isset($item->id)) ? $item->id : 'newItem';
@@ -1550,7 +1550,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// subform fields to target
 				$updaterT = array(
 							// subformfield => array( field => type_value )
-							'addcustom_admin_views' => array('customadminview' => 'custom_admin_view')
+							'addcustom_admin_views' => array('customadminview' => 'custom_admin_view', 'adminviews' => 'admin_view', 'before' => 'admin_view')
 							);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'component_custom_admin_views', $updaterT);
@@ -1743,7 +1743,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// only update if we have translations
 					if (ComponentbuilderHelper::checkArray($translations))
 					{
-						$item->translation = json_encode($translations);
+						$item->translation = json_encode($translations, JSON_FORCE_OBJECT);
 					}
 				}
 				elseif (isset($item->localTranslation) && ComponentbuilderHelper::checkJson($item->localTranslation))

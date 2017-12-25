@@ -41,12 +41,16 @@ abstract class ComponentbuilderHelper
 		self::loadSession();
 	} 
 
+	/**
+	* 	The global updater
+	**/
+	protected static $globalUpdater = array();
+
 	/*
 	 * Convert repeatable field to subform
 	 * 
 	 * @param   array    $item       The array to convert
 	 * @param   string   $name      The main field name
-	 * @param   array   $updater    The updater (dynamic) option
 	 *
 	 * @return  array
 	 */
@@ -72,11 +76,6 @@ abstract class ComponentbuilderHelper
 		return $item;
 	}
 
-	/**
-	* 	The global updater
-	**/
-	protected static $globalUpdater = array();
-
 	/*
 	 * Convert repeatable field to subform
 	 * 
@@ -91,66 +90,69 @@ abstract class ComponentbuilderHelper
 		// update the repeatable fields
 		foreach ($searcher as  $key => $sleutel)
 		{
-			$isJson = false;
-			if (isset($object->{$key}) && self::checkJson($object->{$key}))
+			if (isset($object->{$key}))
 			{
-				$object->{$key} = json_decode($object->{$key}, true);
-				$isJson = true;
-			}
-			// check if this is old values for repeatable fields
-			if (self::checkArray($object->{$key}) && isset($object->{$key}[$sleutel]))
-			{
-				// load it back
-				$object->{$key} = self::convertRepeatable($object->{$key}, $key);
-				// add to global updater
-				if (
-					self::checkArray($object->{$key}) && self::checkArray($updater) && 
-					(
-						( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) ) || 
-						( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
-					)
-				   )
+				$isJson = false;
+				if (self::checkJson($object->{$key}))
 				{
-					$_key = null;
-					$_value = null;
-					$_table = null;
-					// check if we have unique id table for this repeatable/subform field
-					if ( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
+					$object->{$key} = json_decode($object->{$key}, true);
+					$isJson = true;
+				}
+				// check if this is old values for repeatable fields
+				if (self::checkArray($object->{$key}) && isset($object->{$key}[$sleutel]))
+				{
+					// load it back
+					$object->{$key} = self::convertRepeatable($object->{$key}, $key);
+					// add to global updater
+					if (
+						self::checkArray($object->{$key}) && self::checkArray($updater) && 
+						(
+							( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) ) || 
+							( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
+						)
+					   )
 					{
-						$_key = $updater['unique'][$key]['key'];
-						$_value = $updater['unique'][$key]['val'];
-						$_table = $updater['unique'][$key]['table'];
-					}
-					elseif ( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) )
-					{
-						$_key = $updater['key'];
-						$_value = $updater['val'];
-						$_table = $updater['table'];
-					}
-					// continue only if values are valid
-					if (self::checkString($_table) && self::checkString($_key) && $_value > 0)
-					{
-						// set target table & item
-						$target = trim($_table) . '.' . trim($_key) . '.' . trim($_value);
-						if (!isset(self::$globalUpdater[$target]))
+						$_key = null;
+						$_value = null;
+						$_table = null;
+						// check if we have unique id table for this repeatable/subform field
+						if ( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
 						{
-							self::$globalUpdater[$target] = new stdClass;
-							self::$globalUpdater[$target]->{$_key} = (int) $_value;
+							$_key = $updater['unique'][$key]['key'];
+							$_value = $updater['unique'][$key]['val'];
+							$_table = $updater['unique'][$key]['table'];
 						}
-						// load the new subform values to global updater
-						self::$globalUpdater[$target]->{$key} = json_encode($object->{$key});
+						elseif ( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) )
+						{
+							$_key = $updater['key'];
+							$_value = $updater['val'];
+							$_table = $updater['table'];
+						}
+						// continue only if values are valid
+						if (self::checkString($_table) && self::checkString($_key) && $_value > 0)
+						{
+							// set target table & item
+							$target = trim($_table) . '.' . trim($_key) . '.' . trim($_value);
+							if (!isset(self::$globalUpdater[$target]))
+							{
+								self::$globalUpdater[$target] = new stdClass;
+								self::$globalUpdater[$target]->{$_key} = (int) $_value;
+							}
+							// load the new subform values to global updater
+							self::$globalUpdater[$target]->{$key} = json_encode($object->{$key});
+						}
 					}
 				}
-			}
-			// no set back to json if came in as json
-			if (isset($object->{$key}) && $isJson && self::checkArray($object->{$key}))
-			{
-				$object->{$key} = json_encode($object->{$key}); 
-			}
-			// remove if not json or array
-			elseif (isset($object->{$key}) && !self::checkArray($object->{$key}) && !self::checkJson($object->{$key}))
-			{
-				unset($object->{$key});
+				// no set back to json if came in as json
+				if ($isJson && self::checkArray($object->{$key}))
+				{
+					$object->{$key} = json_encode($object->{$key}); 
+				}
+				// remove if not json or array
+				elseif (!self::checkArray($object->{$key}) && !self::checkJson($object->{$key}))
+				{
+					unset($object->{$key});
+				}
 			}
 		}
 		return $object;

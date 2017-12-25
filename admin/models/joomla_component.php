@@ -258,7 +258,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 						}
 					}
 					$item->{$_value} = $bucket;
-					$objectUpdate->{$_value} = json_encode($bucket);
+					$objectUpdate->{$_value} = json_encode($bucket, JSON_FORCE_OBJECT);
 				}
 			}
 			// be sure to update the table if we found repeatable fields that are still not converted

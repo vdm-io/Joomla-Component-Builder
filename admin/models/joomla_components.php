@@ -57,34 +57,34 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	}
 
 	public $user;
-	public $packagePath		= false;
-	public $packageName		= false;
-	public $zipPath			= false;
-	public $key			= array();
-	public $exportBuyLinks		= array();
-	public $exportPackageLinks	= array();
-	public $info			= array(
-						'name' => array(),
-						'short_description' => array(),
-						'component_version' => array(),
-						'companyname' => array(),
-						'author' => array(),
-						'email' => array(),
-						'website' => array(),
-						'license' => array(),
-						'copyright' => array(),
-						'getKeyFrom' => null
-						);
-	public $activeType		= 'export';
+	public $packagePath = false;
+	public $packageName = false;
+	public $zipPath = false;
+	public $key = array();
+	public $exportBuyLinks = array();
+	public $exportPackageLinks = array();
+	public $info = array(
+		'name' => array(),
+		'short_description' => array(),
+		'component_version' => array(),
+		'companyname' => array(),
+		'author' => array(),
+		'email' => array(),
+		'website' => array(),
+		'license' => array(),
+		'copyright' => array(),
+		'getKeyFrom' => null
+		);
+	public $activeType = 'export';
 
 	protected $params;
 	protected $tempPath;
 	protected $customPath;
-	protected $smartExport		= array();
-	protected $exportIDs 			= array();
-	protected $customCodeM		= array();
-	protected $fieldTypes			= array();
-	protected $isMultiple			= array();
+	protected $smartExport = array();
+	protected $exportIDs = array();
+	protected $customCodeM = array();
+	protected $fieldTypes = array();
+	protected $isMultiple = array();
 
 	/**
 	* Method to build the export package
@@ -207,15 +207,15 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							continue;
 						}
 						// build information data set
-						$this->info['name'][$item->id]			= $item->name;
-						$this->info['short_description'][$item->id]	= $item->short_description;
-						$this->info['component_version'][$item->id]	= $item->component_version;
-						$this->info['companyname'][$item->id]		= $item->companyname;
-						$this->info['author'][$item->id]		= $item->author;
-						$this->info['email'][$item->id]			= $item->email;
-						$this->info['website'][$item->id]		= $item->website;
-						$this->info['license'][$item->id]		= $item->license;
-						$this->info['copyright'][$item->id]		= $item->copyright;
+						$this->info['name'][$item->id] = $item->name;
+						$this->info['short_description'][$item->id] = $item->short_description;
+						$this->info['component_version'][$item->id] = $item->component_version;
+						$this->info['companyname'][$item->id] = $item->companyname;
+						$this->info['author'][$item->id] = $item->author;
+						$this->info['email'][$item->id] = $item->email;
+						$this->info['website'][$item->id] = $item->website;
+						$this->info['license'][$item->id] = $item->license;
+						$this->info['copyright'][$item->id] = $item->copyright;
 						// set the keys
 						if (isset($item->export_key) && ComponentbuilderHelper::checkString($item->export_key))
 						{
@@ -500,6 +500,38 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						continue;
 					}
+					// actions to take before storing the item if table is template, layout, site_view, or custom_admin_view
+					if ('layout' === $table || 'template' === $table || 'site_view' === $table || 'custom_admin_view' === $table)
+					{
+						// unset snippets (we no longer export snippets)
+						if (isset($item->snippet))
+						{
+							unset($item->snippet);
+						}
+					}
+					// actions to take before storing the item if table is joomla_component
+					if ('joomla_component' === $table)
+					{
+						// make sure old fields are not exported any more
+						unset($item->addconfig);
+						unset($item->addadmin_views);
+						unset($item->addcustom_admin_views);
+						unset($item->addsite_views);
+						unset($item->version_update);
+						unset($item->sql_tweak);
+						unset($item->addcustommenus);
+						unset($item->dashboard_tab);
+						unset($item->php_dashboard_methods);
+						unset($item->addfiles);
+						unset($item->addfolders);
+					}
+					// actions to take before storing the item if table is admin_view
+					if ('admin_view' === $table)
+					{
+						// make sure old fields are not exported any more
+						unset($item->addfields);
+						unset($item->addconditions);
+					}
 					// load to global object
 					$this->smartExport[$table][$item->id] = $item;
 					// set the custom code ID's
@@ -645,12 +677,12 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$data = $locker->encryptString($data);		
 			// Set the key owner information
 			$this->info['getKeyFrom'] = array();
-			$this->info['getKeyFrom']['company']		= $this->params->get('export_company', null);
-			$this->info['getKeyFrom']['owner']			= $this->params->get('export_owner', null);
-			$this->info['getKeyFrom']['email']			= $this->params->get('export_email', null);
-			$this->info['getKeyFrom']['website']		= $this->params->get('export_website', null);
-			$this->info['getKeyFrom']['license']		= $this->params->get('export_license', null);
-			$this->info['getKeyFrom']['copyright']		= $this->params->get('export_copyright', null);
+			$this->info['getKeyFrom']['company'] = $this->params->get('export_company', null);
+			$this->info['getKeyFrom']['owner'] = $this->params->get('export_owner', null);
+			$this->info['getKeyFrom']['email'] = $this->params->get('export_email', null);
+			$this->info['getKeyFrom']['website'] = $this->params->get('export_website', null);
+			$this->info['getKeyFrom']['license'] = $this->params->get('export_license', null);
+			$this->info['getKeyFrom']['copyright'] = $this->params->get('export_copyright', null);
 			// making provision for future changes 
 			if (count($this->exportBuyLinks) == 1)
 			{
