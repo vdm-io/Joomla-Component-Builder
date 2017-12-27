@@ -14,7 +14,7 @@
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		batchselection.php
-	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
+	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 

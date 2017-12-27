@@ -14,7 +14,7 @@
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		script.php
-	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
+	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -2831,10 +2831,10 @@ class com_componentbuilderInstallerScript
 
 		// little notice as after service, in case of bad experience with component.
 		echo '<h2>Did something go wrong? Are you disappointed?</h2>
-		<p>Please let me know at <a href="mailto:joomla@vdm.io">joomla@vdm.io</a>.
+		<p>Please let me know at <a href="mailto:llewellyn@joomlacomponentbuilder.com">llewellyn@joomlacomponentbuilder.com</a>.
 		<br />We at Vast Development Method are committed to building extensions that performs proficiently! You can help us, really!
 		<br />Send me your thoughts on improvements that is needed, trust me, I will be very grateful!
-		<br />Visit us at <a href="http://vdm.bz/component-builder" target="_blank">http://vdm.bz/component-builder</a> today!</p>';
+		<br />Visit us at <a href="http://joomlacomponentbuilder.com" target="_blank">http://joomlacomponentbuilder.com</a> today!</p>';
 	}
 
 	/**
@@ -3590,7 +3590,7 @@ class com_componentbuilderInstallerScript
 			$query = $db->getQuery(true);
 			// Field to update.
 			$fields = array(
-				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","minify":"0","percentagelanguageadd":"50","set_browser_storage":"1","storage_time_to_live":"global","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
+				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"llewellyn@joomlacomponentbuilder.com","minify":"0","percentagelanguageadd":"50","set_browser_storage":"1","storage_time_to_live":"global","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
 			);
 			// Condition.
 			$conditions = array(
@@ -3600,7 +3600,7 @@ class com_componentbuilderInstallerScript
 			$db->setQuery($query);
 			$allDone = $db->execute();
 
-			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
+			echo '<a target="_blank" href="http://joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>';
 		}
@@ -4736,7 +4736,7 @@ class com_componentbuilderInstallerScript
 					}
 				}
 			}
-			echo '<a target="_blank" href="http://vdm.bz/component-builder" title="Component Builder">
+			echo '<a target="_blank" href="http://joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
 				<h3>Upgrade to Version 2.6.7 Was Successful! Let us know if anything is not working as expected.</h3>';

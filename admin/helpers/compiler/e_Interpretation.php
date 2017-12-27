@@ -12091,7 +12091,7 @@ class Interpretation extends Fields
 
 	public function setDashboardModelMethods()
 	{
-		if ($this->componentData->add_php_dashboard_methods)
+		if (isset($this->componentData->php_dashboard_methods) && ComponentbuilderHelper::checkString($this->componentData->php_dashboard_methods))
 		{
 			// get all the mothods that should load date to the view
 			$this->DashboardGetCustomData = ComponentbuilderHelper::getAllBetween($this->componentData->php_dashboard_methods, 'public function get', '()');
@@ -12104,7 +12104,7 @@ class Interpretation extends Fields
 
 	public function setDashboardGetCustomData()
 	{
-		if (ComponentbuilderHelper::checkArray($this->DashboardGetCustomData))
+		if (isset($this->DashboardGetCustomData) && ComponentbuilderHelper::checkArray($this->DashboardGetCustomData))
 		{
 			// gets array reset
 			$gets = array();
@@ -12112,8 +12112,7 @@ class Interpretation extends Fields
 			foreach ($this->DashboardGetCustomData as $get)
 			{
 				$string = ComponentbuilderHelper::safeString($get);
-				$tabs = (\strlen($string) < 8) ? "\t\t\t" : (\strlen($string) < 16) ? "\t\t" : (\strlen($string) < 24) ? "\t" : ' ';
-				$gets[] = "\$this->" . $string . $tabs . "= \$this->get('" . $get . "');";
+				$gets[] = "\$this->" . $string . " = \$this->get('" . $get . "');";
 			}
 			// return the gets
 			return PHP_EOL . "\t\t" . implode(PHP_EOL . "\t\t", $gets);
@@ -12130,7 +12129,7 @@ class Interpretation extends Fields
 		$tab = "\t";
 		$loadTabs = false;
 		// check if we have custom tabs
-		if ($this->componentData->add_php_dashboard_methods && ComponentbuilderHelper::checkArray($this->componentData->dashboard_tab))
+		if (isset($this->componentData->dashboard_tab) && ComponentbuilderHelper::checkArray($this->componentData->dashboard_tab))
 		{
 			// build the tabs and accordians
 			foreach ($this->componentData->dashboard_tab as $data)

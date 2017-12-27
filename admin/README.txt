@@ -1,7 +1,6 @@
 # Joomla Component Builder (JCB)
 [![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases) [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
 
-
 This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
  ![Component Builder image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/vdm-component.jpg "The Component Builder")
@@ -16,7 +15,8 @@ You can install it quite easily and with no limitations. On [github](https://git
 
 Once installed upgrades are quick and easy via the default Joomla upgrade area.
 
-# Some of the Features
+Some of the Features
+====================
 
 + Adding mySQL Dump to any View/Table.
 + Grab existing Table data and build a dynamic dump.
@@ -52,7 +52,8 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 + The Batch and Filter implementation on all backend-list views.
 + This and much much more are all possible with this component builder!
 
-# Just Imagine
+Just Imagine
+====================
 
 + Your Component Back-end can be more advanced then the Joomla Article Manager.
 + Your Code as Perfectly Unified to the strict Joomla Standards.
@@ -64,7 +65,8 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 + Front-end freedom of design that allows for any library to be used.
 + This and much much more are all possible with this component builder!
 
-# You are in Control
+You are in Control
+====================
 
 + You can change the licensing template for your components.
 + You can change/improve existing field types and add more.
@@ -77,54 +79,68 @@ Once installed upgrades are quick and easy via the default Joomla upgrade area.
 + Export any component completely mapped in JCB and import into another JCB.
 + This and much much more are all possible with this component builder!
 
-# Get Access to Video Tutorials
+Get More Demo Content
+====================
 
-> **You can purchase more [demo content](http://vdm.bz/jcb-packages) for Component Builder including access to training & help video tutorials:**
+> **You can purchase more [demo content](http://vdm.bz/jcb-packages) for Component Builder:**
 
 + *Demo Component* see the build on [github](https://github.com/namibia/demo-joomla-3-component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demo.zip) _(free)_
 + *Advance Demo Component* get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demoAdvanced.zip) _([buy key](http://vdm.bz/get-advance-demo-key))_
 + *Sermon Distributor* see the build on [github](https://github.com/SermonDistributor/Joomla-3-Component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_sermondistributor.zip) _([buy key](http://vdm.bz/get-sermon-distributor-key))_
 + *Location Data* see the build on [github](https://github.com/vdm-io/Joomla-Location-Data) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_locationData.zip) _([buy key](http://vdm.bz/get-location-data-key))_
-+ *Help View Integration*
-+ *Training & Help Videos* tutorials in the component included.
++ *More Coming...*
 
-[**GET ACCESS NOW!**](http://vdm.bz/component-builder)
+Where can you get support and help?
+====================
 
-# gitHub Support
++ [The JCB Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE)
++ [Hello World Tutorial](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
++ [The JCB! Wiki](https://github.com/vdm-io/Joomla-Component-Builder/wiki)
++ [JCB Google Group/forum](https://groups.google.com/a/vdm.io/d/forum/jcb)
++ [Report a Security Issue](http://joomlacomponentbuilder.com/report-security-issues)
++ [Community Complaint](http://joomlacomponentbuilder.com/community-complaint)
++ [Open Issue On Github](https://github.com/vdm-io/Joomla-Component-Builder/issues) ^^
 
-Would you require more help please open and issue here on [gitHub today](https://github.com/vdm-io/Joomla-Component-Builder/issues)!
+Since JCB has [become a community](https://github.com/vdm-io/Joomla-Component-Builder/blob/staging/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/joomla-component-builder) is **no longer solely responsible** for support.
 
-# WHY GIVE IT AWAY LIKE THIS?
+We have started a [**JCB forum**](https://groups.google.com/a/vdm.io/d/forum/jcb) where you can post questions, about how things work, or if you need some kind of help in relation to your development of your components.
 
-> I am an Open Source Enthusiast
+^^ Then if you run into any issues, related to the JCB code, like bugs, **start by searching** the (*open & closed*) issues over on Github, and if the issue has not been mentioned before, **then only** open a new issue, following the [community guidelines](https://github.com/vdm-io/Joomla-Component-Builder/blob/master/.github/CONTRIBUTING.md).
+
+WHY GIVE IT AWAY LIKE THIS?
+====================
+
+> We are Open Source Enthusiast
 > Who Support the Joomla Community
 
-My idea was to almost let this tool serve as a cheat sheet to how things can be done... and with the help of other developers (more advanced then me) end up formulating the way how things not only can, but must be done to insure secure, stable, scalable and maintainable code is produced. 
+Our idea was to almost let this tool serve as a cheat sheet to how things can be done... and with the help of other developers end up formulating the way how things not only can, but must be done to insure secure, stable, scalable and maintainable code is produced. 
 
-# MAKING IT BETTER!
+MAKING IT BETTER!
+====================
 
-Component Builder is mapped as a component in itself on my local development environment. So I am improving it like you would any other component in it. I am looking for developers with the **skill** and the **desire** to really join me... and then I will possible give them access to this, so we can all help improve this simple, yet advanced tool.
+Component Builder is mapped as a component in itself on my local development environment. So we are improving it like you would any other component in it. I am looking for developers with the **skill** and the **desire** to really join us... and then we will [possible give them access](https://www.youtube.com/watch?v=lLOfx9YA7VQ&list=PLQRGFI8XZ_wsfz3NdKawCiYsALuZ-GhwJ) to this, so we can all help improve this simple, yet advanced tool.
 
 # Build Details
 
-+ *Company*: [Vast Development Method](http://vdm.bz/component-builder)
-+ *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
-+ *Name*: [Component Builder](http://vdm.bz/component-builder)
++ *Company*: [Vast Development Method](https://www.vdm.io/)
++ *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
++ *Name*: [Component Builder](http://joomlacomponentbuilder.com)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 25th December, 2017
++ *Last Build*: 27th December, 2017
 + *Version*: 2.6.7
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **178562**
++ *Line count*: **178594**
++ *Field count*: **1539**
 + *File count*: **1145**
 + *Folder count*: **184**
 
-> This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).
-> Developed by [Llewellyn van der Merwe](mailto:joomla@vdm.io)
+> This **component** was build with a Joomla [Automated Component Builder](http://joomlacomponentbuilder.com).
+> Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 
 ## Donations
 
-Come on buy me a coffee :)
+Come on buy VDM a coffee :)
  * PayPal: [paypal.me/payvdm](https://www.paypal.me/payvdm)
  * Bitcoin: 18vURxYpPFjvNk8BnUy1ovCAyQmY3MzkSf
  * Ethereum: 0x9548144662b47327c954f3e214edb96662d51218

@@ -14,7 +14,7 @@
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
-	@author			Llewellyn van der Merwe <http://vdm.bz/component-builder>	
+	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -43,10 +43,10 @@ class ComponentbuilderViewComponentbuilder extends JViewLegacy
 		// Assign data to the view
 		$this->icons			= $this->get('Icons');
 		$this->contributors		= ComponentbuilderHelper::getContributors();
-		$this->github	= $this->get('Github');
-		$this->wiki	= $this->get('Wiki');
-		$this->noticeboard	= $this->get('Noticeboard');
-		$this->readme	= $this->get('Readme');
+		$this->github = $this->get('Github');
+		$this->wiki = $this->get('Wiki');
+		$this->noticeboard = $this->get('Noticeboard');
+		$this->readme = $this->get('Readme');
 		
 		// get the manifest details of the component
 		$this->manifest = ComponentbuilderHelper::manifest();
