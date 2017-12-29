@@ -3339,7 +3339,8 @@ class Interpretation extends Fields
 				$path = '/administrator/components/com_' . $this->fileContentStatic['###component###'] . '/assets/js/' . $view['settings']->code . '.js';
 			}
 			// add script to file
-			$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_JAVASCRIPT_FILE###'] = $view['settings']->javascript_file;
+			$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_JAVASCRIPT_FILE###'] 
+				= $this->setPlaceholders($view['settings']->javascript_file, $this->placeholders);
 			// add script to view
 			return PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add View JavaScript File" . PHP_EOL . "\t\t" . $this->setIncludeLibScript($path);
 		}

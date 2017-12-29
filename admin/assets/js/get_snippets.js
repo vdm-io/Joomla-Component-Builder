@@ -400,7 +400,7 @@ function bulkSnippetGithub(status) {
 function doBulkUpdate_server(path, status) {
 	// set the ajax scope
 	ajaxcall = null;
-	var getUrl = "index.php?option=com_[[[component]]]&task=ajax.setSnippetGithub&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json";
 	if (token.length > 0 && path.length > 0 && status.length > 0) {
 		var request = 'token='+token+'&path='+path+'&status='+status;
 	}
@@ -437,7 +437,7 @@ function setSnippetGithub(key, status) {
 function setSnippetGithub_server(path, status) {
 	// set the ajax scope
 	ajaxcall = null;
-	var getUrl = "index.php?option=com_[[[component]]]&task=ajax.setSnippetGithub&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json";
 	if (token.length > 0 && path.length > 0 && status.length > 0) {
 		var request = 'token='+token+'&path='+path+'&status='+status;
 	}
