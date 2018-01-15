@@ -384,10 +384,10 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 				} else {
 					// split versions in to array
 					var activeVersionArray = activeVersion.split(".");
-					var localVersionArray = manifest.version.split(".");
-					if (localVersionArray[0] > activeVersionArray[0] || 
-					(localVersionArray[0] == activeVersionArray[0] && localVersionArray[1] > activeVersionArray[1]) || 
-					(localVersionArray[0] == activeVersionArray[0] && localVersionArray[1] == activeVersionArray[1] && localVersionArray[2] > activeVersionArray[2])) {
+					var localVersionArray = manifest.version.split(".");					
+					if ((+localVersionArray[0] > +activeVersionArray[0]) || 
+					(+localVersionArray[0] == +activeVersionArray[0] && +localVersionArray[1] > +activeVersionArray[1]) || 
+					(+localVersionArray[0] == +activeVersionArray[0] && +localVersionArray[1] == +activeVersionArray[1] && +localVersionArray[2] > +activeVersionArray[2])) {
 						// local version head latest release
 						jQuery(".update-notice").html("<small><span style=\'color:#F7B033;\'><span class=\'icon-wrench\'></span>'.JText::_('COM_COMPONENTBUILDER_BETA_RELEASE').'</span></small>");
 					} else {

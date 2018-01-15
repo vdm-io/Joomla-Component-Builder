@@ -268,8 +268,6 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->php_save = base64_decode($item->php_save);
 						// decode php_batchmove
 						$item->php_batchmove = base64_decode($item->php_batchmove);
-						// decode php_getlistquery
-						$item->php_getlistquery = base64_decode($item->php_getlistquery);
 						// decode php_allowedit
 						$item->php_allowedit = base64_decode($item->php_allowedit);
 						// decode php_after_publish
@@ -278,6 +276,10 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->php_getitems = base64_decode($item->php_getitems);
 						// decode php_import
 						$item->php_import = base64_decode($item->php_import);
+						// decode php_getlistquery
+						$item->php_getlistquery = base64_decode($item->php_getlistquery);
+						// decode php_getitem
+						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_getitems_after_all
 						$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
 						// decode php_before_save
@@ -296,8 +298,6 @@ class ComponentbuilderModelAdmin_views extends JModelList
 						$item->sql = base64_decode($item->sql);
 						// decode php_import_display
 						$item->php_import_display = base64_decode($item->php_import_display);
-						// decode php_getitem
-						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_import_save
 						$item->php_import_save = base64_decode($item->php_import_save);
 						// decode css_view

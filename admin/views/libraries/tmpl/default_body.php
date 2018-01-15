@@ -85,6 +85,16 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 			<?php else: ?>
 				<div class="name"><?php echo $this->escape($item->name); ?></div>
 			<?php endif; ?>
+			
+			<div class="btn-group" style="margin: 5px 0 0 0;">
+				<?php if ($canDo->get('library_config.edit') && $library_config_id = ComponentbuilderHelper::getVar('library_config', $item->id, 'library', 'id')): ?>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=libraries_config&task=library_config.edit&id=<?php echo $library_config_id; ?>&ref=libraries" title="<?php echo JText::_('COM_COMPONENTBUILDER_THE_LIBRARY_CONFIG_FIELDS'); ?>" ><span class="icon-options"></span></a>
+				<?php endif; ?>
+				<?php if ($canDo->get('library_files_folders_urls.edit') && $library_files_folders_urls_id = ComponentbuilderHelper::getVar('library_files_folders_urls', $item->id, 'library', 'id')): ?>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=libraries_files_folders_urls&task=library_files_folders_urls.edit&id=<?php echo $library_files_folders_urls_id; ?>&ref=libraries" title="<?php echo JText::_('COM_COMPONENTBUILDER_THE_LIBRARY_FILES_FOLDERS_URLS'); ?>" ><span class="icon-briefcase"></span></a>
+				<?php endif; ?>
+			</div>
+			
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->description); ?>

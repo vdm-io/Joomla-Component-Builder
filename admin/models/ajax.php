@@ -826,7 +826,7 @@ class ComponentbuilderModelAjax extends JModelList
 	protected function addEditLink($id, $view, $views)
 	{
 		// can edit
-		if ($this->canEdit($id))
+		if ($this->canEdit($id, $view))
 		{
 			$edit = "index.php?option=com_componentbuilder&view=".$views."&task=".$view.".edit&id=".$id.$this->ref;
 			return ' <a onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$edit.'\' })"  href="javascript:void(0)" class="uk-icon-pencil"></a>';
@@ -970,24 +970,21 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	public function getFieldSelectOptions($id)
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		 
+	{		 
 		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.xml', 'b.name')));
-		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'b') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('b.id') . ')');
-		$query->where($db->quoteName('a.published') . ' = 1');
-		$query->where($db->quoteName('a.id') . ' = '. (int) $id);
+		$query = $this->_db->getQuery(true);
+		$query->select($this->_db->quoteName(array('a.xml', 'b.name')));
+		$query->from($this->_db->quoteName('#__componentbuilder_field', 'a'));
+		$query->join('LEFT', $this->_db->quoteName('#__componentbuilder_fieldtype', 'b') . ' ON (' . $this->_db->quoteName('a.fieldtype') . ' = ' . $this->_db->quoteName('b.id') . ')');
+		$query->where($this->_db->quoteName('a.published') . ' = 1');
+		$query->where($this->_db->quoteName('a.id') . ' = '. (int) $id);
 		 
 		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
+		$this->_db->setQuery($query);
+		$this->_db->execute();
+		if ($this->_db->getNumRows())
 		{
-			$result		= $db->loadObject();
+			$result		= $this->_db->loadObject();
 			$result->name	= strtolower($result->name);
 			if (ComponentbuilderHelper::typeField($result->name,'list'))
 			{
@@ -1056,10 +1053,8 @@ class ComponentbuilderModelAjax extends JModelList
     
 	public function getTableColumns($tableName)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
         	// get the columns
-		$columns = $db->getTableColumns("#__".$tableName);
+		$columns = $this->_db->getTableColumns("#__".$tableName);
 		if (ComponentbuilderHelper::checkArray($columns))
 		{
         	// build the return string
@@ -1073,188 +1068,183 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 
+	protected $linkedKeys = array(
+			'field' => array(
+				array('table' => 'component_config', 'tables' => 'components_config', 'fields' => array('addconfig' => 'field', 'joomla_component' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'name' => 'system_name'),
+				array('table' => 'admin_fields', 'tables' => 'admins_fields', 'fields' => array('addfields' => 'field', 'admin_view' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_ADMIN_VIEW', 'name' => 'system_name')
+			),
+			'admin_view' => array(
+				array('table' => 'component_admin_views', 'tables' => 'components_admin_views', 'fields' => array('addadmin_views' => 'adminview', 'joomla_component' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'name' => 'system_name')
+			),
+			'custom_admin_view' => array(
+				array('table' => 'component_custom_admin_views', 'tables' => 'components_custom_admin_views', 'fields' => array('addcustom_admin_views' => 'customadminview', 'joomla_component' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'name' => 'system_name')
+			),
+			'site_view' => array(
+				array('table' => 'component_site_views', 'tables' => 'components_site_views', 'fields' => array('addsite_views' => 'siteview', 'joomla_component' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'name' => 'system_name')
+			),
+			'library' => array(
+				array('table' => 'template', 'tables' => 'templates', 'fields' => array('libraries' => 'ARRAY', 'name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_TEMPLATE'),
+				array('table' => 'layout', 'tables' => 'layouts', 'fields' => array('libraries' => 'ARRAY', 'name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_LAYOUT'),
+				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('libraries' => 'ARRAY', 'system_name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
+				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('libraries' => 'ARRAY', 'system_name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW')
+			),
+			'dynamic_get' => array(
+				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('custom_get' => 'ARRAY', 'main_get' => 'INT', 'system_name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
+				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('custom_get' => 'ARRAY', 'main_get' => 'INT', 'system_name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW')
+			)
+		);
+
 	/**
-	 * Get Linked to
+	 * Get Linked
 	 * 
-	 * @param   string   $type  Item Name
-	 * @param   int        $id     Item ID
+	 * @param   int       $type    The display return type
 	 *
-	 * @return  string      The table of the linked to result
+	 * @return    string  The display return type on success
 	 * 
 	 */
-	protected function getLinked($to)
+	public function getLinked($type)
 	{
 		// get the view name & id
 		$values = $this->getViewID();
 		// check if item is set
 		if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
 		{
-			// get linked to
-			$linkedToArray = (array) explode('__', $to);
-			// check if item is linked to component
-			if (in_array('component', $linkedToArray))
+			// check if we have any linked to config
+			if (isset($this->linkedKeys[$values['a_view']]))
 			{
-				if (!$components = getComponentLinked($values['a_view'], $values['a_id']))
+				// make sure the ref is set
+				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'];
+				// get the linked to
+				if ($linked = $this->getLinkedTo($values['a_view'], $values['a_id']))
 				{
-					$linkedToString =  implode(', ', array_map( function($name) { return ComponentbuilderHelper::safeString($name, 'w'); }, $linkedToArray));
-					return '<div class="control-group"><div class="alert alert-info"><h4>' . JText::sprintf('COM_COMPONENTBUILDER_S_NOT_LINKED', ComponentbuilderHelper::safeString($values['a_view'], 'Ww')) . '</h4><p>' . JText::sprintf('COM_COMPONENTBUILDER_THIS_BSB_IS_NOT_LINKED_TO_ANY_S', $values['a_view'], $linkedToString) . '</p></div></div>';
+					// just return it for now as an unordered list
+					return  '<div class="control-group"><ul class="uk-list uk-list-striped"><li>' .implode('</li><li>', $linked) . '</li></ul></div></div>';
 				}
 			}
-			// if fields and components found get admin views
-			
+		}
+		// if not found but has session view name
+		if (strlen($values['a_view']))
+		{
+			return '<div class="control-group"><div class="alert alert-info"><h4>' . JText::sprintf('COM_COMPONENTBUILDER_S_NOT_LINKED', ComponentbuilderHelper::safeString($values['a_view'], 'Ww')) . '</h4><p>' . JText::sprintf('COM_COMPONENTBUILDER_THIS_BSB_IS_NOT_LINKED_TO_ANY_OTHER_AREAS_OF_JCB_AT_THIS_TIME', $values['a_view']) . '</p></div></div>';
 		}
 		// no view or id found in session, or view not allowed to access area
 		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_WAS_A_PROBLEM_BNO_VIEW_OR_ID_FOUND_IN_SESSION_OR_VIEW_NOT_ALLOWED_TO_ACCESS_AREAB_WE_COULD_NOT_LOAD_ANY_LINKED_TO_VALUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR') . '</p></div></div>';
 	}
 
 	/**
-	 * Get Component Linked to Item
+	 * Get Linked to Items
 	 * 
-	 * @param   string   $type  Item Name
-	 * @param   int        $id     Item ID
+	 * @param   string   $view  View that is being searched for
+	 * @param   int        $id     ID
 	 *
-	 * @return  array       Components Id if found
+	 * @return  array     Found items
 	 * 
 	 */
-	protected function getComponentLinked($type, $id)
+	protected function getLinkedTo($view, $id)
 	{
 		// reset bucket
-		$componentsLinked = array();
-		// Create a new query object.
-		$query = $this->db->getQuery(true);
-		// get all history values
-		$query->select('h.*');
-		$query->from('#__ucm_history AS h');
-		$query->where($this->db->quoteName('h.ucm_item_id') . ' = ' . (int) $id);
-		// Join over the content type for the type id
-		$query->join('LEFT', '#__content_types AS ct ON ct.type_id = h.ucm_type_id');
-		$query->where('ct.type_alias = ' . $this->db->quote('com_componentbuilder.' . $type));
-		$this->db->setQuery($query);
-		$this->db->execute();
-		if ($this->db->getNumRows())
+		$linked = array();
+		// start search
+		foreach ($this->linkedKeys[$view] as $search)
 		{
-			// load all item history
-			$items = $db->loadObjectList();
-			// load the components ids
-			foreach ($items as $item)
+			// Create a new query object.
+			$query = $this->_db->getQuery(true);
+			// get all history values
+			$selection = array_keys($search['fields']);
+			$selection[] = 'id';
+			$query->select($selection);
+			$query->from('#__componentbuilder_' . $search['table']);
+			$this->_db->setQuery($query);
+			$this->_db->execute();
+			if ($this->_db->getNumRows())
 			{
-				// only work with those who have notes
-				if (ComponentbuilderHelper::checkJson($item->version_note))
+				// load all items
+				$items = $this->_db->loadObjectList();
+				// search the items
+				foreach ($items as $item)
 				{
-					$note = json_decode($item->version_note, true);
-					if (ComponentbuilderHelper::checkArray($note))
+					$found = false;
+					foreach ($search['fields'] as $key => $target)
 					{
-						foreach($note as $ids)
+						if ('NAME' === $target)
 						{
-							if (ComponentbuilderHelper::checkArray($ids))
+							$name = $item->{$key};
+							$nameTable = $key;
+							continue;
+						}
+						elseif (!$found)
+						{
+							if ('INT' === $target)
 							{
-								foreach ($ids as $_id)
+								// check if ID match
+								if ($item->{$key} == $id)
 								{
-									$componentsLinked[(int) $_id] = array('component' => (int) $_id);
+									$found = true;
 								}
 							}
-							elseif (is_numeric($ids))
+							else
 							{
-								$componentsLinked[(int) $ids] = array('component' => (int) $ids);
+								// check if we have a json
+								if (ComponentbuilderHelper::checkJson($item->{$key}))
+								{
+									$item->{$key} = json_decode($item->{$key}, true);
+								}
+								// if array
+								if (ComponentbuilderHelper::checkArray($item->{$key}))
+								{
+									if ('ARRAY' === $target)
+									{
+										// check if ID match
+										foreach ($item->{$key} as $_id)
+										{
+											if ($_id == $id)
+											{
+												$found = true;
+											}
+										}
+									}
+									else
+									{
+										foreach ($item->{$key} as $row)
+										{
+											if (isset($row[$target]) && $row[$target] == $id)
+											{
+												$found = true;
+											}
+										}
+									}
+								}
 							}
 						}
 					}
-				}
-			}
-			// check if we found any
-			if (ComponentbuilderHelper::checkArray($componentLinked))
-			{
-				return $componentLinked;
-			}
-		}
-		return false;
-	}
-
-	// Used in site_view
-			
-	public function getSnippets($libraries)
-	{
-		if (ComponentbuilderHelper::checkJson($libraries))
-		{
-			$libraries = json_decode($libraries, true);
-		}
-		// check if we have an array
-		if (ComponentbuilderHelper::checkArray($libraries))
-		{
-			// insure we only have int values
-			if ($libraries = $this->checkLibraries($libraries))
-			{
-				// Get a db connection.
-				$db = JFactory::getDbo();
-				// Create a new query object.
-				$query = $db->getQuery(true);
-				$query->select($db->quoteName( array('a.id') ));
-				$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
-				$query->where($db->quoteName('a.published') . ' = 1');
-				// check for country and region
-				$query->where($db->quoteName('a.library') . ' IN ('. implode(',',$libraries) .')');
-				$db->setQuery($query);
-				$db->execute();
-				if ($db->getNumRows())
-				{
-					return $db->loadColumn();
-				}
-			}
-		}
-		return false;
-	}
-
-	protected function checkLibraries($libraries)
-	{
-		$bucket = array();
-		$libraries = array_map( function($id) use (&$bucket) { 
-			// now get bundled libraries
-			$type = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'type');
-			if (2 == $type && $bundled = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'libraries'))
-			{
-				// make sure we have an array if it was json
-				if (ComponentbuilderHelper::checkJson($bundled))
-				{
-					$bundled = json_decode($bundled, true);
-				}
-				// load in the values if we have an array
-				if (ComponentbuilderHelper::checkArray($bundled))
-				{
-					foreach ($bundled as $lib)
+					// check if found
+					if ($found)
 					{
-						$bucket[$lib] = $lib;
+						// build the name
+						$edit = true;
+						if (is_numeric($name) && isset($search['name']))
+						{
+							if (!$name =  ComponentbuilderHelper::getVar($nameTable, (int) $name, 'id', $search['name']))
+							{
+								$name = JText::_('COM_COMPONENTBUILDER_NO_FOUND');
+								$edit = false;
+							}
+						}
+						// set edit link
+						$link = ($edit) ? $this->addEditLink($item->id, $search['table'], $search['tables']) : '';
+						// build the linked
+						$linked[] = JText::_($search['type']) . ' - ' . $name . ' ' . $link;
 					}
 				}
-				elseif (is_numeric($bundled))
-				{
-					$bucket[(int) $bundled] = (int) $bundled;
-				}
-			}
-			else
-			{
-				return (int) $id;
-			}
-		}, $libraries);
-		// check if we have any bundled libraries
-		if (ComponentbuilderHelper::checkArray($bucket))
-		{
-			foreach ($bucket as $lib)
-			{
-				$libraries[] = (int) $lib;
 			}
 		}
-		// check that we have libraries
-		if (ComponentbuilderHelper::checkArray($libraries))
+		// check if we found any
+		if (ComponentbuilderHelper::checkArray($linked))
 		{
-			$libraries = array_values(array_unique(array_filter($libraries, function($id){return is_int($id);})));
-			// check if we have any libraries remaining
-			if (ComponentbuilderHelper::checkArray($libraries))
-			{
-				return $libraries;
-			}
+			return $linked;
 		}
 		return false;
-	}			
+	}
 
 	// Used in template
 	public function getTemplateDetails($id)
@@ -1964,7 +1954,102 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 
-	// Used in snippet
+	// Used in field
+	public function getFieldOptions($id)
+	{
+		if ($field = ComponentbuilderHelper::getFieldOptions($id, 'id'))
+		{
+			// return found field options
+			return $field;
+		}
+		return false;
+	}
+
+	// Used in get_snippets
+			
+	public function getSnippets($libraries)
+	{
+		if (ComponentbuilderHelper::checkJson($libraries))
+		{
+			$libraries = json_decode($libraries, true);
+		}
+		// check if we have an array
+		if (ComponentbuilderHelper::checkArray($libraries))
+		{
+			// insure we only have int values
+			if ($libraries = $this->checkLibraries($libraries))
+			{
+				// Get a db connection.
+				$db = JFactory::getDbo();
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->select($db->quoteName( array('a.id') ));
+				$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
+				$query->where($db->quoteName('a.published') . ' = 1');
+				// check for country and region
+				$query->where($db->quoteName('a.library') . ' IN ('. implode(',',$libraries) .')');
+				$db->setQuery($query);
+				$db->execute();
+				if ($db->getNumRows())
+				{
+					return $db->loadColumn();
+				}
+			}
+		}
+		return false;
+	}
+
+	protected function checkLibraries($libraries)
+	{
+		$bucket = array();
+		$libraries = array_map( function($id) use (&$bucket) { 
+			// now get bundled libraries
+			$type = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'type');
+			if (2 == $type && $bundled = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'libraries'))
+			{
+				// make sure we have an array if it was json
+				if (ComponentbuilderHelper::checkJson($bundled))
+				{
+					$bundled = json_decode($bundled, true);
+				}
+				// load in the values if we have an array
+				if (ComponentbuilderHelper::checkArray($bundled))
+				{
+					foreach ($bundled as $lib)
+					{
+						$bucket[$lib] = $lib;
+					}
+				}
+				elseif (is_numeric($bundled))
+				{
+					$bucket[(int) $bundled] = (int) $bundled;
+				}
+			}
+			else
+			{
+				return (int) $id;
+			}
+		}, $libraries);
+		// check if we have any bundled libraries
+		if (ComponentbuilderHelper::checkArray($bucket))
+		{
+			foreach ($bucket as $lib)
+			{
+				$libraries[] = (int) $lib;
+			}
+		}
+		// check that we have libraries
+		if (ComponentbuilderHelper::checkArray($libraries))
+		{
+			$libraries = array_values(array_unique(array_filter($libraries, function($id){return is_int($id);})));
+			// check if we have any libraries remaining
+			if (ComponentbuilderHelper::checkArray($libraries))
+			{
+				return $libraries;
+			}
+		}
+		return false;
+	}			
 	public function getSnippetDetails($id)
 	{
 		// Get a db connection.
@@ -2126,16 +2211,5 @@ class ComponentbuilderModelAjax extends JModelList
 			return $item->get('id');
 		}
 		return 0;
-	}
-
-	// Used in field
-	public function getFieldOptions($id)
-	{
-		if ($field = ComponentbuilderHelper::getFieldOptions($id, 'id'))
-		{
-			// return found field options
-			return $field;
-		}
-		return false;
 	}
 }

@@ -166,12 +166,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_batchmove = base64_decode($item->php_batchmove);
 			}
 
-			if (!empty($item->php_getlistquery))
-			{
-				// base64 Decode php_getlistquery.
-				$item->php_getlistquery = base64_decode($item->php_getlistquery);
-			}
-
 			if (!empty($item->php_allowedit))
 			{
 				// base64 Decode php_allowedit.
@@ -194,6 +188,18 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_import.
 				$item->php_import = base64_decode($item->php_import);
+			}
+
+			if (!empty($item->php_getlistquery))
+			{
+				// base64 Decode php_getlistquery.
+				$item->php_getlistquery = base64_decode($item->php_getlistquery);
+			}
+
+			if (!empty($item->php_getitem))
+			{
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 			if (!empty($item->php_getitems_after_all))
@@ -248,12 +254,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_import_display.
 				$item->php_import_display = base64_decode($item->php_import_display);
-			}
-
-			if (!empty($item->php_getitem))
-			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 			if (!empty($item->php_import_save))
@@ -1282,12 +1282,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
 		}
 
-		// Set the php_getlistquery string to base64 string.
-		if (isset($data['php_getlistquery']))
-		{
-			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
-		}
-
 		// Set the php_allowedit string to base64 string.
 		if (isset($data['php_allowedit']))
 		{
@@ -1310,6 +1304,18 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_import']))
 		{
 			$data['php_import'] = base64_encode($data['php_import']);
+		}
+
+		// Set the php_getlistquery string to base64 string.
+		if (isset($data['php_getlistquery']))
+		{
+			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
+		}
+
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
+		{
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_getitems_after_all string to base64 string.
@@ -1364,12 +1370,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (isset($data['php_import_display']))
 		{
 			$data['php_import_display'] = base64_encode($data['php_import_display']);
-		}
-
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
-		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_import_save string to base64 string.

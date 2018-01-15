@@ -194,11 +194,9 @@ class ComponentbuilderViewSnippet extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_SNIPPET_NEW' : 'COM_COMPONENTBUILDER_SNIPPET_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/snippet.css", array('version' => 'auto'));
-		// Add Ajax Token
-		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/snippet/submitbutton.js", array('version' => 'auto')); 
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/snippet.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
+		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/snippet/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 		JText::script('view not acceptable. Error');
 	}
 }

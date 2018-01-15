@@ -30,6 +30,9 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
+	'add_php_ajax',
+	'php_ajaxmethod',
+	'ajax_input',
 	'add_php_document',
 	'php_document',
 	'add_php_view',

@@ -30,7 +30,8 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'php_custom_get'
+	'php_custom_get',
+	'note_linked_to_notice'
 );
 
 ?>

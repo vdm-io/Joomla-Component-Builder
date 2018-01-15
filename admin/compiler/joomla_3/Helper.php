@@ -42,6 +42,24 @@ abstract class ###Component###Helper
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_###component###/###component###.xml";
 		return simplexml_load_file($manifestUrl);
 	}
+	
+	/**
+	*	Joomla version object
+	**/	
+	protected static $JVersion;
+	
+	/**
+	*	set/get Joomla version
+	**/
+	public static function jVersion()
+	{
+		// check if set
+		if (!self::checkObject(self::$JVersion))
+		{
+			self::$JVersion = new JVersion();
+		}
+		return self::$JVersion;
+	}
 
 	/**
 	*	Load the Contributors details.

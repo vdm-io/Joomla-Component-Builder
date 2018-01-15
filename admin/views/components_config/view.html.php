@@ -204,7 +204,7 @@ class ComponentbuilderViewComponents_config extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_COMPONENTS_CONFIG'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_config.css", array('version' => 'auto'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/components_config.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 	}
 
 	/**

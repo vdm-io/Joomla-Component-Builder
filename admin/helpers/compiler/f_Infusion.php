@@ -173,9 +173,9 @@ class Infusion extends Interpretation
 			$this->fileContentStatic['###SITEJS###'] = $this->setPlaceholders($this->customScriptBuilder['component_js'], $this->placeholders);
 
 			// ###ADMINCSS###
-			$this->fileContentStatic['###ADMINCSS###'] = $this->setPlaceholders($this->customScriptBuilder['component_css'], $this->placeholders);
+			$this->fileContentStatic['###ADMINCSS###'] = $this->setPlaceholders($this->customScriptBuilder['component_css_admin'], $this->placeholders);
 			// ###SITECSS###
-			$this->fileContentStatic['###SITECSS###'] = $this->setPlaceholders($this->customScriptBuilder['component_css'], $this->placeholders);
+			$this->fileContentStatic['###SITECSS###'] = $this->setPlaceholders($this->customScriptBuilder['component_css_site'], $this->placeholders);
 
 			// ###CUSTOM_HELPER_SCRIPT###
 			$this->fileContentStatic['###CUSTOM_HELPER_SCRIPT###'] = $this->setPlaceholders($this->customScriptBuilder['component_php_helper_admin'], $this->placeholders);

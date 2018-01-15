@@ -1853,6 +1853,24 @@ abstract class ComponentbuilderHelper
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_componentbuilder/componentbuilder.xml";
 		return simplexml_load_file($manifestUrl);
 	}
+	
+	/**
+	*	Joomla version object
+	**/	
+	protected static $JVersion;
+	
+	/**
+	*	set/get Joomla version
+	**/
+	public static function jVersion()
+	{
+		// check if set
+		if (!self::checkObject(self::$JVersion))
+		{
+			self::$JVersion = new JVersion();
+		}
+		return self::$JVersion;
+	}
 
 	/**
 	*	Load the Contributors details.
@@ -2017,6 +2035,11 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('snippet.access', 'com_componentbuilder') && $user->authorise('snippet.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_SNIPPETS'), 'index.php?option=com_componentbuilder&view=snippets', $submenu === 'snippets');
+		}
+		// Access control (get_snippets.submenu).
+		if ($user->authorise('get_snippets.submenu', 'com_componentbuilder'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_GET_SNIPPETS'), 'index.php?option=com_componentbuilder&view=get_snippets', $submenu === 'get_snippets');
 		}
 		if ($user->authorise('field.access', 'com_componentbuilder') && $user->authorise('field.submenu', 'com_componentbuilder'))
 		{

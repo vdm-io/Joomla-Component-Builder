@@ -194,9 +194,9 @@ class ComponentbuilderViewComponent_custom_admin_menus extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_custom_admin_menus.css", array('version' => 'auto')); 
-		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_custom_admin_menus/submitbutton.js", array('version' => 'auto')); 
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_custom_admin_menus.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
+		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_custom_admin_menus/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 		JText::script('view not acceptable. Error');
 	}
 }

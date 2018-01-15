@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
 	`add_admin_event` TINYINT(1) NOT NULL DEFAULT 0,
-	`add_css` TINYINT(1) NOT NULL DEFAULT 0,
+	`add_css_admin` TINYINT(1) NOT NULL DEFAULT 0,
+	`add_css_site` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_email_helper` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_javascript` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_license` TINYINT(1) NOT NULL DEFAULT 0,
@@ -31,7 +32,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	`component_version` CHAR(64) NOT NULL DEFAULT '',
 	`copyright` VARCHAR(255) NOT NULL DEFAULT '',
 	`creatuserhelper` TINYINT(1) NOT NULL DEFAULT 0,
-	`css` TEXT NOT NULL,
+	`css_admin` TEXT NOT NULL,
+	`css_site` TEXT NOT NULL,
 	`debug_linenr` TINYINT(1) NOT NULL DEFAULT 0,
 	`description` TEXT NOT NULL,
 	`email` VARCHAR(255) NOT NULL DEFAULT '',
@@ -93,11 +95,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_state` (`published`),
 	KEY `idx_system_name` (`system_name`),
 	KEY `idx_name_code` (`name_code`),
-	KEY `idx_add_update_server` (`add_update_server`),
+	KEY `idx_add_css_site` (`add_css_site`),
 	KEY `idx_mvc_versiondate` (`mvc_versiondate`),
 	KEY `idx_add_placeholders` (`add_placeholders`),
 	KEY `idx_addfootable` (`addfootable`),
 	KEY `idx_add_php_helper_admin` (`add_php_helper_admin`),
+	KEY `idx_update_server_target` (`update_server_target`),
 	KEY `idx_add_php_helper_site` (`add_php_helper_site`),
 	KEY `idx_debug_linenr` (`debug_linenr`),
 	KEY `idx_add_javascript` (`add_javascript`),
@@ -107,8 +110,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_add_license` (`add_license`),
 	KEY `idx_add_site_event` (`add_site_event`),
 	KEY `idx_license_type` (`license_type`),
-	KEY `idx_add_css` (`add_css`),
-	KEY `idx_update_server_target` (`update_server_target`),
+	KEY `idx_add_css_admin` (`add_css_admin`),
+	KEY `idx_add_update_server` (`add_update_server`),
 	KEY `idx_adduikit` (`adduikit`),
 	KEY `idx_add_email_helper` (`add_email_helper`),
 	KEY `idx_add_php_preflight_install` (`add_php_preflight_install`),
@@ -259,10 +262,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	`add_custom_button` INT(1) NOT NULL DEFAULT 0,
 	`add_javascript_file` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_js_document` TINYINT(1) NOT NULL DEFAULT 0,
+	`add_php_ajax` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_php_document` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_php_jview` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_php_jview_display` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_php_view` TINYINT(1) NOT NULL DEFAULT 0,
+	`ajax_input` TEXT NOT NULL,
 	`codename` VARCHAR(255) NOT NULL DEFAULT '',
 	`css` TEXT NOT NULL,
 	`css_document` TEXT NOT NULL,
@@ -278,6 +283,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	`main_get` INT(11) NOT NULL DEFAULT 0,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
 	`not_required` INT(1) NOT NULL DEFAULT 0,
+	`php_ajaxmethod` MEDIUMTEXT NOT NULL,
 	`php_controller` MEDIUMTEXT NOT NULL,
 	`php_document` MEDIUMTEXT NOT NULL,
 	`php_jview` MEDIUMTEXT NOT NULL,
@@ -307,16 +313,17 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	KEY `idx_name` (`name`),
 	KEY `idx_codename` (`codename`),
 	KEY `idx_add_css_document` (`add_css_document`),
-	KEY `idx_add_js_document` (`add_js_document`),
-	KEY `idx_add_php_document` (`add_php_document`),
-	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
+	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_add_css` (`add_css`),
-	KEY `idx_add_php_view` (`add_php_view`),
-	KEY `idx_add_php_jview` (`add_php_jview`),
+	KEY `idx_add_js_document` (`add_js_document`),
 	KEY `idx_add_javascript_file` (`add_javascript_file`),
 	KEY `idx_main_get` (`main_get`),
 	KEY `idx_dynamic_get` (`dynamic_get`),
-	KEY `idx_add_custom_button` (`add_custom_button`)
+	KEY `idx_add_php_document` (`add_php_document`),
+	KEY `idx_add_custom_button` (`add_custom_button`),
+	KEY `idx_add_php_view` (`add_php_view`),
+	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
+	KEY `idx_add_php_jview` (`add_php_jview`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
@@ -377,19 +384,19 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_codename` (`codename`),
-	KEY `idx_add_php_document` (`add_php_document`),
-	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
-	KEY `idx_add_php_view` (`add_php_view`),
-	KEY `idx_add_php_jview` (`add_php_jview`),
+	KEY `idx_add_css_document` (`add_css_document`),
+	KEY `idx_add_php_ajax` (`add_php_ajax`),
+	KEY `idx_add_css` (`add_css`),
 	KEY `idx_add_javascript_file` (`add_javascript_file`),
 	KEY `idx_add_js_document` (`add_js_document`),
 	KEY `idx_main_get` (`main_get`),
-	KEY `idx_add_css_document` (`add_css_document`),
 	KEY `idx_dynamic_get` (`dynamic_get`),
-	KEY `idx_add_css` (`add_css`),
-	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_add_custom_button` (`add_custom_button`),
-	KEY `idx_button_position` (`button_position`)
+	KEY `idx_add_php_document` (`add_php_document`),
+	KEY `idx_button_position` (`button_position`),
+	KEY `idx_add_php_view` (`add_php_view`),
+	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
+	KEY `idx_add_php_jview` (`add_php_jview`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
@@ -519,11 +526,11 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_name` (`name`),
 	KEY `idx_main_source` (`main_source`),
 	KEY `idx_gettype` (`gettype`),
-	KEY `idx_add_php_before_getitem` (`add_php_before_getitem`),
-	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
-	KEY `idx_add_php_after_getitem` (`add_php_after_getitem`),
-	KEY `idx_add_php_before_getitems` (`add_php_before_getitems`),
 	KEY `idx_add_php_after_getitems` (`add_php_after_getitems`),
+	KEY `idx_add_php_before_getitems` (`add_php_before_getitems`),
+	KEY `idx_add_php_before_getitem` (`add_php_before_getitem`),
+	KEY `idx_add_php_after_getitem` (`add_php_after_getitem`),
+	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
 	KEY `idx_getcustom` (`getcustom`),
 	KEY `idx_pagination` (`pagination`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -1220,8 +1227,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
 -- Dumping data for table `#__componentbuilder_joomla_component`
 --
 
-INSERT INTO `#__componentbuilder_joomla_component` (`id`, `add_license`, `license_type`, `mvc_versiondate`, `add_css`, `add_email_helper`, `add_php_helper_admin`, `add_php_helper_both`, `add_php_helper_site`, `add_php_postflight_install`, `add_php_method_uninstall`, `add_php_postflight_update`, `add_php_preflight_install`, `add_php_preflight_update`, `add_placeholders`, `add_sql`, `addfootable`, `adduikit`, `add_admin_event`, `add_site_event`, `add_update_server`, `add_sales_server`, `sales_server_ftp`, `update_server_ftp`, `update_server_target`, `php_admin_event`, `php_site_event`, `addreadme`, `readme`, `author`, `bom`, `buildcomp`, `buildcompsql`, `companyname`, `component_version`, `update_server`, `copyright`, `creatuserhelper`, `css`, `debug_linenr`, `description`, `email`, `emptycontributors`, `image`, `license`, `name`, `system_name`, `name_code`, `not_required`, `number`, `php_helper_admin`, `php_helper_both`, `php_helper_site`, `php_postflight_install`, `php_method_uninstall`, `php_postflight_update`, `php_preflight_install`, `php_preflight_update`, `short_description`, `sql`, `website`, `published`, `created`, `modified`, `version`, `hits`, `ordering`, `whmcs_key`, `whmcs_url`) VALUES
-(25, '', 1, '', '', '', '', '', 1, 1, '', '', '', '', '', '', '', 1, '', '', 1, '', '', '', 2, '', '', 1, 'IyAjIyNDb21wb25lbnRfbmFtZSMjIyAoIyMjVkVSU0lPTiMjIykNCg0KIVsjIyNDb21wb25lbnRfbmFtZSMjIyBpbWFnZV0oaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL25hbWliaWEvZGVtby1qb29tbGEtMy1jb21wb25lbnQvbWFzdGVyL2FkbWluL2Fzc2V0cy9pbWFnZXMvdmRtLWNvbXBvbmVudC5qcGcgIlRoZSAjIyNDb21wb25lbnRfbmFtZSMjIyIpDQoNCiMjI0RFU0NSSVBUSU9OIyMjDQoNCiMgQnVpbGQgRGV0YWlscw0KDQorICpDb21wYW55KjogWyMjI0NPTVBBTllOQU1FIyMjXSgjIyNBVVRIT1JXRUJTSVRFIyMjKQ0KKyAqQXV0aG9yKjogWyMjI0FVVEhPUiMjI10obWFpbHRvOiMjI0FVVEhPUkVNQUlMIyMjKQ0KKyAqTmFtZSo6IFsjIyNDb21wb25lbnRfbmFtZSMjI10oIyMjQVVUSE9SV0VCU0lURSMjIykNCisgKkZpcnN0IEJ1aWxkKjogIyMjQ1JFQVRJT05EQVRFIyMjDQorICpMYXN0IEJ1aWxkKjogIyMjQlVJTEREQVRFIyMjDQorICpWZXJzaW9uKjogIyMjVkVSU0lPTiMjIw0KKyAqQ29weXJpZ2h0KjogIyMjQ09QWVJJR0hUIyMjDQorICpMaWNlbnNlKjogIyMjTElDRU5TRSMjIw0KDQojIyBCdWlsZCBUaW1lDQoNCioqIyMjdG90YWxIb3VycyMjIyBIb3VycyoqIG9yICoqIyMjdG90YWxEYXlzIyMjIEVpZ2h0IEhvdXIgRGF5cyoqIChhY3R1YWwgdGltZSB0aGUgYXV0aG9yIHNhdmVkIC0NCmR1ZSB0byBbQXV0b21hdGVkIENvbXBvbmVudCBCdWlsZGVyXShodHRwczovL3d3dy52ZG0uaW8vam9vbWxhLWNvbXBvbmVudC1idWlsZGVyKSkNCg0KPiAoaWYgY3JlYXRpbmcgYSBmb2xkZXIgYW5kIGZpbGUgdG9vayAqKjUgc2Vjb25kcyoqIGFuZCB3cml0aW5nIG9uZSBsaW5lIG9mIGNvZGUgdG9vayAqKjEwIHNlY29uZHMqKiwNCj4gbmV2ZXIgbWFraW5nIG9uZSBtaXN0YWtlIG9yIHRha2luZyBhbnkgY29mZmVlIGJyZWFrLikNCg0KKyAqTGluZSBjb3VudCo6ICoqIyMjTElORV9DT1VOVCMjIyoqDQorICpGaWxlIGNvdW50KjogKiojIyNGSUxFX0NPVU5UIyMjKioNCisgKkZvbGRlciBjb3VudCo6ICoqIyMjRk9MREVSX0NPVU5UIyMjKioNCg0KKiojIyNhY3R1YWxIb3Vyc1NwZW50IyMjIEhvdXJzKiogb3IgKiojIyNhY3R1YWxEYXlzU3BlbnQjIyMgRWlnaHQgSG91ciBEYXlzKiogKHRoZSBhY3R1YWwgdGltZSB0aGUgYXV0aG9yIHNwZW50KQ0KDQo+ICh3aXRoIHRoZSBmb2xsb3dpbmcgYnJlYWsgZG93bjoNCj4gKipkZWJ1Z2dpbmcgQCMjI2RlYnVnZ2luZ0hvdXJzIyMjaG91cnMqKiA9IGNvZGluZ3RpbWUgLyA0Ow0KPiAqKnBsYW5uaW5nIEAjIyNwbGFubmluZ0hvdXJzIyMjaG91cnMqKiA9IGNvZGluZ3RpbWUgLyA3Ow0KPiAqKm1hcHBpbmcgQCMjI21hcHBpbmdIb3VycyMjI2hvdXJzKiogPSBjb2Rpbmd0aW1lIC8gMTA7DQo+ICoqb2ZmaWNlIEAjIyNvZmZpY2VIb3VycyMjI2hvdXJzKiogPSBjb2Rpbmd0aW1lIC8gNjspDQoNCioqIyMjYWN0dWFsVG90YWxIb3VycyMjIyBIb3VycyoqIG9yICoqIyMjYWN0dWFsVG90YWxEYXlzIyMjIEVpZ2h0IEhvdXIgRGF5cyoqDQooYSB0b3RhbCBvZiB0aGUgcmVhbGlzdGljIHRpbWUgZnJhbWUgZm9yIHRoaXMgcHJvamVjdCkNCg0KPiAoaWYgY3JlYXRpbmcgYSBmb2xkZXIgYW5kIGZpbGUgdG9vayAqKjUgc2Vjb25kcyoqIGFuZCB3cml0aW5nIG9uZSBsaW5lIG9mIGNvZGUgdG9vayAqKjEwIHNlY29uZHMqKiwNCj4gd2l0aCB0aGUgbm9ybWFsIGV2ZXJ5ZGF5IHJlYWxpdGllcyBhdCB0aGUgb2ZmaWNlLCB0aGF0IGluY2x1ZGVzIHRoZSBjb21wb25lbnQgcGxhbm5pbmcsIG1hcHBpbmcgJiBkZWJ1Z2dpbmcuKQ0KDQpQcm9qZWN0IGR1cmF0aW9uOiAqKiMjI3Byb2plY3RXZWVrVGltZSMjIyB3ZWVrcyoqIG9yICoqIyMjcHJvamVjdE1vbnRoVGltZSMjIyBtb250aHMqKg0KDQo+IFRoaXMgKipjb21wb25lbnQqKiB3YXMgYnVpbGQgd2l0aCBhIEpvb21sYSBbQXV0b21hdGVkIENvbXBvbmVudCBCdWlsZGVyXShodHRwczovL3d3dy52ZG0uaW8vam9vbWxhLWNvbXBvbmVudC1idWlsZGVyKS4NCj4gRGV2ZWxvcGVkIGJ5IFtMbGV3ZWxseW4gdmFuIGRlciBNZXJ3ZV0obWFpbHRvOmpvb21sYUB2ZG0uaW8pDQoNCiMjIERvbmF0aW9ucw0KDQpJZiB5b3Ugd2FudCB0byBzdXBwb3J0IHRoaXMgcHJvamVjdCwgcGxlYXNlIGNvbnNpZGVyIGRvbmF0aW5nOg0KKiBQYXlQYWw6IFtwYXlwYWwubWUvcGF5dmRtXShodHRwczovL3d3dy5wYXlwYWwubWUvcGF5dmRtKQ0KKiBCaXRjb2luOiAxRkx4aVQ2d3l4Z1ozYm9ldmlMa1lKMURScHA0MXV6cHhhDQoqIEV0aGVyZXVtOiAweDI0MzM5MmRhYTNjOWM4YmM4NDFmY2FjZjdjN2Y3MjU0MWNiMTY4MjMg', 'Llewellyn van der Merwe', 'default.txt', '', '', 'Vast Development Method', '2.0.0', 'https://www.vdm.io/updates/demo_update_server.xml', 'Copyright (C) 2015. All Rights Reserved', '', '', '', 'Just a basic demo of the most basic implementations of the [Joomla](http://www.joomla.org) Component Builder\'s ability.', 'info@vdm.io', '', 'images/vdm/demo500.jpg', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html', 'Demo', 'Demo', 'demo', '', 4, '', '', 'CS8qKg0KCSAqCUNoYW5nZSB0byBuaWNlIGZhbmN5IGRhdGUNCgkgKi8NCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGZhbmN5RGF0ZSgkZGF0ZSkNCgl7DQoJCWlmICghc2VsZjo6aXNWYWxpZFRpbWVTdGFtcCgkZGF0ZSkpDQoJCXsNCgkJCSRkYXRlID0gc3RydG90aW1lKCRkYXRlKTsNCgkJfQ0KCQlyZXR1cm4gZGF0ZSgnalMgXG9cZiBGIFknLCRkYXRlKTsNCgl9DQoNCgkvKioNCgkgKglDaGFuZ2UgdG8gbmljZSBmYW5jeSB0aW1lIGFuZCBkYXRlDQoJICovDQoJcHVibGljIHN0YXRpYyBmdW5jdGlvbiBmYW5jeURhdGVUaW1lKCR0aW1lKQ0KCXsNCgkJaWYgKCFzZWxmOjppc1ZhbGlkVGltZVN0YW1wKCR0aW1lKSkNCgkJew0KCQkJJHRpbWUgPSBzdHJ0b3RpbWUoJHRpbWUpOw0KCQl9DQoJCXJldHVybiBkYXRlKCcoRzppKSBqUyBcb1xmIEYgWScsJHRpbWUpOw0KCX0NCg0KCS8qKg0KCSAqCUNoYW5nZSB0byBuaWNlIGhvdXI6bWludXRlcyB0aW1lDQoJICovDQoJcHVibGljIHN0YXRpYyBmdW5jdGlvbiBmYW5jeVRpbWUoJHRpbWUpDQoJew0KCQlpZiAoIXNlbGY6OmlzVmFsaWRUaW1lU3RhbXAoJHRpbWUpKQ0KCQl7DQoJCQkkdGltZSA9IHN0cnRvdGltZSgkdGltZSk7DQoJCX0NCgkJcmV0dXJuIGRhdGUoJ0c6aScsJHRpbWUpOw0KCX0NCg0KCS8qKg0KCSAqCUNoZWNrIGlmIHN0cmluZyBpcyBhIHZhbGlkIHRpbWUgc3RhbXANCgkgKi8NCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGlzVmFsaWRUaW1lU3RhbXAoJHRpbWVzdGFtcCkNCgl7DQoJCXJldHVybiAoKGludCkgJHRpbWVzdGFtcCA9PT0gJHRpbWVzdGFtcCkNCgkJJiYgKCR0aW1lc3RhbXAgPD0gUEhQX0lOVF9NQVgpDQoJCSYmICgkdGltZXN0YW1wID49IH5QSFBfSU5UX01BWCk7DQoJfQ0K', 'CQkvLyBHZXQgQXBwbGljYXRpb24gb2JqZWN0DQoJCSRhcHAgPSBKRmFjdG9yeTo6Z2V0QXBwbGljYXRpb24oKTsNCgkJJGFwcC0+ZW5xdWV1ZU1lc3NhZ2UoJ1RoaXMgaXMgYSBkZW1vIGNvbXBvbmVudCBkZXZlbG9wZWQgaW4gPGEgaHJlZj0iaHR0cDovL3ZkbS5iei9jb21wb25lbnQtYnVpbGRlciIgdGFnZXQ9Il9iYWxuayIgdGl0bGU9Ikpvb21sYSBDb21wb25lbnQgQnVpbGRlciI+SkNCPC9hPiEgWW91IGNhbiBidWlsZCBtb3JlIGNvbXBvbmVudHMgbGlrZSB0aGlzIHdpdGggSkNCLCBjaGVja291dCBvdXIgcGFnZSBvbiA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdmRtLWlvL0pvb21sYS1Db21wb25lbnQtQnVpbGRlciIgdGFnZXQ9Il9iYWxuayIgdGl0bGU9Ikpvb21sYSBDb21wb25lbnQgQnVpbGRlciI+Z2l0aHViPC9hPiBmb3IgbW9yZSBpbmZvLiBUaGUgZnV0dXJlIG9mIDxhIGhyZWY9Imh0dHA6Ly92ZG0uYnovY29tcG9uZW50LWJ1aWxkZXIiIHRhZ2V0PSJfYmFsbmsiIHRpdGxlPSJKb29tbGEgQ29tcG9uZW50IEJ1aWxkZXIiPkpvb21sYSBDb21wb25lbnQgRGV2ZWxvcG1lbnQ8L2E+IGlzIEhlcmUhJywgJ0luZm8nKTs=', '', '', '', '', 'Demo Component', '', 'https://www.vdm.io/', 1, '2016-10-18 11:44:09', '2017-08-25 00:36:01', 30, '', 3, 'V6inNhoApqD2JvhSrOd+R/OzoW8mTod30wXoypEZacY=', '');
+INSERT INTO `#__componentbuilder_joomla_component` (`id`, `add_license`, `license_type`, `mvc_versiondate`, `add_css_admin`, `add_css_site`, `add_email_helper`, `add_javascript`, `add_php_helper_admin`, `add_php_helper_both`, `add_php_helper_site`, `add_php_postflight_install`, `add_php_method_uninstall`, `add_php_postflight_update`, `add_php_preflight_install`, `add_php_preflight_update`, `add_placeholders`, `add_sql`, `addadmin_views`, `addconfig`, `addcontributors`, `addcustom_admin_views`, `addcustommenus`, `addfiles`, `addfolders`, `addfootable`, `adduikit`, `addsite_views`, `add_admin_event`, `add_site_event`, `add_update_server`, `add_sales_server`, `add_php_dashboard_methods`, `php_dashboard_methods`, `dashboard_tab`, `sales_server_ftp`, `update_server_ftp`, `update_server_target`, `php_admin_event`, `php_site_event`, `addreadme`, `readme`, `author`, `bom`, `buildcomp`, `buildcompsql`, `companyname`, `component_version`, `update_server`, `copyright`, `creatuserhelper`, `css_admin`, `css_site`, `debug_linenr`, `description`, `email`, `emptycontributors`, `export_buy_link`, `export_package_link`, `export_key`, `image`, `javascript`, `license`, `name`, `system_name`, `toignore`, `name_code`, `number`, `php_helper_admin`, `php_helper_both`, `php_helper_site`, `php_postflight_install`, `php_method_uninstall`, `php_postflight_update`, `php_preflight_install`, `php_preflight_update`, `short_description`, `sql`, `sql_tweak`, `website`, `version_update`, `published`, `created`, `modified`, `hits`, `ordering`, `whmcs_key`, `whmcs_url`) VALUES
+(25, '', 1, '', '', '', '', '', '', '', 1, 1, '', '', '', '', '', '', '{\"addadmin_views0\":{\"adminview\":\"109\",\"icomoon\":\"eye-open\",\"mainmenu\":\"1\",\"dashboard_add\":\"1\",\"dashboard_list\":\"1\",\"submenu\":\"1\",\"checkin\":\"1\",\"history\":\"1\",\"metadata\":\"1\",\"access\":\"1\",\"port\":\"1\",\"edit_create_site_view\":\"1\",\"order\":\"1\"}}', '', '', '', '', '', '', '', 1, '{\"addsite_views0\":{\"siteview\":\"23\",\"menu\":\"1\",\"metadata\":\"1\",\"default_view\":\"1\",\"access\":\"1\",\"public\":\"1\"},\"addsite_views1\":{\"siteview\":\"25\",\"menu\":\"0\",\"metadata\":\"1\",\"default_view\":\"0\",\"access\":\"1\",\"public\":\"1\"}}', '', '', 1, '', '', '', '', '', '', 2, '', '', 1, 'IyAjIyNDb21wb25lbnRfbmFtZSMjIyAoIyMjVkVSU0lPTiMjIykNCg0KIVsjIyNDb21wb25lbnRfbmFtZSMjIyBpbWFnZV0oaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL25hbWliaWEvZGVtby1qb29tbGEtMy1jb21wb25lbnQvbWFzdGVyL2FkbWluL2Fzc2V0cy9pbWFnZXMvdmRtLWNvbXBvbmVudC5qcGcgIlRoZSAjIyNDb21wb25lbnRfbmFtZSMjIyIpDQoNCiMjI0RFU0NSSVBUSU9OIyMjDQoNCiMgQnVpbGQgRGV0YWlscw0KDQorICpDb21wYW55KjogWyMjI0NPTVBBTllOQU1FIyMjXSgjIyNBVVRIT1JXRUJTSVRFIyMjKQ0KKyAqQXV0aG9yKjogWyMjI0FVVEhPUiMjI10obWFpbHRvOiMjI0FVVEhPUkVNQUlMIyMjKQ0KKyAqTmFtZSo6IFsjIyNDb21wb25lbnRfbmFtZSMjI10oIyMjQVVUSE9SV0VCU0lURSMjIykNCisgKkZpcnN0IEJ1aWxkKjogIyMjQ1JFQVRJT05EQVRFIyMjDQorICpMYXN0IEJ1aWxkKjogIyMjQlVJTEREQVRFIyMjDQorICpWZXJzaW9uKjogIyMjVkVSU0lPTiMjIw0KKyAqQ29weXJpZ2h0KjogIyMjQ09QWVJJR0hUIyMjDQorICpMaWNlbnNlKjogIyMjTElDRU5TRSMjIw0KDQojIyBCdWlsZCBUaW1lDQoNCioqIyMjdG90YWxIb3VycyMjIyBIb3VycyoqIG9yICoqIyMjdG90YWxEYXlzIyMjIEVpZ2h0IEhvdXIgRGF5cyoqIChhY3R1YWwgdGltZSB0aGUgYXV0aG9yIHNhdmVkIC0NCmR1ZSB0byBbQXV0b21hdGVkIENvbXBvbmVudCBCdWlsZGVyXShodHRwczovL3d3dy52ZG0uaW8vam9vbWxhLWNvbXBvbmVudC1idWlsZGVyKSkNCg0KPiAoaWYgY3JlYXRpbmcgYSBmb2xkZXIgYW5kIGZpbGUgdG9vayAqKjUgc2Vjb25kcyoqIGFuZCB3cml0aW5nIG9uZSBsaW5lIG9mIGNvZGUgdG9vayAqKjEwIHNlY29uZHMqKiwNCj4gbmV2ZXIgbWFraW5nIG9uZSBtaXN0YWtlIG9yIHRha2luZyBhbnkgY29mZmVlIGJyZWFrLikNCg0KKyAqTGluZSBjb3VudCo6ICoqIyMjTElORV9DT1VOVCMjIyoqDQorICpGaWxlIGNvdW50KjogKiojIyNGSUxFX0NPVU5UIyMjKioNCisgKkZvbGRlciBjb3VudCo6ICoqIyMjRk9MREVSX0NPVU5UIyMjKioNCg0KKiojIyNhY3R1YWxIb3Vyc1NwZW50IyMjIEhvdXJzKiogb3IgKiojIyNhY3R1YWxEYXlzU3BlbnQjIyMgRWlnaHQgSG91ciBEYXlzKiogKHRoZSBhY3R1YWwgdGltZSB0aGUgYXV0aG9yIHNwZW50KQ0KDQo+ICh3aXRoIHRoZSBmb2xsb3dpbmcgYnJlYWsgZG93bjoNCj4gKipkZWJ1Z2dpbmcgQCMjI2RlYnVnZ2luZ0hvdXJzIyMjaG91cnMqKiA9IGNvZGluZ3RpbWUgLyA0Ow0KPiAqKnBsYW5uaW5nIEAjIyNwbGFubmluZ0hvdXJzIyMjaG91cnMqKiA9IGNvZGluZ3RpbWUgLyA3Ow0KPiAqKm1hcHBpbmcgQCMjI21hcHBpbmdIb3VycyMjI2hvdXJzKiogPSBjb2Rpbmd0aW1lIC8gMTA7DQo+ICoqb2ZmaWNlIEAjIyNvZmZpY2VIb3VycyMjI2hvdXJzKiogPSBjb2Rpbmd0aW1lIC8gNjspDQoNCioqIyMjYWN0dWFsVG90YWxIb3VycyMjIyBIb3VycyoqIG9yICoqIyMjYWN0dWFsVG90YWxEYXlzIyMjIEVpZ2h0IEhvdXIgRGF5cyoqDQooYSB0b3RhbCBvZiB0aGUgcmVhbGlzdGljIHRpbWUgZnJhbWUgZm9yIHRoaXMgcHJvamVjdCkNCg0KPiAoaWYgY3JlYXRpbmcgYSBmb2xkZXIgYW5kIGZpbGUgdG9vayAqKjUgc2Vjb25kcyoqIGFuZCB3cml0aW5nIG9uZSBsaW5lIG9mIGNvZGUgdG9vayAqKjEwIHNlY29uZHMqKiwNCj4gd2l0aCB0aGUgbm9ybWFsIGV2ZXJ5ZGF5IHJlYWxpdGllcyBhdCB0aGUgb2ZmaWNlLCB0aGF0IGluY2x1ZGVzIHRoZSBjb21wb25lbnQgcGxhbm5pbmcsIG1hcHBpbmcgJiBkZWJ1Z2dpbmcuKQ0KDQpQcm9qZWN0IGR1cmF0aW9uOiAqKiMjI3Byb2plY3RXZWVrVGltZSMjIyB3ZWVrcyoqIG9yICoqIyMjcHJvamVjdE1vbnRoVGltZSMjIyBtb250aHMqKg0KDQo+IFRoaXMgKipjb21wb25lbnQqKiB3YXMgYnVpbGQgd2l0aCBhIEpvb21sYSBbQXV0b21hdGVkIENvbXBvbmVudCBCdWlsZGVyXShodHRwczovL3d3dy52ZG0uaW8vam9vbWxhLWNvbXBvbmVudC1idWlsZGVyKS4NCj4gRGV2ZWxvcGVkIGJ5IFtMbGV3ZWxseW4gdmFuIGRlciBNZXJ3ZV0obWFpbHRvOmpvb21sYUB2ZG0uaW8pDQoNCiMjIERvbmF0aW9ucw0KDQpJZiB5b3Ugd2FudCB0byBzdXBwb3J0IHRoaXMgcHJvamVjdCwgcGxlYXNlIGNvbnNpZGVyIGRvbmF0aW5nOg0KKiBQYXlQYWw6IFtwYXlwYWwubWUvcGF5dmRtXShodHRwczovL3d3dy5wYXlwYWwubWUvcGF5dmRtKQ0KKiBCaXRjb2luOiAxRkx4aVQ2d3l4Z1ozYm9ldmlMa1lKMURScHA0MXV6cHhhDQoqIEV0aGVyZXVtOiAweDI0MzM5MmRhYTNjOWM4YmM4NDFmY2FjZjdjN2Y3MjU0MWNiMTY4MjMg', 'Llewellyn van der Merwe', 'default.txt', '', '', 'Vast Development Method', '2.0.0', 'https://www.vdm.io/updates/demo_update_server.xml', 'Copyright (C) 2015. All Rights Reserved', '', '', '', '', 'Just a basic demo of the most basic implementations of the [Joomla](http://www.joomla.org) Component Builder\'s ability.', 'info@vdm.io', '', '', '', 'q59UiiKBVT2mWzkz3EPBrdIANxfa0dSmp+5sEgzgC+s=', 'images/vdm/demo500.jpg', '', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html', 'Demo', 'Demo', '', 'demo', 4, '', '', 'CS8qKg0KCSAqCUNoYW5nZSB0byBuaWNlIGZhbmN5IGRhdGUNCgkgKi8NCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGZhbmN5RGF0ZSgkZGF0ZSkNCgl7DQoJCWlmICghc2VsZjo6aXNWYWxpZFRpbWVTdGFtcCgkZGF0ZSkpDQoJCXsNCgkJCSRkYXRlID0gc3RydG90aW1lKCRkYXRlKTsNCgkJfQ0KCQlyZXR1cm4gZGF0ZSgnalMgXG9cZiBGIFknLCRkYXRlKTsNCgl9DQoNCgkvKioNCgkgKglDaGFuZ2UgdG8gbmljZSBmYW5jeSB0aW1lIGFuZCBkYXRlDQoJICovDQoJcHVibGljIHN0YXRpYyBmdW5jdGlvbiBmYW5jeURhdGVUaW1lKCR0aW1lKQ0KCXsNCgkJaWYgKCFzZWxmOjppc1ZhbGlkVGltZVN0YW1wKCR0aW1lKSkNCgkJew0KCQkJJHRpbWUgPSBzdHJ0b3RpbWUoJHRpbWUpOw0KCQl9DQoJCXJldHVybiBkYXRlKCcoRzppKSBqUyBcb1xmIEYgWScsJHRpbWUpOw0KCX0NCg0KCS8qKg0KCSAqCUNoYW5nZSB0byBuaWNlIGhvdXI6bWludXRlcyB0aW1lDQoJICovDQoJcHVibGljIHN0YXRpYyBmdW5jdGlvbiBmYW5jeVRpbWUoJHRpbWUpDQoJew0KCQlpZiAoIXNlbGY6OmlzVmFsaWRUaW1lU3RhbXAoJHRpbWUpKQ0KCQl7DQoJCQkkdGltZSA9IHN0cnRvdGltZSgkdGltZSk7DQoJCX0NCgkJcmV0dXJuIGRhdGUoJ0c6aScsJHRpbWUpOw0KCX0NCg0KCS8qKg0KCSAqCUNoZWNrIGlmIHN0cmluZyBpcyBhIHZhbGlkIHRpbWUgc3RhbXANCgkgKi8NCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGlzVmFsaWRUaW1lU3RhbXAoJHRpbWVzdGFtcCkNCgl7DQoJCXJldHVybiAoKGludCkgJHRpbWVzdGFtcCA9PT0gJHRpbWVzdGFtcCkNCgkJJiYgKCR0aW1lc3RhbXAgPD0gUEhQX0lOVF9NQVgpDQoJCSYmICgkdGltZXN0YW1wID49IH5QSFBfSU5UX01BWCk7DQoJfQ0K', 'CQkvLyBHZXQgQXBwbGljYXRpb24gb2JqZWN0DQoJCSRhcHAgPSBKRmFjdG9yeTo6Z2V0QXBwbGljYXRpb24oKTsNCgkJJGFwcC0+ZW5xdWV1ZU1lc3NhZ2UoJ1RoaXMgaXMgYSBkZW1vIGNvbXBvbmVudCBkZXZlbG9wZWQgaW4gPGEgaHJlZj0iaHR0cDovL3ZkbS5iei9jb21wb25lbnQtYnVpbGRlciIgdGFnZXQ9Il9iYWxuayIgdGl0bGU9Ikpvb21sYSBDb21wb25lbnQgQnVpbGRlciI+SkNCPC9hPiEgWW91IGNhbiBidWlsZCBtb3JlIGNvbXBvbmVudHMgbGlrZSB0aGlzIHdpdGggSkNCLCBjaGVja291dCBvdXIgcGFnZSBvbiA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdmRtLWlvL0pvb21sYS1Db21wb25lbnQtQnVpbGRlciIgdGFnZXQ9Il9iYWxuayIgdGl0bGU9Ikpvb21sYSBDb21wb25lbnQgQnVpbGRlciI+Z2l0aHViPC9hPiBmb3IgbW9yZSBpbmZvLiBUaGUgZnV0dXJlIG9mIDxhIGhyZWY9Imh0dHA6Ly92ZG0uYnovY29tcG9uZW50LWJ1aWxkZXIiIHRhZ2V0PSJfYmFsbmsiIHRpdGxlPSJKb29tbGEgQ29tcG9uZW50IEJ1aWxkZXIiPkpvb21sYSBDb21wb25lbnQgRGV2ZWxvcG1lbnQ8L2E+IGlzIEhlcmUhJywgJ0luZm8nKTs=', '', '', '', '', 'Demo Component', '', '', 'https://www.vdm.io/', '{\"version_update0\":{\"version\":\"1.0.5\",\"mysql\":\"\",\"url\":\"https:\\/\\/github.com\\/namibia\\/demo-joomla-3-component\\/archive\\/v1.0.5.zip\"},\"version_update1\":{\"version\":\"2.0.0\",\"mysql\":\"\",\"url\":\"https:\\/\\/github.com\\/namibia\\/demo-joomla-3-component\\/archive\\/v2.0.0.zip\"}}', 1, '2016-10-18 11:44:09', '2017-08-25 00:36:01', '', 3, 'V6inNhoApqD2JvhSrOd+R/OzoW8mTod30wXoypEZacY=', '');
 
 --
 -- Dumping data for table `#__componentbuilder_admin_view`
@@ -1272,7 +1279,7 @@ INSERT INTO `#__componentbuilder_library` (`id`, `addconditions`, `description`,
 
 INSERT INTO `#__componentbuilder_snippet` (`id`, `contributor_company`, `contributor_email`, `contributor_name`, `contributor_website`, `description`, `heading`, `library`, `name`, `snippet`, `type`, `url`, `usage`, `params`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
 (1, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'The grid system of UIkit follows the mobile-first approach and accomodates up to 10 grid columns. It uses units with predefined classes inside each grid, which define the column width. It is also possible to combine the grid with classes from the Flex component, although it works only in modern browsers.', 'Create a fully responsive, fluid and nestable grid layout.', 4, 'Grid', 'PGRpdiBkYXRhLXVrLWdyaWQtbWFyZ2luPSIiIGNsYXNzPSJ0bS1ncmlkLXRydW5jYXRlIHVrLWdyaWQgdWstZ3JpZC1kaXZpZGVyIHVrLXRleHQtY2VudGVyIj4NCiAgICA8ZGl2IGNsYXNzPSJ1ay13aWR0aC1tZWRpdW0tMS0zIj4NCiAgICAJPGRpdiBjbGFzcz0idWstcGFuZWwgdWstcGFuZWwtYm94Ij4NCiAgICAgICAgCXtjb250ZW50fQ0KICAgICAgICA8L2Rpdj4NCiAgICA8L2Rpdj4NCiAgICA8ZGl2IGNsYXNzPSJ1ay13aWR0aC1tZWRpdW0tMS0zIj4NCiAgICAJPGRpdiBjbGFzcz0idWstcGFuZWwgdWstcGFuZWwtYm94Ij4NCiAgICAgICAgCXtjb250ZW50fQ0KICAgICAgICA8L2Rpdj4NCiAgICA8L2Rpdj4NCiAgICA8ZGl2IGNsYXNzPSJ1ay13aWR0aC1tZWRpdW0tMS0zIj4NCiAgICAJPGRpdiBjbGFzcz0idWstcGFuZWwgdWstcGFuZWwtYm94Ij4NCiAgICAgICAgCXtjb250ZW50fQ0KICAgICAgICA8L2Rpdj4NCiAgICA8L2Rpdj4NCjwvZGl2Pg==', 1, 'http://getuikit.com/docs/grid.html', 'To create the grid container, add the .uk-grid class to a parent element. Add one of the .uk-width-* classes to child elements to determine, how the units shall be sized. The grid supports 1, 2, 3, 4, 5, 6 and 10 unit divisions. This table gives you an overview of the uk-width-* classes that can be applied to units.', '', 1, '2015-05-19 17:18:32', '2017-11-11 22:09:27', 77, '', 1),
-(2, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'UIkit uses panels to outline certain sections of your content, which can be styled differently. Typically, panels are arranged in grid columns from the Grid component.', 'Create layout boxes with different styles.', 4, 'Panel', 'PGRpdiBkYXRhLXVrLWdyaWQtbWFyZ2luPSIiIGNsYXNzPSJ1ay1ncmlkIj4NCiAgICA8ZGl2IGNsYXNzPSJ1ay13aWR0aC1tZWRpdW0tMS0yIj4NCiAgICAgICAgPGRpdiBjbGFzcz0idWstcGFuZWwgdWstcGFuZWwtYm94Ij4NCiAgICAgICAgICAgIDxoMyBjbGFzcz0idWstcGFuZWwtdGl0bGUiPnt0aXRsZX08L2gzPg0KICAgICAgICAgICAge2NvbnRlbnR9DQogICAgICAgIDwvZGl2Pg0KICAgIDwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9InVrLXdpZHRoLW1lZGl1bS0xLTIiPg0KICAgICAgICA8ZGl2IGNsYXNzPSJ1ay1wYW5lbCB1ay1wYW5lbC1ib3giPg0KICAgICAgICAgICAgPGgzIGNsYXNzPSJ1ay1wYW5lbC10aXRsZSI+e3RpdGxlfTwvaDM+DQogICAgICAgICAgICB7Y29udGVudH0NCiAgICAgICAgPC9kaXY+DQogICAgPC9kaXY+DQo8L2Rpdj4=', 1, 'http://getuikit.com/docs/panel.html', 'The Panel component consists of the panel itself, the panel title and a panel badge. To prevent redundant white space, top and bottom margins are removed from the panel\'s content.', '', 1, '2015-05-19 20:04:54', '2017-11-11 22:09:27', 67, '', 1),
+(2, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'UIkit uses panels to outline certain sections of your content, which can be styled differently. Typically, panels are arranged in grid columns from the Grid component.', 'Create layout boxes with different styles.', 4, 'Panel', 'PGRpdiBkYXRhLXVrLWdyaWQtbWFyZ2luPSIiIGNsYXNzPSJ1ay1ncmlkIj4NCiAgICA8ZGl2IGNsYXNzPSJ1ay13aWR0aC1tZWRpdW0tMS0yIj4NCiAgICAgICAgPGRpdiBjbGFzcz0idWstcGFuZWwgdWstcGFuZWwtYm94Ij4NCiAgICAgICAgICAgIDxoMyBjbGFzcz0idWstcGFuZWwtdGl0bGUiPnt0aXRsZX08L2gzPg0KICAgICAgICAgICAge2NvbnRlbnR9DQogICAgICAgIDwvZGl2Pg0KICAgIDwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9InVrLXdpZHRoLW1lZGl1bS0xLTIiPg0KICAgICAgICA8ZGl2IGNsYXNzPSJ1ay1wYW5lbCB1ay1wYW5lbC1ib3giPg0KICAgICAgICAgICAgPGgzIGNsYXNzPSJ1ay1wYW5lbC10aXRsZSI+e3RpdGxlfTwvaDM+DQogICAgICAgICAgICB7Y29udGVudH0NCiAgICAgICAgPC9kaXY+DQogICAgPC9kaXY+DQo8L2Rpdj4=', 1, 'http://getuikit.com/docs/panel.html', 'The Panel component consists of the panel itself, the panel title and a panel badge. To prevent redundant white space, top and bottom margins are removed from the panel\'s content.', '', 1, '2015-05-19 20:04:54', '2017-11-11 22:09:27', 70, '', 1),
 (3, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', '', 'Separate content sections by bundling them in blocks with different styles.', 4, 'Block', 'PGRpdiBjbGFzcz0idWstYmxvY2sgdWstYmxvY2stcHJpbWFyeSI+e2NvbnRlbnR9PC9kaXY+', 1, 'http://getuikit.com/docs/block.html', 'To apply this component, just add the .uk-block class to a container element.', '', 1, '2015-05-19 20:09:41', '2017-11-11 22:09:27', 56, '', 2),
 (4, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', '', 'Create articles within your page.', 4, 'Article', 'PGFydGljbGUgY2xhc3M9InVrLWFydGljbGUiPg0KICAgIDxoMSBjbGFzcz0idWstYXJ0aWNsZS10aXRsZSI+e3RpdGxlfTwvaDE+DQogICAgPHAgY2xhc3M9InVrLWFydGljbGUtbWV0YSI+e21ldGF9PC9wPg0KICAgIDxwIGNsYXNzPSJ1ay1hcnRpY2xlLWxlYWQiPntjb250ZW50fTwvcD4NCiAgICB7Y29udGVudH0NCiAgICA8aHIgY2xhc3M9InVrLWFydGljbGUtZGl2aWRlciI+DQogICAge2NvbnRlbnR9DQo8L2FydGljbGU+', 1, 'http://getuikit.com/docs/article.html', 'The article component consists of the article itself, a title, meta data, an opening paragraph and dividers.', '', 1, '2015-05-19 20:12:06', '2017-11-11 22:09:27', 53, '', 3),
 (5, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', '', 'Create comments, for example about articles.', 4, 'Comment', 'PGFydGljbGUgY2xhc3M9InVrLWNvbW1lbnQiPg0KICAgIDxoZWFkZXIgY2xhc3M9InVrLWNvbW1lbnQtaGVhZGVyIj4NCiAgICAgICAgPGltZyBjbGFzcz0idWstY29tbWVudC1hdmF0YXIiIHNyYz0ie2ltYWdldXJsfSIgYWx0PSIiPg0KICAgICAgICA8aDQgY2xhc3M9InVrLWNvbW1lbnQtdGl0bGUiPnt0aXRsZX08L2g0Pg0KICAgICAgICA8ZGl2IGNsYXNzPSJ1ay1jb21tZW50LW1ldGEiPnttZXRhfTwvZGl2Pg0KICAgIDwvaGVhZGVyPg0KICAgIDxkaXYgY2xhc3M9InVrLWNvbW1lbnQtYm9keSI+e3RpdGxlfTwvZGl2Pg0KPC9hcnRpY2xlPg==', 1, 'http://getuikit.com/docs/comment.html', 'The Comment component consists of a comment header, including an avatar, a title and meta data, and a comment body.', '', 1, '2015-05-19 20:13:53', '2017-11-11 22:09:27', 54, '', 4),
@@ -1613,24 +1620,15 @@ INSERT INTO `#__componentbuilder_snippet_type` (`id`, `name`, `description`, `pa
 (42, 'Utility: Spacing', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, '', 42),
 (43, 'Utility: Text', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, '', 43);
 
---
--- Dumping data for table `#__componentbuilder_library_config`
---
 
-INSERT INTO `#__componentbuilder_library_config` (`id`, `addconfig`, `library`, `params`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
-(1, '', 2, '', 1, '2017-11-25 02:59:38', '2017-12-17 09:04:04', 12, '', 1),
-(2, '', 3, '', 1, '2017-11-25 21:51:25', '2017-12-10 15:08:32', 6, '', 2);
 
 --
 -- Dumping data for table `#__componentbuilder_library_files_folders_urls`
 --
 
 INSERT INTO `#__componentbuilder_library_files_folders_urls` (`id`, `addfiles`, `addfolders`, `addurls`, `library`, `params`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
-(1, '', '', '', 4, '', 1, '2017-11-25 00:09:15', '2017-12-25 12:38:11', 9, '', 1),
 (2, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/js\\/bootstrap.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/css\\/bootstrap.min.css\",\"type\":\"2\"}}', 2, '', 1, '2017-11-25 16:17:36', '2017-12-25 12:40:16', 10, '', 2),
-(3, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit-icons.min.js\",\"type\":\"2\"},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/css\\/uikit.min.css\",\"type\":\"2\"}}', 3, '', 1, '2017-11-25 21:47:40', '2017-12-25 12:38:24', 8, '', 3),
-(4, '', '', '', 5, '', 1, '2017-11-25 22:00:43', '2017-12-25 12:38:29', 4, '', 4),
-(5, '', '', '', 6, '', 1, '2017-11-25 22:12:42', '2017-12-25 12:38:34', 5, '', 5);
+(3, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit-icons.min.js\",\"type\":\"2\"},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/css\\/uikit.min.css\",\"type\":\"2\"}}', 3, '', 1, '2017-11-25 21:47:40', '2017-12-25 12:38:24', 8, '', 3);
 
 
 

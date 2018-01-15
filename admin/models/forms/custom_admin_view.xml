@@ -155,21 +155,20 @@
                        label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICON_LABEL"
                        description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICON_DESCRIPTION"
                        directory="" />
-                <!-- Add_js_document Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_js_document"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_JS_DOCUMENT_LABEL"
-                       class="btn-group btn-group-yesno"
+                <!-- Libraries Field. Type: Libraries. (custom)-->
+                <field type="libraries"
+                       name="libraries"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIBRARIES_LABEL"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIBRARIES_DESCRIPTION"
+                       class="list_class"
+                       multiple="true"
                        default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
-                </field>
-                <!-- Add_php_document Field. Type: Radio. (joomla)-->
+                       required="false"
+                       button="true" />
+                <!-- Add_php_ajax Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_document"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL"
+                       name="add_php_ajax"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_AJAX_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -184,17 +183,17 @@
                        description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_ADD_LANGUAGE_STRING_DESCRIPTION"
                        heading="h4"
                        class="note_add_language_string" />
-                <!-- Add_php_jview_display Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_jview_display"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_JVIEW_DISPLAY_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
-                </field>
+                <!-- Php_document Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="php_document"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_LABEL"
+                       rows="17"
+                       cols="5"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_HINT"
+                       required="true" />
                 <!-- Note_libraries_selection Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
                        name="note_libraries_selection"
@@ -202,16 +201,17 @@
                        description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_LIBRARIES_SELECTION_DESCRIPTION"
                        heading="h4"
                        class="alert alert-info note_libraries_selection" />
-                <!-- Libraries Field. Type: Libraries. (custom)-->
-                <field type="libraries"
-                       name="libraries"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIBRARIES_LABEL"
-                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIBRARIES_DESCRIPTION"
-                       class="list_class"
-                       multiple="true"
-                       default="0"
-                       required="false"
-                       button="true" />
+                <!-- Php_jview_display Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="php_jview_display"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DISPLAY_LABEL"
+                       rows="17"
+                       cols="5"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DISPLAY_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DISPLAY_HINT"
+                       required="true" />
                 <!-- Add_css Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_css"
@@ -229,38 +229,112 @@
                        label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_UIKIT_SNIPPET_LABEL"
                        heading="h4"
                        class="snippet-code note_uikit_snippet" />
-                <!-- Add_php_view Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_view"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_VIEW_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
-                </field>
-                <!-- Php_controller Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="php_controller"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_LABEL"
-                       rows="30"
-                       cols="15"
-                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_DESCRIPTION"
-                       class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_HINT"
-                       required="false" />
-                <!-- Add_php_jview Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_jview"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_JVIEW_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
+                <!-- Ajax_input Field. Type: Subform. (joomla)-->
+                <field type="subform"
+                       name="ajax_input"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_AJAX_INPUT_LABEL"
+                       layout="joomla.form.field.subform.repeatable-table"
+                       multiple="true"
+                       icon="list"
+                       maximum="150">
+                        <form hidden="true"
+                              name="list_ajax_input_modal"
+                              repeat="true">
+                                <!-- Value_name Field. Type: Text. (joomla)-->
+                                <field type="text"
+                                       name="value_name"
+                                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_VALUE_NAME_LABEL"
+                                       size="40"
+                                       maxlength="150"
+                                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_VALUE_NAME_DESCRIPTION"
+                                       class="text_area"
+                                       readonly="false"
+                                       disabled="false"
+                                       required="false"
+                                       filter="STRING"
+                                       message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_VALUE_NAME_MESSAGE"
+                                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_VALUE_NAME_HINT" />
+                                <!-- Task_name Field. Type: Text. (joomla)-->
+                                <field type="text"
+                                       name="task_name"
+                                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TASK_NAME_LABEL"
+                                       size="40"
+                                       maxlength="150"
+                                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TASK_NAME_DESCRIPTION"
+                                       class="text_area"
+                                       readonly="false"
+                                       disabled="false"
+                                       required="false"
+                                       filter="WORD"
+                                       message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TASK_NAME_MESSAGE"
+                                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TASK_NAME_HINT" />
+                                <!-- Input_default Field. Type: Text. (joomla)-->
+                                <field type="text"
+                                       name="input_default"
+                                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INPUT_DEFAULT_LABEL"
+                                       size="40"
+                                       maxlength="150"
+                                       default="NULL"
+                                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INPUT_DEFAULT_DESCRIPTION"
+                                       class="text_area"
+                                       readonly="false"
+                                       disabled="false"
+                                       required="false"
+                                       filter="STRING"
+                                       message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INPUT_DEFAULT_MESSAGE"
+                                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INPUT_DEFAULT_HINT" />
+                                <!-- Input_filter Field. Type: List. (joomla)-->
+                                <field type="list"
+                                       name="input_filter"
+                                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INPUT_FILTER_LABEL"
+                                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INPUT_FILTER_DESCRIPTION"
+                                       class="list_class"
+                                       multiple="false"
+                                       filter="WORD"
+                                       required="false"
+                                       default="INT">
+                                        <!-- Option Set.-->
+                                        <option value="INT">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INT</option>
+                                        <option value="UINT">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_UINT</option>
+                                        <option value="FLOAT">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FLOAT</option>
+                                        <option value="BOOLEAN">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_BOOLEAN</option>
+                                        <option value="WORD">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_WORD</option>
+                                        <option value="ALNUM">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALNUM</option>
+                                        <option value="CMD">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CMD</option>
+                                        <option value="BASE64">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_BASESIXTY_FOUR</option>
+                                        <option value="STRING">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_STRING</option>
+                                        <option value="HTML">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_HTML</option>
+                                        <option value="ARRAY">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARRAY</option>
+                                        <option value="PATH">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PATH</option>
+                                        <option value="USERNAME">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_USERNAME</option>
+                                        <option value="RAW">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_RAW</option>
+                                        <option value="unknown">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_UNKNOWN</option>
+                                </field>
+                                <!-- Method_name Field. Type: Text. (joomla)-->
+                                <field type="text"
+                                       name="method_name"
+                                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_NAME_LABEL"
+                                       size="40"
+                                       maxlength="150"
+                                       default="getValueNow"
+                                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_NAME_DESCRIPTION"
+                                       class="text_area"
+                                       readonly="false"
+                                       disabled="false"
+                                       required="false"
+                                       filter="WORD"
+                                       message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_NAME_MESSAGE"
+                                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_NAME_HINT" />
+                                <!-- User_check Field. Type: Checkbox. (joomla)-->
+                                <field type="checkbox"
+                                       name="user_check"
+                                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_USER_CHECK_LABEL"
+                                       value="1"
+                                       default="1"
+                                       required="false"
+                                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_USER_CHECK_DESCRIPTION"
+                                       class="inputbox" />
+                        </form>
                 </field>
                 <!-- Note_snippet_usage Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
@@ -268,6 +342,39 @@
                        label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_SNIPPET_USAGE_LABEL"
                        heading="h4"
                        class="snippet-usage note_snippet_usage" />
+                <!-- Php_view Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="php_view"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_LABEL"
+                       rows="17"
+                       cols="5"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_HINT"
+                       required="true" />
+                <!-- Add_js_document Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_js_document"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_JS_DOCUMENT_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
+                </field>
+                <!-- Php_jview Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="php_jview"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_LABEL"
+                       rows="17"
+                       cols="5"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_HINT"
+                       required="true" />
                 <!-- Default Field. Type: Textarea. (joomla)-->
                 <field type="textarea"
                        name="default"
@@ -278,17 +385,6 @@
                        filter="raw"
                        hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DEFAULT_HINT"
                        required="true" />
-                <!-- Php_model Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="php_model"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_LABEL"
-                       rows="30"
-                       cols="15"
-                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
-                       class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_HINT"
-                       required="false" />
                 <!-- Add_javascript_file Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_javascript_file"
@@ -370,16 +466,16 @@
                        description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DYNAMIC_GET_DESCRIPTION"
                        multiple="false"
                        required="false" />
-                <!-- Php_document Field. Type: Textarea. (joomla)-->
+                <!-- Php_ajaxmethod Field. Type: Textarea. (joomla)-->
                 <field type="textarea"
-                       name="php_document"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_LABEL"
-                       rows="17"
-                       cols="5"
-                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_DESCRIPTION"
+                       name="php_ajaxmethod"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_AJAXMETHOD_LABEL"
+                       rows="30"
+                       cols="15"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_AJAXMETHOD_DESCRIPTION"
                        class="text_area span12"
                        filter="raw"
-                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_HINT"
+                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_AJAXMETHOD_HINT"
                        required="true" />
                 <!-- Dynamic_values Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
@@ -388,17 +484,17 @@
                        description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DYNAMIC_VALUES_DESCRIPTION"
                        heading="h4"
                        class="dynamic_values" />
-                <!-- Php_view Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="php_view"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_LABEL"
-                       rows="17"
-                       cols="5"
-                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_DESCRIPTION"
-                       class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_HINT"
-                       required="true" />
+                <!-- Add_php_document Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_document"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
+                </field>
                 <!-- Add_custom_button Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_custom_button"
@@ -410,17 +506,17 @@
                         <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
                 </field>
-                <!-- Php_jview_display Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="php_jview_display"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DISPLAY_LABEL"
-                       rows="17"
-                       cols="5"
-                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DISPLAY_DESCRIPTION"
-                       class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DISPLAY_HINT"
-                       required="true" />
+                <!-- Add_php_view Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_view"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_VIEW_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
+                </field>
                 <!-- Custom_button Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="custom_button"
@@ -708,17 +804,57 @@
                                 </field>
                         </form>
                 </field>
-                <!-- Php_jview Field. Type: Textarea. (joomla)-->
+                <!-- Add_php_jview_display Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_jview_display"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_JVIEW_DISPLAY_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
+                </field>
+                <!-- Php_controller Field. Type: Textarea. (joomla)-->
                 <field type="textarea"
-                       name="php_jview"
-                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_LABEL"
-                       rows="17"
-                       cols="5"
-                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_DESCRIPTION"
+                       name="php_controller"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_LABEL"
+                       rows="30"
+                       cols="15"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_DESCRIPTION"
                        class="text_area span12"
                        filter="raw"
-                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_JVIEW_HINT"
-                       required="true" />
+                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_HINT"
+                       required="false" />
+                <!-- Add_php_jview Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_jview"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_JVIEW_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
+                </field>
+                <!-- Php_model Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="php_model"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_LABEL"
+                       rows="30"
+                       cols="15"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_HINT"
+                       required="false" />
+                <!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_linked_to_notice"
+                       label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_LABEL"
+                       description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_DESCRIPTION"
+                       heading="h4"
+                       class="note_linked_to_notice" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

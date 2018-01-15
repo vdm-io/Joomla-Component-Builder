@@ -65,6 +65,11 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
+
+	public function getVDM()
+	{
+		return $this->vastDevMod;
+	}
     
 	/**
 	 * Method to get a single record.
@@ -93,6 +98,22 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$registry = new Registry;
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
+			}
+
+			if (!empty($item->join_view_table))
+			{
+				// Convert the join_view_table field to an array.
+				$join_view_table = new Registry;
+				$join_view_table->loadString($item->join_view_table);
+				$item->join_view_table = $join_view_table->toArray();
+			}
+
+			if (!empty($item->join_db_table))
+			{
+				// Convert the join_db_table field to an array.
+				$join_db_table = new Registry;
+				$join_db_table->loadString($item->join_db_table);
+				$item->join_db_table = $join_db_table->toArray();
 			}
 
 			if (!empty($item->filter))
@@ -125,22 +146,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$global = new Registry;
 				$global->loadString($item->global);
 				$item->global = $global->toArray();
-			}
-
-			if (!empty($item->join_db_table))
-			{
-				// Convert the join_db_table field to an array.
-				$join_db_table = new Registry;
-				$join_db_table->loadString($item->join_db_table);
-				$item->join_db_table = $join_db_table->toArray();
-			}
-
-			if (!empty($item->join_view_table))
-			{
-				// Convert the join_view_table field to an array.
-				$join_view_table = new Registry;
-				$join_view_table->loadString($item->join_view_table);
-				$item->join_view_table = $join_view_table->toArray();
 			}
 
 			if (!empty($item->php_custom_get))
@@ -184,6 +189,27 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				// base64 Decode php_calculation.
 				$item->php_calculation = base64_decode($item->php_calculation);
 			}
+
+			
+			if (empty($item->id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $item->id;
+			}			
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('dynamic_get__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'dynamic_get__'.$id);
+				ComponentbuilderHelper::set('dynamic_get__'.$id, $this->vastDevMod);
+			}			
 
 			// update the fields
 			$objectUpdate = new stdClass();
@@ -944,6 +970,32 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
+		// Set the join_view_table items to data.
+		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
+		{
+			$join_view_table = new JRegistry;
+			$join_view_table->loadArray($data['join_view_table']);
+			$data['join_view_table'] = (string) $join_view_table;
+		}
+		elseif (!isset($data['join_view_table']))
+		{
+			// Set the empty join_view_table to data
+			$data['join_view_table'] = '';
+		}
+
+		// Set the join_db_table items to data.
+		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
+		{
+			$join_db_table = new JRegistry;
+			$join_db_table->loadArray($data['join_db_table']);
+			$data['join_db_table'] = (string) $join_db_table;
+		}
+		elseif (!isset($data['join_db_table']))
+		{
+			// Set the empty join_db_table to data
+			$data['join_db_table'] = '';
+		}
+
 		// Set the filter items to data.
 		if (isset($data['filter']) && is_array($data['filter']))
 		{
@@ -994,32 +1046,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 		{
 			// Set the empty global to data
 			$data['global'] = '';
-		}
-
-		// Set the join_db_table items to data.
-		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
-		{
-			$join_db_table = new JRegistry;
-			$join_db_table->loadArray($data['join_db_table']);
-			$data['join_db_table'] = (string) $join_db_table;
-		}
-		elseif (!isset($data['join_db_table']))
-		{
-			// Set the empty join_db_table to data
-			$data['join_db_table'] = '';
-		}
-
-		// Set the join_view_table items to data.
-		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
-		{
-			$join_view_table = new JRegistry;
-			$join_view_table->loadArray($data['join_view_table']);
-			$data['join_view_table'] = (string) $join_view_table;
-		}
-		elseif (!isset($data['join_view_table']))
-		{
-			// Set the empty join_view_table to data
-			$data['join_view_table'] = '';
 		}
 
 		// Set the php_custom_get string to base64 string.

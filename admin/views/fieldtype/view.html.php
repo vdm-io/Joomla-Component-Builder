@@ -64,7 +64,7 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
 		}
 
 		// Get Linked view data
-		$this->vzyfields = $this->get('Vzyfields');
+		$this->waafields = $this->get('Waafields');
 
 		// Set the toolbar
 		$this->addToolBar();
@@ -197,19 +197,19 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_FIELDTYPE_NEW' : 'COM_COMPONENTBUILDER_FIELDTYPE_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/fieldtype.css", array('version' => 'auto')); 
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/fieldtype.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
 
 		// Add the CSS for Footable
 		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		$this->document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css', array('version' => 'auto'));
+		$this->document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 		// Add the JavaScript for Footable (adding all funtions)
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/footable-v3/js/footable.min.js', array('version' => 'auto'));
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/footable-v3/js/footable.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 
 		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
 		$this->document->addScriptDeclaration($footable);
 
-		$this->document->addScript(JURI::root() . $this->script, array('version' => 'auto'));
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/fieldtype/submitbutton.js", array('version' => 'auto')); 
+		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/fieldtype/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 		JText::script('view not acceptable. Error');
 	}
 }

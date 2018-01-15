@@ -266,12 +266,16 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 							continue;
 						}
 
-						// decode php_controller
-						$item->php_controller = base64_decode($item->php_controller);
+						// decode php_document
+						$item->php_document = base64_decode($item->php_document);
+						// decode php_jview_display
+						$item->php_jview_display = base64_decode($item->php_jview_display);
+						// decode php_view
+						$item->php_view = base64_decode($item->php_view);
+						// decode php_jview
+						$item->php_jview = base64_decode($item->php_jview);
 						// decode default
 						$item->default = base64_decode($item->default);
-						// decode php_model
-						$item->php_model = base64_decode($item->php_model);
 						// decode js_document
 						$item->js_document = base64_decode($item->js_document);
 						// decode javascript_file
@@ -280,14 +284,12 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 						$item->css_document = base64_decode($item->css_document);
 						// decode css
 						$item->css = base64_decode($item->css);
-						// decode php_document
-						$item->php_document = base64_decode($item->php_document);
-						// decode php_view
-						$item->php_view = base64_decode($item->php_view);
-						// decode php_jview_display
-						$item->php_jview_display = base64_decode($item->php_jview_display);
-						// decode php_jview
-						$item->php_jview = base64_decode($item->php_jview);
+						// decode php_ajaxmethod
+						$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+						// decode php_controller
+						$item->php_controller = base64_decode($item->php_controller);
+						// decode php_model
+						$item->php_model = base64_decode($item->php_model);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

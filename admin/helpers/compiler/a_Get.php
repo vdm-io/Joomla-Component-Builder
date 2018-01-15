@@ -989,17 +989,21 @@ class Get
 		}
 		unset($component->javascript);
 
-		// add_css
-		if ($component->add_css == 1)
+		// add global CSS
+		$addGlobalCss = array('admin', 'site');
+		foreach ($addGlobalCss as $area)
 		{
-			$this->customScriptBuilder['component_css'] = base64_decode($component->css);
+			// add_css if found
+			if (isset($component->{'add_css_'.$area}) && $component->{'add_css_'.$area} == 1 && isset($component->{'css_'.$area}) && ComponentbuilderHelper::checkString($component->{'css_'.$area}))
+			{
+				$this->customScriptBuilder['component_css_'.$area] = base64_decode($component->{'css_'.$area});
+			}
+			else
+			{
+				$this->customScriptBuilder['component_css_'.$area] = '';
+			}
+			unset($component->{'css_'.$area});
 		}
-		else
-		{
-			$this->customScriptBuilder['component_css'] = '';
-		}
-		unset($component->css);
-
 		// set the lang target
 		$this->lang = 'admin';
 		// add PHP in ADMIN
@@ -1212,6 +1216,7 @@ class Get
 
 			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
 			$view = $this->db->loadObject();
+
 			// setup view name to use in storing the data
 			$name_single = ComponentbuilderHelper::safeString($view->name_single);
 			$name_list = ComponentbuilderHelper::safeString($view->name_list);
@@ -1613,6 +1618,7 @@ class Get
 			unset($this->placeholders['[[[Views]]]']);
 			unset($this->placeholders['[[[VIEW]]]']);
 			unset($this->placeholders['[[[VIEWS]]]']);
+
 			// store this view to class object
 			$this->_adminViewData[$id] = $view;
 		}
@@ -1811,23 +1817,45 @@ class Get
 		// add_Ajax for this view
 		if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 		{
+			// ajax target (since we only have two options really)
+			if ('site' === $this->target)
+			{
+				$target = 'site';
+			}
+			else
+			{
+				$target = 'admin';
+			}
+			$setAjax = false;
 			// check if controller input as been set
 			$view->ajax_input = (isset($view->ajax_input) && ComponentbuilderHelper::checkJson($view->ajax_input)) ? json_decode($view->ajax_input, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->ajax_input))
 			{
-				$this->customScriptBuilder[$this->target]['ajax_controller'][$view->code] = array_values($view->ajax_input);
-				$this->addSiteAjax = true;
+				$this->customScriptBuilder[$target]['ajax_controller'][$view->code] = array_values($view->ajax_input);
+				$setAjax = true;
 			}
 			unset($view->ajax_input);
 			// load the ajax class mathods (if set)
 			if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
 			{
-
-				$this->customScriptBuilder[$this->target]['ajax_model'][$view->code] = $this->setDynamicValues(base64_decode($view->php_ajaxmethod));
-				$this->addSiteAjax = true;
+				$this->customScriptBuilder[$target]['ajax_model'][$view->code] = $this->setDynamicValues(base64_decode($view->php_ajaxmethod));
+				$setAjax = true;
 			}
 			// unset anyway
 			unset($view->php_ajaxmethod);
+			// should ajax be set
+			if ($setAjax)
+			{
+				// turn on ajax area
+				if ('site' === $this->target)
+				{
+					$this->addSiteAjax = true;
+				}
+				else
+				{
+					$this->addAjax = true;
+				}
+			}
 		}
 		// add the custom buttons
 		if (isset($view->add_custom_button) && $view->add_custom_button == 1)

@@ -61,10 +61,10 @@ abstract class ###Component###Helper
 				}
 				return (string) implode($sperator,$result);
 			}
-                        return (string) json_decode($value);
-                }
-                return $value;
-        }
+			return (string) json_decode($value);
+		}
+		return $value;
+	}
 	
 	/**
 	*	Load the Component xml manifest.
@@ -73,6 +73,24 @@ abstract class ###Component###Helper
 	{
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_###component###/###component###.xml";
 		return simplexml_load_file($manifestUrl);
+	}
+	
+	/**
+	*	Joomla version object
+	**/	
+	protected static $JVersion;
+	
+	/**
+	*	set/get Joomla version
+	**/
+	public static function jVersion()
+	{
+		// check if set
+		if (!self::checkObject(self::$JVersion))
+		{
+			self::$JVersion = new JVersion();
+		}
+		return self::$JVersion;
 	}
 
 	/**

@@ -52,7 +52,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getButton', 'ajax');
 		$this->registerTask('getButtonID', 'ajax');
 		$this->registerTask('getAjaxDisplay', 'ajax');
-		$this->registerTask('getSnippets', 'ajax');
+		$this->registerTask('getLinked', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
 		$this->registerTask('getLayoutDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
@@ -60,9 +60,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getDynamicValues', 'ajax');
 		$this->registerTask('checkFunctionName', 'ajax');
 		$this->registerTask('usedin', 'ajax');
+		$this->registerTask('fieldOptions', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
 		$this->registerTask('setSnippetGithub', 'ajax');
-		$this->registerTask('fieldOptions', 'ajax');
+		$this->registerTask('getSnippets', 'ajax');
 	}
 
 	public function ajax()
@@ -458,14 +459,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
-				case 'getSnippets':
+				case 'getLinked':
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$librariesValue = $jinput->get('libraries', NULL, 'STRING');
-						if($librariesValue && $user->id != 0)
+						$typeValue = $jinput->get('type', NULL, 'INT');
+						if($typeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getSnippets($librariesValue);
+							$result = $this->getModel('ajax')->getLinked($typeValue);
 						}
 						else
 						{
@@ -770,6 +771,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
+				case 'fieldOptions':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						if($idValue)
+						{
+							$result = $this->getModel('ajax')->getFieldOptions($idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
 				case 'snippetDetails':
 					try
 					{
@@ -847,14 +886,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
-				case 'fieldOptions':
+				case 'getSnippets':
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$idValue = $jinput->get('id', NULL, 'INT');
-						if($idValue)
+						$librariesValue = $jinput->get('libraries', NULL, 'STRING');
+						if($librariesValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getFieldOptions($idValue);
+							$result = $this->getModel('ajax')->getSnippets($librariesValue);
 						}
 						else
 						{

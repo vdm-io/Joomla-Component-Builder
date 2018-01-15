@@ -65,6 +65,11 @@ class ComponentbuilderModelField extends JModelAdmin
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
+
+	public function getVDM()
+	{
+		return $this->vastDevMod;
+	}
     
 	/**
 	 * Method to get a single record.
@@ -124,6 +129,27 @@ class ComponentbuilderModelField extends JModelAdmin
 				// base64 Decode javascript_views_footer.
 				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 			}
+
+			
+			if (empty($item->id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $item->id;
+			}			
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('field__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'field__'.$id);
+				ComponentbuilderHelper::set('field__'.$id, $this->vastDevMod);
+			}			
 			
 			if (!empty($item->id))
 			{

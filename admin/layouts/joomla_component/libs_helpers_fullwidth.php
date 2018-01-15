@@ -46,8 +46,10 @@ $fields = $displayData->get('fields') ?: array(
 	'php_site_event',
 	'add_javascript',
 	'javascript',
-	'add_css',
-	'css'
+	'add_css_admin',
+	'css_admin',
+	'add_css_site',
+	'css_site'
 );
 
 ?>

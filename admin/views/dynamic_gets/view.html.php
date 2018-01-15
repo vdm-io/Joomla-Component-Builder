@@ -258,7 +258,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_DYNAMIC_GETS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/dynamic_gets.css", array('version' => 'auto'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/dynamic_gets.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 	}
 
 	/**

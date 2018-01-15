@@ -208,7 +208,6 @@
                 <!-- Note_filter_information Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
                        name="note_filter_information"
-                       label="COM_COMPONENTBUILDER_FIELD_NOTE_FILTER_INFORMATION_LABEL"
                        description="COM_COMPONENTBUILDER_FIELD_NOTE_FILTER_INFORMATION_DESCRIPTION"
                        class="note_filter_information" />
                 <!-- Datalenght Field. Type: List. (joomla)-->
