@@ -1493,6 +1493,20 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// remove from this dataset
 				unset($item->addfolders);
+				// update the add_css
+				if (isset($item->add_css))
+				{
+					$item->add_css_admin = $item->add_css;
+				}
+				// remove from this dataset
+				unset($item->add_css);
+				// update the css
+				if (isset($item->css) && ComponentbuilderHelper::checkString($item->css))
+				{
+					$item->css_admin = $item->css;
+				}
+				// remove from this dataset
+				unset($item->css);
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
