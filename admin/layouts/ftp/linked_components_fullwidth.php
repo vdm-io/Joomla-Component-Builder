@@ -28,7 +28,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->wablinked_components;
+$items	= $displayData->waclinked_components;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";

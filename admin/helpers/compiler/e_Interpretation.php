@@ -8104,32 +8104,34 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\t\treturn false;";
 			$query .= PHP_EOL . "\t}";
 
-			$query .= PHP_EOL . PHP_EOL . "\t/**";
-			$query .= PHP_EOL . "\t* Method to get header.";
-			$query .= PHP_EOL . "\t*";
-			$query .= PHP_EOL . "\t* @return mixed  An array of data items on success, false on failure.";
-			$query .= PHP_EOL . "\t*/";
-			$query .= PHP_EOL . "\tpublic function getExImPortHeaders()";
-			$query .= PHP_EOL . "\t{";
-			$query .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get a db connection.";
-			$query .= PHP_EOL . "\t\t\$db = JFactory::getDbo();";
-			$query .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " get the columns";
-			$query .= PHP_EOL . "\t\t\$columns = \$db->getTableColumns(" . '"#__' . $this->fileContentStatic['###component###'] . '_' . $viewName_single . '");';
-			$query .= PHP_EOL . "\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$columns))";
-			$query .= PHP_EOL . "\t\t{";
-			$query .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " remove the headers you don't import/export.";
-			$query .= PHP_EOL . "\t\t\tunset(\$columns['asset_id']);";
-			$query .= PHP_EOL . "\t\t\tunset(\$columns['checked_out']);";
-			$query .= PHP_EOL . "\t\t\tunset(\$columns['checked_out_time']);";
-			$query .= PHP_EOL . "\t\t\t\$headers = new stdClass();";
-			$query .= PHP_EOL . "\t\t\tforeach (\$columns as \$column => \$type)";
-			$query .= PHP_EOL . "\t\t\t{";
-			$query .= PHP_EOL . "\t\t\t\t\$headers->{\$column} = \$column;";
-			$query .= PHP_EOL . "\t\t\t}";
-			$query .= PHP_EOL . "\t\t\treturn \$headers;";
-			$query .= PHP_EOL . "\t\t}";
-			$query .= PHP_EOL . "\t\treturn false;";
-			$query .= PHP_EOL . "\t}";
+			// set some placeholders just incase
+			if (!isset($this->placeholders['###view###']) && !isset($this->placeholders['[[[view]]]']))
+			{
+				$this->placeholders['###view###'] = $viewName_single;
+				$this->placeholders['[[[view]]]'] = $viewName_single;
+				$_viewSet = true;
+			}
+			if (!isset($this->placeholders['###views###']) && !isset($this->placeholders['[[[views]]]']))
+			{
+				$this->placeholders['###views###'] = $viewName_list;
+				$this->placeholders['[[[views]]]'] = $viewName_list;
+				$_viewsSet = true;
+			}
+
+			// add getExImPortHeaders
+			$query .= $this->getCustomScriptBuilder('php_import_headers', 'import_' . $viewName_list, PHP_EOL . PHP_EOL, null, true);
+
+			// remove place holders if not needed (to not be suprized)
+			if (isset($_viewSet))
+			{
+				unset($this->placeholders['###view###']);
+				unset($this->placeholders['[[[view]]]']);
+			}
+			if (isset($_viewsSet))
+			{
+				unset($this->placeholders['###views###']);
+				unset($this->placeholders['[[[views]]]']);
+			}
 		}
 		return $query;
 	}

@@ -938,7 +938,7 @@ abstract class ComponentbuilderHelper
 			
 	public static function getImportScripts($type, $fieldName = false)
 	{
-		// if field name is pased the convert to type
+		// if field name is passed the convert to type
 		if ($fieldName)
 		{
 			$fieldNames = array(
@@ -947,7 +947,8 @@ abstract class ComponentbuilderHelper
 				'php_import_save' => 'save',
 				'html_import_view' => 'view',
 				'php_import' => 'import',
-				'php_import_ext' => 'ext'
+				'php_import_ext' => 'ext',
+				'php_import_headers' => 'headers'
 			);
 			// first check if the field name is found
 			if (isset($fieldNames[$type]))
@@ -1046,6 +1047,36 @@ abstract class ComponentbuilderHelper
 			$script['setdata'][] = "\t\t}";
 			$script['setdata'][] = "\t\treturn false;";
 			$script['setdata'][] = "\t}";
+		}
+		elseif ('headers' === $type)
+		{
+			$script['headers'] = array();
+			$script['headers'][] = "\t/**";
+			$script['headers'][] = "\t* Method to get header.";
+			$script['headers'][] = "\t*";
+			$script['headers'][] = "\t* @return mixed  An array of data items on success, false on failure.";
+			$script['headers'][] = "\t*/";
+			$script['headers'][] = "\tpublic function getExImPortHeaders()";
+			$script['headers'][] = "\t{";
+			$script['headers'][] = "\t\t// Get a db connection.";
+			$script['headers'][] = "\t\t\$db = JFactory::getDbo();";
+			$script['headers'][] = "\t\t// get the columns";
+			$script['headers'][] = "\t\t\$columns = \$db->getTableColumns(\"#__###-#-#-component###_###-#-#-view###\");";
+			$script['headers'][] = "\t\tif (###-#-#-Component###Helper::checkArray(\$columns))";
+			$script['headers'][] = "\t\t{";
+			$script['headers'][] = "\t\t\t// remove the headers you don't import/export.";
+			$script['headers'][] = "\t\t\tunset(\$columns['asset_id']);";
+			$script['headers'][] = "\t\t\tunset(\$columns['checked_out']);";
+			$script['headers'][] = "\t\t\tunset(\$columns['checked_out_time']);";
+			$script['headers'][] = "\t\t\t\$headers = new stdClass();";
+			$script['headers'][] = "\t\t\tforeach (\$columns as \$column => \$type)";
+			$script['headers'][] = "\t\t\t{";
+			$script['headers'][] = "\t\t\t\t\$headers->{\$column} = \$column;";
+			$script['headers'][] = "\t\t\t}";
+			$script['headers'][] = "\t\t\treturn \$headers;";
+			$script['headers'][] = "\t\t}";
+			$script['headers'][] = "\t\treturn false;";
+			$script['headers'][] = "\t}";
 		}
 		elseif ('save' === $type)
 		{

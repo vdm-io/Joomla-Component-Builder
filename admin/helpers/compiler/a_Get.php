@@ -1534,7 +1534,7 @@ class Get
 			// set custom import scripts
 			if (isset($view->add_custom_import) && $view->add_custom_import == 1)
 			{
-				$addImportArray = array('php_import_ext', 'php_import_display', 'php_import', 'php_import_setdata', 'php_import_save', 'html_import_view');
+				$addImportArray = array('php_import_ext', 'php_import_display', 'php_import', 'php_import_setdata', 'php_import_save', 'php_import_headers', 'html_import_view');
 				foreach ($addImportArray as $importScripter)
 				{
 					if (isset($view->$importScripter) && strlen($view->$importScripter) > 0)

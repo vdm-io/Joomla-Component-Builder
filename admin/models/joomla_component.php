@@ -415,6 +415,43 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 					}
 				}
 			}
+			// prep the lang strings for export
+			if (isset($_export) && $_export && ComponentbuilderHelper::checkArray($items))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					// remove some values completely
+					unset($item->components);
+					unset($item->params);
+					unset($item->published);
+					unset($item->created_by);
+					unset($item->modified_by);
+					unset($item->created);
+					unset($item->modified);
+					unset($item->version);
+					unset($item->hits);
+					unset($item->access);
+					unset($item->ordering);
+					// now adapt the entranslation
+					if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+					{
+						$translations = json_decode($item->translation, true);
+						if (ComponentbuilderHelper::checkArray($translations))
+						{
+							foreach ($translations as $language)
+							{
+								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
+								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+								{
+									$item->{$language['language']} = $language['translation'];
+								}
+							}
+						}
+					}
+					// remove translation
+					unset($item->translation);
+				}
+			}
 			return $items;
 		}
 		return false;

@@ -454,33 +454,6 @@ class ComponentbuilderModelFields extends JModelList
 			}
 		}
 		return false;
-	}
-
-	/**
-	* Method to get header.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getExImPortHeaders()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		// get the columns
-		$columns = $db->getTableColumns("#__componentbuilder_field");
-		if (ComponentbuilderHelper::checkArray($columns))
-		{
-			// remove the headers you don't import/export.
-			unset($columns['asset_id']);
-			unset($columns['checked_out']);
-			unset($columns['checked_out_time']);
-			$headers = new stdClass();
-			foreach ($columns as $column => $type)
-			{
-				$headers->{$column} = $column;
-			}
-			return $headers;
-		}
-		return false;
 	} 
 	
 	/**

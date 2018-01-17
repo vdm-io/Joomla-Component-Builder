@@ -161,6 +161,43 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					}
 				}
 			}
+			// prep the lang strings for export
+			if (isset($_export) && $_export && ComponentbuilderHelper::checkArray($items))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					// remove some values completely
+					unset($item->components);
+					unset($item->params);
+					unset($item->published);
+					unset($item->created_by);
+					unset($item->modified_by);
+					unset($item->created);
+					unset($item->modified);
+					unset($item->version);
+					unset($item->hits);
+					unset($item->access);
+					unset($item->ordering);
+					// now adapt the entranslation
+					if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+					{
+						$translations = json_decode($item->translation, true);
+						if (ComponentbuilderHelper::checkArray($translations))
+						{
+							foreach ($translations as $language)
+							{
+								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
+								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+								{
+									$item->{$language['language']} = $language['translation'];
+								}
+							}
+						}
+					}
+					// remove translation
+					unset($item->translation);
+				}
+			}
         
 		// return items
 		return $items;
@@ -347,6 +384,43 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					}
 				}
 			}
+			// prep the lang strings for export
+			if (isset($_export) && $_export && ComponentbuilderHelper::checkArray($items))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					// remove some values completely
+					unset($item->components);
+					unset($item->params);
+					unset($item->published);
+					unset($item->created_by);
+					unset($item->modified_by);
+					unset($item->created);
+					unset($item->modified);
+					unset($item->version);
+					unset($item->hits);
+					unset($item->access);
+					unset($item->ordering);
+					// now adapt the entranslation
+					if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+					{
+						$translations = json_decode($item->translation, true);
+						if (ComponentbuilderHelper::checkArray($translations))
+						{
+							foreach ($translations as $language)
+							{
+								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
+								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+								{
+									$item->{$language['language']} = $language['translation'];
+								}
+							}
+						}
+					}
+					// remove translation
+					unset($item->translation);
+				}
+			}
 				return $items;
 			}
 		}
@@ -360,24 +434,17 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 	*/
 	public function getExImPortHeaders()
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		// get the columns
-		$columns = $db->getTableColumns("#__componentbuilder_language_translation");
-		if (ComponentbuilderHelper::checkArray($columns))
+		$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
+		// start setup of headers
+		$headers = new stdClass();
+		$headers->id = 'id';
+		$headers->English = 'English';
+		// add the languages
+		foreach ($languages as $language)
 		{
-			// remove the headers you don't import/export.
-			unset($columns['asset_id']);
-			unset($columns['checked_out']);
-			unset($columns['checked_out_time']);
-			$headers = new stdClass();
-			foreach ($columns as $column => $type)
-			{
-				$headers->{$column} = $column;
-			}
-			return $headers;
+			$headers->{$language} = $language;
 		}
-		return false;
+		return $headers;
 	} 
 	
 	/**

@@ -99,7 +99,7 @@ class ComponentbuilderControllerLanguage_translations extends JControllerAdmin
 				$session->set('dataType_VDM_IMPORTINTO', 'language_translation');
 				// Redirect to import view.
 				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_LANGUAGE_TRANSLATIONS');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import', false), $message);
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import_language_translations', false), $message);
 				return;
 			}
 		}
