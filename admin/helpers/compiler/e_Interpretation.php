@@ -8103,6 +8103,34 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\t\t}";
 			$query .= PHP_EOL . "\t\treturn false;";
 			$query .= PHP_EOL . "\t}";
+			
+			// set a default script for those with no custom script
+			$default = PHP_EOL . PHP_EOL . "\t/**";
+			$default .= PHP_EOL . "\t* Method to get header.";
+			$default .= PHP_EOL . "\t*";
+			$default .= PHP_EOL . "\t* @return mixed  An array of data items on success, false on failure.";
+			$default .= PHP_EOL . "\t*/";
+			$default .= PHP_EOL . "\tpublic function getExImPortHeaders()";
+			$default .= PHP_EOL . "\t{";
+			$default .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get a db connection.";
+			$default .= PHP_EOL . "\t\t\$db = JFactory::getDbo();";
+			$default .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " get the columns";
+			$default .= PHP_EOL . "\t\t\$columns = \$db->getTableColumns(" . '"#__' . $this->fileContentStatic['###component###'] . '_' . $viewName_single . '");';
+			$default .= PHP_EOL . "\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$columns))";
+			$default .= PHP_EOL . "\t\t{";
+			$default .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " remove the headers you don't import/export.";
+			$default .= PHP_EOL . "\t\t\tunset(\$columns['asset_id']);";
+			$default .= PHP_EOL . "\t\t\tunset(\$columns['checked_out']);";
+			$default .= PHP_EOL . "\t\t\tunset(\$columns['checked_out_time']);";
+			$default .= PHP_EOL . "\t\t\t\$headers = new stdClass();";
+			$default .= PHP_EOL . "\t\t\tforeach (\$columns as \$column => \$type)";
+			$default .= PHP_EOL . "\t\t\t{";
+			$default .= PHP_EOL . "\t\t\t\t\$headers->{\$column} = \$column;";
+			$default .= PHP_EOL . "\t\t\t}";
+			$default .= PHP_EOL . "\t\t\treturn \$headers;";
+			$default .= PHP_EOL . "\t\t}";
+			$default .= PHP_EOL . "\t\treturn false;";
+			$default .= PHP_EOL . "\t}";
 
 			// set some placeholders just incase
 			if (!isset($this->placeholders['###view###']) && !isset($this->placeholders['[[[view]]]']))
@@ -8119,7 +8147,7 @@ class Interpretation extends Fields
 			}
 
 			// add getExImPortHeaders
-			$query .= $this->getCustomScriptBuilder('php_import_headers', 'import_' . $viewName_list, PHP_EOL . PHP_EOL, null, true);
+			$query .= $this->getCustomScriptBuilder('php_import_headers', 'import_' . $viewName_list, PHP_EOL . PHP_EOL, null, true, $default);
 
 			// remove place holders if not needed (to not be suprized)
 			if (isset($_viewSet))
