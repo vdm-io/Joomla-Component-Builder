@@ -440,9 +440,12 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 		$headers->id = 'id';
 		$headers->English = 'English';
 		// add the languages
-		foreach ($languages as $language)
+		if (ComponentbuilderHelper::checkArray($languages))
 		{
-			$headers->{$language} = $language;
+			foreach ($languages as $language)
+			{
+				$headers->{$language} = $language;
+			}
 		}
 		return $headers;
 	} 

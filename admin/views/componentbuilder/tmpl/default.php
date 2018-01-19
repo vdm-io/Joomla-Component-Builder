@@ -91,12 +91,12 @@ JHtml::_('behavior.tooltip');
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'vast_development_method', JText::_('Vast Development Method', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('Notice Board', true)); ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'vast_development_method_accordian', array('active' => 'vast_development_method_one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'vast_development_method_accordian', 'Notice Board', 'vast_development_method_one'); ?>
-						<?php echo $this->loadTemplate('vast_development_method_notice_board');?>
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'notice_board_accordian', array('active' => 'notice_board_one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?>
+						<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
