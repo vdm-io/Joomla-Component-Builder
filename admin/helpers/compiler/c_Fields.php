@@ -375,33 +375,19 @@ class Fields extends Structure
 	/**
 	 * set the Field set of a view
 	 * 
-	 * @param   array    $view  The view data
-	 * @param   string   $component The component name
+	 * @param   array    $view             The view data
+	 * @param   string   $component        The component name
+	 * @param   string   $viewName         The single view name
+	 * @param   string   $listViewName     The list view name
 	 *
 	 * @return  string The fields set in xml
 	 * 
 	 */
-	public function setFieldSet($view, $component)
+	public function setFieldSet($view, $component, $viewName, $listViewName)
 	{
 		// setup the fieldset of this view
 		if (isset($view['settings']->fields) && ComponentbuilderHelper::checkArray($view['settings']->fields))
 		{
-			// setup the list view and single view name
-			$listViewName = ComponentbuilderHelper::safeString($view['settings']->name_list);
-			$viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
-			// set some place holder for this view
-			$this->placeholders['###view###'] = $viewName;
-			$this->placeholders['###VIEW###'] = strtoupper($viewName);
-			$this->placeholders['###View###'] = ucfirst($viewName);
-			$this->placeholders['[[[view]]]'] = $this->placeholders['###view###'];
-			$this->placeholders['[[[VIEW]]]'] = $this->placeholders['###VIEW###'];
-			$this->placeholders['[[[View]]]'] = $this->placeholders['###View###'];
-			$this->placeholders['###views###'] = $listViewName;
-			$this->placeholders['###VIEWS###'] = strtoupper($listViewName);
-			$this->placeholders['###Views###'] = ucfirst($listViewName);
-			$this->placeholders['[[[views]]]'] = $this->placeholders['###views###'];
-			$this->placeholders['[[[VIEWS]]]'] = $this->placeholders['###VIEWS###'];
-			$this->placeholders['[[[Views]]]'] = $this->placeholders['###Views###'];
 			// add metadata to the view
 			if (isset($view['metadata']) && $view['metadata'])
 			{
@@ -753,8 +739,6 @@ class Fields extends Structure
 				// count the static field created
 				$this->fieldCount++;
 			}
-			// just to be safe, lets clear the view placeholders
-			$this->clearFromPlaceHolders('view');
 			// return the set
 			return $this->xmlPrettyPrint($XML, 'fieldset');
 		}

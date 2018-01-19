@@ -3339,8 +3339,7 @@ class Interpretation extends Fields
 				$path = '/administrator/components/com_' . $this->fileContentStatic['###component###'] . '/assets/js/' . $view['settings']->code . '.js';
 			}
 			// add script to file
-			$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_JAVASCRIPT_FILE###'] 
-				= $this->setPlaceholders($view['settings']->javascript_file, $this->placeholders);
+			$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_JAVASCRIPT_FILE###'] = $this->setPlaceholders($view['settings']->javascript_file, $this->placeholders);
 			// add script to view
 			return PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add View JavaScript File" . PHP_EOL . "\t\t" . $this->setIncludeLibScript($path);
 		}
@@ -8104,36 +8103,10 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\t\treturn false;";
 			$query .= PHP_EOL . "\t}";
 
-			// set some placeholders just incase
-			if (!isset($this->placeholders['###view###']) && !isset($this->placeholders['[[[view]]]']))
-			{
-				$this->placeholders['###view###'] = $viewName_single;
-				$this->placeholders['[[[view]]]'] = $viewName_single;
-				$_viewSet = true;
-			}
-			if (!isset($this->placeholders['###views###']) && !isset($this->placeholders['[[[views]]]']))
-			{
-				$this->placeholders['###views###'] = $viewName_list;
-				$this->placeholders['[[[views]]]'] = $viewName_list;
-				$_viewsSet = true;
-			}
-
 			// add getExImPortHeaders
-			$query .= $this->getCustomScriptBuilder('php_import_headers', 'import_' . $viewName_list, PHP_EOL . PHP_EOL, null, true, 
+			$query .= $this->getCustomScriptBuilder('php_import_headers', 'import_' . $viewName_list, PHP_EOL . PHP_EOL, null, true,
 				// set a default script for those with no custom script
 				PHP_EOL . PHP_EOL . $this->setPlaceholders(ComponentbuilderHelper::getImportScripts('headers'), $this->placeholders));
-
-			// remove place holders if not needed (to not be suprized)
-			if (isset($_viewSet))
-			{
-				unset($this->placeholders['###view###']);
-				unset($this->placeholders['[[[view]]]']);
-			}
-			if (isset($_viewsSet))
-			{
-				unset($this->placeholders['###views###']);
-				unset($this->placeholders['[[[views]]]']);
-			}
 		}
 		return $query;
 	}

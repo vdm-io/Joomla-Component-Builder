@@ -65,7 +65,7 @@ class Compiler extends Infusion
 	{
 		// to check the compiler speed
 		$this->time_start = microtime(true);
-		// first we run the perent constructor
+		// first we run the perent constructors
 		if (parent::__construct($config))
 		{
 			// set temp directory

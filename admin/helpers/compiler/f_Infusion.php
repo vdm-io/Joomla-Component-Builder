@@ -236,14 +236,25 @@ class Infusion extends Interpretation
 			// start dynamic build
 			foreach ($this->componentData->admin_views as $view)
 			{
-				// just to be safe, lets clear the view placeholders
-				$this->clearFromPlaceHolders('view');
 				// set the target
 				$this->target = 'admin';
 				$this->lang = 'admin';
-				// set main keys
-				$viewName_single = ComponentbuilderHelper::safeString($view['settings']->name_single);
-				$viewName_list = ComponentbuilderHelper::safeString($view['settings']->name_list);
+
+				// set single view
+				if (isset($view['settings']->name_single))
+				{
+					$viewName_single = ComponentbuilderHelper::safeString($view['settings']->name_single);
+				}
+
+				// set list view
+				if (isset($view['settings']->name_list))
+				{
+					$viewName_list = ComponentbuilderHelper::safeString($view['settings']->name_list);
+				}
+
+				// set the view placeholders
+				$this->setViewPlaceholders($view['settings']);
+
 				// set site edit view array
 				if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
 				{
@@ -258,36 +269,14 @@ class Infusion extends Interpretation
 				// set view array
 				$viewarray[] = "\t\t\t\t'" . $viewName_single . "' => '" . $viewName_list . "'";
 				// set the view names
-				if ($view['settings']->name_single != 'null')
+				if (isset($view['settings']->name_single) && $view['settings']->name_single != 'null')
 				{
-					// ###VIEW### <<<DYNAMIC>>>
-					$viewName_u = ComponentbuilderHelper::safeString($view['settings']->name_single, 'U');
-					$this->fileContentDynamic[$viewName_single]['###VIEW###'] = $viewName_u;
-					$this->fileContentDynamic[$viewName_list]['###VIEW###'] = $viewName_u;
-
-					// ###View### <<<DYNAMIC>>>
-					$viewName_f = ComponentbuilderHelper::safeString($view['settings']->name_single, 'F');
-					$this->fileContentDynamic[$viewName_single]['###View###'] = $viewName_f;
-					$this->fileContentDynamic[$viewName_list]['###View###'] = $viewName_f;
-
-					// ###view### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_single]['###view###'] = $viewName_single;
-					$this->fileContentDynamic[$viewName_list]['###view###'] = $viewName_single;
-
-					// set some place holder for the views
-					$this->placeholders['###view###'] = $viewName_single;
-					$this->placeholders['###View###'] = $viewName_f;
-					$this->placeholders['###VIEW###'] = $viewName_u;
-					$this->placeholders['[[[view]]]'] = $viewName_single;
-					$this->placeholders['[[[View]]]'] = $viewName_f;
-					$this->placeholders['[[[VIEW]]]'] = $viewName_u;
-
 					// set license per view if needed
 					$this->setLockLicensePer($viewName_single, $this->target);
 					$this->setLockLicensePer($viewName_list, $this->target);
 
 					// ###FIELDSETS### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_single]['###FIELDSETS###'] = $this->setFieldSet($view, $this->fileContentStatic['###component###']);
+					$this->fileContentDynamic[$viewName_single]['###FIELDSETS###'] = $this->setFieldSet($view, $this->fileContentStatic['###component###'], $viewName_single, $viewName_list);
 
 					// ###ACCESSCONTROL### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single]['###ACCESSCONTROL###'] = $this->setFieldSetAccessControl($viewName_single);
@@ -391,35 +380,15 @@ class Infusion extends Interpretation
 					}
 				}
 				// set the views names
-				if ($view['settings']->name_list != 'null')
+				if (isset($view['settings']->name_list) && $view['settings']->name_list != 'null')
 				{
 					$this->lang = 'admin';
-					// ###VIEWS### <<<DYNAMIC>>>
-					$viewsName_u = ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
-					$this->fileContentDynamic[$viewName_list]['###VIEWS###'] = $viewsName_u;
-					$this->fileContentDynamic[$viewName_single]['###VIEWS###'] = $viewsName_u;
 
-					// ###Views### <<<DYNAMIC>>>
-					$viewsName_f = ComponentbuilderHelper::safeString($view['settings']->name_list, 'F');
-					$this->fileContentDynamic[$viewName_list]['###Views###'] = $viewsName_f;
-					$this->fileContentDynamic[$viewName_single]['###Views###'] = $viewsName_f;
-
-					// ###views### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_list]['###views###'] = $viewName_list;
-					$this->fileContentDynamic[$viewName_single]['###views###'] = $viewName_list;
 					// ###ICOMOON### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_list]['###ICOMOON###'] = $view['icomoon'];
 
-					// set some place holder for the views
-					$this->placeholders['###views###'] = $viewName_list;
-					$this->placeholders['###Views###'] = $viewsName_f;
-					$this->placeholders['###VIEWS###'] = $viewsName_u;
-					$this->placeholders['[[[views]]]'] = $viewName_list;
-					$this->placeholders['[[[Views]]]'] = $viewsName_f;
-					$this->placeholders['[[[VIEWS]]]'] = $viewsName_u;
-
 					// set the export/import option
-					if (isset($view['port']) && $view['port'])
+					if (isset($view['port']) && $view['port'] || 1 == $view['settings']->add_custom_import)
 					{
 						$this->eximportView[$viewName_list] = true;
 						if (1 == $view['settings']->add_custom_import)
@@ -1081,6 +1050,82 @@ class Infusion extends Interpretation
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Set the view place holders to global scope
+	 * 
+	 * @param   object  $view  The view settings
+	 * 
+	 * @ return void
+	 */
+	protected function setViewPlaceholders(&$view)
+	{
+		// just to be safe, lets clear previous view placeholders
+		$this->clearFromPlaceHolders('view');
+
+		// ###VIEW### <<<DYNAMIC>>>
+		if (isset($view->name_single))
+		{
+			// set main keys
+			$viewName_single = ComponentbuilderHelper::safeString($view->name_single);
+			$viewName_u = ComponentbuilderHelper::safeString($view->name_single, 'U');
+			$viewName_f = ComponentbuilderHelper::safeString($view->name_single, 'F');
+
+			// set some place holder for the views
+			$this->placeholders['###view###'] = $viewName_single;
+			$this->placeholders['###View###'] = $viewName_f;
+			$this->placeholders['###VIEW###'] = $viewName_u;
+			$this->placeholders['[[[view]]]'] = $viewName_single;
+			$this->placeholders['[[[View]]]'] = $viewName_f;
+			$this->placeholders['[[[VIEW]]]'] = $viewName_u;
+		}
+
+		// ###VIEWS### <<<DYNAMIC>>>
+		if (isset($view->name_list))
+		{
+			$viewName_list = ComponentbuilderHelper::safeString($view->name_list);
+			$viewsName_u = ComponentbuilderHelper::safeString($view->name_list, 'U');
+			$viewsName_f = ComponentbuilderHelper::safeString($view->name_list, 'F');
+
+			// set some place holder for the views
+			$this->placeholders['###views###'] = $viewName_list;
+			$this->placeholders['###Views###'] = $viewsName_f;
+			$this->placeholders['###VIEWS###'] = $viewsName_u;
+			$this->placeholders['[[[views]]]'] = $viewName_list;
+			$this->placeholders['[[[Views]]]'] = $viewsName_f;
+			$this->placeholders['[[[VIEWS]]]'] = $viewsName_u;
+		}
+
+		// ###view### <<<DYNAMIC>>>
+		if (isset($viewName_single))
+		{
+			$this->fileContentDynamic[$viewName_single]['###view###'] = $viewName_single;
+			$this->fileContentDynamic[$viewName_single]['###VIEW###'] = $viewName_u;
+			$this->fileContentDynamic[$viewName_single]['###View###'] = $viewName_f;
+
+			if (isset($viewName_list))
+			{
+				$this->fileContentDynamic[$viewName_list]['###view###'] = $viewName_single;
+				$this->fileContentDynamic[$viewName_list]['###VIEW###'] = $viewName_u;
+				$this->fileContentDynamic[$viewName_list]['###View###'] = $viewName_f;
+			}
+		}
+
+		// ###views### <<<DYNAMIC>>>
+		if (isset($viewName_list))
+		{
+			$this->fileContentDynamic[$viewName_list]['###views###'] = $viewName_list;
+			$this->fileContentDynamic[$viewName_list]['###VIEWS###'] = $viewsName_u;
+			$this->fileContentDynamic[$viewName_list]['###Views###'] = $viewsName_f;
+
+			if (isset($viewName_single))
+			{
+				$this->fileContentDynamic[$viewName_single]['###views###'] = $viewName_list;
+				$this->fileContentDynamic[$viewName_single]['###VIEWS###'] = $viewsName_u;
+				$this->fileContentDynamic[$viewName_single]['###Views###'] = $viewsName_f;
+			}
+		}
 	}
 
 	/**
