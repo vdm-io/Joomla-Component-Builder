@@ -107,13 +107,13 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				$translation->loadString($item->translation);
 				$item->translation = $translation->toArray();
 			}
-
+			
 			if (!empty($item->components))
 			{
 				// JSON Decode components.
-				$item->components = json_decode($item->components);
+				$item->components = json_decode($item->components, true);
 			}
-
+			
 			
 			if (empty($item->id))
 			{

@@ -164,6 +164,8 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			// prep the lang strings for export
 			if (isset($_export) && $_export && ComponentbuilderHelper::checkArray($items))
 			{
+				// insure we have the same order in the languages
+				$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
 				foreach ($items as $nr => &$item)
 				{
 					// remove some values completely
@@ -178,18 +180,26 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					unset($item->hits);
 					unset($item->access);
 					unset($item->ordering);
-					// now adapt the entranslation
-					if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+					// set the lang order
+					if ($nr != 0)
 					{
-						$translations = json_decode($item->translation, true);
-						if (ComponentbuilderHelper::checkArray($translations))
+						foreach ($languages as $lanTag)
 						{
-							foreach ($translations as $language)
+							$item->{$lanTag} = '';
+						}
+						// now adapt the entranslation
+						if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+						{
+							$translations = json_decode($item->translation, true);
+							if (ComponentbuilderHelper::checkArray($translations))
 							{
-								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
-								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+								foreach ($translations as $language)
 								{
-									$item->{$language['language']} = $language['translation'];
+									if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
+									&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+									{
+										$item->{$language['language']} = $language['translation'];
+									}
 								}
 							}
 						}
@@ -387,6 +397,8 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			// prep the lang strings for export
 			if (isset($_export) && $_export && ComponentbuilderHelper::checkArray($items))
 			{
+				// insure we have the same order in the languages
+				$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
 				foreach ($items as $nr => &$item)
 				{
 					// remove some values completely
@@ -401,18 +413,26 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					unset($item->hits);
 					unset($item->access);
 					unset($item->ordering);
-					// now adapt the entranslation
-					if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+					// set the lang order
+					if ($nr != 0)
 					{
-						$translations = json_decode($item->translation, true);
-						if (ComponentbuilderHelper::checkArray($translations))
+						foreach ($languages as $lanTag)
 						{
-							foreach ($translations as $language)
+							$item->{$lanTag} = '';
+						}
+						// now adapt the entranslation
+						if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+						{
+							$translations = json_decode($item->translation, true);
+							if (ComponentbuilderHelper::checkArray($translations))
 							{
-								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
-								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+								foreach ($translations as $language)
 								{
-									$item->{$language['language']} = $language['translation'];
+									if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
+									&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+									{
+										$item->{$language['language']} = $language['translation'];
+									}
 								}
 							}
 						}

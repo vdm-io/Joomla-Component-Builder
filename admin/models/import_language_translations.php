@@ -501,9 +501,10 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 						// raw items import & update!
 						$query = $db->getQuery(true);
 						$query
-							->select('version')
+							->select($db->quoteName(array('version', 'translation')))
 							->from($db->quoteName('#__componentbuilder_'.$table))
-							->where($db->quoteName('id') . ' = '. $db->quote($row[$id_key]));
+							->where($db->quoteName('id') . ' = '. $db->quote($row[$id_key]))
+							->where($db->quoteName('entranslation') . ' = '. $db->quote($row[$english_key]));
 						// Reset the query using our newly populated query object.
 						$db->setQuery($query);
 						$db->execute();
@@ -514,14 +515,25 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 					{
 						// update item
 						$id 		= $row[$id_key];
-						$version	= $db->loadResult();
+						$item	= $db->loadObject();
+						// load previous translation strings
+						if (ComponentbuilderHelper::checkJson($item->translation))
+						{
+							$translations = json_decode($item->translation, true);
+							$counter = count($translations) + 2;
+							$pre = true;
+						}
+						else
+						{
+							$translations = array();
+							$counter = 0;
+							$pre = false;
+						}
 						// get languages
 						$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
 						// reset all buckets
 						$query 		= $db->getQuery(true);
 						$fields 	= array();
-						$translations = array();
-						$counter = 0;
 						// Fields to update.
 						foreach($row as $key => $cell)
 						{
@@ -533,7 +545,7 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 							// update version
 							if ('version' == $target[$key])
 							{
-								$cell = (int) $version + 1;
+								$cell = (int) $item->version + 1;
 							}
 							// verify publish authority
 							if ('published' == $target[$key] && !$canState)
@@ -546,6 +558,20 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 								// only add if it has a string
 								if (ComponentbuilderHelper::checkString($cell))
 								{
+									// remove if was set previously
+									if ($pre)
+									{
+										$tag = $target[$key];
+										$translations = array_filter(
+											$translations,
+											function($trans) use($tag) {
+												if ($trans['language'] !== $tag)
+												{
+													return true;
+												}
+												return false;
+											});
+									}
 									$translations['translation'.$counter] = array('language' => $target[$key], 'translation' => $cell);
 									$counter++;
 								}
@@ -569,22 +595,18 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 						if (ComponentbuilderHelper::checkArray($translations))
 						{
 							$fields[] = $db->quoteName('translation') . ' = ' . $db->quote(json_encode($translations, JSON_FORCE_OBJECT));
-						}
-						// load the defaults
-						$fields[]	= $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
-						$fields[]	= $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
-						// Conditions for which records should be updated.
-						$conditions = array(
-							$db->quoteName('id') . ' = ' . $id
-						);
+							// load the defaults
+							$fields[]	= $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
+							$fields[]	= $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
+							// Conditions for which records should be updated.
+							$conditions = array(
+								$db->quoteName('id') . ' = ' . $id
+							);
 						
-						$query->update($db->quoteName('#__componentbuilder_'.$table))->set($fields)->where($conditions);
-						$db->setQuery($query);
-						$db->execute();
-					}
-					else
-					{
-						return false;
+							$query->update($db->quoteName('#__componentbuilder_'.$table))->set($fields)->where($conditions);
+							$db->setQuery($query);
+							$db->execute();
+						}
 					}
 				}
 				return true;
