@@ -48,7 +48,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getCronPath', 'ajax');
 		$this->registerTask('tableColumns', 'ajax');
 		$this->registerTask('fieldSelectOptions', 'ajax');
-		$this->registerTask('getImportScripts', 'ajax');
+		$this->registerTask('getDynamicScripts', 'ajax');
 		$this->registerTask('getButton', 'ajax');
 		$this->registerTask('getButtonID', 'ajax');
 		$this->registerTask('getAjaxDisplay', 'ajax');
@@ -306,14 +306,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
-				case 'getImportScripts':
+				case 'getDynamicScripts':
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($typeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getImportScripts($typeValue);
+							$result = $this->getModel('ajax')->getDynamicScripts($typeValue);
 						}
 						else
 						{

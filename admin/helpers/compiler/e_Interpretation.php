@@ -2242,7 +2242,11 @@ class Interpretation extends Fields
 				$getItem .= PHP_EOL . "\t" . $tab . "\t\$this->_item[\$pk] = \$data;";
 			}
 			// check if the dispather should be added
-			return str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
+			if (isset($this->JEventDispatcher) && ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+			{
+				$getItem = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
+			}
+			return $getItem;
 		}
 		return PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . "add your custom code here.";
 	}
@@ -2693,7 +2697,11 @@ class Interpretation extends Fields
 			}
 		}
 		// check if the dispatcher must be set
-		return str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $methods) . PHP_EOL;
+		if (isset($this->JEventDispatcher) && ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+		{
+			$methods = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $methods);
+		}
+		return $methods . PHP_EOL;
 	}
 
 	public function setCustomViewMethodDefaults($get, $code)
@@ -2842,7 +2850,10 @@ class Interpretation extends Fields
 				}
 			}
 			// check if we should load the dispatcher
-			$getItem = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
+			if (isset($this->JEventDispatcher) && ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+			{
+				$getItem = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
+			}
 			// setup Globals
 			$getItem .= $this->setCustomViewGlobals($get->global, '$item', $asBucket, "\t\t");
 			// setup the custom gets that returns multipal values
@@ -4816,19 +4827,29 @@ class Interpretation extends Fields
 
 	public function routerParseSwitch(&$view, $viewArray = null, $aliasView = true, $idView = true)
 	{
+		// reset buckets
+		$routerSwitch = array();
 		$isCategory = '';
 		$viewTable = false;
-		if ($viewArray && ComponentbuilderHelper::checkArray($viewArray))
+		if ($viewArray && ComponentbuilderHelper::checkArray($viewArray) && isset($viewArray['settings']) && isset($viewArray['settings']->main_get))
 		{
-			if (isset($viewArray['settings']->main_get->db_table_main) && $viewArray['settings']->main_get->db_table_main === 'categories')
+			// check if we have custom script for this router parse switch case
+			if (isset($viewArray['settings']->main_get->add_php_router_parse) && $viewArray['settings']->main_get->add_php_router_parse == 1
+				&& isset($viewArray['settings']->main_get->php_router_parse) && ComponentbuilderHelper::checkString($viewArray['settings']->main_get->php_router_parse))
+			{
+				// load the custom script for the switch based on dynamic get
+				$routerSwitch[] = PHP_EOL . "\t\t\tcase '" . $view . "':";
+				$routerSwitch[] = $this->setPlaceholders($this->setDynamicValues(base64_decode($viewArray['settings']->main_get->php_router_parse)), $this->placeholders);
+				$routerSwitch[] = "\t\t\t\tbreak;";
+				
+				return implode(PHP_EOL, $routerSwitch);
+			}
+			// is this a catogory
+			elseif (isset($viewArray['settings']->main_get->db_table_main) && $viewArray['settings']->main_get->db_table_main === 'categories')
 			{
 				$isCategory = ', true'; // TODO we will keep an eye on this....
 			}
-//			elseif (isset($viewArray['settings']->main_get->gettype) && $viewArray['settings']->main_get->gettype == 2)
-//			{
-//				$idView = false; // TODO we will keep an eye on this....
-//				$aliasView = false;
-//			}
+			// get the main table name
 			elseif (isset($viewArray['settings']->main_get->main_get) && ComponentbuilderHelper::checkArray($viewArray['settings']->main_get->main_get))
 			{
 				foreach ($viewArray['settings']->main_get->main_get as $get)
@@ -4842,6 +4863,7 @@ class Interpretation extends Fields
 								$viewTable = str_replace('#__' . $this->fileContentStatic['###component###'] . '_', '', $get['selection']['table']);
 							}
 						}
+						break;
 					}
 				}
 			}
@@ -4849,9 +4871,6 @@ class Interpretation extends Fields
 		// add if tags is added, also for all front item views
 		if ($aliasView)
 		{
-			// build view route switch
-			$routerSwitch = array();
-
 			$routerSwitch[] = PHP_EOL . "\t\t\tcase '" . $view . "':";
 			$routerSwitch[] = "\t\t\t\t\$vars['view'] = '" . $view . "';";
 			$routerSwitch[] = "\t\t\t\tif (is_numeric(\$segments[\$count-1]))";
@@ -4875,14 +4894,9 @@ class Interpretation extends Fields
 			$routerSwitch[] = "\t\t\t\t\t}";
 			$routerSwitch[] = "\t\t\t\t}";
 			$routerSwitch[] = "\t\t\t\tbreak;";
-
-			return implode(PHP_EOL, $routerSwitch);
 		}
 		elseif ($idView)
 		{
-			// build view route switch
-			$routerSwitch = array();
-
 			$routerSwitch[] = PHP_EOL . "\t\t\tcase '" . $view . "':";
 			$routerSwitch[] = "\t\t\t\t\$vars['view'] = '" . $view . "';";
 			$routerSwitch[] = "\t\t\t\tif (is_numeric(\$segments[\$count-1]))";
@@ -4890,21 +4904,15 @@ class Interpretation extends Fields
 			$routerSwitch[] = "\t\t\t\t\t\$vars['id'] = (int) \$segments[\$count-1];";
 			$routerSwitch[] = "\t\t\t\t}";
 			$routerSwitch[] = "\t\t\t\tbreak;";
-
-			return implode(PHP_EOL, $routerSwitch);
 		}
 		else
 		{
-			// build view route switch
-			$routerSwitch = array();
-
 			$routerSwitch[] = PHP_EOL . "\t\t\tcase '" . $view . "':";
 			$routerSwitch[] = "\t\t\t\t\$vars['view'] = '" . $view . "';";
 			$routerSwitch[] = "\t\t\t\tbreak;";
-
-			return implode(PHP_EOL, $routerSwitch);
 		}
-		return '';
+
+		return implode(PHP_EOL, $routerSwitch);
 	}
 
 	public function routerBuildViews(&$view)
@@ -8102,11 +8110,14 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\t\t}";
 			$query .= PHP_EOL . "\t\treturn false;";
 			$query .= PHP_EOL . "\t}";
+			
+			// get the header script
+			$header = ComponentbuilderHelper::getDynamicScripts('headers');
 
 			// add getExImPortHeaders
 			$query .= $this->getCustomScriptBuilder('php_import_headers', 'import_' . $viewName_list, PHP_EOL . PHP_EOL, null, true,
 				// set a default script for those with no custom script
-				PHP_EOL . PHP_EOL . $this->setPlaceholders(ComponentbuilderHelper::getImportScripts('headers'), $this->placeholders));
+				PHP_EOL . PHP_EOL . $this->setPlaceholders($header, $this->placeholders));
 		}
 		return $query;
 	}

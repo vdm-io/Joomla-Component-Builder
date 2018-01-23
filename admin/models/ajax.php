@@ -333,10 +333,10 @@ class ComponentbuilderModelAjax extends JModelList
 		return '';
 	}			
 
-	public static function getImportScripts($type)
+	public static function getDynamicScripts($type)
 	{
 		// get from global helper
-		return ComponentbuilderHelper::getImportScripts($type);
+		return ComponentbuilderHelper::getDynamicScripts($type);
 	}
 
 	protected $functionArray = array(
@@ -1881,7 +1881,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$query['c']['table'] = 'custom_admin_view';
 		$query['c']['view'] = 'custom_admin_views';
 		$query['c']['select'] = array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
-			'js_document','css_document','css','php_model','php_controller');
+			'js_document','css_document','css','php_ajaxmethod','php_model','php_controller');
 		$query['c']['not_base64'] = array();
 		$query['c']['name'] = 'system_name';
 

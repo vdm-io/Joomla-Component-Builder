@@ -333,6 +333,8 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 						$item->php_before_getitems = base64_decode($item->php_before_getitems);
 						// decode php_after_getitems
 						$item->php_after_getitems = base64_decode($item->php_after_getitems);
+						// decode php_router_parse
+						$item->php_router_parse = base64_decode($item->php_router_parse);
 						// decode php_calculation
 						$item->php_calculation = base64_decode($item->php_calculation);
 						// unset the values we don't want exported.

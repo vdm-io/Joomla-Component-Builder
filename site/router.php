@@ -234,7 +234,7 @@ function ComponentbuilderBuildRoute(&$query)
 
 function ComponentbuilderParseRoute($segments)
 {
-	$router = new ContentRouter;
+	$router = new ComponentbuilderRouter;
 
 	return $router->parse($segments);
 }

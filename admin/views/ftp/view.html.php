@@ -64,7 +64,7 @@ class ComponentbuilderViewFtp extends JViewLegacy
 		}
 
 		// Get Linked view data
-		$this->waclinked_components = $this->get('Waclinked_components');
+		$this->waelinked_components = $this->get('Waelinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

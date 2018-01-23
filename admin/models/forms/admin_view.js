@@ -1203,7 +1203,7 @@ jQuery(document).ready(function()
 	// set button
 	addButtonID('admin_fields','create_edit_buttons', 1); // <-- first
 	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	getImportScripts(valueSwitch);
+	getDynamicScripts(valueSwitch);
 	// now load the fields
 	getAjaxDisplay('admin_fields');
 	getAjaxDisplay('admin_fields_conditions');
@@ -1340,8 +1340,8 @@ function getTableColumns(fieldKey, table_, nr_){
 	}
 }
 
-function getImportScripts_server(typpe){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getImportScripts&format=json&vdm="+vastDevMod;
+function getDynamicScripts_server(typpe){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getDynamicScripts&format=json&vdm="+vastDevMod;
 	if(token.length > 0 && typpe.length > 0){
 		var request = 'token='+token+'&type='+typpe;
 	}
@@ -1354,7 +1354,7 @@ function getImportScripts_server(typpe){
 	});
 }
 
-function getImportScripts(id){
+function getDynamicScripts(id){
 	if (1 == id) {
 		// get the current values
 		var current_import_display = jQuery('textarea#jform_php_import_display').val();
@@ -1366,7 +1366,7 @@ function getImportScripts(id){
 		var current_ext = jQuery('textarea#jform_php_import_ext').val();
 		// set the display method script
 		if(current_import_display.length == 0){
-			getImportScripts_server('display').done(function(result) {
+			getDynamicScripts_server('display').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_display').val(result);
 				}
@@ -1374,7 +1374,7 @@ function getImportScripts(id){
 		}
 		// set the import method script
 		if(current_import.length == 0){
-			getImportScripts_server('import').done(function(result) {
+			getDynamicScripts_server('import').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import').val(result);
 				}
@@ -1382,7 +1382,7 @@ function getImportScripts(id){
 		}
 		// set the headers method script
 		if(current_headers.length == 0){
-			getImportScripts_server('headers').done(function(result) {
+			getDynamicScripts_server('headers').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_headers').val(result);
 				}
@@ -1390,7 +1390,7 @@ function getImportScripts(id){
 		}
 		// set the setData method script
 		if(current_setdata.length == 0){
-			getImportScripts_server('setdata').done(function(result) {
+			getDynamicScripts_server('setdata').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_setdata').val(result);
 				}
@@ -1398,7 +1398,7 @@ function getImportScripts(id){
 		}
 		// set the save method script
 		if(current_save.length == 0){
-			getImportScripts_server('save').done(function(result) {
+			getDynamicScripts_server('save').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_save').val(result);
 				}
@@ -1406,7 +1406,7 @@ function getImportScripts(id){
 		}
 		// set the view script
 		if(current_view.length == 0){
-			getImportScripts_server('view').done(function(result) {
+			getDynamicScripts_server('view').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_html_import_view').val(result);
 				}
@@ -1414,7 +1414,7 @@ function getImportScripts(id){
 		}
 		// set the import ext script
 		if(current_ext.length == 0){
-			getImportScripts_server('ext').done(function(result) {
+			getDynamicScripts_server('ext').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_ext').val(result);
 				}

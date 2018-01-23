@@ -405,7 +405,7 @@ class Dropboxupdater
 		{
 			$this->setErrors($this->dropbox->error_summary);
 			return false;
-		}		
+		}
 		// if this is a manual update, then revoke the token
 		if ($this->forceUpdate)
 		{

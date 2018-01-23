@@ -1,10 +1,9 @@
 <?php
-
 /*----------------------------------------------------------------------------------|  www.vdm.io  |----/
 				Vast Development Method
 /-------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.0 - 03rd November, 2016
+	@version		2.0.0 - 21st January, 2017
 	@package		Dropbox API 2
 	@subpackage		dropbox.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>
@@ -21,16 +20,15 @@ defined('_JEXEC') or die;
  */
 class Dropbox
 {
-
 	/**
 	 * final url
 	 */
 	protected $url;
-
+	
 	/**
 	 * The array for the post url
 	 */
-	protected $postUrl = array(
+	protected $postUrl = array( 
 		"protocol" => "https://",
 		"suddomain" => "api.",
 		"domain" => "dropboxapi.com",
@@ -39,69 +37,75 @@ class Dropbox
 
 	/**
 	 * the verious pathes we need
-	 */
-	protected $domainpath = array(
+	 */	
+	protected $domainpath = array( 
+		"list_shared_links" => "sharing/list_shared_links",
 		"list_folder" => "files/list_folder",
 		"list_folder_continue" => "files/list_folder/continue",
-		"create_shared_link" => "sharing/create_shared_link",
+		"create_shared_link_with_settings" => "sharing/create_shared_link_with_settings",
 		"get_shared_link_metadata" => "sharing/get_shared_link_metadata",
 		"revoke" => "auth/token/revoke"
 	);
 
 	/**
 	 * the target pathe to get
-	 */
+	 */	
 	protected $targetPath = false;
 	protected $targetPathOriginal = false;
 
 	/**
 	 * oauth token
-	 */
+	 */	
 	protected $oauthToken;
 
 	/**
 	 * the verious pathes we need
-	 */
+	 */	
 	protected $permissionType;
 
 	/**
-	 * The loop controller in calling Dropbox API
-	 */
-	protected $continueCalling = array();
+	 * The array of queries for creating shared links
+	 */	
+	protected $createSharedLinks = array();
+
+	/**
+	 * The array of queries for getting shared links
+	 */	
+	protected $getSharedLinks = array();
 
 	/**
 	 * the success switch
-	 */
+	 */	
 	protected $succes;
 
 	/**
 	 * the type call
-	 */
+	 */	
 	protected $type;
 
 	/**
 	 * the query for the call
-	 */
+	 */	
 	protected $query;
 
 	/**
 	 * the query for the call
-	 */
+	 */	
 	protected $model;
 
 	/**
 	 * the mediaData bucket
-	 */
+	 */	
 	public $mediaData = array();
 
 	/**
 	 * the error messages
-	 */
+	 */	
 	public $error_summary = array();
-
+	
 	/**
-	 * 	force the update to reset
-	 * */
+	* 	force the update to reset
+	**/
 	public $forceReset = false;
 
 	/**
@@ -109,8 +113,12 @@ class Dropbox
 	 */
 	public function __construct(JModelLegacy $model, $buildType)
 	{
+		// set the first call
+		$this->firstCall = 'get'; // TODO (we may what to make this dynamic)
+		// set the second call
+		$this->secondCall = 'create'; // TODO (we may what to make this dynamic)
 		// set the url at this point for now
-		$this->url = $this->postUrl["protocol"] . $this->postUrl["suddomain"] . $this->postUrl["domain"] . $this->postUrl["path"];
+		$this->url = $this->postUrl["protocol"].$this->postUrl["suddomain"].$this->postUrl["domain"].$this->postUrl["path"];
 		// set the local model
 		$this->model = $model;
 		// set the build type
@@ -135,10 +143,10 @@ class Dropbox
 		ini_set('max_execution_time', 500);
 		// set the oauth toke
 		$this->oauthToken = $token;
-
+		
 		// set the permission type
 		$this->permissionType = $permissiontype;
-
+		
 		// set the details
 		if ($this->checkArray($details))
 		{
@@ -147,22 +155,125 @@ class Dropbox
 				$this->$detail = $value;
 			}
 		}
-
+		
 		// set the curent folder path
 		if (!$this->setFolderPath())
 		{
 			return false;
 		}
-
 		// start the main factory that calles for the folder data
 		$this->query = array("path" => $this->targetPath, "recursive" => true, "include_media_info" => true);
 		$this->type = 'list_folder';
 		if ($this->makeCall())
 		{
+			if ($this->_isCurl())
+			{
+				// run the share link builder
+				return $this->makeMultiExecCalls();
+			}
 			return true;
 		}
+		return false;
 	}
-
+	
+	protected function makeMultiExecCalls()
+	{
+		// make the fist call
+		$this->multiSharedLinks($this->firstCall);
+		// make the second call
+		$this->multiSharedLinks($this->secondCall);
+		// make the fist call (again for safety)
+		$this->multiSharedLinks($this->firstCall);
+		// make the second call (again for safety)
+		$this->multiSharedLinks($this->secondCall);
+	}
+	
+	protected function multiSharedLinks($type)
+	{
+		switch ($type)
+		{
+			case "create":
+				// great links if not made already
+				if (count($this->createSharedLinks) > 0)
+				{
+					$url = $this->url.$this->domainpath['create_shared_link_with_settings'];
+					$this->type = 'create_shared_link_with_settings';
+					// build return function
+					$storeSharedLink = function ($data, $target) {
+						// check if link already made
+						if (isset($data->error_summary) && strpos($data->error_summary, 'shared_link_already_exists') !== false)
+						{
+							$this->getSharedLinks[] = json_encode(array("path" => $target));
+						}
+						else
+						{
+							$this->curlCallResult($data);
+						}
+					};
+					// run call
+					return $this->multiCall($url, $type, $storeSharedLink);
+				}
+			break;
+			case "get":
+				// now get the already made links
+				if (count($this->getSharedLinks) > 0)
+				{
+					$url = $this->url.$this->domainpath['list_shared_links'];
+					$this->type = 'list_shared_links';
+					// build return function
+					$storeSharedLink = function ($data, $target) {
+						// check if link not made
+						if (isset($data->error_summary))
+						{
+							$this->createSharedLinks[] = json_encode(array("path" => $target, "settings" => array("requested_visibility" => "public")));
+						}
+						else
+						{
+							$this->curlCallResult($data);
+						}
+					};
+					// run call
+					return $this->multiCall($url, $type, $storeSharedLink);
+				}
+			break;
+		}
+		return false;
+	}
+	
+	protected function multiCall(&$url, $type, &$storeSharedLink)
+	{
+		$timer = 1;
+		$options = array();
+		// set the options array and make the calls every 250
+		foreach ($this->{$type."SharedLinks"} as $query)
+		{
+			$options[] = array(CURLOPT_HTTPHEADER => array('Authorization: Bearer ' . $this->oauthToken, 'Content-Type: application/json'), CURLOPT_POST => 1,  CURLOPT_POSTFIELDS => $query); $timer++;
+			// check timer
+			if ($timer >= 550)
+			{
+				// run multi curl
+				$this->curlMultiExec($url, $options, $storeSharedLink);
+				// reset
+				$timer = 1;
+				$options = array();
+			}
+		}
+		// make sure all was done
+		if ($timer > 1 && count($options))
+		{
+			// run multi curl
+			$this->curlMultiExec($url, $options, $storeSharedLink);
+		}
+		// reset the values
+		$this->{$type."SharedLinks"} = array();
+		// only if there is no errors
+		if (count($this->error_summary) > 0)
+		{
+			return false;
+		}
+		return true;
+	}
+	
 	public function revokeToken($token = null)
 	{
 		if ($token)
@@ -179,7 +290,7 @@ class Dropbox
 		}
 		return false;
 	}
-
+	
 	protected function setFolderPath()
 	{
 		if ('full' == $this->permissionType && isset($this->dropboxOption) && isset($this->dropboxTarget) && $this->checkString($this->dropboxTarget))
@@ -187,8 +298,8 @@ class Dropbox
 			if (2 == $this->dropboxOption)
 			{
 				// simply set the path
-				$this->targetPath = '/' . trim(strtolower($this->dropboxTarget), '/');
-
+				$this->targetPath = '/'.trim(strtolower($this->dropboxTarget), '/');
+				
 				return true;
 			}
 			elseif (1 == $this->dropboxOption)
@@ -205,12 +316,12 @@ class Dropbox
 		elseif ('app' == $this->permissionType)
 		{
 			$this->targetPath = "";
-
+			
 			return true;
 		}
 		return false;
 	}
-
+	
 	protected function makeCall()
 	{
 		if ($this->_isCurl())
@@ -222,48 +333,52 @@ class Dropbox
 			return $this->makeGetCall();
 		}
 	}
-
+	
 	protected function makeGetCall()
-	{
+	{		
 		$options = array(
 			'http' => array(
-				'header' => "Content-Type: application/json\r\n" .
-				"Authorization: Bearer " . $this->oauthToken,
-				'method' => "POST"
+				'header' => "Content-Type: application/json\r\n".
+					"Authorization: Bearer ".$this->oauthToken,
+				'method'  => "POST"
 			),
 		);
-
+		
 		if ($this->checkArray($this->query))
 		{
 			$this->query = json_encode($this->query);
 		}
-		$options['http']['content'] = $this->query;
-
+		// add the query
+		if ($this->checkString($this->query))
+		{
+			$options['http']['content'] = $this->query;
+		}
 		$context = stream_context_create($options);
-		$response = file_get_contents($this->url . $this->domainpath[$this->type], false, $context);
+		$response = file_get_contents($this->url.$this->domainpath[$this->type], false, $context);
 
 		// store the result
 		return $this->getCallResult($response);
 	}
-
+	
 	protected function getCallResult($response)
 	{
 		if ($response === FALSE)
 		{
-			$this->error_summary[] = $this->type . '_error';
+			$this->error_summary[] = $this->type.'_error';
 			return false;
 		}
 		// store the result
 		return $this->setTheResult(json_decode($response));
 	}
-
+	
 	protected function makeCurlCall()
 	{
-		$headers = array('Authorization: Bearer ' . $this->oauthToken,
-			'Content-Type: application/json'
-		);
+		// do not run creat shared link this way
+		$headers = array('Authorization: Bearer '. $this->oauthToken,
+				'Content-Type: application/json'
+			);
 
-		$ch = curl_init($this->url . $this->domainpath[$this->type]);
+		$ch = curl_init($this->url.$this->domainpath[$this->type]);
 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		// check if query is set		
@@ -271,7 +386,11 @@ class Dropbox
 		{
 			$this->query = json_encode($this->query);
 		}
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->query);
+		// add the query
+		if ($this->checkString($this->query))
+		{
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->query);
+		}
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		// curl_setopt($ch, CURLOPT_VERBOSE, 1); // debug
@@ -283,9 +402,9 @@ class Dropbox
 		// store the result
 		return $this->curlCallResult($response);
 	}
-
+	
 	public function curlCallResult($response)
-	{
+	{		
 		if ($this->checkJson($response))
 		{
 			$response = json_decode($response);
@@ -293,7 +412,7 @@ class Dropbox
 		// store the result
 		return $this->setTheResult($response);
 	}
-
+	
 	protected function setTheResult($data)
 	{
 		// if there was an error stop!!!
@@ -303,11 +422,11 @@ class Dropbox
 			$this->forceReset = true;
 			return false;
 		}
-
+		
 		// deal with each type
 		switch ($this->type)
 		{
-			case "list_folder":
+			case "list_folder":			
 			case "list_folder_continue":
 				if (isset($data->entries) && $this->checkArray($data->entries))
 				{
@@ -327,15 +446,30 @@ class Dropbox
 						return true;
 					}
 				}
-				$this->error_summary[] = $this->type . '_error';
+				$this->error_summary[] = $this->type.'_error';
 				break;
-			case "create_shared_link":
-				if (isset($data->url) && isset($data->path) && $this->storeSharedLink($this->fixPath($data->path), str_replace('?dl=0', '?dl=1', $data->url)))
+			case "list_shared_links":
+				if (isset($data->links) && $this->checkArray($data->links))
+				{
+					foreach ($data->links as $link)
+					{
+						if (!$this->storeSharedLink($link))
+						{
+							// we could not stored the link
+							return false;
+						}
+					}
+					return true;
+				}
+				$this->error_summary[] = $this->type.'_error';
+				break;
+			case "create_shared_link_with_settings":
+				if ($this->storeSharedLink($data))
 				{
 					// we stored the link
 					return true;
 				}
-				$this->error_summary[] = $this->type . '_error';
+				$this->error_summary[] = $this->type.'_error';
 				break;
 			case "get_shared_link_metadata":
 				if (isset($data->path_lower))
@@ -343,37 +477,36 @@ class Dropbox
 					$this->targetPath = $data->path_lower;
 					return true;
 				}
-				$this->error_summary[] = $this->type . '_error';
+				$this->error_summary[]	= $this->type.'_error';
 				break;
 			case "revoke":
 				if (is_null($data))
 				{
 					return true;
 				}
-				$this->error_summary[] = $this->type . '_error';
+				$this->error_summary[] = $this->type.'_error';
 				break;
 		}
 		$this->forceReset = true;
 		return false;
 	}
-
-	protected function storeSharedLink($path, $url)
+	
+	protected function storeSharedLink($data)
 	{
 		// we need to store the url to DB
-		if (isset($this->mediaData[$path]))
+		if (isset($data->url) && isset($data->name) && isset($data->size) && (isset($data->path) || isset($data->path_lower)))
 		{
-			$localListing = array();
-			$localListing['id'] = 0;
-			$localListing['name'] = $this->mediaData[$path]['name'];
-			$localListing['size'] = $this->mediaData[$path]['size'];
-			$localListing['key'] = $path;
-			$localListing['url'] = $url;
-			$localListing['build'] = $this->build;
-			$localListing['external_source'] = (int) $this->sourceID;
-			// free some memory
-			unset($this->mediaData[$path]);
+			$path								= (isset($data->path)) ? $data->path : $data->path_lower;
+			$localListing						= array();
+			$localListing['id']					= 0;
+			$localListing['name']				= $data->name;
+			$localListing['size']				= $data->size;
+			$localListing['key']				= $this->fixPath($path);
+			$localListing['url']				= str_replace('?dl=0','?dl=1',$data->url);
+			$localListing['build']				= $this->build;
+			$localListing['external_source']	= (int) $this->sourceID;
 			// check if item already set
-			if ($id = $this->model->searchForId($path))
+			if ($id = $this->model->searchForId($localListing['key']))
 			{
 				// update item
 				$localListing['id'] = $id;
@@ -384,9 +517,9 @@ class Dropbox
 	}
 
 	protected function storeFiles($entries)
-	{
+	{		
 		foreach ($entries as $item)
-		{
+		{			
 			if (isset($item->{'.tag'}) && 'file' == $item->{'.tag'} && isset($item->name))
 			{
 				$addLink = false;
@@ -395,7 +528,7 @@ class Dropbox
 				{
 					foreach ($this->addTypes as $add)
 					{
-						if (strpos($item->name, $add) !== false)
+						if (strpos($item->name,$add) !== false)
 						{
 							$addLink = true;
 						}
@@ -403,12 +536,28 @@ class Dropbox
 				}
 				if ($addLink && isset($item->path_lower))
 				{
-					// store media info
-					$this->mediaData[$this->fixPath($item->path_lower)] = array('name' => $item->name, 'size' => $item->size);
-					// get the shared link
-					$this->query = array("path" => $item->path_lower);
-					$this->type = 'create_shared_link';
-					if (!$this->makeCall())
+					// set based on first call
+					if ('get' === $this->firstCall)
+					{
+						// first check if shared link exist
+						$this->query = array("path" => $item->path_lower);
+						// set the type of call
+						$this->type = 'list_shared_links';
+					}
+					else
+					{
+						// first check if shared link exist
+						$this->query = array("path" => $item->path_lower, "settings" => array("requested_visibility" => "public"));
+						// set the type of call
+						$this->type = 'create_shared_link_with_settings';
+					}
+					// if we have curl the use multi curl execution
+					if ($this->_isCurl())
+					{
+						// set query to worker
+						$this->{$this->firstCall."SharedLinks"}[] = json_encode($this->query);
+					}
+					elseif (!$this->makeCall())
 					{
 						return false;
 					}
@@ -417,7 +566,7 @@ class Dropbox
 		}
 		return true;
 	}
-
+	
 	protected function fixPath($path)
 	{
 		if ($this->checkString($this->targetPath))
@@ -426,7 +575,7 @@ class Dropbox
 		}
 		else
 		{
-			$path = 'VDM_pLeK_h0uEr' . $path;
+			$path = 'VDM_pLeK_h0uEr'.$path;
 		}
 		return $path;
 	}
@@ -448,7 +597,7 @@ class Dropbox
 		}
 		return false;
 	}
-
+	
 	protected function checkJson($string)
 	{
 		if ($this->checkString($string))
@@ -467,9 +616,85 @@ class Dropbox
 		}
 		return false;
 	}
-
+	
 	protected function _isCurl()
 	{
 		return function_exists('curl_version');
+	}
+	
+	protected function curlMultiExec(&$url, &$_options, $callback = null)
+	{
+		if ($this->checkString($url))
+		{
+			// make sure the thread size isn't greater than the # of _options
+			$threadSize = 20;
+			$threadSize = (sizeof($_options) < $threadSize) ? sizeof($_options) : $threadSize;
+			// set the options
+			$options = array();
+			$options[CURLOPT_URL] = $url;
+			$options[CURLOPT_USERAGENT] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12';
+			$options[CURLOPT_RETURNTRANSFER] = TRUE;
+			$options[CURLOPT_SSL_VERIFYPEER] = FALSE;
+			// start multi threading :)
+			$handle = curl_multi_init();
+			// start the first batch of requests
+			for ($i = 0; $i < $threadSize; $i++)
+			{
+				if (isset($_options[$i]))
+				{
+					$ch = curl_init();
+					foreach ($_options[$i] as $curlopt => $string)
+					{
+						$options[$curlopt] = $string;
+					}
+					curl_setopt_array($ch, $options);
+					curl_multi_add_handle($handle, $ch);
+				}
+			}
+			// we wait for all the calls to finish (should not take long)
+			do {
+				while(($execrun = curl_multi_exec($handle, $working)) == CURLM_CALL_MULTI_PERFORM);
+					if($execrun != CURLM_OK)
+						break;
+				// a request was just completed -- find out which one
+				while($done = curl_multi_info_read($handle))
+				{
+					if (is_callable($callback))
+					{
+						// $info = curl_getinfo($done['handle']);
+						// request successful. process output using the callback function.
+						$output = curl_multi_getcontent($done['handle']);
+						$callback(json_decode($output), json_decode(end($_options[$i]))->path);
+					}
+					$key = $i + 1;
+					if(isset($_options[$key]))
+					{
+						// start a new request (it's important to do this before removing the old one)
+						$ch = curl_init(); $i++;
+						// add options
+						foreach ($_options[$key] as $curlopt => $string)
+						{
+							$options[$curlopt] = $string;
+						}
+						curl_setopt_array($ch, $options);
+						curl_multi_add_handle($handle, $ch);
+						// remove options again
+						foreach ($_options[$key] as $curlopt => $string)
+						{
+							unset($options[$curlopt]);
+						}
+					}
+					// remove the curl handle that just completed
+					curl_multi_remove_handle($handle, $done['handle']);
+				}
+				// stop wasting CPU cycles and rest for a couple ms
+				usleep(10000);
+			} while ($working);
+			// close the curl multi thread
+			curl_multi_close($handle);
+			// okay done
+			return true;
+		}
+		return false;
 	}
 }

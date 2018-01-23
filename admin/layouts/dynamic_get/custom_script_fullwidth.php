@@ -39,7 +39,9 @@ $fields = $displayData->get('fields') ?: array(
 	'add_php_before_getitems',
 	'php_before_getitems',
 	'add_php_after_getitems',
-	'php_after_getitems'
+	'php_after_getitems',
+	'add_php_router_parse',
+	'php_router_parse'
 );
 
 ?>

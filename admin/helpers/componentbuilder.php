@@ -158,7 +158,7 @@ abstract class ComponentbuilderHelper
 		return $object;
 	}
 			
-	public static function getImportScripts($type, $fieldName = false)
+	public static function getDynamicScripts($type, $fieldName = false)
 	{
 		// if field name is passed the convert to type
 		if ($fieldName)
@@ -196,7 +196,7 @@ abstract class ComponentbuilderHelper
 			$script['display'][] = "\t\tif (\$this->getLayout() !== 'modal')";
 			$script['display'][] = "\t\t{";
 			$script['display'][] = "\t\t\t// Include helper submenu";
-			$script['display'][] = "\t\t\t###-#-#-Component###Helper::addSubmenu('import');";
+			$script['display'][] = "\t\t\t[[[-#-#-Component]]]Helper::addSubmenu('import');";
 			$script['display'][] = "\t\t}";
 			$script['display'][] = "\n\t\t\$paths = new stdClass;";
 			$script['display'][] = "\t\t\$paths->first = '';";
@@ -204,7 +204,7 @@ abstract class ComponentbuilderHelper
 			$script['display'][] = "\n\t\t\$this->paths = &\$paths;";
 			$script['display'][] = "\t\t\$this->state = &\$state;";
 			$script['display'][] = "\t\t// get global action permissions";
-			$script['display'][] = "\t\t\$this->canDo = ###-#-#-Component###Helper::getActions('import');";
+			$script['display'][] = "\t\t\$this->canDo = [[[-#-#-Component]]]Helper::getActions('import');";
 			$script['display'][] = "\n\t\t// We don't need toolbar in the modal window.";
 			$script['display'][] = "\t\tif (\$this->getLayout() !== 'modal')";
 			$script['display'][] = "\t\t{";
@@ -219,7 +219,7 @@ abstract class ComponentbuilderHelper
 			$script['display'][] = "\t\tif(\$this->hasPackage && \$this->dataType)";
 			$script['display'][] = "\t\t{";
 			$script['display'][] = "\t\t\t\$this->headerList \t= json_decode(\$session->get(\$this->dataType.'_VDM_IMPORTHEADERS', false),true);";
-			$script['display'][] = "\t\t\t\$this->headers \t\t= ###-#-#-Component###Helper::getFileHeaders(\$this->dataType);";
+			$script['display'][] = "\t\t\t\$this->headers \t\t= [[[-#-#-Component]]]Helper::getFileHeaders(\$this->dataType);";
 			$script['display'][] = "\t\t\t// clear the data type";
 			$script['display'][] = "\t\t\t\$session->clear('dataType');";
 			$script['display'][] = "\t\t}";
@@ -245,7 +245,7 @@ abstract class ComponentbuilderHelper
 			$script['setdata'][] = "\t**/";
 			$script['setdata'][] = "\tprotected function setData(\$package,\$table,\$target_headers)";
 			$script['setdata'][] = "\t{";
-			$script['setdata'][] = "\t\tif (###-#-#-Component###Helper::checkArray(\$target_headers))";
+			$script['setdata'][] = "\t\tif ([[[-#-#-Component]]]Helper::checkArray(\$target_headers))";
 			$script['setdata'][] = "\t\t{";
 			$script['setdata'][] = "\t\t\t// make sure the file is loaded\t\t";
 			$script['setdata'][] = "\t\t\tJLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');";
@@ -283,8 +283,8 @@ abstract class ComponentbuilderHelper
 			$script['headers'][] = "\t\t// Get a db connection.";
 			$script['headers'][] = "\t\t\$db = JFactory::getDbo();";
 			$script['headers'][] = "\t\t// get the columns";
-			$script['headers'][] = "\t\t\$columns = \$db->getTableColumns(\"#__###-#-#-component###_###-#-#-view###\");";
-			$script['headers'][] = "\t\tif (###-#-#-Component###Helper::checkArray(\$columns))";
+			$script['headers'][] = "\t\t\$columns = \$db->getTableColumns(\"#__[[[-#-#-component]]]_[[[-#-#-view]]]\");";
+			$script['headers'][] = "\t\tif ([[[-#-#-Component]]]Helper::checkArray(\$columns))";
 			$script['headers'][] = "\t\t{";
 			$script['headers'][] = "\t\t\t// remove the headers you don't import/export.";
 			$script['headers'][] = "\t\t\tunset(\$columns['asset_id']);";
@@ -314,7 +314,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = "\tprotected function save(\$data,\$table)";
 			$script['save'][] = "\t{";
 			$script['save'][] = "\t\t// import the data if there is any";
-			$script['save'][] = "\t\tif(###-#-#-Component###Helper::checkArray(\$data['array']))";
+			$script['save'][] = "\t\tif([[[-#-#-Component]]]Helper::checkArray(\$data['array']))";
 			$script['save'][] = "\t\t{";
 			$script['save'][] = "\t\t\t// get user object";
 			$script['save'][] = "\t\t\t\$user  \t\t= JFactory::getUser();";
@@ -332,7 +332,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = "\t\t\t}";
 			$script['save'][] = "\t\t\t";
 			$script['save'][] = "\t\t\t// make sure there is still values in array and that it was not only headers";
-			$script['save'][] = "\t\t\tif(###-#-#-Component###Helper::checkArray(\$data['array']) && \$user->authorise(\$table.'.import', 'com_###-#-#-component###') && \$user->authorise('core.import', 'com_###-#-#-component###'))";
+			$script['save'][] = "\t\t\tif([[[-#-#-Component]]]Helper::checkArray(\$data['array']) && \$user->authorise(\$table.'.import', 'com_[[[-#-#-component]]]') && \$user->authorise('core.import', 'com_[[[-#-#-component]]]'))";
 			$script['save'][] = "\t\t\t{";
 			$script['save'][] = "\t\t\t\t// set target.";
 			$script['save'][] = "\t\t\t\t\$target\t= array_flip(\$data['target_headers']);";
@@ -341,7 +341,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = "\t\t\t\t// set some defaults";
 			$script['save'][] = "\t\t\t\t\$todayDate\t\t= JFactory::getDate()->toSql();";
 			$script['save'][] = "\t\t\t\t// get global action permissions";
-			$script['save'][] = "\t\t\t\t\$canDo\t\t\t= ###-#-#-Component###Helper::getActions(\$table);";
+			$script['save'][] = "\t\t\t\t\$canDo\t\t\t= [[[-#-#-Component]]]Helper::getActions(\$table);";
 			$script['save'][] = "\t\t\t\t\$canEdit\t\t= \$canDo->get('core.edit');";
 			$script['save'][] = "\t\t\t\t\$canState\t\t= \$canDo->get('core.edit.state');";
 			$script['save'][] = "\t\t\t\t\$canCreate\t\t= \$canDo->get('core.create');";
@@ -356,7 +356,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = "\t\t\t\t\t\t\$query = \$db->getQuery(true);";
 			$script['save'][] = "\t\t\t\t\t\t\$query";
 			$script['save'][] = "\t\t\t\t\t\t\t->select('version')";
-			$script['save'][] = "\t\t\t\t\t\t\t->from(\$db->quoteName('#__###-#-#-component###_'.\$table))";
+			$script['save'][] = "\t\t\t\t\t\t\t->from(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))";
 			$script['save'][] = "\t\t\t\t\t\t\t->where(\$db->quoteName('id') . ' = '. \$db->quote(\$row[\$id_key]));";
 			$script['save'][] = "\t\t\t\t\t\t// Reset the query using our newly populated query object.";
 			$script['save'][] = "\t\t\t\t\t\t\$db->setQuery(\$query);";
@@ -423,7 +423,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = "\t\t\t\t\t\t\t\$db->quoteName('id') . ' = ' . \$id";
 			$script['save'][] = "\t\t\t\t\t\t);";
 			$script['save'][] = "\t\t\t\t\t\t";
-			$script['save'][] = "\t\t\t\t\t\t\$query->update(\$db->quoteName('#__###-#-#-component###_'.\$table))->set(\$fields)->where(\$conditions);";
+			$script['save'][] = "\t\t\t\t\t\t\$query->update(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))->set(\$fields)->where(\$conditions);";
 			$script['save'][] = "\t\t\t\t\t\t\$db->setQuery(\$query);";
 			$script['save'][] = "\t\t\t\t\t\t\$db->execute();";
 			$script['save'][] = "\t\t\t\t\t}";
@@ -499,7 +499,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = "\t\t\t\t\t\t}";
 			$script['save'][] = "\t\t\t\t\t\t// Prepare the insert query.";
 			$script['save'][] = "\t\t\t\t\t\t\$query";
-			$script['save'][] = "\t\t\t\t\t\t\t->insert(\$db->quoteName('#__###-#-#-component###_'.\$table))";
+			$script['save'][] = "\t\t\t\t\t\t\t->insert(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))";
 			$script['save'][] = "\t\t\t\t\t\t\t->columns(\$db->quoteName(\$columns))";
 			$script['save'][] = "\t\t\t\t\t\t\t->values(implode(',', \$values));";
 			$script['save'][] = "\t\t\t\t\t\t// Set the query using our newly populated query object and execute it.";
@@ -509,7 +509,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = "\t\t\t\t\t\t{";
 			$script['save'][] = "\t\t\t\t\t\t\t\$aId = \$db->insertid();";
 			$script['save'][] = "\t\t\t\t\t\t\t// make sure the access of asset is set";
-			$script['save'][] = "\t\t\t\t\t\t\t###-#-#-Component###Helper::setAsset(\$aId,\$table);";
+			$script['save'][] = "\t\t\t\t\t\t\t[[[-#-#-Component]]]Helper::setAsset(\$aId,\$table);";
 			$script['save'][] = "\t\t\t\t\t\t}";
 			$script['save'][] = "\t\t\t\t\t}";
 			$script['save'][] = "\t\t\t\t\telse";
@@ -527,7 +527,7 @@ abstract class ComponentbuilderHelper
 		{
 			$script['view'] = array();
 			$script['view'][] = "<script type=\"text/javascript\">";
-			$script['view'][] = "<?php if (\$this->hasPackage && ###-#-#-Component###Helper::checkArray(\$this->headerList)) : ?>";
+			$script['view'][] = "<?php if (\$this->hasPackage && [[[-#-#-Component]]]Helper::checkArray(\$this->headerList)) : ?>";
 			$script['view'][] = "\tJoomla.continueImport = function()";
 			$script['view'][] = "\t{";
 			$script['view'][] = "\t\tvar form = document.getElementById('adminForm');";
@@ -544,7 +544,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = "\t\t// do field validation";
 			$script['view'][] = "\t\tif (error)";
 			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_MSG_PLEASE_SELECT_ALL_COLUMNS', true); ?>\");";
+			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_ALL_COLUMNS', true); ?>\");";
 			$script['view'][] = "\t\t}";
 			$script['view'][] = "\t\telse";
 			$script['view'][] = "\t\t{";
@@ -562,7 +562,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = "\n\t\t// do field validation";
 			$script['view'][] = "\t\tif (form.import_package.value == \"\")";
 			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_MSG_PLEASE_SELECT_A_FILE', true); ?>\");";
+			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_A_FILE', true); ?>\");";
 			$script['view'][] = "\t\t}";
 			$script['view'][] = "\t\telse";
 			$script['view'][] = "\t\t{";
@@ -579,7 +579,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = "";
 			$script['view'][] = "\n\t\t// do field validation";
 			$script['view'][] = "\t\tif (form.import_directory.value == \"\"){";
-			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_MSG_PLEASE_SELECT_A_DIRECTORY', true); ?>\");";
+			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_A_DIRECTORY', true); ?>\");";
 			$script['view'][] = "\t\t}";
 			$script['view'][] = "\t\telse";
 			$script['view'][] = "\t\t{";
@@ -597,7 +597,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = "\n\t\t// do field validation";
 			$script['view'][] = "\t\tif (form.import_url.value == \"\" || form.import_url.value == \"http://\")";
 			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_MSG_ENTER_A_URL', true); ?>\");";
+			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_ENTER_A_URL', true); ?>\");";
 			$script['view'][] = "\t\t}";
 			$script['view'][] = "\t\telse";
 			$script['view'][] = "\t\t{";
@@ -614,7 +614,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = "\tvar outerDiv = \$('body');";
 			$script['view'][] = "";
 			$script['view'][] = "\n\t\$('<div id=\"loading\"></div>')";
-			$script['view'][] = "\t\t.css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_###-#-#-component###/assets/images/import.gif') 50% 15% no-repeat\")";
+			$script['view'][] = "\t\t.css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_[[[-#-#-component]]]/assets/images/import.gif') 50% 15% no-repeat\")";
 			$script['view'][] = "\t\t.css(\"top\", outerDiv.position().top - \$(window).scrollTop())";
 			$script['view'][] = "\t\t.css(\"left\", outerDiv.position().left - \$(window).scrollLeft())";
 			$script['view'][] = "\t\t.css(\"width\", outerDiv.width())";
@@ -630,7 +630,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = "\n</script>";
 			$script['view'][] = "";
 			$script['view'][] = "\n<div id=\"installer-import\" class=\"clearfix\">";
-			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo JRoute::_('index.php?option=com_###-#-#-component###&view=import_###-#-#-views###');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
+			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo JRoute::_('index.php?option=com_[[[-#-#-component]]]&view=import_[[[-#-#-views]]]');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
 			$script['view'][] = "";
 			$script['view'][] = "\n\t<?php if (!empty( \$this->sidebar)) : ?>";
 			$script['view'][] = "\t\t<div id=\"j-sidebar-container\" class=\"span2\">";
@@ -641,13 +641,13 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = "\t\t<div id=\"j-main-container\">";
 			$script['view'][] = "\t<?php endif;?>";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t<?php if (\$this->hasPackage && ###-#-#-Component###Helper::checkArray(\$this->headerList) && ###-#-#-Component###Helper::checkArray(\$this->headers)) : ?>";
+			$script['view'][] = "\n\t<?php if (\$this->hasPackage && [[[-#-#-Component]]]Helper::checkArray(\$this->headerList) && [[[-#-#-Component]]]Helper::checkArray(\$this->headers)) : ?>";
 			$script['view'][] = "\t\t<fieldset class=\"uploadform\">";
-			$script['view'][] = "\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_LINK_FILE_TO_TABLE_COLUMNS'); ?></legend>";
+			$script['view'][] = "\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_LINK_FILE_TO_TABLE_COLUMNS'); ?></legend>";
 			$script['view'][] = "\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t<label class=\"control-label\" ><h4><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_TABLE_COLUMNS'); ?></h4></label>";
+			$script['view'][] = "\t\t\t\t<label class=\"control-label\" ><h4><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_TABLE_COLUMNS'); ?></h4></label>";
 			$script['view'][] = "\t\t\t\t<div class=\"controls\">";
-			$script['view'][] = "\t\t\t\t\t<label class=\"control-label\" ><h4><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_FILE_COLUMNS'); ?></h4></label>";
+			$script['view'][] = "\t\t\t\t\t<label class=\"control-label\" ><h4><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FILE_COLUMNS'); ?></h4></label>";
 			$script['view'][] = "\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t</div>";
 			$script['view'][] = "\t\t\t<?php foreach(\$this->headerList as \$name => \$title): ?>";
@@ -655,72 +655,72 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = "\t\t\t\t\t<label for=\"<?php echo \$name; ?>\" class=\"control-label\" ><?php echo \$title; ?></label>";
 			$script['view'][] = "\t\t\t\t\t<div class=\"controls\">";
 			$script['view'][] = "\t\t\t\t\t\t<select  name=\"<?php echo \$name; ?>\"  id=\"vdm_<?php echo \$name; ?>\" required class=\"required input_box\" >";
-			$script['view'][] = "\t\t\t\t\t\t\t<option value=\"\"><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_PLEASE_SELECT_COLUMN'); ?></option>";
-			$script['view'][] = "\t\t\t\t\t\t\t<option value=\"IGNORE\"><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_IGNORE_COLUMN'); ?></option>";
+			$script['view'][] = "\t\t\t\t\t\t\t<option value=\"\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_PLEASE_SELECT_COLUMN'); ?></option>";
+			$script['view'][] = "\t\t\t\t\t\t\t<option value=\"IGNORE\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_IGNORE_COLUMN'); ?></option>";
 			$script['view'][] = "\t\t\t\t\t\t\t<?php foreach(\$this->headers as \$value => \$option): ?>";
 			$script['view'][] = "\t\t\t\t\t\t\t\t<?php \$selected = (strtolower(\$option) ==  strtolower (\$title) || strtolower(\$option) == strtolower(\$name))? 'selected=\"selected\"':''; ?>";
-			$script['view'][] = "\t\t\t\t\t\t\t\t<option value=\"<?php echo ###-#-#-Component###Helper::htmlEscape(\$value); ?>\" class=\"required\" <?php echo \$selected ?>><?php echo ###-#-#-Component###Helper::htmlEscape(\$option); ?></option>";
+			$script['view'][] = "\t\t\t\t\t\t\t\t<option value=\"<?php echo [[[-#-#-Component]]]Helper::htmlEscape(\$value); ?>\" class=\"required\" <?php echo \$selected ?>><?php echo [[[-#-#-Component]]]Helper::htmlEscape(\$option); ?></option>";
 			$script['view'][] = "\t\t\t\t\t\t\t<?php endforeach; ?>";
 			$script['view'][] = "\t\t\t\t\t\t</select>";
 			$script['view'][] = "\t\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t<?php endforeach; ?>";
 			$script['view'][] = "\t\t\t<div class=\"form-actions\">";
-			$script['view'][] = "\t\t\t\t<input class=\"btn btn-primary\" type=\"button\" value=\"<?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_CONTINUE'); ?>\" onclick=\"Joomla.continueImport()\" />";
+			$script['view'][] = "\t\t\t\t<input class=\"btn btn-primary\" type=\"button\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_CONTINUE'); ?>\" onclick=\"Joomla.continueImport()\" />";
 			$script['view'][] = "\t\t\t</div>";
 			$script['view'][] = "\t\t</fieldset>";
 			$script['view'][] = "\t\t<input type=\"hidden\" name=\"gettype\" value=\"continue\" />";
 			$script['view'][] = "\t<?php else: ?>";
 			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'upload')); ?>";
 			$script['view'][] = "\t\t";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'upload', JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_FROM_UPLOAD', true)); ?>";
+			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'upload', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_UPLOAD', true)); ?>";
 			$script['view'][] = "\t\t\t<fieldset class=\"uploadform\">";
-			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_UPDATE_DATA'); ?></legend>";
+			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
 			$script['view'][] = "\t\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t\t<label for=\"import_package\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_SELECT_FILE'); ?></label>";
+			$script['view'][] = "\t\t\t\t\t<label for=\"import_package\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE'); ?></label>";
 			$script['view'][] = "\t\t\t\t\t<div class=\"controls\">";
 			$script['view'][] = "\t\t\t\t\t\t<input class=\"input_box\" id=\"import_package\" name=\"import_package\" type=\"file\" size=\"57\" />";
 			$script['view'][] = "\t\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t\t<div class=\"form-actions\">";
-			$script['view'][] = "\t\t\t\t\t<input class=\"btn btn-primary\" type=\"button\" value=\"<?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_UPLOAD_BOTTON'); ?>\" onclick=\"Joomla.submitbutton()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
+			$script['view'][] = "\t\t\t\t\t<input class=\"btn btn-primary\" type=\"button\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPLOAD_BOTTON'); ?>\" onclick=\"Joomla.submitbutton()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
 			$script['view'][] = "\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t</fieldset>";
 			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
 			$script['view'][] = "\t\t";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'directory', JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_FROM_DIRECTORY', true)); ?>";
+			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'directory', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_DIRECTORY', true)); ?>";
 			$script['view'][] = "\t\t\t<fieldset class=\"uploadform\">";
-			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_UPDATE_DATA'); ?></legend>";
+			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
 			$script['view'][] = "\t\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t\t<label for=\"import_directory\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_SELECT_FILE_DIRECTORY'); ?></label>";
+			$script['view'][] = "\t\t\t\t\t<label for=\"import_directory\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE_DIRECTORY'); ?></label>";
 			$script['view'][] = "\t\t\t\t\t<div class=\"controls\">";
 			$script['view'][] = "\t\t\t\t\t\t<input type=\"text\" id=\"import_directory\" name=\"import_directory\" class=\"span5 input_box\" size=\"70\" value=\"<?php echo \$this->state->get('import.directory'); ?>\" />";
 			$script['view'][] = "\t\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t\t<div class=\"form-actions\">";
-			$script['view'][] = "\t\t\t\t\t<input type=\"button\" class=\"btn btn-primary\" value=\"<?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_GET_BOTTON'); ?>\" onclick=\"Joomla.submitbutton3()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
+			$script['view'][] = "\t\t\t\t\t<input type=\"button\" class=\"btn btn-primary\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_GET_BOTTON'); ?>\" onclick=\"Joomla.submitbutton3()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
 			$script['view'][] = "\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t\t</fieldset>";
 			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'url', JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_FROM_URL', true)); ?>";
+			$script['view'][] = "\n\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'url', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_URL', true)); ?>";
 			$script['view'][] = "\t\t\t<fieldset class=\"uploadform\">";
-			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_UPDATE_DATA'); ?></legend>";
+			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
 			$script['view'][] = "\t\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t\t<label for=\"import_url\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_SELECT_FILE_URL'); ?></label>";
+			$script['view'][] = "\t\t\t\t\t<label for=\"import_url\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE_URL'); ?></label>";
 			$script['view'][] = "\t\t\t\t\t<div class=\"controls\">";
 			$script['view'][] = "\t\t\t\t\t\t<input type=\"text\" id=\"import_url\" name=\"import_url\" class=\"span5 input_box\" size=\"70\" value=\"http://\" />";
 			$script['view'][] = "\t\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t\t<div class=\"form-actions\">";
-			$script['view'][] = "\t\t\t\t\t<input type=\"button\" class=\"btn btn-primary\" value=\"<?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_GET_BOTTON'); ?>\" onclick=\"Joomla.submitbutton4()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
+			$script['view'][] = "\t\t\t\t\t<input type=\"button\" class=\"btn btn-primary\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_GET_BOTTON'); ?>\" onclick=\"Joomla.submitbutton4()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
 			$script['view'][] = "\t\t\t\t</div>";
 			$script['view'][] = "\t\t\t</fieldset>";
 			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
 			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
 			$script['view'][] = "\t\t<input type=\"hidden\" name=\"gettype\" value=\"upload\" />";
 			$script['view'][] = "\t<?php endif; ?>";
-			$script['view'][] = "\t<input type=\"hidden\" name=\"task\" value=\"import_###-#-#-views###.import\" />";
+			$script['view'][] = "\t<input type=\"hidden\" name=\"task\" value=\"import_[[[-#-#-views]]].import\" />";
 			$script['view'][] = "\t<?php echo JHtml::_('form.token'); ?>";
 			$script['view'][] = "</form>";
 			$script['view'][] = "</div>";
@@ -770,7 +770,7 @@ abstract class ComponentbuilderHelper
 			$script['import'][] = "\t\t\t\t\t\$session->clear('hasPackage');";
 			$script['import'][] = "\t\t\t\t\tbreak;";
 			$script['import'][] = "\n\t\t\t\tdefault:";
-			$script['import'][] = "\t\t\t\t\t\$app->setUserState('com_###-#-#-component###.message', JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_NO_IMPORT_TYPE_FOUND'));";
+			$script['import'][] = "\t\t\t\t\t\$app->setUserState('com_[[[-#-#-component]]].message', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_NO_IMPORT_TYPE_FOUND'));";
 			$script['import'][] = "\n\t\t\t\t\treturn false;";
 			$script['import'][] = "\t\t\t\t\tbreak;";
 			$script['import'][] = "\t\t\t}";
@@ -782,7 +782,7 @@ abstract class ComponentbuilderHelper
 			$script['import'][] = "\t\t\t{";
 			$script['import'][] = "\t\t\t\t\$this->remove(\$package['packagename']);";
 			$script['import'][] = "\t\t\t}";
-			$script['import'][] = "\n\t\t\t\$app->setUserState('com_###-#-#-component###.message', JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));";
+			$script['import'][] = "\n\t\t\t\$app->setUserState('com_[[[-#-#-component]]].message', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));";
 			$script['import'][] = "\t\t\treturn false;";
 			$script['import'][] = "\t\t}";
 			$script['import'][] = "\t\t";
@@ -799,11 +799,11 @@ abstract class ComponentbuilderHelper
 			$script['import'][] = "\t\tif (!\$this->setData(\$package,\$this->dataType,\$headerList))";
 			$script['import'][] = "\t\t{";
 			$script['import'][] = "\t\t\t// There was an error importing the package";
-			$script['import'][] = "\t\t\t\$msg = JTe-#-#-xt::_('COM_###-#-#-COMPONENT###_IMPORT_ERROR');";
+			$script['import'][] = "\t\t\t\$msg = JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_ERROR');";
 			$script['import'][] = "\t\t\t\$back = \$session->get('backto_VDM_IMPORT', NULL);";
 			$script['import'][] = "\t\t\tif (\$back)";
 			$script['import'][] = "\t\t\t{";
-			$script['import'][] = "\t\t\t\t\$app->setUserState('com_###-#-#-component###.redirect_url', 'index.php?option=com_###-#-#-component###&view='.\$back);";
+			$script['import'][] = "\t\t\t\t\$app->setUserState('com_[[[-#-#-component]]].redirect_url', 'index.php?option=com_[[[-#-#-component]]]&view='.\$back);";
 			$script['import'][] = "\t\t\t\t\$session->clear('backto_VDM_IMPORT');";
 			$script['import'][] = "\t\t\t}";
 			$script['import'][] = "\t\t\t\$result = false;";
@@ -811,11 +811,11 @@ abstract class ComponentbuilderHelper
 			$script['import'][] = "\t\telse";
 			$script['import'][] = "\t\t{";
 			$script['import'][] = "\t\t\t// Package imported sucessfully";
-			$script['import'][] = "\t\t\t\$msg = JTe-#-#-xt::sprintf('COM_###-#-#-COMPONENT###_IMPORT_SUCCESS', \$package['packagename']);";
+			$script['import'][] = "\t\t\t\$msg = JTe-#-#-xt::sprintf('COM_[[[-#-#-COMPONENT]]]_IMPORT_SUCCESS', \$package['packagename']);";
 			$script['import'][] = "\t\t\t\$back = \$session->get('backto_VDM_IMPORT', NULL);";
 			$script['import'][] = "\t\t\tif (\$back)";
 			$script['import'][] = "\t\t\t{";
-			$script['import'][] = "\t\t\t    \$app->setUserState('com_###-#-#-component###.redirect_url', 'index.php?option=com_###-#-#-component###&view='.\$back);";
+			$script['import'][] = "\t\t\t    \$app->setUserState('com_[[[-#-#-component]]].redirect_url', 'index.php?option=com_[[[-#-#-component]]]&view='.\$back);";
 			$script['import'][] = "\t\t\t    \$session->clear('backto_VDM_IMPORT');";
 			$script['import'][] = "\t\t\t}";
 			$script['import'][] = "\t\t\t\$result = true;";
@@ -851,6 +851,23 @@ abstract class ComponentbuilderHelper
 			$script['ext'][] = "\t\t}";
 			$script['ext'][] = "\t\treturn false;";
 			$script['ext'][] = "\t}";
+		}
+		elseif ('routerparse' === $type)
+		{
+			$script['routerparse'][] = "\t\t\t\t// default script in switch for this view";
+			$script['routerparse'][] = "\t\t\t\t\$vars['view'] = '[[[-#-#-sview]]]';";
+			$script['routerparse'][] = "\t\t\t\tif (is_numeric(\$segments[\$count-1]))";
+			$script['routerparse'][] = "\t\t\t\t{";
+			$script['routerparse'][] = "\t\t\t\t\t\$vars['id'] = (int) \$segments[\$count-1];";
+			$script['routerparse'][] = "\t\t\t\t}";
+			$script['routerparse'][] = "\t\t\t\telseif (\$segments[\$count-1])";
+			$script['routerparse'][] = "\t\t\t\t{";
+			$script['routerparse'][] = "\t\t\t\t\t\$id = \$this->getVar('[[[-#-#-sview]]]', \$segments[\$count-1], 'alias', 'id');";
+			$script['routerparse'][] = "\t\t\t\t\tif(\$id)";
+			$script['routerparse'][] = "\t\t\t\t\t{";
+			$script['routerparse'][] = "\t\t\t\t\t\t\$vars['id'] = \$id;";
+			$script['routerparse'][] = "\t\t\t\t\t}";
+			$script['routerparse'][] = "\t\t\t\t}";
 		}
 		// return the needed script
 		if (isset($script[$type]))

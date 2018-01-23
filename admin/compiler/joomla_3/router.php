@@ -222,7 +222,7 @@ function ###Component###BuildRoute(&$query)
 
 function ###Component###ParseRoute($segments)
 {
-	$router = new ContentRouter;
+	$router = new ###Component###Router;
 
 	return $router->parse($segments);
 }

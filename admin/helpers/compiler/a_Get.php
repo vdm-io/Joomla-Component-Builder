@@ -1545,7 +1545,7 @@ class Get
 					else
 					{
 						// load the default
-						$this->customScriptBuilder[$importScripter]['import_' . $name_list] = ComponentbuilderHelper::getImportScripts($importScripter, true);
+						$this->customScriptBuilder[$importScripter]['import_' . $name_list] = ComponentbuilderHelper::getDynamicScripts($importScripter, true);
 					}
 				}
 			}

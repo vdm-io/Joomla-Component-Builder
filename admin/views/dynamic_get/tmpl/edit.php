@@ -570,6 +570,55 @@ jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 
 });
 
+// #jform_gettype listeners for gettype_vvvvvzu function
+jQuery('#jform_gettype').on('keyup',function()
+{
+	var gettype_vvvvvzu = jQuery("#jform_gettype").val();
+	vvvvvzu(gettype_vvvvvzu);
+
+});
+jQuery('#adminForm').on('change', '#jform_gettype',function (e)
+{
+	e.preventDefault();
+	var gettype_vvvvvzu = jQuery("#jform_gettype").val();
+	vvvvvzu(gettype_vvvvvzu);
+
+});
+
+// #jform_gettype listeners for gettype_vvvvvzv function
+jQuery('#jform_gettype').on('keyup',function()
+{
+	var gettype_vvvvvzv = jQuery("#jform_gettype").val();
+	var add_php_router_parse_vvvvvzv = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
+	vvvvvzv(gettype_vvvvvzv,add_php_router_parse_vvvvvzv);
+
+});
+jQuery('#adminForm').on('change', '#jform_gettype',function (e)
+{
+	e.preventDefault();
+	var gettype_vvvvvzv = jQuery("#jform_gettype").val();
+	var add_php_router_parse_vvvvvzv = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
+	vvvvvzv(gettype_vvvvvzv,add_php_router_parse_vvvvvzv);
+
+});
+
+// #jform_add_php_router_parse listeners for add_php_router_parse_vvvvvzv function
+jQuery('#jform_add_php_router_parse').on('keyup',function()
+{
+	var gettype_vvvvvzv = jQuery("#jform_gettype").val();
+	var add_php_router_parse_vvvvvzv = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
+	vvvvvzv(gettype_vvvvvzv,add_php_router_parse_vvvvvzv);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_php_router_parse',function (e)
+{
+	e.preventDefault();
+	var gettype_vvvvvzv = jQuery("#jform_gettype").val();
+	var add_php_router_parse_vvvvvzv = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
+	vvvvvzv(gettype_vvvvvzv,add_php_router_parse_vvvvvzv);
+
+});
+
 
 <?php $fieldNrs = range(0,50,1); ?>
 <?php $fieldNames = array('db' => 'Db','view' => 'View'); ?>
@@ -598,6 +647,13 @@ jQuery(document).ready(function(){
 	get<?php echo $funcName; ?>TableColumns(value_<?php echo $fieldName ?>,'a','<?php echo $fieldName ?>',3,true, '','');
 });
 <?php endforeach; ?>
+
+// #jform_add_php_router_parse listeners
+jQuery('#jform_add_php_router_parse').on('change',function() {
+	var valueSwitch = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
+	getDynamicScripts(valueSwitch);
+});
+
 			
 // nice little dot trick :)
 jQuery(document).ready( function($) {
