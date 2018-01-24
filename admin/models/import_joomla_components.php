@@ -2265,10 +2265,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					}
 					break;
 				case 'joomla_component':
-					if ($retry == 2)
+					if ($retry == 3)
+					{
+						// get by name only
+						$getter = array('name', 'name_code'); // risky will look at this again
+					}
+					elseif ($retry == 2)
 					{
 						// get by name ...
 						$getter = array('name', 'name_code', 'short_description', 'author', 'email', 'component_version', 'companyname', 'system_name', 'website', 'bom', 'copyright', 'license'); // risky will look at this again
+						$retryAgain = 3;
 					}
 					else
 					{
