@@ -3,7 +3,7 @@
 				Vast Development Method
 /-------------------------------------------------------------------------------------------------------/
 
-	@version		2.0.0 - 21st January, 2017
+	@version		2.0.3 - 27th January, 2018
 	@package		Dropbox API 2
 	@subpackage		dropbox.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>
@@ -16,7 +16,7 @@
 defined('_JEXEC') or die;
 
 /**
- * Dropbox class
+ * Dropbox class to get shared links
  */
 class Dropbox
 {
@@ -48,7 +48,7 @@ class Dropbox
 	);
 
 	/**
-	 * the target pathe to get
+	 * the target path to get
 	 */	
 	protected $targetPath = false;
 	protected $targetPathOriginal = false;
@@ -56,7 +56,8 @@ class Dropbox
 	/**
 	 * oauth token
 	 */	
-	protected $oauthToken;
+	protected $oauthToken = array();
+	protected $token = 0;
 
 	/**
 	 * the verious pathes we need
@@ -67,11 +68,13 @@ class Dropbox
 	 * The array of queries for creating shared links
 	 */	
 	protected $createSharedLinks = array();
+	protected $createSharedLinks_ = array(); // retry array
 
 	/**
 	 * The array of queries for getting shared links
 	 */	
 	protected $getSharedLinks = array();
+	protected $getSharedLinks_ = array(); // retry array
 
 	/**
 	 * the success switch
@@ -92,6 +95,16 @@ class Dropbox
 	 * the query for the call
 	 */	
 	protected $model;
+
+	/**
+	 * the slow down timer
+	 */	
+	protected $slowdown = 0;
+
+	/**
+	 * the speed up switch
+	 */	
+	protected $speedup = false;
 
 	/**
 	 * the mediaData bucket
@@ -141,8 +154,19 @@ class Dropbox
 	{
 		// we need more then the normal time to run this script 5 minutes at least.
 		ini_set('max_execution_time', 500);
-		// set the oauth toke
-		$this->oauthToken = $token;
+		// little tweak for big folders (use multy tokens)
+		if (strpos($token, '____') !== false)
+		{
+			$this->oauthToken = array_filter((array) explode('____', $token),
+				function ($string) {
+					return $this->checkString($string);
+				});
+		}
+		else
+		{
+			// set the oauth toke
+			$this->oauthToken = array($token);
+		}
 		
 		// set the permission type
 		$this->permissionType = $permissiontype;
@@ -155,7 +179,7 @@ class Dropbox
 				$this->$detail = $value;
 			}
 		}
-		
+
 		// set the curent folder path
 		if (!$this->setFolderPath())
 		{
@@ -176,16 +200,39 @@ class Dropbox
 		return false;
 	}
 	
+	protected function getToken()
+	{
+		$key = $this->token;
+		if (isset($this->oauthToken[$key]))
+		{
+			// update key
+			$this->token++;
+			return $this->oauthToken[$key];
+		}
+		// reset key
+		$this->token = 1;
+		// return first token
+		return $this->oauthToken[0];
+	}
+	
 	protected function makeMultiExecCalls()
 	{
+		$this->succesCall = true;
 		// make the fist call
 		$this->multiSharedLinks($this->firstCall);
 		// make the second call
 		$this->multiSharedLinks($this->secondCall);
-		// make the fist call (again for safety)
-		$this->multiSharedLinks($this->firstCall);
-		// make the second call (again for safety)
-		$this->multiSharedLinks($this->secondCall);
+		// slow down if needed
+		$this->speedup = false;
+		// for safety
+		if (($this->checkArray($this->createSharedLinks) || $this->checkArray($this->createSharedLinks_) ||
+			$this->checkArray($this->getSharedLinks) || $this->checkArray($this->getSharedLinks_)) &&
+			$this->succesCall)
+		{
+			return $this->makeMultiExecCalls();
+		}
+		// all done
+		return $this->succesCall;
 	}
 	
 	protected function multiSharedLinks($type)
@@ -194,14 +241,21 @@ class Dropbox
 		{
 			case "create":
 				// great links if not made already
-				if (count($this->createSharedLinks) > 0)
+				if ($this->checkArray($this->createSharedLinks) || $this->checkArray($this->createSharedLinks_))
 				{
 					$url = $this->url.$this->domainpath['create_shared_link_with_settings'];
 					$this->type = 'create_shared_link_with_settings';
 					// build return function
 					$storeSharedLink = function ($data, $target) {
+						// check if we are going to fast
+						if (isset($data->error_summary) && strpos($data->error_summary, 'too_many_requests') !== false)
+						{
+							$this->slowDown($data);
+							// this call was droped, so we must try again
+							$this->createSharedLinks_[] = json_encode(array("path" => $target, "settings" => array("requested_visibility" => "public")));
+						}
 						// check if link already made
-						if (isset($data->error_summary) && strpos($data->error_summary, 'shared_link_already_exists') !== false)
+						elseif (isset($data->error_summary) && strpos($data->error_summary, 'shared_link_already_exists') !== false)
 						{
 							$this->getSharedLinks[] = json_encode(array("path" => $target));
 						}
@@ -211,19 +265,33 @@ class Dropbox
 						}
 					};
 					// run call
-					return $this->multiCall($url, $type, $storeSharedLink);
+					if ($this->checkArray($this->createSharedLinks))
+					{
+						$this->multiCall($url, 'createSharedLinks', $storeSharedLink);
+					}
+					// also run the retries
+					if ($this->checkArray($this->createSharedLinks_))
+					{
+						$this->multiCall($url, 'createSharedLinks_', $storeSharedLink);
+					}
 				}
 			break;
 			case "get":
 				// now get the already made links
-				if (count($this->getSharedLinks) > 0)
+				if ($this->checkArray($this->getSharedLinks) || $this->checkArray($this->getSharedLinks_))
 				{
 					$url = $this->url.$this->domainpath['list_shared_links'];
 					$this->type = 'list_shared_links';
 					// build return function
 					$storeSharedLink = function ($data, $target) {
 						// check if link not made
-						if (isset($data->error_summary))
+						if (isset($data->error_summary) && strpos($data->error_summary, 'too_many_requests') !== false)
+						{
+							$this->slowDown($data);
+							// this call was droped, so we must try again
+							$this->getSharedLinks_[] = json_encode(array("path" => $target));
+						}
+						elseif (isset($data->error_summary))
 						{
 							$this->createSharedLinks[] = json_encode(array("path" => $target, "settings" => array("requested_visibility" => "public")));
 						}
@@ -233,21 +301,28 @@ class Dropbox
 						}
 					};
 					// run call
-					return $this->multiCall($url, $type, $storeSharedLink);
+					if ($this->checkArray($this->getSharedLinks))
+					{
+						$this->multiCall($url, 'getSharedLinks', $storeSharedLink);
+					}
+					// also run the retries
+					if ($this->checkArray($this->getSharedLinks_))
+					{
+						$this->multiCall($url, 'getSharedLinks_', $storeSharedLink);
+					}
 				}
 			break;
 		}
-		return false;
 	}
 	
 	protected function multiCall(&$url, $type, &$storeSharedLink)
 	{
 		$timer = 1;
 		$options = array();
-		// set the options array and make the calls every 250
-		foreach ($this->{$type."SharedLinks"} as $query)
+		// set the options array and make the calls every 550
+		foreach ($this->{$type} as $query)
 		{
-			$options[] = array(CURLOPT_HTTPHEADER => array('Authorization: Bearer ' . $this->oauthToken, 'Content-Type: application/json'), CURLOPT_POST => 1,  CURLOPT_POSTFIELDS => $query); $timer++;
+			$options[] = array(CURLOPT_HTTPHEADER => array('Authorization: Bearer ' . $this->getToken(), 'Content-Type: application/json'), CURLOPT_POST => 1,  CURLOPT_POSTFIELDS => $query); $timer++;
 			// check timer
 			if ($timer >= 550)
 			{
@@ -259,19 +334,33 @@ class Dropbox
 			}
 		}
 		// make sure all was done
-		if ($timer > 1 && count($options))
+		if ($timer > 1 && $this->checkArray($options))
 		{
 			// run multi curl
 			$this->curlMultiExec($url, $options, $storeSharedLink);
 		}
 		// reset the values
-		$this->{$type."SharedLinks"} = array();
-		// only if there is no errors
-		if (count($this->error_summary) > 0)
+		$this->{$type} = array();
+		// check if we have errors
+		if ($this->checkArray($this->error_summary))
 		{
-			return false;
+			$this->succesCall = false;
 		}
-		return true;
+	}
+	
+	public function slowDown($data)
+	{
+		if (!$this->speedup)
+		{
+			// set default
+			$this->slowdown = 300000000;
+			// can we set it dynamicly
+			if (isset($data->error) && isset($data->error->retry_after))
+			{
+				// convert retry_after minutes to microseconds
+				$this->slowdown = (int) bcmul($data->error->retry_after, 1000000);
+			}
+		}
 	}
 	
 	public function revokeToken($token = null)
@@ -279,14 +368,23 @@ class Dropbox
 		if ($token)
 		{
 			// set the oauth toke
-			$this->oauthToken = $token;
+			$this->oauthToken[] = $token;
 		}
 		// set the call to revoke the token
 		$this->query = 'null';
 		$this->type = 'revoke';
-		if ($this->makeCall())
+		// remove all tokens
+		$removed = true;
+		if ($this->checkArray($this->oauthToken))
 		{
-			return true;
+			foreach($this->oauthToken as $token)
+			{
+				if (!$this->makeCall())
+				{
+					$removed = false;
+				}
+			}
+			return $removed;
 		}
 		return false;
 	}
@@ -339,7 +437,7 @@ class Dropbox
 		$options = array(
 			'http' => array(
 				'header' => "Content-Type: application/json\r\n".
-					"Authorization: Bearer ".$this->oauthToken,
+					"Authorization: Bearer ".$this->getToken(),
 				'method'  => "POST"
 			),
 		);
@@ -374,7 +472,7 @@ class Dropbox
 	protected function makeCurlCall()
 	{
 		// do not run creat shared link this way
-		$headers = array('Authorization: Bearer '. $this->oauthToken,
+		$headers = array('Authorization: Bearer '. $this->getToken(),
 				'Content-Type: application/json'
 			);
 
@@ -626,8 +724,16 @@ class Dropbox
 	{
 		if ($this->checkString($url))
 		{
+			// check if we should slow down
+			if ($this->slowdown > 0)
+			{
+				usleep($this->slowdown);
+				// reset the trafic speed
+				$this->slowdown = 0;
+				$this->speedup = true; // we should only sleep once per/bunch
+			}
 			// make sure the thread size isn't greater than the # of _options
-			$threadSize = 20;
+			$threadSize = 50;
 			$threadSize = (sizeof($_options) < $threadSize) ? sizeof($_options) : $threadSize;
 			// set the options
 			$options = array();
@@ -664,8 +770,20 @@ class Dropbox
 						// $info = curl_getinfo($done['handle']);
 						// request successful. process output using the callback function.
 						$output = curl_multi_getcontent($done['handle']);
-						$callback(json_decode($output), json_decode(end($_options[$i]))->path);
+						if ($this->checkJson($output) && isset($_options[$i]))
+						{
+							$callback(json_decode($output), json_decode(end($_options[$i]))->path);
+						}
 					}
+					// check if we should slow down
+					if ($this->slowdown > 0)
+					{
+						usleep($this->slowdown);
+						// reset the trafic speed
+						$this->slowdown = 0;
+						$this->speedup = true; // we should only sleep once per/bunch
+					}
+					// next key
 					$key = $i + 1;
 					if(isset($_options[$key]))
 					{

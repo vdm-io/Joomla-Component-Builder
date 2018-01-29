@@ -466,7 +466,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 					getIS(1,board).done(function(result) {
 						if (result){
 							jQuery("#cpanel_tabTabs a").each(function() {
-								if (this.href.indexOf("#vast_development_method") >= 0) {
+								if (this.href.indexOf("#vast_development_method") >= 0 || this.href.indexOf("#notice_board") >= 0) {
 									var textVDM = jQuery(this).text();
 									jQuery(this).html("<span class=\"label label-important vdm-new-notice\">1</span> "+textVDM);
 									jQuery(this).attr("id","vdm-new-notice");
