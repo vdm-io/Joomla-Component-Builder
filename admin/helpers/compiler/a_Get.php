@@ -144,7 +144,7 @@ class Get
 	public $customCodeMemory = array();
 
 	/**
-	 * The custom code in local files that aready exist in system
+	 * The custom code in local files that already exist in system
 	 * 
 	 * @var      array
 	 */
@@ -163,6 +163,13 @@ class Get
 	 * @var      array
 	 */
 	protected $codeAreadyDone = array();
+
+	/**
+	 * The online code to be added
+	 * 
+	 * @var      array
+	 */
+	protected $onlineCodeData = array();
 
 	/*
 	 * The line numbers Switch
@@ -3651,19 +3658,90 @@ class Get
 	{
 		if (ComponentbuilderHelper::checkString($string))
 		{
-			return $this->setLangStrings($this->setCustomCodeData($string));
+			return $this->setLangStrings($this->setCustomCodeData($this->setOnlineCodeData($string)));
 		}
 		return $string;
 	}
-
+	/**
+	 * We start set the online code data & can load it in to string
+	 * 
+	 * @param   string   $string The content to check
+	 *
+	 * @return  string
+	 * 
+	 */
+	public function setOnlineCodeData($string)
+	{
+		// check if content has custom code place holder
+		if (strpos($string, '[ONLIN' . 'ECODE=') !== false)
+		{
+			// urls content
+			$bucket = array();
+			$found = ComponentbuilderHelper::getAllBetween($string, '[ONLIN' . 'ECODE=', ']');
+			if (ComponentbuilderHelper::checkArray($found))
+			{
+				// build local bucket
+				foreach ($found as $url)
+				{
+					$key = '[ONLIN' . 'ECODE=' . $url . ']';
+					$urlKey = trim($url);
+					// check if we already fethced this
+					if (!isset($this->onlineCodeData[$urlKey]))
+					{
+						// get the data string (code)
+						$this->onlineCodeData[$urlKey] = ComponentbuilderHelper::getFileContents($urlKey);
+						// did we get any value
+						if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
+						{
+							// check for changes
+							$liveHash = md5($this->onlineCodeData[$urlKey]);
+							// check if it exist local
+							if ($hash = ComponentbuilderHelper::getVar('online_code', $urlKey, 'url', 'hash'))
+							{
+								if ($hash !== $liveHash)
+								{
+									$object = new stdClass();
+									$object->url = $urlKey;
+									$object->hash = $liveHash;
+									// update local hash
+									$this->db->updateObject('#__componentbuilder_online_code', $object, 'url');
+									// give notice of the change
+									$this->app->enqueueMessage(JText::sprintf('The code from <b>%s</b> has been changed since the last compilation, please investigate!', $urlKey), 'warning');
+								}
+							}
+							else
+							{
+								// add the hash to track changes
+								$object = new stdClass();
+								$object->url = $urlKey;
+								$object->hash = $liveHash;
+								// insert local hash
+								$this->db->insertObject('#__componentbuilder_online_code', $object);
+							}
+						}
+					}
+					// add to local bucket
+					if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
+					{
+						$bucket[$key] = $this->onlineCodeData[$urlKey];
+					}
+				}
+				// now update local string if bucket has values
+				if (ComponentbuilderHelper::checkArray($bucket))
+				{
+					$string = $this->setPlaceholders($string, $bucket);
+				}
+			}
+		}
+		return $string;
+	}
+	
 	/**
 	 * We start set the custom code data & can load it in to string
 	 * 
 	 * @param   string   $string The content to check
-	 * @param   bool     $insert Should we insert the code into the content
-	 * @param   bool     $bool Should we return bool on success
 	 *
-	 * @return  string|bool based on sig
+	 * @return  string
 	 * 
 	 */
 	public function setCustomCodeData($string)
@@ -3690,11 +3768,11 @@ class Get
 						$getFuncName = trim($key);
 						if (!isset($this->functionNameMemory[$getFuncName]))
 						{
-							if (!$found = ComponentbuilderHelper::getVar('custom_code', $getFuncName, 'function_name', 'id'))
+							if (!$found_local = ComponentbuilderHelper::getVar('custom_code', $getFuncName, 'function_name', 'id'))
 							{
 								continue;
 							}
-							$this->functionNameMemory[$getFuncName] = $found;
+							$this->functionNameMemory[$getFuncName] = $found_local;
 						}
 						$id = (int) $this->functionNameMemory[$getFuncName];
 					}
@@ -3711,11 +3789,11 @@ class Get
 							$getFuncName = trim($array[0]);
 							if (!isset($this->functionNameMemory[$getFuncName]))
 							{
-								if (!$found = ComponentbuilderHelper::getVar('custom_code', $getFuncName, 'function_name', 'id'))
+								if (!$found_local = ComponentbuilderHelper::getVar('custom_code', $getFuncName, 'function_name', 'id'))
 								{
 									continue;
 								}
-								$this->functionNameMemory[$getFuncName] = $found;
+								$this->functionNameMemory[$getFuncName] = $found_local;
 							}
 							$id = (int) $this->functionNameMemory[$getFuncName];
 						}
@@ -4618,6 +4696,7 @@ class Get
 						{
 							// reset found comment type
 							$commentType = 0;
+							$this->app->enqueueMessage(JText::sprintf('We found dynamic code <b>all in one line</b>, and ignored it! Please review (%s) for more details!', $path), 'warning');
 							continue;
 						}
 						// do a quick check to insure we have an id
