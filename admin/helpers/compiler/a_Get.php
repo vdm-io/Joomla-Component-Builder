@@ -3719,6 +3719,11 @@ class Get
 								$this->db->insertObject('#__componentbuilder_online_code', $object);
 							}
 						}
+						else
+						{
+							// set notice that we could not get the code from the url
+							$this->app->enqueueMessage(JText::sprintf('The code from <b>%s</b> could not be added!', $urlKey), 'warning');
+						}
 					}
 					// add to local bucket
 					if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
@@ -4360,6 +4365,9 @@ class Get
 			foreach ($bucket as $nr => &$customCode)
 			{
 				$customCode['code'] = base64_decode($customCode['code']);
+				// always insure that the online code is loaded
+				$customCode['code'] = $this->setOnlineCodeData($customCode['code']);
+				// set the lang only if needed
 				if ($setLang)
 				{
 					$customCode['code'] = $this->setLangStrings($customCode['code']);
