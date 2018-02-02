@@ -1737,6 +1737,49 @@ abstract class ComponentbuilderHelper
 	}
 			
 	/**
+	*	Check if the url exist
+	* 
+	*	@param  string   $url   The url to check
+	*
+	*	@return  bool      If exist true
+	* 
+	*/
+	public static function urlExists($url)
+	{
+		$exists = false;
+		// check if we can use curl
+		if (function_exists('curl_version'))
+		{
+			// initiate curl
+			$ch = curl_init($url);
+			// CURLOPT_NOBODY (do not return body)
+			curl_setopt($ch, CURLOPT_NOBODY, true);
+			// make call
+			$result = curl_exec($ch);
+			// check return value
+			if ($result !== false)
+			{
+				// get the http CODE
+				$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				if ($statusCode === 200)
+				{
+					$exists = true;
+				}
+			}
+			// close the connection
+			curl_close($ch);
+		}
+		elseif ($headers = @get_headers($url))
+		{
+			if(isset($headers[0]) && is_string($headers[0]) && strpos($headers[0],'404') === false)
+			{
+				$exists = true;
+			}
+		}
+		return $exists;
+	}			
+			
+	/**
 	*	Get the file path or url
 	* 
 	*	@param  string   $type              The (url/path) type to return

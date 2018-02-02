@@ -3658,19 +3658,20 @@ class Get
 	{
 		if (ComponentbuilderHelper::checkString($string))
 		{
-			return $this->setLangStrings($this->setCustomCodeData($this->setOnlineCodeData($string)));
+			return $this->setLangStrings($this->setCustomCodeData($this->setOnlineCodeString($string)));
 		}
 		return $string;
 	}
+	
 	/**
-	 * We start set the online code data & can load it in to string
+	 * We start set the online code string & can load it in to string
 	 * 
 	 * @param   string   $string The content to check
 	 *
 	 * @return  string
 	 * 
 	 */
-	public function setOnlineCodeData($string)
+	public function setOnlineCodeString($string)
 	{
 		// check if content has custom code place holder
 		if (strpos($string, '[ONLIN' . 'ECODE=') !== false)
@@ -3683,52 +3684,22 @@ class Get
 				// build local bucket
 				foreach ($found as $url)
 				{
-					$key = '[ONLIN' . 'ECODE=' . $url . ']';
-					$urlKey = trim($url);
-					// check if we already fethced this
-					if (!isset($this->onlineCodeData[$urlKey]))
+					// check if the URL is valid
+					if (!filter_var($url, FILTER_VALIDATE_URL) === false && ComponentbuilderHelper::urlExists($url))
 					{
-						// get the data string (code)
-						$this->onlineCodeData[$urlKey] = ComponentbuilderHelper::getFileContents($urlKey);
-						// did we get any value
-						if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
-						{
-							// check for changes
-							$liveHash = md5($this->onlineCodeData[$urlKey]);
-							// check if it exist local
-							if ($hash = ComponentbuilderHelper::getVar('online_code', $urlKey, 'url', 'hash'))
-							{
-								if ($hash !== $liveHash)
-								{
-									$object = new stdClass();
-									$object->url = $urlKey;
-									$object->hash = $liveHash;
-									// update local hash
-									$this->db->updateObject('#__componentbuilder_online_code', $object, 'url');
-									// give notice of the change
-									$this->app->enqueueMessage(JText::sprintf('The code from <b>%s</b> has been changed since the last compilation, please investigate!', $urlKey), 'warning');
-								}
-							}
-							else
-							{
-								// add the hash to track changes
-								$object = new stdClass();
-								$object->url = $urlKey;
-								$object->hash = $liveHash;
-								// insert local hash
-								$this->db->insertObject('#__componentbuilder_online_code', $object);
-							}
-						}
-						else
-						{
-							// set notice that we could not get the code from the url
-							$this->app->enqueueMessage(JText::sprintf('The code from <b>%s</b> could not be added!', $urlKey), 'warning');
-						}
+						$this->getOnlineCodeString($url, $bucket);
 					}
-					// add to local bucket
-					if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
+					// check if this is a path
+					elseif (JPath::clean($url) === $url && JFile::exists($url))
 					{
-						$bucket[$key] = $this->onlineCodeData[$urlKey];
+						$this->getOnlineCodeString($url, $bucket);
+					}
+					// give notice that url/path is not valid
+					else
+					{
+						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', '[ONLIN'.'ECODE='.$url.']'), 'warning');
+						// remove the placeholder
+						$bucket['[ONLIN'.'ECODE='.$url.']'] = '';
 					}
 				}
 				// now update local string if bucket has values
@@ -3739,6 +3710,70 @@ class Get
 			}
 		}
 		return $string;
+	}
+	
+	/**
+	 * Get the Online Code/String
+	 * 
+	 * @param   string   $string The content to check
+	 * @param   array    $bucket The Placeholders bucket
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function getOnlineCodeString($url, &$bucket)
+	{
+		// set key
+		$key = '[ONLIN' . 'ECODE=' . $url . ']';
+		// set URL key
+		$urlKey = trim($url);
+		// check if we already fethced this
+		if (!isset($this->onlineCodeData[$urlKey]))
+		{
+			// get the data string (code)
+			$this->onlineCodeData[$urlKey] = ComponentbuilderHelper::getFileContents($urlKey);
+			// did we get any value
+			if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
+			{
+				// check for changes
+				$liveHash = md5($this->onlineCodeData[$urlKey]);
+				// check if it exist local
+				if ($hash = ComponentbuilderHelper::getVar('online_code', $urlKey, 'url', 'hash'))
+				{
+					if ($hash !== $liveHash)
+					{
+						$object = new stdClass();
+						$object->url = $urlKey;
+						$object->hash = $liveHash;
+						// update local hash
+						$this->db->updateObject('#__componentbuilder_online_code', $object, 'url');
+						// give notice of the change
+						$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been changed since the last compilation, please investigate!', $key), 'warning');
+					}
+				}
+				else
+				{
+					// add the hash to track changes
+					$object = new stdClass();
+					$object->url = $urlKey;
+					$object->hash = $liveHash;
+					// insert local hash
+					$this->db->insertObject('#__componentbuilder_online_code', $object);
+				}
+			}
+			else
+			{
+				// set notice that we could not get the code from the url
+				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> returned an empty string!', $key), 'warning');
+				// remove the tag
+				$this->onlineCodeData[$urlKey] = '';
+			}
+		}
+		// add to local bucket
+		if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
+		{
+			$bucket[$key] = $this->onlineCodeData[$urlKey];
+		}
 	}
 	
 	/**
@@ -4366,7 +4401,7 @@ class Get
 			{
 				$customCode['code'] = base64_decode($customCode['code']);
 				// always insure that the online code is loaded
-				$customCode['code'] = $this->setOnlineCodeData($customCode['code']);
+				$customCode['code'] = $this->setOnlineCodeString($customCode['code']);
 				// set the lang only if needed
 				if ($setLang)
 				{
