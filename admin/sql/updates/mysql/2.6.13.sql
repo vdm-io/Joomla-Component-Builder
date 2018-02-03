@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS `#__componentbuilder_online_code` (
-	`url` VARCHAR(255) NOT NULL DEFAULT '',
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_external_code` (
+	`target` VARCHAR(255) NOT NULL DEFAULT '',
 	`hash` VARCHAR(64) NOT NULL DEFAULT '',
-	PRIMARY KEY  (`url`)
+	PRIMARY KEY  (`target`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

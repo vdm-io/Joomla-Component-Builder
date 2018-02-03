@@ -165,11 +165,11 @@ class Get
 	protected $codeAreadyDone = array();
 
 	/**
-	 * The online code to be added
+	 * The external code/string to be added
 	 * 
 	 * @var      array
 	 */
-	protected $onlineCodeData = array();
+	protected $externalCodeString = array();
 
 	/*
 	 * The line numbers Switch
@@ -3658,48 +3658,47 @@ class Get
 	{
 		if (ComponentbuilderHelper::checkString($string))
 		{
-			return $this->setLangStrings($this->setCustomCodeData($this->setOnlineCodeString($string)));
+			return $this->setLangStrings($this->setCustomCodeData($this->setExternalCodeString($string)));
 		}
 		return $string;
 	}
 	
 	/**
-	 * We start set the online code string & can load it in to string
+	 * Set the external code string & load it in to string
 	 * 
 	 * @param   string   $string The content to check
 	 *
 	 * @return  string
 	 * 
 	 */
-	public function setOnlineCodeString($string)
+	public function setExternalCodeString($string)
 	{
 		// check if content has custom code place holder
-		if (strpos($string, '[ONLIN' . 'ECODE=') !== false)
+		if (strpos($string, '[EXTERNA'.'LCODE=') !== false)
 		{
-			// urls content
+			// target content
 			$bucket = array();
-			$found = ComponentbuilderHelper::getAllBetween($string, '[ONLIN' . 'ECODE=', ']');
+			$found = ComponentbuilderHelper::getAllBetween($string, '[EXTERNA'.'LCODE=', ']');
 			if (ComponentbuilderHelper::checkArray($found))
 			{
 				// build local bucket
-				foreach ($found as $url)
+				foreach ($found as $target)
 				{
-					// check if the URL is valid
-					if (!filter_var($url, FILTER_VALIDATE_URL) === false && ComponentbuilderHelper::urlExists($url))
+					// check if the target is valid URL or path
+					if ((!filter_var($target, FILTER_VALIDATE_URL) === false && ComponentbuilderHelper::urlExists($target))
+						|| (JPath::clean($target) === $target && JFile::exists($target)))
 					{
-						$this->getOnlineCodeString($url, $bucket);
+						$this->getExternalCodeString($target, $bucket);
 					}
-					// check if this is a path
-					elseif (JPath::clean($url) === $url && JFile::exists($url))
-					{
-						$this->getOnlineCodeString($url, $bucket);
-					}
-					// give notice that url/path is not valid
+					// give notice that target is not a valid url/path
 					else
 					{
-						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', '[ONLIN'.'ECODE='.$url.']'), 'warning');
+						// set key
+						$key = '[EXTERNA'.'LCODE='.$target.']';
+						// set the notice
+						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', $key), 'warning');
 						// remove the placeholder
-						$bucket['[ONLIN'.'ECODE='.$url.']'] = '';
+						$bucket[$key] = '';
 					}
 				}
 				// now update local string if bucket has values
@@ -3713,7 +3712,7 @@ class Get
 	}
 	
 	/**
-	 * Get the Online Code/String
+	 * Get the External Code/String
 	 * 
 	 * @param   string   $string The content to check
 	 * @param   array    $bucket The Placeholders bucket
@@ -3721,32 +3720,32 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	protected function getOnlineCodeString($url, &$bucket)
+	protected function getExternalCodeString($target, &$bucket)
 	{
 		// set key
-		$key = '[ONLIN' . 'ECODE=' . $url . ']';
+		$key = '[EXTERNA'.'LCODE=' . $target . ']';
 		// set URL key
-		$urlKey = trim($url);
-		// check if we already fethced this
-		if (!isset($this->onlineCodeData[$urlKey]))
+		$targetKey = trim($target);
+		// check if we already fetched this
+		if (!isset($this->externalCodeString[$targetKey]))
 		{
 			// get the data string (code)
-			$this->onlineCodeData[$urlKey] = ComponentbuilderHelper::getFileContents($urlKey);
+			$this->externalCodeString[$targetKey] = ComponentbuilderHelper::getFileContents($targetKey);
 			// did we get any value
-			if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
+			if (ComponentbuilderHelper::checkString($this->externalCodeString[$targetKey]))
 			{
 				// check for changes
-				$liveHash = md5($this->onlineCodeData[$urlKey]);
+				$liveHash = md5($this->externalCodeString[$targetKey]);
 				// check if it exist local
-				if ($hash = ComponentbuilderHelper::getVar('online_code', $urlKey, 'url', 'hash'))
+				if ($hash = ComponentbuilderHelper::getVar('external_code', $targetKey, 'target', 'hash'))
 				{
 					if ($hash !== $liveHash)
 					{
 						$object = new stdClass();
-						$object->url = $urlKey;
+						$object->target = $targetKey;
 						$object->hash = $liveHash;
 						// update local hash
-						$this->db->updateObject('#__componentbuilder_online_code', $object, 'url');
+						$this->db->updateObject('#__componentbuilder_external_code', $object, 'target');
 						// give notice of the change
 						$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been changed since the last compilation, please investigate!', $key), 'warning');
 					}
@@ -3755,24 +3754,22 @@ class Get
 				{
 					// add the hash to track changes
 					$object = new stdClass();
-					$object->url = $urlKey;
+					$object->target = $targetKey;
 					$object->hash = $liveHash;
 					// insert local hash
-					$this->db->insertObject('#__componentbuilder_online_code', $object);
+					$this->db->insertObject('#__componentbuilder_external_code', $object);
 				}
 			}
 			else
 			{
-				// set notice that we could not get the code from the url
-				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> returned an empty string!', $key), 'warning');
-				// remove the tag
-				$this->onlineCodeData[$urlKey] = '';
+				// set notice that we could not get a valid string from the target
+				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> returned an invalid string!', $key), 'warning');
 			}
 		}
 		// add to local bucket
-		if (ComponentbuilderHelper::checkString($this->onlineCodeData[$urlKey]))
+		if (isset($this->externalCodeString[$targetKey]))
 		{
-			$bucket[$key] = $this->onlineCodeData[$urlKey];
+			$bucket[$key] = $this->externalCodeString[$targetKey];
 		}
 	}
 	
@@ -4400,8 +4397,8 @@ class Get
 			foreach ($bucket as $nr => &$customCode)
 			{
 				$customCode['code'] = base64_decode($customCode['code']);
-				// always insure that the online code is loaded
-				$customCode['code'] = $this->setOnlineCodeString($customCode['code']);
+				// always insure that the external code is loaded
+				$customCode['code'] = $this->setExternalCodeString($customCode['code']);
 				// set the lang only if needed
 				if ($setLang)
 				{

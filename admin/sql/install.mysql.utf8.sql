@@ -1634,10 +1634,10 @@ INSERT INTO `#__componentbuilder_library_files_folders_urls` (`id`, `addfiles`, 
 (2, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/js\\/bootstrap.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/css\\/bootstrap.min.css\",\"type\":\"2\"}}', 2, '', 1, '2017-11-25 16:17:36', '2017-12-25 12:40:16', 10, '', 2),
 (3, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit-icons.min.js\",\"type\":\"2\"},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/css\\/uikit.min.css\",\"type\":\"2\"}}', 3, '', 1, '2017-11-25 21:47:40', '2017-12-25 12:38:24', 8, '', 3);
 
-CREATE TABLE IF NOT EXISTS `#__componentbuilder_online_code` (
-	`url` VARCHAR(255) NOT NULL DEFAULT '',
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_external_code` (
+	`target` VARCHAR(255) NOT NULL DEFAULT '',
 	`hash` VARCHAR(64) NOT NULL DEFAULT '',
-	PRIMARY KEY  (`url`)
+	PRIMARY KEY  (`target`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 
