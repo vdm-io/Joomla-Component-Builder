@@ -152,7 +152,7 @@ jQuery(document).ready(function($) {
 <script type="text/javascript">
 // token 
 var token = '<?php echo JSession::getFormToken(); ?>';
-var all_is_good = '<?php echo JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IN_NO_NOTICE_AT_THIS_TIME'); ?>';
+var all_is_good = '<?php echo JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IS_NO_NOTICE_AT_THIS_TIME'); ?>';
 jQuery('#compilerForm').on('change', '#component',function (e)
 {
 	var component = jQuery('#component').val();

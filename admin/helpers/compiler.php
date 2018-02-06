@@ -175,6 +175,16 @@ class Compiler extends Infusion
 					$this->app->enqueueMessage('<hr />', 'Warning');
 				}
 			}
+			// check if we should add a EXTERNALCODE notice
+			if (ComponentbuilderHelper::checkArray($this->externalCodeString))
+			{
+				// number of external code strings
+				$externalCount = count($this->externalCodeString);
+				// the correct string
+				$externalCodeString = ($externalCount == 1) ? JText::_('code/string') : JText::_('code/strings');
+				// the notice
+				$this->app->enqueueMessage(JText::sprintf('There has been <b>%s - %s</b> added to this component as EXTERNALCODE. To avoid shipping your component with malicious %s always make sure that the correct <b>code/string values</b> were used.', $externalCount, $externalCodeString, $externalCodeString), 'Notice');
+			}
 			// end the timer here
 			$this->time_end = microtime(true);
 			$this->secondsCompiled = $this->time_end - $this->time_start;
@@ -691,20 +701,20 @@ class Compiler extends Infusion
 						{
 							// Load escaped code since the target endhash has changed
 							$this->loadEscapedCode($file, $target, $lineBites);
-							$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'warning');
+							$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'Warning');
 						}
 					}
 					else
 					{
 						// Load escaped code since the target hash has changed
 						$this->loadEscapedCode($file, $target, $lineBites);
-						$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'warning');
+						$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'Warning');
 					}
 				}
 				else
 				{
 					// Give developer a notice that file is not found.
-					$this->app->enqueueMessage(JText::sprintf('File <b>%s</b> could not be found, so the custom code for this file could not be addded.', $target['path']), 'warning');
+					$this->app->enqueueMessage(JText::sprintf('File <b>%s</b> could not be found, so the custom code for this file could not be addded.', $target['path']), 'Warning');
 				}
 			}
 		}

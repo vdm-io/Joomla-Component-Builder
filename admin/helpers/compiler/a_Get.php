@@ -247,10 +247,10 @@ class Get
 	 * @var      array
 	 */
 	public $langStringTargets = array(
-		'Joomla.JText._(',
-		'JText::script(',
-		'JText::_(',
-		'JText::sprintf('
+		'Joomla'.'.JText._(',
+		'JText:'.':script(',
+		'JText:'.':_(',
+		'JText:'.':sprintf('
 	);
 
 	/**
@@ -3171,10 +3171,10 @@ class Get
 			// insure string is not broken
 			$content = str_replace('COM_###COMPONENT###', $this->langPrefix, $content);
 			// first get the Joomla.JText._()
-			if (in_array('Joomla.JText._(', $langStringTargets))
+			if (in_array('Joomla'.'.JText._(', $langStringTargets))
 			{
-				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, "Joomla.JText._('", "'");
-				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'Joomla.JText._("', '"');
+				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, "Joomla".".JText._('", "'");
+				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'Joomla.'.'JText._("', '"');
 				// combine into one array
 				$jsTEXT = ComponentbuilderHelper::mergeArrays($jsTEXT);
 				// we need to add a check to insure these JavaScript lang matchup
@@ -3185,11 +3185,11 @@ class Get
 					$this->langMismatch = ComponentbuilderHelper::mergeArrays(array($jsTEXT, $this->langMismatch));
 				}
 			}
-			// now get the JText::script()
-			if (in_array('JText::script(', $langStringTargets))
+			// now get the JText: :script()
+			if (in_array('JText:'.':script(', $langStringTargets))
 			{
-				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, "JText::script('", "'");
-				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'JText::script("', '"');
+				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, "JText:".":script('", "'");
+				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'JText:'.':script("', '"');
 				// combine into one array
 				$scTEXT = ComponentbuilderHelper::mergeArrays($scTEXT);
 				// we need to add a check to insure these JavaScript lang matchup
@@ -3204,7 +3204,7 @@ class Get
 			foreach ($langStringTargets as $langStringTarget)
 			{
 				// need some special treatment here
-				if ($langStringTarget === 'Joomla.JText._(' || $langStringTarget === 'JText::script(')
+				if ($langStringTarget === 'Joomla'.'.JText._(' || $langStringTarget === 'JText:'.':script(')
 				{
 					continue;
 				}
@@ -3696,7 +3696,7 @@ class Get
 						// set key
 						$key = '[EXTERNA'.'LCODE='.$target.']';
 						// set the notice
-						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', $key), 'warning');
+						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', $key), 'Warning');
 						// remove the placeholder
 						$bucket[$key] = '';
 					}
@@ -3741,13 +3741,14 @@ class Get
 				{
 					if ($hash !== $liveHash)
 					{
+						// update the hash since it changed
 						$object = new stdClass();
 						$object->target = $targetKey;
 						$object->hash = $liveHash;
 						// update local hash
 						$this->db->updateObject('#__componentbuilder_external_code', $object, 'target');
 						// give notice of the change
-						$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been changed since the last compilation, please investigate!', $key), 'warning');
+						$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been <b>changed</b> since the last compilation, please investigate to insure the changes are safe!', $key), 'Warning');
 					}
 				}
 				else
@@ -3758,12 +3759,14 @@ class Get
 					$object->hash = $liveHash;
 					// insert local hash
 					$this->db->insertObject('#__componentbuilder_external_code', $object);
+					// give notice the first time this is added
+					$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been added for the <b>first time</b>, please investigate to insure the correct code/string was used!', $key), 'Notice');
 				}
 			}
 			else
 			{
 				// set notice that we could not get a valid string from the target
-				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> returned an invalid string!', $key), 'warning');
+				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> returned an invalid string!', $key), 'Warning');
 			}
 		}
 		// add to local bucket
@@ -4736,7 +4739,7 @@ class Get
 						{
 							// reset found comment type
 							$commentType = 0;
-							$this->app->enqueueMessage(JText::sprintf('We found dynamic code <b>all in one line</b>, and ignored it! Please review (%s) for more details!', $path), 'warning');
+							$this->app->enqueueMessage(JText::sprintf('We found dynamic code <b>all in one line</b>, and ignored it! Please review (%s) for more details!', $path), 'Warning');
 							continue;
 						}
 						// do a quick check to insure we have an id

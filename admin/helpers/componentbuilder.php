@@ -1761,7 +1761,7 @@ abstract class ComponentbuilderHelper
 			{
 				// get the http CODE
 				$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-				if ($statusCode === 200)
+				if ($statusCode !== 404)
 				{
 					$exists = true;
 				}

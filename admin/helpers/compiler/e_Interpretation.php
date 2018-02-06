@@ -255,7 +255,7 @@ class Interpretation extends Fields
 				$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = $this->setHelperLicenseLock($_VDM, 'site');
 				$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = $this->setHelperLicenseLock($_VDM, 'admin');
 				$this->fileContentStatic['###LICENSE_LOCKED_INT###'] = $this->setInitLicenseLock($_VDM);
-				$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = PHP_EOL . PHP_EOL . 'defined(\'' . $_VDM . '\') or die(JText::_(\'NIE_REG_NIE\'));';
+				$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = PHP_EOL . PHP_EOL . 'defined(\'' . $_VDM . '\') or die(JText:'.':_(\'NIE_REG_NIE\'));';
 			}
 		}
 		else
@@ -300,7 +300,7 @@ class Interpretation extends Fields
 		$statment[] = PHP_EOL . "\t\tif (!" . $thIIS . "->" . $boolMethod . "())";
 		$statment[] = "\t\t{";
 		$statment[] = "\t\t\t\$app = JFactory::getApplication();";
-		$statment[] = "\t\t\t\$app->enqueueMessage(JText::_('NIE_REG_NIE'), 'error');";
+		$statment[] = "\t\t\t\$app->enqueueMessage(JText:".":_('NIE_REG_NIE'), 'error');";
 		$statment[] = "\t\t\t\$app->redirect('index.php');";
 		$statment[] = "\t\t\treturn false;";
 		$statment[] = "\t\t}";
@@ -2070,7 +2070,7 @@ class Interpretation extends Fields
 			{
 				$this->langContent['site'][$langKeyWord] = 'Not authorised to view ' . $view['settings']->code . '!';
 			}
-			$accessCheck[] = "\t\t\t\$app->enqueueMessage(JText::_('" . $langKeyWord . "'), 'error');";
+			$accessCheck[] = "\t\t\t\$app->enqueueMessage(JText:".":_('" . $langKeyWord . "'), 'error');";
 			$accessCheck[] = $redirectMessage;
 			$accessCheck[] = "\t\t\t\$app->redirect(" . $redirectString . ");";
 			$accessCheck[] = "\t\t\treturn false;";
@@ -2124,7 +2124,7 @@ class Interpretation extends Fields
 					$this->langContent[$this->lang][$langKeyWoord] = 'Not found, or access denied.';
 				}
 				$getItem .= PHP_EOL . "\t" . $tab . "\t\t//" . $this->setLine(__LINE__) . " If no data is found redirect to default page and show warning.";
-				$getItem .= PHP_EOL . "\t" . $tab . "\t\t\$app->enqueueMessage(JText::_('" . $langKeyWoord . "'), 'warning');";
+				$getItem .= PHP_EOL . "\t" . $tab . "\t\t\$app->enqueueMessage(JText:".":_('" . $langKeyWoord . "'), 'warning');";
 				if ('site' === $this->target)
 				{
 					// check that the default and the redirect page is not the same
@@ -4571,7 +4571,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . "\t\t\t{";
 				$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
 				// TODO lang is not translated
-				$script .= PHP_EOL . "\t\t\t\t\$app->enqueueMessage(JText::_('The (" . $typeAlias . ") type alias was removed from the <b>#__content_type</b> table'));";
+				$script .= PHP_EOL . "\t\t\t\t\$app->enqueueMessage(JText:".":_('The (" . $typeAlias . ") type alias was removed from the <b>#__content_type</b> table'));";
 				$script .= PHP_EOL . "\t\t\t}";
 
 				// Now remove the related items from contentitem tag map table
@@ -4588,7 +4588,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . "\t\t\t{";
 				$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
 				// TODO lang is not translated
-				$script .= PHP_EOL . "\t\t\t\t\$app->enqueueMessage(JText::_('The (" . $typeAlias . ") type alias was removed from the <b>#__contentitem_tag_map</b> table'));";
+				$script .= PHP_EOL . "\t\t\t\t\$app->enqueueMessage(JText:".":_('The (" . $typeAlias . ") type alias was removed from the <b>#__contentitem_tag_map</b> table'));";
 				$script .= PHP_EOL . "\t\t\t}";
 
 				// Now remove the related items from ucm content table
@@ -4605,7 +4605,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . "\t\t\t{";
 				$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
 				// TODO lang is not translated
-				$script .= PHP_EOL . "\t\t\t\t\$app->enqueueMessage(JText::_('The (" . $typeAlias . ") type alias was removed from the <b>#__ucm_content</b> table'));";
+				$script .= PHP_EOL . "\t\t\t\t\$app->enqueueMessage(JText:".":_('The (" . $typeAlias . ") type alias was removed from the <b>#__ucm_content</b> table'));";
 				$script .= PHP_EOL . "\t\t\t}";
 
 				// setup the foreach loop of ids
@@ -4642,8 +4642,8 @@ class Interpretation extends Fields
 
 			$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " If All related items was removed queued success message.";
 			// TODO lang is not translated
-			$script .= PHP_EOL . "\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_base</b> table'));";
-			$script .= PHP_EOL . "\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_history</b> table'));";
+			$script .= PHP_EOL . "\t\t\$app->enqueueMessage(JText:".":_('All related items was removed from the <b>#__ucm_base</b> table'));";
+			$script .= PHP_EOL . "\t\t\$app->enqueueMessage(JText:".":_('All related items was removed from the <b>#__ucm_history</b> table'));";
 			// finaly remove the assets from the assets table
 			$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Remove " . $component . " assets from the assets table";
 			$script .= PHP_EOL . "\t\t\$" . $component . "_condition = array( \$db->quoteName('name') . ' LIKE ' . \$db->quote('com_" . $component . "%') );";
@@ -4657,7 +4657,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . "\t\t{";
 			$script .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " If succesfully remove " . $component . " add queued success message.";
 			// TODO lang is not translated
-			$script .= PHP_EOL . "\t\t\t\$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));";
+			$script .= PHP_EOL . "\t\t\t\$app->enqueueMessage(JText:".":_('All related items was removed from the <b>#__assets</b> table'));";
 			$script .= PHP_EOL . "\t\t}";
 			// done
 			$script .= PHP_EOL;
@@ -4995,7 +4995,7 @@ class Interpretation extends Fields
 			$batchmove[] = PHP_EOL . "\t\tif (!\$this->canDo->get('core.edit') && !\$this->canDo->get('core.batch'))";
 		}
 		$batchmove[] = "\t\t{";
-		$batchmove[] = "\t\t\t\$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
+		$batchmove[] = "\t\t\t\$this->setError(JText:".":_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
 		$batchmove[] = "\t\t\treturn false;";
 		$batchmove[] = "\t\t}" . $customScript;
 
@@ -5045,7 +5045,7 @@ class Interpretation extends Fields
 			$batchmove[] = "\t\t\tif (!\$this->user->authorise('core.edit', \$contexts[\$pk]))";
 		}
 		$batchmove[] = "\t\t\t{";
-		$batchmove[] = "\t\t\t\t\$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
+		$batchmove[] = "\t\t\t\t\$this->setError(JText:".":_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
 
 		$batchmove[] = PHP_EOL . "\t\t\t\treturn false;";
 		$batchmove[] = "\t\t\t}";
@@ -5063,7 +5063,7 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t\telse";
 		$batchmove[] = "\t\t\t\t{";
 		$batchmove[] = "\t\t\t\t\t//" . $this->setLine(__LINE__) . " Not fatal error";
-		$batchmove[] = "\t\t\t\t\t\$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
+		$batchmove[] = "\t\t\t\t\t\$this->setError(JText:".":sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
 		$batchmove[] = "\t\t\t\t\tcontinue;";
 		$batchmove[] = "\t\t\t\t}";
 		$batchmove[] = "\t\t\t}";
@@ -5249,7 +5249,7 @@ class Interpretation extends Fields
 		}
 		$batchcopy[] = PHP_EOL . "\t\t\t{";
 		$batchcopy[] = PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " Not fatal error";
-		$batchcopy[] = PHP_EOL . "\t\t\t\t\$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
+		$batchcopy[] = PHP_EOL . "\t\t\t\t\$this->setError(JText:".":sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
 		$batchcopy[] = PHP_EOL . "\t\t\t\tcontinue;";
 		$batchcopy[] = PHP_EOL . "\t\t\t}";
 
@@ -5266,7 +5266,7 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t\telse";
 		$batchcopy[] = "\t\t\t\t{";
 		$batchcopy[] = "\t\t\t\t\t//" . $this->setLine(__LINE__) . " Not fatal error";
-		$batchcopy[] = "\t\t\t\t\t\$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
+		$batchcopy[] = "\t\t\t\t\t\$this->setError(JText:".":sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
 		$batchcopy[] = "\t\t\t\t\tcontinue;";
 		$batchcopy[] = "\t\t\t\t}";
 		$batchcopy[] = "\t\t\t}";
@@ -5427,7 +5427,7 @@ class Interpretation extends Fields
 			{
 				$fixUniqe[] = PHP_EOL . "\t\t\t\tif (\$table->load(array('" . $alias . "' => \$data['" . $alias . "'], '" . $category . "' => \$data['" . $category . "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUniqe[] = "\t\t\t\t{";
-				$fixUniqe[] = "\t\t\t\t\t\$msg = JText::_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
+				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:".":_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
 				$fixUniqe[] = PHP_EOL . "\t\t\t\tlist(\$" . $title . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], \$data['" . $title . "']);";
 			}
@@ -5435,7 +5435,7 @@ class Interpretation extends Fields
 			{
 				$fixUniqe[] = PHP_EOL . "\t\t\t\tif (\$table->load(array('" . $alias . "' => \$data['" . $alias . "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUniqe[] = "\t\t\t\t{";
-				$fixUniqe[] = "\t\t\t\t\t\$msg = JText::_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
+				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:".":_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
 				$fixUniqe[] = PHP_EOL . "\t\t\t\tlist(\$" . $title . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], \$data['" . $title . "']);";
 			}
@@ -6119,7 +6119,7 @@ class Interpretation extends Fields
 				// check if translated value is used
 				if (isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list]) && array_key_exists($item['code'], $this->selectionTranslationFixBuilder[$viewName_list]))
 				{
-					$itemCode = '<?php echo JText::_($item->' . $item['code'] . '); ?>';
+					$itemCode = '<?php echo JText:'.':_($item->' . $item['code'] . '); ?>';
 				}
 				elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['text'] === 'user')
 				{
@@ -6221,9 +6221,9 @@ class Interpretation extends Fields
 								foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
 								{
 									$customAdminView .= PHP_EOL . "\t\t\t<?php if (\$canDo->get('" . $customLinkView['link'] . ".access')): ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>" title="<?php echo JText::_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>" title="<?php echo JText:'.':_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
 									$customAdminView .= PHP_EOL . "\t\t\t<?php else: ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText::_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:'.':_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
 									$customAdminView .= PHP_EOL . "\t\t\t<?php endif; ?>";
 								}
 								$customAdminView .= PHP_EOL . "\t\t\t" . '</div>';
@@ -6396,7 +6396,7 @@ class Interpretation extends Fields
 				{
 					$class = 'nowrap';
 				}
-				$title = "<?php echo JText::_('" . $item['lang'] . "'); ?>";
+				$title = "<?php echo JText:".":_('" . $item['lang'] . "'); ?>";
 				if ($item['sort'])
 				{
 					$title = "<?php echo JHtml::_('grid.sort', '" . $item['lang'] . "', '" . $item['code'] . "', \$this->listDirn, \$this->listOrder); ?>";
@@ -6415,7 +6415,7 @@ class Interpretation extends Fields
 				$head .= PHP_EOL . "\t\t</th>";
 				$head .= PHP_EOL . "\t<?php else: ?>";
 				$head .= PHP_EOL . "\t\t" . '<th width="10" class="nowrap center" >';
-				$head .= PHP_EOL . "\t\t\t<?php echo JText::_('" . $statusLangName . "'); ?>";
+				$head .= PHP_EOL . "\t\t\t<?php echo JText:".":_('" . $statusLangName . "'); ?>";
 				$head .= PHP_EOL . "\t\t</th>";
 				$head .= PHP_EOL . "\t<?php endif; ?>";
 			}
@@ -6741,7 +6741,7 @@ class Interpretation extends Fields
 					$body .= PHP_EOL;
 				}
 				// start tab
-				$body .= PHP_EOL . "\t<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeName . "', JText::_('" . $tabLangName . "', true)); ?>";
+				$body .= PHP_EOL . "\t<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeName . "', JText:".":_('" . $tabLangName . "', true)); ?>";
 				// add the main
 				$body .= PHP_EOL . "\t\t" . '<div class="row-fluid form-horizontal-desktop">';
 				$body .= $main;
@@ -6924,7 +6924,7 @@ class Interpretation extends Fields
 				}
 				$body .= PHP_EOL . PHP_EOL . "\t<?php if (" . implode(' || ', $publishingPer) . ") : ?>";
 				// set the default publishing tab
-				$body .= PHP_EOL . "\t<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeNameLeft . "', JText::_('" . $tabLangName . "', true)); ?>";
+				$body .= PHP_EOL . "\t<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeNameLeft . "', JText:".":_('" . $tabLangName . "', true)); ?>";
 				$body .= PHP_EOL . "\t\t" . '<div class="row-fluid form-horizontal-desktop">';
 				if ($items_one)
 				{
@@ -6956,7 +6956,7 @@ class Interpretation extends Fields
 				}
 				// set the permissions tab
 				$body .= PHP_EOL . PHP_EOL . "\t<?php if (\$this->canDo->get('core.admin')) : ?>";
-				$body .= PHP_EOL . "\t<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeName . "', JText::_('" . $tabLangName . "', true)); ?>";
+				$body .= PHP_EOL . "\t<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeName . "', JText:".":_('" . $tabLangName . "', true)); ?>";
 				$body .= PHP_EOL . "\t\t" . '<div class="row-fluid form-horizontal-desktop">';
 				$body .= PHP_EOL . "\t\t\t" . '<div class="span12">';
 				$body .= PHP_EOL . "\t\t\t\t" . '<fieldset class="adminform">';
@@ -7278,7 +7278,7 @@ class Interpretation extends Fields
 				// check if translated vlaue is used
 				if (isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list]) && array_key_exists($item['code'], $this->selectionTranslationFixBuilder[$viewName_list]))
 				{
-					$itemCode = '<?php echo JText::_($item->' . $item['code'] . '); ?>';
+					$itemCode = '<?php echo JText:'.':_($item->' . $item['code'] . '); ?>';
 				}
 				elseif ($item['custom']['text'] === 'user')
 				{
@@ -7393,9 +7393,9 @@ class Interpretation extends Fields
 								foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
 								{
 									$customAdminView .= PHP_EOL . "\t\t\t<?php if (\$canDo->get('" . $customLinkView['link'] . ".access')): ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>&ref=' . $refview . '&refid=<?php echo $id; ?>" title="<?php echo JText::_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>&ref=' . $refview . '&refid=<?php echo $id; ?>" title="<?php echo JText:'.':_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
 									$customAdminView .= PHP_EOL . "\t\t\t<?php else: ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText::_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:'.':_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
 									$customAdminView .= PHP_EOL . "\t\t\t<?php endif; ?>";
 								}
 								$customAdminView .= PHP_EOL . "\t\t\t" . '</div>';
@@ -7477,29 +7477,29 @@ class Interpretation extends Fields
 			// add the defaults 
 			$body .= PHP_EOL . "\t\t<?php if (\$item->published == 1):?>";
 			$body .= PHP_EOL . "\t\t\t" . '<td class="center"  ' . $data_value . '="1">';
-			$body .= PHP_EOL . "\t\t\t\t" . '<span class="status-metro status-published" title="<?php echo JText::_(' . "'" . $this->langPrefix . "_PUBLISHED'" . ');  ?>">';
-			$body .= PHP_EOL . "\t\t\t\t\t" . '<?php echo JText::_(' . "'" . $this->langPrefix . "_PUBLISHED'" . '); ?>';
+			$body .= PHP_EOL . "\t\t\t\t" . '<span class="status-metro status-published" title="<?php echo JText:'.':_(' . "'" . $this->langPrefix . "_PUBLISHED'" . ');  ?>">';
+			$body .= PHP_EOL . "\t\t\t\t\t" . '<?php echo JText:'.':_(' . "'" . $this->langPrefix . "_PUBLISHED'" . '); ?>';
 			$body .= PHP_EOL . "\t\t\t\t" . '</span>';
 			$body .= PHP_EOL . "\t\t\t" . '</td>';
 
 			$body .= PHP_EOL . "\t\t<?php elseif (\$item->published == 0):?>";
 			$body .= PHP_EOL . "\t\t\t" . '<td class="center"  ' . $data_value . '="2">';
-			$body .= PHP_EOL . "\t\t\t\t" . '<span class="status-metro status-inactive" title="<?php echo JText::_(' . "'" . $this->langPrefix . "_INACTIVE'" . ');  ?>">';
-			$body .= PHP_EOL . "\t\t\t\t\t" . '<?php echo JText::_(' . "'" . $this->langPrefix . "_INACTIVE'" . '); ?>';
+			$body .= PHP_EOL . "\t\t\t\t" . '<span class="status-metro status-inactive" title="<?php echo JText:'.':_(' . "'" . $this->langPrefix . "_INACTIVE'" . ');  ?>">';
+			$body .= PHP_EOL . "\t\t\t\t\t" . '<?php echo JText:'.':_(' . "'" . $this->langPrefix . "_INACTIVE'" . '); ?>';
 			$body .= PHP_EOL . "\t\t\t\t" . '</span>';
 			$body .= PHP_EOL . "\t\t\t" . '</td>';
 
 			$body .= PHP_EOL . "\t\t<?php elseif (\$item->published == 2):?>";
 			$body .= PHP_EOL . "\t\t\t" . '<td class="center"  ' . $data_value . '="3">';
-			$body .= PHP_EOL . "\t\t\t\t" . '<span class="status-metro status-archived" title="<?php echo JText::_(' . "'" . $this->langPrefix . "_ARCHIVED'" . ');  ?>">';
-			$body .= PHP_EOL . "\t\t\t\t\t" . '<?php echo JText::_(' . "'" . $this->langPrefix . "_ARCHIVED'" . '); ?>';
+			$body .= PHP_EOL . "\t\t\t\t" . '<span class="status-metro status-archived" title="<?php echo JText:'.':_(' . "'" . $this->langPrefix . "_ARCHIVED'" . ');  ?>">';
+			$body .= PHP_EOL . "\t\t\t\t\t" . '<?php echo JText:'.':_(' . "'" . $this->langPrefix . "_ARCHIVED'" . '); ?>';
 			$body .= PHP_EOL . "\t\t\t\t" . '</span>';
 			$body .= PHP_EOL . "\t\t\t" . '</td>';
 
 			$body .= PHP_EOL . "\t\t<?php elseif (\$item->published == -2):?>";
 			$body .= PHP_EOL . "\t\t\t" . '<td class="center"  ' . $data_value . '="4">';
-			$body .= PHP_EOL . "\t\t\t\t" . '<span class="status-metro status-trashed" title="<?php echo JText::_(' . "'" . $this->langPrefix . "_TRASHED'" . ');  ?>">';
-			$body .= PHP_EOL . "\t\t\t\t\t" . '<?php echo JText::_(' . "'" . $this->langPrefix . "_TRASHED'" . '); ?>';
+			$body .= PHP_EOL . "\t\t\t\t" . '<span class="status-metro status-trashed" title="<?php echo JText:'.':_(' . "'" . $this->langPrefix . "_TRASHED'" . ');  ?>">';
+			$body .= PHP_EOL . "\t\t\t\t\t" . '<?php echo JText:'.':_(' . "'" . $this->langPrefix . "_TRASHED'" . '); ?>';
 			$body .= PHP_EOL . "\t\t\t\t" . '</span>';
 			$body .= PHP_EOL . "\t\t\t" . '</td>';
 			$body .= PHP_EOL . "\t\t" . '<?php endif; ?>';
@@ -7523,7 +7523,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . '</table>';
 			$body .= PHP_EOL . '<?php else: ?>';
 			$body .= PHP_EOL . "\t" . '<div class="alert alert-no-items">';
-			$body .= PHP_EOL . "\t\t" . '<?php echo JText::_(' . "'JGLOBAL_NO_MATCHING_RESULTS'" . '); ?>';
+			$body .= PHP_EOL . "\t\t" . '<?php echo JText:'.':_(' . "'JGLOBAL_NO_MATCHING_RESULTS'" . '); ?>';
 			$body .= PHP_EOL . "\t" . '</div>';
 			$body .= PHP_EOL . '<?php endif; ?>';
 			// return the build
@@ -7572,12 +7572,12 @@ class Interpretation extends Fields
 				// add the new buttons
 				if ($addNewButon == 1 || $addNewButon == 2)
 				{
-					$head .= PHP_EOL . $tabB . "\t" . '<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_(' . "'" . $this->langPrefix . "_NEW'" . '); ?></a>';
+					$head .= PHP_EOL . $tabB . "\t" . '<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText:'.':_(' . "'" . $this->langPrefix . "_NEW'" . '); ?></a>';
 				}
 				// add the close and new button
 				if ($addNewButon == 2 || $addNewButon == 3)
 				{
-					$head .= PHP_EOL . $tabB . "\t" . '<a class="btn btn-small" onclick="Joomla.submitbutton(\'' . $refview . '.cancel\');" href="<?php echo $close_new; ?>"><span class="icon-new"></span> <?php echo JText::_(' . "'" . $this->langPrefix . "_CLOSE_NEW'" . '); ?></a>';
+					$head .= PHP_EOL . $tabB . "\t" . '<a class="btn btn-small" onclick="Joomla.submitbutton(\'' . $refview . '.cancel\');" href="<?php echo $close_new; ?>"><span class="icon-new"></span> <?php echo JText:'.':_(' . "'" . $this->langPrefix . "_CLOSE_NEW'" . '); ?></a>';
 				}
 				// close group button if needed
 				if ($addNewButon == 2)
@@ -7642,7 +7642,7 @@ class Interpretation extends Fields
 					$firstLink = false;
 				}
 				$head .= PHP_EOL . "\t\t<th" . $setin . $htmlFix . ">";
-				$head .= PHP_EOL . "\t\t\t<?php echo JText::_('" . $item['lang'] . "'); ?>";
+				$head .= PHP_EOL . "\t\t\t<?php echo JText:".":_('" . $item['lang'] . "'); ?>";
 				$head .= PHP_EOL . "\t\t</th>";
 				$controller++;
 			}
@@ -7651,10 +7651,10 @@ class Interpretation extends Fields
 			$data_type = (2 == $this->footableVersion) ? 'data-type="numeric"' : 'data-type="number"';
 			// set default
 			$head .= PHP_EOL . "\t\t" . '<th width="10" ' . $data_hide . '>';
-			$head .= PHP_EOL . "\t\t\t<?php echo JText::_('" . $statusLangName . "'); ?>";
+			$head .= PHP_EOL . "\t\t\t<?php echo JText:".":_('" . $statusLangName . "'); ?>";
 			$head .= PHP_EOL . "\t\t</th>";
 			$head .= PHP_EOL . "\t\t" . '<th width="5" ' . $data_type . ' ' . $data_hide . '>';
-			$head .= PHP_EOL . "\t\t\t<?php echo JText::_('" . $idLangName . "'); ?>";
+			$head .= PHP_EOL . "\t\t\t<?php echo JText:".":_('" . $idLangName . "'); ?>";
 			$head .= PHP_EOL . "\t\t</th>";
 			$head .= PHP_EOL . "\t</tr>";
 			$head .= PHP_EOL . "</thead>";
@@ -8017,7 +8017,7 @@ class Interpretation extends Fields
 				$method[] = PHP_EOL . PHP_EOL . "\tpublic function redirectTo" . ComponentbuilderHelper::safeString($custom_button['link'], 'F') . "()";
 				$method[] = "\t{";
 				$method[] = "\t\t//" . $this->setLine(__LINE__) . " Check for request forgeries";
-				$method[] = "\t\tJSession::checkToken() or die(JText::_('JINVALID_TOKEN'));";
+				$method[] = "\t\tJSession::checkToken() or die(JText:".":_('JINVALID_TOKEN'));";
 				$method[] = "\t\t//" . $this->setLine(__LINE__) . " check if export is allowed for this user.";
 				$method[] = "\t\t\$user = JFactory::getUser();";
 				$method[] = "\t\tif (\$user->authorise('" . $custom_button['link'] . ".access', 'com_" . $this->fileContentStatic['###component###'] . "'))";
@@ -8033,7 +8033,7 @@ class Interpretation extends Fields
 				$method[] = "\t\t\treturn;";
 				$method[] = "\t\t}";
 				$method[] = "\t\t//" . $this->setLine(__LINE__) . " Redirect to the list screen with error.";
-				$method[] = "\t\t\$message = JText::_('" . $this->langPrefix . "_ACCESS_TO_" . $custom_button['NAME'] . "_FAILED');";
+				$method[] = "\t\t\$message = JText:".":_('" . $this->langPrefix . "_ACCESS_TO_" . $custom_button['NAME'] . "_FAILED');";
 				$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $viewName_list . "', false), \$message, 'error');";
 				$method[] = "\t\treturn;";
 				$method[] = "\t}";
@@ -8133,7 +8133,7 @@ class Interpretation extends Fields
 			$method[] = PHP_EOL . PHP_EOL . "\tpublic function exportData()";
 			$method[] = "\t{";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " Check for request forgeries";
-			$method[] = "\t\tJSession::checkToken() or die(JText::_('JINVALID_TOKEN'));";
+			$method[] = "\t\tJSession::checkToken() or die(JText:".":_('JINVALID_TOKEN'));";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " check if export is allowed for this user.";
 			$method[] = "\t\t\$user = JFactory::getUser();";
 			$method[] = "\t\tif (\$user->authorise('" . $viewName_single . ".export', 'com_" . $this->fileContentStatic['###component###'] . "') && \$user->authorise('core.export', 'com_" . $this->fileContentStatic['###component###'] . "'))";
@@ -8155,7 +8155,7 @@ class Interpretation extends Fields
 			$method[] = "\t\t\t}";
 			$method[] = "\t\t}";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " Redirect to the list screen with error.";
-			$method[] = "\t\t\$message = JText::_('" . $this->langPrefix . "_EXPORT_FAILED');";
+			$method[] = "\t\t\$message = JText:".":_('" . $this->langPrefix . "_EXPORT_FAILED');";
 			$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $viewName_list . "', false), \$message, 'error');";
 			$method[] = "\t\treturn;";
 			$method[] = "\t}";
@@ -8164,7 +8164,7 @@ class Interpretation extends Fields
 			$method[] = PHP_EOL . PHP_EOL . "\tpublic function importData()";
 			$method[] = "\t{";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " Check for request forgeries";
-			$method[] = "\t\tJSession::checkToken() or die(JText::_('JINVALID_TOKEN'));";
+			$method[] = "\t\tJSession::checkToken() or die(JText:".":_('JINVALID_TOKEN'));";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " check if import is allowed for this user.";
 			$method[] = "\t\t\$user = JFactory::getUser();";
 			$method[] = "\t\tif (\$user->authorise('" . $viewName_single . ".import', 'com_" . $this->fileContentStatic['###component###'] . "') && \$user->authorise('core.import', 'com_" . $this->fileContentStatic['###component###'] . "'))";
@@ -8188,7 +8188,7 @@ class Interpretation extends Fields
 			{
 				$this->langContent[$this->lang][$selectImportFileNote] = 'Select the file to import data to ' . $viewName_list . '.';
 			}
-			$method[] = "\t\t\t\t\$message = JText::_('" . $selectImportFileNote . "');";
+			$method[] = "\t\t\t\t\$message = JText:".":_('" . $selectImportFileNote . "');";
 			// if this view has custom script it must have as custom import (model, veiw, controller)
 			if (isset($this->importCustomScripts[$viewName_list]) && $this->importCustomScripts[$viewName_list])
 			{
@@ -8202,7 +8202,7 @@ class Interpretation extends Fields
 			$method[] = "\t\t\t}";
 			$method[] = "\t\t}";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " Redirect to the list screen with error.";
-			$method[] = "\t\t\$message = JText::_('" . $this->langPrefix . "_IMPORT_FAILED');";
+			$method[] = "\t\t\$message = JText:".":_('" . $this->langPrefix . "_IMPORT_FAILED');";
 			$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $viewName_list . "', false), \$message, 'error');";
 			$method[] = "\t\treturn;";
 			$method[] = "\t}";
@@ -8522,7 +8522,7 @@ class Interpretation extends Fields
 		$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
 		$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
 		$addButton[] = "\t\t\t\t\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
-		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText::sprintf('" . $this->langPrefix . "_CREATE_NEW_S', \$buttonNamee).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
+		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText:".":sprintf('" . $this->langPrefix . "_CREATE_NEW_S', \$buttonNamee).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
 		$addButton[] = "\t\t\t\t\thref=\"index.php?option=com_" . $this->fileContentStatic['###component###'] . "&amp;view=" . $targetView . "&amp;layout=edit'.\$ref.'\" >";
 		$addButton[] = "\t\t\t\t\t<span class=\"icon-new icon-white\"></span></a>';";
 		$addButton[] = "\t\t\t}";
@@ -8543,7 +8543,7 @@ class Interpretation extends Fields
 		$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
 		$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
 		$addButton[] = "\t\t\t\t\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
-		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText::sprintf('" . $this->langPrefix . "_EDIT_S', \$buttonNamee).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
+		$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText:".":sprintf('" . $this->langPrefix . "_EDIT_S', \$buttonNamee).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
 		$addButton[] = "\t\t\t\t\t<span class=\"icon-edit\"></span></a>';";
 		$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " build script";
 		$addButton[] = "\t\t\t\t\$script[] = \"";
@@ -9895,7 +9895,7 @@ class Interpretation extends Fields
 						$function[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " Translate the " . $filter['code'] . " selection";
 						$function[] = "\t\t\t\t\$text = \$model->selectionTranslation(\$" . $filter['code'] . ",'" . $filter['code'] . "');";
 						$function[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " Now add the " . $filter['code'] . " and its text to the options array";
-						$function[] = "\t\t\t\t\$_filter[] = JHtml::_('select.option', \$" . $filter['code'] . ", JText::_(\$text));";
+						$function[] = "\t\t\t\t\$_filter[] = JHtml::_('select.option', \$" . $filter['code'] . ", JText:".":_(\$text));";
 					}
 					elseif ($filter['type'] === 'user')
 					{
@@ -9966,7 +9966,7 @@ class Interpretation extends Fields
 					$otherFilter[] = "\t\t{";
 					$otherFilter[] = "\t\t\t//" . $this->setLine(__LINE__) . " " . $CodeName . " Filter";
 					$otherFilter[] = "\t\t\tJHtmlSidebar::addFilter(";
-					$otherFilter[] = "\t\t\t\t'- Select '.JText::_('" . $filter['lang'] . "').' -',";
+					$otherFilter[] = "\t\t\t\t'- Select '.JText:".":_('" . $filter['lang'] . "').' -',";
 					$otherFilter[] = "\t\t\t\t'filter_" . $filter['code'] . "',";
 					$otherFilter[] = "\t\t\t\tJHtml::_('select.options', \$this->" . $codeName . "Options, 'value', 'text', \$this->state->get('filter." . $filter['code'] . "'))";
 					$otherFilter[] = "\t\t\t);";
@@ -9975,7 +9975,7 @@ class Interpretation extends Fields
 					$otherFilter[] = "\t\t\t{";
 					$otherFilter[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " " . $CodeName . " Batch Selection";
 					$otherFilter[] = "\t\t\t\tJHtmlBatch_::addListSelection(";
-					$otherFilter[] = "\t\t\t\t\t'- Keep Original '.JText::_('" . $filter['lang'] . "').' -',";
+					$otherFilter[] = "\t\t\t\t\t'- Keep Original '.JText:".":_('" . $filter['lang'] . "').' -',";
 					$otherFilter[] = "\t\t\t\t\t'batch[" . $filter['code'] . "]',";
 					$otherFilter[] = "\t\t\t\t\tJHtml::_('select.options', \$this->" . $codeName . "Options, 'value', 'text')";
 					$otherFilter[] = "\t\t\t\t);";
@@ -10000,7 +10000,7 @@ class Interpretation extends Fields
 					$otherFilter[] = "\t\t{";
 					$otherFilter[] = "\t\t\t//" . $this->setLine(__LINE__) . " " . $Codename . " Filter";
 					$otherFilter[] = "\t\t\tJHtmlSidebar::addFilter(";
-					$otherFilter[] = "\t\t\t\t'- Select '.JText::_('" . $filter['lang'] . "').' -',";
+					$otherFilter[] = "\t\t\t\t'- Select '.JText:".":_('" . $filter['lang'] . "').' -',";
 					$otherFilter[] = "\t\t\t\t'filter_" . $filter['code'] . "',";
 					$otherFilter[] = "\t\t\t\tJHtml::_('select.options', \$this->" . $filter['code'] . "Options, 'value', 'text', \$this->state->get('filter." . $filter['code'] . "'))";
 					$otherFilter[] = "\t\t\t);";
@@ -10009,7 +10009,7 @@ class Interpretation extends Fields
 					$otherFilter[] = "\t\t\t{";
 					$otherFilter[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " " . $Codename . " Batch Selection";
 					$otherFilter[] = "\t\t\t\tJHtmlBatch_::addListSelection(";
-					$otherFilter[] = "\t\t\t\t\t'- Keep Original '.JText::_('" . $filter['lang'] . "').' -',";
+					$otherFilter[] = "\t\t\t\t\t'- Keep Original '.JText:".":_('" . $filter['lang'] . "').' -',";
 					$otherFilter[] = "\t\t\t\t\t'batch[" . $filter['code'] . "]',";
 					$otherFilter[] = "\t\t\t\t\tJHtml::_('select.options', \$this->" . $filter['code'] . "Options, 'value', 'text')";
 					$otherFilter[] = "\t\t\t\t);";
@@ -10047,7 +10047,7 @@ class Interpretation extends Fields
 			$filter = array();
 			$filter[] = PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Category Filter.";
 			$filter[] = "\t\tJHtmlSidebar::addFilter(";
-			$filter[] = "\t\t\tJText::_('JOPTION_SELECT_CATEGORY'),";
+			$filter[] = "\t\t\tJText:".":_('JOPTION_SELECT_CATEGORY'),";
 			$filter[] = "\t\t\t'filter_category_id',";
 			$filter[] = "\t\t\tJHtml::_('select.options', JHtml::_('category.options', 'com_" . $component . "." . $otherViews . "'), 'value', 'text', \$this->state->get('filter.category_id'))";
 			$filter[] = "\t\t);";
@@ -10057,7 +10057,7 @@ class Interpretation extends Fields
 			$filter[] = "\t\t{";
 			$filter[] = "\t\t\t//" . $this->setLine(__LINE__) . " Category Batch selection.";
 			$filter[] = "\t\t\tJHtmlBatch_::addListSelection(";
-			$filter[] = "\t\t\t\tJText::_('COM_" . $COMONENT . "_KEEP_ORIGINAL_CATEGORY'),";
+			$filter[] = "\t\t\t\tJText:".":_('COM_" . $COMONENT . "_KEEP_ORIGINAL_CATEGORY'),";
 			$filter[] = "\t\t\t\t'batch[category]',";
 			$filter[] = "\t\t\t\tJHtml::_('select.options', JHtml::_('category.options', 'com_" . $component . "." . $otherViews . "'), 'value', 'text')";
 			$filter[] = "\t\t\t);";
@@ -11146,7 +11146,7 @@ class Interpretation extends Fields
 
 			// build toolbar
 			$toolBar = "JFactory::getApplication()->input->set('hidemainmenu', true);";
-			$toolBar .= PHP_EOL . "\t\tJToolBarHelper::title(JText::_('" . $viewNameLang_readonly . "'), '" . $viewName . "');";
+			$toolBar .= PHP_EOL . "\t\tJToolBarHelper::title(JText:".":_('" . $viewNameLang_readonly . "'), '" . $viewName . "');";
 			$toolBar .= PHP_EOL . "\t\tJToolBarHelper::cancel('" . $viewName . ".cancel', 'JTOOLBAR_CLOSE');";
 		}
 		else
@@ -11162,7 +11162,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . "\t\t\$user = JFactory::getUser();";
 			$toolBar .= PHP_EOL . "\t\t\$userId	= \$user->id;";
 			$toolBar .= PHP_EOL . "\t\t\$isNew = \$this->item->id == 0;";
-			$toolBar .= PHP_EOL . PHP_EOL . "\t\tJToolbarHelper::title( JText::_(\$isNew ? '" . $viewNameLang_new . "' : '" . $viewNameLang_edit . "'), 'pencil-2 article-add');";
+			$toolBar .= PHP_EOL . PHP_EOL . "\t\tJToolbarHelper::title( JText:".":_(\$isNew ? '" . $viewNameLang_new . "' : '" . $viewNameLang_edit . "'), 'pencil-2 article-add');";
 			$toolBar .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Built the actions for new and existing records.";
 			$toolBar .= PHP_EOL . "\t\tif (\$this->refid || \$this->ref)";
 			$toolBar .= PHP_EOL . "\t\t{";
@@ -11418,8 +11418,8 @@ class Interpretation extends Fields
 		$donelist = array('sorting', 'published');
 		// set the default first
 		$fields = "return array(";
-		$fields .= PHP_EOL . "\t\t\t'a.sorting' => JText::_('JGRID_HEADING_ORDERING')";
-		$fields .= "," . PHP_EOL . "\t\t\t'a.published' => JText::_('JSTATUS')";
+		$fields .= PHP_EOL . "\t\t\t'a.sorting' => JText:".":_('JGRID_HEADING_ORDERING')";
+		$fields .= "," . PHP_EOL . "\t\t\t'a.published' => JText:".":_('JSTATUS')";
 
 		// add the rest of the set filters
 		if (isset($this->sortBuilder[$view]) && ComponentbuilderHelper::checkArray($this->sortBuilder[$view]))
@@ -11430,20 +11430,20 @@ class Interpretation extends Fields
 				{
 					if ($filter['type'] === 'category')
 					{
-						$fields .= "," . PHP_EOL . "\t\t\t'c.category_title' => JText::_('" . $filter['lang'] . "')";
+						$fields .= "," . PHP_EOL . "\t\t\t'c.category_title' => JText:".":_('" . $filter['lang'] . "')";
 					}
 					elseif (ComponentbuilderHelper::checkArray($filter['custom']))
 					{
-						$fields .= "," . PHP_EOL . "\t\t\t'" . $filter['custom']['db'] . "." . $filter['custom']['text'] . "' => JText::_('" . $filter['lang'] . "')";
+						$fields .= "," . PHP_EOL . "\t\t\t'" . $filter['custom']['db'] . "." . $filter['custom']['text'] . "' => JText:".":_('" . $filter['lang'] . "')";
 					}
 					else
 					{
-						$fields .= "," . PHP_EOL . "\t\t\t'a." . $filter['code'] . "' => JText::_('" . $filter['lang'] . "')";
+						$fields .= "," . PHP_EOL . "\t\t\t'a." . $filter['code'] . "' => JText:".":_('" . $filter['lang'] . "')";
 					}
 				}
 			}
 		}
-		$fields .= "," . PHP_EOL . "\t\t\t'a.id' => JText::_('JGRID_HEADING_ID')";
+		$fields .= "," . PHP_EOL . "\t\t\t'a.id' => JText:".":_('JGRID_HEADING_ID')";
 		$fields .= PHP_EOL . "\t\t);";
 		// return fields
 		return $fields;
@@ -11638,11 +11638,11 @@ class Interpretation extends Fields
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t{";
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\tif (\$counter == 0)";
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t{";
-					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t\t\$" . $item['name'] . "Names .= JText::_(\$this->selectionTranslation(\$" . $item['name'] . ", '" . $item['name'] . "'));";
+					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t\t\$" . $item['name'] . "Names .= JText:".":_(\$this->selectionTranslation(\$" . $item['name'] . ", '" . $item['name'] . "'));";
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t}";
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\telse";
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t{";
-					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t\t\$" . $item['name'] . "Names .= ', '.JText::_(\$this->selectionTranslation(\$" . $item['name'] . ", '" . $item['name'] . "'));";
+					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t\t\$" . $item['name'] . "Names .= ', '.JText:".":_(\$this->selectionTranslation(\$" . $item['name'] . ", '" . $item['name'] . "'));";
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t}";
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t\t\$counter++;";
 					$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t}";
@@ -12132,7 +12132,7 @@ class Interpretation extends Fields
 			$display[] = '<div id="j-main-container">';
 			$display[] = "\t" . '<div class="form-horizontal">';
 			$display[] = "\t<?php echo JHtml::_('bootstrap.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
-			$display[] = PHP_EOL . "\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'cpanel', JText::_('cPanel', true)); ?>";
+			$display[] = PHP_EOL . "\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'cpanel', JText:".":_('cPanel', true)); ?>";
 			$display[] = "\t\t" . '<div class="row-fluid">';
 			// set the tab to insure correct spacing
 			$tab = "\t\t\t";
@@ -12168,7 +12168,7 @@ class Interpretation extends Fields
 			foreach ($builder as $tabname => $accordians)
 			{
 				$alias = ComponentbuilderHelper::safeString($tabname);
-				$display[] = PHP_EOL . "\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', '" . $alias . "', JText::_('" . $tabname . "', true)); ?>";
+				$display[] = PHP_EOL . "\t\t<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', '" . $alias . "', JText:".":_('" . $tabname . "', true)); ?>";
 				$display[] = "\t\t" . '<div class="row-fluid">';
 				$display[] = $tab . '<div class="span12">';
 				$display[] = $tab . "\t<?php  echo JHtml::_('bootstrap.startAccordion', '" . $alias . "_accordian', array('active' => '" . $alias . "_one')); ?>";
@@ -12356,7 +12356,7 @@ class Interpretation extends Fields
 			// set the code name
 			$codeName = ComponentbuilderHelper::safeString($this->componentData->name_code);
 			// set dashboard
-			$menus .= "JHtmlSidebar::addEntry(JText::_('" . $lang . "_DASHBOARD'), 'index.php?option=com_" . $codeName . "&view=" . $codeName . "', \$submenu === '" . $codeName . "');";
+			$menus .= "JHtmlSidebar::addEntry(JText:".":_('" . $lang . "_DASHBOARD'), 'index.php?option=com_" . $codeName . "&view=" . $codeName . "', \$submenu === '" . $codeName . "');";
 			$this->langContent[$this->lang][$lang . '_DASHBOARD'] = 'Dashboard';
 			$catArray = array();
 			foreach ($this->componentData->admin_views as $view)
@@ -12384,7 +12384,7 @@ class Interpretation extends Fields
 					}
 					$nameList = ComponentbuilderHelper::safeString($view['settings']->name_list);
 					$nameUpper = ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
-					$menus .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText::_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
+					$menus .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText:".":_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
 					$this->langContent[$this->lang][$lang . "_" . $nameUpper] = $view['settings']->name_list;
 					// check if category has another name
 					if (isset($this->catOtherName[$nameList]) && ComponentbuilderHelper::checkArray($this->catOtherName[$nameList]))
@@ -12397,7 +12397,7 @@ class Interpretation extends Fields
 					}
 					if (isset($this->categoryBuilder[$nameList]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameList]) && !in_array($otherViews, $catArray))
 					{
-						$menus .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText::_('" . $this->categoryBuilder[$nameList]['name'] . "'), 'index.php?option=com_categories&view=categories&extension=com_" . $codeName . "." . $otherViews . "', \$submenu === 'categories." . $otherViews . "');";
+						$menus .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText:".":_('" . $this->categoryBuilder[$nameList]['name'] . "'), 'index.php?option=com_categories&view=categories&extension=com_" . $codeName . "." . $otherViews . "', \$submenu === 'categories." . $otherViews . "');";
 						// make sure we add a category only once
 						$catArray[] = $otherViews;
 					}
@@ -12503,13 +12503,13 @@ class Interpretation extends Fields
 
 				$this->langContent[$this->lang][$lang . '_' . $nameUpper] = $name;
 				// add custom menu
-				$custom .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText::_('" . $lang . "_" . $nameUpper . "'), '" . $menu['link'] . "', \$submenu === '" . $nameList . "');";
+				$custom .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText:".":_('" . $lang . "_" . $nameUpper . "'), '" . $menu['link'] . "', \$submenu === '" . $nameList . "');";
 			}
 			else
 			{
 				$this->langContent[$this->lang][$lang . '_' . $nameUpper] = $name;
 				// add custom menu
-				$custom .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText::_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
+				$custom .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText:".":_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
 			}
 			// check if the item has permissions.
 			$custom .= PHP_EOL . "\t\t}";
@@ -12547,13 +12547,13 @@ class Interpretation extends Fields
 			{
 				$this->langContent[$this->lang][$lang . '_' . $nameUpper] = $name;
 				// add custom menu
-				$this->lastCustomSubMenu[$nr] .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText::_('" . $lang . "_" . $nameUpper . "'), '" . $menu['link'] . "', \$submenu === '" . $nameList . "');";
+				$this->lastCustomSubMenu[$nr] .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText:".":_('" . $lang . "_" . $nameUpper . "'), '" . $menu['link'] . "', \$submenu === '" . $nameList . "');";
 			}
 			else
 			{
 				$this->langContent[$this->lang][$lang . '_' . $nameUpper] = $name;
 				// add custom menu
-				$this->lastCustomSubMenu[$nr] .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText::_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
+				$this->lastCustomSubMenu[$nr] .= PHP_EOL . "\t\t" . $tab . "JHtmlSidebar::addEntry(JText:".":_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
 			}
 			// check if the item has permissions.
 			$this->lastCustomSubMenu[$nr] .= PHP_EOL . "\t\t}";
