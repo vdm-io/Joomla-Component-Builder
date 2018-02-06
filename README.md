@@ -132,7 +132,7 @@ Component Builder is mapped as a component in itself on my local development env
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
 + *Line count*: **180952**
 + *Field count*: **1577**
-+ *File count*: **1162**
++ *File count*: **1159**
 + *Folder count*: **186**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://joomlacomponentbuilder.com).
