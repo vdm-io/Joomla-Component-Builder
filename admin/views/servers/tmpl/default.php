@@ -34,8 +34,8 @@ JHtml::_('formbehavior.chosen', 'select');
 
 if ($this->saveOrder)
 {
-	$saveOrderingUrl = 'index.php?option=com_componentbuilder&task=ftps.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', 'ftpList', 'adminForm', strtolower($this->listDirn), $saveOrderingUrl);
+	$saveOrderingUrl = 'index.php?option=com_componentbuilder&task=servers.saveOrderAjax&tmpl=component';
+	JHtml::_('sortablelist.sortable', 'serverList', 'adminForm', strtolower($this->listDirn), $saveOrderingUrl);
 }
 
 ?>
@@ -56,7 +56,7 @@ if ($this->saveOrder)
 		Joomla.tableOrdering(order, dirn, '');
 	}
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=ftps'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=servers'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if(!empty( $this->sidebar)): ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -72,7 +72,7 @@ if ($this->saveOrder)
     </div>
 <?php else : ?>
 		<?php echo $this->loadTemplate('toolbar');?>
-		<table class="table table-striped" id="ftpList">
+		<table class="table table-striped" id="serverList">
 			<thead><?php echo $this->loadTemplate('head');?></thead>
 			<tfoot><?php echo $this->loadTemplate('foot');?></tfoot>
 			<tbody><?php echo $this->loadTemplate('body');?></tbody>
@@ -83,7 +83,7 @@ if ($this->saveOrder)
                 'bootstrap.renderModal',
                 'collapseModal',
                 array(
-                    'title' => JText::_('COM_COMPONENTBUILDER_FTPS_BATCH_OPTIONS'),
+                    'title' => JText::_('COM_COMPONENTBUILDER_SERVERS_BATCH_OPTIONS'),
                     'footer' => $this->loadTemplate('batch_footer')
                 ),
                 $this->loadTemplate('batch_body')

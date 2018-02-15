@@ -1,4 +1,3 @@
-<?php
 /*--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
     __      __       _     _____                 _                                  _     __  __      _   _               _
     \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
@@ -13,7 +12,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		default_batch_footer.php
+	@subpackage		submitbutton.js
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -23,15 +22,28 @@
                                                              
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
-
-?>
-<!-- clear the batch values if cancel -->
-<button class="btn" type="button" onclick="" data-dismiss="modal">
-	<?php echo JText::_('JCANCEL'); ?>
-</button>
-<!-- post the batch values if process -->
-<button class="btn btn-success" type="submit" onclick="Joomla.submitbutton('ftp.batch');">
-	<?php echo JText::_('JGLOBAL_BATCH_PROCESS'); ?>
-</button>
+Joomla.submitbutton = function(task)
+{
+	if (task == ''){
+		return false;
+	} else { 
+		var isValid=true;
+		var action = task.split('.');
+		if (action[1] != 'cancel' && action[1] != 'close'){
+			var forms = $$('form.form-validate');
+			for (var i=0;i<forms.length;i++){
+				if (!document.formvalidator.isValid(forms[i])){
+					isValid = false;
+					break;
+				}
+			}
+		}
+		if (isValid){
+			Joomla.submitform(task);
+			return true;
+		} else {
+			alert(Joomla.JText._('server, some values are not acceptable.','Some values are unacceptable'));
+			return false;
+		}
+	}
+}

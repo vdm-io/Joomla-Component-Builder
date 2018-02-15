@@ -26,18 +26,18 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access'); 
 
-$edit = "index.php?option=com_componentbuilder&view=ftps&task=ftp.edit";
+$edit = "index.php?option=com_componentbuilder&view=servers&task=server.edit";
 
 ?>
 <?php foreach ($this->items as $i => $item): ?>
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = JFactory::getUser($item->checked_out);
-		$canDo = ComponentbuilderHelper::getActions('ftp',$item,'ftps');
+		$canDo = ComponentbuilderHelper::getActions('server',$item,'servers');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
-		<?php if ($canDo->get('ftp.edit.state')): ?>
+		<?php if ($canDo->get('server.edit.state')): ?>
 			<?php
 				if ($this->saveOrder)
 				{
@@ -60,7 +60,7 @@ $edit = "index.php?option=com_componentbuilder&view=ftps&task=ftp.edit";
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center">
-		<?php if ($canDo->get('ftp.edit')): ?>
+		<?php if ($canDo->get('server.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
@@ -75,30 +75,33 @@ $edit = "index.php?option=com_componentbuilder&view=ftps&task=ftp.edit";
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('ftp.edit')): ?>
+			<?php if ($canDo->get('server.edit')): ?>
 				<div class="name">
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'ftps.', $canCheckin); ?>
+						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'servers.', $canCheckin); ?>
 					<?php endif; ?>
 				</div>
 			<?php else: ?>
 				<div class="name"><?php echo $this->escape($item->name); ?></div>
 			<?php endif; ?>
 		</td>
+		<td class="hidden-phone">
+			<?php echo JText::_($item->protocol); ?>
+		</td>
 		<td class="center">
-		<?php if ($canDo->get('ftp.edit.state')) : ?>
+		<?php if ($canDo->get('server.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'ftps.', true, 'cb'); ?>
+						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'servers.', true, 'cb'); ?>
 					<?php else: ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'ftps.', false, 'cb'); ?>
+						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'servers.', false, 'cb'); ?>
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'ftps.', true, 'cb'); ?>
+					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'servers.', true, 'cb'); ?>
 				<?php endif; ?>
 		<?php else: ?>
-			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'ftps.', false, 'cb'); ?>
+			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'servers.', false, 'cb'); ?>
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center hidden-phone">

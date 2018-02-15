@@ -491,11 +491,11 @@ function vvvvvwh(add_update_server_vvvvvwh)
 	// set the function logic
 	if (add_update_server_vvvvvwh == 1)
 	{
-		jQuery('#jform_update_server').closest('.control-group').show();
+		jQuery('#jform_update_server_url').closest('.control-group').show();
 	}
 	else
 	{
-		jQuery('#jform_update_server').closest('.control-group').hide();
+		jQuery('#jform_update_server_url').closest('.control-group').hide();
 	}
 }
 
@@ -505,11 +505,11 @@ function vvvvvwi(add_sales_server_vvvvvwi)
 	// set the function logic
 	if (add_sales_server_vvvvvwi == 1)
 	{
-		jQuery('#jform_sales_server_ftp').closest('.control-group').show();
+		jQuery('#jform_sales_server').closest('.control-group').show();
 	}
 	else
 	{
-		jQuery('#jform_sales_server_ftp').closest('.control-group').hide();
+		jQuery('#jform_sales_server').closest('.control-group').hide();
 	}
 }
 
@@ -692,12 +692,12 @@ function vvvvvwp(update_server_target_vvvvvwp,add_update_server_vvvvvwp)
 	// set the function logic
 	if (update_server_target_vvvvvwp == 1 && add_update_server_vvvvvwp == 1)
 	{
-		jQuery('#jform_update_server_ftp').closest('.control-group').show();
+		jQuery('#jform_update_server').closest('.control-group').show();
 		jQuery('.note_update_server_note_ftp').closest('.control-group').show();
 	}
 	else
 	{
-		jQuery('#jform_update_server_ftp').closest('.control-group').hide();
+		jQuery('#jform_update_server').closest('.control-group').hide();
 		jQuery('.note_update_server_note_ftp').closest('.control-group').hide();
 	}
 }
@@ -708,12 +708,12 @@ function vvvvvwq(add_update_server_vvvvvwq,update_server_target_vvvvvwq)
 	// set the function logic
 	if (add_update_server_vvvvvwq == 1 && update_server_target_vvvvvwq == 1)
 	{
-		jQuery('#jform_update_server_ftp').closest('.control-group').show();
+		jQuery('#jform_update_server').closest('.control-group').show();
 		jQuery('.note_update_server_note_ftp').closest('.control-group').show();
 	}
 	else
 	{
-		jQuery('#jform_update_server_ftp').closest('.control-group').hide();
+		jQuery('#jform_update_server').closest('.control-group').hide();
 		jQuery('.note_update_server_note_ftp').closest('.control-group').hide();
 	}
 }

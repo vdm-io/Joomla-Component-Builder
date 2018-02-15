@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		ftps.php
+	@subpackage		servers.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -30,16 +30,16 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controlleradmin');
 
 /**
- * Ftps Controller
+ * Servers Controller
  */
-class ComponentbuilderControllerFtps extends JControllerAdmin
+class ComponentbuilderControllerServers extends JControllerAdmin
 {
-	protected $text_prefix = 'COM_COMPONENTBUILDER_FTPS';
+	protected $text_prefix = 'COM_COMPONENTBUILDER_SERVERS';
 	/**
 	 * Proxy for getModel.
 	 * @since	2.5
 	 */
-	public function getModel($name = 'Ftp', $prefix = 'ComponentbuilderModel', $config = array())
+	public function getModel($name = 'Server', $prefix = 'ComponentbuilderModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		
@@ -52,7 +52,7 @@ class ComponentbuilderControllerFtps extends JControllerAdmin
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		// check if export is allowed for this user.
 		$user = JFactory::getUser();
-		if ($user->authorise('ftp.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
+		if ($user->authorise('server.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// Get the input
 			$input = JFactory::getApplication()->input;
@@ -60,19 +60,19 @@ class ComponentbuilderControllerFtps extends JControllerAdmin
 			// Sanitize the input
 			JArrayHelper::toInteger($pks);
 			// Get the model
-			$model = $this->getModel('Ftps');
+			$model = $this->getModel('Servers');
 			// get the data to export
 			$data = $model->getExportData($pks);
 			if (ComponentbuilderHelper::checkArray($data))
 			{
 				// now set the data to the spreadsheet
 				$date = JFactory::getDate();
-				ComponentbuilderHelper::xls($data,'Ftps_'.$date->format('jS_F_Y'),'Ftps exported ('.$date->format('jS F, Y').')','ftps');
+				ComponentbuilderHelper::xls($data,'Servers_'.$date->format('jS_F_Y'),'Servers exported ('.$date->format('jS F, Y').')','servers');
 			}
 		}
 		// Redirect to the list screen with error.
 		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=ftps', false), $message, 'error');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=servers', false), $message, 'error');
 		return;
 	}
 
@@ -83,10 +83,10 @@ class ComponentbuilderControllerFtps extends JControllerAdmin
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
 		$user = JFactory::getUser();
-		if ($user->authorise('ftp.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
+		if ($user->authorise('server.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
 			// Get the import model
-			$model = $this->getModel('Ftps');
+			$model = $this->getModel('Servers');
 			// get the headers to import
 			$headers = $model->getExImPortHeaders();
 			if (ComponentbuilderHelper::checkObject($headers))
@@ -94,18 +94,18 @@ class ComponentbuilderControllerFtps extends JControllerAdmin
 				// Load headers to session.
 				$session = JFactory::getSession();
 				$headers = json_encode($headers);
-				$session->set('ftp_VDM_IMPORTHEADERS', $headers);
-				$session->set('backto_VDM_IMPORT', 'ftps');
-				$session->set('dataType_VDM_IMPORTINTO', 'ftp');
+				$session->set('server_VDM_IMPORTHEADERS', $headers);
+				$session->set('backto_VDM_IMPORT', 'servers');
+				$session->set('dataType_VDM_IMPORTINTO', 'server');
 				// Redirect to import view.
-				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_FTPS');
+				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_SERVERS');
 				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import', false), $message);
 				return;
 			}
 		}
 		// Redirect to the list screen with error.
 		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=ftps', false), $message, 'error');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=servers', false), $message, 'error');
 		return;
 	}  
 }

@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		ftp.php
+	@subpackage		server.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -30,9 +30,9 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controllerform');
 
 /**
- * Ftp Controller
+ * Server Controller
  */
-class ComponentbuilderControllerFtp extends JControllerForm
+class ComponentbuilderControllerServer extends JControllerForm
 {
 	/**
 	 * Current or most recently performed task.
@@ -45,7 +45,7 @@ class ComponentbuilderControllerFtp extends JControllerForm
 
 	public function __construct($config = array())
 	{
-		$this->view_list = 'Ftps'; // safeguard for setting the return view listing to the main view.
+		$this->view_list = 'Servers'; // safeguard for setting the return view listing to the main view.
 		parent::__construct($config);
 	}
 
@@ -61,13 +61,13 @@ class ComponentbuilderControllerFtp extends JControllerForm
 	protected function allowAdd($data = array())
 	{
 		// Access check.
-		$access = JFactory::getUser()->authorise('ftp.access', 'com_componentbuilder');
+		$access = JFactory::getUser()->authorise('server.access', 'com_componentbuilder');
 		if (!$access)
 		{
 			return false;
 		}
 		// In the absense of better information, revert to the component permissions.
-		return JFactory::getUser()->authorise('ftp.create', $this->option);
+		return JFactory::getUser()->authorise('server.create', $this->option);
 	}
 
 	/**
@@ -89,7 +89,7 @@ class ComponentbuilderControllerFtp extends JControllerForm
 
 
 		// Access check.
-		$access = ($user->authorise('ftp.access', 'com_componentbuilder.ftp.' . (int) $recordId) &&  $user->authorise('ftp.access', 'com_componentbuilder'));
+		$access = ($user->authorise('server.access', 'com_componentbuilder.server.' . (int) $recordId) &&  $user->authorise('server.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;
@@ -98,10 +98,10 @@ class ComponentbuilderControllerFtp extends JControllerForm
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('ftp.edit', 'com_componentbuilder.ftp.' . (int) $recordId);
+			$permission = $user->authorise('server.edit', 'com_componentbuilder.server.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('ftp.edit.own', 'com_componentbuilder.ftp.' . $recordId))
+				if ($user->authorise('server.edit.own', 'com_componentbuilder.server.' . $recordId))
 				{
 					// Now test the owner is the user.
 					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
@@ -120,7 +120,7 @@ class ComponentbuilderControllerFtp extends JControllerForm
 					// If the owner matches 'me' then allow.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('ftp.edit.own', 'com_componentbuilder'))
+						if ($user->authorise('server.edit.own', 'com_componentbuilder'))
 						{
 							return true;
 						}
@@ -130,7 +130,7 @@ class ComponentbuilderControllerFtp extends JControllerForm
 			}
 		}
 		// Since there is no permission, revert to the component permissions.
-		return $user->authorise('ftp.edit', $this->option);
+		return $user->authorise('server.edit', $this->option);
 	}
 
 	/**
@@ -196,10 +196,10 @@ class ComponentbuilderControllerFtp extends JControllerForm
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Set the model
-		$model = $this->getModel('Ftp', '', array());
+		$model = $this->getModel('Server', '', array());
 
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=ftps' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=servers' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}

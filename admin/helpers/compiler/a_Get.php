@@ -1141,23 +1141,23 @@ class Get
 		// reset back to nowlang
 		$this->lang = $nowLang;
 
-		// add the update FTP server sig
-		if ($component->add_update_server == 1 && is_numeric($component->update_server_ftp) && $component->update_server_ftp > 0)
+		// add the update server details
+		if ($component->add_update_server == 1 && is_numeric($component->update_server) && $component->update_server > 0)
 		{
-			$component->update_server_ftp = ComponentbuilderHelper::getVar('ftp', (int) $component->update_server_ftp, 'id', 'signature');
+			$component->update_server = ComponentbuilderHelper::getVar('server', (int) $component->update_server, 'id', 'signature');
 		}
 		else
 		{
-			$component->update_server_ftp = 0;
+			$component->update_server = 0;
 		}
-		// add the sales FTP server sig
-		if ($component->add_sales_server == 1 && is_numeric($component->sales_server_ftp) && $component->sales_server_ftp > 0)
+		// add the sales server details
+		if ($component->add_sales_server == 1 && is_numeric($component->sales_server) && $component->sales_server > 0)
 		{
-			$component->sales_server_ftp = ComponentbuilderHelper::getVar('ftp', (int) $component->sales_server_ftp, 'id', 'signature');
+			$component->sales_server = ComponentbuilderHelper::getVar('server', (int) $component->sales_server, 'id', 'signature');
 		}
 		else
 		{
-			$component->sales_server_ftp = 0;
+			$component->sales_server = 0;
 			$component->add_sales_server = 0;
 		}
 		// set the ignore folders for repo if found

@@ -998,6 +998,13 @@ abstract class ComponentbuilderHelper
 					return $content;
 				}
 			}
+			elseif (property_exists('ComponentbuilderHelper', 'curlErrorLoaded') && !self::$curlErrorLoaded)
+			{
+				// set the notice
+				JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWOCURL_NOT_FOUNDHTWOPPLEASE_SETUP_CURL_ON_YOUR_SYSTEM_OR_BCOMPONENTBUILDERB_WILL_NOT_FUNCTION_CORRECTLYP'), 'Error');
+				// load this notice only once
+				self::$curlErrorLoaded = true;
+			}
 		}
 		return $none;
 	}

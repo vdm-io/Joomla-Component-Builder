@@ -316,19 +316,19 @@ class Compiler extends Infusion
 		{
 			$xml_update_server_path = $this->componentPath . '/' . $this->updateServerFileName . '.xml';
 			// make sure we have the correct file
-			if (JFile::exists($xml_update_server_path) && isset($this->componentData->update_server_ftp))
+			if (JFile::exists($xml_update_server_path) && isset($this->componentData->update_server))
 			{
 				// Get the basic encription.
 				$basickey = ComponentbuilderHelper::getCryptKey('basic');
 				// Get the encription object.
 				$basic = new FOFEncryptAes($basickey, 128);
-				if (!empty($this->componentData->update_server_ftp) && $basickey && !is_numeric($this->componentData->update_server_ftp) && $this->componentData->update_server_ftp === base64_encode(base64_decode($this->componentData->update_server_ftp, true)))
+				if (!empty($this->componentData->update_server) && $basickey && !is_numeric($this->componentData->update_server) && $this->componentData->update_server === base64_encode(base64_decode($this->componentData->update_server, true)))
 				{
-					// basic decript data update_server_ftp.
-					$this->componentData->update_server_ftp = rtrim($basic->decryptString($this->componentData->update_server_ftp), "\0");
+					// basic decript data update_server.
+					$this->componentData->update_server = rtrim($basic->decryptString($this->componentData->update_server), "\0");
 				}
 				// now move the file
-				$this->moveFileToFtpServer($xml_update_server_path, $this->componentData->update_server_ftp);
+				$this->moveFileToFtpServer($xml_update_server_path, $this->componentData->update_server);
 			}
 		}
 	}
@@ -497,19 +497,19 @@ class Compiler extends Infusion
 			if ($this->componentData->add_sales_server == 1 && $this->dynamicIntegration)
 			{
 				// make sure we have the correct file
-				if (isset($this->componentData->sales_server_ftp))
+				if (isset($this->componentData->sales_server))
 				{
 					// Get the basic encription.
 					$basickey = ComponentbuilderHelper::getCryptKey('basic');
 					// Get the encription object.
 					$basic = new FOFEncryptAes($basickey, 128);
-					if (!empty($this->componentData->sales_server_ftp) && $basickey && !is_numeric($this->componentData->sales_server_ftp) && $this->componentData->sales_server_ftp === base64_encode(base64_decode($this->componentData->sales_server_ftp, true)))
+					if (!empty($this->componentData->sales_server) && $basickey && !is_numeric($this->componentData->sales_server) && $this->componentData->sales_server === base64_encode(base64_decode($this->componentData->sales_server, true)))
 					{
-						// basic decript data update_server_ftp.
-						$this->componentData->sales_server_ftp = rtrim($basic->decryptString($this->componentData->sales_server_ftp), "\0");
+						// basic decript data update_server.
+						$this->componentData->sales_server = rtrim($basic->decryptString($this->componentData->sales_server), "\0");
 					}
 					// now move the file
-					$this->moveFileToFtpServer($this->filepath, $this->componentData->sales_server_ftp, $this->componentSalesName . '.zip', false);
+					$this->moveFileToFtpServer($this->filepath, $this->componentData->sales_server, $this->componentSalesName . '.zip', false);
 				}
 			}
 			// remove the component folder since we are done

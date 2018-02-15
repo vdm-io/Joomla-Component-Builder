@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		dynamic_integration_fullwidth.php
+	@subpackage		default_batch_body.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -24,33 +24,9 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-
-defined('_JEXEC') or die('Restricted access');
-
-$form = $displayData->getForm();
-
-$fields = $displayData->get('fields') ?: array(
-	'add_update_server',
-	'update_server_url',
-	'update_server_target',
-	'note_update_server_note_ftp',
-	'note_update_server_note_zip',
-	'note_update_server_note_other',
-	'update_server',
-	'add_sales_server',
-	'sales_server'
-);
+defined('_JEXEC') or die('Restricted access'); 
 
 ?>
-<div class="form-vertical">
-<?php foreach($fields as $field): ?>
-    <div class="control-group">
-        <div class="control-label">
-            <?php echo $form->getLabel($field); ?>
-        </div>
-        <div class="controls">
-            <?php echo $form->getInput($field); ?>
-        </div>
-    </div>
-<?php endforeach; ?>
-</div>
+
+<p><?php echo JText::_('COM_COMPONENTBUILDER_SERVERS_BATCH_TIP'); ?></p>
+<?php echo $this->batchDisplay; ?>

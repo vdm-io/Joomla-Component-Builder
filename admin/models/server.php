@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		ftp.php
+	@subpackage		server.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -32,9 +32,9 @@ use Joomla\Registry\Registry;
 jimport('joomla.application.component.modeladmin');
 
 /**
- * Componentbuilder Ftp Model
+ * Componentbuilder Server Model
  */
-class ComponentbuilderModelFtp extends JModelAdmin
+class ComponentbuilderModelServer extends JModelAdmin
 {    
 	/**
 	 * @var        string    The prefix to use with controller messages.
@@ -48,7 +48,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	 * @var      string
 	 * @since    3.2
 	 */
-	public $typeAlias = 'com_componentbuilder.ftp';
+	public $typeAlias = 'com_componentbuilder.server';
 
 	/**
 	 * Returns a Table object, always creating it
@@ -61,7 +61,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'ftp', $prefix = 'ComponentbuilderTable', $config = array())
+	public function getTable($type = 'server', $prefix = 'ComponentbuilderTable', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
@@ -100,19 +100,67 @@ class ComponentbuilderModelFtp extends JModelAdmin
 			// Get the encryption object.
 			$basic = new FOFEncryptAes($basickey, 128);
 
+			if (!empty($item->path) && $basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
+			{
+				// basic decrypt data path.
+				$item->path = rtrim($basic->decryptString($item->path), "\0");
+			}
+
+			if (!empty($item->port) && $basickey && !is_numeric($item->port) && $item->port === base64_encode(base64_decode($item->port, true)))
+			{
+				// basic decrypt data port.
+				$item->port = rtrim($basic->decryptString($item->port), "\0");
+			}
+
+			if (!empty($item->password) && $basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
+			{
+				// basic decrypt data password.
+				$item->password = rtrim($basic->decryptString($item->password), "\0");
+			}
+
+			if (!empty($item->secret) && $basickey && !is_numeric($item->secret) && $item->secret === base64_encode(base64_decode($item->secret, true)))
+			{
+				// basic decrypt data secret.
+				$item->secret = rtrim($basic->decryptString($item->secret), "\0");
+			}
+
+			if (!empty($item->host) && $basickey && !is_numeric($item->host) && $item->host === base64_encode(base64_decode($item->host, true)))
+			{
+				// basic decrypt data host.
+				$item->host = rtrim($basic->decryptString($item->host), "\0");
+			}
+
 			if (!empty($item->signature) && $basickey && !is_numeric($item->signature) && $item->signature === base64_encode(base64_decode($item->signature, true)))
 			{
 				// basic decrypt data signature.
 				$item->signature = rtrim($basic->decryptString($item->signature), "\0");
 			}
+
+			if (!empty($item->username) && $basickey && !is_numeric($item->username) && $item->username === base64_encode(base64_decode($item->username, true)))
+			{
+				// basic decrypt data username.
+				$item->username = rtrim($basic->decryptString($item->username), "\0");
+			}
+
+			if (!empty($item->private) && $basickey && !is_numeric($item->private) && $item->private === base64_encode(base64_decode($item->private, true)))
+			{
+				// basic decrypt data private.
+				$item->private = rtrim($basic->decryptString($item->private), "\0");
+			}
+
+			if (!empty($item->public) && $basickey && !is_numeric($item->public) && $item->public === base64_encode(base64_decode($item->public, true)))
+			{
+				// basic decrypt data public.
+				$item->public = rtrim($basic->decryptString($item->public), "\0");
+			}
 			
 			if (!empty($item->id))
 			{
 				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.ftp');
+				$item->tags->getTagIds($item->id, 'com_componentbuilder.server');
 			}
 		}
-		$this->sales_server_ftpupdate_server_ftp_vvvx = $item->id;
+		$this->sales_serverupdate_servervvvx = $item->id;
 
 		return $item;
 	}
@@ -122,7 +170,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWaelinked_components()
+	public function getWaplinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -136,19 +184,19 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		// From the componentbuilder_joomla_component table
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
 
-		// Filter by sales_server_ftpupdate_server_ftp_vvvx global.
-		$sales_server_ftpupdate_server_ftp_vvvx = $this->sales_server_ftpupdate_server_ftp_vvvx;
-		if (is_numeric($sales_server_ftpupdate_server_ftp_vvvx ))
+		// Filter by sales_serverupdate_servervvvx global.
+		$sales_serverupdate_servervvvx = $this->sales_serverupdate_servervvvx;
+		if (is_numeric($sales_serverupdate_servervvvx ))
 		{
-			$query->where('a.sales_server_ftp = ' . (int) $sales_server_ftpupdate_server_ftp_vvvx . ' OR a.update_server_ftp  = ' . (int) $sales_server_ftpupdate_server_ftp_vvvx, ' OR');
+			$query->where('a.sales_server = ' . (int) $sales_serverupdate_servervvvx . ' OR a.update_server = ' . (int) $sales_serverupdate_servervvvx, ' OR');
 		}
-		elseif (is_string($sales_server_ftpupdate_server_ftp_vvvx))
+		elseif (is_string($sales_serverupdate_servervvvx))
 		{
-			$query->where('a.sales_server_ftp = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvvx) . ' OR a.update_server_ftp  = ' . $db->quote($sales_server_ftpupdate_server_ftp_vvvx), ' OR');
+			$query->where('a.sales_server = ' . $db->quote($sales_serverupdate_servervvvx) . ' OR a.update_server = ' . $db->quote($sales_serverupdate_servervvvx), ' OR');
 		}
 		else
 		{
-			$query->where('a.update_server_ftp  = -5');
+			$query->where('a.update_server = -5');
 		}
 
 		// Join over the asset groups.
@@ -211,7 +259,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
-		$form = $this->loadForm('com_componentbuilder.ftp', 'ftp', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_componentbuilder.server', 'server', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
 		{
@@ -235,8 +283,8 @@ class ComponentbuilderModelFtp extends JModelAdmin
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('ftp.edit.state', 'com_componentbuilder.ftp.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('ftp.edit.state', 'com_componentbuilder')))
+		if ($id != 0 && (!$user->authorise('server.edit.state', 'com_componentbuilder.server.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('server.edit.state', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
@@ -252,8 +300,8 @@ class ComponentbuilderModelFtp extends JModelAdmin
 			$form->setValue('created_by', null, $user->id);
 		}
 		// Modify the form based on Edit Creaded By access controls.
-		if ($id != 0 && (!$user->authorise('ftp.edit.created_by', 'com_componentbuilder.ftp.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('ftp.edit.created_by', 'com_componentbuilder')))
+		if ($id != 0 && (!$user->authorise('server.edit.created_by', 'com_componentbuilder.server.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('server.edit.created_by', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created_by', 'disabled', 'true');
@@ -263,45 +311,13 @@ class ComponentbuilderModelFtp extends JModelAdmin
 			$form->setFieldAttribute('created_by', 'filter', 'unset');
 		}
 		// Modify the form based on Edit Creaded Date access controls.
-		if ($id != 0 && (!$user->authorise('ftp.edit.created', 'com_componentbuilder.ftp.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('ftp.edit.created', 'com_componentbuilder')))
+		if ($id != 0 && (!$user->authorise('server.edit.created', 'com_componentbuilder.server.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('server.edit.created', 'com_componentbuilder')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created', 'disabled', 'true');
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
-		}
-		// Modify the form based on Edit Name access controls.
-		if ($id != 0 && (!$user->authorise('ftp.edit.name', 'com_componentbuilder.ftp.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('ftp.edit.name', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('name', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('name', 'readonly', 'true');
-			if (!$form->getValue('name'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('name', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('name', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Signature access controls.
-		if ($id != 0 && (!$user->authorise('ftp.edit.signature', 'com_componentbuilder.ftp.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('ftp.edit.signature', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('signature', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('signature', 'readonly', 'true');
-			if (!$form->getValue('signature'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('signature', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('signature', 'required', 'false');
-			}
 		}
 		// Only load these values if no id is found
 		if (0 == $id)
@@ -327,7 +343,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/ftp.js';
+		return 'administrator/components/com_componentbuilder/models/forms/server.js';
 	}
     
 	/**
@@ -350,7 +366,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 
 			$user = JFactory::getUser();
 			// The record has been set. Check the record permissions.
-			return $user->authorise('ftp.delete', 'com_componentbuilder.ftp.' . (int) $record->id);
+			return $user->authorise('server.delete', 'com_componentbuilder.server.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -372,14 +388,14 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('ftp.edit.state', 'com_componentbuilder.ftp.' . (int) $recordId);
+			$permission = $user->authorise('server.edit.state', 'com_componentbuilder.server.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
 				return false;
 			}
 		}
 		// In the absense of better information, revert to the component permissions.
-		return $user->authorise('ftp.edit.state', 'com_componentbuilder');
+		return $user->authorise('server.edit.state', 'com_componentbuilder');
 	}
     
 	/**
@@ -396,7 +412,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		// Check specific edit permission then general edit permission.
 		$user = JFactory::getUser();
 
-		return $user->authorise('ftp.edit', 'com_componentbuilder.ftp.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('ftp.edit',  'com_componentbuilder');
+		return $user->authorise('server.edit', 'com_componentbuilder.server.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('server.edit',  'com_componentbuilder');
 	}
     
 	/**
@@ -437,7 +453,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
-					->from($db->quoteName('#__componentbuilder_ftp'));
+					->from($db->quoteName('#__componentbuilder_server'));
 				$db->setQuery($query);
 				$max = $db->loadResult();
 
@@ -467,7 +483,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 	protected function loadFormData() 
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.ftp.data', array());
+		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.server.data', array());
 
 		if (empty($data))
 		{
@@ -475,6 +491,42 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		}
 
 		return $data;
+	}
+
+	/**
+	* Method to validate the form data.
+	*
+	* @param   JForm   $form   The form to validate against.
+	* @param   array   $data   The data to validate.
+	* @param   string  $group  The name of the field group to validate.
+	*
+	* @return  mixed  Array of filtered data if valid, false otherwise.
+	*
+	* @see     JFormRule
+	* @see     JFilterInput
+	* @since   12.2
+	*/
+	public function validate($form, $data, $group = null)
+	{
+		// check if the not_required field is set
+		if (ComponentbuilderHelper::checkString($data['not_required']))
+		{
+			$requiredFields = (array) explode(',',(string) $data['not_required']);
+			$requiredFields = array_unique($requiredFields);
+			// now change the required field attributes value
+			foreach ($requiredFields as $requiredField)
+			{
+				// make sure there is a string value
+				if (ComponentbuilderHelper::checkString($requiredField))
+				{
+					// change to false
+					$form->setFieldAttribute($requiredField, 'required', 'false');
+					// also clear the data set
+					$data[$requiredField] = '';
+				}
+			}
+		}
+		return parent::validate($form, $data, $group);
 	} 
 
 	/**
@@ -565,7 +617,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		$this->tableClassName		= get_class($this->table);
 		$this->contentType		= new JUcmType;
 		$this->type			= $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo			= ComponentbuilderHelper::getActions('ftp');
+		$this->canDo			= ComponentbuilderHelper::getActions('server');
 		$this->batchSet			= true;
 
 		if (!$this->canDo->get('core.batch'))
@@ -645,10 +697,10 @@ class ComponentbuilderModelFtp extends JModelAdmin
 			$this->tableClassName	= get_class($this->table);
 			$this->contentType	= new JUcmType;
 			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
-			$this->canDo		= ComponentbuilderHelper::getActions('ftp');
+			$this->canDo		= ComponentbuilderHelper::getActions('server');
 		}
 
-		if (!$this->canDo->get('ftp.create') && !$this->canDo->get('ftp.batch'))
+		if (!$this->canDo->get('server.create') && !$this->canDo->get('server.batch'))
 		{
 			return false;
 		}
@@ -663,7 +715,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		{
 			$values['published'] = 0;
 		}
-		elseif (isset($values['published']) && !$this->canDo->get('ftp.edit.state'))
+		elseif (isset($values['published']) && !$this->canDo->get('server.edit.state'))
 		{
 				$values['published'] = 0;
 		}
@@ -680,7 +732,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 
 			// only allow copy if user may edit this item.
 
-			if (!$this->user->authorise('ftp.edit', $contexts[$pk]))
+			if (!$this->user->authorise('server.edit', $contexts[$pk]))
 
 			{
 
@@ -794,17 +846,17 @@ class ComponentbuilderModelFtp extends JModelAdmin
 			$this->tableClassName	= get_class($this->table);
 			$this->contentType	= new JUcmType;
 			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
-			$this->canDo		= ComponentbuilderHelper::getActions('ftp');
+			$this->canDo		= ComponentbuilderHelper::getActions('server');
 		}
 
-		if (!$this->canDo->get('ftp.edit') && !$this->canDo->get('ftp.batch'))
+		if (!$this->canDo->get('server.edit') && !$this->canDo->get('server.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
 		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('ftp.edit.state'))
+		if (isset($values['published']) && !$this->canDo->get('server.edit.state'))
 		{
 			unset($values['published']);
 		}
@@ -814,7 +866,7 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		// Parent exists so we proceed
 		foreach ($pks as $pk)
 		{
-			if (!$this->user->authorise('ftp.edit', $contexts[$pk]))
+			if (!$this->user->authorise('server.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 
@@ -914,10 +966,58 @@ class ComponentbuilderModelFtp extends JModelAdmin
 		// Get the encryption object
 		$basic = new FOFEncryptAes($basickey, 128);
 
+		// Encrypt data path.
+		if (isset($data['path']) && $basickey)
+		{
+			$data['path'] = $basic->encryptString($data['path']);
+		}
+
+		// Encrypt data port.
+		if (isset($data['port']) && $basickey)
+		{
+			$data['port'] = $basic->encryptString($data['port']);
+		}
+
+		// Encrypt data password.
+		if (isset($data['password']) && $basickey)
+		{
+			$data['password'] = $basic->encryptString($data['password']);
+		}
+
+		// Encrypt data secret.
+		if (isset($data['secret']) && $basickey)
+		{
+			$data['secret'] = $basic->encryptString($data['secret']);
+		}
+
+		// Encrypt data host.
+		if (isset($data['host']) && $basickey)
+		{
+			$data['host'] = $basic->encryptString($data['host']);
+		}
+
 		// Encrypt data signature.
 		if (isset($data['signature']) && $basickey)
 		{
 			$data['signature'] = $basic->encryptString($data['signature']);
+		}
+
+		// Encrypt data username.
+		if (isset($data['username']) && $basickey)
+		{
+			$data['username'] = $basic->encryptString($data['username']);
+		}
+
+		// Encrypt data private.
+		if (isset($data['private']) && $basickey)
+		{
+			$data['private'] = $basic->encryptString($data['private']);
+		}
+
+		// Encrypt data public.
+		if (isset($data['public']) && $basickey)
+		{
+			$data['public'] = $basic->encryptString($data['public']);
 		}
         
 		// Set the Params Items to data

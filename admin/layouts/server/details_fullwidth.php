@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		details_above.php
+	@subpackage		details_fullwidth.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -29,13 +29,23 @@ defined('_JEXEC') or die('Restricted access');
 
 $form = $displayData->getForm();
 
-$fields = array(
-	'name'
+$fields = $displayData->get('fields') ?: array(
+	'note_ftp_signature',
+	'signature',
+	'note_ssh_security',
+	'not_required'
 );
 
 ?>
-<div class="form-inline form-inline-header">
-	<?php foreach($fields as $field){
-		echo $form->renderField($field);
-	} ?>
+<div class="form-vertical">
+<?php foreach($fields as $field): ?>
+    <div class="control-group">
+        <div class="control-label">
+            <?php echo $form->getLabel($field); ?>
+        </div>
+        <div class="controls">
+            <?php echo $form->getInput($field); ?>
+        </div>
+    </div>
+<?php endforeach; ?>
 </div>

@@ -30,12 +30,12 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 
 /**
- * Componentbuilder View class for the Ftps
+ * Componentbuilder View class for the Servers
  */
-class ComponentbuilderViewFtps extends JViewLegacy
+class ComponentbuilderViewServers extends JViewLegacy
 {
 	/**
-	 * Ftps view display method
+	 * Servers view display method
 	 * @return void
 	 */
 	function display($tpl = null)
@@ -43,7 +43,7 @@ class ComponentbuilderViewFtps extends JViewLegacy
 		if ($this->getLayout() !== 'modal')
 		{
 			// Include helper submenu
-			ComponentbuilderHelper::addSubmenu('ftps');
+			ComponentbuilderHelper::addSubmenu('servers');
 		}
 
 		// Assign data to the view
@@ -55,11 +55,11 @@ class ComponentbuilderViewFtps extends JViewLegacy
 		$this->listDirn = $this->escape($this->state->get('list.direction'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// get global action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('ftp');
-		$this->canEdit = $this->canDo->get('ftp.edit');
-		$this->canState = $this->canDo->get('ftp.edit.state');
-		$this->canCreate = $this->canDo->get('ftp.create');
-		$this->canDelete = $this->canDo->get('ftp.delete');
+		$this->canDo = ComponentbuilderHelper::getActions('server');
+		$this->canEdit = $this->canDo->get('server.edit');
+		$this->canState = $this->canDo->get('server.edit.state');
+		$this->canCreate = $this->canDo->get('server.create');
+		$this->canDelete = $this->canDo->get('server.delete');
 		$this->canBatch = $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
@@ -92,13 +92,13 @@ class ComponentbuilderViewFtps extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_FTPS'), 'flash');
-		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=ftps');
+		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_SERVERS'), 'flash');
+		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=servers');
 		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		if ($this->canCreate)
 		{
-			JToolBarHelper::addNew('ftp.add');
+			JToolBarHelper::addNew('server.add');
 		}
 
 		// Only load if there are items
@@ -106,18 +106,18 @@ class ComponentbuilderViewFtps extends JViewLegacy
 		{
 			if ($this->canEdit)
 			{
-				JToolBarHelper::editList('ftp.edit');
+				JToolBarHelper::editList('server.edit');
 			}
 
 			if ($this->canState)
 			{
-				JToolBarHelper::publishList('ftps.publish');
-				JToolBarHelper::unpublishList('ftps.unpublish');
-				JToolBarHelper::archiveList('ftps.archive');
+				JToolBarHelper::publishList('servers.publish');
+				JToolBarHelper::unpublishList('servers.unpublish');
+				JToolBarHelper::archiveList('servers.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					JToolBarHelper::checkin('ftps.checkin');
+					JToolBarHelper::checkin('servers.checkin');
 				}
 			}
 
@@ -137,26 +137,26 @@ class ComponentbuilderViewFtps extends JViewLegacy
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
-				JToolbarHelper::deleteList('', 'ftps.delete', 'JTOOLBAR_EMPTY_TRASH');
+				JToolbarHelper::deleteList('', 'servers.delete', 'JTOOLBAR_EMPTY_TRASH');
 			}
 			elseif ($this->canState && $this->canDelete)
 			{
-				JToolbarHelper::trash('ftps.trash');
+				JToolbarHelper::trash('servers.trash');
 			}
 
-			if ($this->canDo->get('core.export') && $this->canDo->get('ftp.export'))
+			if ($this->canDo->get('core.export') && $this->canDo->get('server.export'))
 			{
-				JToolBarHelper::custom('ftps.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
+				JToolBarHelper::custom('servers.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
 		} 
 
-		if ($this->canDo->get('core.import') && $this->canDo->get('ftp.import'))
+		if ($this->canDo->get('core.import') && $this->canDo->get('server.import'))
 		{
-			JToolBarHelper::custom('ftps.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
+			JToolBarHelper::custom('servers.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
 		}
 
 		// set help url for this view if found
-		$help_url = ComponentbuilderHelper::getHelpUrl('ftps');
+		$help_url = ComponentbuilderHelper::getHelpUrl('servers');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
 				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
@@ -207,7 +207,7 @@ class ComponentbuilderViewFtps extends JViewLegacy
 		{
 			// Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_FTP_NAME_LABEL').' -',
+				'- Select '.JText::_('COM_COMPONENTBUILDER_SERVER_NAME_LABEL').' -',
 				'filter_name',
 				JHtml::_('select.options', $this->nameOptions, 'value', 'text', $this->state->get('filter.name'))
 			);
@@ -216,9 +216,31 @@ class ComponentbuilderViewFtps extends JViewLegacy
 			{
 				// Name Batch Selection
 				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FTP_NAME_LABEL').' -',
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SERVER_NAME_LABEL').' -',
 					'batch[name]',
 					JHtml::_('select.options', $this->nameOptions, 'value', 'text')
+				);
+			}
+		}
+
+		// Set Protocol Selection
+		$this->protocolOptions = $this->getTheProtocolSelections();
+		if ($this->protocolOptions)
+		{
+			// Protocol Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL').' -',
+				'filter_protocol',
+				JHtml::_('select.options', $this->protocolOptions, 'value', 'text', $this->state->get('filter.protocol'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Protocol Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL').' -',
+					'batch[protocol]',
+					JHtml::_('select.options', $this->protocolOptions, 'value', 'text')
 				);
 			}
 		}
@@ -235,8 +257,8 @@ class ComponentbuilderViewFtps extends JViewLegacy
 		{
 			$this->document = JFactory::getDocument();
 		}
-		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_FTPS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/ftps.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_SERVERS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/servers.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 	}
 
 	/**
@@ -267,7 +289,8 @@ class ComponentbuilderViewFtps extends JViewLegacy
 		return array(
 			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
-			'a.name' => JText::_('COM_COMPONENTBUILDER_FTP_NAME_LABEL'),
+			'a.name' => JText::_('COM_COMPONENTBUILDER_SERVER_NAME_LABEL'),
+			'a.protocol' => JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	}
@@ -282,7 +305,7 @@ class ComponentbuilderViewFtps extends JViewLegacy
 
 		// Select the text.
 		$query->select($db->quoteName('name'));
-		$query->from($db->quoteName('#__componentbuilder_ftp'));
+		$query->from($db->quoteName('#__componentbuilder_server'));
 		$query->order($db->quoteName('name') . ' ASC');
 
 		// Reset the query using our newly populated query object.
@@ -298,6 +321,42 @@ class ComponentbuilderViewFtps extends JViewLegacy
 			{
 				// Now add the name and its text to the options array
 				$_filter[] = JHtml::_('select.option', $name, $name);
+			}
+			return $_filter;
+		}
+		return false;
+	}
+
+	protected function getTheProtocolSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('protocol'));
+		$query->from($db->quoteName('#__componentbuilder_server'));
+		$query->order($db->quoteName('protocol') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $protocol)
+			{
+				// Translate the protocol selection
+				$text = $model->selectionTranslation($protocol,'protocol');
+				// Now add the protocol and its text to the options array
+				$_filter[] = JHtml::_('select.option', $protocol, JText::_($text));
 			}
 			return $_filter;
 		}

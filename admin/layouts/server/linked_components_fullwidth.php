@@ -28,7 +28,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->waelinked_components;
+$items	= $displayData->waplinked_components;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";
@@ -75,7 +75,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 	<tr>
 		<td class="nowrap">
 			<?php if ($canDo->get('joomla_component.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=ftp&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=server&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_components.', $canCheckin); ?>
 					<?php endif; ?>

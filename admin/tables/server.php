@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		ftp.php
+	@subpackage		server.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -32,9 +32,9 @@ use Joomla\Registry\Registry;
 jimport('joomla.database.table');
 
 /**
- * Ftps Table class
+ * Servers Table class
  */
-class ComponentbuilderTableFtp extends JTable
+class ComponentbuilderTableServer extends JTable
 {
 	/**
 	 * Ensure the params and metadata in json encoded in the bind method
@@ -51,10 +51,10 @@ class ComponentbuilderTableFtp extends JTable
 	 */
 	function __construct(&$db) 
 	{
-		parent::__construct('#__componentbuilder_ftp', 'id', $db);
+		parent::__construct('#__componentbuilder_server', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.ftp')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.server')); 
 	}	
  
 	public function bind($array, $ignore = '')
@@ -84,7 +84,7 @@ class ComponentbuilderTableFtp extends JTable
 	}
     
 	/**
-	 * Overload the store method for the Ftp table.
+	 * Overload the store method for the Server table.
 	 *
 	 * @param   boolean	Toggle whether null values should be updated.
 	 * @return  boolean  True on success, false on failure.
@@ -103,7 +103,7 @@ class ComponentbuilderTableFtp extends JTable
 		}
 		else
 		{
-			// New ftp. A ftp created and created_by field can be set by the user,
+			// New server. A server created and created_by field can be set by the user,
 			// so we don't touch either of these if they are set.
 			if (!(int) $this->created)
 			{
@@ -118,11 +118,11 @@ class ComponentbuilderTableFtp extends JTable
 		if (isset($this->alias))
 		{
 			// Verify that the alias is unique
-			$table = JTable::getInstance('ftp', 'ComponentbuilderTable');
+			$table = JTable::getInstance('server', 'ComponentbuilderTable');
 
 			if ($table->load(array('alias' => $this->alias)) && ($table->id != $this->id || $this->id == 0))
 			{
-				$this->setError(JText::_('COM_COMPONENTBUILDER_FTP_ERROR_UNIQUE_ALIAS'));
+				$this->setError(JText::_('COM_COMPONENTBUILDER_SERVER_ERROR_UNIQUE_ALIAS'));
 				return false;
 			}
 		}
@@ -153,7 +153,7 @@ class ComponentbuilderTableFtp extends JTable
 			// Generate a valid alias
 			$this->generateAlias();
             
-			$table = JTable::getInstance('ftp', 'componentbuilderTable');
+			$table = JTable::getInstance('server', 'componentbuilderTable');
 
 			while ($table->load(array('alias' => $this->alias)) && ($table->id != $this->id || $this->id == 0))
 			{
@@ -202,7 +202,7 @@ class ComponentbuilderTableFtp extends JTable
 		// If we don't have any access rules set at this point just use an empty JAccessRules class
 		if (!$this->getRules())
 		{
-			$rules = $this->getDefaultAssetValues('com_componentbuilder.ftp.'.$this->id);
+			$rules = $this->getDefaultAssetValues('com_componentbuilder.server.'.$this->id);
 			$this->setRules($rules);
 		}
         
@@ -293,7 +293,7 @@ class ComponentbuilderTableFtp extends JTable
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
-		return 'com_componentbuilder.ftp.'.(int) $this->$k;
+		return 'com_componentbuilder.server.'.(int) $this->$k;
 	}
 
 	/**

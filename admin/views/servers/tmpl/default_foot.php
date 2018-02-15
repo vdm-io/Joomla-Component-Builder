@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		details_fullwidth.php
+	@subpackage		default_foot.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -24,26 +24,9 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-
-defined('_JEXEC') or die('Restricted access');
-
-$form = $displayData->getForm();
-
-$fields = $displayData->get('fields') ?: array(
-	'note_ftp_signature',
-	'signature'
-);
+defined('_JEXEC') or die('Restricted access'); 
 
 ?>
-<div class="form-vertical">
-<?php foreach($fields as $field): ?>
-    <div class="control-group">
-        <div class="control-label">
-            <?php echo $form->getLabel($field); ?>
-        </div>
-        <div class="controls">
-            <?php echo $form->getInput($field); ?>
-        </div>
-    </div>
-<?php endforeach; ?>
-</div>
+<tr>
+	<td colspan="6"><?php echo $this->pagination->getListFooter(); ?></td>
+</tr>

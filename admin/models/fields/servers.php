@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		ftps.php
+	@subpackage		servers.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -31,16 +31,16 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Ftps Form Field class for the Componentbuilder component
+ * Servers Form Field class for the Componentbuilder component
  */
-class JFormFieldFtps extends JFormFieldList
+class JFormFieldServers extends JFormFieldList
 {
 	/**
-	 * The ftps field type.
+	 * The servers field type.
 	 *
 	 * @var		string
 	 */
-	public $type = 'ftps'; 
+	public $type = 'servers'; 
 	/**
 	 * Override to add new button
 	 *
@@ -78,8 +78,8 @@ class JFormFieldFtps extends JFormFieldList
 				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
 			}
 			$user = JFactory::getUser();
-			// only add if user allowed to create ftp
-			if ($user->authorise('ftp.create', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			// only add if user allowed to create server
+			if ($user->authorise('server.create', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build Create button
 				$buttonNamee = trim($buttonName);
@@ -88,11 +88,11 @@ class JFormFieldFtps extends JFormFieldList
 				$buttonNamee = preg_replace("/[^A-Za-z ]/", '', $buttonNamee);
 				$buttonNamee = ucfirst(strtolower($buttonNamee));
 				$button[] = '<a id="'.$buttonName.'Create" class="btn btn-small btn-success hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', $buttonNamee).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
-					href="index.php?option=com_componentbuilder&amp;view=ftp&amp;layout=edit'.$ref.'" >
+					href="index.php?option=com_componentbuilder&amp;view=server&amp;layout=edit'.$ref.'" >
 					<span class="icon-new icon-white"></span></a>';
 			}
-			// only add if user allowed to edit ftp
-			if (($buttonName === 'ftp' || $buttonName === 'ftps') && $user->authorise('ftp.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			// only add if user allowed to edit server
+			if (($buttonName === 'server' || $buttonName === 'servers') && $user->authorise('server.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build edit button
 				$buttonNamee = trim($buttonName);
@@ -119,7 +119,7 @@ class JFormFieldFtps extends JFormFieldList
 							jQuery('#".$buttonName."Create').hide();
 							// show edit button
 							jQuery('#".$buttonName."Edit').show();
-							var url = 'index.php?option=com_componentbuilder&view=ftps&task=ftp.edit&id='+value+'".$refJ."';
+							var url = 'index.php?option=com_componentbuilder&view=servers&task=server.edit&id='+value+'".$refJ."';
 							jQuery('#".$buttonName."Edit').attr('href', url);
 						} else {
 							// show the create button
@@ -129,7 +129,7 @@ class JFormFieldFtps extends JFormFieldList
 						}
 					}";
 			}
-			// check if button was created for ftp field.
+			// check if button was created for server field.
 			if (is_array($button) && count($button) > 0)
 			{
 				// Load the needed script.
@@ -151,8 +151,8 @@ class JFormFieldFtps extends JFormFieldList
 	{
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','update_server_ftp_name')));
-		$query->from($db->quoteName('#__componentbuilder_ftp', 'a'));
+		$query->select($db->quoteName(array('a.id','a.name','a.protocol'),array('id','update_server_name', 'protocol')));
+		$query->from($db->quoteName('#__componentbuilder_server', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
@@ -163,7 +163,8 @@ class JFormFieldFtps extends JFormFieldList
 			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->update_server_ftp_name);
+			$item->protocol = ($item->protocol == 2) ? JText::_('SSH') : JText::_('FTP');
+				$options[] = JHtml::_('select.option', $item->id, $item->update_server_name.' ['.$item->protocol.']');
 			}
 		}
 		return $options;

@@ -700,7 +700,7 @@ class Interpretation extends Fields
 			{
 				$updateXML[] = '</updates>';
 				// ###UPDATE_SERVER_XML###
-				$name = str_replace('.xml', '', substr($this->componentData->update_server, strrpos($this->componentData->update_server, '/') + 1));
+				$name = str_replace('.xml', '', substr($this->componentData->update_server_url, strrpos($this->componentData->update_server_url, '/') + 1));
 				$target = array('admin' => $name);
 				$this->buildDynamique($target, 'update_server');
 				$this->fileContentDynamic[$name]['###UPDATE_SERVER_XML###'] = implode(PHP_EOL, $updateXML);
@@ -710,12 +710,12 @@ class Interpretation extends Fields
 			}
 		}
 		// add the update server link to component XML
-		if ($this->componentData->add_update_server && isset($this->componentData->update_server) && ComponentbuilderHelper::checkString($this->componentData->update_server))
+		if ($this->componentData->add_update_server && isset($this->componentData->update_server_url) && ComponentbuilderHelper::checkString($this->componentData->update_server_url))
 		{
 			// ###UPDATESERVER###
 			$updateServer = array();
 			$updateServer[] = PHP_EOL . "\t<updateservers>";
-			$updateServer[] = "\t\t" . '<server type="extension" enabled="1" element="com_' . $this->fileContentStatic['###component###'] . '" name="' . $this->fileContentStatic['###Component_name###'] . '">' . $this->componentData->update_server . '</server>';
+			$updateServer[] = "\t\t" . '<server type="extension" enabled="1" element="com_' . $this->fileContentStatic['###component###'] . '" name="' . $this->fileContentStatic['###Component_name###'] . '">' . $this->componentData->update_server_url . '</server>';
 			$updateServer[] = "\t</updateservers>";
 			// return the array to string
 			$updateServer = implode(PHP_EOL, $updateServer);
@@ -2241,9 +2241,14 @@ class Interpretation extends Fields
 				$getItem .= PHP_EOL . PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " set data object to item.";
 				$getItem .= PHP_EOL . "\t" . $tab . "\t\$this->_item[\$pk] = \$data;";
 			}
-			// check if the dispather should be added
-			if (isset($this->JEventDispatcher) && ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+			// only update if dispacher placholder is found
+			if (strpos($getItem, '###DISPATCHER###') !== false)
 			{
+				// check if the dispather should be added
+				if (!isset($this->JEventDispatcher) || !ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+				{
+					$this->JEventDispatcher = array('###DISPATCHER###' => '');
+				}
 				$getItem = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
 			}
 			return $getItem;
@@ -2696,9 +2701,14 @@ class Interpretation extends Fields
 				$methods = str_replace('###CRYPT###', '', $methods);
 			}
 		}
-		// check if the dispatcher must be set
-		if (isset($this->JEventDispatcher) && ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+		// only update if dispacher placholder is found
+		if (strpos($methods, '###DISPATCHER###') !== false)
 		{
+			// check if the dispather should be added
+			if (!isset($this->JEventDispatcher) || !ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+			{
+				$this->JEventDispatcher = array('###DISPATCHER###' => '');
+			}
 			$methods = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $methods);
 		}
 		return $methods . PHP_EOL;
@@ -2849,9 +2859,14 @@ class Interpretation extends Fields
 					$asBucket[] = $main_get['as'];
 				}
 			}
-			// check if we should load the dispatcher
-			if (isset($this->JEventDispatcher) && ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+			// only update if dispacher placholder is found
+			if (strpos($getItem, '###DISPATCHER###') !== false)
 			{
+				// check if the dispather should be added
+				if (!isset($this->JEventDispatcher) || !ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+				{
+					$this->JEventDispatcher = array('###DISPATCHER###' => '');
+				}
 				$getItem = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
 			}
 			// setup Globals

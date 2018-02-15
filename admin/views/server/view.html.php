@@ -30,9 +30,9 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 
 /**
- * Ftp View class
+ * Server View class
  */
-class ComponentbuilderViewFtp extends JViewLegacy
+class ComponentbuilderViewServer extends JViewLegacy
 {
 	/**
 	 * display method of View
@@ -46,7 +46,7 @@ class ComponentbuilderViewFtp extends JViewLegacy
 		$this->script = $this->get('Script');
 		$this->state = $this->get('State');
 		// get action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('ftp',$this->item);
+		$this->canDo = ComponentbuilderHelper::getActions('server',$this->item);
 		// get input
 		$jinput = JFactory::getApplication()->input;
 		$this->ref = $jinput->get('ref', 0, 'word');
@@ -64,7 +64,7 @@ class ComponentbuilderViewFtp extends JViewLegacy
 		}
 
 		// Get Linked view data
-		$this->waelinked_components = $this->get('Waelinked_components');
+		$this->waplinked_components = $this->get('Waplinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();
@@ -93,29 +93,29 @@ class ComponentbuilderViewFtp extends JViewLegacy
 		$userId	= $user->id;
 		$isNew = $this->item->id == 0;
 
-		JToolbarHelper::title( JText::_($isNew ? 'COM_COMPONENTBUILDER_FTP_NEW' : 'COM_COMPONENTBUILDER_FTP_EDIT'), 'pencil-2 article-add');
+		JToolbarHelper::title( JText::_($isNew ? 'COM_COMPONENTBUILDER_SERVER_NEW' : 'COM_COMPONENTBUILDER_SERVER_EDIT'), 'pencil-2 article-add');
 		// Built the actions for new and existing records.
 		if ($this->refid || $this->ref)
 		{
-			if ($this->canDo->get('ftp.create') && $isNew)
+			if ($this->canDo->get('server.create') && $isNew)
 			{
 				// We can create the record.
-				JToolBarHelper::save('ftp.save', 'JTOOLBAR_SAVE');
+				JToolBarHelper::save('server.save', 'JTOOLBAR_SAVE');
 			}
-			elseif ($this->canDo->get('ftp.edit'))
+			elseif ($this->canDo->get('server.edit'))
 			{
 				// We can save the record.
-				JToolBarHelper::save('ftp.save', 'JTOOLBAR_SAVE');
+				JToolBarHelper::save('server.save', 'JTOOLBAR_SAVE');
 			}
 			if ($isNew)
 			{
 				// Do not creat but cancel.
-				JToolBarHelper::cancel('ftp.cancel', 'JTOOLBAR_CANCEL');
+				JToolBarHelper::cancel('server.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
 			{
 				// We can close it.
-				JToolBarHelper::cancel('ftp.cancel', 'JTOOLBAR_CLOSE');
+				JToolBarHelper::cancel('server.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}
 		else
@@ -123,43 +123,43 @@ class ComponentbuilderViewFtp extends JViewLegacy
 			if ($isNew)
 			{
 				// For new records, check the create permission.
-				if ($this->canDo->get('ftp.create'))
+				if ($this->canDo->get('server.create'))
 				{
-					JToolBarHelper::apply('ftp.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('ftp.save', 'JTOOLBAR_SAVE');
-					JToolBarHelper::custom('ftp.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+					JToolBarHelper::apply('server.apply', 'JTOOLBAR_APPLY');
+					JToolBarHelper::save('server.save', 'JTOOLBAR_SAVE');
+					JToolBarHelper::custom('server.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 				};
-				JToolBarHelper::cancel('ftp.cancel', 'JTOOLBAR_CANCEL');
+				JToolBarHelper::cancel('server.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
 			{
-				if ($this->canDo->get('ftp.edit'))
+				if ($this->canDo->get('server.edit'))
 				{
 					// We can save the new record
-					JToolBarHelper::apply('ftp.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('ftp.save', 'JTOOLBAR_SAVE');
+					JToolBarHelper::apply('server.apply', 'JTOOLBAR_APPLY');
+					JToolBarHelper::save('server.save', 'JTOOLBAR_SAVE');
 					// We can save this record, but check the create permission to see
 					// if we can return to make a new one.
-					if ($this->canDo->get('ftp.create'))
+					if ($this->canDo->get('server.create'))
 					{
-						JToolBarHelper::custom('ftp.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+						JToolBarHelper::custom('server.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 					}
 				}
-				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('ftp.version'));
-				if ($this->state->params->get('save_history', 1) && $this->canDo->get('ftp.edit') && $canVersion)
+				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('server.version'));
+				if ($this->state->params->get('save_history', 1) && $this->canDo->get('server.edit') && $canVersion)
 				{
-					JToolbarHelper::versions('com_componentbuilder.ftp', $this->item->id);
+					JToolbarHelper::versions('com_componentbuilder.server', $this->item->id);
 				}
-				if ($this->canDo->get('ftp.create'))
+				if ($this->canDo->get('server.create'))
 				{
-					JToolBarHelper::custom('ftp.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+					JToolBarHelper::custom('server.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}
-				JToolBarHelper::cancel('ftp.cancel', 'JTOOLBAR_CLOSE');
+				JToolBarHelper::cancel('server.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}
 		JToolbarHelper::divider();
 		// set help url for this view if found
-		$help_url = ComponentbuilderHelper::getHelpUrl('ftp');
+		$help_url = ComponentbuilderHelper::getHelpUrl('server');
 		if (ComponentbuilderHelper::checkString($help_url))
 		{
 			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
@@ -196,8 +196,8 @@ class ComponentbuilderViewFtp extends JViewLegacy
 		{
 			$this->document = JFactory::getDocument();
 		}
-		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_FTP_NEW' : 'COM_COMPONENTBUILDER_FTP_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/ftp.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
+		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_SERVER_NEW' : 'COM_COMPONENTBUILDER_SERVER_EDIT'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/server.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
 
 		// Add the CSS for Footable
 		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
@@ -209,7 +209,7 @@ class ComponentbuilderViewFtp extends JViewLegacy
 		$this->document->addScriptDeclaration($footable);
 
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/ftp/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/server/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 		JText::script('view not acceptable. Error');
 	}
 }

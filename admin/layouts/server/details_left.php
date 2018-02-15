@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		default_foot.php
+	@subpackage		details_left.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -24,9 +24,34 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
 
-?>
-<tr>
-	<td colspan="5"><?php echo $this->pagination->getListFooter(); ?></td>
-</tr>
+defined('_JEXEC') or die('Restricted access');
+
+$form = $displayData->getForm();
+
+$fields = $displayData->get('fields') ?: array(
+	'username',
+	'host',
+	'port',
+	'path'
+);
+
+$hiddenFields = $displayData->get('hidden_fields') ?: array();
+
+foreach ($fields as $field)
+{
+	$field = is_array($field) ? $field : array($field);
+	foreach ($field as $f)
+	{
+		if ($form->getField($f))
+		{
+			if (in_array($f, $hiddenFields))
+			{
+				$form->setFieldAttribute($f, 'type', 'hidden');
+			}
+
+			echo $form->renderField($f);
+			break;
+		}
+	}
+}

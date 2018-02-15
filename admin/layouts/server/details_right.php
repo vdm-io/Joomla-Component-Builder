@@ -1,3 +1,4 @@
+<?php
 /*--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
     __      __       _     _____                 _                                  _     __  __      _   _               _
     \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
@@ -12,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		submitbutton.js
+	@subpackage		details_right.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -22,28 +23,36 @@
                                                              
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
-Joomla.submitbutton = function(task)
+// No direct access to this file
+
+defined('_JEXEC') or die('Restricted access');
+
+$form = $displayData->getForm();
+
+$fields = $displayData->get('fields') ?: array(
+	'authentication',
+	'password',
+	'private',
+	'public',
+	'secret'
+);
+
+$hiddenFields = $displayData->get('hidden_fields') ?: array();
+
+foreach ($fields as $field)
 {
-	if (task == ''){
-		return false;
-	} else { 
-		var isValid=true;
-		var action = task.split('.');
-		if (action[1] != 'cancel' && action[1] != 'close'){
-			var forms = $$('form.form-validate');
-			for (var i=0;i<forms.length;i++){
-				if (!document.formvalidator.isValid(forms[i])){
-					isValid = false;
-					break;
-				}
+	$field = is_array($field) ? $field : array($field);
+	foreach ($field as $f)
+	{
+		if ($form->getField($f))
+		{
+			if (in_array($f, $hiddenFields))
+			{
+				$form->setFieldAttribute($f, 'type', 'hidden');
 			}
-		}
-		if (isValid){
-			Joomla.submitform(task);
-			return true;
-		} else {
-			alert(Joomla.JText._('ftp, some values are not acceptable.','Some values are unacceptable'));
-			return false;
+
+			echo $form->renderField($f);
+			break;
 		}
 	}
 }

@@ -102,7 +102,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'fieldtype' => 'fieldtypes',
 				'language_translation' => 'language_translations',
 				'language' => 'languages',
-				'ftp' => 'ftps',
+				'server' => 'servers',
 				'help_document' => 'help_documents',
 				'admin_fields' => 'admins_fields',
 				'admin_fields_conditions' => 'admins_fields_conditions',

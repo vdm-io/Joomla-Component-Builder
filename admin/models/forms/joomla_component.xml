@@ -247,11 +247,11 @@
                        class="text_area span12"
                        filter="HTML"
                        hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DESCRIPTION_HINT" />
-                <!-- Update_server_ftp Field. Type: Ftps. (custom)-->
-                <field type="ftps"
-                       name="update_server_ftp"
-                       label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_FTP_LABEL"
-                       description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_FTP_DESCRIPTION"
+                <!-- Update_server Field. Type: Servers. (custom)-->
+                <field type="servers"
+                       name="update_server"
+                       label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_LABEL"
+                       description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_DESCRIPTION"
                        class="list_class"
                        multiple="false"
                        default="0"
@@ -342,7 +342,7 @@
                        default="1"
                        required="true">
                         <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_FTP</option>
+                        <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SERVER</option>
                         <option value="2">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ZIP</option>
                         <option value="3">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_OTHER</option>
                 </field>
@@ -615,11 +615,11 @@
                         <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
                 </field>
-                <!-- Sales_server_ftp Field. Type: Ftps. (custom)-->
-                <field type="ftps"
-                       name="sales_server_ftp"
-                       label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_FTP_LABEL"
-                       description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_FTP_DESCRIPTION"
+                <!-- Sales_server Field. Type: Servers. (custom)-->
+                <field type="servers"
+                       name="sales_server"
+                       label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_LABEL"
+                       description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_DESCRIPTION"
                        class="list_class"
                        multiple="false"
                        default="0"
@@ -1087,18 +1087,18 @@
                         <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
                 </field>
-                <!-- Update_server Field. Type: Url. (joomla)-->
+                <!-- Update_server_url Field. Type: Url. (joomla)-->
                 <field type="url"
-                       name="update_server"
-                       label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_LABEL"
+                       name="update_server_url"
+                       label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_URL_LABEL"
                        size="60"
                        maxlength="150"
-                       description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_DESCRIPTION"
+                       description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_URL_DESCRIPTION"
                        class="text_area span12"
                        filter="url"
                        validated="url"
-                       message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_HINT" />
+                       message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_URL_MESSAGE"
+                       hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_URL_HINT" />
                 <!-- Number Field. Type: Number. (joomla)-->
                 <field type="number"
                        name="number"

@@ -1932,6 +1932,13 @@ abstract class ComponentbuilderHelper
 					return $content;
 				}
 			}
+			elseif (property_exists('ComponentbuilderHelper', 'curlErrorLoaded') && !self::$curlErrorLoaded)
+			{
+				// set the notice
+				JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWOCURL_NOT_FOUNDHTWOPPLEASE_SETUP_CURL_ON_YOUR_SYSTEM_OR_BCOMPONENTBUILDERB_WILL_NOT_FUNCTION_CORRECTLYP'), 'Error');
+				// load this notice only once
+				self::$curlErrorLoaded = true;
+			}
 		}
 		return $none;
 	}
@@ -2150,9 +2157,9 @@ abstract class ComponentbuilderHelper
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGES'), 'index.php?option=com_componentbuilder&view=languages', $submenu === 'languages');
 		}
-		if ($user->authorise('ftp.access', 'com_componentbuilder') && $user->authorise('ftp.submenu', 'com_componentbuilder'))
+		if ($user->authorise('server.access', 'com_componentbuilder') && $user->authorise('server.submenu', 'com_componentbuilder'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_FTPS'), 'index.php?option=com_componentbuilder&view=ftps', $submenu === 'ftps');
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_SERVERS'), 'index.php?option=com_componentbuilder&view=servers', $submenu === 'servers');
 		}
 		if ($user->authorise('help_document.access', 'com_componentbuilder') && $user->authorise('help_document.submenu', 'com_componentbuilder'))
 		{
