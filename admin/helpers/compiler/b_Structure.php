@@ -717,7 +717,7 @@ class Structure extends Get
 				$zipPath = str_replace('c0mp0n3nt/', '', $details->path);
 				$path = str_replace('c0mp0n3nt/', $this->componentPath . '/', $details->path);
 				// set the template folder path
-				$templatePath = (isset($details->custom)) ? (($details->custom === 'custom') ? $this->templatePathCustom.'/' : '') : $this->templatePath.'/';
+				$templatePath = (isset($details->custom) && $details->custom) ? (($details->custom !== 'full') ? $this->templatePathCustom.'/':'') : $this->templatePath.'/';
 				// now mov the file
 				if ($details->type === 'file')
 				{
@@ -1143,6 +1143,7 @@ class Structure extends Get
 					$custom['path'] = str_replace('/' . $lastFolder, '', $custom['path']);
 					$rename = 'new';
 					$newname = $lastFolder;
+					// add fix to insure it gets added to xml if needed
 					if (($tkey = array_search($lastFolder, $pathArray)) !== false)
 					{
 						unset($pathArray[$tkey]);
@@ -1155,6 +1156,11 @@ class Structure extends Get
 					$lastFolder = end($folderArray);
 					$rename = 'new';
 					$newname = $lastFolder;
+					// add fix to insure it gets added to xml if needed
+					if (($tkey = array_search($lastFolder, $pathArray)) !== false)
+					{
+						unset($pathArray[$tkey]);
+					}
 				}
 				else
 				{

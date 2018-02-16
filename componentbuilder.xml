@@ -104,6 +104,7 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 			<folder>views</folder>
 			<folder>layouts</folder>
 			<folder>custom</folder>
+			<folder>compiler</folder>
 		</files>
 
 		<languages folder="admin">
