@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		settings_fullwidth.php
+	@subpackage		advance_fullwidth.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -30,10 +30,10 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_add_files',
-	'addfiles',
-	'note_add_folders',
-	'addfolders'
+	'note_add_files_fullpath',
+	'addfilesfullpath',
+	'note_add_folders_fullpath',
+	'addfoldersfullpath'
 );
 
 ?>

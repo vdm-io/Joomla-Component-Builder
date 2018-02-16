@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		settings_above.php
+	@subpackage		basic_above.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = array(
-	'joomla_component'
+	'library'
 );
 
 ?>

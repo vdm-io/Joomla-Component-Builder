@@ -676,6 +676,8 @@ class Get
 				'g.addcustommenus',
 				'j.addfiles',
 				'j.addfolders',
+				'j.addfilesfullpath',
+				'j.addfoldersfullpath',
 				'c.addsite_views',
 				'i.dashboard_tab',
 				'i.php_dashboard_methods',
@@ -690,6 +692,8 @@ class Get
 				'addcustommenus',
 				'addfiles',
 				'addfolders',
+				'addfilesfullpath',
+				'addfoldersfullpath',
 				'addsite_views',
 				'dashboard_tab',
 				'php_dashboard_methods',
@@ -768,21 +772,28 @@ class Get
 		// ensure version naming is correct
 		$this->component_version = preg_replace('/[^0-9.]+/', '', $component->component_version);
 
-		// set the addfolders data
-		$component->addfolders = (isset($component->addfolders) && ComponentbuilderHelper::checkJson($component->addfolders)) ? json_decode($component->addfolders, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addfolders))
+		// set the add targets
+		$addArrayF = array('files' => 'files', 'folders' => 'folders', 'filesfullpath' => 'files', 'foldersfullpath' => 'folders');
+		foreach ($addArrayF as $addTarget => $targetHere)
 		{
-			$component->folders = array_values($component->addfolders);
+			// set the add target data
+			$component->{'add'.$addTarget} = (isset($component->{'add'.$addTarget}) && ComponentbuilderHelper::checkJson($component->{'add'.$addTarget})) ? json_decode($component->{'add'.$addTarget}, true) : null;
+			if (ComponentbuilderHelper::checkArray($component->{'add'.$addTarget}))
+			{
+				if (isset($component->{$targetHere}) && ComponentbuilderHelper::checkArray($component->{$targetHere}))
+				{
+					foreach($component->{'add'.$addTarget} as $taget)
+					{
+						$component->{$targetHere}[] = $taget;
+					}
+				}
+				else
+				{
+					$component->{$targetHere} = array_values($component->{'add'.$addTarget});
+				}
+			}
+			unset($component->{'add'.$addTarget});
 		}
-		unset($component->addfolders);
-
-		// set the addfiles data
-		$component->addfiles = (isset($component->addfiles) && ComponentbuilderHelper::checkJson($component->addfiles)) ? json_decode($component->addfiles, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addfiles))
-		{
-			$component->files = array_values($component->addfiles);
-		}
-		unset($component->addfiles);
 
 		// set the uikit switch
 		$this->uikit = $component->adduikit;
@@ -3018,6 +3029,8 @@ class Get
 					'b.addconfig',
 					'c.addfiles',
 					'c.addfolders',
+					'c.addfilesfullpath',
+					'c.addfoldersfullpath',
 					'c.addurls',
 					'a.php_setdocument'
 					), array(
@@ -3029,6 +3042,8 @@ class Get
 					'addconfig',
 					'addfiles',
 					'addfolders',
+					'addfilesfullpath',
+					'addfoldersfullpath',
 					'addurls',
 					'php_setdocument'
 					)
@@ -3070,23 +3085,27 @@ class Get
 			// check if this lib has dynamic behaviour
 			if ($library->how > 0)
 			{
-				// set the addfolders data
-				$library->addfolders = (isset($library->addfolders) && ComponentbuilderHelper::checkJson($library->addfolders)) ? json_decode($library->addfolders, true) : null;
-				if (ComponentbuilderHelper::checkArray($library->addfolders))
+				// set the add targets
+				$addArray = array('files' => 'files', 'folders' => 'folders', 'urls' => 'urls', 'filesfullpath' => 'files', 'foldersfullpath' => 'folders');
+				foreach ($addArray as $addTarget => $targetHere)
 				{
-					$library->folders = array_values($library->addfolders);
-				}
-				// set the addfiles data
-				$library->addfiles = (isset($library->addfiles) && ComponentbuilderHelper::checkJson($library->addfiles)) ? json_decode($library->addfiles, true) : null;
-				if (ComponentbuilderHelper::checkArray($library->addfiles))
-				{
-					$library->files = array_values($library->addfiles);
-				}
-				// set the addurls data
-				$library->addurls = (isset($library->addurls) && ComponentbuilderHelper::checkJson($library->addurls)) ? json_decode($library->addurls, true) : null;
-				if (ComponentbuilderHelper::checkArray($library->addurls))
-				{
-					$library->urls = array_values($library->addurls);
+					// set the add target data
+					$library->{'add'.$addTarget} = (isset($library->{'add'.$addTarget}) && ComponentbuilderHelper::checkJson($library->{'add'.$addTarget})) ? json_decode($library->{'add'.$addTarget}, true) : null;
+					if (ComponentbuilderHelper::checkArray($library->{'add'.$addTarget}))
+					{
+						if (isset($library->{$targetHere}) && ComponentbuilderHelper::checkArray($library->{$targetHere}))
+						{
+							foreach($library->{'add'.$addTarget} as $taget)
+							{
+								$library->{$targetHere}[] = $taget;
+							}
+						}
+						else
+						{
+							$library->{$targetHere} = array_values($library->{'add'.$addTarget});
+						}
+					}
+					unset($library->{'add'.$addTarget});
 				}
 				// add config fields only if needed
 				if ($library->how > 1)
@@ -3126,9 +3145,6 @@ class Get
 				unset($library->php_setdocument);
 				unset($library->addconditions);
 				unset($library->addconfig);
-				unset($library->addfolders);
-				unset($library->addfiles);
-				unset($library->addurls);
 				// load to global lib
 				$this->libraries[$id] = $library;
 			}

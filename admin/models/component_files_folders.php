@@ -111,6 +111,22 @@ class ComponentbuilderModelComponent_files_folders extends JModelAdmin
 				$item->addfolders = $addfolders->toArray();
 			}
 
+			if (!empty($item->addfilesfullpath))
+			{
+				// Convert the addfilesfullpath field to an array.
+				$addfilesfullpath = new Registry;
+				$addfilesfullpath->loadString($item->addfilesfullpath);
+				$item->addfilesfullpath = $addfilesfullpath->toArray();
+			}
+
+			if (!empty($item->addfoldersfullpath))
+			{
+				// Convert the addfoldersfullpath field to an array.
+				$addfoldersfullpath = new Registry;
+				$addfoldersfullpath->loadString($item->addfoldersfullpath);
+				$item->addfoldersfullpath = $addfoldersfullpath->toArray();
+			}
+
 			// update the fields
 			$objectUpdate = new stdClass();
 			$objectUpdate->id = (int) $item->id;
@@ -856,6 +872,32 @@ class ComponentbuilderModelComponent_files_folders extends JModelAdmin
 		{
 			// Set the empty addfolders to data
 			$data['addfolders'] = '';
+		}
+
+		// Set the addfilesfullpath items to data.
+		if (isset($data['addfilesfullpath']) && is_array($data['addfilesfullpath']))
+		{
+			$addfilesfullpath = new JRegistry;
+			$addfilesfullpath->loadArray($data['addfilesfullpath']);
+			$data['addfilesfullpath'] = (string) $addfilesfullpath;
+		}
+		elseif (!isset($data['addfilesfullpath']))
+		{
+			// Set the empty addfilesfullpath to data
+			$data['addfilesfullpath'] = '';
+		}
+
+		// Set the addfoldersfullpath items to data.
+		if (isset($data['addfoldersfullpath']) && is_array($data['addfoldersfullpath']))
+		{
+			$addfoldersfullpath = new JRegistry;
+			$addfoldersfullpath->loadArray($data['addfoldersfullpath']);
+			$data['addfoldersfullpath'] = (string) $addfoldersfullpath;
+		}
+		elseif (!isset($data['addfoldersfullpath']))
+		{
+			// Set the empty addfoldersfullpath to data
+			$data['addfoldersfullpath'] = '';
 		}
         
 		// Set the Params Items to data

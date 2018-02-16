@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		settings_fullwidth.php
+	@subpackage		basic_above.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -29,25 +29,13 @@ defined('_JEXEC') or die('Restricted access');
 
 $form = $displayData->getForm();
 
-$fields = $displayData->get('fields') ?: array(
-	'note_add_urls',
-	'addurls',
-	'note_add_files',
-	'addfiles',
-	'note_add_folders',
-	'addfolders'
+$fields = array(
+	'joomla_component'
 );
 
 ?>
-<div class="form-vertical">
-<?php foreach($fields as $field): ?>
-    <div class="control-group">
-        <div class="control-label">
-            <?php echo $form->getLabel($field); ?>
-        </div>
-        <div class="controls">
-            <?php echo $form->getInput($field); ?>
-        </div>
-    </div>
-<?php endforeach; ?>
+<div class="form-inline form-inline-header">
+	<?php foreach($fields as $field){
+		echo $form->renderField($field);
+	} ?>
 </div>

@@ -717,26 +717,40 @@ class Structure extends Get
 				$zipPath = str_replace('c0mp0n3nt/', '', $details->path);
 				$path = str_replace('c0mp0n3nt/', $this->componentPath . '/', $details->path);
 				// set the template folder path
-				$templatePath = (isset($details->custom) && $details->custom) ? $this->templatePathCustom : $this->templatePath;
+				$templatePath = (isset($details->custom)) ? (($details->custom === 'custom') ? $this->templatePathCustom.'/' : '') : $this->templatePath.'/';
 				// now mov the file
 				if ($details->type === 'file')
 				{
-					// move the file to its place
-					JFile::copy($templatePath . '/' . $item, $path . '/' . $new);
-					// count the file created
-					$this->fileCount++;
-					// store the new files
-					if (!in_array($ftem, $this->notNew))
+					if (!JFile::exists($templatePath . $item))
 					{
-						$this->newFiles['static'][] = array('path' => $path . '/' . $new, 'name' => $new, 'zip' => $zipPath . '/' . $new);
+						$this->app->enqueueMessage(JText::sprintf('The file path: <b>%s</b> does not exist, and was not added!', $templatePath . $item), 'Error');
+					}
+					else
+					{
+						// move the file to its place
+						JFile::copy($templatePath . $item, $path . '/' . $new);
+						// count the file created
+						$this->fileCount++;
+						// store the new files
+						if (!in_array($ftem, $this->notNew))
+						{
+							$this->newFiles['static'][] = array('path' => $path . '/' . $new, 'name' => $new, 'zip' => $zipPath . '/' . $new);
+						}
 					}
 				}
 				elseif ($details->type === 'folder')
 				{
-					// move the folder to its place
-					JFolder::copy($templatePath . '/' . $item, $path . '/' . $new);
-					// count the folder created
-					$this->folderCount++;
+					if (!JFolder::exists($templatePath . $item))
+					{
+						$this->app->enqueueMessage(JText::sprintf('The folder path: <b>%s</b> does not exist, and was not added!', $templatePath . $item), 'Error');
+					}
+					else
+					{
+						// move the folder to its place
+						JFolder::copy($templatePath . $item, $path . '/' . $new);
+						// count the folder created
+						$this->folderCount++;
+					}
 				}
 			}
 			return true;
@@ -1103,9 +1117,22 @@ class Structure extends Get
 			$pointer_tracker = 'h';
 			foreach ($this->componentData->folders as $custom)
 			{
-				// fix path
-				$custom['path'] = rtrim($custom['path'], '/');
-				$custom['path'] = ltrim($custom['path'], '/');
+				// by default custom path is true
+				$customPath = 'custom';
+				// fix custom path
+				if (isset($custom['path']) && ComponentbuilderHelper::checkString($custom['path']))
+				{
+					$custom['path'] = trim($custom['path'], '/');
+				}
+				// set full path if this is a full path folder
+				if(!isset($custom['folder']) && isset($custom['folderpath']))
+				{
+					$custom['folder'] = '/'.trim($custom['folderpath'], '/');
+					// remove the file path
+					unset($custom['folderpath']);
+					// triget fullpath
+					$customPath = 'full';
+				}
 				// make sure we use the correct name
 				$pathArray = (array) explode('/', $custom['path']);
 				$firstFolder = array_values($pathArray)[0];
@@ -1120,6 +1147,14 @@ class Structure extends Get
 					{
 						unset($pathArray[$tkey]);
 					}
+				}
+				elseif ('full' === $customPath)
+				{
+					// make sure we use the correct name
+					$folderArray = (array) explode('/', $custom['folder']);
+					$lastFolder = end($folderArray);
+					$rename = 'new';
+					$newname = $lastFolder;
 				}
 				else
 				{
@@ -1164,7 +1199,7 @@ class Structure extends Get
 				$versionData->move->static->$key_pointer->rename = $rename;
 				$versionData->move->static->$key_pointer->newName = $newname;
 				$versionData->move->static->$key_pointer->type = 'folder';
-				$versionData->move->static->$key_pointer->custom = true;
+				$versionData->move->static->$key_pointer->custom = $customPath;
 			}
 			unset($this->componentData->folders);
 			unset($custom);
@@ -1191,6 +1226,16 @@ class Structure extends Get
 			$pointer_tracker = 'h';
 			foreach ($this->componentData->files as $custom)
 			{
+				$customPath = 'custom';
+				// set full path if this is a full path file
+				if(!isset($custom['file']) && isset($custom['filepath']))
+				{
+					$custom['file'] = '/'.trim($custom['filepath'], '/');
+					// remove the file path
+					unset($custom['filepath']);
+					// triget fullpath
+					$customPath = 'full';
+				}
 				// make we have not duplicates
 				$key_pointer = ComponentbuilderHelper::safeString($custom['file']) . '_g' . $pointer_tracker;
 				$pointer_tracker++;
@@ -1201,22 +1246,27 @@ class Structure extends Get
 				$pathInfo = pathinfo($custom['path']);
 				if (isset($pathInfo['extension']) && $pathInfo['extension'])
 				{
-					$pathInfo['dirname'] = rtrim($pathInfo['dirname'], '/');
-					$pathInfo['dirname'] = ltrim($pathInfo['dirname'], '/');
+					$pathInfo['dirname'] = trim($pathInfo['dirname'], '/');
+					// set the info
 					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $pathInfo['dirname'];
 					$versionData->move->static->$key_pointer->rename = 'new';
 					$versionData->move->static->$key_pointer->newName = $pathInfo['basename'];
-					// set the name
-					$name = $pathInfo['basename'];
+				}
+				elseif ('full' === $customPath)
+				{
+					$fileArray = explode('/', $custom['file']);
+					// set the info
+					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
+					$versionData->move->static->$key_pointer->rename = 'new';
+					$versionData->move->static->$key_pointer->newName = end($fileArray);
 				}
 				else
 				{
-					$custom['path'] = rtrim($custom['path'], '/');
-					$custom['path'] = ltrim($custom['path'], '/');
+					// fix custom path
+					$custom['path'] = trim($custom['path'], '/');
+					// set the info
 					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
 					$versionData->move->static->$key_pointer->rename = false;
-					// set the name
-					$name = $custom['file'];
 				}
 				// check if file should be updated
 				if (!isset($custom['notnew']) || $custom['notnew'] == 0 || $custom['notnew'] != 1)
@@ -1224,7 +1274,7 @@ class Structure extends Get
 					$this->notNew[] = $key_pointer;
 				}
 				$versionData->move->static->$key_pointer->type = 'file';
-				$versionData->move->static->$key_pointer->custom = true;
+				$versionData->move->static->$key_pointer->custom = $customPath;
 			}
 			unset($this->componentData->files);
 			unset($custom);

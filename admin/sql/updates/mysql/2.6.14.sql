@@ -11,6 +11,11 @@ ALTER TABLE `#__componentbuilder_server` ADD `public` TEXT NOT NULL AFTER `proto
 ALTER TABLE `#__componentbuilder_server` ADD `secret` TEXT NOT NULL AFTER `public`;
 ALTER TABLE `#__componentbuilder_server` ADD `username` TEXT NOT NULL AFTER `signature`;
 
+ALTER TABLE `#__componentbuilder_component_files_folders` ADD `addfilesfullpath` TEXT NOT NULL AFTER `addfiles`;
+ALTER TABLE `#__componentbuilder_component_files_folders` ADD `addfoldersfullpath` TEXT NOT NULL AFTER `addfolders`;
+ALTER TABLE `#__componentbuilder_library_files_folders_urls` ADD `addfilesfullpath` TEXT NOT NULL AFTER `addfiles`;
+ALTER TABLE `#__componentbuilder_library_files_folders_urls` ADD `addfoldersfullpath` TEXT NOT NULL AFTER `addfolders`;
+
 ALTER TABLE `#__componentbuilder_joomla_component` CHANGE `update_server` `update_server_url` VARCHAR(255) NOT NULL DEFAULT '';
 ALTER TABLE `#__componentbuilder_joomla_component` CHANGE `sales_server_ftp` `sales_server` INT(11) NOT NULL DEFAULT 0;
 ALTER TABLE `#__componentbuilder_joomla_component` CHANGE `update_server_ftp` `update_server` INT(11) NOT NULL DEFAULT 0;

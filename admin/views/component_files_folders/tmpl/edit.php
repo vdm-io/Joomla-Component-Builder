@@ -58,17 +58,27 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('component_files_folders.settings_above', $this); ?>
+	<?php echo JLayoutHelper::render('component_files_folders.basic_above', $this); ?>
 <div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'component_files_foldersTab', array('active' => 'settings')); ?>
+	<?php echo JHtml::_('bootstrap.startTabSet', 'component_files_foldersTab', array('active' => 'basic')); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'component_files_foldersTab', 'settings', JText::_('COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_SETTINGS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'component_files_foldersTab', 'basic', JText::_('COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_BASIC', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('component_files_folders.settings_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('component_files_folders.basic_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'component_files_foldersTab', 'advance', JText::_('COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_ADVANCE', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component_files_folders.advance_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
