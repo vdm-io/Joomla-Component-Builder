@@ -100,10 +100,10 @@ class ComponentbuilderModelServer extends JModelAdmin
 			// Get the encryption object.
 			$basic = new FOFEncryptAes($basickey, 128);
 
-			if (!empty($item->path) && $basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
+			if (!empty($item->host) && $basickey && !is_numeric($item->host) && $item->host === base64_encode(base64_decode($item->host, true)))
 			{
-				// basic decrypt data path.
-				$item->path = rtrim($basic->decryptString($item->path), "\0");
+				// basic decrypt data host.
+				$item->host = rtrim($basic->decryptString($item->host), "\0");
 			}
 
 			if (!empty($item->port) && $basickey && !is_numeric($item->port) && $item->port === base64_encode(base64_decode($item->port, true)))
@@ -112,10 +112,10 @@ class ComponentbuilderModelServer extends JModelAdmin
 				$item->port = rtrim($basic->decryptString($item->port), "\0");
 			}
 
-			if (!empty($item->password) && $basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
+			if (!empty($item->path) && $basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
 			{
-				// basic decrypt data password.
-				$item->password = rtrim($basic->decryptString($item->password), "\0");
+				// basic decrypt data path.
+				$item->path = rtrim($basic->decryptString($item->path), "\0");
 			}
 
 			if (!empty($item->secret) && $basickey && !is_numeric($item->secret) && $item->secret === base64_encode(base64_decode($item->secret, true)))
@@ -124,16 +124,16 @@ class ComponentbuilderModelServer extends JModelAdmin
 				$item->secret = rtrim($basic->decryptString($item->secret), "\0");
 			}
 
-			if (!empty($item->host) && $basickey && !is_numeric($item->host) && $item->host === base64_encode(base64_decode($item->host, true)))
-			{
-				// basic decrypt data host.
-				$item->host = rtrim($basic->decryptString($item->host), "\0");
-			}
-
 			if (!empty($item->signature) && $basickey && !is_numeric($item->signature) && $item->signature === base64_encode(base64_decode($item->signature, true)))
 			{
 				// basic decrypt data signature.
 				$item->signature = rtrim($basic->decryptString($item->signature), "\0");
+			}
+
+			if (!empty($item->password) && $basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
+			{
+				// basic decrypt data password.
+				$item->password = rtrim($basic->decryptString($item->password), "\0");
 			}
 
 			if (!empty($item->username) && $basickey && !is_numeric($item->username) && $item->username === base64_encode(base64_decode($item->username, true)))
@@ -146,12 +146,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 			{
 				// basic decrypt data private.
 				$item->private = rtrim($basic->decryptString($item->private), "\0");
-			}
-
-			if (!empty($item->public) && $basickey && !is_numeric($item->public) && $item->public === base64_encode(base64_decode($item->public, true)))
-			{
-				// basic decrypt data public.
-				$item->public = rtrim($basic->decryptString($item->public), "\0");
 			}
 			
 			if (!empty($item->id))
@@ -170,7 +164,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWaplinked_components()
+	public function getWanlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -966,10 +960,10 @@ class ComponentbuilderModelServer extends JModelAdmin
 		// Get the encryption object
 		$basic = new FOFEncryptAes($basickey, 128);
 
-		// Encrypt data path.
-		if (isset($data['path']) && $basickey)
+		// Encrypt data host.
+		if (isset($data['host']) && $basickey)
 		{
-			$data['path'] = $basic->encryptString($data['path']);
+			$data['host'] = $basic->encryptString($data['host']);
 		}
 
 		// Encrypt data port.
@@ -978,10 +972,10 @@ class ComponentbuilderModelServer extends JModelAdmin
 			$data['port'] = $basic->encryptString($data['port']);
 		}
 
-		// Encrypt data password.
-		if (isset($data['password']) && $basickey)
+		// Encrypt data path.
+		if (isset($data['path']) && $basickey)
 		{
-			$data['password'] = $basic->encryptString($data['password']);
+			$data['path'] = $basic->encryptString($data['path']);
 		}
 
 		// Encrypt data secret.
@@ -990,16 +984,16 @@ class ComponentbuilderModelServer extends JModelAdmin
 			$data['secret'] = $basic->encryptString($data['secret']);
 		}
 
-		// Encrypt data host.
-		if (isset($data['host']) && $basickey)
-		{
-			$data['host'] = $basic->encryptString($data['host']);
-		}
-
 		// Encrypt data signature.
 		if (isset($data['signature']) && $basickey)
 		{
 			$data['signature'] = $basic->encryptString($data['signature']);
+		}
+
+		// Encrypt data password.
+		if (isset($data['password']) && $basickey)
+		{
+			$data['password'] = $basic->encryptString($data['password']);
 		}
 
 		// Encrypt data username.
@@ -1012,12 +1006,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 		if (isset($data['private']) && $basickey)
 		{
 			$data['private'] = $basic->encryptString($data['private']);
-		}
-
-		// Encrypt data public.
-		if (isset($data['public']) && $basickey)
-		{
-			$data['public'] = $basic->encryptString($data['public']);
 		}
         
 		// Set the Params Items to data

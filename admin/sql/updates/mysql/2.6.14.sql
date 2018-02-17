@@ -7,8 +7,7 @@ ALTER TABLE `#__componentbuilder_server` ADD `path` TEXT NOT NULL AFTER `passwor
 ALTER TABLE `#__componentbuilder_server` ADD `port` TEXT NOT NULL AFTER `path`;
 ALTER TABLE `#__componentbuilder_server` ADD `private` TEXT NOT NULL AFTER `port`;
 ALTER TABLE `#__componentbuilder_server` ADD `protocol` TINYINT(1) NOT NULL DEFAULT 0 AFTER `private`;
-ALTER TABLE `#__componentbuilder_server` ADD `public` TEXT NOT NULL AFTER `protocol`;
-ALTER TABLE `#__componentbuilder_server` ADD `secret` TEXT NOT NULL AFTER `public`;
+ALTER TABLE `#__componentbuilder_server` ADD `secret` TEXT NOT NULL AFTER `protocol`;
 ALTER TABLE `#__componentbuilder_server` ADD `username` TEXT NOT NULL AFTER `signature`;
 
 ALTER TABLE `#__componentbuilder_component_files_folders` ADD `addfilesfullpath` TEXT NOT NULL AFTER `addfiles`;

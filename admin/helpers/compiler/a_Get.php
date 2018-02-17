@@ -1152,24 +1152,26 @@ class Get
 		// reset back to nowlang
 		$this->lang = $nowLang;
 
-		// add the update server details
-		if ($component->add_update_server == 1 && is_numeric($component->update_server) && $component->update_server > 0)
+		// add the update/sales server FTP details if that is the expected protocol
+		$serverArray = array('update_server','sales_server');
+		foreach($serverArray as $server)
 		{
-			$component->update_server = ComponentbuilderHelper::getVar('server', (int) $component->update_server, 'id', 'signature');
-		}
-		else
-		{
-			$component->update_server = 0;
-		}
-		// add the sales server details
-		if ($component->add_sales_server == 1 && is_numeric($component->sales_server) && $component->sales_server > 0)
-		{
-			$component->sales_server = ComponentbuilderHelper::getVar('server', (int) $component->sales_server, 'id', 'signature');
-		}
-		else
-		{
-			$component->sales_server = 0;
-			$component->add_sales_server = 0;
+			if ($component->{'add_'.$server} == 1 && is_numeric($component->{$server}) && $component->{$server} > 0)
+			{
+				// get the server protocol
+				$component->{$server.'_protocol'} = ComponentbuilderHelper::getVar('server', (int) $component->{$server}, 'id', 'protocol');
+				// load the FTP
+				if (1 == $component->{$server.'_protocol'})
+				{
+					$component->{$server} = ComponentbuilderHelper::getVar('server', (int) $component->{$server}, 'id', 'signature');
+				}
+			}
+			else
+			{
+				$component->{$server} = 0;
+				$component->{'add_'.$server} = 0;
+				$component->{$server.'_protocol'} = 0;
+			}
 		}
 		// set the ignore folders for repo if found
 		if (isset($component->toignore) && ComponentbuilderHelper::checkString($component->toignore))

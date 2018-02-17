@@ -804,7 +804,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_server` (
 	`port` TEXT NOT NULL,
 	`private` TEXT NOT NULL,
 	`protocol` TINYINT(1) NOT NULL DEFAULT 0,
-	`public` TEXT NOT NULL,
 	`secret` TEXT NOT NULL,
 	`signature` TEXT NOT NULL,
 	`username` TEXT NOT NULL,

@@ -170,7 +170,7 @@ jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 jQuery('#jform_protocol').on('keyup',function()
 {
 	var protocol_vvvvwav = jQuery("#jform_protocol").val();
-	var authentication_vvvvwav = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvwav = jQuery("#jform_authentication").val();
 	vvvvwav(protocol_vvvvwav,authentication_vvvvwav);
 
 });
@@ -178,7 +178,7 @@ jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
 	var protocol_vvvvwav = jQuery("#jform_protocol").val();
-	var authentication_vvvvwav = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvwav = jQuery("#jform_authentication").val();
 	vvvvwav(protocol_vvvvwav,authentication_vvvvwav);
 
 });
@@ -187,7 +187,7 @@ jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 jQuery('#jform_authentication').on('keyup',function()
 {
 	var protocol_vvvvwav = jQuery("#jform_protocol").val();
-	var authentication_vvvvwav = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvwav = jQuery("#jform_authentication").val();
 	vvvvwav(protocol_vvvvwav,authentication_vvvvwav);
 
 });
@@ -195,7 +195,7 @@ jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 {
 	e.preventDefault();
 	var protocol_vvvvwav = jQuery("#jform_protocol").val();
-	var authentication_vvvvwav = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvwav = jQuery("#jform_authentication").val();
 	vvvvwav(protocol_vvvvwav,authentication_vvvvwav);
 
 });
@@ -204,7 +204,7 @@ jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 jQuery('#jform_protocol').on('keyup',function()
 {
 	var protocol_vvvvwax = jQuery("#jform_protocol").val();
-	var authentication_vvvvwax = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvwax = jQuery("#jform_authentication").val();
 	vvvvwax(protocol_vvvvwax,authentication_vvvvwax);
 
 });
@@ -212,7 +212,7 @@ jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
 	var protocol_vvvvwax = jQuery("#jform_protocol").val();
-	var authentication_vvvvwax = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvwax = jQuery("#jform_authentication").val();
 	vvvvwax(protocol_vvvvwax,authentication_vvvvwax);
 
 });
@@ -221,7 +221,7 @@ jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 jQuery('#jform_authentication').on('keyup',function()
 {
 	var protocol_vvvvwax = jQuery("#jform_protocol").val();
-	var authentication_vvvvwax = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvwax = jQuery("#jform_authentication").val();
 	vvvvwax(protocol_vvvvwax,authentication_vvvvwax);
 
 });
@@ -229,7 +229,7 @@ jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 {
 	e.preventDefault();
 	var protocol_vvvvwax = jQuery("#jform_protocol").val();
-	var authentication_vvvvwax = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvwax = jQuery("#jform_authentication").val();
 	vvvvwax(protocol_vvvvwax,authentication_vvvvwax);
 
 });
@@ -237,7 +237,7 @@ jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 // #jform_authentication listeners for authentication_vvvvway function
 jQuery('#jform_authentication').on('keyup',function()
 {
-	var authentication_vvvvway = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvway = jQuery("#jform_authentication").val();
 	var protocol_vvvvway = jQuery("#jform_protocol").val();
 	vvvvway(authentication_vvvvway,protocol_vvvvway);
 
@@ -245,7 +245,7 @@ jQuery('#jform_authentication').on('keyup',function()
 jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 {
 	e.preventDefault();
-	var authentication_vvvvway = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvway = jQuery("#jform_authentication").val();
 	var protocol_vvvvway = jQuery("#jform_protocol").val();
 	vvvvway(authentication_vvvvway,protocol_vvvvway);
 
@@ -254,7 +254,7 @@ jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 // #jform_protocol listeners for protocol_vvvvway function
 jQuery('#jform_protocol').on('keyup',function()
 {
-	var authentication_vvvvway = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvway = jQuery("#jform_authentication").val();
 	var protocol_vvvvway = jQuery("#jform_protocol").val();
 	vvvvway(authentication_vvvvway,protocol_vvvvway);
 
@@ -262,7 +262,7 @@ jQuery('#jform_protocol').on('keyup',function()
 jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
-	var authentication_vvvvway = jQuery("#jform_authentication input[type='radio']:checked").val();
+	var authentication_vvvvway = jQuery("#jform_authentication").val();
 	var protocol_vvvvway = jQuery("#jform_protocol").val();
 	vvvvway(authentication_vvvvway,protocol_vvvvway);
 

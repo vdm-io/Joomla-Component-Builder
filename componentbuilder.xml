@@ -113,7 +113,4 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		</languages>
 
 	</administration>
-	<updateservers>
-		<server type="extension" enabled="1" element="com_componentbuilder" name="Component Builder">https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/componentbuilder_update_server.xml</server>
-	</updateservers>
 </extension>

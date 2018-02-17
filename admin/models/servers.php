@@ -152,7 +152,7 @@ class ComponentbuilderModelServers extends JModelList
 			$protocolArray = array(
 				0 => 'COM_COMPONENTBUILDER_SERVER_SELECT_AN_OPTION',
 				1 => 'COM_COMPONENTBUILDER_SERVER_FTP',
-				2 => 'COM_COMPONENTBUILDER_SERVER_SSH'
+				2 => 'COM_COMPONENTBUILDER_SERVER_SFTP'
 			);
 			// Now check if value is found in this array
 			if (isset($protocolArray[$value]) && ComponentbuilderHelper::checkString($protocolArray[$value]))
@@ -304,35 +304,35 @@ class ComponentbuilderModelServers extends JModelList
 							continue;
 						}
 
-						if ($basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
+						if ($basickey && !is_numeric($item->host) && $item->host === base64_encode(base64_decode($item->host, true)))
 						{
-							// decrypt path
-							$item->path = $basic->decryptString($item->path);
+							// decrypt host
+							$item->host = $basic->decryptString($item->host);
 						}
 						if ($basickey && !is_numeric($item->port) && $item->port === base64_encode(base64_decode($item->port, true)))
 						{
 							// decrypt port
 							$item->port = $basic->decryptString($item->port);
 						}
-						if ($basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
+						if ($basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
 						{
-							// decrypt password
-							$item->password = $basic->decryptString($item->password);
+							// decrypt path
+							$item->path = $basic->decryptString($item->path);
 						}
 						if ($basickey && !is_numeric($item->secret) && $item->secret === base64_encode(base64_decode($item->secret, true)))
 						{
 							// decrypt secret
 							$item->secret = $basic->decryptString($item->secret);
 						}
-						if ($basickey && !is_numeric($item->host) && $item->host === base64_encode(base64_decode($item->host, true)))
-						{
-							// decrypt host
-							$item->host = $basic->decryptString($item->host);
-						}
 						if ($basickey && !is_numeric($item->signature) && $item->signature === base64_encode(base64_decode($item->signature, true)))
 						{
 							// decrypt signature
 							$item->signature = $basic->decryptString($item->signature);
+						}
+						if ($basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
+						{
+							// decrypt password
+							$item->password = $basic->decryptString($item->password);
 						}
 						if ($basickey && !is_numeric($item->username) && $item->username === base64_encode(base64_decode($item->username, true)))
 						{
@@ -343,11 +343,6 @@ class ComponentbuilderModelServers extends JModelList
 						{
 							// decrypt private
 							$item->private = $basic->decryptString($item->private);
-						}
-						if ($basickey && !is_numeric($item->public) && $item->public === base64_encode(base64_decode($item->public, true)))
-						{
-							// decrypt public
-							$item->public = $basic->decryptString($item->public);
 						}
 						// unset the values we don't want exported.
 						unset($item->asset_id);

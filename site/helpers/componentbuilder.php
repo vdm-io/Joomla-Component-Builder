@@ -1009,6 +1009,160 @@ abstract class ComponentbuilderHelper
 		return $none;
 	}
 			
+			
+	/**
+	* 	Load the Composer Vendors
+	**/
+	public static function composerAutoload()
+	{
+		// load the autoloader
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/vendor/autoload.php';
+	}			 
+			
+	/**
+	* 	the SFTP object
+	**/
+	protected static $sftp = array();
+
+	/**
+	* 	get the sftp object
+	* 	
+	* 	@param   int    $serverID       The server local id to use
+	* 	
+	* 	@return  object on success with sftp power
+	**/
+	public static function getSftp($serverID)
+	{
+		// check if it was already set
+		if (!self::checkObject(self::$sftp[$serverID]))
+		{
+			// check if we have a server with that id
+			if ($server = self::getServerDetails($serverID, 2))
+			{
+				// make sure we have the composer classes loaded
+				self::composerAutoload();
+				// insure the port is set
+				$server->port = (isset($server->port) && is_int($server->port) && $server->port > 0) ? $server->port : 22;
+				// open the connection
+				self::$sftp[$serverID] = new phpseclib\Net\SFTP($server->host, $server->port);
+				// now login based on authentication type
+				switch($server->authentication)
+				{
+					case 1: // password
+						// now login
+						if (!self::$sftp[$serverID]->login($server->username, $server->password))
+						{
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_AND_PASSWORD_ARE_CORRECT', $server->name), 'Error');
+							return false;
+						}
+					break;
+					case 2: // private key file
+						$rsa = new phpseclib\Crypt\RSA();
+						// check if we have a passprase
+						if (self::checkString($server->secret))
+						{
+							$rsa->setPassword($server->secret);
+						}
+						// now load the key file
+						if (!$rsa->loadKey(self::getFileContents($server->private, null)))
+						{
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
+							return false;
+						}
+						// now login
+						if (!self::$sftp[$serverID]->login($server->username, $rsa))
+						{
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_AND_PRIVATE_KEY_FILE_ARE_CORRECT', $server->name), 'Error');
+							return false;
+						}
+					break;
+					case 3: // both password and private key file
+						$rsa = new phpseclib\Crypt\RSA();
+						// check if we have a passphrase
+						if (self::checkString($server->secret))
+						{
+							$rsa->setPassword($server->secret);
+						}
+						// now load the key file
+						if (!$rsa->loadKey(self::getFileContents($server->private, null)))
+						{
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
+							return false;
+						}
+						// now login
+						if (!self::$sftp[$serverID]->login($server->username, $server->password, $rsa))
+						{
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_PASSWORD_AND_PRIVATE_KEY_FILE_ARE_CORRECT', $server->name), 'Error');
+							return false;
+						}
+					break;
+				}
+				// set some defaults
+				self::$sftp[$serverID]->remote_server_name = $server->name;
+				self::$sftp[$serverID]->remote_server_path = (self::checkString($server->path) && $server->path !== '/') ? $server->path : '';
+			}
+			else
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_SERVER_DETAILS_FOR_BSB_COULD_NOT_BE_RETRIEVED', $serverID), 'Error');
+				return false;
+			}
+		}
+		// return the sftp object
+		return self::$sftp[$serverID];
+	}
+
+	/**
+	* 	get the server details
+	* 	
+	* 	@param   int    $serverID       The server local id to use
+	* 	@param   int    $protocol       The server protocol to use
+	* 	
+	* 	@return  array    on success with sftp server details
+	**/
+	protected static function getServerDetails($serverID, $protocol = 2)
+	{
+		if (is_int($serverID) && is_int($serverID))
+		{
+			// Get a db connection
+			$db = JFactory::getDbo();
+			// start the query
+			$query = $db->getQuery(true);
+			// select based to protocal
+			if (2 == $protocol)
+			{
+				$query->select($db->quoteName(array('name','authentication','username','host','password','path','port','private','secret')));
+			}
+			else
+			{
+				$query->select($db->quoteName(array('name','signature')));
+			}
+			$query->from($db->quoteName('#__componentbuilder_server'));
+			$query->where($db->quoteName('id') . ' = ' . (int) $serverID);
+			$query->where($db->quoteName('protocol') . ' = ' . (int) $protocol);
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				$server = $db->loadObject();
+				// Get the basic encryption.
+				$basickey = self::getCryptKey('basic');
+				// Get the encryption object.
+				$basic = new FOFEncryptAes($basickey, 128);
+				// unlock the needed fields
+				foreach($server as $name => $value)
+				{
+					if ($name !== 'name' && !empty($server->{$name}) && $basickey && !is_numeric($server->{$name}) && $server->{$name} === base64_encode(base64_decode($server->{$name}, true)))
+					{
+						// basic decrypt of data
+						$server->{$name} = rtrim($basic->decryptString($server->{$name}), "\0");
+					}
+				}
+				// return the server details
+				return $server;
+			}
+		}
+		return false;
+	}			
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{

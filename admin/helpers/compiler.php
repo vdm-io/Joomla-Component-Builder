@@ -318,17 +318,35 @@ class Compiler extends Infusion
 			// make sure we have the correct file
 			if (JFile::exists($xml_update_server_path) && isset($this->componentData->update_server))
 			{
-				// Get the basic encription.
-				$basickey = ComponentbuilderHelper::getCryptKey('basic');
-				// Get the encription object.
-				$basic = new FOFEncryptAes($basickey, 128);
-				if (!empty($this->componentData->update_server) && $basickey && !is_numeric($this->componentData->update_server) && $this->componentData->update_server === base64_encode(base64_decode($this->componentData->update_server, true)))
+				// use FTP
+				if ($this->componentData->update_server_protocol == 1)
 				{
-					// basic decript data update_server.
-					$this->componentData->update_server = rtrim($basic->decryptString($this->componentData->update_server), "\0");
+					// Get the basic encription.
+					$basickey = ComponentbuilderHelper::getCryptKey('basic');
+					// Get the encription object.
+					$basic = new FOFEncryptAes($basickey, 128);
+					if (!empty($this->componentData->update_server) && $basickey && !is_numeric($this->componentData->update_server) && $this->componentData->update_server === base64_encode(base64_decode($this->componentData->update_server, true)))
+					{
+						// basic decript data update_server.
+						$this->componentData->update_server = rtrim($basic->decryptString($this->componentData->update_server), "\0");
+					}
+					// now move the file
+					$this->moveFileToFtpServer($xml_update_server_path, $this->componentData->update_server);
 				}
-				// now move the file
-				$this->moveFileToFtpServer($xml_update_server_path, $this->componentData->update_server);
+				// use SFTP
+				elseif ($this->componentData->update_server_protocol == 2)
+				{
+					if ($sftp = ComponentbuilderHelper::getSftp((int) $this->componentData->update_server))
+					{
+						// now move the file
+						if (!$sftp->put($sftp->remote_server_path . $this->updateServerFileName . '.xml', ComponentbuilderHelper::getFileContents($xml_update_server_path, null)))
+						{
+							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->updateServerFileName . '.xml', $sftp->remote_server_path, $sftp->remote_server_name), 'Error');
+						}
+						// remove the local file
+						JFile::delete($xml_update_server_path);
+					}
+				}
 			}
 		}
 	}
@@ -499,17 +517,33 @@ class Compiler extends Infusion
 				// make sure we have the correct file
 				if (isset($this->componentData->sales_server))
 				{
-					// Get the basic encription.
-					$basickey = ComponentbuilderHelper::getCryptKey('basic');
-					// Get the encription object.
-					$basic = new FOFEncryptAes($basickey, 128);
-					if (!empty($this->componentData->sales_server) && $basickey && !is_numeric($this->componentData->sales_server) && $this->componentData->sales_server === base64_encode(base64_decode($this->componentData->sales_server, true)))
+					// use FTP
+					if ($this->componentData->sales_server_protocol == 1)
 					{
-						// basic decript data update_server.
-						$this->componentData->sales_server = rtrim($basic->decryptString($this->componentData->sales_server), "\0");
+						// Get the basic encription.
+						$basickey = ComponentbuilderHelper::getCryptKey('basic');
+						// Get the encription object.
+						$basic = new FOFEncryptAes($basickey, 128);
+						if (!empty($this->componentData->sales_server) && $basickey && !is_numeric($this->componentData->sales_server) && $this->componentData->sales_server === base64_encode(base64_decode($this->componentData->sales_server, true)))
+						{
+							// basic decript data sales_server.
+							$this->componentData->sales_server = rtrim($basic->decryptString($this->componentData->sales_server), "\0");
+						}
+						// now move the file
+						$this->moveFileToFtpServer($this->filepath, $this->componentData->sales_server, $this->componentSalesName . '.zip', false);
 					}
-					// now move the file
-					$this->moveFileToFtpServer($this->filepath, $this->componentData->sales_server, $this->componentSalesName . '.zip', false);
+					// use SFTP
+					elseif ($this->componentData->sales_server_protocol == 2)
+					{
+						if ($sftp = ComponentbuilderHelper::getSftp((int) $this->componentData->sales_server))
+						{
+							// now move the file
+							if (!$sftp->put($sftp->remote_server_path . $this->componentFolderName . '.zip', ComponentbuilderHelper::getFileContents($this->filepath, null)))
+							{
+								$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->componentFolderName . '.zip', $sftp->remote_server_path, $sftp->remote_server_name), 'Error');
+							}
+						}
+					}
 				}
 			}
 			// remove the component folder since we are done
