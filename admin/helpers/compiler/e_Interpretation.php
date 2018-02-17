@@ -12228,7 +12228,7 @@ class Interpretation extends Fields
 		{
 			foreach ($this->componentData->custom_admin_views as $nr => $menu)
 			{
-				if (!isset($this->customAdminAdded[$menu['settings']->code]) && $menu['dashboard_list'] == 1 && $menu['before'] == $view['adminview'])
+				if (!isset($this->customAdminAdded[$menu['settings']->code]) && isset($menu['dashboard_list']) && $menu['dashboard_list'] == 1 && $menu['before'] == $view['adminview'])
 				{
 					$type = ComponentbuilderHelper::imageInfo($menu['settings']->icon);
 					if ($type)
@@ -12258,7 +12258,7 @@ class Interpretation extends Fields
 						$icon .= ", '" . $type . $menu['settings']->code . "'";
 					}
 				}
-				elseif (!isset($this->customAdminAdded[$menu['settings']->code]) && $menu['dashboard_list'] == 1 && empty($menu['before']))
+				elseif (!isset($this->customAdminAdded[$menu['settings']->code]) && isset($menu['dashboard_list']) && $menu['dashboard_list'] == 1 && empty($menu['before']))
 				{
 					$type = ComponentbuilderHelper::imageInfo($menu['settings']->icon);
 					if ($type)
@@ -12289,7 +12289,7 @@ class Interpretation extends Fields
 				$nr = $nr + 100;
 				$nameList = ComponentbuilderHelper::safeString($menu['name_code']);
 				$nameUpper = ComponentbuilderHelper::safeString($menu['name_code'], 'U');
-				if ($menu['dashboard_list'] == 1 && $view['adminview'] == $menu['before'])
+				if (isset($menu['dashboard_list']) && $menu['dashboard_list'] == 1 && $view['adminview'] == $menu['before'])
 				{
 					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
 					{
@@ -12327,7 +12327,7 @@ class Interpretation extends Fields
 						}
 					}
 				}
-				elseif ($menu['dashboard_list'] == 1 && empty($menu['before']))
+				elseif (isset($menu['dashboard_list']) && $menu['dashboard_list'] == 1 && empty($menu['before']))
 				{
 					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
 					{
@@ -12484,7 +12484,7 @@ class Interpretation extends Fields
 			$nameUpper = $menu['settings']->CODE;
 		}
 
-		if ($menu['submenu'] == 1 && $view['adminview'] == $menu['before'])
+		if (isset($menu['submenu']) && $menu['submenu'] == 1 && $view['adminview'] == $menu['before'])
 		{
 			// setup access defaults
 			$tab = "";
@@ -12531,7 +12531,7 @@ class Interpretation extends Fields
 
 			return $custom;
 		}
-		elseif ($menu['submenu'] == 1 && empty($menu['before']))
+		elseif (isset($menu['submenu']) && $menu['submenu'] == 1 && empty($menu['before']))
 		{
 			// setup access defaults
 			$tab = "";
@@ -12622,13 +12622,13 @@ class Interpretation extends Fields
 			{
 				if (!isset($this->customAdminAdded[$menu['settings']->code]))
 				{
-					if ($menu['mainmenu'] == 1 && $view['adminview'] == $menu['before'])
+					if (isset($menu['mainmenu']) && $menu['mainmenu'] == 1 && $view['adminview'] == $menu['before'])
 					{
 						$this->langContent['adminsys'][$lang . '_' . $menu['settings']->CODE] = $menu['settings']->name;
 						// add custom menu
 						$customMenu .= PHP_EOL . "\t\t\t" . '<menu option="com_' . $codeName . '" view="' . $menu['settings']->code . '">' . $lang . '_' . $menu['settings']->CODE . '</menu>';
 					}
-					elseif ($menu['mainmenu'] == 1 && empty($menu['before']))
+					elseif (isset($menu['mainmenu']) && $menu['mainmenu'] == 1 && empty($menu['before']))
 					{
 						$this->langContent['adminsys'][$lang . '_' . $menu['settings']->CODE] = $menu['settings']->name;
 						// add custom menu
@@ -12643,7 +12643,7 @@ class Interpretation extends Fields
 			foreach ($this->componentData->custommenus as $nr => $menu)
 			{
 				$nr = $nr + 100;
-				if ($menu['mainmenu'] == 1 && $view['adminview'] == $menu['before'])
+				if (isset($menu['mainmenu']) && $menu['mainmenu'] == 1 && $view['adminview'] == $menu['before'])
 				{
 					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
 					{
@@ -12664,7 +12664,7 @@ class Interpretation extends Fields
 						$customMenu .= PHP_EOL . "\t\t\t" . '<menu option="com_' . $codeName . '" view="' . $nameList . '">' . $lang . '_' . $nameUpper . '</menu>';
 					}
 				}
-				elseif ($menu['mainmenu'] == 1 && empty($menu['before']))
+				elseif (isset($menu['mainmenu']) && $menu['mainmenu'] == 1 && empty($menu['before']))
 				{
 					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
 					{

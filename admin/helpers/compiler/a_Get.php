@@ -1169,7 +1169,11 @@ class Get
 			else
 			{
 				$component->{$server} = 0;
-				$component->{'add_'.$server} = 0;
+				// only change this for sales server (update server can be added loacaly to the zip file)
+				if ('sales_server' === $server)
+				{
+					$component->{'add_'.$server} = 0;
+				}
 				$component->{$server.'_protocol'} = 0;
 			}
 		}

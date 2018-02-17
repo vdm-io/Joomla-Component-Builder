@@ -538,9 +538,9 @@ class Compiler extends Infusion
 						if ($sftp = ComponentbuilderHelper::getSftp((int) $this->componentData->sales_server))
 						{
 							// now move the file
-							if (!$sftp->put($sftp->remote_server_path . $this->componentFolderName . '.zip', ComponentbuilderHelper::getFileContents($this->filepath, null)))
+							if (!$sftp->put($sftp->remote_server_path . $this->componentSalesName . '.zip', ComponentbuilderHelper::getFileContents($this->filepath, null)))
 							{
-								$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->componentFolderName . '.zip', $sftp->remote_server_path, $sftp->remote_server_name), 'Error');
+								$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->componentSalesName . '.zip', $sftp->remote_server_path, $sftp->remote_server_name), 'Error');
 							}
 						}
 					}
