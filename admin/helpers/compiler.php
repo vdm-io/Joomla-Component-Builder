@@ -321,27 +321,29 @@ class Compiler extends Infusion
 				// use FTP
 				if ($this->componentData->update_server_protocol == 1)
 				{
-					// Get the basic encription.
-					$basickey = ComponentbuilderHelper::getCryptKey('basic');
-					// Get the encription object.
-					$basic = new FOFEncryptAes($basickey, 128);
-					if (!empty($this->componentData->update_server) && $basickey && !is_numeric($this->componentData->update_server) && $this->componentData->update_server === base64_encode(base64_decode($this->componentData->update_server, true)))
+					// get server details
+					if ($ftp = ComponentbuilderHelper::getServer((int) $this->componentData->update_server, 1))
 					{
-						// basic decript data update_server.
-						$this->componentData->update_server = rtrim($basic->decryptString($this->componentData->update_server), "\0");
+						// now move the file
+						if (!$ftp->store($xml_update_server_path, null))
+						{
+							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> server.', $this->updateServerFileName . '.xml', $$ftp->remote_server_name[(int) $this->componentData->update_server]), 'Error');
+						}
+						// remove the local file
+						JFile::delete($xml_update_server_path);
+						// close the connection
+						$ftp->quit();
 					}
-					// now move the file
-					$this->moveFileToFtpServer($xml_update_server_path, $this->componentData->update_server);
 				}
 				// use SFTP
 				elseif ($this->componentData->update_server_protocol == 2)
 				{
-					if ($sftp = ComponentbuilderHelper::getSftp((int) $this->componentData->update_server))
+					if ($sftp = ComponentbuilderHelper::getServer((int) $this->componentData->update_server, 2))
 					{
 						// now move the file
-						if (!$sftp->put($sftp->remote_server_path . $this->updateServerFileName . '.xml', ComponentbuilderHelper::getFileContents($xml_update_server_path, null)))
+						if (!$sftp->put($sftp->remote_server_path[(int) $this->componentData->update_server] . $this->updateServerFileName . '.xml', ComponentbuilderHelper::getFileContents($xml_update_server_path, null)))
 						{
-							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->updateServerFileName . '.xml', $sftp->remote_server_path, $sftp->remote_server_name), 'Error');
+							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->updateServerFileName . '.xml', $sftp->remote_server_path[(int) $this->componentData->update_server], $sftp->remote_server_name[(int) $this->componentData->update_server]), 'Error');
 						}
 						// remove the local file
 						JFile::delete($xml_update_server_path);
@@ -520,27 +522,26 @@ class Compiler extends Infusion
 					// use FTP
 					if ($this->componentData->sales_server_protocol == 1)
 					{
-						// Get the basic encription.
-						$basickey = ComponentbuilderHelper::getCryptKey('basic');
-						// Get the encription object.
-						$basic = new FOFEncryptAes($basickey, 128);
-						if (!empty($this->componentData->sales_server) && $basickey && !is_numeric($this->componentData->sales_server) && $this->componentData->sales_server === base64_encode(base64_decode($this->componentData->sales_server, true)))
+						if ($ftp = ComponentbuilderHelper::getServer((int) $this->componentData->sales_server, 1))
 						{
-							// basic decript data sales_server.
-							$this->componentData->sales_server = rtrim($basic->decryptString($this->componentData->sales_server), "\0");
+							// now move the file
+							if (!$ftp->store($xml_update_server_path, $this->componentSalesName . '.zip'))
+							{
+								$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> server.', $this->componentSalesName . '.zip', $ftp->remote_server_name[(int) $this->componentData->sales_server]), 'Error');
+							}
+							// close the connection
+							$ftp->quit();
 						}
-						// now move the file
-						$this->moveFileToFtpServer($this->filepath, $this->componentData->sales_server, $this->componentSalesName . '.zip', false);
 					}
 					// use SFTP
 					elseif ($this->componentData->sales_server_protocol == 2)
 					{
-						if ($sftp = ComponentbuilderHelper::getSftp((int) $this->componentData->sales_server))
+						if ($sftp = ComponentbuilderHelper::getServer((int) $this->componentData->sales_server, 2))
 						{
 							// now move the file
-							if (!$sftp->put($sftp->remote_server_path . $this->componentSalesName . '.zip', ComponentbuilderHelper::getFileContents($this->filepath, null)))
+							if (!$sftp->put($sftp->remote_server_path[(int) $this->componentData->sales_server] . $this->componentSalesName . '.zip', ComponentbuilderHelper::getFileContents($this->filepath, null)))
 							{
-								$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->componentSalesName . '.zip', $sftp->remote_server_path, $sftp->remote_server_name), 'Error');
+								$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->componentSalesName . '.zip', $sftp->remote_server_path[(int) $this->componentData->sales_server], $sftp->remote_server_name[(int) $this->componentData->sales_server]), 'Error');
 							}
 						}
 					}
@@ -550,74 +551,6 @@ class Compiler extends Infusion
 			if ($this->removeFolder($this->componentPath))
 			{
 				return true;
-			}
-		}
-		return false;
-	}
-
-	private function moveFileToFtpServer($localPath, $clientInput, $remote = null, $removeLocal = true)
-	{
-		// get the ftp opbject
-		$ftp = $this->getFTP($clientInput);
-		// chack if we are conected
-		if ($ftp instanceof JClientFtp && $ftp->isConnected())
-		{
-			// move the file
-			if ($ftp->store($localPath, $remote))
-			{
-				// if moved then remove the file from repository
-				if ($removeLocal)
-				{
-					JFile::delete($localPath);
-				}
-			}
-			// at the end close the conection
-			$ftp->quit();
-		}
-	}
-
-	private function getFTP($clientInput)
-	{
-		$s1GnAtnr3 = md5($clientInput);
-		if (isset($this->FTP[$s1GnAtnr3]) && $this->FTP[$s1GnAtnr3] instanceof JClientFtp)
-		{
-			// return the FTP instance
-			return $this->FTP[$s1GnAtnr3];
-		}
-		else
-		{
-			// make sure we have a string and it is not default or empty
-			if (ComponentbuilderHelper::checkString($clientInput))
-			{
-				// turn into variables
-				parse_str($clientInput); // because of this I am using strand variable naming to avoid any collisions.
-				// set options
-				if (isset($options) && ComponentbuilderHelper::checkArray($options))
-				{
-					foreach ($options as $o__p0t1on => $vAln3)
-					{
-						if ('timeout' === $o__p0t1on)
-						{
-							$options[$o__p0t1on] = (int) $vAln3;
-						}
-						if ('type' === $o__p0t1on)
-						{
-							$options[$o__p0t1on] = (string) $vAln3;
-						}
-					}
-				}
-				else
-				{
-					$options = array();
-				}
-				// get ftp object
-				if (isset($host) && $host != 'HOSTNAME' && isset($port) && $port != 'PORT_INT' && isset($username) && $username != 'user@name.com' && isset($password) && $password != 'password')
-				{
-					// load for reuse
-					$this->FTP[$s1GnAtnr3] = JClientFtp::getInstance($host, $port, $options, $username, $password);
-					// return the FTP instance
-					return $this->FTP[$s1GnAtnr3];
-				}
 			}
 		}
 		return false;

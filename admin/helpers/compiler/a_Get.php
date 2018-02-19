@@ -1160,11 +1160,6 @@ class Get
 			{
 				// get the server protocol
 				$component->{$server.'_protocol'} = ComponentbuilderHelper::getVar('server', (int) $component->{$server}, 'id', 'protocol');
-				// load the FTP
-				if (1 == $component->{$server.'_protocol'})
-				{
-					$component->{$server} = ComponentbuilderHelper::getVar('server', (int) $component->{$server}, 'id', 'signature');
-				}
 			}
 			else
 			{

@@ -1954,39 +1954,76 @@ abstract class ComponentbuilderHelper
 	}			 
 			
 	/**
-	* 	the SFTP object
+	* 	the SFTP objects
 	**/
 	protected static $sftp = array();
 
 	/**
+	* 	the FTP objects
+	**/
+	protected static $ftp = array();
+
+	/**
+	* 	get the server object
+	* 	
+	* 	@param   int         $serverID       The server local id to use
+	* 	@param   int         $protocol        The server protocol to use
+	* 	@param   string    $permission    The permission validation area
+	* 	
+	* 	@return  object     on success server object
+	**/
+	public static function getServer($serverID, $protocol, $permission = 'core.export')
+	{
+		// return the server object
+		switch ($protocol)
+		{
+			case 1: // FTP
+				return self::getFtp($serverID, $permission);
+			break;
+			case 2: // SFTP
+				return self::getSftp($serverID, $permission);
+			break;
+		}
+		return false;
+	}
+
+	/**
 	* 	get the sftp object
 	* 	
-	* 	@param   int    $serverID       The server local id to use
+	* 	@param   int         $serverID       The server local id to use
+	* 	@param   string    $permission    The permission validation area
 	* 	
 	* 	@return  object on success with sftp power
 	**/
-	public static function getSftp($serverID)
+	public static function getSftp($serverID, $permission = 'core.export')
 	{
-		// check if it was already set
-		if (!self::checkObject(self::$sftp[$serverID]))
+		// check if we have a server with that id
+		if ($server = self::getServerDetails($serverID, 2, $permission))
 		{
-			// check if we have a server with that id
-			if ($server = self::getServerDetails($serverID, 2))
+			// check if it was already set
+			if (!isset(self::$sftp[$server->cache]) || !self::checkObject(self::$sftp[$server->cache]))
 			{
 				// make sure we have the composer classes loaded
 				self::composerAutoload();
+				// make sure we have the phpseclib classes
+				if (!class_exists('\phpseclib\Net\SFTP'))
+				{
+					// class not in place so send out error
+					JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_THE_BPHPSECLIBNETSFTPB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_ADMINHELPERSVENDOR_FOLDER_OF_JCB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO'), 'Error');
+					return false;
+				}
 				// insure the port is set
 				$server->port = (isset($server->port) && is_int($server->port) && $server->port > 0) ? $server->port : 22;
 				// open the connection
-				self::$sftp[$serverID] = new phpseclib\Net\SFTP($server->host, $server->port);
+				self::$sftp[$server->cache] = new phpseclib\Net\SFTP($server->host, $server->port);
 				// now login based on authentication type
 				switch($server->authentication)
 				{
 					case 1: // password
-						// now login
-						if (!self::$sftp[$serverID]->login($server->username, $server->password))
+						if (!self::$sftp[$server->cache]->login($server->username, $server->password))
 						{
 							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_AND_PASSWORD_ARE_CORRECT', $server->name), 'Error');
+							unset(self::$sftp[$server->cache]);
 							return false;
 						}
 					break;
@@ -2001,12 +2038,14 @@ abstract class ComponentbuilderHelper
 						if (!$rsa->loadKey(self::getFileContents($server->private, null)))
 						{
 							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
+							unset(self::$sftp[$server->cache]);
 							return false;
 						}
 						// now login
-						if (!self::$sftp[$serverID]->login($server->username, $rsa))
+						if (!self::$sftp[$server->cache]->login($server->username, $rsa))
 						{
 							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_AND_PRIVATE_KEY_FILE_ARE_CORRECT', $server->name), 'Error');
+							unset(self::$sftp[$server->cache]);
 							return false;
 						}
 					break;
@@ -2021,54 +2060,166 @@ abstract class ComponentbuilderHelper
 						if (!$rsa->loadKey(self::getFileContents($server->private, null)))
 						{
 							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
+							unset(self::$sftp[$server->cache]);
 							return false;
 						}
 						// now login
-						if (!self::$sftp[$serverID]->login($server->username, $server->password, $rsa))
+						if (!self::$sftp[$server->cache]->login($server->username, $server->password, $rsa))
 						{
 							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_PASSWORD_AND_PRIVATE_KEY_FILE_ARE_CORRECT', $server->name), 'Error');
+							unset(self::$sftp[$server->cache]);
 							return false;
 						}
 					break;
 				}
-				// set some defaults
-				self::$sftp[$serverID]->remote_server_name = $server->name;
-				self::$sftp[$serverID]->remote_server_path = (self::checkString($server->path) && $server->path !== '/') ? $server->path : '';
 			}
-			else
+			// only continue if object is set
+			if (isset(self::$sftp[$server->cache]) && self::checkObject(self::$sftp[$server->cache]))
 			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_SERVER_DETAILS_FOR_BSB_COULD_NOT_BE_RETRIEVED', $serverID), 'Error');
-				return false;
+				// set the unique buckets
+				if (!isset(self::$sftp[$server->cache]->remote_server_name))
+				{
+					self::$sftp[$server->cache]->remote_server_name = array();
+					self::$sftp[$server->cache]->remote_server_path = array();
+				}
+				// always set the name and remote server path
+				self::$sftp[$server->cache]->remote_server_name[$serverID] = $server->name;
+				self::$sftp[$server->cache]->remote_server_path[$serverID] = (self::checkString($server->path) && $server->path !== '/') ? $server->path : '';
+				// return the sftp object
+				return self::$sftp[$server->cache];
 			}
 		}
-		// return the sftp object
-		return self::$sftp[$serverID];
+		return false;
+	}
+
+	/**
+	* 	get the JClientFtp object
+	* 	
+	* 	@param   int        $serverID       The server local id to use
+	* 	@param   string    $permission    The permission validation area
+	* 	
+	* 	@return  object on success with ftp power
+	**/
+	public static function getFtp($serverID, $permission)
+	{
+		// check if we have a server with that id
+		if ($server = self::getServerDetails($serverID, 1, $permission))
+		{
+			// check if we already have the server instance
+			if (isset(self::$ftp[$server->cache]) && self::$ftp[$server->cache] instanceof JClientFtp)
+			{
+				// always set the name and remote server path
+				self::$ftp[$server->cache]->remote_server_name[$serverID] = $server->name;
+				// if still connected we are ready to go
+				if (self::$ftp[$server->cache]->isConnected())
+				{
+					// return the FTP instance
+					return self::$ftp[$server->cache];
+				}
+				// check if we can reinitialise the server
+				if (self::$ftp[$server->cache]->reinit())
+				{
+					// return the FTP instance
+					return self::$ftp[$server->cache];
+				}
+			}
+			// make sure we have a string and it is not default or empty
+			if (self::checkString($server->signature))
+			{
+				// turn into variables
+				parse_str($server->signature); // because of this I am using strange variable naming to avoid any collisions.
+				// set options
+				if (isset($options) && self::checkArray($options))
+				{
+					foreach ($options as $o__p0t1on => $vAln3)
+					{
+						if ('timeout' === $o__p0t1on)
+						{
+							$options[$o__p0t1on] = (int) $vAln3;
+						}
+						if ('type' === $o__p0t1on)
+						{
+							$options[$o__p0t1on] = (string) $vAln3;
+						}
+					}
+				}
+				else
+				{
+					$options = array();
+				}
+				// get ftp object
+				if (isset($host) && $host != 'HOSTNAME' && isset($port) && $port != 'PORT_INT' && isset($username) && $username != 'user@name.com' && isset($password) && $password != 'password')
+				{
+					// load for reuse
+					self::$ftp[$server->cache] = JClientFtp::getInstance($host, $port, $options, $username, $password);
+				}
+				else
+				{
+					// load error to indicate signature was in error
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_FTP_SIGNATURE_FOR_BSB_WAS_NOT_WELL_FORMED_PLEASE_CHECK_YOUR_SIGNATURE_DETAILS', $server->name), 'Error');
+					return false;
+				}
+				// check if we are connected
+				if (self::$ftp[$server->cache] instanceof JClientFtp && self::$ftp[$server->cache]->isConnected())
+				{
+					// set the unique buckets
+					if (!isset(self::$ftp[$server->cache]->remote_server_name))
+					{
+						self::$ftp[$server->cache]->remote_server_name = array();
+					}
+					// always set the name and remote server path
+					self::$ftp[$server->cache]->remote_server_name[$serverID] = $server->name;
+					// return the FTP instance
+					return self::$ftp[$server->cache];
+				}
+				// reset since we have no connection
+				unset(self::$ftp[$server->cache]);
+			}
+			// load error to indicate signature was in error
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_FTP_CONNECTION_FOR_BSB_COULD_NOT_BE_MADE_PLEASE_CHECK_YOUR_SIGNATURE_DETAILS', $server->name), 'Error');
+		}
+		return false;
 	}
 
 	/**
 	* 	get the server details
 	* 	
-	* 	@param   int    $serverID       The server local id to use
-	* 	@param   int    $protocol       The server protocol to use
+	* 	@param   int         $serverID       The server local id to use
+	* 	@param   int         $protocol        The server protocol to use
+	* 	@param   string    $permission    The permission validation area
 	* 	
-	* 	@return  array    on success with sftp server details
+	* 	@return  object    on success with server details
 	**/
-	protected static function getServerDetails($serverID, $protocol = 2)
+	public static function getServerDetails($serverID, $protocol = 2, $permission = 'core.export')
 	{
-		if (is_int($serverID) && is_int($serverID))
+		// check if this user has permission to access items
+		if (!JFactory::getUser()->authorise($permission, 'com_componentbuilder'))
+		{
+			// set message to inform the user that permission was denied
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_ACCESS_THE_SERVER_DETAILS_BS_DENIEDB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', self::safeString($permission, 'w')), 'Error');
+			return false;
+		}
+		// now insure we have correct values 
+		if (is_int($serverID) && is_int($protocol))
 		{
 			// Get a db connection
 			$db = JFactory::getDbo();
 			// start the query
 			$query = $db->getQuery(true);
-			// select based to protocal
+			// select based to protocol
 			if (2 == $protocol)
 			{
+				// SFTP
 				$query->select($db->quoteName(array('name','authentication','username','host','password','path','port','private','secret')));
+				// cache builder
+				$cache = array('authentication','username','host','password','port','private','secret');
 			}
 			else
 			{
+				// FTP
 				$query->select($db->quoteName(array('name','signature')));
+				// cache builder
+				$cache = array('signature');
 			}
 			$query->from($db->quoteName('#__componentbuilder_server'));
 			$query->where($db->quoteName('id') . ' = ' . (int) $serverID);
@@ -2082,21 +2233,42 @@ abstract class ComponentbuilderHelper
 				$basickey = self::getCryptKey('basic');
 				// Get the encryption object.
 				$basic = new FOFEncryptAes($basickey, 128);
+				// start cache keys
+				$keys = array();
 				// unlock the needed fields
-				foreach($server as $name => $value)
+				foreach($server as $name => &$value)
 				{
-					if ($name !== 'name' && !empty($server->{$name}) && $basickey && !is_numeric($server->{$name}) && $server->{$name} === base64_encode(base64_decode($server->{$name}, true)))
+					// unlock the needed fields
+					if ($name !== 'name' && !empty($value) && $basickey && !is_numeric($value) && $value === base64_encode(base64_decode($value, true)))
 					{
 						// basic decrypt of data
-						$server->{$name} = rtrim($basic->decryptString($server->{$name}), "\0");
+						$value = rtrim($basic->decryptString($value), "\0");
 					}
+					// build cache (keys) for lower connection latency
+					if (in_array($name, $cache))
+					{
+						$keys[] = $value;
+					}
+				}
+				// check if cache keys were found
+				if (self::checkArray($keys))
+				{
+					// now set cache
+					$server->cache = md5(implode('', $keys));
+				}
+				else
+				{
+					// default is ID
+					$server->cache = $serverID;
 				}
 				// return the server details
 				return $server;
 			}
 		}
+		JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_SERVER_DETAILS_FOR_BID_SB_COULD_NOT_BE_RETRIEVED', $serverID), 'Error');
 		return false;
-	}			
+	}
+			
 	/**
 	*	Load the Component xml manifest.
 	**/
