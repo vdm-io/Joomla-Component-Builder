@@ -2022,7 +2022,7 @@ abstract class ComponentbuilderHelper
 					case 1: // password
 						if (!self::$sftp[$server->cache]->login($server->username, $server->password))
 						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_AND_PASSWORD_ARE_CORRECT', $server->name), 'Error');
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
 							unset(self::$sftp[$server->cache]);
 							return false;
 						}
@@ -2044,7 +2044,7 @@ abstract class ComponentbuilderHelper
 						// now login
 						if (!self::$sftp[$server->cache]->login($server->username, $rsa))
 						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_AND_PRIVATE_KEY_FILE_ARE_CORRECT', $server->name), 'Error');
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
 							unset(self::$sftp[$server->cache]);
 							return false;
 						}
@@ -2066,7 +2066,7 @@ abstract class ComponentbuilderHelper
 						// now login
 						if (!self::$sftp[$server->cache]->login($server->username, $server->password, $rsa))
 						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_USERNAME_PASSWORD_AND_PRIVATE_KEY_FILE_ARE_CORRECT', $server->name), 'Error');
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
 							unset(self::$sftp[$server->cache]);
 							return false;
 						}
