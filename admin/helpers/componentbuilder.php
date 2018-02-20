@@ -1954,6 +1954,49 @@ abstract class ComponentbuilderHelper
 	}			 
 			
 	/**
+	* 	Move File to Server
+	* 	
+	* 	@param   string    $localPath    The local path to the file
+	* 	@param   string    $fileName     The the actual file name
+	* 	@param   int       $serverID     The server local id to use
+	* 	@param   int       $protocol      The server protocol to use
+	* 	@param   string    $permission    The permission validation area
+	* 	
+	* 	@return  bool      true on success
+	**/
+	public static function moveToServer($localPath, $fileName, $serverID, $protocol = null, $permission = 'core.export')
+	{
+		// get the server
+		if ($server = self::getServer( (int) $serverID, $protocol, $permission))
+		{
+			// use the FTP protocol
+			if (1 == $server->jcb_protocol)
+			{
+				// now move the file
+				if (!$server->store($localPath, $fileName))
+				{
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_FILE_COULD_NOT_BE_MOVED_TO_BSB_SERVER', $fileName, $server->jcb_remote_server_name[(int) $serverID]), 'Error');
+					return false;
+				}
+				// close the connection
+				$server->quit();
+			}
+			// use the SFTP protocol
+			elseif (2 == $server->jcb_protocol)
+			{
+				// now move the file
+				if (!$server->put($server->jcb_remote_server_path[(int) $serverID] . $fileName, self::getFileContents($localPath, null)))
+				{
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_FILE_COULD_NOT_BE_MOVED_TO_BSB_PATH_ON_BSB_SERVER', $fileName, $server->jcb_remote_server_path[(int) $serverID], $server->jcb_remote_server_name[(int) $serverID]), 'Error');
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	* 	the SFTP objects
 	**/
 	protected static $sftp = array();
@@ -1972,8 +2015,13 @@ abstract class ComponentbuilderHelper
 	* 	
 	* 	@return  object     on success server object
 	**/
-	public static function getServer($serverID, $protocol, $permission = 'core.export')
+	public static function getServer($serverID, $protocol = null, $permission = 'core.export')
 	{
+		// if not protocol is given get it (sad I know)
+		if (!$protocol)
+		{
+			$protocol = self::getVar('server', (int) $serverID, 'id', 'protocol');
+		}
 		// return the server object
 		switch ($protocol)
 		{
@@ -2016,6 +2064,8 @@ abstract class ComponentbuilderHelper
 				$server->port = (isset($server->port) && is_int($server->port) && $server->port > 0) ? $server->port : 22;
 				// open the connection
 				self::$sftp[$server->cache] = new phpseclib\Net\SFTP($server->host, $server->port);
+				// heads-up on protocol
+				self::$sftp[$server->cache]->jcb_protocol = 2; // SFTP <-- if called not knowing what type of protocol is being used
 				// now login based on authentication type
 				switch($server->authentication)
 				{
@@ -2077,14 +2127,14 @@ abstract class ComponentbuilderHelper
 			if (isset(self::$sftp[$server->cache]) && self::checkObject(self::$sftp[$server->cache]))
 			{
 				// set the unique buckets
-				if (!isset(self::$sftp[$server->cache]->remote_server_name))
+				if (!isset(self::$sftp[$server->cache]->jcb_remote_server_name))
 				{
-					self::$sftp[$server->cache]->remote_server_name = array();
-					self::$sftp[$server->cache]->remote_server_path = array();
+					self::$sftp[$server->cache]->jcb_remote_server_name = array();
+					self::$sftp[$server->cache]->jcb_remote_server_path = array();
 				}
 				// always set the name and remote server path
-				self::$sftp[$server->cache]->remote_server_name[$serverID] = $server->name;
-				self::$sftp[$server->cache]->remote_server_path[$serverID] = (self::checkString($server->path) && $server->path !== '/') ? $server->path : '';
+				self::$sftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
+				self::$sftp[$server->cache]->jcb_remote_server_path[$serverID] = (self::checkString($server->path) && $server->path !== '/') ? $server->path : '';
 				// return the sftp object
 				return self::$sftp[$server->cache];
 			}
@@ -2109,7 +2159,7 @@ abstract class ComponentbuilderHelper
 			if (isset(self::$ftp[$server->cache]) && self::$ftp[$server->cache] instanceof JClientFtp)
 			{
 				// always set the name and remote server path
-				self::$ftp[$server->cache]->remote_server_name[$serverID] = $server->name;
+				self::$ftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
 				// if still connected we are ready to go
 				if (self::$ftp[$server->cache]->isConnected())
 				{
@@ -2162,13 +2212,15 @@ abstract class ComponentbuilderHelper
 				// check if we are connected
 				if (self::$ftp[$server->cache] instanceof JClientFtp && self::$ftp[$server->cache]->isConnected())
 				{
+					// heads-up on protocol
+					self::$ftp[$server->cache]->jcb_protocol = 1; // FTP <-- if called not knowing what type of protocol is being used
 					// set the unique buckets
-					if (!isset(self::$ftp[$server->cache]->remote_server_name))
+					if (!isset(self::$ftp[$server->cache]->jcb_remote_server_name))
 					{
-						self::$ftp[$server->cache]->remote_server_name = array();
+						self::$ftp[$server->cache]->jcb_remote_server_name = array();
 					}
 					// always set the name and remote server path
-					self::$ftp[$server->cache]->remote_server_name[$serverID] = $server->name;
+					self::$ftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
 					// return the FTP instance
 					return self::$ftp[$server->cache];
 				}

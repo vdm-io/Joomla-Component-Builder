@@ -547,6 +547,27 @@
                description="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_DESCRIPTION"
                heading="h4"
                class="backupcronjob_note" />		
+	<!--  Cronjob_backup_type Field. Type: Radio. (joomla) -->
+	<field type="radio"
+               name="cronjob_backup_type"
+               label="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_TYPE_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_TYPE_DESCRIPTION"
+               class="btn-group btn-group-yesno"
+               default="1">
+                <!-- Option Set.-->
+                <option value="1">COM_COMPONENTBUILDER_CONFIG_LOCAL_FOLDER</option>
+                <option value="2">COM_COMPONENTBUILDER_CONFIG_REMOTE_SERVER</option>
+        </field>		
+	<!--  Cronjob_backup_server Field. Type: Servers. (custom) -->
+	<field type="servers"
+               name="cronjob_backup_server"
+               label="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_SERVER_LABEL"
+               description="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_SERVER_DESCRIPTION"
+               class="list_class"
+               multiple="false"
+               default="0"
+               showon="cronjob_backup_type:2"
+               button="true" />		
 	<!--  Cronjob_backup_folder_path Field. Type: Text. (joomla) -->
 	<field type="text"
                name="cronjob_backup_folder_path"
@@ -560,7 +581,8 @@
                required="false"
                filter="PATH"
                message="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_MESSAGE"
-               hint="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_HINT" />		
+               hint="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_HINT"
+               showon="cronjob_backup_type:1" />		
 	<!--  Backup_email Field. Type: Text. (joomla) -->
 	<field type="text"
                name="backup_email"

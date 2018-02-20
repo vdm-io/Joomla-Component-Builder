@@ -136,7 +136,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				if (ComponentbuilderHelper::checkArray($items))
 				{
 					// set params
-					$this->params = JComponentHelper::getParams('com_componentbuilder');
+					if (!ComponentbuilderHelper::checkObject($this->params))
+					{
+						$this->params = JComponentHelper::getParams('com_componentbuilder');
+					}
 					// set custom folder path
 					$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
 					// check what type of export or backup this is
@@ -148,6 +151,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// set the paths
 							$comConfig = JFactory::getConfig();
 							$this->backupPath = $comConfig->get('tmp_path');
+						}
+						// check what backup type we are working with here
+						$this->backupType = $this->params->get('cronjob_backup_type', 1); // 1 = local folder; 2 = remote server (default is local)
+						// if remote server get the ID
+						if (2 == $this->backupType)
+						{
+							$this->backupServer = $this->params->get('cronjob_backup_server', null);
 						}
 						// set the date array
 						$date = JFactory::getDate();
@@ -449,7 +459,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 
 		// Select some fields
 		$query->select(array('a.*'));
-			
+
 		// From the componentbuilder_ANY table
 		$query->from($this->_db->quoteName('#__componentbuilder_'. $table, 'a'));
 		// set the where query
@@ -636,14 +646,20 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// view icon
 							$this->moveIt(array($item->icon), 'image');
 						}
-						// add snippets
-						$this->setExportIDs((int) $item->snippet, 'snippet');
+						// add snippets (was removed please use snippet importer)
+						if (isset($item->snippet) && is_numeric($item->snippet))
+						{
+							$this->setExportIDs((int) $item->snippet, 'snippet');
+						}
 					}
 					// actions to take if table is template and layout
 					if ('layout' === $table || 'template' === $table)
 					{
-						// add snippets
-						$this->setExportIDs((int) $item->snippet, 'snippet');
+						// add snippets (was removed please use snippet importer)
+						if (isset($item->snippet) && is_numeric($item->snippet))
+						{
+							$this->setExportIDs((int) $item->snippet, 'snippet');
+						}
 						// search for templates & layouts
 						$this->getTemplateLayout(base64_decode($item->$table), $this->user);
 						// add search array templates and layouts
@@ -729,6 +745,16 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		if (!ComponentbuilderHelper::zip($this->packagePath, $this->zipPath))
 		{
 			return false;
+		}
+		// move to remote server if needed
+		if (2 == $this->backupType)
+		{
+			if (!ComponentbuilderHelper::moveToServer($this->zipPath, $this->packageName.'.zip', $this->backupServer, null, 'joomla_component.export'))
+			{
+				return false;
+			}
+			// remove the local file
+			JFile::delete($this->zipPath);
 		}
 		// remove the folder
 		if (!ComponentbuilderHelper::removeFolder($this->packagePath))
@@ -828,6 +854,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			{
 				if ('file' === $type)
 				{
+					// TODO we must add the new all over files to this... will be a little tricky.
 					$tmpFilePath = str_replace('//', '/', $tmpPath.'/'.$item);
 					$customFilePath = str_replace('//', '/', $this->customPath.'/'.$item);
 					if (!JFile::exists($tmpFilePath) && JFile::exists($customFilePath))
@@ -1099,7 +1126,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			foreach ($keys['search'] as $key)
 			{
-				if (!isset($keys['not_base64'][$key]))
+				if ('id' === $key || 'name' === $key || 'system_name' === $key)
+				{
+					continue;
+				}
+				elseif (!isset($keys['not_base64'][$key]))
 				{
 					$value = base64_decode($item->{$key});
 				}
@@ -1221,81 +1252,144 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			}
 		}
 	}
-
+			
 	/**
 	* Get the keys of the values to search custom code in
 	*
 	*  @param   string    $targe  The table targeted
+	*  @param   string    $type   The type of get
 	* 
 	*  @return  array      The query options
 	* 
 	*/
-	protected function getCodeSearchKeys($target)
+	protected function getCodeSearchKeys($target, $type = null)
 	{
+		// set the template if type is query
+		if ('query' === $type)
+		{
+			$tables = array(
+				'a' => 'joomla_component',
+				'b' => 'admin_view',
+				'c' => 'custom_admin_view',
+				'd' => 'site_view',
+				'e' => 'field',
+				'f' => 'dynamic_get',
+				'g' => 'template',
+				'h' => 'layout',
+				'i' => 'component_dashboard',
+				'j' => 'library',
+			);
+			// check if we have a match
+			if (isset($tables[$target]))
+			{
+				$target = $tables[$target];
+			}
+		}
+		// start target arrays
 		$targets = array();
 		// #__componentbuilder_joomla_component
 		$targets['joomla_component'] = array();
-		$targets['joomla_component']['search'] = array('php_preflight_install','php_postflight_install',
+		$targets['joomla_component']['search'] = array('id', 'system_name', 'php_preflight_install','php_postflight_install',
 			'php_preflight_update','php_postflight_update','php_method_uninstall',
 			'php_helper_admin','php_admin_event','php_helper_both','php_helper_site',
-			'php_site_event');
+			'php_site_event','javascript');
+		$targets['joomla_component']['view'] = 'joomla_components';
 		$targets['joomla_component']['not_base64'] = array();
+		$targets['joomla_component']['name'] = 'system_name';
 
 		// #__componentbuilder_component_dashboard
 		$targets['component_dashboard'] = array();
-		$targets['component_dashboard']['search'] = array('php_dashboard_methods','dashboard_tab');
+		$targets['component_dashboard']['search'] = array('id', 'joomla_component', 'php_dashboard_methods','dashboard_tab');
+		$targets['component_dashboard']['view'] = 'components_dashboard';
 		$targets['component_dashboard']['not_base64'] = array('dashboard_tab' => 'json');
+		$targets['component_dashboard']['name'] = 'joomla_component->id:joomla_component.system_name';
 
 		// #__componentbuilder_admin_view
 		$targets['admin_view'] = array();
-		$targets['admin_view']['search'] = array('javascript_view_file','javascript_view_footer','javascript_views_file',
-			'javascript_views_footer','php_getitem','php_save','php_postsavehook','php_getitems',
-			'php_getitems_after_all','php_getlistquery','php_allowedit','php_before_delete',
-			'php_after_delete','php_before_publish','php_after_publish','php_batchcopy',
-			'php_batchmove','php_document','php_model','php_controller','php_import_display',
-			'php_import','php_import_setdata','php_import_save','html_import_view','php_ajaxmethod');
+		$targets['admin_view']['search'] = array('id', 'system_name', 'javascript_view_file','javascript_view_footer',
+			'javascript_views_file','javascript_views_footer','html_import_view',
+			'php_after_delete','php_after_publish','php_ajaxmethod','php_allowedit','php_batchcopy',
+			'php_batchmove','php_before_delete','php_before_publish','php_before_save','php_controller',
+			'php_controller_list','php_document','php_getitem','php_getitems','php_getitems_after_all',
+			'php_getlistquery','php_import','php_import_display','php_import_ext','php_import_headers',
+			'php_import_save','php_import_setdata','php_model','php_model_list','php_postsavehook','php_save');
+		$targets['admin_view']['view'] = 'admin_views';
 		$targets['admin_view']['not_base64'] = array();
+		$targets['admin_view']['name'] = 'system_name';
 
 		// #__componentbuilder_custom_admin_view
 		$targets['custom_admin_view'] = array();
-		$targets['custom_admin_view']['search'] = array('default','php_view','php_jview','php_jview_display','php_document',
-			'js_document','css_document','css','php_model','php_controller');
+		$targets['custom_admin_view']['search'] = array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
+			'js_document','css_document','css','php_ajaxmethod','php_model','php_controller');
+		$targets['custom_admin_view']['view'] = 'custom_admin_views';
 		$targets['custom_admin_view']['not_base64'] = array();
+		$targets['custom_admin_view']['name'] = 'system_name';
 
 		// #__componentbuilder_site_view
 		$targets['site_view'] = array();
-		$targets['site_view']['search'] = array('default','php_view','php_jview','php_jview_display','php_document',
+		$targets['site_view']['search'] = array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
 			'js_document','css_document','css','php_ajaxmethod','php_model','php_controller');
+		$targets['site_view']['view'] = 'site_views';
 		$targets['site_view']['not_base64'] = array();
+		$targets['site_view']['name'] = 'system_name';
 
 		// #__componentbuilder_field
 		$targets['field'] = array();
-		$targets['field']['search'] = array('xml','javascript_view_footer','javascript_views_footer');
+		$targets['field']['search'] = array('id', 'name', 'xml','javascript_view_footer','javascript_views_footer');
+		$targets['field']['view'] = 'fields';
 		$targets['field']['not_base64'] = array('xml' => 'json');
+		$targets['field']['name'] = 'name';
 
 		// #__componentbuilder_dynamic_get
 		$targets['dynamic_get'] = array();
-		$targets['dynamic_get']['search'] = array('php_before_getitem','php_after_getitem','php_before_getitems','php_after_getitems',
+		$targets['dynamic_get']['search'] = array('id', 'name', 'php_before_getitem','php_after_getitem','php_before_getitems','php_after_getitems',
 			'php_getlistquery');
+		$targets['dynamic_get']['view'] = 'dynamic_gets';
 		$targets['dynamic_get']['not_base64'] = array();
+		$targets['dynamic_get']['name'] = 'name';
 
 		// #__componentbuilder_template
 		$targets['template'] = array();
-		$targets['template']['search'] = array('php_view','template');
+		$targets['template']['search'] = array('id', 'name', 'php_view','template');
+		$targets['template']['view'] = 'templates';
 		$targets['template']['not_base64'] = array();
+		$targets['template']['name'] = 'name';
 
 		// #__componentbuilder_layout
 		$targets['layout'] = array();
-		$targets['layout']['search'] = array('php_view','layout');
+		$targets['layout']['search'] = array('id', 'name', 'php_view','layout');
+		$targets['layout']['view'] = 'layouts';
 		$targets['layout']['not_base64'] = array();
+		$targets['layout']['name'] = 'name';
 
-		// return the query string to search
-		if (isset($targets[$target]))
+		// #__componentbuilder_library
+		$targets['library'] = array();
+		$targets['library']['view'] = 'libraries';
+		$targets['library']['search'] = array('id', 'name', 'php_setdocument');
+		$targets['library']['view'] = 'libraries';
+		$targets['library']['not_base64'] = array();
+		$targets['library']['name'] = 'name';
+
+		// return result ready for a.query
+		if ('query' === $type && isset($targets[$target]))
 		{
+			// add the .a to the selection array
+			$targets[$target]['select'] = array_map( function($select) { return 'a.'.$select; }, $targets[$target]['search']);
+			// also set the table
+			$targets[$target]['table'] = $target;
+			// remove search
+			unset($targets[$target]['search']);
+			// return
+			return $targets[$target];
+		}
+		// return the query string to search
+		elseif (isset($targets[$target]))
+		{
+			// remove name and id
 			return $targets[$target];
 		}
 		return false;
-	}
+	}			
 	
 	/**
 	 * Method to auto-populate the model state.

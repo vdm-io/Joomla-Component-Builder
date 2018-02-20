@@ -45,6 +45,8 @@ class ComponentbuilderViewApi extends JViewLegacy
 		$this->user = JFactory::getUser();
 		// Initialise variables.
 		$this->item = $this->get('Item');
+				// do not load the display
+				jexit('Access Denied!');
 
 		// Set the toolbar
 		$this->addToolBar();

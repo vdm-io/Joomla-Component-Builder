@@ -318,37 +318,10 @@ class Compiler extends Infusion
 			// make sure we have the correct file
 			if (JFile::exists($xml_update_server_path) && isset($this->componentData->update_server))
 			{
-				// use FTP
-				if ($this->componentData->update_server_protocol == 1)
-				{
-					// get server details
-					if ($ftp = ComponentbuilderHelper::getServer((int) $this->componentData->update_server, 1))
-					{
-						// now move the file
-						if (!$ftp->store($xml_update_server_path, null))
-						{
-							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> server.', $this->updateServerFileName . '.xml', $$ftp->remote_server_name[(int) $this->componentData->update_server]), 'Error');
-						}
-						// remove the local file
-						JFile::delete($xml_update_server_path);
-						// close the connection
-						$ftp->quit();
-					}
-				}
-				// use SFTP
-				elseif ($this->componentData->update_server_protocol == 2)
-				{
-					if ($sftp = ComponentbuilderHelper::getServer((int) $this->componentData->update_server, 2))
-					{
-						// now move the file
-						if (!$sftp->put($sftp->remote_server_path[(int) $this->componentData->update_server] . $this->updateServerFileName . '.xml', ComponentbuilderHelper::getFileContents($xml_update_server_path, null)))
-						{
-							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->updateServerFileName . '.xml', $sftp->remote_server_path[(int) $this->componentData->update_server], $sftp->remote_server_name[(int) $this->componentData->update_server]), 'Error');
-						}
-						// remove the local file
-						JFile::delete($xml_update_server_path);
-					}
-				}
+				// move to server
+				ComponentbuilderHelper::moveToServer($xml_update_server_path, $this->updateServerFileName . '.xml', (int) $this->componentData->update_server, $this->componentData->update_server_protocol);
+				// remove the local file
+				JFile::delete($xml_update_server_path);
 			}
 		}
 	}
@@ -519,32 +492,8 @@ class Compiler extends Infusion
 				// make sure we have the correct file
 				if (isset($this->componentData->sales_server))
 				{
-					// use FTP
-					if ($this->componentData->sales_server_protocol == 1)
-					{
-						if ($ftp = ComponentbuilderHelper::getServer((int) $this->componentData->sales_server, 1))
-						{
-							// now move the file
-							if (!$ftp->store($xml_update_server_path, $this->componentSalesName . '.zip'))
-							{
-								$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> server.', $this->componentSalesName . '.zip', $ftp->remote_server_name[(int) $this->componentData->sales_server]), 'Error');
-							}
-							// close the connection
-							$ftp->quit();
-						}
-					}
-					// use SFTP
-					elseif ($this->componentData->sales_server_protocol == 2)
-					{
-						if ($sftp = ComponentbuilderHelper::getServer((int) $this->componentData->sales_server, 2))
-						{
-							// now move the file
-							if (!$sftp->put($sftp->remote_server_path[(int) $this->componentData->sales_server] . $this->componentSalesName . '.zip', ComponentbuilderHelper::getFileContents($this->filepath, null)))
-							{
-								$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> file could not be moved to <b>%s</b> path on <b>%s</b> server.', $this->componentSalesName . '.zip', $sftp->remote_server_path[(int) $this->componentData->sales_server], $sftp->remote_server_name[(int) $this->componentData->sales_server]), 'Error');
-							}
-						}
-					}
+					// move to server
+					ComponentbuilderHelper::moveToServer($this->filepath, $this->componentSalesName . '.zip', (int) $this->componentData->sales_server, $this->componentData->sales_server_protocol);
 				}
 			}
 			// remove the component folder since we are done
