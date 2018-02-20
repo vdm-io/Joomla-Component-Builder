@@ -151,7 +151,7 @@ class JFormFieldServers extends JFormFieldList
 	{
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','a.protocol'),array('id','cronjob_backup_server_name', 'protocol')));
+		$query->select($db->quoteName(array('a.id','a.name','a.protocol'),array('id','name', 'protocol')));
 		$query->from($db->quoteName('#__componentbuilder_server', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
@@ -164,7 +164,7 @@ class JFormFieldServers extends JFormFieldList
 			foreach($items as $item)
 			{
 			$item->protocol = ($item->protocol == 2) ? JText::_('SFTP') : JText::_('FTP');
-				$options[] = JHtml::_('select.option', $item->id, $item->cronjob_backup_server_name.' ['.$item->protocol.']');
+				$options[] = JHtml::_('select.option', $item->id, $item->name.' ['.$item->protocol.']');
 			}
 		}
 		return $options;

@@ -1512,6 +1512,11 @@ class Fields extends Structure
 					// load the php for the custom field file
 					$fieldAttributes['custom']['phpx'][$phpLine] = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
 				}
+				elseif ($property['name'] === 'prime_php' && $setCustom)
+				{
+					// load the php for the custom field file
+					$fieldAttributes['custom']['prime_php'] = (int) ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
+				}
 				elseif ($property['name'] === 'extends' && $setCustom)
 				{
 					// load the class that is being extended
@@ -2139,8 +2144,8 @@ class Fields extends Structure
 
 	public function setCustomFieldTypeFile($data, $viewName_list, $viewName_single)
 	{
-		// make sure it is not already been build
-		if (!isset($this->fileContentDynamic['customfield_' . $data['type']]) || !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_' . $data['type']]))
+		// make sure it is not already been build or if it is prime
+		if ((isset($data['custom']['prime_php']) && $data['custom']['prime_php'] == 1) || !isset($this->fileContentDynamic['customfield_' . $data['type']]) || !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_' . $data['type']]))
 		{
 			// first build the custom field type file
 			$target = array('admin' => 'customfield');
