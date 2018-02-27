@@ -221,7 +221,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->export_key = rtrim($basic->decryptString($item->export_key), "\0");
 			}
 
-			
+
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -240,7 +240,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_component__'.$id);
 				ComponentbuilderHelper::set('joomla_component__'.$id, $this->vastDevMod);
-			}			
+			}
 
 			// update the fields
 			$objectUpdate = new stdClass();
@@ -782,20 +782,21 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
 			$_tablesArray = array(
-				'component_admin_views',
-				'component_site_views',
-				'component_custom_admin_views',
-				'component_updates',
-				'component_mysql_tweaks',
-				'component_custom_admin_menus',
-				'component_config',
-				'component_dashboard',
-				'component_files_folders'
+				'component_admin_views' => 'joomla_component',
+				'component_site_views' => 'joomla_component',
+				'component_custom_admin_views' => 'joomla_component',
+				'component_updates' => 'joomla_component',
+				'component_mysql_tweaks' => 'joomla_component',
+				'component_custom_admin_menus' => 'joomla_component',
+				'component_config' => 'joomla_component',
+				'component_dashboard' => 'joomla_component',
+				'component_files_folders' => 'joomla_component',
+				'custom_code' => 'component'
 			);
-			foreach($_tablesArray as $_updateTable)
+			foreach($_tablesArray as $_updateTable => $_key)
 			{
 				// get the linked IDs
-				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'joomla_component', 'id'))
+				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, $_key, 'id'))
 				{
 					// load the model
 					$_Model = ComponentbuilderHelper::getModel($_updateTable);
@@ -829,20 +830,21 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
 			$_tablesArray = array(
-				'component_admin_views',
-				'component_site_views',
-				'component_custom_admin_views',
-				'component_updates',
-				'component_mysql_tweaks',
-				'component_custom_admin_menus',
-				'component_config',
-				'component_dashboard',
-				'component_files_folders'
+				'component_admin_views' => 'joomla_component',
+				'component_site_views' => 'joomla_component',
+				'component_custom_admin_views' => 'joomla_component',
+				'component_updates' => 'joomla_component',
+				'component_mysql_tweaks' => 'joomla_component',
+				'component_custom_admin_menus' => 'joomla_component',
+				'component_config' => 'joomla_component',
+				'component_dashboard' => 'joomla_component',
+				'component_files_folders' => 'joomla_component',
+				'custom_code' => 'component'
 			);
-			foreach($_tablesArray as $_updateTable)
+			foreach($_tablesArray as $_updateTable => $_key)
 			{
 				// get the linked IDs
-				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'joomla_component', 'id'))
+				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, $_key, 'id'))
 				{
 					// load the model
 					$_Model = ComponentbuilderHelper::getModel($_updateTable);
@@ -970,8 +972,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
 		}
 
@@ -996,7 +996,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -1006,17 +1005,11 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('joomla_component.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -1026,7 +1019,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -1037,7 +1029,11 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				}
 			}
 
-			$this->table->system_name = $this->generateUniqe('system_name',$this->table->system_name);
+			// Only for strings
+			if (ComponentbuilderHelper::checkString($this->table->system_name) && !is_numeric($this->table->system_name))
+			{
+				$this->table->system_name = $this->generateUniqe('system_name',$this->table->system_name);
+			}
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -1119,8 +1115,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
 		}
 
@@ -1144,7 +1138,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			if (!$this->user->authorise('joomla_component.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -1155,7 +1148,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -1235,6 +1227,12 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		} 
+
+		// if system name is empty create from name
+		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		{
+			$data['system_name'] = $data['name'];
+		}
 
 		// Set the addcontributors items to data.
 		if (isset($data['addcontributors']) && is_array($data['addcontributors']))

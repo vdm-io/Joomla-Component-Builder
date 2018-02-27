@@ -118,7 +118,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <script type="text/javascript">
 
 
-			
+
 <?php
 	$app = JFactory::getApplication();
 ?>
@@ -134,5 +134,5 @@ function JRouter(link) {
 	}
 ?>
 	return url+link;
-}			 
+} 
 </script>

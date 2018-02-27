@@ -130,7 +130,7 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 			}
 
-			
+
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -149,7 +149,7 @@ class ComponentbuilderModelField extends JModelAdmin
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'field__'.$id);
 				ComponentbuilderHelper::set('field__'.$id, $this->vastDevMod);
-			}			
+			}
 			
 			if (!empty($item->id))
 			{
@@ -608,8 +608,6 @@ class ComponentbuilderModelField extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('field');
 		}
 
@@ -649,7 +647,6 @@ class ComponentbuilderModelField extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -659,17 +656,11 @@ class ComponentbuilderModelField extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('field.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -679,7 +670,6 @@ class ComponentbuilderModelField extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -770,8 +760,6 @@ class ComponentbuilderModelField extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('field');
 		}
 
@@ -811,7 +799,6 @@ class ComponentbuilderModelField extends JModelAdmin
 			if (!$this->user->authorise('field.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -822,7 +809,6 @@ class ComponentbuilderModelField extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else

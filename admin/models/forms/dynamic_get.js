@@ -1435,7 +1435,7 @@ jQuery(document).ready(function()
 	var valueSwitch = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
 	getDynamicScripts(valueSwitch);
 });
-			
+
 function getLinked_server(type){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&vdm="+vastDevMod;
 	if(token.length > 0 && type > 0){
@@ -1456,7 +1456,7 @@ function getLinked(){
 			jQuery('#display_linked_to').html(result);
 		}
 	});
-}			
+}
 
 function getViewTableColumns_server(viewId,asKey,rowType)
 {

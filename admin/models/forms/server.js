@@ -31,7 +31,6 @@ jform_vvvvwatwai_required = false;
 jform_vvvvwauwaj_required = false;
 jform_vvvvwavwak_required = false;
 jform_vvvvwaxwal_required = false;
-jform_vvvvwaywam_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -50,9 +49,13 @@ jQuery(document).ready(function()
 	var authentication_vvvvwax = jQuery("#jform_authentication").val();
 	vvvvwax(protocol_vvvvwax,authentication_vvvvwax);
 
-	var authentication_vvvvway = jQuery("#jform_authentication").val();
-	var protocol_vvvvway = jQuery("#jform_protocol").val();
-	vvvvway(authentication_vvvvway,protocol_vvvvway);
+	var protocol_vvvvwaz = jQuery("#jform_protocol").val();
+	var authentication_vvvvwaz = jQuery("#jform_authentication").val();
+	vvvvwaz(protocol_vvvvwaz,authentication_vvvvwaz);
+
+	var protocol_vvvvwbb = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbb = jQuery("#jform_authentication").val();
+	vvvvwbb(protocol_vvvvwbb,authentication_vvvvwbb);
 });
 
 // the vvvvwat function
@@ -316,7 +319,7 @@ function protocol_vvvvwav_SomeFunc(protocol_vvvvwav)
 function authentication_vvvvwav_SomeFunc(authentication_vvvvwav)
 {
 	// set the function logic
-	if (authentication_vvvvwav == 1 || authentication_vvvvwav == 3)
+	if (authentication_vvvvwav == 1 || authentication_vvvvwav == 3 || authentication_vvvvwav == 5)
 	{
 		return true;
 	}
@@ -364,7 +367,6 @@ function vvvvwax(protocol_vvvvwax,authentication_vvvvwax)
 			jform_vvvvwaxwal_required = false;
 		}
 
-		jQuery('#jform_secret').closest('.control-group').show();
 	}
 	else
 	{
@@ -377,7 +379,6 @@ function vvvvwax(protocol_vvvvwax,authentication_vvvvwax)
 			jQuery('#jform_private').removeClass('required');
 			jform_vvvvwaxwal_required = true;
 		}
-		jQuery('#jform_secret').closest('.control-group').hide();
 	}
 }
 
@@ -403,80 +404,122 @@ function authentication_vvvvwax_SomeFunc(authentication_vvvvwax)
 	return false;
 }
 
-// the vvvvway function
-function vvvvway(authentication_vvvvway,protocol_vvvvway)
+// the vvvvwaz function
+function vvvvwaz(protocol_vvvvwaz,authentication_vvvvwaz)
 {
-	if (isSet(authentication_vvvvway) && authentication_vvvvway.constructor !== Array)
+	if (isSet(protocol_vvvvwaz) && protocol_vvvvwaz.constructor !== Array)
 	{
-		var temp_vvvvway = authentication_vvvvway;
-		var authentication_vvvvway = [];
-		authentication_vvvvway.push(temp_vvvvway);
+		var temp_vvvvwaz = protocol_vvvvwaz;
+		var protocol_vvvvwaz = [];
+		protocol_vvvvwaz.push(temp_vvvvwaz);
 	}
-	else if (!isSet(authentication_vvvvway))
+	else if (!isSet(protocol_vvvvwaz))
 	{
-		var authentication_vvvvway = [];
+		var protocol_vvvvwaz = [];
 	}
-	var authentication = authentication_vvvvway.some(authentication_vvvvway_SomeFunc);
+	var protocol = protocol_vvvvwaz.some(protocol_vvvvwaz_SomeFunc);
 
-	if (isSet(protocol_vvvvway) && protocol_vvvvway.constructor !== Array)
+	if (isSet(authentication_vvvvwaz) && authentication_vvvvwaz.constructor !== Array)
 	{
-		var temp_vvvvway = protocol_vvvvway;
-		var protocol_vvvvway = [];
-		protocol_vvvvway.push(temp_vvvvway);
+		var temp_vvvvwaz = authentication_vvvvwaz;
+		var authentication_vvvvwaz = [];
+		authentication_vvvvwaz.push(temp_vvvvwaz);
 	}
-	else if (!isSet(protocol_vvvvway))
+	else if (!isSet(authentication_vvvvwaz))
 	{
-		var protocol_vvvvway = [];
+		var authentication_vvvvwaz = [];
 	}
-	var protocol = protocol_vvvvway.some(protocol_vvvvway_SomeFunc);
+	var authentication = authentication_vvvvwaz.some(authentication_vvvvwaz_SomeFunc);
 
 
 	// set this function logic
-	if (authentication && protocol)
+	if (protocol && authentication)
 	{
-		jQuery('#jform_private').closest('.control-group').show();
-		if (jform_vvvvwaywam_required)
-		{
-			updateFieldRequired('private',0);
-			jQuery('#jform_private').prop('required','required');
-			jQuery('#jform_private').attr('aria-required',true);
-			jQuery('#jform_private').addClass('required');
-			jform_vvvvwaywam_required = false;
-		}
-
-		jQuery('#jform_secret').closest('.control-group').show();
+		jQuery('#jform_private_key').closest('.control-group').show();
 	}
 	else
 	{
-		jQuery('#jform_private').closest('.control-group').hide();
-		if (!jform_vvvvwaywam_required)
-		{
-			updateFieldRequired('private',1);
-			jQuery('#jform_private').removeAttr('required');
-			jQuery('#jform_private').removeAttr('aria-required');
-			jQuery('#jform_private').removeClass('required');
-			jform_vvvvwaywam_required = true;
-		}
-		jQuery('#jform_secret').closest('.control-group').hide();
+		jQuery('#jform_private_key').closest('.control-group').hide();
 	}
 }
 
-// the vvvvway Some function
-function authentication_vvvvway_SomeFunc(authentication_vvvvway)
+// the vvvvwaz Some function
+function protocol_vvvvwaz_SomeFunc(protocol_vvvvwaz)
 {
 	// set the function logic
-	if (authentication_vvvvway == 2 || authentication_vvvvway == 3)
+	if (protocol_vvvvwaz == 2)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvway Some function
-function protocol_vvvvway_SomeFunc(protocol_vvvvway)
+// the vvvvwaz Some function
+function authentication_vvvvwaz_SomeFunc(authentication_vvvvwaz)
 {
 	// set the function logic
-	if (protocol_vvvvway == 2)
+	if (authentication_vvvvwaz == 4 || authentication_vvvvwaz == 5)
+	{
+		return true;
+	}
+	return false;
+}
+
+// the vvvvwbb function
+function vvvvwbb(protocol_vvvvwbb,authentication_vvvvwbb)
+{
+	if (isSet(protocol_vvvvwbb) && protocol_vvvvwbb.constructor !== Array)
+	{
+		var temp_vvvvwbb = protocol_vvvvwbb;
+		var protocol_vvvvwbb = [];
+		protocol_vvvvwbb.push(temp_vvvvwbb);
+	}
+	else if (!isSet(protocol_vvvvwbb))
+	{
+		var protocol_vvvvwbb = [];
+	}
+	var protocol = protocol_vvvvwbb.some(protocol_vvvvwbb_SomeFunc);
+
+	if (isSet(authentication_vvvvwbb) && authentication_vvvvwbb.constructor !== Array)
+	{
+		var temp_vvvvwbb = authentication_vvvvwbb;
+		var authentication_vvvvwbb = [];
+		authentication_vvvvwbb.push(temp_vvvvwbb);
+	}
+	else if (!isSet(authentication_vvvvwbb))
+	{
+		var authentication_vvvvwbb = [];
+	}
+	var authentication = authentication_vvvvwbb.some(authentication_vvvvwbb_SomeFunc);
+
+
+	// set this function logic
+	if (protocol && authentication)
+	{
+		jQuery('#jform_secret').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('#jform_secret').closest('.control-group').hide();
+	}
+}
+
+// the vvvvwbb Some function
+function protocol_vvvvwbb_SomeFunc(protocol_vvvvwbb)
+{
+	// set the function logic
+	if (protocol_vvvvwbb == 2)
+	{
+		return true;
+	}
+	return false;
+}
+
+// the vvvvwbb Some function
+function authentication_vvvvwbb_SomeFunc(authentication_vvvvwbb)
+{
+	// set the function logic
+	if (authentication_vvvvwbb == 2 || authentication_vvvvwbb == 3 || authentication_vvvvwbb == 4 || authentication_vvvvwbb == 5)
 	{
 		return true;
 	}

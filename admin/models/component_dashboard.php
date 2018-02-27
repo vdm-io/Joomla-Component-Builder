@@ -563,8 +563,6 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('component_dashboard');
 		}
 
@@ -589,7 +587,6 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -599,17 +596,11 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('component_dashboard.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -619,7 +610,6 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -630,7 +620,11 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 				}
 			}
 
-			$this->table->joomla_component = $this->generateUniqe('joomla_component',$this->table->joomla_component);
+			// Only for strings
+			if (ComponentbuilderHelper::checkString($this->table->joomla_component) && !is_numeric($this->table->joomla_component))
+			{
+				$this->table->joomla_component = $this->generateUniqe('joomla_component',$this->table->joomla_component);
+			}
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -712,8 +706,6 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('component_dashboard');
 		}
 
@@ -737,7 +729,6 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 			if (!$this->user->authorise('component_dashboard.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -748,7 +739,6 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else

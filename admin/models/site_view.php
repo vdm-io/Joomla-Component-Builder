@@ -204,7 +204,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->php_controller = base64_decode($item->php_controller);
 			}
 
-			
+
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -223,7 +223,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'site_view__'.$id);
 				ComponentbuilderHelper::set('site_view__'.$id, $this->vastDevMod);
-			}			
+			}
 
 			// update the fields
 			$objectUpdate = new stdClass();
@@ -721,8 +721,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('site_view');
 		}
 
@@ -747,7 +745,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -757,17 +754,11 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('core.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -777,7 +768,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -788,7 +778,11 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				}
 			}
 
-			$this->table->name = $this->generateUniqe('name',$this->table->name);
+			// Only for strings
+			if (ComponentbuilderHelper::checkString($this->table->name) && !is_numeric($this->table->name))
+			{
+				$this->table->name = $this->generateUniqe('name',$this->table->name);
+			}
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -870,8 +864,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('site_view');
 		}
 
@@ -895,7 +887,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			if (!$this->user->authorise('core.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -906,7 +897,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -989,6 +979,11 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 
 		// always reset the snippets
 		$data['snippet'] = 0;
+		// if system name is empty create from name
+		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		{
+			$data['system_name'] = $data['name'];
+		}
 
 		// Set the libraries items to data.
 		if (isset($data['libraries']) && is_array($data['libraries']))

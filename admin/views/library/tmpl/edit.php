@@ -300,7 +300,7 @@ jQuery(document).ready(function(){
 		}
 	});
 });
-			
+
 <?php
 	$app = JFactory::getApplication();
 ?>
@@ -316,8 +316,8 @@ function JRouter(link) {
 	}
 ?>
 	return url+link;
-}			
-			
+}
+
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -329,5 +329,5 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});			 
+}); 
 </script>

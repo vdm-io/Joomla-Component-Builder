@@ -5144,8 +5144,8 @@ class Get
 				else
 				{
 					return array(
-						'start' => "\t\t\t",
-						'end' => "\t\t\t");
+						'start' => "",
+						'end' => "");
 				}
 				break;
 			case 12:
@@ -5159,8 +5159,8 @@ class Get
 				else
 				{
 					return array(
-						'start' => "\t\t\t",
-						'end' => "\t\t\t");
+						'start' => "",
+						'end' => "");
 				}
 				break;
 			case 21:
@@ -5174,8 +5174,8 @@ class Get
 				else
 				{
 					return array(
-						'start' => "\t\t\t",
-						'end' => "\t\t\t");
+						'start' => "",
+						'end' => "");
 				}
 				break;
 			case 22:
@@ -5189,14 +5189,14 @@ class Get
 				else
 				{
 					return array(
-						'start' => "\t\t\t",
-						'end' => "\t\t\t");
+						'start' => "",
+						'end' => " ");
 				}
 				break;
 			case 3:
 				return array(
-					'start' => "\t\t\t",
-					'end' => "\t\t\t");
+					'start' => "",
+					'end' => "");
 				break;
 		}
 		return false;

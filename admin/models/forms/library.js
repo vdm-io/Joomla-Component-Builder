@@ -426,7 +426,7 @@ jQuery(document).ready(function()
 function addData(result,where){
 	jQuery(result).insertAfter(jQuery(where).closest('.control-group'));
 }
-			
+
 function addButtonID_server(type, size){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButtonID&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0 && size > 0){
@@ -450,8 +450,8 @@ function addButtonID(type, where, size){
 			}
 		}
 	});
-}			
-			
+}
+
 function addButton_server(type){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
@@ -471,8 +471,8 @@ function addButton(type,where){
 			addData(result,'#jform_'+where);
 		}
 	})
-}			
-			
+}
+
 function getLinked_server(type){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&vdm="+vastDevMod;
 	if(token.length > 0 && type > 0){
@@ -493,7 +493,7 @@ function getLinked(){
 			jQuery('#display_linked_to').html(result);
 		}
 	});
-}			
+}
 
 function getAjaxDisplay(type){
 	getAjaxDisplay_server(type).done(function(result) {

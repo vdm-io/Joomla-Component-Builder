@@ -139,10 +139,10 @@ class ComponentbuilderModelLibraries extends JModelList
 			{
 				// convert type
 				$item->type = $this->selectionTranslation($item->type, 'type');
-			
+
 				// convert how
 				$item->how = $this->selectionTranslation($item->how, 'how');
-			
+
 			}
 		}
  
@@ -171,7 +171,7 @@ class ComponentbuilderModelLibraries extends JModelList
 				return $typeArray[$value];
 			}
 		}
-			
+
 		// Array of how language strings
 		if ($name === 'how')
 		{
@@ -188,7 +188,7 @@ class ComponentbuilderModelLibraries extends JModelList
 				return JText::_($howArray[$value]);
 			}
 		}
-			
+
 		return $value;
 	}
 	

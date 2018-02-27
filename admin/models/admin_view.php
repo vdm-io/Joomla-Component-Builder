@@ -352,7 +352,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_ext = base64_decode($item->php_import_ext);
 			}
 
-			
+
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -371,7 +371,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
 				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
-			}			
+			}
 
 			// update the fields
 			$objectUpdate = new stdClass();
@@ -908,8 +908,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('admin_view');
 		}
 
@@ -934,7 +932,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -944,17 +941,11 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('admin_view.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -964,7 +955,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -1029,7 +1019,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			// Add the new ID to the array
 			$newIds[$pk] = $newId;
 		}
-			
+
 		if (ComponentbuilderHelper::checkArray($newIds))
 		{
 			foreach($newIds as $oldID => $newID)
@@ -1048,7 +1038,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				}
 			}
 		}		
-			
+
 
 		// Clean the cache
 		$this->cleanCache();
@@ -1075,8 +1065,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('admin_view');
 		}
 
@@ -1100,7 +1088,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			if (!$this->user->authorise('admin_view.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -1111,7 +1098,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -1191,6 +1177,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		} 
+
+		// if system name is empty create from name_single
+		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		{
+			$data['system_name'] = $data['name_single'];
+		}
 
 		// Set the addtables items to data.
 		if (isset($data['addtables']) && is_array($data['addtables']))

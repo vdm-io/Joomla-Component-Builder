@@ -711,7 +711,7 @@ jQuery('#adminForm').on('change', '#jform_buildcomp',function (e)
 });
 
 
-			
+
 <?php
 	$app = JFactory::getApplication();
 ?>
@@ -727,8 +727,8 @@ function JRouter(link) {
 	}
 ?>
 	return url+link;
-}			
-			
+}
+
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -740,5 +740,5 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});			 
+}); 
 </script>

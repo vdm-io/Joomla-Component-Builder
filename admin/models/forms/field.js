@@ -514,7 +514,7 @@ jQuery(document).ready(function()
 	// get the linked details
 	getLinked();
 });
-			
+
 function getLinked_server(type){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&vdm="+vastDevMod;
 	if(token.length > 0 && type > 0){
@@ -535,7 +535,7 @@ function getLinked(){
 			jQuery('#display_linked_to').html(result);
 		}
 	});
-}			
+}
 
 function getFieldOptions_server(fieldId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldOptions&format=json";

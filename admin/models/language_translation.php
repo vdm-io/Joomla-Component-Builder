@@ -107,14 +107,14 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				$translation->loadString($item->translation);
 				$item->translation = $translation->toArray();
 			}
-			
+
 			if (!empty($item->components))
 			{
 				// JSON Decode components.
 				$item->components = json_decode($item->components, true);
 			}
-			
-			
+
+
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -133,7 +133,7 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'language_translation__'.$id);
 				ComponentbuilderHelper::set('language_translation__'.$id, $this->vastDevMod);
-			}			
+			}
 			
 			if (!empty($item->id))
 			{
@@ -556,8 +556,6 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('language_translation');
 		}
 
@@ -582,7 +580,6 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -592,17 +589,11 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('language_translation.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -612,7 +603,6 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -623,7 +613,11 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				}
 			}
 
-			$this->table->entranslation = $this->generateUniqe('entranslation',$this->table->entranslation);
+			// Only for strings
+			if (ComponentbuilderHelper::checkString($this->table->entranslation) && !is_numeric($this->table->entranslation))
+			{
+				$this->table->entranslation = $this->generateUniqe('entranslation',$this->table->entranslation);
+			}
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -705,8 +699,6 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('language_translation');
 		}
 
@@ -730,7 +722,6 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 			if (!$this->user->authorise('language_translation.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -741,7 +732,6 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else

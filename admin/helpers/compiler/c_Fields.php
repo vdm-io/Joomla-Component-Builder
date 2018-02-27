@@ -90,6 +90,13 @@ class Fields extends Structure
 	public $doNotEscape = array();
 
 	/**
+	 * list of classes used in the list view for the fields
+	 * 
+	 * @var    array
+	 */
+	public $listFieldClass = array();
+
+	/**
 	 * tags builder
 	 * 
 	 * @var    array
@@ -1681,6 +1688,12 @@ class Fields extends Structure
 			// do some nice twigs beyond the default
 			if (isset($fieldAttributes['name']))
 			{
+				// check if we have class value for the list view of this field
+				$listclass = ComponentbuilderHelper::getBetween($field['settings']->xml, 'listclass="', '"');
+				if (ComponentbuilderHelper::checkString($listclass))
+				{
+					$this->listFieldClass[$listViewName][$fieldAttributes['name']] = $listclass;
+				}
 				// check if we find reason to remove this field from being escaped
 				$escaped = ComponentbuilderHelper::getBetween($field['settings']->xml, 'escape="', '"');
 				if (ComponentbuilderHelper::checkString($escaped))

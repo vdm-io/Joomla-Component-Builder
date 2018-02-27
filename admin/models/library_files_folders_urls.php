@@ -558,8 +558,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('library_files_folders_urls');
 		}
 
@@ -584,7 +582,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -594,17 +591,11 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('library_files_folders_urls.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -614,7 +605,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -625,7 +615,11 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 				}
 			}
 
-			$this->table->library = $this->generateUniqe('library',$this->table->library);
+			// Only for strings
+			if (ComponentbuilderHelper::checkString($this->table->library) && !is_numeric($this->table->library))
+			{
+				$this->table->library = $this->generateUniqe('library',$this->table->library);
+			}
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -707,8 +701,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('library_files_folders_urls');
 		}
 
@@ -732,7 +724,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 			if (!$this->user->authorise('library_files_folders_urls.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -743,7 +734,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else

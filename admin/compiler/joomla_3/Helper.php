@@ -463,20 +463,43 @@ abstract class ###Component###Helper
 	/**
 	*	Get any component's model
 	**/
-	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $component = '###component###')
+	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $component = '###Component###', $config = array())
 	{
+		// fix the name
+		$name = self::safeString($name);
+		// full path
+		$fullPath = $path . '/models';
+		// set prefix
+		$prefix = $component.'Model';
 		// load the model file
-		JModelLegacy::addIncludePath( $path . '/models' );
+		JModelLegacy::addIncludePath($fullPath, $prefix);
 		// get instance
-		$model = JModelLegacy::getInstance( $name, $component.'Model' );
-		// if model not found
+		$model = JModelLegacy::getInstance($name, $prefix, $config);
+		// if model not found (strange)
 		if ($model == false)
 		{
-			// build class name
-			$class = $prefix.$name;
-			// initilize the model
-			new $class();
-			$model = JModelLegacy::getInstance($name, $prefix);
+			jimport('joomla.filesystem.file');
+			// get file path
+			$filePath = $path.'/'.$name.'.php';
+			$fullPath = $fullPath.'/'.$name.'.php';
+			// check if it exists
+			if (JFile::exists($filePath))
+			{
+				// get the file
+				require_once $filePath;
+			}
+			elseif (JFile::exists($fullPath))
+			{
+				// get the file
+				require_once $fullPath;
+			}
+			// build class names
+			$modelClass = $prefix.$name;
+			if (class_exists($modelClass))
+			{
+				// initialize the model
+				return new $modelClass($config);
+			}
 		}
 		return $model;
 	}

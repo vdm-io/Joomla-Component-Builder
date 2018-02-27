@@ -333,7 +333,7 @@ jQuery(document).ready(function() {
 		getFieldOptions(fieldId,false);
 	}
 });
-			
+
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -345,5 +345,5 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});			 
+}); 
 </script>

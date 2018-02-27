@@ -484,7 +484,7 @@ jQuery(document).ready(function()
 	// get the linked details
 	getLinked();
 });
-			
+
 function getLinked_server(type){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&vdm="+vastDevMod;
 	if(token.length > 0 && type > 0){
@@ -505,8 +505,8 @@ function getLinked(){
 			jQuery('#display_linked_to').html(result);
 		}
 	});
-}			
-			
+}
+
 function getSnippetDetails_server(snippetId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.snippetDetails&format=json";
 	if(token.length > 0 && snippetId > 0){
@@ -554,8 +554,8 @@ function getSnippetDetails(id){
 			jQuery('.snippet-usage').append(usage);
 		}
 	})
-}			
-			
+}
+
 function getDynamicValues_server(dynamicId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getDynamicValues&format=json";
 	if(token.length > 0 && dynamicId > 0){
@@ -581,8 +581,8 @@ function getDynamicValues(id){
 			});
 		}
 	})
-}			
-			
+}
+
 function getLayoutDetails_server(id){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json";
 	if(token.length > 0 && id > 0){
@@ -607,8 +607,8 @@ function getLayoutDetails(id){
 			});
 		}
 	})
-}			
-			
+}
+
 function getTemplateDetails_server(id){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.templateDetails&format=json";
 	if(token.length > 0 && id > 0){
@@ -633,8 +633,8 @@ function getTemplateDetails(id){
 			});
 		}
 	})
-}			
-			
+}
+
 // set snippets that are on the page
 var snippetIds = [];
 var snippets = {};
@@ -705,4 +705,4 @@ function setSnippets(array){
 		jQuery('#jform_snippet').append('<option value="">'+create_a_snippet+'</option>');
 	}
 	jQuery('#jform_snippet').trigger('liszt:updated');
-}			 
+} 

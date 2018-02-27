@@ -44,7 +44,7 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in joomla_component
-			
+
 	/**
 	* 	Check and if a vdm notice is new (per/user)
 	**/
@@ -91,7 +91,7 @@ class ComponentbuilderModelAjax extends JModelList
 			return true;
 		}
 		return false;
-	}			
+	}
 	/**
 	* 	get the component details (html)
 	**/
@@ -177,7 +177,7 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in admin_view
-			
+
 	protected $viewid = array();
 
 	protected function getViewID($call = 'table')
@@ -209,7 +209,7 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 		return false;
 	}
-			
+
 	protected $buttonArray = array(
 				'library_config' => 'libraries_config',
 				'library_files_folders_urls' => 'libraries_files_folders_urls',
@@ -226,7 +226,7 @@ class ComponentbuilderModelAjax extends JModelList
 				'component_dashboard' => 'components_dashboard',
 				'component_files_folders' => 'components_files_folders',
 				'language' => true);
-			
+
 	public function getButton($type)
 	{
 		if (isset($this->buttonArray[$type]))
@@ -262,8 +262,8 @@ class ComponentbuilderModelAjax extends JModelList
 			return '';
 		}
 		return false;
-	}			
-			
+	}
+
 	public function getButtonID($type, $size)
 	{
 		if (isset($this->buttonArray[$type]))
@@ -331,7 +331,7 @@ class ComponentbuilderModelAjax extends JModelList
 			}
 		}
 		return '';
-	}			
+	}
 
 	public static function getDynamicScripts($type)
 	{
@@ -446,7 +446,7 @@ class ComponentbuilderModelAjax extends JModelList
 		return ComponentbuilderHelper::safeString($keys[1], 'Ww');
 	}
 
-			
+
 	protected function getSubformTable($idName, $data)
 	{
 		// make sure we convert the json to array
@@ -553,7 +553,7 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			$rows[$nr] .= '<td data-column=" '.$_header.' ">'.$value.'</td>';
 		}
-	}			
+	}
 
 	protected $ref;
 	protected $fieldsArray = array(
@@ -1840,7 +1840,7 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 		return false;
 	}
-			
+
 	/**
 	* Get the keys of the values to search custom code in
 	*
@@ -1977,7 +1977,7 @@ class ComponentbuilderModelAjax extends JModelList
 			return $targets[$target];
 		}
 		return false;
-	}			
+	}
 
 	// Used in field
 	public function getFieldOptions($id)
@@ -1991,7 +1991,7 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in get_snippets
-			
+
 	public function getSnippets($libraries)
 	{
 		if (ComponentbuilderHelper::checkJson($libraries))
@@ -2074,7 +2074,7 @@ class ComponentbuilderModelAjax extends JModelList
 			}
 		}
 		return false;
-	}			
+	}
 	public function getSnippetDetails($id)
 	{
 		// Get a db connection.

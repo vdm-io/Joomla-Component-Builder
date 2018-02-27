@@ -100,10 +100,10 @@ class ComponentbuilderModelServer extends JModelAdmin
 			// Get the encryption object.
 			$basic = new FOFEncryptAes($basickey, 128);
 
-			if (!empty($item->host) && $basickey && !is_numeric($item->host) && $item->host === base64_encode(base64_decode($item->host, true)))
+			if (!empty($item->path) && $basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
 			{
-				// basic decrypt data host.
-				$item->host = rtrim($basic->decryptString($item->host), "\0");
+				// basic decrypt data path.
+				$item->path = rtrim($basic->decryptString($item->path), "\0");
 			}
 
 			if (!empty($item->port) && $basickey && !is_numeric($item->port) && $item->port === base64_encode(base64_decode($item->port, true)))
@@ -112,10 +112,10 @@ class ComponentbuilderModelServer extends JModelAdmin
 				$item->port = rtrim($basic->decryptString($item->port), "\0");
 			}
 
-			if (!empty($item->path) && $basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
+			if (!empty($item->password) && $basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
 			{
-				// basic decrypt data path.
-				$item->path = rtrim($basic->decryptString($item->path), "\0");
+				// basic decrypt data password.
+				$item->password = rtrim($basic->decryptString($item->password), "\0");
 			}
 
 			if (!empty($item->secret) && $basickey && !is_numeric($item->secret) && $item->secret === base64_encode(base64_decode($item->secret, true)))
@@ -124,16 +124,16 @@ class ComponentbuilderModelServer extends JModelAdmin
 				$item->secret = rtrim($basic->decryptString($item->secret), "\0");
 			}
 
+			if (!empty($item->host) && $basickey && !is_numeric($item->host) && $item->host === base64_encode(base64_decode($item->host, true)))
+			{
+				// basic decrypt data host.
+				$item->host = rtrim($basic->decryptString($item->host), "\0");
+			}
+
 			if (!empty($item->signature) && $basickey && !is_numeric($item->signature) && $item->signature === base64_encode(base64_decode($item->signature, true)))
 			{
 				// basic decrypt data signature.
 				$item->signature = rtrim($basic->decryptString($item->signature), "\0");
-			}
-
-			if (!empty($item->password) && $basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
-			{
-				// basic decrypt data password.
-				$item->password = rtrim($basic->decryptString($item->password), "\0");
 			}
 
 			if (!empty($item->username) && $basickey && !is_numeric($item->username) && $item->username === base64_encode(base64_decode($item->username, true)))
@@ -146,6 +146,12 @@ class ComponentbuilderModelServer extends JModelAdmin
 			{
 				// basic decrypt data private.
 				$item->private = rtrim($basic->decryptString($item->private), "\0");
+			}
+
+			if (!empty($item->private_key) && $basickey && !is_numeric($item->private_key) && $item->private_key === base64_encode(base64_decode($item->private_key, true)))
+			{
+				// basic decrypt data private_key.
+				$item->private_key = rtrim($basic->decryptString($item->private_key), "\0");
 			}
 			
 			if (!empty($item->id))
@@ -164,7 +170,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWanlinked_components()
+	public function getWamlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -689,8 +695,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('server');
 		}
 
@@ -715,7 +719,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -725,17 +728,11 @@ class ComponentbuilderModelServer extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('server.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -745,7 +742,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -756,7 +752,11 @@ class ComponentbuilderModelServer extends JModelAdmin
 				}
 			}
 
-			$this->table->name = $this->generateUniqe('name',$this->table->name);
+			// Only for strings
+			if (ComponentbuilderHelper::checkString($this->table->name) && !is_numeric($this->table->name))
+			{
+				$this->table->name = $this->generateUniqe('name',$this->table->name);
+			}
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -838,8 +838,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('server');
 		}
 
@@ -863,7 +861,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 			if (!$this->user->authorise('server.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -874,7 +871,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -960,10 +956,10 @@ class ComponentbuilderModelServer extends JModelAdmin
 		// Get the encryption object
 		$basic = new FOFEncryptAes($basickey, 128);
 
-		// Encrypt data host.
-		if (isset($data['host']) && $basickey)
+		// Encrypt data path.
+		if (isset($data['path']) && $basickey)
 		{
-			$data['host'] = $basic->encryptString($data['host']);
+			$data['path'] = $basic->encryptString($data['path']);
 		}
 
 		// Encrypt data port.
@@ -972,10 +968,10 @@ class ComponentbuilderModelServer extends JModelAdmin
 			$data['port'] = $basic->encryptString($data['port']);
 		}
 
-		// Encrypt data path.
-		if (isset($data['path']) && $basickey)
+		// Encrypt data password.
+		if (isset($data['password']) && $basickey)
 		{
-			$data['path'] = $basic->encryptString($data['path']);
+			$data['password'] = $basic->encryptString($data['password']);
 		}
 
 		// Encrypt data secret.
@@ -984,16 +980,16 @@ class ComponentbuilderModelServer extends JModelAdmin
 			$data['secret'] = $basic->encryptString($data['secret']);
 		}
 
+		// Encrypt data host.
+		if (isset($data['host']) && $basickey)
+		{
+			$data['host'] = $basic->encryptString($data['host']);
+		}
+
 		// Encrypt data signature.
 		if (isset($data['signature']) && $basickey)
 		{
 			$data['signature'] = $basic->encryptString($data['signature']);
-		}
-
-		// Encrypt data password.
-		if (isset($data['password']) && $basickey)
-		{
-			$data['password'] = $basic->encryptString($data['password']);
 		}
 
 		// Encrypt data username.
@@ -1006,6 +1002,12 @@ class ComponentbuilderModelServer extends JModelAdmin
 		if (isset($data['private']) && $basickey)
 		{
 			$data['private'] = $basic->encryptString($data['private']);
+		}
+
+		// Encrypt data private_key.
+		if (isset($data['private_key']) && $basickey)
+		{
+			$data['private_key'] = $basic->encryptString($data['private_key']);
 		}
         
 		// Set the Params Items to data

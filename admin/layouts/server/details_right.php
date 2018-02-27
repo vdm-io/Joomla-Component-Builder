@@ -33,6 +33,7 @@ $fields = $displayData->get('fields') ?: array(
 	'authentication',
 	'password',
 	'private',
+	'private_key',
 	'secret'
 );
 

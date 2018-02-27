@@ -364,7 +364,7 @@ jQuery('#adminForm').on('change', '#jform_libraries',function (e) {
 	e.preventDefault();
 	getSnippets();
 });
-			
+
 jQuery.fn.selText = function() {
     var obj = this[0];
     if (jQuery.browser.msie) {
@@ -382,7 +382,7 @@ jQuery.fn.selText = function() {
         selection.setBaseAndExtent(obj, 0, obj, 1);
     }
     return this;
-}			
+}
 
 jQuery('#adminForm').on('change', '#jform_snippet',function (e) {
 	e.preventDefault();
@@ -418,7 +418,7 @@ jQuery(document).ready(function() {
 // some lang strings
 var select_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
 var create_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
-			
+
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -430,5 +430,5 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});			 
+}); 
 </script>

@@ -204,7 +204,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->php_model = base64_decode($item->php_model);
 			}
 
-			
+
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -223,7 +223,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'custom_admin_view__'.$id);
 				ComponentbuilderHelper::set('custom_admin_view__'.$id, $this->vastDevMod);
-			}			
+			}
 
 			// check what type of custom_button array we have here (should be subform... but just incase)
 			// This could happen due to huge data sets
@@ -703,8 +703,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('custom_admin_view');
 		}
 
@@ -729,7 +727,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -739,17 +736,11 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('core.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -759,7 +750,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -770,7 +760,11 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				}
 			}
 
-			$this->table->name = $this->generateUniqe('name',$this->table->name);
+			// Only for strings
+			if (ComponentbuilderHelper::checkString($this->table->name) && !is_numeric($this->table->name))
+			{
+				$this->table->name = $this->generateUniqe('name',$this->table->name);
+			}
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -852,8 +846,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('custom_admin_view');
 		}
 
@@ -877,7 +869,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			if (!$this->user->authorise('core.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -888,7 +879,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else

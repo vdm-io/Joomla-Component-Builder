@@ -1507,6 +1507,18 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// remove from this dataset
 				unset($item->css);
+				// rename sales_server_ftp field
+				if (isset($item->sales_server_ftp))
+				{
+					$item->sales_server = $item->sales_server_ftp;
+					unset($item->sales_server_ftp);
+				}
+				// rename update_server_ftp field
+				if (isset($item->update_server_ftp))
+				{
+					$item->update_server = $item->update_server_ftp;
+					unset($item->update_server_ftp);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -2267,19 +2279,19 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'joomla_component':
 					if ($retry == 3)
 					{
-						// get by name only
-						$getter = array('name', 'name_code'); // risky will look at this again
+						// get by names only
+						$getter = array('name', 'name_code', 'system_name');
 					}
 					elseif ($retry == 2)
 					{
 						// get by name ...
-						$getter = array('name', 'name_code', 'short_description', 'author', 'email', 'component_version', 'companyname', 'system_name', 'website', 'bom', 'copyright', 'license'); // risky will look at this again
+						$getter = array('name', 'name_code', 'short_description', 'author', 'email', 'component_version', 'companyname', 'system_name', 'website', 'bom', 'copyright', 'license'); 
 						$retryAgain = 3;
 					}
 					else
 					{
 						// get by id name ...
-						$getter = array('id', 'name', 'name_code', 'short_description', 'author', 'component_version', 'companyname', 'system_name'); // risky will look at this again
+						$getter = array('id', 'name', 'name_code', 'short_description', 'author', 'component_version', 'companyname', 'system_name');
 						$retryAgain = 2;
 					}
 					break;

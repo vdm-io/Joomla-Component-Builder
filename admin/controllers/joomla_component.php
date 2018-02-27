@@ -331,23 +331,24 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 			$oldID = $this->input->get('id', 0, 'INT');
 			// linked tables to update
 			$_tablesArray = array(
-				'component_admin_views',
-				'component_site_views',
-				'component_custom_admin_views',
-				'component_updates',
-				'component_mysql_tweaks',
-				'component_custom_admin_menus',
-				'component_config',
-				'component_dashboard',
-				'component_files_folders'
+				'component_admin_views' => 'joomla_component',
+				'component_site_views' => 'joomla_component',
+				'component_custom_admin_views' => 'joomla_component',
+				'component_updates' => 'joomla_component',
+				'component_mysql_tweaks' => 'joomla_component',
+				'component_custom_admin_menus' => 'joomla_component',
+				'component_config' => 'joomla_component',
+				'component_dashboard' => 'joomla_component',
+				'component_files_folders' => 'joomla_component',
+				'custom_code' => 'component'
 			);
-			foreach($_tablesArray as $_updateTable)
+			foreach($_tablesArray as $_updateTable => $_key)
 			{
 				// get the linked ID
-				if ($_value = ComponentbuilderHelper::getVar($_updateTable, $oldID, 'joomla_component', 'id'))
+				if ($_value = ComponentbuilderHelper::getVar($_updateTable, $oldID, $_key, 'id'))
 				{
 					// copy fields to new linked table
-					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array('joomla_component' => $newID));
+					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array($_key => $newID));
 				}
 			}
 		}

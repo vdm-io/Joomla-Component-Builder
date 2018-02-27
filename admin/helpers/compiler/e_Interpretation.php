@@ -4996,8 +4996,6 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t\$this->user		= JFactory::getUser();";
 		$batchmove[] = "\t\t\t\$this->table		= \$this->getTable();";
 		$batchmove[] = "\t\t\t\$this->tableClassName	= get_class(\$this->table);";
-		$batchmove[] = "\t\t\t\$this->contentType	= new JUcmType;";
-		$batchmove[] = "\t\t\t\$this->type		= \$this->contentType->getTypeByTable(\$this->tableClassName);";
 		$batchmove[] = "\t\t\t\$this->canDo		= " . $Helper . "::getActions('" . $viewName_single . "');";
 		$batchmove[] = "\t\t}";
 
@@ -5062,7 +5060,7 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t{";
 		$batchmove[] = "\t\t\t\t\$this->setError(JText:".":_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
 
-		$batchmove[] = PHP_EOL . "\t\t\t\treturn false;";
+		$batchmove[] = "\t\t\t\treturn false;";
 		$batchmove[] = "\t\t\t}";
 
 		$batchmove[] = PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Check that the row actually exists";
@@ -5073,7 +5071,7 @@ class Interpretation extends Fields
 		$batchmove[] = "\t\t\t\t\t//" . $this->setLine(__LINE__) . " Fatal error";
 		$batchmove[] = "\t\t\t\t\t\$this->setError(\$error);";
 
-		$batchmove[] = PHP_EOL . "\t\t\t\t\treturn false;";
+		$batchmove[] = "\t\t\t\t\treturn false;";
 		$batchmove[] = "\t\t\t\t}";
 		$batchmove[] = "\t\t\t\telse";
 		$batchmove[] = "\t\t\t\t{";
@@ -5187,8 +5185,6 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t\$this->user 		= JFactory::getUser();";
 		$batchcopy[] = "\t\t\t\$this->table 		= \$this->getTable();";
 		$batchcopy[] = "\t\t\t\$this->tableClassName	= get_class(\$this->table);";
-		$batchcopy[] = "\t\t\t\$this->contentType	= new JUcmType;";
-		$batchcopy[] = "\t\t\t\$this->type		= \$this->contentType->getTypeByTable(\$this->tableClassName);";
 		$batchcopy[] = "\t\t\t\$this->canDo		= " . $Helper . "::getActions('" . $viewName_single . "');";
 		$batchcopy[] = "\t\t}";
 		if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.create']]))
@@ -5245,7 +5241,7 @@ class Interpretation extends Fields
 
 		$batchcopy[] = PHP_EOL . "\t\t\$newIds = array();";
 
-		$batchcopy[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Parent exists so let's proceed";
+		$batchcopy[] = "\t\t//" . $this->setLine(__LINE__) . " Parent exists so let's proceed";
 		$batchcopy[] = "\t\twhile (!empty(\$pks))";
 		$batchcopy[] = "\t\t{";
 		$batchcopy[] = "\t\t\t//" . $this->setLine(__LINE__) . " Pop the first ID off the stack";
@@ -5256,17 +5252,17 @@ class Interpretation extends Fields
 		$batchcopy[] = PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " only allow copy if user may edit this item.";
 		if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder[$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit']]) && in_array($viewName_single, $this->permissionBuilder[$core['core.edit']]))
 		{
-			$batchcopy[] = PHP_EOL . "\t\t\tif (!\$this->user->authorise('" . $core['core.edit'] . "', \$contexts[\$pk]))";
+			$batchcopy[] = "\t\t\tif (!\$this->user->authorise('" . $core['core.edit'] . "', \$contexts[\$pk]))";
 		}
 		else
 		{
-			$batchcopy[] = PHP_EOL . "\t\t\tif (!\$this->user->authorise('core.edit', \$contexts[\$pk]))";
+			$batchcopy[] = "\t\t\tif (!\$this->user->authorise('core.edit', \$contexts[\$pk]))";
 		}
-		$batchcopy[] = PHP_EOL . "\t\t\t{";
-		$batchcopy[] = PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " Not fatal error";
-		$batchcopy[] = PHP_EOL . "\t\t\t\t\$this->setError(JText:".":sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
-		$batchcopy[] = PHP_EOL . "\t\t\t\tcontinue;";
-		$batchcopy[] = PHP_EOL . "\t\t\t}";
+		$batchcopy[] = "\t\t\t{";
+		$batchcopy[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " Not fatal error";
+		$batchcopy[] = "\t\t\t\t\$this->setError(JText:".":sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
+		$batchcopy[] = "\t\t\t\tcontinue;";
+		$batchcopy[] = "\t\t\t}";
 
 		$batchcopy[] = PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Check that the row actually exists";
 		$batchcopy[] = "\t\t\tif (!\$this->table->load(\$pk))";
@@ -5276,7 +5272,7 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t\t\t//" . $this->setLine(__LINE__) . " Fatal error";
 		$batchcopy[] = "\t\t\t\t\t\$this->setError(\$error);";
 
-		$batchcopy[] = PHP_EOL . "\t\t\t\t\treturn false;";
+		$batchcopy[] = "\t\t\t\t\treturn false;";
 		$batchcopy[] = "\t\t\t\t}";
 		$batchcopy[] = "\t\t\t\telse";
 		$batchcopy[] = "\t\t\t\t{";
@@ -5309,11 +5305,15 @@ class Interpretation extends Fields
 		}
 		elseif (!$category && $alias && $title)
 		{
-			$batchcopy[] = PHP_EOL . "\t\t\tlist(\$this->table->" . $title . ", \$this->table->" . $alias . ") = \$this->_generateNewTitle(\$this->table->" . $alias . ", \$this->table->" . $title . ");";
+			$batchcopy[] = "\t\t\tlist(\$this->table->" . $title . ", \$this->table->" . $alias . ") = \$this->_generateNewTitle(\$this->table->" . $alias . ", \$this->table->" . $title . ");";
 		}
 		elseif (!$category && !$alias && $title && $title != 'user' && $title != 'jobnumber') // TODO [jobnumber] just for one project (not ideal)
 		{
-			$batchcopy[] = PHP_EOL . "\t\t\t\$this->table->" . $title . " = \$this->generateUniqe('" . $title . "',\$this->table->" . $title . ");";
+			$batchcopy[] = PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Only for strings";
+			$batchcopy[] = "\t\t\tif (" . $Helper . "::checkString(\$this->table->" . $title . ") && !is_numeric(\$this->table->" . $title . "))";
+			$batchcopy[] = "\t\t\t{";
+			$batchcopy[] = "\t\t\t\t\$this->table->" . $title . " = \$this->generateUniqe('" . $title . "',\$this->table->" . $title . ");";
+			$batchcopy[] = "\t\t\t}";
 		}
 
 		$batchcopy[] = PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " insert all set values";
@@ -6164,7 +6164,7 @@ class Interpretation extends Fields
 					{
 						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 						// category and linked
-						$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+						$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 						$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_" . $this->fileContentStatic['###component###'] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")): ?>";
 						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic['###component###'] . '.' . $otherViews . '"><?php echo $this->escape($item->category_title); ?></a>';
 						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
@@ -6176,7 +6176,7 @@ class Interpretation extends Fields
 					{
 						// user and linked
 						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . "User = JFactory::getUser(\$item->" . $item['code'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+						$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 						$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
 						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['code'] . ' ?>"><?php echo $' . $item['code'] . 'User->name; ?></a>';
 						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
@@ -6212,7 +6212,7 @@ class Interpretation extends Fields
 						{
 							// user and linked
 							$body .= PHP_EOL . "\t\t<?php \$" . $item['id'] . " = JFactory::getUser(\$item->" . $item['id'] . "); ?>";
-							$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+							$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 							$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
 							$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['id'] . ' ?>"><?php echo $' . $item['id'] . '->name; ?></a>';
 							$body .= PHP_EOL . "\t\t\t<?php else: ?>";
@@ -6261,7 +6261,7 @@ class Interpretation extends Fields
 						if ($add)
 						{
 							// set as linked
-							$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+							$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 							$body .= PHP_EOL . "\t\t\t<?php if (" . $accessCheck . "): ?>";
 							$body .= PHP_EOL . "\t\t\t\t" . '<div class="name">' . PHP_EOL . "\t\t\t\t\t" . '<a href="' . $link . '">' . $itemCode . '</a>';
 							if ($checkoutTriger)
@@ -6283,7 +6283,7 @@ class Interpretation extends Fields
 				{
 					if ($item['type'] === 'category')
 					{
-						$body .= PHP_EOL . "\t\t<td class=\"hidden-phone\">";
+						$body .= PHP_EOL . "\t\t<td class=\"".$this->setListFieldClass($item['code'], $viewName_list, 'hidden-phone')."\">";
 						$body .= PHP_EOL . "\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
 						$body .= PHP_EOL . "\t\t</td>";
 					}
@@ -6291,7 +6291,7 @@ class Interpretation extends Fields
 					{
 						// custom user and linked
 						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . " = JFactory::getUser(\$item->" . $item['id'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="nowrap hidden-phone">';
+						$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap hidden-phone').'">';
 						$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
 						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['id'] . ' ?>"><?php echo $' . $item['code'] . '->name; ?></a>';
 						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
@@ -6303,14 +6303,14 @@ class Interpretation extends Fields
 					{
 						// user name only
 						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . "User = JFactory::getUser(\$item->" . $item['code'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+						$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 						$body .= PHP_EOL . "\t\t\t<?php echo \$" . $item['code'] . "User->name; ?>";
 						$body .= PHP_EOL . "\t\t</td>";
 					}
 					else
 					{
 						// normal not linked
-						$body .= PHP_EOL . "\t\t<td class=\"hidden-phone\">";
+						$body .= PHP_EOL . "\t\t<td class=\"".$this->setListFieldClass($item['code'], $viewName_list, 'hidden-phone')."\">";
 						$body .= PHP_EOL . "\t\t\t" . $itemCode;
 						$body .= PHP_EOL . "\t\t</td>";
 					}
@@ -6345,7 +6345,7 @@ class Interpretation extends Fields
 			}
 			if (!isset($this->fieldsNames[$viewName_single]['id']))
 			{
-				$body .= PHP_EOL . "\t\t" . '<td class="nowrap center hidden-phone">';
+				$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap center hidden-phone').'">';
 				$body .= PHP_EOL . "\t\t\t<?php echo \$item->id; ?>";
 				$body .= PHP_EOL . "\t\t</td>";
 			}
@@ -6355,6 +6355,11 @@ class Interpretation extends Fields
 			return $body;
 		}
 		return '';
+	}
+
+	protected function setListFieldClass($name, $listViewName, $default = '')
+	{
+		return (isset($this->listFieldClass[$listViewName]) && isset($this->listFieldClass[$listViewName][$name])) ? $this->listFieldClass[$listViewName][$name] : $default;
 	}
 
 	public function setListHead($viewName_single, $viewName_list)
@@ -7324,7 +7329,7 @@ class Interpretation extends Fields
 					{
 						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 						// category and linked
-						$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+						$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 						$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_" . $this->fileContentStatic['###component###'] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")): ?>";
 						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic['###component###'] . '.' . $otherViews . '"><?php echo $displayData->escape($item->category_title); ?></a>';
 						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
@@ -7336,7 +7341,7 @@ class Interpretation extends Fields
 					{
 						// user and linked
 						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . "User = JFactory::getUser(\$item->" . $item['code'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+						$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 						$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
 						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['code'] . ' ?>"><?php echo $' . $item['code'] . 'User->name; ?></a>';
 						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
@@ -7385,7 +7390,7 @@ class Interpretation extends Fields
 						{
 							// user and linked
 							$body .= PHP_EOL . "\t\t<?php \$_" . $item['id'] . " = JFactory::getUser(\$item->" . $item['id'] . "); ?>";
-							$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+							$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 							$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
 							$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['id'] . ' ?>"><?php echo $_' . $item['id'] . '->name; ?></a>';
 							$body .= PHP_EOL . "\t\t\t<?php else: ?>";
@@ -7433,7 +7438,7 @@ class Interpretation extends Fields
 						if ($add)
 						{
 							// set as linked
-							$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+							$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 							$body .= PHP_EOL . "\t\t\t<?php if (" . $accessCheck . "): ?>";
 							$body .= PHP_EOL . "\t\t\t\t" . '<a href="' . $link . '">' . $itemCode . '</a>';
 							if ($checkoutTriger)
@@ -7474,7 +7479,7 @@ class Interpretation extends Fields
 					{
 						// user name only
 						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . "User = JFactory::getUser(\$item->" . $item['code'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="nowrap">';
+						$body .= PHP_EOL . "\t\t" . '<td class="'.$this->setListFieldClass($item['code'], $viewName_list, 'nowrap').'">';
 						$body .= PHP_EOL . "\t\t\t<?php echo \$" . $item['code'] . "User->name; ?>";
 						$body .= PHP_EOL . "\t\t</td>";
 					}
@@ -14404,7 +14409,7 @@ function vdm_dkim() {
 					$this->componentGlobal[$sortKey] = "\t\t" . '<action name="site.' . $siteCode . '.access" title="' . $siteTitle . '" description="' . $siteDesc . '" />';
 
 					// check if this site view requires access rule to default to public
-					if (isset($site_view['public']) && $site_view['public'] == 1)
+					if (isset($site_view['public_access']) && $site_view['public_access'] == 1)
 					{
 						// we use one as public group (TODO we see if we run into any issues)
 						$this->assetsRules[] = '"site.' . $siteCode . '.access":{"1":1}';

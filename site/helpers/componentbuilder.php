@@ -369,7 +369,7 @@ abstract class ComponentbuilderHelper
 		// load this for all
 		jimport('joomla.application');
 	}
-			
+
 	/**
 	 * Remove folders with files
 	 * 
@@ -435,7 +435,7 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-			
+
 	/**
 	* 	The dynamic builder of views, tables and fields
 	**/
@@ -444,7 +444,7 @@ abstract class ComponentbuilderHelper
 		self::autoLoader('extrusion');
 		$extruder = new Extrusion($data);
 	}
-			
+
 	/**
 	*	The zipper method
 	* 
@@ -494,8 +494,8 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-			
-			
+
+
 	/**
 	*	Write a file to the server
 	* 
@@ -527,7 +527,7 @@ abstract class ComponentbuilderHelper
 		}
 		return $klaar;
 	}
-				
+	
 	public static function getFieldOptions($value, $type, $settings = array())
 	{
 		// Get a db connection.
@@ -729,7 +729,7 @@ abstract class ComponentbuilderHelper
 		// noting for now
 		return true;
 	}
-			
+
 	/**
 	* 	the Butler
 	**/
@@ -777,7 +777,7 @@ abstract class ComponentbuilderHelper
 		}
 		return self::$localSession[$key];
 	}
-			
+
 	/**
 	* 	check if it is a new hash
 	**/
@@ -801,7 +801,33 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-			
+
+	/**
+	* 	prepare base64 string for url
+	**/
+	public static function base64_urlencode($string, $encode = false)
+	{
+		if ($encode)
+		{
+			$string = base64_encode($string);
+		}
+		return str_replace(array('+', '/'), array('-', '_'), $string);
+	}
+
+	/**
+	* 	prepare base64 string form url
+	**/
+	public static function base64_urldecode($string, $decode = false)
+	{
+		$string = str_replace(array('-', '_'), array('+', '/'), $string);
+		if ($decode)
+		{
+			$string = base64_decode($string);
+		}
+		return $string;
+	}
+
+
 	/**
 	*	Check if the url exist
 	* 
@@ -843,8 +869,8 @@ abstract class ComponentbuilderHelper
 			}
 		}
 		return $exists;
-	}			
-			
+	}
+
 	/**
 	*	Get the file path or url
 	* 
@@ -914,8 +940,8 @@ abstract class ComponentbuilderHelper
 		// sanitize the path
 		return '/' . trim( $filePath, '/' ) . '/' . $fileName;
 	}
-			
-			
+
+
 	/**
 	*	Get the file path or url
 	* 
@@ -955,8 +981,8 @@ abstract class ComponentbuilderHelper
 		// sanitize the path
 		return '/' . trim( $folderPath, '/' ) . '/';
 	}
-			
-			
+
+
 	/**
 	*	get the content of a file
 	* 
@@ -1008,17 +1034,28 @@ abstract class ComponentbuilderHelper
 		}
 		return $none;
 	}
-			
-			
+
+
+	/**
+	* 	 Composer Switch
+	**/
+	protected static $composer = false; 
+
 	/**
 	* 	Load the Composer Vendors
 	**/
 	public static function composerAutoload()
 	{
-		// load the autoloader
-		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/vendor/autoload.php';
-	}			 
-			
+		// insure we load the composer vendors only once
+		if (!self::$composer)
+		{
+			// load the autoloader
+			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/vendor/autoload.php';
+			// do not load again
+			self::$composer = true;
+		}
+	}
+
 	/**
 	* 	Move File to Server
 	* 	
@@ -1144,47 +1181,99 @@ abstract class ComponentbuilderHelper
 						}
 					break;
 					case 2: // private key file
-						$rsa = new phpseclib\Crypt\RSA();
-						// check if we have a passprase
-						if (self::checkString($server->secret))
+						if (self::checkObject(self::crypt('RSA')))
 						{
-							$rsa->setPassword($server->secret);
-						}
-						// now load the key file
-						if (!$rsa->loadKey(self::getFileContents($server->private, null)))
-						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
-							unset(self::$sftp[$server->cache]);
-							return false;
-						}
-						// now login
-						if (!self::$sftp[$server->cache]->login($server->username, $rsa))
-						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
-							unset(self::$sftp[$server->cache]);
-							return false;
+							// check if we have a passprase
+							if (self::checkString($server->secret))
+							{
+								self::crypt('RSA')->setPassword($server->secret);
+							}
+							// now load the key file
+							if (!self::crypt('RSA')->loadKey(self::getFileContents($server->private, null)))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+							// now login
+							if (!self::$sftp[$server->cache]->login($server->username, self::crypt('RSA')))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
 						}
 					break;
 					case 3: // both password and private key file
-						$rsa = new phpseclib\Crypt\RSA();
-						// check if we have a passphrase
-						if (self::checkString($server->secret))
+						if (self::checkObject(self::crypt('RSA')))
 						{
-							$rsa->setPassword($server->secret);
+							// check if we have a passphrase
+							if (self::checkString($server->secret))
+							{
+								self::crypt('RSA')->setPassword($server->secret);
+							}
+							// now load the key file
+							if (!self::crypt('RSA')->loadKey(self::getFileContents($server->private, null)))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+							// now login
+							if (!self::$sftp[$server->cache]->login($server->username, $server->password, self::crypt('RSA')))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
 						}
-						// now load the key file
-						if (!$rsa->loadKey(self::getFileContents($server->private, null)))
+					break;
+					case 4: // private key field
+						if (self::checkObject(self::crypt('RSA')))
 						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
-							unset(self::$sftp[$server->cache]);
-							return false;
+							// check if we have a passprase
+							if (self::checkString($server->secret))
+							{
+								self::crypt('RSA')->setPassword($server->secret);
+							}
+							// now load the key field
+							if (!self::crypt('RSA')->loadKey($server->private_key))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FIELD_COULD_NOT_BE_LOADED_FOR_BSB_SERVER', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+							// now login
+							if (!self::$sftp[$server->cache]->login($server->username, self::crypt('RSA')))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
 						}
-						// now login
-						if (!self::$sftp[$server->cache]->login($server->username, $server->password, $rsa))
+					break;
+					case 5: // both password and private key field
+						if (self::checkObject(self::crypt('RSA')))
 						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
-							unset(self::$sftp[$server->cache]);
-							return false;
+							// check if we have a passphrase
+							if (self::checkString($server->secret))
+							{
+								self::crypt('RSA')->setPassword($server->secret);
+							}
+							// now load the key file
+							if (!self::crypt('RSA')->loadKey($server->private_key))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FIELD_COULD_NOT_BE_LOADED_FOR_BSB_SERVER', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+							// now login
+							if (!self::$sftp[$server->cache]->login($server->username, $server->password, self::crypt('RSA')))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
 						}
 					break;
 				}
@@ -1328,9 +1417,9 @@ abstract class ComponentbuilderHelper
 			if (2 == $protocol)
 			{
 				// SFTP
-				$query->select($db->quoteName(array('name','authentication','username','host','password','path','port','private','secret')));
+				$query->select($db->quoteName(array('name','authentication','username','host','password','path','port','private','private_key','secret')));
 				// cache builder
-				$cache = array('authentication','username','host','password','port','private','secret');
+				$cache = array('authentication','username','host','password','port','private','private_key','secret');
 			}
 			else
 			{
@@ -1348,7 +1437,7 @@ abstract class ComponentbuilderHelper
 			{
 				$server = $db->loadObject();
 				// Get the basic encryption.
-				$basickey = self::getCryptKey('basic');
+				$basickey = self::getCryptKey('basic', 'Th1sMnsTbL0ck@d');
 				// Get the encryption object.
 				$basic = new FOFEncryptAes($basickey, 128);
 				// start cache keys
@@ -1386,7 +1475,6 @@ abstract class ComponentbuilderHelper
 		JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_SERVER_DETAILS_FOR_BID_SB_COULD_NOT_BE_RETRIEVED', $serverID), 'Error');
 		return false;
 	}
-			
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{
@@ -1559,23 +1647,43 @@ abstract class ComponentbuilderHelper
 	/**
 	*	Get any component's model
 	**/
-	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $component = 'componentbuilder')
+	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $component = 'Componentbuilder', $config = array())
 	{
+		// fix the name
+		$name = self::safeString($name);
 		// full path
 		$fullPath = $path . '/models';
+		// set prefix
+		$prefix = $component.'Model';
 		// load the model file
-		JModelLegacy::addIncludePath($fullPath);
+		JModelLegacy::addIncludePath($fullPath, $prefix);
 		// get instance
-		$model = JModelLegacy::getInstance( $name, $component.'Model' );
-		// if model not found
+		$model = JModelLegacy::getInstance($name, $prefix, $config);
+		// if model not found (strange)
 		if ($model == false)
 		{
-			require_once $fullPath.'/'.strtolower($name).'.php';
-			// build class name
-			$class = $prefix.$name;
-			// initialize the model
-			new $class();
-			$model = JModelLegacy::getInstance($name, $prefix);
+			jimport('joomla.filesystem.file');
+			// get file path
+			$filePath = $path.'/'.$name.'.php';
+			$fullPath = $fullPath.'/'.$name.'.php';
+			// check if it exists
+			if (JFile::exists($filePath))
+			{
+				// get the file
+				require_once $filePath;
+			}
+			elseif (JFile::exists($fullPath))
+			{
+				// get the file
+				require_once $fullPath;
+			}
+			// build class names
+			$modelClass = $prefix.$name;
+			if (class_exists($modelClass))
+			{
+				// initialize the model
+				return new $modelClass($config);
+			}
 		}
 		return $model;
 	}

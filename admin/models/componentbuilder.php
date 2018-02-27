@@ -336,7 +336,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		return $icons;
 	}
 
-			
+
 	public function getGithub()
 	{
 		// load jquery (not sure why... but else the timeago breaks)
@@ -428,8 +428,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 				'closedissues' => $create.'<div id="closedissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_CLOSED_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreclosed,
 				'tagreleases' => '<div id="tagreleases">'.JText::_('COM_COMPONENTBUILDER_LAST_FEW_RELEASES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$viewissues
 		);
-	}			
-			
+	}
+
 	public function getWiki()
 	{
 		$document = JFactory::getDocument();
@@ -448,8 +448,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
-				 
-			
+	 
+
 	public function getNoticeboard()
 	{
 		// get the document to load the scripts
@@ -521,8 +521,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		});');
 
 		return '<div id="noticeboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
-	}			
-			
+	}
+
 	public function getReadme()
 	{
 		$document = JFactory::getDocument();
@@ -539,5 +539,5 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		});');
 
 		return '<div id="readme-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
-	}			
+	}
 }

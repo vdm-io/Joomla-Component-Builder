@@ -196,7 +196,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->php_calculation = base64_decode($item->php_calculation);
 			}
 
-			
+
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -215,7 +215,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'dynamic_get__'.$id);
 				ComponentbuilderHelper::set('dynamic_get__'.$id, $this->vastDevMod);
-			}			
+			}
 
 			// update the fields
 			$objectUpdate = new stdClass();
@@ -710,8 +710,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('dynamic_get');
 		}
 
@@ -736,7 +734,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -746,17 +743,11 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('dynamic_get.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -766,7 +757,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -777,7 +767,11 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				}
 			}
 
-			$this->table->name = $this->generateUniqe('name',$this->table->name);
+			// Only for strings
+			if (ComponentbuilderHelper::checkString($this->table->name) && !is_numeric($this->table->name))
+			{
+				$this->table->name = $this->generateUniqe('name',$this->table->name);
+			}
 
 			// insert all set values
 			if (ComponentbuilderHelper::checkArray($values))
@@ -859,8 +853,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= ComponentbuilderHelper::getActions('dynamic_get');
 		}
 
@@ -884,7 +876,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			if (!$this->user->authorise('dynamic_get.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -895,7 +886,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else

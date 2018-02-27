@@ -264,7 +264,7 @@ jQuery('#adminForm').on('change', '#jform_comment_type',function (e)
 		jQuery('#phpjs-comment-info').show();
 	}
 });
-			
+
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -276,5 +276,5 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});			
+});
 </script>

@@ -85,7 +85,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 			<?php else: ?>
 				<div class="name"><?php echo $this->escape($item->system_name); ?></div>
 			<?php endif; ?>
-			
+
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 				<?php if ($canDo->get('component_admin_views.edit') && $component_admin_views_id = ComponentbuilderHelper::getVar('component_admin_views', $item->id, 'joomla_component', 'id')): ?>
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=components_admin_views&task=component_admin_views.edit&id=<?php echo $component_admin_views_id; ?>&ref=joomla_components" title="<?php echo JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_ADMIN_VIEWS'); ?>" ><span class="icon-stack"></span></a>
@@ -129,7 +129,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 				<?php endif; ?>
 			</div>
 		</td>
-			
+
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->companyname); ?>
 		</td>

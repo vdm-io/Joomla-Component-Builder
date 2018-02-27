@@ -32,7 +32,7 @@ jQuery(document).ready(function($)
 function addData(result,where){
 	jQuery(result).insertAfter(jQuery(where).closest('.control-group'));
 }
-			
+
 function addButton_server(type){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
@@ -52,4 +52,4 @@ function addButton(type,where){
 			addData(result,'#jform_'+where);
 		}
 	})
-}			 
+} 

@@ -228,7 +228,7 @@ JHtml::_('behavior.keepalive');
 </div>
 <div id="loading" style="display: none;"><br /><h3><?php echo JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT_LOADING'); ?>.<span class="loading-dots">.</span></h3></div>
 <script type="text/javascript">
-			
+
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -240,7 +240,7 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});			 
+}); 
 </script>
 <?php else: ?>
         <h1><?php echo JText::_('COM_COMPONENTBUILDER_NO_ACCESS_GRANTED'); ?></h1>

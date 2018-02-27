@@ -239,7 +239,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}
-			
+
 	public function backup()
 	{
 		// get params first
@@ -399,7 +399,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED'), 'Error');
 		return;
 	}
-			
+
 	protected function getApiUser()
 	{
 		// admin area does not have API user, only front-end (so we fallback on login user)

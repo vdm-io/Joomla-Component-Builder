@@ -1252,7 +1252,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			}
 		}
 	}
-			
+
 	/**
 	* Get the keys of the values to search custom code in
 	*
@@ -1389,7 +1389,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			return $targets[$target];
 		}
 		return false;
-	}			
+	}
 	
 	/**
 	 * Method to auto-populate the model state.

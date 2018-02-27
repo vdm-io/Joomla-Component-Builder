@@ -169,7 +169,7 @@ jQuery('#adminForm').on('change', '#jform_libraries',function (e) {
 	e.preventDefault();
 	getSnippets();
 });
-			
+
 jQuery.fn.selText = function() {
     var obj = this[0];
     if (jQuery.browser.msie) {
@@ -187,7 +187,7 @@ jQuery.fn.selText = function() {
         selection.setBaseAndExtent(obj, 0, obj, 1);
     }
     return this;
-}			
+}
 
 jQuery('#adminForm').on('change', '#jform_snippet',function (e) {
 	e.preventDefault();

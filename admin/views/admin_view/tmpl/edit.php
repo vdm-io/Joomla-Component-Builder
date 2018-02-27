@@ -731,7 +731,7 @@ jQuery('#jform_add_custom_import').on('change',function() {
 	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
 	getDynamicScripts(valueSwitch);
 });
-			
+
 <?php
 	$app = JFactory::getApplication();
 ?>
@@ -747,8 +747,8 @@ function JRouter(link) {
 	}
 ?>
 	return url+link;
-}			
-			
+}
+
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;
@@ -760,5 +760,5 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-});			 
+}); 
 </script>
