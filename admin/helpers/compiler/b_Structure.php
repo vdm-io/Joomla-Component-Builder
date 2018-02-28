@@ -307,11 +307,68 @@ class Structure extends Get
 	public $addCheckin = false;
 
 	/**
+	 * The Move Folders Switch
+	 * 
+	 * @var     boolean
+	 */
+	public $setMoveFolders = false;
+
+	/**
 	 * The array of last modified dates
 	 * 
 	 * @var     array
 	 */
 	protected $lastModifiedDate = array();
+	
+	/**
+	 * The array of dynamic paths
+	 * 
+	 * JPATH_SITE is meant to represent the root path of the JSite application, just as JPATH_ADMINISTRATOR is mean to represent the root path of the JAdministrator application.
+	 * 
+	 *    JPATH_BASE is the root path for the current requested application.... so if you are in the administrator application:
+	 * 
+	 *    JPATH_BASE == JPATH_ADMINISTRATOR
+	 * 
+	 * If you are in the site application:
+	 * 
+	 *    JPATH_BASE == JPATH_SITE
+	 * 
+	 * If you are in the installation application:
+	 * 
+	 *    JPATH_BASE == JPATH_INSTALLATION.
+	 * 
+	 *    JPATH_ROOT is the root path for the Joomla install and does not depend upon any application.
+	 * 
+	 * @var     array
+	 */
+	protected $constantPaths = array(
+		// The path to the administrator folder.
+		'JPATH_ADMINISTRATOR' => JPATH_ADMINISTRATOR,
+		// The path to the installed Joomla! site, or JPATH_ROOT/administrator if executed from the backend.
+		'JPATH_BASE' => JPATH_BASE,
+		// The path to the cache folder.
+		'JPATH_CACHE' => JPATH_CACHE,
+		// The path to the administration folder of the current component being executed.
+		'JPATH_COMPONENT_ADMINISTRATOR' => JPATH_COMPONENT_ADMINISTRATOR,
+		// The path to the site folder of the current component being executed.
+		'JPATH_COMPONENT_SITE' => JPATH_COMPONENT_SITE,
+		// The path to the current component being executed.
+		'JPATH_COMPONENT' => JPATH_COMPONENT,
+		// The path to folder containing the configuration.php file.
+		'JPATH_CONFIGURATION' => JPATH_CONFIGURATION,
+		// The path to the installation folder.
+		'JPATH_INSTALLATION' => JPATH_INSTALLATION,
+		// The path to the libraries folder.
+		'JPATH_LIBRARIES' => JPATH_LIBRARIES,
+		// The path to the plugins folder.
+		'JPATH_PLUGINS' => JPATH_PLUGINS,
+		// The path to the installed Joomla! site.
+		'JPATH_ROOT' => JPATH_ROOT,
+		// The path to the installed Joomla! site.
+		'JPATH_SITE' => JPATH_SITE,
+		// The path to the templates folder.
+		'JPATH_THEMES' => JPATH_THEMES
+	);
 
 	/**
 	 * Constructor
@@ -718,38 +775,56 @@ class Structure extends Get
 				$path = str_replace('c0mp0n3nt/', $this->componentPath . '/', $details->path);
 				// set the template folder path
 				$templatePath = (isset($details->custom) && $details->custom) ? (($details->custom !== 'full') ? $this->templatePathCustom.'/':'') : $this->templatePath.'/';
-				// now mov the file
+				// set the final paths
+				$currentFullPath = str_replace('//', '/', $templatePath.'/'.$item);
+				$packageFullPath = str_replace('//', '/', $path.'/'.$new);
+				$zipFullPath = str_replace('//', '/', $zipPath.'/'.$new);
+				// now move the file
 				if ($details->type === 'file')
 				{
-					if (!JFile::exists($templatePath . $item))
+					if (!JFile::exists($currentFullPath))
 					{
-						$this->app->enqueueMessage(JText::sprintf('The file path: <b>%s</b> does not exist, and was not added!', $templatePath . $item), 'Error');
+						$this->app->enqueueMessage(JText::sprintf('The file path: <b>%s</b> does not exist, and was not added!', $currentFullPath), 'Error');
 					}
 					else
 					{
 						// move the file to its place
-						JFile::copy($templatePath . $item, $path . '/' . $new);
+						JFile::copy($currentFullPath, $packageFullPath);
 						// count the file created
 						$this->fileCount++;
 						// store the new files
 						if (!in_array($ftem, $this->notNew))
 						{
-							$this->newFiles['static'][] = array('path' => $path . '/' . $new, 'name' => $new, 'zip' => $zipPath . '/' . $new);
+							$this->newFiles['static'][] = array('path' => $packageFullPath, 'name' => $new, 'zip' => $zipFullPath);
 						}
 					}
 				}
 				elseif ($details->type === 'folder')
 				{
-					if (!JFolder::exists($templatePath . $item))
+					if (!JFolder::exists($currentFullPath))
 					{
-						$this->app->enqueueMessage(JText::sprintf('The folder path: <b>%s</b> does not exist, and was not added!', $templatePath . $item), 'Error');
+						$this->app->enqueueMessage(JText::sprintf('The folder path: <b>%s</b> does not exist, and was not added!', $currentFullPath), 'Error');
 					}
 					else
 					{
 						// move the folder to its place
-						JFolder::copy($templatePath . $item, $path . '/' . $new);
+						JFolder::copy($currentFullPath, $packageFullPath);
 						// count the folder created
 						$this->folderCount++;
+					}
+				}
+				// check if we should add the dynamic folder moving script to the installer script
+				if (!$this->setMoveFolders)
+				{
+					$checker = explode('/',$zipFullPath);
+					// TODO <-- this may not be the best way, will keep an eye on this.
+					// We basicly only want to check if a folder is added that is not in the stdFolders array
+					if (isset($checker[0]) && ComponentbuilderHelper::checkString($checker[0]) && !in_array($checker[0], $stdFolders))
+					{
+						// add the setDynamicF0ld3rs() method to the install scipt.php file
+						$this->setMoveFolders = true;
+						// set message that this was done (will still add a tutorial link later)
+						$this->app->enqueueMessage(JText::sprintf('<p><b>Dynamic folder/s were detected.</b><br />A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder/s are copied into the correct place when this componet is installed!</p>'), 'Notice');
 					}
 				}
 			}
@@ -1128,6 +1203,8 @@ class Structure extends Get
 				if(!isset($custom['folder']) && isset($custom['folderpath']))
 				{
 					$custom['folder'] = '/'.trim($custom['folderpath'], '/');
+					// update the dynamic path
+					$custom['folder'] = $this->updateDynamicPath($custom['folder']);
 					// remove the file path
 					unset($custom['folderpath']);
 					// triget fullpath
@@ -1237,6 +1314,8 @@ class Structure extends Get
 				if(!isset($custom['file']) && isset($custom['filepath']))
 				{
 					$custom['file'] = '/'.trim($custom['filepath'], '/');
+					// update the dynamic path
+					$custom['file'] = $this->updateDynamicPath($custom['file']);
 					// remove the file path
 					unset($custom['filepath']);
 					// triget fullpath
@@ -1310,6 +1389,19 @@ class Structure extends Get
 			// count the file created
 			$this->fileCount++;
 		}
+	}
+
+	/**
+	 * Update paths with real value
+	 * 
+	 * @param   string   $path  The full path
+	 *
+	 * @return  string   The updated path
+	 * 
+	 */
+	protected function updateDynamicPath($path)
+	{
+		return $this->setPlaceholders($path, $this->constantPaths);
 	}
 
 	/**

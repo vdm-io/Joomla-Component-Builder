@@ -111,6 +111,8 @@ class com_###component###InstallerScript
 	 */
 	function postflight($type, $parent)
 	{
+		// get application
+		$app = JFactory::getApplication();###MOVEFOLDERSSCRIPT###
 		// set the default component settings
 		if ($type == 'install')
 		{###POSTINSTALLSCRIPT###
@@ -119,5 +121,5 @@ class com_###component###InstallerScript
 		if ($type == 'update')
 		{###POSTUPDATESCRIPT###
 		}
-	}
+	}###MOVEFOLDERSMETHOD###
 }

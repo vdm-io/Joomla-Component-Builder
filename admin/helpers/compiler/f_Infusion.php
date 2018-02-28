@@ -1026,6 +1026,12 @@ class Infusion extends Interpretation
 			// ###UNINSTALLSCRIPT###
 			$this->fileContentStatic['###UNINSTALLSCRIPT###'] = $this->setUninstallScript();
 
+			// ###MOVEFOLDERSSCRIPT###
+			$this->fileContentStatic['###MOVEFOLDERSSCRIPT###'] = $this->setMoveFolderScript();
+
+			// ###MOVEFOLDERSMETHOD###
+			$this->fileContentStatic['###MOVEFOLDERSMETHOD###'] = $this->setMoveFolderMethod();
+
 			// ###HELPER_UIKIT###
 			$this->fileContentStatic['###HELPER_UIKIT###'] = $this->setUikitHelperMethods();
 

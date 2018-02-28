@@ -4682,6 +4682,66 @@ class Interpretation extends Fields
 		return $script;
 	}
 
+	public function setMoveFolderScript()
+	{
+		if ($this->setMoveFolders)
+		{
+			// reset script
+			$script = array();
+			$script[] = "\t\t//" . $this->setLine(__LINE__) . " We check if we have dynamic folders to copy";
+			$script[] = "\t\t\$this->setDynamicF0ld3rs(\$app, \$parent);";
+			// done
+			return PHP_EOL.implode(PHP_EOL, $script);
+		}
+		return '';
+	}
+
+	public function setMoveFolderMethod()
+	{
+		if ($this->setMoveFolders)
+		{
+			// reset script
+			$script = array();
+			$script[] = "\t/**";
+			$script[] = "\t * Method to set/copy dynamic folders into place (use with caution)";
+			$script[] = "\t *";
+			$script[] = "\t * @return void";
+			$script[] = "\t */";
+			$script[] = "\tprotected function setDynamicF0ld3rs(\$app, \$parent)";
+			$script[] = "\t{";
+			$script[] = "\t\t//" . $this->setLine(__LINE__) . " get the instalation path";
+			$script[] = "\t\t\$installer = \$parent->getParent();";
+			$script[] = "\t\t\$installPath = \$installer->getPath('source');";
+			$script[] = "\t\t//" . $this->setLine(__LINE__) . " get all the folders";
+			$script[] = "\t\t\$folders = JFolder::folders(\$installPath);";
+			$script[] = "\t\t//" . $this->setLine(__LINE__) . " check if we have folders we may want to copy";
+			$script[] = "\t\t\$doNotCopy = array('media','admin','site'); // Joomla already deals with these";
+			$script[] = "\t\tif (count(\$folders) > 1)";
+			$script[] = "\t\t{";
+			$script[] = "\t\t\tforeach (\$folders as \$folder)";
+			$script[] = "\t\t\t{";
+			$script[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " Only copy if not a standard folders";
+			$script[] = "\t\t\t\tif (!in_array(\$folder, \$doNotCopy))";
+			$script[] = "\t\t\t\t{";
+			$script[] = "\t\t\t\t\t//" . $this->setLine(__LINE__) . " set the source path";
+			$script[] = "\t\t\t\t\t\$src = \$installPath.'/'.\$folder;";
+			$script[] = "\t\t\t\t\t//" . $this->setLine(__LINE__) . " set the destination path";
+			$script[] = "\t\t\t\t\t\$dest = JPATH_ROOT.'/'.\$folder;";
+			$script[] = "\t\t\t\t\t//" . $this->setLine(__LINE__) . " now try to copy the folder";
+			$script[] = "\t\t\t\t\tif (!JFolder::copy(\$src, \$dest, '', true))";
+			$script[] = "\t\t\t\t\t{";
+			$script[] = "\t\t\t\t\t\t\$app->enqueueMessage('Could not copy '.\$folder.' folder into place, please make sure destination is writable!', 'error');";
+			$script[] = "\t\t\t\t\t}";
+			$script[] = "\t\t\t\t}";
+			$script[] = "\t\t\t}";
+			$script[] = "\t\t}";
+			$script[] = "\t}";
+			// done
+			return PHP_EOL.PHP_EOL.implode(PHP_EOL, $script);
+		}
+		return '';
+	}
+
 	public function getContentType($view, $component)
 	{
 		// add if history is to be kept or if tags is added

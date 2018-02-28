@@ -3194,6 +3194,10 @@ class com_componentbuilderInstallerScript
 	 */
 	function postflight($type, $parent)
 	{
+		// get application
+		$app = JFactory::getApplication();
+		// We check if we have dynamic folders to copy
+		$this->setDynamicF0ld3rs($app, $parent);
 		// set the default component settings
 		if ($type == 'install')
 		{
@@ -4736,10 +4740,53 @@ class com_componentbuilderInstallerScript
 					}
 				}
 			}
+			// check if this install has the libraries in the helper folder, if so remove it
+			$vendorPath = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/vendor';
+			if (JFolder::exists($vendorPath))
+			{
+				ComponentbuilderHelper::removeFolder($vendorPath);
+				// set a notice that this was done
+				$app->enqueueMessage('<p><b>Best Practice!</b><br />We have removed the composer-vendor folder from the /administrator/components/com_componentbuilder/helpers/ folder and placed it in the /libraries/vdm_io/ folder.</p>', 'Notice');
+			}
 			echo '<a target="_blank" href="http://joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
 				<h3>Upgrade to Version 2.6.17 Was Successful! Let us know if anything is not working as expected.</h3>';
+		}
+	}
+
+	/**
+	 * Method to set/copy dynamic folders into place (use with caution)
+	 *
+	 * @return void
+	 */
+	protected function setDynamicF0ld3rs($app, $parent)
+	{
+		// get the instalation path
+		$installer = $parent->getParent();
+		$installPath = $installer->getPath('source');
+		// get all the folders
+		$folders = JFolder::folders($installPath);
+		// check if we have folders we may want to copy
+		$doNotCopy = array('media','admin','site'); // Joomla already deals with these
+		if (count($folders) > 1)
+		{
+			foreach ($folders as $folder)
+			{
+				// Only copy if not a standard folders
+				if (!in_array($folder, $doNotCopy))
+				{
+					// set the source path
+					$src = $installPath.'/'.$folder;
+					// set the destination path
+					$dest = JPATH_ROOT.'/'.$folder;
+					// now try to copy the folder
+					if (!JFolder::copy($src, $dest, '', true))
+					{
+						$app->enqueueMessage('Could not copy '.$folder.' folder into place, please make sure destination is writable!', 'error');
+					}
+				}
+			}
 		}
 	}
 }

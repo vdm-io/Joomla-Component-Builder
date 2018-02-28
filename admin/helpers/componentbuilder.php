@@ -1984,7 +1984,7 @@ abstract class ComponentbuilderHelper
 		if (!self::$composer)
 		{
 			// load the autoloader
-			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/vendor/autoload.php';
+			require_once JPATH_SITE.'/libraries/vdm_io/vendor/autoload.php';
 			// do not load again
 			self::$composer = true;
 		}
@@ -2094,7 +2094,7 @@ abstract class ComponentbuilderHelper
 				if (!class_exists('\phpseclib\Net\SFTP'))
 				{
 					// class not in place so send out error
-					JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_THE_BPHPSECLIBNETSFTPB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_ADMINHELPERSVENDOR_FOLDER_OF_JCB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO'), 'Error');
+					JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_THE_BPHPSECLIBNETSFTPB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_BLIBRARIESVDM_IOVENDORB_FOLDER_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO'), 'Error');
 					return false;
 				}
 				// insure the port is set
