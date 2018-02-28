@@ -2409,6 +2409,40 @@ abstract class ComponentbuilderHelper
 		JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_SERVER_DETAILS_FOR_BID_SB_COULD_NOT_BE_RETRIEVED', $serverID), 'Error');
 		return false;
 	}
+
+	/**
+	* 	the Crypt objects
+	**/
+	protected static $CRYPT = array();
+
+	/**
+	* 	get the Crypt object
+	* 	
+	* 	@return  object on success with Crypt power
+	**/
+	public static function crypt($TYPE)
+	{
+		// check if it was already set
+		if (isset(self::$CRYPT[$TYPE]) && self::checkObject(self::$CRYPT[$TYPE]))
+		{
+			return self::$CRYPT[$TYPE];
+		}
+		// make sure we have the composer classes loaded
+		self::composerAutoload();
+		// build class name
+		$CLASS = '\phpseclib\Crypt\\'.$TYPE;
+		// make sure we have the phpseclib classes
+		if (!class_exists($CLASS))
+		{
+			// class not in place so send out error
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_BLIBRARIESVDM_IOVENDORB_FOLDER_OF_JCB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', $CLASS), 'Error');
+			return false;
+		}
+		// set the 
+		self::$CRYPT[$TYPE] = new $CLASS();
+		// return the object
+		return self::$CRYPT[$TYPE];
+	}
 	/**
 	*	Load the Component xml manifest.
 	**/

@@ -739,6 +739,8 @@ class Structure extends Get
 			{
 				$README = true;
 			}
+			// set the standard folders
+			$stdFolders = array('site','admin','media');
 			// start moving
 			foreach ($this->joomlaVersionData->move->static as $ftem => $details)
 			{
