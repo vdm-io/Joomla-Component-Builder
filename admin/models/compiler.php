@@ -124,7 +124,7 @@ class ComponentbuilderModelCompiler extends JModelList
 				$_copyright = new stdClass();
 				$_copyright->text =& $item->copyright; // value must be in text
 				// Since all values are now in text (Joomla Limitation), we also add the field name (copyright) to context
-				$this->_dispatcher->trigger("onContentPrepare",array('com_componentbuilder.compiler.copyright',&$_copyright,&$this->params));
+				$this->_dispatcher->trigger("onContentPrepare", array('com_componentbuilder.compiler.copyright', &$_copyright, &$this->params, 0));
 				// Checking if copyright has uikit components that must be loaded.
 				$this->uikitComp = ComponentbuilderHelper::getUikitComp($item->copyright,$this->uikitComp);
 			}

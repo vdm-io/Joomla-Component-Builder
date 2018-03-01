@@ -1671,7 +1671,7 @@ class Interpretation extends Fields
 				$fieldPrepare .= PHP_EOL . "\t" . $tab . "\t\$_" . $field . " = new stdClass();";
 				$fieldPrepare .= PHP_EOL . "\t" . $tab . "\t\$_" . $field . '->text =& ' . $string . '->' . $field . '; //' . $this->setLine(__LINE__) . ' value must be in text';
 				$fieldPrepare .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Since all values are now in text (Joomla Limitation), we also add the field name (" . $field . ") to context";
-				$fieldPrepare .= PHP_EOL . "\t" . $tab . "\t" . '$this->_dispatcher->trigger("onContentPrepare",array(\'' . $context . '.' . $field . '\',&$_' . $field . ',&$this->params));'; // we can improve the params later (TODO)
+				$fieldPrepare .= PHP_EOL . "\t" . $tab . "\t" . '$this->_dispatcher->trigger("onContentPrepare", array(\'' . $context . '.' . $field . '\', &$_' . $field . ', &$this->params, 0));'; // we can improve the params later (TODO)
 			}
 		}
 		// load dispatcher
