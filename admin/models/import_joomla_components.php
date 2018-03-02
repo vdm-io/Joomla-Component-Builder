@@ -767,7 +767,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected function moveSmartStuff()
 	{
 		// make sure to first unlock files
-		$this->unLockFiles($this->dir);
+		$this->unLockFiles();
 		// set params
 		$params = JComponentHelper::getParams('com_componentbuilder');
 		// set custom folder path
@@ -796,6 +796,43 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$success = false;
 			}
 		}
+		// now move the dynamic files if found
+		$dynamicDir = str_replace('//', '/', $this->dir . '/dynamic');
+		if (JFolder::exists($dynamicDir))
+		{
+			// get a list of folders
+			$folders = JFolder::folders($dynamicDir);
+			// check if we have files
+			if(ComponentbuilderHelper::checkArray($folders))
+			{
+				foreach ($folders as $folder)
+				{
+					$destination = $this->setDynamicPath($folder);
+					$fullPath = str_replace('//', '/', $dynamicDir . '/' . $folder);
+					if (!JFolder::exists($fullPath) || !JFolder::copy($fullPath, $destination,'',true))
+					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FOLDER_BSB_WAS_NOT_MOVE_TO_S', $folder, $destination), 'error');
+						$success = false;
+					}
+				}
+			}
+			// get a list of files
+			$files = JFolder::files($dynamicDir);
+			// check if we have files
+			if(ComponentbuilderHelper::checkArray($files))
+			{
+				foreach ($files as $file)
+				{
+					$destination = $this->setDynamicPath($file);
+					$fullPath = str_replace('//', '/', $dynamicDir . '/' . $file);
+					if (!JFile::exists($fullPath) || !JFile::copy($fullPath, $destination))
+					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_NOT_MOVE_TO_S', $file, $destination), 'error');
+						$success = false;
+					}
+				}
+			}
+		}
 		return $success;
 	}
 
@@ -812,19 +849,17 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			$unlocker = new FOFEncryptAes($this->sleutle, 128);
 			// we must first store the current working directory
 			$joomla = getcwd();
-			// setup the type path
-			$customPath = str_replace('//', '/', $this->dir . '/custom');
-			// go to the custom folder if found
-			if (JFolder::exists($customPath))
+			// to avoid that it decrypt the db and info file again we must move per/folder
+			$folders = array('images', 'custom', 'dynamic');
+			// loop the folders
+			foreach ($folders as $folder)
 			{
-				$this->unlock($customPath, $unlocker);
-			}
-			// setup the type path
-			$imagesPath = str_replace('//', '/', $this->dir . '/images');
-			// go to the custom folder if found
-			if (JFolder::exists($imagesPath))
-			{
-				$this->unlock($imagesPath, $unlocker);
+				$subPath = str_replace('//', '/', $this->dir . '/' . $folder);
+				// go to the package sub folder if found
+				if (JFolder::exists($subPath))
+				{
+					$this->unlock($subPath, $unlocker);
+				}
 			}
 			// change back to working dir
 			chdir($joomla);
@@ -983,10 +1018,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				foreach($values as $value)
 				{
 					// first check if exist (only add if it does not)
-					if (!$this->getLocalItem($value, $table, 1))
+					if (!$this->getLocalItem($value, $table, 1, 1, true))
 					{
 						// add the diverged data
-						$this->addLocalItem($value, $table);
+						$this->addLocalItem($value, $table, true);
 					}
 				}
 			}
@@ -1223,15 +1258,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	/**
 	* Prep the item
 	*
-	* @param object $item      The item to prep
-	* @param string $type      The type of values
-	* @param string $action    The action (add/update)
+	* @param object $item       The item to prep
+	* @param string $type        The type of values
+	* @param string $action     The action (add/update)
+	* @param bool   $diverged  The diverged data switch
 	*
 	* @return  mixed           false on failure
 	*                          object on success
 	*
 	**/
-	protected function prepItem($item, &$type, $action)
+	protected function prepItem($item, &$type, $action, $diverged = false)
 	{
 		// remove access
 		if (isset($item->access))
@@ -1528,8 +1564,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'component_admin_views':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1546,8 +1586,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->updateSubformsIDs($item, 'component_admin_views', $updaterT);
 			break;
 			case 'component_site_views':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1564,8 +1608,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->updateSubformsIDs($item, 'component_site_views', $updaterT);
 			break;
 			case 'component_custom_admin_views':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1582,8 +1630,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->updateSubformsIDs($item, 'component_custom_admin_views', $updaterT);
 			break;
 			case 'component_updates':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1593,8 +1645,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'component_mysql_tweaks':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1611,8 +1667,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->updateSubformsIDs($item, 'component_mysql_tweaks', $updaterT);
 			break;
 			case 'component_custom_admin_menus':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1629,8 +1689,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->updateSubformsIDs($item, 'component_custom_admin_menus', $updaterT);
 			break;
 			case 'component_config':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1647,8 +1711,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->updateSubformsIDs($item, 'component_config', $updaterT);
 			break;
 			case 'component_dashboard':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1658,8 +1726,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
 			case 'component_files_folders':
-				// update the joomla_component ID where needed
-				$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
 				// repeatable fields to update
 				$updaterR = array(
 						// repeatablefield => checker
@@ -1784,8 +1856,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 			case 'admin_fields':
 			case 'admin_fields_conditions':
-				// update the admin_view ID where needed
-				$item = $this->setNewID($item, 'admin_view', 'admin_view', $type);
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the admin_view ID where needed
+					$item = $this->setNewID($item, 'admin_view', 'admin_view', $type);
+				}
 				// set the updater
 				if ('admin_fields' === $type)
 				{
@@ -2006,17 +2082,18 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	/**
 	* add the local item 
 	*
-	* @param object $item      The item to update
-	* @param string $type      The type of values
+	* @param object $item       The item to update
+	* @param string $type        The type of values
+	* @param bool   $diverged  The diverged data switch
 	*
 	* @return  mixed           false on failure
 	*                          ID int on success
 	*
 	**/
-	protected function addLocalItem(&$item, &$type)
+	protected function addLocalItem(&$item, &$type, $diverged = false)
 	{
 		// prep the item
-		if ($add = $this->prepItem($item, $type, 'add'))
+		if ($add = $this->prepItem($item, $type, 'add', $diverged))
 		{
 			// insert/add the item
 			if ($result = $this->_db->insertObject('#__componentbuilder_' . $type, $add))
@@ -2034,16 +2111,17 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	/**
 	* Get the local item
 	*
-	* @param object $item      The item to get
-	* @param string $type      The type of values
-	* @param bool   $retry      The retry switch
-	* @param bool   $get        The query get switch
+	* @param object $item       The item to get
+	* @param string $type        The type of values
+	* @param bool   $retry        The retry switch
+	* @param bool   $get          The query get switch
+	* @param bool   $diverged  The diverged data switch
 	*
 	* @return  mixed           false on failure
 	*                          ID int on success
 	*
 	**/
-	protected function getLocalItem(&$item, &$type, $retry = false, $get = 1)
+	protected function getLocalItem(&$item, &$type, $retry = false, $get = 1, $diverged = false)
 	{
 		$query = $this->_db->getQuery(true);
 		$query->select('a.*');
@@ -2154,7 +2232,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// get by admin_view (since there should only be one of each name)
 					$getter = array('admin_view');
 					$this->specialValue = array();
-					$this->specialValue['admin_view'] = $this->newID['admin_view'][(int) $item->admin_view];
+					// Yet if diverged it makes sense that the ID is updated.
+					if ($diverged)
+					{
+						$this->specialValue['admin_view'] = (int) $item->admin_view;
+					}
+					elseif (isset($this->newID['admin_view'][(int) $item->admin_view]))
+					{
+						$this->specialValue['admin_view'] = $this->newID['admin_view'][(int) $item->admin_view];
+					}
 					break;
 				case 'fieldtype':
 					// get by name (since there should only be one of each name)
@@ -2304,10 +2390,23 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'component_config':
 				case 'component_dashboard':
 				case 'component_files_folders':
-					// get by admin_view (since there should only be one of each name)
+					// get by joomla_component (since there should only be one of each component)
 					$getter = array('joomla_component');
 					$this->specialValue = array();
-					$this->specialValue['joomla_component'] = $this->newID['joomla_component'][(int) $item->joomla_component];
+					// Yet if diverged it makes sense that the ID is updated.
+					if ($diverged)
+					{
+						$this->specialValue['joomla_component'] = (int) $item->joomla_component;
+					}
+					elseif (isset($this->newID['joomla_component'][(int) $item->joomla_component]))
+					{
+						$this->specialValue['joomla_component'] = $this->newID['joomla_component'][(int) $item->joomla_component];
+					}
+					// (TODO) I have seen this happen, seems dangerous! 
+					else
+					{
+						return false;
+					}
 					break;
 				case 'language_translation':
 						// get by English translation since there should just be one
@@ -2543,6 +2642,34 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Update constant path with real full path value
+	 * 
+	 * @param   string   $path  The full path
+	 *
+	 * @return  string   The updated path
+	 * 
+	 */
+	protected function setFullPath($path)
+	{
+		return str_replace(array_keys(ComponentbuilderHelper::$constantPaths), array_values(ComponentbuilderHelper::$constantPaths), $path);
+	}
+
+	/**
+	 * Convert the name to a path
+	 * 
+	 * @param   string   $path  The path name
+	 *
+	 * @return  string   The full path	 * 
+	 */
+	protected function setDynamicPath($path)
+	{
+		// now convert to path
+		$path = str_replace('__v_d_m__', '/', $path);
+		// add the full path if possible
+		return str_replace('//', '/', $this->setFullPath($path));
 	}
 	
 	protected function getAlias($name,$type = false)

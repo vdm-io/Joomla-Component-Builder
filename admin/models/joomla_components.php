@@ -273,17 +273,24 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add to pks
 						$pks[] = $item->id;
 					}
+					// array of tables linked to joomla_component
+					$linkedTables = array(
+						'custom_code' => 'component',
+						'component_files_folders' => 'joomla_component',
+						'component_admin_views' => 'joomla_component',
+						'component_config' => 'joomla_component',
+						'component_site_views' => 'joomla_component',
+						'component_custom_admin_views' => 'joomla_component',
+						'component_updates' => 'joomla_component',
+						'component_mysql_tweaks' => 'joomla_component',
+						'component_custom_admin_menus' => 'joomla_component',
+						'component_dashboard' => 'joomla_component' );
 					// load all tables linked to joomla_component
-					$this->setData('custom_code', $pks, 'component');
-					$this->setData('component_files_folders', $pks, 'joomla_component');
-					$this->setData('component_admin_views', $pks, 'joomla_component');
-					$this->setData('component_config', $pks, 'joomla_component');
-					$this->setData('component_site_views', $pks, 'joomla_component');
-					$this->setData('component_custom_admin_views', $pks, 'joomla_component');
-					$this->setData('component_updates', $pks, 'joomla_component');
-					$this->setData('component_mysql_tweaks', $pks, 'joomla_component');
-					$this->setData('component_custom_admin_menus', $pks, 'joomla_component');
-					$this->setData('component_dashboard', $pks, 'joomla_component');
+					foreach($linkedTables as $table => $field)
+					{
+						$this->setData($table, $pks, $field);
+					}
+						
 					// add fields and conditions
 					if (isset($this->exportIDs['admin_view']) && ComponentbuilderHelper::checkArray($this->exportIDs['admin_view']))
 					{
@@ -320,7 +327,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						$this->setData('custom_code', array_values($this->exportIDs['custom_code']), 'id');
 					}
-					// has any data been set
+
+					// has any data been set for this component
 					if (isset($this->smartExport['joomla_component']) && ComponentbuilderHelper::checkArray($this->smartExport['joomla_component']))
 					{
 						// set the folder and move the files of each component to the folder
@@ -553,6 +561,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$this->moveIt($this->getValues($item->addfiles, 'subform', 'file', null), 'file');
 						// build folders
 						$this->moveIt($this->getValues($item->addfolders, 'subform', 'folder', null), 'folder');
+						// build full path files
+						$this->moveIt($this->getValues($item->addfilesfullpath, 'subform', 'filepath', null), 'file', true);
+						// build full path folders
+						$this->moveIt($this->getValues($item->addfoldersfullpath, 'subform', 'folderpath', null), 'folder', true);
 					}
 					// actions to take if table is component_config
 					if ('component_config' === $table)
@@ -777,19 +789,18 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$locker = new FOFEncryptAes($this->key, 128);
 			// we must first store the current working directory
 			$joomla = getcwd();
-			// setup the type path
-			$customPath = $this->packagePath . '/custom';
-			// go to the custom folder if found
-			if (JFolder::exists($customPath))
+			// to avoid that it encrypt the db and info file again we must move per/folder
+			$folders = array('images', 'custom', 'dynamic');
+			// loop the folders
+			foreach ($folders as $folder)
 			{
-				$this->lock($customPath, $locker);
-			}
-			// setup the type path
-			$imagesPath = $this->packagePath . '/images';
-			// go to the custom folder if found
-			if (JFolder::exists($imagesPath))
-			{
-				$this->lock($imagesPath, $locker);
+				// the sub path
+				$subPath = $this->packagePath.'/'.$folder;
+				// go to the package sub folder if found
+				if (JFolder::exists($subPath))
+				{
+					$this->lock($subPath, $locker);
+				}
 			}
 			// change back to working dir
 			chdir($joomla);
@@ -823,7 +834,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*
 	* @return bool
 	*/
-	protected function moveIt($paths, $type)
+	protected function moveIt($paths, $type, $dynamic = false)
 	{
 		// make sure we have an array
 		if (!ComponentbuilderHelper::checkArray($paths))
@@ -834,10 +845,19 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		if ('file' === $type || 'folder' === $type)
 		{
 			$folderName = 'custom';
+			// if these are full paths use dynamic folder
+			if ($dynamic)
+			{
+				$folderName = 'dynamic';
+			}
 		}
-		if ('image' === $type)
+		elseif ('image' === $type)
 		{
 			$folderName = 'images';
+		}
+		else
+		{
+			return false;
 		}
 		// setup the type path
 		$tmpPath = str_replace('//', '/', $this->packagePath . '/' . $folderName);
@@ -850,19 +870,31 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		// now move it
 		foreach ($paths as $item)
 		{
+			// make sure we have a string
 			if (ComponentbuilderHelper::checkString($item))
 			{
+				// if the file type
 				if ('file' === $type)
 				{
-					// TODO we must add the new all over files to this... will be a little tricky.
-					$tmpFilePath = str_replace('//', '/', $tmpPath.'/'.$item);
-					$customFilePath = str_replace('//', '/', $this->customPath.'/'.$item);
+					// if dynamic paths
+					if ($dynamic)
+					{
+						$tmpFilePath = $tmpPath.'/'.$this->setDynamicPathName($item);
+						$customFilePath = str_replace('//', '/', $this->setFullPath($item));
+					}
+					else
+					{
+						$tmpFilePath = str_replace('//', '/', $tmpPath.'/'.$item);
+						$customFilePath = str_replace('//', '/', $this->customPath.'/'.$item);
+					}
+					// now check if file exist
 					if (!JFile::exists($tmpFilePath) && JFile::exists($customFilePath))
 					{
 						// move the file to its place
 						JFile::copy($customFilePath, $tmpFilePath);
 					}
 				}
+				// if the image type
 				if ('image' === $type)
 				{
 					$imageName = basename($item);
@@ -882,10 +914,20 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						JFile::copy($customImagePath, $tmpImagePath);
 					}
 				}
+				// if the folder type
 				if ('folder' === $type)
 				{
-					$tmpFolderPath = str_replace('//', '/', $tmpPath.'/'.$item);
-					$customFolderPath = str_replace('//', '/', $this->customPath.'/'.$item);
+					// if dynamic paths
+					if ($dynamic)
+					{
+						$tmpFolderPath = $tmpPath.'/'.$this->setDynamicPathName($item);
+						$customFolderPath = str_replace('//', '/', $this->setFullPath($item));
+					}
+					else
+					{
+						$tmpFolderPath = str_replace('//', '/', $tmpPath.'/'.$item);
+						$customFolderPath = str_replace('//', '/', $this->customPath.'/'.$item);
+					}
 					if (!JFolder::exists($tmpFolderPath) && JFolder::exists($customFolderPath))
 					{
 						// move the folder to its place
@@ -1251,6 +1293,48 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				return ComponentbuilderHelper::safeString($item->name_code);
 			}
 		}
+	}
+
+	/**
+	 * Convert the path to a name
+	 * 
+	 * @param   string   $path  The full path
+	 *
+	 * @return  string   The path name
+	 * 
+	 */
+	protected function setDynamicPathName($path)
+	{
+		// remove the full path if possible
+		$path = str_replace('//', '/', $this->setConstantPath($path));
+		// now convert to string
+		return str_replace('/', '__v_d_m__', $path);
+	}
+
+	/**
+	 * Update real full path value with constant path string
+	 * 
+	 * @param   string   $path  The full path
+	 *
+	 * @return  string   The updated path
+	 * 
+	 */
+	protected function setConstantPath($path)
+	{
+		return str_replace(array_values(ComponentbuilderHelper::$constantPaths), array_keys(ComponentbuilderHelper::$constantPaths), $path);
+	}
+
+	/**
+	 * Update constant path with real full path value
+	 * 
+	 * @param   string   $path  The full path
+	 *
+	 * @return  string   The updated path
+	 * 
+	 */
+	protected function setFullPath($path)
+	{
+		return str_replace(array_keys(ComponentbuilderHelper::$constantPaths), array_values(ComponentbuilderHelper::$constantPaths), $path);
 	}
 
 	/**

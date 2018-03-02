@@ -986,6 +986,57 @@ abstract class ComponentbuilderHelper
 	**/
 	public static $snippetPath = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/';
 	public static $snippetsPath = 'https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master';
+	
+	/**
+	 * The array of constant paths
+	 * 
+	 * JPATH_SITE is meant to represent the root path of the JSite application,
+	 * just as JPATH_ADMINISTRATOR is mean to represent the root path of the JAdministrator application.
+	 * 
+	 *    JPATH_BASE is the root path for the current requested application.... so if you are in the administrator application:
+	 * 
+	 *    JPATH_BASE == JPATH_ADMINISTRATOR
+	 * 
+	 * If you are in the site application:
+	 * 
+	 *    JPATH_BASE == JPATH_SITE
+	 * 
+	 * If you are in the installation application:
+	 * 
+	 *    JPATH_BASE == JPATH_INSTALLATION.
+	 * 
+	 *    JPATH_ROOT is the root path for the Joomla install and does not depend upon any application.
+	 * 
+	 * @var     array
+	 */
+	public static $constantPaths = array(
+		// The path to the administrator folder.
+		'JPATH_ADMINISTRATOR' => JPATH_ADMINISTRATOR,
+		// The path to the installed Joomla! site, or JPATH_ROOT/administrator if executed from the backend.
+		'JPATH_BASE' => JPATH_BASE,
+		// The path to the cache folder.
+		'JPATH_CACHE' => JPATH_CACHE,
+		// The path to the administration folder of the current component being executed.
+		'JPATH_COMPONENT_ADMINISTRATOR' => JPATH_COMPONENT_ADMINISTRATOR,
+		// The path to the site folder of the current component being executed.
+		'JPATH_COMPONENT_SITE' => JPATH_COMPONENT_SITE,
+		// The path to the current component being executed.
+		'JPATH_COMPONENT' => JPATH_COMPONENT,
+		// The path to folder containing the configuration.php file.
+		'JPATH_CONFIGURATION' => JPATH_CONFIGURATION,
+		// The path to the installation folder.
+		'JPATH_INSTALLATION' => JPATH_INSTALLATION,
+		// The path to the libraries folder.
+		'JPATH_LIBRARIES' => JPATH_LIBRARIES,
+		// The path to the plugins folder.
+		'JPATH_PLUGINS' => JPATH_PLUGINS,
+		// The path to the installed Joomla! site.
+		'JPATH_ROOT' => JPATH_ROOT,
+		// The path to the installed Joomla! site.
+		'JPATH_SITE' => JPATH_SITE,
+		// The path to the templates folder.
+		'JPATH_THEMES' => JPATH_THEMES
+	);
 
 	/**
 	*	Get the snippet contributor details

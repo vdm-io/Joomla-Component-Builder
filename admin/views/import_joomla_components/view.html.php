@@ -138,7 +138,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 
 			$text1 = JFormHelper::loadFieldType('text',true);
 			// add the key
-			$xml = '<field type="password" label="'.JText::_('COM_COMPONENTBUILDER_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE').'" name="sleutle" class="text_area" filter="STRING" hint="add key here" '.$required.' />';
+			$xml = '<field type="password" label="'.JText::_('COM_COMPONENTBUILDER_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE').'" name="sleutle" autocomplete="false" class="text_area" filter="STRING" hint="add key here" '.$required.' />';
 			// prepare the xml
 			$sleutle = new SimpleXMLElement($xml);
 			// set components to form
