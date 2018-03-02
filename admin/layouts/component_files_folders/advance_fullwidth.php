@@ -33,7 +33,8 @@ $fields = $displayData->get('fields') ?: array(
 	'note_add_files_fullpath',
 	'addfilesfullpath',
 	'note_add_folders_fullpath',
-	'addfoldersfullpath'
+	'addfoldersfullpath',
+	'note_constant_paths'
 );
 
 ?>
