@@ -216,6 +216,18 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							unset($items[$nr]);
 							continue;
 						}
+						// make sure old fields are not exported any more
+						unset($item->addconfig);
+						unset($item->addadmin_views);
+						unset($item->addcustom_admin_views);
+						unset($item->addsite_views);
+						unset($item->version_update);
+						unset($item->sql_tweak);
+						unset($item->addcustommenus);
+						unset($item->dashboard_tab);
+						unset($item->php_dashboard_methods);
+						unset($item->addfiles);
+						unset($item->addfolders);
 						// build information data set
 						$this->info['name'][$item->id] = $item->name;
 						$this->info['short_description'][$item->id] = $item->short_description;
@@ -607,6 +619,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						// add fields
 						$this->setData('field', $this->getValues($item->addfields, 'subform', 'field'), 'id');
+					}
+					// actions to take if table is admin_fields_conditions
+					if ('admin_fields_conditions' === $table)
+					{
+						// add fields
+						$this->setData('field', $this->getValues($item->addconditions, 'subform', 'target_field'), 'id');
+						$this->setData('field', $this->getValues($item->addconditions, 'subform', 'match_field'), 'id');
 					}
 					// actions to take if table is field
 					if ('field' === $table)
