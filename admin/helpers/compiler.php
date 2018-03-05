@@ -183,7 +183,9 @@ class Compiler extends Infusion
 				// the correct string
 				$externalCodeString = ($externalCount == 1) ? JText::_('code/string') : JText::_('code/strings');
 				// the notice
+				$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Notice</h3>'), 'Notice');
 				$this->app->enqueueMessage(JText::sprintf('There has been <b>%s - %s</b> added to this component as EXTERNALCODE. To avoid shipping your component with malicious %s always make sure that the correct <b>code/string values</b> were used.', $externalCount, $externalCodeString, $externalCodeString), 'Notice');
+				$this->app->enqueueMessage('<hr />', 'Notice');
 			}
 			// end the timer here
 			$this->time_end = microtime(true);

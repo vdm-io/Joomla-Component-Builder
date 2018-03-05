@@ -176,6 +176,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'library_files_folders_urls.create' => 'library_files_folders_urls.create',
 			'libraries_files_folders_urls.access' => 'library_files_folders_urls.access',
 			'library_files_folders_urls.access' => 'library_files_folders_urls.access');
+		// loop over the $views
 		foreach($viewGroups as $group => $views)
 		{
 			$i = 0;
@@ -184,47 +185,62 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 				foreach($views as $view)
 				{
 					$add = false;
-					if (strpos($view,'.') !== false)
+					// external views (links)
+					if (strpos($view,'||') !== false)
 					{
-							$dwd = explode('.', $view);
-							if (count($dwd) == 3)
+						$dwd = explode('||', $view);
+						if (count($dwd) == 3)
+						{
+							list($type, $name, $url) = $dwd;
+							$viewName 	= $name;
+							$alt 		= $name;
+							$url 		= $url;
+							$image 		= $name.'.'.$type;
+							$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U');
+						}
+					}
+					// internal views
+					elseif (strpos($view,'.') !== false)
+					{
+						$dwd = explode('.', $view);
+						if (count($dwd) == 3)
+						{
+							list($type, $name, $action) = $dwd;
+						}
+						elseif (count($dwd) == 2)
+						{
+							list($type, $name) = $dwd;
+							$action = false;
+						}
+						if ($action)
+						{
+							$viewName = $name;
+							switch($action)
 							{
-								list($type, $name, $action) = $dwd;
+								case 'add':
+									$url 	= 'index.php?option=com_componentbuilder&view='.$name.'&layout=edit';
+									$image 	= $name.'_'.$action.'.'.$type;
+									$alt 	= $name.'&nbsp;'.$action;
+									$name	= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U').'_ADD';
+									$add	= true;
+								break;
+								default:
+									$url 	= 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.'.$name;
+									$image 	= $name.'_'.$action.'.'.$type;
+									$alt 	= $name.'&nbsp;'.$action;
+									$name	= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U').'_'.ComponentbuilderHelper::safeString($action,'U');
+								break;
 							}
-							elseif (count($dwd) == 2)
-							{
-								list($type, $name) = $dwd;
-								$action = false;
-							}
-							if ($action)
-							{
-								$viewName = $name;
-								switch($action)
-								{
-									case 'add':
-										$url 	='index.php?option=com_componentbuilder&view='.$name.'&layout=edit';
-										$image 	= $name.'_'.$action.'.'.$type;
-										$alt 	= $name.'&nbsp;'.$action;
-										$name	= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U').'_ADD';
-										$add	= true;
-									break;
-									default:
-										$url 	= 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.'.$name;
-										$image 	= $name.'_'.$action.'.'.$type;
-										$alt 	= $name.'&nbsp;'.$action;
-										$name	= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U').'_'.ComponentbuilderHelper::safeString($action,'U');
-									break;
-								}
-							}
-							else
-							{
-								$viewName 	= $name;
-								$alt 		= $name;
-								$url 		= 'index.php?option=com_componentbuilder&view='.$name;
-								$image 		= $name.'.'.$type;
-								$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U');
-								$hover		= false;
-							}
+						}
+						else
+						{
+							$viewName 	= $name;
+							$alt 		= $name;
+							$url 		= 'index.php?option=com_componentbuilder&view='.$name;
+							$image 		= $name.'.'.$type;
+							$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U');
+							$hover		= false;
+						}
 					}
 					else
 					{
@@ -277,7 +293,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 							// check access
 							if($user->authorise($accessAdd, 'com_componentbuilder') && $user->authorise($accessTo, 'com_componentbuilder') && $dashboard_add)
 							{
-								$icons[$group][$i]              = new StdClass;
+								$icons[$group][$i]			= new StdClass;
 								$icons[$group][$i]->url 	= $url;
 								$icons[$group][$i]->name 	= $name;
 								$icons[$group][$i]->image 	= $image;
@@ -289,7 +305,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 							// check access
 							if($user->authorise($accessTo, 'com_componentbuilder') && $dashboard_list)
 							{
-								$icons[$group][$i]              = new StdClass;
+								$icons[$group][$i]			= new StdClass;
 								$icons[$group][$i]->url 	= $url;
 								$icons[$group][$i]->name 	= $name;
 								$icons[$group][$i]->image 	= $image;
@@ -301,7 +317,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 							// check access
 							if($user->authorise($accessAdd, 'com_componentbuilder') && $dashboard_add)
 							{
-								$icons[$group][$i]              = new StdClass;
+								$icons[$group][$i]			= new StdClass;
 								$icons[$group][$i]->url 	= $url;
 								$icons[$group][$i]->name 	= $name;
 								$icons[$group][$i]->image 	= $image;
@@ -310,7 +326,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 						}
 						else
 						{
-							$icons[$group][$i]              = new StdClass;
+							$icons[$group][$i]			= new StdClass;
 							$icons[$group][$i]->url 	= $url;
 							$icons[$group][$i]->name 	= $name;
 							$icons[$group][$i]->image 	= $image;
@@ -319,7 +335,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 					}
 					else
 					{
-						$icons[$group][$i]              = new StdClass;
+						$icons[$group][$i]			= new StdClass;
 						$icons[$group][$i]->url 	= $url;
 						$icons[$group][$i]->name 	= $name;
 						$icons[$group][$i]->image 	= $image;

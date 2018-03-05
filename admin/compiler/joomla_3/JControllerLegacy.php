@@ -88,18 +88,22 @@ class ###Component###Controller extends JControllerLegacy
 
 	protected function getViewRelation($view)
 	{
+		// check the we have a value
 		if (###Component###Helper::checkString($view))
 		{
+			// the view relationships
 			$views = array(###VIEWARRAY###
 					);
 			// check if this is a list view
-			if (in_array($view,$views))
+			if (in_array($view, $views))
 			{
+				// this is a list view
 				return array('edit' => false, 'view' => array_search($view,$views), 'views' => $view);
 			}
 			// check if it is an edit view
-			elseif (array_key_exists($view,$views))
+			elseif (array_key_exists($view, $views))
 			{
+				// this is a edit view
 				return array('edit' => true, 'view' => $view, 'views' => $views[$view]);
 			}
 		}

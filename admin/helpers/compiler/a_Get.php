@@ -3713,7 +3713,9 @@ class Get
 						// set key
 						$key = '[EXTERNA'.'LCODE='.$target.']';
 						// set the notice
+						$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
 						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', $key), 'Warning');
+						$this->app->enqueueMessage('<hr />', 'Warning');
 						// remove the placeholder
 						$bucket[$key] = '';
 					}
@@ -3765,7 +3767,9 @@ class Get
 						// update local hash
 						$this->db->updateObject('#__componentbuilder_external_code', $object, 'target');
 						// give notice of the change
+						$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
 						$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been <b>changed</b> since the last compilation, please investigate to insure the changes are safe!', $key), 'Warning');
+						$this->app->enqueueMessage('<hr />', 'Warning');
 					}
 				}
 				else
@@ -3777,13 +3781,17 @@ class Get
 					// insert local hash
 					$this->db->insertObject('#__componentbuilder_external_code', $object);
 					// give notice the first time this is added
+					$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Notice</h3>'), 'Notice');
 					$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been added for the <b>first time</b>, please investigate to insure the correct code/string was used!', $key), 'Notice');
+					$this->app->enqueueMessage('<hr />', 'Notice');
 				}
 			}
 			else
 			{
 				// set notice that we could not get a valid string from the target
+				$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
 				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> returned an invalid string!', $key), 'Warning');
+				$this->app->enqueueMessage('<hr />', 'Warning');
 			}
 		}
 		// add to local bucket

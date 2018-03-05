@@ -12356,69 +12356,80 @@ class Interpretation extends Fields
 				$nameUpper = ComponentbuilderHelper::safeString($menu['name_code'], 'U');
 				if (isset($menu['dashboard_list']) && $menu['dashboard_list'] == 1 && $view['adminview'] == $menu['before'])
 				{
-					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
+					$type = ComponentbuilderHelper::imageInfo('images/' . $menu['icon']);
+					if ($type)
 					{
-						// TODO must look at adding custom links to icons aswell
-						return '';
+						// icon builder loader
+						$this->iconBuilder[$type .".". $nameList] = 'images/' . $menu['icon'];
 					}
 					else
 					{
-						$type = ComponentbuilderHelper::imageInfo('images/' . $menu['icon']);
-						if ($type)
-						{
-							$type = $type . ".";
-							// icon builder loader
-							$this->iconBuilder[$type . $nameList] = 'images/' . $menu['icon'];
-						}
-						else
-						{
-							$type = 'png.';
-						}
-						// build lang
-						$langName = $menu['name'] . '<br /><br />';
-						$langKey = $this->langPrefix . '_DASHBOARD_' . $nameUpper;
-						// add to lang
-						$this->langContent[$this->lang][$langKey] = $langName;
+						$type = 'png';
+					}
+					// build lang
+					$langName = $menu['name'] . '<br /><br />';
+					$langKey = $this->langPrefix . '_DASHBOARD_' . $nameUpper;
+					// add to lang
+					$this->langContent[$this->lang][$langKey] = $langName;
+					
+					// if this is a link build the icon values with pipe
+					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
+					{												
 						// set icon
 						if ($counter == 0)
 						{
 							$counter++;
-							$icon .= "'" . $type . $nameList . "'";
+							$icon .= "'".$type."||".$nameList."||".$menu['link']."'";
 						}
 						else
 						{
 							$counter++;
-							$icon .= ", '" . $type . $nameList . "'";
+							$icon .= ", '".$type."||".$nameList."||".$menu['link']."'";
+						}
+					}
+					else
+					{						
+						// set icon
+						if ($counter == 0)
+						{
+							$counter++;
+							$icon .= "'" . $type .".". $nameList . "'";
+						}
+						else
+						{
+							$counter++;
+							$icon .= ", '" . $type .".". $nameList . "'";
 						}
 					}
 				}
 				elseif (isset($menu['dashboard_list']) && $menu['dashboard_list'] == 1 && empty($menu['before']))
 				{
-					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
+					$type = ComponentbuilderHelper::imageInfo('images/' . $menu['icon']);
+					if ($type)
 					{
-						// TODO must look at adding custom links to icons aswell
-						return '';
+						// icon builder loader
+						$this->iconBuilder[$type .".". $nameList] = 'images/' . $menu['icon'];
 					}
 					else
 					{
-						$type = ComponentbuilderHelper::imageInfo('images/' . $menu['icon']);
-						if ($type)
-						{
-							$type = $type . ".";
-							// icon builder loader
-							$this->iconBuilder[$type . $nameList] = 'images/' . $menu['icon'];
-						}
-						else
-						{
-							$type = 'png.';
-						}
-						// build lang
-						$langName = $menu['name'] . '<br /><br />';
-						$langKey = $this->langPrefix . '_DASHBOARD_' . $nameUpper;
-						// add to lang
-						$this->langContent[$this->lang][$langKey] = $langName;
+						$type = 'png';
+					}
+					// build lang
+					$langName = $menu['name'] . '<br /><br />';
+					$langKey = $this->langPrefix . '_DASHBOARD_' . $nameUpper;
+					// add to lang
+					$this->langContent[$this->lang][$langKey] = $langName;
+					
+					// if this is a link build the icon values with pipe
+					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
+					{
 						// set icon
-						$this->lastCustomDashboardIcon[$nr] = ", '" . $type . $nameList . "'";
+						$this->lastCustomDashboardIcon[$nr] = ", '".$type."||".$nameList."||".$menu['link']."'";
+					}
+					else
+					{
+						// set icon
+						$this->lastCustomDashboardIcon[$nr] = ", '" . $type .".". $nameList . "'";
 					}
 				}
 			}
