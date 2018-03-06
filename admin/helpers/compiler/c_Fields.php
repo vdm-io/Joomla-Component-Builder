@@ -272,11 +272,18 @@ class Fields extends Structure
 	public $basicEncryptionBuilder = array();
 
 	/**
-	 * Advnaced Encryption Builder
+	 * WHMCS Encryption Builder
 	 * 
 	 * @var    array
 	 */
-	public $advancedEncryptionBuilder = array();
+	public $whmcsEncryptionBuilder = array();
+
+	/**
+	 * Medium Encryption Builder
+	 * 
+	 * @var    array
+	 */
+	public $mediumEncryptionBuilder = array();
 
 	/**
 	 * Get Items Method List String Fix Builder
@@ -1330,7 +1337,7 @@ class Fields extends Structure
 	 */
 	public function buildSiteFieldData($view, $field, $set, $type)
 	{
-		$decode = array('json', 'base64', 'basic_encryption', 'advance_encryption');
+		$decode = array('json', 'base64', 'basic_encryption', 'whmcs_encryption', 'medium_encryption');
 		$textareas = array('textarea', 'editor');
 		if (isset($this->siteFields[$view][$field]) && ComponentbuilderHelper::checkArray($this->siteFields[$view][$field]))
 		{
@@ -2075,10 +2082,16 @@ class Fields extends Structure
 					$this->buildSiteFieldData($viewName, $name, 'basic_encryption', $typeName);
 					break;
 				case 4:
-					// ADVANCE_ENCRYPTION_VDMKEY
-					$this->advancedEncryptionBuilder[$viewName][] = $name;
+					// WHMCS_ENCRYPTION_VDMKEY
+					$this->whmcsEncryptionBuilder[$viewName][] = $name;
 					// Site settings of each field if needed
-					$this->buildSiteFieldData($viewName, $name, 'advance_encryption', $typeName);
+					$this->buildSiteFieldData($viewName, $name, 'whmcs_encryption', $typeName);
+					break;
+				case 5:
+					// MEDIUM_ENCRYPTION_LOCALFILE
+					$this->mediumEncryptionBuilder[$viewName][] = $name;
+					// Site settings of each field if needed
+					$this->buildSiteFieldData($viewName, $name, 'medium_encryption', $typeName);
 					break;
 				default:
 					// JSON_ARRAY_ENCODE

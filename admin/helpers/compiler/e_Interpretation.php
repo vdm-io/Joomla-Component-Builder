@@ -377,7 +377,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $init);
 	}
 
-	public function setVDMCryption()
+	public function setWHMCSCryption()
 	{
 		// make sure we have the correct file
 		if (isset($this->componentData->whmcs_key) && ComponentbuilderHelper::checkString($this->componentData->whmcs_key))
@@ -385,7 +385,7 @@ class Interpretation extends Fields
 			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
 			// Get the encryption object.
-			$basic = new FOFEncryptAes($basickey, 128);
+			$basic = new FOFEncryptAes($basickey);
 			if (!empty($this->componentData->whmcs_key) && $basickey && !is_numeric($this->componentData->whmcs_key) && $this->componentData->whmcs_key === base64_encode(base64_decode($this->componentData->whmcs_key, true)))
 			{
 				// basic decrypt data whmcs_key.
@@ -398,9 +398,9 @@ class Interpretation extends Fields
 				$theKey = base64_encode(serialize($key));
 				// set the script
 				$encrypt[] = "/**";
-				$encrypt[] = "* " . $this->setLine(__LINE__) . "VDM Class ";
+				$encrypt[] = "* " . $this->setLine(__LINE__) . "WHMCS Class ";
 				$encrypt[] = "**/";
-				$encrypt[] = PHP_EOL . "class VDM";
+				$encrypt[] = PHP_EOL . "class WHMCS";
 				$encrypt[] = "{";
 				$encrypt[] = "\tpublic \$_key = false;";
 				$encrypt[] = "\tpublic \$_is = false;";
@@ -570,85 +570,159 @@ class Interpretation extends Fields
 	{
 		// ###ENCRYPT_FILE###
 		$this->fileContentStatic['###ENCRYPT_FILE###'] = '';
-		if ((isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder)) || (isset($this->advancedEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder)) || $this->componentData->add_license)
+		if ((isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder)) ||
+			(isset($this->mediumEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->mediumEncryptionBuilder)) ||
+			(isset($this->whmcsEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->whmcsEncryptionBuilder)) ||
+			$this->componentData->add_license)
 		{
-			if (isset($this->advancedEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder) || $this->componentData->add_license)
+			if (isset($this->whmcsEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->whmcsEncryptionBuilder) || $this->componentData->add_license)
 			{
-				// set advanced encrypt file into place
-				$target = array('admin' => 'encrypt');
-				$done = $this->buildDynamique($target, 'encrypt');
-				// the text for the file ###VDM_ENCRYPTION_BODY###
-				$this->fileContentDynamic['encrypt']['###VDM_ENCRYPTION_BODY###'] = $this->setVDMCryption();
+				// set whmcs encrypt file into place
+				$target = array('admin' => 'whmcs');
+				$done = $this->buildDynamique($target, 'whmcs');
+				// the text for the file ###WHMCS_ENCRYPTION_BODY###
+				$this->fileContentDynamic['whmcs']['###WHMCS_ENCRYPTION_BODY###'] = $this->setWHMCSCryption();
 				// ###ENCRYPT_FILE###
-				$this->fileContentStatic['###ENCRYPT_FILE###'] = PHP_EOL . "\t\t\t<filename>vdm.php</filename>";
+				$this->fileContentStatic['###WHMCS_ENCRYPT_FILE###'] = PHP_EOL . "\t\t\t<filename>whmcs.php</filename>";
 			}
 			// get component name
 			$component = $this->fileContentStatic['###component###'];
 			// set the getCryptKey function to the helper class
 			$function = array();
-			if (isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder))
+			// start building the getCryptKey function/class method
+			$function[] = PHP_EOL . PHP_EOL . "\t/**";
+			$function[] = "\t *	Get The Encryption Keys";
+			$function[] = "\t *";
+			$function[] = "\t *	@param  string        \$type     The type of key";
+			$function[] = "\t *	@param  string/bool   \$default  The return value if no key was found";
+			$function[] = "\t *";
+			$function[] = "\t *	@return  string   On success";
+			$function[] = "\t *";
+			$function[] = "\t **/";
+			$function[] = "\tpublic static function getCryptKey(\$type, \$default = false)";
+			$function[] = "\t{";
+			$function[] = "\t\t//" . $this->setLine(__LINE__) . " Get the global params";
+			$function[] = "\t\t\$params = JComponentHelper::getParams('com_" . $component . "', true);";
+			// add the basic option
+			if (isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder))
 			{
-				$function[] = PHP_EOL . PHP_EOL . "\tpublic static function getCryptKey(\$type, \$default = null)";
-				$function[] = "\t{";
-				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Get the global params";
-				$function[] = "\t\t\$params = JComponentHelper::getParams('com_" . $component . "', true);";
-				$function[] = "\t\tif ('advanced' === \$type)";
-				$function[] = "\t\t{";
-				$function[] = "\t\t\t\$advanced_key = \$params->get('advanced_key', \$default);";
-				$function[] = "\t\t\tif (\$advanced_key)";
-				$function[] = "\t\t\t{";
-				$function[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " load the file";
-				$function[] = "\t\t\t\tJLoader::import( 'vdm', JPATH_COMPONENT_ADMINISTRATOR);";
-				$function[] = PHP_EOL . "\t\t\t\t\$the = new VDM(\$advanced_key);";
-				$function[] = PHP_EOL . "\t\t\t\treturn \$the->_key;";
-				$function[] = "\t\t\t}";
-				$function[] = "\t\t}";
-				$function[] = "\t\telseif ('basic' === \$type)";
-				$function[] = "\t\t{";
-				$function[] = "\t\t\t\$basic_key = \$params->get('basic_key', \$default);";
-				$function[] = "\t\t\tif (\$basic_key)";
-				$function[] = "\t\t\t{";
-				$function[] = "\t\t\t\treturn \$basic_key;";
-				$function[] = "\t\t\t}";
-				$function[] = "\t\t}";
-				$function[] = "\t\treturn false;";
-				$function[] = "\t}";
-			}
-			elseif (isset($this->advancedEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder))
-			{
-				$function[] = PHP_EOL . PHP_EOL . "\tpublic static function getCryptKey(\$type, \$default = null)";
-				$function[] = "\t{";
-				$function[] = "\t\tif ('advanced' === \$type)";
-				$function[] = "\t\t{";
-				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Get the global params";
-				$function[] = "\t\t\t\$params = JComponentHelper::getParams('com_" . $component . "', true);";
-				$function[] = "\t\t\t\$advanced_key = \$params->get('advanced_key', \$default);";
-				$function[] = "\t\t\tif (\$advanced_key)";
-				$function[] = "\t\t\t{";
-				$function[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " load the file";
-				$function[] = "\t\t\t\tJLoader::import( 'vdm', JPATH_COMPONENT_ADMINISTRATOR);";
-				$function[] = PHP_EOL . "\t\t\t\t\$the = new VDM(\$advanced_key);";
-				$function[] = PHP_EOL . "\t\t\t\treturn \$the->_key;";
-				$function[] = "\t\t\t}";
-				$function[] = "\t\t}";
-				$function[] = "\t\treturn false;";
-				$function[] = "\t}";
-			}
-			elseif (isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder))
-			{
-				$function[] = PHP_EOL . PHP_EOL . "\tpublic static function getCryptKey(\$type, \$default = null)";
-				$function[] = "\t{";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Basic Encryption Type";
 				$function[] = "\t\tif ('basic' === \$type)";
 				$function[] = "\t\t{";
-				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Get the global params";
-				$function[] = "\t\t\t\$params = JComponentHelper::getParams('com_" . $component . "', true);";
 				$function[] = "\t\t\t\$basic_key = \$params->get('basic_key', \$default);";
-				$function[] = "\t\t\tif (\$basic_key)";
+				$function[] = "\t\t\tif (self::checkString(\$basic_key))";
 				$function[] = "\t\t\t{";
 				$function[] = "\t\t\t\treturn \$basic_key;";
 				$function[] = "\t\t\t}";
 				$function[] = "\t\t}";
-				$function[] = "\t\treturn false;";
+			}
+			// add the medium option
+			if (isset($this->mediumEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->mediumEncryptionBuilder))
+			{
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Medium Encryption Type";
+				$function[] = "\t\tif ('medium' === \$type)";
+				$function[] = "\t\t{";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " check if medium key is already loaded.";
+				$function[] = "\t\t\tif (self::checkString(self::\$mediumCryptKey))";
+				$function[] = "\t\t\t{";
+				$function[] = "\t\t\t\treturn (self::\$mediumCryptKey !== 'none') ? trim(self::\$mediumCryptKey) : \$default;";
+				$function[] = "\t\t\t}";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " get the path to the medium encryption key.";
+				$function[] = "\t\t\t\$medium_key_path = \$params->get('medium_key_path', null);";
+				$function[] = "\t\t\tif (self::checkString(\$medium_key_path))";
+				$function[] = "\t\t\t{";
+				$function[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " load the key from the file.";
+				$function[] = "\t\t\t\tif (self::getMediumCryptKey(\$medium_key_path))";
+				$function[] = "\t\t\t\t{";
+				$function[] = "\t\t\t\t\treturn trim(self::\$mediumCryptKey);";
+				$function[] = "\t\t\t\t}";
+				$function[] = "\t\t\t}";
+				$function[] = "\t\t}";
+			}
+			// add the whmcs option
+			if (isset($this->whmcsEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->whmcsEncryptionBuilder) || $this->componentData->add_license)
+			{
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " WHMCS Encryption Type";
+				$function[] = "\t\tif ('whmcs' === \$type || 'advanced' === \$type)";
+				$function[] = "\t\t{";
+				$function[] = "\t\t\t\$key = \$params->get('advanced_key', \$default);";
+				$function[] = "\t\t\tif (self::checkString(\$key))";
+				$function[] = "\t\t\t{";
+				$function[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " load the file";
+				$function[] = "\t\t\t\tJLoader::import( 'whmcs', JPATH_COMPONENT_ADMINISTRATOR);";
+				$function[] = PHP_EOL . "\t\t\t\t\$the = new WHMCS(\$key);";
+				$function[] = PHP_EOL . "\t\t\t\treturn \$the->_key;";
+				$function[] = "\t\t\t}";
+				$function[] = "\t\t}";
+			}
+			// end the function
+			$function[] = PHP_EOL . "\t\treturn \$default;";
+			$function[] = "\t}";
+			// set the getMediumCryptKey class/method
+			if (isset($this->mediumEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->mediumEncryptionBuilder))
+			{
+				$function[] = PHP_EOL . PHP_EOL . "\t/**";
+				$function[] = "\t *	The Medium Encryption Key";
+				$function[] = "\t *";
+				$function[] = "\t *	@var  string/bool";
+				$function[] = "\t **/";
+				$function[] = "\tprotected static \$mediumCryptKey = false;";
+				$function[] = PHP_EOL . "\t/**";
+				$function[] = "\t *	Get The Medium Encryption Key";
+				$function[] = "\t *";
+				$function[] = "\t *	@param   string    \$path  The path to the medium crypt key folder";
+				$function[] = "\t *";
+				$function[] = "\t *	@return  string    On success";
+				$function[] = "\t *";
+				$function[] = "\t **/";
+				$function[] = "\tpublic static function getMediumCryptKey(\$path)";
+				$function[] = "\t{";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Prep the path a little";
+				$function[] = "\t\t\$path = '/'. trim('/', str_replace('//', '/', \$path));";
+				$function[] = "\t\t/jimport('joomla.filesystem.folder');";
+				$function[] = "\t\t///" . $this->setLine(__LINE__) . " Check if folder exist";
+				$function[] = "\t\t/if (!JFolder::exists(\$path))";
+				$function[] = "\t\t/{";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Lock key.";
+				$function[] = "\t\t\tself::\$mediumCryptKey = 'none';";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
+				$function[] = "\t\t\tJFactory::getApplication()->enqueueMessage(JText::_('" . $this->langPrefix . "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
+				$function[] = "\t\t\treturn false;";
+				$function[] = "\t\t/}";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Create FileName and set file path";
+				$function[] = "\t\t\$filePath = \$path.'/.'.md5('medium_crypt_key_file');";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Check if we already have the file set";
+				$function[] = "\t\tif ((self::\$mediumCryptKey = @file_get_contents(\$filePath)) !== FALSE)";
+				$function[] = "\t\t{";
+				$function[] = "\t\t\treturn true;";
+				$function[] = "\t\t}";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Set the key for the first time";
+				$function[] = "\t\tself::\$mediumCryptKey = self::randomkey(128);";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Open the key file";
+				$function[] = "\t\t\$fh = fopen(\$filePath, 'w');";
+				$function[] = "\t\tif (!is_resource(\$fh))";
+				$function[] = "\t\t{";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Lock key.";
+				$function[] = "\t\t\tself::\$mediumCryptKey = 'none';";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
+				$function[] = "\t\t\tJFactory::getApplication()->enqueueMessage(JText::_('" . $this->langPrefix . "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
+				$function[] = "\t\t\treturn false;";
+				$function[] = "\t\t}";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Write to the key file";
+				$function[] = "\t\tif (!fwrite(\$fh, self::\$mediumCryptKey))";
+				$function[] = "\t\t{";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Close key file.";
+				$function[] = "\t\t\tfclose(\$fh);";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Lock key.";
+				$function[] = "\t\t\tself::\$mediumCryptKey = 'none';";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
+				$function[] = "\t\t\tJFactory::getApplication()->enqueueMessage(JText::_('" . $this->langPrefix . "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
+				$function[] = "\t\t\treturn false;";
+				$function[] = "\t\t}";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Close key file.";
+				$function[] = "\t\tfclose(\$fh);";
+				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Key is set.";
+				$function[] = PHP_EOL . "\t\treturn true;";
 				$function[] = "\t}";
 			}
 			// return the help methods
@@ -1614,33 +1688,30 @@ class Interpretation extends Fields
 		{
 			if (strpos($get['selection']['select'], $field) !== false)
 			{
-				if ($array['decode'] === 'json')
+				if ('json' === $array['decode'])
 				{
 					$if = PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkJson(" . $string . "->" . $field . "))" . PHP_EOL . "\t" . $tab . "\t{";
 					// json_decode
 					$decoder = $string . "->" . $field . " = json_decode(" . $string . "->" . $field . ", true);";
-					// TODO Use the type of field to prepare it even more for use in the view
 				}
-				elseif ($array['decode'] === 'base64')
+				elseif ('base64' === $array['decode'])
 				{
 					$if = PHP_EOL . "\t" . $tab . "\tif (!empty(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ")))" . PHP_EOL . "\t" . $tab . "\t{";
 					// base64_decode
 					$decoder = $string . "->" . $field . " = base64_decode(" . $string . "->" . $field . ");";
-					// TODO Use the type of field to prepare it even more for use in the view
 				}
-				elseif ($array['decode'] === 'basic_encryption')
+				elseif (strpos($array['decode'], '_encryption') !== false)
 				{
-					$if = PHP_EOL . "\t" . $tab . "\tif (!empty(" . $string . "->" . $field . ") && \$basickey && !is_numeric(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ", true)))" . PHP_EOL . "\t" . $tab . "\t{";
-					// basic decryption
-					$decoder = $string . "->" . $field . " = rtrim(\$basic->decryptString(" . $string . "->" . $field . "), " . '"\0"' . ");";
-					$this->siteDecrypt['basic'][$code] = true;
-				}
-				elseif ($array['decode'] === 'advance_encryption')
-				{
-					$if = PHP_EOL . "\t" . $tab . "\tif (!empty(" . $string . "->" . $field . ") && \$advancedkey && !is_numeric(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ", true)))" . PHP_EOL . "\t" . $tab . "\t{";
-					// advanced decryption
-					$decoder = $string . "->" . $field . " = rtrim(\$advanced->decryptString(" . $string . "->" . $field . "), " . '"\0"' . ");";
-					$this->siteDecrypt['advanced'][$code] = true;
+					foreach ($this->cryptionTypes as $cryptionType)
+					{
+						if ($cryptionType.'_encryption' === $array['decode'])
+						{
+							$if = PHP_EOL . "\t" . $tab . "\tif (!empty(" . $string . "->" . $field . ") && \$".$cryptionType."key && !is_numeric(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ", true)))" . PHP_EOL . "\t" . $tab . "\t{";
+							// set decryption
+							$decoder = $string . "->" . $field . " = rtrim(\$".$cryptionType."->decryptString(" . $string . "->" . $field . "), " . '"\0"' . ");";
+							$this->siteDecrypt[$cryptionType][$code] = true;
+						}
+					}
 				}
 
 				// build decoder string
@@ -2093,9 +2164,12 @@ class Interpretation extends Fields
 	{
 		if (ComponentbuilderHelper::checkObject($get))
 		{
-			$this->siteDecrypt['basic'][$code] = false;
-			$this->siteDecrypt['advanced'][$code] = false;
-
+			// set the site decription switches
+			foreach ($this->cryptionTypes as $cryptionType)
+			{
+				$this->siteDecrypt[$cryptionType][$code] = false;
+			}
+			// start loadin the get Item
 			$getItem = PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get a db connection.";
 			$getItem .= PHP_EOL . "\t" . $tab . "\t\$db = JFactory::getDbo();";
 			$getItem .= PHP_EOL . PHP_EOL . $tab . "\t\t//" . $this->setLine(__LINE__) . " Create a new query object.";
@@ -2198,27 +2272,20 @@ class Interpretation extends Fields
 					$asBucket[] = $main_get['as'];
 				}
 			}
-
-			if ((isset($this->siteDecrypt['basic'][$code]) && $this->siteDecrypt['basic'][$code]) || (isset($this->siteDecrypt['advanced'][$code]) && $this->siteDecrypt['advanced'][$code]))
+			// set the scripts
+			$Component = $this->fileContentStatic['###Component###'];
+			$script = '';
+			foreach ($this->cryptionTypes as $cryptionType)
 			{
-				$Component = $this->fileContentStatic['###Component###'];
-				$script = '';
-				if (isset($this->siteDecrypt['basic'][$code]) && $this->siteDecrypt['basic'][$code])
+				if (isset($this->siteDecrypt[$cryptionType][$code]) && $this->siteDecrypt[$cryptionType][$code])
 				{
-					$script .= PHP_EOL . PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the basic encryption.";
-					$script .= PHP_EOL . "\t" . $tab . "\t\$basickey = " . $Component . "Helper::getCryptKey('basic');";
-					$script .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-					$script .= PHP_EOL . "\t" . $tab . "\t\$basic = new FOFEncryptAes(\$basickey, 128);";
+					$script .= PHP_EOL . PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the ".$cryptionType." encryption.";
+					$script .= PHP_EOL . "\t" . $tab . "\t\$".$cryptionType."key = ".$Component."Helper::getCryptKey('".$cryptionType."');";
+					$script .= PHP_EOL . "\t" . $tab . "\t//".$this->setLine(__LINE__)." Get the encryption object.";
+					$script .= PHP_EOL . "\t" . $tab . "\t\$".$cryptionType." = new FOFEncryptAes(\$".$cryptionType."key);";
 				}
-				if (isset($this->siteDecrypt['advanced'][$code]) && $this->siteDecrypt['advanced'][$code])
-				{
-					$script .= PHP_EOL . PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the advanced encryption.";
-					$script .= PHP_EOL . "\t" . $tab . "\t\$advancedkey = " . $Component . "Helper::getCryptKey('advanced');";
-					$script .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-					$script .= PHP_EOL . "\t" . $tab . "\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
-				}
-				$getItem = $script . $getItem;
 			}
+			$getItem = $script . $getItem;
 			// setup Globals
 			$getItem .= $this->setCustomViewGlobals($get->global, '$data', $asBucket, $tab);
 			// setup the custom gets that returns multipal values
@@ -2497,8 +2564,11 @@ class Interpretation extends Fields
 			{
 				foreach ($main_get->custom_get as $get)
 				{
-					$this->siteDecrypt['basic'][$code] = false;
-					$this->siteDecrypt['advanced'][$code] = false;
+					// set the site decription switch
+					foreach ($this->cryptionTypes as $cryptionType)
+					{
+						$this->siteDecrypt[$cryptionType][$code] = false;
+					}
 					// set the method defaults
 					$default = $this->setCustomViewMethodDefaults($get, $code);
 					// build custom method
@@ -2676,26 +2746,20 @@ class Interpretation extends Fields
 					$methods .= PHP_EOL . "\t\treturn false;";
 					$methods .= PHP_EOL . "\t}";
 
-					if ((isset($this->siteDecrypt['basic'][$code]) && $this->siteDecrypt['basic'][$code]) || (isset($this->siteDecrypt['advanced'][$code]) && $this->siteDecrypt['advanced'][$code]))
+					// set the script if it was found
+					$Component = $this->fileContentStatic['###Component###'];
+					$script = '';
+					foreach ($this->cryptionTypes as $cryptionType)
 					{
-						$Component = $this->fileContentStatic['###Component###'];
-						$script = '';
-						if ($this->siteDecrypt['basic'][$code])
+						if (isset($this->siteDecrypt[$cryptionType][$code]) && $this->siteDecrypt[$cryptionType][$code])
 						{
-							$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the basic encryption.";
-							$script .= PHP_EOL . "\t\t\$basickey = " . $Component . "Helper::getCryptKey('basic');";
-							$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-							$script .= PHP_EOL . "\t\t\$basic = new FOFEncryptAes(\$basickey, 128);" . PHP_EOL;
+							$script .= PHP_EOL . "\t\t//".$this->setLine(__LINE__)." Get the ".$cryptionType." encryption.";
+							$script .= PHP_EOL . "\t\t\$".$cryptionType."key = ".$Component."Helper::getCryptKey('".$cryptionType."');";
+							$script .= PHP_EOL . "\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
+							$script .= PHP_EOL . "\t\t\$".$cryptionType." = new FOFEncryptAes(\$".$cryptionType."key);".PHP_EOL;
 						}
-						if ($this->siteDecrypt['advanced'][$code])
-						{
-							$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the advanced encryption.";
-							$script .= PHP_EOL . "\t\t\$advancedkey = " . $Component . "Helper::getCryptKey('advanced');";
-							$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-							$script .= PHP_EOL . "\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);" . PHP_EOL;
-						}
-						$methods = str_replace('###CRYPT###', $script, $methods);
 					}
+					$methods = str_replace('###CRYPT###', $script, $methods);
 				}
 				// insure the crypt placeholder is removed
 				$methods = str_replace('###CRYPT###', '', $methods);
@@ -2802,9 +2866,14 @@ class Interpretation extends Fields
 	public function setCustomViewGetItems(&$get, $code)
 	{
 		$getItem = '';
-		$this->siteDecrypt['basic'][$code] = false;
-		$this->siteDecrypt['advanced'][$code] = false;
+		// set the site decrypt switch
+		foreach ($this->cryptionTypes as $cryptionType)
+		{
+			$this->siteDecrypt[$cryptionType][$code] = false;
+		}
+		// set the component name
 		$Component = $this->fileContentStatic['###Component###'];
+		// start load the get item
 		if (ComponentbuilderHelper::checkObject($get))
 		{
 			$getItem .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Insure all item fields are adapted where needed.";
@@ -2892,26 +2961,19 @@ class Interpretation extends Fields
 			}
 		}
 
-		if ($this->siteDecrypt['basic'][$code] || $this->siteDecrypt['advanced'][$code])
+		// set the script if found
+		$script = '';
+		foreach ($this->cryptionTypes as $cryptionType)
 		{
-			$script = '';
-			if ($this->siteDecrypt['basic'][$code])
+			if ($this->siteDecrypt[$cryptionType][$code])
 			{
-				$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the basic encryption.";
-				$script .= PHP_EOL . "\t\t\$basickey = " . $Component . "Helper::getCryptKey('basic');";
+				$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the ".$cryptionType." encryption.";
+				$script .= PHP_EOL . "\t\t\$".$cryptionType."key = " . $Component . "Helper::getCryptKey('".$cryptionType."');";
 				$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-				$script .= PHP_EOL . "\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
+				$script .= PHP_EOL . "\t\t\$".$cryptionType." = new FOFEncryptAes(\$".$cryptionType."key);";
 			}
-			if ($this->siteDecrypt['advanced'][$code])
-			{
-				$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the advanced encryption.";
-				$script .= PHP_EOL . "\t\t\$advancedkey = " . $Component . "Helper::getCryptKey('advanced');";
-				$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-				$script .= PHP_EOL . "\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
-			}
-			$getItem = $script . $getItem;
 		}
-		return $getItem;
+		return $script.$getItem;
 	}
 
 	public function setCustomViewDisplayMethod(&$view)
@@ -4177,37 +4239,23 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . "\t\t\t}";
 			}
 		}
+		// get the component name
+		$Component = $this->fileContentStatic['###Component###'];
 		// decryption
-		if ((isset($this->basicEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder[$view])) || (isset($this->advancedEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder[$view])))
+		foreach ($this->cryptionTypes as $cryptionType)
 		{
-			$Component = $this->fileContentStatic['###Component###'];
-			if (isset($this->basicEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder[$view]))
+			if (isset($this->{$cryptionType.'EncryptionBuilder'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType.'EncryptionBuilder'}[$view]))
 			{
-				$script .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Get the basic encryption.";
-				$script .= PHP_EOL . "\t\t\t\$basickey = " . $Component . "Helper::getCryptKey('basic');";
-				$script .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-				$script .= PHP_EOL . "\t\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
-				foreach ($this->basicEncryptionBuilder[$view] as $baseString)
+				$script .= PHP_EOL . PHP_EOL."\t\t\t//".$this->setLine(__LINE__)." Get the ".$cryptionType." encryption.";
+				$script .= PHP_EOL . "\t\t\t\$".$cryptionType."key = ".$Component."Helper::getCryptKey('".$cryptionType."');";
+				$script .= PHP_EOL . "\t\t\t//".$this->setLine(__LINE__)." Get the encryption object.";
+				$script .= PHP_EOL . "\t\t\t\$".$cryptionType." = new FOFEncryptAes(\$".$cryptionType."key);";
+				foreach ($this->{$cryptionType.'EncryptionBuilder'}[$view] as $baseString)
 				{
-					$script .= PHP_EOL . PHP_EOL . "\t\t\tif (!empty(\$item->" . $baseString . ") && \$basickey && !is_numeric(\$item->" . $baseString . ") && \$item->" . $baseString . " === base64_encode(base64_decode(\$item->" . $baseString . ", true)))";
+					$script .= PHP_EOL . PHP_EOL."\t\t\tif (!empty(\$item->".$baseString.") && \$".$cryptionType."key && !is_numeric(\$item->".$baseString.") && \$item->".$baseString." === base64_encode(base64_decode(\$item->".$baseString.", true)))";
 					$script .= PHP_EOL . "\t\t\t{";
-					$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " basic decrypt data " . $baseString . ".";
-					$script .= PHP_EOL . "\t\t\t\t\$item->" . $baseString . " = rtrim(\$basic->decryptString(\$item->" . $baseString . "), " . '"\0"' . ");";
-					$script .= PHP_EOL . "\t\t\t}";
-				}
-			}
-			if (isset($this->advancedEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder[$view]))
-			{
-				$script .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Get the advanced encryption key.";
-				$script .= PHP_EOL . "\t\t\t\$advancedkey = " . $Component . "Helper::getCryptKey('advanced');";
-				$script .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-				$script .= PHP_EOL . "\t\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
-				foreach ($this->advancedEncryptionBuilder[$view] as $baseString)
-				{
-					$script .= PHP_EOL . PHP_EOL . "\t\t\tif (!empty(\$item->" . $baseString . ") && \$advancedkey && !is_numeric(\$item->" . $baseString . ") && \$item->" . $baseString . " === base64_encode(base64_decode(\$item->" . $baseString . ", true)))";
-					$script .= PHP_EOL . "\t\t\t{";
-					$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " advanced decrypt data " . $baseString . ".";
-					$script .= PHP_EOL . "\t\t\t\t\$item->" . $baseString . " = rtrim(\$advanced->decryptString(\$item->" . $baseString . "), " . '"\0"' . ");";
+					$script .= PHP_EOL . "\t\t\t\t//".$this->setLine(__LINE__)." ".$cryptionType." decrypt data ".$baseString.".";
+					$script .= PHP_EOL . "\t\t\t\t\$item->".$baseString." = rtrim(\$".$cryptionType."->decryptString(\$item->".$baseString."), " . '"\0"' . ");";
 					$script .= PHP_EOL . "\t\t\t}";
 				}
 			}
@@ -4285,36 +4333,21 @@ class Interpretation extends Fields
 			}
 		}
 		// turn string into encrypted string
-		if ((isset($this->basicEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder[$view])) || (isset($this->advancedEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder[$view])))
+		$Component = $this->fileContentStatic['###Component###'];
+		foreach ($this->cryptionTypes as $cryptionType)
 		{
-			$Component = $this->fileContentStatic['###Component###'];
-			if (isset($this->basicEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder[$view]))
+			if (isset($this->{$cryptionType.'EncryptionBuilder'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType.'EncryptionBuilder'}[$view]))
 			{
-				$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the basic encryption key.";
-				$script .= PHP_EOL . "\t\t\$basickey = " . $Component . "Helper::getCryptKey('basic');";
+				$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the ".$cryptionType." encryption key.";
+				$script .= PHP_EOL . "\t\t\$".$cryptionType."key = " . $Component . "Helper::getCryptKey('".$cryptionType."');";
 				$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the encryption object";
-				$script .= PHP_EOL . "\t\t\$basic = new FOFEncryptAes(\$basickey, 128);";
-				foreach ($this->basicEncryptionBuilder[$view] as $baseString)
+				$script .= PHP_EOL . "\t\t\$".$cryptionType." = new FOFEncryptAes(\$".$cryptionType."key);";
+				foreach ($this->{$cryptionType.'EncryptionBuilder'}[$view] as $baseString)
 				{
 					$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Encrypt data " . $baseString . ".";
-					$script .= PHP_EOL . "\t\tif (isset(\$data['" . $baseString . "']) && \$basickey)";
+					$script .= PHP_EOL . "\t\tif (isset(\$data['" . $baseString . "']) && \$".$cryptionType."key)";
 					$script .= PHP_EOL . "\t\t{";
-					$script .= PHP_EOL . "\t\t\t\$data['" . $baseString . "'] = \$basic->encryptString(\$data['" . $baseString . "']);";
-					$script .= PHP_EOL . "\t\t}";
-				}
-			}
-			if (isset($this->advancedEncryptionBuilder[$view]) && ComponentbuilderHelper::checkArray($this->advancedEncryptionBuilder[$view]))
-			{
-				$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the advanced encryption key.";
-				$script .= PHP_EOL . "\t\t\$advancedkey = " . $Component . "Helper::getCryptKey('advanced');";
-				$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the encryption object";
-				$script .= PHP_EOL . "\t\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
-				foreach ($this->advancedEncryptionBuilder[$view] as $baseString)
-				{
-					$script .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Encrypt data " . $baseString . ".";
-					$script .= PHP_EOL . "\t\tif (isset(\$data['" . $baseString . "']) && \$advancedkey)";
-					$script .= PHP_EOL . "\t\t{";
-					$script .= PHP_EOL . "\t\t\t\$data['" . $baseString . "'] = \$advanced->encryptString(\$data['" . $baseString . "']);";
+					$script .= PHP_EOL . "\t\t\t\$data['" . $baseString . "'] = \$".$cryptionType."->encryptString(\$data['" . $baseString . "']);";
 					$script .= PHP_EOL . "\t\t}";
 				}
 			}
@@ -11593,8 +11626,10 @@ class Interpretation extends Fields
 		// add the fix if this view has the need for it
 		$fix = '';
 		// encryption switches
-		$basicCrypt = false;
-		$advancedCrypt = false;
+		foreach ($this->cryptionTypes as $cryptionType)
+		{
+			${$cryptionType.'Crypt'} = false;
+		}
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$view]))
@@ -11662,9 +11697,15 @@ class Interpretation extends Fields
 						$suffix_decode = '';
 						break;
 					case 4:
-						// ADVANCE_ENCRYPTION_VDMKEY
-						$decode = '$advanced->decryptString';
-						$advancedCrypt = true;
+						// WHMCS_ENCRYPTION_WHMCS
+						$decode = '$whmcs->decryptString';
+						$whmcsCrypt = true;
+						$suffix_decode = '';
+						break;
+					case 5:
+						// MEDIUM_ENCRYPTION_LOCALFILE
+						$decode = '$medium->decryptString';
+						$mediumCrypt = true;
 						$suffix_decode = '';
 						break;
 					default:
@@ -11740,13 +11781,19 @@ class Interpretation extends Fields
 							$fix .= PHP_EOL . "\t" . $tab . "\t\t\tif (\$basickey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
 							$fix .= PHP_EOL . "\t" . $tab . "\t\t\t{";
 						}
-						if ($item['method'] == 4)
+						elseif ($item['method'] == 5)
 						{
 							$taber = "\t";
-							$fix .= PHP_EOL . "\t" . $tab . "\t\t\tif (\$advancedkey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
+							$fix .= PHP_EOL . "\t" . $tab . "\t\t\tif (\$mediumkey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
 							$fix .= PHP_EOL . "\t" . $tab . "\t\t\t{";
 						}
-						if ($item['method'] == 3 || $item['method'] == 4)
+						elseif ($item['method'] == 4)
+						{
+							$taber = "\t";
+							$fix .= PHP_EOL . "\t" . $tab . "\t\t\tif (\$whmcskey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
+							$fix .= PHP_EOL . "\t" . $tab . "\t\t\t{";
+						}
+						if ($item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5)
 						{
 							$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\t//" . $this->setLine(__LINE__) . " decrypt " . $item['name'];
 						}
@@ -11853,27 +11900,20 @@ class Interpretation extends Fields
 		// add custom php to getitems method
 		$fix .= $this->getCustomScriptBuilder('php_getitems', $view, PHP_EOL . PHP_EOL . $tab);
 
-		if ($basicCrypt)
+		// load the encryption object if needed
+		$script = '';
+		foreach ($this->cryptionTypes as $cryptionType)
 		{
-			$script = PHP_EOL . PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the basic encryption key.";
-			$script .= PHP_EOL . "\t" . $tab . "\t\$basickey = " . $Component . "Helper::getCryptKey('basic');";
-			$script .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-			$script .= PHP_EOL . "\t" . $tab . "\t\$basic = new FOFEncryptAes(\$basickey, 128);";
-			// add the encryption script
-			$fix = $script . $fix;
+			if (${$cryptionType.'Crypt'})
+			{
+				$script .= PHP_EOL . PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the ".$cryptionType." encryption key.";
+				$script .= PHP_EOL . "\t" . $tab . "\t\$".$cryptionType."key = " . $Component . "Helper::getCryptKey('".$cryptionType."');";
+				$script .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
+				$script .= PHP_EOL . "\t" . $tab . "\t\$".$cryptionType." = new FOFEncryptAes(\$".$cryptionType."key);";
+			}
 		}
-
-		if ($advancedCrypt)
-		{
-			$script = PHP_EOL . PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the advanced encryption key.";
-			$script .= PHP_EOL . "\t" . $tab . "\t\$advancedkey = " . $Component . "Helper::getCryptKey('advanced');";
-			$script .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-			$script .= PHP_EOL . "\t" . $tab . "\t\$advanced = new FOFEncryptAes(\$advancedkey, 256);";
-			// add the encryption script
-			$fix = $script . $fix;
-		}
-
-		return $fix;
+		// add the encryption script
+		return $script . $fix;
 	}
 
 	public function setSelectionTranslationFix($views, $Component, $tab = '')
@@ -12726,6 +12766,18 @@ class Interpretation extends Fields
 						$nameList = ComponentbuilderHelper::safeString($menu['name']);
 						$nameUpper = ComponentbuilderHelper::safeString($menu['name'], 'U');
 						$this->langContent['adminsys'][$lang . '_' . $nameUpper] = $menu['name'];
+						// sanitize url
+						if (strpos($menu['link'], 'http') === false)
+						{
+							$menu['link'] = str_replace('/administrator/index.php?', '', $menu['link']);
+							$menu['link'] = str_replace('administrator/index.php?', '', $menu['link']);
+							// check if the index is still there
+							if (strpos($menu['link'], 'index.php?') !== false)
+							{
+								$menu['link'] = str_replace('/index.php?', '', $menu['link']);
+								$menu['link'] = str_replace('index.php?', '', $menu['link']);
+							}
+						}
 						// urlencode
 						$menu['link'] = htmlspecialchars($menu['link'], ENT_XML1, 'UTF-8');
 						// add custom menu
@@ -12747,6 +12799,18 @@ class Interpretation extends Fields
 						$nameList = ComponentbuilderHelper::safeString($menu['name']);
 						$nameUpper = ComponentbuilderHelper::safeString($menu['name'], 'U');
 						$this->langContent['adminsys'][$lang . '_' . $nameUpper] = $menu['name'];
+						// sanitize url
+						if (strpos($menu['link'], 'http') === false)
+						{
+							$menu['link'] = str_replace('/administrator/index.php?', '', $menu['link']);
+							$menu['link'] = str_replace('administrator/index.php?', '', $menu['link']);
+							// check if the index is still there
+							if (strpos($menu['link'], 'index.php?') !== false)
+							{
+								$menu['link'] = str_replace('/index.php?', '', $menu['link']);
+								$menu['link'] = str_replace('index.php?', '', $menu['link']);
+							}
+						}
 						// urlencode
 						$menu['link'] = htmlspecialchars($menu['link'], ENT_XML1, 'UTF-8');
 						// add custom menu
@@ -14280,25 +14344,70 @@ function vdm_dkim() {
 	 */
 	public function setEncryptionConfigFieldsets($lang)
 	{
+		// enable the loading of dynamic field sets
+		$dynamicAddFields = array();
 		// Add encryption if needed
-		if ((isset($this->basicEncryption) && $this->basicEncryption) || (isset($this->advancedEncryption) && $this->advancedEncryption))
+		if ((isset($this->basicEncryption) && $this->basicEncryption) ||
+			(isset($this->whmcsEncryption) && $this->whmcsEncryption) ||
+			(isset($this->mediumEncryption) && $this->mediumEncryption) ||
+			$this->componentData->add_license ||
+			(isset($this->configFieldSetsCustomField['Encryption Settings']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Encryption Settings'])))
 		{
+			$dynamicAddFields[] = "Encryption Settings";
 			// start building field set for encryption functions
 			$this->configFieldSets[] = "\t<fieldset";
 			$this->configFieldSets[] = "\t\t" . 'name="encryption_config"';
 			$this->configFieldSets[] = "\t\t" . 'label="' . $lang . '_ENCRYPTION_LABEL"';
 			$this->configFieldSets[] = "\t\t" . 'description="' . $lang . '_ENCRYPTION_DESC">';
+
 			// set tab lang
-			$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "Encryption Settings";
-			$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The encryption key for the field encryption is set here.";
+			if (((isset($this->basicEncryption) && $this->basicEncryption) ||
+				(isset($this->mediumEncryption) && $this->mediumEncryption) ||
+				(isset($this->whmcsEncryption) && $this->whmcsEncryption)) &&
+				$this->componentData->add_license && $this->componentData->license_type == 3)
+			{
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "License & Encryption Settings";
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The license & encryption keys are set here.";
+				// add the next dynamic option
+				$dynamicAddFields[] = "License & Encryption Settings";
+			}
+			elseif (((isset($this->basicEncryption) && $this->basicEncryption) ||
+				(isset($this->mediumEncryption) && $this->mediumEncryption) ||
+				(isset($this->whmcsEncryption) && $this->whmcsEncryption)) &&
+				$this->componentData->add_license && $this->componentData->license_type == 2)
+			{
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "Update & Encryption Settings";
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The update & encryption keys are set here.";
+				// add the next dynamic option
+				$dynamicAddFields[] = "Update & Encryption Settings";
+			}
+			elseif ($this->componentData->add_license && $this->componentData->license_type == 3)
+			{
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "License Settings";
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The license key is set here.";
+				// add the next dynamic option
+				$dynamicAddFields[] = "License Settings";
+			}
+			elseif ($this->componentData->add_license && $this->componentData->license_type == 2)
+			{
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "Update Settings";
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The update key is set here.";
+				// add the next dynamic option
+				$dynamicAddFields[] = "Update Settings";
+			}
+			else
+			{
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "Encryption Settings";
+				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The encryption key for the field encryption is set here.";
+			}
 
 			if (isset($this->basicEncryption) && $this->basicEncryption)
 			{
 				// set field lang
-				$this->langContent[$this->lang][$lang . '_BASIC_KEY_LABEL'] = "Basic Key <small>(basic encryption)</small>";
+				$this->langContent[$this->lang][$lang . '_BASIC_KEY_LABEL'] = "Basic Key";
 				$this->langContent[$this->lang][$lang . '_BASIC_KEY_DESC'] = "Set the basic local key here.";
 				$this->langContent[$this->lang][$lang . '_BASIC_KEY_NOTE_LABEL'] = "Basic Encryption";
-				$this->langContent[$this->lang][$lang . '_BASIC_KEY_NOTE_DESC'] = "When using the basic encryption please use a 32 character passphrase.<br />Never change this passphrase once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+				$this->langContent[$this->lang][$lang . '_BASIC_KEY_NOTE_DESC'] = "When using the basic encryption please use set a 32 character passphrase.<br />Never change this passphrase once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
 				// set the field
 				$this->configFieldSets[] = "\t\t" . '<field type="note" name="basic_key_note" class="alert alert-info" label="' . $lang . '_BASIC_KEY_NOTE_LABEL" description="' . $lang . '_BASIC_KEY_NOTE_DESC"  />';
 				$this->configFieldSets[] = "\t\t" . '<field name="basic_key"';
@@ -14308,30 +14417,87 @@ function vdm_dkim() {
 				$this->configFieldSets[] = "\t\t\t" . 'size="60"';
 				$this->configFieldSets[] = "\t\t\t" . 'default=""';
 				$this->configFieldSets[] = "\t\t/>";
-			}
-
-			if (isset($this->advancedEncryption) && $this->advancedEncryption)
+			}	
+			if (isset($this->mediumEncryption) && $this->mediumEncryption)
 			{
 				// set field lang
-				$this->langContent[$this->lang][$lang . '_VDM_KEY_LABEL'] = "Advanced Key <small>(advanced encryption)</small>";
-				$this->langContent[$this->lang][$lang . '_VDM_KEY_DESC'] = "Add the advanced key here.";
-				$this->langContent[$this->lang][$lang . '_VDM_KEY_NOTE_LABEL'] = "Advanced Encryption";
-				$this->langContent[$this->lang][$lang . '_VDM_KEY_NOTE_DESC'] = "When using the advanced encryption you need to get an advanced key from " . $this->componentData->companyname . ".<br />Never change this advanced key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_LABEL'] = "Medium Key (Path)";
+				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_DESC'] = "Set the full path to where the key file must be stored. Make sure it is behind the root folder of your website, so that it is not public accessible.";
+				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_NOTE_LABEL'] = "Medium Encryption";
+				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_NOTE_DESC'] = "When using the medium encryption option, the system generates its own key and stores it in a file at the folder/path you set here.<br />Never change this key once it is set, or remove the key file! <b>DATA WILL GET CORRUPTED IF YOU DO!</b> Also make sure the full path to where the the key file should be stored, is behind the root folder of your website/system, so that it is not public accessible. Making a backup of this key file over a <b>secure connection</b> is recommended!";
 				// set the field
-				$this->configFieldSets[] = "\t\t" . '<field type="note" name="vdm_key_note" class="alert alert-info" label="' . $lang . '_VDM_KEY_NOTE_LABEL" description="' . $lang . '_VDM_KEY_NOTE_DESC"  />';
-				$this->configFieldSets[] = "\t\t" . '<field name="advanced_key"';
+				$this->configFieldSets[] = "\t\t" . '<field type="note" name="medium_key_note" class="alert alert-info" label="' . $lang . '_MEDIUM_KEY_NOTE_LABEL" description="' . $lang . '_MEDIUM_KEY_NOTE_DESC" />';
+				$this->configFieldSets[] = "\t\t" . '<field name="medium_key_path"';
 				$this->configFieldSets[] = "\t\t\t" . 'type="text"';
-				$this->configFieldSets[] = "\t\t\t" . 'label="' . $lang . '_VDM_KEY_LABEL"';
-				$this->configFieldSets[] = "\t\t\t" . 'description="' . $lang . '_VDM_KEY_DESC"';
+				$this->configFieldSets[] = "\t\t\t" . 'label="' . $lang . '_MEDIUM_KEY_LABEL"';
+				$this->configFieldSets[] = "\t\t\t" . 'description="' . $lang . '_MEDIUM_KEY_DESC"';
+				$this->configFieldSets[] = "\t\t\t" . 'size="160"';
+				$this->configFieldSets[] = "\t\t\t" . 'filter="PATH"';
+				$this->configFieldSets[] = "\t\t\t" . 'hint="/home/user/hiddenfolder123/"';
+				$this->configFieldSets[] = "\t\t\t" . 'default=""';
+				$this->configFieldSets[] = "\t\t/>";
+				// set some error message if the path does not exist
+				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_PATH_ERROR'] = "Medium key path (for encryption of various fields) does not exist, or is not writable. Please check the path and update it in the global option of this component.";
+			}
+			if (isset($this->whmcsEncryption) && $this->whmcsEncryption || $this->componentData->add_license)
+			{
+				// set field lang label and description
+				if ($this->componentData->add_license && $this->componentData->license_type == 3)
+				{
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = "License Key";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the license key you recieved from " . $this->componentData->companyname . " here.";
+				}
+				elseif ($this->componentData->add_license && $this->componentData->license_type == 2)
+				{
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = "Update Key";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the update key you recieved from " . $this->componentData->companyname . " here.";
+				}
+				else
+				{
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = "WHMCS Key";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the key you recieved from " . $this->componentData->companyname . " here.";
+				}
+				// ajust the notice based on license
+				if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
+				{
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Field Encryption (whmcs)";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "When using this (whmcs) encryption you need to get a key from " . $this->componentData->companyname . ".<br />Never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+				}
+				else
+				{
+					if ($this->componentData->license_type == 3)
+					{
+						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your License Key";
+					}
+					elseif ($this->componentData->license_type == 2)
+					{
+						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your Update Key";
+					}
+					else
+					{
+						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your Key (whmcs)";
+					}
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "You need to get this key from " . $this->componentData->companyname . ".";
+				}
+				// set the fields
+				$this->configFieldSets[] = "\t\t" . '<field type="note" name="whmcs_key_note" class="alert alert-info" label="' . $lang . '_WHMCS_KEY_NOTE_LABEL" description="' . $lang . '_WHMCS_KEY_NOTE_DESC"  />';
+				$this->configFieldSets[] = "\t\t" . '<field name="advanced_key"'; // We are going to change this field to whmcs_key (TODO)
+				$this->configFieldSets[] = "\t\t\t" . 'type="text"';
+				$this->configFieldSets[] = "\t\t\t" . 'label="' . $lang . '_WHMCS_KEY_LABEL"';
+				$this->configFieldSets[] = "\t\t\t" . 'description="' . $lang . '_WHMCS_KEY_DESC"';
 				$this->configFieldSets[] = "\t\t\t" . 'size="60"';
 				$this->configFieldSets[] = "\t\t\t" . 'default=""';
 				$this->configFieldSets[] = "\t\t/>";
 			}
-			// add custom Encryption Settings fields
-			if (isset($this->configFieldSetsCustomField['Encryption Settings']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Encryption Settings']))
+			// load the dynamic field sets
+			foreach ($dynamicAddFields as $dynamicAddField)
 			{
-				$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField['Encryption Settings']);
-				unset($this->configFieldSetsCustomField['Encryption Settings']);
+				// add custom Encryption Settings fields
+				if (isset($this->configFieldSetsCustomField[$dynamicAddField]) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField[$dynamicAddField]))
+				{
+					$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField[$dynamicAddField]);
+					unset($this->configFieldSetsCustomField[$dynamicAddField]);
+				}
 			}
 			// close that fieldset
 			$this->configFieldSets[] = "\t</fieldset>";

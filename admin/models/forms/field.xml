@@ -327,8 +327,9 @@
                         <option value="0">COM_COMPONENTBUILDER_FIELD_DEFAULT</option>
                         <option value="1">COM_COMPONENTBUILDER_FIELD_JSON</option>
                         <option value="2">COM_COMPONENTBUILDER_FIELD_BASESIXTY_FOUR</option>
-                        <option value="3">COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALKEY</option>
-                        <option value="4">COM_COMPONENTBUILDER_FIELD_ADVANCE_ENCRYPTION_WHMCSKEY</option>
+                        <option value="3">COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALDBKEY</option>
+                        <option value="5">COM_COMPONENTBUILDER_FIELD_MEDIUM_ENCRYPTION_LOCALFILEKEY</option>
+                        <option value="4">COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION</option>
                 </field>
                 <!-- Javascript_view_footer Field. Type: Textarea. (joomla)-->
                 <field type="textarea"

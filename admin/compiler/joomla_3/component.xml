@@ -71,7 +71,7 @@
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
-			<filename>controller.php</filename>###ENCRYPT_FILE###
+			<filename>controller.php</filename>###WHMCS_ENCRYPT_FILE###
 			<filename>index.html</filename>
 			<filename>###component###.php</filename>###EXSTRA_ADMIN_FILES###
 			<folder>assets</folder>

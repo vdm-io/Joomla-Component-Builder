@@ -207,7 +207,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
 			// Get the encryption object.
-			$basic = new FOFEncryptAes($basickey, 128);
+			$basic = new FOFEncryptAes($basickey);
 
 			if (!empty($item->whmcs_key) && $basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 			{
@@ -1346,7 +1346,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		// Get the basic encryption key.
 		$basickey = ComponentbuilderHelper::getCryptKey('basic');
 		// Get the encryption object
-		$basic = new FOFEncryptAes($basickey, 128);
+		$basic = new FOFEncryptAes($basickey);
 
 		// Encrypt data whmcs_key.
 		if (isset($data['whmcs_key']) && $basickey)

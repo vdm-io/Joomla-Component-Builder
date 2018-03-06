@@ -98,7 +98,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
 			// Get the encryption object.
-			$basic = new FOFEncryptAes($basickey, 128);
+			$basic = new FOFEncryptAes($basickey);
 
 			if (!empty($item->path) && $basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
 			{
@@ -170,7 +170,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWamlinked_components()
+	public function getWanlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -954,7 +954,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 		// Get the basic encryption key.
 		$basickey = ComponentbuilderHelper::getCryptKey('basic');
 		// Get the encryption object
-		$basic = new FOFEncryptAes($basickey, 128);
+		$basic = new FOFEncryptAes($basickey);
 
 		// Encrypt data path.
 		if (isset($data['path']) && $basickey)

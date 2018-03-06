@@ -3898,18 +3898,29 @@ abstract class ComponentbuilderHelper
 		return implode($key);
 	}
 
-	public static function getCryptKey($type, $default = null)
+	/**
+	 *	Get The Encryption Keys
+	 *
+	 *	@param  string        $type     The type of key
+	 *	@param  string/bool   $default  The return value if no key was found
+	 *
+	 *	@return  string   On success
+	 *
+	 **/
+	public static function getCryptKey($type, $default = false)
 	{
+		// Get the global params
+		$params = JComponentHelper::getParams('com_componentbuilder', true);
+		// Basic Encryption Type
 		if ('basic' === $type)
 		{
-			// Get the global params
-			$params = JComponentHelper::getParams('com_componentbuilder', true);
 			$basic_key = $params->get('basic_key', $default);
-			if ($basic_key)
+			if (self::checkString($basic_key))
 			{
 				return $basic_key;
 			}
 		}
-		return false;
+
+		return $default;
 	}
 }

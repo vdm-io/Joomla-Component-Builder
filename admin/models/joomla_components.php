@@ -1707,7 +1707,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// Get the basic encryption key.
 				$basickey = ComponentbuilderHelper::getCryptKey('basic');
 				// Get the encryption object.
-				$basic = new FOFEncryptAes($basickey, 128);
+				$basic = new FOFEncryptAes($basickey);
 
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))

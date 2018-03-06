@@ -29,4 +29,4 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-###VDM_ENCRYPTION_BODY###
+###WHMCS_ENCRYPTION_BODY###

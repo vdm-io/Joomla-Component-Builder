@@ -31,6 +31,7 @@ jform_vvvvwatwai_required = false;
 jform_vvvvwauwaj_required = false;
 jform_vvvvwavwak_required = false;
 jform_vvvvwaxwal_required = false;
+jform_vvvvwazwam_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -436,10 +437,27 @@ function vvvvwaz(protocol_vvvvwaz,authentication_vvvvwaz)
 	if (protocol && authentication)
 	{
 		jQuery('#jform_private_key').closest('.control-group').show();
+		if (jform_vvvvwazwam_required)
+		{
+			updateFieldRequired('private_key',0);
+			jQuery('#jform_private_key').prop('required','required');
+			jQuery('#jform_private_key').attr('aria-required',true);
+			jQuery('#jform_private_key').addClass('required');
+			jform_vvvvwazwam_required = false;
+		}
+
 	}
 	else
 	{
 		jQuery('#jform_private_key').closest('.control-group').hide();
+		if (!jform_vvvvwazwam_required)
+		{
+			updateFieldRequired('private_key',1);
+			jQuery('#jform_private_key').removeAttr('required');
+			jQuery('#jform_private_key').removeAttr('aria-required');
+			jQuery('#jform_private_key').removeClass('required');
+			jform_vvvvwazwam_required = true;
+		}
 	}
 }
 

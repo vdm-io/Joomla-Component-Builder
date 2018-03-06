@@ -216,10 +216,10 @@
 		},
 		"dynamic": {
 			"admin": {
-				"vdm.php": {
+				"whmcs.php": {
 					"path": "c0mp0n3nt/admin",
 					"rename": false,
-					"type": "encrypt"
+					"type": "whmcs"
 				},
 				"Helper_email.php": {
 					"path": "c0mp0n3nt/admin/helpers",

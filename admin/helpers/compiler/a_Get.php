@@ -471,11 +471,18 @@ class Get
 	public $layoutData = array();
 
 	/**
-	 * The Advanced Encryption Switch
+	 * The Encryption Types
+	 * 
+	 * @var    array
+	 */
+	public $cryptionTypes = array('basic','medium','whmcs');
+
+	/**
+	 * The WHMCS Encryption Switch
 	 * 
 	 * @var    boolean
 	 */
-	public $advancedEncryption = false;
+	public $whmcsEncryption = false;
 
 	/**
 	 * The Basic Encryption Switch
@@ -483,6 +490,13 @@ class Get
 	 * @var    boolean
 	 */
 	public $basicEncryption = false;
+
+	/**
+	 * The Medium Encryption Switch
+	 * 
+	 * @var    boolean
+	 */
+	public $mediumEncryption = false;
 
 	/**
 	 * The Custom field Switch per view
@@ -1956,15 +1970,20 @@ class Get
 				{
 					$field->properties = array_values($field->properties);
 				}
-				// check if we have advanced encryption
-				if (4 == $field->store && (!isset($this->advancedEncryption) || !$this->advancedEncryption))
+				// check if we have WHMCS encryption
+				if (4 == $field->store && (!isset($this->whmcsEncryption) || !$this->whmcsEncryption))
 				{
-					$this->advancedEncryption = true;
+					$this->whmcsEncryption = true;
 				}
 				// check if we have basic encryption
 				elseif (3 == $field->store && (!isset($this->basicEncryption) || !$this->basicEncryption))
 				{
 					$this->basicEncryption = true;
+				}
+				// check if we have better encryption
+				elseif (5 == $field->store && (!isset($this->mediumEncryption) || !$this->mediumEncryption))
+				{
+					$this->mediumEncryption = true;
 				}
 
 				// get the last used version
@@ -3701,21 +3720,34 @@ class Get
 				// build local bucket
 				foreach ($found as $target)
 				{
-					// check if the target is valid URL or path
-					if ((!filter_var($target, FILTER_VALIDATE_URL) === false && ComponentbuilderHelper::urlExists($target))
-						|| (JPath::clean($target) === $target && JFile::exists($target)))
+					// check if user has permission to use EXTERNAL code (we may add a custom access switch - use ADMIN for now)
+					if ($this->user->authorise('core.admin', 'com_componentbuilder'))
 					{
-						$this->getExternalCodeString($target, $bucket);
+						// check if the target is valid URL or path
+						if ((!filter_var($target, FILTER_VALIDATE_URL) === false && ComponentbuilderHelper::urlExists($target))
+							|| (JPath::clean($target) === $target && JFile::exists($target)))
+						{
+							$this->getExternalCodeString($target, $bucket);
+						}
+						// give notice that target is not a valid url/path
+						else
+						{
+							// set key
+							$key = '[EXTERNA'.'LCODE='.$target.']';
+							// set the notice
+							$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
+							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', $key), 'Warning');
+							$this->app->enqueueMessage('<hr />', 'Warning');
+							// remove the placeholder
+							$bucket[$key] = '';
+						}
 					}
-					// give notice that target is not a valid url/path
 					else
 					{
 						// set key
 						$key = '[EXTERNA'.'LCODE='.$target.']';
 						// set the notice
-						$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
-						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', $key), 'Warning');
-						$this->app->enqueueMessage('<hr />', 'Warning');
+						$this->app->enqueueMessage(JText::sprintf('%s, you do not have permission to use <b>EXTERNALCODE</b> feature (so it was removed from the compilation), please contact you system administrator for more info!<br /><small>(admin access required)</small>', $this->user->get('name')), 'Error');
 						// remove the placeholder
 						$bucket[$key] = '';
 					}

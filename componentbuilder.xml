@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>5th March, 2018</creationDate>
+	<creationDate>6th March, 2018</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>llewellyn@joomlacomponentbuilder.com</authorEmail>
 	<authorUrl>http://joomlacomponentbuilder.com</authorUrl>
@@ -91,7 +91,7 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
-			<filename>controller.php</filename>
+			<filename>controller.php</filename>###WHMCS_ENCRYPT_FILE###
 			<filename>index.html</filename>
 			<filename>componentbuilder.php</filename>
 			<filename>README.txt</filename>

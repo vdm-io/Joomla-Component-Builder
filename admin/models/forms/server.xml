@@ -248,7 +248,8 @@
                        cols="5"
                        description="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_DESCRIPTION"
                        class="input-xxlarge span12"
-                       hint="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_HINT" />
+                       hint="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_HINT"
+                       required="true" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->
