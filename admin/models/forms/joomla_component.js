@@ -126,6 +126,12 @@ jQuery(document).ready(function()
 
 	var buildcomp_vvvvvww = jQuery("#jform_buildcomp input[type='radio']:checked").val();
 	vvvvvww(buildcomp_vvvvvww);
+
+	var dashboard_type_vvvvvwx = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
+	vvvvvwx(dashboard_type_vvvvvwx);
+
+	var dashboard_type_vvvvvwy = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
+	vvvvvwy(dashboard_type_vvvvvwy);
 });
 
 // the vvvvvvv function
@@ -808,6 +814,36 @@ function vvvvvww(buildcomp_vvvvvww)
 	}
 }
 
+// the vvvvvwx function
+function vvvvvwx(dashboard_type_vvvvvwx)
+{
+	// set the function logic
+	if (dashboard_type_vvvvvwx == 2)
+	{
+		jQuery('#jform_dashboard').closest('.control-group').show();
+		jQuery('.note_dynamic_dashboard').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('#jform_dashboard').closest('.control-group').hide();
+		jQuery('.note_dynamic_dashboard').closest('.control-group').hide();
+	}
+}
+
+// the vvvvvwy function
+function vvvvvwy(dashboard_type_vvvvvwy)
+{
+	// set the function logic
+	if (dashboard_type_vvvvvwy == 1)
+	{
+		jQuery('.note_botton_component_dashboard').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('.note_botton_component_dashboard').closest('.control-group').hide();
+	}
+}
+
 // update required fields
 function updateFieldRequired(name,status)
 {
@@ -846,9 +882,11 @@ function isSet(val)
 
 jQuery(document).ready(function()
 {
+	// check what is the dashboard switch
+	var dasboard_type = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
+	dasboardSwitch(dasboard_type);
 	// set buttons
 	function setButtons1() {
-		addButtonID('component_dashboard','button_component_dashboard', 1);
 		addButtonID('component_files_folders','button_component_files_folders', 1);
 		addButtonID('component_site_views','button_create_edit_views', 1);
 	 }
@@ -913,6 +951,20 @@ function getAjaxDisplay_server(type){
 
 function addData(result, where){
 	jQuery(result).insertAfter(jQuery(where).closest('.control-group'));
+}
+
+function dasboardSwitch(value){
+	// hide if default
+	if (2 == value) {
+		jQuery('.control-group-componentdashboard-one').hide();
+	} else {
+		// default behaviour
+		if (jQuery('div.control-group-componentdashboard-one').length) {
+			jQuery('.control-group-componentdashboard-one').show();
+		} else {
+			addButtonID('component_dashboard','button_component_dashboard', 1);
+		}
+	}
 }
 
 

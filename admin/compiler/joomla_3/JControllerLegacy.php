@@ -38,6 +38,23 @@ jimport('joomla.application.component.controller');
 class ###Component###Controller extends JControllerLegacy
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 * Recognized key values include 'name', 'default_task', 'model_path', and
+	 * 'view_path' (this list is not meant to be comprehensive).
+	 *
+	 * @since   3.0
+	 */
+	public function __construct($config = array())
+	{
+		// set the default view
+		$config['default_view'] = '###DASHBOARDVIEW###';
+
+		parent::__construct($config);
+	}
+	
+	/**
 	 * display task
 	 *
 	 * @return void
@@ -45,7 +62,7 @@ class ###Component###Controller extends JControllerLegacy
 	function display($cachable = false, $urlparams = false)
 	{
 		// set default view if not set
-		$view   = $this->input->getCmd('view', '###Component###');
+		$view   = $this->input->getCmd('view', '###DASHBOARDVIEW###');
 		$data	= $this->getViewRelation($view);
 		$layout	= $this->input->get('layout', null, 'WORD');
 		$id    	= $this->input->getInt('id');

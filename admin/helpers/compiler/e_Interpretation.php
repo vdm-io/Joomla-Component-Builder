@@ -678,17 +678,17 @@ class Interpretation extends Fields
 				$function[] = "\tpublic static function getMediumCryptKey(\$path)";
 				$function[] = "\t{";
 				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Prep the path a little";
-				$function[] = "\t\t\$path = '/'. trim('/', str_replace('//', '/', \$path));";
-				$function[] = "\t\t/jimport('joomla.filesystem.folder');";
+				$function[] = "\t\t\$path = '/'. trim(str_replace('//', '/', \$path), '/');";
+				$function[] = "\t\tjimport('joomla.filesystem.folder');";
 				$function[] = "\t\t///" . $this->setLine(__LINE__) . " Check if folder exist";
-				$function[] = "\t\t/if (!JFolder::exists(\$path))";
-				$function[] = "\t\t/{";
-				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Lock key.";
+				$function[] = "\t\tif (!JFolder::exists(\$path))";
+				$function[] = "\t\t{";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Lock key.";
 				$function[] = "\t\t\tself::\$mediumCryptKey = 'none';";
-				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
 				$function[] = "\t\t\tJFactory::getApplication()->enqueueMessage(JText::_('" . $this->langPrefix . "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = "\t\t\treturn false;";
-				$function[] = "\t\t/}";
+				$function[] = "\t\t}";
 				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Create FileName and set file path";
 				$function[] = "\t\t\$filePath = \$path.'/.'.md5('medium_crypt_key_file');";
 				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Check if we already have the file set";
@@ -699,30 +699,30 @@ class Interpretation extends Fields
 				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Set the key for the first time";
 				$function[] = "\t\tself::\$mediumCryptKey = self::randomkey(128);";
 				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Open the key file";
-				$function[] = "\t\t\$fh = fopen(\$filePath, 'w');";
+				$function[] = "\t\t\$fh = @fopen(\$filePath, 'w');";
 				$function[] = "\t\tif (!is_resource(\$fh))";
 				$function[] = "\t\t{";
-				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Lock key.";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Lock key.";
 				$function[] = "\t\t\tself::\$mediumCryptKey = 'none';";
-				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
 				$function[] = "\t\t\tJFactory::getApplication()->enqueueMessage(JText::_('" . $this->langPrefix . "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = "\t\t\treturn false;";
 				$function[] = "\t\t}";
 				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Write to the key file";
 				$function[] = "\t\tif (!fwrite(\$fh, self::\$mediumCryptKey))";
 				$function[] = "\t\t{";
-				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Close key file.";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Close key file.";
 				$function[] = "\t\t\tfclose(\$fh);";
-				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Lock key.";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Lock key.";
 				$function[] = "\t\t\tself::\$mediumCryptKey = 'none';";
-				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
+				$function[] = "\t\t\t//" . $this->setLine(__LINE__) . " Set the error message.";
 				$function[] = "\t\t\tJFactory::getApplication()->enqueueMessage(JText::_('" . $this->langPrefix . "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = "\t\t\treturn false;";
 				$function[] = "\t\t}";
 				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Close key file.";
 				$function[] = "\t\tfclose(\$fh);";
 				$function[] = "\t\t//" . $this->setLine(__LINE__) . " Key is set.";
-				$function[] = PHP_EOL . "\t\treturn true;";
+				$function[] = "\t\treturn true;";
 				$function[] = "\t}";
 			}
 			// return the help methods
@@ -11772,7 +11772,7 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					if ($item['method'] == 2 || $item['method'] == 3 || $item['method'] == 4)
+					if ($item['method'] == 2 || $item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5)
 					{
 						$taber = '';
 						if ($item['method'] == 3)
@@ -11803,7 +11803,7 @@ class Interpretation extends Fields
 						}
 						$fix .= PHP_EOL . "\t" . $tab . $taber . "\t\t\t\$item->" . $item['name'] . " = " . $decode . "(\$item->" . $item['name'] . ");";
 
-						if ($item['method'] == 3 || $item['method'] == 4)
+						if ($item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5)
 						{
 							$fix .= PHP_EOL . "\t" . $tab . "\t\t\t}";
 						}
@@ -12486,9 +12486,12 @@ class Interpretation extends Fields
 			$lang = $this->langPrefix . '_SUBMENU';
 			// set the code name
 			$codeName = ComponentbuilderHelper::safeString($this->componentData->name_code);
-			// set dashboard
-			$menus .= "JHtmlSidebar::addEntry(JText:".":_('" . $lang . "_DASHBOARD'), 'index.php?option=com_" . $codeName . "&view=" . $codeName . "', \$submenu === '" . $codeName . "');";
-			$this->langContent[$this->lang][$lang . '_DASHBOARD'] = 'Dashboard';
+			// set default dashboard
+			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
+			{
+				$menus .= "JHtmlSidebar::addEntry(JText:".":_('" . $lang . "_DASHBOARD'), 'index.php?option=com_" . $codeName . "&view=" . $codeName . "', \$submenu === '" . $codeName . "');";
+				$this->langContent[$this->lang][$lang . '_DASHBOARD'] = 'Dashboard';
+			}
 			$catArray = array();
 			foreach ($this->componentData->admin_views as $view)
 			{

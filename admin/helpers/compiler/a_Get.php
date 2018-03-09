@@ -1135,10 +1135,10 @@ class Get
 		{
 			$component->readme = '';
 		}
+		
 		// set lang now
 		$nowLang = $this->lang;
 		$this->lang = 'admin';
-
 		// dashboard methods
 		$component->dashboard_tab = (isset($component->dashboard_tab) && ComponentbuilderHelper::checkJson($component->dashboard_tab)) ? json_decode($component->dashboard_tab, true) : null;
 		if (ComponentbuilderHelper::checkArray($component->dashboard_tab))

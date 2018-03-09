@@ -228,6 +228,8 @@ class ComponentbuilderModelCompiler extends JModelList
 	
 	public function install($p_file)
 	{
+		$this->setState('action', 'install');
+
 		// Set FTP credentials, if given.
 		JClientHelper::setCredentialsFromRequest('ftp');
 		$app = JFactory::getApplication();
@@ -235,7 +237,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		// Load installer plugins for assistance if required:
 		JPluginHelper::importPlugin('installer');
 		$dispatcher = JEventDispatcher::getInstance();
-		
+
 		$package = null;
 
 		// This event allows an input pre-treatment, a custom pre-packing or custom installation.
@@ -246,7 +248,8 @@ class ComponentbuilderModelCompiler extends JModelList
 		{
 			return true;
 		}
-		elseif (in_array(false, $results, true))
+
+		if (in_array(false, $results, true))
 		{
 			return false;
 		}
@@ -256,8 +259,10 @@ class ComponentbuilderModelCompiler extends JModelList
 
 		// Unpack the downloaded package file.
 		$package = JInstallerHelper::unpack($tmp_dest . '/' . $p_file, true);
-		// insure the install type is folder
+
+		// insure the install type is folder (JCB zip file is in the folder)
 		$installType = 'folder';
+
 		// This event allows a custom installation of the package or a customization of the package:
 		$results = $dispatcher->trigger('onInstallerBeforeInstaller', array($this, &$package));
 
@@ -300,7 +305,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		$dispatcher->trigger('onInstallerAfterInstaller', array($this, &$package, $installer, &$result, &$msg));
 
 		// Set some model state values.
-		$app	= JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg, $msgType);
 		$this->setState('name', $installer->get('name'));
 		$this->setState('result', $result);
@@ -316,6 +321,16 @@ class ComponentbuilderModelCompiler extends JModelList
 		}
 
 		JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+
+		// Clear the cached extension data and menu cache
+		$this->cleanCache('_system', 0);
+		$this->cleanCache('_system', 1);
+		$this->cleanCache('com_modules', 0);
+		$this->cleanCache('com_modules', 1);
+		$this->cleanCache('com_plugins', 0);
+		$this->cleanCache('com_plugins', 1);
+		$this->cleanCache('mod_menu', 0);
+		$this->cleanCache('mod_menu', 1);
 
 		return $result;
 	}

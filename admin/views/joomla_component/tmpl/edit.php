@@ -132,8 +132,11 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'php', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
+			<div class="span6">
 				<?php echo JLayoutHelper::render('joomla_component.php_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('joomla_component.php_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
@@ -710,6 +713,36 @@ jQuery('#adminForm').on('change', '#jform_buildcomp',function (e)
 
 });
 
+// #jform_dashboard_type listeners for dashboard_type_vvvvvwx function
+jQuery('#jform_dashboard_type').on('keyup',function()
+{
+	var dashboard_type_vvvvvwx = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
+	vvvvvwx(dashboard_type_vvvvvwx);
+
+});
+jQuery('#adminForm').on('change', '#jform_dashboard_type',function (e)
+{
+	e.preventDefault();
+	var dashboard_type_vvvvvwx = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
+	vvvvvwx(dashboard_type_vvvvvwx);
+
+});
+
+// #jform_dashboard_type listeners for dashboard_type_vvvvvwy function
+jQuery('#jform_dashboard_type').on('keyup',function()
+{
+	var dashboard_type_vvvvvwy = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
+	vvvvvwy(dashboard_type_vvvvvwy);
+
+});
+jQuery('#adminForm').on('change', '#jform_dashboard_type',function (e)
+{
+	e.preventDefault();
+	var dashboard_type_vvvvvwy = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
+	vvvvvwy(dashboard_type_vvvvvwy);
+
+});
+
 
 
 <?php
@@ -740,5 +773,12 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-}); 
+});
+// check when dashboard switch changes
+jQuery('#adminForm').on('change', '#jform_dashboard_type',function (e)
+{
+	e.preventDefault();
+	var dasboard_type = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
+	dasboardSwitch(dasboard_type);
+});
 </script>

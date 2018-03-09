@@ -274,11 +274,13 @@ class ComponentbuilderModelAjax extends JModelList
 			{
 				// get the view name & id
 				$values = $this->getViewID();
+				// set the button ID
+				$css_class = 'control-group-'.ComponentbuilderHelper::safeString($type. '-' . $size, 'L', '-');
 				// check if new item
 				$ref = '';
 				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
 				{
-					// only load referal if not new item.
+					// only load referral if not new item.
 					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
 					// get item id
 					if ($id = ComponentbuilderHelper::getVar($type, $values['a_id'], $values['a_view'], 'id'))
@@ -299,7 +301,7 @@ class ComponentbuilderModelAjax extends JModelList
 					$button = array();
 					if (1 == $size)
 					{
-						$button[] = '<div class="control-group">';
+						$button[] = '<div class="control-group '.$css_class.'">';
 						$button[] = '<div class="control-label">';
 						$button[] = '<label>' . ComponentbuilderHelper::safeString($type, 'Ww') . '</label>';
 						$button[] = '</div>';
@@ -326,7 +328,7 @@ class ComponentbuilderModelAjax extends JModelList
 				// only return notice if big button
 				if (1 == $size)
 				{
-					return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w')) . '</div></div>';
+					return '<div class="control-group '.$css_class.'"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w')) . '</div></div>';
 				}
 			}
 		}

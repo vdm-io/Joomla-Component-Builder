@@ -752,21 +752,33 @@ class Infusion extends Interpretation
 
 			// ###UPDATE_VERSION_MYSQL###
 			$this->setVersionController();
+			
+			// only set these if default dashboard it used
+			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
+			{
+				// ###DASHBOARDVIEW###
+				$this->fileContentStatic['###DASHBOARDVIEW###'] = $this->fileContentStatic['###component###'];
+				
+				// ###DASHBOARDICONS###
+				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASHBOARDICONS###'] = $this->setDashboardIcons();
 
-			// ###DASHBOARDICONS###
-			$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASHBOARDICONS###'] = $this->setDashboardIcons();
+				// ###DASHBOARDICONACCESS###
+				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASHBOARDICONACCESS###'] = $this->setDashboardIconAccess();
 
-			// ###DASHBOARDICONACCESS###
-			$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASHBOARDICONACCESS###'] = $this->setDashboardIconAccess();
+				// ###DASH_MODEL_METHODS###
+				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_MODEL_METHODS###'] = $this->setDashboardModelMethods();
 
-			// ###DASH_MODEL_METHODS###
-			$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_MODEL_METHODS###'] = $this->setDashboardModelMethods();
+				// ###DASH_GET_CUSTOM_DATA###
+				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_GET_CUSTOM_DATA###'] = $this->setDashboardGetCustomData();
 
-			// ###DASH_GET_CUSTOM_DATA###
-			$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_GET_CUSTOM_DATA###'] = $this->setDashboardGetCustomData();
-
-			// ###DASH_DISPLAY_DATA###
-			$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_DISPLAY_DATA###'] = $this->setDashboardDisplayData();
+				// ###DASH_DISPLAY_DATA###
+				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASH_DISPLAY_DATA###'] = $this->setDashboardDisplayData();
+			}
+			else
+			{
+				// ###DASHBOARDVIEW###
+				$this->fileContentStatic['###DASHBOARDVIEW###'] = $this->dynamicDashboard;
+			}
 
 			// add import
 			if (isset($this->addEximport) && $this->addEximport)

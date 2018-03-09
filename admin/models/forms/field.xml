@@ -342,14 +342,13 @@
                        filter="raw"
                        hint="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_HINT"
                        required="true" />
-                <!-- Note_vdm_encryption Field. Type: Note. A None Database Field. (joomla)-->
+                <!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
-                       name="note_vdm_encryption"
-                       label="COM_COMPONENTBUILDER_FIELD_NOTE_VDM_ENCRYPTION_LABEL"
-                       description="COM_COMPONENTBUILDER_FIELD_NOTE_VDM_ENCRYPTION_DESCRIPTION"
+                       name="note_whmcs_encryption"
+                       label="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_LABEL"
+                       description="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_DESCRIPTION"
                        heading="h4"
-                       class="alert alert-success note_vdm_encryption"
-                       close="true" />
+                       class="alert alert-success note_whmcs_encryption" />
                 <!-- Javascript_views_footer Field. Type: Textarea. (joomla)-->
                 <field type="textarea"
                        name="javascript_views_footer"

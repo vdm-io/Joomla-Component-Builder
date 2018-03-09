@@ -41,7 +41,7 @@ $fields = $displayData->get('fields') ?: array(
 	'indexes',
 	'null_switch',
 	'store',
-	'note_vdm_encryption'
+	'note_whmcs_encryption'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_botton_component_dashboard'
+	'dashboard_type'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

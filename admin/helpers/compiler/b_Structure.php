@@ -321,6 +321,13 @@ class Structure extends Get
 	protected $lastModifiedDate = array();
 
 	/**
+	 * The default view switch
+	 * 
+	 * @var     bool/string
+	 */
+	public $dynamicDashboard = false;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct($config = array())
@@ -349,6 +356,8 @@ class Structure extends Get
 			$this->setLibaries();
 			// set the Joomla Version Data
 			$this->joomlaVersionData = $this->setJoomlaVersionData();
+			// set the dashboard
+			$this->setDynamicDashboard();
 			// set the new folders
 			if (!$this->setFolders())
 			{
@@ -520,6 +529,67 @@ class Structure extends Get
 						}
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * set the dynamic dashboard if set
+	 * 
+	 * @return  void
+	 * 
+	 */
+	private function setDynamicDashboard()
+	{
+		// only do the dashboard stuff it the default is used
+		if (isset($this->componentData->dashboard_type) && 2 == $this->componentData->dashboard_type
+			&& isset($this->componentData->dashboard) && ComponentbuilderHelper::checkString($this->componentData->dashboard)
+			&& strpos($this->componentData->dashboard, '_') !== false)
+		{
+			// set the default view
+			$getter = explode('_',$this->componentData->dashboard);
+			if (count($getter) == 2 && is_numeric($getter[1]))
+			{
+				$id = $getter[1];
+				// custom admin view
+				if ('C' === $getter[0])
+				{
+					$dashboard = array_filter($this->componentData->custom_admin_views, function($view) use($id){
+						if (isset($view['customadminview']) && $id == $view['customadminview'])
+						{
+							return true;
+						}
+						return false;
+					});
+					// check if somthing was returned
+					if (count($dashboard) && isset($dashboard[0]['settings']) && isset($dashboard[0]['settings']->code))
+					{
+						$this->dynamicDashboard = $dashboard[0]['settings']->code;
+					}
+				}
+				// admin view
+				elseif ('A' === $getter[0])
+				{
+					$dashboard = array_filter($this->componentData->admin_views, function($view) use($id){
+						if (isset($view['adminview']) && $id == $view['adminview'])
+						{
+							return true;
+						}
+						return false;
+					});
+					// check if somthing was returned
+					if (count($dashboard) && isset($dashboard[0]['settings']) && isset($dashboard[0]['settings']->name_list))
+					{
+						$this->dynamicDashboard = ComponentbuilderHelper::safeString($dashboard[0]['settings']->name_list);
+					}
+				}
+			}
+			// if default was changed to dynamic dashboard the remove default tab and methods
+			if (ComponentbuilderHelper::checkString($this->dynamicDashboard))
+			{
+				// dynamic dashboard is used
+				$this->componentData->dashboard_tab = '';
+				$this->componentData->php_dashboard_methods = '';
 			}
 		}
 	}
@@ -797,9 +867,12 @@ class Structure extends Get
 		$front = false;
 		if ((isset($this->joomlaVersionData->move->dynamic) && ComponentbuilderHelper::checkObject($this->joomlaVersionData->move->dynamic)) && (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views)))
 		{
-			// setup dashboard
-			$target = array('admin' => $this->componentData->name_code);
-			$this->buildDynamique($target, 'dashboard');
+			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
+			{
+				// setup dashboard
+				$target = array('admin' => $this->componentData->name_code);
+				$this->buildDynamique($target, 'dashboard');
+			}
 			// now the rest of the views
 			foreach ($this->componentData->admin_views as $nr => $view)
 			{

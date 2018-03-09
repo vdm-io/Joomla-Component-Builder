@@ -136,67 +136,33 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_protocol listeners for protocol_vvvvwat function
-jQuery('#jform_protocol').on('keyup',function()
-{
-	var protocol_vvvvwat = jQuery("#jform_protocol").val();
-	vvvvwat(protocol_vvvvwat);
-
-});
-jQuery('#adminForm').on('change', '#jform_protocol',function (e)
-{
-	e.preventDefault();
-	var protocol_vvvvwat = jQuery("#jform_protocol").val();
-	vvvvwat(protocol_vvvvwat);
-
-});
-
-// #jform_protocol listeners for protocol_vvvvwau function
-jQuery('#jform_protocol').on('keyup',function()
-{
-	var protocol_vvvvwau = jQuery("#jform_protocol").val();
-	vvvvwau(protocol_vvvvwau);
-
-});
-jQuery('#adminForm').on('change', '#jform_protocol',function (e)
-{
-	e.preventDefault();
-	var protocol_vvvvwau = jQuery("#jform_protocol").val();
-	vvvvwau(protocol_vvvvwau);
-
-});
-
 // #jform_protocol listeners for protocol_vvvvwav function
 jQuery('#jform_protocol').on('keyup',function()
 {
 	var protocol_vvvvwav = jQuery("#jform_protocol").val();
-	var authentication_vvvvwav = jQuery("#jform_authentication").val();
-	vvvvwav(protocol_vvvvwav,authentication_vvvvwav);
+	vvvvwav(protocol_vvvvwav);
 
 });
 jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
 	var protocol_vvvvwav = jQuery("#jform_protocol").val();
-	var authentication_vvvvwav = jQuery("#jform_authentication").val();
-	vvvvwav(protocol_vvvvwav,authentication_vvvvwav);
+	vvvvwav(protocol_vvvvwav);
 
 });
 
-// #jform_authentication listeners for authentication_vvvvwav function
-jQuery('#jform_authentication').on('keyup',function()
+// #jform_protocol listeners for protocol_vvvvwaw function
+jQuery('#jform_protocol').on('keyup',function()
 {
-	var protocol_vvvvwav = jQuery("#jform_protocol").val();
-	var authentication_vvvvwav = jQuery("#jform_authentication").val();
-	vvvvwav(protocol_vvvvwav,authentication_vvvvwav);
+	var protocol_vvvvwaw = jQuery("#jform_protocol").val();
+	vvvvwaw(protocol_vvvvwaw);
 
 });
-jQuery('#adminForm').on('change', '#jform_authentication',function (e)
+jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
-	var protocol_vvvvwav = jQuery("#jform_protocol").val();
-	var authentication_vvvvwav = jQuery("#jform_authentication").val();
-	vvvvwav(protocol_vvvvwav,authentication_vvvvwav);
+	var protocol_vvvvwaw = jQuery("#jform_protocol").val();
+	vvvvwaw(protocol_vvvvwaw);
 
 });
 
@@ -299,6 +265,40 @@ jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 	var protocol_vvvvwbb = jQuery("#jform_protocol").val();
 	var authentication_vvvvwbb = jQuery("#jform_authentication").val();
 	vvvvwbb(protocol_vvvvwbb,authentication_vvvvwbb);
+
+});
+
+// #jform_protocol listeners for protocol_vvvvwbd function
+jQuery('#jform_protocol').on('keyup',function()
+{
+	var protocol_vvvvwbd = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbd = jQuery("#jform_authentication").val();
+	vvvvwbd(protocol_vvvvwbd,authentication_vvvvwbd);
+
+});
+jQuery('#adminForm').on('change', '#jform_protocol',function (e)
+{
+	e.preventDefault();
+	var protocol_vvvvwbd = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbd = jQuery("#jform_authentication").val();
+	vvvvwbd(protocol_vvvvwbd,authentication_vvvvwbd);
+
+});
+
+// #jform_authentication listeners for authentication_vvvvwbd function
+jQuery('#jform_authentication').on('keyup',function()
+{
+	var protocol_vvvvwbd = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbd = jQuery("#jform_authentication").val();
+	vvvvwbd(protocol_vvvvwbd,authentication_vvvvwbd);
+
+});
+jQuery('#adminForm').on('change', '#jform_authentication',function (e)
+{
+	e.preventDefault();
+	var protocol_vvvvwbd = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbd = jQuery("#jform_authentication").val();
+	vvvvwbd(protocol_vvvvwbd,authentication_vvvvwbd);
 
 });
 
