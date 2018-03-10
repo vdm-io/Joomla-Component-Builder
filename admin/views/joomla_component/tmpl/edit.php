@@ -130,18 +130,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'php', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'dash_install', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASH_INSTALL', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('joomla_component.php_left', $this); ?>
+				<?php echo JLayoutHelper::render('joomla_component.dash_install_left', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('joomla_component.php_right', $this); ?>
+				<?php echo JLayoutHelper::render('joomla_component.dash_install_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('joomla_component.php_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('joomla_component.dash_install_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>

@@ -13,7 +13,7 @@
 	@version		2.6.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		php_right.php
+	@subpackage		dash_install_right.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
