@@ -541,7 +541,7 @@ class Structure extends Get
 	 */
 	private function setDynamicDashboard()
 	{
-		// only do the dashboard stuff it the default is used
+		// only add the dynamic dashboard if all checks out
 		if (isset($this->componentData->dashboard_type) && 2 == $this->componentData->dashboard_type
 			&& isset($this->componentData->dashboard) && ComponentbuilderHelper::checkString($this->componentData->dashboard)
 			&& strpos($this->componentData->dashboard, '_') !== false)
@@ -550,39 +550,59 @@ class Structure extends Get
 			$getter = explode('_',$this->componentData->dashboard);
 			if (count($getter) == 2 && is_numeric($getter[1]))
 			{
-				$id = $getter[1];
-				// custom admin view
-				if ('C' === $getter[0])
+				// the pointers
+				$id = (int) $getter[1];
+				$t = ComponentbuilderHelper::safeString($getter[0], 'U');
+				// the dynamic stuff
+				$targets = array('A' => 'admin_views', 'C' => 'custom_admin_views');
+				$names = array('A' => 'admin view', 'C' => 'custom admin view');
+				$types = array('A' => 'adminview', 'C' => 'customadminview');
+				$keys = array('A' => 'name_list', 'C' => 'code');
+				// check the target values
+				if (isset($targets[$t]) && $id > 0)
 				{
-					$dashboard = array_filter($this->componentData->custom_admin_views, function($view) use($id){
-						if (isset($view['customadminview']) && $id == $view['customadminview'])
-						{
-							return true;
-						}
-						return false;
-					});
-					// check if somthing was returned
-					if (count($dashboard) && isset($dashboard[0]['settings']) && isset($dashboard[0]['settings']->code))
+					// set the dynamic dash
+					if (isset($this->componentData->{$targets[$t]}) && ComponentbuilderHelper::checkArray($this->componentData->{$targets[$t]}))
 					{
-						$this->dynamicDashboard = $dashboard[0]['settings']->code;
+						// search the target views
+						$dashboard = (array) array_filter($this->componentData->{$targets[$t]}, function($view) use($id, $t, $types){
+							if (isset($view[$types[$t]]) && $id == (int) $view[$types[$t]])
+							{
+								return true;
+							}
+							return false;
+						});
+						// check if view was found (this should be true)
+						if (count($dashboard) && isset($dashboard[0]['settings']) && isset($dashboard[0]['settings']->{$keys[$t]}))
+						{
+							$this->dynamicDashboard = ComponentbuilderHelper::safeString($dashboard[0]['settings']->{$keys[$t]});
+						}
+						else
+						{
+							// set the type name
+							$type_names = ComponentbuilderHelper::safeString($targets[$t], 'w');
+							// set massage that something is wrong
+							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> (<b>%s</b>) is not available in your component! Please insure to only used %s, for a dynamic dashboard, that are still linked to your component.', $names[$t], $this->componentData->dashboard, $type_names), 'Error');
+						}
+					}
+					else
+					{
+						// set the type name
+						$type_names = ComponentbuilderHelper::safeString($targets[$t], 'w');
+						// set massage that something is wrong
+						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> (<b>%s</b>) is not available in your component! Please insure to only used %s, for a dynamic dashboard, that are still linked to your component.', $names[$t], $this->componentData->dashboard, $type_names), 'Error');
 					}
 				}
-				// admin view
-				elseif ('A' === $getter[0])
+				else
 				{
-					$dashboard = array_filter($this->componentData->admin_views, function($view) use($id){
-						if (isset($view['adminview']) && $id == $view['adminview'])
-						{
-							return true;
-						}
-						return false;
-					});
-					// check if somthing was returned
-					if (count($dashboard) && isset($dashboard[0]['settings']) && isset($dashboard[0]['settings']->name_list))
-					{
-						$this->dynamicDashboard = ComponentbuilderHelper::safeString($dashboard[0]['settings']->name_list);
-					}
+					// the target value is wrong
+					$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> value for the dynamic dashboard is invalid.', $this->componentData->dashboard), 'Error');
 				}
+			}
+			else
+			{
+				// the target value is wrong
+				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> value for the dynamic dashboard is invalid.', $this->componentData->dashboard), 'Error');				
 			}
 			// if default was changed to dynamic dashboard the remove default tab and methods
 			if (ComponentbuilderHelper::checkString($this->dynamicDashboard))
