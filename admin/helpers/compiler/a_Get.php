@@ -2346,7 +2346,13 @@ class Get
 					}
 					else
 					{
-						$name = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
+						// get value from xml
+						$xml = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
+						// check if a value was found
+						if (ComponentbuilderHelper::checkString($xml))
+						{
+							$name = $xml;
+						}
 					}
 					// exit foreach loop
 					break;

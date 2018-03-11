@@ -12866,7 +12866,6 @@ class Interpretation extends Fields
 					'###views###' => $listViewName);
 				$view = '';
 				$viewType = 0;
-				
 				// set the custom table key
 				$dbkey = 'g';
 				foreach ($this->componentData->config as $field)

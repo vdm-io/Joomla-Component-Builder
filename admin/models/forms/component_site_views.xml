@@ -152,13 +152,13 @@
                                        required="false"
                                        description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_ACCESS_DESCRIPTION"
                                        class="inputbox" />
-                                <!--  Field. Type: Checkbox. (joomla)-->
+                                <!-- Public_access Field. Type: Checkbox. (joomla)-->
                                 <field type="checkbox"
-                                       name="show_title"
-                                       label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_LABEL"
+                                       name="public_access"
+                                       label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_PUBLIC_ACCESS_LABEL"
                                        value="1"
                                        required="false"
-                                       description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_DESCRIPTION"
+                                       description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_PUBLIC_ACCESS_DESCRIPTION"
                                        class="inputbox" />
                         </form>
                 </field>
