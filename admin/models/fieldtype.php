@@ -129,7 +129,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
 			}
 		}
-		$this->fieldtypevvvw = $item->id;
+		$this->fieldtypevvvv = $item->id;
 
 		return $item;
 	}
@@ -139,7 +139,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getWadfields()
+	public function getWacfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -159,15 +159,15 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$query->select($db->quoteName('g.name','fieldtype_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by fieldtypevvvw global.
-		$fieldtypevvvw = $this->fieldtypevvvw;
-		if (is_numeric($fieldtypevvvw ))
+		// Filter by fieldtypevvvv global.
+		$fieldtypevvvv = $this->fieldtypevvvv;
+		if (is_numeric($fieldtypevvvv ))
 		{
-			$query->where('a.fieldtype = ' . (int) $fieldtypevvvw );
+			$query->where('a.fieldtype = ' . (int) $fieldtypevvvv );
 		}
-		elseif (is_string($fieldtypevvvw))
+		elseif (is_string($fieldtypevvvv))
 		{
-			$query->where('a.fieldtype = ' . $db->quote($fieldtypevvvw));
+			$query->where('a.fieldtype = ' . $db->quote($fieldtypevvvv));
 		}
 		else
 		{
@@ -223,13 +223,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationWadfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationWacfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationWadfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationWacfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationWadfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationWacfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationWadfields($item->store, 'store');
+					$item->store = $this->selectionTranslationWacfields($item->store, 'store');
 				}
 			}
 
@@ -243,7 +243,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	*
 	* @return translatable string
 	*/
-	public function selectionTranslationWadfields($value,$name)
+	public function selectionTranslationWacfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
@@ -404,6 +404,22 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$form->setFieldAttribute('name', 'required', 'false');
 			}
 		}
+		// Modify the form based on Edit Properties access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.properties', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.properties', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('properties', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('properties', 'readonly', 'true');
+			if (!$form->getValue('properties'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('properties', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('properties', 'required', 'false');
+			}
+		}
 		// Modify the form based on Edit Description access controls.
 		if ($id != 0 && (!$user->authorise('fieldtype.edit.description', 'com_componentbuilder.fieldtype.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('fieldtype.edit.description', 'com_componentbuilder')))
@@ -434,22 +450,6 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$form->setFieldAttribute('short_description', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('short_description', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Properties access controls.
-		if ($id != 0 && (!$user->authorise('fieldtype.edit.properties', 'com_componentbuilder.fieldtype.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('fieldtype.edit.properties', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('properties', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('properties', 'readonly', 'true');
-			if (!$form->getValue('properties'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('properties', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('properties', 'required', 'false');
 			}
 		}
 		// Only load these values if no id is found

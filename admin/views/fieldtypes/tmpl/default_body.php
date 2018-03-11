@@ -86,15 +86,15 @@ $edit = "index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.ed
 				<div class="name"><?php echo $this->escape($item->name); ?></div>
 			<?php endif; ?>
 		</td>
+		<td class="hidden-phone">
+			<?php echo $this->escape($item->short_description); ?>
+		</td>
 		<td class="nowrap">
 			<?php if ($this->user->authorise('core.edit', 'com_componentbuilder.fieldtypes.category.' . (int)$item->catid)): ?>
 				<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.fieldtypes"><?php echo $this->escape($item->category_title); ?></a>
 			<?php else: ?>
 				<?php echo $this->escape($item->category_title); ?>
 			<?php endif; ?>
-		</td>
-		<td class="hidden-phone">
-			<?php echo $this->escape($item->short_description); ?>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('fieldtype.edit.state')) : ?>

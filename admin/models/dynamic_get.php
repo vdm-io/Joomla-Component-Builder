@@ -100,14 +100,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->join_db_table))
-			{
-				// Convert the join_db_table field to an array.
-				$join_db_table = new Registry;
-				$join_db_table->loadString($item->join_db_table);
-				$item->join_db_table = $join_db_table->toArray();
-			}
-
 			if (!empty($item->filter))
 			{
 				// Convert the filter field to an array.
@@ -146,6 +138,14 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$join_view_table = new Registry;
 				$join_view_table->loadString($item->join_view_table);
 				$item->join_view_table = $join_view_table->toArray();
+			}
+
+			if (!empty($item->join_db_table))
+			{
+				// Convert the join_db_table field to an array.
+				$join_db_table = new Registry;
+				$join_db_table->loadString($item->join_db_table);
+				$item->join_db_table = $join_db_table->toArray();
 			}
 
 			if (!empty($item->php_custom_get))
@@ -966,19 +966,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the join_db_table items to data.
-		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
-		{
-			$join_db_table = new JRegistry;
-			$join_db_table->loadArray($data['join_db_table']);
-			$data['join_db_table'] = (string) $join_db_table;
-		}
-		elseif (!isset($data['join_db_table']))
-		{
-			// Set the empty join_db_table to data
-			$data['join_db_table'] = '';
-		}
-
 		// Set the filter items to data.
 		if (isset($data['filter']) && is_array($data['filter']))
 		{
@@ -1042,6 +1029,19 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 		{
 			// Set the empty join_view_table to data
 			$data['join_view_table'] = '';
+		}
+
+		// Set the join_db_table items to data.
+		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
+		{
+			$join_db_table = new JRegistry;
+			$join_db_table->loadArray($data['join_db_table']);
+			$data['join_db_table'] = (string) $join_db_table;
+		}
+		elseif (!isset($data['join_db_table']))
+		{
+			// Set the empty join_db_table to data
+			$data['join_db_table'] = '';
 		}
 
 		// Set the php_custom_get string to base64 string.

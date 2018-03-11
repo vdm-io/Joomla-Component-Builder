@@ -89,14 +89,6 @@
                        required="true"
                        readonly="true"
                        button="false" />
-                <!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_on_conditions"
-                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_LABEL"
-                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_on_conditions"
-                       close="true" />
                 <!-- Addconditions Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="addconditions"
@@ -190,6 +182,14 @@
                                        required="false" />
                         </form>
                 </field>
+                <!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_on_conditions"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_on_conditions"
+                       close="true" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

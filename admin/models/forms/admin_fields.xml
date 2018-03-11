@@ -89,13 +89,6 @@
                        required="true"
                        readonly="true"
                        button="false" />
-                <!-- Note_on_views Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_on_views"
-                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_LABEL"
-                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_on_views" />
                 <!-- Addfields Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="addfields"
@@ -239,6 +232,13 @@
                                 </field>
                         </form>
                 </field>
+                <!-- Note_on_views Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_on_views"
+                       label="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_FIELDS_NOTE_ON_VIEWS_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_on_views" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

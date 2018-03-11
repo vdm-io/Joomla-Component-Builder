@@ -266,18 +266,16 @@ class ComponentbuilderModelSite_views extends JModelList
 							continue;
 						}
 
-						// decode php_jview_display
-						$item->php_jview_display = base64_decode($item->php_jview_display);
 						// decode php_document
 						$item->php_document = base64_decode($item->php_document);
+						// decode php_jview
+						$item->php_jview = base64_decode($item->php_jview);
 						// decode default
 						$item->default = base64_decode($item->default);
 						// decode php_view
 						$item->php_view = base64_decode($item->php_view);
-						// decode php_jview
-						$item->php_jview = base64_decode($item->php_jview);
-						// decode php_model
-						$item->php_model = base64_decode($item->php_model);
+						// decode php_jview_display
+						$item->php_jview_display = base64_decode($item->php_jview_display);
 						// decode javascript_file
 						$item->javascript_file = base64_decode($item->javascript_file);
 						// decode js_document
@@ -290,6 +288,8 @@ class ComponentbuilderModelSite_views extends JModelList
 						$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
 						// decode php_controller
 						$item->php_controller = base64_decode($item->php_controller);
+						// decode php_model
+						$item->php_model = base64_decode($item->php_model);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

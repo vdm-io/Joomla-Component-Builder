@@ -187,18 +187,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php if ($this->canDo->get('language_translation.access')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'translation', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TRANSLATION', true)); ?>
-		<div class="row-fluid form-horizontal-desktop">
-		</div>
-		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
-				<?php echo JLayoutHelper::render('joomla_component.translation_fullwidth', $this); ?>
-			</div>
-		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php endif; ?>
-
 	<?php if ($this->canDo->get('joomla_component.delete') || $this->canDo->get('joomla_component.edit.created_by') || $this->canDo->get('joomla_component.edit.state') || $this->canDo->get('joomla_component.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'publishing', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

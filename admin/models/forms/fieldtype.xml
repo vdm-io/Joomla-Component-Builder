@@ -93,42 +93,6 @@
                        filter="STRING"
                        message="COM_COMPONENTBUILDER_FIELDTYPE_NAME_MESSAGE"
                        hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT" />
-                <!-- Note_on_fields Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_on_fields"
-                       label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_ON_FIELDS_LABEL"
-                       description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_ON_FIELDS_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_on_fields" />
-                <!-- Catid Field. Type: Category. (joomla)-->
-                <field type="category"
-                       name="catid"
-                       label="COM_COMPONENTBUILDER_FIELDTYPE_CATID_LABEL"
-                       extension="com_componentbuilder.fieldtypes"
-                       description="COM_COMPONENTBUILDER_FIELDTYPE_CATID_DESCRIPTION"
-                       class="inputbox" />
-                <!-- Description Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="description"
-                       label="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_LABEL"
-                       rows="11"
-                       cols="10"
-                       description="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_DESCRIPTION"
-                       class="text_area span12"
-                       filter="HTML"
-                       hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT" />
-                <!-- Short_description Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="short_description"
-                       label="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_LABEL"
-                       size="40"
-                       maxlength="150"
-                       description="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_DESCRIPTION"
-                       class="text_area"
-                       required="true"
-                       filter="HTML"
-                       message="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_HINT" />
                 <!-- Properties Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="properties"
@@ -205,6 +169,42 @@
                                        required="false" />
                         </form>
                 </field>
+                <!-- Note_on_fields Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_on_fields"
+                       label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_ON_FIELDS_LABEL"
+                       description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_ON_FIELDS_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_on_fields" />
+                <!-- Description Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="description"
+                       label="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_LABEL"
+                       rows="11"
+                       cols="10"
+                       description="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_DESCRIPTION"
+                       class="text_area span12"
+                       filter="HTML"
+                       hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT" />
+                <!-- Short_description Field. Type: Text. (joomla)-->
+                <field type="text"
+                       name="short_description"
+                       label="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_LABEL"
+                       size="40"
+                       maxlength="150"
+                       description="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_DESCRIPTION"
+                       class="text_area"
+                       required="true"
+                       filter="HTML"
+                       message="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_MESSAGE"
+                       hint="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_HINT" />
+                <!-- Catid Field. Type: Category. (joomla)-->
+                <field type="category"
+                       name="catid"
+                       label="COM_COMPONENTBUILDER_FIELDTYPE_CATID_LABEL"
+                       extension="com_componentbuilder.fieldtypes"
+                       description="COM_COMPONENTBUILDER_FIELDTYPE_CATID_DESCRIPTION"
+                       class="inputbox" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

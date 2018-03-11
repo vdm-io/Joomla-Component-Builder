@@ -262,10 +262,10 @@ class ComponentbuilderModelTemplates extends JModelList
 							continue;
 						}
 
-						// decode template
-						$item->template = base64_decode($item->template);
 						// decode php_view
 						$item->php_view = base64_decode($item->php_view);
+						// decode template
+						$item->template = base64_decode($item->template);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

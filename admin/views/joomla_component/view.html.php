@@ -63,9 +63,6 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 			$this->referral = '&ref='.(string)$this->ref;
 		}
 
-		// Get Linked view data
-		$this->vwntranslation = $this->get('Vwntranslation');
-
 		// Set the toolbar
 		$this->addToolBar();
 		
@@ -200,16 +197,6 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/joomla_component.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 		// Add Ajax Token
 		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
-
-		// Add the CSS for Footable
-		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		$this->document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
-		// Add the JavaScript for Footable (adding all funtions)
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/footable-v3/js/footable.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
-
-		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
-		$this->document->addScriptDeclaration($footable);
-
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/joomla_component/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 

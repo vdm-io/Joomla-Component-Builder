@@ -304,6 +304,31 @@ class ComponentbuilderModelServers extends JModelList
 							continue;
 						}
 
+						if ($basickey && !is_numeric($item->signature) && $item->signature === base64_encode(base64_decode($item->signature, true)))
+						{
+							// decrypt signature
+							$item->signature = $basic->decryptString($item->signature);
+						}
+						if ($basickey && !is_numeric($item->private_key) && $item->private_key === base64_encode(base64_decode($item->private_key, true)))
+						{
+							// decrypt private_key
+							$item->private_key = $basic->decryptString($item->private_key);
+						}
+						if ($basickey && !is_numeric($item->secret) && $item->secret === base64_encode(base64_decode($item->secret, true)))
+						{
+							// decrypt secret
+							$item->secret = $basic->decryptString($item->secret);
+						}
+						if ($basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
+						{
+							// decrypt password
+							$item->password = $basic->decryptString($item->password);
+						}
+						if ($basickey && !is_numeric($item->private) && $item->private === base64_encode(base64_decode($item->private, true)))
+						{
+							// decrypt private
+							$item->private = $basic->decryptString($item->private);
+						}
 						if ($basickey && !is_numeric($item->path) && $item->path === base64_encode(base64_decode($item->path, true)))
 						{
 							// decrypt path
@@ -314,40 +339,15 @@ class ComponentbuilderModelServers extends JModelList
 							// decrypt port
 							$item->port = $basic->decryptString($item->port);
 						}
-						if ($basickey && !is_numeric($item->password) && $item->password === base64_encode(base64_decode($item->password, true)))
-						{
-							// decrypt password
-							$item->password = $basic->decryptString($item->password);
-						}
-						if ($basickey && !is_numeric($item->secret) && $item->secret === base64_encode(base64_decode($item->secret, true)))
-						{
-							// decrypt secret
-							$item->secret = $basic->decryptString($item->secret);
-						}
 						if ($basickey && !is_numeric($item->host) && $item->host === base64_encode(base64_decode($item->host, true)))
 						{
 							// decrypt host
 							$item->host = $basic->decryptString($item->host);
 						}
-						if ($basickey && !is_numeric($item->signature) && $item->signature === base64_encode(base64_decode($item->signature, true)))
-						{
-							// decrypt signature
-							$item->signature = $basic->decryptString($item->signature);
-						}
 						if ($basickey && !is_numeric($item->username) && $item->username === base64_encode(base64_decode($item->username, true)))
 						{
 							// decrypt username
 							$item->username = $basic->decryptString($item->username);
-						}
-						if ($basickey && !is_numeric($item->private) && $item->private === base64_encode(base64_decode($item->private, true)))
-						{
-							// decrypt private
-							$item->private = $basic->decryptString($item->private);
-						}
-						if ($basickey && !is_numeric($item->private_key) && $item->private_key === base64_encode(base64_decode($item->private_key, true)))
-						{
-							// decrypt private_key
-							$item->private_key = $basic->decryptString($item->private_key);
 						}
 						// unset the values we don't want exported.
 						unset($item->asset_id);

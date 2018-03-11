@@ -97,15 +97,15 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_state` (`published`),
 	KEY `idx_system_name` (`system_name`),
 	KEY `idx_name_code` (`name_code`),
-	KEY `idx_mvc_versiondate` (`mvc_versiondate`),
-	KEY `idx_add_placeholders` (`add_placeholders`),
-	KEY `idx_adduikit` (`adduikit`),
-	KEY `idx_update_server_target` (`update_server_target`),
 	KEY `idx_debug_linenr` (`debug_linenr`),
 	KEY `idx_add_email_helper` (`add_email_helper`),
+	KEY `idx_add_placeholders` (`add_placeholders`),
+	KEY `idx_mvc_versiondate` (`mvc_versiondate`),
+	KEY `idx_add_update_server` (`add_update_server`),
+	KEY `idx_adduikit` (`adduikit`),
 	KEY `idx_add_license` (`add_license`),
 	KEY `idx_license_type` (`license_type`),
-	KEY `idx_add_update_server` (`add_update_server`),
+	KEY `idx_update_server_target` (`update_server_target`),
 	KEY `idx_creatuserhelper` (`creatuserhelper`),
 	KEY `idx_addfootable` (`addfootable`),
 	KEY `idx_add_php_helper_both` (`add_php_helper_both`),
@@ -122,8 +122,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_add_php_postflight_update` (`add_php_postflight_update`),
 	KEY `idx_add_php_method_uninstall` (`add_php_method_uninstall`),
 	KEY `idx_add_sql` (`add_sql`),
-	KEY `idx_addreadme` (`addreadme`),
 	KEY `idx_emptycontributors` (`emptycontributors`),
+	KEY `idx_addreadme` (`addreadme`),
 	KEY `idx_add_sales_server` (`add_sales_server`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
@@ -227,25 +227,25 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name_single` (`name_single`),
 	KEY `idx_name_list` (`name_list`),
-	KEY `idx_add_php_document` (`add_php_document`),
-	KEY `idx_add_php_postsavehook` (`add_php_postsavehook`),
-	KEY `idx_add_custom_import` (`add_custom_import`),
-	KEY `idx_add_php_before_publish` (`add_php_before_publish`),
-	KEY `idx_type` (`type`),
-	KEY `idx_add_php_batchcopy` (`add_php_batchcopy`),
-	KEY `idx_add_fadein` (`add_fadein`),
-	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
-	KEY `idx_add_php_getitems_after_all` (`add_php_getitems_after_all`),
-	KEY `idx_add_php_before_save` (`add_php_before_save`),
-	KEY `idx_add_php_getitems` (`add_php_getitems`),
-	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
-	KEY `idx_add_php_save` (`add_php_save`),
-	KEY `idx_add_php_allowedit` (`add_php_allowedit`),
-	KEY `idx_add_php_batchmove` (`add_php_batchmove`),
 	KEY `idx_add_php_after_publish` (`add_php_after_publish`),
+	KEY `idx_add_php_batchmove` (`add_php_batchmove`),
+	KEY `idx_add_php_allowedit` (`add_php_allowedit`),
+	KEY `idx_add_php_save` (`add_php_save`),
+	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
+	KEY `idx_type` (`type`),
+	KEY `idx_add_fadein` (`add_fadein`),
 	KEY `idx_add_php_after_delete` (`add_php_after_delete`),
 	KEY `idx_add_sql` (`add_sql`),
+	KEY `idx_add_php_before_save` (`add_php_before_save`),
+	KEY `idx_add_php_postsavehook` (`add_php_postsavehook`),
+	KEY `idx_add_php_batchcopy` (`add_php_batchcopy`),
+	KEY `idx_add_php_before_publish` (`add_php_before_publish`),
+	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
+	KEY `idx_add_php_document` (`add_php_document`),
 	KEY `idx_add_css_view` (`add_css_view`),
+	KEY `idx_add_custom_import` (`add_custom_import`),
+	KEY `idx_add_php_getitems` (`add_php_getitems`),
+	KEY `idx_add_php_getitems_after_all` (`add_php_getitems_after_all`),
 	KEY `idx_add_css_views` (`add_css_views`),
 	KEY `idx_add_javascript_view_file` (`add_javascript_view_file`),
 	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`),
@@ -315,16 +315,16 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_codename` (`codename`),
-	KEY `idx_add_css_document` (`add_css_document`),
 	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_add_css` (`add_css`),
 	KEY `idx_add_js_document` (`add_js_document`),
 	KEY `idx_add_javascript_file` (`add_javascript_file`),
+	KEY `idx_add_css_document` (`add_css_document`),
 	KEY `idx_main_get` (`main_get`),
 	KEY `idx_dynamic_get` (`dynamic_get`),
 	KEY `idx_add_php_document` (`add_php_document`),
-	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_add_php_view` (`add_php_view`),
+	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
 	KEY `idx_add_php_jview` (`add_php_jview`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -387,9 +387,9 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_codename` (`codename`),
-	KEY `idx_add_css_document` (`add_css_document`),
 	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_add_css` (`add_css`),
+	KEY `idx_add_css_document` (`add_css_document`),
 	KEY `idx_add_javascript_file` (`add_javascript_file`),
 	KEY `idx_add_js_document` (`add_js_document`),
 	KEY `idx_main_get` (`main_get`),
@@ -435,8 +435,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_alias` (`alias`),
-	KEY `idx_dynamic_get` (`dynamic_get`),
-	KEY `idx_add_php_view` (`add_php_view`)
+	KEY `idx_add_php_view` (`add_php_view`),
+	KEY `idx_dynamic_get` (`dynamic_get`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
@@ -531,12 +531,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_name` (`name`),
 	KEY `idx_main_source` (`main_source`),
 	KEY `idx_gettype` (`gettype`),
+	KEY `idx_add_php_router_parse` (`add_php_router_parse`),
 	KEY `idx_add_php_after_getitems` (`add_php_after_getitems`),
 	KEY `idx_add_php_before_getitems` (`add_php_before_getitems`),
-	KEY `idx_add_php_before_getitem` (`add_php_before_getitem`),
-	KEY `idx_add_php_router_parse` (`add_php_router_parse`),
-	KEY `idx_add_php_after_getitem` (`add_php_after_getitem`),
 	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
+	KEY `idx_add_php_after_getitem` (`add_php_after_getitem`),
+	KEY `idx_add_php_before_getitem` (`add_php_before_getitem`),
 	KEY `idx_getcustom` (`getcustom`),
 	KEY `idx_pagination` (`pagination`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -578,8 +578,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	KEY `idx_component` (`component`),
 	KEY `idx_target` (`target`),
 	KEY `idx_type` (`type`),
-	KEY `idx_to_line` (`to_line`),
 	KEY `idx_function_name` (`function_name`),
+	KEY `idx_to_line` (`to_line`),
 	KEY `idx_from_line` (`from_line`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
@@ -701,15 +701,15 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
 	KEY `idx_datatype` (`datatype`),
 	KEY `idx_indexes` (`indexes`),
 	KEY `idx_null_switch` (`null_switch`),
-	KEY `idx_datalenght_other` (`datalenght_other`),
-	KEY `idx_datadefault` (`datadefault`),
 	KEY `idx_add_css_view` (`add_css_view`),
-	KEY `idx_datadefault_other` (`datadefault_other`),
-	KEY `idx_datalenght` (`datalenght`),
-	KEY `idx_add_css_views` (`add_css_views`),
+	KEY `idx_catid` (`catid`),
 	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`),
 	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`),
-	KEY `idx_catid` (`catid`)
+	KEY `idx_add_css_views` (`add_css_views`),
+	KEY `idx_datalenght` (`datalenght`),
+	KEY `idx_datadefault_other` (`datadefault_other`),
+	KEY `idx_datadefault` (`datadefault`),
+	KEY `idx_datalenght_other` (`datalenght_other`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
@@ -868,9 +868,9 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 	KEY `idx_title` (`title`),
 	KEY `idx_type` (`type`),
 	KEY `idx_location` (`location`),
+	KEY `idx_article` (`article`),
 	KEY `idx_target` (`target`),
-	KEY `idx_alias` (`alias`),
-	KEY `idx_article` (`article`)
+	KEY `idx_alias` (`alias`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (

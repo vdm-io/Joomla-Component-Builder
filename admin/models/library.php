@@ -100,20 +100,20 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->addconditions))
-			{
-				// Convert the addconditions field to an array.
-				$addconditions = new Registry;
-				$addconditions->loadString($item->addconditions);
-				$item->addconditions = $addconditions->toArray();
-			}
-
 			if (!empty($item->libraries))
 			{
 				// Convert the libraries field to an array.
 				$libraries = new Registry;
 				$libraries->loadString($item->libraries);
 				$item->libraries = $libraries->toArray();
+			}
+
+			if (!empty($item->addconditions))
+			{
+				// Convert the addconditions field to an array.
+				$addconditions = new Registry;
+				$addconditions->loadString($item->addconditions);
+				$item->addconditions = $addconditions->toArray();
 			}
 
 			if (!empty($item->php_setdocument))
@@ -918,19 +918,6 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
-		// Set the addconditions items to data.
-		if (isset($data['addconditions']) && is_array($data['addconditions']))
-		{
-			$addconditions = new JRegistry;
-			$addconditions->loadArray($data['addconditions']);
-			$data['addconditions'] = (string) $addconditions;
-		}
-		elseif (!isset($data['addconditions']))
-		{
-			// Set the empty addconditions to data
-			$data['addconditions'] = '';
-		}
-
 		// Set the libraries items to data.
 		if (isset($data['libraries']) && is_array($data['libraries']))
 		{
@@ -942,6 +929,19 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 		{
 			// Set the empty libraries to data
 			$data['libraries'] = '';
+		}
+
+		// Set the addconditions items to data.
+		if (isset($data['addconditions']) && is_array($data['addconditions']))
+		{
+			$addconditions = new JRegistry;
+			$addconditions->loadArray($data['addconditions']);
+			$data['addconditions'] = (string) $addconditions;
+		}
+		elseif (!isset($data['addconditions']))
+		{
+			// Set the empty addconditions to data
+			$data['addconditions'] = '';
 		}
 
 		// Set the php_setdocument string to base64 string.

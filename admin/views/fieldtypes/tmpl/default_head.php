@@ -46,11 +46,11 @@ defined('_JEXEC') or die('Restricted access');
 	<th class="nowrap" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELDTYPE_NAME_LABEL', 'name', $this->listDirn, $this->listOrder); ?>
 	</th>
-	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPE_CATEGORY', 'catid', $this->listDirn, $this->listOrder); ?>
-	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_LABEL', 'short_description', $this->listDirn, $this->listOrder); ?>
+	</th>
+	<th class="nowrap" >
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPE_CATEGORY', 'catid', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

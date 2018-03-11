@@ -103,20 +103,20 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 				$item->addfoldersfullpath = $addfoldersfullpath->toArray();
 			}
 
-			if (!empty($item->addurls))
-			{
-				// Convert the addurls field to an array.
-				$addurls = new Registry;
-				$addurls->loadString($item->addurls);
-				$item->addurls = $addurls->toArray();
-			}
-
 			if (!empty($item->addfilesfullpath))
 			{
 				// Convert the addfilesfullpath field to an array.
 				$addfilesfullpath = new Registry;
 				$addfilesfullpath->loadString($item->addfilesfullpath);
 				$item->addfilesfullpath = $addfilesfullpath->toArray();
+			}
+
+			if (!empty($item->addfolders))
+			{
+				// Convert the addfolders field to an array.
+				$addfolders = new Registry;
+				$addfolders->loadString($item->addfolders);
+				$item->addfolders = $addfolders->toArray();
 			}
 
 			if (!empty($item->addfiles))
@@ -127,12 +127,12 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 				$item->addfiles = $addfiles->toArray();
 			}
 
-			if (!empty($item->addfolders))
+			if (!empty($item->addurls))
 			{
-				// Convert the addfolders field to an array.
-				$addfolders = new Registry;
-				$addfolders->loadString($item->addfolders);
-				$item->addfolders = $addfolders->toArray();
+				// Convert the addurls field to an array.
+				$addurls = new Registry;
+				$addurls->loadString($item->addurls);
+				$item->addurls = $addurls->toArray();
 			}
 			
 			if (!empty($item->id))
@@ -827,19 +827,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 			$data['addfoldersfullpath'] = '';
 		}
 
-		// Set the addurls items to data.
-		if (isset($data['addurls']) && is_array($data['addurls']))
-		{
-			$addurls = new JRegistry;
-			$addurls->loadArray($data['addurls']);
-			$data['addurls'] = (string) $addurls;
-		}
-		elseif (!isset($data['addurls']))
-		{
-			// Set the empty addurls to data
-			$data['addurls'] = '';
-		}
-
 		// Set the addfilesfullpath items to data.
 		if (isset($data['addfilesfullpath']) && is_array($data['addfilesfullpath']))
 		{
@@ -851,6 +838,19 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 		{
 			// Set the empty addfilesfullpath to data
 			$data['addfilesfullpath'] = '';
+		}
+
+		// Set the addfolders items to data.
+		if (isset($data['addfolders']) && is_array($data['addfolders']))
+		{
+			$addfolders = new JRegistry;
+			$addfolders->loadArray($data['addfolders']);
+			$data['addfolders'] = (string) $addfolders;
+		}
+		elseif (!isset($data['addfolders']))
+		{
+			// Set the empty addfolders to data
+			$data['addfolders'] = '';
 		}
 
 		// Set the addfiles items to data.
@@ -866,17 +866,17 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 			$data['addfiles'] = '';
 		}
 
-		// Set the addfolders items to data.
-		if (isset($data['addfolders']) && is_array($data['addfolders']))
+		// Set the addurls items to data.
+		if (isset($data['addurls']) && is_array($data['addurls']))
 		{
-			$addfolders = new JRegistry;
-			$addfolders->loadArray($data['addfolders']);
-			$data['addfolders'] = (string) $addfolders;
+			$addurls = new JRegistry;
+			$addurls->loadArray($data['addurls']);
+			$data['addurls'] = (string) $addurls;
 		}
-		elseif (!isset($data['addfolders']))
+		elseif (!isset($data['addurls']))
 		{
-			// Set the empty addfolders to data
-			$data['addfolders'] = '';
+			// Set the empty addurls to data
+			$data['addurls'] = '';
 		}
         
 		// Set the Params Items to data

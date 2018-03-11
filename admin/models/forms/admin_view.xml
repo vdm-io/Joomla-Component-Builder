@@ -130,16 +130,10 @@
                        filter="HTML"
                        message="COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_MESSAGE"
                        hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_HINT" />
-                <!-- Icon Field. Type: Media. (joomla)-->
-                <field type="media"
-                       name="icon"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
-                       directory="" />
-                <!-- Add_php_document Field. Type: Radio. (joomla)-->
+                <!-- Add_php_after_publish Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_document"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL"
+                       name="add_php_after_publish"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_PUBLISH_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -147,22 +141,10 @@
                         <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
                 </field>
-                <!-- Icon_category Field. Type: Media. (joomla)-->
-                <field type="media"
-                       name="icon_category"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_LABEL"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_DESCRIPTION"
-                       directory="" />
-                <!-- Icon_add Field. Type: Media. (joomla)-->
-                <field type="media"
-                       name="icon_add"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_LABEL"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_DESCRIPTION"
-                       directory="" />
-                <!-- Add_php_postsavehook Field. Type: Radio. (joomla)-->
+                <!-- Add_php_batchmove Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_postsavehook"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_POSTSAVEHOOK_LABEL"
+                       name="add_php_batchmove"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHMOVE_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -170,11 +152,10 @@
                         <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
                 </field>
-                <!-- Add_custom_import Field. Type: Radio. (joomla)-->
+                <!-- Add_php_allowedit Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_custom_import"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_DESCRIPTION"
+                       name="add_php_allowedit"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWEDIT_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -182,10 +163,10 @@
                         <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
                 </field>
-                <!-- Add_php_before_publish Field. Type: Radio. (joomla)-->
+                <!-- Add_php_save Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_before_publish"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_PUBLISH_LABEL"
+                       name="add_php_save"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_SAVE_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -193,6 +174,35 @@
                         <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
                 </field>
+                <!-- Add_php_getlistquery Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_getlistquery"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETLISTQUERY_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+                </field>
+                <!-- Php_import_save Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="php_import_save"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_LABEL"
+                       rows="30"
+                       cols="15"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_HINT"
+                       required="true" />
+                <!-- Note_beginner_import Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_beginner_import"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_beginner_import" />
                 <!-- Type Field. Type: List. (joomla)-->
                 <field type="list"
                        name="type"
@@ -205,27 +215,13 @@
                         <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_READWRITE</option>
                         <option value="2">COM_COMPONENTBUILDER_ADMIN_VIEW_READONLY</option>
                 </field>
-                <!-- Description Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="description"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_LABEL"
-                       rows="11"
-                       cols="10"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_DESCRIPTION"
-                       class="text_area span12"
-                       filter="HTML"
-                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_HINT" />
-                <!-- Add_php_batchcopy Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_batchcopy"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHCOPY_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-                </field>
+                <!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_linked_to_notice"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_DESCRIPTION"
+                       heading="h4"
+                       class="note_linked_to_notice" />
                 <!-- Add_fadein Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_fadein"
@@ -237,94 +233,26 @@
                         <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_ADD</option>
                         <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_REMOVE</option>
                 </field>
-                <!-- Add_php_before_delete Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_before_delete"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_DELETE_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-                </field>
-                <!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_linked_to_notice"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_LABEL"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_DESCRIPTION"
-                       heading="h4"
-                       class="note_linked_to_notice" />
-                <!-- Addtables Field. Type: Subform. (joomla)-->
-                <field type="subform"
-                       name="addtables"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL"
-                       layout="joomla.form.field.subform.repeatable-table"
-                       multiple="true"
-                       icon="list"
-                       maximum="50">
-                        <form hidden="true"
-                              name="list_addtables_modal"
-                              repeat="true">
-                                <!-- Table Field. Type: Dbtables. (custom)-->
-                                <field type="dbtables"
-                                       name="table"
-                                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE_LABEL"
-                                       class="list_class"
-                                       multiple="false"
-                                       default="0"
-                                       required="false"
-                                       button="false" />
-                                <!-- Sourcemap Field. Type: Textarea. (joomla)-->
-                                <field type="textarea"
-                                       name="sourcemap"
-                                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_LABEL"
-                                       rows="22"
-                                       cols="30"
-                                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_DESCRIPTION"
-                                       class="text_area span4"
-                                       filter="HTML"
-                                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_HINT"
-                                       required="false" />
-                        </form>
-                </field>
-                <!-- Add_php_getitems_after_all Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_getitems_after_all"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_AFTER_ALL_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-                </field>
-                <!-- Php_import_headers Field. Type: Textarea. (joomla)-->
+                <!-- Description Field. Type: Textarea. (joomla)-->
                 <field type="textarea"
-                       name="php_import_headers"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_LABEL"
-                       rows="30"
-                       cols="15"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_DESCRIPTION"
+                       name="description"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_LABEL"
+                       rows="11"
+                       cols="10"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_DESCRIPTION"
                        class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_HINT"
-                       required="true" />
-                <!-- Add_php_before_save Field. Type: Radio. (joomla)-->
+                       filter="HTML"
+                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_DESCRIPTION_HINT" />
+                <!-- Icon_category Field. Type: Media. (joomla)-->
+                <field type="media"
+                       name="icon_category"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_DESCRIPTION"
+                       directory="" />
+                <!-- Add_php_after_delete Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_before_save"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_SAVE_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-                </field>
-                <!-- Add_php_getitems Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_getitems"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_LABEL"
+                       name="add_php_after_delete"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_DELETE_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -336,10 +264,10 @@
                 <field type="hidden"
                        name="not_required"
                        default="[]" />
-                <!-- Add_php_getlistquery Field. Type: Radio. (joomla)-->
+                <!-- Add_sql Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_getlistquery"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETLISTQUERY_LABEL"
+                       name="add_sql"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_SQL_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -354,17 +282,17 @@
                        description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_DESCRIPTION"
                        heading="h4"
                        class="alert alert-info note_on_permissions" />
-                <!-- Add_php_save Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_save"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_SAVE_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-                </field>
+                <!-- Html_import_view Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="html_import_view"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_LABEL"
+                       rows="30"
+                       cols="15"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_HINT"
+                       required="true" />
                 <!-- Addpermissions Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="addpermissions"
@@ -420,17 +348,12 @@
                                 </field>
                         </form>
                 </field>
-                <!-- Add_php_allowedit Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="add_php_allowedit"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWEDIT_LABEL"
-                       class="btn-group btn-group-yesno"
-                       default="0"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-                </field>
+                <!-- Icon_add Field. Type: Media. (joomla)-->
+                <field type="media"
+                       name="icon_add"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_DESCRIPTION"
+                       directory="" />
                 <!-- Note_on_tabs Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
                        name="note_on_tabs"
@@ -438,10 +361,10 @@
                        description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION"
                        heading="h4"
                        class="alert alert-info note_on_tabs" />
-                <!-- Add_php_batchmove Field. Type: Radio. (joomla)-->
+                <!-- Add_php_before_save Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_batchmove"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHMOVE_LABEL"
+                       name="add_php_before_save"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_SAVE_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -477,10 +400,10 @@
                                        hint="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_HINT" />
                         </form>
                 </field>
-                <!-- Add_php_after_publish Field. Type: Radio. (joomla)-->
+                <!-- Add_php_postsavehook Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_after_publish"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_PUBLISH_LABEL"
+                       name="add_php_postsavehook"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_POSTSAVEHOOK_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -495,10 +418,10 @@
                        description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_LINKED_VIEWS_DESCRIPTION"
                        heading="h4"
                        class="alert alert-info note_on_linked_views" />
-                <!-- Add_php_after_delete Field. Type: Radio. (joomla)-->
+                <!-- Add_php_batchcopy Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_php_after_delete"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_DELETE_LABEL"
+                       name="add_php_batchcopy"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHCOPY_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -584,10 +507,10 @@
                                 </field>
                         </form>
                 </field>
-                <!-- Add_sql Field. Type: Radio. (joomla)-->
+                <!-- Add_php_before_publish Field. Type: Radio. (joomla)-->
                 <field type="radio"
-                       name="add_sql"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_SQL_LABEL"
+                       name="add_php_before_publish"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_PUBLISH_LABEL"
                        class="btn-group btn-group-yesno"
                        default="0"
                        required="true">
@@ -602,45 +525,71 @@
                        description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_DESCRIPTION"
                        heading="h4"
                        class="alert alert-info note_create_edit_notice" />
-                <!-- Note_beginner_import Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_beginner_import"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_LABEL"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_beginner_import" />
+                <!-- Add_php_before_delete Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_before_delete"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_DELETE_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+                </field>
                 <!-- Note_create_edit_buttons Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
                        name="note_create_edit_buttons"
                        description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_BUTTONS_DESCRIPTION"
                        class="note_create_edit_buttons" />
-                <!-- Html_import_view Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="html_import_view"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_LABEL"
-                       rows="30"
-                       cols="15"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_DESCRIPTION"
-                       class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_HINT"
-                       required="true" />
+                <!-- Add_php_document Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_document"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+                </field>
                 <!-- Note_create_edit_display Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
                        name="note_create_edit_display"
                        description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_DISPLAY_DESCRIPTION"
                        class="note_create_edit_display" />
-                <!-- Php_import_save Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="php_import_save"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_LABEL"
-                       rows="30"
-                       cols="15"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_DESCRIPTION"
-                       class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_HINT"
-                       required="true" />
+                <!-- Addtables Field. Type: Subform. (joomla)-->
+                <field type="subform"
+                       name="addtables"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL"
+                       layout="joomla.form.field.subform.repeatable-table"
+                       multiple="true"
+                       icon="list"
+                       maximum="50">
+                        <form hidden="true"
+                              name="list_addtables_modal"
+                              repeat="true">
+                                <!-- Table Field. Type: Dbtables. (custom)-->
+                                <field type="dbtables"
+                                       name="table"
+                                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE_LABEL"
+                                       class="list_class"
+                                       multiple="false"
+                                       default="0"
+                                       required="false"
+                                       button="false" />
+                                <!-- Sourcemap Field. Type: Textarea. (joomla)-->
+                                <field type="textarea"
+                                       name="sourcemap"
+                                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_LABEL"
+                                       rows="22"
+                                       cols="30"
+                                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_DESCRIPTION"
+                                       class="text_area span4"
+                                       filter="HTML"
+                                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_HINT"
+                                       required="false" />
+                        </form>
+                </field>
                 <!-- Add_css_view Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_css_view"
@@ -652,17 +601,51 @@
                         <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
                 </field>
-                <!-- Php_getitem Field. Type: Textarea. (joomla)-->
+                <!-- Add_custom_import Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_custom_import"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_DESCRIPTION"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+                </field>
+                <!-- Add_php_getitems Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_getitems"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+                </field>
+                <!-- Php_import_headers Field. Type: Textarea. (joomla)-->
                 <field type="textarea"
-                       name="php_getitem"
-                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_LABEL"
+                       name="php_import_headers"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_LABEL"
                        rows="30"
                        cols="15"
-                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_DESCRIPTION"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_DESCRIPTION"
                        class="text_area span12"
                        filter="raw"
-                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_HINT"
+                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_HINT"
                        required="true" />
+                <!-- Add_php_getitems_after_all Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="add_php_getitems_after_all"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_AFTER_ALL_LABEL"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+                        <option value="0">COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+                </field>
                 <!-- Css_view Field. Type: Textarea. (joomla)-->
                 <field type="textarea"
                        name="css_view"
@@ -674,6 +657,12 @@
                        filter="raw"
                        hint="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEW_HINT"
                        required="true" />
+                <!-- Icon Field. Type: Media. (joomla)-->
+                <field type="media"
+                       name="icon"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
+                       directory="" />
                 <!-- Php_getitems Field. Type: Textarea. (joomla)-->
                 <field type="textarea"
                        name="php_getitems"
@@ -1491,6 +1480,17 @@
                        class="text_area span12"
                        filter="raw"
                        hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_EXT_HINT"
+                       required="true" />
+                <!-- Php_getitem Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="php_getitem"
+                       label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_LABEL"
+                       rows="30"
+                       cols="15"
+                       description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_HINT"
                        required="true" />
         </fieldset>
 	

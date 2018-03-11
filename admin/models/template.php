@@ -103,16 +103,16 @@ class ComponentbuilderModelTemplate extends JModelAdmin
 				$item->libraries = $libraries->toArray();
 			}
 
-			if (!empty($item->template))
-			{
-				// base64 Decode template.
-				$item->template = base64_decode($item->template);
-			}
-
 			if (!empty($item->php_view))
 			{
 				// base64 Decode php_view.
 				$item->php_view = base64_decode($item->php_view);
+			}
+
+			if (!empty($item->template))
+			{
+				// base64 Decode template.
+				$item->template = base64_decode($item->template);
 			}
 			
 			if (!empty($item->id))
@@ -839,16 +839,16 @@ class ComponentbuilderModelTemplate extends JModelAdmin
 			$data['libraries'] = '';
 		}
 
-		// Set the template string to base64 string.
-		if (isset($data['template']))
-		{
-			$data['template'] = base64_encode($data['template']);
-		}
-
 		// Set the php_view string to base64 string.
 		if (isset($data['php_view']))
 		{
 			$data['php_view'] = base64_encode($data['php_view']);
+		}
+
+		// Set the template string to base64 string.
+		if (isset($data['template']))
+		{
+			$data['template'] = base64_encode($data['template']);
 		}
         
 		// Set the Params Items to data

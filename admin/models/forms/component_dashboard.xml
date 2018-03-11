@@ -89,17 +89,6 @@
                        required="true"
                        readonly="true"
                        button="false" />
-                <!-- Php_dashboard_methods Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="php_dashboard_methods"
-                       label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_LABEL"
-                       rows="17"
-                       cols="5"
-                       description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_DESCRIPTION"
-                       class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_HINT"
-                       required="false" />
                 <!-- Dashboard_tab Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="dashboard_tab"
@@ -152,6 +141,17 @@
                                        required="false" />
                         </form>
                 </field>
+                <!-- Php_dashboard_methods Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="php_dashboard_methods"
+                       label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_LABEL"
+                       rows="17"
+                       cols="5"
+                       description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_DESCRIPTION"
+                       class="text_area span12"
+                       filter="raw"
+                       hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_HINT"
+                       required="false" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

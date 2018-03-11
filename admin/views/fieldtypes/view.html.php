@@ -263,8 +263,8 @@ class ComponentbuilderViewFieldtypes extends JViewLegacy
 			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_FIELDTYPE_NAME_LABEL'),
-			'c.category_title' => JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPE_CATEGORY'),
 			'a.short_description' => JText::_('COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_LABEL'),
+			'c.category_title' => JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPE_CATEGORY'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	}

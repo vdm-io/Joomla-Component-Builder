@@ -1246,7 +1246,11 @@ class Fields extends Structure
 			$this->tabCounter[$viewName][(int) $field['tab']] = $tabName;
 			if (isset($this->layoutBuilder[$viewName][$tabName][(int) $field['alignment']][(int) $field['order_edit']]))
 			{
-				$size = count($this->layoutBuilder[$viewName][$tabName][(int) $field['alignment']][(int) $field['order_edit']]) + 1;
+				$size = (int) count((array) $this->layoutBuilder[$viewName][$tabName][(int) $field['alignment']]) + 1;
+				while(isset($this->layoutBuilder[$viewName][$tabName][(int) $field['alignment']][$size]))
+				{
+					$size++;
+				}
 				$this->layoutBuilder[$viewName][$tabName][(int) $field['alignment']][$size] = $name;
 			}
 			else
@@ -1266,7 +1270,11 @@ class Fields extends Structure
 			{
 				if (isset($this->newPublishingFields[$viewName][(int) $field['alignment']][(int) $field['order_edit']]))
 				{
-					$size = count($this->newPublishingFields[$viewName][(int) $field['alignment']][(int) $field['order_edit']]) + 1;
+					$size = (int) count((array) $this->newPublishingFields[$viewName][(int) $field['alignment']]) + 1;
+					while(isset($this->newPublishingFields[$viewName][(int) $field['alignment']][$size]))
+					{
+						$size++;
+					}
 					$this->newPublishingFields[$viewName][(int) $field['alignment']][$size] = $name;
 				}
 				else
@@ -1280,7 +1288,11 @@ class Fields extends Structure
 			$this->tabCounter[$viewName][1] = 'Details';
 			if (isset($this->layoutBuilder[$viewName]['Details'][(int) $field['alignment']][(int) $field['order_edit']]))
 			{
-				$size = count($this->layoutBuilder[$viewName]['Details'][(int) $field['alignment']][(int) $field['order_edit']]) + 1;
+				$size = (int) count((array) $this->layoutBuilder[$viewName]['Details'][(int) $field['alignment']]) + 1;
+				while(isset($this->layoutBuilder[$viewName]['Details'][(int) $field['alignment']][$size]))
+				{
+					$size++;
+				}
 				$this->layoutBuilder[$viewName]['Details'][(int) $field['alignment']][$size] = $name;
 			}
 			else

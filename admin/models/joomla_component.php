@@ -108,64 +108,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->addcontributors = $addcontributors->toArray();
 			}
 
-			if (!empty($item->php_postflight_install))
+			if (!empty($item->php_postflight_update))
 			{
-				// base64 Decode php_postflight_install.
-				$item->php_postflight_install = base64_decode($item->php_postflight_install);
+				// base64 Decode php_postflight_update.
+				$item->php_postflight_update = base64_decode($item->php_postflight_update);
 			}
 
-			if (!empty($item->php_site_event))
+			if (!empty($item->php_preflight_update))
 			{
-				// base64 Decode php_site_event.
-				$item->php_site_event = base64_decode($item->php_site_event);
-			}
-
-			if (!empty($item->readme))
-			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
-			}
-
-			if (!empty($item->css_admin))
-			{
-				// base64 Decode css_admin.
-				$item->css_admin = base64_decode($item->css_admin);
-			}
-
-			if (!empty($item->php_preflight_install))
-			{
-				// base64 Decode php_preflight_install.
-				$item->php_preflight_install = base64_decode($item->php_preflight_install);
-			}
-
-			if (!empty($item->php_method_uninstall))
-			{
-				// base64 Decode php_method_uninstall.
-				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-			}
-
-			if (!empty($item->php_helper_both))
-			{
-				// base64 Decode php_helper_both.
-				$item->php_helper_both = base64_decode($item->php_helper_both);
-			}
-
-			if (!empty($item->php_admin_event))
-			{
-				// base64 Decode php_admin_event.
-				$item->php_admin_event = base64_decode($item->php_admin_event);
-			}
-
-			if (!empty($item->php_helper_admin))
-			{
-				// base64 Decode php_helper_admin.
-				$item->php_helper_admin = base64_decode($item->php_helper_admin);
-			}
-
-			if (!empty($item->php_helper_site))
-			{
-				// base64 Decode php_helper_site.
-				$item->php_helper_site = base64_decode($item->php_helper_site);
+				// base64 Decode php_preflight_update.
+				$item->php_preflight_update = base64_decode($item->php_preflight_update);
 			}
 
 			if (!empty($item->javascript))
@@ -180,22 +132,70 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->css_site = base64_decode($item->css_site);
 			}
 
-			if (!empty($item->php_preflight_update))
-			{
-				// base64 Decode php_preflight_update.
-				$item->php_preflight_update = base64_decode($item->php_preflight_update);
-			}
-
-			if (!empty($item->php_postflight_update))
-			{
-				// base64 Decode php_postflight_update.
-				$item->php_postflight_update = base64_decode($item->php_postflight_update);
-			}
-
 			if (!empty($item->sql))
 			{
 				// base64 Decode sql.
 				$item->sql = base64_decode($item->sql);
+			}
+
+			if (!empty($item->php_helper_admin))
+			{
+				// base64 Decode php_helper_admin.
+				$item->php_helper_admin = base64_decode($item->php_helper_admin);
+			}
+
+			if (!empty($item->php_helper_site))
+			{
+				// base64 Decode php_helper_site.
+				$item->php_helper_site = base64_decode($item->php_helper_site);
+			}
+
+			if (!empty($item->php_helper_both))
+			{
+				// base64 Decode php_helper_both.
+				$item->php_helper_both = base64_decode($item->php_helper_both);
+			}
+
+			if (!empty($item->php_admin_event))
+			{
+				// base64 Decode php_admin_event.
+				$item->php_admin_event = base64_decode($item->php_admin_event);
+			}
+
+			if (!empty($item->php_site_event))
+			{
+				// base64 Decode php_site_event.
+				$item->php_site_event = base64_decode($item->php_site_event);
+			}
+
+			if (!empty($item->css_admin))
+			{
+				// base64 Decode css_admin.
+				$item->css_admin = base64_decode($item->css_admin);
+			}
+
+			if (!empty($item->php_preflight_install))
+			{
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
+			if (!empty($item->php_postflight_install))
+			{
+				// base64 Decode php_postflight_install.
+				$item->php_postflight_install = base64_decode($item->php_postflight_install);
+			}
+
+			if (!empty($item->php_method_uninstall))
+			{
+				// base64 Decode php_method_uninstall.
+				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+			}
+
+			if (!empty($item->readme))
+			{
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
 			}
 
 			if (!empty($item->buildcompsql))
@@ -279,192 +279,8 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.joomla_component');
 			}
 		}
-		$this->componentsvvvv = $item->id;
 
 		return $item;
-	}
-
-	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getVwntranslation()
-	{
-		// Get the user object.
-		$user = JFactory::getUser();
-		// Create a new query object.
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-
-		// Select some fields
-		$query->select('a.*');
-
-		// From the componentbuilder_language_translation table
-		$query->from($db->quoteName('#__componentbuilder_language_translation', 'a'));
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
-
-		// Order the results by ordering
-		$query->order('a.published  ASC');
-		$query->order('a.ordering  ASC');
-
-		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$items = $db->loadObjectList();
-
-			// set values to display correctly.
-			if (ComponentbuilderHelper::checkArray($items))
-			{
-				// get user object.
-				$user = JFactory::getUser();
-				foreach ($items as $nr => &$item)
-				{
-					$access = ($user->authorise('language_translation.access', 'com_componentbuilder.language_translation.' . (int) $item->id) && $user->authorise('language_translation.access', 'com_componentbuilder'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-
-			// Filter by componentsvvvv Array Field
-			$componentsvvvv = $this->componentsvvvv;
-			if (ComponentbuilderHelper::checkArray($items) && $componentsvvvv)
-			{
-				foreach ($items as $nr => &$item)
-				{
-					if (ComponentbuilderHelper::checkJson($item->components))
-					{
-						$item->components = json_decode($item->components, true);
-					}
-					elseif (!isset($item->components) || !ComponentbuilderHelper::checkArray($item->components))
-					{
-						unset($items[$nr]);
-						continue;
-					}
-					if (!in_array($componentsvvvv,$item->components))
-					{
-						unset($items[$nr]);
-						continue;
-					}
-				}
-			}
-			else
-			{
-				return false;
-			}
-
-				// show all languages that are already set for this string
-			if (!isset($_export) && ComponentbuilderHelper::checkArray($items))
-			{
-				foreach ($items as $nr => &$item)
-				{
-					$langBucket = array();
-					if (ComponentbuilderHelper::checkJson($item->translation))
-					{
-						$translations = json_decode($item->translation, true);
-						if (ComponentbuilderHelper::checkArray($translations))
-						{
-							foreach ($translations as $language)
-							{
-								if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
-								&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
-								{
-									$langBucket[$language['language']] = $language['language'];
-								}
-							}
-						}
-					}
-					// set how many component use this string
-					$componentCounter = '';
-					if (ComponentbuilderHelper::checkJson($item->components))
-					{
-						$item->components = json_decode($item->components, true);
-					}
-					if (ComponentbuilderHelper::checkArray($item->components))
-					{
-						$componentCounter = ' - <small>' . JText::_('COM_COMPONENTBUILDER_USED_IN') . ' ' . count($item->components) . '</small>';
-					}
-					// load the languages to the string
-					if (ComponentbuilderHelper::checkArray($langBucket))
-					{
-						$item->entranslation = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150) . $componentCounter;
-					}
-					else
-					{
-						$item->entranslation = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150) . $componentCounter;
-					}
-				}
-			}
-			// prep the lang strings for export
-			if (isset($_export) && $_export && ComponentbuilderHelper::checkArray($items))
-			{
-				// insure we have the same order in the languages
-				$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
-				foreach ($items as $nr => &$item)
-				{
-					// remove some values completely
-					unset($item->components);
-					unset($item->params);
-					unset($item->published);
-					unset($item->created_by);
-					unset($item->modified_by);
-					unset($item->created);
-					unset($item->modified);
-					unset($item->version);
-					unset($item->hits);
-					unset($item->access);
-					unset($item->ordering);
-					// set the lang order
-					if ($nr != 0)
-					{
-						foreach ($languages as $lanTag)
-						{
-							$item->{$lanTag} = '';
-						}
-						// now adapt the entranslation
-						if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
-						{
-							$translations = json_decode($item->translation, true);
-							if (ComponentbuilderHelper::checkArray($translations))
-							{
-								foreach ($translations as $language)
-								{
-									if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
-									&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
-									{
-										$item->{$language['language']} = $language['translation'];
-									}
-								}
-							}
-						}
-					}
-					// remove translation
-					unset($item->translation);
-				}
-			}
-			return $items;
-		}
-		return false;
 	} 
 
 	/**
@@ -1247,64 +1063,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['addcontributors'] = '';
 		}
 
-		// Set the php_postflight_install string to base64 string.
-		if (isset($data['php_postflight_install']))
+		// Set the php_postflight_update string to base64 string.
+		if (isset($data['php_postflight_update']))
 		{
-			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
+			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
-		// Set the php_site_event string to base64 string.
-		if (isset($data['php_site_event']))
+		// Set the php_preflight_update string to base64 string.
+		if (isset($data['php_preflight_update']))
 		{
-			$data['php_site_event'] = base64_encode($data['php_site_event']);
-		}
-
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
-		{
-			$data['readme'] = base64_encode($data['readme']);
-		}
-
-		// Set the css_admin string to base64 string.
-		if (isset($data['css_admin']))
-		{
-			$data['css_admin'] = base64_encode($data['css_admin']);
-		}
-
-		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
-		{
-			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
-		}
-
-		// Set the php_method_uninstall string to base64 string.
-		if (isset($data['php_method_uninstall']))
-		{
-			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
-		}
-
-		// Set the php_helper_both string to base64 string.
-		if (isset($data['php_helper_both']))
-		{
-			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
-		}
-
-		// Set the php_admin_event string to base64 string.
-		if (isset($data['php_admin_event']))
-		{
-			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
-		}
-
-		// Set the php_helper_admin string to base64 string.
-		if (isset($data['php_helper_admin']))
-		{
-			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
-		}
-
-		// Set the php_helper_site string to base64 string.
-		if (isset($data['php_helper_site']))
-		{
-			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
+			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
 		}
 
 		// Set the javascript string to base64 string.
@@ -1319,22 +1087,70 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['css_site'] = base64_encode($data['css_site']);
 		}
 
-		// Set the php_preflight_update string to base64 string.
-		if (isset($data['php_preflight_update']))
-		{
-			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
-		}
-
-		// Set the php_postflight_update string to base64 string.
-		if (isset($data['php_postflight_update']))
-		{
-			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
-		}
-
 		// Set the sql string to base64 string.
 		if (isset($data['sql']))
 		{
 			$data['sql'] = base64_encode($data['sql']);
+		}
+
+		// Set the php_helper_admin string to base64 string.
+		if (isset($data['php_helper_admin']))
+		{
+			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
+		}
+
+		// Set the php_helper_site string to base64 string.
+		if (isset($data['php_helper_site']))
+		{
+			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
+		}
+
+		// Set the php_helper_both string to base64 string.
+		if (isset($data['php_helper_both']))
+		{
+			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
+		}
+
+		// Set the php_admin_event string to base64 string.
+		if (isset($data['php_admin_event']))
+		{
+			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
+		}
+
+		// Set the php_site_event string to base64 string.
+		if (isset($data['php_site_event']))
+		{
+			$data['php_site_event'] = base64_encode($data['php_site_event']);
+		}
+
+		// Set the css_admin string to base64 string.
+		if (isset($data['css_admin']))
+		{
+			$data['css_admin'] = base64_encode($data['css_admin']);
+		}
+
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
+		{
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
+		// Set the php_postflight_install string to base64 string.
+		if (isset($data['php_postflight_install']))
+		{
+			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
+		}
+
+		// Set the php_method_uninstall string to base64 string.
+		if (isset($data['php_method_uninstall']))
+		{
+			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
+		}
+
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
+		{
+			$data['readme'] = base64_encode($data['readme']);
 		}
 
 		// Set the buildcompsql string to base64 string.

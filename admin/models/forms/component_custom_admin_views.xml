@@ -89,13 +89,6 @@
                        required="true"
                        readonly="true"
                        button="false" />
-                <!-- Note_on_custom_admin_views Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_on_custom_admin_views"
-                       label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_NOTE_ON_CUSTOM_ADMIN_VIEWS_LABEL"
-                       description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_NOTE_ON_CUSTOM_ADMIN_VIEWS_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_on_custom_admin_views" />
                 <!-- Addcustom_admin_views Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="addcustom_admin_views"
@@ -401,6 +394,13 @@
                                        button="false" />
                         </form>
                 </field>
+                <!-- Note_on_custom_admin_views Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_on_custom_admin_views"
+                       label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_NOTE_ON_CUSTOM_ADMIN_VIEWS_LABEL"
+                       description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_NOTE_ON_CUSTOM_ADMIN_VIEWS_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_on_custom_admin_views" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

@@ -266,16 +266,16 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 							continue;
 						}
 
-						// decode php_document
-						$item->php_document = base64_decode($item->php_document);
 						// decode php_jview_display
 						$item->php_jview_display = base64_decode($item->php_jview_display);
 						// decode php_view
 						$item->php_view = base64_decode($item->php_view);
-						// decode php_jview
-						$item->php_jview = base64_decode($item->php_jview);
+						// decode php_document
+						$item->php_document = base64_decode($item->php_document);
 						// decode default
 						$item->default = base64_decode($item->default);
+						// decode php_jview
+						$item->php_jview = base64_decode($item->php_jview);
 						// decode js_document
 						$item->js_document = base64_decode($item->js_document);
 						// decode javascript_file

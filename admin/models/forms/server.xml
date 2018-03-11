@@ -107,6 +107,17 @@
                         <option value="1">COM_COMPONENTBUILDER_SERVER_FTP</option>
                         <option value="2">COM_COMPONENTBUILDER_SERVER_SFTP</option>
                 </field>
+                <!-- Note_ssh_security Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_ssh_security"
+                       label="COM_COMPONENTBUILDER_SERVER_NOTE_SSH_SECURITY_LABEL"
+                       description="COM_COMPONENTBUILDER_SERVER_NOTE_SSH_SECURITY_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_ssh_security" />
+                <!-- Not_required Field. Type: Hidden. (joomla)-->
+                <field type="hidden"
+                       name="not_required"
+                       default="[]" />
                 <!-- Note_ftp_signature Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
                        name="note_ftp_signature"
@@ -114,6 +125,79 @@
                        description="COM_COMPONENTBUILDER_SERVER_NOTE_FTP_SIGNATURE_DESCRIPTION"
                        heading="h4"
                        class="alert alert-success note_ftp_signature" />
+                <!-- Signature Field. Type: Text. (joomla)-->
+                <field type="text"
+                       name="signature"
+                       label="COM_COMPONENTBUILDER_SERVER_SIGNATURE_LABEL"
+                       size="250"
+                       maxlength="250"
+                       description="COM_COMPONENTBUILDER_SERVER_SIGNATURE_DESCRIPTION"
+                       class="text_area span12"
+                       required="true"
+                       filter="STRING"
+                       message="COM_COMPONENTBUILDER_SERVER_SIGNATURE_MESSAGE"
+                       hint="COM_COMPONENTBUILDER_SERVER_SIGNATURE_HINT"
+                       autocomplete="off" />
+                <!-- Private_key Field. Type: Textarea. (joomla)-->
+                <field type="textarea"
+                       name="private_key"
+                       label="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_LABEL"
+                       rows="15"
+                       cols="5"
+                       description="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_DESCRIPTION"
+                       class="input-xxlarge span12"
+                       hint="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_HINT"
+                       required="true" />
+                <!-- Secret Field. Type: Password. (joomla)-->
+                <field type="password"
+                       name="secret"
+                       label="COM_COMPONENTBUILDER_SERVER_SECRET_LABEL"
+                       size="60"
+                       description="COM_COMPONENTBUILDER_SERVER_SECRET_DESCRIPTION"
+                       message="Error! Please add the passphrase here."
+                       class="text_area"
+                       filter="raw" />
+                <!-- Password Field. Type: Password. (joomla)-->
+                <field type="password"
+                       name="password"
+                       label="COM_COMPONENTBUILDER_SERVER_PASSWORD_LABEL"
+                       size="60"
+                       description="COM_COMPONENTBUILDER_SERVER_PASSWORD_DESCRIPTION"
+                       message="Error! Please add the password here."
+                       class="text_area"
+                       required="true"
+                       filter="raw" />
+                <!-- Private Field. Type: Text. (joomla)-->
+                <field type="text"
+                       name="private"
+                       label="COM_COMPONENTBUILDER_SERVER_PRIVATE_LABEL"
+                       size="50"
+                       maxlength="150"
+                       description="COM_COMPONENTBUILDER_SERVER_PRIVATE_DESCRIPTION"
+                       class="text_area"
+                       readonly="false"
+                       disabled="false"
+                       required="true"
+                       filter="PATH"
+                       message="COM_COMPONENTBUILDER_SERVER_PRIVATE_MESSAGE"
+                       hint="COM_COMPONENTBUILDER_SERVER_PRIVATE_HINT" />
+                <!-- Authentication Field. Type: List. (joomla)-->
+                <field type="list"
+                       name="authentication"
+                       label="COM_COMPONENTBUILDER_SERVER_AUTHENTICATION_LABEL"
+                       description="COM_COMPONENTBUILDER_SERVER_AUTHENTICATION_DESCRIPTION"
+                       class="list_class"
+                       multiple="false"
+                       filter="INT"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="">COM_COMPONENTBUILDER_SERVER_SELECT_AN_OPTION</option>
+                        <option value="1">COM_COMPONENTBUILDER_SERVER_PASSWORD</option>
+                        <option value="2">COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_FILE_PATH</option>
+                        <option value="3">COM_COMPONENTBUILDER_SERVER_BOTH_PASSWORD_PRIVATE_KEY_FILE_PATH</option>
+                        <option value="4">COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_TEXT_FIELD</option>
+                        <option value="5">COM_COMPONENTBUILDER_SERVER_BOTH_PASSWORD_PRIVATE_KEY_TEXT_FIELD</option>
+                </field>
                 <!-- Path Field. Type: Text. (joomla)-->
                 <field type="text"
                        name="path"
@@ -142,49 +226,6 @@
                        message="COM_COMPONENTBUILDER_SERVER_PORT_MESSAGE"
                        hint="COM_COMPONENTBUILDER_SERVER_PORT_HINT"
                        onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};" />
-                <!-- Authentication Field. Type: List. (joomla)-->
-                <field type="list"
-                       name="authentication"
-                       label="COM_COMPONENTBUILDER_SERVER_AUTHENTICATION_LABEL"
-                       description="COM_COMPONENTBUILDER_SERVER_AUTHENTICATION_DESCRIPTION"
-                       class="list_class"
-                       multiple="false"
-                       filter="INT"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="">COM_COMPONENTBUILDER_SERVER_SELECT_AN_OPTION</option>
-                        <option value="1">COM_COMPONENTBUILDER_SERVER_PASSWORD</option>
-                        <option value="2">COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_FILE_PATH</option>
-                        <option value="3">COM_COMPONENTBUILDER_SERVER_BOTH_PASSWORD_PRIVATE_KEY_FILE_PATH</option>
-                        <option value="4">COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_TEXT_FIELD</option>
-                        <option value="5">COM_COMPONENTBUILDER_SERVER_BOTH_PASSWORD_PRIVATE_KEY_TEXT_FIELD</option>
-                </field>
-                <!-- Note_ssh_security Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_ssh_security"
-                       label="COM_COMPONENTBUILDER_SERVER_NOTE_SSH_SECURITY_LABEL"
-                       description="COM_COMPONENTBUILDER_SERVER_NOTE_SSH_SECURITY_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_ssh_security" />
-                <!-- Password Field. Type: Password. (joomla)-->
-                <field type="password"
-                       name="password"
-                       label="COM_COMPONENTBUILDER_SERVER_PASSWORD_LABEL"
-                       size="60"
-                       description="COM_COMPONENTBUILDER_SERVER_PASSWORD_DESCRIPTION"
-                       message="Error! Please add the password here."
-                       class="text_area"
-                       required="true"
-                       filter="raw" />
-                <!-- Secret Field. Type: Password. (joomla)-->
-                <field type="password"
-                       name="secret"
-                       label="COM_COMPONENTBUILDER_SERVER_SECRET_LABEL"
-                       size="60"
-                       description="COM_COMPONENTBUILDER_SERVER_SECRET_DESCRIPTION"
-                       message="Error! Please add the passphrase here."
-                       class="text_area"
-                       filter="raw" />
                 <!-- Host Field. Type: Text. (joomla)-->
                 <field type="text"
                        name="host"
@@ -197,19 +238,6 @@
                        filter="STRING"
                        message="COM_COMPONENTBUILDER_SERVER_HOST_MESSAGE"
                        hint="COM_COMPONENTBUILDER_SERVER_HOST_HINT" />
-                <!-- Signature Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="signature"
-                       label="COM_COMPONENTBUILDER_SERVER_SIGNATURE_LABEL"
-                       size="250"
-                       maxlength="250"
-                       description="COM_COMPONENTBUILDER_SERVER_SIGNATURE_DESCRIPTION"
-                       class="text_area span12"
-                       required="true"
-                       filter="STRING"
-                       message="COM_COMPONENTBUILDER_SERVER_SIGNATURE_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SERVER_SIGNATURE_HINT"
-                       autocomplete="off" />
                 <!-- Username Field. Type: Text. (joomla)-->
                 <field type="text"
                        name="username"
@@ -222,34 +250,6 @@
                        filter="STRING"
                        message="COM_COMPONENTBUILDER_SERVER_USERNAME_MESSAGE"
                        hint="COM_COMPONENTBUILDER_SERVER_USERNAME_HINT" />
-                <!-- Not_required Field. Type: Hidden. (joomla)-->
-                <field type="hidden"
-                       name="not_required"
-                       default="[]" />
-                <!-- Private Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="private"
-                       label="COM_COMPONENTBUILDER_SERVER_PRIVATE_LABEL"
-                       size="50"
-                       maxlength="150"
-                       description="COM_COMPONENTBUILDER_SERVER_PRIVATE_DESCRIPTION"
-                       class="text_area"
-                       readonly="false"
-                       disabled="false"
-                       required="true"
-                       filter="PATH"
-                       message="COM_COMPONENTBUILDER_SERVER_PRIVATE_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SERVER_PRIVATE_HINT" />
-                <!-- Private_key Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="private_key"
-                       label="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_LABEL"
-                       rows="15"
-                       cols="5"
-                       description="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_DESCRIPTION"
-                       class="input-xxlarge span12"
-                       hint="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_HINT"
-                       required="true" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

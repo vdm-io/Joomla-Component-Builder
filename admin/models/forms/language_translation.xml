@@ -92,6 +92,15 @@
                        hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_HINT"
                        readonly="true"
                        disabled="true" />
+                <!-- Components Field. Type: Components. (custom)-->
+                <field type="components"
+                       name="components"
+                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
+                       class="list_class"
+                       multiple="true"
+                       default="0"
+                       required="true"
+                       button="false" />
                 <!-- Translation Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="translation"
@@ -126,15 +135,6 @@
                                        button="false" />
                         </form>
                 </field>
-                <!-- Components Field. Type: Components. (custom)-->
-                <field type="components"
-                       name="components"
-                       label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
-                       class="list_class"
-                       multiple="true"
-                       default="0"
-                       required="true"
-                       button="false" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

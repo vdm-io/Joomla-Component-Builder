@@ -271,10 +271,10 @@ class ComponentbuilderModelLayouts extends JModelList
 							continue;
 						}
 
-						// decode layout
-						$item->layout = base64_decode($item->layout);
 						// decode php_view
 						$item->php_view = base64_decode($item->php_view);
+						// decode layout
+						$item->layout = base64_decode($item->layout);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

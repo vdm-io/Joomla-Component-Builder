@@ -89,6 +89,13 @@
                        required="true"
                        readonly="true"
                        button="false" />
+                <!-- Note_constant_paths Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_constant_paths"
+                       label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_CONSTANT_PATHS_LABEL"
+                       description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_CONSTANT_PATHS_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_constant_paths" />
                 <!-- Addfoldersfullpath Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="addfoldersfullpath"
@@ -136,13 +143,13 @@
                                        class="inputbox" />
                         </form>
                 </field>
-                <!-- Note_add_folders Field. Type: Note. A None Database Field. (joomla)-->
+                <!-- Note_add_folders_fullpath Field. Type: Note. A None Database Field. (joomla)-->
                 <field type="note"
-                       name="note_add_folders"
-                       label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FOLDERS_LABEL"
-                       description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FOLDERS_DESCRIPTION"
+                       name="note_add_folders_fullpath"
+                       label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FOLDERS_FULLPATH_LABEL"
+                       description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FOLDERS_FULLPATH_DESCRIPTION"
                        heading="h4"
-                       class="alert alert-info note_add_folders" />
+                       class="alert alert-info note_add_folders_fullpath" />
                 <!-- Addfilesfullpath Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="addfilesfullpath"
@@ -191,6 +198,13 @@
                                        class="inputbox" />
                         </form>
                 </field>
+                <!-- Note_add_files_fullpath Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_add_files_fullpath"
+                       label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FILES_FULLPATH_LABEL"
+                       description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FILES_FULLPATH_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_add_files_fullpath" />
                 <!-- Addfolders Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="addfolders"
@@ -236,6 +250,13 @@
                                        class="inputbox" />
                         </form>
                 </field>
+                <!-- Note_add_folders Field. Type: Note. A None Database Field. (joomla)-->
+                <field type="note"
+                       name="note_add_folders"
+                       label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FOLDERS_LABEL"
+                       description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FOLDERS_DESCRIPTION"
+                       heading="h4"
+                       class="alert alert-info note_add_folders" />
                 <!-- Addfiles Field. Type: Subform. (joomla)-->
                 <field type="subform"
                        name="addfiles"
@@ -289,27 +310,6 @@
                        description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FILES_DESCRIPTION"
                        heading="h4"
                        class="alert alert-info note_add_files" />
-                <!-- Note_add_folders_fullpath Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_add_folders_fullpath"
-                       label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FOLDERS_FULLPATH_LABEL"
-                       description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FOLDERS_FULLPATH_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_add_folders_fullpath" />
-                <!-- Note_add_files_fullpath Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_add_files_fullpath"
-                       label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FILES_FULLPATH_LABEL"
-                       description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FILES_FULLPATH_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_add_files_fullpath" />
-                <!-- Note_constant_paths Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_constant_paths"
-                       label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_CONSTANT_PATHS_LABEL"
-                       description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_CONSTANT_PATHS_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_constant_paths" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

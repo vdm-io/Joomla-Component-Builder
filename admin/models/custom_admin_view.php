@@ -100,20 +100,20 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->libraries))
-			{
-				// Convert the libraries field to an array.
-				$libraries = new Registry;
-				$libraries->loadString($item->libraries);
-				$item->libraries = $libraries->toArray();
-			}
-
 			if (!empty($item->ajax_input))
 			{
 				// Convert the ajax_input field to an array.
 				$ajax_input = new Registry;
 				$ajax_input->loadString($item->ajax_input);
 				$item->ajax_input = $ajax_input->toArray();
+			}
+
+			if (!empty($item->libraries))
+			{
+				// Convert the libraries field to an array.
+				$libraries = new Registry;
+				$libraries->loadString($item->libraries);
+				$item->libraries = $libraries->toArray();
 			}
 
 			if (!empty($item->custom_get))
@@ -132,12 +132,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->custom_button = $custom_button->toArray();
 			}
 
-			if (!empty($item->php_document))
-			{
-				// base64 Decode php_document.
-				$item->php_document = base64_decode($item->php_document);
-			}
-
 			if (!empty($item->php_jview_display))
 			{
 				// base64 Decode php_jview_display.
@@ -150,16 +144,22 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->php_view = base64_decode($item->php_view);
 			}
 
-			if (!empty($item->php_jview))
+			if (!empty($item->php_document))
 			{
-				// base64 Decode php_jview.
-				$item->php_jview = base64_decode($item->php_jview);
+				// base64 Decode php_document.
+				$item->php_document = base64_decode($item->php_document);
 			}
 
 			if (!empty($item->default))
 			{
 				// base64 Decode default.
 				$item->default = base64_decode($item->default);
+			}
+
+			if (!empty($item->php_jview))
+			{
+				// base64 Decode php_jview.
+				$item->php_jview = base64_decode($item->php_jview);
 			}
 
 			if (!empty($item->js_document))
@@ -962,19 +962,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		// always reset the snippets
 		$data['snippet'] = 0;
 
-		// Set the libraries items to data.
-		if (isset($data['libraries']) && is_array($data['libraries']))
-		{
-			$libraries = new JRegistry;
-			$libraries->loadArray($data['libraries']);
-			$data['libraries'] = (string) $libraries;
-		}
-		elseif (!isset($data['libraries']))
-		{
-			// Set the empty libraries to data
-			$data['libraries'] = '';
-		}
-
 		// Set the ajax_input items to data.
 		if (isset($data['ajax_input']) && is_array($data['ajax_input']))
 		{
@@ -986,6 +973,19 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		{
 			// Set the empty ajax_input to data
 			$data['ajax_input'] = '';
+		}
+
+		// Set the libraries items to data.
+		if (isset($data['libraries']) && is_array($data['libraries']))
+		{
+			$libraries = new JRegistry;
+			$libraries->loadArray($data['libraries']);
+			$data['libraries'] = (string) $libraries;
+		}
+		elseif (!isset($data['libraries']))
+		{
+			// Set the empty libraries to data
+			$data['libraries'] = '';
 		}
 
 		// Set the custom_get items to data.
@@ -1014,12 +1014,6 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$data['custom_button'] = '';
 		}
 
-		// Set the php_document string to base64 string.
-		if (isset($data['php_document']))
-		{
-			$data['php_document'] = base64_encode($data['php_document']);
-		}
-
 		// Set the php_jview_display string to base64 string.
 		if (isset($data['php_jview_display']))
 		{
@@ -1032,16 +1026,22 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$data['php_view'] = base64_encode($data['php_view']);
 		}
 
-		// Set the php_jview string to base64 string.
-		if (isset($data['php_jview']))
+		// Set the php_document string to base64 string.
+		if (isset($data['php_document']))
 		{
-			$data['php_jview'] = base64_encode($data['php_jview']);
+			$data['php_document'] = base64_encode($data['php_document']);
 		}
 
 		// Set the default string to base64 string.
 		if (isset($data['default']))
 		{
 			$data['default'] = base64_encode($data['default']);
+		}
+
+		// Set the php_jview string to base64 string.
+		if (isset($data['php_jview']))
+		{
+			$data['php_jview'] = base64_encode($data['php_jview']);
 		}
 
 		// Set the js_document string to base64 string.

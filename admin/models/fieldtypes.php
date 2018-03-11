@@ -45,10 +45,10 @@ class ComponentbuilderModelFieldtypes extends JModelList
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.name','name',
+				'a.short_description','short_description',
 				'c.title','category_title',
 				'c.id', 'category_id',
-				'a.catid', 'catid',
-				'a.short_description','short_description'
+				'a.catid', 'catid'
 			);
 		}
 
@@ -72,6 +72,9 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
 		$this->setState('filter.name', $name);
 
+		$short_description = $this->getUserStateFromRequest($this->context . '.filter.short_description', 'filter_short_description');
+		$this->setState('filter.short_description', $short_description);
+
 		$category = $app->getUserStateFromRequest($this->context . '.filter.category', 'filter_category');
 		$this->setState('filter.category', $category);
 
@@ -80,9 +83,6 @@ class ComponentbuilderModelFieldtypes extends JModelList
 
 		$catid = $app->getUserStateFromRequest($this->context . '.filter.catid', 'filter_catid');
 		$this->setState('filter.catid', $catid);
-
-		$short_description = $this->getUserStateFromRequest($this->context . '.filter.short_description', 'filter_short_description');
-		$this->setState('filter.short_description', $short_description);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -197,7 +197,7 @@ class ComponentbuilderModelFieldtypes extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.description LIKE '.$search.' OR a.short_description LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.description LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.catid LIKE '.$search.')');
 			}
 		}
 
@@ -351,10 +351,10 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.name');
+		$id .= ':' . $this->getState('filter.short_description');
 		$id .= ':' . $this->getState('filter.category');
 		$id .= ':' . $this->getState('filter.category_id');
 		$id .= ':' . $this->getState('filter.catid');
-		$id .= ':' . $this->getState('filter.short_description');
 
 		return parent::getStoreId($id);
 	}

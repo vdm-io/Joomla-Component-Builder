@@ -143,17 +143,10 @@
                        multiple="false"
                        required="true"
                        button="false" />
-                <!-- Target Field. Type: Radio. (joomla)-->
-                <field type="radio"
-                       name="target"
-                       label="COM_COMPONENTBUILDER_HELP_DOCUMENT_TARGET_LABEL"
-                       description="COM_COMPONENTBUILDER_HELP_DOCUMENT_TARGET_DESCRIPTION"
-                       class="btn-group"
-                       required="true">
-                        <!-- Option Set.-->
-                        <option value="1">COM_COMPONENTBUILDER_HELP_DOCUMENT_SOME</option>
-                        <option value="2">COM_COMPONENTBUILDER_HELP_DOCUMENT_ALL</option>
-                </field>
+                <!-- Not_required Field. Type: Hidden. (joomla)-->
+                <field type="hidden"
+                       name="not_required"
+                       default="[]" />
                 <!-- Content Field. Type: Editor. (joomla)-->
                 <field type="editor"
                        name="content"
@@ -163,13 +156,6 @@
                        buttons="false"
                        filter="safehtml"
                        required="true" />
-                <!-- Alias Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="alias"
-                       label="COM_COMPONENTBUILDER_HELP_DOCUMENT_ALIAS_LABEL"
-                       description="JFIELD_ALIAS_DESC"
-                       filter="STRING"
-                       hint="COM_COMPONENTBUILDER_HELP_DOCUMENT_ALIAS_HINT" />
                 <!-- Article Field. Type: Articles. (custom)-->
                 <field type="articles"
                        name="article"
@@ -191,10 +177,24 @@
                        validated="url"
                        message="COM_COMPONENTBUILDER_HELP_DOCUMENT_URL_MESSAGE"
                        hint="COM_COMPONENTBUILDER_HELP_DOCUMENT_URL_HINT" />
-                <!-- Not_required Field. Type: Hidden. (joomla)-->
-                <field type="hidden"
-                       name="not_required"
-                       default="[]" />
+                <!-- Target Field. Type: Radio. (joomla)-->
+                <field type="radio"
+                       name="target"
+                       label="COM_COMPONENTBUILDER_HELP_DOCUMENT_TARGET_LABEL"
+                       description="COM_COMPONENTBUILDER_HELP_DOCUMENT_TARGET_DESCRIPTION"
+                       class="btn-group"
+                       required="true">
+                        <!-- Option Set.-->
+                        <option value="1">COM_COMPONENTBUILDER_HELP_DOCUMENT_SOME</option>
+                        <option value="2">COM_COMPONENTBUILDER_HELP_DOCUMENT_ALL</option>
+                </field>
+                <!-- Alias Field. Type: Text. (joomla)-->
+                <field type="text"
+                       name="alias"
+                       label="COM_COMPONENTBUILDER_HELP_DOCUMENT_ALIAS_LABEL"
+                       description="JFIELD_ALIAS_DESC"
+                       filter="STRING"
+                       hint="COM_COMPONENTBUILDER_HELP_DOCUMENT_ALIAS_HINT" />
         </fieldset>
 	
 	<!-- Access Control Fields. -->

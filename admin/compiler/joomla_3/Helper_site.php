@@ -65,7 +65,7 @@ abstract class ###Component###Helper
 		}
 		return $value;
 	}
-	
+
 	/**
 	*	Load the Component xml manifest.
 	**/
@@ -74,12 +74,12 @@ abstract class ###Component###Helper
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_###component###/###component###.xml";
 		return simplexml_load_file($manifestUrl);
 	}
-	
+
 	/**
 	*	Joomla version object
 	**/	
 	protected static $JVersion;
-	
+
 	/**
 	*	set/get Joomla version
 	**/
@@ -174,7 +174,7 @@ abstract class ###Component###Helper
 		}
 		return $model;
 	}
-	
+
 	/**
 	*	Add to asset Table
 	*/
@@ -238,7 +238,7 @@ abstract class ###Component###Helper
 		}
 		return false;
 	}
-	
+
 	/**
 	 *	Gets the default asset Rules for a component/view.
 	 */
@@ -441,7 +441,7 @@ abstract class ###Component###Helper
 		}
 		return $id;
 	}
-	
+
 	/**
 	*	Get the actions permissions
 	**/
@@ -633,7 +633,14 @@ abstract class ###Component###Helper
 		}
 		return $result;
 	}
-	
+
+	/**
+	*	Check if have an json string
+	*
+	*	@input	string   The json string to check
+	*
+	*	@returns bool true on success
+	**/
 	public static function checkJson($string)
 	{
 		if (self::checkString($string))
@@ -644,15 +651,29 @@ abstract class ###Component###Helper
 		return false;
 	}
 
+	/**
+	*	Check if have an object with a length
+	*
+	*	@input	object   The object to check
+	*
+	*	@returns bool true on success
+	**/
 	public static function checkObject($object)
 	{
-		if (isset($object) && is_object($object) && count($object) > 0)
+		if (isset($object) && is_object($object))
 		{
-			return true;
+			return count((array)$object) > 0;
 		}
 		return false;
 	}
 
+	/**
+	*	Check if have an array with a length
+	*
+	*	@input	array   The array to check
+	*
+	*	@returns bool true on success
+	**/
 	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && count($array) > 0)
@@ -674,6 +695,13 @@ abstract class ###Component###Helper
 		return false;
 	}
 
+	/**
+	*	Check if have a string with a length
+	*
+	*	@input	string   The string to check
+	*
+	*	@returns bool true on success
+	**/
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -682,7 +710,7 @@ abstract class ###Component###Helper
 		}
 		return false;
 	}
-	
+
 	/**
 	*	Check if we are connected
 	*	Thanks https://stackoverflow.com/a/4860432/1429677
@@ -708,6 +736,13 @@ abstract class ###Component###Helper
 		return $is_conn;
 	}
 
+	/**
+	*	Merge an array of array's
+	*
+	*	@input	array   The arrays you would like to merge
+	*
+	*	@returns array on success
+	**/
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -731,6 +766,13 @@ abstract class ###Component###Helper
 		return self::shorten($string, $length, $addTip);
 	}
 
+	/**
+	*	Shorten a string
+	*
+	*	@input	string   The you would like to shorten
+	*
+	*	@returns string on success
+	**/
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
@@ -765,6 +807,13 @@ abstract class ###Component###Helper
 		return $string;
 	}
 
+	/**
+	*	Making strings safe (various ways)
+	*
+	*	@input	string   The you would like to make safe
+	*
+	*	@returns string on success
+	**/
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true)
 	{
 		if ($replaceNumbers === true)
@@ -892,7 +941,7 @@ abstract class ###Component###Helper
 		// return the string with no numbers remaining.
 		return $string;
 	}
-	
+
 	/**
 	*	Convert an integer into an English word string
 	*	Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
