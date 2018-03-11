@@ -2464,55 +2464,39 @@ class Get
 						{
 							$result->php_calculation = $this->setDynamicValues(base64_decode($result->php_calculation));
 						}
-						// add php custom scripting (php_before_getitem)
-						if ($result->add_php_before_getitem == 1 && ComponentbuilderHelper::checkString($result->php_before_getitem))
+						// The array of the php scripts that should be added to the script builder
+						$phpSripts = array('php_before_getitem', 'php_after_getitem', 'php_before_getitems', 'php_after_getitems', 'php_getlistquery');
+						// load the php scripts
+						foreach ($phpSripts as $script)
 						{
-							if (!isset($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view_code]))
+							// add php script to the script builder
+							if (isset($result->{'add_'.$script}) && $result->{'add_'.$script} == 1 
+								&& isset($result->{$script}) && ComponentbuilderHelper::checkString($result->{$script}))
 							{
-								$this->customScriptBuilder[$this->target . '_php_before_getitem'][$view_code] = '';
+								// move all main gets out to the customscript builder
+								if ($result->gettype <= 2)
+								{
+									if (!isset($this->customScriptBuilder[$this->target . '_' . $script][$view_code]))
+									{
+										$this->customScriptBuilder[$this->target . '_' . $script][$view_code] = '';
+									}
+									$this->customScriptBuilder[$this->target . '_' . $script][$view_code] .= $this->setDynamicValues(PHP_EOL . PHP_EOL . base64_decode($result->{$script}));
+									// remove from local item
+									unset($result->{$script});
+									unset($result->{'add_'.$script});
+								}
+								else
+								{
+									// only for custom gets
+									$result->{$script} = $this->setDynamicValues(PHP_EOL . base64_decode($result->{$script}));
+								}
 							}
-							$this->customScriptBuilder[$this->target . '_php_before_getitem'][$view_code] .= $this->setDynamicValues(PHP_EOL . PHP_EOL . base64_decode($result->php_before_getitem));
-							unset($result->php_before_getitem);
-						}
-						// add php custom scripting (php_after_getitem)
-						if ($result->add_php_after_getitem == 1 && ComponentbuilderHelper::checkString($result->php_after_getitem))
-						{
-							if (!isset($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view_code]))
+							else
 							{
-								$this->customScriptBuilder[$this->target . '_php_after_getitem'][$view_code] = '';
+								// remove from local item
+								unset($result->{$script});
+								unset($result->{'add_'.$script});
 							}
-							$this->customScriptBuilder[$this->target . '_php_after_getitem'][$view_code] .= $this->setDynamicValues(PHP_EOL . PHP_EOL . base64_decode($result->php_after_getitem));
-							unset($result->php_after_getitem);
-						}
-						// add php custom scripting (php_before_getitems)
-						if ($result->add_php_before_getitems == 1 && ComponentbuilderHelper::checkString($result->php_before_getitems))
-						{
-							if (!isset($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view_code]))
-							{
-								$this->customScriptBuilder[$this->target . '_php_before_getitems'][$view_code] = '';
-							}
-							$this->customScriptBuilder[$this->target . '_php_before_getitems'][$view_code] .= $this->setDynamicValues(PHP_EOL . PHP_EOL . base64_decode($result->php_before_getitems));
-							unset($result->php_before_getitems);
-						}
-						// add php custom scripting (php_after_getitems)
-						if ($result->add_php_after_getitems == 1 && ComponentbuilderHelper::checkString($result->php_after_getitems))
-						{
-							if (!isset($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view_code]))
-							{
-								$this->customScriptBuilder[$this->target . '_php_after_getitems'][$view_code] = '';
-							}
-							$this->customScriptBuilder[$this->target . '_php_after_getitems'][$view_code] .= $this->setDynamicValues(PHP_EOL . PHP_EOL . base64_decode($result->php_after_getitems));
-							unset($result->php_after_getitems);
-						}
-						// add php custom scripting (php_getlistquery)
-						if ($result->add_php_getlistquery == 1 && ComponentbuilderHelper::checkString($result->php_getlistquery))
-						{
-							if (!isset($this->customScriptBuilder[$this->target . '_php_getlistquery'][$view_code]))
-							{
-								$this->customScriptBuilder[$this->target . '_php_getlistquery'][$view_code] = '';
-							}
-							$this->customScriptBuilder[$this->target . '_php_getlistquery'][$view_code] .= $this->setDynamicValues(PHP_EOL . base64_decode($result->php_getlistquery));
-							unset($result->php_getlistquery);
 						}
 						// set the getmethod code name
 						$result->key = ComponentbuilderHelper::safeString($view_code . ' ' . $result->name . ' ' . $result->id);

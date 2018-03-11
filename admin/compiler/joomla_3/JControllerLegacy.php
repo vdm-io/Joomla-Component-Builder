@@ -53,7 +53,7 @@ class ###Component###Controller extends JControllerLegacy
 
 		parent::__construct($config);
 	}
-	
+
 	/**
 	 * display task
 	 *

@@ -2169,8 +2169,16 @@ class Interpretation extends Fields
 			{
 				$this->siteDecrypt[$cryptionType][$code] = false;
 			}
+			// start the get Item
+			$getItem = '';
+			// set before item php
+			if (isset($get->add_php_before_getitem) && $get->add_php_before_getitem == 1
+				&& isset($get->php_before_getitem) && ComponentbuilderHelper::checkString($get->php_before_getitem))
+			{
+				$getItem .= $this->setPlaceholders($get->php_before_getitem, $this->placeholders);
+			}
 			// start loadin the get Item
-			$getItem = PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get a db connection.";
+			$getItem .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Get a db connection.";
 			$getItem .= PHP_EOL . "\t" . $tab . "\t\$db = JFactory::getDbo();";
 			$getItem .= PHP_EOL . PHP_EOL . $tab . "\t\t//" . $this->setLine(__LINE__) . " Create a new query object.";
 			$getItem .= PHP_EOL . "\t" . $tab . "\t\$query = \$db->getQuery(true);";
@@ -2290,10 +2298,16 @@ class Interpretation extends Fields
 			$getItem .= $this->setCustomViewGlobals($get->global, '$data', $asBucket, $tab);
 			// setup the custom gets that returns multipal values
 			$getItem .= $this->setCustomViewCustomJoin($get->custom_get, '$data', $code, $asBucket, $tab);
+			// set after item php
+			if (isset($get->add_php_after_getitem) && $get->add_php_after_getitem == 1
+				&& isset($get->php_after_getitem) && ComponentbuilderHelper::checkString($get->php_after_getitem))
+			{
+				$getItem .= $this->setPlaceholders($get->php_after_getitem, $this->placeholders);
+			}
 			// set calculations
 			if ($get->addcalculation == 1)
 			{
-				$get->php_calculation = (array) explode(PHP_EOL, $get->php_calculation);
+				$get->php_calculation = (array) explode(PHP_EOL, $this->setPlaceholders($get->php_calculation, $this->placeholders));
 				$getItem .= PHP_EOL . "\t" . $tab . "\t" . implode(PHP_EOL . "\t" . $tab . "\t", $get->php_calculation);
 			}
 			if ($type === 'custom')
@@ -2367,11 +2381,23 @@ class Interpretation extends Fields
 					$main .= PHP_EOL . "\t\t}";
 					$main .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the global params";
 					$main .= PHP_EOL . "\t\t\$globalParams = JComponentHelper::getParams('com_" . $this->fileContentStatic['###component###'] . "', true);";
+					// set php before listquery
+					if (isset($view->add_php_getlistquery) && $view->add_php_getlistquery == 1
+						&& isset($view->php_getlistquery) && ComponentbuilderHelper::checkString($view->php_getlistquery))
+					{
+						$main .= $this->setPlaceholders($view->php_getlistquery, $this->placeholders);
+					}
 					// ###SITE_GET_LIST_QUERY### <<<DYNAMIC>>>
 					$main .= $this->setCustomViewListQuery($view, $view->code, false);
 					// load the object list
 					$main .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
 					$main .= PHP_EOL . "\t\t\$db->setQuery(\$query);";
+					// set before items php
+					if (isset($view->add_php_before_getitems) && $view->add_php_before_getitems == 1
+						&& isset($view->php_before_getitems) && ComponentbuilderHelper::checkString($view->php_before_getitems))
+					{
+						$main .= $this->setPlaceholders($view->php_before_getitems, $this->placeholders);
+					}
 					$main .= PHP_EOL . "\t\t\$items = \$db->loadObjectList();";
 					$main .= PHP_EOL . PHP_EOL . "\t\tif (empty(\$items))";
 					$main .= PHP_EOL . "\t\t{";
@@ -2954,6 +2980,12 @@ class Interpretation extends Fields
 			}
 			$getItem .= PHP_EOL . "\t\t\t}";
 			$getItem .= PHP_EOL . "\t\t}";
+			// set after items php
+			if (isset($get->add_php_after_getitems) && $get->add_php_after_getitems == 1
+				&& isset($get->php_after_getitems) && ComponentbuilderHelper::checkString($get->php_after_getitems))
+			{
+				$getItem .= $this->setPlaceholders($get->php_after_getitems, $this->placeholders);
+			}
 			// remove empty foreach
 			if (strlen($getItem) <= 100)
 			{

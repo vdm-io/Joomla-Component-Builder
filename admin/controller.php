@@ -50,7 +50,7 @@ class ComponentbuilderController extends JControllerLegacy
 
 		parent::__construct($config);
 	}
-	
+
 	/**
 	 * display task
 	 *
