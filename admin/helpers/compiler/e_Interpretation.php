@@ -2195,6 +2195,12 @@ class Interpretation extends Fields
 			$getItem .= PHP_EOL . "\t" . $tab . "\t\$db->setQuery(\$query);";
 			$getItem .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Load the results as a stdClass object.";
 			$getItem .= PHP_EOL . "\t" . $tab . "\t\$data = \$db->loadObject();";
+			// set after item php
+			if (isset($get->add_php_after_getitem) && $get->add_php_after_getitem == 1
+				&& isset($get->php_after_getitem) && ComponentbuilderHelper::checkString($get->php_after_getitem))
+			{
+				$getItem .= $this->setPlaceholders($get->php_after_getitem, $this->placeholders);
+			}
 			$getItem .= PHP_EOL . PHP_EOL . $tab . "\t\tif (empty(\$data))";
 			$getItem .= PHP_EOL . "\t" . $tab . "\t{";
 			if ($type === 'main')
@@ -2298,12 +2304,6 @@ class Interpretation extends Fields
 			$getItem .= $this->setCustomViewGlobals($get->global, '$data', $asBucket, $tab);
 			// setup the custom gets that returns multipal values
 			$getItem .= $this->setCustomViewCustomJoin($get->custom_get, '$data', $code, $asBucket, $tab);
-			// set after item php
-			if (isset($get->add_php_after_getitem) && $get->add_php_after_getitem == 1
-				&& isset($get->php_after_getitem) && ComponentbuilderHelper::checkString($get->php_after_getitem))
-			{
-				$getItem .= $this->setPlaceholders($get->php_after_getitem, $this->placeholders);
-			}
 			// set calculations
 			if ($get->addcalculation == 1)
 			{
@@ -2389,16 +2389,22 @@ class Interpretation extends Fields
 					}
 					// ###SITE_GET_LIST_QUERY### <<<DYNAMIC>>>
 					$main .= $this->setCustomViewListQuery($view, $view->code, false);
-					// load the object list
-					$main .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
-					$main .= PHP_EOL . "\t\t\$db->setQuery(\$query);";
 					// set before items php
 					if (isset($view->add_php_before_getitems) && $view->add_php_before_getitems == 1
 						&& isset($view->php_before_getitems) && ComponentbuilderHelper::checkString($view->php_before_getitems))
 					{
 						$main .= $this->setPlaceholders($view->php_before_getitems, $this->placeholders);
 					}
+					// load the object list
+					$main .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
+					$main .= PHP_EOL . "\t\t\$db->setQuery(\$query);";
 					$main .= PHP_EOL . "\t\t\$items = \$db->loadObjectList();";
+					// set after items php
+					if (isset($view->add_php_after_getitems) && $view->add_php_after_getitems == 1
+						&& isset($view->php_after_getitems) && ComponentbuilderHelper::checkString($view->php_after_getitems))
+					{
+						$main .= $this->setPlaceholders($view->php_after_getitems, $this->placeholders);
+					}
 					$main .= PHP_EOL . PHP_EOL . "\t\tif (empty(\$items))";
 					$main .= PHP_EOL . "\t\t{";
 					$main .= PHP_EOL . "\t\t\treturn false;";
@@ -2980,12 +2986,6 @@ class Interpretation extends Fields
 			}
 			$getItem .= PHP_EOL . "\t\t\t}";
 			$getItem .= PHP_EOL . "\t\t}";
-			// set after items php
-			if (isset($get->add_php_after_getitems) && $get->add_php_after_getitems == 1
-				&& isset($get->php_after_getitems) && ComponentbuilderHelper::checkString($get->php_after_getitems))
-			{
-				$getItem .= $this->setPlaceholders($get->php_after_getitems, $this->placeholders);
-			}
 			// remove empty foreach
 			if (strlen($getItem) <= 100)
 			{
