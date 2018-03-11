@@ -880,6 +880,7 @@ function isSet(val)
 	return false;
 }
 
+
 jQuery(document).ready(function()
 {
 	// check what is the dashboard switch

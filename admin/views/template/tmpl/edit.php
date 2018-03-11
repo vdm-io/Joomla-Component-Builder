@@ -160,7 +160,8 @@ jQuery(function() {
 	jQuery('#open-libraries').html('<a href="index.php?option=com_componentbuilder&view=libraries"><?php echo JText::_('COM_COMPONENTBUILDER_LIBRARIES'); ?></a>');
 });
 jQuery('#jform_snippet').closest('.input-append').addClass('jform_snippet_input_width');
-jQuery('#jform_dynamic_get').closest('.input-append').addClass('jform_dynamic_get_input_width');jQuery(function() {
+jQuery('#jform_dynamic_get').closest('.input-append').addClass('jform_dynamic_get_input_width');
+jQuery(function() {
     jQuery("code").click(function() {
         jQuery(this).selText().addClass("selected");
     });

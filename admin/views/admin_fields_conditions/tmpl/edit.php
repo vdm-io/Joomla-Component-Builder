@@ -119,6 +119,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <script type="text/javascript">
 
 
+
 <?php $numberAddconditions = range(0, count($this->item->addconditions) + 3, 1);?>
 
 // for the values already set

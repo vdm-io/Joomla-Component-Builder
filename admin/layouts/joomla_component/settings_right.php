@@ -31,10 +31,10 @@ $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
 	'note_component_files_folders',
-	'spacer_hr_d',
+	'spacer_hr_four',
 	'to_ignore_note',
 	'toignore',
-	'spacer_hr_e',
+	'spacer_hr_five',
 	'jcb_export_package_note',
 	'export_key',
 	'export_package_link',

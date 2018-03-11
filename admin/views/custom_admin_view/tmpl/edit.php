@@ -355,7 +355,8 @@ jQuery('input.form-field-repeatable').on('row-add', function (e) {
 	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
 });
 });
-<?php endforeach; ?>jQuery(function() {
+<?php endforeach; ?>
+jQuery(function() {
     jQuery("code").click(function() {
         jQuery(this).selText().addClass("selected");
     });

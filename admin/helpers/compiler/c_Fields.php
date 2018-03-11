@@ -76,13 +76,6 @@ class Fields extends Structure
 	public $siteFieldData = array();
 
 	/**
-	 * Category other name bucket
-	 * 
-	 * @var    array
-	 */
-	public $catOtherName = array();
-
-	/**
 	 * list of fields that are not being escaped
 	 * 
 	 * @var    array
@@ -342,13 +335,6 @@ class Fields extends Structure
 	public $fieldsNames = array();
 
 	/**
-	 * Set unique Names
-	 * 
-	 * @var    array
-	 */
-	public $uniqueNames = array();
-
-	/**
 	 * Default Fields
 	 * 
 	 * @var    array
@@ -461,22 +447,14 @@ class Fields extends Structure
 			$this->langContent[$this->lang][$langView . '_VERSION_LABEL'] = "Revision";
 			$this->langContent[$this->lang][$langView . '_VERSION_DESC'] = "A count of the number of times this " . $view['settings']->name_single . " has been revised.";
 			$this->langContent[$this->lang][$langView . '_SAVE_WARNING'] = "Alias already existed so a number was added at the end. You can re-edit the " . $view['settings']->name_single . " to customise the alias.";
-
-			// check if the same field is added multiple times
-			foreach ($view['settings']->fields as $field)
-			{
-				$name = ComponentbuilderHelper::safeString($field['settings']->name);
-				$this->setUniqueNameKeeper($field, $view['settings']->type, $name, $viewName);
-			}
 			// start adding dynamc fields
 			$dynamicFieldsXML = array();
-			$spacerCounter = 'a';
 			// set the custom table key
 			$dbkey = 'g';
 			// TODO we should add the global and local view switch if field for front end
 			foreach ($view['settings']->fields as $field)
 			{
-				$dynamicFieldsXML[] = $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $spacerCounter, $this->placeholders, $dbkey, true);
+				$dynamicFieldsXML[] = $this->setDynamicField($field, $view, $view['settings']->type, $langView, $viewName, $listViewName, $this->placeholders, $dbkey, true);
 			}
 			// set the default fields
 			$XML = new simpleXMLElement('<a/>');
@@ -781,7 +759,6 @@ class Fields extends Structure
 	 * @param   string   $langView The language string of the view
 	 * @param   string   $viewName The singel view name
 	 * @param   string   $listViewName The list view name
-	 * @param   string   $spacerCounter The space counter value
 	 * @param   array    $placeholders The place holder and replace values
 	 * @param   string   $dbkey The the custom table key
 	 * @param   boolean  $build The switch to set the build option
@@ -789,19 +766,19 @@ class Fields extends Structure
 	 * @return  SimpleXMLElement The complete field in xml
 	 *
 	 */
-	public function setDynamicField(&$field, &$view, &$viewType, &$langView, &$viewName, &$listViewName, &$spacerCounter, &$placeholders, &$dbkey, $build)
+	public function setDynamicField(&$field, &$view, &$viewType, &$langView, &$viewName, &$listViewName, &$placeholders, &$dbkey, $build)
 	{
 		if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']))
 		{
 			// reset some values
-			$name = ComponentbuilderHelper::safeString($field['settings']->name);
-			$typeName = ComponentbuilderHelper::safeString($field['settings']->type_name);
+			$name = $this->getFieldName($field, $listViewName);
+			$typeName = $this->getFieldType($field);
 			$multiple = false;
 			$langLabel = '';
 			$fieldSet = '';
 			$fieldAttributes = array();
 			// set field attributes
-			$fieldAttributes = $this->setFieldAttributes($field, $viewType, $name, $typeName, $multiple, $langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders);
+			$fieldAttributes = $this->setFieldAttributes($field, $viewType, $name, $typeName, $multiple, $langLabel, $langView, $listViewName, $viewName, $placeholders);
 			// check if values were set
 			if (ComponentbuilderHelper::checkArray($fieldAttributes))
 			{
@@ -849,11 +826,6 @@ class Fields extends Structure
 					}
 					// now add to the field set
 					$xmlElement = $this->setField('spacer', $fieldAttributes, $name, $typeName, $langView, $viewName, $listViewName, $placeholders, $optionArray);
-					// increment spacer counter
-					if ($typeName === 'spacer')
-					{
-						$spacerCounter++;
-					}
 				}
 				elseif ($this->defaultField($typeName, 'special'))
 				{
@@ -1064,12 +1036,12 @@ class Fields extends Structure
 						$fieldData['settings'] = $this->getFieldData($fieldId, $viewName);
 						if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 						{
-							$r_name = ComponentbuilderHelper::safeString($fieldData['settings']->name);
-							$r_typeName = ComponentbuilderHelper::safeString($fieldData['settings']->type_name);
+							$r_name = $this->getFieldName($fieldData);
+							$r_typeName = $this->getFieldType($fieldData);
 							$r_multiple = false;
 							$r_langLabel = '';
 							// get field values
-							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders, true);
+							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $listViewName, $viewName, $placeholders, true);
 							// check if values were set
 							if (ComponentbuilderHelper::checkArray($r_fieldValues))
 							{
@@ -1161,12 +1133,12 @@ class Fields extends Structure
 							$fieldData['settings'] = $this->getFieldData($fieldId, $viewName);
 							if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 							{
-								$r_name = ComponentbuilderHelper::safeString($fieldData['settings']->name);
-								$r_typeName = ComponentbuilderHelper::safeString($fieldData['settings']->type_name);
+								$r_name = $this->getFieldName($fieldData);
+								$r_typeName = $this->getFieldType($fieldData);
 								$r_multiple = false;
 								$r_langLabel = '';
 								// get field values
-								$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $listViewName, $viewName, $placeholders, true);
+								$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $listViewName, $viewName, $placeholders, true);
 								// check if values were set
 								if (ComponentbuilderHelper::checkArray($r_fieldValues))
 								{
@@ -1372,7 +1344,6 @@ class Fields extends Structure
 	 * @param   boolean  $multiple      The switch to set multiple selection option
 	 * @param   string   $langLabel     The language string for field label
 	 * @param   string   $langView      The language string of the view
-	 * @param   string   $spacerCounter The space counter value
 	 * @param   string   $listViewName  The list view name
 	 * @param   string   $viewName      The singel view name
 	 * @param   array    $placeholders  The place holder and replace values
@@ -1381,7 +1352,7 @@ class Fields extends Structure
 	 * @return  array The field attributes
 	 *
 	 */
-	private function setFieldAttributes(&$field, &$viewType, &$name, &$typeName, &$multiple, &$langLabel, $langView, &$spacerCounter, $listViewName, $viewName, $placeholders, $repeatable = false)
+	private function setFieldAttributes(&$field, &$viewType, &$name, &$typeName, &$multiple, &$langLabel, $langView, $listViewName, $viewName, $placeholders, $repeatable = false)
 	{
 		// reset array
 		$fieldAttributes = array();
@@ -1402,38 +1373,8 @@ class Fields extends Structure
 				$langValue = '';
 				if ($property['name'] === 'type')
 				{
-					if ($typeName === 'custom' || $typeName === 'customuser')
-					{
-						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
-					}
-					// use field core type only if not found
-					elseif (ComponentbuilderHelper::checkString($typeName))
-					{
-						$xmlValue = $typeName;
-					}
-					// make sure none adjustable fields are set
-					elseif (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']) && $property['adjustable'] == 0)
-					{
-						$xmlValue = $property['example'];
-					}
-					// fall back on the xml settings
-					else
-					{
-						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
-					}
-
-					// check if the value is set
-					if (ComponentbuilderHelper::checkString($xmlValue))
-					{
-						// add the value
-						$typeName = $xmlValue;
-					}
-					else
-					{
-						// fall back to text
-						$xmlValue = 'text';
-						$typeName = $xmlValue;
-					}
+					// get type name
+					$xmlValue = $typeName;
 
 					// add to custom if it is custom
 					if ($setCustom)
@@ -1444,67 +1385,8 @@ class Fields extends Structure
 				}
 				elseif ($property['name'] === 'name')
 				{
-					// if category then name must be catid (only one per view)
-					if ($typeName === 'category')
-					{
-						// quick check if this is a category linked to view page
-						$requeSt_id = ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"');
-						if (strpos($requeSt_id, '_request_id') !== false || strpos($requeSt_id, '_request_catid') !== false)
-						{
-							// keep it then, don't change
-							$xmlValue = $requeSt_id;
-						}
-						else
-						{
-							$xmlValue = 'catid';
-						}
-						// check if we should use another Text Name as this views name
-						$otherName = ComponentbuilderHelper::getBetween($field['settings']->xml, 'othername="', '"');
-						$otherViews = ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"');
-						$otherView = ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"');
-						if (ComponentbuilderHelper::checkString($otherName) && ComponentbuilderHelper::checkString($otherViews) && ComponentbuilderHelper::checkString($otherView))
-						{
-							$this->catOtherName[$listViewName] = array(
-								'name' => ComponentbuilderHelper::safeString($otherName),
-								'views' => ComponentbuilderHelper::safeString($otherViews),
-								'view' => ComponentbuilderHelper::safeString($otherView)
-							);
-						}
-					}
-					// if tag is set then enable all tag options for this view (only one per view)
-					elseif ($typeName === 'tag')
-					{
-						$xmlValue = 'tags';
-					}
-					// if the field is set as alias it must be called alias
-					elseif (isset($field['alias']) && $field['alias'])
-					{
-						$xmlValue = 'alias';
-					}
-					elseif ($typeName === 'spacer')
-					{
-						// make sure the name is unique
-						$xmlValue = $name . '_' . $spacerCounter;
-					}
-					else
-					{
-						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
-					}
-
-					// use field core name only if not found in xml
-					if (!ComponentbuilderHelper::checkString($xmlValue))
-					{
-						// make sure the XML name is uniqe, so we can add one field multiple times
-						$name = $this->uniqueName($name, $viewName);
-						$xmlValue = $name;
-					}
-					// set the name if found
-					else
-					{
-						// make sure the XML name is uniqe, so we can add one field multiple times
-						$xmlValue = $this->uniqueName($xmlValue, $viewName);
-						$name = $this->setPlaceholders($xmlValue, $placeholders);
-					}
+					// get the actual field name
+					$xmlValue = $this->setPlaceholders($name, $placeholders);
 				}
 				elseif ($property['name'] === 'extension' || $property['name'] === 'directory' || $property['name'] === 'formsource')
 				{
@@ -1623,9 +1505,9 @@ class Fields extends Structure
 					// update label if field use multiple times
 					if ($property['name'] === 'label')
 					{
-						if (isset($fieldAttributes['name']) && isset($this->uniqueNames[$viewName]['names'][$fieldAttributes['name']]))
+						if (isset($fieldAttributes['name']) && isset($this->uniqueNames[$listViewName]['names'][$fieldAttributes['name']]))
 						{
-							$xmlValue .= ' (' . ComponentbuilderHelper::safeString($this->uniqueNames[$viewName]['names'][$fieldAttributes['name']]) . ')';
+							$xmlValue .= ' (' . ComponentbuilderHelper::safeString($this->uniqueNames[$listViewName]['names'][$fieldAttributes['name']]) . ')';
 						}
 					}
 					// replace placeholders
@@ -1716,123 +1598,6 @@ class Fields extends Structure
 			}
 		}
 		return $fieldAttributes;
-	}
-
-	/**
-	 * Keep track of the field names, to see if it used multiple times
-	 *
-	 * @param   array    $field     The field data
-	 * @param   string   $typeName  The field type
-	 * @param   string   $name      The field name
-	 * @param   string   $viewName  The singel view name
-	 *
-	 * @return  void
-	 *
-	 */
-	protected function setUniqueNameKeeper(&$field, &$typeName, &$name, $viewName)
-	{
-		// setup a default field
-		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
-		{
-			foreach ($field['settings']->properties as $property)
-			{
-				// reset
-				$xmlValue = '';
-				if ($property['name'] === 'name')
-				{
-					// if category then name must be catid (only one per view)
-					if ($typeName === 'category')
-					{
-						// only one allowed
-						return;
-					}
-					// if tag is set then enable all tag options for this view (only one per view)
-					elseif ($typeName === 'tag')
-					{
-						// only one allowed
-						return;
-					}
-					// if the field is set as alias it must be called alias
-					elseif (isset($field['alias']) && $field['alias'])
-					{
-						// only one allowed
-						return;
-					}
-					elseif ($typeName === 'spacer')
-					{
-						// not needed here
-						return;
-					}
-					else
-					{
-						$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
-					}
-
-					// use field core name only if not found in xml
-					if (!ComponentbuilderHelper::checkString($xmlValue))
-					{
-						$xmlValue = $name;
-					}
-					// make sure the XML name is uniqe, so we can add one field multiple times
-					return $this->setUniqueNameCounter($xmlValue, $viewName);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Count how many times the same field is used per view
-	 *
-	 * @param   string   $name The name of the field
-	 * @param   string   $view The name of the view
-	 *
-	 * @return  void
-	 *
-	 */
-	protected function setUniqueNameCounter($name, $view)
-	{
-		if (!isset($this->uniqueNames[$view]))
-		{
-			$this->uniqueNames[$view] = array();
-			$this->uniqueNames[$view]['counter'] = array();
-			$this->uniqueNames[$view]['names'] = array();
-		}
-		if (!isset($this->uniqueNames[$view]['counter'][$name]))
-		{
-			$this->uniqueNames[$view]['counter'][$name] = 1;
-			return;
-		}
-		// count how many times the field is used
-		$this->uniqueNames[$view]['counter'][$name] ++;
-		return;
-	}
-
-	/**
-	 * Naming each field with an unique name
-	 *
-	 * @param   string   $name The name of the field
-	 * @param   string   $view The name of the view
-	 *
-	 * @return  string   the name
-	 *
-	 */
-	protected function uniqueName($name, $view)
-	{
-		// only increment if the field name is used multiple times
-		if (isset($this->uniqueNames[$view]['counter'][$name]) && $this->uniqueNames[$view]['counter'][$name] > 1)
-		{
-			$counter = $this->uniqueNames[$view]['counter'][$name];
-			$uniqueName = ComponentbuilderHelper::safeString($name . '_' . $counter);
-			while (isset($this->uniqueNames[$view]['names'][$uniqueName]))
-			{
-				$counter--;
-				$uniqueName = ComponentbuilderHelper::safeString($name . '_' . $counter);
-			}
-			// set the new name
-			$this->uniqueNames[$view]['names'][$uniqueName] = $counter;
-			return $uniqueName;
-		}
-		return $name;
 	}
 
 	/**

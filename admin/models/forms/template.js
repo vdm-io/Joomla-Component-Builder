@@ -100,6 +100,7 @@ function isSet(val)
 }
 
 
+
 function getSnippetDetails_server(snippetId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.snippetDetails&format=json";
 	if(token.length > 0 && snippetId > 0){

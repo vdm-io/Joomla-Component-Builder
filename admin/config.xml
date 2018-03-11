@@ -69,11 +69,11 @@
                min="10"
                max="100"
                step="10" />		
-	<!--  Spacer_hr_a Field. Type: Spacer. A None Database Field. (joomla) -->
+	<!--  Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
 	<field type="spacer"
-               name="spacer_hr_a"
+               name="spacer_hr_one"
                hr="true"
-               class="spacer_hr_a" />		
+               class="spacer_hr_one" />		
 	<!--  Api Field. Type: User. (joomla) -->
 	<field type="user"
                name="api"
@@ -114,11 +114,11 @@
                 <option value="604800">COM_COMPONENTBUILDER_CONFIG_EVERY_WEEK</option>
                 <option value="0">COM_COMPONENTBUILDER_CONFIG_NEVER_UPDATE</option>
         </field>		
-	<!--  Spacer_hr_b Field. Type: Spacer. A None Database Field. (joomla) -->
+	<!--  Spacer_hr_two Field. Type: Spacer. A None Database Field. (joomla) -->
 	<field type="spacer"
-               name="spacer_hr_b"
+               name="spacer_hr_two"
                hr="true"
-               class="spacer_hr_b" />
+               class="spacer_hr_two" />
 		<field name="autorTitle"
 			type="spacer"
 			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR"

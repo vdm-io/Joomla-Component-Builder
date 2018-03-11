@@ -620,6 +620,7 @@ jQuery('#adminForm').on('change', '#jform_add_php_router_parse',function (e)
 });
 
 
+
 <?php $fieldNrs = range(0,50,1); ?>
 <?php $fieldNames = array('db' => 'Db','view' => 'View'); ?>
 // for the vlaues already set

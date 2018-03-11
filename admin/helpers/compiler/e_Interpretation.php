@@ -5634,7 +5634,6 @@ class Interpretation extends Fields
 			// set the main db prefix
 			$component = $this->fileContentStatic['###component###'];
 			// start building the db
-
 			$db = '';
 			foreach ($this->queryBuilder as $view => $fields)
 			{
@@ -5711,9 +5710,21 @@ class Interpretation extends Fields
 						$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_" . $view . "`ADD`" . $field . "`"] = "ALTER TABLE `#__" . $component . "_" . $view . "` ADD `" . $field . "` " . $data['type'] . $lenght . " " . $default . " AFTER `" . $last_name . "`;";
 					}
 					// check if the field has changed name and/or data type and lenght
-					elseif (0)
+					elseif ((isset($this->updateSQL['field.datatype']) && isset($this->updateSQL['field.datatype'][$view.'.'.$field])) || 
+						(isset($this->updateSQL['field.lenght']) && isset($this->updateSQL['field.lenght'][$view.'.'.$field])) || 
+						(isset($this->updateSQL['field.name']) && isset($this->updateSQL['field.name'][$view.'.'.$field])))
 					{
-						// hmmm tough one
+						// if the name changed
+						if (isset($this->updateSQL['field.name']) && isset($this->updateSQL['field.name'][$view.'.'.$field]))
+						{
+							$oldName = $this->updateSQL['field.name'][$view.'.'.$field]['old'];
+						}
+						else
+						{
+							$oldName = $field;
+						}
+						// now set the update SQL
+						$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_" . $view . "`CHANGE`" . $oldName . "``" . $field . "`"] = "ALTER TABLE `#__" . $component . "_" . $view . "` CHANGE `" . $oldName . "` `" . $field . "` " . $data['type'] . $lenght . " " . $default . ";";
 					}
 					// be sure to track the last name used :)
 					$last_name = $field;
@@ -12853,14 +12864,14 @@ class Interpretation extends Fields
 					'###component###' => $component,
 					'###view###' => $viewName,
 					'###views###' => $listViewName);
-				$spacerCounter = 'a';
 				$view = '';
 				$viewType = 0;
+				
 				// set the custom table key
 				$dbkey = 'g';
 				foreach ($this->componentData->config as $field)
 				{
-					$newxmlField = $this->setDynamicField($field, $view, $viewType, $lang, $viewName, $listViewName, $spacerCounter, $placeholders, $dbkey, false);
+					$newxmlField = $this->setDynamicField($field, $view, $viewType, $lang, $viewName, $listViewName, $placeholders, $dbkey, false);
 					// tmp hack untill this whole area is also done in xml (TODO)
 					if (isset($newxmlField->fieldXML))
 					{
@@ -14715,8 +14726,8 @@ function vdm_dkim() {
 											$propertyType = $property;
 										}
 									}
-									$fieldType = $this->getFieldType($field['settings']->type_name, $field['settings']->xml, $propertyType);
-									$fieldName = $this->getFieldName($fieldType, $field['settings']->xml, $field['alias']);
+									$fieldType = $this->getFieldType($field);
+									$fieldName = $this->getFieldName($field, $nameViews);
 									$fieldView = array();
 									// set the permission for this field
 									$fieldView['action'] = 'view.edit.' . $fieldName;
@@ -15062,72 +15073,6 @@ function vdm_dkim() {
 				$this->langContent['bothadmin'][$title] = trim($permission['title']);
 				$this->langContent['bothadmin'][$title . '_DESC'] = trim($permission['description']);
 			}
-		}
-	}
-
-	public function getFieldName($typeName, $xml, $alias)
-	{
-		// if category then name must be catid (only one per view)
-		if ($typeName === 'category')
-		{
-			return 'catid';
-		}
-		// if tag is set then enable all tag options for this view (only one per view)
-		elseif ($typeName === 'tag')
-		{
-			return 'tags';
-		}
-		// if the field is set as alias it must be called alias
-		elseif ($alias)
-		{
-			return 'alias';
-		}
-		elseif ($typeName === 'spacer')
-		{
-			// make sure the name is unique
-			return false;
-		}
-		else
-		{
-			return ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xml, 'name="', '"'));
-		}
-	}
-
-	public function getFieldType($typeName, $xml, $property)
-	{
-		// make sure its lower case
-		$typeName = ComponentbuilderHelper::safeString($typeName);
-
-		if ($typeName === 'custom' || $typeName === 'customuser')
-		{
-			$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xml, 'type="', '"'));
-		}
-		// use field core type only if not found
-		elseif (ComponentbuilderHelper::checkString($typeName))
-		{
-			$xmlValue = $typeName;
-		}
-		// make sure none adjustable fields are set
-		elseif (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']) && $property['adjustable'] == 0)
-		{
-			$xmlValue = $property['example'];
-		}
-		// fall back on the xml settings
-		else
-		{
-			$xmlValue = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xml, 'type="', '"'));
-		}
-
-		// check if the value is set
-		if (ComponentbuilderHelper::checkString($xmlValue))
-		{
-			// add the value
-			return $xmlValue;
-		}
-		else
-		{
-			// fall back to text
-			return 'text';
 		}
 	}
 

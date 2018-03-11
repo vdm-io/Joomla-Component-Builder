@@ -31,11 +31,11 @@ $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
 	'note_moved_views',
-	'spacer_hr_a',
+	'spacer_hr_one',
 	'note_mysql_tweak_options',
-	'spacer_hr_b',
+	'spacer_hr_two',
 	'note_add_custom_menus',
-	'spacer_hr_c',
+	'spacer_hr_three',
 	'note_add_config'
 );
 

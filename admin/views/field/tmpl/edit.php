@@ -292,6 +292,7 @@ jQuery('#adminForm').on('change', '#jform_add_javascript_views_footer',function 
 });
 
 
+
 jQuery(function() {
     jQuery("code").click(function() {
         jQuery(this).selText().addClass("selected");

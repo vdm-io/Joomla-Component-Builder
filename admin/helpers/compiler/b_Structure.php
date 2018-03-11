@@ -551,8 +551,8 @@ class Structure extends Get
 			if (count($getter) == 2 && is_numeric($getter[1]))
 			{
 				// the pointers
-				$id = (int) $getter[1];
 				$t = ComponentbuilderHelper::safeString($getter[0], 'U');
+				$id = (int) $getter[1];
 				// the dynamic stuff
 				$targets = array('A' => 'admin_views', 'C' => 'custom_admin_views');
 				$names = array('A' => 'admin view', 'C' => 'custom admin view');
@@ -561,12 +561,14 @@ class Structure extends Get
 				// check the target values
 				if (isset($targets[$t]) && $id > 0)
 				{
+					// set the type name
+					$type_names = ComponentbuilderHelper::safeString($targets[$t], 'w');
 					// set the dynamic dash
 					if (isset($this->componentData->{$targets[$t]}) && ComponentbuilderHelper::checkArray($this->componentData->{$targets[$t]}))
 					{
 						// search the target views
 						$dashboard = (array) array_filter($this->componentData->{$targets[$t]}, function($view) use($id, $t, $types){
-							if (isset($view[$types[$t]]) && $id == (int) $view[$types[$t]])
+							if (isset($view[$types[$t]]) && $id == $view[$types[$t]])
 							{
 								return true;
 							}
@@ -579,16 +581,12 @@ class Structure extends Get
 						}
 						else
 						{
-							// set the type name
-							$type_names = ComponentbuilderHelper::safeString($targets[$t], 'w');
 							// set massage that something is wrong
 							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> (<b>%s</b>) is not available in your component! Please insure to only used %s, for a dynamic dashboard, that are still linked to your component.', $names[$t], $this->componentData->dashboard, $type_names), 'Error');
 						}
 					}
 					else
 					{
-						// set the type name
-						$type_names = ComponentbuilderHelper::safeString($targets[$t], 'w');
 						// set massage that something is wrong
 						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> (<b>%s</b>) is not available in your component! Please insure to only used %s, for a dynamic dashboard, that are still linked to your component.', $names[$t], $this->componentData->dashboard, $type_names), 'Error');
 					}

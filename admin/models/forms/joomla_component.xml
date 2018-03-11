@@ -665,11 +665,11 @@
                         <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
                 </field>
-                <!-- Spacer_hr_a Field. Type: Spacer. A None Database Field. (joomla)-->
+                <!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla)-->
                 <field type="spacer"
-                       name="spacer_hr_a"
+                       name="spacer_hr_one"
                        hr="true"
-                       class="spacer_hr_a" />
+                       class="spacer_hr_one" />
                 <!-- Addfootable Field. Type: List. (joomla)-->
                 <field type="list"
                        name="addfootable"
@@ -702,11 +702,11 @@
                         <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
                 </field>
-                <!-- Spacer_hr_b Field. Type: Spacer. A None Database Field. (joomla)-->
+                <!-- Spacer_hr_two Field. Type: Spacer. A None Database Field. (joomla)-->
                 <field type="spacer"
-                       name="spacer_hr_b"
+                       name="spacer_hr_two"
                        hr="true"
-                       class="spacer_hr_b" />
+                       class="spacer_hr_two" />
                 <!-- Add_php_helper_admin Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_php_helper_admin"
@@ -736,11 +736,11 @@
                         <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
                 </field>
-                <!-- Spacer_hr_c Field. Type: Spacer. A None Database Field. (joomla)-->
+                <!-- Spacer_hr_three Field. Type: Spacer. A None Database Field. (joomla)-->
                 <field type="spacer"
-                       name="spacer_hr_c"
+                       name="spacer_hr_three"
                        hr="true"
-                       class="spacer_hr_c" />
+                       class="spacer_hr_three" />
                 <!-- Add_php_helper_site Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_php_helper_site"
@@ -788,11 +788,11 @@
                         <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
                 </field>
-                <!-- Spacer_hr_d Field. Type: Spacer. A None Database Field. (joomla)-->
+                <!-- Spacer_hr_four Field. Type: Spacer. A None Database Field. (joomla)-->
                 <field type="spacer"
-                       name="spacer_hr_d"
+                       name="spacer_hr_four"
                        hr="true"
-                       class="spacer_hr_d" />
+                       class="spacer_hr_four" />
                 <!-- Add_css_admin Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_css_admin"
@@ -846,11 +846,11 @@
                         <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEFAULT</option>
                         <option value="2">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC</option>
                 </field>
-                <!-- Spacer_hr_e Field. Type: Spacer. A None Database Field. (joomla)-->
+                <!-- Spacer_hr_five Field. Type: Spacer. A None Database Field. (joomla)-->
                 <field type="spacer"
-                       name="spacer_hr_e"
+                       name="spacer_hr_five"
                        hr="true"
-                       class="spacer_hr_e" />
+                       class="spacer_hr_five" />
                 <!-- Dashboard Field. Type: Dynamicdashboard. (custom)-->
                 <field type="dynamicdashboard"
                        name="dashboard"
@@ -947,11 +947,11 @@
                         <option value="1">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
                         <option value="0">COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
                 </field>
-                <!-- Spacer_hr_f Field. Type: Spacer. A None Database Field. (joomla)-->
+                <!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla)-->
                 <field type="spacer"
-                       name="spacer_hr_f"
+                       name="spacer_hr_six"
                        hr="true"
-                       class="spacer_hr_f" />
+                       class="spacer_hr_six" />
                 <!-- Add_php_method_uninstall Field. Type: Radio. (joomla)-->
                 <field type="radio"
                        name="add_php_method_uninstall"

@@ -224,6 +224,7 @@ function isSet(val)
 	return false;
 }
 
+
 jQuery(document).ready(function()
 {
 	var target = jQuery("#jform_target input[type='radio']:checked").val();

@@ -745,6 +745,7 @@ jQuery('#adminForm').on('change', '#jform_dashboard_type',function (e)
 
 
 
+
 <?php
 	$app = JFactory::getApplication();
 ?>

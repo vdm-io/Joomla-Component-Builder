@@ -429,6 +429,27 @@ class Get
 	private $_fieldData = array();
 
 	/**
+	 * Set unique Names
+	 * 
+	 * @var    array
+	 */
+	public $uniqueNames = array();
+
+	/**
+	 * Set unique Names
+	 * 
+	 * @var    array
+	 */
+	protected $uniqueFieldNames = array();
+
+	/**
+	 * Category other name bucket
+	 * 
+	 * @var    array
+	 */
+	public $catOtherName = array();
+
+	/**
 	 * The linked admin view tabs
 	 * 
 	 * @var     array
@@ -952,13 +973,32 @@ class Get
 		$component->addconfig = (isset($component->addconfig) && ComponentbuilderHelper::checkJson($component->addconfig)) ? json_decode($component->addconfig, true) : null;
 		if (ComponentbuilderHelper::checkArray($component->addconfig))
 		{
-			$component->config = array_map(function($array)
+			$component->config = array_map(function($field)
 			{
-				$array['alias'] = 0;
-				$array['title'] = 0;
-				$array['settings'] = $this->getFieldData($array['field']);
-				return $array;
+				// set hash 
+				static $hash = 1;
+				// load hash
+				$field['hash'] = md5($field['field'].$hash);
+				// increment hash
+				$hash++;
+				$field['alias'] = 0;
+				$field['title'] = 0;
+				// load the settings
+				$field['settings'] = $this->getFieldData($field['field']);
+				// set real field name
+				$field['base_name'] = $this->getFieldName($field);
+				// set unigue name keeper
+				$this->setUniqueNameCounter($this->getFieldName($field), 'configs');
+				// return field
+				return $field;
 			}, array_values($component->addconfig));
+
+			// do some house cleaning (for fields)
+			foreach ($component->config as $field)
+			{
+				// so first we lock the field name in
+				$this->getFieldName($field, 'configs');
+			}
 			// unset original value
 			unset($component->addconfig);
 		}
@@ -1357,11 +1397,24 @@ class Get
 				if (ComponentbuilderHelper::checkArray($view->addfields))
 				{
 					// load the field data
-					$view->fields = array_map(function($array) use($name_single, $name_list)
+					$view->fields = array_map(function($field) use($name_single, $name_list)
 					{
-						$array['settings'] = $this->getFieldData($array['field'], $name_single, $name_list);
-						return $array;
+						// set hash 
+						static $hash = 1;
+						// load hash
+						$field['hash'] = md5($field['field'].$hash);
+						// increment hash
+						$hash++;
+						// set the settings
+						$field['settings'] = $this->getFieldData($field['field'], $name_single, $name_list);
+						// set real field name
+						$field['base_name'] = $this->getFieldName($field);
+						// set unigue name keeper
+						$this->setUniqueNameCounter($field['base_name'], $name_list);
+						// return field
+						return $field;
 					}, array_values($view->addfields));
+
 					// sort the fields acording to order
 					usort($view->fields, function($a, $b)
 					{
@@ -1383,6 +1436,62 @@ class Get
 						}
 						return 0;
 					});
+
+					// do some house cleaning (for fields)
+					foreach ($view->fields as $field)
+					{
+						// so first we lock the field name in
+						$field_name = $this->getFieldName($field, $name_list);
+						// check if the field changed since the last compilation
+						if (ComponentbuilderHelper::checkObject($field['settings']->history))
+						{
+							// check if the datatype changed
+							if (isset($field['settings']->history->datatype))
+							{
+								$this->setUpdateSQL($field['settings']->history->datatype, $field['settings']->datatype, 'field.datatype', $name_single.'.'.$field_name);
+							}
+							// check if the datatype lenght changed
+							if (isset($field['settings']->history->datalenght) && isset($field['settings']->history->datalenght_other))
+							{
+								$this->setUpdateSQL($field['settings']->history->datalenght.$field['settings']->history->datalenght_other, $field['settings']->datalenght.$field['settings']->datalenght_other, 'field.lenght', $name_single.'.'.$field_name);
+							}
+							// check if the name changed
+							if (isset($field['settings']->history->xml) && ComponentbuilderHelper::checkJson($field['settings']->history->xml))
+							{
+								// only run if this is not an alias or a tag
+								if ((!isset($field['alias']) || !$field['alias']) && 'tag' !== $field['settings']->type_name)
+								{
+									// build temp field bucket
+									$tmpfield = array();
+									$tmpfield['settings'] = new stdClass();
+									// convert the xml json string to normal string
+									$tmpfield['settings']->xml = $this->setDynamicValues(json_decode($field['settings']->history->xml));
+									// add properties from current field as it is generic
+									$tmpfield['settings']->properties = $field['settings']->properties;
+									// add the old name
+									$tmpfield['settings']->name = $field['settings']->history->name;
+									// add the field type from current field since it is generic
+									$tmpfield['settings']->type_name = $field['settings']->type_name;
+									// get the old name
+									$old_field_name = $this->getFieldName($tmpfield);
+
+									// only run this if not a multi field
+									if (!isset($this->uniqueNames[$name_list]['names'][$field_name]))
+									{
+										// this only works when the field is not multiple of the same field
+										$this->setUpdateSQL($old_field_name, $field_name, 'field.name', $name_single.'.'.$field_name);
+									}
+									elseif ($old_field_name !== $field_name)
+									{
+										// give a notice atleast that the multi fields could have changed and no DB update was done
+										$this->app->enqueueMessage(JText::sprintf('You have a field called <b>%s</b> that has been added multiple times to the <b>%s</b> view, the name of that field has changed to <b>%s</b>. Normaly we would automaticly add the update SQL to your component, but with multiple fields this does not work automaticly since it could be that noting changed and it just seems like it did. Therefore you will have to do this manualy if it actualy did change!', $field_name, $name_single, $old_field_name), 'Notice');
+									}
+									// remove tmp
+									unset($tmpfield);
+								}
+							}
+						}
+					}
 				}
 			}
 			unset($view->addfields);
@@ -1418,16 +1527,10 @@ class Get
 									$required = ($required == true) ? 'yes' : 'no';
 									$filter = ComponentbuilderHelper::getBetween($fieldValues['settings']->xml, 'filter="', '"');
 									$filter = ComponentbuilderHelper::checkString($filter) ? $filter : 'none';
-									// get name
-									$name = ComponentbuilderHelper::getBetween($fieldValues['settings']->xml, 'name="', '"');
-									$name = ComponentbuilderHelper::checkString($name) ? $name : $fieldValues['settings']->name;
-									// get type
-									$type = ComponentbuilderHelper::getBetween($fieldValues['settings']->xml, 'type="', '"');
-									$type = ComponentbuilderHelper::checkString($type) ? $type : $fieldValues['settings']->type_name;
 									// set the field name
 									$conditionValue['target_field'][$fieldKey] = array(
-										'name' => ComponentbuilderHelper::safeString($name),
-										'type' => ComponentbuilderHelper::safeString($type),
+										'name' => $this->getFieldName($fieldValues, $name_list),
+										'type' => $this->getFieldType($fieldValues),
 										'required' => $required,
 										'filter' => $filter
 									);
@@ -1444,15 +1547,11 @@ class Get
 						{
 							if ((int) $fieldValue['field'] == (int) $conditionValue['match_field'])
 							{
-								// get name
-								$name = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml, 'name="', '"');
-								$name = ComponentbuilderHelper::checkString($name) ? $name : $fieldValue['settings']->name;
-								// get type
-								$type = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml, 'type="', '"');
-								$type = ComponentbuilderHelper::checkString($type) ? $type : $fieldValue['settings']->type_name;
+								// set the type
+								$type = $this->getFieldType($fieldValue);
 								// set the field details
-								$conditionValue['match_name'] = ComponentbuilderHelper::safeString($name);
-								$conditionValue['match_type'] = ComponentbuilderHelper::safeString($type);
+								$conditionValue['match_name'] = $this->getFieldName($fieldValue, $name_list);
+								$conditionValue['match_type'] = $type;
 								$conditionValue['match_xml'] = $fieldValue['settings']->xml;
 								// if custom field load field being extended
 								if (!ComponentbuilderHelper::typeField($type))
@@ -1500,7 +1599,7 @@ class Get
 						}
 						$this->customScriptBuilder[$scripter_target][$name_single] = '';
 					}
-					$this->customScriptBuilder[$scripter_target][$name_single] .= $view->$scripter;
+					$this->customScriptBuilder[$scripter_target][$name_single] .= PHP_EOL . $view->$scripter;
 					if (strpos($view->$scripter, "token") !== false || strpos($view->$scripter, "task=ajax") !== false)
 					{
 						if (!$this->customScriptBuilder['token'][$name_single])
@@ -1521,7 +1620,7 @@ class Get
 					{
 						$this->customScriptBuilder[$scripter][$name_single] = '';
 					}
-					$this->customScriptBuilder[$scripter][$name_single] .= base64_decode($view->$scripter);
+					$this->customScriptBuilder[$scripter][$name_single] .= PHP_EOL . base64_decode($view->$scripter);
 					unset($view->$scripter);
 				}
 			}
@@ -2076,7 +2175,7 @@ class Get
 						$this->_fieldData[$id]->javascript_views_footer = $this->setDynamicValues(base64_decode($this->_fieldData[$id]->javascript_views_footer));
 						$this->_fieldData[$id]->javascript_views_footer_decoded = true;
 					}
-					$this->customScriptBuilder['views_footer'][$name_list] .= $this->_fieldData[$id]->javascript_views_footer;
+					$this->customScriptBuilder['views_footer'][$name_list] .= PHP_EOL . $this->_fieldData[$id]->javascript_views_footer;
 					if (strpos($this->_fieldData[$id]->javascript_views_footer, "token") !== false ||
 						strpos($this->_fieldData[$id]->javascript_views_footer, "task=ajax") !== false)
 					{
@@ -2108,7 +2207,7 @@ class Get
 						$this->setCustomCodeData($this->_fieldData[$id]->css_views);
 						$this->_fieldData[$id]->css_views_decoded = true;
 					}
-					$this->customScriptBuilder['css_views'][$name_list] .= $this->_fieldData[$id]->css_views;
+					$this->customScriptBuilder['css_views'][$name_list] .= PHP_EOL . $this->_fieldData[$id]->css_views;
 				}
 
 				// add this only once to view.
@@ -2121,6 +2220,207 @@ class Get
 			return $this->_fieldData[$id];
 		}
 		return false;
+	}
+
+	/**
+	 * Get the field's actual type
+	 * 
+	 * @param   object   $field   The field object
+	 * 
+	 * @return  string   Success returns field type
+	 * 
+	 */
+	public function getFieldType(&$field)
+	{
+		// set the type name
+		$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
+		// check that we have the poperties
+		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
+		{
+			foreach ($field['settings']->properties as $property)
+			{
+				if ($property['name'] === 'type')
+				{
+					if ($type_name === 'custom' || $type_name === 'customuser')
+					{
+						$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
+					}
+					// use field core type
+					elseif (ComponentbuilderHelper::checkString($type_name))
+					{
+						$type = $type_name;
+					}
+					// make sure none adjustable fields are set (should be same as above)
+					elseif (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']) && $property['adjustable'] == 0)
+					{
+						$type = $property['example'];
+					}
+					// fall back on the xml settings (not ideal)
+					else
+					{
+						$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xml, 'type="', '"'));
+					}
+
+					// check if the value is set
+					if (ComponentbuilderHelper::checkString($type))
+					{
+						// add the value
+						return $type;
+					}
+					// exit foreach loop
+					break;
+				}
+			}
+		}
+		// fall back to text
+		return  'text';
+	}
+
+	/**
+	 * Get the field's actual name
+	 * 
+	 * @param   object   $field         The field object
+	 * @param   string   $listViewName  The list view name
+	 * 
+	 * @return  string   Success returns field name
+	 * 
+	 */
+	public function getFieldName(&$field, $listViewName = null)
+	{
+		// return the unique name if already set
+		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']) && isset($this->uniqueFieldNames[$listViewName.$field['hash']]))
+		{
+			return $this->uniqueFieldNames[$listViewName.$field['hash']];
+		}
+		// set the type name
+		$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
+		// set the name of the field
+		$name = ComponentbuilderHelper::safeString($field['settings']->name);
+		// check that we have the poperties
+		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
+		{
+			foreach ($field['settings']->properties as $property)
+			{
+				if ($property['name'] === 'name')
+				{
+					// if category then name must be catid (only one per view)
+					if ($type_name === 'category')
+					{
+						// quick check if this is a category linked to view page
+						$requeSt_id = ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"');
+						if (strpos($requeSt_id, '_request_id') !== false || strpos($requeSt_id, '_request_catid') !== false)
+						{
+							// keep it then, don't change
+							$name = $requeSt_id;
+						}
+						else
+						{
+							$name = 'catid';
+						}
+						// if list view name is set
+						if (ComponentbuilderHelper::checkString($listViewName))
+						{
+							// check if we should use another Text Name as this views name
+							$otherName = ComponentbuilderHelper::getBetween($field['settings']->xml, 'othername="', '"');
+							$otherViews = ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"');
+							$otherView = ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"');
+							if (ComponentbuilderHelper::checkString($otherName) && ComponentbuilderHelper::checkString($otherViews) && ComponentbuilderHelper::checkString($otherView))
+							{
+								$this->catOtherName[$listViewName] = array(
+									'name' => ComponentbuilderHelper::safeString($otherName),
+									'views' => ComponentbuilderHelper::safeString($otherViews),
+									'view' => ComponentbuilderHelper::safeString($otherView)
+								);
+							}
+						}
+					}
+					// if tag is set then enable all tag options for this view (only one per view)
+					elseif ($type_name === 'tag')
+					{
+						$name = 'tags';
+					}
+					// if the field is set as alias it must be called alias
+					elseif (isset($field['alias']) && $field['alias'])
+					{
+						$name = 'alias';
+					}
+					else
+					{
+						$name = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
+					}
+					// exit foreach loop
+					break;
+				}
+			}
+		}
+		// return the value unique
+		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']) )
+		{
+			$this->uniqueFieldNames[$listViewName.$field['hash']] = $this->uniqueName($name, $listViewName);
+			// now return the unique name
+			return $this->uniqueFieldNames[$listViewName.$field['hash']];
+		}
+		// fall back to global
+		return  $name;
+	}
+
+	/**
+	 * Count how many times the same field is used per view
+	 *
+	 * @param   string   $name The name of the field
+	 * @param   string   $view The name of the view
+	 *
+	 * @return  void
+	 *
+	 */
+	protected function setUniqueNameCounter($name, $view)
+	{
+		if (!isset($this->uniqueNames[$view]))
+		{
+			$this->uniqueNames[$view] = array();
+			$this->uniqueNames[$view]['counter'] = array();
+			$this->uniqueNames[$view]['names'] = array();
+		}
+		if (!isset($this->uniqueNames[$view]['counter'][$name]))
+		{
+			$this->uniqueNames[$view]['counter'][$name] = 1;
+			return;
+		}
+		// count how many times the field is used
+		$this->uniqueNames[$view]['counter'][$name] ++;
+		return;
+	}
+
+	/**
+	 * Naming each field with an unique name
+	 *
+	 * @param   string   $name The name of the field
+	 * @param   string   $view The name of the view
+	 *
+	 * @return  string   the name
+	 *
+	 */
+	protected function uniqueName($name, $view)
+	{
+		// only increment if the field name is used multiple times
+		if (isset($this->uniqueNames[$view]['counter'][$name]) && $this->uniqueNames[$view]['counter'][$name] > 1)
+		{
+			$counter = 1;
+			// set the unique name
+			$uniqueName = ComponentbuilderHelper::safeString($name . '_' . $counter);
+			while (isset($this->uniqueNames[$view]['names'][$uniqueName]))
+			{
+				// increment the number
+				$counter++;
+				// try again
+				$uniqueName = ComponentbuilderHelper::safeString($name . '_' . $counter);
+			}
+			// set the new name number
+			$this->uniqueNames[$view]['names'][$uniqueName] = $counter;
+			// return the unique name
+			return $uniqueName;
+		}
+		return $name;
 	}
 
 	/**

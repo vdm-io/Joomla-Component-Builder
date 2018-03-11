@@ -278,6 +278,7 @@ jQuery('#adminForm').on('change', '#jform_type',function (e)
 });
 
 
+
 <?php $numberAddconditions = range(0, count($this->item->addconditions) + 3, 1);?>
 
 // for the values already set

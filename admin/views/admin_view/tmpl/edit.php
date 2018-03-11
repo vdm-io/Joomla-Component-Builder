@@ -703,7 +703,8 @@ jQuery('input.form-field-repeatable').on('row-add', function (e) {
 	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
 });
 });
-<?php endforeach; ?><?php $numberAddtables = range(0, count($this->item->addtables) + 3, 1);?>
+<?php endforeach; ?>
+<?php $numberAddtables = range(0, count($this->item->addtables) + 3, 1);?>
 
 // for the values already set
 jQuery(document).ready(function(){

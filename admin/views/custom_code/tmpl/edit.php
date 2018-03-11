@@ -226,6 +226,7 @@ jQuery('#adminForm').on('change', '#jform_target',function (e)
 });
 
 
+
 jQuery('#adminForm').on('change', '#jform_function_name',function (e)
 {
 	e.preventDefault();

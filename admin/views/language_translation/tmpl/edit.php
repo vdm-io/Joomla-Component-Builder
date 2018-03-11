@@ -119,6 +119,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 
 
+
 <?php
 	$app = JFactory::getApplication();
 ?>

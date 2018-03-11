@@ -438,6 +438,7 @@ function isSet(val)
 	return false;
 }
 
+
 jQuery(document).ready(function()
 {
 	// get the linked details

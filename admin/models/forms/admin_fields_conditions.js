@@ -24,6 +24,7 @@
 
 
 
+
 function getFieldSelectOptions_server(fieldId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json";
 	if(token.length > 0 && fieldId > 0){
