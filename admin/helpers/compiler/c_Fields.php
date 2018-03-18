@@ -1188,6 +1188,8 @@ class Fields extends Structure
 	 */
 	private function setField($setType, &$fieldAttributes, &$name, &$typeName, &$langView, &$view_name_single, &$view_name_list, $placeholders, &$optionArray, $custom = null, $taber = '')
 	{
+		// count the dynamic fields created
+		$this->fieldCount++;
 		// check what type of field builder to use
 		if ($this->fieldBuilderType == 1)
 		{
@@ -1541,8 +1543,6 @@ class Fields extends Structure
 				$this->setCustomFieldTypeFile($data, $view_name_list, $view_name_single);
 			}
 		}
-		// count the dynamic fields created
-		$this->fieldCount++;
 		// return field
 		return $field;
 	}
@@ -2868,8 +2868,6 @@ class Fields extends Structure
 				$xml = simplexml_import_dom($domXML);
 				break;
 		}
-		// count the dynamic fields created
-		$this->fieldCount++;
 	}
 
 	/**

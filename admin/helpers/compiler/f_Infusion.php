@@ -752,13 +752,13 @@ class Infusion extends Interpretation
 
 			// ###UPDATE_VERSION_MYSQL###
 			$this->setVersionController();
-			
+
 			// only set these if default dashboard it used
 			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
 			{
 				// ###DASHBOARDVIEW###
 				$this->fileContentStatic['###DASHBOARDVIEW###'] = $this->fileContentStatic['###component###'];
-				
+
 				// ###DASHBOARDICONS###
 				$this->fileContentDynamic[$this->fileContentStatic['###component###']]['###DASHBOARDICONS###'] = $this->setDashboardIcons();
 

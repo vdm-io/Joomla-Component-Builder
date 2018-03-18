@@ -542,12 +542,10 @@ class Structure extends Get
 	private function setDynamicDashboard()
 	{
 		// only add the dynamic dashboard if all checks out
-		if (isset($this->componentData->dashboard_type) && 2 == $this->componentData->dashboard_type
-			&& isset($this->componentData->dashboard) && ComponentbuilderHelper::checkString($this->componentData->dashboard)
-			&& strpos($this->componentData->dashboard, '_') !== false)
+		if (isset($this->componentData->dashboard_type) && 2 == $this->componentData->dashboard_type && isset($this->componentData->dashboard) && ComponentbuilderHelper::checkString($this->componentData->dashboard) && strpos($this->componentData->dashboard, '_') !== false)
 		{
 			// set the default view
-			$getter = explode('_',$this->componentData->dashboard);
+			$getter = explode('_', $this->componentData->dashboard);
 			if (count($getter) == 2 && is_numeric($getter[1]))
 			{
 				// the pointers
@@ -567,13 +565,14 @@ class Structure extends Get
 					if (isset($this->componentData->{$targets[$t]}) && ComponentbuilderHelper::checkArray($this->componentData->{$targets[$t]}))
 					{
 						// search the target views
-						$dashboard = (array) array_filter($this->componentData->{$targets[$t]}, function($view) use($id, $t, $types){
-							if (isset($view[$types[$t]]) && $id == $view[$types[$t]])
+						$dashboard = (array) array_filter($this->componentData->{$targets[$t]}, function($view) use($id, $t, $types)
 							{
-								return true;
-							}
-							return false;
-						});
+								if (isset($view[$types[$t]]) && $id == $view[$types[$t]])
+								{
+									return true;
+								}
+								return false;
+							});
 						// check if view was found (this should be true)
 						if (count($dashboard) && isset($dashboard[0]['settings']) && isset($dashboard[0]['settings']->{$keys[$t]}))
 						{
@@ -600,7 +599,7 @@ class Structure extends Get
 			else
 			{
 				// the target value is wrong
-				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> value for the dynamic dashboard is invalid.', $this->componentData->dashboard), 'Error');				
+				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> value for the dynamic dashboard is invalid.', $this->componentData->dashboard), 'Error');
 			}
 			// if default was changed to dynamic dashboard the remove default tab and methods
 			if (ComponentbuilderHelper::checkString($this->dynamicDashboard))
@@ -778,7 +777,7 @@ class Structure extends Get
 				$README = true;
 			}
 			// set the standard folders
-			$stdFolders = array('site','admin','media');
+			$stdFolders = array('site', 'admin', 'media');
 			// start moving
 			foreach ($this->joomlaVersionData->move->static as $ftem => $details)
 			{
@@ -814,11 +813,11 @@ class Structure extends Get
 				$zipPath = str_replace('c0mp0n3nt/', '', $details->path);
 				$path = str_replace('c0mp0n3nt/', $this->componentPath . '/', $details->path);
 				// set the template folder path
-				$templatePath = (isset($details->custom) && $details->custom) ? (($details->custom !== 'full') ? $this->templatePathCustom.'/':'') : $this->templatePath.'/';
+				$templatePath = (isset($details->custom) && $details->custom) ? (($details->custom !== 'full') ? $this->templatePathCustom . '/' : '') : $this->templatePath . '/';
 				// set the final paths
-				$currentFullPath = str_replace('//', '/', $templatePath.'/'.$item);
-				$packageFullPath = str_replace('//', '/', $path.'/'.$new);
-				$zipFullPath = str_replace('//', '/', $zipPath.'/'.$new);
+				$currentFullPath = str_replace('//', '/', $templatePath . '/' . $item);
+				$packageFullPath = str_replace('//', '/', $path . '/' . $new);
+				$zipFullPath = str_replace('//', '/', $zipPath . '/' . $new);
 				// now move the file
 				if ($details->type === 'file')
 				{
@@ -856,7 +855,7 @@ class Structure extends Get
 				// check if we should add the dynamic folder moving script to the installer script
 				if (!$this->setMoveFolders)
 				{
-					$checker = explode('/',$zipFullPath);
+					$checker = explode('/', $zipFullPath);
 					// TODO <-- this may not be the best way, will keep an eye on this.
 					// We basicly only want to check if a folder is added that is not in the stdFolders array
 					if (isset($checker[0]) && ComponentbuilderHelper::checkString($checker[0]) && !in_array($checker[0], $stdFolders))
@@ -1243,9 +1242,9 @@ class Structure extends Get
 					$custom['path'] = trim($custom['path'], '/');
 				}
 				// set full path if this is a full path folder
-				if(!isset($custom['folder']) && isset($custom['folderpath']))
+				if (!isset($custom['folder']) && isset($custom['folderpath']))
 				{
-					$custom['folder'] = '/'.trim($custom['folderpath'], '/');
+					$custom['folder'] = '/' . trim($custom['folderpath'], '/');
 					// update the dynamic path
 					$custom['folder'] = $this->updateDynamicPath($custom['folder']);
 					// remove the file path
@@ -1354,9 +1353,9 @@ class Structure extends Get
 			{
 				$customPath = 'custom';
 				// set full path if this is a full path file
-				if(!isset($custom['file']) && isset($custom['filepath']))
+				if (!isset($custom['file']) && isset($custom['filepath']))
 				{
-					$custom['file'] = '/'.trim($custom['filepath'], '/');
+					$custom['file'] = '/' . trim($custom['filepath'], '/');
 					// update the dynamic path
 					$custom['file'] = $this->updateDynamicPath($custom['file']);
 					// remove the file path
@@ -1460,4 +1459,5 @@ class Structure extends Get
 	{
 		return ComponentbuilderHelper::removeFolder($dir, $ignore);
 	}
+
 }

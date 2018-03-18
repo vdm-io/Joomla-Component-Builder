@@ -701,4 +701,5 @@ class Compiler extends Infusion
 
 		// any help to improve this is welcome...
 	}
+
 }

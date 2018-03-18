@@ -11,7 +11,7 @@
                                                       |_|
   /-------------------------------------------------------------------------------------------------------------------------------/
 
-  @version		2.6.0
+  @version		2.6.x
   @created		30th April, 2015
   @package		Component Builder
   @subpackage	compiler.php
@@ -247,10 +247,10 @@ class Get
 	 * @var      array
 	 */
 	public $langStringTargets = array(
-		'Joomla'.'.JText._(',
-		'JText:'.':script(',
-		'JText:'.':_(',
-		'JText:'.':sprintf('
+		'Joomla' . '.JText._(',
+		'JText:' . ':script(',
+		'JText:' . ':_(',
+		'JText:' . ':sprintf('
 	);
 
 	/**
@@ -506,7 +506,7 @@ class Get
 	 * 
 	 * @var    array
 	 */
-	public $cryptionTypes = array('basic','medium','whmcs');
+	public $cryptionTypes = array('basic', 'medium', 'whmcs');
 
 	/**
 	 * The WHMCS Encryption Switch
@@ -832,22 +832,22 @@ class Get
 		foreach ($addArrayF as $addTarget => $targetHere)
 		{
 			// set the add target data
-			$component->{'add'.$addTarget} = (isset($component->{'add'.$addTarget}) && ComponentbuilderHelper::checkJson($component->{'add'.$addTarget})) ? json_decode($component->{'add'.$addTarget}, true) : null;
-			if (ComponentbuilderHelper::checkArray($component->{'add'.$addTarget}))
+			$component->{'add' . $addTarget} = (isset($component->{'add' . $addTarget}) && ComponentbuilderHelper::checkJson($component->{'add' . $addTarget})) ? json_decode($component->{'add' . $addTarget}, true) : null;
+			if (ComponentbuilderHelper::checkArray($component->{'add' . $addTarget}))
 			{
 				if (isset($component->{$targetHere}) && ComponentbuilderHelper::checkArray($component->{$targetHere}))
 				{
-					foreach($component->{'add'.$addTarget} as $taget)
+					foreach ($component->{'add' . $addTarget} as $taget)
 					{
 						$component->{$targetHere}[] = $taget;
 					}
 				}
 				else
 				{
-					$component->{$targetHere} = array_values($component->{'add'.$addTarget});
+					$component->{$targetHere} = array_values($component->{'add' . $addTarget});
 				}
 			}
-			unset($component->{'add'.$addTarget});
+			unset($component->{'add' . $addTarget});
 		}
 
 		// set the uikit switch
@@ -998,7 +998,7 @@ class Get
 				// set hash 
 				static $hash = 1;
 				// load hash
-				$field['hash'] = md5($field['field'].$hash);
+				$field['hash'] = md5($field['field'] . $hash);
 				// increment hash
 				$hash++;
 				$field['alias'] = 0;
@@ -1086,15 +1086,15 @@ class Get
 		foreach ($addGlobalCss as $area)
 		{
 			// add_css if found
-			if (isset($component->{'add_css_'.$area}) && $component->{'add_css_'.$area} == 1 && isset($component->{'css_'.$area}) && ComponentbuilderHelper::checkString($component->{'css_'.$area}))
+			if (isset($component->{'add_css_' . $area}) && $component->{'add_css_' . $area} == 1 && isset($component->{'css_' . $area}) && ComponentbuilderHelper::checkString($component->{'css_' . $area}))
 			{
-				$this->customScriptBuilder['component_css_'.$area] = base64_decode($component->{'css_'.$area});
+				$this->customScriptBuilder['component_css_' . $area] = base64_decode($component->{'css_' . $area});
 			}
 			else
 			{
-				$this->customScriptBuilder['component_css_'.$area] = '';
+				$this->customScriptBuilder['component_css_' . $area] = '';
 			}
-			unset($component->{'css_'.$area});
+			unset($component->{'css_' . $area});
 		}
 		// set the lang target
 		$this->lang = 'admin';
@@ -1195,7 +1195,7 @@ class Get
 		{
 			$component->readme = '';
 		}
-		
+
 		// set lang now
 		$nowLang = $this->lang;
 		$this->lang = 'admin';
@@ -1227,13 +1227,13 @@ class Get
 		$this->lang = $nowLang;
 
 		// add the update/sales server FTP details if that is the expected protocol
-		$serverArray = array('update_server','sales_server');
-		foreach($serverArray as $server)
+		$serverArray = array('update_server', 'sales_server');
+		foreach ($serverArray as $server)
 		{
-			if ($component->{'add_'.$server} == 1 && is_numeric($component->{$server}) && $component->{$server} > 0)
+			if ($component->{'add_' . $server} == 1 && is_numeric($component->{$server}) && $component->{$server} > 0)
 			{
 				// get the server protocol
-				$component->{$server.'_protocol'} = ComponentbuilderHelper::getVar('server', (int) $component->{$server}, 'id', 'protocol');
+				$component->{$server . '_protocol'} = ComponentbuilderHelper::getVar('server', (int) $component->{$server}, 'id', 'protocol');
 			}
 			else
 			{
@@ -1241,9 +1241,9 @@ class Get
 				// only change this for sales server (update server can be added loacaly to the zip file)
 				if ('sales_server' === $server)
 				{
-					$component->{'add_'.$server} = 0;
+					$component->{'add_' . $server} = 0;
 				}
-				$component->{$server.'_protocol'} = 0;
+				$component->{$server . '_protocol'} = 0;
 			}
 		}
 		// set the ignore folders for repo if found
@@ -1422,7 +1422,7 @@ class Get
 						// set hash 
 						static $hash = 1;
 						// load hash
-						$field['hash'] = md5($field['field'].$hash);
+						$field['hash'] = md5($field['field'] . $hash);
 						// increment hash
 						$hash++;
 						// set the settings
@@ -1468,12 +1468,12 @@ class Get
 							// check if the datatype changed
 							if (isset($field['settings']->history->datatype))
 							{
-								$this->setUpdateSQL($field['settings']->history->datatype, $field['settings']->datatype, 'field.datatype', $name_single.'.'.$field_name);
+								$this->setUpdateSQL($field['settings']->history->datatype, $field['settings']->datatype, 'field.datatype', $name_single . '.' . $field_name);
 							}
 							// check if the datatype lenght changed
 							if (isset($field['settings']->history->datalenght) && isset($field['settings']->history->datalenght_other))
 							{
-								$this->setUpdateSQL($field['settings']->history->datalenght.$field['settings']->history->datalenght_other, $field['settings']->datalenght.$field['settings']->datalenght_other, 'field.lenght', $name_single.'.'.$field_name);
+								$this->setUpdateSQL($field['settings']->history->datalenght . $field['settings']->history->datalenght_other, $field['settings']->datalenght . $field['settings']->datalenght_other, 'field.lenght', $name_single . '.' . $field_name);
 							}
 							// check if the name changed
 							if (isset($field['settings']->history->xml) && ComponentbuilderHelper::checkJson($field['settings']->history->xml))
@@ -1499,7 +1499,7 @@ class Get
 									if (!isset($this->uniqueNames[$name_list]['names'][$field_name]))
 									{
 										// this only works when the field is not multiple of the same field
-										$this->setUpdateSQL($old_field_name, $field_name, 'field.name', $name_single.'.'.$field_name);
+										$this->setUpdateSQL($old_field_name, $field_name, 'field.name', $name_single . '.' . $field_name);
 									}
 									elseif ($old_field_name !== $field_name)
 									{
@@ -2293,7 +2293,7 @@ class Get
 			}
 		}
 		// fall back to text
-		return  'text';
+		return 'text';
 	}
 
 	/**
@@ -2308,9 +2308,9 @@ class Get
 	public function getFieldName(&$field, $listViewName = null)
 	{
 		// return the unique name if already set
-		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']) && isset($this->uniqueFieldNames[$listViewName.$field['hash']]))
+		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']) && isset($this->uniqueFieldNames[$listViewName . $field['hash']]))
 		{
-			return $this->uniqueFieldNames[$listViewName.$field['hash']];
+			return $this->uniqueFieldNames[$listViewName . $field['hash']];
 		}
 		// set the type name
 		$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
@@ -2380,14 +2380,14 @@ class Get
 			}
 		}
 		// return the value unique
-		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']) )
+		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']))
 		{
-			$this->uniqueFieldNames[$listViewName.$field['hash']] = $this->uniqueName($name, $listViewName);
+			$this->uniqueFieldNames[$listViewName . $field['hash']] = $this->uniqueName($name, $listViewName);
 			// now return the unique name
-			return $this->uniqueFieldNames[$listViewName.$field['hash']];
+			return $this->uniqueFieldNames[$listViewName . $field['hash']];
 		}
 		// fall back to global
-		return  $name;
+		return $name;
 	}
 
 	/**
@@ -2490,8 +2490,7 @@ class Get
 						foreach ($phpSripts as $script)
 						{
 							// add php script to the script builder
-							if (isset($result->{'add_'.$script}) && $result->{'add_'.$script} == 1 
-								&& isset($result->{$script}) && ComponentbuilderHelper::checkString($result->{$script}))
+							if (isset($result->{'add_' . $script}) && $result->{'add_' . $script} == 1 && isset($result->{$script}) && ComponentbuilderHelper::checkString($result->{$script}))
 							{
 								// move all main gets out to the customscript builder
 								if ($result->gettype <= 2)
@@ -2503,7 +2502,7 @@ class Get
 									$this->customScriptBuilder[$this->target . '_' . $script][$view_code] .= $this->setDynamicValues(PHP_EOL . PHP_EOL . base64_decode($result->{$script}));
 									// remove from local item
 									unset($result->{$script});
-									unset($result->{'add_'.$script});
+									unset($result->{'add_' . $script});
 								}
 								else
 								{
@@ -2515,7 +2514,7 @@ class Get
 							{
 								// remove from local item
 								unset($result->{$script});
-								unset($result->{'add_'.$script});
+								unset($result->{'add_' . $script});
 							}
 						}
 						// set the getmethod code name
@@ -3420,22 +3419,22 @@ class Get
 				foreach ($addArray as $addTarget => $targetHere)
 				{
 					// set the add target data
-					$library->{'add'.$addTarget} = (isset($library->{'add'.$addTarget}) && ComponentbuilderHelper::checkJson($library->{'add'.$addTarget})) ? json_decode($library->{'add'.$addTarget}, true) : null;
-					if (ComponentbuilderHelper::checkArray($library->{'add'.$addTarget}))
+					$library->{'add' . $addTarget} = (isset($library->{'add' . $addTarget}) && ComponentbuilderHelper::checkJson($library->{'add' . $addTarget})) ? json_decode($library->{'add' . $addTarget}, true) : null;
+					if (ComponentbuilderHelper::checkArray($library->{'add' . $addTarget}))
 					{
 						if (isset($library->{$targetHere}) && ComponentbuilderHelper::checkArray($library->{$targetHere}))
 						{
-							foreach($library->{'add'.$addTarget} as $taget)
+							foreach ($library->{'add' . $addTarget} as $taget)
 							{
 								$library->{$targetHere}[] = $taget;
 							}
 						}
 						else
 						{
-							$library->{$targetHere} = array_values($library->{'add'.$addTarget});
+							$library->{$targetHere} = array_values($library->{'add' . $addTarget});
 						}
 					}
-					unset($library->{'add'.$addTarget});
+					unset($library->{'add' . $addTarget});
 				}
 				// add config fields only if needed
 				if ($library->how > 1)
@@ -3517,10 +3516,10 @@ class Get
 			// insure string is not broken
 			$content = str_replace('COM_###COMPONENT###', $this->langPrefix, $content);
 			// first get the Joomla.JText._()
-			if (in_array('Joomla'.'.JText._(', $langStringTargets))
+			if (in_array('Joomla' . '.JText._(', $langStringTargets))
 			{
-				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, "Joomla".".JText._('", "'");
-				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'Joomla.'.'JText._("', '"');
+				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, "Joomla" . ".JText._('", "'");
+				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'Joomla.' . 'JText._("', '"');
 				// combine into one array
 				$jsTEXT = ComponentbuilderHelper::mergeArrays($jsTEXT);
 				// we need to add a check to insure these JavaScript lang matchup
@@ -3532,10 +3531,10 @@ class Get
 				}
 			}
 			// now get the JText: :script()
-			if (in_array('JText:'.':script(', $langStringTargets))
+			if (in_array('JText:' . ':script(', $langStringTargets))
 			{
-				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, "JText:".":script('", "'");
-				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'JText:'.':script("', '"');
+				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, "JText:" . ":script('", "'");
+				$scTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'JText:' . ':script("', '"');
 				// combine into one array
 				$scTEXT = ComponentbuilderHelper::mergeArrays($scTEXT);
 				// we need to add a check to insure these JavaScript lang matchup
@@ -3550,7 +3549,7 @@ class Get
 			foreach ($langStringTargets as $langStringTarget)
 			{
 				// need some special treatment here
-				if ($langStringTarget === 'Joomla'.'.JText._(' || $langStringTarget === 'JText:'.':script(')
+				if ($langStringTarget === 'Joomla' . '.JText._(' || $langStringTarget === 'JText:' . ':script(')
 				{
 					continue;
 				}
@@ -4008,7 +4007,7 @@ class Get
 		}
 		return $string;
 	}
-	
+
 	/**
 	 * Set the external code string & load it in to string
 	 * 
@@ -4020,11 +4019,11 @@ class Get
 	public function setExternalCodeString($string)
 	{
 		// check if content has custom code place holder
-		if (strpos($string, '[EXTERNA'.'LCODE=') !== false)
+		if (strpos($string, '[EXTERNA' . 'LCODE=') !== false)
 		{
 			// target content
 			$bucket = array();
-			$found = ComponentbuilderHelper::getAllBetween($string, '[EXTERNA'.'LCODE=', ']');
+			$found = ComponentbuilderHelper::getAllBetween($string, '[EXTERNA' . 'LCODE=', ']');
 			if (ComponentbuilderHelper::checkArray($found))
 			{
 				// build local bucket
@@ -4034,8 +4033,7 @@ class Get
 					if ($this->user->authorise('core.admin', 'com_componentbuilder'))
 					{
 						// check if the target is valid URL or path
-						if ((!filter_var($target, FILTER_VALIDATE_URL) === false && ComponentbuilderHelper::urlExists($target))
-							|| (JPath::clean($target) === $target && JFile::exists($target)))
+						if ((!filter_var($target, FILTER_VALIDATE_URL) === false && ComponentbuilderHelper::urlExists($target)) || (JPath::clean($target) === $target && JFile::exists($target)))
 						{
 							$this->getExternalCodeString($target, $bucket);
 						}
@@ -4043,7 +4041,7 @@ class Get
 						else
 						{
 							// set key
-							$key = '[EXTERNA'.'LCODE='.$target.']';
+							$key = '[EXTERNA' . 'LCODE=' . $target . ']';
 							// set the notice
 							$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
 							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', $key), 'Warning');
@@ -4055,7 +4053,7 @@ class Get
 					else
 					{
 						// set key
-						$key = '[EXTERNA'.'LCODE='.$target.']';
+						$key = '[EXTERNA' . 'LCODE=' . $target . ']';
 						// set the notice
 						$this->app->enqueueMessage(JText::sprintf('%s, you do not have permission to use <b>EXTERNALCODE</b> feature (so it was removed from the compilation), please contact you system administrator for more info!<br /><small>(admin access required)</small>', $this->user->get('name')), 'Error');
 						// remove the placeholder
@@ -4071,7 +4069,7 @@ class Get
 		}
 		return $string;
 	}
-	
+
 	/**
 	 * Get the External Code/String
 	 * 
@@ -4084,7 +4082,7 @@ class Get
 	protected function getExternalCodeString($target, &$bucket)
 	{
 		// set key
-		$key = '[EXTERNA'.'LCODE=' . $target . ']';
+		$key = '[EXTERNA' . 'LCODE=' . $target . ']';
 		// set URL key
 		$targetKey = trim($target);
 		// check if we already fetched this
@@ -4142,7 +4140,7 @@ class Get
 			$bucket[$key] = $this->externalCodeString[$targetKey];
 		}
 	}
-	
+
 	/**
 	 * We start set the custom code data & can load it in to string
 	 * 
@@ -4501,12 +4499,12 @@ class Get
 						// add the new lang placeholder to the db
 						$this->newLangStrings[$counterInsert] = array();
 						$this->newLangStrings[$counterInsert][] = $this->db->quote(json_encode(array($this->componentID))); // 'components'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote($string);	 // 'entranslation'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);	  // 'published'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote($today);	 // 'created'
+						$this->newLangStrings[$counterInsert][] = $this->db->quote($string);  // 'entranslation'
+						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);   // 'published'
+						$this->newLangStrings[$counterInsert][] = $this->db->quote($today);  // 'created'
 						$this->newLangStrings[$counterInsert][] = $this->db->quote((int) $this->user->id);   // 'created_by'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);	  // 'version'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);	  // 'access'
+						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);   // 'version'
+						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);   // 'access'
 
 						$counterInsert++;
 
@@ -5040,7 +5038,7 @@ class Get
 							if ($_type == 2)
 							{
 								// load the last value
-								$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(0);	// 'hashendtarget'
+								$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(0); // 'hashendtarget'
 							}
 						}
 						// the record already exist so we must update instead
@@ -5155,14 +5153,14 @@ class Get
 							$this->newCustomCode[$pointer[$targetKey]] = array();
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote($path);   // 'path'
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote((int) $_type);  // 'type'
-							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(1);	// 'target'
+							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(1); // 'target'
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote($commentType);  // 'comment_type'
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote((int) $this->componentID); // 'component'
-							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(1);	// 'published'
+							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(1); // 'published'
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote($today);   // 'created'
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote((int) $this->user->id); // 'created_by'
-							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(1);	// 'version'
-							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(1);	// 'access'
+							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(1); // 'version'
+							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(1); // 'access'
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote($hashtarget);  // 'hashtarget'
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote((int) $lineNumber);  // 'fromline'
 						}
