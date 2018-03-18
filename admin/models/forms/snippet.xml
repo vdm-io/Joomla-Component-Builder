@@ -4,225 +4,250 @@
 	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
 >
 	<fieldset name="details">
-                <!-- Default Fields.-->
-                <!-- Id Field. Type: Text (joomla)-->
-                <field name="id"
-                       type="text"
-                       class="readonly"
-                       label="JGLOBAL_FIELD_ID_LABEL"
-                       description="JGLOBAL_FIELD_ID_DESC"
-                       size="10"
-                       default="0" />
-                <!-- Date Created Field. Type: Calendar (joomla)-->
-                <field name="created"
-                       type="calendar"
-                       label="COM_COMPONENTBUILDER_SNIPPET_CREATED_DATE_LABEL"
-                       description="COM_COMPONENTBUILDER_SNIPPET_CREATED_DATE_DESC"
-                       size="22"
-                       format="%Y-%m-%d %H:%M:%S"
-                       filter="user_utc" />
-                <!-- User Created Field. Type: User (joomla)-->
-                <field name="created_by"
-                       type="user"
-                       label="COM_COMPONENTBUILDER_SNIPPET_CREATED_BY_LABEL"
-                       description="COM_COMPONENTBUILDER_SNIPPET_CREATED_BY_DESC" />
-                <!-- Published Field. Type: List (joomla)-->
-                <field name="published"
-                       type="list"
-                       label="JSTATUS">
-                        <option value="1">JPUBLISHED</option>
-                        <option value="0">JUNPUBLISHED</option>
-                        <option value="2">JARCHIVED</option>
-                        <option value="-2">JTRASHED</option>
-                </field>
-                <!-- Date Modified Field. Type: Calendar (joomla)-->
-                <field name="modified"
-                       type="calendar"
-                       class="readonly"
-                       label="COM_COMPONENTBUILDER_SNIPPET_MODIFIED_DATE_LABEL"
-                       description="COM_COMPONENTBUILDER_SNIPPET_MODIFIED_DATE_DESC"
-                       size="22"
-                       readonly="true"
-                       format="%Y-%m-%d %H:%M:%S"
-                       filter="user_utc" />
-                <!-- User Modified Field. Type: User (joomla)-->
-                <field name="modified_by"
-                       type="user"
-                       label="COM_COMPONENTBUILDER_SNIPPET_MODIFIED_BY_LABEL"
-                       description="COM_COMPONENTBUILDER_SNIPPET_MODIFIED_BY_DESC"
-                       class="readonly"
-                       readonly="true"
-                       filter="unset" />
-                <!-- Access Field. Type: Accesslevel (joomla)-->
-                <field name="access"
-                       type="accesslevel"
-                       label="JFIELD_ACCESS_LABEL"
-                       description="JFIELD_ACCESS_DESC"
-                       default="1"
-                       required="false" />
-                <!-- Ordering Field. Type: Numbers (joomla)-->
-                <field name="ordering"
-                       type="number"
-                       class="inputbox validate-ordering"
-                       label="COM_COMPONENTBUILDER_SNIPPET_ORDERING_LABEL"
-                       description=""
-                       default="0"
-                       size="6"
-                       required="false" />
-                <!-- Version Field. Type: Text (joomla)-->
-                <field name="version"
-                       type="text"
-                       class="readonly"
-                       label="COM_COMPONENTBUILDER_SNIPPET_VERSION_LABEL"
-                       description="COM_COMPONENTBUILDER_SNIPPET_VERSION_DESC"
-                       size="6"
-                       readonly="true"
-                       filter="unset" />
-                <!-- Dynamic Fields.-->
-                <!-- Name Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="name"
-                       label="COM_COMPONENTBUILDER_SNIPPET_NAME_LABEL"
-                       size="40"
-                       maxlength="150"
-                       description="COM_COMPONENTBUILDER_SNIPPET_NAME_DESCRIPTION"
-                       class="text_area"
-                       readonly="false"
-                       disabled="false"
-                       required="true"
-                       filter="STRING"
-                       message="COM_COMPONENTBUILDER_SNIPPET_NAME_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_NAME_HINT" />
-                <!-- Url Field. Type: Url. (joomla)-->
-                <field type="url"
-                       name="url"
-                       label="COM_COMPONENTBUILDER_SNIPPET_URL_LABEL"
-                       size="60"
-                       maxlength="150"
-                       description="COM_COMPONENTBUILDER_SNIPPET_URL_DESCRIPTION"
-                       class="text_area"
-                       required="true"
-                       filter="url"
-                       validated="url"
-                       message="COM_COMPONENTBUILDER_SNIPPET_URL_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_URL_HINT" />
-                <!-- Type Field. Type: Snippettype. (custom)-->
-                <field type="snippettype"
-                       name="type"
-                       label="COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL"
-                       description="COM_COMPONENTBUILDER_SNIPPET_TYPE_DESCRIPTION"
-                       class="list_class"
-                       multiple="false"
-                       default="0"
-                       required="true" />
-                <!-- Heading Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="heading"
-                       label="COM_COMPONENTBUILDER_SNIPPET_HEADING_LABEL"
-                       size="40"
-                       maxlength="150"
-                       description="COM_COMPONENTBUILDER_SNIPPET_HEADING_DESCRIPTION"
-                       class="text_area"
-                       required="true"
-                       filter="HTML"
-                       message="COM_COMPONENTBUILDER_SNIPPET_HEADING_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_HEADING_HINT" />
-                <!-- Library Field. Type: Library. (custom)-->
-                <field type="library"
-                       name="library"
-                       label="COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL"
-                       description="COM_COMPONENTBUILDER_SNIPPET_LIBRARY_DESCRIPTION"
-                       class="list_class"
-                       multiple="false"
-                       default="0"
-                       required="true"
-                       button="true" />
-                <!-- Note_contributor_details Field. Type: Note. A None Database Field. (joomla)-->
-                <field type="note"
-                       name="note_contributor_details"
-                       label="COM_COMPONENTBUILDER_SNIPPET_NOTE_CONTRIBUTOR_DETAILS_LABEL"
-                       description="COM_COMPONENTBUILDER_SNIPPET_NOTE_CONTRIBUTOR_DETAILS_DESCRIPTION"
-                       heading="h4"
-                       class="alert alert-info note_contributor_details" />
-                <!-- Contributor_email Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="contributor_email"
-                       label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_LABEL"
-                       size="10"
-                       maxlength="50"
-                       description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_DESCRIPTION"
-                       class="text_area"
-                       readonly="true"
-                       filter="STRING"
-                       message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_HINT" />
-                <!-- Contributor_name Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="contributor_name"
-                       label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_LABEL"
-                       size="10"
-                       maxlength="50"
-                       description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_DESCRIPTION"
-                       class="text_area"
-                       readonly="true"
-                       filter="STRING"
-                       message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_HINT" />
-                <!-- Contributor_website Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="contributor_website"
-                       label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_LABEL"
-                       size="10"
-                       maxlength="50"
-                       description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_DESCRIPTION"
-                       class="text_area"
-                       readonly="true"
-                       filter="STRING"
-                       message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_HINT" />
-                <!-- Contributor_company Field. Type: Text. (joomla)-->
-                <field type="text"
-                       name="contributor_company"
-                       label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_LABEL"
-                       size="10"
-                       maxlength="50"
-                       description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_DESCRIPTION"
-                       class="text_area"
-                       readonly="true"
-                       filter="STRING"
-                       message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_MESSAGE"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_HINT" />
-                <!-- Snippet Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="snippet"
-                       label="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_LABEL"
-                       rows="27"
-                       cols="10"
-                       class="text_area span12"
-                       filter="raw"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_HINT"
-                       required="true" />
-                <!-- Usage Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="usage"
-                       label="COM_COMPONENTBUILDER_SNIPPET_USAGE_LABEL"
-                       rows="11"
-                       cols="10"
-                       description="COM_COMPONENTBUILDER_SNIPPET_USAGE_DESCRIPTION"
-                       class="text_area span12"
-                       filter="STRING"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_USAGE_HINT" />
-                <!-- Description Field. Type: Textarea. (joomla)-->
-                <field type="textarea"
-                       name="description"
-                       label="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_LABEL"
-                       rows="11"
-                       cols="10"
-                       description="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_DESCRIPTION"
-                       class="text_area span12"
-                       filter="HTML"
-                       hint="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_HINT" />
-        </fieldset>
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_SNIPPET_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_SNIPPET_CREATED_DATE_DESC"
+			size="22"
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_SNIPPET_CREATED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_SNIPPET_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_SNIPPET_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_SNIPPET_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_SNIPPET_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_SNIPPET_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_SNIPPET_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_SNIPPET_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_SNIPPET_VERSION_DESC"
+			size="6"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="name"
+			label="COM_COMPONENTBUILDER_SNIPPET_NAME_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_SNIPPET_NAME_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_NAME_HINT"
+		/>
+		<!-- Url Field. Type: Url. (joomla) -->
+		<field
+			type="url"
+			name="url"
+			label="COM_COMPONENTBUILDER_SNIPPET_URL_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_SNIPPET_URL_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="url"
+			validated="url"
+			message="COM_COMPONENTBUILDER_SNIPPET_URL_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_URL_HINT"
+		/>
+		<!-- Type Field. Type: Snippettype. (custom) -->
+		<field
+			type="snippettype"
+			name="type"
+			label="COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL"
+			description="COM_COMPONENTBUILDER_SNIPPET_TYPE_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="true"
+		/>
+		<!-- Heading Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="heading"
+			label="COM_COMPONENTBUILDER_SNIPPET_HEADING_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_SNIPPET_HEADING_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="HTML"
+			message="COM_COMPONENTBUILDER_SNIPPET_HEADING_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_HEADING_HINT"
+		/>
+		<!-- Library Field. Type: Library. (custom) -->
+		<field
+			type="library"
+			name="library"
+			label="COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL"
+			description="COM_COMPONENTBUILDER_SNIPPET_LIBRARY_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="true"
+			button="true"
+		/>
+		<!-- Note_contributor_details Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_contributor_details" label="COM_COMPONENTBUILDER_SNIPPET_NOTE_CONTRIBUTOR_DETAILS_LABEL" description="COM_COMPONENTBUILDER_SNIPPET_NOTE_CONTRIBUTOR_DETAILS_DESCRIPTION" heading="h4" class="alert alert-info note_contributor_details" />
+		<!-- Contributor_email Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="contributor_email"
+			label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_EMAIL_HINT"
+		/>
+		<!-- Contributor_name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="contributor_name"
+			label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_NAME_HINT"
+		/>
+		<!-- Contributor_website Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="contributor_website"
+			label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_WEBSITE_HINT"
+		/>
+		<!-- Contributor_company Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="contributor_company"
+			label="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR_COMPANY_HINT"
+		/>
+		<!-- Snippet Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="snippet"
+			label="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_LABEL"
+			rows="27"
+			cols="10"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_SNIPPET_SNIPPET_HINT"
+			required="true"
+		/>
+		<!-- Usage Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="usage"
+			label="COM_COMPONENTBUILDER_SNIPPET_USAGE_LABEL"
+			rows="11"
+			cols="10"
+			description="COM_COMPONENTBUILDER_SNIPPET_USAGE_DESCRIPTION"
+			class="text_area span12"
+			filter="STRING"
+			hint="COM_COMPONENTBUILDER_SNIPPET_USAGE_HINT"
+		/>
+		<!-- Description Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="description"
+			label="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_LABEL"
+			rows="11"
+			cols="10"
+			description="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_DESCRIPTION"
+			class="text_area span12"
+			filter="HTML"
+			hint="COM_COMPONENTBUILDER_SNIPPET_DESCRIPTION_HINT"
+		/>
+	</fieldset>
 	
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">

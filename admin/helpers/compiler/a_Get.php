@@ -429,6 +429,16 @@ class Get
 	private $_fieldData = array();
 
 	/**
+	 * The field builder type
+	 * 
+	 * 1 = StringManipulation
+	 * 2 = SimpleXMLElement
+	 * 
+	 * @var     int
+	 */
+	public $fieldBuilderType;
+
+	/**
 	 * Set unique Names
 	 * 
 	 * @var    array
@@ -610,6 +620,16 @@ class Get
 			$this->tidy = extension_loaded('Tidy');
 			// Set the params
 			$this->params = JComponentHelper::getParams('com_componentbuilder');
+			// set the field type builder
+			$this->fieldBuilderType = $this->params->get('compiler_field_builder_type', 2);
+			// check the field builder type logic
+			if (!$this->tidy && $this->fieldBuilderType == 2)
+			{
+				// we do not have the tidy extention set fall back to StringManipulation
+				$this->fieldBuilderType = 1;
+				// load the sugestion to use string manipulation
+				$this->app->enqueueMessage(JText::_('Since you do not have <b>Tidy</b> extentsion setup on your system, we could not use the SimpleXMLElement class. We instead used <b>string manipulation</b> to build all your fields, this is a faster method, you must inspect the xml files in your component package to see if you are satisfied with the result.<br />You can make this method your default by opening the global options of JCB and under the <b>Global</b> tab set the <b>Field Builder Type</b> to string manipulation.<hr />'), 'Notice');
+			}
 			// load the compiler path
 			$this->compilerPath = $this->params->get('compiler_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
 			// set the component ID

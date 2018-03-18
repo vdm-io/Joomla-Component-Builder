@@ -12902,13 +12902,23 @@ class Interpretation extends Fields
 				$dbkey = 'g';
 				foreach ($this->componentData->config as $field)
 				{
-					$newxmlField = $this->setDynamicField($field, $view, $viewType, $lang, $viewName, $listViewName, $placeholders, $dbkey, false);
-					// tmp hack untill this whole area is also done in xml (TODO)
-					if (isset($newxmlField->fieldXML))
+					// check the field builder type
+					if ($this->fieldBuilderType == 1)
 					{
-						$xmlField = dom_import_simplexml($newxmlField->fieldXML);
-						$xmlField = PHP_EOL . "\t<!-- " . $newxmlField->comment . ' -->' . PHP_EOL . "\t" . $this->xmlPrettyPrint($xmlField, 'field');
+						// string manipulation
+						$xmlField = $this->setDynamicField($field, $view, $viewType, $lang, $viewName, $listViewName, $placeholders, $dbkey, false);
 					}
+					else
+					{
+						// simpleXMLElement class
+						$newxmlField = $this->setDynamicField($field, $view, $viewType, $lang, $viewName, $listViewName, $placeholders, $dbkey, false);
+						if (isset($newxmlField->fieldXML))
+						{
+							$xmlField = dom_import_simplexml($newxmlField->fieldXML);
+							$xmlField = PHP_EOL . "\t<!-- " . $newxmlField->comment . ' -->' . PHP_EOL . "\t" . $this->xmlPrettyPrint($xmlField, 'field');
+						}
+					}
+					// make sure the xml is set and a string
 					if (isset($xmlField) && ComponentbuilderHelper::checkString($xmlField))
 					{
 						$this->configFieldSetsCustomField[$field['tabname']][] = $xmlField;
@@ -13097,7 +13107,7 @@ class Interpretation extends Fields
 					}
 				}
 				// set the fields
-				$this->configFieldSets[] = implode("\t\t", $bucket);
+				$this->configFieldSets[] = implode("", $bucket);
 				// close field set
 				$this->configFieldSets[] = "\t</fieldset>";
 				// remove after loading
@@ -13135,7 +13145,7 @@ class Interpretation extends Fields
 			// add custom Target Groups fields
 			if (isset($this->configFieldSetsCustomField['Target Groups']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Target Groups']))
 			{
-				$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField['Target Groups']);
+				$this->configFieldSets[] = implode("", $this->configFieldSetsCustomField['Target Groups']);
 				unset($this->configFieldSetsCustomField['Target Groups']);
 			}
 			// close that fieldse
@@ -13261,7 +13271,7 @@ class Interpretation extends Fields
 		// add custom global fields
 		if (isset($this->configFieldSetsCustomField['Global']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Global']))
 		{
-			$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField['Global']);
+			$this->configFieldSets[] = implode("", $this->configFieldSetsCustomField['Global']);
 			unset($this->configFieldSetsCustomField['Global']);
 		}
 		// set the author details
@@ -13619,7 +13629,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			// add custom Uikit Settings fields
 			if (isset($this->configFieldSetsCustomField['Uikit Settings']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Uikit Settings']))
 			{
-				$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField['Uikit Settings']);
+				$this->configFieldSets[] = implode("", $this->configFieldSetsCustomField['Uikit Settings']);
 				unset($this->configFieldSetsCustomField['Uikit Settings']);
 			}
 			// close that fieldset
@@ -13643,7 +13653,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			// add custom Mail Configurations
 			if (isset($this->configFieldSetsCustomField['Mail Configuration']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Mail Configuration']))
 			{
-				$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField['Mail Configuration']);
+				$this->configFieldSets[] = implode("", $this->configFieldSetsCustomField['Mail Configuration']);
 				unset($this->configFieldSetsCustomField['Mail Configuration']);
 			}
 			else
@@ -13905,7 +13915,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			// add custom DKIM fields
 			if (isset($this->configFieldSetsCustomField['DKIM']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['DKIM']))
 			{
-				$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField['DKIM']);
+				$this->configFieldSets[] = implode("", $this->configFieldSetsCustomField['DKIM']);
 				unset($this->configFieldSetsCustomField['DKIM']);
 			}
 			else
@@ -14339,7 +14349,7 @@ function vdm_dkim() {
 			// add custom Encryption Settings fields
 			if (isset($this->configFieldSetsCustomField['Chart Settings']) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField['Chart Settings']))
 			{
-				$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField['Chart Settings']);
+				$this->configFieldSets[] = implode("", $this->configFieldSetsCustomField['Chart Settings']);
 				unset($this->configFieldSetsCustomField['Chart Settings']);
 			}
 
@@ -14540,7 +14550,7 @@ function vdm_dkim() {
 				// add custom Encryption Settings fields
 				if (isset($this->configFieldSetsCustomField[$dynamicAddField]) && ComponentbuilderHelper::checkArray($this->configFieldSetsCustomField[$dynamicAddField]))
 				{
-					$this->configFieldSets[] = implode("\t\t", $this->configFieldSetsCustomField[$dynamicAddField]);
+					$this->configFieldSets[] = implode("", $this->configFieldSetsCustomField[$dynamicAddField]);
 					unset($this->configFieldSetsCustomField[$dynamicAddField]);
 				}
 			}

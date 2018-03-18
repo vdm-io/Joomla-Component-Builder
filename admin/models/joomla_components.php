@@ -713,86 +713,91 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*/
 	protected function smartExportBuilder()
 	{
-		// set db data
-		$data = serialize($this->smartExport);
-		// lock the data if set
-		if (ComponentbuilderHelper::checkArray($this->key))
+		// check if data is set
+		if (isset($this->smartExport) && ComponentbuilderHelper::checkArray($this->smartExport))
 		{
-			// lock the data
-			$this->key = md5(implode('', $this->key));
-			$locker = new FOFEncryptAes($this->key, 128);
-			$data = $locker->encryptString($data);		
-			// Set the key owner information
-			$this->info['getKeyFrom'] = array();
-			$this->info['getKeyFrom']['company'] = $this->params->get('export_company', null);
-			$this->info['getKeyFrom']['owner'] = $this->params->get('export_owner', null);
-			$this->info['getKeyFrom']['email'] = $this->params->get('export_email', null);
-			$this->info['getKeyFrom']['website'] = $this->params->get('export_website', null);
-			$this->info['getKeyFrom']['license'] = $this->params->get('export_license', null);
-			$this->info['getKeyFrom']['copyright'] = $this->params->get('export_copyright', null);
-			// making provision for future changes 
-			if (count($this->exportBuyLinks) == 1)
+			// set db data
+			$data = serialize($this->smartExport);
+			// lock the data if set
+			if (ComponentbuilderHelper::checkArray($this->key))
 			{
-				$this->info['getKeyFrom']['buy_links'] = $this->exportBuyLinks;
+				// lock the data
+				$this->key = md5(implode('', $this->key));
+				$locker = new FOFEncryptAes($this->key, 128);
+				$data = $locker->encryptString($data);		
+				// Set the key owner information
+				$this->info['getKeyFrom'] = array();
+				$this->info['getKeyFrom']['company'] = $this->params->get('export_company', null);
+				$this->info['getKeyFrom']['owner'] = $this->params->get('export_owner', null);
+				$this->info['getKeyFrom']['email'] = $this->params->get('export_email', null);
+				$this->info['getKeyFrom']['website'] = $this->params->get('export_website', null);
+				$this->info['getKeyFrom']['license'] = $this->params->get('export_license', null);
+				$this->info['getKeyFrom']['copyright'] = $this->params->get('export_copyright', null);
+				// making provision for future changes 
+				if (count($this->exportBuyLinks) == 1)
+				{
+					$this->info['getKeyFrom']['buy_links'] = $this->exportBuyLinks;
+				}
+				else
+				{
+					// use global if more then one component is exported, or if none has a buy link
+					$this->info['getKeyFrom']['buy_link'] = $this->params->get('export_buy_link', null);
+				}
+				$this->info['getKeyFrom']['package_links']	= $this->exportPackageLinks;
 			}
 			else
 			{
-				// use global if more then one component is exported, or if none has a buy link
-				$this->info['getKeyFrom']['buy_link'] = $this->params->get('export_buy_link', null);
+				// Set the owner information
+				$data = base64_encode($data);
 			}
-			$this->info['getKeyFrom']['package_links']	= $this->exportPackageLinks;
-		}
-		else
-		{
-			// Set the owner information
-			$data = base64_encode($data);
-		}
-		// set the path
-		$dbPath = $this->packagePath . '/db.vdm';
-		// write the db data to file in package
-		if (!ComponentbuilderHelper::writeFile($dbPath, wordwrap($data, 128, "\n", true)))
-		{
-			return false;
-		}
-		// set info data
-		$locker = new FOFEncryptAes('V4stD3vel0pmEntMethOd@YoUrS3rv!s', 128);
-		$info = $locker->encryptString(json_encode($this->info));
-		// set the path
-		$infoPath = $this->packagePath . '/info.vdm';
-		// write the db data to file in package
-		if (!ComponentbuilderHelper::writeFile($infoPath, wordwrap($info, 128, "\n", true)))
-		{
-				return false;
-		}
-		// lock all files
-		$this->lockFiles();
-		// remove old zip files with the same name
-		if (JFile::exists($this->zipPath))
-		{
-			// remove file if found
-			JFile::delete($this->zipPath);
-		}
-		// zip the folder
-		if (!ComponentbuilderHelper::zip($this->packagePath, $this->zipPath))
-		{
-			return false;
-		}
-		// move to remote server if needed
-		if (2 == $this->backupType)
-		{
-			if (!ComponentbuilderHelper::moveToServer($this->zipPath, $this->packageName.'.zip', $this->backupServer, null, 'joomla_component.export'))
+			// set the path
+			$dbPath = $this->packagePath . '/db.vdm';
+			// write the db data to file in package
+			if (!ComponentbuilderHelper::writeFile($dbPath, wordwrap($data, 128, "\n", true)))
 			{
 				return false;
 			}
-			// remove the local file
-			JFile::delete($this->zipPath);
+			// set info data
+			$locker = new FOFEncryptAes('V4stD3vel0pmEntMethOd@YoUrS3rv!s', 128);
+			$info = $locker->encryptString(json_encode($this->info));
+			// set the path
+			$infoPath = $this->packagePath . '/info.vdm';
+			// write the db data to file in package
+			if (!ComponentbuilderHelper::writeFile($infoPath, wordwrap($info, 128, "\n", true)))
+			{
+					return false;
+			}
+			// lock all files
+			$this->lockFiles();
+			// remove old zip files with the same name
+			if (JFile::exists($this->zipPath))
+			{
+				// remove file if found
+				JFile::delete($this->zipPath);
+			}
+			// zip the folder
+			if (!ComponentbuilderHelper::zip($this->packagePath, $this->zipPath))
+			{
+				return false;
+			}
+			// move to remote server if needed
+			if (2 == $this->backupType)
+			{
+				if (!ComponentbuilderHelper::moveToServer($this->zipPath, $this->packageName.'.zip', $this->backupServer, null, 'joomla_component.export'))
+				{
+					return false;
+				}
+				// remove the local file
+				JFile::delete($this->zipPath);
+			}
+			// remove the folder
+			if (!ComponentbuilderHelper::removeFolder($this->packagePath))
+			{
+				return false;
+			}
+			return true;
 		}
-		// remove the folder
-		if (!ComponentbuilderHelper::removeFolder($this->packagePath))
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	/**

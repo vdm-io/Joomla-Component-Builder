@@ -620,16 +620,19 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	get the localkey
+	* 	the basic localkey
 	**/
 	protected static $localkey = false;
-	
+
+	/**
+	* 	get the localkey
+	**/	
 	public static function getLocalKey()
 	{
 		if (!self::$localkey)
 		{
-			// get the main key
-			self::$localkey = md5(JComponentHelper::getParams('com_componentbuilder')->get('basic_key', 'localKey34fdWEkl'));
+			// get the basic key
+			self::$localkey = md5(self::getCryptKey('basic', 'localKey34fdWEkl'));
 		}
 		return self::$localkey;
 	}
@@ -702,8 +705,18 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-	
-	public static function getBetween($content,$start,$end)
+
+	/**
+	*	get between
+	* 
+	*	@param  string          $content    The content to search
+	*	@param  string          $start        The starting value
+	*	@param  string          $end         The ending value
+	*
+	*	@return  string          On success / empty string on failure 
+	* 
+	*/
+	public static function getBetween($content, $start, $end)
 	{
 		$r = explode($start, $content);
 		if (isset($r[1]))
@@ -713,17 +726,32 @@ abstract class ComponentbuilderHelper
 		}
 		return '';
 	}
-	
-	public static function getAllBetween($content,$start,$end)
+
+	/**
+	* 	get all between
+	* 
+	*	@param  string          $content    The content to search
+	*	@param  string          $start        The starting value
+	*	@param  string          $end         The ending value
+	*
+	*	@return  array          On success
+	* 
+	*/
+	public static function getAllBetween($content, $start, $end)
 	{
-		$buket = array();
+		// reset bucket
+		$bucket = array();
 		for ($i = 0; ; $i++)
 		{
+			// search for string
 			$found = self::getBetween($content,$start,$end);
 			if (self::checkString($found))
 			{
-				$buket[] = $found;
+				// add to bucket
+				$bucket[] = $found;
+				// build removal string
 				$remove = $start.$found.$end;
+				// remove from content
 				$content = str_replace($remove,'',$content);
 			}
 			else
@@ -736,9 +764,10 @@ abstract class ComponentbuilderHelper
 				break;
 			}
 		}
-		return  array_unique($buket);
+		// only return unique array of values
+		return  array_unique($bucket);
 	}
-	
+
 	public static function typeField($type,$option = 'default')
 	{
 		// list of default fields
@@ -1560,6 +1589,7 @@ abstract class ComponentbuilderHelper
 		// return the object
 		return self::$CRYPT[$TYPE];
 	}
+
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null)
 	{
