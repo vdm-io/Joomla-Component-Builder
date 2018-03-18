@@ -1387,7 +1387,7 @@ class Fields extends Structure
 							// add the tabs needed
 							$r_taber = "\t\t\t";
 							// get field values
-							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $view_name_list, $view_name_single, $placeholders, true);
+							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $view_name_list, $view_name_single, $placeholders, true);
 							// check if values were set
 							if (ComponentbuilderHelper::checkArray($r_fieldValues))
 							{
@@ -1474,7 +1474,7 @@ class Fields extends Structure
 							// add the tabs needed
 							$r_taber = "\t\t";
 							// get field values
-							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $spacerCounter, $view_name_list, $view_name_single, $placeholders, true);
+							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $view_name_list, $view_name_single, $placeholders, true);
 							// check if values were set
 							if (ComponentbuilderHelper::checkArray($r_fieldValues))
 							{

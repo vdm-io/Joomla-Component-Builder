@@ -5427,6 +5427,13 @@ class Get
 	 */
 	public function setPlaceholders(&$data, &$placeholder, $action = 1)
 	{
+		// make sure the placeholders is an array
+		if (!ComponentbuilderHelper::checkArray($placeholder))
+		{
+			// This is an error, (TODO) actualy we need to add a kind of log here to know that this happened
+			return $data;
+		}
+		// continue with the work of replacement
 		if (1 == $action) // <-- just replace (default)
 		{
 			return str_replace(array_keys($placeholder), array_values($placeholder), $data);
