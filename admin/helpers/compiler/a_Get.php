@@ -5425,7 +5425,7 @@ class Get
 	 * @return  string
 	 * 
 	 */
-	public function setPlaceholders(&$data, &$placeholder, $action = 1)
+	public function setPlaceholders($data, &$placeholder, $action = 1)
 	{
 		// make sure the placeholders is an array
 		if (!ComponentbuilderHelper::checkArray($placeholder))

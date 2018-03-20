@@ -1072,27 +1072,28 @@ class ComponentbuilderModelAjax extends JModelList
 
 	protected $linkedKeys = array(
 			'field' => array(
-				array('table' => 'component_config', 'tables' => 'components_config', 'fields' => array('addconfig' => 'field', 'joomla_component' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'name' => 'system_name'),
-				array('table' => 'admin_fields', 'tables' => 'admins_fields', 'fields' => array('addfields' => 'field', 'admin_view' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_ADMIN_VIEW', 'name' => 'system_name')
+				array('table' => 'component_config', 'tables' => 'components_config', 'fields' => array('addconfig' => 'field', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name'),
+				array('table' => 'admin_fields', 'tables' => 'admins_fields', 'fields' => array('addfields' => 'field', 'admin_view' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_ADMIN_VIEW', 'linked_name' => 'system_name'),
+				array('table' => 'field', 'tables' => 'fields', 'fields' => array('xml' => 'fields', 'name' => 'NAME', 'fieldtype' => 'TYPE'), 'linked' => 'COM_COMPONENTBUILDER_FIELD', 'type_name' => 'name')
 			),
 			'admin_view' => array(
-				array('table' => 'component_admin_views', 'tables' => 'components_admin_views', 'fields' => array('addadmin_views' => 'adminview', 'joomla_component' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'name' => 'system_name')
+				array('table' => 'component_admin_views', 'tables' => 'components_admin_views', 'fields' => array('addadmin_views' => 'adminview', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name')
 			),
 			'custom_admin_view' => array(
-				array('table' => 'component_custom_admin_views', 'tables' => 'components_custom_admin_views', 'fields' => array('addcustom_admin_views' => 'customadminview', 'joomla_component' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'name' => 'system_name')
+				array('table' => 'component_custom_admin_views', 'tables' => 'components_custom_admin_views', 'fields' => array('addcustom_admin_views' => 'customadminview', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name')
 			),
 			'site_view' => array(
-				array('table' => 'component_site_views', 'tables' => 'components_site_views', 'fields' => array('addsite_views' => 'siteview', 'joomla_component' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'name' => 'system_name')
+				array('table' => 'component_site_views', 'tables' => 'components_site_views', 'fields' => array('addsite_views' => 'siteview', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name')
 			),
 			'library' => array(
-				array('table' => 'template', 'tables' => 'templates', 'fields' => array('libraries' => 'ARRAY', 'name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_TEMPLATE'),
-				array('table' => 'layout', 'tables' => 'layouts', 'fields' => array('libraries' => 'ARRAY', 'name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_LAYOUT'),
-				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('libraries' => 'ARRAY', 'system_name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
-				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('libraries' => 'ARRAY', 'system_name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW')
+				array('table' => 'template', 'tables' => 'templates', 'fields' => array('libraries' => 'ARRAY', 'name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_TEMPLATE'),
+				array('table' => 'layout', 'tables' => 'layouts', 'fields' => array('libraries' => 'ARRAY', 'name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_LAYOUT'),
+				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('libraries' => 'ARRAY', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
+				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('libraries' => 'ARRAY', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW')
 			),
 			'dynamic_get' => array(
-				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('custom_get' => 'ARRAY', 'main_get' => 'INT', 'system_name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
-				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('custom_get' => 'ARRAY', 'main_get' => 'INT', 'system_name' => 'NAME'), 'type' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW')
+				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('custom_get' => 'ARRAY', 'main_get' => 'INT', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
+				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('custom_get' => 'ARRAY', 'main_get' => 'INT', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW')
 			)
 		);
 
@@ -1166,12 +1167,19 @@ class ComponentbuilderModelAjax extends JModelList
 				foreach ($items as $item)
 				{
 					$found = false;
+					$type_name = null;
 					foreach ($search['fields'] as $key => $target)
 					{
 						if ('NAME' === $target)
 						{
-							$name = $item->{$key};
-							$nameTable = $key;
+							$linked_name = $item->{$key};
+							$linked_nameTable = $key;
+							continue;
+						}
+						elseif ('TYPE' === $target)
+						{
+							$type_name = $item->{$key};
+							$type_nameTable = $key;
 							continue;
 						}
 						elseif (!$found)
@@ -1216,6 +1224,30 @@ class ComponentbuilderModelAjax extends JModelList
 										}
 									}
 								}
+								// if string (fields)
+								if (!$found &&  'xml' === $key && ComponentbuilderHelper::checkString($item->{$key})
+									&& strpos($item->{$key}, 'fields="') !== false)
+								{
+									// now get the fields between
+									$_fields = ComponentbuilderHelper::getBetween($item->{$key}, 'fields="', '"');
+									// check the result
+									if (ComponentbuilderHelper::checkString($_fields))
+									{
+										// get the ids of all the fields linked here
+										$_fields = array_map('trim', (array) explode(',', $_fields));
+										// check the result
+										if (ComponentbuilderHelper::checkArray($_fields))
+										{
+											foreach ($_fields as $_field)
+											{
+												if ($_field == $id)
+												{
+													$found = true;
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -1224,18 +1256,34 @@ class ComponentbuilderModelAjax extends JModelList
 					{
 						// build the name
 						$edit = true;
-						if (is_numeric($name) && isset($search['name']))
+						if (is_numeric($linked_name) && isset($search['linked_name']))
 						{
-							if (!$name =  ComponentbuilderHelper::getVar($nameTable, (int) $name, 'id', $search['name']))
+							if (!$linked_name =  ComponentbuilderHelper::getVar($linked_nameTable, (int) $linked_name, 'id', $search['linked_name']))
 							{
-								$name = JText::_('COM_COMPONENTBUILDER_NO_FOUND');
+								$linked_name = JText::_('COM_COMPONENTBUILDER_NO_FOUND');
 								$edit = false;
 							}
+						}
+						// build the local type
+						if (is_numeric($type_name) && isset($search['type_name']))
+						{
+							if (!$type_name =  ComponentbuilderHelper::getVar($type_nameTable, (int) $type_name, 'id', $search['type_name']))
+							{
+								$type_name = '';
+							}
+							else
+							{
+								$type_name = ' (' . $type_name . ') ';
+							}
+						}
+						elseif (ComponentbuilderHelper::checkString($type_name) || is_numeric($type_name))
+						{
+							$type_name = ' (' . $type_name . ') ';
 						}
 						// set edit link
 						$link = ($edit) ? $this->addEditLink($item->id, $search['table'], $search['tables']) : '';
 						// build the linked
-						$linked[] = JText::_($search['type']) . ' - ' . $name . ' ' . $link;
+						$linked[] = JText::_($search['linked']) . $type_name . ' - ' . $linked_name . ' ' . $link;
 					}
 				}
 			}
