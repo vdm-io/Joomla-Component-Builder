@@ -120,6 +120,23 @@ JHtml::_('behavior.keepalive');
 			form.submit();
 		}
 	};
+	Joomla.submitbuttonVDM = function()
+	{
+		var form = document.getElementById('adminForm');
+		// do field validation
+		if (form.vdm_package.value == "" || form.vdm_package.value == "http://")
+		{
+			alert("<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_YOUR_WOULD_LIKE_TO_IMPORT', true); ?>");
+		}
+		else
+		{
+			// set the url
+			form.import_url.value = form.vdm_package.value;
+			jQuery('#loading').css('display', 'block');
+			form.gettype.value = 'url';
+			form.submit();
+		}
+	};
 <?php endif; ?>
 
 
@@ -157,9 +174,9 @@ jQuery(document).ready(function($) {
 		<div id="j-main-container">
 	<?php endif;?>
 	<?php if ($this->hasPackage && ComponentbuilderHelper::checkArray($this->headerList) && ComponentbuilderHelper::checkArray($this->headers)) : ?>
-		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => $this->activeTab)); ?>
+		<?php echo JHtml::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => $this->activeTab)); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'basic', JText::_('COM_COMPONENTBUILDER_BASIC_METHOD', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'basic', JText::_('COM_COMPONENTBUILDER_BASIC_METHOD', true)); ?>
 		<fieldset class="uploadform">
 			<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_LINK_FILE_TO_TABLE_COLUMNS'); ?></legend>
 			<div class="control-group">
@@ -205,9 +222,9 @@ jQuery(document).ready(function($) {
 		?>
 		<h3 style="color: #1F73BA;"><?php echo JText::_('COM_COMPONENTBUILDER_CONFIRMATION_STEP_BEFORE_IMPORTING'); ?></h3>
 		<p style="color: #1F73BA;"><?php echo JText::_('COM_COMPONENTBUILDER_YOU_SHOULD_ONLY_CONTINUE_THIS_IMPORT_IF_YOU_HAVE_BACKUP_YOUR_COMPONENTS_AND_INSURED_THAT_THE_PACKAGE_OWNER_IS_REPUTABLE'); ?></p>
-		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'advanced')); ?>
+		<?php echo JHtml::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => 'advanced')); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'advanced', JText::sprintf('COM_COMPONENTBUILDER_IMPORT_S', $comP)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'advanced', JText::sprintf('COM_COMPONENTBUILDER_IMPORT_S', $comP)); ?>
 		<div class="<?php echo $class1; ?>">
 		<fieldset class="uploadform">
 			<legend><?php echo JText::_('COM_COMPONENTBUILDER_SMART_PACKAGE_OPTIONS'); ?></legend>
@@ -299,7 +316,7 @@ jQuery(document).ready(function($) {
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 		<?php if (isset($this->packageInfo['name']) && ComponentbuilderHelper::checkArray($this->packageInfo['name'])) : ?>
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'info', JText::sprintf('COM_COMPONENTBUILDER_S_BEING_IMPORTED', $comP)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'info', JText::sprintf('COM_COMPONENTBUILDER_S_BEING_IMPORTED', $comP)); ?>
 			<?php $class2 = ($cAmount == 1) ? 'span12' : 'span6'; ?>
 			<?php $counter = 1; foreach ($this->packageInfo['name'] as $key => $value): ?>
 				<?php if ($cAmount > 1 && $counter == 3) { echo '</div>'; $counter = 1;} ?>
@@ -330,9 +347,9 @@ jQuery(document).ready(function($) {
 			<h1 style="color: #922924;"><?php echo JText::_('COM_COMPONENTBUILDER_BACKUP_LOCAL_DATA_FIRST'); ?></h1>
 			<p style="color: #922924;"><?php echo JText::_('COM_COMPONENTBUILDER_ALWAYS_INSURE_THAT_YOU_HAVE_YOUR_LOCAL_COMPONENTS_BACKED_UP_BY_MAKING_AN_EXPORT_OF_ALL_YOUR_LOCAL_COMPONENTS_BEFORE_IMPORTING_ANY_NEW_COMPONENTS_SMALLMAKE_BSUREB_TO_MOVE_THIS_ZIPPED_BACKUP_PACKAGE_OUT_OF_THE_TMP_FOLDER_BEFORE_DOING_AN_IMPORTSMALLBR_IF_YOU_ARE_IMPORTING_A_PACKAGE_OF_A_THREERD_PARTY_JCB_PACKAGE_DEVELOPER_BMAKE_SURE_IT_IS_A_REPUTABLE_JCB_PACKAGE_DEVELOPERSB'); ?></p>
 		<?php endif; ?>
-		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'upload')); ?>
+		<?php echo JHtml::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => 'upload')); ?>
 		
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'upload', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_UPLOAD', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'upload', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_UPLOAD', true)); ?>
 			<fieldset class="uploadform">
 				<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
 				<div class="control-group">
@@ -347,7 +364,7 @@ jQuery(document).ready(function($) {
 			</fieldset>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 		
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'directory', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_DIRECTORY', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'directory', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_DIRECTORY', true)); ?>
 			<fieldset class="uploadform">
 				<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
 				<div class="control-group">
@@ -362,7 +379,7 @@ jQuery(document).ready(function($) {
 				</fieldset>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'url', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_URL', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_URL', true)); ?>
 			<fieldset class="uploadform">
 				<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
 				<div class="control-group">
@@ -376,6 +393,27 @@ jQuery(document).ready(function($) {
 				</div>
 			</fieldset>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+		<?php if ($this->vdmPackages): ?>
+			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_vdm', JText::_('COM_COMPONENTBUILDER_VDM_PACKAGES', true)); ?>
+				<fieldset class="uploadform">
+					<legend><?php echo JText::_("COM_COMPONENTBUILDER_PACKAGES_FROM_VAST_DEVELOPMENT_METHOD"); ?></legend>
+					<p><?php echo JText::_('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECT_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_PLEASE_LET_US_KNOW'); ?></p>
+					<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THEY_ARE_BEING_HOSTED_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTON', 'href="https://github.com/vdm-io/JCB-Packages" target="_blank" title="gitHub Reposetory"'); ?></p>
+					<?php foreach ($this->vdmPackages as $field): ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label;?></div>
+						<div class="controls"><?php echo $field->input;?></div>
+					</div>
+					<?php endforeach; ?>
+					<div class="form-actions">
+						<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonVDM()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo JText::_('COM_COMPONENTBUILDER_OFFICIAL_VDM_PACKAGES'); ?></small>
+					</div>
+					<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.vdm.io/support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
+				</fieldset>
+			<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php endif; ?>
+
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 		<input type="hidden" name="gettype" value="upload" />
 	<?php endif; ?>

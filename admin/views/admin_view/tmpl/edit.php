@@ -704,7 +704,7 @@ jQuery('input.form-field-repeatable').on('row-add', function (e) {
 });
 });
 <?php endforeach; ?>
-<?php $numberAddtables = range(0, count($this->item->addtables) + 3, 1);?>
+<?php $numberAddtables = range(0, count( (array) $this->item->addtables) + 3, 1);?>
 
 // for the values already set
 jQuery(document).ready(function(){

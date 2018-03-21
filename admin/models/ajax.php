@@ -1226,10 +1226,10 @@ class ComponentbuilderModelAjax extends JModelList
 								}
 								// if string (fields)
 								if (!$found &&  'xml' === $key && ComponentbuilderHelper::checkString($item->{$key})
-									&& strpos($item->{$key}, 'fields="') !== false)
+									&& strpos($item->{$key}, $target.'="') !== false)
 								{
 									// now get the fields between
-									$_fields = ComponentbuilderHelper::getBetween($item->{$key}, 'fields="', '"');
+									$_fields = ComponentbuilderHelper::getBetween($item->{$key},  $target.'="', '"');
 									// check the result
 									if (ComponentbuilderHelper::checkString($_fields))
 									{

@@ -52,6 +52,100 @@ abstract class ComponentbuilderHelper
 	**/
 	public static $snippetPath = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/';
 	public static $snippetsPath = 'https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master';
+
+	/**
+	*	The packages paths
+	**/
+	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
+	public static $jcbGithubPackageUrl = "https://github.com/vdm-io/JCB-Packages/raw/master/";
+
+	// not needed at this time (maybe latter)
+	public static $accessToken = "";
+
+	/**
+	*	get the github repo file list
+	*
+	*	@return  array on success
+	* 
+	*/
+	public static function getGithubRepoFileList($type, $target)
+	{
+		// get the current Packages (public)
+		if (!$repoData = self::get($type))
+		{
+			if (self::urlExists($target))
+			{
+				$repoData = self::getFileContents($target);
+				if (self::checkJson($repoData))
+				{
+					$test = json_decode($repoData);
+					if (self::checkObject($test) && isset($test->tree) && self::checkArray($test->tree) )
+					{
+						// remember to set it
+						self::set($type, $repoData);
+					}
+					// check if we have error message from github
+					elseif ($errorMessage = self::githubErrorHandeler(array('error' => null), $test))
+					{
+						if (self::checkString($errorMessage['error']))
+						{
+							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
+						}
+						$repoData = false;
+					}
+				}
+				else
+				{
+					$repoData = false;
+				}
+			}
+			else
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $target), 'Error');
+			}
+		}
+		// check if we could find packages
+		if (isset($repoData) && self::checkJson($repoData))
+		{
+			$repoData = json_decode($repoData);
+			if (self::checkObject($repoData) && isset($repoData->tree) && self::checkArray($repoData->tree) )
+			{
+				return $repoData->tree;
+			}
+		}
+		return false;
+	}
+
+	/**
+	*	get the github error messages
+	*
+	*	@return  array of errors on success
+	* 
+	*/
+	protected static function githubErrorHandeler($message, &$github)
+	{
+		if (self::checkObject($github) && isset($github->message) && self::checkString($github->message))
+		{
+			// set the message
+			$errorMessage = $github->message;
+			// add the documentation URL
+			if (isset($github->documentation_url) && self::checkString($github->documentation_url))
+			{
+				$errorMessage = $errorMessage.'<br />'.$github->documentation_url;
+			}
+			// check the message
+			if (strpos($errorMessage, 'Authenticated') !== false)
+			{
+				// add little more help if it is an access token issue
+				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_AN_BACCESS_TOKENB_TO_GETBIBLE_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO', $errorMessage);
+			}
+			// set error notice
+			$message['error'] = $errorMessage;
+			// we have error message
+			return $message;
+		}
+		return false;
+	}
 	
 	/**
 	 * The array of constant paths

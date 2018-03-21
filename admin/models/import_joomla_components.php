@@ -110,6 +110,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// get import type
 		$this->getType 		= $this->app->input->getString('gettype', NULL);
 		// get import type
+		$this->getType 		= $this->app->input->getString('gettype', NULL);
+		// get import type
 		$this->dataType		= $session->get('dataType_VDM_IMPORTINTO', NULL);
 
 		if ($package === null)
@@ -189,6 +191,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$headerList = null;
 				// force update
 				$this->forceUpdate 	= $this->app->input->getInt('force_update', 0);
+				// show more information
+				$this->moreInfo 	= $this->app->input->getInt('more_info', 0);
 				// has a key
 				$this->hasKey 		= $this->app->input->getInt('haskey', 0);
 				// die sleutle
@@ -700,6 +704,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// first check if exist
 				if ($local = $this->getLocalItem($item, $table, 1))
 				{
+					// display more import info
+					if ($this->moreInfo)
+					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_WAS_FOUND', $table.' id:'.$oldID . '->' . $local->id), 'success');
+					}
 					$dbDate = strtotime($item->modified);
 					$localDate = strtotime($local->modified);
 					// okay we have it local (check if the version is newer)
@@ -718,8 +727,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						{
 							// we had success in
 							$this->newID[$table][$oldID] = (int) $id;
-							// to debug if your mismatching is to much (TODO) we can add a debugging switch later
-							// $this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_BEEN_UPDATED', $table.' id:'.$oldID . '->' . $id), 'success');
+							// display more import info
+							if ($this->moreInfo)
+							{
+								$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_BEEN_UPDATED', $table.' id:'.$oldID . '->' . $id), 'success');
+							}
 						}
 						else
 						{
@@ -741,8 +753,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				{
 					// not found in local db so add
 					$this->newID[$table][$oldID] = (int) $id;
-					// to debug if your mismatching is to much
-					// $this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_BEEN_IMPORTED', $table.' id:'.$oldID . '->' . $id), 'success');
+					// display more import info
+					if ($this->moreInfo)
+					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BSB_HAS_BEEN_IMPORTED', $table.' id:'.$oldID . '->' . $id), 'success');
+					}
 				}
 				else
 				{
