@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.x
+	@version		2.7.x
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		view.html.php
@@ -42,6 +42,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 	protected $packageInfo;
 	protected $formPackage;
 	protected $vdmPackages = false;
+	protected $freePackages = array('JCB_demo.zip', 'JCB_helloWorld.zip');
 
 	public function display($tpl = null)
 	{
@@ -203,7 +204,17 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 
 	public function setPackageName($name)
 	{
-		return ComponentbuilderHelper::safeString( preg_replace('/(?<!^)([A-Z])/', '-\ \1', str_replace(array('.zip', 'JCB_'), '', $name)), 'W');
+		// the free switch
+		if (in_array($name, $this->freePackages))
+		{
+			$type = ' - free';
+		}
+		else
+		{
+			$type = ' - paid';
+		}
+		// return the name
+		return ComponentbuilderHelper::safeString( preg_replace('/(?<!^)([A-Z])/', '-\ \1', str_replace(array('.zip', 'JCB_'), '', $name)), 'W').$type;
 	}
 
 	/**

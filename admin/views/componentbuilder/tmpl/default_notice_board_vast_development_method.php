@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.x
+	@version		2.7.x
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		default_notice_board_vast_development_method.php

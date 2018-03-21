@@ -10,7 +10,7 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		2.6.x
+	@version		2.7.x
 	@created		30th April, 2015
 	@package		Component Builder
 	@subpackage		custom_admin_views_fullwidth.php
