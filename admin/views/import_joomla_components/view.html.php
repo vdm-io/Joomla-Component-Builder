@@ -125,7 +125,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 
 			$radio2 = JFormHelper::loadFieldType('radio',true);
 			// Switch to show more information about the import
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_QUITE').'" description="'.JText::_('COM_COMPONENTBUILDER_SELECT_IF_THE_IMPORT_SHOULD_BE_SHOWING_MORE_OR_LESS_INFORMATION_DURING_IMPORT').'" name="more_info" type="radio" class="btn-group btn-group-yesno" default="0" filter="INT">';
+			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_QUIET').'" description="'.JText::_('COM_COMPONENTBUILDER_SELECT_IF_THE_IMPORT_SHOULD_BE_SHOWING_MORE_ELABORATE_OR_LESS_QUIET_INFORMATION_DURING_IMPORT').'" name="more_info" type="radio" class="btn-group btn-group-yesno" default="0" filter="INT">';
 			$xml .= '<option value="0">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="1">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
 			$xml .= "</field>";
 			// prepare the xml
