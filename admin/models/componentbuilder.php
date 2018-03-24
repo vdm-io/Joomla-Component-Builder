@@ -43,7 +43,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
 		// view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.libraries', 'png.snippet.add', 'png.snippets', 'png||getsnippets||index.php?option=com_componentbuilder&view=get_snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_document.add', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.libraries', 'png.snippets', 'png||getsnippets||index.php?option=com_componentbuilder&view=get_snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_document.add', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
@@ -101,7 +101,6 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'snippet.access' => 'snippet.access',
 			'snippets.submenu' => 'snippet.submenu',
 			'snippets.dashboard_list' => 'snippet.dashboard_list',
-			'snippet.dashboard_add' => 'snippet.dashboard_add',
 			'field.create' => 'field.create',
 			'fields.access' => 'field.access',
 			'field.access' => 'field.access',

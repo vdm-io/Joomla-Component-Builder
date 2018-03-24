@@ -72,16 +72,9 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 		// get the session object
 		$session = JFactory::getSession();
 		// check if it has package
-		$this->hasPackage 	= $session->get('hasPackage', false);
-		$this->dataType 	= $session->get('dataType', false);
-		if($this->hasPackage && $this->dataType && $this->dataType !== 'smart_package')
-		{
-			$this->headerList 	= json_decode($session->get($this->dataType.'_VDM_IMPORTHEADERS', false),true);
-			$this->headers 		= ComponentbuilderHelper::getFileHeaders($this->dataType);
-			// clear the data type
-			$session->clear('dataType');
-		}
-		elseif (!$this->dataType)
+		$this->hasPackage = $session->get('hasPackage', false);
+		$this->dataType = $session->get('dataType', false);
+		if (!$this->dataType)
 		{
 			$this->dataType = $session->get('dataType_VDM_IMPORTINTO',  null);
 		}

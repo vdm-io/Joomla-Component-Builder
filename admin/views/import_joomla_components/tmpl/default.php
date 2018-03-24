@@ -32,48 +32,20 @@ JHtml::_('script', 'system/core.js', false, true);
 JHtml::_('behavior.keepalive');
 ?>
 <script type="text/javascript">
-<?php if ($this->hasPackage && ComponentbuilderHelper::checkArray($this->headerList)) : ?>
-	Joomla.continueBasicImport = function()
-	{
-		var form = document.getElementById('adminForm');
-		var error = false;
-		var therequired = [<?php $i = 0; foreach($this->headerList as $name => $title) { echo ($i != 0)? ', "vdm_'.$name.'"':'"vdm_'.$name.'"'; $i++; } ?>];
-		for(i = 0; i < therequired.length; i++)
-		{
-			if(jQuery('#'+therequired[i]).val() == "" )
-			{
-				error = true;
-				break;
-			}
-		}
-		// do field validation
-		if (error)
-		{
-			alert("<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_SELECT_ALL_COLUMNS', true); ?>");
-		}
-		else
-		{
-			jQuery('#loading').css('display', 'block');
-			form.gettype.value = 'continue-basic';
-			form.submit();
-		}
-	};
-<?php elseif ($this->hasPackage && $this->dataType === 'smart_package'): ?>
+<?php if ($this->hasPackage && $this->dataType === 'smart_package'): ?>
 	Joomla.continueExtImport = function()
 	{
 		var form = document.getElementById('adminForm');
-		var error = false;
-		// do field validation
-		if (error)
-		{
-			alert("<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_SELECT_ALL_COLUMNS', true); ?>");
-		}
-		else
-		{
-			jQuery('#loading').css('display', 'block');
-			form.gettype.value = 'continue-ext';
-			form.submit();
-		}
+		jQuery('#loading').css('display', 'block');
+		form.gettype.value = 'continue-ext';
+		form.submit();
+	};
+	Joomla.cancelImport = function()
+	{
+		var form = document.getElementById('adminForm');
+		jQuery('#loading').css('display', 'block');
+		form.gettype.value = 'cancel-ext';
+		form.submit();
 	};
 <?php else: ?>
 	Joomla.submitbutton = function()
@@ -133,6 +105,7 @@ JHtml::_('behavior.keepalive');
 			// set the url
 			form.import_url.value = form.vdm_package.value;
 			jQuery('#loading').css('display', 'block');
+			form.checksum.value = 'vdm';
 			form.gettype.value = 'url';
 			form.submit();
 		}
@@ -160,7 +133,7 @@ jQuery(document).ready(function($) {
 });
 </script>
 
-<?php $formats = ($this->dataType === 'smart_package') ? '.zip' : '.csv .xls .ods'; ?>
+<?php $formats = ($this->dataType === 'smart_package') ? '.zip' : 'none'; ?>
 
 <div id="installer-import" class="clearfix">
 <form enctype="multipart/form-data" action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components');?>" method="post" name="adminForm" id="adminForm" class="form-horizontal form-validate">
@@ -173,39 +146,7 @@ jQuery(document).ready(function($) {
 	<?php else : ?>
 		<div id="j-main-container">
 	<?php endif;?>
-	<?php if ($this->hasPackage && ComponentbuilderHelper::checkArray($this->headerList) && ComponentbuilderHelper::checkArray($this->headers)) : ?>
-		<?php echo JHtml::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => $this->activeTab)); ?>
-
-		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'basic', JText::_('COM_COMPONENTBUILDER_BASIC_METHOD', true)); ?>
-		<fieldset class="uploadform">
-			<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_LINK_FILE_TO_TABLE_COLUMNS'); ?></legend>
-			<div class="control-group">
-				<label class="control-label" ><h4><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_TABLE_COLUMNS'); ?></h4></label>
-				<div class="controls">
-					<label class="control-label" ><h4><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_FILE_COLUMNS'); ?></h4></label>
-				</div>
-			</div>
-			<?php foreach($this->headerList as $name => $title): ?>
-				<div class="control-group">
-					<label for="<?php echo $name; ?>" class="control-label" ><?php echo $title; ?></label>
-					<div class="controls">
-						<select  name="<?php echo $name; ?>"  id="vdm_<?php echo $name; ?>" required class="required input_box" >
-							<option value=""><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_PLEASE_SELECT_COLUMN'); ?></option>
-							<option value="IGNORE"><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_IGNORE_COLUMN'); ?></option>
-							<?php foreach($this->headers as $value => $option): ?>
-								<?php $selected = (strtolower($option) ==  strtolower ($title) || strtolower($option) == strtolower($name))? 'selected="selected"':''; ?>
-								<option value="<?php echo ComponentbuilderHelper::htmlEscape($value); ?>" class="required" <?php echo $selected ?>><?php echo ComponentbuilderHelper::htmlEscape($option); ?></option>
-							<?php endforeach; ?>
-						</select>
-					</div>
-				</div>
-			<?php endforeach; ?>
-			<div class="form-actions">
-				<input class="btn btn-primary" type="button" value="<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_CONTINUE'); ?>" onclick="Joomla.continueBasicImport()" />
-			</div>
-		</fieldset>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php elseif ($this->hasPackage && $this->dataType === 'smart_package') : ?>
+	<?php if ($this->hasPackage && $this->dataType === 'smart_package') : ?>
 		<?php
 			if (isset($this->packageInfo['name']) && ComponentbuilderHelper::checkArray($this->packageInfo['name'])) 
 			{
@@ -237,7 +178,10 @@ jQuery(document).ready(function($) {
 					<?php endforeach; ?>
 				<?php endif; ?>
 			<div class="form-actions">
-				<input class="btn btn-primary" type="button" value="<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_CONTINUE'); ?>" onclick="Joomla.continueExtImport()" />
+				<div class="btn-group">
+					<input class="btn btn-primary" type="button" value="<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_CONTINUE'); ?>" onclick="Joomla.continueExtImport()" />
+					<input class="btn" type="button" value="<?php echo JText::_('COM_COMPONENTBUILDER_CANCEL'); ?>" onclick="Joomla.cancelImport()" />
+				</div>
 			</div>
 		</fieldset>
 		<?php if (!$hasOwner): ?>
@@ -418,6 +362,7 @@ jQuery(document).ready(function($) {
 
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 		<input type="hidden" name="gettype" value="upload" />
+		<input type="hidden" name="checksum" value="0" />
 	<?php endif; ?>
 	<input type="hidden" name="task" value="import_joomla_components.import" />
 	<?php echo JHtml::_('form.token'); ?>

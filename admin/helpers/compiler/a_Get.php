@@ -4983,6 +4983,7 @@ class Get
 		{
 			$path = $file;
 		}
+		// now we go line by line
 		foreach (new SplFileObject($file) as $lineNumber => $lineContent)
 		{
 			// we musk keep last few lines to dynamic find target entry later

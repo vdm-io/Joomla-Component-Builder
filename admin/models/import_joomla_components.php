@@ -93,6 +93,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected $fieldTypes		 	= array();
 	protected $isMultiple		 	= array();
 	protected $specialValue 	 	= false;
+	protected $checksum  	 	= null;
+	protected $checksumURLs  	= array('vdm' => 'https://raw.githubusercontent.com/vdm-io/JCB-Packages/master/');
 
 	/**
 	 * Import an spreadsheet from either folder, url or upload.
@@ -102,24 +104,30 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	 */
 	public function import()
 	{
+		// set the state to import
 		$this->setState('action', 'import');
-		$this->app 		= JFactory::getApplication();
-		$session 			= JFactory::getSession();
-		$package 			= null;
-		$continue			= false;
+		// get App
+		$this->app = JFactory::getApplication();
+		// get session
+		$session = JFactory::getSession();
+		// some defaults
+		$package = null;
+		$continue = false;
 		// get import type
-		$this->getType 		= $this->app->input->getString('gettype', NULL);
+		$this->getType = $this->app->input->getString('gettype', NULL);
+		// do checksum validation
+		$this->checksum = $this->app->input->getString('checksum', NULL);
 		// get import type
-		$this->getType 		= $this->app->input->getString('gettype', NULL);
-		// get import type
-		$this->dataType		= $session->get('dataType_VDM_IMPORTINTO', NULL);
-
+		$this->dataType = $session->get('dataType_VDM_IMPORTINTO', NULL);
+		// if we have no package
 		if ($package === null)
 		{
+			// we must allow unsafe with smart import since it is code being imported.
 			if ($this->dataType === 'smart_package')
 			{
 				$this->allow_unsafe = true;
 			}
+			// action based on get Type
 			switch ($this->getType)
 			{
 				case 'folder':
@@ -136,7 +144,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$package = $this->_getPackageFromUrl();
 					break;
 
-				case 'continue-basic':
 				case 'continue-ext':
 					$continue 	= true;
 					$package	= $session->get('package', null);
@@ -149,7 +156,39 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					break;
 
 				default:
-					$this->app->setUserState('com_componentbuilder.message', JText::_('COM_COMPONENTBUILDER_IMPORT_NO_IMPORT_TYPE_FOUND'));
+					$package	= $session->get('package', null);
+					if (ComponentbuilderHelper::checkJson($package))
+					{
+						// get package
+						$package	= json_decode($package, true);
+						// remove zip file
+						if (isset($package['packagename']))
+						{
+							$this->remove($package['packagename']);
+						}
+						// check if dir is set
+						if (isset($package['dir']))
+						{
+							// set auto loader
+							ComponentbuilderHelper::autoLoader('smart');
+							// get install folder
+							$dir = JFile::stripExt($package['dir']);
+							// remove unziped folder
+							ComponentbuilderHelper::removeFolder($dir);
+						}
+					}
+					// clear session
+					$session->clear('package');
+					$session->clear('dataType');
+					$session->clear('hasPackage');
+					$session->clear('smart_package_info');
+					$back = $session->get('backto_VDM_IMPORT', NULL);
+					$session->clear('backto_VDM_IMPORT');
+					if ($back)
+					{
+						$this->app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view='.$back);
+					}
+					$session->clear('backto_VDM_IMPORT');
 					return false;
 					break;
 			}
@@ -170,35 +209,28 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		if(!$continue)
 		{
 			// check if this a smart package, if true then get info
-			if ($this->dataType === 'smart_package')
+			if ($this->dataType !== 'smart_package' || !$this->getInfo($package, $session))
 			{
-				$this->getInfo($package, $session);
+				$this->app->setUserState('com_componentbuilder.message', JText::_('COM_COMPONENTBUILDER_THERE_WAS_AN_ERROR_GETTING_THE_PACKAGE_INFO'));
+				return false;
 			}
-			$package	= json_encode($package);
+			// set package to session
+			$package = json_encode($package);
 			$session->set('package', $package);
 			$session->set('dataType', $this->dataType);
 			$session->set('hasPackage', true);
 			return true;
 		}
-
-		// set the data
-		if ('continue-basic' == $this->getType)
-		{
-				$headerList = json_decode($session->get($this->dataType.'_VDM_IMPORTHEADERS', false), true);
-		}
-		else
-		{
-				$headerList = null;
-				// force update
-				$this->forceUpdate 	= $this->app->input->getInt('force_update', 0);
-				// show more information
-				$this->moreInfo 	= $this->app->input->getInt('more_info', 0);
-				// has a key
-				$this->hasKey 		= $this->app->input->getInt('haskey', 0);
-				// die sleutle
-				$this->sleutle 		= $this->app->input->getString('sleutle', NULL);
-		}
-		if (!$this->setData($package, $headerList))
+		// force update
+		$this->forceUpdate = $this->app->input->getInt('force_update', 0);
+		// show more information
+		$this->moreInfo = $this->app->input->getInt('more_info', 0);
+		// has a key
+		 $this->hasKey = $this->app->input->getInt('haskey', 0);
+		// die sleutle
+		$this->sleutle = $this->app->input->getString('sleutle', NULL);
+		// try to store/set data
+		if (!$this->setData($package))
 		{
 			// There was an error importing the package
 			$msg = JText::_('COM_COMPONENTBUILDER_IMPORT_ERROR');
@@ -219,8 +251,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			$back = $session->get('backto_VDM_IMPORT', NULL);
 			if ($back)
 			{
-			    $this->app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view='.$back);
-			    $session->clear('backto_VDM_IMPORT');
+				$this->app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view='.$back);
+				$session->clear('backto_VDM_IMPORT');
 			}
 			$result = true;
 		}
@@ -230,7 +262,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 
 		// remove file after import
 		$this->remove($package['packagename']);
-		$session->clear($this->getType.'_VDM_IMPORTHEADERS');
+
 		return $result;
 	}
 
@@ -244,6 +276,49 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// extract the package
 			if (JFile::exists($package['dir']))
 			{
+				// does this package pass a checksum
+				$checksum = false;
+				$checksumStatus = 'warning'; 
+				$checksumMessage = JText::_('COM_COMPONENTBUILDER_PLEASE_NOTE_THAT_THIS_PACKAGE_BHAS_NOB_CHECKSUM_VALIDATION');
+				// do hash validation here for git repos
+				if (ComponentbuilderHelper::checkString($this->checksum) && isset($this->checksumURLs[$this->checksum]))
+				{
+					// get packages checksums
+					$checksums = ComponentbuilderHelper::getFileContents($this->checksumURLs[$this->checksum].'checksum.json');
+					if (ComponentbuilderHelper::checkJson($checksums))
+					{
+						// convert to array
+						$checksums = json_decode($checksums, true);
+						// get package name
+						$packageName = basename($package['dir']);
+						// check if package is found
+						if (isset($checksums[$packageName]))
+						{
+							// validate checksum
+							if ($checksums[$packageName] === sha1_file($package['dir']))
+							{
+								$validator = $this->checksumURLs[$this->checksum].str_replace('.zip', '.sha', $packageName);
+								$checksumMessage =  JText::sprintf('COM_COMPONENTBUILDER_THIS_PACKAGE_BPASSEDB_CHECKSUM_VALIDATION_PLEASE_VALIDATE_THIS_CHECKSUM_BSB_TO_BE_THE_SAME_AS_THE_ONE_FOUND_A_S_SA', $checksums[$packageName], 'href="'.$validator.'" target="_blank" title="verify checksum">', $validator);
+								$checksumStatus = 'Success';
+								$checksum = true;
+							}
+						}
+						// set error
+						if (!$checksum)
+						{
+							$checksumMessage =  JText::_('COM_COMPONENTBUILDER_BBEST_TO_NOT_CONTINUEBBR_THIS_PACKAGE_BFAILEDB_CHECKSUM_VALIDATION_THIS_COULD_BE_A_SERIOUS_SECURITY_BREACH_DO_NOT_CONTINUE');
+							$checksumStatus = 'error';
+						}
+					}
+					// set error
+					else
+					{
+						$checksumMessage =  JText::_('COM_COMPONENTBUILDER_BBEST_TO_NOT_CONTINUEBBR_WE_COULD_NOT_LOAD_THE_CHECKSUM_FOR_THIS_PACKAGE_AND_SO_NO_VALIDATION_WAS_POSSIBLE_THIS_MAY_BE_DUE_TO_YOUR_NETWORK_OR_A_CHANGE_TO_THAT_PACKAGE_NAME');
+						$checksumStatus = 'error';
+					}
+				}
+				// do not have check sum validation
+				$this->app->enqueueMessage($checksumMessage, $checksumStatus);
 				// get the zip adapter
 				$zip = JArchive::getAdapter('zip');
 				// set the directory name
@@ -469,11 +544,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// check the extension
 		switch(strtolower(pathinfo($file, PATHINFO_EXTENSION)))
 		{
-			case 'xls':
-			case 'ods':
-			case 'csv':
-			return true;
-			break;
 			case 'zip':
 			if ($this->dataType === 'smart_package')
 			{
@@ -519,32 +589,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	* @return  boolean false on failure
 	*
 	**/
-	protected function setData($package, $target_headers)
+	protected function setData($package)
 	{
 		$jinput = JFactory::getApplication()->input;
 		// set the data based on the type of import being done
-		if ('continue-basic' === $this->getType && ComponentbuilderHelper::checkArray($target_headers))
-		{
-			foreach($target_headers as $header)
-			{
-				$data['target_headers'][$header] = $jinput->getString($header, null);
-			}
-			// make sure the file is loaded		
-			JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');
-			// set the data
-			if(isset($package['dir']))
-			{
-				$inputFileType = PHPExcel_IOFactory::identify($package['dir']);
-				$excelReader = PHPExcel_IOFactory::createReader($inputFileType);
-				$excelReader->setReadDataOnly(true);
-				$excelObj = $excelReader->load($package['dir']);
-				$data['array'] = $excelObj->getActiveSheet()->toArray(null, true,true,true);
-				$excelObj->disconnectWorksheets();
-				unset($excelObj);
-				return $this->saveBasic($data);
-			}
-		}
-		elseif ('continue-ext' === $this->getType)
+		if ('continue-ext' === $this->getType)
 		{
 			// set the data
 			if(isset($package['dir']))
@@ -685,14 +734,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	**/
 	protected function saveSmartItems($table)
 	{
-		$success = true;
 		if (isset($this->data[$table]) && ComponentbuilderHelper::checkArray($this->data[$table]))
 		{
 			// get global action permissions
-			$canDo		= ComponentbuilderHelper::getActions($table);
-			$canEdit		= $canDo->get('core.edit');
-			$canState		= $canDo->get('core.edit.state');
-			$canCreate	= $canDo->get('core.create');
+			$canDo = ComponentbuilderHelper::getActions($table);
+			$canEdit = $canDo->get('core.edit');
+			$canState = $canDo->get('core.edit.state');
+			$canCreate = $canDo->get('core.create');
 			// set id keeper
 			if (!isset($this->newID[$table]))
 			{
@@ -770,7 +818,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 			}
 		}
-		return $success;
+		return true;
 	}
 
 	/**
@@ -799,6 +847,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BCUSTOM_FILESB_NOT_MOVE_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
 			}
+			// display more import info
+			elseif ($this->moreInfo)
+			{
+				$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_SOME_BCUSTOM_FILESB_WERE_MOVED_TO_BSB', $customPath), 'success');
+			}
 		}
 		// check if we have images
 		$imageDir = str_replace('//', '/', $this->dir . '/images');
@@ -809,6 +862,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BIMAGESB_NOT_MOVE_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
+			}
+			// display more import info
+			elseif ($this->moreInfo)
+			{
+				$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_SOME_BIMAGESB_WERE_MOVED_TO_BSB', $imagesPath), 'success');
 			}
 		}
 		// now move the dynamic files if found
@@ -826,8 +884,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$fullPath = str_replace('//', '/', $dynamicDir . '/' . $folder);
 					if (!JFolder::exists($fullPath) || !JFolder::copy($fullPath, $destination,'',true))
 					{
-						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FOLDER_BSB_WAS_NOT_MOVE_TO_S', $folder, $destination), 'error');
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FOLDER_BSB_WAS_NOT_MOVE_TO_BSB', $folder, $destination), 'error');
 						$success = false;
+					}
+					// display more import info
+					elseif ($this->moreInfo)
+					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FOLDER_BSB_WAS_MOVED_TO_BSB', $folder, $destination), 'success');
 					}
 				}
 			}
@@ -842,8 +905,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$fullPath = str_replace('//', '/', $dynamicDir . '/' . $file);
 					if (!JFile::exists($fullPath) || !JFile::copy($fullPath, $destination))
 					{
-						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_NOT_MOVE_TO_S', $file, $destination), 'error');
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_NOT_MOVE_TO_BSB', $file, $destination), 'error');
 						$success = false;
+					}
+					// display more import info
+					elseif ($this->moreInfo)
+					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_MOVED_TO_BSB', $file, $destination), 'success');
 					}
 				}
 			}
@@ -902,7 +970,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// write the decrypted data back to file
 				if (!ComponentbuilderHelper::writeFile($file, rtrim($unlocker->decryptString($data), "\0")))
 				{
-					// we should add error handler here in case file could not be unlocked
+					// in case file could not be unlocked
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_COULD_NOT_BE_UNLOCKED', $file), 'error');
+				}
+				// display more import info
+				elseif ($this->moreInfo)
+				{
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_SUCCESSFULLY_UNLOCKED', $file),  'success');
 				}
 			}
 			
@@ -1978,6 +2052,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 			// add the data to the mover
 			$this->divergedDataMover[$table][$uniqueKey]->{$type} = $values;
+			// display more import info
+			if ($this->moreInfo)
+			{
+				$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_WE_SUCCESSFULLY_MOVED_BSB', ComponentbuilderHelper::safeString($type, 'Ww') . ' to ('.ComponentbuilderHelper::safeString($table, 'w').')'), 'success');
+			}
 			// success
 			return true;
 		}
@@ -2438,223 +2517,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 			// we try again
 			return $this->getLocalItem($item, $type, $retryAgain, $getter);
-		}
-		return false;
-	}
-
-	/**
-	* Save the data from the file to the database
-	*
-	* @param array  $data The values to save
-	*
-	* @return  boolean false on failure
-	*
-	**/
-	protected function saveBasic($data)
-	{
-		// import the data if there is any
-		if(ComponentbuilderHelper::checkArray($data['array']))
-		{
-			// get user object
-			$this->user  	= JFactory::getUser();
-			// remove header if it has headers
-			$id_key 	= $data['target_headers']['id'];
-			$published_key 	= $data['target_headers']['published'];
-			$ordering_key 	= $data['target_headers']['ordering'];
-			// get the first array set
-			$firstSet = reset($data['array']);
-
-			// check if first array is a header array and remove if true
-			if($firstSet[$id_key] == 'id' || $firstSet[$published_key] == 'published' || $firstSet[$ordering_key] == 'ordering')
-			{
-				array_shift($data['array']);
-			}
-			
-			// make sure there is still values in array and that it was not only headers
-			if(ComponentbuilderHelper::checkArray($data['array']) && $this->user->authorise($this->dataType.'.import', 'com_componentbuilder') && $this->user->authorise('core.import', 'com_componentbuilder'))
-			{
-				// set target.
-				$target	= array_flip($data['target_headers']);
-				// set some defaults
-				$todayDate	= JFactory::getDate()->toSql();
-				// get global action permissions
-				$canDo		= ComponentbuilderHelper::getActions($this->dataType);
-				$canEdit		= $canDo->get('core.edit');
-				$canState		= $canDo->get('core.edit.state');
-				$canCreate	= $canDo->get('core.create');
-				$hasAlias		= $this->getAliasesUsed($this->dataType);
-				// prosses the data
-				foreach($data['array'] as $row)
-				{
-					$found = false;
-					if (isset($row[$id_key]) && is_numeric($row[$id_key]) && $row[$id_key] > 0)
-					{
-						// raw items import & update!
-						$query = $this->_db->getQuery(true);
-						$query
-							->select('version')
-							->from($this->_db->quoteName('#__componentbuilder_'.$this->dataType))
-							->where($this->_db->quoteName('id') . ' = '. $this->_db->quote($row[$id_key]));
-						// Reset the query using our newly populated query object.
-						$this->_db->setQuery($query);
-						$this->_db->execute();
-						$found = $this->_db->getNumRows();
-					}
-					
-					if($found && $canEdit)
-					{
-						// update item
-						$id 		= $row[$id_key];
-						$version	= $this->_db->loadResult();
-						// reset all buckets
-						$query 	= $this->_db->getQuery(true);
-						$fields 	= array();
-						// Fields to update.
-						foreach($row as $key => $cell)
-						{
-							// ignore column
-							if ('IGNORE' == $target[$key])
-							{
-								continue;
-							}
-							// update modified
-							if ('modified_by' == $target[$key])
-							{
-								continue;
-							}
-							// update modified
-							if ('modified' == $target[$key])
-							{
-								continue;
-							}
-							// update version
-							if ('version' == $target[$key])
-							{
-								$cell = (int) $version + 1;
-							}
-							// verify publish authority
-							if ('published' == $target[$key] && !$canState)
-							{
-								continue;
-							}
-							// set to update array
-							if(in_array($key, $data['target_headers']) && is_numeric($cell))
-							{
-								$fields[] = $this->_db->quoteName($target[$key]) . ' = ' . $cell;
-							}
-							elseif(in_array($key, $data['target_headers']) && is_string($cell))
-							{
-								$fields[] = $this->_db->quoteName($target[$key]) . ' = ' . $this->_db->quote($cell);
-							}
-							elseif(in_array($key, $data['target_headers']) && is_null($cell))
-							{
-								// if import data is null then set empty
-								$fields[] = $this->_db->quoteName($target[$key]) . " = ''";
-							}
-						}
-						// load the defaults
-						$fields[]	= $this->_db->quoteName('modified_by') . ' = ' . $this->_db->quote($this->user->id);
-						$fields[]	= $this->_db->quoteName('modified') . ' = ' . $this->_db->quote($todayDate);
-						// Conditions for which records should be updated.
-						$conditions = array(
-							$this->_db->quoteName('id') . ' = ' . $id
-						);
-						$query->update($this->_db->quoteName('#__componentbuilder_' . $this->dataType))->set($fields)->where($conditions);
-						$this->_db->setQuery($query);
-						$this->_db->execute();
-					}
-					elseif ($canCreate)
-					{
-						// insert item
-						$query = $this->_db->getQuery(true);
-						// reset all buckets
-						$columns 	= array();
-						$values 	= array();
-						$version	= false;
-						// Insert columns. Insert values.
-						foreach($row as $key => $cell)
-						{
-							// ignore column
-							if ('IGNORE' == $target[$key])
-							{
-								continue;
-							}
-							// remove id
-							if ('id' == $target[$key])
-							{
-								continue;
-							}
-							// update created
-							if ('created_by' == $target[$key])
-							{
-								continue;
-							}
-							// update created
-							if ('created' == $target[$key])
-							{
-								continue;
-							}
-							// Make sure the alias is incremented
-							if ('alias' == $target[$key])
-							{
-								$cell = $this->getAlias($cell,$this->dataType);
-							}
-							// update version
-							if ('version' == $target[$key])
-							{
-								$cell = 1;
-								$version = true;
-							}
-							// set to insert array
-							if(in_array($key, $data['target_headers']) && is_numeric($cell))
-							{
-								$columns[] 	= $target[$key];
-								$values[] 		= $cell;
-							}
-							elseif(in_array($key, $data['target_headers']) && is_string($cell))
-							{
-								$columns[] 	= $target[$key];
-								$values[] 		= $this->_db->quote($cell);
-							}
-							elseif(in_array($key, $data['target_headers']) && is_null($cell))
-							{
-								// if import data is null then set empty
-								$columns[] 	= $target[$key];
-								$values[] 		= "''";
-							}
-						}
-						// load the defaults
-						$columns[] 	= 'created_by';
-						$values[] 		= $this->_db->quote($this->user->id);
-						$columns[] 	= 'created';
-						$values[] 		= $this->_db->quote($todayDate);
-						if (!$version)
-						{
-							$columns[] 	= 'version';
-							$values[] 		= 1;
-						}
-						// Prepare the insert query.
-						$query
-							->insert($this->_db->quoteName('#__componentbuilder_'.$this->dataType))
-							->columns($this->_db->quoteName($columns))
-							->values(implode(',', $values));
-						// Set the query using our newly populated query object and execute it.
-						$this->_db->setQuery($query);
-						$done = $this->_db->execute();
-						if ($done)
-						{
-							$aId = $this->_db->insertid();
-							// make sure the access of asset is set
-							ComponentbuilderHelper::setAsset($aId,$this->dataType);
-						}
-					}
-					else
-					{
-						return false;
-					}
-				}
-				return true;
-			}
 		}
 		return false;
 	}
