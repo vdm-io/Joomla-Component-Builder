@@ -2083,6 +2083,15 @@ class Fields extends Structure
 					// get the actual field name
 					$xmlValue = $this->setPlaceholders($name, $placeholders);
 				}
+				elseif ($property['name'] === 'validate')
+				{
+					// check if we have validate (validation rule set)
+					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, 'validate="', '"');
+					if (ComponentbuilderHelper::checkString($xmlValue))
+					{
+						$xmlValue = ComponentbuilderHelper::safeString($xmlValue);
+					}
+				}
 				elseif ($property['name'] === 'extension' || $property['name'] === 'directory' || $property['name'] === 'formsource')
 				{
 					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
@@ -2289,6 +2298,16 @@ class Fields extends Structure
 				if (ComponentbuilderHelper::checkString($display))
 				{
 					$fieldAttributes['display'] = $display;
+				}
+				// make sure validation is set if found (even it not part of field properties)
+				if (!isset($fieldAttributes['validate']))
+				{
+					// check if we have validate (validation rule set)
+					$validationRule = ComponentbuilderHelper::getBetween($field['settings']->xml, 'validate="', '"');
+					if (ComponentbuilderHelper::checkString($validationRule))
+					{
+						$fieldAttributes['validate'] = ComponentbuilderHelper::safeString($validationRule);
+					}
 				}
 			}
 		}

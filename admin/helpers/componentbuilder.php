@@ -158,6 +158,60 @@ abstract class ComponentbuilderHelper
 		return $object;
 	}
 
+	/*
+	 * Get the Array of Existing Validation Rule Names
+	 *
+	 * @return array
+	 */
+	public static function getExistingValidationRuleNames($lowercase = false)
+	{
+		if (!$items = self::get('_existing_validation_rules_VDM', null))
+		{
+			// load the file class
+			jimport('joomla.filesystem.file');
+			jimport('joomla.filesystem.folder');
+			// set the path to the form validation rules
+			$path = JPATH_LIBRARIES . '/src/Form/Rule';
+			// check if the path exist
+			if (!JFolder::exists($path))
+			{
+				return false;
+			}
+			// we must first store the current working directory
+			$joomla = getcwd();
+			// go to that folder
+			chdir($path);
+			// load all the files in this path
+			$items = JFolder::files('.', '\.php', true, true);
+			// change back to Joomla working directory
+			chdir($joomla);
+			// make sure we have an array
+			if (!self::checkArray($items))
+			{
+				return false;
+			}
+			// remove the Rule.php from the name
+			$items = array_map( function ($name) {
+				return str_replace(array('./','Rule.php'), '', $name);
+			}, $items);
+			// store the names for next run
+			self::set('_existing_validation_rules_VDM', json_encode($items));
+		}
+		// make sure it is no longer json
+		if (self::checkJson($items))
+		{
+			$items = json_decode($items, true);
+		}
+		// check if the names should be all lowercase
+		if ($lowercase)
+		{
+			$items = array_map( function($item) {
+				return strtolower($item);
+			}, $items);
+		}
+		return $items;
+	}
+
 	public static function getDynamicScripts($type, $fieldName = false)
 	{
 		// if field name is passed the convert to type
@@ -1626,10 +1680,13 @@ abstract class ComponentbuilderHelper
 		{
 			$result = $db->loadObject();
 			$properties = json_decode($result->properties,true);
-			$field = array('values' => "<field ", 'values_description' => '<ul>', 'short_description' => $result->short_description, 'description' => $result->description);
+			$field = array('values' => "<field ", 'values_description' => '<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">', 'short_description' => $result->short_description, 'description' => $result->description);
+			// set the headers
+			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
 			foreach ($properties as $property)
 			{
-				$field['values_description'] .= '<li><b>'.$property['name'].'</b> '.$property['description'].'</li>';
+				$example = (isset($property['example']) && self::checkString($property['example'])) ? '<code>'.$property['example'].'</code>' : '';
+				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
 				if(isset($settings[$property['name']]))
 				{
 					$field['values'] .= "\n\t".$property['name'].'="'.$settings[$property['name']].'" ';
@@ -1640,7 +1697,7 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			$field['values'] .= "\n/>";
-			$field['values_description'] .= '</ul>';
+			$field['values_description'] .= '</tbody></table>';
 			// return found field options
 			return $field;
 		}
@@ -2813,6 +2870,10 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('get_snippets.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_GET_SNIPPETS'), 'index.php?option=com_componentbuilder&view=get_snippets', $submenu === 'get_snippets');
+		}
+		if ($user->authorise('validation_rule.access', 'com_componentbuilder') && $user->authorise('validation_rule.submenu', 'com_componentbuilder'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_VALIDATION_RULES'), 'index.php?option=com_componentbuilder&view=validation_rules', $submenu === 'validation_rules');
 		}
 		if ($user->authorise('field.access', 'com_componentbuilder') && $user->authorise('field.submenu', 'com_componentbuilder'))
 		{

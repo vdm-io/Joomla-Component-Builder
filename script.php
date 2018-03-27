@@ -923,6 +923,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Validation_rule alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.validation_rule') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$validation_rule_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($validation_rule_found)
+		{
+			// Since there are load the needed  validation_rule type ids
+			$validation_rule_ids = $db->loadColumn();
+			// Remove Validation_rule from the content type table
+			$validation_rule_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.validation_rule') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($validation_rule_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Validation_rule items
+			$validation_rule_done = $db->execute();
+			if ($validation_rule_done);
+			{
+				// If succesfully remove Validation_rule add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Validation_rule items from the contentitem tag map table
+			$validation_rule_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.validation_rule') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($validation_rule_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Validation_rule items
+			$validation_rule_done = $db->execute();
+			if ($validation_rule_done);
+			{
+				// If succesfully remove Validation_rule add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Validation_rule items from the ucm content table
+			$validation_rule_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.validation_rule') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($validation_rule_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Validation_rule items
+			$validation_rule_done = $db->execute();
+			if ($validation_rule_done);
+			{
+				// If succesfully remove Validation_rule add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Validation_rule items are cleared from DB
+			foreach ($validation_rule_ids as $validation_rule_id)
+			{
+				// Remove Validation_rule items from the ucm base table
+				$validation_rule_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $validation_rule_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($validation_rule_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Validation_rule items
+				$db->execute();
+
+				// Remove Validation_rule items from the ucm history table
+				$validation_rule_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $validation_rule_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($validation_rule_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Validation_rule items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Field alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.field') );
 		$db->setQuery($query);
@@ -3325,6 +3411,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$snippet_Inserted = $db->insertObject('#__content_types', $snippet);
 
+			// Create the validation_rule content type object.
+			$validation_rule = new stdClass();
+			$validation_rule->type_title = 'Componentbuilder Validation_rule';
+			$validation_rule->type_alias = 'com_componentbuilder.validation_rule';
+			$validation_rule->table = '{"special": {"dbtable": "#__componentbuilder_validation_rule","key": "id","type": "Validation_rule","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$validation_rule->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","short_description":"short_description","inherit":"inherit","php":"php"}}';
+			$validation_rule->router = 'ComponentbuilderHelperRoute::getValidation_ruleRoute';
+			$validation_rule->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/validation_rule.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "inherit","targetTable": "#__componentbuilder_validation_rule","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$validation_rule_Inserted = $db->insertObject('#__content_types', $validation_rule);
+
 			// Create the field content type object.
 			$field = new stdClass();
 			$field->type_title = 'Componentbuilder Field';
@@ -3903,6 +4001,35 @@ class com_componentbuilderInstallerScript
 			else
 			{
 				$snippet_Inserted = $db->insertObject('#__content_types', $snippet);
+			}
+
+			// Create the validation_rule content type object.
+			$validation_rule = new stdClass();
+			$validation_rule->type_title = 'Componentbuilder Validation_rule';
+			$validation_rule->type_alias = 'com_componentbuilder.validation_rule';
+			$validation_rule->table = '{"special": {"dbtable": "#__componentbuilder_validation_rule","key": "id","type": "Validation_rule","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$validation_rule->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","short_description":"short_description","inherit":"inherit","php":"php"}}';
+			$validation_rule->router = 'ComponentbuilderHelperRoute::getValidation_ruleRoute';
+			$validation_rule->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/validation_rule.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "inherit","targetTable": "#__componentbuilder_validation_rule","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if validation_rule type is already in content_type DB.
+			$validation_rule_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($validation_rule->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$validation_rule->type_id = $db->loadResult();
+				$validation_rule_Updated = $db->updateObject('#__content_types', $validation_rule, 'type_id');
+			}
+			else
+			{
+				$validation_rule_Inserted = $db->insertObject('#__content_types', $validation_rule);
 			}
 
 			// Create the field content type object.
@@ -4751,7 +4878,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.7.0 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.7.1 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 

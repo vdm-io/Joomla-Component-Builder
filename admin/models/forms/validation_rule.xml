@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_componentbuilder/models/rules"
+	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
+>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_VALIDATION_RULE_CREATED_DATE_DESC"
+			size="22"
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_CREATED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_VALIDATION_RULE_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_VALIDATION_RULE_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_VALIDATION_RULE_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_VALIDATION_RULE_VERSION_DESC"
+			size="6"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="name"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_NAME_LABEL"
+			size="40"
+			description="COM_COMPONENTBUILDER_VALIDATION_RULE_NAME_DESCRIPTION"
+			class="input-large-text"
+			required="true"
+		/>
+		<!-- Short_description Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="short_description"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_SHORT_DESCRIPTION_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_VALIDATION_RULE_SHORT_DESCRIPTION_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="HTML"
+			message="COM_COMPONENTBUILDER_VALIDATION_RULE_SHORT_DESCRIPTION_MESSAGE"
+			hint="COM_COMPONENTBUILDER_VALIDATION_RULE_SHORT_DESCRIPTION_HINT"
+		/>
+		<!-- Inherit Field. Type: Existingvalidationrules. (custom) -->
+		<field
+			type="existingvalidationrules"
+			name="inherit"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_INHERIT_LABEL"
+			description="COM_COMPONENTBUILDER_VALIDATION_RULE_INHERIT_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="false"
+			button="false"
+		/>
+		<!-- Php Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php"
+			label="COM_COMPONENTBUILDER_VALIDATION_RULE_PHP_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_VALIDATION_RULE_PHP_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_VALIDATION_RULE_PHP_HINT"
+			required="true"
+		/>
+	</fieldset>
+	
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this validation_rule"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="validation_rule"
+		/>
+	</fieldset>
+</form>

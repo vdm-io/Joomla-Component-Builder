@@ -1120,8 +1120,12 @@ class ComponentbuilderModelAjax extends JModelList
 				// get the linked to
 				if ($linked = $this->getLinkedTo($values['a_view'], $values['a_id']))
 				{
-					// just return it for now as an unordered list
-					return  '<div class="control-group"><ul class="uk-list uk-list-striped"><li>' .implode('</li><li>', $linked) . '</li></ul></div></div>';
+					// just return it for now a table
+					$table =  '<div class="control-group"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+					$table .=  '<caption>'.JText::sprintf('COM_COMPONENTBUILDER_PLACES_ACROSS_JCB_WHERE_THIS_S_IS_LINKED', ComponentbuilderHelper::safeString($values['a_view'], 'w')).'</caption>';
+					$table .=  '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_TYPE_NAME').'</th></tr></thead>';
+					$table .=  '<tbody><tr><td>' .implode('</td></tr><tr><td>', $linked) . '</td></tr></tbody></table></div>';
+					return $table;
 				}
 			}
 		}
@@ -1299,66 +1303,69 @@ class ComponentbuilderModelAjax extends JModelList
 	// Used in template
 	public function getTemplateDetails($id)
 	{
+		// set table
+		$table = false;
 		// Get a db connection.
-		$db = JFactory::getDbo();
-		 
+		$db = JFactory::getDbo();		 
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.alias','a.template','b.name')));
 		$query->from($db->quoteName('#__componentbuilder_template', 'a'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'b') . ' ON (' . $db->quoteName('b.id') . ' = ' . $db->quoteName('a.dynamic_get') . ')');
 		$query->where($db->quoteName('a.id') . ' != '.(int) $id);
-		$query->where($db->quoteName('a.published') . ' = 1');
-		 
+		$query->where($db->quoteName('a.published') . ' = 1');		 
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 		$db->execute();
 		if ($db->getNumRows())
 		{ 
 			$results = $db->loadObjectList();
-			$templateString = array('<h3>Template Code Snippets</h3><div class="row-fluid form-horizontal-desktop">');
+			$templateString = array();
 			foreach ($results as $result)
 			{
-				$templateString[] = "<div>dynamicGet: <b>".$result->name."</b><br /><code>&lt;?php echo \$this->loadTemplate('".ComponentbuilderHelper::safeString($result->alias)."'); ?&gt;</code></div>";
+				$templateString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo \$this->loadTemplate('".ComponentbuilderHelper::safeString($result->alias)."'); ?&gt;</code></td>";
 			}
-			$templateString[] = "</div><hr />";
-			return implode("\n",$templateString);
+			// build the table
+			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS').'</h2><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table .= '<caption>'.JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE').'</caption>';
+			$table .= '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET').'</th><th>'.JText::_('COM_COMPONENTBUILDER_SNIPPET').'</th></thead>';
+			$table .= '<tbody><tr>'.implode("</tr><tr>",$templateString)."</tr></tbody></table>";
 		}
-		return false;
+		return $table;
 	}
 
 	// Used in layout
 	public function getLayoutDetails($id)
 	{
+		// set table
+		$table = false;
 		// Get a db connection.
-		$db = JFactory::getDbo();
-		 
+		$db = JFactory::getDbo();		 
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.alias','a.layout','b.getcustom','b.gettype','b.name')));
 		$query->from($db->quoteName('#__componentbuilder_layout', 'a'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'b') . ' ON (' . $db->quoteName('b.id') . ' = ' . $db->quoteName('a.dynamic_get') . ')');
 		$query->where($db->quoteName('a.id') . ' != '.(int) $id);
-		$query->where($db->quoteName('a.published') . ' = 1');
-		 
+		$query->where($db->quoteName('a.published') . ' = 1');		 
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 		$db->execute();
 		if ($db->getNumRows())
 		{ 
 			$results = $db->loadObjectList();
-			$layoutString = array('<h3>Layout Code Snippets</h3><div class="row-fluid form-horizontal-desktop">');
+			$layoutString = array();
 			foreach ($results as $result)
 			{
 				switch ($result->gettype)
 				{
 					case 1:
 					// single
-					$layoutString[] = "<div>dynamicGet: <b>".$result->name."</b><br /><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->item); ?&gt;</code></div>";
+					$layoutString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->item); ?&gt;</code></td>";
 					break;
 					case 2:
 					// list
-					$layoutString[] = "<div>dynamicGet: <b>".$result->name."</b><br /><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->items); ?&gt;</code></div>";
+					$layoutString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->items); ?&gt;</code></td>";
 					break;
 					case 3:
 					case 4:
@@ -1372,14 +1379,17 @@ class ComponentbuilderModelAjax extends JModelList
 					{
 						$varName = $result->getcustom;
 					}
-					$layoutString[] = "<div>dynamicGet: <b>".$result->name."</b><br /><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->".$varName."); ?&gt;</code></div>";
+					$layoutString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->".$varName."); ?&gt;</code></td>";
 					break;
 				}
 			}
-			$layoutString[] = "</div><hr />";
-			return implode("\n",$layoutString);
+			// build the table
+			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_LAYOUT_CODE_SNIPPETS').'</h2><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table .= '<caption>'.JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE').'</caption>';
+			$table .= '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET').'</th><th>'.JText::_('COM_COMPONENTBUILDER_SNIPPET').'</th></thead>';
+			$table .= '<tbody><tr>'.implode("</tr><tr>",$layoutString)."</tr></tbody></table>";
 		}
-		return false;
+		return $table;
 	}
 
 	// Used in dynamic_get
@@ -2027,6 +2037,126 @@ class ComponentbuilderModelAjax extends JModelList
 			return $targets[$target];
 		}
 		return false;
+	}
+
+	// Used in validation_rule
+	public function getExistingValidationRuleCode($name)
+	{
+		// make sure we have all the exiting rule names
+		if ($names = ComponentbuilderHelper::getExistingValidationRuleNames())
+		{
+			// check that this is a valid rule file
+			if (ComponentbuilderHelper::checkArray($names) && in_array($name, $names))
+			{
+				// get the full path to rule file
+				$path = JPATH_LIBRARIES . '/src/Form/Rule/'.$name.'Rule.php';
+				// get all the code
+				if ($code = ComponentbuilderHelper::getFileContents($path))
+				{
+					// remove the class details and the ending }
+					$codeArray = (array) explode("FormRule\n{\n", $code);
+					if (isset($codeArray[1]))
+					{
+						return array('values' => rtrim(rtrim(rtrim($codeArray[1]),'}')));
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public function checkRuleName($name, $id)
+	{
+		$name = ComponentbuilderHelper::safeString($name);
+		if ($found = ComponentbuilderHelper::getVar('validation_rule', $name, 'name', 'id'))
+		{
+			if ((int) $id !== (int) $found)
+			{
+				return array (
+					'message' => JText::sprintf('COM_COMPONENTBUILDER_SORRY_THIS_VALIDATION_RULE_NAME_S_ALREADY_EXIST_IN_YOUR_SYSTEM', $name),
+					'status' => 'danger',
+					'timeout' => 6000);
+			}
+		}
+		// now check the existing once
+		if ($names = ComponentbuilderHelper::getExistingValidationRuleNames(true))
+		{
+			if (in_array($name, $names))
+			{
+				return array (
+					'message' => JText::sprintf('COM_COMPONENTBUILDER_SORRY_THIS_VALIDATION_RULE_NAME_S_ALREADY_EXIST_AS_PART_OF_THE_JOOMLA_CORE_NO_NEED_TO_CREATE_IT_IF_YOU_ARE_ADAPTING_IT_GIVE_IT_YOUR_OWN_UNIQUE_NAME', $name),
+					'status' => 'danger',
+					'timeout' => 10000);
+			}
+		}
+		return array (
+			'name' => $name,
+			'message' => JText::sprintf('COM_COMPONENTBUILDER_GREAT_THIS_VALIDATION_RULE_NAME_S_WILL_WORK', $name),
+			'status' => 'success',
+			'timeout' => 5000);
+	}
+
+	public function getValidationRulesTable($id)
+	{
+		// get all the validation rules
+		if ($rules = $this->getValidationRules())
+		{
+			// build table
+			$table =  '<div class="control-group"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table .=  '<caption>'.JText::sprintf('COM_COMPONENTBUILDER_THE_AVAILABLE_VALIDATION_RULES_FOR_THE_VALIDATE_ATTRIBUTE_ARE').'</caption>';
+			$table .=  '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_VALIDATE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></tr></thead>';
+			$table .=  '<tbody>';
+			foreach ($rules as $name => $decs)
+			{
+				// just load the values
+				$decs = (ComponentbuilderHelper::checkString($decs) && !is_numeric($decs)) ? $decs : '';
+				$table .=  '<tr><td class="uk-text-right"><code>'.$name.'</code></td><td>'. $decs. '</td></tr>';
+			}
+			return $table.'</tbody></table></div>';
+		}
+		return false;
+	}
+
+	public function getValidationRules()
+	{
+		// custom rule names
+		$names = array();
+		// make sure we have all the exiting rule names
+		if (!$exitingNames = ComponentbuilderHelper::getExistingValidationRuleNames(true))
+		{
+			// stop (something is wrong)
+			return false;
+		}
+		// convert names to keys
+		$exitingNames = array_flip($exitingNames);
+		// load the descriptions (taken from https://docs.joomla.org/Server-side_form_validation)
+		$exitingNames["boolean"] = JText::_("COM_COMPONENTBUILDER_ACCEPTS_ONLY_THE_VALUES_ZERO_ONE_TRUE_OR_FALSE_CASEINSENSITIVE");
+		$exitingNames["color"] = JText::_("COM_COMPONENTBUILDER_ACCEPTS_ONLY_EMPTY_VALUES_CONVERTED_TO_ZERO_AND_STRINGS_IN_THE_FORM_RGB_OR_RRGGBB_WHERE_R_G_AND_B_ARE_HEX_VALUES");
+		$exitingNames["email"] =  JText::_("COM_COMPONENTBUILDER_ACCEPTS_AN_EMAIL_ADDRESS_SATISFIES_A_BASIC_SYNTAX_CHECK_IN_THE_PATTERN_OF_QUOTXYZZQUOT_WITH_NO_INVALID_CHARACTERS");
+		$exitingNames["equals"] = JText::sprintf("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_THE_SAME_AS_THAT_HELD_IN_THE_FIELD_NAMED_QUOTFIELDQUOT_EGS", '<br /><code>&lt;input type="text" name="email_check" validate="equals" field="email" /&gt;</code>');
+		$exitingNames["options"] = JText::_("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_ENTERED_BE_ONE_OF_THE_OPTIONS_IN_AN_ELEMENT_OF_TYPEQUOTLISTQUOT_THAT_IS_THAT_THE_ELEMENT_IS_A_SELECT_LIST");
+		$exitingNames["tel"] = JText::_("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_A_TELEPHONE_NUMBER_COMPLYING_WITH_THE_STANDARDS_OF_NANPA_ITUT_TRECEONE_HUNDRED_AND_SIXTY_FOUR_OR_IETF_RFCFOUR_THOUSAND_NINE_HUNDRED_AND_THIRTY_THREE");
+		$exitingNames["url"] = JText::sprintf("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_IS_A_URL_WITH_A_VALID_SCHEME_WHICH_CAN_BE_RESTRICTED_BY_THE_OPTIONAL_COMMASEPARATED_FIELD_SCHEME_AND_PASSES_A_BASIC_SYNTAX_CHECK_EGS", '<br /><code>&lt;input type="text" name="link" validate="url" scheme="http,https,mailto" /&gt;</code>');
+		$exitingNames["username"] = JText::_("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_DOES_NOT_APPEAR_AS_A_USERNAME_ON_THE_SYSTEM_THAT_IS_THAT_IT_IS_A_VALID_NEW_USERNAME_DOES_NOT_SYNTAX_CHECK_IT_AS_A_VALID_NAME");
+		// now get the custom created rules
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.name','a.short_description')));
+		$query->from($db->quoteName('#__componentbuilder_validation_rule','a'));
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$names = $db->loadAssocList('name', 'short_description');
+		}
+		// merge the arrays
+		$rules = ComponentbuilderHelper::mergeArrays(array($exitingNames, $names));
+		// sort the array
+		 ksort($rules);
+		// return the validation rules
+		return $rules;
 	}
 
 	// Used in field

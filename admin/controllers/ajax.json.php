@@ -60,6 +60,9 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getDynamicValues', 'ajax');
 		$this->registerTask('checkFunctionName', 'ajax');
 		$this->registerTask('usedin', 'ajax');
+		$this->registerTask('getExistingValidationRuleCode', 'ajax');
+		$this->registerTask('getValidationRulesTable', 'ajax');
+		$this->registerTask('checkRuleName', 'ajax');
 		$this->registerTask('fieldOptions', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
 		$this->registerTask('setSnippetGithub', 'ajax');
@@ -741,6 +744,121 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($functioNameValue && $idValue && $targetValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->usedin($functioNameValue, $idValue, $targetValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getExistingValidationRuleCode':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$nameValue = $jinput->get('name', NULL, 'WORD');
+						if($nameValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getExistingValidationRuleCode($nameValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getValidationRulesTable':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						if($idValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getValidationRulesTable($idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'checkRuleName':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$nameValue = $jinput->get('name', NULL, 'STRING');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						if($nameValue && $idValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->checkRuleName($nameValue, $idValue);
 						}
 						else
 						{

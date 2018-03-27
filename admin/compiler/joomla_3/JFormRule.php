@@ -26,22 +26,17 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 ###BOM###
 
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+namespace Joomla\CMS\Form\Rule;
 
-// import Joomla formrule library
-jimport('joomla.form.formrule');
+defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormRule;
+use Joomla\Registry\Registry;
+
 /**
- * Form Rule class for the Joomla Framework.
+ * Form Rule (###Name###) class for the Joomla Platform.
  */
-class JFormRule###Name### extends JFormRule
-{
-	/**
-	 * The regular expression.
-	 *
-	 * @access	protected
-	 * @var		string
-	 * @since	2.5
-	 */
-	protected $regex = '^[^_]+$';
+class JFormRule###Name### extends FormRule
+{###VALIDATION_RULE_METHODS###
 }

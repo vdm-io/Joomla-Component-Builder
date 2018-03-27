@@ -294,9 +294,13 @@ jQuery('#adminForm').on('change', '#jform_add_javascript_views_footer',function 
 
 
 jQuery(function() {
-    jQuery("code").click(function() {
-        jQuery(this).selText().addClass("selected");
-    });
+	setTimeout(
+		function() {
+			// load the on click event
+			jQuery("code").click(function() {
+				jQuery(this).selText().addClass("selected");
+			});
+		}, 2000);
 });
 
 jQuery.fn.selText = function() {

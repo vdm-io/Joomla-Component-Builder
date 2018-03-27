@@ -43,12 +43,14 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
 		// view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.libraries', 'png.snippets', 'png||getsnippets||index.php?option=com_componentbuilder&view=get_snippets', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_document.add', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtype.add', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
 			'compiler.submenu' => 'compiler.submenu',
 			'compiler.dashboard_list' => 'compiler.dashboard_list',
+			'get_snippets.submenu' => 'get_snippets.submenu',
+			'get_snippets.dashboard_list' => 'get_snippets.dashboard_list',
 			'joomla_component.create' => 'joomla_component.create',
 			'joomla_components.access' => 'joomla_component.access',
 			'joomla_component.access' => 'joomla_component.access',
@@ -101,6 +103,11 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'snippet.access' => 'snippet.access',
 			'snippets.submenu' => 'snippet.submenu',
 			'snippets.dashboard_list' => 'snippet.dashboard_list',
+			'validation_rule.create' => 'validation_rule.create',
+			'validation_rules.access' => 'validation_rule.access',
+			'validation_rule.access' => 'validation_rule.access',
+			'validation_rules.submenu' => 'validation_rule.submenu',
+			'validation_rules.dashboard_list' => 'validation_rule.dashboard_list',
 			'field.create' => 'field.create',
 			'fields.access' => 'field.access',
 			'field.access' => 'field.access',
@@ -132,7 +139,6 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'help_document.access' => 'help_document.access',
 			'help_documents.submenu' => 'help_document.submenu',
 			'help_documents.dashboard_list' => 'help_document.dashboard_list',
-			'help_document.dashboard_add' => 'help_document.dashboard_add',
 			'admin_fields.create' => 'admin_fields.create',
 			'admins_fields.access' => 'admin_fields.access',
 			'admin_fields.access' => 'admin_fields.access',

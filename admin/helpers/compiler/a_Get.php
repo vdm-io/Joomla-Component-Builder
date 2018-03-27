@@ -415,6 +415,13 @@ class Get
 	public $sqlTweak = array();
 
 	/**
+	 * The validation rules that should be added
+	 * 
+	 * @var     array
+	 */
+	public $validationRules = array();
+
+	/**
 	 * The admin views data array
 	 * 
 	 * @var     array
@@ -2082,6 +2089,37 @@ class Get
 
 				// load the values form params
 				$field->xml = $this->setDynamicValues(json_decode($field->xml));
+				
+				// check if we have validate (validation rule set)
+				$validationRule = ComponentbuilderHelper::getBetween($field->xml, 'validate="', '"');
+				if (ComponentbuilderHelper::checkString($validationRule))
+				{
+					// make sure it is lowercase
+					$validationRule = ComponentbuilderHelper::safeString($validationRule);
+					// make sure it is not already set
+					if (!isset($this->validationRules[$validationRule]))
+					{
+						// get joomla core validation names
+						if ($coreValidationRules = ComponentbuilderHelper::getExistingValidationRuleNames(true))
+						{
+							// make sure this rule is not a core validation rule
+							if (!in_array($validationRule, $coreValidationRules))
+							{
+								// get the class methods for this rule if it exists
+								if ($this->validationRules[$validationRule] = ComponentbuilderHelper::getVar('validation_rule', $validationRule, 'name','php'))
+								{
+									// open and set the validation rule
+									$this->validationRules[$validationRule] = $this->setDynamicValues(base64_decode($this->validationRules[$validationRule]));
+								}
+								else
+								{
+									// set the notice that this validation rule is custom and was not found
+									
+								}
+							}
+						}
+					}
+				}
 
 				// load the type values form type params
 				$field->properties = (isset($field->properties) && ComponentbuilderHelper::checkJson($field->properties)) ? json_decode($field->properties, true) : null;

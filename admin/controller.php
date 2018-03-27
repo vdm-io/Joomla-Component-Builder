@@ -117,6 +117,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'custom_code' => 'custom_codes',
 				'library' => 'libraries',
 				'snippet' => 'snippets',
+				'validation_rule' => 'validation_rules',
 				'field' => 'fields',
 				'fieldtype' => 'fieldtypes',
 				'language_translation' => 'language_translations',

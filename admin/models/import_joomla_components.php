@@ -1433,21 +1433,21 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-							// repeatablefield => checker
-							'join_view_table' => 'view_table',
-							'join_db_table' => 'db_table',
-							'order' => 'table_key',
-							'where' => 'table_key',
-							'global' => 'name',
-							'filter' => 'filter_type'
-							);
+					// repeatablefield => checker
+					'join_view_table' => 'view_table',
+					'join_db_table' => 'db_table',
+					'order' => 'table_key',
+					'where' => 'table_key',
+					'global' => 'name',
+					'filter' => 'filter_type'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
-							// subformfield => field => type_value
-							'join_view_table' => array('view_table' => 'admin_view')
-							);
+					// subformfield => field => type_value
+					'join_view_table' => array('view_table' => 'admin_view')
+				);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'dynamic_get', $updaterT);
 			break;
@@ -1470,10 +1470,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = $this->setNewID($item, 'snippet', 'snippet', $type);
 				// repeatable fields to update
 				$updaterR = array(
-							// repeatablefield => checker
-							'ajax_input' => 'value_name',
-							'custom_button' => 'name'
-							);
+					// repeatablefield => checker
+					'ajax_input' => 'value_name',
+					'custom_button' => 'name'
+				);
 				// update the repeatable fields				
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
@@ -1515,14 +1515,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				unset($item->addconditions);
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'ajax_input' => 'value_name',
-						'custom_button' => 'name',
-						'addtables' => 'table',
-						'addlinked_views' => 'adminview',
-						'addtabs' => 'name',
-						'addpermissions' => 'action'
-					);
+					// repeatablefield => checker
+					'ajax_input' => 'value_name',
+					'custom_button' => 'name',
+					'addtables' => 'table',
+					'addlinked_views' => 'adminview',
+					'addtabs' => 'name',
+					'addpermissions' => 'action'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
@@ -1646,9 +1646,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'addcontributors' => 'name'
-					);
+					// repeatablefield => checker
+					'addcontributors' => 'name'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
@@ -1661,16 +1661,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'addadmin_views' => 'adminview'
-					);
+					// repeatablefield => checker
+					'addadmin_views' => 'adminview'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
-							// subformfield => array( field => type_value )
-							'addadmin_views' => array('adminview' => 'admin_view')
-							);
+					// subformfield => array( field => type_value )
+					'addadmin_views' => array('adminview' => 'admin_view')
+				);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'component_admin_views', $updaterT);
 			break;
@@ -1683,16 +1683,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'addsite_views' => 'siteview'
-					);
+					// repeatablefield => checker
+					'addsite_views' => 'siteview'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
-							// subformfield => array( field => type_value )
-							'addsite_views' => array('siteview' => 'site_view')
-							);
+					// subformfield => array( field => type_value )
+					'addsite_views' => array('siteview' => 'site_view')
+				);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'component_site_views', $updaterT);
 			break;
@@ -1705,16 +1705,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'addcustom_admin_views' => 'customadminview'
-					);
+					// repeatablefield => checker
+					'addcustom_admin_views' => 'customadminview'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
-							// subformfield => array( field => type_value )
-							'addcustom_admin_views' => array('customadminview' => 'custom_admin_view', 'adminviews' => 'admin_view', 'before' => 'admin_view')
-							);
+					// subformfield => array( field => type_value )
+					'addcustom_admin_views' => array('customadminview' => 'custom_admin_view', 'adminviews' => 'admin_view', 'before' => 'admin_view')
+				);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'component_custom_admin_views', $updaterT);
 			break;
@@ -1727,9 +1727,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'version_update' => 'version'
-					);
+					// repeatablefield => checker
+					'version_update' => 'version'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
@@ -1749,9 +1749,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
-							// subformfield => array( field => type_value )
-							'sql_tweak' => array('adminview' => 'admin_view')
-							);
+					// subformfield => array( field => type_value )
+					'sql_tweak' => array('adminview' => 'admin_view')
+				);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'component_mysql_tweaks', $updaterT);
 			break;
@@ -1764,16 +1764,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'addcustommenus' => 'name'
-					);
+					// repeatablefield => checker
+					'addcustommenus' => 'name'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
-							// subformfield => array( field => type_value )
-							'addcustommenus' => array('before' => 'admin_view')
-							);
+					// subformfield => array( field => type_value )
+					'addcustommenus' => array('before' => 'admin_view')
+				);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'component_custom_admin_menus', $updaterT);
 			break;
@@ -1786,16 +1786,16 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'addconfig' => 'field'
-					);
+					// repeatablefield => checker
+					'addconfig' => 'field'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
 				$updaterT = array(
-							// subformfield => array( field => type_value )
-							'addconfig' => array('field' => 'field')
-							);
+					// subformfield => array( field => type_value )
+					'addconfig' => array('field' => 'field')
+				);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'component_config', $updaterT);
 			break;
@@ -1808,9 +1808,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'dashboard_tab' => 'name'
-					);
+					// repeatablefield => checker
+					'dashboard_tab' => 'name'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
@@ -1823,10 +1823,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'addfiles' => 'file',
-						'addfolders' => 'folder'
-					);
+					// repeatablefield => checker
+					'addfiles' => 'file',
+					'addfolders' => 'folder'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;

@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS `#__componentbuilder_dynamic_get`;
 DROP TABLE IF EXISTS `#__componentbuilder_custom_code`;
 DROP TABLE IF EXISTS `#__componentbuilder_library`;
 DROP TABLE IF EXISTS `#__componentbuilder_snippet`;
+DROP TABLE IF EXISTS `#__componentbuilder_validation_rule`;
 DROP TABLE IF EXISTS `#__componentbuilder_field`;
 DROP TABLE IF EXISTS `#__componentbuilder_fieldtype`;
 DROP TABLE IF EXISTS `#__componentbuilder_language_translation`;

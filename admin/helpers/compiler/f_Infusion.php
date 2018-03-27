@@ -815,6 +815,21 @@ class Infusion extends Interpretation
 				// set the module
 				$this->fileContentDynamic['ajax']['###AJAX_SITE_MODEL_METHODS###'] = $this->setAjaxModelMethods('site');
 			}
+			
+			// build the validation rules
+			if (isset($this->validationRules) && ComponentbuilderHelper::checkArray($this->validationRules))
+			{
+				foreach ($this->validationRules as $rule => $_php)
+				{
+					// setup rule file
+					$target = array('admin' => 'a_rule_zi');
+					$this->buildDynamique($target, 'rule', $rule);
+					// set the JFormRule Name
+					$this->fileContentDynamic['a_rule_zi_'.$rule]['###Name###'] = ucfirst($rule);
+					// set the JFormRule PHP
+					$this->fileContentDynamic['a_rule_zi_'.$rule]['###VALIDATION_RULE_METHODS###'] = PHP_EOL . $_php;
+				}
+			}
 
 			// run the second run if needed
 			if (isset($this->secondRunAdmin) && ComponentbuilderHelper::checkArray($this->secondRunAdmin))

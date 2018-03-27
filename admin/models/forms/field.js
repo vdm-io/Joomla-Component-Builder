@@ -514,6 +514,8 @@ jQuery(document).ready(function()
 {
 	// get the linked details
 	getLinked();
+	// get the validation rules
+	getValidationRulesTable();
 });
 
 function getLinked_server(type){
@@ -562,4 +564,26 @@ function getFieldOptions(id,setValue){
 			jQuery('.helpNote').append('<div id="help" style="margin: 10px;">'+result.description+'<br />'+result.values_description+'</div>');
 		}
 	})
-}  
+}
+
+function getValidationRulesTable_server(){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getValidationRulesTable&format=json";
+	if(token.length > 0){
+		var request = 'token='+token+'&id=1';
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
+
+function getValidationRulesTable(){
+	getValidationRulesTable_server().done(function(result) {
+		if(result){
+			jQuery('#display_validation_rules').html(result);
+		}
+	});
+} 

@@ -692,10 +692,13 @@ abstract class ComponentbuilderHelper
 		{
 			$result = $db->loadObject();
 			$properties = json_decode($result->properties,true);
-			$field = array('values' => "<field ", 'values_description' => '<ul>', 'short_description' => $result->short_description, 'description' => $result->description);
+			$field = array('values' => "<field ", 'values_description' => '<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">', 'short_description' => $result->short_description, 'description' => $result->description);
+			// set the headers
+			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
 			foreach ($properties as $property)
 			{
-				$field['values_description'] .= '<li><b>'.$property['name'].'</b> '.$property['description'].'</li>';
+				$example = (isset($property['example']) && self::checkString($property['example'])) ? '<code>'.$property['example'].'</code>' : '';
+				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
 				if(isset($settings[$property['name']]))
 				{
 					$field['values'] .= "\n\t".$property['name'].'="'.$settings[$property['name']].'" ';
@@ -706,7 +709,7 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			$field['values'] .= "\n/>";
-			$field['values_description'] .= '</ul>';
+			$field['values_description'] .= '</tbody></table>';
 			// return found field options
 			return $field;
 		}
