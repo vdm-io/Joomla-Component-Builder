@@ -53,6 +53,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getButtonID', 'ajax');
 		$this->registerTask('getAjaxDisplay', 'ajax');
 		$this->registerTask('getLinked', 'ajax');
+		$this->registerTask('checkAliasField', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
 		$this->registerTask('getLayoutDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
@@ -352,9 +353,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
-						if($typeValue && $user->id != 0)
+						$sizeValue = $jinput->get('size', NULL, 'INT');
+						if($typeValue && $sizeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getButton($typeValue);
+							$result = $this->getModel('ajax')->getButton($typeValue, $sizeValue);
 						}
 						else
 						{
@@ -470,6 +472,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($typeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getLinked($typeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'checkAliasField':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$typeValue = $jinput->get('type', NULL, 'INT');
+						if($typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->checkAliasField($typeValue);
 						}
 						else
 						{

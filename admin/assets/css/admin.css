@@ -27,5 +27,6 @@
 	pointer-events: none;
 }
 .fieldMedium { width: 130px; }
+.fieldFull { width: 100%; }
 .fieldSmall { width: 60px; }
 code { display: inline-block; margin: 3px;}

@@ -1199,6 +1199,8 @@ function isSet(val)
 
 jQuery(document).ready(function()
 {
+	// check if this view has alias field
+	checkAliasField();
 	// get the linked details
 	getLinked();
 	// set button
@@ -1213,6 +1215,35 @@ jQuery(document).ready(function()
 	// set button to create more fields
 	addButton('field','create_edit_buttons'); // <-- third
 });
+
+function checkAliasField() {
+	checkAliasField_server(1).done(function(result) {
+		if(result){
+			// remove the notice
+			jQuery('.note_create_edit_notice_p').remove();
+		} else {
+			// hide everything about alias management
+			jQuery('#jform_alias_builder_type').closest('.control-group').remove();
+			jQuery('#jform_alias_builder').closest('.control-group').remove();
+			jQuery('.note_alias_builder_default').closest('.control-group').remove();
+			jQuery('.note_alias_builder_custom').closest('.control-group').remove();
+		}
+	});
+}
+
+function checkAliasField_server(type){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.checkAliasField&format=json&vdm="+vastDevMod;
+	if(token.length > 0 && type > 0){
+		var request = 'token='+token+'&type=' + type;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
 
 function getAjaxDisplay(type){
 	getAjaxDisplay_server(type).done(function(result) {
@@ -1267,10 +1298,10 @@ function addButtonID(type, where, size){
 	});
 }
 
-function addButton_server(type){
+function addButton_server(type, size){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
-		var request = 'token='+token+'&type='+type;
+		var request = 'token='+token+'&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -1280,10 +1311,16 @@ function addButton_server(type){
 		jsonp: 'callback'
 	});
 }
-function addButton(type,where){
-	addButton_server(type).done(function(result) {
+function addButton(type, where, size){
+	// just to insure that default behaviour still works
+	size = typeof size !== 'undefined' ? size : 1;
+	addButton_server(type, size).done(function(result) {
 		if(result){
-			addData(result,'#jform_'+where);
+			if (2 == size) {
+				jQuery('#'+where).html(result);
+			} else {
+				addData(result, '#jform_'+where);
+			}
 		}
 	})
 }

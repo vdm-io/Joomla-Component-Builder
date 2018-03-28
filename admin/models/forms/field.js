@@ -516,6 +516,8 @@ jQuery(document).ready(function()
 	getLinked();
 	// get the validation rules
 	getValidationRulesTable();
+	// set button to create more fields
+	addButton('validation_rule', 'validation_rules_header', 2);
 });
 
 function getLinked_server(type){
@@ -540,6 +542,33 @@ function getLinked(){
 	});
 }
 
+function addButton_server(type, size){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
+	if(token.length > 0 && type.length > 0){
+		var request = 'token='+token+'&type='+type+'&size='+size;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
+function addButton(type, where, size){
+	// just to insure that default behaviour still works
+	size = typeof size !== 'undefined' ? size : 1;
+	addButton_server(type, size).done(function(result) {
+		if(result){
+			if (2 == size) {
+				jQuery('#'+where).html(result);
+			} else {
+				addData(result, '#jform_'+where);
+			}
+		}
+	})
+}
+
 function getFieldOptions_server(fieldId){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldOptions&format=json";
 	if(token.length > 0 && fieldId > 0){
@@ -561,7 +590,7 @@ function getFieldOptions(id,setValue){
 				jQuery('textarea#jform_xml').val(result.values);
 			}
 			jQuery('#help').remove();
-			jQuery('.helpNote').append('<div id="help" style="margin: 10px;">'+result.description+'<br />'+result.values_description+'</div>');
+			jQuery('.helpNote').append('<div id="help" class="uk-scrollable-box">'+result.description+'<br />'+result.values_description+'</div>');
 		}
 	})
 }

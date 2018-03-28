@@ -262,74 +262,74 @@ class ComponentbuilderModelAdmin_views extends JModelList
 							continue;
 						}
 
-						// decode php_import_save
-						$item->php_import_save = base64_decode($item->php_import_save);
 						// decode html_import_view
 						$item->html_import_view = base64_decode($item->html_import_view);
+						// decode php_import_save
+						$item->php_import_save = base64_decode($item->php_import_save);
 						// decode php_import_headers
 						$item->php_import_headers = base64_decode($item->php_import_headers);
-						// decode css_view
-						$item->css_view = base64_decode($item->css_view);
+						// decode php_getitem
+						$item->php_getitem = base64_decode($item->php_getitem);
 						// decode php_getitems
 						$item->php_getitems = base64_decode($item->php_getitems);
 						// decode php_getitems_after_all
 						$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
-						// decode css_views
-						$item->css_views = base64_decode($item->css_views);
+						// decode css_view
+						$item->css_view = base64_decode($item->css_view);
 						// decode php_getlistquery
 						$item->php_getlistquery = base64_decode($item->php_getlistquery);
 						// decode php_before_save
 						$item->php_before_save = base64_decode($item->php_before_save);
-						// decode javascript_view_file
-						$item->javascript_view_file = base64_decode($item->javascript_view_file);
+						// decode css_views
+						$item->css_views = base64_decode($item->css_views);
 						// decode php_save
 						$item->php_save = base64_decode($item->php_save);
 						// decode php_postsavehook
 						$item->php_postsavehook = base64_decode($item->php_postsavehook);
-						// decode javascript_view_footer
-						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+						// decode javascript_view_file
+						$item->javascript_view_file = base64_decode($item->javascript_view_file);
 						// decode php_allowedit
 						$item->php_allowedit = base64_decode($item->php_allowedit);
 						// decode php_batchcopy
 						$item->php_batchcopy = base64_decode($item->php_batchcopy);
-						// decode javascript_views_file
-						$item->javascript_views_file = base64_decode($item->javascript_views_file);
+						// decode javascript_view_footer
+						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 						// decode php_batchmove
 						$item->php_batchmove = base64_decode($item->php_batchmove);
 						// decode php_before_publish
 						$item->php_before_publish = base64_decode($item->php_before_publish);
-						// decode javascript_views_footer
-						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+						// decode javascript_views_file
+						$item->javascript_views_file = base64_decode($item->javascript_views_file);
 						// decode php_after_publish
 						$item->php_after_publish = base64_decode($item->php_after_publish);
 						// decode php_before_delete
 						$item->php_before_delete = base64_decode($item->php_before_delete);
+						// decode javascript_views_footer
+						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 						// decode php_after_delete
 						$item->php_after_delete = base64_decode($item->php_after_delete);
-						// decode php_controller
-						$item->php_controller = base64_decode($item->php_controller);
 						// decode php_document
 						$item->php_document = base64_decode($item->php_document);
+						// decode php_controller
+						$item->php_controller = base64_decode($item->php_controller);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
 						// decode php_model
 						$item->php_model = base64_decode($item->php_model);
 						// decode php_controller_list
 						$item->php_controller_list = base64_decode($item->php_controller_list);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
-						// decode php_model_list
-						$item->php_model_list = base64_decode($item->php_model_list);
 						// decode php_import_display
 						$item->php_import_display = base64_decode($item->php_import_display);
-						// decode php_ajaxmethod
-						$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+						// decode php_model_list
+						$item->php_model_list = base64_decode($item->php_model_list);
 						// decode php_import
 						$item->php_import = base64_decode($item->php_import);
 						// decode php_import_setdata
 						$item->php_import_setdata = base64_decode($item->php_import_setdata);
+						// decode php_ajaxmethod
+						$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
 						// decode php_import_ext
 						$item->php_import_ext = base64_decode($item->php_import_ext);
-						// decode php_getitem
-						$item->php_getitem = base64_decode($item->php_getitem);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

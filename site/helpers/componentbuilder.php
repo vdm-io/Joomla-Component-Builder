@@ -697,7 +697,7 @@ abstract class ComponentbuilderHelper
 			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
 			foreach ($properties as $property)
 			{
-				$example = (isset($property['example']) && self::checkString($property['example'])) ? '<code>'.$property['example'].'</code>' : '';
+				$example = (isset($property['example']) && self::checkString($property['example'])) ? self::shorten($property['example'], 30) : '';
 				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
 				if(isset($settings[$property['name']]))
 				{

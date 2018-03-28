@@ -215,6 +215,7 @@ class ComponentbuilderModelAjax extends JModelList
 				'library_files_folders_urls' => 'libraries_files_folders_urls',
 				'admin_fields' => 'admins_fields',
 				'admin_fields_conditions' => 'admins_fields_conditions',
+				'validation_rule' => 'validation_rules',
 				'field' => 'fields',
 				'component_admin_views' => 'components_admin_views' ,
 				'component_site_views' => 'components_site_views',
@@ -227,7 +228,7 @@ class ComponentbuilderModelAjax extends JModelList
 				'component_files_folders' => 'components_files_folders',
 				'language' => true);
 
-	public function getButton($type)
+	public function getButton($type, $size)
 	{
 		if (isset($this->buttonArray[$type]))
 		{
@@ -244,18 +245,27 @@ class ComponentbuilderModelAjax extends JModelList
 					// only load referal if not new item.
 					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
 				}
-				// build the button
-				$button = '<div class="control-group">
-							<div class="control-label">
-								<label>' . ucwords($type) . '</label>
-							</div>
-							<div class="controls">	
-								<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit'.$ref.'\' })" href="javascript:void(0)" >
-								<span class="icon-new icon-white"></span> 
-									' . JText::_('COM_COMPONENTBUILDER_NEW') . '
-								</a>
-							</div>
-						</div>';
+				// build url (A tag)
+				$startAtag = '<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit'.$ref.'\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
+				// build the smaller button
+				if (2 == $size)
+				{
+					$button = $startAtag.'<span class="icon-new icon-white"></span> ' . JText::_('COM_COMPONENTBUILDER_CREATE') . '</a>';
+				}
+				else
+				// build the big button
+				{
+					$button = '<div class="control-group">
+								<div class="control-label">
+									<label>' . ucwords($type) . '</label>
+								</div>
+								<div class="controls">	'.$startAtag.'
+									<span class="icon-new icon-white"></span> 
+										' . JText::_('COM_COMPONENTBUILDER_NEW') . '
+									</a>
+								</div>
+							</div>';
+				}
 				// return the button attached to input field
 				return $button;
 			}
@@ -307,7 +317,7 @@ class ComponentbuilderModelAjax extends JModelList
 						$button[] = '</div>';
 						$button[] = '<div class="controls">';
 					}
-					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" >';
+					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" title="'.$buttonText.'">';
 					if (1 == $size)
 					{
 						$button[] = '<span class="'.$icon.' icon-white"></span>';
@@ -335,7 +345,36 @@ class ComponentbuilderModelAjax extends JModelList
 		return '';
 	}
 
-	public static function getDynamicScripts($type)
+	public function checkAliasField($type)
+	{
+		// get the view name & id
+		$values = $this->getViewID();
+		if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
+		{
+			// get the fields
+			if ($fields = ComponentbuilderHelper::getVar('admin_fields', $values['a_id'], 'admin_view', 'addfields'))
+			{
+				// open the fields
+				if (ComponentbuilderHelper::checkJson($fields))
+				{
+					$fields = json_decode($fields, true);
+					if (ComponentbuilderHelper::checkArray($fields))
+					{
+						foreach($fields as $field)
+						{
+							if (isset($field['alias']) && $field['alias'] == 1)
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public function getDynamicScripts($type)
 	{
 		// get from global helper
 		return ComponentbuilderHelper::getDynamicScripts($type);
@@ -831,7 +870,8 @@ class ComponentbuilderModelAjax extends JModelList
 		if ($this->canEdit($id, $view))
 		{
 			$edit = "index.php?option=com_componentbuilder&view=".$views."&task=".$view.".edit&id=".$id.$this->ref;
-			return ' <a onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$edit.'\' })"  href="javascript:void(0)" class="uk-icon-pencil"></a>';
+			$title = ComponentbuilderHelper::safeString(JText::_('COM_COMPONENTBUILDER_EDIT').' '.$view, 'W');
+			return ' <a onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$edit.'\' })"  href="javascript:void(0)" class="uk-icon-pencil" title="'.$title.'"></a>';
 			
 		}
 		return '';
@@ -2133,10 +2173,10 @@ class ComponentbuilderModelAjax extends JModelList
 		$exitingNames["boolean"] = JText::_("COM_COMPONENTBUILDER_ACCEPTS_ONLY_THE_VALUES_ZERO_ONE_TRUE_OR_FALSE_CASEINSENSITIVE");
 		$exitingNames["color"] = JText::_("COM_COMPONENTBUILDER_ACCEPTS_ONLY_EMPTY_VALUES_CONVERTED_TO_ZERO_AND_STRINGS_IN_THE_FORM_RGB_OR_RRGGBB_WHERE_R_G_AND_B_ARE_HEX_VALUES");
 		$exitingNames["email"] =  JText::_("COM_COMPONENTBUILDER_ACCEPTS_AN_EMAIL_ADDRESS_SATISFIES_A_BASIC_SYNTAX_CHECK_IN_THE_PATTERN_OF_QUOTXYZZQUOT_WITH_NO_INVALID_CHARACTERS");
-		$exitingNames["equals"] = JText::sprintf("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_THE_SAME_AS_THAT_HELD_IN_THE_FIELD_NAMED_QUOTFIELDQUOT_EGS", '<br /><code>&lt;input type="text" name="email_check" validate="equals" field="email" /&gt;</code>');
+		$exitingNames["equals"] = JText::sprintf("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_THE_SAME_AS_THAT_HELD_IN_THE_FIELD_NAMED_QUOTFIELDQUOT_EGS", '<br /><code>&lt;input<br />&nbsp;&nbsp;type="text"<br />&nbsp;&nbsp;name="email_check"<br />&nbsp;&nbsp;validate="equals"<br />&nbsp;&nbsp;field="email"<br />/&gt;</code>');
 		$exitingNames["options"] = JText::_("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_ENTERED_BE_ONE_OF_THE_OPTIONS_IN_AN_ELEMENT_OF_TYPEQUOTLISTQUOT_THAT_IS_THAT_THE_ELEMENT_IS_A_SELECT_LIST");
 		$exitingNames["tel"] = JText::_("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_A_TELEPHONE_NUMBER_COMPLYING_WITH_THE_STANDARDS_OF_NANPA_ITUT_TRECEONE_HUNDRED_AND_SIXTY_FOUR_OR_IETF_RFCFOUR_THOUSAND_NINE_HUNDRED_AND_THIRTY_THREE");
-		$exitingNames["url"] = JText::sprintf("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_IS_A_URL_WITH_A_VALID_SCHEME_WHICH_CAN_BE_RESTRICTED_BY_THE_OPTIONAL_COMMASEPARATED_FIELD_SCHEME_AND_PASSES_A_BASIC_SYNTAX_CHECK_EGS", '<br /><code>&lt;input type="text" name="link" validate="url" scheme="http,https,mailto" /&gt;</code>');
+		$exitingNames["url"] = JText::sprintf("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_IS_A_URL_WITH_A_VALID_SCHEME_WHICH_CAN_BE_RESTRICTED_BY_THE_OPTIONAL_COMMASEPARATED_FIELD_SCHEME_AND_PASSES_A_BASIC_SYNTAX_CHECK_EGS", '<br /><code>&lt;input<br />&nbsp;&nbsp;type="text"<br />&nbsp;&nbsp;name="link"<br />&nbsp;&nbsp;validate="url"<br />&nbsp;&nbsp;scheme="http,https,mailto"<br />/&gt;</code>');
 		$exitingNames["username"] = JText::_("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_DOES_NOT_APPEAR_AS_A_USERNAME_ON_THE_SYSTEM_THAT_IS_THAT_IT_IS_A_VALID_NEW_USERNAME_DOES_NOT_SYNTAX_CHECK_IT_AS_A_VALID_NAME");
 		// now get the custom created rules
 		$db = JFactory::getDbo();

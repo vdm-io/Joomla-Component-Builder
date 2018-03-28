@@ -2393,12 +2393,12 @@ class Fields extends Structure
 			$this->historyBuilder[$view_name_single] = $view_name_single;
 		}
 		// set Alias (only one title per view)
-		if (isset($field['alias']) && $field['alias'])
+		if (isset($field['alias']) && $field['alias'] && !isset($this->aliasBuilder[$view_name_single]))
 		{
 			$this->aliasBuilder[$view_name_single] = $name;
 		}
 		// set Titles (only one title per view)
-		if (isset($field['title']) && $field['title'])
+		if (isset($field['title']) && $field['title'] && !isset($this->titleBuilder[$view_name_single]))
 		{
 			$this->titleBuilder[$view_name_single] = $name;
 		}

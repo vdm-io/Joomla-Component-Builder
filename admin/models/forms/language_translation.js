@@ -34,10 +34,10 @@ function addData(result,where){
 	jQuery(result).insertAfter(jQuery(where).closest('.control-group'));
 }
 
-function addButton_server(type){
+function addButton_server(type, size){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
-		var request = 'token='+token+'&type='+type;
+		var request = 'token='+token+'&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -47,10 +47,16 @@ function addButton_server(type){
 		jsonp: 'callback'
 	});
 }
-function addButton(type,where){
-	addButton_server(type).done(function(result) {
+function addButton(type, where, size){
+	// just to insure that default behaviour still works
+	size = typeof size !== 'undefined' ? size : 1;
+	addButton_server(type, size).done(function(result) {
 		if(result){
-			addData(result,'#jform_'+where);
+			if (2 == size) {
+				jQuery('#'+where).html(result);
+			} else {
+				addData(result, '#jform_'+where);
+			}
 		}
 	})
 } 

@@ -132,6 +132,14 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->addtables = $addtables->toArray();
 			}
 
+			if (!empty($item->alias_builder))
+			{
+				// Convert the alias_builder field to an array.
+				$alias_builder = new Registry;
+				$alias_builder->loadString($item->alias_builder);
+				$item->alias_builder = $alias_builder->toArray();
+			}
+
 			if (!empty($item->custom_button))
 			{
 				// Convert the custom_button field to an array.
@@ -148,16 +156,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->ajax_input = $ajax_input->toArray();
 			}
 
-			if (!empty($item->php_import_save))
-			{
-				// base64 Decode php_import_save.
-				$item->php_import_save = base64_decode($item->php_import_save);
-			}
-
 			if (!empty($item->html_import_view))
 			{
 				// base64 Decode html_import_view.
 				$item->html_import_view = base64_decode($item->html_import_view);
+			}
+
+			if (!empty($item->php_import_save))
+			{
+				// base64 Decode php_import_save.
+				$item->php_import_save = base64_decode($item->php_import_save);
 			}
 
 			if (!empty($item->php_import_headers))
@@ -166,10 +174,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_headers = base64_decode($item->php_import_headers);
 			}
 
-			if (!empty($item->css_view))
+			if (!empty($item->php_getitem))
 			{
-				// base64 Decode css_view.
-				$item->css_view = base64_decode($item->css_view);
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 			if (!empty($item->php_getitems))
@@ -184,10 +192,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
 			}
 
-			if (!empty($item->css_views))
+			if (!empty($item->css_view))
 			{
-				// base64 Decode css_views.
-				$item->css_views = base64_decode($item->css_views);
+				// base64 Decode css_view.
+				$item->css_view = base64_decode($item->css_view);
 			}
 
 			if (!empty($item->php_getlistquery))
@@ -202,10 +210,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_before_save = base64_decode($item->php_before_save);
 			}
 
-			if (!empty($item->javascript_view_file))
+			if (!empty($item->css_views))
 			{
-				// base64 Decode javascript_view_file.
-				$item->javascript_view_file = base64_decode($item->javascript_view_file);
+				// base64 Decode css_views.
+				$item->css_views = base64_decode($item->css_views);
 			}
 
 			if (!empty($item->php_save))
@@ -220,10 +228,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_postsavehook = base64_decode($item->php_postsavehook);
 			}
 
-			if (!empty($item->javascript_view_footer))
+			if (!empty($item->javascript_view_file))
 			{
-				// base64 Decode javascript_view_footer.
-				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+				// base64 Decode javascript_view_file.
+				$item->javascript_view_file = base64_decode($item->javascript_view_file);
 			}
 
 			if (!empty($item->php_allowedit))
@@ -238,10 +246,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_batchcopy = base64_decode($item->php_batchcopy);
 			}
 
-			if (!empty($item->javascript_views_file))
+			if (!empty($item->javascript_view_footer))
 			{
-				// base64 Decode javascript_views_file.
-				$item->javascript_views_file = base64_decode($item->javascript_views_file);
+				// base64 Decode javascript_view_footer.
+				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 			}
 
 			if (!empty($item->php_batchmove))
@@ -256,10 +264,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_before_publish = base64_decode($item->php_before_publish);
 			}
 
-			if (!empty($item->javascript_views_footer))
+			if (!empty($item->javascript_views_file))
 			{
-				// base64 Decode javascript_views_footer.
-				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+				// base64 Decode javascript_views_file.
+				$item->javascript_views_file = base64_decode($item->javascript_views_file);
 			}
 
 			if (!empty($item->php_after_publish))
@@ -274,10 +282,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_before_delete = base64_decode($item->php_before_delete);
 			}
 
+			if (!empty($item->javascript_views_footer))
+			{
+				// base64 Decode javascript_views_footer.
+				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+			}
+
 			if (!empty($item->php_after_delete))
 			{
 				// base64 Decode php_after_delete.
 				$item->php_after_delete = base64_decode($item->php_after_delete);
+			}
+
+			if (!empty($item->php_document))
+			{
+				// base64 Decode php_document.
+				$item->php_document = base64_decode($item->php_document);
 			}
 
 			if (!empty($item->php_controller))
@@ -286,10 +306,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_controller = base64_decode($item->php_controller);
 			}
 
-			if (!empty($item->php_document))
+			if (!empty($item->sql))
 			{
-				// base64 Decode php_document.
-				$item->php_document = base64_decode($item->php_document);
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
 			}
 
 			if (!empty($item->php_model))
@@ -304,28 +324,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_controller_list = base64_decode($item->php_controller_list);
 			}
 
-			if (!empty($item->sql))
-			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
-			}
-
-			if (!empty($item->php_model_list))
-			{
-				// base64 Decode php_model_list.
-				$item->php_model_list = base64_decode($item->php_model_list);
-			}
-
 			if (!empty($item->php_import_display))
 			{
 				// base64 Decode php_import_display.
 				$item->php_import_display = base64_decode($item->php_import_display);
 			}
 
-			if (!empty($item->php_ajaxmethod))
+			if (!empty($item->php_model_list))
 			{
-				// base64 Decode php_ajaxmethod.
-				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+				// base64 Decode php_model_list.
+				$item->php_model_list = base64_decode($item->php_model_list);
 			}
 
 			if (!empty($item->php_import))
@@ -340,16 +348,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_import_setdata = base64_decode($item->php_import_setdata);
 			}
 
+			if (!empty($item->php_ajaxmethod))
+			{
+				// base64 Decode php_ajaxmethod.
+				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+			}
+
 			if (!empty($item->php_import_ext))
 			{
 				// base64 Decode php_import_ext.
 				$item->php_import_ext = base64_decode($item->php_import_ext);
-			}
-
-			if (!empty($item->php_getitem))
-			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 
@@ -1236,6 +1244,19 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['addtables'] = '';
 		}
 
+		// Set the alias_builder items to data.
+		if (isset($data['alias_builder']) && is_array($data['alias_builder']))
+		{
+			$alias_builder = new JRegistry;
+			$alias_builder->loadArray($data['alias_builder']);
+			$data['alias_builder'] = (string) $alias_builder;
+		}
+		elseif (!isset($data['alias_builder']))
+		{
+			// Set the empty alias_builder to data
+			$data['alias_builder'] = '';
+		}
+
 		// Set the custom_button items to data.
 		if (isset($data['custom_button']) && is_array($data['custom_button']))
 		{
@@ -1262,16 +1283,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['ajax_input'] = '';
 		}
 
-		// Set the php_import_save string to base64 string.
-		if (isset($data['php_import_save']))
-		{
-			$data['php_import_save'] = base64_encode($data['php_import_save']);
-		}
-
 		// Set the html_import_view string to base64 string.
 		if (isset($data['html_import_view']))
 		{
 			$data['html_import_view'] = base64_encode($data['html_import_view']);
+		}
+
+		// Set the php_import_save string to base64 string.
+		if (isset($data['php_import_save']))
+		{
+			$data['php_import_save'] = base64_encode($data['php_import_save']);
 		}
 
 		// Set the php_import_headers string to base64 string.
@@ -1280,10 +1301,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_import_headers'] = base64_encode($data['php_import_headers']);
 		}
 
-		// Set the css_view string to base64 string.
-		if (isset($data['css_view']))
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
 		{
-			$data['css_view'] = base64_encode($data['css_view']);
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_getitems string to base64 string.
@@ -1298,10 +1319,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_getitems_after_all'] = base64_encode($data['php_getitems_after_all']);
 		}
 
-		// Set the css_views string to base64 string.
-		if (isset($data['css_views']))
+		// Set the css_view string to base64 string.
+		if (isset($data['css_view']))
 		{
-			$data['css_views'] = base64_encode($data['css_views']);
+			$data['css_view'] = base64_encode($data['css_view']);
 		}
 
 		// Set the php_getlistquery string to base64 string.
@@ -1316,10 +1337,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_before_save'] = base64_encode($data['php_before_save']);
 		}
 
-		// Set the javascript_view_file string to base64 string.
-		if (isset($data['javascript_view_file']))
+		// Set the css_views string to base64 string.
+		if (isset($data['css_views']))
 		{
-			$data['javascript_view_file'] = base64_encode($data['javascript_view_file']);
+			$data['css_views'] = base64_encode($data['css_views']);
 		}
 
 		// Set the php_save string to base64 string.
@@ -1334,10 +1355,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_postsavehook'] = base64_encode($data['php_postsavehook']);
 		}
 
-		// Set the javascript_view_footer string to base64 string.
-		if (isset($data['javascript_view_footer']))
+		// Set the javascript_view_file string to base64 string.
+		if (isset($data['javascript_view_file']))
 		{
-			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
+			$data['javascript_view_file'] = base64_encode($data['javascript_view_file']);
 		}
 
 		// Set the php_allowedit string to base64 string.
@@ -1352,10 +1373,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_batchcopy'] = base64_encode($data['php_batchcopy']);
 		}
 
-		// Set the javascript_views_file string to base64 string.
-		if (isset($data['javascript_views_file']))
+		// Set the javascript_view_footer string to base64 string.
+		if (isset($data['javascript_view_footer']))
 		{
-			$data['javascript_views_file'] = base64_encode($data['javascript_views_file']);
+			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
 		}
 
 		// Set the php_batchmove string to base64 string.
@@ -1370,10 +1391,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_before_publish'] = base64_encode($data['php_before_publish']);
 		}
 
-		// Set the javascript_views_footer string to base64 string.
-		if (isset($data['javascript_views_footer']))
+		// Set the javascript_views_file string to base64 string.
+		if (isset($data['javascript_views_file']))
 		{
-			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
+			$data['javascript_views_file'] = base64_encode($data['javascript_views_file']);
 		}
 
 		// Set the php_after_publish string to base64 string.
@@ -1388,10 +1409,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_before_delete'] = base64_encode($data['php_before_delete']);
 		}
 
+		// Set the javascript_views_footer string to base64 string.
+		if (isset($data['javascript_views_footer']))
+		{
+			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
+		}
+
 		// Set the php_after_delete string to base64 string.
 		if (isset($data['php_after_delete']))
 		{
 			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
+		}
+
+		// Set the php_document string to base64 string.
+		if (isset($data['php_document']))
+		{
+			$data['php_document'] = base64_encode($data['php_document']);
 		}
 
 		// Set the php_controller string to base64 string.
@@ -1400,10 +1433,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_controller'] = base64_encode($data['php_controller']);
 		}
 
-		// Set the php_document string to base64 string.
-		if (isset($data['php_document']))
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
 		{
-			$data['php_document'] = base64_encode($data['php_document']);
+			$data['sql'] = base64_encode($data['sql']);
 		}
 
 		// Set the php_model string to base64 string.
@@ -1418,28 +1451,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_controller_list'] = base64_encode($data['php_controller_list']);
 		}
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
-		{
-			$data['sql'] = base64_encode($data['sql']);
-		}
-
-		// Set the php_model_list string to base64 string.
-		if (isset($data['php_model_list']))
-		{
-			$data['php_model_list'] = base64_encode($data['php_model_list']);
-		}
-
 		// Set the php_import_display string to base64 string.
 		if (isset($data['php_import_display']))
 		{
 			$data['php_import_display'] = base64_encode($data['php_import_display']);
 		}
 
-		// Set the php_ajaxmethod string to base64 string.
-		if (isset($data['php_ajaxmethod']))
+		// Set the php_model_list string to base64 string.
+		if (isset($data['php_model_list']))
 		{
-			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
+			$data['php_model_list'] = base64_encode($data['php_model_list']);
 		}
 
 		// Set the php_import string to base64 string.
@@ -1454,16 +1475,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
 		}
 
+		// Set the php_ajaxmethod string to base64 string.
+		if (isset($data['php_ajaxmethod']))
+		{
+			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
+		}
+
 		// Set the php_import_ext string to base64 string.
 		if (isset($data['php_import_ext']))
 		{
 			$data['php_import_ext'] = base64_encode($data['php_import_ext']);
-		}
-
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
-		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
         
 		// Set the Params Items to data

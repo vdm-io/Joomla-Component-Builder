@@ -30,7 +30,11 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_create_edit_notice'
+	'note_create_edit_notice',
+	'alias_builder_type',
+	'note_alias_builder_custom',
+	'note_alias_builder_default',
+	'alias_builder'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

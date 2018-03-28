@@ -25,3 +25,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_validation_rule` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `#__componentbuilder_admin_view` ADD `alias_builder` VARCHAR(255) NOT NULL DEFAULT '' AFTER `ajax_input`;
+
+ALTER TABLE `#__componentbuilder_admin_view` ADD `alias_builder_type` CHAR NOT NULL DEFAULT '' AFTER `alias_builder`;

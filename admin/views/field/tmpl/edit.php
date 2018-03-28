@@ -339,6 +339,23 @@ jQuery(document).ready(function() {
 	}
 });
 
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
+
 // nice little dot trick :)
 jQuery(document).ready( function($) {
   var x=0;

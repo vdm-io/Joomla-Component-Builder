@@ -436,6 +436,13 @@ class Get
 	private $_fieldData = array();
 
 	/**
+	 * The custom alias builder
+	 * 
+	 * @var     array
+	 */
+	public $customAliasBuilder = array();
+
+	/**
 	 * The field builder type
 	 * 
 	 * 1 = StringManipulation
@@ -1748,6 +1755,33 @@ class Get
 					$this->addAjax = true;
 				}
 			}
+			// activate alias builder
+			if (!isset($this->customAliasBuilder[$name_single]) && isset($view->alias_builder_type) && 2 == $view->alias_builder_type
+				&& isset($view->alias_builder) && ComponentbuilderHelper::checkJson($view->alias_builder))
+			{
+				// get the aliasFields
+				$alias_fields = (array) json_decode($view->alias_builder, true);
+				// get the active fields
+				$alias_fields = (array) array_filter($view->fields, function($field)  use($alias_fields) {
+					// check if field is in view fields
+					if (in_array($field['field'], $alias_fields))
+					{
+						return true;
+					}
+					return false;
+				});
+				// check if all is well
+				if (ComponentbuilderHelper::checkArray($alias_fields))
+				{
+					// load the field names
+					$this->customAliasBuilder[$name_single] = (array) array_map(function ($field) use($name_list) {
+							return $this->getFieldName($field, $name_list);
+						},$alias_fields
+					);
+				}
+			}
+			// unset
+			unset($view->alias_builder);
 			// add_sql
 			if ($view->add_sql == 1)
 			{
@@ -2089,7 +2123,7 @@ class Get
 
 				// load the values form params
 				$field->xml = $this->setDynamicValues(json_decode($field->xml));
-				
+
 				// check if we have validate (validation rule set)
 				$validationRule = ComponentbuilderHelper::getBetween($field->xml, 'validate="', '"');
 				if (ComponentbuilderHelper::checkString($validationRule))
@@ -2103,7 +2137,7 @@ class Get
 						if ($coreValidationRules = ComponentbuilderHelper::getExistingValidationRuleNames(true))
 						{
 							// make sure this rule is not a core validation rule
-							if (!in_array($validationRule, $coreValidationRules))
+							if (!in_array($validationRule, (array) $coreValidationRules))
 							{
 								// get the class methods for this rule if it exists
 								if ($this->validationRules[$validationRule] = ComponentbuilderHelper::getVar('validation_rule', $validationRule, 'name','php'))
@@ -2113,8 +2147,7 @@ class Get
 								}
 								else
 								{
-									// set the notice that this validation rule is custom and was not found
-									
+									// set the notice that this validation rule is custom and was not found (TODO)
 								}
 							}
 						}

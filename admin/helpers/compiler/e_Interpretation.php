@@ -5064,8 +5064,6 @@ class Interpretation extends Fields
 	public function setBatchMove($viewName_single)
 	{
 		// set needed defaults
-		$title = false;
-		$alias = false;
 		$category = false;
 		$batchmove = array();
 		$VIEW = ComponentbuilderHelper::safeString($viewName_single, 'U');
@@ -5082,16 +5080,6 @@ class Interpretation extends Fields
 		if (array_key_exists($viewName_single, $this->catCodeBuilder))
 		{
 			$category = $this->catCodeBuilder[$viewName_single]['code'];
-		}
-		// only load alias if set in this view
-		if (array_key_exists($viewName_single, $this->aliasBuilder))
-		{
-			$alias = $this->aliasBuilder[$viewName_single];
-		}
-		// only load title if set in this view
-		if (array_key_exists($viewName_single, $this->titleBuilder))
-		{
-			$title = $this->titleBuilder[$viewName_single];
 		}
 		// prepare custom script
 		$customScript = $this->getCustomScriptBuilder('php_batchmove', $viewName_single, PHP_EOL . PHP_EOL, null, true);
@@ -5252,6 +5240,7 @@ class Interpretation extends Fields
 	{
 		// set needed defaults
 		$title = false;
+		$titles = array();
 		$alias = false;
 		$category = false;
 		$batchcopy = array();
@@ -5277,9 +5266,26 @@ class Interpretation extends Fields
 			$alias = $this->aliasBuilder[$viewName_single];
 		}
 		// only load title if set in this view
-		if (array_key_exists($viewName_single, $this->titleBuilder))
+		if (isset($this->customAliasBuilder[$viewName_single]))
 		{
-			$title = $this->titleBuilder[$viewName_single];
+			$titles = array_values($this->customAliasBuilder[$viewName_single]);
+			$title = true;
+		}
+		elseif (array_key_exists($viewName_single, $this->titleBuilder))
+		{
+			$titles = array($this->titleBuilder[$viewName_single]);
+			$title = true;
+		}
+		// se the dynamic title
+		if ($title)
+		{
+			// reset the bucket
+			$titleData = array();
+			// load the dynamic title builder
+			foreach ($titles as $_title)
+			{
+				$titleData[] = "\$this->table->" . $_title;
+			}
 		}
 		// prepare custom script
 		$customScript = $this->getCustomScriptBuilder('php_batchcopy', $viewName_single, PHP_EOL . PHP_EOL, null, true);
@@ -5400,7 +5406,7 @@ class Interpretation extends Fields
 		$batchcopy[] = "\t\t\t\t\tcontinue;";
 		$batchcopy[] = "\t\t\t\t}";
 		$batchcopy[] = "\t\t\t}";
-		if ($category && $alias === 'alias' && $title === 'title')
+		if ($category && $alias === 'alias' && ($title && count($titles) == 1 && in_array('title', $titles)))
 		{
 			$batchcopy[] = PHP_EOL . "\t\t\tif (isset(\$values['" . $category . "']))";
 			$batchcopy[] = "\t\t\t{";
@@ -5411,27 +5417,31 @@ class Interpretation extends Fields
 			$batchcopy[] = "\t\t\t\tstatic::generateTitle((int) \$this->table->" . $category . ", \$this->table);";
 			$batchcopy[] = "\t\t\t}";
 		}
-		elseif ($category && $alias && $title)
+		elseif ($category && $alias && ($title && count($titles) == 1))
 		{
 			$batchcopy[] = PHP_EOL . "\t\t\tif (isset(\$values['" . $category . "']))";
 			$batchcopy[] = "\t\t\t{";
-			$batchcopy[] = "\t\t\t\tlist(\$this->table->" . $title . ", \$this->table->" . $alias . ") = \$this->generateNewTitle(\$values['" . $category . "'], \$this->table->" . $alias . ", \$this->table->" . $title . ");";
+			$batchcopy[] = "\t\t\t\tlist(\$this->table->" . implode('', $titles) . ", \$this->table->" . $alias . ") = \$this->generateNewTitle(\$values['" . $category . "'], \$this->table->" . $alias . ", \$this->table->" . implode('', $titles) . ");";
 			$batchcopy[] = "\t\t\t}";
 			$batchcopy[] = "\t\t\telse";
 			$batchcopy[] = "\t\t\t{";
-			$batchcopy[] = "\t\t\t\tlist(\$this->table->" . $title . ", \$this->table->" . $alias . ") = \$this->generateNewTitle(\$this->table->" . $category . ", \$this->table->" . $alias . ", \$this->table->" . $title . ");";
+			$batchcopy[] = "\t\t\t\tlist(\$this->table->" . implode('', $titles) . ", \$this->table->" . $alias . ") = \$this->generateNewTitle(\$this->table->" . $category . ", \$this->table->" . $alias . ", \$this->table->" . implode('', $titles) . ");";
 			$batchcopy[] = "\t\t\t}";
+		}
+		elseif (!$category && $alias && ($title && count($titles) == 1))
+		{
+			$batchcopy[] = "\t\t\tlist(\$this->table->" . implode('', $titles) . ", \$this->table->" . $alias . ") = \$this->_generateNewTitle(\$this->table->" . $alias . ", \$this->table->" . implode('', $titles) . ");";
 		}
 		elseif (!$category && $alias && $title)
 		{
-			$batchcopy[] = "\t\t\tlist(\$this->table->" . $title . ", \$this->table->" . $alias . ") = \$this->_generateNewTitle(\$this->table->" . $alias . ", \$this->table->" . $title . ");";
+			$batchcopy[] = "\t\t\tlist(" . implode(', ', $titleData) . ", \$this->table->" . $alias . ") = \$this->_generateNewTitle(\$this->table->" . $alias . ", array(" . implode(', ', $titleData) . "));";
 		}
-		elseif (!$category && !$alias && $title && $title != 'user' && $title != 'jobnumber') // TODO [jobnumber] just for one project (not ideal)
+		elseif (!$category && !$alias && ($title && count($titles) == 1 && !in_array('user', $titles) && !in_array('jobnumber', $titles))) // TODO [jobnumber] just for one project (not ideal)
 		{
 			$batchcopy[] = PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Only for strings";
-			$batchcopy[] = "\t\t\tif (" . $Helper . "::checkString(\$this->table->" . $title . ") && !is_numeric(\$this->table->" . $title . "))";
+			$batchcopy[] = "\t\t\tif (" . $Helper . "::checkString(\$this->table->" . implode('', $titles). ") && !is_numeric(\$this->table->" . implode('', $titles) . "))";
 			$batchcopy[] = "\t\t\t{";
-			$batchcopy[] = "\t\t\t\t\$this->table->" . $title . " = \$this->generateUniqe('" . $title . "',\$this->table->" . $title . ");";
+			$batchcopy[] = "\t\t\t\t\$this->table->" . implode('', $titles) . " = \$this->generateUniqe('" . implode('', $titles) . "',\$this->table->" . implode('', $titles) . ");";
 			$batchcopy[] = "\t\t\t}";
 		}
 
@@ -5503,35 +5513,65 @@ class Interpretation extends Fields
 	{
 		$fixUniqe = array();
 		// only load this if these two items are set
-		if (array_key_exists($viewName_single, $this->aliasBuilder) && array_key_exists($viewName_single, $this->titleBuilder))
+		if (array_key_exists($viewName_single, $this->aliasBuilder) && 
+			(array_key_exists($viewName_single, $this->titleBuilder) || isset($this->customAliasBuilder[$viewName_single])))
 		{
 			// set needed defaults
 			$setCategory = false;
 			$alias = $this->aliasBuilder[$viewName_single];
-			$title = $this->titleBuilder[$viewName_single];
 			$VIEW = ComponentbuilderHelper::safeString($viewName_single, 'U');
 			if (array_key_exists($viewName_single, $this->catCodeBuilder))
 			{
 				$category = $this->catCodeBuilder[$viewName_single]['code'];
 				$setCategory = true;
 			}
+			// set the title stuff
+			if (isset($this->customAliasBuilder[$viewName_single]))
+			{
+				$titles = array_values($this->customAliasBuilder[$viewName_single]);
+				if (isset($this->titleBuilder[$viewName_single]))
+				{
+					// $titles[] = $this->titleBuilder[$viewName_single]; // TODO this may be unexpected
+				}
+			}
+			else
+			{
+				$titles = array($this->titleBuilder[$viewName_single]);
+			}
 			// start building the fix
-			$fixUniqe[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Alter the " . $title . " for save as copy";
+			$fixUniqe[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Alter the " . implode(', ',$titles) . " for save as copy";
 			$fixUniqe[] = "\t\tif (\$input->get('task') === 'save2copy')";
 			$fixUniqe[] = "\t\t{";
 			$fixUniqe[] = "\t\t\t\$origTable = clone \$this->getTable();";
 			$fixUniqe[] = "\t\t\t\$origTable->load(\$input->getInt('id'));";
-			$fixUniqe[] = PHP_EOL . "\t\t\tif (\$data['" . $title . "'] == \$origTable->" . $title . ")";
-			$fixUniqe[] = "\t\t\t{";
-			if ($setCategory)
+			// reset the buckets
+			$ifStatment = array();
+			$titleVars = array();
+			$titleData = array();
+			$titleUpdate = array();
+			// load the dynamic title builder
+			foreach ($titles as $title)
 			{
-				$fixUniqe[] = "\t\t\t\tlist(\$" . $title . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], \$data['" . $title . "']);";
+				$ifStatment[] = "\$data['" . $title . "'] == \$origTable->" . $title;
+				$titleVars[] = "\$" . $title;
+				$titleData[] = "\$data['" . $title . "']";
+				$titleUpdate[] = "\t\t\t\t\$data['" . $title . "'] = \$" . $title . ";";
+			}
+			$fixUniqe[] = PHP_EOL . "\t\t\tif (" . implode(' || ', $ifStatment) . ")";
+			$fixUniqe[] = "\t\t\t{";
+			if ($setCategory && count($titles) == 1)
+			{
+				$fixUniqe[] = "\t\t\t\tlist(" . implode('',$titleVars) . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], " . implode('',$titleData) . ");";
+			}
+			elseif (count($titles) == 1)
+			{
+				$fixUniqe[] = "\t\t\t\tlist(" . implode(', ',$titleVars) . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], " . implode('',$titleData) . ");";
 			}
 			else
 			{
-				$fixUniqe[] = "\t\t\t\tlist(\$" . $title . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], \$data['" . $title . "']);";
+				$fixUniqe[] = "\t\t\t\tlist(" . implode(', ',$titleVars) . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], array(" . implode(', ',$titleData) . "));";
 			}
-			$fixUniqe[] = "\t\t\t\t\$data['" . $title . "'] = \$" . $title . ";";
+			$fixUniqe[] = implode("\n", $titleUpdate);
 			$fixUniqe[] = "\t\t\t\t\$data['" . $alias . "'] = \$" . $alias . ";";
 			$fixUniqe[] = "\t\t\t}";
 			$fixUniqe[] = "\t\t\telse";
@@ -5546,24 +5586,25 @@ class Interpretation extends Fields
 			$fixUniqe[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Automatic handling of " . $alias . " for empty fields";
 			$fixUniqe[] = "\t\tif (in_array(\$input->get('task'), array('apply', 'save', 'save2new')) && (int) \$input->get('id') == 0)";
 			$fixUniqe[] = "\t\t{";
-			$fixUniqe[] = "\t\t\tif (\$data['" . $alias . "'] == null)";
+			$fixUniqe[] = "\t\t\tif (\$data['" . $alias . "'] == null || empty(\$data['" . $alias . "']))";
 			$fixUniqe[] = "\t\t\t{";
 			$fixUniqe[] = "\t\t\t\tif (JFactory::getConfig()->get('unicodeslugs') == 1)";
 			$fixUniqe[] = "\t\t\t\t{";
-			$fixUniqe[] = "\t\t\t\t\t\$data['" . $alias . "'] = JFilterOutput::stringURLUnicodeSlug(\$data['" . $title . "']);";
+			$fixUniqe[] = "\t\t\t\t\t\$data['" . $alias . "'] = JFilterOutput::stringURLUnicodeSlug(" . implode(' . " " . ', $titleData) . ");";
 			$fixUniqe[] = "\t\t\t\t}";
 			$fixUniqe[] = "\t\t\t\telse";
 			$fixUniqe[] = "\t\t\t\t{";
-			$fixUniqe[] = "\t\t\t\t\t\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(\$data['" . $title . "']);";
+			$fixUniqe[] = "\t\t\t\t\t\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(". implode(' . " " . ', $titleData) .");";
 			$fixUniqe[] = "\t\t\t\t}";
 			$fixUniqe[] = PHP_EOL . "\t\t\t\t\$table = JTable::getInstance('" . $viewName_single . "', '" . $this->fileContentStatic['###component###'] . "Table');";
-			if ($setCategory)
+			if ($setCategory && count($titles) == 1)
 			{
 				$fixUniqe[] = PHP_EOL . "\t\t\t\tif (\$table->load(array('" . $alias . "' => \$data['" . $alias . "'], '" . $category . "' => \$data['" . $category . "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUniqe[] = "\t\t\t\t{";
 				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:" . ":_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
-				$fixUniqe[] = PHP_EOL . "\t\t\t\tlist(\$" . $title . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], \$data['" . $title . "']);";
+				$fixUniqe[] = PHP_EOL . "\t\t\t\tlist(" . implode('',$titleVars) . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], " . implode('',$titleData) . ");";
+				$fixUniqe[] = "\t\t\t\t\$data['" . $alias . "'] = \$" . $alias . ";";
 			}
 			else
 			{
@@ -5571,9 +5612,8 @@ class Interpretation extends Fields
 				$fixUniqe[] = "\t\t\t\t{";
 				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:" . ":_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
-				$fixUniqe[] = PHP_EOL . "\t\t\t\tlist(\$" . $title . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], \$data['" . $title . "']);";
+				$fixUniqe[] = PHP_EOL . "\t\t\t\t\$data['" . $alias . "'] = \$this->_generateNewTitle(\$data['" . $alias . "']);";
 			}
-			$fixUniqe[] = "\t\t\t\t\$data['" . $alias . "'] = \$" . $alias . ";";
 			$fixUniqe[] = PHP_EOL . "\t\t\t\tif (isset(\$msg))";
 			$fixUniqe[] = "\t\t\t\t{";
 			$fixUniqe[] = "\t\t\t\t\tJFactory::getApplication()->enqueueMessage(\$msg, 'warning');";
@@ -5602,28 +5642,56 @@ class Interpretation extends Fields
 	public function setGenerateNewTitle($viewName_single)
 	{
 		// if category is added to this view then do nothing
-		if (array_key_exists($viewName_single, $this->aliasBuilder) && array_key_exists($viewName_single, $this->titleBuilder))
+		if (array_key_exists($viewName_single, $this->aliasBuilder) && 
+			(array_key_exists($viewName_single, $this->titleBuilder) || isset($this->customAliasBuilder[$viewName_single])))
 		{
+			// get component name
+			$Component = $this->fileContentStatic['###Component###'];
+			// rest the new function
 			$newFunction = array();
 			$newFunction[] = PHP_EOL . PHP_EOL . "\t/**";
-			$newFunction[] = "\t* Method to change the title & alias.";
+			$newFunction[] = "\t* Method to change the title/s & alias.";
 			$newFunction[] = "\t*";
-			$newFunction[] = "\t* @param   string   \$alias        The alias.";
-			$newFunction[] = "\t* @param   string   \$title        The title.";
+			$newFunction[] = "\t* @param   string         \$alias        The alias.";
+			$newFunction[] = "\t* @param   string/array   \$title        The title.";
 			$newFunction[] = "\t*";
-			$newFunction[] = "\t* @return	array  Contains the modified title and alias.";
+			$newFunction[] = "\t* @return	array/string  Contains the modified title/s and/or alias.";
 			$newFunction[] = "\t*";
 			$newFunction[] = "\t*/";
-			$newFunction[] = "\tprotected function _generateNewTitle(\$alias, \$title)";
+			$newFunction[] = "\tprotected function _generateNewTitle(\$alias, \$title = null)";
 			$newFunction[] = "\t{";
-			$newFunction[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Alter the title & alias";
+			$newFunction[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Alter the title/s & alias";
 			$newFunction[] = "\t\t\$table = \$this->getTable();";
 			$newFunction[] = PHP_EOL . "\t\twhile (\$table->load(array('alias' => \$alias)))";
 			$newFunction[] = "\t\t{";
-			$newFunction[] = "\t\t\t\$title = JString::increment(\$title);";
+			$newFunction[] = "\t\t\t//" . $this->setLine(__LINE__) . " Check if this is an array of titles";
+			$newFunction[] = "\t\t\tif (".$Component."Helper::checkArray(\$title))";
+			$newFunction[] = "\t\t\t{";
+			$newFunction[] = "\t\t\t\tforeach(\$title as \$nr => &\$_title)";
+			$newFunction[] = "\t\t\t\t{";
+			$newFunction[] = "\t\t\t\t\t\$_title = JString::increment(\$_title);";
+			$newFunction[] = "\t\t\t\t}";
+			$newFunction[] = "\t\t\t}";
+			$newFunction[] = "\t\t\t//" . $this->setLine(__LINE__) . " Make sure we have a title";
+			$newFunction[] = "\t\t\telseif (\$title)";
+			$newFunction[] = "\t\t\t{";
+			$newFunction[] = "\t\t\t\t\$title = JString::increment(\$title);";
+			$newFunction[] = "\t\t\t}";
 			$newFunction[] = "\t\t\t\$alias = JString::increment(\$alias, 'dash');";
 			$newFunction[] = "\t\t}";
-			$newFunction[] = PHP_EOL . "\t\treturn array(\$title, \$alias);";
+			$newFunction[] = "\t\t//" . $this->setLine(__LINE__) . " Check if this is an array of titles";
+			$newFunction[] = "\t\tif (".$Component."Helper::checkArray(\$title))";
+			$newFunction[] = "\t\t{";
+			$newFunction[] = "\t\t\t\$title[] = \$alias;";
+			$newFunction[] = "\t\t\treturn \$title;";
+			$newFunction[] = "\t\t}";
+			$newFunction[] = "\t\t//" . $this->setLine(__LINE__) . " Make sure we have a title";
+			$newFunction[] = "\t\telseif (\$title)";
+			$newFunction[] = "\t\t{";
+			$newFunction[] = "\t\t\treturn array(\$title, \$alias);";
+			$newFunction[] = "\t\t}";
+			$newFunction[] = "\t\t//" . $this->setLine(__LINE__) . " We only had an alias";
+			$newFunction[] = "\t\treturn \$alias;";
 			$newFunction[] = "\t}";
 			return implode(PHP_EOL, $newFunction);
 		}
@@ -5631,9 +5699,9 @@ class Interpretation extends Fields
 		{
 			$newFunction = array();
 			$newFunction[] = PHP_EOL . PHP_EOL . "\t/**";
-			$newFunction[] = "\t* Method to change the title & alias.";
+			$newFunction[] = "\t* Method to change the title";
 			$newFunction[] = "\t*";
-			$newFunction[] = "\t* @param   string   \$title        The title.";
+			$newFunction[] = "\t* @param   string   \$title   The title.";
 			$newFunction[] = "\t*";
 			$newFunction[] = "\t* @return	array  Contains the modified title and alias.";
 			$newFunction[] = "\t*";
