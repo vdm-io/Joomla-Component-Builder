@@ -2160,6 +2160,15 @@ class Fields extends Structure
 				{
 					// dont load the button to repeatable
 					$xmlValue = 'false';
+					// do not add button
+					$fieldAttributes['custom']['add_button'] = 'false';
+				}
+				elseif ($property['name'] === 'button' && $setCustom)
+				{
+					// dont load the button to repeatable
+					$xmlValue = (string) ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'button="', '"'));
+					// add to custom values
+					$fieldAttributes['custom']['add_button'] = (ComponentbuilderHelper::checkString($xmlValue) || 1 == $xmlValue) ? $xmlValue: 'false';
 				}
 				elseif ($property['name'] === 'required' && $repeatable)
 				{
@@ -2787,7 +2796,9 @@ class Fields extends Structure
 	protected function setAddButtonToListField($fieldData)
 	{
 		// make sure hte view values are set
-		if (isset($fieldData['view']) && isset($fieldData['views']))
+		if (isset($fieldData['add_button']) && ($fieldData['add_button'] === 'true' || 1 == $fieldData['add_button']) &&
+			isset($fieldData['view']) && isset($fieldData['views']) &&
+			ComponentbuilderHelper::checkString($fieldData['view']) && ComponentbuilderHelper::checkString($fieldData['views']))
 		{
 			$addButton = array();
 			$addButton[] = PHP_EOL . PHP_EOL . "\t/**";
@@ -2834,7 +2845,7 @@ class Fields extends Structure
 				$fieldData['component'] = "com_" . $this->fileContentStatic['###component###'];
 			}
 			// check that the componet has the com_ value in it
-			if (strpos($fieldData['component'], 'com_') === false)
+			if (strpos($fieldData['component'], 'com_') === false || strpos($fieldData['component'], '=') !== false)
 			{
 				$fieldData['component'] = "com_" . $fieldData['component'];
 			}

@@ -279,6 +279,7 @@
 			class="list_class"
 			multiple="false"
 			required="true"
+			button="false"
 		/>
 		<!-- View_selection Field. Type: Textarea. (joomla) -->
 		<field
