@@ -302,12 +302,16 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						$this->setData($table, $pks, $field);
 					}
-						
 					// add fields and conditions
 					if (isset($this->exportIDs['admin_view']) && ComponentbuilderHelper::checkArray($this->exportIDs['admin_view']))
 					{
 						$this->setData('admin_fields', array_values($this->exportIDs['admin_view']), 'admin_view');
 						$this->setData('admin_fields_conditions', array_values($this->exportIDs['admin_view']), 'admin_view');
+					}
+					// add validation rules
+					if (isset($this->exportIDs['validation_rule']) && ComponentbuilderHelper::checkArray($this->exportIDs['validation_rule']))
+					{
+						$this->setData('validation_rule', array_values($this->exportIDs['validation_rule']), 'name');
 					}
 					// add field types
 					if (isset($this->exportIDs['fieldtype']) && ComponentbuilderHelper::checkArray($this->exportIDs['fieldtype']))
@@ -357,7 +361,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*
 	* @return void.
 	*/
-	protected function setExportIDs($value, $table)
+	protected function setExportIDs($value, $table, $int = true)
 	{
 		// check if table has been set
 		if (!isset($this->exportIDs[$table]))
@@ -374,15 +378,23 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			foreach ($value as $id)
 			{
-				if ((ComponentbuilderHelper::checkString($id) || is_numeric($id)) && 0 !== (int) $id)
+				if ($int && (ComponentbuilderHelper::checkString($id) || is_numeric($id)) && 0 !== (int) $id)
 				{
 					$this->exportIDs[$table][(int) $id] = (int) $id;
 				}
+				elseif (!$int && ComponentbuilderHelper::checkString($id))
+				{
+					$this->exportIDs[$table][$id] = $this->_db->quote($id);
+				}
 			}
 		}
-		elseif ((ComponentbuilderHelper::checkString($value) || is_numeric($value)) && 0 !== (int) $value)
+		elseif ($int && (ComponentbuilderHelper::checkString($value) || is_numeric($value)) && 0 !== (int) $value)
 		{
 			$this->exportIDs[$table][(int) $value] = (int) $value;
+		}
+		elseif (!$int && ComponentbuilderHelper::checkString($value))
+		{
+			$this->exportIDs[$table][$value] = $this->_db->quote($value);
 		}
 	}
 
@@ -467,7 +479,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	protected function setData($table, $values, $key)
+	protected function setData($table, $values, $key, $string = false)
 	{
 		// make sure we have an array of values
 		if (!ComponentbuilderHelper::checkArray($values) || !ComponentbuilderHelper::checkString($table) || !ComponentbuilderHelper::checkString($key))
@@ -476,10 +488,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		}
 		// start the query
 		$query = $this->_db->getQuery(true);
-
 		// Select some fields
 		$query->select(array('a.*'));
-
 		// From the componentbuilder_ANY table
 		$query->from($this->_db->quoteName('#__componentbuilder_'. $table, 'a'));
 		// set the where query
@@ -490,10 +500,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$groups = implode(',', $this->user->getAuthorisedViewLevels());
 			$query->where('a.access IN (' . $groups . ')');
 		}
-
 		// Order the results by ordering
 		$query->order('a.ordering  ASC');
-
 		// Load the items
 		$this->_db->setQuery($query);
 		$this->_db->execute();
@@ -651,6 +659,23 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							if (ComponentbuilderHelper::checkArray($fieldsSets))
 							{
 								$this->setData('field', $fieldsSets, 'id');
+							}
+						}
+						// check if validation rule is found
+						$validationRule = ComponentbuilderHelper::getBetween(json_decode($item->xml), 'validate="', '"');
+						if (ComponentbuilderHelper::checkString($validationRule))
+						{
+							// make sure it is lowercase
+							$validationRule = ComponentbuilderHelper::safeString($validationRule);
+							// get core validation rules
+							if ($coreValidationRules = ComponentbuilderHelper::getExistingValidationRuleNames(true))
+							{
+								// make sure this rule is not a core validation rule
+								if (!in_array($validationRule, (array) $coreValidationRules))
+								{
+									// okay load the rule
+									$this->setExportIDs($validationRule, 'validation_rule', false);
+								}
 							}
 						}
 					}

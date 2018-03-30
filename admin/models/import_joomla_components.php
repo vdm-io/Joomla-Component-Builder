@@ -697,7 +697,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$this->today = JFactory::getDate()->toSql();
 		// the array of tables to store
 		$tables = array(
-			'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
+			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
 			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
 			'admin_fields', 'admin_fields_conditions', 'component_admin_views', 'component_site_views',
 			'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
@@ -2336,6 +2336,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						$this->specialValue['admin_view'] = $this->newID['admin_view'][(int) $item->admin_view];
 					}
 					break;
+				case 'validation_rule':
 				case 'fieldtype':
 					// get by name (since there should only be one of each name)
 					$getter = 'name';
