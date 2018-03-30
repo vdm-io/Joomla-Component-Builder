@@ -43,7 +43,7 @@ class JFormField###Type### extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = '###type###'; ###ADD_BUTTON###
+	public $type = '###type###';###ADD_BUTTON###
 
 	/**
 	 * Method to get a list of options for a list input.

@@ -40,7 +40,8 @@ class JFormFieldMatchfield extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'matchfield'; 
+	public $type = 'matchfield';
+
 	/**
 	 * Override to add new button
 	 *

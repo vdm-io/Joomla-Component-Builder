@@ -40,7 +40,8 @@ class JFormFieldComponentadminmenus extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'componentadminmenus'; 
+	public $type = 'componentadminmenus';
+
 	/**
 	 * Override to add new button
 	 *

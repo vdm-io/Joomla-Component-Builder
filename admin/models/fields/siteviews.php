@@ -40,7 +40,8 @@ class JFormFieldSiteviews extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'siteviews'; 
+	public $type = 'siteviews';
+
 	/**
 	 * Override to add new button
 	 *

@@ -40,7 +40,8 @@ class JFormFieldMaingets extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'maingets'; 
+	public $type = 'maingets';
+
 	/**
 	 * Override to add new button
 	 *

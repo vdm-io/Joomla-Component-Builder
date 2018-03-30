@@ -40,7 +40,8 @@ class JFormFieldCustomgets extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'customgets'; 
+	public $type = 'customgets';
+
 	/**
 	 * Override to add new button
 	 *

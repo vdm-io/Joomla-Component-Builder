@@ -40,7 +40,8 @@ class JFormFieldLang extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'lang'; 
+	public $type = 'lang';
+
 	/**
 	 * Override to add new button
 	 *

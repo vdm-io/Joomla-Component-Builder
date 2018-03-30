@@ -40,7 +40,8 @@ class JFormFieldComponents extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'components'; 
+	public $type = 'components';
+
 	/**
 	 * Override to add new button
 	 *

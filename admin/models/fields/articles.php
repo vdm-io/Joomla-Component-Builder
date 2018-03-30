@@ -40,7 +40,8 @@ class JFormFieldArticles extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'articles'; 
+	public $type = 'articles';
+
 	/**
 	 * Override to add new button
 	 *
@@ -79,7 +80,7 @@ class JFormFieldArticles extends JFormFieldList
 			}
 			$user = JFactory::getUser();
 			// only add if user allowed to create article
-			if ($user->authorise('core.create', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			if ($user->authorise('core.create', 'com_content') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build Create button
 				$buttonNamee = trim($buttonName);
@@ -88,11 +89,11 @@ class JFormFieldArticles extends JFormFieldList
 				$buttonNamee = preg_replace("/[^A-Za-z ]/", '', $buttonNamee);
 				$buttonNamee = ucfirst(strtolower($buttonNamee));
 				$button[] = '<a id="'.$buttonName.'Create" class="btn btn-small btn-success hasTooltip" title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', $buttonNamee).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
-					href="index.php?option=com_componentbuilder&amp;view=article&amp;layout=edit'.$ref.'" >
+					href="index.php?option=com_content&amp;view=article&amp;layout=edit'.$ref.'" >
 					<span class="icon-new icon-white"></span></a>';
 			}
 			// only add if user allowed to edit article
-			if (($buttonName === 'article' || $buttonName === 'articles')  && $user->authorise('core.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			if (($buttonName === 'article' || $buttonName === 'articles')  && $user->authorise('core.edit', 'com_content') && $app->isAdmin()) // TODO for now only in admin area.
 			{
 				// build edit button
 				$buttonNamee = trim($buttonName);
@@ -119,7 +120,7 @@ class JFormFieldArticles extends JFormFieldList
 							jQuery('#".$buttonName."Create').hide();
 							// show edit button
 							jQuery('#".$buttonName."Edit').show();
-							var url = 'index.php?option=com_componentbuilder&view=articles&task=article.edit&id='+value+'".$refJ."';
+							var url = 'index.php?option=com_content&view=articles&task=article.edit&id='+value+'".$refJ."';
 							jQuery('#".$buttonName."Edit').attr('href', url);
 						} else {
 							// show the create button

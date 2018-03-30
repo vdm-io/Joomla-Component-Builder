@@ -40,7 +40,8 @@ class JFormFieldLibconfigfield extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'libconfigfield'; 
+	public $type = 'libconfigfield';
+
 	/**
 	 * Override to add new button
 	 *

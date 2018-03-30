@@ -40,7 +40,8 @@ class JFormFieldSnippets extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'snippets'; 
+	public $type = 'snippets';
+
 	/**
 	 * Override to add new button
 	 *

@@ -40,7 +40,8 @@ class JFormFieldLibraryreadonly extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'libraryreadonly'; 
+	public $type = 'libraryreadonly';
+
 	/**
 	 * Override to add new button
 	 *

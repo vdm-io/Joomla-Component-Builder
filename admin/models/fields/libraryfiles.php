@@ -40,7 +40,8 @@ class JFormFieldLibraryfiles extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'libraryfiles'; 
+	public $type = 'libraryfiles';
+
 	/**
 	 * Override to add new button
 	 *

@@ -40,7 +40,8 @@ class JFormFieldFilebehaviour extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'filebehaviour'; 
+	public $type = 'filebehaviour';
+
 	/**
 	 * Override to add new button
 	 *

@@ -40,7 +40,8 @@ class JFormFieldAliasbuilder extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'aliasbuilder'; 
+	public $type = 'aliasbuilder';
+
 	/**
 	 * Override to add new button
 	 *

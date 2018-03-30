@@ -40,7 +40,8 @@ class JFormFieldDynamicdashboard extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'dynamicdashboard'; 
+	public $type = 'dynamicdashboard';
+
 	/**
 	 * Override to add new button
 	 *

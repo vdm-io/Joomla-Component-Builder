@@ -40,7 +40,8 @@ class JFormFieldExistingvalidationrules extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'existingvalidationrules'; 
+	public $type = 'existingvalidationrules';
+
 	/**
 	 * Override to add new button
 	 *

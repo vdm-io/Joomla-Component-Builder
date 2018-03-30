@@ -40,7 +40,8 @@ class JFormFieldCustomfilelist extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'customfilelist'; 
+	public $type = 'customfilelist';
+
 	/**
 	 * Override to add new button
 	 *

@@ -40,7 +40,8 @@ class JFormFieldAdminviewsreadonly extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'adminviewsreadonly'; 
+	public $type = 'adminviewsreadonly';
+
 	/**
 	 * Override to add new button
 	 *

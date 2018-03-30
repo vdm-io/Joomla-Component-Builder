@@ -40,7 +40,8 @@ class JFormFieldDynamicget extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'dynamicget'; 
+	public $type = 'dynamicget';
+
 	/**
 	 * Override to add new button
 	 *

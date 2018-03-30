@@ -5490,13 +5490,12 @@ class Get
 	 * @param   string   $data          The actual data
 	 * @param   array    $placeholder   The placeholders
 	 * @param   int      $action        The action to use
-	 * ===================================================
+	 * 
 	 * THE ACTION OPTIONS ARE
-	 * ===================================================
 	 * 1 -> Just replace (default)
 	 * 2 -> Check if data string has placeholders
 	 * 3 -> Remove placeholders not in data string
-	 * ===================================================
+	 * 
 	 * @param   int      $langSwitch    The lang switch
 	 *
 	 * @return  string

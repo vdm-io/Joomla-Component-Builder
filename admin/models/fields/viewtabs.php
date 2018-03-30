@@ -40,7 +40,8 @@ class JFormFieldViewtabs extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'viewtabs'; 
+	public $type = 'viewtabs';
+
 	/**
 	 * Override to add new button
 	 *

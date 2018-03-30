@@ -40,7 +40,8 @@ class JFormFieldSiteviewfolderlist extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'siteviewfolderlist'; 
+	public $type = 'siteviewfolderlist';
+
 	/**
 	 * Override to add new button
 	 *

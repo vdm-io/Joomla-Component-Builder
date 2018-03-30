@@ -40,7 +40,8 @@ class JFormFieldLibrariesx extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'librariesx'; 
+	public $type = 'librariesx';
+
 	/**
 	 * Override to add new button
 	 *

@@ -40,7 +40,8 @@ class JFormFieldServers extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'servers'; 
+	public $type = 'servers';
+
 	/**
 	 * Override to add new button
 	 *

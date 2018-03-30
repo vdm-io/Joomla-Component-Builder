@@ -40,7 +40,8 @@ class JFormFieldAdminviewfolderlist extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'adminviewfolderlist'; 
+	public $type = 'adminviewfolderlist';
+
 	/**
 	 * Override to add new button
 	 *
