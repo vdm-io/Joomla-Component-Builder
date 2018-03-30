@@ -246,7 +246,7 @@ class ComponentbuilderModelAjax extends JModelList
 					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
 				}
 				// build url (A tag)
-				$startAtag = '<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit'.$ref.'\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
+				$startAtag = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit'.$ref.'\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
 				// build the smaller button
 				if (2 == $size)
 				{
@@ -317,7 +317,7 @@ class ComponentbuilderModelAjax extends JModelList
 						$button[] = '</div>';
 						$button[] = '<div class="controls">';
 					}
-					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" title="'.$buttonText.'">';
+					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" title="'.$buttonText.'">';
 					if (1 == $size)
 					{
 						$button[] = '<span class="'.$icon.' icon-white"></span>';

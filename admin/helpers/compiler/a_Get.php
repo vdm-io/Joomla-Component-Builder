@@ -926,17 +926,19 @@ class Get
 			// build the admin_views settings
 			$component->admin_views = array_map(function($array)
 			{
-				$array = array_map(function($value)
-				{
+				$array = array_map(function($value) {
 					if (!ComponentbuilderHelper::checkArray($value) && !ComponentbuilderHelper::checkObject($value) && strval($value) === strval(intval($value)))
 					{
 						return (int) $value;
 					}
 					return $value;
 				}, $array);
-				// has become a lacacy issue, can't remove this
-				$array['view'] = $array['adminview'];
-				$array['settings'] = $this->getAdminViewData($array['view']);
+				// check if we must add to site
+				if (isset($array['edit_create_site_view']) && $array['edit_create_site_view'])
+				{
+					$this->siteEditView[$array['adminview']] = true;
+					$this->lang = 'both';
+				}
 				if (isset($array['port']) && $array['port'] && !$this->addEximport)
 				{
 					$this->addEximport = true;
@@ -945,14 +947,13 @@ class Get
 				{
 					$this->setTagHistory = true;
 				}
-				if (isset($array['edit_create_site_view']) && $array['edit_create_site_view'])
-				{
-					$this->siteEditView[$array['adminview']] = true;
-				}
+				// has become a lacacy issue, can't remove this
+				$array['view'] = $array['adminview'];
+				// get the admin settings/data
+				$array['settings'] = $this->getAdminViewData($array['view']);
 				return $array;
 			}, array_values($component->addadmin_views));
 		}
-
 		// set the site_view data
 		$component->addsite_views = (isset($component->addsite_views) && ComponentbuilderHelper::checkJson($component->addsite_views)) ? json_decode($component->addsite_views, true) : null;
 		if (ComponentbuilderHelper::checkArray($component->addsite_views))
@@ -1617,6 +1618,10 @@ class Get
 			unset($view->addlinked_views);
 			// set the lang target
 			$this->lang = 'admin';
+			if (isset($this->siteEditView[$id]))
+			{
+				$this->lang = 'both';
+			}
 			// add_javascript
 			$addArrayJ = array('javascript_view_file', 'javascript_view_footer', 'javascript_views_file', 'javascript_views_footer');
 			foreach ($addArrayJ as $scripter)
