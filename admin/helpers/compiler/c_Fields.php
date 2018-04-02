@@ -2799,7 +2799,47 @@ class Fields extends Structure
 		if (isset($fieldData['add_button']) && ($fieldData['add_button'] === 'true' || 1 == $fieldData['add_button']) &&
 			isset($fieldData['view']) && isset($fieldData['views']) &&
 			ComponentbuilderHelper::checkString($fieldData['view']) && ComponentbuilderHelper::checkString($fieldData['views']))
-		{
+		{		
+			// check that the component value is set
+			if (!isset($fieldData['component']) || !ComponentbuilderHelper::checkString($fieldData['component']))
+			{
+				$fieldData['component'] = "com_" . $this->fileContentStatic['###component###'];
+			}
+			// check that the componet has the com_ value in it
+			if (strpos($fieldData['component'], 'com_') === false || strpos($fieldData['component'], '=') !== false)
+			{
+				$fieldData['component'] = "com_" . $fieldData['component'];
+			}
+			// make sure the component is update if ### or [[[ component placeholder is used
+			if (strpos($fieldData['component'], '###') !== false || strpos($fieldData['component'], '[[[') !== false ) // should not be needed... but
+			{
+				$fieldData['component'] = $this->setPlaceholders($fieldData['component'], $this->placeholders);
+			}
+			// get core permissions
+			$coreLoad = false;
+			// add ref tags
+			$refLoad = true;
+			if (isset($this->permissionCore[$fieldData['view']]))
+			{
+				// get the core permission naming array
+				$core = $this->permissionCore[$fieldData['view']];
+				// set switch to activate easy update
+				$coreLoad = true;
+				// since the view is local to the component use this component name
+				$component = "com_" . $this->fileContentStatic['###component###'];
+			}
+			else
+			{
+				// fall back on the field component
+				$component = $fieldData['component'];
+			}
+			// check if we should add ref tags
+			if ($fieldData['component'] !== $component)
+			{
+				// do not add ref tags
+				$refLoad = false;
+			}
+			// start building the add buttons/s
 			$addButton = array();
 			$addButton[] = PHP_EOL . PHP_EOL . "\t/**";
 			$addButton[] = "\t * Override to add new button";
@@ -2831,45 +2871,29 @@ class Fields extends Structure
 			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " check if new item";
 			$addButton[] = "\t\t\t\$ref = '';";
 			$addButton[] = "\t\t\t\$refJ = '';";
-			$addButton[] = "\t\t\tif (!is_null(\$values['id']) && strlen(\$values['view']))";
-			$addButton[] = "\t\t\t{";
-			$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " only load referal if not new item.";
-			$addButton[] = "\t\t\t\t\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
-			$addButton[] = "\t\t\t\t\$refJ = '&ref=' . \$values['view'] . '&refid=' . \$values['id'];";
-			$addButton[] = "\t\t\t}";
-			$addButton[] = "\t\t\t\$user = JFactory::getUser();";
-			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " only add if user allowed to create " . $fieldData['view'];			
-			// check that the component value is set
-			if (!isset($fieldData['component']) || !ComponentbuilderHelper::checkString($fieldData['component']))
+			if ($refLoad)
 			{
-				$fieldData['component'] = "com_" . $this->fileContentStatic['###component###'];
-			}
-			// check that the componet has the com_ value in it
-			if (strpos($fieldData['component'], 'com_') === false || strpos($fieldData['component'], '=') !== false)
-			{
-				$fieldData['component'] = "com_" . $fieldData['component'];
-			}
-			// make sure the component is update if ### or [[[ component placeholder is used
-			if (strpos($fieldData['component'], '###') !== false || strpos($fieldData['component'], '[[[') !== false ) // should not be needed... but
-			{
-				$fieldData['component'] = $this->setPlaceholders($fieldData['component'], $this->placeholders);
-			}
-			// get core permissions
-			$coreLoad = false;
-			if (isset($this->permissionCore[$fieldData['view']]))
-			{
-				// get the core permission naming array
-				$core = $this->permissionCore[$fieldData['view']];
-				// set switch to activate easy update
-				$coreLoad = true;
-				// since the view is local to the component use this component name
-				$component = "com_" . $this->fileContentStatic['###component###'];
+				$addButton[] = "\t\t\tif (!is_null(\$values['id']) && strlen(\$values['view']))";
+				$addButton[] = "\t\t\t{";
+				$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " only load referal if not new item.";
+				$addButton[] = "\t\t\t\t\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
+				$addButton[] = "\t\t\t\t\$refJ = '&ref=' . \$values['view'] . '&refid=' . \$values['id'];";
+				$addButton[] = "\t\t\t}";
 			}
 			else
 			{
-				// fall back on the field component
-				$component = $fieldData['component'];
+				$addButton[] = "\t\t\tif (!is_null(\$values['id']) && strlen(\$values['view']))";
+				$addButton[] = "\t\t\t{";
+				$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " get the return value.";
+				$addButton[] = "\t\t\t\t\$_uri = (string) JUri::getInstance();";
+				$addButton[] = "\t\t\t\t\$_return = urlencode(base64_encode(\$_uri));";
+				$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " load return value.";
+				$addButton[] = "\t\t\t\t\$ref = '&amp;return=' . \$_return;";
+				$addButton[] = "\t\t\t\t\$refJ = '&return=' . \$_return;";
+				$addButton[] = "\t\t\t}";
 			}
+			$addButton[] = "\t\t\t\$user = JFactory::getUser();";
+			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " only add if user allowed to create " . $fieldData['view'];	
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($fieldData['view'], $this->permissionBuilder['global'][$core['core.create']]))
 			{
