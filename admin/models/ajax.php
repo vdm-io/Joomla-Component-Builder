@@ -1366,10 +1366,10 @@ class ComponentbuilderModelAjax extends JModelList
 				$templateString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo \$this->loadTemplate('".ComponentbuilderHelper::safeString($result->alias)."'); ?&gt;</code></td>";
 			}
 			// build the table
-			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS').'</h2><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS').'</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
 			$table .= '<caption>'.JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE').'</caption>';
 			$table .= '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET').'</th><th>'.JText::_('COM_COMPONENTBUILDER_SNIPPET').'</th></thead>';
-			$table .= '<tbody><tr>'.implode("</tr><tr>",$templateString)."</tr></tbody></table>";
+			$table .= '<tbody><tr>'.implode("</tr><tr>",$templateString)."</tr></tbody></table></div>";
 		}
 		return $table;
 	}
@@ -1424,10 +1424,10 @@ class ComponentbuilderModelAjax extends JModelList
 				}
 			}
 			// build the table
-			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_LAYOUT_CODE_SNIPPETS').'</h2><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_LAYOUT_CODE_SNIPPETS').'</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
 			$table .= '<caption>'.JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE').'</caption>';
 			$table .= '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET').'</th><th>'.JText::_('COM_COMPONENTBUILDER_SNIPPET').'</th></thead>';
-			$table .= '<tbody><tr>'.implode("</tr><tr>",$layoutString)."</tr></tbody></table>";
+			$table .= '<tbody><tr>'.implode("</tr><tr>",$layoutString)."</tr></tbody></table></div>";
 		}
 		return $table;
 	}
