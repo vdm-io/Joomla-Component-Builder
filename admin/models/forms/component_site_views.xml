@@ -105,8 +105,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_ADDSITE_VIEWS_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addsite_views_modal" repeat="true">
 				<!-- Siteview Field. Type: Siteviews. (custom) -->
 				<field

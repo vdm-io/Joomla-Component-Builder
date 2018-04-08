@@ -110,6 +110,19 @@ abstract class ###Component###Helper
 		###SUBMENU###
 	}###HELPER_CREATEUSER### ###HELPER_UIKIT### ###HELPER_EXEL###
 
+	/**
+	 * Get a Variable 
+	 *
+	 * @param   string   $table        The table from which to get the variable
+	 * @param   string   $where        The value where
+	 * @param   string   $whereString  The target/field string where/name
+	 * @param   string   $what         The return field
+	 * @param   string   $operator     The operator between $whereString/field and $where/value
+	 * @param   string   $main         The component in which the table is found
+	 *
+	 * @return  mix string/int/float
+	 *
+	 */
 	public static function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = '###component###')
 	{
 		if(!$where)
@@ -150,6 +163,20 @@ abstract class ###Component###Helper
 		return false;
 	}
 
+	/**
+	 * Get array of variables
+	 *
+	 * @param   string   $table        The table from which to get the variables
+	 * @param   string   $where        The value where
+	 * @param   string   $whereString  The target/field string where/name
+	 * @param   string   $what         The return field
+	 * @param   string   $operator     The operator between $whereString/field and $where/value
+	 * @param   string   $main         The component in which the table is found
+	 * @param   bool     $unique       The switch to return a unique array
+	 *
+	 * @return  array
+	 *
+	 */
 	public static function getVars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = '###component###', $unique = true)
 	{
 		if(!$where)
@@ -618,28 +645,141 @@ abstract class ###Component###Helper
 		return JAccess::getAssetRules(0);
 	}
 
+	/**
+	 * xmlAppend
+	 *
+	 * @param   SimpleXMLElement   $xml      The XML element reference in which to inject a comment
+	 * @param   mixed              $node     A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlAppend(&$xml, $node)
+	{
+		if (!$node)
+		{
+			// element was not returned
+			return;
+		}
+		switch (get_class($node))
+		{
+			case 'stdClass':
+				if (property_exists($node, 'comment'))
+				{
+					self::xmlComment($xml, $node->comment);
+				}
+				if (property_exists($node, 'fieldXML'))
+				{
+					self::xmlAppend($xml, $node->fieldXML);
+				}
+				break;
+			case 'SimpleXMLElement':
+				$domXML = dom_import_simplexml($xml);
+				$domNode = dom_import_simplexml($node);
+				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
+				$xml = simplexml_import_dom($domXML);
+				break;
+		}
+	}
+
+	/**
+	 * xmlComment
+	 *
+	 * @param   SimpleXMLElement   $xml        The XML element reference in which to inject a comment
+	 * @param   string             $comment    The comment to inject
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlComment(&$xml, $comment)
+	{
+		$domXML = dom_import_simplexml($xml);
+		$domComment = new DOMComment($comment);
+		$nodeTarget = $domXML->ownerDocument->importNode($domComment, true);
+		$domXML->appendChild($nodeTarget);
+		$xml = simplexml_import_dom($domXML);
+	}
+
+	/**
+	 * xmlAddAttributes
+	 *
+	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
+	 * @param   array              $attributes   The attributes to apply to the XML element
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlAddAttributes(&$xml, $attributes = array())
+	{
+		foreach ($attributes as $key => $value)
+		{
+			$xml->addAttribute($key, $value);
+		}
+	}
+
+	/**
+	 * xmlAddOptions
+	 *
+	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
+	 * @param   array              $options      The options to apply to the XML element
+	 *
+	 * @return  void
+	 *
+	 */
+	public static function xmlAddOptions(&$xml, $options = array())
+	{
+		foreach ($options as $key => $value)
+		{
+			$addOption = $xml->addChild('option');
+			$addOption->addAttribute('value', $key);
+			$addOption[] = $value;
+		}
+	}
+
+	/**
+	 * Render Bool Button
+	 *
+	 * @param   array   $args   All the args for the button
+	 *                             0) name
+	 *                             1) additional (options class) // not used at this time
+	 *                             2) default
+	 *                             3) yes (name)
+	 *                             4) no (name)
+	 *
+	 * @return  string    The input html of the button
+	 *
+	 */
 	public static function renderBoolButton()
 	{
 		$args = func_get_args();
+		// check if there is additional button class
+		$additional = isset($args[1]) ? (string) $args[1] : ''; // not used at this time
+		// start the xml
+		$buttonXML = new SimpleXMLElement('<field/>');
+		// button attributes
+		$buttonAttributes = array(
+			'type' => 'radio',
+			'name' => isset($args[0]) ? self::htmlEscape($args[0]) : 'bool_button',
+			'label' => isset($args[0]) ? self::safeString(self::htmlEscape($args[0]), 'Ww') : 'Bool Button', // not seen anyway
+			'class' => 'btn-group',
+			'filter' => 'INT',
+			'default' => isset($args[2]) ? (int) $args[2] : 0);
+		// load the haskey attributes
+		self::xmlAddAttributes($buttonXML, $buttonAttributes);
+		// set the button options
+		$buttonOptions = array(
+			'1' => isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES',
+			'0' => isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO');
+		// load the button options
+		self::xmlAddOptions($buttonXML, $buttonOptions);
 
 		// get the radio element
 		$button = JFormHelper::loadFieldType('radio');
 
-		// setup the properties
-		$name	 	= self::htmlEscape($args[0]);
-		$additional = isset($args[1]) ? (string) $args[1] : '';
-		$value		= $args[2];
-		$yes 	 	= isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES';
-		$no 	 	= isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO';
-
-		// prepare the xml
-		$element = new SimpleXMLElement('<field name="'.$name.'" type="radio" class="btn-group"><option '.$additional.' value="0">'.$no.'</option><option '.$additional.' value="1">'.$yes.'</option></field>');
-
 		// run
-		$button->setup($element, $value);
+		$button->setup($buttonXML, $buttonAttributes['default']);
 
 		return $button->input;
-
 	}
 
 	/**

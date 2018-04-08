@@ -389,8 +389,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_FILTER_DESCRIPTION"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_filter_modal" repeat="true">
 				<!-- Filter_type Field. Type: List. (joomla) -->
 				<field
@@ -517,8 +516,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_WHERE_DESCRIPTION"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_where_modal" repeat="true">
 				<!-- Table_key Field. Type: Text. (joomla) -->
 				<field
@@ -610,8 +608,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_ORDER_DESCRIPTION"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_order_modal" repeat="true">
 				<!-- Table_key Field. Type: Text. (joomla) -->
 				<field
@@ -667,8 +664,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_GLOBAL_DESCRIPTION"
-			icon="list"
-			maximum="200">
+			icon="list">
 			<form hidden="true" name="list_global_modal" repeat="true">
 				<!-- Name Field. Type: Text. (joomla) -->
 				<field
@@ -843,8 +839,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_DESCRIPTION"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_join_view_table_modal" repeat="true">
 				<!-- View_table Field. Type: Adminviews. (custom) -->
 				<field
@@ -1112,8 +1107,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_DB_TABLE_DESCRIPTION"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_join_db_table_modal" repeat="true">
 				<!-- Db_table Field. Type: Dbtables. (custom) -->
 				<field

@@ -107,8 +107,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_ADDFOLDERSFULLPATH_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addfoldersfullpath_modal" repeat="true">
 				<!-- Folderpath Field. Type: Text. (joomla) -->
 				<field
@@ -161,8 +160,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_ADDFILESFULLPATH_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addfilesfullpath_modal" repeat="true">
 				<!-- Filepath Field. Type: Text. (joomla) -->
 				<field
@@ -216,8 +214,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_ADDFOLDERS_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addfolders_modal" repeat="true">
 				<!-- Folder Field. Type: Customfolderlist. (custom) -->
 				<field
@@ -268,8 +265,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_ADDFILES_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addfiles_modal" repeat="true">
 				<!-- File Field. Type: Customfilelist. (custom) -->
 				<field

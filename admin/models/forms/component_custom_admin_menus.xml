@@ -104,8 +104,7 @@
 			label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_ADDCUSTOMMENUS_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_addcustommenus_modal" repeat="true">
 				<!-- Name Field. Type: Text. (joomla) -->
 				<field

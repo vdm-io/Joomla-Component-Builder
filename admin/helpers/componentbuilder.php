@@ -1187,12 +1187,12 @@ abstract class ComponentbuilderHelper
 	);
 
 	/**
-	*	Get the snippet contributor details
+	* Get the snippet contributor details
 	* 
-	*	@param  string   $filename   The file name
-	*	@param  string   $type         The type of file
+	* @param  string   $filename   The file name
+	* @param  string   $type         The type of file
 	*
-	*	@return  array    On success the contributor details
+	* @return  array    On success the contributor details
 	* 
 	*/
 	public static function getContributorDetails($filename, $type = 'snippet')
@@ -1245,11 +1245,11 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Get the library files
+	* Get the library files
 	* 
-	*	@param  int   $id   The library id to target
+	* @param  int   $id   The library id to target
 	*
-	*	@return  array    On success the array of files that belong to this library
+	* @return  array    On success the array of files that belong to this library
 	* 
 	*/
 	public static function getLibraryFiles($id)
@@ -1579,12 +1579,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	The zipper method
+	* The zipper method
 	* 
-	*	@param  string   $workingDIR    The directory where the items must be zipped
-	*	@param  string   $filepath          The path to where the zip file must be placed
+	* @param  string   $workingDIR    The directory where the items must be zipped
+	* @param  string   $filepath          The path to where the zip file must be placed
 	*
-	*	@return  bool true   On success
+	* @return  bool true   On success
 	* 
 	*/
 	public static function zip($workingDIR, &$filepath)
@@ -1630,13 +1630,13 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	*	Write a file to the server
-	* 
-	*	@param  string   $path    The path and file name where to safe the data
-	*	@param  string   $data    The data to safe
+	* Write a file to the server
 	*
-	*	@return  bool true   On success
-	* 
+	* @param  string   $path    The path and file name where to safe the data
+	* @param  string   $data    The data to safe
+	*
+	* @return  bool true   On success
+	*
 	*/
 	public static function writeFile($path, $data)
 	{
@@ -1792,13 +1792,13 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	get between
+	* get between
 	* 
-	*	@param  string          $content    The content to search
-	*	@param  string          $start        The starting value
-	*	@param  string          $end         The ending value
+	* @param  string          $content    The content to search
+	* @param  string          $start        The starting value
+	* @param  string          $end         The ending value
 	*
-	*	@return  string          On success / empty string on failure 
+	* @return  string          On success / empty string on failure 
 	* 
 	*/
 	public static function getBetween($content, $start, $end)
@@ -1813,13 +1813,13 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	get all between
+	* get all between
 	* 
-	*	@param  string          $content    The content to search
-	*	@param  string          $start        The starting value
-	*	@param  string          $end         The ending value
+	* @param  string          $content    The content to search
+	* @param  string          $start        The starting value
+	* @param  string          $end         The ending value
 	*
-	*	@return  array          On success
+	* @return  array          On success
 	* 
 	*/
 	public static function getAllBetween($content, $start, $end)
@@ -2037,17 +2037,17 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Get the file path or url
-	* 
-	*	@param  string   $type              The (url/path) type to return
-	*	@param  string   $target            The Params Target name (if set)
-	*	@param  string   $fileType          The kind of filename to generate (if not set no file name is generated)
-	*	@param  string   $key               The key to adjust the filename (if not set ignored)
-	*	@param  string   $default           The default path if not set in Params (fallback path)
-	*	@param  bool     $createIfNotSet    The switch to create the folder if not found
+	* Get the file path or url
 	*
-	*	@return  string    On success the path or url is returned based on the type requested
-	* 
+	* @param  string   $type              The (url/path) type to return
+	* @param  string   $target            The Params Target name (if set)
+	* @param  string   $fileType          The kind of filename to generate (if not set no file name is generated)
+	* @param  string   $key               The key to adjust the filename (if not set ignored)
+	* @param  string   $default           The default path if not set in Params (fallback path)
+	* @param  bool     $createIfNotSet    The switch to create the folder if not found
+	*
+	* @return  string    On success the path or url is returned based on the type requested
+	*
 	*/
 	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
 	{
@@ -2149,13 +2149,13 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	*	get the content of a file
-	* 
-	*	@param  string          $path    The path to the file
-	*	@param  string/bool   $none   The return value if no content was found
+	* get the content of a file
 	*
-	*	@return  string   On success
-	* 
+	* @param  string          $path    The path to the file
+	* @param  string/bool   $none   The return value if no content was found
+	*
+	* @return  string   On success
+	*
 	*/
 	public static function getFileContents($path, $none = '')
 	{
@@ -3183,6 +3183,19 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
+	/**
+	 * Get a Variable 
+	 *
+	 * @param   string   $table        The table from which to get the variable
+	 * @param   string   $where        The value where
+	 * @param   string   $whereString  The target/field string where/name
+	 * @param   string   $what         The return field
+	 * @param   string   $operator     The operator between $whereString/field and $where/value
+	 * @param   string   $main         The component in which the table is found
+	 *
+	 * @return  mix string/int/float
+	 *
+	 */
 	public static function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = 'componentbuilder')
 	{
 		if(!$where)
@@ -3223,6 +3236,20 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
+	/**
+	 * Get array of variables
+	 *
+	 * @param   string   $table        The table from which to get the variables
+	 * @param   string   $where        The value where
+	 * @param   string   $whereString  The target/field string where/name
+	 * @param   string   $what         The return field
+	 * @param   string   $operator     The operator between $whereString/field and $where/value
+	 * @param   string   $main         The component in which the table is found
+	 * @param   bool     $unique       The switch to return a unique array
+	 *
+	 * @return  array
+	 *
+	 */
 	public static function getVars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = 'componentbuilder', $unique = true)
 	{
 		if(!$where)
@@ -3691,28 +3718,141 @@ abstract class ComponentbuilderHelper
 		return JAccess::getAssetRules(0);
 	}
 
+	/**
+	 * xmlAppend
+	 *
+	 * @param   SimpleXMLElement   $xml      The XML element reference in which to inject a comment
+	 * @param   mixed              $node     A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlAppend(&$xml, $node)
+	{
+		if (!$node)
+		{
+			// element was not returned
+			return;
+		}
+		switch (get_class($node))
+		{
+			case 'stdClass':
+				if (property_exists($node, 'comment'))
+				{
+					self::xmlComment($xml, $node->comment);
+				}
+				if (property_exists($node, 'fieldXML'))
+				{
+					self::xmlAppend($xml, $node->fieldXML);
+				}
+				break;
+			case 'SimpleXMLElement':
+				$domXML = dom_import_simplexml($xml);
+				$domNode = dom_import_simplexml($node);
+				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
+				$xml = simplexml_import_dom($domXML);
+				break;
+		}
+	}
+
+	/**
+	 * xmlComment
+	 *
+	 * @param   SimpleXMLElement   $xml        The XML element reference in which to inject a comment
+	 * @param   string             $comment    The comment to inject
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlComment(&$xml, $comment)
+	{
+		$domXML = dom_import_simplexml($xml);
+		$domComment = new DOMComment($comment);
+		$nodeTarget = $domXML->ownerDocument->importNode($domComment, true);
+		$domXML->appendChild($nodeTarget);
+		$xml = simplexml_import_dom($domXML);
+	}
+
+	/**
+	 * xmlAddAttributes
+	 *
+	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
+	 * @param   array              $attributes   The attributes to apply to the XML element
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlAddAttributes(&$xml, $attributes = array())
+	{
+		foreach ($attributes as $key => $value)
+		{
+			$xml->addAttribute($key, $value);
+		}
+	}
+
+	/**
+	 * xmlAddOptions
+	 *
+	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
+	 * @param   array              $options      The options to apply to the XML element
+	 *
+	 * @return  void
+	 *
+	 */
+	public static function xmlAddOptions(&$xml, $options = array())
+	{
+		foreach ($options as $key => $value)
+		{
+			$addOption = $xml->addChild('option');
+			$addOption->addAttribute('value', $key);
+			$addOption[] = $value;
+		}
+	}
+
+	/**
+	 * Render Bool Button
+	 *
+	 * @param   array   $args   All the args for the button
+	 *                             0) name
+	 *                             1) additional (options class) // not used at this time
+	 *                             2) default
+	 *                             3) yes (name)
+	 *                             4) no (name)
+	 *
+	 * @return  string    The input html of the button
+	 *
+	 */
 	public static function renderBoolButton()
 	{
 		$args = func_get_args();
+		// check if there is additional button class
+		$additional = isset($args[1]) ? (string) $args[1] : ''; // not used at this time
+		// start the xml
+		$buttonXML = new SimpleXMLElement('<field/>');
+		// button attributes
+		$buttonAttributes = array(
+			'type' => 'radio',
+			'name' => isset($args[0]) ? self::htmlEscape($args[0]) : 'bool_button',
+			'label' => isset($args[0]) ? self::safeString(self::htmlEscape($args[0]), 'Ww') : 'Bool Button', // not seen anyway
+			'class' => 'btn-group',
+			'filter' => 'INT',
+			'default' => isset($args[2]) ? (int) $args[2] : 0);
+		// load the haskey attributes
+		self::xmlAddAttributes($buttonXML, $buttonAttributes);
+		// set the button options
+		$buttonOptions = array(
+			'1' => isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES',
+			'0' => isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO');
+		// load the button options
+		self::xmlAddOptions($buttonXML, $buttonOptions);
 
 		// get the radio element
 		$button = JFormHelper::loadFieldType('radio');
 
-		// setup the properties
-		$name	 	= self::htmlEscape($args[0]);
-		$additional = isset($args[1]) ? (string) $args[1] : '';
-		$value		= $args[2];
-		$yes 	 	= isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES';
-		$no 	 	= isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO';
-
-		// prepare the xml
-		$element = new SimpleXMLElement('<field name="'.$name.'" type="radio" class="btn-group"><option '.$additional.' value="0">'.$no.'</option><option '.$additional.' value="1">'.$yes.'</option></field>');
-
 		// run
-		$button->setup($element, $value);
+		$button->setup($buttonXML, $buttonAttributes['default']);
 
 		return $button->input;
-
 	}
 
 	/**

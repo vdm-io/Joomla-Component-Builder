@@ -1041,8 +1041,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADDCONTRIBUTORS_DESCRIPTION"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_addcontributors_modal" repeat="true">
 				<!-- Name Field. Type: Text. (joomla) -->
 				<field

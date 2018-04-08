@@ -199,8 +199,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_ADDCONDITIONS_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addconditions_modal" repeat="true">
 				<!-- File Field. Type: Libraryfiles. (custom) -->
 				<field

@@ -105,8 +105,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addconditions_modal" repeat="true">
 				<!-- Target_field Field. Type: Targetfields. (custom) -->
 				<field

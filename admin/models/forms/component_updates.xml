@@ -105,8 +105,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_UPDATE_DESCRIPTION"
-			icon="list"
-			maximum="300">
+			icon="list">
 			<form hidden="true" name="list_version_update_modal" repeat="true">
 				<!-- Version Field. Type: Text. (joomla) -->
 				<field

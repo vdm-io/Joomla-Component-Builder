@@ -1369,6 +1369,8 @@ class Structure extends Get
 				// set new file to object
 				$versionData->move->static->$key_pointer = new stdClass();
 				$versionData->move->static->$key_pointer->naam = $custom['file'];
+				// update the dynamic component name placholders in file names
+				$custom['path'] = $this->setPlaceholders($custom['path'], $this->placeholders);
 				// get the path info
 				$pathInfo = pathinfo($custom['path']);
 				if (isset($pathInfo['extension']) && $pathInfo['extension'])

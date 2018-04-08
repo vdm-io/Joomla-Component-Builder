@@ -250,7 +250,8 @@ class Get
 		'Joomla' . '.JText._(',
 		'JText:' . ':script(',
 		'JText:' . ':_(',
-		'JText:' . ':sprintf('
+		'JText:' . ':sprintf(',
+		'JustTEXT:' . ':_('
 	);
 
 	/**
@@ -3568,11 +3569,11 @@ class Get
 
 	/**
 	 * Set Language Place Holders
-	 * 
+	 *
 	 * @param   string   $content  The content
 	 *
 	 * @return  string The content with the updated Language place holder
-	 * 
+	 *
 	 */
 	public function setLangStrings($content)
 	{
@@ -3591,11 +3592,17 @@ class Get
 		{
 			// insure string is not broken
 			$content = str_replace('COM_###COMPONENT###', $this->langPrefix, $content);
-			// first get the Joomla.JText._()
+			// reset some buckets
+			$langHolders = array();
+			$langCheck = array();
+			$langOnly = array();
+			$jsTEXT = array();
+			$scTEXT = array();
+			// first get the Joomla .JText._()
 			if (in_array('Joomla' . '.JText._(', $langStringTargets))
 			{
 				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, "Joomla" . ".JText._('", "'");
-				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'Joomla.' . 'JText._("', '"');
+				$jsTEXT[] = ComponentbuilderHelper::getAllBetween($content, 'Joomla' . '.JText._("', '"');
 				// combine into one array
 				$jsTEXT = ComponentbuilderHelper::mergeArrays($jsTEXT);
 				// we need to add a check to insure these JavaScript lang matchup
@@ -3621,48 +3628,87 @@ class Get
 					$this->langMatch = ComponentbuilderHelper::mergeArrays(array($scTEXT, $this->langMatch));
 				}
 			}
+			// now do the little trick for JustTEXT: :_('Just uppercase text');
+			if (in_array('JustTEXT:' . ':_(', $langStringTargets))
+			{
+				$langOnly[] = ComponentbuilderHelper::getAllBetween($content, "JustTEXT:" . ":_('", "')");
+				$langOnly[] = ComponentbuilderHelper::getAllBetween($content, 'JustTEXT:' . ':_("', '")');
+			}
 			// set language data
 			foreach ($langStringTargets as $langStringTarget)
 			{
 				// need some special treatment here
-				if ($langStringTarget === 'Joomla' . '.JText._(' || $langStringTarget === 'JText:' . ':script(')
+				if ($langStringTarget === 'Joomla' . '.JText._(' ||
+					$langStringTarget === 'JText:' . ':script(' ||
+					$langStringTarget === 'JustTEXT:' . ':_(')
 				{
 					continue;
 				}
 				$langCheck[] = ComponentbuilderHelper::getAllBetween($content, $langStringTarget . "'", "'");
 				$langCheck[] = ComponentbuilderHelper::getAllBetween($content, $langStringTarget . '"', '"');
 			}
-			$langArray = ComponentbuilderHelper::mergeArrays($langCheck);
-			if (ComponentbuilderHelper::checkArray($langArray)) //<-- not really needed hmmm
+			// the normal loading of the language strings
+			$langCheck = ComponentbuilderHelper::mergeArrays($langCheck);
+			if (ComponentbuilderHelper::checkArray($langCheck)) //<-- not really needed hmmm
 			{
-				foreach ($langArray as $string)
+				foreach ($langCheck as $string)
 				{
-					// this is there to insure we dont break already added Language strings
-					if (ComponentbuilderHelper::safeString($string, 'U') === $string)
+					if ($keyLang = $this->setLang($string))
 					{
-						continue;
-					}
-					// only load if string is not already set
-					$keyLang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($string, 'U');
-					if (!isset($this->langContent[$this->lang][$keyLang]))
-					{
-						$this->langContent[$this->lang][$keyLang] = trim($string);
-					}
-					// load the language targets
-					foreach ($langStringTargets as $langStringTarget)
-					{
-						$langHolders[$langStringTarget . "'" . $string . "'"] = $langStringTarget . "'" . $keyLang . "'";
-						$langHolders[$langStringTarget . '"' . $string . '"'] = $langStringTarget . '"' . $keyLang . '"';
+						// load the language targets
+						foreach ($langStringTargets as $langStringTarget)
+						{
+							$langHolders[$langStringTarget . "'" . $string . "'"] = $langStringTarget . "'" . $keyLang . "'";
+							$langHolders[$langStringTarget . '"' . $string . '"'] = $langStringTarget . '"' . $keyLang . '"';
+						}
 					}
 				}
-				// only continue if we have value to replace
-				if (isset($langHolders) && ComponentbuilderHelper::checkArray($langHolders))
+			}
+			// the uppercase loading only (for arrays and other tricks)
+			if (ComponentbuilderHelper::checkArray($langOnly))
+			{
+				$langOnly = ComponentbuilderHelper::mergeArrays($langOnly);
+				foreach ($langOnly as $string)
 				{
-					$content = $this->setPlaceholders($content, $langHolders);
+					if ($keyLang = $this->setLang($string))
+					{
+						// load the language targets
+						$langHolders["JustTEXT:" . ":_('" . $string . "')"] = "'" . $keyLang . "'";
+						$langHolders['JustTEXT:' . ':_("' . $string . '")'] = '"' . $keyLang . '"';
+					}
 				}
+			}
+			// only continue if we have value to replace
+			if (ComponentbuilderHelper::checkArray($langHolders))
+			{
+				$content = $this->setPlaceholders($content, $langHolders);
 			}
 		}
 		return $content;
+	}
+
+	/**
+	 * Set the language String
+	 * 
+	 * @param   string   $string  The plan text string (English)
+	 *
+	 * @return  string   The key language string (all uppercase)
+	 * 
+	 */
+	public function setLang($string)
+	{
+		// this is there to insure we dont break already added Language strings
+		if (ComponentbuilderHelper::safeString($string, 'U') === $string)
+		{
+			return false;
+		}
+		// only load if string is not already set
+		$keyLang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($string, 'U');
+		if (!isset($this->langContent[$this->lang][$keyLang]))
+		{
+			$this->langContent[$this->lang][$keyLang] = trim($string);
+		}
+		return $keyLang;
 	}
 
 	/**

@@ -174,8 +174,7 @@
 			label="COM_COMPONENTBUILDER_SITE_VIEW_AJAX_INPUT_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
-			icon="list"
-			maximum="150">
+			icon="list">
 			<form hidden="true" name="list_ajax_input_modal" repeat="true">
 				<!-- Value_name Field. Type: Text. (joomla) -->
 				<field
@@ -631,8 +630,7 @@
 			label="COM_COMPONENTBUILDER_SITE_VIEW_CUSTOM_BUTTON_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
-			icon="list"
-			maximum="7">
+			icon="list">
 			<form hidden="true" name="list_custom_button_modal" repeat="true">
 				<!-- Icomoon Field. Type: List. (joomla) -->
 				<field

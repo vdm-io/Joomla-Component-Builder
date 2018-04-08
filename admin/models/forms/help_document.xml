@@ -204,6 +204,7 @@
 			required="true"
 			filter="url"
 			validated="url"
+			scheme="http,https"
 			message="COM_COMPONENTBUILDER_HELP_DOCUMENT_URL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_HELP_DOCUMENT_URL_HINT"
 		/>

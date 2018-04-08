@@ -332,8 +332,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDPERMISSIONS_DESCRIPTION"
-			icon="list"
-			maximum="20">
+			icon="list">
 			<form hidden="true" name="list_addpermissions_modal" repeat="true">
 				<!-- Action Field. Type: List. (joomla) -->
 				<field
@@ -435,8 +434,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABS_DESCRIPTION"
-			icon="list"
-			maximum="14">
+			icon="list">
 			<form hidden="true" name="list_addtabs_modal" repeat="true">
 				<!-- Name Field. Type: Text. (joomla) -->
 				<field
@@ -494,8 +492,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDLINKED_VIEWS_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addlinked_views_modal" repeat="true">
 				<!-- Adminview Field. Type: Adminviews. (custom) -->
 				<field
@@ -659,8 +656,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_addtables_modal" repeat="true">
 				<!-- Table Field. Type: Dbtables. (custom) -->
 				<field
@@ -1144,8 +1140,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTON_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
-			icon="list"
-			maximum="7">
+			icon="list">
 			<form hidden="true" name="list_custom_button_modal" repeat="true">
 				<!-- Icomoon Field. Type: List. (joomla) -->
 				<field
@@ -1812,8 +1807,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_AJAX_INPUT_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
-			icon="list"
-			maximum="150">
+			icon="list">
 			<form hidden="true" name="list_ajax_input_modal" repeat="true">
 				<!-- Value_name Field. Type: Text. (joomla) -->
 				<field

@@ -105,8 +105,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_CONFIG_ADDCONFIG_DESCRIPTION"
-			icon="list"
-			maximum="500">
+			icon="list">
 			<form hidden="true" name="list_addconfig_modal" repeat="true">
 				<!-- Field Field. Type: Fields. (custom) -->
 				<field

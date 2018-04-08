@@ -106,7 +106,7 @@ jQuery(document).ready(function($) {
 <div id="j-main-container">
 <?php endif; ?>
 	<div id="form">
-		<div class="span6">
+		<div class="span4">
 			<h3><?php echo JText::_('COM_COMPONENTBUILDER_READY_TO_COMPILE_A_COMPONENT'); ?></h3>
 			<form action="index.php?option=com_componentbuilder&view=compiler" method="post" name="compilerForm" id="compilerForm" class="form-validate" enctype="multipart/form-data">
 				<div>
@@ -130,7 +130,7 @@ jQuery(document).ready(function($) {
 				<?php echo JHtml::_('form.token'); ?>
 			</form>
 		</div>
-		<div class="span6">
+		<div class="span7">
 			<div id="component-details"><?php echo $selectNotice; ?></div>
 			<div id="noticeboard" class="well well-small">
 				<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span id="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>

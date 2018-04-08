@@ -104,91 +104,160 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 		$form = array();
 		if ('smart_package' === $type)
 		{
-			$radio1 = JFormHelper::loadFieldType('radio',true);
-			// Switch to force local update
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_FORCE_LOCAL_UPDATE').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_WE_FORCE_THE_UPDATE_OF_ALL_LOCAL_DATA_EVEN_IF_IT_IS_NEWER_THEN_THE_DATA_BEING_IMPORTED').'" name="force_update" type="radio" class="btn-group btn-group-yesno" default="0" filter="INT">';
-			$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
-			$xml .= "</field>";
-			// prepare the xml
-			$force = new SimpleXMLElement($xml);
-			// set components to form
-			$radio1->setup($force,0);
+			// get the force_update radio field
+			$force_update = JFormHelper::loadFieldType('radio',true);
+			// start force_update xml
+			$force_updateXML = new SimpleXMLElement('<field/>');
+			// force_update attributes
+			$force_updateAttributes = array(
+				'type' => 'radio',
+				'name' => 'backup',
+				'label' => 'COM_COMPONENTBUILDER_FORCE_LOCAL_UPDATE',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_SHOULD_WE_FORCE_THE_UPDATE_OF_ALL_LOCAL_DATA_EVEN_IF_IT_IS_NEWER_THEN_THE_DATA_BEING_IMPORTED',
+				'default' => '0');
+			// load the force_update attributes
+			ComponentbuilderHelper::xmlAddAttributes($force_updateXML, $force_updateAttributes);
+			// set the force_update options
+			$force_updateOptions = array(
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the force_update options
+			ComponentbuilderHelper::xmlAddOptions($force_updateXML, $force_updateOptions);
+			// setup the force_update radio field
+			$force_update->setup($force_updateXML,0);
 			// add to form
-			$form[] = $radio1;
+			$form[] = $force_update;
 
-			$radio2 = JFormHelper::loadFieldType('radio',true);
-			// Switch to show more information about the import
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_QUIET').'" description="'.JText::_('COM_COMPONENTBUILDER_SELECT_IF_THE_IMPORT_SHOULD_BE_SHOWING_MORE_ELABORATE_OR_LESS_QUIET_INFORMATION_DURING_IMPORT').'" name="more_info" type="radio" class="btn-group btn-group-yesno" default="0" filter="INT">';
-			$xml .= '<option value="0">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="1">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
-			$xml .= "</field>";
-			// prepare the xml
-			$information = new SimpleXMLElement($xml);
-			// set information to form
-			$radio2->setup($information,0);
+			// get the more_info radio field
+			$more_info = JFormHelper::loadFieldType('radio',true);
+			// start more_info xml
+			$more_infoXML = new SimpleXMLElement('<field/>');
+			// more_info attributes
+			$more_infoAttributes = array(
+				'type' => 'radio',
+				'name' => 'backup',
+				'label' => 'COM_COMPONENTBUILDER_SEE_ALL_IMPORT_INFO',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_SHOULD_WE_BE_SHOWING_MORE_ELABORATE_INFORMATION_DURING_IMPORT',
+				'default' => '0');
+			// load the more_info attributes
+			ComponentbuilderHelper::xmlAddAttributes($more_infoXML, $more_infoAttributes);
+			// set the more_info options
+			$more_infoOptions = array(
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the more_info options
+			ComponentbuilderHelper::xmlAddOptions($more_infoXML, $more_infoOptions);
+			// setup the more_info radio field
+			$more_info->setup($more_infoXML,0);
 			// add to form
-			$form[] = $radio2;
+			$form[] = $more_info;
 		
 			if (!$this->packageInfo || (isset($this->packageInfo['getKeyFrom']) && ComponentbuilderHelper::checkArray($this->packageInfo['getKeyFrom'])))
 			{
 				// set required field
-				$required = 'required="true"';
+				$required = true;
+				// does the packages has info
 				if (!$this->packageInfo)
 				{
-					$radio2 = JFormHelper::loadFieldType('radio',true);
-					// has key
-					$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_USE_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_DOES_THIS_PACKAGE_REQUIRE_A_KEY_TO_INSTALL').'" name="haskey" type="radio" class="btn-group btn-group-yesno" default="1" filter="INT">';
-					$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
-					$xml .= "</field>";
-					// prepare the xml
-					$license = new SimpleXMLElement($xml);
-					// set components to form
-					$radio2->setup($license,1);
-					$required = ''; // change required field
+					// get the haskey radio field
+					$haskey = JFormHelper::loadFieldType('radio',true);
+					// start haskey xml
+					$haskeyXML = new SimpleXMLElement('<field/>');
+					// haskey attributes
+					$haskeyAttributes = array(
+						'type' => 'radio',
+						'name' => 'backup',
+						'label' => 'COM_COMPONENTBUILDER_USE_KEY',
+						'class' => 'btn-group btn-group-yesno',
+						'description' => 'COM_COMPONENTBUILDER_DOES_THIS_PACKAGE_REQUIRE_A_KEY_TO_INSTALL',
+						'default' => '1',
+						'filter' => 'INT');
+					// load the haskey attributes
+					ComponentbuilderHelper::xmlAddAttributes($haskeyXML, $haskeyAttributes);
+					// set the haskey options
+					$haskeyOptions = array(
+						'1' => 'COM_COMPONENTBUILDER_YES',
+						'0' => 'COM_COMPONENTBUILDER_NO');
+					// load the haskey options
+					ComponentbuilderHelper::xmlAddOptions($haskeyXML, $haskeyOptions);
+					// setup the haskey radio field
+					$haskey->setup($haskeyXML,1);
 					// add to form
-					$form[] = $radio2;
+					$form[] = $haskey;
+
+					// now make required false
+					$required = false;
 				}
 
-				$text1 = JFormHelper::loadFieldType('text',true);
-				// add the key
-				$xml = '<field type="password" label="'.JText::_('COM_COMPONENTBUILDER_KEY').'" description="'.JText::_('COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE').'" name="sleutle" autocomplete="false" class="text_area" filter="STRING" hint="add key here" '.$required.' />';
-				// prepare the xml
-				$sleutle = new SimpleXMLElement($xml);
-				// set components to form
-				$text1->setup($sleutle,'');
+				// get the sleutle password field
+				$sleutle = JFormHelper::loadFieldType('password',true);
+				// start sleutle xml
+				$sleutleXML = new SimpleXMLElement('<field/>');
+				// sleutle attributes
+				$sleutleAttributes = array(
+					'type' => 'password',
+					'name' => 'backup',
+					'label' => 'COM_COMPONENTBUILDER_KEY',
+					'class' => 'text_area',
+					'description' => 'COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE',
+					'autocomplete' => 'false',
+					'filter' => 'STRING',
+					'hint' => 'COM_COMPONENTBUILDER_ADD_KEY_HERE');
+				// should this be required
+				if ($required)
+				{
+					$sleutleAttributes['required'] = 'true';
+				}
+				// load the sleutle attributes
+				ComponentbuilderHelper::xmlAddAttributes($sleutleXML, $sleutleAttributes);
+				// setup the sleutle password field
+				$sleutle->setup($sleutleXML,'');
 				// add to form
-				$form[] = $text1;
+				$form[] = $sleutle;
 			}
 		}
 		elseif ('vdm_package' === $type && $listObjects = ComponentbuilderHelper::getGithubRepoFileList('jcbGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
 		{
 			if (ComponentbuilderHelper::checkArray($listObjects))
 			{
-				// load the vdm packages if available
-				$list = JFormHelper::loadFieldType('list',true);
+				// get the vdm_package list field
+				$vdm_package = JFormHelper::loadFieldType('list',true);
+				// start vdm_package xml
+				$vdm_packageXML = new SimpleXMLElement('<field/>');
+				// vdm_package attributes
+				$vdm_packageAttributes = array(
+					'type' => 'list',
+					'name' => 'vdm_package',
+					'label' => 'COM_COMPONENTBUILDER_PACKAGE',
+					'class' => 'list_class',
+					'description' => 'COM_COMPONENTBUILDER_SELECT_THE_PACKAGE_TO_IMPORT');
 				// load the list
 				$load = false;
-				// start building componet xml field
-				$xml = '<field label="Package" description="'.JText::_('COM_COMPONENTBUILDER_SELECT_THE_PACKAGE_TO_IMPORT').'" name="vdm_package" type="list" class="list_class">';
-				$xml .= '<option value="">'.JText::_('COM_COMPONENTBUILDER__SELECT_PACKAGE_').'</option>';
+				// load the vdm_package attributes
+				ComponentbuilderHelper::xmlAddAttributes($vdm_packageXML, $vdm_packageAttributes);
+				// start the vdm_package options
+				$vdm_packageOptions = array();
+				$vdm_packageOptions[''] = 'COM_COMPONENTBUILDER__SELECT_PACKAGE_';
+				// load vdm_package options from array
 				foreach($listObjects as $listObject)
 				{
 					if (strpos($listObject->path, '.zip') !== false)
 					{
-						$xml .= '<option value="'.ComponentbuilderHelper::$jcbGithubPackageUrl.$listObject->path.'">'.$this->setPackageName($listObject->path).'</option>';
+						$vdm_packageOptions[ComponentbuilderHelper::$jcbGithubPackageUrl.$listObject->path] = $this->setPackageName($listObject->path);
 						$load = true;
 					}
 				}
-				$xml .= "</field>";
 				// only load if at least one item was found
 				if ($load)
 				{
-					// prepare the xml
-					$packages = new SimpleXMLElement($xml);
-					// set components to form
-					$list->setup($packages, '');
-
-					// set to form
-					$form[] = $list;
+					// load the vdm_package options
+					ComponentbuilderHelper::xmlAddOptions($vdm_packageXML, $vdm_packageOptions);
+					// setup the vdm_package radio field
+					$vdm_package->setup($vdm_packageXML,'');
+					// add to form
+					$form[] = $vdm_package;
 				}
 			}
 		}

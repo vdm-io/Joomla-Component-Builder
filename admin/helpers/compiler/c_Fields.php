@@ -755,8 +755,8 @@ class Fields extends Structure
 		$XML = new simpleXMLElement('<a/>');
 		$fieldSetXML = $XML->addChild('fieldset');
 		$fieldSetXML->addAttribute('name', 'details');
-		$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Default Fields.");
-		$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Id Field. Type: Text (joomla)");
+		ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Default Fields.");
+		ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Id Field. Type: Text (joomla)");
 		// if id is not set
 		if (!isset($this->fieldsNames[$view_name_single]['id']))
 		{
@@ -770,7 +770,7 @@ class Fields extends Structure
 				'default' => 0
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -787,9 +787,9 @@ class Fields extends Structure
 				'filter' => 'user_utc'
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -803,9 +803,9 @@ class Fields extends Structure
 				'description' => $langView . '_CREATED_BY_DESC',
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Created Field. Type: User (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Created Field. Type: User (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -818,9 +818,9 @@ class Fields extends Structure
 				'label' => 'JSTATUS'
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Published Field. Type: List (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Published Field. Type: List (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 			foreach (array('JPUBLISHED' => 1, 'JUNPUBLISHED' => 0, 'JARCHIVED' => 2, 'JTRASHED' => -2) as $text => $value)
@@ -844,9 +844,9 @@ class Fields extends Structure
 				'format' => '%Y-%m-%d %H:%M:%S',
 				'filter' => 'user_utc'
 			);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -862,9 +862,9 @@ class Fields extends Structure
 				'readonly' => 'true',
 				'filter' => 'unset'
 			);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -880,9 +880,9 @@ class Fields extends Structure
 				'required' => "false"
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -900,9 +900,9 @@ class Fields extends Structure
 				'required' => "false"
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -919,9 +919,9 @@ class Fields extends Structure
 				'readonly' => "true",
 				'filter' => 'unset'
 			);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Version Field. Type: Text (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Version Field. Type: Text (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -937,34 +937,34 @@ class Fields extends Structure
 				'rows' => 3,
 				'cols' => 30
 			);
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 			// metadesc
 			$attributes['name'] = 'metadesc';
 			$attributes['label'] = 'JFIELD_META_DESCRIPTION_LABEL';
 			$attributes['description'] = 'JFIELD_META_DESCRIPTION_DESC';
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla)");
 			$fieldXML = $fieldSetXML->addChild('field');
-			$this->xmlAddAttributes($fieldXML, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// load the dynamic fields now
 		if (count($dynamicFieldsXML))
 		{
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Dynamic Fields.");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Dynamic Fields.");
 			foreach ($dynamicFieldsXML as $dynamicfield)
 			{
-				$this->xmlAppend($fieldSetXML, $dynamicfield);
+				ComponentbuilderHelper::xmlAppend($fieldSetXML, $dynamicfield);
 			}
 		}
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view_name_single]))
 		{
-			$this->xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadata Fields");
+			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadata Fields");
 			$fieldsXML = $fieldSetXML->addChild('fields');
 			$fieldsXML->addAttribute('name', 'metadata');
 			$fieldsXML->addAttribute('label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS');
@@ -972,7 +972,7 @@ class Fields extends Structure
 			$fieldsFieldSetXML->addAttribute('name', 'vdmmetadata');
 			$fieldsFieldSetXML->addAttribute('label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS');
 			// robots
-			$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Robots Field. Type: List (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Robots Field. Type: List (joomla)");
 			$robots = $fieldsFieldSetXML->addChild('field');
 			$attributes = array(
 				'name' => 'robots',
@@ -980,7 +980,7 @@ class Fields extends Structure
 				'label' => 'JFIELD_METADATA_ROBOTS_LABEL',
 				'description' => 'JFIELD_METADATA_ROBOTS_DESC'
 			);
-			$this->xmlAddAttributes($robots, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($robots, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 			$options = array(
@@ -997,7 +997,7 @@ class Fields extends Structure
 				$option[] = $text;
 			}
 			// author
-			$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Author Field. Type: Text (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Author Field. Type: Text (joomla)");
 			$author = $fieldsFieldSetXML->addChild('field');
 			$attributes = array(
 				'name' => 'author',
@@ -1006,11 +1006,11 @@ class Fields extends Structure
 				'description' => 'JFIELD_METADATA_AUTHOR_DESC',
 				'size' => 20
 			);
-			$this->xmlAddAttributes($author, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($author, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 			// rights
-			$this->xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla)");
+			ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla)");
 			$rights = $fieldsFieldSetXML->addChild('field');
 			$attributes = array(
 				'name' => 'rights',
@@ -1022,7 +1022,7 @@ class Fields extends Structure
 				'cols' => 30,
 				'rows' => 2
 			);
-			$this->xmlAddAttributes($rights, $attributes);
+			ComponentbuilderHelper::xmlAddAttributes($rights, $attributes);
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -1581,7 +1581,7 @@ class Fields extends Structure
 				}
 				elseif ($property === 'option')
 				{
-					$this->xmlComment($field->fieldXML, $this->setLine(__LINE__) . " Option Set.");
+					ComponentbuilderHelper::xmlComment($field->fieldXML, $this->setLine(__LINE__) . " Option Set.");
 					if (strpos($value, ',') !== false)
 					{
 						// mulitpal options
@@ -1644,7 +1644,7 @@ class Fields extends Structure
 			}
 			if (!$field->fieldXML->count())
 			{
-				$this->xmlComment($field->fieldXML, $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings.");
+				ComponentbuilderHelper::xmlComment($field->fieldXML, $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings.");
 			}
 		}
 		elseif ($setType === 'plain')
@@ -1733,12 +1733,12 @@ class Fields extends Structure
 								if ($this->defaultField($r_typeName, 'option'))
 								{
 									// now add to the field set
-									$this->xmlAppend($fieldSetXML, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
+									ComponentbuilderHelper::xmlAppend($fieldSetXML, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 								}
 								elseif ($this->defaultField($r_typeName, 'plain'))
 								{
 									// now add to the field set
-									$this->xmlAppend($fieldSetXML, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
+									ComponentbuilderHelper::xmlAppend($fieldSetXML, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 								}
 								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 								{
@@ -1746,7 +1746,7 @@ class Fields extends Structure
 									$custom = $r_fieldValues['custom'];
 									unset($r_fieldValues['custom']);
 									// now add to the field set
-									$this->xmlAppend($fieldSetXML, $this->setField('custom', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
+									ComponentbuilderHelper::xmlAppend($fieldSetXML, $this->setField('custom', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 									// set lang (just incase)
 									$r_listLangName = $langView . '_' . ComponentbuilderHelper::safeString($r_name, 'U');
 									// add to lang array
@@ -1794,7 +1794,7 @@ class Fields extends Structure
 						'name' => 'list_' . $fieldAttributes['name'] . '_modal',
 						'repeat' => 'true'
 					);
-					$this->xmlAddAttributes($form, $attributes);
+					ComponentbuilderHelper::xmlAddAttributes($form, $attributes);
 
 					if (strpos($fieldAttributes['fields'], ',') !== false)
 					{
@@ -1830,12 +1830,12 @@ class Fields extends Structure
 									if ($this->defaultField($r_typeName, 'option'))
 									{
 										// now add to the field set
-										$this->xmlAppend($form, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
+										ComponentbuilderHelper::xmlAppend($form, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 									}
 									elseif ($this->defaultField($r_typeName, 'plain'))
 									{
 										// now add to the field set
-										$this->xmlAppend($form, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
+										ComponentbuilderHelper::xmlAppend($form, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 									}
 									elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 									{
@@ -1843,7 +1843,7 @@ class Fields extends Structure
 										$custom = $r_fieldValues['custom'];
 										unset($r_fieldValues['custom']);
 										// now add to the field set
-										$this->xmlAppend($form, $this->setField('custom', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
+										ComponentbuilderHelper::xmlAppend($form, $this->setField('custom', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 										// set lang (just incase)
 										$r_listLangName = $langView . '_' . ComponentbuilderHelper::safeString($r_name, 'U');
 										// add to lang array
@@ -3028,78 +3028,6 @@ class Fields extends Structure
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * xmlComment
-	 *
-	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
-	 * @param   string  $comment The comment to inject
-	 *
-	 * @return  null
-	 *
-	 */
-	public function xmlComment(&$xml, $comment)
-	{
-		$domXML = dom_import_simplexml($xml);
-		$domComment = new DOMComment($comment);
-		$nodeTarget = $domXML->ownerDocument->importNode($domComment, true);
-		$domXML->appendChild($nodeTarget);
-		$xml = simplexml_import_dom($domXML);
-	}
-
-	/**
-	 * xmlAddAttributes
-	 *
-	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
-	 * @param   array  $attributes The attributes to apply to the XML element
-	 *
-	 * @return  null
-	 *
-	 */
-	public function xmlAddAttributes(&$xml, $attributes = array())
-	{
-		foreach ($attributes as $key => $value)
-		{
-			$xml->addAttribute($key, $value);
-		}
-	}
-
-	/**
-	 * xmlAppend
-	 *
-	 * @param   SimpleXMLElement   $xml The XML element reference in which to inject a comment
-	 * @param   mixed  $node A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
-	 *
-	 * @return  null
-	 *
-	 */
-	public function xmlAppend(&$xml, $node)
-	{
-		if (!$node)
-		{
-			// element was not returned
-			return;
-		}
-		switch (get_class($node))
-		{
-			case 'stdClass':
-				if (property_exists($node, 'comment'))
-				{
-					$this->xmlComment($xml, $node->comment);
-				}
-				if (property_exists($node, 'fieldXML'))
-				{
-					$this->xmlAppend($xml, $node->fieldXML);
-				}
-				break;
-			case 'SimpleXMLElement':
-				$domXML = dom_import_simplexml($xml);
-				$domNode = dom_import_simplexml($node);
-				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
-				$xml = simplexml_import_dom($domXML);
-				break;
-		}
 	}
 
 	/**

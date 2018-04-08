@@ -105,8 +105,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_SQL_TWEAK_DESCRIPTION"
-			icon="list"
-			maximum="50">
+			icon="list">
 			<form hidden="true" name="list_sql_tweak_modal" repeat="true">
 				<!-- Adminview Field. Type: Componentadminviews. (custom) -->
 				<field

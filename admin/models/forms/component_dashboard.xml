@@ -105,7 +105,6 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			icon="list"
-			maximum="10"
 			filter="raw">
 			<form hidden="true" name="list_dashboard_tab_modal" repeat="true">
 				<!-- Name Field. Type: Text. (joomla) -->

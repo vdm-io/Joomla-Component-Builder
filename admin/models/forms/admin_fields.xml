@@ -105,8 +105,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ADDFIELDS_DESCRIPTION"
-			icon="list"
-			maximum="800">
+			icon="list">
 			<form hidden="true" name="list_addfields_modal" repeat="true">
 				<!-- Field Field. Type: Fields. (custom) -->
 				<field

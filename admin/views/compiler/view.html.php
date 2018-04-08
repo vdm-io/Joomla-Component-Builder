@@ -80,61 +80,143 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 	{		
 		if(ComponentbuilderHelper::checkArray($this->Components)){
 			jimport('joomla.form.form');
+
+			// start the form
+			$form = array();
+
+			// get the sales radio field
+			$sales = JFormHelper::loadFieldType('radio',true);
+			// start sales xml
+			$salesXML = new SimpleXMLElement('<field/>');
+			// sales attributes
+			$salesAttributes = array(
+				'type' => 'radio',
+				'name' => 'backup',
+				'label' => 'COM_COMPONENTBUILDER_ADD_TO_BACKUP_FOLDER_AMP_SALES_SERVER_SMALLIF_SETSMALL',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_ZIPPED_PACKAGE_OF_THE_COMPONENT_BE_MOVED_TO_THE_LOCAL_BACKUP_AND_REMOTE_SALES_SERVER_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_THOSE_VALUES_SET',
+				'default' => '0');
+			// load the sales attributes
+			ComponentbuilderHelper::xmlAddAttributes($salesXML, $salesAttributes);
+			// set the sales options
+			$salesOptions = array(
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the sales options
+			ComponentbuilderHelper::xmlAddOptions($salesXML, $salesOptions);
+			// setup the sales radio field
+			$sales->setup($salesXML,0);
+			// add to form
+			$form[] = $sales;
 			
-			$radio1 = JFormHelper::loadFieldType('radio',true);
-			// start building add to sales folder xml field
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_TO_BACKUP_FOLDER_AMP_SALES_SERVER_LTSMALLGTIF_SETLTSMALLGT').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_THE_ZIPPED_PACKAGE_OF_THE_COMPONENT_BE_MOVED_TO_THE_LOCAL_BACKUP_AND_REMOTE_SALES_SERVER_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_THOSE_VALUES_SET').'" name="backup" type="radio" class="btn-group btn-group-yesno" default="0">';
-			$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
-			$xml .= "</field>";
-			// prepare the xml
-			$sales = new SimpleXMLElement($xml);
-			// set components to form
-			$radio1->setup($sales,0);
-			
-			$radio2 = JFormHelper::loadFieldType('radio',true);
-			// start building add to repository folder xml field
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_TO_REPOSITORY_FOLDER').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_THE_COMPONENT_BE_MOVED_TO_YOUR_LOCAL_REPOSITORY_FOLDER').'" name="repository" type="radio" class="btn-group btn-group-yesno" default="1">';
-			$xml .= '<option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
-			$xml .= "</field>";
-			// prepare the xml
-			$repository = new SimpleXMLElement($xml);
-			// set components to form
-			$radio2->setup($repository,1);
-			
-			$radio3 = JFormHelper::loadFieldType('radio',true);
-			// start building custom code placeholders
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS').'" description="'.JText::_('COM_COMPONENTBUILDER_SHOULD_JCB_INSERT_THE_CUSTOM_CODE_PLACEHOLDERS_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_CUSTOM_CODE').'" name="placeholders" type="radio" class="btn-group btn-group-yesno" default="2">';
-			$xml .= '<option value="2">'.JText::_('COM_COMPONENTBUILDER_GLOBAL').'</option> <option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
-			$xml .= "</field>";
-			// prepare the xml
-			$placeholder = new SimpleXMLElement($xml);
-			// set components to form
-			$radio3->setup($placeholder,2);
-			
-			$radio4 = JFormHelper::loadFieldType('radio',true);
-			// add debug line numbers
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS').'" description="'.JText::_('COM_COMPONENTBUILDER_ADD_CORRESPONDING_LINE_NUMBERS_TO_THE_DYNAMIC_COMMENTS_SO_TO_SEE_WHERE_IN_THE_COMPILER_THE_LINES_OF_CODE_WAS_BUILD_THIS_WILL_HELP_IF_YOU_NEED_TO_GET_MORE_TECHNICAL_WITH_AN_ISSUE_ON_GITHUB_OR_EVEN_FOR_YOUR_OWN_DEBUGGING').'" name="debuglinenr" type="radio" class="btn-group btn-group-yesno" default="2">';
-			$xml .= '<option value="2">'.JText::_('COM_COMPONENTBUILDER_GLOBAL').'</option> <option value="1">'.JText::_('COM_COMPONENTBUILDER_YES').'</option> <option value="0">'.JText::_('COM_COMPONENTBUILDER_NO').'</option>';
-			$xml .= "</field>";
-			// prepare the xml
-			$debug_linenr = new SimpleXMLElement($xml);
-			// set components to form
-			$radio4->setup($debug_linenr,2);
-			
-			$list = JFormHelper::loadFieldType('list',true);
-			// start building componet xml field
-			$xml = '<field label="'.JText::_('COM_COMPONENTBUILDER_COMPONENTS').'" description="'.JText::_('COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_TO_COMPILE').'" name="component" type="list" class="btn-group" required="true">';
-			$xml .= '<option value="">'.JText::_('COM_COMPONENTBUILDER__SELECT_COMPONENT_').'</option>';
-			foreach($this->Components as $componet){
-				$xml .= '<option value="'.$componet->id.'">'.$this->escape($componet->name).'</option>';
+			// get the repository radio field
+			$repository = JFormHelper::loadFieldType('radio',true);
+			// start repository xml
+			$repositoryXML = new SimpleXMLElement('<field/>');
+			// repository attributes
+			$repositoryAttributes = array(
+				'type' => 'radio',
+				'name' => 'repository',
+				'label' => 'COM_COMPONENTBUILDER_ADD_TO_REPOSITORY_FOLDER',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_COMPONENT_BE_MOVED_TO_YOUR_LOCAL_REPOSITORY_FOLDER',
+				'default' => '1');
+			// load the repository attributes
+			ComponentbuilderHelper::xmlAddAttributes($repositoryXML, $repositoryAttributes);
+			// start the repository options
+			$repositoryOptions = array(
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the repository options
+			ComponentbuilderHelper::xmlAddOptions($repositoryXML, $repositoryOptions);
+			// setup the repository radio field
+			$repository->setup($repositoryXML,1);
+			// add to form
+			$form[] = $repository;
+
+			// get the placeholders radio field
+			$placeholders = JFormHelper::loadFieldType('radio',true);
+			// start placeholders xml
+			$placeholdersXML = new SimpleXMLElement('<field/>');
+			// placeholders attributes
+			$placeholdersAttributes = array(
+				'type' => 'radio',
+				'name' => 'placeholders',
+				'label' => 'COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_SHOULD_JCB_INSERT_THE_CUSTOM_CODE_PLACEHOLDERS_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_CUSTOM_CODE',
+				'default' => '2');
+			// load the placeholders attributes
+			ComponentbuilderHelper::xmlAddAttributes($placeholdersXML, $placeholdersAttributes);
+			// start the placeholders options
+			$placeholdersOptions = array(
+				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the placeholders options
+			ComponentbuilderHelper::xmlAddOptions($placeholdersXML, $placeholdersOptions);
+			// setup the placeholders radio field
+			$placeholders->setup($placeholdersXML,2);
+			// add to form
+			$form[] = $placeholders;
+
+			// get the debuglinenr radio field
+			$debuglinenr = JFormHelper::loadFieldType('radio',true);
+			// start debuglinenr xml
+			$debuglinenrXML = new SimpleXMLElement('<field/>');
+			// debuglinenr attributes
+			$debuglinenrAttributes = array(
+				'type' => 'radio',
+				'name' => 'debuglinenr',
+				'label' => 'COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_ADD_CORRESPONDING_LINE_NUMBERS_TO_THE_DYNAMIC_COMMENTS_SO_TO_SEE_WHERE_IN_THE_COMPILER_THE_LINES_OF_CODE_WAS_BUILD_THIS_WILL_HELP_IF_YOU_NEED_TO_GET_MORE_TECHNICAL_WITH_AN_ISSUE_ON_GITHUB_OR_EVEN_FOR_YOUR_OWN_DEBUGGING',
+				'default' => '2');
+			// load the debuglinenr attributes
+			ComponentbuilderHelper::xmlAddAttributes($debuglinenrXML, $debuglinenrAttributes);
+			// start the debuglinenr options
+			$debuglinenrOptions = array(
+				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the debuglinenr options
+			ComponentbuilderHelper::xmlAddOptions($debuglinenrXML, $debuglinenrOptions);
+			// setup the debuglinenr radio field
+			$debuglinenr->setup($debuglinenrXML,2);
+			// add to form
+			$form[] = $debuglinenr;
+
+			// get the component list field
+			$component = JFormHelper::loadFieldType('list',true);
+			// start component xml
+			$componentXML = new SimpleXMLElement('<field/>');
+			// component attributes
+			$componentAttributes = array(
+				'type' => 'list',
+				'name' => 'component',
+				'label' => 'COM_COMPONENTBUILDER_COMPONENTS',
+				'class' => 'list_class',
+				'description' => 'COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_TO_COMPILE',
+				'required' => 'true');
+			// load the component attributes
+			ComponentbuilderHelper::xmlAddAttributes($componentXML, $componentAttributes);
+			// start the component options
+			$componentOptions = array();
+			$componentOptions[''] = 'COM_COMPONENTBUILDER__SELECT_COMPONENT_';
+			// load component options from array
+			foreach($this->Components as $componet)
+			{
+				$componentOptions[(int) $componet->id] = $this->escape($componet->name);
 			}
-			$xml .= "</field>";
-			// prepare the xml
-			$componets = new SimpleXMLElement($xml);
-			// set components to form
-			$list->setup($componets,0);
-						
-			return array($radio1,$radio2,$radio3,$radio4,$list);
+			// load the component options
+			ComponentbuilderHelper::xmlAddOptions($componentXML, $componentOptions);
+			// setup the component radio field
+			$component->setup($componentXML,'');
+			// add to form
+			$form[] = $component;
+
+			// return the form array
+			return $form;
 		}
 		return false;
 	}
