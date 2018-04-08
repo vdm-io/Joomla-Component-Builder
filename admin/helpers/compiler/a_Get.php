@@ -5710,4 +5710,46 @@ class Get
 		return false;
 	}
 
+	/**
+	 * bc math wrapper (very basic not for accounting)
+	 * 
+	 * @param   string   $type    The type bc math
+	 * @param   int      $val1    The first value
+	 * @param   int      $val2    The second value
+	 *
+	 * @return int
+	 * 
+	 */
+	public function bcmath($type, $val1, $val2)
+	{
+		// build function name
+		$function = 'bc'.$type;
+		// use the bcmath function of available
+		if (function_exists($function))
+		{
+			return $function($val1, $val2);
+		}
+		// if function does not exist we use +-*/ operators (since it realy not that serious)
+		switch($type)
+		{
+			// Multiply two numbers
+			case 'mul':
+				return round($val1 * $val2);
+			break;
+			// Divide of two numbers
+			case 'div':
+				return round($val1 / $val2);
+			break;
+			// Adding two numbers
+			case 'add':
+				return round($val1 + $val2);
+			break;
+			// Subtract one number from the other
+			case 'add':
+				return round($val1 - $val2);
+			break;
+		}
+		return false;
+	}
+
 }

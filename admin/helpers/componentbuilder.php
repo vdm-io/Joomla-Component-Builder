@@ -1660,7 +1660,8 @@ abstract class ComponentbuilderHelper
 		}
 		return $klaar;
 	}
-	
+
+
 	public static function getFieldOptions($value, $type, $settings = array())
 	{
 		// Get a db connection.

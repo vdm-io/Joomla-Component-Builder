@@ -1217,8 +1217,8 @@ class Infusion extends Interpretation
 					if ('en-GB' !== $tag)
 					{
 						$langStringNr = count($languageStrings);
-						$langStringSum = bcmul($langStringNr, 100);
-						$percentage = bcdiv($langStringSum, $mainLangLoader[$area]);
+						$langStringSum = $this->bcmath('mul', $langStringNr, 100);
+						$percentage = $this->bcmath('div', $langStringSum, $mainLangLoader[$area]);
 						$stringNAme = ($langStringNr == 1) ? '(string ' . $tag . ' translated)' : '(strings ' . $tag . ' translated)';
 						// force load if debug lines are added
 						if (!$this->debugLinenr)
@@ -1304,5 +1304,4 @@ class Infusion extends Interpretation
 			}
 		}
 	}
-
 }

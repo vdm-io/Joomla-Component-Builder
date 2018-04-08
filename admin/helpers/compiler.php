@@ -548,7 +548,7 @@ class Compiler extends Infusion
 						$lineBites[$lineNumber] = (int) mb_strlen($lineContent, '8bit');
 						if (!$found)
 						{
-							$bites = (int) bcadd($lineBites[$lineNumber], $bites);
+							$bites = (int) $this->bcmath('add', $lineBites[$lineNumber], $bites);
 						}
 						if ($found && !$foundEnd)
 						{
@@ -684,12 +684,12 @@ class Compiler extends Infusion
 		// Add the data
 		fwrite($fpFile, $data);
 		// truncate file at the end of the data that was added
-		$remove = bcadd($position, mb_strlen($data, '8bit'));
+		$remove = $this->bcmath('add', $position, mb_strlen($data, '8bit'));
 		ftruncate($fpFile, $remove);
 		// check if this was a replacement of data
 		if ($replace)
 		{
-			$position = bcadd($position, $replace);
+			$position = $this->bcmath('add', $position, $replace);
 		}
 		// move to the position of the data that should remain below the new data
 		fseek($fpTemp, $position);

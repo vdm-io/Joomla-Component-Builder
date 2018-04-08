@@ -277,13 +277,13 @@ class Builder extends Mapping
 	protected function setFieldXML(&$field, $fieldId)
 	{
 		// load the field settings
-		$settings			= array();
-		$settings['name']		= $field['name'];
-		$settings['description']	= 'The '.strtolower($field['label']) . ' is set here.';
-		$settings['message']		= "Error! Please add some ".strtolower($field['label'])." here.";
-		$settings['label']		= $field['label'];
-		$settings['default']		= ($field['default'] == 'Other') ? $field['defaultOther'] : $field['default'];
-		$settings['hint']		= $field['label'] .' Here!';
+		$settings = array();
+		$settings['name'] = $field['name'];
+		$settings['description'] = 'The '.strtolower($field['label']) . ' is set here.';
+		$settings['message'] = "Error! Please add some ".strtolower($field['label'])." here.";
+		$settings['label'] = $field['label'];
+		$settings['default'] = ($field['default'] == 'Other') ? $field['defaultOther'] : $field['default'];
+		$settings['hint'] = $field['label'] .' Here!';
 		// okay set the xml field values
 		if ($fieldOptions = ComponentbuilderHelper::getFieldOptions($fieldId, 'id', $settings))
 		{
