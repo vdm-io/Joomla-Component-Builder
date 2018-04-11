@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'xml',
+	'note_select_field_type',
 	'note_filter_information'
 );
 

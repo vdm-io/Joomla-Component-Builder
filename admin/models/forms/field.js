@@ -596,8 +596,8 @@ function getFieldOptions(fieldtype){
 			propertiesArray = result.nameListOptions;
 			// remove previous forms of exist
 			jQuery('.prop_removal').remove();
-			// remove the hidden jform_properties
-			jQuery('#jform_xml').closest('.control-group').remove();
+			// hide notice
+			jQuery('.note_select_field_type').closest('.control-group').remove();
 			// append to the closed to xml (hidden field) 
 			jQuery('.note_filter_information').closest('.control-group').prepend(result.subform);
 			// add the watcher

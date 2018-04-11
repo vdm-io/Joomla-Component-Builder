@@ -9556,7 +9556,7 @@ class Interpretation extends Fields
 		{
 			if (ComponentbuilderHelper::typeField($type, 'list') || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
 			{
-				$optionsArray = explode(PHP_EOL, $options);
+				$optionsArray = array_map('trim', (array) explode(PHP_EOL, $options));
 				if (!ComponentbuilderHelper::checkArray($optionsArray))
 				{
 					$optionsArray[] = $optionsArray;
@@ -9565,7 +9565,7 @@ class Interpretation extends Fields
 				{
 					if (strpos($option, '|') !== false)
 					{
-						list($option) = explode('|', $option);
+						list($option) = array_map('trim', (array) explode('|', $option));
 					}
 					if ($option != 'dynamic_list')
 					{
@@ -9582,7 +9582,7 @@ class Interpretation extends Fields
 				{
 					if (strpos($keywords, ',') !== false)
 					{
-						$keywords = explode(',', $keywords);
+						$keywords = array_map('trim', (array) explode(',', $keywords));
 						foreach ($keywords as $keyword)
 						{
 							$buket['keywords'][] = trim($keyword);
