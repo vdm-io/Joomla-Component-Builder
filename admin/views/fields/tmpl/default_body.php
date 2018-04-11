@@ -104,15 +104,15 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		<td class="hidden-phone">
 			<?php echo JText::_($item->null_switch); ?>
 		</td>
-		<td class="hidden-phone">
-			<?php echo JText::_($item->store); ?>
-		</td>
 		<td class="nowrap">
 			<?php if ($this->user->authorise('core.edit', 'com_componentbuilder.fields.category.' . (int)$item->catid)): ?>
 				<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.fields"><?php echo $this->escape($item->category_title); ?></a>
 			<?php else: ?>
 				<?php echo $this->escape($item->category_title); ?>
 			<?php endif; ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo JText::_($item->store); ?>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('field.edit.state')) : ?>

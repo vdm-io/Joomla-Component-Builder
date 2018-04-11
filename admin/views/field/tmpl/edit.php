@@ -86,7 +86,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'scripts', JText::_('COM_COMPONENTBUILDER_FIELD_SCRIPTS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
+			<div class="span6">
+				<?php echo JLayoutHelper::render('field.scripts_left', $this); ?>
+			</div>
+			<div class="span6">
 				<?php echo JLayoutHelper::render('field.scripts_right', $this); ?>
 			</div>
 		</div>

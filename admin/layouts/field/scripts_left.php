@@ -13,7 +13,7 @@
 	@version		2.7.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		data_base_left.php
+	@subpackage		scripts_left.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -30,11 +30,10 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'datatype',
-	'datalenght',
-	'datalenght_other',
-	'datadefault',
-	'datadefault_other'
+	'add_css_view',
+	'css_view',
+	'add_css_views',
+	'css_views'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

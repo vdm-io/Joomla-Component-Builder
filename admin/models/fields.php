@@ -49,10 +49,10 @@ class ComponentbuilderModelFields extends JModelList
 				'a.datatype','datatype',
 				'a.indexes','indexes',
 				'a.null_switch','null_switch',
-				'a.store','store',
 				'c.title','category_title',
 				'c.id', 'category_id',
-				'a.catid', 'catid'
+				'a.catid', 'catid',
+				'a.store','store'
 			);
 		}
 
@@ -88,9 +88,6 @@ class ComponentbuilderModelFields extends JModelList
 		$null_switch = $this->getUserStateFromRequest($this->context . '.filter.null_switch', 'filter_null_switch');
 		$this->setState('filter.null_switch', $null_switch);
 
-		$store = $this->getUserStateFromRequest($this->context . '.filter.store', 'filter_store');
-		$this->setState('filter.store', $store);
-
 		$category = $app->getUserStateFromRequest($this->context . '.filter.category', 'filter_category');
 		$this->setState('filter.category', $category);
 
@@ -99,6 +96,9 @@ class ComponentbuilderModelFields extends JModelList
 
 		$catid = $app->getUserStateFromRequest($this->context . '.filter.catid', 'filter_catid');
 		$this->setState('filter.catid', $catid);
+
+		$store = $this->getUserStateFromRequest($this->context . '.filter.store', 'filter_store');
+		$this->setState('filter.store', $store);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -313,7 +313,7 @@ class ComponentbuilderModelFields extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.fieldtype LIKE '.$search.' OR g.name LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.store LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.xml LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.fieldtype LIKE '.$search.' OR g.name LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.store LIKE '.$search.' OR a.xml LIKE '.$search.')');
 			}
 		}
 
@@ -431,12 +431,12 @@ class ComponentbuilderModelFields extends JModelList
 							continue;
 						}
 
+						// decode javascript_view_footer
+						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 						// decode css_views
 						$item->css_views = base64_decode($item->css_views);
 						// decode css_view
 						$item->css_view = base64_decode($item->css_view);
-						// decode javascript_view_footer
-						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 						// decode javascript_views_footer
 						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 						// unset the values we don't want exported.
@@ -504,10 +504,10 @@ class ComponentbuilderModelFields extends JModelList
 		$id .= ':' . $this->getState('filter.datatype');
 		$id .= ':' . $this->getState('filter.indexes');
 		$id .= ':' . $this->getState('filter.null_switch');
-		$id .= ':' . $this->getState('filter.store');
 		$id .= ':' . $this->getState('filter.category');
 		$id .= ':' . $this->getState('filter.category_id');
 		$id .= ':' . $this->getState('filter.catid');
+		$id .= ':' . $this->getState('filter.store');
 
 		return parent::getStoreId($id);
 	}

@@ -106,6 +106,12 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->xml = json_decode($item->xml);
 			}
 
+			if (!empty($item->javascript_view_footer))
+			{
+				// base64 Decode javascript_view_footer.
+				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+			}
+
 			if (!empty($item->css_views))
 			{
 				// base64 Decode css_views.
@@ -116,12 +122,6 @@ class ComponentbuilderModelField extends JModelAdmin
 			{
 				// base64 Decode css_view.
 				$item->css_view = base64_decode($item->css_view);
-			}
-
-			if (!empty($item->javascript_view_footer))
-			{
-				// base64 Decode javascript_view_footer.
-				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 			}
 
 			if (!empty($item->javascript_views_footer))
@@ -931,6 +931,12 @@ class ComponentbuilderModelField extends JModelAdmin
 			$data['xml'] = (string) json_encode($data['xml']);
 		}
 
+		// Set the javascript_view_footer string to base64 string.
+		if (isset($data['javascript_view_footer']))
+		{
+			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
+		}
+
 		// Set the css_views string to base64 string.
 		if (isset($data['css_views']))
 		{
@@ -941,12 +947,6 @@ class ComponentbuilderModelField extends JModelAdmin
 		if (isset($data['css_view']))
 		{
 			$data['css_view'] = base64_encode($data['css_view']);
-		}
-
-		// Set the javascript_view_footer string to base64 string.
-		if (isset($data['javascript_view_footer']))
-		{
-			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
 		}
 
 		// Set the javascript_views_footer string to base64 string.

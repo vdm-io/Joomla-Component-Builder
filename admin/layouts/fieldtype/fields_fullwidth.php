@@ -61,10 +61,10 @@ $can = ComponentbuilderHelper::getActions('field');
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY'); ?>
 		</th>
 		<th data-breakpoints="all" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'); ?>
 		</th>
 		<th width="10" data-breakpoints="xs sm md">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STATUS'); ?>
@@ -104,15 +104,15 @@ $can = ComponentbuilderHelper::getActions('field');
 		<td>
 			<?php echo JText::_($item->null_switch); ?>
 		</td>
-		<td>
-			<?php echo JText::_($item->store); ?>
-		</td>
 		<td class="nowrap">
 			<?php if ($user->authorise('core.edit', 'com_componentbuilder.fields.category.' . (int)$item->catid)): ?>
 				<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.fields"><?php echo $displayData->escape($item->category_title); ?></a>
 			<?php else: ?>
 				<?php echo $displayData->escape($item->category_title); ?>
 			<?php endif; ?>
+		</td>
+		<td>
+			<?php echo JText::_($item->store); ?>
 		</td>
 		<?php if ($item->published == 1):?>
 			<td class="center"  data-sort-value="1">
