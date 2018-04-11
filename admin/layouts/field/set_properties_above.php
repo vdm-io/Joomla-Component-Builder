@@ -1,3 +1,4 @@
+<?php
 /*--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
     __      __       _     _____                 _                                  _     __  __      _   _               _
     \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
@@ -12,7 +13,7 @@
 	@version		2.7.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		field.css
+	@subpackage		set_properties_above.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -22,8 +23,21 @@
                                                              
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
-/* CSS Document */
+// No direct access to this file
 
+defined('_JEXEC') or die('Restricted access');
 
-.uk-scrollable-box { height: 380px !important; }
-.subform-table-sublayout-section .controls { margin-left: 0px; }
+$form = $displayData->getForm();
+
+$fields = array(
+	'fieldtype',
+	'name',
+	'catid'
+);
+
+?>
+<div class="form-inline form-inline-header">
+	<?php foreach($fields as $field){
+		echo $form->renderField($field);
+	} ?>
+</div>

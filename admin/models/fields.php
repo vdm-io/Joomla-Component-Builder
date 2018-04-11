@@ -313,7 +313,7 @@ class ComponentbuilderModelFields extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.fieldtype LIKE '.$search.' OR g.name LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.xml LIKE '.$search.' OR a.store LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.fieldtype LIKE '.$search.' OR g.name LIKE '.$search.' OR a.datatype LIKE '.$search.' OR a.indexes LIKE '.$search.' OR a.null_switch LIKE '.$search.' OR a.catid LIKE '.$search.' OR a.store LIKE '.$search.' OR a.xml LIKE '.$search.')');
 			}
 		}
 
@@ -431,14 +431,14 @@ class ComponentbuilderModelFields extends JModelList
 							continue;
 						}
 
-						// decode css_view
-						$item->css_view = base64_decode($item->css_view);
 						// decode css_views
 						$item->css_views = base64_decode($item->css_views);
-						// decode javascript_view_footer
-						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 						// decode javascript_views_footer
 						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+						// decode javascript_view_footer
+						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+						// decode css_view
+						$item->css_view = base64_decode($item->css_view);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

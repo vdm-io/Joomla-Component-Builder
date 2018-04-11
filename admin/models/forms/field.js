@@ -512,6 +512,9 @@ function isSet(val)
 
 jQuery(document).ready(function()
 {
+	// get type value
+	var fieldtype = jQuery("#jform_fieldtype option:selected").val();
+	getFieldOptions(fieldtype);
 	// get the linked details
 	getLinked();
 	// get the validation rules
@@ -569,10 +572,13 @@ function addButton(type, where, size){
 	})
 }
 
-function getFieldOptions_server(fieldId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldOptions&format=json";
-	if(token.length > 0 && fieldId > 0){
-		var request = 'token='+token+'&id='+fieldId;
+// the options row id key
+var rowIdKey = 'properties';
+
+function getFieldOptions_server(fieldtype){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldOptions&format=json&vdm="+vastDevMod;
+	if(token.length > 0 && fieldtype > 0){
+		var request = 'token='+token+'&id='+fieldtype;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -583,20 +589,156 @@ function getFieldOptions_server(fieldId){
 	});
 }
 
-function getFieldOptions(id,setValue){
-	getFieldOptions_server(id).done(function(result) {
-		if(result.values){
-			if(setValue){
-				jQuery('textarea#jform_xml').val(result.values);
-			}
+function getFieldOptions(fieldtype){
+	getFieldOptions_server(fieldtype).done(function(result) {
+		if(result.subform){
+			// load the list of properties
+			propertiesArray = result.nameListOptions;
+			// remove previous forms of exist
+			jQuery('.prop_removal').remove();
+			// remove the hidden jform_properties
+			jQuery('#jform_xml').closest('.control-group').remove();
+			// append to the closed to xml (hidden field) 
+			jQuery('.note_filter_information').closest('.control-group').prepend(result.subform);
+			// add the watcher
+			rowWatcher();
+			// initialize the new form
+			jQuery('div.subform-repeatable').subformRepeatable();
+			// update all the list fields to only show items not selected already
+			propertyDynamicSet();
+			// set the field type info
 			jQuery('#help').remove();
-			jQuery('.helpNote').append('<div id="help" class="uk-scrollable-box">'+result.description+'<br />'+result.values_description+'</div>');
+			jQuery('.helpNote').append('<div id="help">'+result.description+'<br />'+result.values_description+'</div>');
 		}
 	})
 }
 
+function getFieldPropertyDesc(field){
+	// get the ID
+	var id = jQuery(field).attr('id');
+	// build the target array
+	var target = id.split('__');
+	// get property value
+	var property = jQuery(field).val();
+	// first check that there isn't any of this property type already set
+	if (propertyIsSet(property, id)) {
+		// reset the selection
+		jQuery('#'+id).val('');
+		jQuery('#'+id).trigger("liszt:updated");
+		// give out a notice
+		jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_PROPERTY_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
+		// update the values
+		jQuery('#'+target[0]+'__desc').val('');
+		jQuery('#'+target[0]+'__value').val('');
+	} else {
+		// do a dynamic update
+		propertyDynamicSet();
+		// get type value
+		var fieldtype = jQuery("#jform_fieldtype option:selected").val();
+		getFieldPropertyDesc_server(fieldtype, property).done(function(result) {
+			if(result.desc && result.value){
+				// update the values
+				jQuery('#'+target[0]+'__desc').val(result.desc);
+				jQuery('#'+target[0]+'__value').val(result.value);
+			} else {
+				// update the values
+				jQuery('#'+target[0]+'__desc').val(Joomla.JText._('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND'));
+				jQuery('#'+target[0]+'__value').val('');
+			}
+		});
+	}
+}
+
+// set properties the options
+propertiesArray = {};
+var propertyIdRemoved;
+
+function propertyDynamicSet() {
+	propertiesAvailable = {};
+	propertiesSelectedArray = {};
+	propertiesTrackerArray = {};
+	var i;
+	for (i = 0; i < 70; i++) { // for now this is the number of field we should check
+		// build ID
+		var id_check = rowIdKey+'_'+rowIdKey+i+'__name';
+		// first check if Id is on page as that not the same as the one currently calling
+		if (jQuery("#"+id_check).length && propertyIdRemoved !== id_check) {
+			// build the selected array
+			var key =  jQuery("#"+id_check+" option:selected").val();
+			var text =  jQuery("#"+id_check+" option:selected").text();
+			propertiesSelectedArray[key] = text;
+			// keep track of the value set
+			propertiesTrackerArray[id_check] = key;
+			// clear the options out
+			jQuery("#"+id_check).find('option').remove().end();
+		}
+	}
+	// trigger chosen on the list fields
+	jQuery('.field_list_name_options').chosen({"disable_search_threshold":10,"search_contains":true,"allow_single_deselect":true,"placeholder_text_multiple":Joomla.JText._("COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS"),"placeholder_text_single":Joomla.JText._("COM_COMPONENTBUILDER_SELECT_A_PROPERTY"),"no_results_text":Joomla.JText._("COM_COMPONENTBUILDER_NO_RESULTS_MATCH")});
+	// now build the list to keep
+	jQuery.each( propertiesArray, function( prop, name ) {
+		if (!propertiesSelectedArray.hasOwnProperty(prop)) {
+			propertiesAvailable[prop] = name;
+		}
+	});
+	// now add the lists back
+	jQuery.each( propertiesTrackerArray, function( tId, tKey ) {
+		if (jQuery('#'+tId).length) {
+			jQuery('#'+tId).append('<option value="'+tKey+'">'+propertiesSelectedArray[tKey]+'</option>');
+			jQuery.each( propertiesAvailable, function( aKey, aValue ) {
+				jQuery('#'+tId).append('<option value="'+aKey+'">'+aValue+'</option>');
+			});
+			jQuery('#'+tId).val(tKey);
+			jQuery('#'+tId).trigger('liszt:updated');
+		}
+	});
+}
+
+function rowWatcher() {
+	jQuery(document).on('subform-row-remove', function(event, row){
+       		propertyIdRemoved = jQuery(row.innerHTML).find('.field_list_name_options').attr('id');
+       		propertyDynamicSet();
+	});
+	jQuery(document).on('subform-row-add', function(event, row){
+       		propertyDynamicSet();
+	});
+}
+
+function propertyIsSet(prop, id) {
+	var i;
+	for (i = 0; i < 70; i++) { // for now this is the number of field we should check
+		// build ID
+		var id_check = rowIdKey+'_'+rowIdKey+i+'__name';
+		// first check if Id is on page as that not the same as the one currently calling
+		if (jQuery("#"+id_check).length && id_check != id) {
+			// get the property value
+			var tmp = jQuery("#"+id_check+" option:selected").val();
+			// now validate
+			if (tmp === prop) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function getFieldPropertyDesc_server(fieldtype, property){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getFieldPropertyDesc&format=json&vdm="+vastDevMod;
+	if(token.length > 0 && fieldtype > 0 && property.length > 0){
+		var request = 'token='+token+'&fieldtype='+fieldtype+'&property='+property;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
+
+
 function getValidationRulesTable_server(){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getValidationRulesTable&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getValidationRulesTable&format=json&vdm="+vastDevMod;
 	if(token.length > 0){
 		var request = 'token='+token+'&id=1';
 	}

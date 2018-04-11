@@ -13,7 +13,7 @@
 	@version		2.7.x
 	@created		30th April, 2015
 	@package		Component Builder
-	@subpackage		details_under.php
+	@subpackage		data_base_right.php
 	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
 	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
 	@copyright		Copyright (C) 2015. All Rights Reserved
@@ -29,13 +29,29 @@ defined('_JEXEC') or die('Restricted access');
 
 $form = $displayData->getForm();
 
-$fields = array(
-	'not_required'
+$fields = $displayData->get('fields') ?: array(
+	'indexes',
+	'null_switch',
+	'store',
+	'note_whmcs_encryption'
 );
 
-?>
-<div class="form-inline form-inline-header">
-	<?php foreach($fields as $field){
-		echo $form->renderField($field);
-	} ?>
-</div>
+$hiddenFields = $displayData->get('hidden_fields') ?: array();
+
+foreach ($fields as $field)
+{
+	$field = is_array($field) ? $field : array($field);
+	foreach ($field as $f)
+	{
+		if ($form->getField($f))
+		{
+			if (in_array($f, $hiddenFields))
+			{
+				$form->setFieldAttribute($f, 'type', 'hidden');
+			}
+
+			echo $form->renderField($f);
+			break;
+		}
+	}
+}

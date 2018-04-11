@@ -65,6 +65,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getValidationRulesTable', 'ajax');
 		$this->registerTask('checkRuleName', 'ajax');
 		$this->registerTask('fieldOptions', 'ajax');
+		$this->registerTask('getFieldPropertyDesc', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
 		$this->registerTask('setSnippetGithub', 'ajax');
 		$this->registerTask('getSnippets', 'ajax');
@@ -937,6 +938,45 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($idValue)
 						{
 							$result = $this->getModel('ajax')->getFieldOptions($idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getFieldPropertyDesc':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$fieldtypeValue = $jinput->get('fieldtype', NULL, 'INT');
+						$propertyValue = $jinput->get('property', NULL, 'WORD');
+						if($fieldtypeValue && $propertyValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getFieldPropertyDesc($fieldtypeValue, $propertyValue);
 						}
 						else
 						{

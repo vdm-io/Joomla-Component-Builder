@@ -170,7 +170,7 @@ class Compiler extends Infusion
 					foreach ($mismatch as $string)
 					{
 						$constant = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($string, 'U');
-						$this->app->enqueueMessage(JText::sprintf('The <b>Joomla.JText._(\'%s\')</b> language constant for (%s) does not have a corresponding JText::Script() decalaration.', $constant, $string), 'Warning');
+						$this->app->enqueueMessage(JText::sprintf('The <b>Joomla.JText._(\'%s\')</b> language constant for <b>%s</b> does not have a corresponding <code>JText::script(\'%s\')</code> decalaration, please add it.', $constant, $string, $string), 'Warning');
 					}
 					$this->app->enqueueMessage('<hr />', 'Warning');
 				}

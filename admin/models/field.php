@@ -106,16 +106,16 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->xml = json_decode($item->xml);
 			}
 
-			if (!empty($item->css_view))
-			{
-				// base64 Decode css_view.
-				$item->css_view = base64_decode($item->css_view);
-			}
-
 			if (!empty($item->css_views))
 			{
 				// base64 Decode css_views.
 				$item->css_views = base64_decode($item->css_views);
+			}
+
+			if (!empty($item->javascript_views_footer))
+			{
+				// base64 Decode javascript_views_footer.
+				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 			}
 
 			if (!empty($item->javascript_view_footer))
@@ -124,10 +124,10 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 			}
 
-			if (!empty($item->javascript_views_footer))
+			if (!empty($item->css_view))
 			{
-				// base64 Decode javascript_views_footer.
-				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+				// base64 Decode css_view.
+				$item->css_view = base64_decode($item->css_view);
 			}
 
 
@@ -889,16 +889,46 @@ class ComponentbuilderModelField extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
+		// get the properties
+		$properties = $input->get('properties', null, 'ARRAY');
+		// make sure we have an array
+		if (ComponentbuilderHelper::checkArray($properties))
+		{
+			// set the bucket
+			$bucket = array();
+			foreach($properties as $property)
+			{
+				// make sure we have the correct values
+				if (ComponentbuilderHelper::checkArray($property) &&
+					isset($property['name']) && ComponentbuilderHelper::checkString($property['name']) &&
+					isset($property['value']) && ComponentbuilderHelper::checkString($property['value']))
+				{
+					// fix the name
+					$property['name'] = ComponentbuilderHelper::safeString($property['name']);
+					// some fixes, just in case (more can be added)
+					switch ($property['name'])
+					{
+						// fix the values
+						case 'name':
+						case 'type':
+							$property['value'] = ComponentbuilderHelper::safeString($property['value']);
+						break;
+					}
+					// load the property
+					$bucket[] = "\t".$property['name'].'="'. str_replace('"', "&quot;", $property['value']).'"';
+				}
+			}
+			// if the bucket has been loaded
+			if (ComponentbuilderHelper::checkArray($bucket))
+			{
+				$data['xml'] = "<field\n".implode("\n", $bucket)."\n/>";
+			}
+		}
+
 		// Set the xml string to JSON string.
 		if (isset($data['xml']))
 		{
 			$data['xml'] = (string) json_encode($data['xml']);
-		}
-
-		// Set the css_view string to base64 string.
-		if (isset($data['css_view']))
-		{
-			$data['css_view'] = base64_encode($data['css_view']);
 		}
 
 		// Set the css_views string to base64 string.
@@ -907,16 +937,22 @@ class ComponentbuilderModelField extends JModelAdmin
 			$data['css_views'] = base64_encode($data['css_views']);
 		}
 
+		// Set the javascript_views_footer string to base64 string.
+		if (isset($data['javascript_views_footer']))
+		{
+			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
+		}
+
 		// Set the javascript_view_footer string to base64 string.
 		if (isset($data['javascript_view_footer']))
 		{
 			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
 		}
 
-		// Set the javascript_views_footer string to base64 string.
-		if (isset($data['javascript_views_footer']))
+		// Set the css_view string to base64 string.
+		if (isset($data['css_view']))
 		{
-			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
+			$data['css_view'] = base64_encode($data['css_view']);
 		}
         
 		// Set the Params Items to data

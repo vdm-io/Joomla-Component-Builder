@@ -58,33 +58,46 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
+	<?php echo JLayoutHelper::render('field.set_properties_above', $this); ?>
 <div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'fieldTab', array('active' => 'details')); ?>
+	<?php echo JHtml::_('bootstrap.startTabSet', 'fieldTab', array('active' => 'set_properties')); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'details', JText::_('COM_COMPONENTBUILDER_FIELD_DETAILS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'set_properties', JText::_('COM_COMPONENTBUILDER_FIELD_SET_PROPERTIES', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span6">
-				<?php echo JLayoutHelper::render('field.details_left', $this); ?>
-			</div>
-			<div class="span6">
-				<?php echo JLayoutHelper::render('field.details_right', $this); ?>
-			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('field.details_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('field.set_properties_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'data_base', JText::_('COM_COMPONENTBUILDER_FIELD_DATA_BASE', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span6">
+				<?php echo JLayoutHelper::render('field.data_base_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('field.data_base_right', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'scripts', JText::_('COM_COMPONENTBUILDER_FIELD_SCRIPTS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span6">
-				<?php echo JLayoutHelper::render('field.scripts_left', $this); ?>
-			</div>
-			<div class="span6">
+			<div class="span12">
 				<?php echo JLayoutHelper::render('field.scripts_right', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'type_info', JText::_('COM_COMPONENTBUILDER_FIELD_TYPE_INFO', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('field.type_info_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -131,7 +144,7 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 </div>
 
 <div class="clearfix"></div>
-<?php echo JLayoutHelper::render('field.details_under', $this); ?>
+<?php echo JLayoutHelper::render('field.set_properties_under', $this); ?>
 </form>
 </div>
 
@@ -322,22 +335,13 @@ jQuery.fn.selText = function() {
     return this;
 }
 
-jQuery('#details').on('change', '#jform_fieldtype',function (e) {
+jQuery('#adminForm').on('change', '#jform_fieldtype',function (e) {
 	e.preventDefault();
 	// get type value
 	var fieldId = jQuery("#jform_fieldtype option:selected").val();
-	getFieldOptions(fieldId,true);
+	getFieldOptions(fieldId);
 });
 
-jQuery(document).ready(function() {
-	// get type value
-	var fieldId = jQuery("#jform_fieldtype option:selected").val();
-	if(jQuery('#jform_xml').length == 0) {
-		getFieldOptions(fieldId,true);
-	} else {
-		getFieldOptions(fieldId,false);
-	}
-});
 
 <?php
 	$app = JFactory::getApplication();

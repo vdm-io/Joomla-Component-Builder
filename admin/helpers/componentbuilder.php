@@ -1578,6 +1578,85 @@ abstract class ComponentbuilderHelper
 		$extruder = new Extrusion($data);
 	}
 
+	public static function getFieldOptions($value, $type, $settings = array(), $xml = null)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
+		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+		$query->where($db->quoteName('published') . ' = 1');
+		$query->where($db->quoteName($type) . ' = '. $value);
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$result = $db->loadObject();
+			$properties = json_decode($result->properties,true);
+			$field = array(
+				'subform' => array(),
+				'nameListOptions' => array(),
+				'values' => "<field ", 
+				'values_description' => '<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">', 
+				'short_description' => $result->short_description, 
+				'description' => $result->description);
+			// number pointer
+			$nr = 0;
+			// set the headers
+			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
+			foreach ($properties as $property)
+			{
+				$example = (isset($property['example']) && self::checkString($property['example'])) ? self::shorten($property['example'], 30) : '';
+				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
+				// check if we should load the value
+				$value = self::getValueFromXMLstring($xml, $property['name']);
+				if(self::checkArray($settings) && isset($settings[$property['name']]))
+				{
+					// add the xml values
+					$field['values'] .= "\n\t".$property['name'].'="'.$settings[$property['name']].'" ';
+					// add the json values
+					$field['subform']['properties'.$nr] = array('name' => $property['name'], 'value' => $settings[$property['name']]);
+					// add the name List Options as set
+					$field['nameListOptionsSet'][$property['name']] = $property['name'];
+				}
+				elseif (!$xml || $value)
+				{
+					// add the xml values
+					$field['values'] .= "\n\t" . $property['name'] . '="'. ($value) ? $value : $property['example'] .'" ';
+					// add the json values
+					$field['subform']['properties' . $nr] = array('name' => $property['name'], 'value' => ($value) ? $value : $property['example'], 'desc' => $property['description']);
+				}
+				// add the name List Options
+				$field['nameListOptions'][$property['name']] = $property['name'];
+				// increment the number
+				$nr++;
+			}
+			$field['values'] .= "\n/>";
+			$field['values_description'] .= '</tbody></table>';
+			// return found field options
+			return $field;
+		}
+		return false;
+	}
+
+	public static function getValueFromXMLstring($xml, $get)
+	{
+		if (self::checkString($xml))
+		{
+			$value = self::getBetween($xml, $get.'="', '"');
+			if (self::checkString($value))
+			{
+				return $value;
+			}
+		}
+		return false;
+	}
+
+
 	/**
 	* The zipper method
 	* 
@@ -1659,50 +1738,6 @@ abstract class ComponentbuilderHelper
 			fclose($fh);
 		}
 		return $klaar;
-	}
-
-
-	public static function getFieldOptions($value, $type, $settings = array())
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
-		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
-		$query->where($db->quoteName('published') . ' = 1');
-		$query->where($db->quoteName($type) . ' = '. $value);
-		 
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$result = $db->loadObject();
-			$properties = json_decode($result->properties,true);
-			$field = array('values' => "<field ", 'values_description' => '<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">', 'short_description' => $result->short_description, 'description' => $result->description);
-			// set the headers
-			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
-			foreach ($properties as $property)
-			{
-				$example = (isset($property['example']) && self::checkString($property['example'])) ? self::shorten($property['example'], 30) : '';
-				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
-				if(isset($settings[$property['name']]))
-				{
-					$field['values'] .= "\n\t".$property['name'].'="'.$settings[$property['name']].'" ';
-				}
-				else
-				{
-					$field['values'] .= "\n\t".$property['name'].'="'.$property['example'].'" ';
-				}
-			}
-			$field['values'] .= "\n/>";
-			$field['values_description'] .= '</tbody></table>';
-			// return found field options
-			return $field;
-		}
-		return false;
 	}
 
 	/**

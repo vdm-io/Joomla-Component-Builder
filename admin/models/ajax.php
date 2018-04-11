@@ -2200,14 +2200,190 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in field
-	public function getFieldOptions($id)
+	public function getFieldOptions($fieldtype)
 	{
-		if ($field = ComponentbuilderHelper::getFieldOptions($id, 'id'))
+		// get the xml
+		$xml = $this->getFieldXML($fieldtype);
+		// now get the field options
+		if ($field = ComponentbuilderHelper::getFieldOptions($fieldtype, 'id', null, $xml))
 		{
+			// get subform field object
+			$subform = $this->buildFieldOptionsSubform($field['subform'], $field['nameListOptions']);
+			// load the html 
+			$field['subform'] = '<div class="control-label prop_removal">'. $subform->label . '</div><div class="controls prop_removal">' . $subform->input . '</div>';
 			// return found field options
 			return $field;
 		}
 		return false;
+	}
+
+	protected function buildFieldOptionsSubform($values, $nameListOptions = null)
+	{
+		// get the subform
+		$subform = JFormHelper::loadFieldType('subform', true);
+		// start building the subform field XML
+		$subformXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$subformAttribute = array(
+			'type' => 'subform',
+			'name' => 'properties',
+			'label' => 'COM_COMPONENTBUILDER_PROPERTIESBR_SMALLHERE_YOU_CAN_SET_THE_PROPERTIES_FOR_THIS_FIELDSMALL',
+			'layout' => 'joomla.form.field.subform.repeatable-table',
+			'multiple' => 'true',
+			'icon' => 'list',
+			'max' => (int) count($nameListOptions));
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($subformXML, $subformAttribute);
+		// now add the subform child form
+		$childForm = $subformXML->addChild('form');
+		// child form attributes
+		$childFormAttribute = array(
+			'hidden' => 'true',
+			'name' => 'list_properties',
+			'repeat' => 'true');
+		// load the child form attributes
+		ComponentbuilderHelper::xmlAddAttributes($childForm, $childFormAttribute);
+
+		// start building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => (ComponentbuilderHelper::checkArray($nameListOptions)) ? 'list' : 'text',
+			'name' => 'name',
+			'label' => 'COM_COMPONENTBUILDER_PROPERTY',
+			'size' => '40',
+			'maxlength' => '150',
+			'class' => (ComponentbuilderHelper::checkArray($nameListOptions)) ? 'list_class field_list_name_options' : 'text_area',
+			'filter' => 'STRING');
+		// add the hint only if not name list and description if name list is an array
+		if (ComponentbuilderHelper::checkArray($nameListOptions))
+		{
+			$nameAttribute['description'] = 'COM_COMPONENTBUILDER_SELECTION';
+			$nameAttribute['multiple'] = 'false';
+			$nameAttribute['onchange'] = "getFieldPropertyDesc(this)";
+		}
+		else
+		{
+			$nameAttribute['hint'] = 'COM_COMPONENTBUILDER_PROPERTY_NAME';
+		}
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// add name list if found
+		if (ComponentbuilderHelper::checkArray($nameListOptions))
+		{
+			ComponentbuilderHelper::xmlAddOptions($nameXML, $nameListOptions);
+		}
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($childForm, $nameXML);
+
+		// start building the name field XML
+		$valueXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$valueAttribute = array(
+			'type' => 'textarea',
+			'name' => 'value',
+			'label' => 'COM_COMPONENTBUILDER_VALUE',
+			'rows' => '1',
+			'cols' => '15',
+			'class' => 'text_area  span12',
+			'filter' => 'STRING',
+			'hint' => 'COM_COMPONENTBUILDER_PROPERTY_VALUE');
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($valueXML, $valueAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($childForm, $valueXML);
+
+		// start building the desc field XML
+		$descXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$descAttribute = array(
+			'type' => 'textarea',
+			'name' => 'desc',
+			'label' => 'COM_COMPONENTBUILDER_DESCRIPTION',
+			'rows' => '3',
+			'cols' => '25',
+			'readonly' => 'true',
+			'class' => 'text_area span12',
+			'filter' => 'WORD',
+			'hint' => 'COM_COMPONENTBUILDER_SELECT_A_PROPERTY');
+		// load the desc attributes
+		ComponentbuilderHelper::xmlAddAttributes($descXML, $descAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($childForm, $descXML);
+
+		// setup subform with values
+		$subform->setup($subformXML, $values);
+
+		// return subfrom object
+		return $subform;
+	}
+
+	public function getFieldPropertyDesc($fieldtype, $_property)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
+		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+		$query->where($db->quoteName('id') . ' = '. $fieldtype);
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			// get the result
+			$result = $db->loadObject();
+			// get the xml
+			$xml = $this->getFieldXML($fieldtype);
+			// open the properties
+			$properties = json_decode($result->properties,true);
+			// make sure we have an array
+			if (ComponentbuilderHelper::checkArray($properties))
+			{
+				foreach ($properties as $property)
+				{
+					if(isset($property['name']) && $_property === $property['name'])
+					{
+						// check if we should load the value
+						if (!$value = ComponentbuilderHelper::getValueFromXMLstring($xml, $property['name']))
+						{
+							$value = (isset($property['example']) && ComponentbuilderHelper::checkString($property['example'])) ? $property['example'] : '';
+						}
+						// return the found values
+						return array('value' => $value, 'desc' => $property['description']);
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	protected function getFieldXML($fieldtype)
+	{
+		// reset xml to null
+		$xml = null;
+		// get the view name & id
+		$global = $this->getViewID();
+		// get the xml if this view already has it set
+		if (!is_null($global['a_id']) && $global['a_id'] > 0 && isset($global['a_view']) && 'field' === $global['a_view'])
+		{
+			// first check field type
+			$_fieldType = ComponentbuilderHelper::getVar('field', $global['a_id'], 'id', 'fieldtype');
+			// only continue if field type is the same
+			if ($fieldtype == $_fieldType)
+			{
+				$xmlDB = ComponentbuilderHelper::getVar('field', $global['a_id'], 'id', 'xml');
+				// check if it is a string
+				if (ComponentbuilderHelper::checkString($xmlDB))
+				{
+					$xml = json_decode($xmlDB);
+				}
+			}
+		}
+		return $xml;
 	}
 
 	// Used in get_snippets
