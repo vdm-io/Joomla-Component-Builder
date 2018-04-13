@@ -111,7 +111,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			// force_update attributes
 			$force_updateAttributes = array(
 				'type' => 'radio',
-				'name' => 'backup',
+				'name' => 'force_update',
 				'label' => 'COM_COMPONENTBUILDER_FORCE_LOCAL_UPDATE',
 				'class' => 'btn-group btn-group-yesno',
 				'description' => 'COM_COMPONENTBUILDER_SHOULD_WE_FORCE_THE_UPDATE_OF_ALL_LOCAL_DATA_EVEN_IF_IT_IS_NEWER_THEN_THE_DATA_BEING_IMPORTED',
@@ -136,7 +136,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			// more_info attributes
 			$more_infoAttributes = array(
 				'type' => 'radio',
-				'name' => 'backup',
+				'name' => 'more_info',
 				'label' => 'COM_COMPONENTBUILDER_SEE_ALL_IMPORT_INFO',
 				'class' => 'btn-group btn-group-yesno',
 				'description' => 'COM_COMPONENTBUILDER_SHOULD_WE_BE_SHOWING_MORE_ELABORATE_INFORMATION_DURING_IMPORT',
@@ -168,7 +168,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 					// haskey attributes
 					$haskeyAttributes = array(
 						'type' => 'radio',
-						'name' => 'backup',
+						'name' => 'haskey',
 						'label' => 'COM_COMPONENTBUILDER_USE_KEY',
 						'class' => 'btn-group btn-group-yesno',
 						'description' => 'COM_COMPONENTBUILDER_DOES_THIS_PACKAGE_REQUIRE_A_KEY_TO_INSTALL',
@@ -198,7 +198,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				// sleutle attributes
 				$sleutleAttributes = array(
 					'type' => 'password',
-					'name' => 'backup',
+					'name' => 'sleutle',
 					'label' => 'COM_COMPONENTBUILDER_KEY',
 					'class' => 'text_area',
 					'description' => 'COM_COMPONENTBUILDER_THE_KEY_OF_THIS_PACKAGE',
