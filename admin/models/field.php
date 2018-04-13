@@ -891,6 +891,8 @@ class ComponentbuilderModelField extends JModelAdmin
 
 		// get the properties
 		$properties = $input->get('properties', null, 'ARRAY');
+		// get the extra properties
+		$extraproperties = $input->get('extraproperties', null, 'ARRAY');
 		// make sure we have an array
 		if (ComponentbuilderHelper::checkArray($properties))
 		{
@@ -899,9 +901,7 @@ class ComponentbuilderModelField extends JModelAdmin
 			foreach($properties as $property)
 			{
 				// make sure we have the correct values
-				if (ComponentbuilderHelper::checkArray($property) &&
-					isset($property['name']) && ComponentbuilderHelper::checkString($property['name']) &&
-					isset($property['value']) && ComponentbuilderHelper::checkString($property['value']))
+				if (ComponentbuilderHelper::checkArray($property) && isset($property['name']) && ComponentbuilderHelper::checkString($property['name']) && isset($property['value']))
 				{
 					// fix the name
 					$property['name'] = ComponentbuilderHelper::safeString($property['name']);
@@ -916,6 +916,19 @@ class ComponentbuilderModelField extends JModelAdmin
 					}
 					// load the property
 					$bucket[] = "\t".$property['name'].'="'. str_replace('"', "&quot;", $property['value']).'"';
+				}
+			}
+			// make sure we have an array
+			if (ComponentbuilderHelper::checkArray($extraproperties))
+			{
+				foreach($extraproperties as $xproperty)
+				{
+					// make sure we have the correct values
+					if (ComponentbuilderHelper::checkArray($xproperty) && isset($xproperty['name']) && ComponentbuilderHelper::checkString($xproperty['name']) && isset($xproperty['value']))
+					{
+						// load the extra property
+						$bucket[] = "\t".ComponentbuilderHelper::safeString($xproperty['name']).'="'. str_replace('"', "&quot;", $xproperty['value']).'"';
+					}
 				}
 			}
 			// if the bucket has been loaded

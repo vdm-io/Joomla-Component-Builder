@@ -141,7 +141,6 @@
 					label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGE_LABEL"
 					class="list_class"
 					multiple="false"
-					default="0"
 					required="false"
 					button="false"
 				/>

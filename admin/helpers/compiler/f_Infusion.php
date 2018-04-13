@@ -1162,8 +1162,7 @@ class Infusion extends Interpretation
 	}
 
 	/**
-	 * Build the lang values and insert to fiel
-	 * 
+	 * Build the language values and insert into file
 	 *
 	 * @return  boolean  on success
 	 * 
@@ -1211,6 +1210,8 @@ class Infusion extends Interpretation
 			$langXML = array();
 			foreach ($this->languages as $tag => $areas)
 			{
+				// trim the tag
+				$tag = trim($tag);
 				foreach ($areas as $area => $languageStrings)
 				{
 					// only log messages for none en-GB translations
@@ -1264,13 +1265,11 @@ class Infusion extends Interpretation
 					// count the file created
 					$this->fileCount++;
 					// add content to it
-					$lang = '';
-					foreach ($languageStrings as $place => $string)
-					{
-						$lang .= $place . '="' . $string . '"' . PHP_EOL;
-					}
+					$lang = array_map(function ($langstring, $placeholder) {
+						return $placeholder . '="' . $langstring . '"';
+					}, $languageStrings, array_keys($languageStrings));
 					// add to language file
-					$this->writeFile($path . '/' . $fileName, $lang);
+					$this->writeFile($path . '/' . $fileName, implode(PHP_EOL, $lang));
 					// set the line counter
 					$this->lineCount = $this->lineCount + substr_count($lang, PHP_EOL);
 					// build xml strings

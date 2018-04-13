@@ -2343,7 +2343,14 @@ class Fields extends Structure
 	 */
 	public function setBuilders($langLabel, $langView, $view_name_single, $view_name_list, $name, $view, $field, $typeName, $multiple, $custom = false, $options = false)
 	{
-		if ($typeName === 'tag')
+		// dbSwitch
+		$dbSwitch = true;
+		if (isset($field['list']) && $field['list'] == 2)
+		{
+			// do not add this field to the database
+			$dbSwitch = false;
+		}
+		elseif ($typeName === 'tag')
 		{
 			// set tags for this view but don't load to DB
 			$this->tagsBuilder[$view_name_single] = $view_name_single;
@@ -2402,12 +2409,12 @@ class Fields extends Structure
 			$this->historyBuilder[$view_name_single] = $view_name_single;
 		}
 		// set Alias (only one title per view)
-		if (isset($field['alias']) && $field['alias'] && !isset($this->aliasBuilder[$view_name_single]))
+		if ($dbSwitch && isset($field['alias']) && $field['alias'] && !isset($this->aliasBuilder[$view_name_single]))
 		{
 			$this->aliasBuilder[$view_name_single] = $name;
 		}
 		// set Titles (only one title per view)
-		if (isset($field['title']) && $field['title'] && !isset($this->titleBuilder[$view_name_single]))
+		if ($dbSwitch && isset($field['title']) && $field['title'] && !isset($this->titleBuilder[$view_name_single]))
 		{
 			$this->titleBuilder[$view_name_single] = $name;
 		}
@@ -2467,7 +2474,7 @@ class Fields extends Structure
 			$this->hiddenFieldsBuilder[$view_name_single] .= ',"' . $name . '"';
 		}
 		// set all int fields of this view
-		if ($field['settings']->datatype === 'INT' || $field['settings']->datatype === 'TINYINT' || $field['settings']->datatype === 'BIGINT')
+		if ($dbSwitch && ($field['settings']->datatype === 'INT' || $field['settings']->datatype === 'TINYINT' || $field['settings']->datatype === 'BIGINT'))
 		{
 			if (!isset($this->intFieldsBuilder[$view_name_single]))
 			{
@@ -2493,7 +2500,7 @@ class Fields extends Structure
 		}
 		// TODO we may need to add a switch instead (since now it uses the first editor field)
 		// set the main(biggest) text field of this view
-		if ($typeName === 'editor')
+		if ($dbSwitch && $typeName === 'editor')
 		{
 			if (!isset($this->maintextBuilder[$view_name_single]) || !ComponentbuilderHelper::checkString($this->maintextBuilder[$view_name_single]))
 			{
@@ -2525,7 +2532,7 @@ class Fields extends Structure
 			$this->setScriptMediaSwitch[$typeName] = $typeName;
 		}
 		// setup gategory for this view
-		if ($typeName === 'category')
+		if ($dbSwitch && $typeName === 'category')
 		{
 			if (isset($this->catOtherName[$view_name_list]) && ComponentbuilderHelper::checkArray($this->catOtherName[$view_name_list]))
 			{
@@ -2542,12 +2549,12 @@ class Fields extends Structure
 			$this->catCodeBuilder[$view_name_single] = array('code' => $name, 'views' => $otherViews, 'view' => $otherView);
 		}
 		// setup checkbox for this view
-		if ($typeName === 'checkbox' || (ComponentbuilderHelper::checkArray($custom) && isset($custom['extends']) && $custom['extends'] === 'checkboxes'))
+		if ($dbSwitch && ($typeName === 'checkbox' || (ComponentbuilderHelper::checkArray($custom) && isset($custom['extends']) && $custom['extends'] === 'checkboxes')))
 		{
 			$this->checkboxBuilder[$view_name_single][] = $name;
 		}
 		// setup checkboxes and other json items for this view
-		if (($typeName === 'subform' || $typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && $typeName != 'tag')
+		if ($dbSwitch && (($typeName === 'subform' || $typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && $typeName != 'tag'))
 		{
 			switch ($field['settings']->store)
 			{
@@ -2614,7 +2621,7 @@ class Fields extends Structure
 			}
 		}
 		// build the data for the export & import methods $typeName === 'repeatable' ||
-		if (($typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && !ComponentbuilderHelper::checkArray($options))
+		if ($dbSwitch && (($typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && !ComponentbuilderHelper::checkArray($options)))
 		{
 			$this->getItemsMethodEximportStringFixBuilder[$view_name_single][] = array('name' => $name, 'type' => $typeName, 'translation' => false, 'custom' => $custom, 'method' => $field['settings']->store);
 		}
@@ -2626,18 +2633,18 @@ class Fields extends Structure
 			$this->selectionTranslationFixBuilder[$view_name_list][$name] = $options;
 		}
 		// build the sort values
-		if ((isset($field['sort']) && $field['sort'] == 1) && (isset($field['list']) && $field['list'] == 1) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
+		if ($dbSwitch && (isset($field['sort']) && $field['sort'] == 1) && (isset($field['list']) && $field['list'] == 1) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
 		{
 			$this->sortBuilder[$view_name_list][] = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'custom' => $custom, 'options' => $options);
 		}
 		// build the search values
-		if (isset($field['search']) && $field['search'] == 1)
+		if ($dbSwitch && isset($field['search']) && $field['search'] == 1)
 		{
 			$_list = (isset($field['list'])) ? $field['list'] : 0;
 			$this->searchBuilder[$view_name_list][] = array('type' => $typeName, 'code' => $name, 'custom' => $custom, 'list' => $_list);
 		}
 		// build the filter values
-		if ((isset($field['filter']) && $field['filter'] == 1) && (isset($field['list']) && $field['list'] == 1) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
+		if ($dbSwitch && (isset($field['filter']) && $field['filter'] == 1) && (isset($field['list']) && $field['list'] == 1) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
 		{
 			$this->filterBuilder[$view_name_list][] = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'database' => $view_name_single, 'function' => ComponentbuilderHelper::safeString($name, 'F'), 'custom' => $custom, 'options' => $options);
 		}

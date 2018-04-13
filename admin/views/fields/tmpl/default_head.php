@@ -58,11 +58,11 @@ defined('_JEXEC') or die('Restricted access');
 	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL', 'null_switch', $this->listDirn, $this->listOrder); ?>
 	</th>
-	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY', 'catid', $this->listDirn, $this->listOrder); ?>
-	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_STORE_LABEL', 'store', $this->listDirn, $this->listOrder); ?>
+	</th>
+	<th class="nowrap" >
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY', 'catid', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

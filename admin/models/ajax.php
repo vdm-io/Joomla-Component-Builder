@@ -387,7 +387,7 @@ class ComponentbuilderModelAjax extends JModelList
 				'type' => 'setURLType',
 				// Admin View
 				'field' => 'setItemNames',
-				'list' => 'setYesNo',
+				'list' => 'setAdminBehaviour',
 				'title' => 'setYesNo',
 				'alias' => 'setYesNo',
 				'sort' => 'setYesNo',
@@ -433,7 +433,7 @@ class ComponentbuilderModelAjax extends JModelList
 			'update' => JText::_('COM_COMPONENTBUILDER_UPDATE'),
 			// Admin View (fields)
 			'field' => JText::_('COM_COMPONENTBUILDER_FIELD'),
-			'list' => JText::_('COM_COMPONENTBUILDER_ADMIN_LIST'),
+			'list' => JText::_('COM_COMPONENTBUILDER_ADMIN_BEHAVIOUR'),
 			'order_list' => JText::_('COM_COMPONENTBUILDER_ORDER_IN_LIST_VIEWS'),
 			'title' => JText::_('COM_COMPONENTBUILDER_TITLE'),
 			'alias' => JText::_('COM_COMPONENTBUILDER_ALIAS'),
@@ -447,10 +447,10 @@ class ComponentbuilderModelAjax extends JModelList
 			'order_edit' => JText::_('COM_COMPONENTBUILDER_ORDER_IN_EDIT'),
 			// Admin View (conditions)
 			'target_field' => JText::_('COM_COMPONENTBUILDER_TARGET_FIELDS'),
-			'target_behavior' => JText::_('COM_COMPONENTBUILDER_TARGET_BEHAVIOR'),
+			'target_behavior' => JText::_('COM_COMPONENTBUILDER_TARGET_BEHAVIOUR'),
 			'target_relation' => JText::_('COM_COMPONENTBUILDER_TARGET_RELATION'),
 			'match_field' => JText::_('COM_COMPONENTBUILDER_MATCH_FIELD'),
-			'match_behavior' => JText::_('COM_COMPONENTBUILDER_MATCH_BEHAVIOR'),
+			'match_behavior' => JText::_('COM_COMPONENTBUILDER_MATCH_BEHAVIOUR'),
 			'match_options' => JText::_('COM_COMPONENTBUILDER_MATCH_OPTIONS'),
 			// Joomla Component
 			'menu' => JText::_('COM_COMPONENTBUILDER_ADD_MENU'),
@@ -887,6 +887,22 @@ class ComponentbuilderModelAjax extends JModelList
 			$this->user = JFactory::getUser();
 		}
 		return $this->user->authorise($view.'.edit', 'com_componentbuilder.'.$view.'.' . (int) $id);
+	}
+
+	protected function setAdminBehaviour($header, $value)
+	{
+		switch ($value)
+		{
+			case 1:
+				return JText::_('COM_COMPONENTBUILDER_SHOW_IN_LIST_VIEW');
+			break;
+			case 2:
+				return JText::_('COM_COMPONENTBUILDER_NONE_DB');
+			break;
+			default:
+				return JText::_('COM_COMPONENTBUILDER_DEFAULT');
+			break;
+		}
 	}
 
 	protected $tabNames = array();
@@ -2200,6 +2216,13 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in field
+	// the current extras available
+	protected $extraFieldProperties = array(
+			'listclass' => 'COM_COMPONENTBUILDER_SET_A_CLASS_VALUE_FOR_THE_LIST_VIEW_OF_THIS_FIELD',
+			'escape' => 'COM_COMPONENTBUILDER_SHOULD_THIS_FIELD_BE_ESCAPED_IN_THE_LIST_VIEW',
+			'display' => 'COM_COMPONENTBUILDER_DISPLAY_SWITCH_FOR_DYNAMIC_PLACEMENT_IN_RELATION_TO_THE_USE_OF_THE_FIELD_IN_MENU_AND_GLOBAL_CONFIGURATION_OPTIONS',
+			'validate' => 'COM_COMPONENTBUILDER_TO_ADD_VALIDATION_TO_A_FIELD_IF_VALIDATION_IS_NOT_PART_OF_FIELD_TYPE_PROPERTIES_LOADED_ABOVE_SO_IF_YOU_HAVE_VALIDATION_SET_AS_A_FIELD_PROPERTY_THIS_EXTRA_PROPERTY_WILL_NOT_BE_NEEDED');
+
 	public function getFieldOptions($fieldtype)
 	{
 		// get the xml
@@ -2207,17 +2230,54 @@ class ComponentbuilderModelAjax extends JModelList
 		// now get the field options
 		if ($field = ComponentbuilderHelper::getFieldOptions($fieldtype, 'id', null, $xml))
 		{
+			// get subform field properties object
+			$properties = $this->buildFieldOptionsSubform($field['subform'], $field['nameListOptions']);
+			// load the extra options
+			$extraValues = $this->getFieldExtraValues($xml, $field['nameListOptions']);
+			// set the nameListOption
+			$extraNameListOption = $this->extraFieldProperties;
+			array_walk($extraNameListOption, function (&$value, $key) {
+				$value = $key;
+			});
 			// get subform field object
-			$subform = $this->buildFieldOptionsSubform($field['subform'], $field['nameListOptions']);
+			$extras = $this->buildFieldOptionsSubform($extraValues, $extraNameListOption, 'extraproperties',  'COM_COMPONENTBUILDER_EXTRA_PROPERTIES_LIKE_LISTCLASS_ESCAPE_DISPLAY_VALIDATEBR_SMALLHERE_YOU_CAN_SET_THE_EXTRA_PROPERTIES_FOR_THIS_FIELDSMALL');
 			// load the html 
-			$field['subform'] = '<div class="control-label prop_removal">'. $subform->label . '</div><div class="controls prop_removal">' . $subform->input . '</div>';
+			$field['subform'] = '<div class="control-label prop_removal">'. $properties->label . '</div><div class="controls prop_removal">' . $properties->input . '</div>';
+			$field['extra'] = '<div class="control-label prop_removal">'. $extras->label . '</div><div class="controls prop_removal">' . $extras->input . '</div>';
 			// return found field options
 			return $field;
 		}
 		return false;
 	}
 
-	protected function buildFieldOptionsSubform($values, $nameListOptions = null)
+	protected function getFieldExtraValues($xml, $options)
+	{
+		// get the value
+		$values = array();
+		// value to check since there are false and null values even 0 in the values returned
+		$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
+		$nr = 0;
+		foreach ($this->extraFieldProperties as $extra => $desc)
+		{
+			if (!in_array($extra, $options))
+			{
+				$value =  ComponentbuilderHelper::getValueFromXMLstring($xml, $extra, $confirmation);
+				if ($confirmation !== $value)
+				{
+					$values['extraproperties' . $nr] = array('name' => $extra, 'value' => $value, 'desc' => JText::_($desc));
+					$nr++;
+				}
+			}
+		}
+		// return only if extras founb
+		if (ComponentbuilderHelper::checkArray($values))
+		{
+			return $values;
+		}
+		return null;
+	}
+
+	protected function buildFieldOptionsSubform($values, $nameListOptions = null, $name = 'properties', $label = 'COM_COMPONENTBUILDER_PROPERTIESBR_SMALLHERE_YOU_CAN_SET_THE_PROPERTIES_FOR_THIS_FIELDSMALL')
 	{
 		// get the subform
 		$subform = JFormHelper::loadFieldType('subform', true);
@@ -2226,12 +2286,12 @@ class ComponentbuilderModelAjax extends JModelList
 		// subform attributes
 		$subformAttribute = array(
 			'type' => 'subform',
-			'name' => 'properties',
-			'label' => 'COM_COMPONENTBUILDER_PROPERTIESBR_SMALLHERE_YOU_CAN_SET_THE_PROPERTIES_FOR_THIS_FIELDSMALL',
+			'name' => $name,
+			'label' => $label,
 			'layout' => 'joomla.form.field.subform.repeatable-table',
 			'multiple' => 'true',
 			'icon' => 'list',
-			'max' => (int) count($nameListOptions));
+			'max' =>  (ComponentbuilderHelper::checkArray($nameListOptions)) ? (int) count($nameListOptions) : 4);
 		// load the subform attributes
 		ComponentbuilderHelper::xmlAddAttributes($subformXML, $subformAttribute);
 		// now add the subform child form
@@ -2260,7 +2320,7 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			$nameAttribute['description'] = 'COM_COMPONENTBUILDER_SELECTION';
 			$nameAttribute['multiple'] = 'false';
-			$nameAttribute['onchange'] = "getFieldPropertyDesc(this)";
+			$nameAttribute['onchange'] = "getFieldPropertyDesc(this, '".$name."')";
 		}
 		else
 		{
@@ -2318,45 +2378,55 @@ class ComponentbuilderModelAjax extends JModelList
 		return $subform;
 	}
 
-	public function getFieldPropertyDesc($fieldtype, $_property)
+	public function getFieldPropertyDesc($_property, $fieldtype)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
-		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
-		$query->where($db->quoteName('id') . ' = '. $fieldtype);
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
+		if (is_numeric($fieldtype))
 		{
-			// get the result
-			$result = $db->loadObject();
-			// get the xml
-			$xml = $this->getFieldXML($fieldtype);
-			// open the properties
-			$properties = json_decode($result->properties,true);
-			// make sure we have an array
-			if (ComponentbuilderHelper::checkArray($properties))
+			// Get a db connection.
+			$db = JFactory::getDbo();
+
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('properties', 'short_description', 'description')));
+			$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+			$query->where($db->quoteName('id') . ' = '. (int) $fieldtype);
+
+			// Reset the query using our newly populated query object.
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
 			{
-				foreach ($properties as $property)
+				// get the result
+				$result = $db->loadObject();
+				// get the xml
+				$xml = $this->getFieldXML($fieldtype);
+				// open the properties
+				$properties = json_decode($result->properties,true);
+				// value to check since there are false and null values even 0 in the values returned
+				$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
+				// make sure we have an array
+				if (ComponentbuilderHelper::checkArray($properties))
 				{
-					if(isset($property['name']) && $_property === $property['name'])
+					foreach ($properties as $property)
 					{
-						// check if we should load the value
-						if (!$value = ComponentbuilderHelper::getValueFromXMLstring($xml, $property['name']))
+						if(isset($property['name']) && $_property === $property['name'])
 						{
-							$value = (isset($property['example']) && ComponentbuilderHelper::checkString($property['example'])) ? $property['example'] : '';
+							// check if we should load the value
+							$value = ComponentbuilderHelper::getValueFromXMLstring($xml, $property['name'], $confirmation);
+							if ($confirmation === $value)
+							{
+								$value = (isset($property['example']) && ComponentbuilderHelper::checkString($property['example'])) ? $property['example'] : '';
+							}
+							// return the found values
+							return array('value' => $value, 'desc' => $property['description']);
 						}
-						// return the found values
-						return array('value' => $value, 'desc' => $property['description']);
 					}
 				}
 			}
+		}
+		elseif (isset($this->extraFieldProperties[$_property]))
+		{
+			return array('value' => '', 'desc' => JText::_($this->extraFieldProperties[$_property]));
 		}
 		return false;
 	}

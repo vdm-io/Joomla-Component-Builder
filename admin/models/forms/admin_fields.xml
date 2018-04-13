@@ -118,28 +118,36 @@
 					required="false"
 					button="false"
 				/>
-				<!-- List Field. Type: Checkbox. (joomla) -->
+				<!-- List Field. Type: List. (joomla) -->
 				<field
-					type="checkbox"
+					type="list"
 					name="list"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_LIST_LABEL"
-					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_LIST_DESCRIPTION"
-					class="inputbox"
-				/>
+					class="fieldMedium count-the-items1235"
+					multiple="false"
+					required="false"
+					onchange="checkAdminBehaviour(this)">
+					<!-- Option Set. -->
+					<option value="">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_DEFAULT</option>
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_SHOW_IN_LIST_VIEW</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_NONE_DB</option>
+				</field>
 				<!-- Order_list Field. Type: Integer. (joomla) -->
 				<field
 					type="integer"
 					name="order_list"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_LIST_LABEL"
-					default="0"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_LIST_DESCRIPTION"
 					class="fieldSmall"
 					required="false"
 					first="0"
 					last="20"
 					step="1"
+					onchange="checkAdminBehaviour(this)"
 				/>
 				<!-- Title Field. Type: Checkbox. (joomla) -->
 				<field
@@ -259,10 +267,9 @@
 					name="permission"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_DESCRIPTION"
-					class="fieldMedium"
+					class="fieldMid"
 					multiple="false"
-					required="false"
-					default="0">
+					required="false">
 					<!-- Option Set. -->
 					<option value="0">
 						COM_COMPONENTBUILDER_ADMIN_FIELDS_NONE</option>

@@ -972,11 +972,11 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$fieldtypeValue = $jinput->get('fieldtype', NULL, 'INT');
 						$propertyValue = $jinput->get('property', NULL, 'WORD');
-						if($fieldtypeValue && $propertyValue && $user->id != 0)
+						$fieldtypeValue = $jinput->get('fieldtype', NULL, 'ALNUM');
+						if($propertyValue && $fieldtypeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getFieldPropertyDesc($fieldtypeValue, $propertyValue);
+							$result = $this->getModel('ajax')->getFieldPropertyDesc($propertyValue, $fieldtypeValue);
 						}
 						else
 						{

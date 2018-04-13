@@ -598,7 +598,9 @@ function getFieldOptions(fieldtype){
 			jQuery('.prop_removal').remove();
 			// hide notice
 			jQuery('.note_select_field_type').closest('.control-group').remove();
-			// append to the closed to xml (hidden field) 
+			// append to note_filter_information class
+			jQuery('.note_filter_information').closest('.control-group').prepend(result.extra);
+			// append to note_filter_information class
 			jQuery('.note_filter_information').closest('.control-group').prepend(result.subform);
 			// add the watcher
 			rowWatcher();
@@ -613,7 +615,7 @@ function getFieldOptions(fieldtype){
 	})
 }
 
-function getFieldPropertyDesc(field){
+function getFieldPropertyDesc(field, targetForm){
 	// get the ID
 	var id = jQuery(field).attr('id');
 	// build the target array
@@ -621,7 +623,7 @@ function getFieldPropertyDesc(field){
 	// get property value
 	var property = jQuery(field).val();
 	// first check that there isn't any of this property type already set
-	if (propertyIsSet(property, id)) {
+	if (propertyIsSet(property, id, targetForm)) {
 		// reset the selection
 		jQuery('#'+id).val('');
 		jQuery('#'+id).trigger("liszt:updated");
@@ -634,9 +636,13 @@ function getFieldPropertyDesc(field){
 		// do a dynamic update
 		propertyDynamicSet();
 		// get type value
-		var fieldtype = jQuery("#jform_fieldtype option:selected").val();
+		if (targetForm === 'properties') {
+			var fieldtype = jQuery("#jform_fieldtype option:selected").val();
+		} else {
+			var fieldtype = 'extra';
+		}
 		getFieldPropertyDesc_server(fieldtype, property).done(function(result) {
-			if(result.desc && result.value){
+			if(result.desc || result.value){
 				// update the values
 				jQuery('#'+target[0]+'__desc').val(result.desc);
 				jQuery('#'+target[0]+'__value').val(result.value);
@@ -704,11 +710,11 @@ function rowWatcher() {
 	});
 }
 
-function propertyIsSet(prop, id) {
+function propertyIsSet(prop, id, targetForm) {
 	var i;
 	for (i = 0; i < 70; i++) { // for now this is the number of field we should check
 		// build ID
-		var id_check = rowIdKey+'_'+rowIdKey+i+'__name';
+		var id_check = targetForm+'_'+targetForm+i+'__name';
 		// first check if Id is on page as that not the same as the one currently calling
 		if (jQuery("#"+id_check).length && id_check != id) {
 			// get the property value
@@ -724,7 +730,7 @@ function propertyIsSet(prop, id) {
 
 function getFieldPropertyDesc_server(fieldtype, property){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getFieldPropertyDesc&format=json&vdm="+vastDevMod;
-	if(token.length > 0 && fieldtype > 0 && property.length > 0){
+	if(token.length > 0 && (fieldtype > 0 || fieldtype.length > 0)&& property.length > 0){
 		var request = 'token='+token+'&fieldtype='+fieldtype+'&property='+property;
 	}
 	return jQuery.ajax({

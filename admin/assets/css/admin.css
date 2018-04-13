@@ -26,7 +26,8 @@
 .no-click {
 	pointer-events: none;
 }
-.fieldMedium { width: 130px; }
+.fieldMedium { width: 120px; }
+.fieldMid { width: 80px; }
 .fieldFull { width: 100%; }
 .fieldSmall { width: 60px; }
 code { display: inline-block; margin: 3px;}

@@ -618,6 +618,8 @@ abstract class ComponentbuilderHelper
 				'description' => $result->description);
 			// number pointer
 			$nr = 0;
+			// value to check since there are false and null values even 0 in the values returned
+			$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
 			// set the headers
 			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
 			foreach ($properties as $property)
@@ -625,7 +627,7 @@ abstract class ComponentbuilderHelper
 				$example = (isset($property['example']) && self::checkString($property['example'])) ? self::shorten($property['example'], 30) : '';
 				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
 				// check if we should load the value
-				$value = self::getValueFromXMLstring($xml, $property['name']);
+				$value = self::getValueFromXMLstring($xml, $property['name'], $confirmation);
 				if(self::checkArray($settings) && isset($settings[$property['name']]))
 				{
 					// add the xml values
@@ -635,12 +637,12 @@ abstract class ComponentbuilderHelper
 					// add the name List Options as set
 					$field['nameListOptionsSet'][$property['name']] = $property['name'];
 				}
-				elseif (!$xml || $value)
+				elseif (!$xml || $confirmation !== $value)
 				{
 					// add the xml values
-					$field['values'] .= "\n\t" . $property['name'] . '="'. ($value) ? $value : $property['example'] .'" ';
+					$field['values'] .= "\n\t" . $property['name'] . '="'. ($confirmation !== $value) ? $value : $property['example'] .'" ';
 					// add the json values
-					$field['subform']['properties' . $nr] = array('name' => $property['name'], 'value' => ($value) ? $value : $property['example'], 'desc' => $property['description']);
+					$field['subform']['properties' . $nr] = array('name' => $property['name'], 'value' => ($confirmation !== $value) ? $value : $property['example'], 'desc' => $property['description']);
 				}
 				// add the name List Options
 				$field['nameListOptions'][$property['name']] = $property['name'];
@@ -655,17 +657,13 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	public static function getValueFromXMLstring($xml, $get)
+	public static function getValueFromXMLstring($xml, $get, $confirmation)
 	{
 		if (self::checkString($xml))
 		{
-			$value = self::getBetween($xml, $get.'="', '"');
-			if (self::checkString($value))
-			{
-				return $value;
-			}
+			return self::getBetween($xml, $get.'="', '"', $confirmation);
 		}
-		return false;
+		return $confirmation;
 	}
 
 
@@ -845,11 +843,12 @@ abstract class ComponentbuilderHelper
 	* @param  string          $content    The content to search
 	* @param  string          $start        The starting value
 	* @param  string          $end         The ending value
+	* @param  string          $default     The default value if none found
 	*
 	* @return  string          On success / empty string on failure 
 	* 
 	*/
-	public static function getBetween($content, $start, $end)
+	public static function getBetween($content, $start, $end, $default = '')
 	{
 		$r = explode($start, $content);
 		if (isset($r[1]))
@@ -857,7 +856,7 @@ abstract class ComponentbuilderHelper
 			$r = explode($end, $r[1]);
 			return $r[0];
 		}
-		return '';
+		return $default;
 	}
 
 	/**
