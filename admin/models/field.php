@@ -903,8 +903,8 @@ class ComponentbuilderModelField extends JModelAdmin
 				// make sure we have the correct values
 				if (ComponentbuilderHelper::checkArray($property) && isset($property['name']) && ComponentbuilderHelper::checkString($property['name']) && isset($property['value']))
 				{
-					// fix the name
-					$property['name'] = ComponentbuilderHelper::safeString($property['name']);
+					// fix the name (TODO)
+					// $property['name'] = ComponentbuilderHelper::safeString($property['name']);
 					// some fixes, just in case (more can be added)
 					switch ($property['name'])
 					{

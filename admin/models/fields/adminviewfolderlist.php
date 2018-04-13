@@ -49,20 +49,6 @@ class JFormFieldAdminviewfolderlist extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		// get custom folder files
-		$localfolder = JPATH_COMPONENT_ADMINISTRATOR.'/views';
-		// set the default
-		$options = array();
-		// import all needed classes
-		jimport('joomla.filesystem.folder');
-		// now check if there are files in the folder
-		if (JFolder::exists($localfolder) && $folders = JFolder::folders($localfolder))
-		{
-			foreach ($folders as $folder)
-			{
-				$options[] = JHtml::_('select.option', $folder, ComponentbuilderHelper::safeString($folder, 'W'));
-			}
-		}
-		return $options;
+		return null;
 	}
 }

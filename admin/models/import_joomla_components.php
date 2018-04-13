@@ -1378,6 +1378,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		{
 			unset($item->metakey);
 		}
+		// remove not_required
+		if (isset($item->not_required))
+		{
+			unset($item->not_required);
+		}
 		// actions to effect all
 		if (isset($item->asset_id))
 		{
