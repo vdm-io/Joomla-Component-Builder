@@ -601,6 +601,13 @@ function getFieldOptions(fieldtype){
 			// append to note_filter_information class
 			jQuery('.note_filter_information').closest('.control-group').prepend(result.extra);
 			// append to note_filter_information class
+			if(result.textarea){
+				jQuery.each( result.textarea, function( i, tField ) {
+					// append to note_filter_information class
+					jQuery('.note_filter_information').closest('.control-group').prepend(tField);
+				});
+			}
+			// append to note_filter_information class
 			jQuery('.note_filter_information').closest('.control-group').prepend(result.subform);
 			// add the watcher
 			rowWatcher();

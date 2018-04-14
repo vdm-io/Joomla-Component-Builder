@@ -612,6 +612,7 @@ abstract class ComponentbuilderHelper
 			$field = array(
 				'subform' => array(),
 				'nameListOptions' => array(),
+				'php' => array(),
 				'values' => "<field ", 
 				'values_description' => '<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">', 
 				'short_description' => $result->short_description, 
@@ -624,32 +625,62 @@ abstract class ComponentbuilderHelper
 			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
 			foreach ($properties as $property)
 			{
-				$example = (isset($property['example']) && self::checkString($property['example'])) ? self::shorten($property['example'], 30) : '';
+				$example = (isset($property['example']) && self::checkString($property['example'])) ? $property['example'] : '';
 				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
 				// check if we should load the value
 				$value = self::getValueFromXMLstring($xml, $property['name'], $confirmation);
+				// check if this is a php field
+				$addPHP = false;
+				if (strpos($property['name'], 'type_php') !== false)
+				{
+					$addPHP = true;
+					$phpKey = trim(preg_replace('/[0-9]+/', '', $property['name']), '_');
+					// start array if not already set
+					if (!isset($field['php'][$phpKey]))
+					{
+						$field['php'][$phpKey] = array();
+						$field['php'][$phpKey]['value'] = array();
+						$field['php'][$phpKey]['desc'] = $property['description'];
+					}
+				}
+				// was the settings for the property passed
 				if(self::checkArray($settings) && isset($settings[$property['name']]))
 				{
 					// add the xml values
-					$field['values'] .= "\n\t".$property['name'].'="'.$settings[$property['name']].'" ';
+					$field['values'] .= PHP_EOL."\t".$property['name'].'="'.$settings[$property['name']].'" ';
 					// add the json values
-					$field['subform']['properties'.$nr] = array('name' => $property['name'], 'value' => $settings[$property['name']]);
-					// add the name List Options as set
-					$field['nameListOptionsSet'][$property['name']] = $property['name'];
+					if ($addPHP)
+					{
+						$field['php'][$phpKey]['value'][] = $settings[$property['name']];
+					}
+					else
+					{
+						$field['subform']['properties'.$nr] = array('name' => $property['name'], 'value' => $settings[$property['name']], 'desc' => $property['description']);
+					}
 				}
 				elseif (!$xml || $confirmation !== $value)
 				{
 					// add the xml values
-					$field['values'] .= "\n\t" . $property['name'] . '="'. ($confirmation !== $value) ? $value : $property['example'] .'" ';
+					$field['values'] .= PHP_EOL."\t" . $property['name'] . '="'. ($confirmation !== $value) ? $value : $example .'" ';
 					// add the json values
-					$field['subform']['properties' . $nr] = array('name' => $property['name'], 'value' => ($confirmation !== $value) ? $value : $property['example'], 'desc' => $property['description']);
+					if ($addPHP)
+					{
+						$field['php'][$phpKey]['value'][] = ($confirmation !== $value) ? $value : $example;
+					}
+					else
+					{
+						$field['subform']['properties' . $nr] = array('name' => $property['name'], 'value' => ($confirmation !== $value) ? $value : $example, 'desc' => $property['description']);
+					}
 				}
 				// add the name List Options
-				$field['nameListOptions'][$property['name']] = $property['name'];
+				if (!$addPHP)
+				{
+					$field['nameListOptions'][$property['name']] = $property['name'];
+				}
 				// increment the number
 				$nr++;
 			}
-			$field['values'] .= "\n/>";
+			$field['values'] .= PHP_EOL."/>";
 			$field['values_description'] .= '</tbody></table>';
 			// return found field options
 			return $field;

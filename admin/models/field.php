@@ -893,6 +893,10 @@ class ComponentbuilderModelField extends JModelAdmin
 		$properties = $input->get('properties', null, 'ARRAY');
 		// get the extra properties
 		$extraproperties = $input->get('extraproperties', null, 'ARRAY');
+		// get the type phpx property
+		$typephpx = $input->get('property_type_phpx', null, 'RAW');
+		// get the type php property
+		$typephp = $input->get('property_type_php', null, 'RAW');
 		// make sure we have an array
 		if (ComponentbuilderHelper::checkArray($properties))
 		{
@@ -931,10 +935,22 @@ class ComponentbuilderModelField extends JModelAdmin
 					}
 				}
 			}
+			// make sure we have a string
+			if (ComponentbuilderHelper::checkString($typephp))
+			{
+				// load the type_php property
+				$bucket[] = "\t".'type_php_1="'. str_replace('"', "'", $typephp).'"';
+			}
+			// make sure we have a string
+			if (ComponentbuilderHelper::checkString($typephpx))
+			{
+				// load the type_phpx property
+				$bucket[] = "\t".'type_phpx_1="'. str_replace('"', "'", $typephp).'"';
+			}
 			// if the bucket has been loaded
 			if (ComponentbuilderHelper::checkArray($bucket))
 			{
-				$data['xml'] = "<field\n".implode("\n", $bucket)."\n/>";
+				$data['xml'] = "<field".PHP_EOL.implode(PHP_EOL, $bucket).PHP_EOL."/>";
 			}
 		}
 

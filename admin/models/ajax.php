@@ -2244,6 +2244,20 @@ class ComponentbuilderModelAjax extends JModelList
 			// load the html 
 			$field['subform'] = '<div class="control-label prop_removal">'. $properties->label . '</div><div class="controls prop_removal">' . $properties->input . '</div>';
 			$field['extra'] = '<div class="control-label prop_removal">'. $extras->label . '</div><div class="controls prop_removal">' . $extras->input . '</div>';
+			// check if we have PHP values
+			if (ComponentbuilderHelper::checkArray($field['php']))
+			{
+				$field['textarea'] = array();
+				foreach($field['php'] as $name => $values)
+				{
+					$value = implode(PHP_EOL, $values['value']);
+					$textarea = $this->buildFieldTexteara($name, $values['desc'], $value, substr_count( $value, PHP_EOL ));
+					// load the html 
+					$field['textarea'][] = '<div class="control-label prop_removal">'. $textarea->label . '</div><div class="controls prop_removal">' . $textarea->input . '</div><br />';
+				}
+			}
+			// remove some unneeded values
+			unset($field['values']);
 			// return found field options
 			return $field;
 		}
@@ -2275,6 +2289,32 @@ class ComponentbuilderModelAjax extends JModelList
 			return $values;
 		}
 		return null;
+	}
+
+	protected function buildFieldTexteara($name, $desc, $default, $rows)
+	{
+		// get the textarea
+		$textarea = JFormHelper::loadFieldType('textarea', true);
+		// start building the name field XML
+		$textareaXML = new SimpleXMLElement('<field/>');
+		// textarea attributes
+		$textareaAttribute = array(
+			'type' => 'textarea',
+			'name' => 'property_'.$name,
+			'label' => $desc,
+			'rows' => (int) ($rows >= 3) ? $rows : $rows + 2,
+			'cols' => '15',
+			'class' => 'text_area  span12',
+			'filter' => 'RAW',
+			'hint' => 'COM_COMPONENTBUILDER__ADD_YOUR_PHP_SCRIPT_HERE');
+		// load the textarea attributes
+		ComponentbuilderHelper::xmlAddAttributes($textareaXML, $textareaAttribute);
+
+		// setup subform with values
+		$textarea->setup($textareaXML, $default);
+
+		// return textarea object
+		return $textarea;
 	}
 
 	protected function buildFieldOptionsSubform($values, $nameListOptions = null, $name = 'properties', $label = 'COM_COMPONENTBUILDER_PROPERTIESBR_SMALLHERE_YOU_CAN_SET_THE_PROPERTIES_FOR_THIS_FIELDSMALL')
