@@ -51,6 +51,122 @@ class ComponentbuilderModelLanguages extends JModelList
 
 		parent::__construct($config);
 	}
+
+	/**
+	 * Load all the languages found in Joomla into JCB
+	 *
+	 * @since   2.7.5
+	 *
+	 * @return  bool true on success
+	 */
+	public function buildLanguages()
+	{
+		if ($languages = $this->getLanguages())
+		{
+			// make sure we have an array
+			if (ComponentbuilderHelper::checkArray($languages))
+			{
+				// get the model
+				$model = ComponentbuilderHelper::getModel('language');
+				foreach ($languages as $language)
+				{
+					// only load it is a package
+					if ('package' === $language->type)
+					{
+						// build array to store/update
+						$tmp = array();
+						$tmp['id'] = 0;
+						$tmp['name'] = (string) $language->name;
+						$tmp['langtag'] = (string) str_replace('pkg_', '', $language->element);
+						// check if already set
+						if ($id = ComponentbuilderHelper::getVar('language', $tmp['langtag'], 'langtag', 'id'))
+						{
+							$tmp['id'] = (int) $id;
+						}
+						// save update the language in the database
+						$model->save($tmp);
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	* Gets an array of objects from the updatesite.
+	 *
+	 * @return  object[]  An array of results.
+	 *
+	 * @since   2.7.5
+	 * @throws  RuntimeException
+	 */
+	protected function getLanguages()
+	{
+		$updateSite = $this->getUpdateSite();
+
+		$http = new JHttp;
+
+		try
+		{
+			$response = $http->get($updateSite);
+		}
+		catch (RuntimeException $e)
+		{
+			$response = null;
+		}
+
+		if ($response === null || $response->code !== 200)
+		{
+			JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_NO_LANGUAGES_UPDATE_SERVER_FOUND'), 'warning');
+
+			return;
+		}
+
+		$updateSiteXML = simplexml_load_string($response->body);
+		$languages     = array();
+
+		foreach ($updateSiteXML->extension as $extension)
+		{
+			$language = new stdClass;
+
+			foreach ($extension->attributes() as $key => $value)
+			{
+				$language->$key = (string) $value;
+			}
+
+			$languages[$language->name] = $language;
+		}
+
+		usort($languages, function($a, $b)
+		{
+			return strcmp($a->name, $b->name);
+		});
+
+		return $languages;
+	}
+
+	/**
+	 * Get the Update Site
+	 *
+	 * @since   2.7.5
+	 *
+	 * @return  string  The URL of the Accredited Languagepack Updatesite XML
+	 */
+	private function getUpdateSite()
+	{
+		$db    = $this->getDbo();
+		$query = $db->getQuery(true)
+			->select($db->qn('us.location'))
+			->from($db->qn('#__extensions', 'e'))
+			->where($db->qn('e.type') . ' = ' . $db->q('package'))
+			->where($db->qn('e.element') . ' = ' . $db->q('pkg_en-GB'))
+			->where($db->qn('e.client_id') . ' = 0')
+			->join('LEFT', $db->qn('#__update_sites_extensions', 'use') . ' ON ' . $db->qn('use.extension_id') . ' = ' . $db->qn('e.extension_id'))
+			->join('LEFT', $db->qn('#__update_sites', 'us') . ' ON ' . $db->qn('us.update_site_id') . ' = ' . $db->qn('use.update_site_id'));
+
+		return $db->setQuery($query)->loadResult();
+	}
 	
 	/**
 	 * Method to auto-populate the model state.

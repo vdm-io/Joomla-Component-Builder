@@ -134,10 +134,10 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
 			} 
-			if ($this->user->authorise('joomla_component.export_components', 'com_componentbuilder'))
+			if ($this->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder'))
 			{
-				// add Export Components button.
-				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_COMPONENTS', false);
+				// add Export JCB Packages button.
+				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_JCB_PACKAGES', false);
 			}
 			if ($this->user->authorise('joomla_component.backup', 'com_componentbuilder'))
 			{
@@ -159,10 +159,10 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 				JToolBarHelper::custom('joomla_components.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
 		}
-		if ($this->user->authorise('joomla_component.import_components', 'com_componentbuilder'))
+		if ($this->user->authorise('joomla_component.import_jcb_packages', 'com_componentbuilder'))
 		{
-			// add Import Components button.
-			JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_COMPONENTS', false);
+			// add Import JCB Packages button.
+			JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_JCB_PACKAGES', false);
 		} 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_component.import'))

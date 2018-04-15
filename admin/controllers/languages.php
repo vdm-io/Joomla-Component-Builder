@@ -108,4 +108,30 @@ class ComponentbuilderControllerLanguages extends JControllerAdmin
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=languages', false), $message, 'error');
 		return;
 	}  
+
+	public function buildLanguages()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// check if user has the right
+		$user = JFactory::getUser();
+		if($user->authorise('core.create', 'com_componentbuilder'))
+		{
+			// get the model
+			$model = $this->getModel('languages');
+			if ($model->buildLanguages())
+			{
+				// set success message
+				$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_IMPORT_SUCCESS').'</h1>';
+				$message .= '<p>'.JText::_('COM_COMPONENTBUILDER_ALL_THE_LANGUAGES_FOUND_IN_JOOMLA_WERE_SUCCESSFULLY_IMPORTED').'</p>';
+				// set redirect
+				$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=languages', false);
+				$this->setRedirect($redirect_url, $message);
+			}
+		}
+		// set redirect
+		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=languages', false);
+		$this->setRedirect($redirect_url);
+		return false;
+	}
 }
