@@ -80,14 +80,17 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		parent::populateState();
 	}
 	
-	protected $app;
+	public $canmerge 		 	= 1;
+	public $postfix 		 	= false;
+	public $forceUpdate 	 	= 0;
+	public $hasKey 		 	= 0;
+	public $sleutle 		 	= null;
+	public $data 		 		= false;
+	public $app;
+
 	protected $dir 		 		= false;
-	protected $data 		 		= false;
 	protected $target 		 	= false;
 	protected $newID 		 	= array();
-	protected $forceUpdate 	 	= 0;
-	protected $hasKey 		 	= 0;
-	protected $sleutle 		 	= null;
 	protected $updateAfter 	 	= array('field' => array(), 'adminview' => array());
 	protected $divergedDataMover 	= array();
 	protected $fieldTypes		 	= array();
@@ -95,6 +98,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected $specialValue 	 	= false;
 	protected $checksum  	 	= null;
 	protected $checksumURLs  	= array('vdm' => 'https://raw.githubusercontent.com/vdm-io/JCB-Packages/master/');
+	protected $mustMerge		= array('validation_rule', 'fieldtype', 'snippet', 'language', 'language_translation');
 
 	/**
 	 * Import an spreadsheet from either folder, url or upload.
@@ -225,6 +229,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$this->forceUpdate = $this->app->input->getInt('force_update', 0);
 		// show more information
 		$this->moreInfo = $this->app->input->getInt('more_info', 0);
+		// allow merge
+		$this->canmerge = $this->app->input->getInt('canmerge', 1);
 		// has a key
 		 $this->hasKey = $this->app->input->getInt('haskey', 0);
 		// die sleutle
@@ -695,6 +701,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$this->user = JFactory::getUser();
 		// set some defaults
 		$this->today = JFactory::getDate()->toSql();
+		// if we can't merge add postfix to name
+		if (!$this->canmerge)
+		{
+			// set some postfix
+			$this->postfix = ' ('.ComponentbuilderHelper::randomkey(2).')';
+		}
 		// the array of tables to store
 		$tables = array(
 			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
@@ -732,7 +744,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	* @return  boolean false on failure
 	*
 	**/
-	protected function saveSmartItems($table)
+	public function saveSmartItems($table)
 	{
 		if (isset($this->data[$table]) && ComponentbuilderHelper::checkArray($this->data[$table]))
 		{
@@ -741,6 +753,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			$canEdit = $canDo->get('core.edit');
 			$canState = $canDo->get('core.edit.state');
 			$canCreate = $canDo->get('core.create');
+			// check if we should allow merge of local values
+			$canmerge = $this->allowMerge($table);
 			// set id keeper
 			if (!isset($this->newID[$table]))
 			{
@@ -750,7 +764,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				$oldID = (int) $item->id;
 				// first check if exist
-				if ($local = $this->getLocalItem($item, $table, 1))
+				if ($canmerge && $local = $this->getLocalItem($item, $table, 1))
 				{
 					// display more import info
 					if ($this->moreInfo)
@@ -819,6 +833,21 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		return true;
+	}
+
+	/**
+	* Check if we should allow merge for this table
+	*
+	* @return  boolean
+	*
+	**/
+	protected function allowMerge($table)
+	{
+		if ($this->canmerge == 1 || in_array($table, $this->mustMerge))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -989,7 +1018,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	* @return  void
 	*
 	**/
-	protected function updateAfter()
+	public function updateAfter()
 	{
 		if (ComponentbuilderHelper::checkArray($this->updateAfter['field']))
 		{
@@ -1097,7 +1126,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	* @return  void
 	*
 	**/
-	protected function moveDivergedData()
+	public function moveDivergedData()
 	{
 		// check if there is data to move
 		if (ComponentbuilderHelper::checkArray($this->divergedDataMover))
@@ -1429,6 +1458,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BFIELD_TYPEB_IDS_MISMATCH_IN_BSB', $item->fieldtype, ComponentbuilderHelper::safeString($type, 'w').':'.$item->id), 'error');
 					return false;
 				}
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->name = $item->name.$this->postfix;
+				}
 			break;
 			case 'dynamic_get':
 				// update the view_table_main ID
@@ -1455,6 +1489,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				);
 				// update the subform ids
 				$this->updateSubformsIDs($item, 'dynamic_get', $updaterT);
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->name = $item->name.$this->postfix;
+				}
 			break;
 			case 'layout':
 			case 'template':
@@ -1462,6 +1501,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = $this->setNewID($item, 'dynamic_get', 'dynamic_get', $type);
 				// update the snippet
 				$item = $this->setNewID($item, 'snippet', 'snippet', $type);
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->name = $item->name.$this->postfix;
+				}
 			break;
 			case 'custom_admin_view':
 			case 'site_view':
@@ -1481,6 +1525,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				);
 				// update the repeatable fields				
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->system_name = $item->system_name.$this->postfix;
+				}
 			break;
 			case 'admin_view':
 				// set the getters anchors
@@ -1530,6 +1579,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->system_name = $item->system_name.$this->postfix;
+				}
 			break;
 			case 'joomla_component':
 				// set the anchors getters
@@ -1656,6 +1710,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->system_name = $item->system_name.$this->postfix;
+				}
 			break;
 			case 'component_admin_views':
 				// diverged id already updated

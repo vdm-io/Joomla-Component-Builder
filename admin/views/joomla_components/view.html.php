@@ -144,6 +144,11 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 				// add Backup button.
 				JToolBarHelper::custom('joomla_components.backup', 'archive', '', 'COM_COMPONENTBUILDER_BACKUP', false);
 			}
+			if ($this->user->authorise('joomla_component.clone', 'com_componentbuilder'))
+			{
+				// add Clone button.
+				JToolBarHelper::custom('joomla_components.cloner', 'save-copy', '', 'COM_COMPONENTBUILDER_CLONE', false);
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{

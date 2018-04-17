@@ -153,6 +153,31 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			$more_info->setup($more_infoXML,0);
 			// add to form
 			$form[] = $more_info;
+
+			// get the merge radio field
+			$merge = JFormHelper::loadFieldType('radio',true);
+			// start merge xml
+			$mergeXML = new SimpleXMLElement('<field/>');
+			// merge attributes
+			$mergeAttributes = array(
+				'type' => 'radio',
+				'name' => 'canmerge',
+				'label' => 'COM_COMPONENTBUILDER_MERGE',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_SHOULD_WE_MERGE_THE_COMPONENTS_WITH_SIMILAR_LOCAL_COMPONENTS_MERGING_THE_COMPONENTS_USE_TO_BE_THE_DEFAULT_BEHAVIOUR_BUT_NOW_YOU_CAN_IMPORT_THE_COMPONENTS_AND_FORCE_IT_NOT_TO_MERGE_THE_FOLLOWING_AREAS_VALIDATION_RULE_FIELDTYPE_SNIPPET_LANGUAGE_LANGUAGE_TRANSLATION_BMUST_AND_WILL_STILLB_MERGE_EVEN_OF_YOUR_SELECTION_IS_BNOB_BECAUSE_OF_THE_SINGULAR_NATURE_OF_THOSE_AREAS',
+				'default' => '1');
+			// load the merge attributes
+			ComponentbuilderHelper::xmlAddAttributes($mergeXML, $mergeAttributes);
+			// set the merge options
+			$mergeOptions = array(
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the merge options
+			ComponentbuilderHelper::xmlAddOptions($mergeXML, $mergeOptions);
+			// setup the merge radio field
+			$merge->setup($mergeXML,1);
+			// add to form
+			$form[] = $merge;
 		
 			if (!$this->packageInfo || (isset($this->packageInfo['getKeyFrom']) && ComponentbuilderHelper::checkArray($this->packageInfo['getKeyFrom'])))
 			{

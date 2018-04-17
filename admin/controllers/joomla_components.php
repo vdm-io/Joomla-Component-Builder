@@ -398,6 +398,56 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		return;
 	}
 
+	public function cloner()
+	{
+		// Get the model
+		$model = $this->getModel('Joomla_components');
+		// check if export is allowed for this user.
+		$model->user = JFactory::getUser();
+		if ($model->user->authorise('joomla_component.cloner', 'com_componentbuilder') && $model->user->authorise('core.copy', 'com_componentbuilder'))
+		{
+			// Get the input
+			$input = JFactory::getApplication()->input;
+			$pks = $input->post->get('cid', array(), 'array');
+			// Sanitize the input
+			JArrayHelper::toInteger($pks);
+			// check if there is any selections
+			if (!ComponentbuilderHelper::checkArray($pks))
+			{
+				// Redirect to the list screen with error.
+				$message = JText::_('COM_COMPONENTBUILDER_NO_COMPONENT_WAS_SELECTED_PLEASE_MAKE_A_SELECTION_OF_ONE_COMPONENT_AND_TRY_AGAIN');
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+				return;
+			}
+			// only one component allowed at this time
+			elseif (count( (array) $pks) !== 1)
+			{
+				// Redirect to the list screen with error.
+				$message = JText::_('COM_COMPONENTBUILDER_ONLY_ONE_COMPONENT_CAN_BE_CLONED_AT_A_TIME_PLEASE_SELECT_ONE_AND_TRY_AGAIN');
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+				return;
+			}
+			// set the active type
+			$model->activeType = 'clone';
+			// clone the component and the views and the fields... everything linked to the component.
+			if ($model->cloner($pks))
+			{
+				// clone was successful
+				$message = JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_WITH_ALL_LINKED_ADMIN_VIEWS_FIELDS_LINKED_TO_ADMIN_VIEWS_CUSTOM_ADMIN_VIEWS_SITE_VIEWS_TEMPLATES_AND_LAYOUTS_WERE_CLONED_SUCCESSFUL');
+				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message);
+				return;
+			}
+			// Redirect to the list screen with error.
+			$message = JText::_('COM_COMPONENTBUILDER_CLONE_FAILED');
+			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+			return;
+		}
+		// Redirect to the list screen with error.
+		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_CLONE_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		return;
+	}
+
 	protected function getApiUser()
 	{
 		// admin area does not have API user, only front-end (so we fallback on login user)

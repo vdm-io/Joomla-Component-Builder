@@ -80,11 +80,59 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	protected $params;
 	protected $tempPath;
 	protected $customPath;
-	protected $smartExport = array();
-	protected $exportIDs = array();
+	protected $smartBox = array();
+	protected $smartIDs = array();
 	protected $customCodeM = array();
 	protected $fieldTypes = array();
 	protected $isMultiple = array();
+
+	/**
+	* Method to clone the component
+	*
+	* @return bool on success.
+	*/
+	public function cloner($pks)
+	{
+		// get the components 
+		if ($items = $this->getComponents($pks))
+		{
+			// update $pks with returned IDs
+			$pks = array();
+			// start loading the components
+			$this->smartBox['joomla_component'] = array();
+			foreach ($items as $nr => &$item)
+			{
+				// check if user has access
+				$access = ($this->user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $this->user->authorise('joomla_component.access', 'com_componentbuilder'));
+				if (!$access)
+				{
+					unset($items[$nr]);
+					continue;
+				}
+				// make sure old fields are not exported any more
+				$this->removeOldComponentValues($item);
+				// load to global object
+				$this->smartBox['joomla_component'][$item->id] = $item;
+				// add to pks
+				$pks[] = $item->id;
+			}
+
+			// has any data been set for this component
+			if (ComponentbuilderHelper::checkArray($pks))
+			{
+				// load the linked stuff
+				$this->getLinkedToComponents($pks);
+			}
+
+			// has any data been set for this component
+			if (isset($this->smartBox['joomla_component']) && ComponentbuilderHelper::checkArray($this->smartBox['joomla_component']))
+			{
+				// set the folder and move the files of each component to the folder
+				return $this->smartCloner();
+			}
+		}
+		return false;
+	}
 
 	/**
 	* Method to build the export package
@@ -92,6 +140,240 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	* @return bool on success.
 	*/
 	public function getSmartExport($pks)
+	{
+		// get the components 
+		if ($items = $this->getComponents($pks))
+		{
+			// set custom folder path
+			$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
+			// check what type of export or backup this is
+			if ('backup' === $this->activeType || 'manualBackup' === $this->activeType)
+			{
+				// set the paths
+				if (!$this->backupPath = $this->params->get('cronjob_backup_folder_path', null))
+				{
+					// set the paths
+					$comConfig = JFactory::getConfig();
+					$this->backupPath = $comConfig->get('tmp_path');
+				}
+				// check what backup type we are working with here
+				$this->backupType = $this->params->get('cronjob_backup_type', 1); // 1 = local folder; 2 = remote server (default is local)
+				// if remote server get the ID
+				if (2 == $this->backupType)
+				{
+					$this->backupServer = $this->params->get('cronjob_backup_server', null);
+				}
+				// set the date array
+				$date = JFactory::getDate();
+				$placeholderDate = array();
+				$placeholderDate['[YEAR]'] = $date->format('Y');
+				$placeholderDate['[MONTH]'] = $date->format('m');
+				$placeholderDate['[DAY]'] = $date->format('d');
+				$placeholderDate['[HOUR]'] = $date->format('H');
+				$placeholderDate['[MINUTE]'] = $date->format('i');
+				// get the package name
+				$packageName = $this->params->get('backup_package_name', 'JCB_Backup_[YEAR]_[MONTH]_[DAY]');
+				$this->packageName = str_replace(array_keys($placeholderDate), array_values($placeholderDate), $packageName);
+			}
+			else
+			{
+				// set the paths
+				$comConfig = JFactory::getConfig();
+				$this->backupPath = $comConfig->get('tmp_path');
+				// set the package name
+				if (count($items) == 1)
+				{
+					$this->packageName = 'JCB_' . $this->getPackageName($items);
+				}
+				else
+				{
+					$this->packageName = 'JCB_smartPackage';
+				}
+			}
+			// set the package path
+			$this->packagePath = rtrim($this->backupPath, '/') . '/' . $this->packageName;
+			$this->zipPath = $this->packagePath .'.zip';
+			if (JFolder::exists($this->packagePath))
+			{
+				// remove if old folder is found
+				ComponentbuilderHelper::removeFolder($this->packagePath);
+			}
+			// create the folders
+			JFolder::create($this->packagePath);
+			// Get the basic encryption.
+			$basickey = ComponentbuilderHelper::getCryptKey('basic');
+			// Get the encription object.
+			if ($basickey)
+			{
+				$basic = new FOFEncryptAes($basickey, 128);
+			}
+			// update $pks with returned IDs
+			$pks = array();
+			// start loading the components
+			$this->smartBox['joomla_component'] = array();
+			foreach ($items as $nr => &$item)
+			{
+				// check if user has access
+				$access = ($this->user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $this->user->authorise('joomla_component.access', 'com_componentbuilder'));
+				if (!$access)
+				{
+					unset($items[$nr]);
+					continue;
+				}
+				// make sure old fields are not exported any more
+				$this->removeOldComponentValues($item);
+				// build information data set
+				$this->info['name'][$item->id] = $item->name;
+				$this->info['short_description'][$item->id] = $item->short_description;
+				$this->info['component_version'][$item->id] = $item->component_version;
+				$this->info['companyname'][$item->id] = $item->companyname;
+				$this->info['author'][$item->id] = $item->author;
+				$this->info['email'][$item->id] = $item->email;
+				$this->info['website'][$item->id] = $item->website;
+				$this->info['license'][$item->id] = $item->license;
+				$this->info['copyright'][$item->id] = $item->copyright;
+				// set the keys
+				if (isset($item->export_key) && ComponentbuilderHelper::checkString($item->export_key))
+				{
+					// keep the key locked for exported data set
+					$export_key = $item->export_key;
+					if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
+					{
+						$export_key = rtrim($basic->decryptString($item->export_key), "\0");
+					}
+					// make sure we have a string
+					if (strlen($export_key) > 4 )
+					{
+						$this->key[$item->id] = $export_key;
+					}
+				}
+				// get name of this item key_name
+				if (isset($item->system_name))
+				{
+					$keyName = ComponentbuilderHelper::safeString($item->system_name, 'cAmel');
+				}
+				else
+				{
+					$keyName = ComponentbuilderHelper::safeString($item->name_code);
+				}
+				// set the export buy links
+				if (isset($item->export_buy_link) && ComponentbuilderHelper::checkString($item->export_buy_link))
+				{
+					// keep the key locked for exported data set
+					$this->exportBuyLinks[$keyName] = $item->export_buy_link;
+				}
+				// set the export buy links
+				if (isset($item->export_package_link) && ComponentbuilderHelper::checkString($item->export_package_link))
+				{
+					// keep the key locked for exported data set
+					$this->exportPackageLinks[$keyName] = $item->export_package_link;
+				}
+				// component image
+				$this->moveIt(array($item->image), 'image');
+				// set the custom code ID's
+				$this->setCustomCodeIds($item, 'joomla_component');
+				// set the language strings for this component
+				$this->setLanguageTranslation($item->id);
+				// load to global object
+				$this->smartBox['joomla_component'][$item->id] = $item;
+				// add to pks
+				$pks[] = $item->id;
+			}
+
+			// has any data been set for this component
+			if (ComponentbuilderHelper::checkArray($pks))
+			{
+				// load the linked stuff
+				$this->getLinkedToComponents($pks);
+			}
+
+			// has any data been set for this component
+			if (isset($this->smartBox['joomla_component']) && ComponentbuilderHelper::checkArray($this->smartBox['joomla_component']))
+			{
+				// set the folder and move the files of each component to the folder
+				return $this->smartExportBuilder();
+			}
+		}
+		return false;
+	}
+
+	/**
+	* Get Everything Linked to Components
+	*
+	* @return void
+	*/
+	protected function getLinkedToComponents($pks)
+	{
+		// array of tables linked to joomla_component
+		$linkedTables = array(
+			'custom_code' => 'component',
+			'component_files_folders' => 'joomla_component',
+			'component_admin_views' => 'joomla_component',
+			'component_config' => 'joomla_component',
+			'component_site_views' => 'joomla_component',
+			'component_custom_admin_views' => 'joomla_component',
+			'component_updates' => 'joomla_component',
+			'component_mysql_tweaks' => 'joomla_component',
+			'component_custom_admin_menus' => 'joomla_component',
+			'component_dashboard' => 'joomla_component' );
+		// load all tables linked to joomla_component
+		foreach($linkedTables as $table => $field)
+		{
+			$this->setData($table, $pks, $field);
+		}
+		// add fields and conditions
+		if (isset($this->smartIDs['admin_view']) && ComponentbuilderHelper::checkArray($this->smartIDs['admin_view']))
+		{
+			$this->setData('admin_fields', array_values($this->smartIDs['admin_view']), 'admin_view');
+			$this->setData('admin_fields_conditions', array_values($this->smartIDs['admin_view']), 'admin_view');
+		}
+		// add validation rules
+		if (isset($this->smartIDs['validation_rule']) && ComponentbuilderHelper::checkArray($this->smartIDs['validation_rule']))
+		{
+			$this->setData('validation_rule', array_values($this->smartIDs['validation_rule']), 'name');
+		}
+		// add field types
+		if (isset($this->smartIDs['fieldtype']) && ComponentbuilderHelper::checkArray($this->smartIDs['fieldtype']))
+		{
+			$this->setData('fieldtype', array_values($this->smartIDs['fieldtype']), 'id');
+		}
+		// add templates
+		if (isset($this->smartIDs['template']) && ComponentbuilderHelper::checkArray($this->smartIDs['template']))
+		{
+			$this->setData('template', array_values($this->smartIDs['template']), 'id');
+		}
+		// add layouts
+		if (isset($this->smartIDs['layout']) && ComponentbuilderHelper::checkArray($this->smartIDs['layout']))
+		{
+			$this->setData('layout', array_values($this->smartIDs['layout']), 'id');
+		}
+		// add dynamic get
+		if (isset($this->smartIDs['dynamic_get']) && ComponentbuilderHelper::checkArray($this->smartIDs['dynamic_get']))
+		{
+			$this->setData('dynamic_get', array_values($this->smartIDs['dynamic_get']), 'id');
+		}
+		// only if exporting
+		if ('clone' !== $this->activeType)
+		{
+			// add snippets
+			if (isset($this->smartIDs['snippet']) && ComponentbuilderHelper::checkArray($this->smartIDs['snippet']))
+			{
+				$this->setData('snippet', array_values($this->smartIDs['snippet']), 'id');
+			}
+			// add custom code
+			if (isset($this->smartIDs['custom_code']) && ComponentbuilderHelper::checkArray($this->smartIDs['custom_code']))
+			{
+				$this->setData('custom_code', array_values($this->smartIDs['custom_code']), 'id');
+			}
+		}
+	}
+
+	/**
+	* Get Components
+	*
+	* @return array of objects.
+	*/
+	protected function getComponents($pks)
 	{
 		// setup the query
 		if (ComponentbuilderHelper::checkArray($pks))
@@ -140,216 +422,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						$this->params = JComponentHelper::getParams('com_componentbuilder');
 					}
-					// set custom folder path
-					$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
-					// check what type of export or backup this is
-					if ('backup' === $this->activeType || 'manualBackup' === $this->activeType)
-					{
-						// set the paths
-						if (!$this->backupPath = $this->params->get('cronjob_backup_folder_path', null))
-						{
-							// set the paths
-							$comConfig = JFactory::getConfig();
-							$this->backupPath = $comConfig->get('tmp_path');
-						}
-						// check what backup type we are working with here
-						$this->backupType = $this->params->get('cronjob_backup_type', 1); // 1 = local folder; 2 = remote server (default is local)
-						// if remote server get the ID
-						if (2 == $this->backupType)
-						{
-							$this->backupServer = $this->params->get('cronjob_backup_server', null);
-						}
-						// set the date array
-						$date = JFactory::getDate();
-						$placeholderDate = array();
-						$placeholderDate['[YEAR]'] = $date->format('Y');
-						$placeholderDate['[MONTH]'] = $date->format('m');
-						$placeholderDate['[DAY]'] = $date->format('d');
-						$placeholderDate['[HOUR]'] = $date->format('H');
-						$placeholderDate['[MINUTE]'] = $date->format('i');
-						// get the package name
-						$packageName = $this->params->get('backup_package_name', 'JCB_Backup_[YEAR]_[MONTH]_[DAY]');
-						$this->packageName = str_replace(array_keys($placeholderDate), array_values($placeholderDate), $packageName);
-					}
-					else
-					{
-						// set the paths
-						$comConfig = JFactory::getConfig();
-						$this->backupPath = $comConfig->get('tmp_path');
-						// set the package name
-						if (count($items) == 1)
-						{
-							$this->packageName = 'JCB_' . $this->getPackageName($items);
-						}
-						else
-						{
-							$this->packageName = 'JCB_smartPackage';
-						}
-					}
-					// set the package path
-					$this->packagePath = rtrim($this->backupPath, '/') . '/' . $this->packageName;
-					$this->zipPath = $this->packagePath .'.zip';
-					if (JFolder::exists($this->packagePath))
-					{
-						// remove if old folder is found
-						ComponentbuilderHelper::removeFolder($this->packagePath);
-					}
-					// create the folders
-					JFolder::create($this->packagePath);
-					// Get the basic encryption.
-					$basickey = ComponentbuilderHelper::getCryptKey('basic');
-					// Get the encription object.
-					if ($basickey)
-					{
-						$basic = new FOFEncryptAes($basickey, 128);
-					}
-					// update $pks with returned IDs
-					$pks = array();
-					// start loading the components
-					$this->smartExport['joomla_component'] = array();
-					foreach ($items as $nr => &$item)
-					{
-						// check if user has access
-						$access = ($this->user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $this->user->authorise('joomla_component.access', 'com_componentbuilder'));
-						if (!$access)
-						{
-							unset($items[$nr]);
-							continue;
-						}
-						// make sure old fields are not exported any more
-						unset($item->addconfig);
-						unset($item->addadmin_views);
-						unset($item->addcustom_admin_views);
-						unset($item->addsite_views);
-						unset($item->version_update);
-						unset($item->sql_tweak);
-						unset($item->addcustommenus);
-						unset($item->dashboard_tab);
-						unset($item->php_dashboard_methods);
-						unset($item->addfiles);
-						unset($item->addfolders);
-						// build information data set
-						$this->info['name'][$item->id] = $item->name;
-						$this->info['short_description'][$item->id] = $item->short_description;
-						$this->info['component_version'][$item->id] = $item->component_version;
-						$this->info['companyname'][$item->id] = $item->companyname;
-						$this->info['author'][$item->id] = $item->author;
-						$this->info['email'][$item->id] = $item->email;
-						$this->info['website'][$item->id] = $item->website;
-						$this->info['license'][$item->id] = $item->license;
-						$this->info['copyright'][$item->id] = $item->copyright;
-						// set the keys
-						if (isset($item->export_key) && ComponentbuilderHelper::checkString($item->export_key))
-						{
-							// keep the key locked for exported data set
-							$export_key = $item->export_key;
-							if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
-							{
-								$export_key = rtrim($basic->decryptString($item->export_key), "\0");
-							}
-							// make sure we have a string
-							if (strlen($export_key) > 4 )
-							{
-								$this->key[$item->id] = $export_key;
-							}
-						}
-						// get name of this item key_name
-						if (isset($item->system_name))
-						{
-							$keyName = ComponentbuilderHelper::safeString($item->system_name, 'cAmel');
-						}
-						else
-						{
-							$keyName = ComponentbuilderHelper::safeString($item->name_code);
-						}
-						// set the export buy links
-						if (isset($item->export_buy_link) && ComponentbuilderHelper::checkString($item->export_buy_link))
-						{
-							// keep the key locked for exported data set
-							$this->exportBuyLinks[$keyName] = $item->export_buy_link;
-						}
-						// set the export buy links
-						if (isset($item->export_package_link) && ComponentbuilderHelper::checkString($item->export_package_link))
-						{
-							// keep the key locked for exported data set
-							$this->exportPackageLinks[$keyName] = $item->export_package_link;
-						}
-						// component image
-						$this->moveIt(array($item->image), 'image');
-						// set the custom code ID's
-						$this->setCustomCodeIds($item, 'joomla_component');
-						// set the language strings for this component
-						$this->setLanguageTranslation($item->id);						
-						// load to global object
-						$this->smartExport['joomla_component'][$item->id] = $item;
-						// add to pks
-						$pks[] = $item->id;
-					}
-					// array of tables linked to joomla_component
-					$linkedTables = array(
-						'custom_code' => 'component',
-						'component_files_folders' => 'joomla_component',
-						'component_admin_views' => 'joomla_component',
-						'component_config' => 'joomla_component',
-						'component_site_views' => 'joomla_component',
-						'component_custom_admin_views' => 'joomla_component',
-						'component_updates' => 'joomla_component',
-						'component_mysql_tweaks' => 'joomla_component',
-						'component_custom_admin_menus' => 'joomla_component',
-						'component_dashboard' => 'joomla_component' );
-					// load all tables linked to joomla_component
-					foreach($linkedTables as $table => $field)
-					{
-						$this->setData($table, $pks, $field);
-					}
-					// add fields and conditions
-					if (isset($this->exportIDs['admin_view']) && ComponentbuilderHelper::checkArray($this->exportIDs['admin_view']))
-					{
-						$this->setData('admin_fields', array_values($this->exportIDs['admin_view']), 'admin_view');
-						$this->setData('admin_fields_conditions', array_values($this->exportIDs['admin_view']), 'admin_view');
-					}
-					// add validation rules
-					if (isset($this->exportIDs['validation_rule']) && ComponentbuilderHelper::checkArray($this->exportIDs['validation_rule']))
-					{
-						$this->setData('validation_rule', array_values($this->exportIDs['validation_rule']), 'name');
-					}
-					// add field types
-					if (isset($this->exportIDs['fieldtype']) && ComponentbuilderHelper::checkArray($this->exportIDs['fieldtype']))
-					{
-						$this->setData('fieldtype', array_values($this->exportIDs['fieldtype']), 'id');
-					}
-					// add templates
-					if (isset($this->exportIDs['template']) && ComponentbuilderHelper::checkArray($this->exportIDs['template']))
-					{
-						$this->setData('template', array_values($this->exportIDs['template']), 'id');
-					}
-					// add layouts
-					if (isset($this->exportIDs['layout']) && ComponentbuilderHelper::checkArray($this->exportIDs['layout']))
-					{
-						$this->setData('layout', array_values($this->exportIDs['layout']), 'id');
-					}
-					// add dynamic get
-					if (isset($this->exportIDs['dynamic_get']) && ComponentbuilderHelper::checkArray($this->exportIDs['dynamic_get']))
-					{
-						$this->setData('dynamic_get', array_values($this->exportIDs['dynamic_get']), 'id');
-					}
-					// add snippets
-					if (isset($this->exportIDs['snippet']) && ComponentbuilderHelper::checkArray($this->exportIDs['snippet']))
-					{
-						$this->setData('snippet', array_values($this->exportIDs['snippet']), 'id');
-					}
-					// add custom code
-					if (isset($this->exportIDs['custom_code']) && ComponentbuilderHelper::checkArray($this->exportIDs['custom_code']))
-					{
-						$this->setData('custom_code', array_values($this->exportIDs['custom_code']), 'id');
-					}
-
-					// has any data been set for this component
-					if (isset($this->smartExport['joomla_component']) && ComponentbuilderHelper::checkArray($this->smartExport['joomla_component']))
-					{
-						// set the folder and move the files of each component to the folder
-						return $this->smartExportBuilder();
-					}
+					return $items;
 				}
 			}
 		}
@@ -357,16 +430,37 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	}
 
 	/**
+	* Remove all values that are no longer relevant.
+	*
+	* @return void.
+	*/
+	protected function removeOldComponentValues(&$item)
+	{
+		// make sure old fields are not used any more
+		unset($item->addconfig);
+		unset($item->addadmin_views);
+		unset($item->addcustom_admin_views);
+		unset($item->addsite_views);
+		unset($item->version_update);
+		unset($item->sql_tweak);
+		unset($item->addcustommenus);
+		unset($item->dashboard_tab);
+		unset($item->php_dashboard_methods);
+		unset($item->addfiles);
+		unset($item->addfolders);
+	}
+
+	/**
 	* Set export IDs.
 	*
 	* @return void.
 	*/
-	protected function setExportIDs($value, $table, $int = true)
+	protected function setSmartIDs($value, $table, $int = true)
 	{
 		// check if table has been set
-		if (!isset($this->exportIDs[$table]))
+		if (!isset($this->smartIDs[$table]))
 		{
-			$this->exportIDs[$table] = array();
+			$this->smartIDs[$table] = array();
 		}
 		// convert if value is in json
 		if (ComponentbuilderHelper::checkJson($value))
@@ -380,21 +474,21 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			{
 				if ($int && (ComponentbuilderHelper::checkString($id) || is_numeric($id)) && 0 !== (int) $id)
 				{
-					$this->exportIDs[$table][(int) $id] = (int) $id;
+					$this->smartIDs[$table][(int) $id] = (int) $id;
 				}
 				elseif (!$int && ComponentbuilderHelper::checkString($id))
 				{
-					$this->exportIDs[$table][$id] = $this->_db->quote($id);
+					$this->smartIDs[$table][$id] = $this->_db->quote($id);
 				}
 			}
 		}
 		elseif ($int && (ComponentbuilderHelper::checkString($value) || is_numeric($value)) && 0 !== (int) $value)
 		{
-			$this->exportIDs[$table][(int) $value] = (int) $value;
+			$this->smartIDs[$table][(int) $value] = (int) $value;
 		}
 		elseif (!$int && ComponentbuilderHelper::checkString($value))
 		{
-			$this->exportIDs[$table][$value] = $this->_db->quote($value);
+			$this->smartIDs[$table][$value] = $this->_db->quote($value);
 		}
 	}
 
@@ -519,22 +613,22 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// reset the global array
 				if ('template' === $table)
 				{
-					$this->exportIDs['template'] = array();
+					$this->smartIDs['template'] = array();
 				}
 				elseif ('layout' === $table)
 				{
-					$this->exportIDs['layout'] = array();
+					$this->smartIDs['layout'] = array();
 				}
 				// start loading the data
-				if (!isset($this->smartExport[$table]))
+				if (!isset($this->smartBox[$table]))
 				{
-					$this->smartExport[$table] = array();
+					$this->smartBox[$table] = array();
 				}
 				// start loading the found items
 				foreach ($items as $nr => &$item)
 				{
 					// set the data per id only once
-					if (!isset($item->id) || 0 === (int) $item->id || isset($this->smartExport[$table][$item->id]))
+					if (!isset($item->id) || 0 === (int) $item->id || isset($this->smartBox[$table][$item->id]))
 					{
 						continue;
 					}
@@ -571,11 +665,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						unset($item->addconditions);
 					}
 					// load to global object
-					$this->smartExport[$table][$item->id] = $item;
+					$this->smartBox[$table][$item->id] = $item;
 					// set the custom code ID's
 					$this->setCustomCodeIds($item, $table);
 					// actions to take if table is component_files_folders
-					if ('component_files_folders' === $table)
+					if ('component_files_folders' === $table && 'clone' !== $this->activeType)
 					{
 						// build files
 						$this->moveIt($this->getValues($item->addfiles, 'subform', 'file', null), 'file');
@@ -614,13 +708,17 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					if ('admin_view' === $table)
 					{
 						// add fields & conditions
-						$this->setExportIDs($item->id, 'admin_view');
-						// admin icon
-						$this->moveIt(array($item->icon), 'image');
-						// admin icon_add
-						$this->moveIt(array($item->icon_add), 'image');
-						// admin icon_category
-						$this->moveIt(array($item->icon_category), 'image');
+						$this->setSmartIDs($item->id, 'admin_view');
+						// do not move anything if clone
+						if ('clone' !== $this->activeType)
+						{
+							// admin icon
+							$this->moveIt(array($item->icon), 'image');
+							// admin icon_add
+							$this->moveIt(array($item->icon_add), 'image');
+							// admin icon_category
+							$this->moveIt(array($item->icon_category), 'image');
+						}
 					}
 					// actions to take if table is admin_fields
 					if ('admin_fields' === $table)
@@ -639,7 +737,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					if ('field' === $table)
 					{
 						// add field types
-						$this->setExportIDs($item->fieldtype, 'fieldtype');
+						$this->setSmartIDs($item->fieldtype, 'fieldtype');
 						// check if this field has multiple fields
 						if ($this->checkMultiFields($item->fieldtype))
 						{
@@ -674,7 +772,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 								if (!in_array($validationRule, (array) $coreValidationRules))
 								{
 									// okay load the rule
-									$this->setExportIDs($validationRule, 'validation_rule', false);
+									$this->setSmartIDs($validationRule, 'validation_rule', false);
 								}
 							}
 						}
@@ -693,11 +791,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							}
 						}
 						// add dynamic gets
-						$this->setExportIDs($item->main_get, 'dynamic_get');
-						$this->setExportIDs($item->custom_get, 'dynamic_get');
-						$this->setExportIDs($item->dynamic_get, 'dynamic_get');
+						$this->setSmartIDs($item->main_get, 'dynamic_get');
+						$this->setSmartIDs($item->custom_get, 'dynamic_get');
+						$this->setSmartIDs($item->dynamic_get, 'dynamic_get');
 						// move the icon
-						if ('custom_admin_view' === $table && isset($item->icon))
+						if ('custom_admin_view' === $table && isset($item->icon) && 'clone' !== $this->activeType)
 						{
 							// view icon
 							$this->moveIt(array($item->icon), 'image');
@@ -705,7 +803,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add snippets (was removed please use snippet importer)
 						if (isset($item->snippet) && is_numeric($item->snippet))
 						{
-							$this->setExportIDs((int) $item->snippet, 'snippet');
+							$this->setSmartIDs((int) $item->snippet, 'snippet');
 						}
 					}
 					// actions to take if table is template and layout
@@ -714,7 +812,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add snippets (was removed please use snippet importer)
 						if (isset($item->snippet) && is_numeric($item->snippet))
 						{
-							$this->setExportIDs((int) $item->snippet, 'snippet');
+							$this->setSmartIDs((int) $item->snippet, 'snippet');
 						}
 						// search for templates & layouts
 						$this->getTemplateLayout(base64_decode($item->$table), $this->user);
@@ -724,7 +822,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							$this->getTemplateLayout($item->php_view, $this->user);
 						}
 						// add dynamic gets
-						$this->setExportIDs((int) $item->dynamic_get, 'dynamic_get');
+						$this->setSmartIDs((int) $item->dynamic_get, 'dynamic_get');
 					}
 				}
 			}
@@ -732,17 +830,72 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	}
 
 	/**
+	* Method to do the smart cloning
+	*
+	* @return bool
+	*/
+	protected function smartCloner()
+	{
+		// check if data is set
+		if (isset($this->smartBox) && ComponentbuilderHelper::checkArray($this->smartBox))
+		{
+			// get the import_joomla_components
+			$model = ComponentbuilderHelper::getModel('import_joomla_components');
+			// do not show more information
+			$model->moreInfo = 0;
+			// trigger the create new (clone) feature
+			$model->canmerge = 0;
+			// set some postfix
+			$model->postfix = ' ('.ComponentbuilderHelper::randomkey(2).')';
+			// get App
+			$model->app = JFactory::getApplication();
+			// set user
+			$model->user = $this->user;
+			// set today's date
+			$model->today = JFactory::getDate()->toSql();
+			// load the data
+			$model->data = $this->smartBox;
+			// remove smart box to safe on memory
+			unset($this->smartBox);
+			// the array of tables to store
+			$tables = array(
+				'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
+				'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
+				'admin_fields', 'admin_fields_conditions', 'component_admin_views', 'component_site_views',
+				'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
+				'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
+			);
+			// smart table loop
+			foreach ($tables as $table)
+			{
+				// save the table to database
+				if (!$model->saveSmartItems($table))
+				{
+					return false;
+				}
+			}
+			// do an after all run on all items that need it
+			$model->updateAfter();
+			// finally move the old datasets
+			$model->moveDivergedData();
+			// we had success
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	* Method to build the package to export
 	*
-	* @return void
+	* @return bool
 	*/
 	protected function smartExportBuilder()
 	{
 		// check if data is set
-		if (isset($this->smartExport) && ComponentbuilderHelper::checkArray($this->smartExport))
+		if (isset($this->smartBox) && ComponentbuilderHelper::checkArray($this->smartBox))
 		{
 			// set db data
-			$data = serialize($this->smartExport);
+			$data = serialize($this->smartBox);
 			// lock the data if set
 			if (ComponentbuilderHelper::checkArray($this->key))
 			{
@@ -1096,9 +1249,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				$data = $this->getDataWithAlias($template, 'template');
 				if (ComponentbuilderHelper::checkArray($data))
 				{
-					if (!isset($this->exportIDs['template']) || !isset($this->exportIDs['template'][$data['id']]))
+					if (!isset($this->smartIDs['template']) || !isset($this->smartIDs['template'][$data['id']]))
 					{
-						$this->setExportIDs($data['id'], 'template');
+						$this->setSmartIDs($data['id'], 'template');
 						// call self to get child data
 						$again[] = $data['html'];
 						$again[] = $data['php_view'];
@@ -1131,9 +1284,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				$data = $this->getDataWithAlias($layout, 'layout');
 				if (ComponentbuilderHelper::checkArray($data))
 				{
-					if (!isset($this->exportIDs['layout']) || !isset($this->exportIDs['layout'][$data['id']]))
+					if (!isset($this->smartIDs['layout']) || !isset($this->smartIDs['layout'][$data['id']]))
 					{
-						$this->setExportIDs($data['id'], 'layout');
+						$this->setSmartIDs($data['id'], 'layout');
 						// call self to get child data
 						$again[] = $data['html'];
 						$again[] = $data['php_view'];
@@ -1152,14 +1305,14 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		if ($user)
 		{
 			// add templates
-			if (isset($this->exportIDs['template']) && ComponentbuilderHelper::checkArray($this->exportIDs['template']))
+			if (isset($this->smartIDs['template']) && ComponentbuilderHelper::checkArray($this->smartIDs['template']))
 			{
-				$this->setData('template', array_values($this->exportIDs['template']), 'id');
+				$this->setData('template', array_values($this->smartIDs['template']), 'id');
 			}
 			// add layouts
-			if (isset($this->exportIDs['layout']) && ComponentbuilderHelper::checkArray($this->exportIDs['layout']))
+			if (isset($this->smartIDs['layout']) && ComponentbuilderHelper::checkArray($this->smartIDs['layout']))
 			{
-				$this->setData('layout', array_values($this->exportIDs['layout']), 'id');
+				$this->setData('layout', array_values($this->smartIDs['layout']), 'id');
 			}
 		}
 	}
@@ -1247,13 +1400,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							// if numeric add to ids
 							if (is_numeric($func))
 							{
-								$this->setExportIDs($func, 'custom_code');
+								$this->setSmartIDs($func, 'custom_code');
 							}
 							elseif (ComponentbuilderHelper::checkString($func))
 							{
 								if ($funcID = ComponentbuilderHelper::getVar('custom_code', $func, 'function_name', 'id'))
 								{
-									$this->setExportIDs($funcID, 'custom_code');
+									$this->setSmartIDs($funcID, 'custom_code');
 								}
 							}
 						}
@@ -1296,19 +1449,19 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			// check if we have items
 			if (ComponentbuilderHelper::checkArray($items))
 			{
-				if (!isset($this->smartExport['language_translation']))
+				if (!isset($this->smartBox['language_translation']))
 				{
-					$this->smartExport['language_translation'] = array();
+					$this->smartBox['language_translation'] = array();
 				}
 				foreach ($items as $item)
 				{
-					if (!isset($this->smartExport['language_translation'][$item->id]) && ComponentbuilderHelper::checkJson($item->components))
+					if (!isset($this->smartBox['language_translation'][$item->id]) && ComponentbuilderHelper::checkJson($item->components))
 					{
 						$components = json_decode($item->components, true);
 						if (in_array($id, $components))
 						{
 							// load to global object
-							$this->smartExport['language_translation'][$item->id] = $item;
+							$this->smartBox['language_translation'][$item->id] = $item;
 							// add languages
 							if (isset($item->translation))
 							{
