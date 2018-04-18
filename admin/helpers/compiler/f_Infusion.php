@@ -299,14 +299,12 @@ class Infusion extends Interpretation
 					// ###AJAXTOKE### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single]['###AJAXTOKE###'] = $this->setAjaxToke($viewName_single);
 
-					if (isset($this->customScriptBuilder['php_document'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['php_document'][$viewName_single]))
+					// ###DOCUMENT_CUSTOM_PHP### <<<DYNAMIC>>>
+					if ($phpDocument = $this->getCustomScriptBuilder('php_document', $viewName_single, PHP_EOL, null, true, false))
 					{
-						// ###DOCUMENT_CUSTOM_PHP### <<<DYNAMIC>>>
-						$this->customScriptBuilder['php_document'][$viewName_single] = str_replace('$document->', '$this->document->', $this->customScriptBuilder['php_document'][$viewName_single]);
-						$this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] = PHP_EOL . $this->setPlaceholders(
-								$this->customScriptBuilder['php_document'][$viewName_single], $this->placeholders);
+						$this->fileContentDynamic[$viewName_single]['###DOCUMENT_CUSTOM_PHP###'] = str_replace('$document->', '$this->document->', $phpDocument);
 						// clear some memory
-						unset($this->customScriptBuilder['php_document'][$viewName_single]);
+						unset($phpDocument);
 					}
 					else
 					{
@@ -361,18 +359,9 @@ class Infusion extends Interpretation
 					// ###POSTSAVEHOOK### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single]['###POSTSAVEHOOK###'] = $this->getCustomScriptBuilder('php_postsavehook', $viewName_single, PHP_EOL, null, true, PHP_EOL . "\t\treturn;", PHP_EOL . PHP_EOL . "\t\treturn;");
 
-					if (isset($this->customScriptBuilder['css_view'][$viewName_single]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['css_view'][$viewName_single]))
-					{
-						// ###VIEWCSS### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$viewName_single]['###VIEWCSS###'] = $this->setPlaceholders($this->customScriptBuilder['css_view'][$viewName_single], $this->placeholders);
-						// clear some memory
-						unset($this->customScriptBuilder['css_view'][$viewName_single]);
-					}
-					else
-					{
-						// ###VIEWCSS### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$viewName_single]['###VIEWCSS###'] = '';
-					}
+					// ###VIEWCSS### <<<DYNAMIC>>>
+					$this->fileContentDynamic[$viewName_single]['###VIEWCSS###'] = $this->getCustomScriptBuilder('css_view', $viewName_single, '', null, true);
+
 					// add css to front end
 					if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
 					{
@@ -489,22 +478,26 @@ class Infusion extends Interpretation
 					// ###JVIEWLISTCANDO### <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_list]['###JVIEWLISTCANDO###'] = $this->setJviewListCanDo($viewName_single, $viewName_list);
 
-					if (isset($this->customScriptBuilder['css_views'][$viewName_list]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['css_views'][$viewName_list]))
+					// ###VIEWSCSS### <<<DYNAMIC>>>
+					$this->fileContentDynamic[$viewName_list]['###VIEWSCSS###'] = $this->getCustomScriptBuilder('css_views', $viewName_list, '', null, true);
+
+					// ###VIEWS_FOOTER_SCRIPT### <<<DYNAMIC>>>
+					$scriptNote = PHP_EOL . '//' . $this->setLine(__LINE__) . ' ' . $viewName_list.' footer script';
+					if ($footerScript = $this->getCustomScriptBuilder('views_footer', $viewName_single, '', $scriptNote, true, false, PHP_EOL))
 					{
-						// ###VIEWCSS### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$viewName_list]['###VIEWSCSS###'] = $this->setPlaceholders($this->customScriptBuilder['css_views'][$viewName_list], $this->placeholders);
+						// only minfy if no php is added to the footer script
+						if ($this->minify && strpos($footerScript, '<?php') === false)
+						{
+							// minfy the script
+							$minifier = new JS;
+							$minifier->add($footerScript);
+							$footerScript = $minifier->minify();
+							// clear some memory
+							unset($minifier);
+						}
+						$this->fileContentDynamic[$viewName_list]['###VIEWS_FOOTER_SCRIPT###'] = PHP_EOL . '<script type="text/javascript">' . $footerScript . "</script>";
 						// clear some memory
-						unset($this->customScriptBuilder['css_views'][$viewName_list]);
-					}
-					else
-					{
-						// ###VIEWCSS### <<<DYNAMIC>>>
-						$this->fileContentDynamic[$viewName_list]['###VIEWSCSS###'] = '';
-					}
-					// ###VIEWS_FOOTER_SCRIPT###
-					if ($footerScript = $this->getCustomScriptBuilder('views_footer', $viewName_single, PHP_EOL))
-					{
-						$this->fileContentDynamic[$viewName_list]['###VIEWS_FOOTER_SCRIPT###'] = PHP_EOL . '<script type="text/javascript">' . $footerScript . PHP_EOL . "</script>";
+						unset($footerScript);
 					}
 					else
 					{
@@ -626,86 +619,31 @@ class Infusion extends Interpretation
 
 					if ($view['settings']->main_get->gettype == 1)
 					{
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view['settings']->code]))
-						{
-							// ###CUSTOM_ADMIN_BEFORE_GET_ITEM### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEM###'] = $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###CUSTOM_ADMIN_BEFORE_GET_ITEM### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEM###'] = '';
-						}
+						// ###CUSTOM_ADMIN_BEFORE_GET_ITEM### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEM###'] = $this->getCustomScriptBuilder($this->target . '_php_before_getitem', $view['settings']->code, '', null, true);
 
 						// ###CUSTOM_ADMIN_GET_ITEM### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_ITEM###'] = $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code, "\t\t");
 
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view['settings']->code]))
-						{
-							// ###CUSTOM_ADMIN_AFTER_GET_ITEM### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEM###'] = $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###CUSTOM_ADMIN_AFTER_GET_ITEM### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEM###'] = '';
-						}
+						// ###CUSTOM_ADMIN_AFTER_GET_ITEM### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEM###'] = $this->getCustomScriptBuilder($this->target . '_php_after_getitem', $view['settings']->code, '', null, true);
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// ###CUSTOM_ADMIN_GET_LIST_QUERY### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_LIST_QUERY###'] = $this->setCustomViewListQuery($view['settings']->main_get, $view['settings']->code);
 
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_getlistquery'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_getlistquery'][$view['settings']->code]))
-						{
-							// ###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY###'] = PHP_EOL . $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_getlistquery'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_getlistquery'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY###'] = '';
-						}
+						// ###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY###'] = $this->getCustomScriptBuilder($this->target . '_php_getlistquery', $view['settings']->code, PHP_EOL, null, true);
 
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view['settings']->code]))
-						{
-							// ###CUSTOM_ADMIN_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEMS###'] = PHP_EOL . $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###CUSTOM_ADMIN_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEMS###'] = '';
-						}
+						// ###CUSTOM_ADMIN_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_BEFORE_GET_ITEMS###'] = $this->getCustomScriptBuilder($this->target . '_php_before_getitems', $view['settings']->code, PHP_EOL, null, true);
 
 						// ###CUSTOM_ADMIN_GET_ITEMS### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_GET_ITEMS###'] = $this->setCustomViewGetItems($view['settings']->main_get, $view['settings']->code);
 
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view['settings']->code]))
-						{
-							// ###CUSTOM_ADMIN_AFTER_GET_ITEMS### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEMS###'] = PHP_EOL . $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###CUSTOM_ADMIN_AFTER_GET_ITEMS### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEMS###'] = '';
-						}
+						// ###CUSTOM_ADMIN_AFTER_GET_ITEMS### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###CUSTOM_ADMIN_AFTER_GET_ITEMS###'] = $this->getCustomScriptBuilder($this->target . '_php_after_getitems', $view['settings']->code, PHP_EOL, null, true);
 					}
 
 					// ###CUSTOM_ADMIN_CUSTOM_METHODS### <<<DYNAMIC>>>
@@ -917,36 +855,15 @@ class Infusion extends Interpretation
 					{
 						// set user permission access check ###USER_PERMISSION_CHECK_ACCESS### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###USER_PERMISSION_CHECK_ACCESS###'] = $this->setUserPermissionCheckAccess($view, 1);
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view['settings']->code]))
-						{
-							// ###SITE_BEFORE_GET_ITEM### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEM###'] = $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_before_getitem'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###SITE_BEFORE_GET_ITEM### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEM###'] = '';
-						}
+
+						// ###SITE_BEFORE_GET_ITEM### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEM###'] = $this->getCustomScriptBuilder($this->target . '_php_before_getitem', $view['settings']->code, '', null, true);
 
 						// ###SITE_GET_ITEM### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_ITEM###'] = $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code, "\t\t");
 
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view['settings']->code]))
-						{
-							// ###SITE_AFTER_GET_ITEM### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEM###'] = $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_after_getitem'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###SITE_AFTER_GET_ITEM### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEM###'] = '';
-						}
+						// ###SITE_AFTER_GET_ITEM### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEM###'] = $this->getCustomScriptBuilder($this->target . '_php_after_getitem', $view['settings']->code, '', null, true);
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
@@ -955,36 +872,14 @@ class Infusion extends Interpretation
 						// ###SITE_GET_LIST_QUERY### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_LIST_QUERY###'] = $this->setCustomViewListQuery($view['settings']->main_get, $view['settings']->code);
 
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view['settings']->code]))
-						{
-							// ###SITE_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEMS###'] = PHP_EOL . $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_before_getitems'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###SITE_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEMS###'] = '';
-						}
+						// ###SITE_BEFORE_GET_ITEMS### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###SITE_BEFORE_GET_ITEMS###'] = $this->getCustomScriptBuilder($this->target . '_php_before_getitems', $view['settings']->code, PHP_EOL, null, true);
 
 						// ###SITE_GET_ITEMS### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code]['###SITE_GET_ITEMS###'] = $this->setCustomViewGetItems($view['settings']->main_get, $view['settings']->code);
 
-						// check if there is any custom script
-						if (isset($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view['settings']->code]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view['settings']->code]))
-						{
-							// ###SITE_AFTER_GET_ITEMS### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEMS###'] = PHP_EOL . $this->setPlaceholders($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view['settings']->code], $this->placeholders);
-							// clear some memory
-							unset($this->customScriptBuilder[$this->target . '_php_after_getitems'][$view['settings']->code]);
-						}
-						else
-						{
-							// ###SITE_AFTER_GET_ITEMS### <<<DYNAMIC>>>
-							$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEMS###'] = '';
-						}
+						// ###SITE_AFTER_GET_ITEMS### <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code]['###SITE_AFTER_GET_ITEMS###'] = $this->getCustomScriptBuilder($this->target . '_php_after_getitems', $view['settings']->code, PHP_EOL, null, true);
 					}
 					// add to lang array
 					if (!isset($this->langContent['site'][$this->langPrefix . '_' . $view['settings']->CODE]))

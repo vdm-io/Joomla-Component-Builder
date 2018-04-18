@@ -98,7 +98,7 @@ if ($this->saveOrder)
 <?php echo JHtml::_('form.token'); ?>
 </form>
 <script type="text/javascript">
-
+// joomla_components footer script
 // waiting spinner
 var outerDiv = jQuery('body');
 jQuery('<div id="loading"></div>')

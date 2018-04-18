@@ -186,6 +186,32 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			// add to form
 			$form[] = $debuglinenr;
 
+			// get the minify radio field
+			$minify = JFormHelper::loadFieldType('radio',true);
+			// start minify xml
+			$minifyXML = new SimpleXMLElement('<field/>');
+			// minify attributes
+			$minifyAttributes = array(
+				'type' => 'radio',
+				'name' => 'minify',
+				'label' => 'COM_COMPONENTBUILDER_MINIFY_JAVASCRIPT',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_JAVASCRIPT_BE_MINIFIED_IN_THE_COMPONENT',
+				'default' => '2');
+			// load the minify attributes
+			ComponentbuilderHelper::xmlAddAttributes($minifyXML, $minifyAttributes);
+			// start the minify options
+			$minifyOptions = array(
+				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the minify options
+			ComponentbuilderHelper::xmlAddOptions($minifyXML, $minifyOptions);
+			// setup the minify radio field
+			$minify->setup($minifyXML,2);
+			// add to form
+			$form[] = $minify;
+
 			// get the component list field
 			$component = JFormHelper::loadFieldType('list',true);
 			// start component xml

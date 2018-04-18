@@ -608,6 +608,13 @@ class Get
 	public $libraries = array();
 
 	/**
+	 * Is minify Enabled
+	 * 
+	 * @var    int
+	 */
+	public $minify = 0;
+
+	/**
 	 * Is Tidy Enabled
 	 * 
 	 * @var    bool
@@ -631,10 +638,12 @@ class Get
 		{
 			// load application
 			$this->app = JFactory::getApplication();
-			// check if we have Tidy enabled
-			$this->tidy = extension_loaded('Tidy');
 			// Set the params
 			$this->params = JComponentHelper::getParams('com_componentbuilder');
+			// set the minfy switch of the JavaScript
+			$this->minify = (isset($config['minify']) && $config['minify'] != 2) ? $config['minify'] : $this->params->get('minify', 0);
+			// check if we have Tidy enabled
+			$this->tidy = extension_loaded('Tidy');
 			// set the field type builder
 			$this->fieldBuilderType = $this->params->get('compiler_field_builder_type', 2);
 			// check the field builder type logic

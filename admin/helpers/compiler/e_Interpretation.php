@@ -2821,6 +2821,20 @@ class Interpretation extends Fields
 		return $method;
 	}
 
+	/**
+	 * get the custom script in the script builder
+	 * 
+	 * @param   string       $first        The first key
+	 * @param   string       $second       The second key
+	 * @param   string       $prefix       The prefix to add in front of the script if found
+	 * @param   string/bool  $note         The switch/note to add to the script
+	 * @param   bool         $unset        The switch to unset the value if found
+	 * @param   string/bool  $unset        The switch/string to use as default return if script not found
+	 * @param   string       $sufix        The sufix  to add after the script if found
+	 *
+	 * @return  mix    The string/script if found or the default value if not found
+	 * 
+	 */
 	public function getCustomScriptBuilder($first, $second, $prefix = '', $note = null, $unset = null, $default = null, $sufix = '')
 	{
 		// check if there is any custom script
@@ -9052,7 +9066,7 @@ class Interpretation extends Fields
 			}
 		}
 		// minfy the script
-		if ($this->params->get('minify') && isset($fileScript) && ComponentbuilderHelper::checkString($fileScript))
+		if ($this->minify && isset($fileScript) && ComponentbuilderHelper::checkString($fileScript))
 		{
 			// minify the fielScript javscript
 			$minifier = new JS;
@@ -9060,7 +9074,7 @@ class Interpretation extends Fields
 			$fileScript = $minifier->minify();
 		}
 		// minfy the script
-		if ($this->params->get('minify') && isset($footerScript) && ComponentbuilderHelper::checkString($footerScript))
+		if ($this->minify && isset($footerScript) && ComponentbuilderHelper::checkString($footerScript))
 		{
 			// minify the footerScript javscript
 			$minifier = new JS;

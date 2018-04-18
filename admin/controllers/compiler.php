@@ -66,17 +66,18 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		if($user->authorise('core.admin', 'com_componentbuilder'))
 		{
 			// get the post values
-			$jinput 		= JFactory::getApplication()->input;
-			$componentId 		= $jinput->post->get('component', 0, 'INT');
-			$version		= $jinput->post->get('version', 0, 'INT');
-			$addBackup		= $jinput->post->get('backup', 0, 'INT');
-			$addRepo			= $jinput->post->get('repository', 0, 'INT');
-			$addPlaceholders	= $jinput->post->get('placeholders', 2, 'INT');
-			$debugLinenr		= $jinput->post->get('debuglinenr', 2, 'INT');
+			$jinput = JFactory::getApplication()->input;
+			$componentId = $jinput->post->get('component', 0, 'INT');
+			$version = $jinput->post->get('version', 0, 'INT');
+			$addBackup = $jinput->post->get('backup', 0, 'INT');
+			$addRepo = $jinput->post->get('repository', 0, 'INT');
+			$addPlaceholders = $jinput->post->get('placeholders', 2, 'INT');
+			$debugLinenr = $jinput->post->get('debuglinenr', 2, 'INT');
+			$minify = $jinput->post->get('minify', 2, 'INT');
 			// include component compiler
 			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
-			$model		= $this->getModel('compiler');
-			if ($model->builder($version,$componentId,$addBackup,$addRepo,$addPlaceholders,$debugLinenr))
+			$model = $this->getModel('compiler');
+			if ($model->builder($version,$componentId,$addBackup,$addRepo,$addPlaceholders,$debugLinenr, $minify))
 			{
 				$cache = JFactory::getCache('mod_menu');
 				$cache->clean();
@@ -88,8 +89,8 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			}
 
 			$app = JFactory::getApplication();
-			$redirect_url	= $app->getUserState('com_componentbuilder.redirect_url');
-			$message	= $app->getUserState('com_componentbuilder.message');
+			$redirect_url = $app->getUserState('com_componentbuilder.redirect_url');
+			$message = $app->getUserState('com_componentbuilder.message');
 			if (empty($redirect_url) && $componentId > 0)
 			{
 				$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
