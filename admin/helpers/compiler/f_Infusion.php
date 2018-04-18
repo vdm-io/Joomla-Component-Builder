@@ -501,6 +501,15 @@ class Infusion extends Interpretation
 						// ###VIEWCSS### <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_list]['###VIEWSCSS###'] = '';
 					}
+					// ###VIEWS_FOOTER_SCRIPT###
+					if ($footerScript = $this->getCustomScriptBuilder('views_footer', $viewName_single, PHP_EOL))
+					{
+						$this->fileContentDynamic[$viewName_list]['###VIEWS_FOOTER_SCRIPT###'] = PHP_EOL . '<script type="text/javascript">' . $footerScript . PHP_EOL . "</script>";
+					}
+					else
+					{
+						$this->fileContentDynamic[$viewName_list]['###VIEWS_FOOTER_SCRIPT###'] = '';
+					}
 				}
 
 				// set u fields used in batch

@@ -99,4 +99,4 @@ if ($this->saveOrder)
 <?php endif; ?>
 <input type="hidden" name="task" value="" />
 <?php echo JHtml::_('form.token'); ?>
-</form>
+</form>###VIEWS_FOOTER_SCRIPT###

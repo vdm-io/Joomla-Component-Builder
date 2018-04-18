@@ -2263,16 +2263,16 @@ class Get
 					{
 						$this->customScriptBuilder['views_footer'] = array();
 					}
-					if (!isset($this->customScriptBuilder['views_footer'][$name_list]))
+					if (!isset($this->customScriptBuilder['views_footer'][$name_single]))
 					{
-						$this->customScriptBuilder['views_footer'][$name_list] = '';
+						$this->customScriptBuilder['views_footer'][$name_single] = '';
 					}
 					if (!isset($this->_fieldData[$id]->javascript_views_footer_decoded))
 					{
 						$this->_fieldData[$id]->javascript_views_footer = $this->setDynamicValues(base64_decode($this->_fieldData[$id]->javascript_views_footer));
 						$this->_fieldData[$id]->javascript_views_footer_decoded = true;
 					}
-					$this->customScriptBuilder['views_footer'][$name_list] .= PHP_EOL . $this->_fieldData[$id]->javascript_views_footer;
+					$this->customScriptBuilder['views_footer'][$name_single] .= PHP_EOL . $this->_fieldData[$id]->javascript_views_footer;
 					if (strpos($this->_fieldData[$id]->javascript_views_footer, "token") !== false ||
 						strpos($this->_fieldData[$id]->javascript_views_footer, "task=ajax") !== false)
 					{
