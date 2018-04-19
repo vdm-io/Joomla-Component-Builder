@@ -204,7 +204,14 @@ class Get
 	 * 
 	 * @var      array
 	 */
-	public $languages = array('en-GB' => array());
+	public $languages = array();
+
+	/**
+	 * The Main Languages
+	 * 
+	 * @var      string
+	 */
+	public $langTag = 'en-GB';
 
 	/**
 	 * The Multi Languages bucket
@@ -642,6 +649,10 @@ class Get
 			$this->params = JComponentHelper::getParams('com_componentbuilder');
 			// set the minfy switch of the JavaScript
 			$this->minify = (isset($config['minify']) && $config['minify'] != 2) ? $config['minify'] : $this->params->get('minify', 0);
+			// set the global language
+			$this->langTag = $this->params->get('language', $this->langTag);
+			// setup the main language array
+			$this->languages[$this->langTag] = array();
 			// check if we have Tidy enabled
 			$this->tidy = extension_loaded('Tidy');
 			// set the field type builder
@@ -4516,8 +4527,8 @@ class Get
 		$query->from($this->db->quoteName('#__componentbuilder_language_translation', 'a'));
 		if (ComponentbuilderHelper::checkArray($values))
 		{
-			$query->select($this->db->quoteName(array('a.id', 'a.translation', 'a.entranslation', 'a.components', 'a.published')));
-			$query->where($this->db->quoteName('a.entranslation') . ' IN (' . implode(',', array_map(function($a)
+			$query->select($this->db->quoteName(array('a.id', 'a.translation', 'a.source', 'a.components', 'a.published')));
+			$query->where($this->db->quoteName('a.source') . ' IN (' . implode(',', array_map(function($a)
 					{
 						return $this->db->quote($a);
 					}, $values)) . ')');
@@ -4525,7 +4536,7 @@ class Get
 			$this->db->execute();
 			if ($this->db->getNumRows())
 			{
-				return $this->db->loadAssocList('entranslation');
+				return $this->db->loadAssocList('source');
 			}
 		}
 		return false;
@@ -4543,7 +4554,7 @@ class Get
 		$counterInsert = 0;
 		$counterUpdate = 0;
 		$today = JFactory::getDate()->toSql();
-		foreach ($this->languages['en-GB'] as $area => $placeholders)
+		foreach ($this->languages[$this->langTag] as $area => $placeholders)
 		{
 			foreach ($placeholders as $placeholder => $string)
 			{
@@ -4630,7 +4641,7 @@ class Get
 						// add the new lang placeholder to the db
 						$this->newLangStrings[$counterInsert] = array();
 						$this->newLangStrings[$counterInsert][] = $this->db->quote(json_encode(array($this->componentID))); // 'components'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote($string);  // 'entranslation'
+						$this->newLangStrings[$counterInsert][] = $this->db->quote($string);  // 'source'
 						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);   // 'published'
 						$this->newLangStrings[$counterInsert][] = $this->db->quote($today);  // 'created'
 						$this->newLangStrings[$counterInsert][] = $this->db->quote((int) $this->user->id);   // 'created_by'
@@ -4668,7 +4679,7 @@ class Get
 			$query = $this->db->getQuery(true);
 			$continue = false;
 			// Insert columns.
-			$columns = array('components', 'entranslation', 'published', 'created', 'created_by', 'version', 'access');
+			$columns = array('components', 'source', 'published', 'created', 'created_by', 'version', 'access');
 			// Prepare the insert query.
 			$query->insert($this->db->quoteName('#__componentbuilder_language_translation'));
 			$query->columns($this->db->quoteName($columns));
@@ -4763,7 +4774,7 @@ class Get
 		$query->from($this->db->quoteName('#__componentbuilder_language_translation', 'a'));
 		$query->select($this->db->quoteName(array('a.id', 'a.translation', 'a.components')));
 		// get all string that are not linked to this component
-		$query->where($this->db->quoteName('a.entranslation') . ' NOT IN (' . implode(',', array_map(function($a)
+		$query->where($this->db->quoteName('a.source') . ' NOT IN (' . implode(',', array_map(function($a)
 				{
 					return $this->db->quote($a);
 				}, $values)) . ')');

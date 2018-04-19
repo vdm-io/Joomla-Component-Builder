@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'entranslation',
+	'source',
 	'translation',
 	'components'
 );

@@ -470,12 +470,19 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			$user  		= JFactory::getUser();
 			// remove header if it has headers
 			$id_key 	= $data['target_headers']['id'];
-			$english_key 	= $data['target_headers']['English'];
+			if (isset($data['target_headers']['Source']))
+			{
+				$source_key 	= $data['target_headers']['Source'];
+			}
+			else
+			{
+				$source_key 	= $data['target_headers']['English'];
+			}
 			// get the first array set
 			$firstSet = reset($data['array']);
 
 			// check if first array is a header array and remove if true
-			if($firstSet[$id_key] == 'id' || $firstSet[$english_key] == 'English')
+			if($firstSet[$id_key] == 'id' || $firstSet[$source_key] == 'Source' || $firstSet[$source_key] == 'English')
 			{
 				array_shift($data['array']);
 			}
@@ -504,7 +511,7 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 							->select($db->quoteName(array('version', 'translation')))
 							->from($db->quoteName('#__componentbuilder_'.$table))
 							->where($db->quoteName('id') . ' = '. $db->quote($row[$id_key]))
-							->where($db->quoteName('entranslation') . ' = '. $db->quote($row[$english_key]));
+							->where($db->quoteName('source') . ' = '. $db->quote($row[$source_key]));
 						// Reset the query using our newly populated query object.
 						$db->setQuery($query);
 						$db->execute();
@@ -538,7 +545,7 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 						foreach($row as $key => $cell)
 						{
 							// ignore column
-							if ('IGNORE' === $target[$key] || 'modified_by' === $target[$key] || 'modified' === $target[$key] || 'English' === $target[$key] )
+							if ('IGNORE' === $target[$key] || 'modified_by' === $target[$key] || 'modified' === $target[$key] || 'Source' === $target[$key] || 'English' === $target[$key] )
 							{
 								continue;
 							}

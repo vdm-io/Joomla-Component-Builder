@@ -1078,26 +1078,26 @@ class Infusion extends Interpretation
 		// check the admin lang is set
 		if ($this->setLangAdmin())
 		{
-			$values[] = array_values($this->languages['en-GB']['admin']);
-			$mainLangLoader['admin'] = count($this->languages['en-GB']['admin']);
+			$values[] = array_values($this->languages[$this->langTag]['admin']);
+			$mainLangLoader['admin'] = count($this->languages[$this->langTag]['admin']);
 		}
 		// check the admin system lang is set
 		if ($this->setLangAdminSys())
 		{
-			$values[] = array_values($this->languages['en-GB']['adminsys']);
-			$mainLangLoader['adminsys'] = count($this->languages['en-GB']['adminsys']);
+			$values[] = array_values($this->languages[$this->langTag]['adminsys']);
+			$mainLangLoader['adminsys'] = count($this->languages[$this->langTag]['adminsys']);
 		}
 		// check the site lang is set
 		if (!$this->removeSiteFolder && $this->setLangSite())
 		{
-			$values[] = array_values($this->languages['en-GB']['site']);
-			$mainLangLoader['site'] = count($this->languages['en-GB']['site']);
+			$values[] = array_values($this->languages[$this->langTag]['site']);
+			$mainLangLoader['site'] = count($this->languages[$this->langTag]['site']);
 		}
 		// check the site system lang is set
 		if (!$this->removeSiteFolder && $this->setLangSiteSys())
 		{
-			$values[] = array_values($this->languages['en-GB']['sitesys']);
-			$mainLangLoader['sitesys'] = count($this->languages['en-GB']['sitesys']);
+			$values[] = array_values($this->languages[$this->langTag]['sitesys']);
+			$mainLangLoader['sitesys'] = count($this->languages[$this->langTag]['sitesys']);
 		}
 		$values = array_unique(ComponentbuilderHelper::mergeArrays($values));
 		// get the other lang strings if there is any
@@ -1118,8 +1118,8 @@ class Infusion extends Interpretation
 				$tag = trim($tag);
 				foreach ($areas as $area => $languageStrings)
 				{
-					// only log messages for none en-GB translations
-					if ('en-GB' !== $tag)
+					// only log messages for none $this->langTag translations
+					if ($this->langTag !== $tag)
 					{
 						$langStringNr = count($languageStrings);
 						$langStringSum = $this->bcmath('mul', $langStringNr, 100);
@@ -1132,12 +1132,12 @@ class Infusion extends Interpretation
 							if ($percentage < $this->percentageLanguageAdd)
 							{
 								// dont add
-								$this->langNot[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total en-GB strings) only <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
+								$this->langNot[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total '.$this->langTag.' strings) only <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
 								continue;
 							}
 						}
 						// show if it was added as well
-						$this->langSet[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total en-GB strings) and <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
+						$this->langSet[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total '.$this->langTag.' strings) and <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
 					}
 					// set naming convention
 					$p = 'admin';

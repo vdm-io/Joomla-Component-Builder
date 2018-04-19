@@ -614,9 +614,9 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 			}
 
 			// Only for strings
-			if (ComponentbuilderHelper::checkString($this->table->entranslation) && !is_numeric($this->table->entranslation))
+			if (ComponentbuilderHelper::checkString($this->table->source) && !is_numeric($this->table->source))
 			{
-				$this->table->entranslation = $this->generateUniqe('entranslation',$this->table->entranslation);
+				$this->table->source = $this->generateUniqe('source',$this->table->source);
 			}
 
 			// insert all set values

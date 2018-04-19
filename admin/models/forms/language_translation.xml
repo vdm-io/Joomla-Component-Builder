@@ -85,18 +85,18 @@
 			filter="unset"
 		/>
 		<!-- Dynamic Fields. -->
-		<!-- Entranslation Field. Type: Textarea. (joomla) -->
+		<!-- Source Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="entranslation"
-			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL"
+			name="source"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_SOURCE_LABEL"
 			rows="4"
 			cols="5"
 			description="JFIELD_TITLE_DESC"
-			message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_MESSAGE"
+			message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_SOURCE_MESSAGE"
 			class="text_area span12"
-			filter="STRING"
-			hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_HINT"
+			filter="safehtml"
+			hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_SOURCE_HINT"
 			readonly="true"
 			disabled="true"
 		/>

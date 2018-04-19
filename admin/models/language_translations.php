@@ -44,7 +44,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.entranslation','entranslation'
+				'a.source','source'
 			);
 		}
 
@@ -65,8 +65,8 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 		{
 			$this->context .= '.' . $layout;
 		}
-		$entranslation = $this->getUserStateFromRequest($this->context . '.filter.entranslation', 'filter_entranslation');
-		$this->setState('filter.entranslation', $entranslation);
+		$source = $this->getUserStateFromRequest($this->context . '.filter.source', 'filter_source');
+		$this->setState('filter.source', $source);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -153,11 +153,11 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					// load the languages to the string
 					if (ComponentbuilderHelper::checkArray($langBucket))
 					{
-						$item->entranslation = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150) . $componentCounter;
+						$item->source = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->source, 'UTF-8', true, 150) . $componentCounter;
 					}
 					else
 					{
-						$item->entranslation = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150) . $componentCounter;
+						$item->source = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->source, 'UTF-8', true, 150) . $componentCounter;
 					}
 				}
 			}
@@ -187,7 +187,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 						{
 							$item->{$lanTag} = '';
 						}
-						// now adapt the entranslation
+						// now adapt the source
 						if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
 						{
 							$translations = json_decode($item->translation, true);
@@ -268,7 +268,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.entranslation LIKE '.$search.')');
+				$query->where('(a.source LIKE '.$search.')');
 			}
 		}
 
@@ -386,11 +386,11 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 					// load the languages to the string
 					if (ComponentbuilderHelper::checkArray($langBucket))
 					{
-						$item->entranslation = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150) . $componentCounter;
+						$item->source = '<small><em>(' . implode(', ', $langBucket) . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->source, 'UTF-8', true, 150) . $componentCounter;
 					}
 					else
 					{
-						$item->entranslation = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->entranslation, 'UTF-8', true, 150) . $componentCounter;
+						$item->source = '<small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em></small> ' . ComponentbuilderHelper::htmlEscape($item->source, 'UTF-8', true, 150) . $componentCounter;
 					}
 				}
 			}
@@ -420,7 +420,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 						{
 							$item->{$lanTag} = '';
 						}
-						// now adapt the entranslation
+						// now adapt the source
 						if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
 						{
 							$translations = json_decode($item->translation, true);
@@ -458,7 +458,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 		// start setup of headers
 		$headers = new stdClass();
 		$headers->id = 'id';
-		$headers->English = 'English';
+		$headers->Source = 'Source';
 		// add the languages
 		if (ComponentbuilderHelper::checkArray($languages))
 		{
@@ -485,7 +485,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.entranslation');
+		$id .= ':' . $this->getState('filter.source');
 
 		return parent::getStoreId($id);
 	}

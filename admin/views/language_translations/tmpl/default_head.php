@@ -44,7 +44,7 @@ defined('_JEXEC') or die('Restricted access');
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL', 'entranslation', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_SOURCE_LABEL', 'source', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

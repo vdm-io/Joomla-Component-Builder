@@ -245,7 +245,7 @@ class ComponentbuilderViewLanguage_translations extends JViewLegacy
 		return array(
 			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
-			'a.entranslation' => JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_ENTRANSLATION_LABEL'),
+			'a.source' => JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_SOURCE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	}

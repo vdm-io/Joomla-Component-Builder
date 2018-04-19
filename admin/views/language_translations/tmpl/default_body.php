@@ -77,13 +77,13 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 		<td class="nowrap">
 			<?php if ($canDo->get('language_translation.edit')): ?>
 				<div class="name">
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $item->entranslation; ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $item->source; ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'language_translations.', $canCheckin); ?>
 					<?php endif; ?>
 				</div>
 			<?php else: ?>
-				<div class="name"><?php echo $item->entranslation; ?></div>
+				<div class="name"><?php echo $item->source; ?></div>
 			<?php endif; ?>
 		</td>
 		<td class="center">

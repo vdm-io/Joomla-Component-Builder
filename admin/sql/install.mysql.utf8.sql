@@ -774,7 +774,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_language_translation` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
 	`components` TEXT NOT NULL,
-	`entranslation` TEXT NOT NULL,
+	`source` TEXT NOT NULL,
 	`translation` TEXT NOT NULL,
 	`params` text NOT NULL DEFAULT '',
 	`published` TINYINT(3) NOT NULL DEFAULT 1,

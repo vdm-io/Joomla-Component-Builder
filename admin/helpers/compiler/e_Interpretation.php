@@ -1270,7 +1270,7 @@ class Interpretation extends Fields
 			$method[] = "\t\t\$lang = JFactory::getLanguage();";
 			$method[] = "\t\t\$extension = 'com_users';";
 			$method[] = "\t\t\$base_dir = JPATH_SITE;";
-			$method[] = "\t\t\$language_tag = 'en-GB';";
+			$method[] = "\t\t\$language_tag = '".$this->langTag."';";
 			$method[] = "\t\t\$reload = true;";
 			$method[] = "\t\t\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " load the user regestration model";
@@ -1351,7 +1351,7 @@ class Interpretation extends Fields
 			$method[] = "\t\t\$lang = JFactory::getLanguage();";
 			$method[] = "\t\t\$extension = 'com_users';";
 			$method[] = "\t\t\$base_dir = JPATH_ADMINISTRATOR;";
-			$method[] = "\t\t\$language_tag = 'en-GB';";
+			$method[] = "\t\t\$language_tag = '".$this->langTag."';";
 			$method[] = "\t\t\$reload = true;";
 			$method[] = "\t\t\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
 			$method[] = "\t\t// load the user model";
@@ -6092,7 +6092,7 @@ class Interpretation extends Fields
 		{
 			ksort($this->langContent['admin']);
 			// load to global languages
-			$this->languages['en-GB']['admin'] = $this->langContent['admin'];
+			$this->languages[$this->langTag]['admin'] = $this->langContent['admin'];
 			// remove tmp array
 			unset($this->langContent['admin']);
 
@@ -6145,7 +6145,7 @@ class Interpretation extends Fields
 		{
 			ksort($this->langContent['site']);
 			// load to global languages
-			$this->languages['en-GB']['site'] = $this->langContent['site'];
+			$this->languages[$this->langTag]['site'] = $this->langContent['site'];
 			// remove tmp array
 			unset($this->langContent['site']);
 
@@ -6173,7 +6173,7 @@ class Interpretation extends Fields
 		{
 			ksort($this->langContent['sitesys']);
 			// load to global languages
-			$this->languages['en-GB']['sitesys'] = $this->langContent['sitesys'];
+			$this->languages[$this->langTag]['sitesys'] = $this->langContent['sitesys'];
 			// remove tmp array
 			unset($this->langContent['sitesys']);
 
@@ -6196,7 +6196,7 @@ class Interpretation extends Fields
 		{
 			ksort($this->langContent['adminsys']);
 			// load to global languages
-			$this->languages['en-GB']['adminsys'] = $this->langContent['adminsys'];
+			$this->languages[$this->langTag]['adminsys'] = $this->langContent['adminsys'];
 			// remove tmp array
 			unset($this->langContent['adminsys']);
 
