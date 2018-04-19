@@ -61,6 +61,17 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NO</option>
 		</field>
+		<!-- Language Field. Type: Lang. (custom) -->
+		<field
+			type="lang"
+			name="language"
+			label="COM_COMPONENTBUILDER_CONFIG_LANGUAGE_LABEL"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="true"
+			button="true"
+		/>
 		<!-- Percentagelanguageadd Field. Type: Number. (joomla) -->
 		<field
 			type="number"

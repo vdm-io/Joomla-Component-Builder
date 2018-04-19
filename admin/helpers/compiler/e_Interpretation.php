@@ -2822,14 +2822,14 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * get the custom script in the script builder
+	 * get the a script from the custom script builder
 	 * 
 	 * @param   string       $first        The first key
 	 * @param   string       $second       The second key
 	 * @param   string       $prefix       The prefix to add in front of the script if found
 	 * @param   string/bool  $note         The switch/note to add to the script
 	 * @param   bool         $unset        The switch to unset the value if found
-	 * @param   string/bool  $unset        The switch/string to use as default return if script not found
+	 * @param   string/bool  $default      The switch/string to use as default return if script not found
 	 * @param   string       $sufix        The sufix  to add after the script if found
 	 *
 	 * @return  mix    The string/script if found or the default value if not found
@@ -2837,8 +2837,9 @@ class Interpretation extends Fields
 	 */
 	public function getCustomScriptBuilder($first, $second, $prefix = '', $note = null, $unset = null, $default = null, $sufix = '')
 	{
-		// check if there is any custom script
+		// default is to return an empty string
 		$script = '';
+		// check if there is any custom script
 		if (isset($this->customScriptBuilder[$first][$second]) && ComponentbuilderHelper::checkString($this->customScriptBuilder[$first][$second]))
 		{
 			// add not if set
@@ -2846,6 +2847,7 @@ class Interpretation extends Fields
 			{
 				$script .= $note;
 			}
+			// load the actual script
 			$script .= $prefix . str_replace(array_keys($this->placeholders), array_values($this->placeholders), $this->customScriptBuilder[$first][$second]) . $sufix;
 			// clear some memory
 			if ($unset)
@@ -3101,6 +3103,17 @@ class Interpretation extends Fields
 
 	public function setPrepareDocument(&$view)
 	{
+		// fix just incase we missed it somewhere
+		$tmp = $this->lang;
+		if ('site' === $this->target)
+		{
+			$this->lang = 'site';
+		}
+		else
+		{
+			$this->lang = 'admin';
+		}
+
 		// ensure correct target is set
 		$TARGET = ComponentbuilderHelper::safeString($this->target, 'U');
 
@@ -3146,6 +3159,9 @@ class Interpretation extends Fields
 
 		// set a JavaScript file if needed
 		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_LIBRARIES_LOADER###'] .= $this->setJavaScriptFile($view, $TARGET);
+
+		// fix just incase we missed it somewhere
+		$this->lang = $tmp;
 	}
 
 	public function setGetModules($view, $TARGET)
@@ -3311,12 +3327,13 @@ class Interpretation extends Fields
 			{
 				foreach ($view['settings']->custom_buttons as $custom_button)
 				{
+					// Load to lang
+					$keyLang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($custom_button['name'], 'U');
+					$keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
+					$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
+					// load the button
 					if (3 !== $type && ($custom_button['target'] != 2 || $this->target === 'site'))
 					{
-						// Load to lang
-						$keyLang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($custom_button['name'], 'U');
-						$keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
-						$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
 						// add cpanel button TODO does not work well on site with permissions
 						if ($custom_button['target'] == 2)
 						{
@@ -3334,10 +3351,6 @@ class Interpretation extends Fields
 					// load the list button
 					elseif (3 == $type && $custom_button['target'] != 1)
 					{
-						// Load to lang
-						$keyLang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($custom_button['name'], 'U');
-						$keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
-						$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
 						// add cpanel button TODO does not work well on site with permissions
 						if (isset($custom_button['type']) && $custom_button['type'] == 2)
 						{

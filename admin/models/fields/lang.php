@@ -50,22 +50,22 @@ class JFormFieldLang extends JFormFieldList
 	public function getOptions()
 	{
 		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.langtag','a.name'),array('langtag','language_name')));
-		$query->from($db->quoteName('#__componentbuilder_language', 'a'));
-		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->order('a.langtag ASC');
-		$db->setQuery((string)$query);
-		$items = $db->loadObjectList();
-		$options = array();
-		if ($items)
-		{
-			$options[] = JHtml::_('select.option', '', 'Select an option');
-			foreach($items as $item)
-			{
-				$options[] = JHtml::_('select.option', trim($item->langtag), $item->language_name . ' (' .$item->langtag.')');
-			}
-		}
-		return $options;
+$query = $db->getQuery(true);
+$query->select($db->quoteName(array('a.langtag','a.name'),array('langtag','language_name')));
+$query->from($db->quoteName('#__componentbuilder_language', 'a'));
+$query->where($db->quoteName('a.published') . ' >= 1');
+$query->order('a.langtag ASC');
+$db->setQuery((string)$query);
+$items = $db->loadObjectList();
+$options = array();
+if ($items)
+{
+	$options[] = JHtml::_('select.option', '', 'Select an option');
+	foreach($items as $item)
+	{
+		$options[] = JHtml::_('select.option', trim($item->langtag), $item->language_name . ' (' .$item->langtag.')');
+	}
+}
+return $options;
 	}
 }

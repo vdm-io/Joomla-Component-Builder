@@ -1362,14 +1362,14 @@ class ComponentbuilderModelAjax extends JModelList
 		// set table
 		$table = false;
 		// Get a db connection.
-		$db = JFactory::getDbo();		 
+		$db = JFactory::getDbo();	
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.alias','a.template','b.name')));
+		$query->select($db->quoteName(array('a.id','a.alias','a.template','b.name','a.dynamic_get')));
 		$query->from($db->quoteName('#__componentbuilder_template', 'a'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'b') . ' ON (' . $db->quoteName('b.id') . ' = ' . $db->quoteName('a.dynamic_get') . ')');
 		$query->where($db->quoteName('a.id') . ' != '.(int) $id);
-		$query->where($db->quoteName('a.published') . ' = 1');		 
+		$query->where($db->quoteName('a.published') . ' = 1');
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 		$db->execute();
@@ -1377,9 +1377,20 @@ class ComponentbuilderModelAjax extends JModelList
 		{ 
 			$results = $db->loadObjectList();
 			$templateString = array();
+			// get the view name & id
+			$values = $this->getViewID();
+			// check if we are in the correct view.
+			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
+			{
+				// set the return ref
+				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'];
+			}
 			foreach ($results as $result)
 			{
-				$templateString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo \$this->loadTemplate('".ComponentbuilderHelper::safeString($result->alias)."'); ?&gt;</code></td>";
+				$edit = ($button = $this->addEditLink($result->id, 'template', 'templates')) ? $button : '';
+				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && $button = $this->addEditLink($result->dynamic_get, 'dynamic_get', 'dynamic_gets')) ? $button : '';
+				$result->name = (ComponentbuilderHelper::checkString($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
+				$templateString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo \$this->loadTemplate('".ComponentbuilderHelper::safeString($result->alias)."'); ?&gt;</code> ".$edit."</td>";
 			}
 			// build the table
 			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS').'</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
@@ -1396,14 +1407,14 @@ class ComponentbuilderModelAjax extends JModelList
 		// set table
 		$table = false;
 		// Get a db connection.
-		$db = JFactory::getDbo();		 
+		$db = JFactory::getDbo();	
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.alias','a.layout','b.getcustom','b.gettype','b.name')));
+		$query->select($db->quoteName(array('a.id','a.alias','a.layout','b.getcustom','b.gettype','b.name','a.dynamic_get')));
 		$query->from($db->quoteName('#__componentbuilder_layout', 'a'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'b') . ' ON (' . $db->quoteName('b.id') . ' = ' . $db->quoteName('a.dynamic_get') . ')');
 		$query->where($db->quoteName('a.id') . ' != '.(int) $id);
-		$query->where($db->quoteName('a.published') . ' = 1');		 
+		$query->where($db->quoteName('a.published') . ' = 1');
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 		$db->execute();
@@ -1411,17 +1422,29 @@ class ComponentbuilderModelAjax extends JModelList
 		{ 
 			$results = $db->loadObjectList();
 			$layoutString = array();
+			// get the view name & id
+			$values = $this->getViewID();
+			// check if we are in the correct view.
+			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
+			{
+				// set the return ref
+				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'];
+			}
 			foreach ($results as $result)
 			{
+				$edit = ($button = $this->addEditLink($result->id, 'layout', 'layouts')) ? $button : '';
+				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && $button = $this->addEditLink($result->dynamic_get, 'dynamic_get', 'dynamic_gets')) ? $button : '';
+				$result->name = (ComponentbuilderHelper::checkString($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
+
 				switch ($result->gettype)
 				{
 					case 1:
 					// single
-					$layoutString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->item); ?&gt;</code></td>";
+					$layoutString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->item); ?&gt;</code> ".$edit."</td>";
 					break;
 					case 2:
 					// list
-					$layoutString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->items); ?&gt;</code></td>";
+					$layoutString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->items); ?&gt;</code> ".$edit."</td>";
 					break;
 					case 3:
 					case 4:
@@ -1435,7 +1458,7 @@ class ComponentbuilderModelAjax extends JModelList
 					{
 						$varName = $result->getcustom;
 					}
-					$layoutString[] = "<td><b>".$result->name."</b></td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->".$varName."); ?&gt;</code></td>";
+					$layoutString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->".$varName."); ?&gt;</code> ".$edit."</td>";
 					break;
 				}
 			}

@@ -158,6 +158,7 @@
 					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_TITLE_DESCRIPTION"
 					class="inputbox"
+					onchange="checkTitle(this)"
 				/>
 				<!-- Alias Field. Type: Checkbox. (joomla) -->
 				<field
@@ -168,6 +169,7 @@
 					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIAS_DESCRIPTION"
 					class="inputbox"
+					onchange="checkAlias(this)"
 				/>
 				<!-- Sort Field. Type: Checkbox. (joomla) -->
 				<field

@@ -138,6 +138,13 @@ class ComponentbuilderModelLanguages extends JModelList
 			$languages[$language->name] = $language;
 		}
 
+		// we must add the British language en-GB (since Joomla Ships with it)
+		$language = new stdClass;
+		$language->name = 'English GB';
+		$language->element = 'pkg_en-GB';
+		$language->type = 'package';
+		$languages[$language->name] = $language;
+
 		usort($languages, function($a, $b)
 		{
 			return strcmp($a->name, $b->name);

@@ -544,7 +544,7 @@ function getDynamicValues(id){
 }
 
 function getLayoutDetails_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&vdm="+vastDevMod;
 	if(token.length > 0 && id > 0){
 		var request = 'token='+token+'&id='+id;
 	}
@@ -570,7 +570,7 @@ function getLayoutDetails(id){
 }
 
 function getTemplateDetails_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.templateDetails&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.templateDetails&format=json&vdm="+vastDevMod;
 	if(token.length > 0 && id > 0){
 		var request = 'token='+token+'&id='+id;
 	}

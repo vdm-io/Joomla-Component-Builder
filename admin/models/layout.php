@@ -65,6 +65,11 @@ class ComponentbuilderModelLayout extends JModelAdmin
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
+
+	public function getVDM()
+	{
+		return $this->vastDevMod;
+	}
     
 	/**
 	 * Method to get a single record.
@@ -113,6 +118,27 @@ class ComponentbuilderModelLayout extends JModelAdmin
 			{
 				// base64 Decode layout.
 				$item->layout = base64_decode($item->layout);
+			}
+
+
+			if (empty($item->id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $item->id;
+			}			
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('layout__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'layout__'.$id);
+				ComponentbuilderHelper::set('layout__'.$id, $this->vastDevMod);
 			}
 			
 			if (!empty($item->id))

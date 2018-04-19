@@ -236,4 +236,50 @@ function fanAsgfdSffsAbsent(arr){
     }
     return absentArray;
 }
+// little script to check that only one title is selected
+function checkTitle(field) {
+	// get the ID
+	var id = jQuery(field).attr('id');
+	var target = id.split('__');
+	//set the subID
+	var subID = target[0]+'__'+target[1];
+	var subID = subID.replace(/\d+/g, '');
+	// set notice and do house cleaning
+	if (jQuery('#'+id).prop('checked')) {
+		// get number of items
+		var numItems = jQuery('.count-the-items1235').length + 10;
+		for (i = 0; i < numItems; i++) { // for now this is the number of field we should check
+			// build ID
+			var id_check = subID+i+'__title';
+			// first check if Id is on page
+			if (jQuery("#"+id_check).length && id_check !== id) {
+				// uncheck it
+				jQuery("#"+id_check).prop('checked', false).trigger('change');
+			}
+		}
+	}
+}
+// little script to check that only one title is selected
+function checkAlias(field) {
+	// get the ID
+	var id = jQuery(field).attr('id');
+	var target = id.split('__');
+	//set the subID
+	var subID = target[0]+'__'+target[1];
+	var subID = subID.replace(/\d+/g, '');
+	// set notice and do house cleaning
+	if (jQuery('#'+id).prop('checked')) {
+		// get number of items
+		var numItems = jQuery('.count-the-items1235').length + 10;
+		for (i = 0; i < numItems; i++) { // for now this is the number of field we should check
+			// build ID
+			var id_check = subID+i+'__alias';
+			// first check if Id is on page
+			if (jQuery("#"+id_check).length && id_check !== id) {
+				// uncheck it
+				jQuery("#"+id_check).prop('checked', false).trigger('change');
+			}
+		}
+	}
+}
 </script>

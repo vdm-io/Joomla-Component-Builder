@@ -5395,7 +5395,7 @@ class Get
 	}
 
 	/**
-	 * search for the system id in the line given
+	 * set the start replace placeholder
 	 * 
 	 * @param   int      $id           The comment id
 	 * @param   int      $commentType  The comment type
@@ -5426,6 +5426,7 @@ class Get
 	 * 
 	 * @param   string   $lineContent  The file path to search
 	 * @param   string   $placeholders The values to search for
+	 * @param   int      $commentType  The comment type
 	 *
 	 * @return  array    on success
 	 * 
@@ -5451,7 +5452,7 @@ class Get
 	}
 
 	/**
-	 * Reverse Engineer the dynamic placeholders (hmmmm)
+	 * Reverse Engineer the dynamic placeholders (TODO hmmmm this is not ideal)
 	 * 
 	 * @param   string   $string       The string to revers
 	 * @param   int      $id           The custom code id
@@ -5484,13 +5485,13 @@ class Get
 		// get targets to search for
 		$langStringTargets = array_filter(
 			$this->langStringTargets, function($get) use($string)
-		{
-			if (strpos($string, $get) !== false)
 			{
-				return true;
-			}
-			return false;
-		});
+				if (strpos($string, $get) !== false)
+				{
+					return true;
+				}
+				return false;
+			});
 		// check if we should continue
 		if (ComponentbuilderHelper::checkArray($langStringTargets))
 		{
@@ -5607,7 +5608,7 @@ class Get
 	}
 
 	/**
-	 * return the placeholders for insered and replaced code
+	 * return the placeholders for inserted and replaced code
 	 * 
 	 * @param   int      $type  The type of placement
 	 * @param   int      $id    The code id in the system
