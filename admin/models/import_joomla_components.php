@@ -725,7 +725,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		// do a after all run on all items that need it
-		$this->updateAfter();
+		$this->updateAfterAll();
 		// finally move the old datasets
 		$this->moveDivergedData();
 		// lets move all the files to its correct location
@@ -739,7 +739,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	/**
 	* Save the smart items
 	*
-	* @param string  $type    The type of values
+	* @param string  $table   The table
 	*
 	* @return  boolean false on failure
 	*
@@ -873,7 +873,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// great we have some custom stuff lets move it
 			if (!JFolder::copy($customDir, $customPath,'',true))
 			{
-				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BCUSTOM_FILESB_NOT_MOVE_TO_CORRECT_LOCATION'), 'error');
+				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BCUSTOM_FILESB_NOT_MOVED_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
 			}
 			// display more import info
@@ -889,7 +889,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// great we have some images lets move them
 			if (!JFolder::copy($imageDir, $imagesPath,'',true))
 			{
-				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BIMAGESB_NOT_MOVE_TO_CORRECT_LOCATION'), 'error');
+				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BIMAGESB_NOT_MOVED_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
 			}
 			// display more import info
@@ -913,7 +913,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$fullPath = str_replace('//', '/', $dynamicDir . '/' . $folder);
 					if (!JFolder::exists($fullPath) || !JFolder::copy($fullPath, $destination,'',true))
 					{
-						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FOLDER_BSB_WAS_NOT_MOVE_TO_BSB', $folder, $destination), 'error');
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FOLDER_BSB_WAS_NOT_MOVED_TO_BSB', $folder, $destination), 'error');
 						$success = false;
 					}
 					// display more import info
@@ -934,7 +934,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$fullPath = str_replace('//', '/', $dynamicDir . '/' . $file);
 					if (!JFile::exists($fullPath) || !JFile::copy($fullPath, $destination))
 					{
-						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_NOT_MOVE_TO_BSB', $file, $destination), 'error');
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_NOT_MOVED_TO_BSB', $file, $destination), 'error');
 						$success = false;
 					}
 					// display more import info
@@ -1018,7 +1018,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	* @return  void
 	*
 	**/
-	public function updateAfter()
+	public function updateAfterAll()
 	{
 		if (ComponentbuilderHelper::checkArray($this->updateAfter['field']))
 		{
@@ -1097,7 +1097,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					if (ComponentbuilderHelper::checkJson($addlinked_views))
 					{
 						$addlinked_views = json_decode($addlinked_views, true);
-						// convert Repetable Fields
+						// convert Repeatable Fields
 						if (ComponentbuilderHelper::checkArray($addlinked_views) && isset($addlinked_views['adminview']))
 						{
 							$addlinked_views = ComponentbuilderHelper::convertRepeatable($addlinked_views, 'addlinked_views');
@@ -1385,7 +1385,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*                          object on success
 	*
 	**/
-	protected function prepItem($item, &$type, $action, $diverged = false)
+	protected function prepItem($item, $type, $action, $diverged = false)
 	{
 		// remove access
 		if (isset($item->access))
@@ -1806,9 +1806,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// repeatable fields to update
 				$updaterR = array(
-						// repeatablefield => checker
-						'sql_tweak' => 'adminview'
-					);
+					// repeatablefield => checker
+					'sql_tweak' => 'adminview'
+				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				// subform fields to target
@@ -2005,6 +2005,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if (isset($item->localTranslation))
 				{
 					unset($item->localTranslation);
+				}
+				// move entranslation to source
+				if (isset($item->entranslation))
+				{
+					$item->source = $item->entranslation;
+					// also remove the old field
+					unset($item->entranslation);
 				}
 			break;
 			case 'admin_fields':
@@ -2217,7 +2224,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*                                  ID int on success
 	*
 	**/
-	protected function updateLocalItem(&$item, &$type, &$canState)
+	protected function updateLocalItem(&$item, $type, &$canState)
 	{
 		// prep the item
 		if ($update = $this->prepItem($item, $type, 'update'))
@@ -2248,7 +2255,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*                          ID int on success
 	*
 	**/
-	protected function addLocalItem(&$item, &$type, $diverged = false)
+	protected function addLocalItem(&$item, $type, $diverged = false)
 	{
 		// prep the item
 		if ($add = $this->prepItem($item, $type, 'add', $diverged))
@@ -2279,15 +2286,26 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*                          ID int on success
 	*
 	**/
-	protected function getLocalItem(&$item, &$type, $retry = false, $get = 1, $diverged = false)
+	protected function getLocalItem($item, $type, $retry = false, $get = 1, $diverged = false)
 	{
 		$query = $this->_db->getQuery(true);
 		$query->select('a.*');
 		$query->from($this->_db->quoteName('#__componentbuilder_' . $type, 'a'));
 		// only run query if where is set
 		$runQuery = false;
-		if ($get == 1 && isset($item->created) && isset($item->id))
+		if ($get == 1 && isset($item->created) && isset($item->id) && (isset($item->name) || isset($item->system_name)))
 		{
+			// to prefent crazy mismatch with old IDs (I know very weired)
+			if (isset($item->system_name))
+			{
+				$query->where($this->_db->quoteName('a.system_name') . ' = '. $this->_db->quote($item->system_name));
+			}
+			// to prefent crazy mismatch with old IDs (I know very weired)
+			if (isset($item->name))
+			{
+				$query->where($this->_db->quoteName('a.name') . ' = '. $this->_db->quote($item->name));
+			}
+			// load the created and id
 			$query->where($this->_db->quoteName('a.created') . ' = '. $this->_db->quote($item->created));
 			$query->where($this->_db->quoteName('a.id') .' = '. (int) $item->id);
 			$runQuery = true;
@@ -2330,19 +2348,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 			}
 		}
-		elseif (isset($item->{$get}) && componentbuilderHelper::checkString($item->{$get})) // do not allow empty strings (since it could be major mis match)
-		{
-			// set the value
-			$value = $item->{$get};
-			// check if we have special value
-			if ($this->specialValue && ComponentbuilderHelper::checkArray($this->specialValue) && isset($this->specialValue[$get]))
-			{
-				$value = $this->specialValue[$get];
-			}
-			$query->where($this->_db->quoteName('a.' . $get) . ' = '. $this->_db->quote($value));
-			$runQuery = true;
-		}
-		elseif (isset($item->{$get}) && is_numeric($item->{$get}))
+		elseif (isset($item->{$get}))
 		{
 			// set the value
 			$value = $item->{$get};
@@ -2352,13 +2358,17 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$value = $this->specialValue[$get];
 			}
 			// load to query
-			if (is_int($value))
+			if (is_numeric($value) && is_int($value))
 			{
 				$query->where($this->_db->quoteName('a.' . $get) . ' = '. (int) $value);
 			}
-			elseif (is_float($value))
+			elseif (is_numeric($value) && is_float($value))
 			{
 				$query->where($this->_db->quoteName('a.' . $get) . ' = '. (float) $value);
+			}
+			elseif(componentbuilderHelper::checkString($value)) // do not allow empty strings (since it could be major mis match)
+			{
+				$query->where($this->_db->quoteName('a.' . $get) . ' = '. $this->_db->quote($value));
 			}
 			else
 			{
@@ -2398,6 +2408,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					elseif (isset($this->newID['admin_view'][(int) $item->admin_view]))
 					{
 						$this->specialValue['admin_view'] = $this->newID['admin_view'][(int) $item->admin_view];
+					}
+					// (TODO) I have seen this happen, seems dangerous! 
+					else
+					{
+						return false;
 					}
 					break;
 				case 'validation_rule':
@@ -2549,27 +2564,31 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'component_config':
 				case 'component_dashboard':
 				case 'component_files_folders':
-					// get by joomla_component (since there should only be one of each component)
-					$getter = array('joomla_component');
-					$this->specialValue = array();
-					// Yet if diverged it makes sense that the ID is updated.
-					if ($diverged)
-					{
-						$this->specialValue['joomla_component'] = (int) $item->joomla_component;
-					}
-					elseif (isset($this->newID['joomla_component'][(int) $item->joomla_component]))
-					{
-						$this->specialValue['joomla_component'] = $this->newID['joomla_component'][(int) $item->joomla_component];
-					}
-					// (TODO) I have seen this happen, seems dangerous! 
-					else
-					{
-						return false;
-					}
+						// get by joomla_component (since there should only be one of each component)
+						$getter = array('joomla_component');
+						$this->specialValue = array();
+						// Yet if diverged it makes sense that the ID is updated.
+						if ($diverged)
+						{
+							$this->specialValue['joomla_component'] = (int) $item->joomla_component;
+						}
+						elseif (isset($this->newID['joomla_component'][(int) $item->joomla_component]))
+						{
+							$this->specialValue['joomla_component'] = $this->newID['joomla_component'][(int) $item->joomla_component];
+						}
+						// (TODO) I have seen this happen, seems dangerous! 
+						else
+						{
+							return false;
+						}
 					break;
 				case 'language_translation':
-						// get by English translation since there should just be one
-						$getter = 'entranslation';
+						// get by source translation since there should just be one
+						$getter = 'source';
+						if (isset($item->entranslation))
+						{
+							$item->source = $item->entranslation;
+						}
 					break;
 				case 'language':
 						// get by language tag since there should just be one
