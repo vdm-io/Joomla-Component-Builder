@@ -122,6 +122,8 @@
 			multiple="false"
 			required="true">
 			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_FIELD_SELECT_AN_OPTION</option>
 			<option value="CHAR">
 				COM_COMPONENTBUILDER_FIELD_CHAR</option>
 			<option value="VARCHAR">
@@ -298,8 +300,46 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_FIELD_NO</option>
 		</field>
+		<!-- Datalenght Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="datalenght"
+			label="COM_COMPONENTBUILDER_FIELD_DATALENGHT_LABEL"
+			description="COM_COMPONENTBUILDER_FIELD_DATALENGHT_DESCRIPTION"
+			class="btn-group"
+			multiple="false">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_FIELD_NONE_SET</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELD_ONE</option>
+			<option value="7">
+				COM_COMPONENTBUILDER_FIELD_SEVEN</option>
+			<option value="10">
+				COM_COMPONENTBUILDER_FIELD_TEN</option>
+			<option value="11">
+				COM_COMPONENTBUILDER_FIELD_ELEVEN</option>
+			<option value="50">
+				COM_COMPONENTBUILDER_FIELD_FIFTY</option>
+			<option value="64">
+				COM_COMPONENTBUILDER_FIELD_SIXTY_FOUR</option>
+			<option value="100">
+				COM_COMPONENTBUILDER_FIELD_ONE_HUNDRED</option>
+			<option value="255">
+				COM_COMPONENTBUILDER_FIELD_TWO_HUNDRED_AND_FIFTY_FIVE</option>
+			<option value="1024">
+				COM_COMPONENTBUILDER_FIELD_ONE_THOUSAND_AND_TWENTY_FOUR</option>
+			<option value="2048">
+				COM_COMPONENTBUILDER_FIELD_TWO_THOUSAND_AND_FORTY_EIGHT</option>
+			<option value="Other">
+				COM_COMPONENTBUILDER_FIELD_OTHER</option>
+		</field>
+		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
 		<!-- Note_filter_information Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_filter_information" description="COM_COMPONENTBUILDER_FIELD_NOTE_FILTER_INFORMATION_DESCRIPTION" class="note_filter_information" />
+		<!-- Helpnote Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="helpnote" label="COM_COMPONENTBUILDER_FIELD_HELPNOTE_LABEL" class="helpNote helpnote" />
 		<!-- Datadefault_other Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -316,8 +356,6 @@
 			message="COM_COMPONENTBUILDER_FIELD_DATADEFAULT_OTHER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELD_DATADEFAULT_OTHER_HINT"
 		/>
-		<!-- Helpnote Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="helpnote" label="COM_COMPONENTBUILDER_FIELD_HELPNOTE_LABEL" class="helpNote helpnote" />
 		<!-- Datadefault Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -356,40 +394,6 @@
 			message="COM_COMPONENTBUILDER_FIELD_DATALENGHT_OTHER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELD_DATALENGHT_OTHER_HINT"
 		/>
-		<!-- Datalenght Field. Type: List. (joomla) -->
-		<field
-			type="list"
-			name="datalenght"
-			label="COM_COMPONENTBUILDER_FIELD_DATALENGHT_LABEL"
-			description="COM_COMPONENTBUILDER_FIELD_DATALENGHT_DESCRIPTION"
-			class="btn-group"
-			multiple="false">
-			<!-- Option Set. -->
-			<option value="">
-				COM_COMPONENTBUILDER_FIELD_NONE_SET</option>
-			<option value="1">
-				COM_COMPONENTBUILDER_FIELD_ONE</option>
-			<option value="7">
-				COM_COMPONENTBUILDER_FIELD_SEVEN</option>
-			<option value="10">
-				COM_COMPONENTBUILDER_FIELD_TEN</option>
-			<option value="11">
-				COM_COMPONENTBUILDER_FIELD_ELEVEN</option>
-			<option value="50">
-				COM_COMPONENTBUILDER_FIELD_FIFTY</option>
-			<option value="64">
-				COM_COMPONENTBUILDER_FIELD_SIXTY_FOUR</option>
-			<option value="100">
-				COM_COMPONENTBUILDER_FIELD_ONE_HUNDRED</option>
-			<option value="255">
-				COM_COMPONENTBUILDER_FIELD_TWO_HUNDRED_AND_FIFTY_FIVE</option>
-			<option value="1024">
-				COM_COMPONENTBUILDER_FIELD_ONE_THOUSAND_AND_TWENTY_FOUR</option>
-			<option value="2048">
-				COM_COMPONENTBUILDER_FIELD_TWO_THOUSAND_AND_FORTY_EIGHT</option>
-			<option value="Other">
-				COM_COMPONENTBUILDER_FIELD_OTHER</option>
-		</field>
 		<!-- Add_javascript_views_footer Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -404,8 +408,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_FIELD_NO</option>
 		</field>
-		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
+		<!-- Note_no_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_no_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_no_database_settings_needed" />
 		<!-- Javascript_views_footer Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"

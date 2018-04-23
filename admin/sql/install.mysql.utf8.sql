@@ -733,10 +733,10 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
 	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`),
 	KEY `idx_add_css_views` (`add_css_views`),
 	KEY `idx_add_css_view` (`add_css_view`),
+	KEY `idx_datalenght` (`datalenght`),
 	KEY `idx_datadefault_other` (`datadefault_other`),
 	KEY `idx_datadefault` (`datadefault`),
 	KEY `idx_datalenght_other` (`datalenght_other`),
-	KEY `idx_datalenght` (`datalenght`),
 	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 

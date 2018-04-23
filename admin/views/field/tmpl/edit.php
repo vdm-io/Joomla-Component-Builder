@@ -82,6 +82,11 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 				<?php echo JLayoutHelper::render('field.data_base_right', $this); ?>
 			</div>
 		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('field.data_base_fullwidth', $this); ?>
+			</div>
+		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'scripts', JText::_('COM_COMPONENTBUILDER_FIELD_SCRIPTS', true)); ?>
@@ -343,6 +348,10 @@ jQuery('#adminForm').on('change', '#jform_fieldtype',function (e) {
 	// get type value
 	var fieldId = jQuery("#jform_fieldtype option:selected").val();
 	getFieldOptions(fieldId);
+	// get the field type text
+	var fieldText = jQuery("#jform_fieldtype option:selected").text().toLowerCase();
+	// now check if database input is needed
+	dbChecker(fieldText);
 });
 
 

@@ -61,6 +61,10 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NO</option>
 		</field>
+		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
+		<!-- Note_language_global Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_language_global" label="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_DESCRIPTION" heading="h4" class="alert alert-info note_language_global" />
 		<!-- Language Field. Type: Lang. (custom) -->
 		<field
 			type="lang"
@@ -85,8 +89,8 @@
 			max="100"
 			step="10"
 		/>
-		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
+		<!-- Spacer_hr_two Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_two" hr="true" class="spacer_hr_two" />
 		<!-- Compiler_field_builder_type Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -103,8 +107,8 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_CONFIG_SIMPLEXMLELEMENT_CLASS</option>
 		</field>
-		<!-- Spacer_hr_two Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_two" hr="true" class="spacer_hr_two" />
+		<!-- Spacer_hr_three Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_three" hr="true" class="spacer_hr_three" />
 		<!-- Api Field. Type: User. (joomla) -->
 		<field
 			type="user"
@@ -163,8 +167,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NEVER_UPDATE</option>
 		</field>
-		<!-- Spacer_hr_three Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_three" hr="true" class="spacer_hr_three" />
+		<!-- Spacer_hr_four Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_four" hr="true" class="spacer_hr_four" />
 		<field name="autorTitle"
 			type="spacer"
 			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR"
@@ -581,6 +585,97 @@
 			size="60"
 			default=""
 		/>
+	</fieldset>
+	<fieldset
+		name="development_method_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_DEVELOPMENT_METHOD">
+
+		<!-- Development_method Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="development_method"
+			label="COM_COMPONENTBUILDER_CONFIG_DEVELOPMENT_METHOD_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_DEVELOPMENT_METHOD_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_EXPANSION</option>
+		</field>
+		<!-- Note_development_method_default Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_development_method_default" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_DEFAULT_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_DEFAULT_DESCRIPTION" heading="h4" class="alert alert-info note_development_method_default" showon="development_method:1" />
+		<!-- Note_development_method_expansion Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_development_method_expansion" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_EXPANSION_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_EXPANSION_DESCRIPTION" heading="h4" class="alert alert-info note_development_method_expansion" showon="development_method:2" />
+		<!-- Expansion Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="expansion"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPANSION_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPANSION_DESCRIPTION"
+			icon="list"
+			max="50"
+			min="1"
+			showon="development_method:2">
+			<form hidden="true" name="list_expansion_modal" repeat="true">
+				<!-- Component Field. Type: Component. (custom) -->
+				<field
+					type="component"
+					name="component"
+					label="COM_COMPONENTBUILDER_CONFIG_COMPONENT_LABEL"
+					class="list_class"
+					multiple="false"
+					default="0"
+					required="false"
+					button="false"
+				/>
+				<!-- Backup Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="backup"
+					label="COM_COMPONENTBUILDER_CONFIG_BACKUP_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_CONFIG_BACKUP_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Repository Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="repository"
+					label="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_DESCRIPTION"
+					class="inputbox"
+				/>
+				<!-- Event Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="event"
+					label="COM_COMPONENTBUILDER_CONFIG_EVENT_LABEL"
+					class="list_class"
+					multiple="false"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_CONFIG_PERCHANGE</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_CONFIG_PERJCB_PACKAGE_IMPORT</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_CONFIG_PERCOMPONENT_EVENT</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_CONFIG_PERHOUR</option>
+					<option value="5">
+						COM_COMPONENTBUILDER_CONFIG_PERDAY</option>
+				</field>
+			</form>
+		</field>
 	</fieldset>
 	<fieldset
 		name="cronjob_custom_config"

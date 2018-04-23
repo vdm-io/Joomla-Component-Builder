@@ -2355,7 +2355,7 @@ class Fields extends Structure
 			// set tags for this view but don't load to DB
 			$this->tagsBuilder[$view_name_single] = $view_name_single;
 		}
-		else
+		elseif (isset($field['settings']->datatype))
 		{
 			// insure default not none if number type
 			$intKeys = array('INT', 'TINYINT', 'BIGINT', 'FLOAT', 'DECIMAL', 'DOUBLE');
@@ -2474,7 +2474,7 @@ class Fields extends Structure
 			$this->hiddenFieldsBuilder[$view_name_single] .= ',"' . $name . '"';
 		}
 		// set all int fields of this view
-		if ($dbSwitch && ($field['settings']->datatype === 'INT' || $field['settings']->datatype === 'TINYINT' || $field['settings']->datatype === 'BIGINT'))
+		if ($dbSwitch && isset($field['settings']->datatype) && ($field['settings']->datatype === 'INT' || $field['settings']->datatype === 'TINYINT' || $field['settings']->datatype === 'BIGINT'))
 		{
 			if (!isset($this->intFieldsBuilder[$view_name_single]))
 			{

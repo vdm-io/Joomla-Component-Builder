@@ -184,6 +184,7 @@ class ComponentbuilderModelFields extends JModelList
 		if ($name === 'datatype')
 		{
 			$datatypeArray = array(
+				0 => 'COM_COMPONENTBUILDER_FIELD_SELECT_AN_OPTION',
 				'CHAR' => 'COM_COMPONENTBUILDER_FIELD_CHAR',
 				'VARCHAR' => 'COM_COMPONENTBUILDER_FIELD_VARCHAR',
 				'TEXT' => 'COM_COMPONENTBUILDER_FIELD_TEXT',

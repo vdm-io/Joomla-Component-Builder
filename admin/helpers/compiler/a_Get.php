@@ -972,6 +972,7 @@ class Get
 				$array['view'] = $array['adminview'];
 				// get the admin settings/data
 				$array['settings'] = $this->getAdminViewData($array['view']);
+
 				return $array;
 			}, array_values($component->addadmin_views));
 		}
@@ -1456,7 +1457,7 @@ class Get
 					$view->fields = array_map(function($field) use($name_single, $name_list)
 					{
 						// set hash 
-						static $hash = 1;
+						static $hash = 123467890; // (TODO) I found this making duplicates
 						// load hash
 						$field['hash'] = md5($field['field'] . $hash);
 						// increment hash

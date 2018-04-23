@@ -521,6 +521,10 @@ jQuery(document).ready(function()
 	getValidationRulesTable();
 	// set button to create more fields
 	addButton('validation_rule', 'validation_rules_header', 2);
+	// get the field type text
+	var fieldText = jQuery("#jform_fieldtype option:selected").text().toLowerCase();
+	// now check if database input is needed
+	dbChecker(fieldText);
 });
 
 function getLinked_server(type){
@@ -770,4 +774,49 @@ function getValidationRulesTable(){
 			jQuery('#display_validation_rules').html(result);
 		}
 	});
+}
+
+function dbChecker(type){
+	if ('note' === type || 'spacer' === type) {
+		// update the datatype selection
+		jQuery('#jform_datatype').val('').trigger('liszt:updated').change();
+		jQuery('#jform_datalenght').val('').trigger('liszt:updated').change();
+		jQuery('#jform_datadefault').val('').trigger('liszt:updated').change();
+		jQuery('#jform_datadefault').val('').trigger('liszt:updated').change();
+		jQuery('#jform_indexes').val(0).trigger('liszt:updated').change();
+		jQuery('#jform_store').val(0).trigger('liszt:updated').change();
+		// remove the datatype
+		jQuery('#jform_datatype-lbl').closest('.control-group').hide();
+		jQuery('#jform_datatype').closest('.control-group').hide();
+		updateFieldRequired('datatype',1);
+		jQuery('#jform_datatype').removeAttr('required');
+		jQuery('#jform_datatype').removeAttr('aria-required');
+		jQuery('#jform_datatype').removeClass('required');
+		// remove the null selection
+		jQuery('#jform_null_switch-lbl').closest('.control-group').hide();
+		jQuery('#jform_null_switch').closest('.control-group').hide();
+		updateFieldRequired('null_switch',1);
+		jQuery('#jform_null_switch').removeAttr('required');
+		jQuery('#jform_null_switch').removeAttr('aria-required');
+		jQuery('#jform_null_switch').removeClass('required');
+		// show notice
+		jQuery('.note_no_database_settings_needed').closest('.control-group').show();
+	} else {
+		// add the datatype
+		jQuery('#jform_datatype-lbl').closest('.control-group').show();
+		jQuery('#jform_datatype').closest('.control-group').show();
+		updateFieldRequired('datatype',0);
+		jQuery('#jform_datatype').prop('required','required');
+		jQuery('#jform_datatype').attr('aria-required',true);
+		jQuery('#jform_datatype').addClass('required');
+		// add the null selection
+		jQuery('#jform_null_switch-lbl').closest('.control-group').show();
+		jQuery('#jform_null_switch').closest('.control-group').show();
+		updateFieldRequired('null_switch',0);
+		jQuery('#jform_null_switch').prop('required','required');
+		jQuery('#jform_null_switch').attr('aria-required',true);
+		jQuery('#jform_null_switch').addClass('required');
+		// remove notice
+		jQuery('.note_no_database_settings_needed').closest('.control-group').hide();		
+	}
 } 
