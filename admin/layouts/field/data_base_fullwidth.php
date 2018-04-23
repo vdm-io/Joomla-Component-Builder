@@ -30,7 +30,8 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_no_database_settings_needed'
+	'note_no_database_settings_needed',
+	'note_database_settings_needed'
 );
 
 ?>

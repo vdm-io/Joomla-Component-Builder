@@ -801,6 +801,7 @@ function dbChecker(type){
 		jQuery('#jform_null_switch').removeClass('required');
 		// show notice
 		jQuery('.note_no_database_settings_needed').closest('.control-group').show();
+		jQuery('.note_database_settings_needed').closest('.control-group').hide();
 	} else {
 		// add the datatype
 		jQuery('#jform_datatype-lbl').closest('.control-group').show();
@@ -817,6 +818,7 @@ function dbChecker(type){
 		jQuery('#jform_null_switch').attr('aria-required',true);
 		jQuery('#jform_null_switch').addClass('required');
 		// remove notice
-		jQuery('.note_no_database_settings_needed').closest('.control-group').hide();		
+		jQuery('.note_no_database_settings_needed').closest('.control-group').hide();
+		jQuery('.note_database_settings_needed').closest('.control-group').show();
 	}
 } 

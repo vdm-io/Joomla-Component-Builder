@@ -39,12 +39,818 @@ abstract class ComponentbuilderHelper
 	{
 		// the Session keeps track of all data related to the current session of this user
 		self::loadSession();
-	} 
+	}  
+
+	/**
+	* 	Locked Libraries (we can not have these change)
+	**/
+	public static $libraryNames = array(1 => 'No Library', 2 => 'Bootstrap v4', 3 => 'Uikit v3', 4 => 'Uikit v2', 5 => 'FooTable v2', 6 => 'FooTable v3');
+
+	/**
+	* 	The global params
+	**/
+	protected static $params = false;
 
 	/**
 	* 	The global updater
 	**/
 	protected static $globalUpdater = array();
+
+	/**
+	* 	The local company details
+	**/
+	protected static $localCompany = array();
+
+	/**
+	* 	The snippet paths
+	**/
+	public static $snippetPath = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/';
+	public static $snippetsPath = 'https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master';
+
+	/**
+	*	The packages paths
+	**/
+	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
+	public static $jcbGithubPackageUrl = "https://github.com/vdm-io/JCB-Packages/raw/master/";
+
+	// not needed at this time (maybe latter)
+	public static $accessToken = "";
+
+	/**
+	*	get the github repo file list
+	*
+	*	@return  array on success
+	* 
+	*/
+	public static function getGithubRepoFileList($type, $target)
+	{
+		// get the current Packages (public)
+		if (!$repoData = self::get($type))
+		{
+			if (self::urlExists($target))
+			{
+				$repoData = self::getFileContents($target);
+				if (self::checkJson($repoData))
+				{
+					$test = json_decode($repoData);
+					if (self::checkObject($test) && isset($test->tree) && self::checkArray($test->tree) )
+					{
+						// remember to set it
+						self::set($type, $repoData);
+					}
+					// check if we have error message from github
+					elseif ($errorMessage = self::githubErrorHandeler(array('error' => null), $test))
+					{
+						if (self::checkString($errorMessage['error']))
+						{
+							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
+						}
+						$repoData = false;
+					}
+				}
+				else
+				{
+					$repoData = false;
+				}
+			}
+			else
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $target), 'Error');
+			}
+		}
+		// check if we could find packages
+		if (isset($repoData) && self::checkJson($repoData))
+		{
+			$repoData = json_decode($repoData);
+			if (self::checkObject($repoData) && isset($repoData->tree) && self::checkArray($repoData->tree) )
+			{
+				return $repoData->tree;
+			}
+		}
+		return false;
+	}
+
+	/**
+	*	get the github error messages
+	*
+	*	@return  array of errors on success
+	* 
+	*/
+	protected static function githubErrorHandeler($message, &$github)
+	{
+		if (self::checkObject($github) && isset($github->message) && self::checkString($github->message))
+		{
+			// set the message
+			$errorMessage = $github->message;
+			// add the documentation URL
+			if (isset($github->documentation_url) && self::checkString($github->documentation_url))
+			{
+				$errorMessage = $errorMessage.'<br />'.$github->documentation_url;
+			}
+			// check the message
+			if (strpos($errorMessage, 'Authenticated') !== false)
+			{
+				// add little more help if it is an access token issue
+				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_AN_BACCESS_TOKENB_TO_GETBIBLE_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO', $errorMessage);
+			}
+			// set error notice
+			$message['error'] = $errorMessage;
+			// we have error message
+			return $message;
+		}
+		return false;
+	}
+
+	/**
+	 * The array of constant paths
+	 * 
+	 * JPATH_SITE is meant to represent the root path of the JSite application,
+	 * just as JPATH_ADMINISTRATOR is mean to represent the root path of the JAdministrator application.
+	 * 
+	 *    JPATH_BASE is the root path for the current requested application.... so if you are in the administrator application:
+	 * 
+	 *    JPATH_BASE == JPATH_ADMINISTRATOR
+	 * 
+	 * If you are in the site application:
+	 * 
+	 *    JPATH_BASE == JPATH_SITE
+	 * 
+	 * If you are in the installation application:
+	 * 
+	 *    JPATH_BASE == JPATH_INSTALLATION.
+	 * 
+	 *    JPATH_ROOT is the root path for the Joomla install and does not depend upon any application.
+	 * 
+	 * @var     array
+	 */
+	public static $constantPaths = array(
+		// The path to the administrator folder.
+		'JPATH_ADMINISTRATOR' => JPATH_ADMINISTRATOR,
+		// The path to the installed Joomla! site, or JPATH_ROOT/administrator if executed from the backend.
+		'JPATH_BASE' => JPATH_BASE,
+		// The path to the cache folder.
+		'JPATH_CACHE' => JPATH_CACHE,
+		// The path to the administration folder of the current component being executed.
+		'JPATH_COMPONENT_ADMINISTRATOR' => JPATH_COMPONENT_ADMINISTRATOR,
+		// The path to the site folder of the current component being executed.
+		'JPATH_COMPONENT_SITE' => JPATH_COMPONENT_SITE,
+		// The path to the current component being executed.
+		'JPATH_COMPONENT' => JPATH_COMPONENT,
+		// The path to folder containing the configuration.php file.
+		'JPATH_CONFIGURATION' => JPATH_CONFIGURATION,
+		// The path to the installation folder.
+		'JPATH_INSTALLATION' => JPATH_INSTALLATION,
+		// The path to the libraries folder.
+		'JPATH_LIBRARIES' => JPATH_LIBRARIES,
+		// The path to the plugins folder.
+		'JPATH_PLUGINS' => JPATH_PLUGINS,
+		// The path to the installed Joomla! site.
+		'JPATH_ROOT' => JPATH_ROOT,
+		// The path to the installed Joomla! site.
+		'JPATH_SITE' => JPATH_SITE,
+		// The path to the templates folder.
+		'JPATH_THEMES' => JPATH_THEMES
+	);
+
+	/*
+	 * Get the Array of Existing Validation Rule Names
+	 *
+	 * @return array
+	 */
+	public static function getExistingValidationRuleNames($lowercase = false)
+	{
+		// get the items
+		$items = self::get('_existing_validation_rules_VDM', null);
+		if (!$items)
+		{
+			// load the file class
+			jimport('joomla.filesystem.file');
+			jimport('joomla.filesystem.folder');
+			// set the path to the form validation rules
+			$path = JPATH_LIBRARIES . '/src/Form/Rule';
+			// check if the path exist
+			if (!JFolder::exists($path))
+			{
+				return false;
+			}
+			// we must first store the current working directory
+			$joomla = getcwd();
+			// go to that folder
+			chdir($path);
+			// load all the files in this path
+			$items = JFolder::files('.', '\.php', true, true);
+			// change back to Joomla working directory
+			chdir($joomla);
+			// make sure we have an array
+			if (!self::checkArray($items))
+			{
+				return false;
+			}
+			// remove the Rule.php from the name
+			$items = array_map( function ($name) {
+				return str_replace(array('./','Rule.php'), '', $name);
+			}, $items);
+			// store the names for next run
+			self::set('_existing_validation_rules_VDM', json_encode($items));
+		}
+		// make sure it is no longer json
+		if (self::checkJson($items))
+		{
+			$items = json_decode($items, true);
+		}
+		// check if the names should be all lowercase
+		if ($lowercase)
+		{
+			$items = array_map( function($item) {
+				return strtolower($item);
+			}, $items);
+		}
+		return $items;
+	}
+
+	/**
+	* Get the snippet contributor details
+	* 
+	* @param  string   $filename   The file name
+	* @param  string   $type         The type of file
+	*
+	* @return  array    On success the contributor details
+	* 
+	*/
+	public static function getContributorDetails($filename, $type = 'snippet')
+	{
+		// start loading he contributor details
+		$contributor = array();
+		// get the path & content
+		switch ($type)
+		{
+			case 'snippet':
+				$path = $snippetPath.$filename;
+				// get the file if available
+				$content = self::getFileContents($path);
+				if (self::checkJson($content))
+				{
+					$content = json_decode($content, true);
+				}
+			break;
+			default:
+				// only allow types that are being targeted
+				return false;
+			break;
+		}
+		// see if we have content and all needed details
+		if (isset($content) && self::checkArray($content)
+				&& isset($content['contributor_company'])
+				&& isset($content['contributor_name'])
+				&& isset($content['contributor_email'])
+				&& isset($content['contributor_website']))
+		{
+			// got the details from file
+			return array('contributor_company' => $content['contributor_company'] ,'contributor_name' => $content['contributor_name'], 'contributor_email' => $content['contributor_email'], 'contributor_website' => $content['contributor_website'], 'origin' => 'file');
+		}
+		// get the global settings
+		if (!self::checkObject(self::$params))
+		{
+			self::$params = JComponentHelper::getParams('com_componentbuilder');
+		}
+		// get the global company details
+		if (!self::checkArray(self::$localCompany))
+		{
+			// Set the person sharing information (default VDM ;)
+			self::$localCompany['company']		= self::$params->get('export_company', 'Vast Development Method');
+			self::$localCompany['owner']		= self::$params->get('export_owner', 'Llewellyn van der Merwe');
+			self::$localCompany['email']		= self::$params->get('export_email', 'joomla@vdm.io');
+			self::$localCompany['website']		= self::$params->get('export_website', 'https://www.vdm.io/');
+		}
+		// default global
+		return array('contributor_company' => self::$localCompany['company']	,'contributor_name' => self::$localCompany['owner'], 'contributor_email' => self::$localCompany['email'], 'contributor_website' => self::$localCompany['website'], 'origin' => 'global');
+	}
+
+	/**
+	* Get the library files
+	* 
+	* @param  int   $id   The library id to target
+	*
+	* @return  array    On success the array of files that belong to this library
+	* 
+	*/
+	public static function getLibraryFiles($id)
+	{
+		// get the library files, folders, and urls
+		$files = array();
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('b.name','a.addurls','a.addfolders','a.addfiles')));
+		$query->from($db->quoteName('#__componentbuilder_library_files_folders_urls','a'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'b') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('b.id') . ')');
+		$query->where($db->quoteName('a.library') . ' = ' . (int) $id);
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{			
+			// prepare the files
+ 			$result = $db->loadObject();
+ 			// first we load the URLs
+			if (self::checkJson($result->addurls))
+			{
+				// convert to array
+				$result->addurls = json_decode($result->addurls, true);
+				// set urls
+				if (self::checkArray($result->addurls))
+				{
+					// build media folder path
+					$mediaPath = '/media/' . strtolower( preg_replace('/\s+/', '-', self::safeString($result->name, 'filename', ' ', false)));
+					// load the urls
+					foreach($result->addurls as $url)
+					{
+						if (isset($url['url']) && self::checkString($url['url']))
+						{
+							// set the path if needed
+							if (isset($url['type']) && $url['type'] > 1)
+							{
+								$fileName = basename($url['url']);
+								// build sub path
+								if (strpos($fileName, '.js') !== false)
+								{
+									$path = '/js';
+								}
+								elseif (strpos($fileName, '.css') !== false)
+								{
+									$path = '/css';
+								}
+								else
+								{
+									$path = '';
+								}
+								// set the path to library file
+								$url['path'] = $mediaPath . $path . '/' . $fileName; // we need this for later
+							}
+							// if local path is set, then use it first
+							if (isset($url['path']))
+							{
+								// load document script
+								$files[md5($url['path'])] =  '(' . JText::_('URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LOCAL');
+							}
+							// check if link must be added
+							if (isset($url['url']) && ((isset($url['type']) && $url['type'] == 1) || (isset($url['type']) && $url['type'] == 3) || !isset($url['type'])))
+							{
+								// load url also if not building document
+								$files[md5($url['url'])] = '(' . JText::_('URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LINK');
+							}
+						}
+					}
+				}
+			}
+			// load the local files
+			if (self::checkJson($result->addfiles))
+			{
+				// convert to array
+				$result->addfiles = json_decode($result->addfiles, true);
+				// set files
+				if (self::checkArray($result->addfiles))
+				{
+					foreach($result->addfiles as $file)
+					{
+						if (isset($file['file']) && isset($file['path']))
+						{
+							$path = '/'.trim($file['path'], '/');
+							// check if path has new file name (has extetion)
+							$pathInfo = pathinfo($path);
+							if (isset($pathInfo['extension']) && $pathInfo['extension'])
+							{
+								// load document script
+								$files[md5($path)] = '(' . JText::_('COM_COMPONENTBUILDER_FILE') . ') ' . $file['file'];
+							}
+							else
+							{
+								// load document script
+								$files[md5($path.'/'.trim($file['file'],'/'))] = '(' . JText::_('COM_COMPONENTBUILDER_FILE') . ') ' . $file['file'];
+							}
+						}
+					}
+				}
+			}
+ 			// load the files in the folder	
+			if (self::checkJson($result->addfolders))
+			{
+				// convert to array
+				$result->addfolders = json_decode($result->addfolders, true);
+				// set folder
+				if (self::checkArray($result->addfolders))
+				{
+					// get the global settings
+					if (!self::checkObject(self::$params))
+					{
+						self::$params = JComponentHelper::getParams('com_componentbuilder');
+					}
+					// reset bucket
+					$bucket = array();
+					// get custom folder path
+					$customPath = '/'.trim(self::$params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom'), '/');
+					// get all the file paths
+					foreach ($result->addfolders as $folder)
+					{
+						if (isset($folder['path']) && isset($folder['folder']))
+						{
+							$_path = '/'.trim($folder['path'], '/');
+							$customFolder = '/'.trim($folder['folder'], '/');
+							if (isset($folder['rename']) && 1 == $folder['rename'])
+							{
+								if ($_paths = self::getAllFilePaths($customPath.$customFolder))
+								{
+									$bucket[$_path] = $_paths;
+								}
+							}
+							else
+							{
+								$path = $_path.$customFolder;
+								if ($_paths = self::getAllFilePaths($customPath.$customFolder))
+								{
+									$bucket[$path] = $_paths;
+								}
+							}
+						}
+					}
+					// now load the script
+					if (self::checkArray($bucket))
+					{
+						foreach ($bucket as $root => $paths)
+						{
+							// load per path
+							foreach($paths as $path)
+							{
+								$files[md5($root.'/'.trim($path, '/'))] = '(' . JText::_('COM_COMPONENTBUILDER_FOLDER') . ') ' . basename($path) . ' - ' . basename($root);
+							}
+						}
+					}
+				}
+			}
+			// return files if found
+			if (self::checkArray($files))
+			{
+				return $files;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * get all the file paths in folder and sub folders
+	 * 
+	 * @param   string  $folder     The local path to parse
+	 * @param   array   $fileTypes  The type of files to get
+	 *
+	 * @return  void
+	 * 
+	 */
+	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'))
+	{
+		if (JFolder::exists($folder))
+		{
+			// we must first store the current woking directory
+			$joomla = getcwd();
+			// we are changing the working directory to the componet path
+			chdir($folder);
+			// get the files
+			foreach ($fileTypes as $type)
+			{
+				// get a list of files in the current directory tree
+				$files[] = JFolder::files('.', $type, true, true);
+			}
+			// change back to Joomla working directory
+			chdir($joomla);
+			// return array of files
+			return array_map( function($file) { return str_replace('./', '/', $file); }, (array) self::mergeArrays($files));
+		}
+		return false;
+	}
+
+	/**
+	 * get all component IDs
+	 */
+	public static function getComponentIDs()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('id')));
+		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
+		$query->where($db->quoteName('published') . ' >= 1'); // do not backup trash
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{			
+				return $db->loadColumn();
+		}
+		return false;
+	}
+
+	/**
+	 * Autoloader
+	 */
+	public static function autoLoader($type = 'compiler')
+	{
+		// load the type classes
+		if ('smart' !== $type)
+		{
+			foreach (glob(JPATH_ADMINISTRATOR."/components/com_componentbuilder/helpers/".$type."/*.php") as $autoFile)
+			{
+				require_once $autoFile;
+			}
+		}
+		// load only if compiler
+		if ('compiler' === $type)
+		{
+			// import the Joomla librarys
+			jimport('joomla.filesystem.file');
+			jimport('joomla.filesystem.folder');
+			jimport('joomla.filesystem.archive');
+			jimport('joomla.application.component.modellist');
+			// include class to minify js
+			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
+		}
+		// load only if smart
+		if ('smart' === $type)
+		{
+			// import the Joomla libraries
+			jimport('joomla.filesystem.file');
+			jimport('joomla.filesystem.folder');
+			jimport('joomla.filesystem.archive');
+			jimport('joomla.application.component.modellist');
+		}
+		// load this for all
+		jimport('joomla.application');
+	}
+
+	/**
+	 * Remove folders with files
+	 * 
+	 * @param   string   $dir     The path to folder to remove
+	 * @param   boolean  $ignore  The folders and files to ignore and not remove
+	 *
+	 * @return  boolean   True in all is removed
+	 * 
+	 */
+	public static function removeFolder($dir, $ignore = false)
+	{
+		if (JFolder::exists($dir))
+		{
+			$it = new RecursiveDirectoryIterator($dir);
+			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+			foreach ($it as $file)
+			{
+				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
+				if ($file->isDir())
+				{
+					$keeper = false;
+					if (self::checkArray($ignore))
+					{
+						foreach ($ignore as $keep)
+						{
+							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
+							{
+								$keeper = true;
+							}
+						}
+					}
+					if ($keeper)
+					{
+						continue;
+					}
+					JFolder::delete($file->getPathname());
+				}
+				else
+				{
+					$keeper = false;
+					if (self::checkArray($ignore))
+					{
+						foreach ($ignore as $keep)
+						{
+							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
+							{
+								$keeper = true;
+							}
+						}
+					}
+					if ($keeper)
+					{
+						continue;
+					}
+					JFile::delete($file->getPathname());
+				}
+			}
+			if (!self::checkArray($ignore))
+			{
+				return JFolder::delete($dir);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	* 	The dynamic builder of views, tables and fields
+	**/
+	public static function dynamicBuilder(&$data, $type)
+	{
+		self::autoLoader('extrusion');
+		$extruder = new Extrusion($data);
+	}
+
+	public static function getFieldOptions($value, $type, $settings = array(), $xml = null)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
+		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+		$query->where($db->quoteName('published') . ' = 1');
+		$query->where($db->quoteName($type) . ' = '. $value);
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$result = $db->loadObject();
+			$properties = json_decode($result->properties,true);
+			$field = array(
+				'subform' => array(),
+				'nameListOptions' => array(),
+				'php' => array(),
+				'values' => "<field ", 
+				'values_description' => '<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">', 
+				'short_description' => $result->short_description, 
+				'description' => $result->description);
+			// number pointer
+			$nr = 0;
+			// value to check since there are false and null values even 0 in the values returned
+			$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
+			// set the headers
+			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
+			foreach ($properties as $property)
+			{
+				$example = (isset($property['example']) && self::checkString($property['example'])) ? $property['example'] : '';
+				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
+				// check if we should load the value
+				$value = self::getValueFromXMLstring($xml, $property['name'], $confirmation);
+				// check if this is a php field
+				$addPHP = false;
+				if (strpos($property['name'], 'type_php') !== false)
+				{
+					$addPHP = true;
+					$phpKey = trim(preg_replace('/[0-9]+/', '', $property['name']), '_');
+					// start array if not already set
+					if (!isset($field['php'][$phpKey]))
+					{
+						$field['php'][$phpKey] = array();
+						$field['php'][$phpKey]['value'] = array();
+						$field['php'][$phpKey]['desc'] = $property['description'];
+					}
+				}
+				// was the settings for the property passed
+				if(self::checkArray($settings) && isset($settings[$property['name']]))
+				{
+					// add the xml values
+					$field['values'] .= PHP_EOL."\t".$property['name'].'="'.$settings[$property['name']].'" ';
+					// add the json values
+					if ($addPHP)
+					{
+						$field['php'][$phpKey]['value'][] = $settings[$property['name']];
+					}
+					else
+					{
+						$field['subform']['properties'.$nr] = array('name' => $property['name'], 'value' => $settings[$property['name']], 'desc' => $property['description']);
+					}
+				}
+				elseif (!$xml || $confirmation !== $value)
+				{
+					// add the xml values
+					$field['values'] .= PHP_EOL."\t" . $property['name'] . '="'. ($confirmation !== $value) ? $value : $example .'" ';
+					// add the json values
+					if ($addPHP)
+					{
+						$field['php'][$phpKey]['value'][] = ($confirmation !== $value) ? $value : $example;
+					}
+					else
+					{
+						$field['subform']['properties' . $nr] = array('name' => $property['name'], 'value' => ($confirmation !== $value) ? $value : $example, 'desc' => $property['description']);
+					}
+				}
+				// add the name List Options
+				if (!$addPHP)
+				{
+					$field['nameListOptions'][$property['name']] = $property['name'];
+				}
+				// increment the number
+				$nr++;
+			}
+			$field['values'] .= PHP_EOL."/>";
+			$field['values_description'] .= '</tbody></table>';
+			// return found field options
+			return $field;
+		}
+		return false;
+	}
+
+	public static function getValueFromXMLstring($xml, $get, $confirmation)
+	{
+		if (self::checkString($xml))
+		{
+			return self::getBetween($xml, $get.'="', '"', $confirmation);
+		}
+		return $confirmation;
+	}
+
+
+	/**
+	* The zipper method
+	* 
+	* @param  string   $workingDIR    The directory where the items must be zipped
+	* @param  string   $filepath          The path to where the zip file must be placed
+	*
+	* @return  bool true   On success
+	* 
+	*/
+	public static function zip($workingDIR, &$filepath)
+	{
+		// store the current joomla working directory
+		$joomla = getcwd();
+
+		// we are changing the working directory to the component temp folder
+		chdir($workingDIR);
+
+		// the full file path of the zip file
+		$filepath = JPath::clean($filepath);
+
+		// delete an existing zip file (or use an exclusion parameter in JFolder::files()
+		JFile::delete($filepath);
+
+		// get a list of files in the current directory tree
+		$files = JFolder::files('.', '', true, true);
+		$zipArray = array();
+		// setup the zip array
+		foreach ($files as $file)
+		{
+		   $tmp = array();
+		   $tmp['name'] = str_replace('./', '', $file);
+		   $tmp['data'] = JFile::read($file);
+		   $tmp['time'] = filemtime($file);
+		   $zipArray[] = $tmp;
+		}
+
+		// change back to joomla working directory
+		chdir($joomla);
+
+		// get the zip adapter
+		$zip = JArchive::getAdapter('zip');
+
+		//create the zip file
+		if ($zip->create($filepath, $zipArray))
+		{
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	* Write a file to the server
+	*
+	* @param  string   $path    The path and file name where to safe the data
+	* @param  string   $data    The data to safe
+	*
+	* @return  bool true   On success
+	*
+	*/
+	public static function writeFile($path, $data)
+	{
+		$klaar = false;
+		if (self::checkString($data))
+		{
+			// open the file
+			$fh = fopen($path, "w");
+			if (!is_resource($fh))
+			{
+				return $klaar;
+			}
+			// write to the file
+			if (fwrite($fh, $data))
+			{
+				// has been done
+				$klaar = true;
+			}
+			// close file.
+			fclose($fh);
+		}
+		return $klaar;
+	}
+
 
 	/*
 	 * Convert repeatable field to subform
@@ -156,60 +962,6 @@ abstract class ComponentbuilderHelper
 			}
 		}
 		return $object;
-	}
-
-	/*
-	 * Get the Array of Existing Validation Rule Names
-	 *
-	 * @return array
-	 */
-	public static function getExistingValidationRuleNames($lowercase = false)
-	{
-		if (!$items = self::get('_existing_validation_rules_VDM', null))
-		{
-			// load the file class
-			jimport('joomla.filesystem.file');
-			jimport('joomla.filesystem.folder');
-			// set the path to the form validation rules
-			$path = JPATH_LIBRARIES . '/src/Form/Rule';
-			// check if the path exist
-			if (!JFolder::exists($path))
-			{
-				return false;
-			}
-			// we must first store the current working directory
-			$joomla = getcwd();
-			// go to that folder
-			chdir($path);
-			// load all the files in this path
-			$items = JFolder::files('.', '\.php', true, true);
-			// change back to Joomla working directory
-			chdir($joomla);
-			// make sure we have an array
-			if (!self::checkArray($items))
-			{
-				return false;
-			}
-			// remove the Rule.php from the name
-			$items = array_map( function ($name) {
-				return str_replace(array('./','Rule.php'), '', $name);
-			}, $items);
-			// store the names for next run
-			self::set('_existing_validation_rules_VDM', json_encode($items));
-		}
-		// make sure it is no longer json
-		if (self::checkJson($items))
-		{
-			$items = json_decode($items, true);
-		}
-		// check if the names should be all lowercase
-		if ($lowercase)
-		{
-			$items = array_map( function($item) {
-				return strtolower($item);
-			}, $items);
-		}
-		return $items;
 	}
 
 	public static function getDynamicScripts($type, $fieldName = false)
@@ -1018,755 +1770,6 @@ abstract class ComponentbuilderHelper
 			}
 		}
 		return false;
-	} 
-
-	/**
-	* 	Locked Libraries (we can not have these change)
-	**/
-	public static $libraryNames = array(1 => 'No Library', 2 => 'Bootstrap v4', 3 => 'Uikit v3', 4 => 'Uikit v2', 5 => 'FooTable v2', 6 => 'FooTable v3');
-
-	/**
-	* 	The global params
-	**/
-	protected static $params = false;
-
-	/**
-	* 	The local company details
-	**/
-	protected static $localCompany = array();
-
-	/**
-	* 	The snippet paths
-	**/
-	public static $snippetPath = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/';
-	public static $snippetsPath = 'https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master';
-
-	/**
-	*	The packages paths
-	**/
-	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
-	public static $jcbGithubPackageUrl = "https://github.com/vdm-io/JCB-Packages/raw/master/";
-
-	// not needed at this time (maybe latter)
-	public static $accessToken = "";
-
-	/**
-	*	get the github repo file list
-	*
-	*	@return  array on success
-	* 
-	*/
-	public static function getGithubRepoFileList($type, $target)
-	{
-		// get the current Packages (public)
-		if (!$repoData = self::get($type))
-		{
-			if (self::urlExists($target))
-			{
-				$repoData = self::getFileContents($target);
-				if (self::checkJson($repoData))
-				{
-					$test = json_decode($repoData);
-					if (self::checkObject($test) && isset($test->tree) && self::checkArray($test->tree) )
-					{
-						// remember to set it
-						self::set($type, $repoData);
-					}
-					// check if we have error message from github
-					elseif ($errorMessage = self::githubErrorHandeler(array('error' => null), $test))
-					{
-						if (self::checkString($errorMessage['error']))
-						{
-							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
-						}
-						$repoData = false;
-					}
-				}
-				else
-				{
-					$repoData = false;
-				}
-			}
-			else
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $target), 'Error');
-			}
-		}
-		// check if we could find packages
-		if (isset($repoData) && self::checkJson($repoData))
-		{
-			$repoData = json_decode($repoData);
-			if (self::checkObject($repoData) && isset($repoData->tree) && self::checkArray($repoData->tree) )
-			{
-				return $repoData->tree;
-			}
-		}
-		return false;
-	}
-
-	/**
-	*	get the github error messages
-	*
-	*	@return  array of errors on success
-	* 
-	*/
-	protected static function githubErrorHandeler($message, &$github)
-	{
-		if (self::checkObject($github) && isset($github->message) && self::checkString($github->message))
-		{
-			// set the message
-			$errorMessage = $github->message;
-			// add the documentation URL
-			if (isset($github->documentation_url) && self::checkString($github->documentation_url))
-			{
-				$errorMessage = $errorMessage.'<br />'.$github->documentation_url;
-			}
-			// check the message
-			if (strpos($errorMessage, 'Authenticated') !== false)
-			{
-				// add little more help if it is an access token issue
-				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_AN_BACCESS_TOKENB_TO_GETBIBLE_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO', $errorMessage);
-			}
-			// set error notice
-			$message['error'] = $errorMessage;
-			// we have error message
-			return $message;
-		}
-		return false;
-	}
-
-	/**
-	 * The array of constant paths
-	 * 
-	 * JPATH_SITE is meant to represent the root path of the JSite application,
-	 * just as JPATH_ADMINISTRATOR is mean to represent the root path of the JAdministrator application.
-	 * 
-	 *    JPATH_BASE is the root path for the current requested application.... so if you are in the administrator application:
-	 * 
-	 *    JPATH_BASE == JPATH_ADMINISTRATOR
-	 * 
-	 * If you are in the site application:
-	 * 
-	 *    JPATH_BASE == JPATH_SITE
-	 * 
-	 * If you are in the installation application:
-	 * 
-	 *    JPATH_BASE == JPATH_INSTALLATION.
-	 * 
-	 *    JPATH_ROOT is the root path for the Joomla install and does not depend upon any application.
-	 * 
-	 * @var     array
-	 */
-	public static $constantPaths = array(
-		// The path to the administrator folder.
-		'JPATH_ADMINISTRATOR' => JPATH_ADMINISTRATOR,
-		// The path to the installed Joomla! site, or JPATH_ROOT/administrator if executed from the backend.
-		'JPATH_BASE' => JPATH_BASE,
-		// The path to the cache folder.
-		'JPATH_CACHE' => JPATH_CACHE,
-		// The path to the administration folder of the current component being executed.
-		'JPATH_COMPONENT_ADMINISTRATOR' => JPATH_COMPONENT_ADMINISTRATOR,
-		// The path to the site folder of the current component being executed.
-		'JPATH_COMPONENT_SITE' => JPATH_COMPONENT_SITE,
-		// The path to the current component being executed.
-		'JPATH_COMPONENT' => JPATH_COMPONENT,
-		// The path to folder containing the configuration.php file.
-		'JPATH_CONFIGURATION' => JPATH_CONFIGURATION,
-		// The path to the installation folder.
-		'JPATH_INSTALLATION' => JPATH_INSTALLATION,
-		// The path to the libraries folder.
-		'JPATH_LIBRARIES' => JPATH_LIBRARIES,
-		// The path to the plugins folder.
-		'JPATH_PLUGINS' => JPATH_PLUGINS,
-		// The path to the installed Joomla! site.
-		'JPATH_ROOT' => JPATH_ROOT,
-		// The path to the installed Joomla! site.
-		'JPATH_SITE' => JPATH_SITE,
-		// The path to the templates folder.
-		'JPATH_THEMES' => JPATH_THEMES
-	);
-
-	/**
-	* Get the snippet contributor details
-	* 
-	* @param  string   $filename   The file name
-	* @param  string   $type         The type of file
-	*
-	* @return  array    On success the contributor details
-	* 
-	*/
-	public static function getContributorDetails($filename, $type = 'snippet')
-	{
-		// start loading he contributor details
-		$contributor = array();
-		// get the path & content
-		switch ($type)
-		{
-			case 'snippet':
-				$path = $snippetPath.$filename;
-				// get the file if available
-				$content = self::getFileContents($path);
-				if (self::checkJson($content))
-				{
-					$content = json_decode($content, true);
-				}
-			break;
-			default:
-				// only allow types that are being targeted
-				return false;
-			break;
-		}
-		// see if we have content and all needed details
-		if (isset($content) && self::checkArray($content)
-				&& isset($content['contributor_company'])
-				&& isset($content['contributor_name'])
-				&& isset($content['contributor_email'])
-				&& isset($content['contributor_website']))
-		{
-			// got the details from file
-			return array('contributor_company' => $content['contributor_company'] ,'contributor_name' => $content['contributor_name'], 'contributor_email' => $content['contributor_email'], 'contributor_website' => $content['contributor_website'], 'origin' => 'file');
-		}
-		// get the global settings
-		if (!self::checkObject(self::$params))
-		{
-			self::$params = JComponentHelper::getParams('com_componentbuilder');
-		}
-		// get the global company details
-		if (!self::checkArray(self::$localCompany))
-		{
-			// Set the person sharing information (default VDM ;)
-			self::$localCompany['company']		= self::$params->get('export_company', 'Vast Development Method');
-			self::$localCompany['owner']		= self::$params->get('export_owner', 'Llewellyn van der Merwe');
-			self::$localCompany['email']		= self::$params->get('export_email', 'joomla@vdm.io');
-			self::$localCompany['website']		= self::$params->get('export_website', 'https://www.vdm.io/');
-		}
-		// default global
-		return array('contributor_company' => self::$localCompany['company']	,'contributor_name' => self::$localCompany['owner'], 'contributor_email' => self::$localCompany['email'], 'contributor_website' => self::$localCompany['website'], 'origin' => 'global');
-	}
-
-	/**
-	* Get the library files
-	* 
-	* @param  int   $id   The library id to target
-	*
-	* @return  array    On success the array of files that belong to this library
-	* 
-	*/
-	public static function getLibraryFiles($id)
-	{
-		// get the library files, folders, and urls
-		$files = array();
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('b.name','a.addurls','a.addfolders','a.addfiles')));
-		$query->from($db->quoteName('#__componentbuilder_library_files_folders_urls','a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'b') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('b.id') . ')');
-		$query->where($db->quoteName('a.library') . ' = ' . (int) $id);
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{			
-			// prepare the files
- 			$result = $db->loadObject();
- 			// first we load the URLs
-			if (self::checkJson($result->addurls))
-			{
-				// convert to array
-				$result->addurls = json_decode($result->addurls, true);
-				// set urls
-				if (self::checkArray($result->addurls))
-				{
-					// build media folder path
-					$mediaPath = '/media/' . strtolower( preg_replace('/\s+/', '-', self::safeString($result->name, 'filename', ' ', false)));
-					// load the urls
-					foreach($result->addurls as $url)
-					{
-						if (isset($url['url']) && self::checkString($url['url']))
-						{
-							// set the path if needed
-							if (isset($url['type']) && $url['type'] > 1)
-							{
-								$fileName = basename($url['url']);
-								// build sub path
-								if (strpos($fileName, '.js') !== false)
-								{
-									$path = '/js';
-								}
-								elseif (strpos($fileName, '.css') !== false)
-								{
-									$path = '/css';
-								}
-								else
-								{
-									$path = '';
-								}
-								// set the path to library file
-								$url['path'] = $mediaPath . $path . '/' . $fileName; // we need this for later
-							}
-							// if local path is set, then use it first
-							if (isset($url['path']))
-							{
-								// load document script
-								$files[md5($url['path'])] =  '(' . JText::_('URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LOCAL');
-							}
-							// check if link must be added
-							if (isset($url['url']) && ((isset($url['type']) && $url['type'] == 1) || (isset($url['type']) && $url['type'] == 3) || !isset($url['type'])))
-							{
-								// load url also if not building document
-								$files[md5($url['url'])] = '(' . JText::_('URL') . ') ' . basename($url['url']) . ' - ' . JText::_('COM_COMPONENTBUILDER_LINK');
-							}
-						}
-					}
-				}
-			}
-			// load the local files
-			if (self::checkJson($result->addfiles))
-			{
-				// convert to array
-				$result->addfiles = json_decode($result->addfiles, true);
-				// set files
-				if (self::checkArray($result->addfiles))
-				{
-					foreach($result->addfiles as $file)
-					{
-						if (isset($file['file']) && isset($file['path']))
-						{
-							$path = '/'.trim($file['path'], '/');
-							// check if path has new file name (has extetion)
-							$pathInfo = pathinfo($path);
-							if (isset($pathInfo['extension']) && $pathInfo['extension'])
-							{
-								// load document script
-								$files[md5($path)] = '(' . JText::_('COM_COMPONENTBUILDER_FILE') . ') ' . $file['file'];
-							}
-							else
-							{
-								// load document script
-								$files[md5($path.'/'.trim($file['file'],'/'))] = '(' . JText::_('COM_COMPONENTBUILDER_FILE') . ') ' . $file['file'];
-							}
-						}
-					}
-				}
-			}
- 			// load the files in the folder	
-			if (self::checkJson($result->addfolders))
-			{
-				// convert to array
-				$result->addfolders = json_decode($result->addfolders, true);
-				// set folder
-				if (self::checkArray($result->addfolders))
-				{
-					// get the global settings
-					if (!self::checkObject(self::$params))
-					{
-						self::$params = JComponentHelper::getParams('com_componentbuilder');
-					}
-					// reset bucket
-					$bucket = array();
-					// get custom folder path
-					$customPath = '/'.trim(self::$params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom'), '/');
-					// get all the file paths
-					foreach ($result->addfolders as $folder)
-					{
-						if (isset($folder['path']) && isset($folder['folder']))
-						{
-							$_path = '/'.trim($folder['path'], '/');
-							$customFolder = '/'.trim($folder['folder'], '/');
-							if (isset($folder['rename']) && 1 == $folder['rename'])
-							{
-								if ($_paths = self::getAllFilePaths($customPath.$customFolder))
-								{
-									$bucket[$_path] = $_paths;
-								}
-							}
-							else
-							{
-								$path = $_path.$customFolder;
-								if ($_paths = self::getAllFilePaths($customPath.$customFolder))
-								{
-									$bucket[$path] = $_paths;
-								}
-							}
-						}
-					}
-					// now load the script
-					if (self::checkArray($bucket))
-					{
-						foreach ($bucket as $root => $paths)
-						{
-							// load per path
-							foreach($paths as $path)
-							{
-								$files[md5($root.'/'.trim($path, '/'))] = '(' . JText::_('COM_COMPONENTBUILDER_FOLDER') . ') ' . basename($path) . ' - ' . basename($root);
-							}
-						}
-					}
-				}
-			}
-			// return files if found
-			if (self::checkArray($files))
-			{
-				return $files;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * get all the file paths in folder and sub folders
-	 * 
-	 * @param   string  $folder     The local path to parse
-	 * @param   array   $fileTypes  The type of files to get
-	 *
-	 * @return  void
-	 * 
-	 */
-	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'))
-	{
-		if (JFolder::exists($folder))
-		{
-			// we must first store the current woking directory
-			$joomla = getcwd();
-			// we are changing the working directory to the componet path
-			chdir($folder);
-			// get the files
-			foreach ($fileTypes as $type)
-			{
-				// get a list of files in the current directory tree
-				$files[] = JFolder::files('.', $type, true, true);
-			}
-			// change back to Joomla working directory
-			chdir($joomla);
-			// return array of files
-			return array_map( function($file) { return str_replace('./', '/', $file); }, (array) self::mergeArrays($files));
-		}
-		return false;
-	}
-
-	/**
-	 * get all component IDs
-	 */
-	public static function getComponentIDs()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('id')));
-		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
-		$query->where($db->quoteName('published') . ' >= 1'); // do not backup trash
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{			
-				return $db->loadColumn();
-		}
-		return false;
-	}
-
-	/**
-	 * Autoloader
-	 */
-	public static function autoLoader($type = 'compiler')
-	{
-		// load the type classes
-		if ('smart' !== $type)
-		{
-			foreach (glob(JPATH_ADMINISTRATOR."/components/com_componentbuilder/helpers/".$type."/*.php") as $autoFile)
-			{
-				require_once $autoFile;
-			}
-		}
-		// load only if compiler
-		if ('compiler' === $type)
-		{
-			// import the Joomla librarys
-			jimport('joomla.filesystem.file');
-			jimport('joomla.filesystem.folder');
-			jimport('joomla.filesystem.archive');
-			jimport('joomla.application.component.modellist');
-			// include class to minify js
-			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
-		}
-		// load only if smart
-		if ('smart' === $type)
-		{
-			// import the Joomla libraries
-			jimport('joomla.filesystem.file');
-			jimport('joomla.filesystem.folder');
-			jimport('joomla.filesystem.archive');
-			jimport('joomla.application.component.modellist');
-		}
-		// load this for all
-		jimport('joomla.application');
-	}
-
-	/**
-	 * Remove folders with files
-	 * 
-	 * @param   string   $dir     The path to folder to remove
-	 * @param   boolean  $ignore  The folders and files to ignore and not remove
-	 *
-	 * @return  boolean   True in all is removed
-	 * 
-	 */
-	public static function removeFolder($dir, $ignore = false)
-	{
-		if (JFolder::exists($dir))
-		{
-			$it = new RecursiveDirectoryIterator($dir);
-			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			foreach ($it as $file)
-			{
-				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
-				if ($file->isDir())
-				{
-					$keeper = false;
-					if (self::checkArray($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-					if ($keeper)
-					{
-						continue;
-					}
-					JFolder::delete($file->getPathname());
-				}
-				else
-				{
-					$keeper = false;
-					if (self::checkArray($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-					if ($keeper)
-					{
-						continue;
-					}
-					JFile::delete($file->getPathname());
-				}
-			}
-			if (!self::checkArray($ignore))
-			{
-				return JFolder::delete($dir);
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	* 	The dynamic builder of views, tables and fields
-	**/
-	public static function dynamicBuilder(&$data, $type)
-	{
-		self::autoLoader('extrusion');
-		$extruder = new Extrusion($data);
-	}
-
-	public static function getFieldOptions($value, $type, $settings = array(), $xml = null)
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
-		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
-		$query->where($db->quoteName('published') . ' = 1');
-		$query->where($db->quoteName($type) . ' = '. $value);
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$result = $db->loadObject();
-			$properties = json_decode($result->properties,true);
-			$field = array(
-				'subform' => array(),
-				'nameListOptions' => array(),
-				'php' => array(),
-				'values' => "<field ", 
-				'values_description' => '<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">', 
-				'short_description' => $result->short_description, 
-				'description' => $result->description);
-			// number pointer
-			$nr = 0;
-			// value to check since there are false and null values even 0 in the values returned
-			$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
-			// set the headers
-			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
-			foreach ($properties as $property)
-			{
-				$example = (isset($property['example']) && self::checkString($property['example'])) ? $property['example'] : '';
-				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
-				// check if we should load the value
-				$value = self::getValueFromXMLstring($xml, $property['name'], $confirmation);
-				// check if this is a php field
-				$addPHP = false;
-				if (strpos($property['name'], 'type_php') !== false)
-				{
-					$addPHP = true;
-					$phpKey = trim(preg_replace('/[0-9]+/', '', $property['name']), '_');
-					// start array if not already set
-					if (!isset($field['php'][$phpKey]))
-					{
-						$field['php'][$phpKey] = array();
-						$field['php'][$phpKey]['value'] = array();
-						$field['php'][$phpKey]['desc'] = $property['description'];
-					}
-				}
-				// was the settings for the property passed
-				if(self::checkArray($settings) && isset($settings[$property['name']]))
-				{
-					// add the xml values
-					$field['values'] .= PHP_EOL."\t".$property['name'].'="'.$settings[$property['name']].'" ';
-					// add the json values
-					if ($addPHP)
-					{
-						$field['php'][$phpKey]['value'][] = $settings[$property['name']];
-					}
-					else
-					{
-						$field['subform']['properties'.$nr] = array('name' => $property['name'], 'value' => $settings[$property['name']], 'desc' => $property['description']);
-					}
-				}
-				elseif (!$xml || $confirmation !== $value)
-				{
-					// add the xml values
-					$field['values'] .= PHP_EOL."\t" . $property['name'] . '="'. ($confirmation !== $value) ? $value : $example .'" ';
-					// add the json values
-					if ($addPHP)
-					{
-						$field['php'][$phpKey]['value'][] = ($confirmation !== $value) ? $value : $example;
-					}
-					else
-					{
-						$field['subform']['properties' . $nr] = array('name' => $property['name'], 'value' => ($confirmation !== $value) ? $value : $example, 'desc' => $property['description']);
-					}
-				}
-				// add the name List Options
-				if (!$addPHP)
-				{
-					$field['nameListOptions'][$property['name']] = $property['name'];
-				}
-				// increment the number
-				$nr++;
-			}
-			$field['values'] .= PHP_EOL."/>";
-			$field['values_description'] .= '</tbody></table>';
-			// return found field options
-			return $field;
-		}
-		return false;
-	}
-
-	public static function getValueFromXMLstring($xml, $get, $confirmation)
-	{
-		if (self::checkString($xml))
-		{
-			return self::getBetween($xml, $get.'="', '"', $confirmation);
-		}
-		return $confirmation;
-	}
-
-
-	/**
-	* The zipper method
-	* 
-	* @param  string   $workingDIR    The directory where the items must be zipped
-	* @param  string   $filepath          The path to where the zip file must be placed
-	*
-	* @return  bool true   On success
-	* 
-	*/
-	public static function zip($workingDIR, &$filepath)
-	{
-		// store the current joomla working directory
-		$joomla = getcwd();
-
-		// we are changing the working directory to the component temp folder
-		chdir($workingDIR);
-
-		// the full file path of the zip file
-		$filepath = JPath::clean($filepath);
-
-		// delete an existing zip file (or use an exclusion parameter in JFolder::files()
-		JFile::delete($filepath);
-
-		// get a list of files in the current directory tree
-		$files = JFolder::files('.', '', true, true);
-		$zipArray = array();
-		// setup the zip array
-		foreach ($files as $file)
-		{
-		   $tmp = array();
-		   $tmp['name'] = str_replace('./', '', $file);
-		   $tmp['data'] = JFile::read($file);
-		   $tmp['time'] = filemtime($file);
-		   $zipArray[] = $tmp;
-		}
-
-		// change back to joomla working directory
-		chdir($joomla);
-
-		// get the zip adapter
-		$zip = JArchive::getAdapter('zip');
-
-		//create the zip file
-		if ($zip->create($filepath, $zipArray))
-		{
-			return true;
-		}
-		return false;
-	}
-
-
-	/**
-	* Write a file to the server
-	*
-	* @param  string   $path    The path and file name where to safe the data
-	* @param  string   $data    The data to safe
-	*
-	* @return  bool true   On success
-	*
-	*/
-	public static function writeFile($path, $data)
-	{
-		$klaar = false;
-		if (self::checkString($data))
-		{
-			// open the file
-			$fh = fopen($path, "w");
-			if (!is_resource($fh))
-			{
-				return $klaar;
-			}
-			// write to the file
-			if (fwrite($fh, $data))
-			{
-				// has been done
-				$klaar = true;
-			}
-			// close file.
-			fclose($fh);
-		}
-		return $klaar;
 	}
 
 	/**

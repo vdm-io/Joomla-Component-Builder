@@ -432,12 +432,12 @@ class ComponentbuilderModelFields extends JModelList
 							continue;
 						}
 
-						// decode javascript_view_footer
-						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 						// decode css_views
 						$item->css_views = base64_decode($item->css_views);
 						// decode css_view
 						$item->css_view = base64_decode($item->css_view);
+						// decode javascript_view_footer
+						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 						// decode javascript_views_footer
 						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 						// unset the values we don't want exported.

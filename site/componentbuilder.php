@@ -36,6 +36,9 @@ JLoader::register('ComponentbuilderHelper', dirname(__FILE__) . '/helpers/compon
 JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
 JLoader::register('ComponentbuilderHelperRoute', dirname(__FILE__) . '/helpers/route.php'); 
 
+// Triger the Global Site Event
+ComponentbuilderHelper::globalEvent($document);
+
 // import joomla controller library
 jimport('joomla.application.component.controller');
 
