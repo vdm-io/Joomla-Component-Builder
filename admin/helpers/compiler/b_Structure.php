@@ -338,9 +338,9 @@ class Structure extends Get
 			// run global updater
 			ComponentbuilderHelper::runGlobalUpdater();
 			// set the Joomla version
-			$this->joomlaVersion = $config['joomlaVersion'];
+			$this->joomlaVersion = $config['version'];
 			// set the template path
-			$this->templatePath = $this->compilerPath . '/joomla_' . $config['joomlaVersion'];
+			$this->templatePath = $this->compilerPath . '/joomla_' . $config['version'];
 			// set some default names
 			$this->componentSalesName = 'com_' . $this->componentData->sales_name . '__J' . $this->joomlaVersion;
 			$this->componentBackupName = 'com_' . $this->componentData->sales_name . '_v' . str_replace('.', '_', $this->componentData->component_version) . '__J' . $this->joomlaVersion;

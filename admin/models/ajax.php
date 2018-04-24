@@ -168,6 +168,19 @@ class ComponentbuilderModelAjax extends JModelList
 			}
 			$result['path'] =  '<code>' . $path . '</code>';
 		}
+		elseif ('expand' === $type)
+		{
+			$result['error'] = '<span style="color: red;">' . JText::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
+			if ($this->hasCurl())
+			{
+				$path = '* * * * * curl -s "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
+			}
+			else
+			{
+				$path = '* * * * * wget "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
+			}
+			$result['path'] =  '<code>' . $path . '</code>';
+		}
 		return $result;
 	}
 	
@@ -2243,7 +2256,7 @@ class ComponentbuilderModelAjax extends JModelList
 	protected $extraFieldProperties = array(
 			'listclass' => 'COM_COMPONENTBUILDER_SET_A_CLASS_VALUE_FOR_THE_LIST_VIEW_OF_THIS_FIELD',
 			'escape' => 'COM_COMPONENTBUILDER_SHOULD_THIS_FIELD_BE_ESCAPED_IN_THE_LIST_VIEW',
-			'display' => 'COM_COMPONENTBUILDER_DISPLAY_SWITCH_FOR_DYNAMIC_PLACEMENT_IN_RELATION_TO_THE_USE_OF_THE_FIELD_IN_MENU_AND_GLOBAL_CONFIGURATION_OPTIONS',
+			'display' => 'COM_COMPONENTBUILDER_DISPLAY_SWITCH_FOR_DYNAMIC_PLACEMENT_IN_RELATION_TO_THE_USE_OF_THE_FIELD_IN_MENU_AND_GLOBAL_CONFIGURATION_OPTIONS_SO_THE_CONFIG_OPTION_WILL_ONLY_ADD_THE_FIELD_TO_THE_GLOBAL_CONFIGURATION_AREA_MENU_WILL_ADD_THE_FIELD_ONLY_TO_THE_MENU_AREA',
 			'validate' => 'COM_COMPONENTBUILDER_TO_ADD_VALIDATION_TO_A_FIELD_IF_VALIDATION_IS_NOT_PART_OF_FIELD_TYPE_PROPERTIES_LOADED_ABOVE_SO_IF_YOU_HAVE_VALIDATION_SET_AS_A_FIELD_PROPERTY_THIS_EXTRA_PROPERTY_WILL_NOT_BE_NEEDED');
 
 	public function getFieldOptions($fieldtype)

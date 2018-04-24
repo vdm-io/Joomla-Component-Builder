@@ -13048,12 +13048,6 @@ class Interpretation extends Fields
 				$tabCode = ComponentbuilderHelper::safeString($tab) . '_custom_config';
 				$tabUpper = ComponentbuilderHelper::safeString($tab, 'U');
 				$tabLower = ComponentbuilderHelper::safeString($tab);
-				// setup lang
-				$this->langContent[$this->lang][$lang . '_' . $tabUpper] = $tab;
-				// start field set
-				$this->configFieldSets[] = "\t<fieldset";
-				$this->configFieldSets[] = "\t\t" . 'name="' . $tabCode . '"';
-				$this->configFieldSets[] = "\t\t" . 'label="' . $lang . '_' . $tabUpper . '">';
 				// remove display targeted fields
 				$bucket = array();
 				foreach ($tabFields as $tabField)
@@ -13065,10 +13059,20 @@ class Interpretation extends Fields
 						$bucket[] = str_replace('display="config"', '', $tabField);
 					}
 				}
-				// set the fields
-				$this->configFieldSets[] = implode("", $bucket);
-				// close field set
-				$this->configFieldSets[] = "\t</fieldset>";
+				// only add the tab if it has values
+				if (ComponentbuilderHelper::checkArray($bucket))
+				{
+					// setup lang
+					$this->langContent[$this->lang][$lang . '_' . $tabUpper] = $tab;
+					// start field set
+					$this->configFieldSets[] = "\t<fieldset";
+					$this->configFieldSets[] = "\t\t" . 'name="' . $tabCode . '"';
+					$this->configFieldSets[] = "\t\t" . 'label="' . $lang . '_' . $tabUpper . '">';
+					// set the fields
+					$this->configFieldSets[] = implode("", $bucket);
+					// close field set
+					$this->configFieldSets[] = "\t</fieldset>";
+				}
 				// remove after loading
 				unset($this->configFieldSetsCustomField[$tab]);
 			}

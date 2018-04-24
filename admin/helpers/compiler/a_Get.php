@@ -668,7 +668,7 @@ class Get
 			// load the compiler path
 			$this->compilerPath = $this->params->get('compiler_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
 			// set the component ID
-			$this->componentID = (int) $config['componentId'];
+			$this->componentID = (int) $config['component'];
 			// set this components code name
 			if ($name_code = ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'name_code'))
 			{
@@ -678,10 +678,10 @@ class Get
 				$this->componentCodeName = ComponentbuilderHelper::safeString($name_code);
 				// set if placeholders should be added to customcode
 				$global = ((int) ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'add_placeholders') == 1) ? true : false;
-				$this->addPlaceholders = ((int) $config['addPlaceholders'] == 0) ? false : (((int) $config['addPlaceholders'] == 1) ? true : $global);
+				$this->addPlaceholders = ((int) $config['placeholders'] == 0) ? false : (((int) $config['placeholders'] == 1) ? true : $global);
 				// set if line numbers should be added to comments
 				$global = ((int) ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'debug_linenr') == 1) ? true : false;
-				$this->debugLinenr = ((int) $config['debugLinenr'] == 0) ? false : (((int) $config['debugLinenr'] == 1) ? true : $global);
+				$this->debugLinenr = ((int) $config['debuglinenr'] == 0) ? false : (((int) $config['debuglinenr'] == 1) ? true : $global);
 				// set the current user
 				$this->user = JFactory::getUser();
 				// Get a db connection.

@@ -2291,6 +2291,607 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	* 	the locker
+	*
+	*  	@var array 
+	**/
+	protected static $locker = array();
+
+	/**
+	* 	the dynamic replacement salt
+	*
+	*  	@var array 
+	**/
+	protected static $globalSalt = array();
+
+	/**
+	* 	the timer
+	*
+	*  	@var object
+	**/
+	protected static $keytimer;
+
+	/**
+	*	To Lock string
+	*
+	*	@param string  $string       The string/array to lock
+	*	@param string  $key          The custom key to use
+	*	@param int      $salt           The switch to add salt and type of salt
+	*	@param int      $dynamic    The dynamic replacement array of salt build string
+	*	@param int      $urlencode  The switch to control url encoding
+	**/
+	public static function lock($string, $key = null, $salt = 2, $dynamic = null, $urlencode = true)
+	{
+		// get the global settings
+		if (!$key || !self::checkString($key))
+		{
+			// set temp timer
+			$timer = 2;
+			// if we have a timer use it
+			if ($salt > 0)
+			{
+				$timer = $salt;
+			}
+			if (method_exists(get_called_class(), "getCryptKey")) 
+			{
+				$key = self::getCryptKey('basic', self::salt($timer, $dynamic));
+			}
+			else
+			{
+				$key = self::salt($timer, $dynamic);
+			}
+		}
+		// check if we have a salt timer
+		if ($salt > 0)
+		{
+			$key .= self::salt($salt, $dynamic);
+		}
+		// get the locker settings
+		if (!isset(self::$locker[$key]) || !self::checkObject(self::$locker[$key]))
+		{
+			self::$locker[$key] = new FOFEncryptAes($key, 128);
+		}
+		// convert array or object to string
+		if (self::checkArray($string) || self::checkObject($string))
+		{
+			$string = serialize($string);
+		}
+		// prep for url
+		if ($urlencode)
+		{
+			return self::base64_urlencode(self::$locker[$key]->encryptString($string));
+		}
+		return self::$locker[$key]->encryptString($string);
+	}
+
+	/**
+	* 	To un-Lock string
+	*
+	*	@param string  $string       The string to unlock
+	*	@param string  $key          The custom key to use
+	*	@param int      $salt           The switch to add salt and type of salt
+	*	@param int      $dynamic    The dynamic replacement array of salt build string
+	*	@param int      $urlencode  The switch to control url decoding
+	**/
+	public static function unlock($string, $key = null, $salt = 2, $dynamic = null, $urlencode = true)
+	{
+		// get the global settings
+		if (!$key || !self::checkString($key))
+		{
+			// set temp timer
+			$timer = 2;
+			// if we have a timer use it
+			if ($salt > 0)
+			{
+				$timer = $salt;
+			}
+			// get secure key
+			if (method_exists(get_called_class(), "getCryptKey")) 
+			{
+				$key = self::getCryptKey('basic', self::salt($timer, $dynamic));
+			}
+			else
+			{
+				$key = self::salt($timer, $dynamic);
+			}
+		}
+		// check if we have a salt timer
+		if ($salt > 0)
+		{
+			$key .= self::salt($salt, $dynamic);
+		}
+		// get the locker settings
+		if (!isset(self::$locker[$key]) || !self::checkObject(self::$locker[$key]))
+		{
+			self::$locker[$key] = new FOFEncryptAes($key, 128);
+		}
+		// make sure we have real base64
+		if ($urlencode)
+		{
+			$string = self::base64_urldecode($string);
+		}
+		// basic decrypt string.
+		if (!empty($string) && !is_numeric($string) && $string === base64_encode(base64_decode($string, true)))
+		{
+			$string = rtrim(self::$locker[$key]->decryptString($string), "\0");
+			// convert serial string to array
+			if (self::is_serial($string))
+			{
+				$string = unserialize($string);
+			}
+		}
+		return $string;
+	}
+
+	/**
+	* 	The Salt
+	*
+	*	@param int      $type          The type of length the salt should be valid
+	*	@param int      $dynamic    The dynamic replacement array of salt build string
+	**/
+	public static function salt($type = 1, $dynamic = null)
+	{
+		// get dynamic replacement salt
+		$dynamic = self::getDynamicSalt($dynamic);
+		// get the key timer
+		if (!self::checkObject(self::$keytimer))
+		{
+			// load the date time object
+			self::$keytimer = new DateTime;
+			// set the correct time stamp
+			$vdmLocalTime = new DateTimeZone('Africa/Windhoek');
+			self::$keytimer->setTimezone($vdmLocalTime);
+		}
+		// set type
+		if ($type == 2)
+		{
+			// hour
+			$format = 'Y-m-d \o\n ' . self::periodFix(self::$keytimer->format('H'));
+		}
+		elseif ($type == 3)
+		{
+			// day
+			$format = 'Y-m-' . self::periodFix(self::$keytimer->format('d'));
+		}
+		elseif ($type == 4)
+		{
+			// month
+			$format = 'Y-' . self::periodFix(self::$keytimer->format('m'));
+		}
+		else
+		{
+			// minute
+			$format = 'Y-m-d \o\n H:' . self::periodFix(self::$keytimer->format('i'));
+		}
+		// get key
+		if (self::checkArray($dynamic))
+		{
+			return md5(str_replace(array_keys($dynamic), array_values($dynamic), self::$keytimer->format($format) . ' @ VDM.I0'));
+		}
+		return md5(self::$keytimer->format($format) . ' @ VDM.I0');
+	}
+
+	/**
+	*	The function to insure the salt is valid within the given period (third try)
+	*
+	*	@param int $main    The main number
+	*/
+	protected static function periodFix($main)
+	{
+		return round($main / 3) * 3;
+	}
+
+	/**
+	*	Check if a string is serialized
+	*	@param string $string
+	*/
+	public static function is_serial($string)
+	{
+		return (@unserialize($string) !== false);
+	}
+
+	/**
+	*	Get dynamic replacement salt
+	*/
+	public static function getDynamicSalt($dynamic = null)
+	{
+		// load global if not manually set
+		if (!self::checkArray($dynamic))
+		{
+			return self::getGlobalSalt();
+		}
+		// return manual values if set
+		else
+		{
+			return $dynamic;
+		}
+	}
+
+	/**
+	*	The random or dynamic secret salt
+	*/
+	public static function getSecretSalt($string = null, $size = 9)
+	{
+		// set the string
+		if (!$string)
+		{
+			// get random string 
+			$string = self::randomkey($size);
+		}
+		// convert string to array
+		$string = self::safeString($string);
+		// convert string to array
+		$array = str_split($string);
+		// insure only unique values are used
+		$array = array_unique($array);
+		// set the size
+		$size = ($size <= count($array)) ? $size : count($array);
+		// down size the 
+		return array_slice($array, 0, $size);
+	}
+
+	/**
+	*	Get global replacement salt
+	*/
+	public static function getGlobalSalt()
+	{
+		// load from memory if found
+		if (!self::checkArray(self::$globalSalt))
+		{
+			// get the global settings
+			if (!self::checkObject(self::$params))
+			{
+				self::$params = JComponentHelper::getParams('com_componentbuilder');
+			}
+			// check if we have a global dynamic replacement array available (format -->  ' 1->!,3->E,4->A')
+			$tmp = self::$params->get('dynamic_salt', null);
+			if (self::checkString($tmp) && strpos($tmp, ',') !== false && strpos($tmp, '->') !== false)
+			{
+				$salt = array_map('trim', (array) explode(',', $tmp));
+				if (self::checkArray($salt ))
+				{
+					foreach($salt as $replace)
+					{
+						$dynamic = array_map('trim', (array) explode('->', $replace));
+						if (isset($dynamic[0]) && isset($dynamic[1]))
+						{
+							self::$globalSalt[$dynamic[0]] = $dynamic[1];
+						}
+					}
+				}
+			}
+		}
+		// return global if found
+		if (self::checkArray(self::$globalSalt))
+		{
+			return self::$globalSalt;
+		}
+		// return default as fail safe
+		return array('1' => '!', '3' => 'E', '4' => 'A');	
+	}
+
+	/**
+	*	Close public protocol
+	*/
+	public static function closePublicProtocol($id, $public)
+	{
+		// get secret salt
+		$secretSalt = self::getSecretSalt(self::salt(1,array('4' => 'R','1' => 'E','2' => 'G','7' => 'J','8' => 'A')));
+		// get the key
+		$key = self::salt(1, $secretSalt);
+		// get secret salt
+		$secret = self::getSecretSalt();
+		// set the secret
+		$close['SECRET'] = self::lock($secret, $key, 1, array('1' => 's', '3' => 'R', '4' => 'D'));
+		// get the key
+		$key = self::salt(1, $secret);
+		// get the public key
+		$close['PUBLIC'] = self::lock($public, $key, 1, array('1' => '!', '3' => 'E', '4' => 'A'));
+		// get secret salt
+		$secretSalt = self::getSecretSalt($public);
+		// get the key
+		$key = self::salt(1, $secretSalt);
+		// get the ID
+		$close['ID'] = self::unlock($id, $key, 1, array('1' => 'i', '3' => 'e', '4' => 'B'));
+		// return closed values
+		return $close;
+	}
+
+	/**
+	*	Open public protocol
+	*/
+	public static function openPublicProtocol($SECRET, $ID, $PUBLIC)
+	{
+		// get secret salt
+		$secretSalt = self::getSecretSalt(self::salt(1,array('4' => 'R','1' => 'E','2' => 'G','7' => 'J','8' => 'A')));
+		// get the key
+		$key = self::salt(1, $secretSalt);
+		// get the $SECRET
+		$SECRET = self::unlock($SECRET, $key, 1, array('1' => 's', '3' => 'R', '4' => 'D'));
+		// get the key
+		$key = self::salt(1, $SECRET);
+		// get the public key
+		$open['public'] = self::unlock($PUBLIC, $key, 1, array('1' => '!', '3' => 'E', '4' => 'A'));
+		// get secret salt
+		$secretSalt = self::getSecretSalt($open['public']);
+		// get the key
+		$key = self::salt(1, $secretSalt);
+		// get the ID
+		$open['id'] = self::unlock($ID, $key, 1, array('1' => 'i', '3' => 'e', '4' => 'B'));
+		// return opened values
+		return $open;
+	}
+
+	/**
+	* 	Workers to load tasks
+	*
+	*	@var array 
+	*/
+	protected static $worker = array();
+
+	/**
+	*	Set a worker dynamic URLs
+	*
+	* 	@var array 
+	*/
+	protected static $workerURL = array();	
+
+	/**
+	*	Set a worker dynamic HEADERs
+	*
+	* 	@var array 
+	*/
+	protected static $workerHEADER = array();
+
+	/**
+	* 	Curl Error Notice
+	*
+	*	@var bool 
+	*/
+	protected static $curlErrorLoaded = false;
+
+	/**
+	* 	Set a worker url
+	* 
+	*	@param  string   $function    The function to target to perform the task
+	*	@param  string   $url            The url of where the task is to be performed
+	*
+	* 	@return  void
+	* 
+	*/
+	public static function setWorkerUrl(&$function, &$url)
+	{
+		// set the URL if found
+		if (self::checkString($url))
+		{
+			// make sure task function url is up
+			self::$workerURL[$function] = $url;
+		}
+	}
+
+	/**
+	* 	Set a worker headers
+	* 
+	*	@param  string   $function    The function to target to perform the task
+	*	@param  array    $headers    The headers needed for these workers/function
+	*
+	* 	@return  void
+	* 
+	*/
+	public static function setWorkerHeaders(&$function, &$headers)
+	{
+		// set the Headers if found
+		if (self::checkArray($headers))
+		{
+			// make sure task function headers are set
+			self::$workerHEADER[$function] = $headers;
+		}
+	}
+
+	/**
+	* 	Set a worker that needs to perform a task
+	* 
+	*	@param  mixed   $data         The data to pass to the task
+	*	@param  string   $function    The function to target to perform the task
+	*	@param  string   $url            The url of where the task is to be performed
+	*	@param  array    $headers    The headers needed for these workers/function
+	*
+	* 	@return  void
+	* 
+	*/
+	public static function setWorker($data, $function, $url = null, $headers = null)
+	{
+		// make sure task function is up
+		if (!isset(self::$worker[$function]))
+		{
+			self::$worker[$function] = array();
+		}
+		// load the task
+		self::$worker[$function][] = self::lock($data);
+		// set the Headers if found
+		if ($headers && !isset(self::$workerHEADER[$function]))
+		{
+			self::setWorkerHeaders($function, $headers);
+		}
+		// set the URL if found
+		if ($url && !isset(self::$workerURL[$function]))
+		{
+			self::setWorkerUrl($function, $url);
+		}
+	}
+
+	/**
+	*	Run set Workers
+	*
+	*	@param  string      $function    The function to target to perform the task
+	*	@param  string      $perTask    The amount of task per worker
+	* 	@param  function   $callback   The option to do a call back when task is completed
+	*	@param  int           $threadSize   The size of the thread
+	*
+	*	@return  bool true   On success
+	*
+	*/
+	public static function runWorker($function, $perTask = 50, $callback = null, $threadSize = 20)
+	{
+		// set task
+		$task = self::lock($function);
+		// build headers
+		$headers = array('VDM-TASK: ' .$task);
+		// build dynamic headers
+		if (isset(self::$workerHEADER[$function]) && self::checkArray(self::$workerHEADER[$function]))
+		{
+			foreach (self::$workerHEADER[$function] as $header)
+			{
+				$headers[] = $header;
+			}
+		}
+		// build worker options
+		$options = array();
+		// make sure worker is up
+		if (isset(self::$worker[$function]) && self::checkArray(self::$worker[$function]))
+		{
+			// this load method is for each
+			if (1 == $perTask)
+			{
+				// working with a string = 1
+				$headers[] = 'VDM-VALUE-TYPE: ' .self::lock(1);
+				// now load the options
+				foreach (self::$worker[$function] as $data)
+				{
+					$options[] = array(CURLOPT_HTTPHEADER => $headers, CURLOPT_POST => 1,  CURLOPT_POSTFIELDS => 'VDM_DATA='. $data);
+				}
+			}
+			// this load method is for bundles 
+			else
+			{
+				// working with an array = 2
+				$headers[] = 'VDM-VALUE-TYPE: ' .self::lock(2);
+				// now load the options
+				$work = array_chunk(self::$worker[$function], $perTask);
+				foreach ($work as $data)
+				{
+					$options[] = array(CURLOPT_HTTPHEADER => $headers, CURLOPT_POST => 1,  CURLOPT_POSTFIELDS => 'VDM_DATA='. implode('___VDM___', $data));
+				}
+			}
+			// relieve worker of task/function
+			self::$worker[$function] = array();
+		}
+		// do the execution
+		if (self::checkArray($options))
+		{
+			if (isset(self::$workerURL[$function]))
+			{
+				$url = self::$workerURL[$function];
+			}
+			else
+			{
+				$url = JURI::root() . '/index.php?option=com_componentbuilder&task=api.worker';
+			}
+			return self::curlMultiExec($url, $options, $callback, $threadSize);
+		}
+		return false;
+	}
+
+	/**
+	*	Do a multi curl execution of tasks
+	*
+	* 	@param  string      $url               The url of where the task is to be performed
+	*  	@param  array       $_options      The array of curl options/headers to set
+	*	@param  function   $callback      The option to do a call back when task is completed
+	*	@param  int           $threadSize   The size of the thread
+	*
+	* 	@return  bool true   On success
+	*
+	*/
+	public static function curlMultiExec(&$url, &$_options, $callback = null, $threadSize = 20)
+	{
+		// make sure we have curl available
+		if (!function_exists('curl_version'))
+		{
+			if (!self::$curlErrorLoaded)
+			{
+				// set the notice
+				JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWOCURL_NOT_FOUNDHTWOPPLEASE_SETUP_CURL_ON_YOUR_SYSTEM_OR_BCOMPONENTBUILDERB_WILL_NOT_FUNCTION_CORRECTLYP'), 'Error');
+				// load the notice only once
+				self::$curlErrorLoaded = true;
+			}
+			return false;
+		}
+		// make sure we have an url
+		if (self::checkString($url))
+		{
+			// make sure the thread size isn't greater than the # of _options
+			$threadSize = (count($_options) < $threadSize) ? count($_options) : $threadSize;
+			// set the options
+			$options = array();
+			$options[CURLOPT_URL] = $url;
+			$options[CURLOPT_USERAGENT] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12';
+			$options[CURLOPT_RETURNTRANSFER] = TRUE;
+			$options[CURLOPT_SSL_VERIFYPEER] = FALSE;
+			// start multi threading :)
+			$handle = curl_multi_init();
+			// start the first batch of requests
+			for ($i = 0; $i < $threadSize; $i++)
+			{
+				if (isset($_options[$i]))
+				{
+					$ch = curl_init();
+					foreach ($_options[$i] as $curlopt => $string)
+					{
+						$options[$curlopt] = $string;
+					}
+					curl_setopt_array($ch, $options);
+					curl_multi_add_handle($handle, $ch);
+				}
+			}
+			// we wait for all the calls to finish (should not take long)
+			do {
+				while(($execrun = curl_multi_exec($handle, $working)) == CURLM_CALL_MULTI_PERFORM);
+					if($execrun != CURLM_OK)
+						break;
+				// a request was just completed -- find out which one
+				while($done = curl_multi_info_read($handle))
+				{
+					if (is_callable($callback))
+					{
+						// $info = curl_getinfo($done['handle']);
+						// request successful. process output using the callback function.
+						$output = curl_multi_getcontent($done['handle']);
+						$callback($output);
+					}
+					$key = $i + 1;
+					if(isset($_options[$key]))
+					{
+						// start a new request (it's important to do this before removing the old one)
+						$ch = curl_init(); $i++;
+						// add options
+						foreach ($_options[$key] as $curlopt => $string)
+						{
+							$options[$curlopt] = $string;
+						}
+						curl_setopt_array($ch, $options);
+						curl_multi_add_handle($handle, $ch);
+						// remove options again
+						foreach ($_options[$key] as $curlopt => $string)
+						{
+							unset($options[$curlopt]);
+						}
+					}
+					// remove the curl handle that just completed
+					curl_multi_remove_handle($handle, $done['handle']);
+				}
+				// stop wasting CPU cycles and rest for a couple ms
+				usleep(10000);
+			} while ($working);
+			// close the curl multi thread
+			curl_multi_close($handle);
+			// okay done
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	* 	Move File to Server
 	* 	
 	* 	@param   string    $localPath    The local path to the file

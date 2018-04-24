@@ -653,33 +653,24 @@
 					description="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_DESCRIPTION"
 					class="inputbox"
 				/>
-				<!-- Event Field. Type: List. (joomla) -->
+				<!-- Placeholders Field. Type: Checkbox. (joomla) -->
 				<field
-					type="list"
-					name="event"
-					label="COM_COMPONENTBUILDER_CONFIG_EVENT_LABEL"
-					class="list_class"
-					multiple="false"
+					type="checkbox"
+					name="placeholders"
+					label="COM_COMPONENTBUILDER_CONFIG_PLACEHOLDERS_LABEL"
+					value="1"
 					required="false"
-					default="1">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_CONFIG_PERCHANGE</option>
-					<option value="2">
-						COM_COMPONENTBUILDER_CONFIG_PERJCB_PACKAGE_IMPORT</option>
-					<option value="3">
-						COM_COMPONENTBUILDER_CONFIG_PERCOMPONENT_EVENT</option>
-					<option value="4">
-						COM_COMPONENTBUILDER_CONFIG_PERHOUR</option>
-					<option value="5">
-						COM_COMPONENTBUILDER_CONFIG_PERDAY</option>
-				</field>
+					description="COM_COMPONENTBUILDER_CONFIG_PLACEHOLDERS_DESCRIPTION"
+					class="inputbox"
+				/>
 			</form>
 		</field>
+		<!-- Expansioncronjob_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="expansioncronjob_note" label="COM_COMPONENTBUILDER_CONFIG_EXPANSIONCRONJOB_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_EXPANSIONCRONJOB_NOTE_DESCRIPTION" heading="h4" class="expansioncronjob_note" showon="development_method:2" />
 	</fieldset>
 	<fieldset
-		name="cronjob_custom_config"
-		label="COM_COMPONENTBUILDER_CONFIG_CRONJOB">
+		name="auto_backup_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_AUTO_BACKUP">
 
 		<!-- Backupcronjob_note Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="backupcronjob_note" label="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_DESCRIPTION" heading="h4" class="backupcronjob_note" />

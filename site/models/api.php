@@ -175,5 +175,73 @@ class ComponentbuilderModelApi extends JModelItem
 			return $this->uikitComp;
 		}
 		return false;
-	}  
+	} 
+
+	public $messages = array();
+	public $model;
+
+	protected $compiler;
+
+	public function compileInstall($component)
+	{
+		$values = array(
+			'version' => 3,
+			'component' => 0,
+			'backup' => 0,
+			'repository' => 0,
+			'placeholders' => 2,
+			'debuglinenr' => 2,
+			'minify' => 2
+		);
+		// set the values
+		foreach ($values as $key => $val)
+		{
+			if (isset($component->{$key}))
+			{
+				$values[$key] = $component->{$key};
+			}
+		}
+		// make sure we have a component
+		if (isset($values['component']) && $values['component'] > 1)
+		{
+			// make sure the component is published
+			$published = ComponentbuilderHelper::getVar('joomla_component', (int) $values['component'], 'id', 'published');
+			// make sure the component is checked in
+			$checked_out = ComponentbuilderHelper::getVar('joomla_component', (int) $values['component'], 'id', 'checked_out');
+			if (1 == $published && $checked_out == 0)
+			{
+				// start up Compiler
+				$this->compiler	 = new Compiler($values);
+				if($this->compiler)
+				{
+					// component was compiled
+					$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_COMPILED', $this->compiler->componentFolderName);
+					// get compiler model to run the installer
+					$model = ComponentbuilderHelper::getModel('compiler', JPATH_COMPONENT_ADMINISTRATOR);
+					// now install components
+					if ($model->install($this->compiler->componentFolderName.'.zip'))
+					{
+						// component was installed
+						$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_INSTALLED_AND_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
+					}
+					else
+					{
+						// component was not installed
+						$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_AND_IS_STILL_IN_THE_TEMP_FOLDER', $this->compiler->componentFolderName);
+					}
+					// get all the messages from application (TODO)
+					return true;
+				}
+				// set that the component was not found
+				$this->messages[] = JText::_('COM_COMPONENTBUILDER_COMPONENT_DID_NOT_COMPILE');
+				return false;
+			}
+			// set that the component was not found
+			$this->messages[] = JText::_('COM_COMPONENTBUILDER_COMPONENT_IS_NOT_PUBLISHED_OR_IS_CHECKED_OUT');
+			return false;
+		}
+		// set that the component was not found
+		$this->messages[] = JText::_('COM_COMPONENTBUILDER_COMPONENT_WAS_NOT_FOUND');
+		return false;
+	} 
 }

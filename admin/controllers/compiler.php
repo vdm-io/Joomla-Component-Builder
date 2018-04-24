@@ -194,7 +194,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$lang->load($extension, $base_dir, $language_tag, $reload);
 				$message = '('.$fileName.'.zip) file was also removed from tmp!';
 				$this->setRedirect($redirect_url,$message,'message');
-				return $model->install($fileName.'.zip');;
+				return $model->install($fileName.'.zip');
 			}
 		}
 		$this->setRedirect($redirect_url,$message,'error');

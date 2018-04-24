@@ -1175,7 +1175,7 @@ class Infusion extends Interpretation
 					// add to language file
 					$this->writeFile($path . '/' . $fileName, implode(PHP_EOL, $lang));
 					// set the line counter
-					$this->lineCount = $this->lineCount + substr_count($lang, PHP_EOL);
+					$this->lineCount = $this->lineCount + count((array)$lang);
 					// build xml strings
 					if (!isset($langXML[$p]))
 					{

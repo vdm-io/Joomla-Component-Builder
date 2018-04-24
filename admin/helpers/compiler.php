@@ -72,12 +72,12 @@ class Compiler extends Infusion
 			$comConfig = JFactory::getConfig();
 			$this->tempPath = $comConfig->get('tmp_path');
 			// set some folder paths in relation to distribution
-			if ($config['addBackup'])
+			if ($config['backup'])
 			{
 				$this->backupPath = $this->params->get('backup_folder_path', $this->tempPath) . '/' . $this->componentBackupName . '.zip';
 				$this->dynamicIntegration = true;
 			}
-			if ($config['addRepo'])
+			if ($config['repository'])
 			{
 				$this->repoPath = $this->params->get('git_folder_path', null);
 			}

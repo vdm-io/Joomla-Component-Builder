@@ -151,7 +151,7 @@ class ComponentbuilderModelCompiler extends JModelList
 	}  
 
 	public $compiler;
-	
+
 	public function getComponents()
 	{
 		// Get a db connection.
@@ -169,18 +169,18 @@ class ComponentbuilderModelCompiler extends JModelList
 		// return the result
 		return $db->loadObjectList();
 	}
-	
+
 	public function builder($version, $id, $backup, $repo, $addPlaceholders, $debugLinenr, $minify) 
-	{	
-		$set['joomlaVersion']	= $version;
-		$set['componentId']		= $id;
-		$set['addBackup']		= $backup;
-		$set['addRepo']			= $repo;
-		$set['addPlaceholders']	= $addPlaceholders;
-		$set['debugLinenr']		= $debugLinenr;
-		$set['minify']			= $minify;
+	{
+		$set['version'] = $version;
+		$set['component'] = $id;
+		$set['backup'] = $backup;
+		$set['repository'] = $repo;
+		$set['placeholders'] = $addPlaceholders;
+		$set['debuglinenr'] = $debugLinenr;
+		$set['minify'] = $minify;
 		// start up Compiler
-		$this->compiler			= new Compiler($set);
+		$this->compiler	 = new Compiler($set);
 		if($this->compiler)
 		{
 			return true;

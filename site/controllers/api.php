@@ -210,10 +210,144 @@ class ComponentbuilderControllerApi extends JControllerForm
 		return;
 	}
 
+	public function expand()
+	{
+		// get params first
+		if (!isset($this->params) || !ComponentbuilderHelper::checkObject($this->params))
+		{
+			$this->params = JComponentHelper::getParams('com_componentbuilder');
+		}
+		// check if expansion is enabled
+		$method = $this->params->get('development_method', 1);
+		if (2 == $method)
+		{
+			// get expansion components
+			$expansion = $this->params->get('expansion', null);
+			// check if they are set
+			if (ComponentbuilderHelper::checkObject($expansion))
+			{
+				// check if user has the right
+				$user = $this->getApiUser();
+				if ($user->authorise('core.admin', 'com_componentbuilder'))
+				{
+					// we have two options, doing them one at a time, use using curl to do tome somewhat asynchronously 
+					if (count ( (array) $expansion) > 1 && function_exists('curl_version'))
+					{
+						// set workers
+						foreach ($expansion as $component)
+						{
+							ComponentbuilderHelper::setWorker($component, 'compileInstall');
+						}
+						// get messages function
+						$callback = function($messages) {
+							$messages = ComponentbuilderHelper::unlock($messages);
+							// check if we have any messages
+							if (ComponentbuilderHelper::checkArray($messages))
+							{
+								// echo "<br />\n".implode("<br />\n", $messages); // (TODO) adding a switch to show messages
+							} else {
+								var_dump($messages); // error debug message
+							}
+						};
+						// run workers
+						ComponentbuilderHelper::runWorker('compileInstall', 1, $callback);
+					}
+					else
+					{
+						// get model
+						$model = $this->getModel('api');
+						// load the compiler
+						$this->_autoloader();
+						// set workers
+						foreach ($expansion as $component)
+						{
+							// compile and install
+							$model->compileInstall($component);
+						}
+						// check if we have any messages
+						if (ComponentbuilderHelper::checkArray($model->messages))
+						{
+							// echo the messages
+							// echo "<br />\n".implode("<br />\n", $model->messages); // (TODO) adding a switch to show messages
+						} else {
+							var_dump($messages); // error debug message
+						}
+					}
+					// clear session
+					JFactory::getApplication()->getSession()->destroy();
+					jexit();
+				}
+				// clear session
+				JFactory::getApplication()->getSession()->destroy();
+				jexit('Access Denied!');
+			}
+		}
+		// clear session
+		JFactory::getApplication()->getSession()->destroy();
+		jexit('Expansion Disabled!');
+	}
+
 	protected function getApiUser()
 	{
 		// return user object
 		return JFactory::getUser($this->params->get('api', 0, 'INT'));
+	}
+
+	public function worker()
+	{
+		// get input values
+		$input = JFactory::getApplication()->input;
+		// get DATA
+		$DATA = $input->post->get('VDM_DATA', null, 'STRING');
+		// get TASK
+		$TASK = $input->server->get('HTTP_VDM_TASK', null, 'STRING');
+		// get TYPE
+		$TYPE = $input->server->get('HTTP_VDM_VALUE_TYPE', null, 'STRING');
+		// check if correct value is given
+		if (ComponentbuilderHelper::checkString($DATA) && ComponentbuilderHelper::checkString($TASK) && ComponentbuilderHelper::checkString($TYPE))
+		{
+			// get the type of values we are working with ( 2 = array; 1 = string)
+			$type = ComponentbuilderHelper::unlock($TYPE);
+			// get data value
+			$dataValues = ComponentbuilderHelper::unlock($DATA);
+			// get the task
+			$task = ComponentbuilderHelper::unlock($TASK);
+			// check the for a string
+			if (1 == $type && ComponentbuilderHelper::checkObject($dataValues) && ComponentbuilderHelper::checkString($task))
+			{
+				// get params first
+				if (!isset($this->params) || !ComponentbuilderHelper::checkObject($this->params))
+				{
+					$this->params = JComponentHelper::getParams('com_componentbuilder');
+				}
+				// get model
+				$model = $this->getModel('api');
+				// open the compile Install function
+				if ('compileInstall' === $task)
+				{
+					// load the compiler
+					$this->_autoloader();
+					// compile and install
+					$model->compileInstall($dataValues);
+					// return locked values
+					echo ComponentbuilderHelper::lock($model->messages);
+					// clear session
+					JFactory::getApplication()->getSession()->destroy();
+					jexit();
+				}
+			}
+		}
+		// not success
+		echo 0;
+		// clear session
+		JFactory::getApplication()->getSession()->destroy();
+		jexit();
+	}
+
+	protected function _autoloader()
+	{
+		// include component compiler
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
 	}
 
 	/**
