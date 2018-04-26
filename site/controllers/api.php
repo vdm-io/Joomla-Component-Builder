@@ -219,6 +219,8 @@ class ComponentbuilderControllerApi extends JControllerForm
 		}
 		// check if expansion is enabled
 		$method = $this->params->get('development_method', 1);
+		// check what kind of return values show we give
+		$returnOptionsBuild = $this->params->get('return_options_build', 2);
 		if (2 == $method)
 		{
 			// get expansion components
@@ -228,8 +230,25 @@ class ComponentbuilderControllerApi extends JControllerForm
 			{
 				// check if user has the right
 				$user = $this->getApiUser();
+				// the message package
+				$message = array();
 				if ($user->authorise('core.admin', 'com_componentbuilder'))
 				{
+					// make sure to not unlock
+					$unlock = false;
+					// get messages
+					$callback = function($messages) use (&$message, &$unlock) {
+						// unlock messages if needed
+						if ($unlock) {
+							$messages = ComponentbuilderHelper::unlock($messages);
+						}
+						// check if we have any messages
+						if (ComponentbuilderHelper::checkArray($messages)) {
+							$message[] = implode("<br />\n", $messages);
+						} else {
+							// var_dump($messages); // error debug message
+						}
+					};
 					// we have two options, doing them one at a time, use using curl to do tome somewhat asynchronously 
 					if (count ( (array) $expansion) > 1 && function_exists('curl_version'))
 					{
@@ -238,17 +257,8 @@ class ComponentbuilderControllerApi extends JControllerForm
 						{
 							ComponentbuilderHelper::setWorker($component, 'compileInstall');
 						}
-						// get messages function
-						$callback = function($messages) {
-							$messages = ComponentbuilderHelper::unlock($messages);
-							// check if we have any messages
-							if (ComponentbuilderHelper::checkArray($messages))
-							{
-								// echo "<br />\n".implode("<br />\n", $messages); // (TODO) adding a switch to show messages
-							} else {
-								var_dump($messages); // error debug message
-							}
-						};
+						// make sure to unlock
+						$unlock = true;
 						// run workers
 						ComponentbuilderHelper::runWorker('compileInstall', 1, $callback);
 					}
@@ -265,26 +275,40 @@ class ComponentbuilderControllerApi extends JControllerForm
 							$model->compileInstall($component);
 						}
 						// check if we have any messages
-						if (ComponentbuilderHelper::checkArray($model->messages))
-						{
-							// echo the messages
-							// echo "<br />\n".implode("<br />\n", $model->messages); // (TODO) adding a switch to show messages
-						} else {
-							var_dump($messages); // error debug message
-						}
+						$callback($model->messages);
+					}
+					// return messages if found
+					if (1== $returnOptionsBuild && ComponentbuilderHelper::checkArray($message))
+					{
+						echo implode("<br />\n", $message);
+					}
+					else
+					{
+						echo 1;
 					}
 					// clear session
 					JFactory::getApplication()->getSession()->destroy();
 					jexit();
 				}
-				// clear session
-				JFactory::getApplication()->getSession()->destroy();
-				jexit('Access Denied!');
+				// check if message is to be returned
+				if (1== $returnOptionsBuild)
+				{
+					// clear session
+					JFactory::getApplication()->getSession()->destroy();
+					jexit('Access Denied!');
+				}
 			}
 		}
 		// clear session
 		JFactory::getApplication()->getSession()->destroy();
-		jexit('Expansion Disabled!');
+		// check if message is to be returned
+		if (1== $returnOptionsBuild)
+		{
+			jexit('Expansion Disabled!');
+		}
+		// return bool
+		echo 0;
+		jexit();
 	}
 
 	protected function getApiUser()

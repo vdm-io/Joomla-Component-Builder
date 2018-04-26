@@ -665,6 +665,21 @@
 				/>
 			</form>
 		</field>
+		<!-- Return_options_build Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="return_options_build"
+			label="COM_COMPONENTBUILDER_CONFIG_RETURN_OPTIONS_BUILD_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_RETURN_OPTIONS_BUILD_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="2"
+			showon="development_method:2">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_DISPLAY_MESSAGE</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_ONLY_BOOLEAN</option>
+		</field>
 		<!-- Expansioncronjob_note Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="expansioncronjob_note" label="COM_COMPONENTBUILDER_CONFIG_EXPANSIONCRONJOB_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_EXPANSIONCRONJOB_NOTE_DESCRIPTION" heading="h4" class="expansioncronjob_note" showon="development_method:2" />
 	</fieldset>
