@@ -2116,7 +2116,7 @@ class Get
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
 
-			// Order it by the ordering field.
+			// Select all the values in the field
 			$query->select('a.*');
 			$query->select($this->db->quoteName(array('c.name', 'c.properties'), array('type_name', 'properties')));
 			$query->from('#__componentbuilder_field AS a');

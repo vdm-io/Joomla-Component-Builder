@@ -105,7 +105,8 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADDADMIN_VIEWS_DESCRIPTION"
-			icon="list">
+			icon="list"
+			min="1">
 			<form hidden="true" name="list_addadmin_views_modal" repeat="true">
 				<!-- Adminview Field. Type: Adminviews. (custom) -->
 				<field

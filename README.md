@@ -126,11 +126,11 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](http://joomlacomponentbuilder.com)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 26th April, 2018
++ *Last Build*: 27th April, 2018
 + *Version*: 2.7.6
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **193266**
++ *Line count*: **193274**
 + *Field count*: **1027**
 + *File count*: **1201**
 + *Folder count*: **193**
