@@ -100,12 +100,6 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->xml))
-			{
-				// JSON Decode xml.
-				$item->xml = json_decode($item->xml);
-			}
-
 			if (!empty($item->css_views))
 			{
 				// base64 Decode css_views.
@@ -128,6 +122,12 @@ class ComponentbuilderModelField extends JModelAdmin
 			{
 				// base64 Decode javascript_views_footer.
 				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+			}
+
+			if (!empty($item->xml))
+			{
+				// JSON Decode xml.
+				$item->xml = json_decode($item->xml);
 			}
 
 

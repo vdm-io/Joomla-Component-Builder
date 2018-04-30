@@ -95,18 +95,18 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->php_dashboard_methods))
+			{
+				// base64 Decode php_dashboard_methods.
+				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
+			}
+
 			if (!empty($item->dashboard_tab))
 			{
 				// Convert the dashboard_tab field to an array.
 				$dashboard_tab = new Registry;
 				$dashboard_tab->loadString($item->dashboard_tab);
 				$item->dashboard_tab = $dashboard_tab->toArray();
-			}
-
-			if (!empty($item->php_dashboard_methods))
-			{
-				// base64 Decode php_dashboard_methods.
-				$item->php_dashboard_methods = base64_decode($item->php_dashboard_methods);
 			}
 
 			// update the fields

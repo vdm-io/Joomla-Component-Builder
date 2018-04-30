@@ -100,14 +100,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->addcontributors))
-			{
-				// Convert the addcontributors field to an array.
-				$addcontributors = new Registry;
-				$addcontributors->loadString($item->addcontributors);
-				$item->addcontributors = $addcontributors->toArray();
-			}
-
 			if (!empty($item->php_postflight_update))
 			{
 				// base64 Decode php_postflight_update.
@@ -219,6 +211,14 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			{
 				// basic decrypt data export_key.
 				$item->export_key = rtrim($basic->decryptString($item->export_key), "\0");
+			}
+
+			if (!empty($item->addcontributors))
+			{
+				// Convert the addcontributors field to an array.
+				$addcontributors = new Registry;
+				$addcontributors->loadString($item->addcontributors);
+				$item->addcontributors = $addcontributors->toArray();
 			}
 
 

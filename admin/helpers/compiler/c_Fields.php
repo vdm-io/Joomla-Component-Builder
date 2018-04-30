@@ -2013,7 +2013,18 @@ class Fields extends Structure
 				// set the decoding methods
 				if (in_array($set, $decode))
 				{
-					$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']] = array('decode' => $set, 'type' => $type);
+					if (isset($this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']]) &&
+						isset($this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']]['decode']))
+					{
+						if (!in_array($set, $this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']]['decode']))
+						{
+							$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']]['decode'][] = $set;
+						}
+					}
+					else
+					{
+						$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']] = array('decode' => array($set), 'type' => $type);
+					}
 				}
 				// set the uikit checker
 				if ((2 == $this->uikit || 1 == $this->uikit) && in_array($type, $textareas))
@@ -2556,6 +2567,7 @@ class Fields extends Structure
 		// setup checkboxes and other json items for this view
 		if ($dbSwitch && (($typeName === 'subform' || $typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && $typeName != 'tag'))
 		{
+			$subformJsonSwitch = true;
 			switch ($field['settings']->store)
 			{
 				case 1:
@@ -2593,6 +2605,8 @@ class Fields extends Structure
 					$this->jsonItemBuilder[$view_name_single][] = $name;
 					// Site settings of each field if needed
 					$this->buildSiteFieldData($view_name_single, $name, 'json', $typeName);
+					// no londer add the json again (already added)
+					$subformJsonSwitch = false;
 					break;
 			}
 			// just a heads-up for usergroups set to multiple
@@ -2614,10 +2628,19 @@ class Fields extends Structure
 				}
 			}
 
-			// if subform the values must revert to array
+			// subform house keeping
 			if ('subform' === $typeName)
 			{
+				// the values must revert to array
 				$this->jsonItemBuilderArray[$view_name_single][] = $name;
+				// should the json builder still be added
+				if ($subformJsonSwitch)
+				{
+					// and insure the if is converted to json
+					$this->jsonItemBuilder[$view_name_single][] = $name;
+					// Site settings of each field if needed
+					$this->buildSiteFieldData($view_name_single, $name, 'json', $typeName);
+				}
 			}
 		}
 		// build the data for the export & import methods $typeName === 'repeatable' ||

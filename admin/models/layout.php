@@ -100,14 +100,6 @@ class ComponentbuilderModelLayout extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->libraries))
-			{
-				// Convert the libraries field to an array.
-				$libraries = new Registry;
-				$libraries->loadString($item->libraries);
-				$item->libraries = $libraries->toArray();
-			}
-
 			if (!empty($item->php_view))
 			{
 				// base64 Decode php_view.
@@ -118,6 +110,14 @@ class ComponentbuilderModelLayout extends JModelAdmin
 			{
 				// base64 Decode layout.
 				$item->layout = base64_decode($item->layout);
+			}
+
+			if (!empty($item->libraries))
+			{
+				// Convert the libraries field to an array.
+				$libraries = new Registry;
+				$libraries->loadString($item->libraries);
+				$item->libraries = $libraries->toArray();
 			}
 
 

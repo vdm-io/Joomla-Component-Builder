@@ -100,6 +100,12 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->php_setdocument))
+			{
+				// base64 Decode php_setdocument.
+				$item->php_setdocument = base64_decode($item->php_setdocument);
+			}
+
 			if (!empty($item->libraries))
 			{
 				// Convert the libraries field to an array.
@@ -114,12 +120,6 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$addconditions = new Registry;
 				$addconditions->loadString($item->addconditions);
 				$item->addconditions = $addconditions->toArray();
-			}
-
-			if (!empty($item->php_setdocument))
-			{
-				// base64 Decode php_setdocument.
-				$item->php_setdocument = base64_decode($item->php_setdocument);
 			}
 
 

@@ -100,38 +100,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->ajax_input))
-			{
-				// Convert the ajax_input field to an array.
-				$ajax_input = new Registry;
-				$ajax_input->loadString($item->ajax_input);
-				$item->ajax_input = $ajax_input->toArray();
-			}
-
-			if (!empty($item->libraries))
-			{
-				// Convert the libraries field to an array.
-				$libraries = new Registry;
-				$libraries->loadString($item->libraries);
-				$item->libraries = $libraries->toArray();
-			}
-
-			if (!empty($item->custom_get))
-			{
-				// Convert the custom_get field to an array.
-				$custom_get = new Registry;
-				$custom_get->loadString($item->custom_get);
-				$item->custom_get = $custom_get->toArray();
-			}
-
-			if (!empty($item->custom_button))
-			{
-				// Convert the custom_button field to an array.
-				$custom_button = new Registry;
-				$custom_button->loadString($item->custom_button);
-				$item->custom_button = $custom_button->toArray();
-			}
-
 			if (!empty($item->php_document))
 			{
 				// base64 Decode php_document.
@@ -202,6 +170,38 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			{
 				// base64 Decode php_model.
 				$item->php_model = base64_decode($item->php_model);
+			}
+
+			if (!empty($item->ajax_input))
+			{
+				// Convert the ajax_input field to an array.
+				$ajax_input = new Registry;
+				$ajax_input->loadString($item->ajax_input);
+				$item->ajax_input = $ajax_input->toArray();
+			}
+
+			if (!empty($item->libraries))
+			{
+				// Convert the libraries field to an array.
+				$libraries = new Registry;
+				$libraries->loadString($item->libraries);
+				$item->libraries = $libraries->toArray();
+			}
+
+			if (!empty($item->custom_get))
+			{
+				// Convert the custom_get field to an array.
+				$custom_get = new Registry;
+				$custom_get->loadString($item->custom_get);
+				$item->custom_get = $custom_get->toArray();
+			}
+
+			if (!empty($item->custom_button))
+			{
+				// Convert the custom_button field to an array.
+				$custom_button = new Registry;
+				$custom_button->loadString($item->custom_button);
+				$item->custom_button = $custom_button->toArray();
 			}
 
 

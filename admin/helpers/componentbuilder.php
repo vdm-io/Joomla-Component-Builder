@@ -2651,6 +2651,23 @@ abstract class ComponentbuilderHelper
 	protected static $curlErrorLoaded = false;
 
 	/**
+	* 	check if a worker has more work
+	* 
+	*	@param  string   $function    The function to target to perform the task
+	*
+	* 	@return  bool
+	* 
+	*/
+	public static function hasWork(&$function)
+	{
+		if (isset(self::$worker[$function]) && self::checkArray(self::$worker[$function]))
+		{
+			return count( (array) self::$worker[$function]);
+		}
+		return false;
+	}
+
+	/**
 	* 	Set a worker url
 	* 
 	*	@param  string   $function    The function to target to perform the task

@@ -100,62 +100,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->addpermissions))
-			{
-				// Convert the addpermissions field to an array.
-				$addpermissions = new Registry;
-				$addpermissions->loadString($item->addpermissions);
-				$item->addpermissions = $addpermissions->toArray();
-			}
-
-			if (!empty($item->addtabs))
-			{
-				// Convert the addtabs field to an array.
-				$addtabs = new Registry;
-				$addtabs->loadString($item->addtabs);
-				$item->addtabs = $addtabs->toArray();
-			}
-
-			if (!empty($item->addlinked_views))
-			{
-				// Convert the addlinked_views field to an array.
-				$addlinked_views = new Registry;
-				$addlinked_views->loadString($item->addlinked_views);
-				$item->addlinked_views = $addlinked_views->toArray();
-			}
-
-			if (!empty($item->addtables))
-			{
-				// Convert the addtables field to an array.
-				$addtables = new Registry;
-				$addtables->loadString($item->addtables);
-				$item->addtables = $addtables->toArray();
-			}
-
-			if (!empty($item->alias_builder))
-			{
-				// Convert the alias_builder field to an array.
-				$alias_builder = new Registry;
-				$alias_builder->loadString($item->alias_builder);
-				$item->alias_builder = $alias_builder->toArray();
-			}
-
-			if (!empty($item->custom_button))
-			{
-				// Convert the custom_button field to an array.
-				$custom_button = new Registry;
-				$custom_button->loadString($item->custom_button);
-				$item->custom_button = $custom_button->toArray();
-			}
-
-			if (!empty($item->ajax_input))
-			{
-				// Convert the ajax_input field to an array.
-				$ajax_input = new Registry;
-				$ajax_input->loadString($item->ajax_input);
-				$item->ajax_input = $ajax_input->toArray();
-			}
-
 			if (!empty($item->html_import_view))
 			{
 				// base64 Decode html_import_view.
@@ -358,6 +302,62 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				// base64 Decode php_import_ext.
 				$item->php_import_ext = base64_decode($item->php_import_ext);
+			}
+
+			if (!empty($item->addpermissions))
+			{
+				// Convert the addpermissions field to an array.
+				$addpermissions = new Registry;
+				$addpermissions->loadString($item->addpermissions);
+				$item->addpermissions = $addpermissions->toArray();
+			}
+
+			if (!empty($item->addtabs))
+			{
+				// Convert the addtabs field to an array.
+				$addtabs = new Registry;
+				$addtabs->loadString($item->addtabs);
+				$item->addtabs = $addtabs->toArray();
+			}
+
+			if (!empty($item->addlinked_views))
+			{
+				// Convert the addlinked_views field to an array.
+				$addlinked_views = new Registry;
+				$addlinked_views->loadString($item->addlinked_views);
+				$item->addlinked_views = $addlinked_views->toArray();
+			}
+
+			if (!empty($item->addtables))
+			{
+				// Convert the addtables field to an array.
+				$addtables = new Registry;
+				$addtables->loadString($item->addtables);
+				$item->addtables = $addtables->toArray();
+			}
+
+			if (!empty($item->alias_builder))
+			{
+				// Convert the alias_builder field to an array.
+				$alias_builder = new Registry;
+				$alias_builder->loadString($item->alias_builder);
+				$item->alias_builder = $alias_builder->toArray();
+			}
+
+			if (!empty($item->custom_button))
+			{
+				// Convert the custom_button field to an array.
+				$custom_button = new Registry;
+				$custom_button->loadString($item->custom_button);
+				$item->custom_button = $custom_button->toArray();
+			}
+
+			if (!empty($item->ajax_input))
+			{
+				// Convert the ajax_input field to an array.
+				$ajax_input = new Registry;
+				$ajax_input->loadString($item->ajax_input);
+				$item->ajax_input = $ajax_input->toArray();
 			}
 
 

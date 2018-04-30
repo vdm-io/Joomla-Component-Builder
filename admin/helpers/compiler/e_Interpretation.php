@@ -1686,37 +1686,43 @@ class Interpretation extends Fields
 		$fieldDecode = '';
 		foreach ($checker as $field => $array)
 		{
-			if (strpos($get['selection']['select'], $field) !== false)
+			if (strpos($get['selection']['select'], $field) !== false && ComponentbuilderHelper::checkArray($array['decode']))
 			{
-				if ('json' === $array['decode'])
+				// insure it is unique
+				$array['decode'] = (array) array_unique(array_reverse((array) $array['decode']));
+				// now loop the array
+				foreach ($array['decode'] as $decode)
 				{
-					$if = PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkJson(" . $string . "->" . $field . "))" . PHP_EOL . "\t" . $tab . "\t{";
-					// json_decode
-					$decoder = $string . "->" . $field . " = json_decode(" . $string . "->" . $field . ", true);";
-				}
-				elseif ('base64' === $array['decode'])
-				{
-					$if = PHP_EOL . "\t" . $tab . "\tif (!empty(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ")))" . PHP_EOL . "\t" . $tab . "\t{";
-					// base64_decode
-					$decoder = $string . "->" . $field . " = base64_decode(" . $string . "->" . $field . ");";
-				}
-				elseif (strpos($array['decode'], '_encryption') !== false)
-				{
-					foreach ($this->cryptionTypes as $cryptionType)
+					if ('json' === $decode)
 					{
-						if ($cryptionType . '_encryption' === $array['decode'])
+						$if = PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkJson(" . $string . "->" . $field . "))" . PHP_EOL . "\t" . $tab . "\t{";
+						// json_decode
+						$decoder = $string . "->" . $field . " = json_decode(" . $string . "->" . $field . ", true);";
+					}
+					elseif ('base64' === $decode)
+					{
+						$if = PHP_EOL . "\t" . $tab . "\tif (!empty(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ")))" . PHP_EOL . "\t" . $tab . "\t{";
+						// base64_decode
+						$decoder = $string . "->" . $field . " = base64_decode(" . $string . "->" . $field . ");";
+					}
+					elseif (strpos($decode, '_encryption') !== false)
+					{
+						foreach ($this->cryptionTypes as $cryptionType)
 						{
-							$if = PHP_EOL . "\t" . $tab . "\tif (!empty(" . $string . "->" . $field . ") && \$" . $cryptionType . "key && !is_numeric(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ", true)))" . PHP_EOL . "\t" . $tab . "\t{";
-							// set decryption
-							$decoder = $string . "->" . $field . " = rtrim(\$" . $cryptionType . "->decryptString(" . $string . "->" . $field . "), " . '"\0"' . ");";
-							$this->siteDecrypt[$cryptionType][$code] = true;
+							if ($cryptionType . '_encryption' === $decode)
+							{
+								$if = PHP_EOL . "\t" . $tab . "\tif (!empty(" . $string . "->" . $field . ") && \$" . $cryptionType . "key && !is_numeric(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ", true)))" . PHP_EOL . "\t" . $tab . "\t{";
+								// set decryption
+								$decoder = $string . "->" . $field . " = rtrim(\$" . $cryptionType . "->decryptString(" . $string . "->" . $field . "), " . '"\0"' . ");";
+								$this->siteDecrypt[$cryptionType][$code] = true;
+							}
 						}
 					}
-				}
 
-				// build decoder string
-				$fieldDecode .= $if . PHP_EOL . "\t" . $tab . "\t\t//" . $this->setLine(__LINE__) . " Decode " . $field;
-				$fieldDecode .= PHP_EOL . "\t" . $tab . "\t\t" . $decoder . PHP_EOL . "\t" . $tab . "\t}";
+					// build decoder string
+					$fieldDecode .= $if . PHP_EOL . "\t" . $tab . "\t\t//" . $this->setLine(__LINE__) . " Decode " . $field;
+					$fieldDecode .= PHP_EOL . "\t" . $tab . "\t\t" . $decoder . PHP_EOL . "\t" . $tab . "\t}";
+				}
 			}
 		}
 		return $fieldDecode;
@@ -4246,6 +4252,39 @@ class Interpretation extends Fields
 	public function setMethodGetItem(&$view)
 	{
 		$script = '';
+		// get the component name
+		$Component = $this->fileContentStatic['###Component###'];
+		// go from base64 to string
+		if (isset($this->base64Builder[$view]) && ComponentbuilderHelper::checkArray($this->base64Builder[$view]))
+		{
+			foreach ($this->base64Builder[$view] as $baseString)
+			{
+				$script .= PHP_EOL . PHP_EOL . "\t\t\tif (!empty(\$item->" . $baseString . "))"; // TODO && base64_encode(base64_decode(\$item->".$baseString.", true)) === \$item->".$baseString.")";
+				$script .= PHP_EOL . "\t\t\t{";
+				$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " base64 Decode " . $baseString . ".";
+				$script .= PHP_EOL . "\t\t\t\t\$item->" . $baseString . " = base64_decode(\$item->" . $baseString . ");";
+				$script .= PHP_EOL . "\t\t\t}";
+			}
+		}
+		// decryption
+		foreach ($this->cryptionTypes as $cryptionType)
+		{
+			if (isset($this->{$cryptionType . 'EncryptionBuilder'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType . 'EncryptionBuilder'}[$view]))
+			{
+				$script .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
+				$script .= PHP_EOL . "\t\t\t\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
+				$script .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
+				$script .= PHP_EOL . "\t\t\t\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+				foreach ($this->{$cryptionType . 'EncryptionBuilder'}[$view] as $baseString)
+				{
+					$script .= PHP_EOL . PHP_EOL . "\t\t\tif (!empty(\$item->" . $baseString . ") && \$" . $cryptionType . "key && !is_numeric(\$item->" . $baseString . ") && \$item->" . $baseString . " === base64_encode(base64_decode(\$item->" . $baseString . ", true)))";
+					$script .= PHP_EOL . "\t\t\t{";
+					$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " " . $cryptionType . " decrypt data " . $baseString . ".";
+					$script .= PHP_EOL . "\t\t\t\t\$item->" . $baseString . " = rtrim(\$" . $cryptionType . "->decryptString(\$item->" . $baseString . "), " . '"\0"' . ");";
+					$script .= PHP_EOL . "\t\t\t}";
+				}
+			}
+		}
 		// go from json to array
 		if (isset($this->jsonItemBuilder[$view]) && ComponentbuilderHelper::checkArray($this->jsonItemBuilder[$view]))
 		{
@@ -4279,39 +4318,6 @@ class Interpretation extends Fields
 				}
 				$script .= PHP_EOL . "\t\t\t\t\$item->" . $jsonString . " = json_decode(\$item->" . $jsonString . $makeArray . ");";
 				$script .= PHP_EOL . "\t\t\t}";
-			}
-		}
-		// go from base64 to string
-		if (isset($this->base64Builder[$view]) && ComponentbuilderHelper::checkArray($this->base64Builder[$view]))
-		{
-			foreach ($this->base64Builder[$view] as $baseString)
-			{
-				$script .= PHP_EOL . PHP_EOL . "\t\t\tif (!empty(\$item->" . $baseString . "))"; // TODO && base64_encode(base64_decode(\$item->".$baseString.", true)) === \$item->".$baseString.")";
-				$script .= PHP_EOL . "\t\t\t{";
-				$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " base64 Decode " . $baseString . ".";
-				$script .= PHP_EOL . "\t\t\t\t\$item->" . $baseString . " = base64_decode(\$item->" . $baseString . ");";
-				$script .= PHP_EOL . "\t\t\t}";
-			}
-		}
-		// get the component name
-		$Component = $this->fileContentStatic['###Component###'];
-		// decryption
-		foreach ($this->cryptionTypes as $cryptionType)
-		{
-			if (isset($this->{$cryptionType . 'EncryptionBuilder'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType . 'EncryptionBuilder'}[$view]))
-			{
-				$script .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
-				$script .= PHP_EOL . "\t\t\t\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
-				$script .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Get the encryption object.";
-				$script .= PHP_EOL . "\t\t\t\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
-				foreach ($this->{$cryptionType . 'EncryptionBuilder'}[$view] as $baseString)
-				{
-					$script .= PHP_EOL . PHP_EOL . "\t\t\tif (!empty(\$item->" . $baseString . ") && \$" . $cryptionType . "key && !is_numeric(\$item->" . $baseString . ") && \$item->" . $baseString . " === base64_encode(base64_decode(\$item->" . $baseString . ", true)))";
-					$script .= PHP_EOL . "\t\t\t{";
-					$script .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " " . $cryptionType . " decrypt data " . $baseString . ".";
-					$script .= PHP_EOL . "\t\t\t\t\$item->" . $baseString . " = rtrim(\$" . $cryptionType . "->decryptString(\$item->" . $baseString . "), " . '"\0"' . ");";
-					$script .= PHP_EOL . "\t\t\t}";
-				}
 			}
 		}
 
