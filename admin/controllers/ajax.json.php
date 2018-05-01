@@ -46,6 +46,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('isRead', 'ajax');
 		$this->registerTask('getComponentDetails', 'ajax');
 		$this->registerTask('getCronPath', 'ajax');
+		$this->registerTask('getJCBpackageInfo', 'ajax');
 		$this->registerTask('tableColumns', 'ajax');
 		$this->registerTask('fieldSelectOptions', 'ajax');
 		$this->registerTask('getDynamicScripts', 'ajax');
@@ -205,6 +206,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($getTypeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getCronPath($getTypeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getJCBpackageInfo':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$urlValue = $jinput->get('url', NULL, 'STRING');
+						if($urlValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getJCBpackageInfo($urlValue);
 						}
 						else
 						{

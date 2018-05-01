@@ -97,7 +97,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected $isMultiple		 	= array();
 	protected $specialValue 	 	= false;
 	protected $checksum  	 	= null;
-	protected $checksumURLs  	= array('vdm' => 'https://raw.githubusercontent.com/vdm-io/JCB-Packages/master/');
+	protected $checksumURLs  	= array('vdm' => 'https://raw.githubusercontent.com/vdm-io/JCB-Packages/master/', 'jcb' => 'https://raw.githubusercontent.com/vdm-io/JCB-Community-Packages/master/');
 	protected $mustMerge		= array('validation_rule', 'fieldtype', 'snippet', 'language', 'language_translation');
 
 	/**
@@ -682,7 +682,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$this->data = $data;
 				return true;
 			}
-			$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWODATA_IS_CORRUPTHTWOTHIS_COULD_BE_DUE_TO_KEY_ERROR_OR_BROKEN_PACKAGE'), 'error');
+			$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWODATA_IS_CORRUPTHTWOTHIS_COULD_BE_DUE_TO_BKEY_ERRORB_OR_BROKEN_PACKAGE'), 'error');
 			return false;
 		}
 		$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWODATA_IS_CORRUPTHTWOTHIS_COULD_BE_DUE_TO_BROKEN_PACKAGE'), 'error');

@@ -225,7 +225,7 @@ abstract class ###Component###Helper
 		return false;
 	}
 
-	public static function jsonToString($value, $sperator = ", ", $table = null)
+	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
 		// check if string is JSON
 		$result = json_decode($value, true);
@@ -239,7 +239,7 @@ abstract class ###Component###Helper
 					$names = array();
 					foreach ($result as $val)
 					{
-						if ($name = self::getVar($table, $val, 'id', 'name'))
+						if ($name = self::getVar($table, $val, $id, $name))
 						{
 							$names[] = $name;
 						}

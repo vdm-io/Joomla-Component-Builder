@@ -11851,7 +11851,7 @@ class Interpretation extends Fields
 							if (isset($item['custom']['table']))
 							{
 								$keyTableNAme = str_replace('#__' . $this->fileContentStatic['###component###'] . '_', '', $item['custom']['table']);
-								$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\$item->" . $item['name'] . " = " . $Component . "Helper::jsonToString(\$item->" . $item['name'] . ", ', ', '" . $keyTableNAme . "');";
+								$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\$item->" . $item['name'] . " = " . $Component . "Helper::jsonToString(\$item->" . $item['name'] . ", ', ', '" . $keyTableNAme . "', '".$item['custom']['id']."', '".$item['custom']['text']."');";
 							}
 							else
 							{

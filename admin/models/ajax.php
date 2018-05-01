@@ -117,6 +117,29 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	/**
+	* 	get the JCB package info (html)
+	**/
+	public function getJCBpackageInfo($url)
+	{
+		// convert URL
+		$url = str_replace('.zip', '.info', $url);
+		// check if url exist
+		if ($info = ComponentbuilderHelper::getFileContents($url, false))
+		{
+			// Get the encryption object.
+			$opener = new FOFEncryptAes('V4stD3vel0pmEntMethOd@YoUrS3rv!s', 128);
+			$info = rtrim($opener->decryptString($info), "\0");
+			// check if we have json
+			if (ComponentbuilderHelper::checkJson($info))
+			{
+				$info = json_decode($info, true);
+				return array('owner' => ComponentbuilderHelper::getPackageOwnerDetailsDisplay($info, true), 'packages' => ComponentbuilderHelper::getPackageComponentsDetailsDisplay($info));
+			}
+		}
+		return array('error' => JText::_('COM_COMPONENTBUILDER_JCB_PACKAGE_INFO_PATH_DOES_NOT_WORK_WE_ADVICE_YOU_BNOT_TO_CONTINUEB_WITH_THE_IMPORT_OF_THE_SELECTED_PACKAGE'));
+	}
+
+	/**
 	* 	set the component display
 	**/
 	protected function componentDetailsDisplay($object)

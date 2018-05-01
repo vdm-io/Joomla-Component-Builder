@@ -42,7 +42,6 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 	protected $packageInfo;
 	protected $formPackage;
 	protected $vdmPackages = false;
-	protected $freePackages = array('JCB_demo.zip', 'JCB_helloWorld.zip');
 
 	public function display($tpl = null)
 	{
@@ -51,6 +50,8 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			// Include helper submenu
 			ComponentbuilderHelper::addSubmenu('import');
 		}
+		// get component params
+		$this->params = JComponentHelper::getParams('com_componentbuilder');
 
 		$paths = new stdClass;
 		$paths->first = '';
@@ -87,6 +88,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			// load the forms
 			$this->formPackage = $this->_getForm($this->dataType);
 			$this->vdmPackages = $this->_getForm('vdm_package');
+			$this->jcbPackages = $this->_getForm('jcb_package');
 		}
 
 		// Check for errors.
@@ -95,8 +97,71 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
+		// set the document
+		$this->setDocument();
+
 		// Display the template
 		parent::display($tpl);
+	}
+
+	/**
+	 * Prepares the document
+	 */
+	protected function setDocument()
+	{
+		// always make sure jquery is loaded.
+		JHtml::_('jquery.framework');
+
+		// Add the JavaScript for JStore
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jquery.json.min.js');
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jstorage.min.js');
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/strtotime.js');
+		// add marked library
+		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
+		// check if we should use browser storage
+		$setBrowserStorage = $this->params->get('set_browser_storage', null);
+		if ($setBrowserStorage)
+		{
+			// check what (Time To Live) show we use
+			$storageTimeToLive = $this->params->get('storage_time_to_live', 'global');
+			if ('global' == $storageTimeToLive)
+			{
+				// use the global session time
+				$session = JFactory::getSession();
+				// must have itin milliseconds
+				$expire = ($session->getExpire()*60)* 1000;
+			}
+			else
+			{
+				// use the Componentbuilder Global setting
+				if (0 !=  $storageTimeToLive)
+				{
+					// this will convert the time into milliseconds
+					$storageTimeToLive =  $storageTimeToLive * 1000;
+				}
+				$expire = $storageTimeToLive;
+			}
+		}
+		else
+		{
+			// set to use no storage
+			$expire = 30000; // only 30 seconds
+		}
+
+		// Set the Time To Live To JavaScript
+		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
+		$this->document->addScriptDeclaration("var all_is_good = '".JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IS_NO_NOTICE_AT_THIS_TIME')."';"); 
+		// add a token on the page for javascript
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
+
+		// add the Uikit v2 style sheets
+		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+
+		// add Uikit v2 JavaScripts
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
 	}
 
 	public function _getForm($type)
@@ -243,9 +308,9 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				$form[] = $sleutle;
 			}
 		}
-		elseif ('vdm_package' === $type && $listObjects = ComponentbuilderHelper::getGithubRepoFileList('jcbGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
+		elseif ('vdm_package' === $type && $vdmListObjects = ComponentbuilderHelper::getGithubRepoFileList('vdmGithubPackages', ComponentbuilderHelper::$vdmGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
 		{
-			if (ComponentbuilderHelper::checkArray($listObjects))
+			if (ComponentbuilderHelper::checkArray($vdmListObjects))
 			{
 				// get the vdm_package list field
 				$vdm_package = JFormHelper::loadFieldType('list',true);
@@ -257,7 +322,8 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 					'name' => 'vdm_package',
 					'label' => 'COM_COMPONENTBUILDER_PACKAGE',
 					'class' => 'list_class',
-					'description' => 'COM_COMPONENTBUILDER_SELECT_THE_PACKAGE_TO_IMPORT');
+					'description' => 'COM_COMPONENTBUILDER_SELECT_THE_PACKAGE_TO_IMPORT',
+					'onchange' => "getJCBpackageInfo('vdm')");
 				// load the list
 				$load = false;
 				// load the vdm_package attributes
@@ -266,11 +332,11 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				$vdm_packageOptions = array();
 				$vdm_packageOptions[''] = 'COM_COMPONENTBUILDER__SELECT_PACKAGE_';
 				// load vdm_package options from array
-				foreach($listObjects as $listObject)
+				foreach($vdmListObjects as $vdmListObject)
 				{
-					if (strpos($listObject->path, '.zip') !== false)
+					if (strpos($vdmListObject->path, '.zip') !== false)
 					{
-						$vdm_packageOptions[ComponentbuilderHelper::$jcbGithubPackageUrl.$listObject->path] = $this->setPackageName($listObject->path);
+						$vdm_packageOptions[ComponentbuilderHelper::$vdmGithubPackageUrl.$vdmListObject->path] = $this->setPackageName($vdmListObject->path);
 						$load = true;
 					}
 				}
@@ -286,22 +352,57 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				}
 			}
 		}
+		elseif ('jcb_package' === $type && $jcbListObjects = ComponentbuilderHelper::getGithubRepoFileList('jcbGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
+		{
+			if (ComponentbuilderHelper::checkArray($jcbListObjects))
+			{
+				// get the jcb_package list field
+				$jcb_package = JFormHelper::loadFieldType('list',true);
+				// start jcb_package xml
+				$jcb_packageXML = new SimpleXMLElement('<field/>');
+				// jcb_package attributes
+				$jcb_packageAttributes = array(
+					'type' => 'list',
+					'name' => 'jcb_package',
+					'label' => 'COM_COMPONENTBUILDER_PACKAGE',
+					'class' => 'list_class',
+					'description' => 'COM_COMPONENTBUILDER_SELECT_THE_PACKAGE_TO_IMPORT',
+					'onchange' => "getJCBpackageInfo('jcb')");
+				// load the list
+				$load = false;
+				// load the jcb_package attributes
+				ComponentbuilderHelper::xmlAddAttributes($jcb_packageXML, $jcb_packageAttributes);
+				// start the jcb_package options
+				$jcb_packageOptions = array();
+				$jcb_packageOptions[''] = 'COM_COMPONENTBUILDER__SELECT_PACKAGE_';
+				// load jcb_package options from array
+				foreach($jcbListObjects as $jcbListObject)
+				{
+					if (strpos($jcbListObject->path, '.zip') !== false)
+					{
+						$jcb_packageOptions[ComponentbuilderHelper::$jcbGithubPackageUrl.$jcbListObject->path] = $this->setPackageName($jcbListObject->path);
+						$load = true;
+					}
+				}
+				// only load if at least one item was found
+				if ($load)
+				{
+					// load the jcb_package options
+					ComponentbuilderHelper::xmlAddOptions($jcb_packageXML, $jcb_packageOptions);
+					// setup the jcb_package radio field
+					$jcb_package->setup($jcb_packageXML,'');
+					// add to form
+					$form[] = $jcb_package;
+				}
+			}
+		}
 		return $form;
 	}
 
 	public function setPackageName($name)
 	{
-		// the free switch
-		if (in_array($name, $this->freePackages))
-		{
-			$type = ' - free';
-		}
-		else
-		{
-			$type = ' - paid';
-		}
 		// return the name
-		return ComponentbuilderHelper::safeString( preg_replace('/(?<!^)([A-Z])/', '-\ \1', str_replace(array('.zip', 'JCB_'), '', $name)), 'W').$type;
+		return ComponentbuilderHelper::safeString( preg_replace('/(?<!^)([A-Z])/', '-\ \1', str_replace(array('.zip', 'JCB_'), '', $name)), 'W');
 	}
 
 	/**

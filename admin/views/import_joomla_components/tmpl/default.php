@@ -110,6 +110,24 @@ JHtml::_('behavior.keepalive');
 			form.submit();
 		}
 	};
+	Joomla.submitbuttonJCB = function()
+	{
+		var form = document.getElementById('adminForm');
+		// do field validation
+		if (form.jcb_package.value == "" || form.jcb_package.value == "http://")
+		{
+			alert("<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_YOUR_WOULD_LIKE_TO_IMPORT', true); ?>");
+		}
+		else
+		{
+			// set the url
+			form.import_url.value = form.jcb_package.value;
+			jQuery('#loading').css('display', 'block');
+			form.checksum.value = 'jcb';
+			form.gettype.value = 'url';
+			form.submit();
+		}
+	};
 <?php endif; ?>
 
 
@@ -190,97 +208,14 @@ jQuery(document).ready(function($) {
 		</div>
 		<?php if ($hasOwner): ?>
 		<div class="well span6">
-			<?php 
-				$ownerDetails = '<h2 class="module-title nav-header">' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
-				$ownerDetails .= '<ul>';
-				if (isset($this->packageInfo['getKeyFrom']['company']) && componentbuilderHelper::checkString($this->packageInfo['getKeyFrom']['company']))
-				{
-					$owner = $this->packageInfo['getKeyFrom']['company'];
-					$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOMPANYEM_BSB', $this->packageInfo['getKeyFrom']['company']) . '</li>';
-				}
-				// add value only if set
-				if (isset($this->packageInfo['getKeyFrom']['owner']) && componentbuilderHelper::checkString($this->packageInfo['getKeyFrom']['owner']))
-				{
-					if (!isset($owner))
-					{
-						$owner = $this->packageInfo['getKeyFrom']['owner'];
-					}
-					$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMOWNEREM_BSB', $this->packageInfo['getKeyFrom']['owner']) . '</li>';
-				}
-				// add value only if set
-				if (isset($this->packageInfo['getKeyFrom']['website']) && componentbuilderHelper::checkString($this->packageInfo['getKeyFrom']['website']))
-				{
-					$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $this->packageInfo['getKeyFrom']['website']) . '</li>';
-				}
-				// add value only if set
-				if (isset($this->packageInfo['getKeyFrom']['email']) && componentbuilderHelper::checkString($this->packageInfo['getKeyFrom']['email']))
-				{
-					$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $this->packageInfo['getKeyFrom']['email']) . '</li>';
-				}
-				// add value only if set
-				if (isset($this->packageInfo['getKeyFrom']['license']) && componentbuilderHelper::checkString($this->packageInfo['getKeyFrom']['license']))
-				{
-					$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMLICENSEEM_BSB', $this->packageInfo['getKeyFrom']['license']) . '</li>';
-				}
-				// add value only if set
-				if (isset($this->packageInfo['getKeyFrom']['copyright']) && componentbuilderHelper::checkString($this->packageInfo['getKeyFrom']['copyright']))
-				{
-					$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB', $this->packageInfo['getKeyFrom']['copyright']) . '</li>';
-				}							
-				$ownerDetails .= '</ul>';
-
-				// provide some details to how the user can get a key
-				if (isset($this->packageInfo['getKeyFrom']['buy_link']) && componentbuilderHelper::checkString($this->packageInfo['getKeyFrom']['buy_link']))
-				{
-					$ownerDetails .= '<hr />';
-					$ownerDetails .= JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_CLASSBTN_BTNPRIMARY_HREFS_TARGET_BLANK_TITLEGET_A_KEY_FROM_SSA', $this->packageInfo['getKeyFrom']['buy_link'], $owner, $owner);
-				}
-				// add more custom links
-				elseif (isset($this->packageInfo['getKeyFrom']['buy_links']) && componentbuilderHelper::checkArray($this->packageInfo['getKeyFrom']['buy_links']))
-				{
-					$buttons = array();
-					foreach ($this->packageInfo['getKeyFrom']['buy_links'] as $keyName => $link)
-					{
-						$buttons[] = JText::sprintf('COM_COMPONENTBUILDER_GET_THE_KEY_FROM_BSB_FOR_A_CLASSBTN_BTNPRIMARY_HREFS_TARGET_BLANK_TITLEGET_A_KEY_FROM_SSA', $owner, $link, $owner, $keyName);
-					}
-					$ownerDetails .= '<hr />';
-					$ownerDetails .= implode('<br />', $buttons);
-				}
-
-				// return the owner details
-				if (!isset($owner))
-				{
-					$ownerDetails = '<h2 style="color: #922924;">' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS_NOT_FOUND') . '</h2>';
-					$ownerDetails .= '<p style="color: #922924;">' . JText::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE') . '</p>';
-				}
-				echo $ownerDetails;
-			?>
+			<?php echo ComponentbuilderHelper::getPackageOwnerDetailsDisplay($this->packageInfo); ?>
 		</div>
 		<?php endif; ?>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 		<?php if (isset($this->packageInfo['name']) && ComponentbuilderHelper::checkArray($this->packageInfo['name'])) : ?>
 		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'info', JText::sprintf('COM_COMPONENTBUILDER_S_BEING_IMPORTED', $comP)); ?>
-			<?php $class2 = ($cAmount == 1) ? 'span12' : 'span6'; ?>
-			<?php $counter = 1; foreach ($this->packageInfo['name'] as $key => $value): ?>
-				<?php if ($cAmount > 1 && $counter == 3) { echo '</div>'; $counter = 1;} ?>
-				<?php if ($cAmount > 1 && $counter == 1) { echo '<div>'; } ?>
-				<div class="well well-small <?php echo $class2; ?>">
-					<h2 class="module-title nav-header"><?php echo JText::sprintf('COM_COMPONENTBUILDER_BSB_EMCOMPONENT_DETAILSEM', $value . ' v' . $this->packageInfo['component_version'][$key]); ?></h2>
-					<p><?php echo $this->packageInfo['short_description'][$key]; ?></p>
-					<ul>
-						<li><?php echo JText::sprintf('COM_COMPONENTBUILDER_EMCOMPANY_NAMEEM_BSB', $this->packageInfo['companyname'][$key]); ?></li>
-						<li><?php echo JText::sprintf('COM_COMPONENTBUILDER_EMAUTHOREM_BSB', $this->packageInfo['author'][$key]); ?></li>
-						<li><?php echo JText::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $this->packageInfo['email'][$key]); ?></li>
-						<li><?php echo JText::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $this->packageInfo['website'][$key]); ?></li>
-					</ul>
-					<h2 class="nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_LICENSE'); ?></h2>
-					<p><?php echo $this->packageInfo['license'][$key]; ?></p>
-					<h2  class="nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_COPYRIGHT'); ?></h2>
-					<p><?php echo $this->packageInfo['copyright'][$key]; ?></p>
-				</div>
-				<?php $counter++; ?>
-			<?php endforeach; ?>
+			<?php echo ComponentbuilderHelper::getPackageComponentsDetailsDisplay($this->packageInfo); ?>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
@@ -338,25 +273,73 @@ jQuery(document).ready(function($) {
 			</fieldset>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php if ($this->vdmPackages): ?>
+		<?php if ($this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_vdm', JText::_('COM_COMPONENTBUILDER_VDM_PACKAGES', true)); ?>
-				<fieldset class="uploadform">
-					<legend><?php echo JText::_("COM_COMPONENTBUILDER_PACKAGES_FROM_VAST_DEVELOPMENT_METHOD"); ?></legend>
+				<div class="span6">
 					<div class="alert alert-success">
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.vdm.io/support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE_A_S_GET_A_KEY_TODAYA', 'href="https://github.com/vdm-io/JCB-Packages" target="_blank" title="gitHub Reposetory"', 'href="http://vdm.bz/jcb-packages" target="_blank" title="get a key to import the paid packages."'); ?></p>
 					</div>
-					<?php foreach ($this->vdmPackages as $field): ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label;?></div>
-						<div class="controls"><?php echo $field->input;?></div>
+					<fieldset class="uploadform">
+						<legend><?php echo JText::_("COM_COMPONENTBUILDER_PACKAGES_FROM_VAST_DEVELOPMENT_METHOD"); ?></legend>
+						<?php foreach ($this->vdmPackages as $field): ?>
+						<div class="control-group">
+							<div class="control-label"><?php echo $field->label;?></div>
+							<div class="controls"><?php echo $field->input;?></div>
+						</div>
+						<?php endforeach; ?>
+						<div class="form-actions">
+							<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonVDM()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo JText::_('COM_COMPONENTBUILDER_OFFICIAL_VDM_PACKAGES'); ?></small>
+						</div>
+						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.vdm.io/support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
+					</fieldset>
+				</div>
+				<div class="span6">
+					<div id="vdm_packages_details">
 					</div>
-					<?php endforeach; ?>
-					<div class="form-actions">
-						<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonVDM()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo JText::_('COM_COMPONENTBUILDER_OFFICIAL_VDM_PACKAGES'); ?></small>
+					<div id="vdm_noticeboard" class="well well-small" >
+						<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
+						<div class="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
+						<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
+					</div><br />
+					<div id="vdm_package_owner_details">
 					</div>
-					<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.vdm.io/support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
-				</fieldset>
+				</div>
+			<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php endif; ?>
+
+		<?php if ($this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages)) : ?>
+			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_jcb', JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_PACKAGES', true)); ?>
+				<div class="span6">
+					<div class="alert alert-success">
+						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.jcb.io/support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
+						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"'); ?></p>
+					</div>
+					<fieldset class="uploadform">
+						<legend><?php echo JText::_("COM_COMPONENTBUILDER_PACKAGES_FROM_JCB_COMMUNITY"); ?></legend>
+						<?php foreach ($this->jcbPackages as $field): ?>
+						<div class="control-group">
+							<div class="control-label"><?php echo $field->label;?></div>
+							<div class="controls"><?php echo $field->input;?></div>
+						</div>
+						<?php endforeach; ?>
+						<div class="form-actions">
+							<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonJCB()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo JText::_('COM_COMPONENTBUILDER_COMMUNITY_PACKAGES'); ?></small>
+						</div>
+						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.jcb.io/support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
+					</fieldset>
+				</div>
+				<div class="span6">
+					<div id="jcb_packages_details">
+					</div>
+					<div id="jcb_noticeboard"  class="well well-small" >
+						<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
+						<div class="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
+						<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
+					</div><br />
+					<div id="jcb_package_owner_details">
+					</div>
+				</div>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
@@ -369,6 +352,105 @@ jQuery(document).ready(function($) {
 </form>
 </div>
 <script type="text/javascript">
+function getJCBpackageInfo(type){
+	// show spinner
+	jQuery('#loading').show();
+	jQuery('#'+type+'_noticeboard').hide();
+	// get value
+	var url = jQuery('#'+type+'_package').val();
+	if (url) {
+		var key = url.replace(/\W/g, '');
+		// check if the values are local
+		var result = jQuery.jStorage.get('JCB-packages-details'+key, null);
+		if (result) {
+			showJCBpackageInfo(result, key, type);
+		} else {
+			getJCBpackageInfoAgain(url, key, type);
+		}
+	} else {
+		// show spinner
+		jQuery('#loading').hide();
+		jQuery('#'+type+'_noticeboard').show();
+		jQuery('#'+type+'_package_owner_details').html(' ');
+		jQuery('#'+type+'_packages_details').html(' ');
+	}
+}
+
+function getJCBpackageInfoAgain(url, key,type){
+	getJCBpackageInfo_server(url).done(function(result) {
+		showJCBpackageInfo(result, key,type);
+	});
+}
+
+function showJCBpackageInfo(result, key,type){
+	if(result.owner || result.packages){
+		jQuery('#'+type+'_packages_details').html(result.packages);
+		jQuery('#'+type+'_package_owner_details').html(result.owner);
+		jQuery.jStorage.set('JCB-packages-details'+key, result, {TTL: expire});
+	} else {
+		if (result.error) {
+			jQuery('#'+type+'_packages_details').html(result.error);
+		}
+		jQuery('#'+type+'_package_owner_details').html(' ');
+		jQuery('#'+type+'_noticeboard').show();
+	}
+	// stop spinner
+	jQuery('#loading').hide();
+}
+
+function getJCBpackageInfo_server(url){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getJCBpackageInfo&format=json";
+	if(token.length > 0 && url.length > 0){
+		var request = 'token='+token+'&url=' + url;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'jsonp',
+		data: request,
+		jsonp: 'callback'
+	});
+}
+
+var noticeboard = "https://www.vdm.io/componentbuilder-noticeboard-md";
+jQuery(document).ready(function () {
+	jQuery.get(noticeboard)
+	.success(function(board) { 
+		if (board.length > 5) {
+			jQuery(".noticeboard-md").html(marked(board));
+			getIS(1,board).done(function(result) {
+				if (result){
+					jQuery(".vdm-new-notice").show();
+					getIS(2,board);
+				}
+			});
+		} else {
+			jQuery(".noticeboard-md").html(all_is_good);
+		}
+	})
+	.error(function(jqXHR, textStatus, errorThrown) { 
+		jQuery(".noticeboard-md").html(all_is_good);
+	});
+});
+// to check is READ/NEW
+function getIS(type,notice){
+	if (type == 1) {
+		var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.isNew&format=json");
+	} else if (type == 2) {
+		var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.isRead&format=json");
+	}	
+	if(token.length > 0 && notice.length){
+		var request = "token="+token+"&notice="+notice;
+	}
+	return jQuery.ajax({
+		type: "POST",
+		url: getUrl,
+		dataType: "jsonp",
+		data: request,
+		jsonp: "callback"
+	});
+}
+
 jQuery('#adminForm').on('change', '#haskey',function (e)
 {
 	e.preventDefault();
@@ -379,4 +461,34 @@ jQuery('#adminForm').on('change', '#haskey',function (e)
 		jQuery("#sleutle").closest('.control-group').hide();
 	}
 });
+
+// nice little dot trick :)
+jQuery(document).ready( function($) {
+  var x=0;
+  setInterval(function() {
+	var dots = "";
+	x++;
+	for (var y=0; y < x%8; y++) {
+		dots+=".";
+	}
+	$(".loading-dots").text(dots);
+  } , 500);
+});
+
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
 </script>
