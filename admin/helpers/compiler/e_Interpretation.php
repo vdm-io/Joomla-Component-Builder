@@ -5757,23 +5757,30 @@ class Interpretation extends Fields
 	public function setGenerateNewAlias($viewName_single)
 	{
 		// make sure this view has an alias
-		if (isset($this->customAliasBuilder[$viewName_single]) || isset($this->titleBuilder[$viewName_single]))
+		if (isset($this->aliasBuilder[$viewName_single]))
 		{
 			// set the title stuff
 			if (isset($this->customAliasBuilder[$viewName_single]))
 			{
 				$titles = array_values($this->customAliasBuilder[$viewName_single]);
 			}
-			else
+			elseif (isset($this->titleBuilder[$viewName_single]))
 			{
 				$titles = array($this->titleBuilder[$viewName_single]);
 			}
 			// reset the bucket
 			$titleData = array();
 			// load the dynamic title builder
-			foreach ($titles as $title)
+			if (isset($titles) && ComponentbuilderHelper::checkArray($titles))
 			{
-				$titleData[] = "\$this->" . $title;
+				foreach ($titles as $title)
+				{
+					$titleData[] = "\$this->" . $title;
+				}
+			}
+			else
+			{
+				$titleData = array("''"); // just incase some mad man does not set a title/customAlias (we fall back on the date)
 			}
 			// rest the new function
 			$newFunction = array();
