@@ -233,7 +233,7 @@ jQuery(document).ready(function($) {
 	<?php else: ?>
 		<?php if ($this->dataType === 'smart_package'): ?>
 			<h1 style="color: #922924;"><?php echo JText::_('COM_COMPONENTBUILDER_BACKUP_LOCAL_DATA_FIRST'); ?></h1>
-			<p style="color: #922924;"><?php echo JText::_('COM_COMPONENTBUILDER_ALWAYS_INSURE_THAT_YOU_HAVE_YOUR_LOCAL_COMPONENTS_BACKED_UP_BY_MAKING_AN_EXPORT_OF_ALL_YOUR_LOCAL_COMPONENTS_BEFORE_IMPORTING_ANY_NEW_COMPONENTS_SMALLMAKE_BSUREB_TO_MOVE_THIS_ZIPPED_BACKUP_PACKAGE_OUT_OF_THE_TMP_FOLDER_BEFORE_DOING_AN_IMPORTSMALLBR_IF_YOU_ARE_IMPORTING_A_PACKAGE_OF_A_THREERD_PARTY_JCB_PACKAGE_DEVELOPER_BMAKE_SURE_IT_IS_A_REPUTABLE_JCB_PACKAGE_DEVELOPERSB'); ?></p>
+			<p style="color: #922924;"><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALWAYS_INSURE_THAT_YOU_HAVE_YOUR_LOCAL_COMPONENTS_BACKED_UP_BY_MAKING_AN_EXPORT_OF_ALL_YOUR_LOCAL_COMPONENTS_BEFORE_IMPORTING_ANY_NEW_COMPONENTS_SMALLMAKE_BSUREB_TO_MOVE_THIS_ZIPPED_BACKUP_PACKAGE_OUT_OF_THE_TMP_FOLDER_BEFORE_DOING_AN_IMPORTSMALLBR_IF_YOU_ARE_IMPORTING_A_PACKAGE_OF_A_THREERD_PARTY_JCB_PACKAGE_DEVELOPER_BMAKE_SURE_IT_IS_A_REPUTABLE_JCB_PACKAGE_DEVELOPERSB_A_SFIND_OUT_WHYA', 'href="https://vdm.bz/jcb-package-import-safety" target="_blank" title="Watch tutorial"'); ?></p>
 		<?php endif; ?>
 		<?php echo JHtml::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => 'upload')); ?>
 		
@@ -286,7 +286,7 @@ jQuery(document).ready(function($) {
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_vdm', JText::_('COM_COMPONENTBUILDER_VDM_PACKAGES', true)); ?>
 				<div class="span12" id="vdm_packages_installer">
 					<div class="alert alert-success">
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.vdm.io/support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
+						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://vdm.bz/jcb-package-support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE_A_S_GET_A_KEY_TODAYA', 'href="https://github.com/vdm-io/JCB-Packages" target="_blank" title="gitHub Reposetory"', 'href="http://vdm.bz/jcb-packages" target="_blank" title="get a key to import the paid packages."'); ?></p>
 					</div>
 					<fieldset class="uploadform">
@@ -300,7 +300,7 @@ jQuery(document).ready(function($) {
 						<div class="form-actions">
 							<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonVDM()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo JText::_('COM_COMPONENTBUILDER_OFFICIAL_VDM_PACKAGES'); ?></small>
 						</div>
-						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.vdm.io/support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
+						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://vdm.bz/jcb-package-support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
 					</fieldset>
 				</div>
 				<div id="vdm_packages_display">
@@ -316,7 +316,7 @@ jQuery(document).ready(function($) {
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_jcb', JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_PACKAGES', true)); ?>
 				<div class="span12" id="jcb_packages_installer">
 					<div class="alert alert-success">
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.jcb.io/support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
+						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://vdm.bz/jcb-package-support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"'); ?></p>
 					</div>
 					<fieldset class="uploadform">
@@ -330,7 +330,7 @@ jQuery(document).ready(function($) {
 						<div class="form-actions">
 							<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonJCB()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo JText::_('COM_COMPONENTBUILDER_COMMUNITY_PACKAGES'); ?></small>
 						</div>
-						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.jcb.io/support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
+						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://vdm.bz/jcb-package-support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
 					</fieldset>
 				</div>
 				<div id="jcb_packages_display">

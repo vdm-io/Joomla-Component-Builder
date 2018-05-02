@@ -11850,7 +11850,15 @@ class Interpretation extends Fields
 							$fix .= PHP_EOL . "\t" . $tab . "\t\t\t//" . $this->setLine(__LINE__) . " convert " . $item['name'];
 							if (isset($item['custom']['table']))
 							{
-								$keyTableNAme = str_replace('#__' . $this->fileContentStatic['###component###'] . '_', '', $item['custom']['table']);
+								// check if this is a local table
+								if (strpos($item['custom']['table'], '#__' . $this->fileContentStatic['###component###'] . '_') !== false)
+								{
+									$keyTableNAme = str_replace('#__' . $this->fileContentStatic['###component###'] . '_', '', $item['custom']['table']);
+								}
+								else
+								{
+									$keyTableNAme = $item['custom']['table'];
+								}
 								$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\$item->" . $item['name'] . " = " . $Component . "Helper::jsonToString(\$item->" . $item['name'] . ", ', ', '" . $keyTableNAme . "', '".$item['custom']['id']."', '".$item['custom']['text']."');";
 							}
 							else

@@ -227,6 +227,13 @@ abstract class ###Component###Helper
 
 	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
+		// do some table foot work
+		$external = false;
+		if (strpos($table, '#__') !== false)
+		{
+			$external = true;
+			$table = str_replace('#__', '', $table);
+		}
 		// check if string is JSON
 		$result = json_decode($value, true);
 		if (json_last_error() === JSON_ERROR_NONE)
@@ -239,9 +246,19 @@ abstract class ###Component###Helper
 					$names = array();
 					foreach ($result as $val)
 					{
-						if ($name = self::getVar($table, $val, $id, $name))
+						if ($external)
 						{
-							$names[] = $name;
+							if ($name = self::getVar(null, $val, $id, $name, '=', $table))
+							{
+								$names[] = $name;
+							}
+						}
+						else
+						{
+							if ($name = self::getVar($table, $val, $id, $name))
+							{
+								$names[] = $name;
+							}
 						}
 					}
 					if (self::checkArray($names))

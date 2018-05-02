@@ -2161,8 +2161,8 @@ abstract class ComponentbuilderHelper
 					$display[] = '<div>';
 				}
 				$display[] = '<div class="well well-small ' . $class2 . '">';
-				$display[] = '<h2 class="module-title nav-header">';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_BSB_EMCOMPONENT_DETAILSEM', $value . ' v' . $info['component_version'][$key]);
+				$display[] = '<h3>';
+				$display[] = $value . ' v' . $info['component_version'][$key];
 				if ($needKey)
 				{
 					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_PAIDLOCKED') . '</em>';
@@ -2171,24 +2171,24 @@ abstract class ComponentbuilderHelper
 				{
 					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_FREEOPEN') . '</em>';
 				}
-				$display[] = '</h2><p>';
+				$display[] = '</h3><h4>';
 				$display[] = $info['short_description'][$key];
-				$display[] = '</p><ul><li>';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_EMCOMPANY_NAMEEM_BSB', $info['companyname'][$key]);
+				$display[] = '</h4><ul><li>';
+				$display[] = JText::sprintf('COM_COMPONENTBUILDER_ICOMPANY_NAMEI_BSB', $info['companyname'][$key]);
 				$display[] = '</li><li>';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_EMAUTHOREM_BSB', $info['author'][$key]);
+				$display[] = JText::sprintf('COM_COMPONENTBUILDER_IAUTHORI_BSB', $info['author'][$key]);
 				$display[] = '</li><li>';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $info['email'][$key]);
+				$display[] = JText::sprintf('COM_COMPONENTBUILDER_IEMAILI_BSB', $info['email'][$key]);
 				$display[] = '</li><li>';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $info['website'][$key]);
+				$display[] = JText::sprintf('COM_COMPONENTBUILDER_IWEBSITEI_BSB', $info['website'][$key]);
 				$display[] = '</li></ul>';
-				$display[] = '<h2 class="nav-header">';
+				$display[] = '<h4 class="nav-header">';
 				$display[] = JText::_('COM_COMPONENTBUILDER_LICENSE');
-				$display[] = '</h2><p>';
+				$display[] = '</h4><p>';
 				$display[] = $info['license'][$key];
-				$display[] = '</p><h2 class="nav-header">';
+				$display[] = '</p><h4 class="nav-header">';
 				$display[] = JText::_('COM_COMPONENTBUILDER_COPYRIGHT');
-				$display[] = '</h2><p>';
+				$display[] = '</h4><p>';
 				$display[] = $info['copyright'][$key];
 				$display[] = '</p></div>';
 		
@@ -4155,6 +4155,13 @@ abstract class ComponentbuilderHelper
 
 	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
+		// do some table foot work
+		$external = false;
+		if (strpos($table, '#__') !== false)
+		{
+			$external = true;
+			$table = str_replace('#__', '', $table);
+		}
 		// check if string is JSON
 		$result = json_decode($value, true);
 		if (json_last_error() === JSON_ERROR_NONE)
@@ -4167,9 +4174,19 @@ abstract class ComponentbuilderHelper
 					$names = array();
 					foreach ($result as $val)
 					{
-						if ($name = self::getVar($table, $val, $id, $name))
+						if ($external)
 						{
-							$names[] = $name;
+							if ($name = self::getVar(null, $val, $id, $name, '=', $table))
+							{
+								$names[] = $name;
+							}
+						}
+						else
+						{
+							if ($name = self::getVar($table, $val, $id, $name))
+							{
+								$names[] = $name;
+							}
 						}
 					}
 					if (self::checkArray($names))
