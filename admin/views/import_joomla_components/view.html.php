@@ -244,7 +244,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			// add to form
 			$form[] = $merge;
 		
-			if (!$this->packageInfo || (isset($this->packageInfo['getKeyFrom']) && ComponentbuilderHelper::checkArray($this->packageInfo['getKeyFrom'])))
+			if (!$this->packageInfo || ComponentbuilderHelper::getPackageComponentsKeyStatus($this->packageInfo))
 			{
 				// set required field
 				$required = true;
@@ -352,7 +352,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				}
 			}
 		}
-		elseif ('jcb_package' === $type && $jcbListObjects = ComponentbuilderHelper::getGithubRepoFileList('jcbGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
+		elseif ('jcb_package' === $type && $jcbListObjects = ComponentbuilderHelper::getGithubRepoFileList('communityGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
 		{
 			if (ComponentbuilderHelper::checkArray($jcbListObjects))
 			{

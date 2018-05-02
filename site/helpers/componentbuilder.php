@@ -2042,57 +2042,47 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
+	protected static $pkOwnerSearch = array(
+		'company' => 'COM_COMPONENTBUILDER_EMCOMPANYEM_BSB',
+		'owner' => 'COM_COMPONENTBUILDER_EMOWNEREM_BSB',
+		'website' => 'COM_COMPONENTBUILDER_EMWEBSITEEM_BSB',
+		'email' => 'COM_COMPONENTBUILDER_EMEMAILEM_BSB',
+		'license' => 'COM_COMPONENTBUILDER_EMLICENSEEM_BSB',
+		'copyright' => 'COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB'
+		);
+
 	/**
 	* 	get the JCB package owner details display
 	**/
 	public static function getPackageOwnerDetailsDisplay(&$info, $trust = false)
 	{
+		$hasOwner = false;
 		$ownerDetails = '<h2 class="module-title nav-header">' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
 		$ownerDetails .= '<ul>';
-		if (isset($info['getKeyFrom']['company']) && self::checkString($info['getKeyFrom']['company']))
+		// load the list items
+		foreach (self::$pkOwnerSearch as $key => $li)
 		{
-			$owner = $info['getKeyFrom']['company'];
-			$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOMPANYEM_BSB', $info['getKeyFrom']['company']) . '</li>';
-		}
-		// add value only if set
-		if (isset($info['getKeyFrom']['owner']) && self::checkString($info['getKeyFrom']['owner']))
-		{
-			if (!isset($owner))
+			if ($value = self::getPackageOwnerValue($key, $info))
 			{
-				$owner = $info['getKeyFrom']['owner'];
+				$ownerDetails .= '<li>' . JText::sprintf($li, $value) . '</li>';
+				// check if we have a owner/source name
+				if (('owner' === $key || 'company' === $key) && !$hasOwner)
+				{
+					$hasOwner = true;
+					$owner = $value;
+				}
 			}
-			$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMOWNEREM_BSB', $info['getKeyFrom']['owner']) . '</li>';
-		}
-		// add value only if set
-		if (isset($info['getKeyFrom']['website']) && self::checkString($info['getKeyFrom']['website']))
-		{
-			$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $info['getKeyFrom']['website']) . '</li>';
-		}
-		// add value only if set
-		if (isset($info['getKeyFrom']['email']) && self::checkString($info['getKeyFrom']['email']))
-		{
-			$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $info['getKeyFrom']['email']) . '</li>';
-		}
-		// add value only if set
-		if (isset($info['getKeyFrom']['license']) && self::checkString($info['getKeyFrom']['license']))
-		{
-			$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMLICENSEEM_BSB', $info['getKeyFrom']['license']) . '</li>';
-		}
-		// add value only if set
-		if (isset($info['getKeyFrom']['copyright']) && self::checkString($info['getKeyFrom']['copyright']))
-		{
-			$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB', $info['getKeyFrom']['copyright']) . '</li>';
-		}							
+		}				
 		$ownerDetails .= '</ul>';
 
 		// provide some details to how the user can get a key
-		if (isset($info['getKeyFrom']['buy_link']) && self::checkString($info['getKeyFrom']['buy_link']))
+		if ($hasOwner && isset($info['getKeyFrom']['buy_link']) && self::checkString($info['getKeyFrom']['buy_link']))
 		{
 			$ownerDetails .= '<hr />';
 			$ownerDetails .= JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_CLASSBTN_BTNPRIMARY_HREFS_TARGET_BLANK_TITLEGET_A_KEY_FROM_SSA', $info['getKeyFrom']['buy_link'], $owner, $owner);
 		}
 		// add more custom links
-		elseif (isset($info['getKeyFrom']['buy_links']) && self::checkArray($info['getKeyFrom']['buy_links']))
+		elseif ($hasOwner && isset($info['getKeyFrom']['buy_links']) && self::checkArray($info['getKeyFrom']['buy_links']))
 		{
 			$buttons = array();
 			foreach ($info['getKeyFrom']['buy_links'] as $keyName => $link)
@@ -2102,18 +2092,48 @@ abstract class ComponentbuilderHelper
 			$ownerDetails .= '<hr />';
 			$ownerDetails .= implode('<br />', $buttons);
 		}
-
 		// return the owner details
-		if (!isset($owner) && !$trust)
+		if (!$hasOwner)
 		{
-			$ownerDetails = '<h2 style="color: #922924;">' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS_NOT_FOUND') . '</h2>';
-			$ownerDetails .= '<p style="color: #922924;">' . JText::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE') . '</p>';
-		}
-		elseif (!isset($owner) && $trust)
-		{
-			$ownerDetails = '';
+			$ownerDetails = '<h2>' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS_NOT_FOUND') . '</h2>';
+			if (!$trust)
+			{
+				$ownerDetails .= '<p style="color: #922924;">' . JText::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE') . '</p>';
+			}
 		}
 		return $ownerDetails;
+	}
+
+	public static function getPackageOwnerValue($key, &$info)
+	{
+		$source = (isset($info['source']) && isset($info['source'][$key])) ? 'source' : ((isset($info['getKeyFrom']) && isset($info['getKeyFrom'][$key])) ? 'getKeyFrom' : false);
+		if ($source && self::checkString($info[$source][$key]))
+		{
+			return $info[$source][$key];
+		}
+		return false;
+	}
+
+	/**
+	* 	get the JCB package component key status
+	**/
+	public static function getPackageComponentsKeyStatus(&$info)
+	{
+		// check the package key status
+		if (!isset($info['key']))
+		{
+			if (isset($info['getKeyFrom']) && isset($info['getKeyFrom']['owner']))
+			{
+				// this just confirms it for older packages
+				$info['key'] = true;
+			}
+			else
+			{
+				// this just confirms it for older packages
+				$info['key'] = false;
+			}
+		}
+		return $info['key'];
 	}
 
 	/**
@@ -2121,6 +2141,8 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function getPackageComponentsDetailsDisplay(&$info)
 	{
+		// check if these components need a key
+		$needKey = self::getPackageComponentsKeyStatus($info);
 		if (isset($info['name']) && self::checkArray($info['name'])) 
 		{
 			$cAmount = count((array) $info['name']);
@@ -2141,6 +2163,14 @@ abstract class ComponentbuilderHelper
 				$display[] = '<div class="well well-small ' . $class2 . '">';
 				$display[] = '<h2 class="module-title nav-header">';
 				$display[] = JText::sprintf('COM_COMPONENTBUILDER_BSB_EMCOMPONENT_DETAILSEM', $value . ' v' . $info['component_version'][$key]);
+				if ($needKey)
+				{
+					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_PAIDLOCKED') . '</em>';
+				}
+				else
+				{
+					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_FREEOPEN') . '</em>';
+				}
 				$display[] = '</h2><p>';
 				$display[] = $info['short_description'][$key];
 				$display[] = '</p><ul><li>';
@@ -2171,7 +2201,7 @@ abstract class ComponentbuilderHelper
 			}
 			return implode("\n",$display);
 		}
-		return '<div>'.JText::_('COM_COMPONENTBUILDER_COPYRIGHT').'</div>';
+		return '<div>'.JText::_('COM_COMPONENTBUILDER_NO_COMPONENT_DETAILS_FOUND_SO_IT_IS_NOT_SAFE_TO_CONTINUE').'</div>';
 	}
 
 	/**

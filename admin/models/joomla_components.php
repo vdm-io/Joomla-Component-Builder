@@ -896,21 +896,29 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			// set db data
 			$data = serialize($this->smartBox);
+			// Set the key owner information
+			$this->info['source'] = array();
+			$this->info['source']['company'] = $this->params->get('export_company', null);
+			$this->info['source']['owner'] = $this->params->get('export_owner', null);
+			$this->info['source']['email'] = $this->params->get('export_email', null);
+			$this->info['source']['website'] = $this->params->get('export_website', null);
+			$this->info['source']['license'] = $this->params->get('export_license', null);
+			$this->info['source']['copyright'] = $this->params->get('export_copyright', null);
 			// lock the data if set
 			if (ComponentbuilderHelper::checkArray($this->key))
 			{
 				// lock the data
 				$this->key = md5(implode('', $this->key));
 				$locker = new FOFEncryptAes($this->key, 128);
-				$data = $locker->encryptString($data);		
+				$data = $locker->encryptString($data);
 				// Set the key owner information
 				$this->info['getKeyFrom'] = array();
-				$this->info['getKeyFrom']['company'] = $this->params->get('export_company', null);
-				$this->info['getKeyFrom']['owner'] = $this->params->get('export_owner', null);
-				$this->info['getKeyFrom']['email'] = $this->params->get('export_email', null);
-				$this->info['getKeyFrom']['website'] = $this->params->get('export_website', null);
-				$this->info['getKeyFrom']['license'] = $this->params->get('export_license', null);
-				$this->info['getKeyFrom']['copyright'] = $this->params->get('export_copyright', null);
+				$this->info['getKeyFrom']['company'] = $this->info['source']['company'];
+				$this->info['getKeyFrom']['owner'] = $this->info['source']['owner'];
+				$this->info['getKeyFrom']['email'] = $this->info['source']['email'];
+				$this->info['getKeyFrom']['website'] = $this->info['source']['website'];
+				$this->info['getKeyFrom']['license'] = $this->info['source']['license'];
+				$this->info['getKeyFrom']['copyright'] = $this->info['source']['copyright'];
 				// making provision for future changes 
 				if (count($this->exportBuyLinks) == 1)
 				{
@@ -922,9 +930,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					$this->info['getKeyFrom']['buy_link'] = $this->params->get('export_buy_link', null);
 				}
 				$this->info['getKeyFrom']['package_links']	= $this->exportPackageLinks;
+				// we started adding this at v2.7.7
+				$this->info['key'] = true;
 			}
 			else
 			{
+				// we started adding this at v2.7.7
+				$this->info['key'] = false;
 				// Set the owner information
 				$data = base64_encode($data);
 			}
