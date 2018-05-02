@@ -514,6 +514,9 @@ class Infusion extends Interpretation
 				// ###GENERATENEWTITLE### <<<DYNAMIC>>>
 				$this->fileContentDynamic[$viewName_single]['###GENERATENEWTITLE###'] = $this->setGenerateNewTitle($viewName_single);
 
+				// ###GENERATENEWALIAS### <<<DYNAMIC>>>
+				$this->fileContentDynamic[$viewName_single]['###GENERATENEWALIAS###'] = $this->setGenerateNewAlias($viewName_single);
+
 				// ###MODEL_BATCH_COPY### <<<DYNAMIC>>>
 				$this->fileContentDynamic[$viewName_single]['###MODEL_BATCH_COPY###'] = $this->setBatchCopy($viewName_single);
 

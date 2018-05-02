@@ -5754,6 +5754,64 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	public function setGenerateNewAlias($viewName_single)
+	{
+		// make sure this view has an alias
+		if (isset($this->customAliasBuilder[$viewName_single]) || isset($this->titleBuilder[$viewName_single]))
+		{
+			// set the title stuff
+			if (isset($this->customAliasBuilder[$viewName_single]))
+			{
+				$titles = array_values($this->customAliasBuilder[$viewName_single]);
+			}
+			else
+			{
+				$titles = array($this->titleBuilder[$viewName_single]);
+			}
+			// reset the bucket
+			$titleData = array();
+			// load the dynamic title builder
+			foreach ($titles as $title)
+			{
+				$titleData[] = "\$this->" . $title;
+			}
+			// rest the new function
+			$newFunction = array();
+			$newFunction[] = PHP_EOL . PHP_EOL . "\t/**";
+			$newFunction[] = "\t* Generate a valid alias from title / date.";
+			$newFunction[] = "\t* Remains public to be able to check for duplicated alias before saving";
+			$newFunction[] = "\t*";
+			$newFunction[] = "\t* @return  string";
+			$newFunction[] = "\t*/";
+			$newFunction[] = "\tpublic function generateAlias()";
+			$newFunction[] = "\t{";
+			$newFunction[] = "\t\tif (empty(\$this->alias))";
+			$newFunction[] = "\t\t{";
+			$newFunction[] = "\t\t\t\$this->alias = ".implode(".' '.",$titleData).';';
+			$newFunction[] = "\t\t}";
+			$newFunction[] = PHP_EOL ."\t\t\$this->alias = JApplication::stringURLSafe(\$this->alias);";
+			$newFunction[] = PHP_EOL ."\t\tif (trim(str_replace('-', '', \$this->alias)) == '')";
+			$newFunction[] = "\t\t{";
+			$newFunction[] = "\t\t\t\$this->alias = JFactory::getDate()->format('Y-m-d-H-i-s');";
+			$newFunction[] = "\t\t}";
+			$newFunction[] = PHP_EOL ."\t\treturn \$this->alias;";
+			$newFunction[] = "\t}";
+			return implode(PHP_EOL, $newFunction);
+		}
+		// rest the new function
+		$newFunction = array();
+		$newFunction[] = PHP_EOL . PHP_EOL . "\t/**";
+		$newFunction[] = "\t* This view does not actually have an alias";
+		$newFunction[] = "\t*";
+		$newFunction[] = "\t* @return  bool";
+		$newFunction[] = "\t*/";
+		$newFunction[] = "\tpublic function generateAlias()";
+		$newFunction[] = "\t{";
+		$newFunction[] = "\t\treturn false;";
+		$newFunction[] = "\t}";
+		return implode(PHP_EOL, $newFunction);
+	}
+
 	public function setInstall()
 	{
 		if (isset($this->queryBuilder) && ComponentbuilderHelper::checkArray($this->queryBuilder))

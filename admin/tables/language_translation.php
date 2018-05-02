@@ -326,23 +326,23 @@ class ComponentbuilderTableLanguage_translation extends JTable
 	}
 
 	/**
-	 * Generate a valid alias from title / date.
-	 * Remains public to be able to check for duplicated alias before saving
-	 *
-	 * @return  string
-	 */
+	* Generate a valid alias from title / date.
+	* Remains public to be able to check for duplicated alias before saving
+	*
+	* @return  string
+	*/
 	public function generateAlias()
 	{
 		if (empty($this->alias))
 		{
-			$this->alias = $this->name;
+			$this->alias = $this->source;
 		}
 
 		$this->alias = JApplication::stringURLSafe($this->alias);
 
 		if (trim(str_replace('-', '', $this->alias)) == '')
 		{
-			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
+			$this->alias = JFactory::getDate()->format('Y-m-d-H-i-s');
 		}
 
 		return $this->alias;
