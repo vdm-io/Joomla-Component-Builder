@@ -105,6 +105,8 @@ JHtml::_('behavior.keepalive');
 			// set the url
 			form.import_url.value = form.vdm_package.value;
 			jQuery('#loading').css('display', 'block');
+			jQuery('#noticeboard').show();
+			jQuery('#installer-import').hide();
 			form.checksum.value = 'vdm';
 			form.gettype.value = 'url';
 			form.submit();
@@ -123,6 +125,8 @@ JHtml::_('behavior.keepalive');
 			// set the url
 			form.import_url.value = form.jcb_package.value;
 			jQuery('#loading').css('display', 'block');
+			jQuery('#noticeboard').show();
+			jQuery('#installer-import').hide();
 			form.checksum.value = 'jcb';
 			form.gettype.value = 'url';
 			form.submit();
@@ -152,8 +156,7 @@ jQuery(document).ready(function($) {
 </script>
 
 <?php $formats = ($this->dataType === 'smart_package') ? '.zip' : 'none'; ?>
-
-<div id="installer-import" class="clearfix">
+<div class="clearfix">
 <form enctype="multipart/form-data" action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components');?>" method="post" name="adminForm" id="adminForm" class="form-horizontal form-validate">
 
 	<?php if (!empty( $this->sidebar)) : ?>
@@ -164,6 +167,12 @@ jQuery(document).ready(function($) {
 	<?php else : ?>
 		<div id="j-main-container">
 	<?php endif;?>
+	<div id="noticeboard" class="well well-small" style="display: none;">
+		<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
+		<div class="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
+		<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
+	</div>
+	<div id="installer-import">
 	<?php if ($this->hasPackage && $this->dataType === 'smart_package') : ?>
 		<?php
 			if (isset($this->packageInfo['name']) && ComponentbuilderHelper::checkArray($this->packageInfo['name'])) 
@@ -275,7 +284,7 @@ jQuery(document).ready(function($) {
 
 		<?php if ($this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_vdm', JText::_('COM_COMPONENTBUILDER_VDM_PACKAGES', true)); ?>
-				<div class="span6">
+				<div class="span12" id="vdm_packages_installer">
 					<div class="alert alert-success">
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.vdm.io/support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE_A_S_GET_A_KEY_TODAYA', 'href="https://github.com/vdm-io/JCB-Packages" target="_blank" title="gitHub Reposetory"', 'href="http://vdm.bz/jcb-packages" target="_blank" title="get a key to import the paid packages."'); ?></p>
@@ -294,13 +303,8 @@ jQuery(document).ready(function($) {
 						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.vdm.io/support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
 					</fieldset>
 				</div>
-				<div class="span6">
+				<div id="vdm_packages_display">
 					<div id="vdm_packages_details">
-					</div>
-					<div id="vdm_noticeboard" class="well well-small" >
-						<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
-						<div class="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
-						<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
 					</div><br />
 					<div id="vdm_package_owner_details">
 					</div>
@@ -310,7 +314,7 @@ jQuery(document).ready(function($) {
 
 		<?php if ($this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages)) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_jcb', JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_PACKAGES', true)); ?>
-				<div class="span6">
+				<div class="span12" id="jcb_packages_installer">
 					<div class="alert alert-success">
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.jcb.io/support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"'); ?></p>
@@ -329,13 +333,8 @@ jQuery(document).ready(function($) {
 						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.jcb.io/support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
 					</fieldset>
 				</div>
-				<div class="span6">
+				<div id="jcb_packages_display">
 					<div id="jcb_packages_details">
-					</div>
-					<div id="jcb_noticeboard"  class="well well-small" >
-						<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
-						<div class="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
-						<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
 					</div><br />
 					<div id="jcb_package_owner_details">
 					</div>
@@ -349,13 +348,15 @@ jQuery(document).ready(function($) {
 	<?php endif; ?>
 	<input type="hidden" name="task" value="import_joomla_components.import" />
 	<?php echo JHtml::_('form.token'); ?>
+	</div>
 </form>
 </div>
 <script type="text/javascript">
 function getJCBpackageInfo(type){
 	// show spinner
 	jQuery('#loading').show();
-	jQuery('#'+type+'_noticeboard').hide();
+	jQuery('#noticeboard').show();
+	jQuery('#installer-import').hide();
 	// get value
 	var url = jQuery('#'+type+'_package').val();
 	if (url) {
@@ -368,11 +369,15 @@ function getJCBpackageInfo(type){
 			getJCBpackageInfoAgain(url, key, type);
 		}
 	} else {
-		// show spinner
+		// hide spinner
 		jQuery('#loading').hide();
-		jQuery('#'+type+'_noticeboard').show();
+		jQuery('#noticeboard').hide();
+		jQuery('#installer-import').show();
 		jQuery('#'+type+'_package_owner_details').html(' ');
 		jQuery('#'+type+'_packages_details').html(' ');
+		// some display moves
+		jQuery('#'+type+'_packages_installer').removeClass('span6').addClass('span12');
+		jQuery('#'+type+'_packages_display').removeClass('span6');
 	}
 }
 
@@ -387,15 +392,23 @@ function showJCBpackageInfo(result, key,type){
 		jQuery('#'+type+'_packages_details').html(result.packages);
 		jQuery('#'+type+'_package_owner_details').html(result.owner);
 		jQuery.jStorage.set('JCB-packages-details'+key, result, {TTL: expire});
+		// some display moves
+		jQuery('#'+type+'_packages_installer').removeClass('span12').addClass('span6');
+		jQuery('#'+type+'_packages_display').addClass('span6');
 	} else {
 		if (result.error) {
 			jQuery('#'+type+'_packages_details').html(result.error);
 		}
 		jQuery('#'+type+'_package_owner_details').html(' ');
 		jQuery('#'+type+'_noticeboard').show();
+		// some display moves
+		jQuery('#'+type+'_packages_installer').removeClass('span6').addClass('span12');
+		jQuery('#'+type+'_packages_display').removeClass('span6');
 	}
 	// stop spinner
 	jQuery('#loading').hide();
+	jQuery('#noticeboard').hide();
+	jQuery('#installer-import').show();
 }
 
 function getJCBpackageInfo_server(url){

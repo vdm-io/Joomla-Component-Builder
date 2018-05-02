@@ -304,7 +304,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							if ($checksums[$packageName] === sha1_file($package['dir']))
 							{
 								$validator = $this->checksumURLs[$this->checksum].str_replace('.zip', '.sha', $packageName);
-								$checksumMessage =  JText::sprintf('COM_COMPONENTBUILDER_THIS_PACKAGE_BPASSEDB_CHECKSUM_VALIDATION_PLEASE_VALIDATE_THIS_CHECKSUM_BSB_TO_BE_THE_SAME_AS_THE_ONE_FOUND_A_S_SA', $checksums[$packageName], 'href="'.$validator.'" target="_blank" title="verify checksum">', $validator);
+								$checksumMessage =  JText::sprintf('COM_COMPONENTBUILDER_THIS_PACKAGE_BPASSEDB_THE_CHECKSUM_VALIDATIONBR_BR_SMALLMANUALLY_ALSO_VALIDATE_THAT_THE_CORRECT_CHECKSUM_WAS_USEDSMALLBR_THIS_CHECKSUM_BSB_MUST_BE_THE_SAME_AS_THE_ONE_FOUND_A_S_SA', $checksums[$packageName], 'href="'.$validator.'" target="_blank" title="verify checksum">', $validator);
 								$checksumStatus = 'Success';
 								$checksum = true;
 							}
