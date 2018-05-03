@@ -352,9 +352,48 @@ jQuery(document).ready(function($) {
 </form>
 </div>
 <script type="text/javascript">
+// set packages that are on the page
+var packages = {};
+jQuery(document).ready(function($)
+{
+	// get all jcb packages
+	jQuery("#jcb_package option").each(function()
+	{
+		var key =  jQuery(this).val();
+		packages[key] = 'jcb';
+	});
+	// get all vdm packages
+	jQuery("#vdm_package option").each(function()
+	{
+		var key =  jQuery(this).val();
+		packages[key] = 'vdm';
+	});
+	// no start behind the scene getting of package info
+	autoJCBpackageInfo();
+});
+
+function autoJCBpackageInfo(){
+	jQuery.each( packages, function( url, type ) {
+		var key = url.replace(/\W/g, '');
+		// check if the values are local
+		var result = jQuery.jStorage.get('JCB-packages-details'+key, null);
+		if (!result && url.length > 0) {
+			 autoJCBpackageInfoAgain(url, key, type);
+		}
+	});
+}
+
+function autoJCBpackageInfoAgain(url, key,type){
+	getJCBpackageInfo_server(url).done(function(result) {
+		if(result.owner || result.packages){
+			jQuery.jStorage.set('JCB-packages-details'+key, result, {TTL: expire});
+		}
+	});
+}
+
 function getJCBpackageInfo(type){
 	// show spinner
-	jQuery('#loading').show();
+	jQuery('#loading').css('display', 'block');
 	jQuery('#noticeboard').show();
 	jQuery('#installer-import').hide();
 	// get value

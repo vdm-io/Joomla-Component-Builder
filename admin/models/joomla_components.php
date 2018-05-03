@@ -931,12 +931,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				}
 				$this->info['getKeyFrom']['package_links']	= $this->exportPackageLinks;
 				// we started adding this at v2.7.7
-				$this->info['key'] = true;
+				$this->info['source']['paid'] = true;
 			}
 			else
 			{
-				// we started adding this at v2.7.7
-				$this->info['key'] = false;
 				// Set the owner information
 				$data = base64_encode($data);
 			}
