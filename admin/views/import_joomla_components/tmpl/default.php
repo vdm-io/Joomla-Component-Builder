@@ -139,7 +139,6 @@ JHtml::_('behavior.keepalive');
 jQuery(document).ready(function($) {
 	var outerDiv = $('body');
 
-
 	$('<div id="loading"></div>')
 		.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
 		.css("top", outerDiv.position().top - $(window).scrollTop())
@@ -287,7 +286,8 @@ jQuery(document).ready(function($) {
 				<div class="span12" id="vdm_packages_installer">
 					<div class="alert alert-success">
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://vdm.bz/jcb-package-support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE_A_S_GET_A_KEY_TODAYA', 'href="https://github.com/vdm-io/JCB-Packages" target="_blank" title="gitHub Reposetory"', 'href="http://vdm.bz/jcb-packages" target="_blank" title="get a key to import the paid packages."'); ?></p>
+						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_BGET_PACKAGEB_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE_A_S_GET_A_KEY_TODAYA', 'href="https://github.com/vdm-io/JCB-Packages" target="_blank" title="gitHub Reposetory"', 'href="http://vdm.bz/jcb-packages" target="_blank" title="get a key to import the paid packages."'); ?></p>
+						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_HOW_TO_GET_A_S_FREE_KEYSA_FROM_VDM', 'href="https://vdm.bz/how-to-get-free-vdm-package-keys" target="_blank" title="see how easy it is to get access keys from VDM"'); ?></p>
 					</div>
 					<fieldset class="uploadform">
 						<legend><?php echo JText::_("COM_COMPONENTBUILDER_PACKAGES_FROM_VAST_DEVELOPMENT_METHOD"); ?></legend>
@@ -317,7 +317,8 @@ jQuery(document).ready(function($) {
 				<div class="span12" id="jcb_packages_installer">
 					<div class="alert alert-success">
 						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://vdm.bz/jcb-package-support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_GET_PACKAGE_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"'); ?></p>
+						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_BGET_PACKAGEB_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"'); ?></p>
+						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ADD_YOUR_OWN_JCB_PACKAGES_TO_THE_COMMUNITY_A_S_GITHUBA_REPOSITORYBR_WATCH_THIS_A_S_TUTORIALA_TO_SEE_HOW', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"',  'href="https://vdm.bz/add-jcb-community-package" target="_blank" title="watch the quick tutorial on how to add your own packages to this list of community packages"'); ?></p>
 					</div>
 					<fieldset class="uploadform">
 						<legend><?php echo JText::_("COM_COMPONENTBUILDER_PACKAGES_FROM_JCB_COMMUNITY"); ?></legend>
@@ -352,22 +353,27 @@ jQuery(document).ready(function($) {
 </form>
 </div>
 <script type="text/javascript">
+<?php if (($this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)) || ($this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages))): ?>
 // set packages that are on the page
 var packages = {};
 jQuery(document).ready(function($)
 {
+<?php if ($this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages)): ?>
 	// get all jcb packages
 	jQuery("#jcb_package option").each(function()
 	{
 		var key =  jQuery(this).val();
 		packages[key] = 'jcb';
 	});
+<?php endif; ?>
+<?php if ($this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
 	// get all vdm packages
 	jQuery("#vdm_package option").each(function()
 	{
 		var key =  jQuery(this).val();
 		packages[key] = 'vdm';
 	});
+<?php endif; ?>
 	// no start behind the scene getting of package info
 	autoJCBpackageInfo();
 });
@@ -463,6 +469,7 @@ function getJCBpackageInfo_server(url){
 		jsonp: 'callback'
 	});
 }
+<?php endif; ?>
 
 var noticeboard = "https://www.vdm.io/componentbuilder-noticeboard-md";
 jQuery(document).ready(function () {

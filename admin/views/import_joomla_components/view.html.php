@@ -42,6 +42,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 	protected $packageInfo;
 	protected $formPackage;
 	protected $vdmPackages = false;
+	protected $directories = array();
 
 	public function display($tpl = null)
 	{
@@ -79,12 +80,26 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 		{
 			$this->dataType = $session->get('dataType_VDM_IMPORTINTO',  null);
 		}
+
+ 		// get the management input from global settings
+ 		$manageDirectories = $this->params->get('manage_jcb_package_directories', 2);
+ 		if ($manageDirectories == 2)
+ 		{
+ 		 	$this->directories = array('vdm','jcb');
+ 		}
+ 		elseif ($manageDirectories == 1)
+ 		{
+ 			$this->directories = (array) $this->params->get('jcb_package_directories');
+ 		}
+
 		// set form only if smart package
 		if ($this->dataType === 'smart_package')
 		{
 			$this->packageInfo = json_decode($session->get('smart_package_info', false), true);
+
 			// add the form class
 			jimport('joomla.form.form');
+
 			// load the forms
 			$this->formPackage = $this->_getForm($this->dataType);
 			$this->vdmPackages = $this->_getForm('vdm_package');
@@ -308,7 +323,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				$form[] = $sleutle;
 			}
 		}
-		elseif ('vdm_package' === $type && $vdmListObjects = ComponentbuilderHelper::getGithubRepoFileList('vdmGithubPackages', ComponentbuilderHelper::$vdmGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
+		elseif ('vdm_package' === $type && in_array('vdm', $this->directories) && $vdmListObjects = ComponentbuilderHelper::getGithubRepoFileList('vdmGithubPackages', ComponentbuilderHelper::$vdmGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
 		{
 			if (ComponentbuilderHelper::checkArray($vdmListObjects))
 			{
@@ -352,7 +367,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				}
 			}
 		}
-		elseif ('jcb_package' === $type && $jcbListObjects = ComponentbuilderHelper::getGithubRepoFileList('communityGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
+		elseif ('jcb_package' === $type && in_array('jcb', $this->directories)  && $jcbListObjects = ComponentbuilderHelper::getGithubRepoFileList('communityGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
 		{
 			if (ComponentbuilderHelper::checkArray($jcbListObjects))
 			{
