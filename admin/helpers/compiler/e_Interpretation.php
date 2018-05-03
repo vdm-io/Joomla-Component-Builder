@@ -5780,7 +5780,7 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				$titleData = array("''"); // just incase some mad man does not set a title/customAlias (we fall back on the date)
+				$titleData = array("'-'"); // just incase some mad man does not set a title/customAlias (we fall back on the date)
 			}
 			// rest the new function
 			$newFunction = array();
@@ -12786,7 +12786,16 @@ class Interpretation extends Fields
 			// set the code name
 			$codeName = ComponentbuilderHelper::safeString($this->componentData->name_code);
 			// set main menu name to lang
-			$this->langContent['adminsys'][$lang] = '&#187; ' . $this->componentData->name;
+			$addPrefix = $this->params->get('add_menu_prefix', 1);
+			if ($addPrefix == 1)
+			{
+				$prefix = trim($this->params->get('menu_prefix', '&#187;'));
+				$this->langContent['adminsys'][$lang] = $prefix . ' ' . $this->componentData->name;
+			}
+			else
+			{
+				$this->langContent['adminsys'][$lang] = $this->componentData->name;
+			}
 			foreach ($this->componentData->admin_views as $view)
 			{
 				// set custom menu

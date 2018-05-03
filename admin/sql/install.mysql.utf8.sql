@@ -1759,7 +1759,7 @@ INSERT INTO `#__componentbuilder_snippet_type` (`id`, `name`, `description`, `pa
 --
 
 INSERT INTO `#__componentbuilder_library_files_folders_urls` (`id`, `addfiles`, `addfolders`, `addurls`, `library`, `params`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
-(2, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/js\\/bootstrap.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/css\\/bootstrap.min.css\",\"type\":\"2\"}}', 2, '', 1, '2017-11-25 16:17:36', '2017-12-25 12:40:16', 10, '', 2),
+(2, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/js\\/bootstrap.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/css\\/bootstrap.min.css\",\"type\":\"2\"}}', 2, '', 1, '2017-11-25 16:17:36', '2018-05-02 23:29:05', 11, '', 2),
 (3, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/js\\/uikit-icons.min.js\",\"type\":\"2\"},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-beta.35\\/css\\/uikit.min.css\",\"type\":\"2\"}}', 3, '', 1, '2017-11-25 21:47:40', '2017-12-25 12:38:24', 8, '', 3);
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_external_code` (
