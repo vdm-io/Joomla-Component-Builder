@@ -57,6 +57,8 @@ $query->where($db->quoteName('a.published') . ' >= 1');
 $query->order('a.langtag ASC');
 $db->setQuery((string)$query);
 $items = $db->loadObjectList();
+// make sure the English GB is added
+$wasAdded = false;
 $options = array();
 if ($items)
 {
@@ -64,7 +66,16 @@ if ($items)
 	foreach($items as $item)
 	{
 		$options[] = JHtml::_('select.option', trim($item->langtag), $item->language_name . ' (' .$item->langtag.')');
+		if ('en-GB' === trim($item->langtag))
+		{
+			$wasAdded = true;
+		}
 	}
+}
+// now add it if not already added
+if (!$wasAdded)
+{
+	$options[] = JHtml::_('select.option', 'en-GB', 'English GB (en-GB)');
 }
 return $options;
 	}

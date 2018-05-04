@@ -48,19 +48,28 @@ JHtml::_('behavior.keepalive');
 		form.submit();
 	};
 <?php else: ?>
-	Joomla.submitbutton = function()
+	Joomla.submitbutton = function(task)
 	{
-		var form = document.getElementById('adminForm');
-		// do field validation
-		if (form.import_package.value == "")
-		{
-			alert("<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_SELECT_A_FILE', true); ?>");
-		}
-		else
-		{
+		if ('refresh' === task){
 			jQuery('#loading').css('display', 'block');
-			form.gettype.value = 'upload';
-			form.submit();
+			// clear the history
+			jQuery.jStorage.flush();
+			// now start the update
+			autoJCBpackageInfo();
+			jQuery('#loading').hide();
+		} else {
+			var form = document.getElementById('adminForm');
+			// do field validation
+			if (form.import_package.value == "")
+			{
+				alert("<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_SELECT_A_FILE', true); ?>");
+			}
+			else
+			{
+				jQuery('#loading').css('display', 'block');
+				form.gettype.value = 'upload';
+				form.submit();
+			}
 		}
 	};
 	Joomla.submitbuttonDir = function()

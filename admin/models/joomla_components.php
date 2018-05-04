@@ -875,7 +875,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				}
 			}
 			// do an after all run on all items that need it
-			$model->updateAfter();
+			$model->updateAfterAll();
 			// finally move the old datasets
 			$model->moveDivergedData();
 			// we had success

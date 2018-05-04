@@ -62,15 +62,21 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 		$this->state = &$state;
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('import');
+		// load the application
+		$this->app = JFactory::getApplication();
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
 		{
 			$this->addToolbar();
 			$this->sidebar = JHtmlSidebar::render();
+			// hide the main menu
+			$this->app->input->set('hidemainmenu', true);
+			// add title to the page
+			JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_JCB_PACKAGE_IMPORT'),'upload');
+			// add refesh button.
+			JToolBarHelper::custom('refresh', 'refresh', '', 'COM_COMPONENTBUILDER_REFRESH', false);
 		}
-		// load the application
-		$app = JFactory::getApplication();
 		// get the session object
 		$session = JFactory::getSession();
 		// check if it has package
