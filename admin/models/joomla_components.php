@@ -936,7 +936,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			else
 			{
 				// we started adding this at v2.7.7
-				$this->info['key'] = true;
+				$this->info['key'] = false;
 				// Set the owner information
 				$data = base64_encode($data);
 			}
