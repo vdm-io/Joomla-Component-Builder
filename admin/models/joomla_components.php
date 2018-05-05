@@ -62,7 +62,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	public $zipPath = false;
 	public $key = array();
 	public $exportBuyLinks = array();
-	public $exportPackageLinks = array();
+	public $joomlaSourceLinks = array();
 	public $info = array(
 		'name' => array(),
 		'short_description' => array(),
@@ -259,14 +259,14 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// set the export buy links
 				if (isset($item->export_buy_link) && ComponentbuilderHelper::checkString($item->export_buy_link))
 				{
-					// keep the key locked for exported data set
-					$this->exportBuyLinks[$keyName] = $item->export_buy_link;
+					// set the export buy link
+					$this->info['export_buy_link'][$item->id] = $item->export_buy_link;
 				}
 				// set the export buy links
-				if (isset($item->export_package_link) && ComponentbuilderHelper::checkString($item->export_package_link))
+				if (isset($item->joomla_source_link) && ComponentbuilderHelper::checkString($item->joomla_source_link))
 				{
-					// keep the key locked for exported data set
-					$this->exportPackageLinks[$keyName] = $item->export_package_link;
+					// set the source link
+					$this->info['joomla_source_link'][$item->id] = $item->joomla_source_link;
 				}
 				// component image
 				$this->moveIt(array($item->image), 'image');
@@ -919,17 +919,19 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				$this->info['getKeyFrom']['website'] = $this->info['source']['website'];
 				$this->info['getKeyFrom']['license'] = $this->info['source']['license'];
 				$this->info['getKeyFrom']['copyright'] = $this->info['source']['copyright'];
-				// making provision for future changes 
-				if (count($this->exportBuyLinks) == 1)
+				// add buy link if only one link is set
+				if (isset($this->info['export_buy_link']) && ComponentbuilderHelper::checkArray($this->info['export_buy_link']) && count((array) $this->info['export_buy_link']) == 1)
 				{
-					$this->info['getKeyFrom']['buy_links'] = $this->exportBuyLinks;
+					$this->info['getKeyFrom']['buy_link'] = array_values($this->info['export_buy_link'])[0];
 				}
 				else
 				{
-					// use global if more then one component is exported, or if none has a buy link
+					// use global if more then one component is exported (since they now have one key), or if none has a buy link
 					$this->info['getKeyFrom']['buy_link'] = $this->params->get('export_buy_link', null);
 				}
-				$this->info['getKeyFrom']['package_links']	= $this->exportPackageLinks;
+				// no remove the buy links
+				unset($this->info['export_buy_link']);
+				// if we have multi links add them also
 				// we started adding this at v2.7.7
 				$this->info['key'] = true;
 			}
@@ -948,7 +950,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				return false;
 			}
 			// set info data
-			$locker = new FOFEncryptAes('V4stD3vel0pmEntMethOd@YoUrS3rv!s', 128);
+			$db = 'COM_COMPONENTBUILDER_SZDEQZDMVSMHBTRWFIFTYTSQFLVVXJTMTHREEJTWOIXM';
+			$locker = new FOFEncryptAes(base64_decode(JText::sprintf($db, 'VjR', 'WV0aE9k')), 128);
 			$info = $locker->encryptString(json_encode($this->info));
 			// set the path
 			$infoPath = $this->packagePath . '/info.vdm';

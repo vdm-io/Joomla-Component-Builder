@@ -127,7 +127,8 @@ class ComponentbuilderModelAjax extends JModelList
 		if ($info = ComponentbuilderHelper::getFileContents($url, false))
 		{
 			// Get the encryption object.
-			$opener = new FOFEncryptAes('V4stD3vel0pmEntMethOd@YoUrS3rv!s', 128);
+			$db = 'COM_COMPONENTBUILDER_VJRZDESSMHBTRWFIFTYTWVZEROAESFLVVXJTMTHREEJTWOIXM';
+			$opener = new FOFEncryptAes(base64_decode(JText::sprintf($db, 'QzdmV', '9kQ')), 128);
 			$info = rtrim($opener->decryptString($info), "\0");
 			// check if we have json
 			if (ComponentbuilderHelper::checkJson($info))

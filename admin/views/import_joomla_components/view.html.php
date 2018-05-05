@@ -70,8 +70,6 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 		{
 			$this->addToolbar();
 			$this->sidebar = JHtmlSidebar::render();
-			// hide the main menu
-			$this->app->input->set('hidemainmenu', true);
 			// add title to the page
 			JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_JCB_PACKAGE_IMPORT'),'upload');
 			// add refesh button.

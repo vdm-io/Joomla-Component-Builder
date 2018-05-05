@@ -2043,12 +2043,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	protected static $pkOwnerSearch = array(
-		'company' => 'COM_COMPONENTBUILDER_EMCOMPANYEM_BSB',
-		'owner' => 'COM_COMPONENTBUILDER_EMOWNEREM_BSB',
-		'website' => 'COM_COMPONENTBUILDER_EMWEBSITEEM_BSB',
-		'email' => 'COM_COMPONENTBUILDER_EMEMAILEM_BSB',
-		'license' => 'COM_COMPONENTBUILDER_EMLICENSEEM_BSB',
-		'copyright' => 'COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB'
+		'company' => 'COM_COMPONENTBUILDER_DTCOMPANYDTDDSDD',
+		'owner' => 'COM_COMPONENTBUILDER_DTOWNERDTDDSDD',
+		'email' => 'COM_COMPONENTBUILDER_DTEMAILDTDDSDD',
+		'website' => 'COM_COMPONENTBUILDER_DTWEBSITEDTDDSDD',
+		'license' => 'COM_COMPONENTBUILDER_DTLICENSEDTDDSDD',
+		'copyright' => 'COM_COMPONENTBUILDER_DTCOPYRIGHTDTDDSDD'
 		);
 
 	/**
@@ -2058,13 +2058,13 @@ abstract class ComponentbuilderHelper
 	{
 		$hasOwner = false;
 		$ownerDetails = '<h2 class="module-title nav-header">' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
-		$ownerDetails .= '<ul>';
+		$ownerDetails .= '<dl class="uk-description-list-horizontal">';
 		// load the list items
-		foreach (self::$pkOwnerSearch as $key => $li)
+		foreach (self::$pkOwnerSearch as $key => $dd)
 		{
 			if ($value = self::getPackageOwnerValue($key, $info))
 			{
-				$ownerDetails .= '<li>' . JText::sprintf($li, $value) . '</li>';
+				$ownerDetails .= JText::sprintf($dd, $value);
 				// check if we have a owner/source name
 				if (('owner' === $key || 'company' === $key) && !$hasOwner)
 				{
@@ -2073,13 +2073,13 @@ abstract class ComponentbuilderHelper
 				}
 			}
 		}				
-		$ownerDetails .= '</ul>';
+		$ownerDetails .= '</dl>';
 
 		// provide some details to how the user can get a key
 		if ($hasOwner && isset($info['getKeyFrom']['buy_link']) && self::checkString($info['getKeyFrom']['buy_link']))
 		{
 			$ownerDetails .= '<hr />';
-			$ownerDetails .= JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_CLASSBTN_BTNPRIMARY_HREFS_TARGET_BLANK_TITLEGET_A_KEY_FROM_SSA', $info['getKeyFrom']['buy_link'], $owner, $owner);
+			$ownerDetails .= JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_SSA', 'class="btn btn-primary" href="'.$info['getKeyFrom']['buy_link'].'" target="_blank" title="get a key from '.$owner.'"', $owner);
 		}
 		// add more custom links
 		elseif ($hasOwner && isset($info['getKeyFrom']['buy_links']) && self::checkArray($info['getKeyFrom']['buy_links']))
@@ -2087,7 +2087,7 @@ abstract class ComponentbuilderHelper
 			$buttons = array();
 			foreach ($info['getKeyFrom']['buy_links'] as $keyName => $link)
 			{
-				$buttons[] = JText::sprintf('COM_COMPONENTBUILDER_GET_THE_KEY_FROM_BSB_FOR_A_CLASSBTN_BTNPRIMARY_HREFS_TARGET_BLANK_TITLEGET_A_KEY_FROM_SSA', $owner, $link, $owner, $keyName);
+				$buttons[] = JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROM_SB_FOR_A_SSA', $owner, 'class="btn btn-primary" href="'.$link.'" target="_blank" title="get a key from '.$owner.'"', $keyName);
 			}
 			$ownerDetails .= '<hr />';
 			$ownerDetails .= implode('<br />', $buttons);
@@ -2101,7 +2101,7 @@ abstract class ComponentbuilderHelper
 				$ownerDetails .= '<p style="color: #922924;">' . JText::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE') . '</p>';
 			}
 		}
-		return $ownerDetails;
+		return '<div>'.$ownerDetails.'</div>';
 	}
 
 	public static function getPackageOwnerValue($key, &$info)
@@ -2136,6 +2136,19 @@ abstract class ComponentbuilderHelper
 		return $info['key'];
 	}
 
+	protected static $compOwnerSearch = array(
+		'ul' => array (
+			'companyname' => 'COM_COMPONENTBUILDER_ICOMPANYI_BSB',
+			'author' => 'COM_COMPONENTBUILDER_IAUTHORI_BSB',
+			'email' => 'COM_COMPONENTBUILDER_IEMAILI_BSB',
+			'website' => 'COM_COMPONENTBUILDER_IWEBSITEI_BSB',
+			),
+		'other' => array(
+			'license' => 'COM_COMPONENTBUILDER_HFOUR_CLASSNAVHEADERLICENSEHFOURPSP',
+			'copyright' => 'COM_COMPONENTBUILDER_HFOUR_CLASSNAVHEADERCOPYRIGHTHFOURPSP'
+			)
+		);
+
 	/**
 	* 	get the JCB package component details display
 	**/
@@ -2151,6 +2164,8 @@ abstract class ComponentbuilderHelper
 			$display = array();
 			foreach ($info['name'] as $key => $value)
 			{
+				// set the name
+				$name= $value . ' v' . $info['component_version'][$key];
 				if ($cAmount > 1 && $counter == 3)
 				{
 					$display[] = '</div>';
@@ -2162,7 +2177,7 @@ abstract class ComponentbuilderHelper
 				}
 				$display[] = '<div class="well well-small ' . $class2 . '">';
 				$display[] = '<h3>';
-				$display[] = $value . ' v' . $info['component_version'][$key];
+				$display[] = $name;
 				if ($needKey)
 				{
 					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_PAIDLOCKED') . '</em>';
@@ -2173,25 +2188,32 @@ abstract class ComponentbuilderHelper
 				}
 				$display[] = '</h3><h4>';
 				$display[] = $info['short_description'][$key];
-				$display[] = '</h4><ul><li>';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_ICOMPANY_NAMEI_BSB', $info['companyname'][$key]);
-				$display[] = '</li><li>';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_IAUTHORI_BSB', $info['author'][$key]);
-				$display[] = '</li><li>';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_IEMAILI_BSB', $info['email'][$key]);
-				$display[] = '</li><li>';
-				$display[] = JText::sprintf('COM_COMPONENTBUILDER_IWEBSITEI_BSB', $info['website'][$key]);
-				$display[] = '</li></ul>';
-				$display[] = '<h4 class="nav-header">';
-				$display[] = JText::_('COM_COMPONENTBUILDER_LICENSE');
-				$display[] = '</h4><p>';
-				$display[] = $info['license'][$key];
-				$display[] = '</p><h4 class="nav-header">';
-				$display[] = JText::_('COM_COMPONENTBUILDER_COPYRIGHT');
-				$display[] = '</h4><p>';
-				$display[] = $info['copyright'][$key];
-				$display[] = '</p></div>';
-		
+				$display[] = '</h4>';
+				$display[] = '<ul class="uk-list uk-list-striped">';
+				// load the list items
+				foreach (self::$compOwnerSearch['ul'] as $li => $value)
+				{
+					if (isset($info[$li]) && isset($info[$li][$key]))
+					{
+						$display[] = '<li>'.JText::sprintf($value, $info[$li][$key]).'</li>';
+					}
+				}
+				$display[] = '</ul>';
+				// if we have a source link we add it
+				if (isset($info['joomla_source_link']) && self::checkArray($info['joomla_source_link']) && self::checkString($info['joomla_source_link'][$key]))
+				{
+					$display[] = '<a class="uk-button uk-button-mini uk-width-1-1 uk-margin-small-bottom " href="'.$info['joomla_source_link'][$key].'" target="_blank" title="Source Code for Joomla Component ('.$name.')">source code</a>';
+				}
+				// load other
+				foreach (self::$compOwnerSearch['other'] as $other => $value)
+				{
+					if (isset($info[$other]) && isset($info[$other][$key]))
+					{
+						$display[] = JText::sprintf($value, $info[$other][$key]);
+					}
+				}
+				$display[] = '</div>';
+
 				$counter++;
 			}
 			// close the div if needed

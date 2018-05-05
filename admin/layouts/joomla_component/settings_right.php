@@ -37,7 +37,7 @@ $fields = $displayData->get('fields') ?: array(
 	'spacer_hr_five',
 	'jcb_export_package_note',
 	'export_key',
-	'export_package_link',
+	'joomla_source_link',
 	'export_buy_link'
 );
 

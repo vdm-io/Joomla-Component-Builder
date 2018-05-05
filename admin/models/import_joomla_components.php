@@ -344,7 +344,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						if ($info === base64_encode(base64_decode($info, true)))
 						{
 							// Get the encryption object.
-							$opener = new FOFEncryptAes('V4stD3vel0pmEntMethOd@YoUrS3rv!s', 128);
+							$db = 'COM_COMPONENTBUILDER_VJRZDESSMHBTRWFIFTYTWVZEROAENINEKQFLVVXJTMTHREEJTWOIXM';
+							$opener = new FOFEncryptAes(base64_decode(JText::sprintf($db, 'QzdmV')), 128);
 							$info = rtrim($opener->decryptString($info), "\0");
 							$session->set('smart_package_info', $info);
 							return true;
@@ -1702,6 +1703,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				{
 					$item->update_server = $item->update_server_ftp;
 					unset($item->update_server_ftp);
+				}
+				// rename export_package_link field
+				if (isset($item->export_package_link))
+				{
+					$item->joomla_source_link = $item->export_package_link;
+					unset($item->export_package_link);
 				}
 				// repeatable fields to update
 				$updaterR = array(

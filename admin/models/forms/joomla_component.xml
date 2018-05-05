@@ -943,20 +943,20 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Export_package_link Field. Type: Url. (joomla) -->
+		<!-- Joomla_source_link Field. Type: Url. (joomla) -->
 		<field
 			type="url"
-			name="export_package_link"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_PACKAGE_LINK_LABEL"
+			name="joomla_source_link"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JOOMLA_SOURCE_LINK_LABEL"
 			size="60"
 			maxlength="150"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_PACKAGE_LINK_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JOOMLA_SOURCE_LINK_DESCRIPTION"
 			class="text_area"
 			required="false"
 			filter="url"
 			validated="url"
-			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_PACKAGE_LINK_MESSAGE"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_PACKAGE_LINK_HINT"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JOOMLA_SOURCE_LINK_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JOOMLA_SOURCE_LINK_HINT"
 		/>
 		<!-- Add_php_preflight_update Field. Type: Radio. (joomla) -->
 		<field
