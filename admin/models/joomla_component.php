@@ -100,22 +100,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_postflight_update))
-			{
-				// base64 Decode php_postflight_update.
-				$item->php_postflight_update = base64_decode($item->php_postflight_update);
-			}
-
 			if (!empty($item->php_preflight_update))
 			{
 				// base64 Decode php_preflight_update.
 				$item->php_preflight_update = base64_decode($item->php_preflight_update);
-			}
-
-			if (!empty($item->javascript))
-			{
-				// base64 Decode javascript.
-				$item->javascript = base64_decode($item->javascript);
 			}
 
 			if (!empty($item->css_site))
@@ -124,10 +112,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->css_site = base64_decode($item->css_site);
 			}
 
-			if (!empty($item->sql))
+			if (!empty($item->php_helper_site))
 			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
+				// base64 Decode php_helper_site.
+				$item->php_helper_site = base64_decode($item->php_helper_site);
+			}
+
+			if (!empty($item->javascript))
+			{
+				// base64 Decode javascript.
+				$item->javascript = base64_decode($item->javascript);
 			}
 
 			if (!empty($item->php_helper_admin))
@@ -136,10 +130,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_helper_admin = base64_decode($item->php_helper_admin);
 			}
 
-			if (!empty($item->php_helper_site))
+			if (!empty($item->readme))
 			{
-				// base64 Decode php_helper_site.
-				$item->php_helper_site = base64_decode($item->php_helper_site);
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
+			}
+
+			if (!empty($item->php_postflight_update))
+			{
+				// base64 Decode php_postflight_update.
+				$item->php_postflight_update = base64_decode($item->php_postflight_update);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
 			}
 
 			if (!empty($item->php_helper_both))
@@ -184,10 +190,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 			}
 
-			if (!empty($item->readme))
+			if (!empty($item->sql_uninstall))
 			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
+				// base64 Decode sql_uninstall.
+				$item->sql_uninstall = base64_decode($item->sql_uninstall);
 			}
 
 			if (!empty($item->buildcompsql))
@@ -1063,22 +1069,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['addcontributors'] = '';
 		}
 
-		// Set the php_postflight_update string to base64 string.
-		if (isset($data['php_postflight_update']))
-		{
-			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
-		}
-
 		// Set the php_preflight_update string to base64 string.
 		if (isset($data['php_preflight_update']))
 		{
 			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
-		}
-
-		// Set the javascript string to base64 string.
-		if (isset($data['javascript']))
-		{
-			$data['javascript'] = base64_encode($data['javascript']);
 		}
 
 		// Set the css_site string to base64 string.
@@ -1087,10 +1081,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['css_site'] = base64_encode($data['css_site']);
 		}
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
+		// Set the php_helper_site string to base64 string.
+		if (isset($data['php_helper_site']))
 		{
-			$data['sql'] = base64_encode($data['sql']);
+			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
+		}
+
+		// Set the javascript string to base64 string.
+		if (isset($data['javascript']))
+		{
+			$data['javascript'] = base64_encode($data['javascript']);
 		}
 
 		// Set the php_helper_admin string to base64 string.
@@ -1099,10 +1099,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
 		}
 
-		// Set the php_helper_site string to base64 string.
-		if (isset($data['php_helper_site']))
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
 		{
-			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
+			$data['readme'] = base64_encode($data['readme']);
+		}
+
+		// Set the php_postflight_update string to base64 string.
+		if (isset($data['php_postflight_update']))
+		{
+			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
 		}
 
 		// Set the php_helper_both string to base64 string.
@@ -1147,10 +1159,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
+		// Set the sql_uninstall string to base64 string.
+		if (isset($data['sql_uninstall']))
 		{
-			$data['readme'] = base64_encode($data['readme']);
+			$data['sql_uninstall'] = base64_encode($data['sql_uninstall']);
 		}
 
 		// Set the buildcompsql string to base64 string.

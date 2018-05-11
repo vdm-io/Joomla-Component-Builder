@@ -11,7 +11,7 @@
                                                       |_|
   /-------------------------------------------------------------------------------------------------------------------------------/
 
-  @version		2.6.x
+  @version		2.7.x
   @created		30th April, 2015
   @package		Component Builder
   @subpackage	compiler.php
@@ -2179,7 +2179,7 @@ class Fields extends Structure
 					// dont load the button to repeatable
 					$xmlValue = (string) ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'button="', '"'));
 					// add to custom values
-					$fieldAttributes['custom']['add_button'] = (ComponentbuilderHelper::checkString($xmlValue) || 1 == $xmlValue) ? $xmlValue: 'false';
+					$fieldAttributes['custom']['add_button'] = (ComponentbuilderHelper::checkString($xmlValue) || 1 == $xmlValue) ? $xmlValue : 'false';
 				}
 				elseif ($property['name'] === 'required' && $repeatable)
 				{
@@ -2829,7 +2829,7 @@ class Fields extends Structure
 		if (isset($fieldData['add_button']) && ($fieldData['add_button'] === 'true' || 1 == $fieldData['add_button']) &&
 			isset($fieldData['view']) && isset($fieldData['views']) &&
 			ComponentbuilderHelper::checkString($fieldData['view']) && ComponentbuilderHelper::checkString($fieldData['views']))
-		{		
+		{
 			// check that the component value is set
 			if (!isset($fieldData['component']) || !ComponentbuilderHelper::checkString($fieldData['component']))
 			{
@@ -2841,7 +2841,7 @@ class Fields extends Structure
 				$fieldData['component'] = "com_" . $fieldData['component'];
 			}
 			// make sure the component is update if ### or [[[ component placeholder is used
-			if (strpos($fieldData['component'], '###') !== false || strpos($fieldData['component'], '[[[') !== false ) // should not be needed... but
+			if (strpos($fieldData['component'], '###') !== false || strpos($fieldData['component'], '[[[') !== false) // should not be needed... but
 			{
 				$fieldData['component'] = $this->setPlaceholders($fieldData['component'], $this->placeholders);
 			}
@@ -2923,7 +2923,7 @@ class Fields extends Structure
 				$addButton[] = "\t\t\t}";
 			}
 			$addButton[] = "\t\t\t\$user = JFactory::getUser();";
-			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " only add if user allowed to create " . $fieldData['view'];	
+			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " only add if user allowed to create " . $fieldData['view'];
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($fieldData['view'], $this->permissionBuilder['global'][$core['core.create']]))
 			{

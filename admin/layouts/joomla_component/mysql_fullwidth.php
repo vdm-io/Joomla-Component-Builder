@@ -31,7 +31,9 @@ $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
 	'add_sql',
-	'sql'
+	'sql',
+	'add_sql_uninstall',
+	'sql_uninstall'
 );
 
 ?>

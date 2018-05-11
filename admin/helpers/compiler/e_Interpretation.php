@@ -11,7 +11,7 @@
                                                       |_|
   /-------------------------------------------------------------------------------------------------------------------------------/
 
-  @version		2.6.x
+  @version		2.7.x
   @created		30th April, 2015
   @package		Component Builder
   @subpackage	compiler.php
@@ -1270,7 +1270,7 @@ class Interpretation extends Fields
 			$method[] = "\t\t\$lang = JFactory::getLanguage();";
 			$method[] = "\t\t\$extension = 'com_users';";
 			$method[] = "\t\t\$base_dir = JPATH_SITE;";
-			$method[] = "\t\t\$language_tag = '".$this->langTag."';";
+			$method[] = "\t\t\$language_tag = '" . $this->langTag . "';";
 			$method[] = "\t\t\$reload = true;";
 			$method[] = "\t\t\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " load the user regestration model";
@@ -1351,7 +1351,7 @@ class Interpretation extends Fields
 			$method[] = "\t\t\$lang = JFactory::getLanguage();";
 			$method[] = "\t\t\$extension = 'com_users';";
 			$method[] = "\t\t\$base_dir = JPATH_ADMINISTRATOR;";
-			$method[] = "\t\t\$language_tag = '".$this->langTag."';";
+			$method[] = "\t\t\$language_tag = '" . $this->langTag . "';";
 			$method[] = "\t\t\$reload = true;";
 			$method[] = "\t\t\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
 			$method[] = "\t\t// load the user model";
@@ -5472,7 +5472,7 @@ class Interpretation extends Fields
 		elseif (!$category && !$alias && ($title && count($titles) == 1 && !in_array('user', $titles) && !in_array('jobnumber', $titles))) // TODO [jobnumber] just for one project (not ideal)
 		{
 			$batchcopy[] = PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Only for strings";
-			$batchcopy[] = "\t\t\tif (" . $Helper . "::checkString(\$this->table->" . implode('', $titles). ") && !is_numeric(\$this->table->" . implode('', $titles) . "))";
+			$batchcopy[] = "\t\t\tif (" . $Helper . "::checkString(\$this->table->" . implode('', $titles) . ") && !is_numeric(\$this->table->" . implode('', $titles) . "))";
 			$batchcopy[] = "\t\t\t{";
 			$batchcopy[] = "\t\t\t\t\$this->table->" . implode('', $titles) . " = \$this->generateUniqe('" . implode('', $titles) . "',\$this->table->" . implode('', $titles) . ");";
 			$batchcopy[] = "\t\t\t}";
@@ -5546,7 +5546,7 @@ class Interpretation extends Fields
 	{
 		$fixUniqe = array();
 		// only load this if these two items are set
-		if (array_key_exists($viewName_single, $this->aliasBuilder) && 
+		if (array_key_exists($viewName_single, $this->aliasBuilder) &&
 			(array_key_exists($viewName_single, $this->titleBuilder) || isset($this->customAliasBuilder[$viewName_single])))
 		{
 			// set needed defaults
@@ -5572,7 +5572,7 @@ class Interpretation extends Fields
 				$titles = array($this->titleBuilder[$viewName_single]);
 			}
 			// start building the fix
-			$fixUniqe[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Alter the " . implode(', ',$titles) . " for save as copy";
+			$fixUniqe[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Alter the " . implode(', ', $titles) . " for save as copy";
 			$fixUniqe[] = "\t\tif (\$input->get('task') === 'save2copy')";
 			$fixUniqe[] = "\t\t{";
 			$fixUniqe[] = "\t\t\t\$origTable = clone \$this->getTable();";
@@ -5594,15 +5594,15 @@ class Interpretation extends Fields
 			$fixUniqe[] = "\t\t\t{";
 			if ($setCategory && count($titles) == 1)
 			{
-				$fixUniqe[] = "\t\t\t\tlist(" . implode('',$titleVars) . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], " . implode('',$titleData) . ");";
+				$fixUniqe[] = "\t\t\t\tlist(" . implode('', $titleVars) . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], " . implode('', $titleData) . ");";
 			}
 			elseif (count($titles) == 1)
 			{
-				$fixUniqe[] = "\t\t\t\tlist(" . implode(', ',$titleVars) . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], " . implode('',$titleData) . ");";
+				$fixUniqe[] = "\t\t\t\tlist(" . implode(', ', $titleVars) . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], " . implode('', $titleData) . ");";
 			}
 			else
 			{
-				$fixUniqe[] = "\t\t\t\tlist(" . implode(', ',$titleVars) . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], array(" . implode(', ',$titleData) . "));";
+				$fixUniqe[] = "\t\t\t\tlist(" . implode(', ', $titleVars) . ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['" . $alias . "'], array(" . implode(', ', $titleData) . "));";
 			}
 			$fixUniqe[] = implode("\n", $titleUpdate);
 			$fixUniqe[] = "\t\t\t\t\$data['" . $alias . "'] = \$" . $alias . ";";
@@ -5627,7 +5627,7 @@ class Interpretation extends Fields
 			$fixUniqe[] = "\t\t\t\t}";
 			$fixUniqe[] = "\t\t\t\telse";
 			$fixUniqe[] = "\t\t\t\t{";
-			$fixUniqe[] = "\t\t\t\t\t\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(". implode(' . " " . ', $titleData) .");";
+			$fixUniqe[] = "\t\t\t\t\t\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(" . implode(' . " " . ', $titleData) . ");";
 			$fixUniqe[] = "\t\t\t\t}";
 			$fixUniqe[] = PHP_EOL . "\t\t\t\t\$table = JTable::getInstance('" . $viewName_single . "', '" . $this->fileContentStatic['###component###'] . "Table');";
 			if ($setCategory && count($titles) == 1)
@@ -5636,7 +5636,7 @@ class Interpretation extends Fields
 				$fixUniqe[] = "\t\t\t\t{";
 				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:" . ":_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
-				$fixUniqe[] = PHP_EOL . "\t\t\t\tlist(" . implode('',$titleVars) . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], " . implode('',$titleData) . ");";
+				$fixUniqe[] = PHP_EOL . "\t\t\t\tlist(" . implode('', $titleVars) . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], " . implode('', $titleData) . ");";
 				$fixUniqe[] = "\t\t\t\t\$data['" . $alias . "'] = \$" . $alias . ";";
 			}
 			else
@@ -5675,7 +5675,7 @@ class Interpretation extends Fields
 	public function setGenerateNewTitle($viewName_single)
 	{
 		// if category is added to this view then do nothing
-		if (array_key_exists($viewName_single, $this->aliasBuilder) && 
+		if (array_key_exists($viewName_single, $this->aliasBuilder) &&
 			(array_key_exists($viewName_single, $this->titleBuilder) || isset($this->customAliasBuilder[$viewName_single])))
 		{
 			// get component name
@@ -5698,7 +5698,7 @@ class Interpretation extends Fields
 			$newFunction[] = PHP_EOL . "\t\twhile (\$table->load(array('alias' => \$alias)))";
 			$newFunction[] = "\t\t{";
 			$newFunction[] = "\t\t\t//" . $this->setLine(__LINE__) . " Check if this is an array of titles";
-			$newFunction[] = "\t\t\tif (".$Component."Helper::checkArray(\$title))";
+			$newFunction[] = "\t\t\tif (" . $Component . "Helper::checkArray(\$title))";
 			$newFunction[] = "\t\t\t{";
 			$newFunction[] = "\t\t\t\tforeach(\$title as \$nr => &\$_title)";
 			$newFunction[] = "\t\t\t\t{";
@@ -5713,7 +5713,7 @@ class Interpretation extends Fields
 			$newFunction[] = "\t\t\t\$alias = JString::increment(\$alias, 'dash');";
 			$newFunction[] = "\t\t}";
 			$newFunction[] = "\t\t//" . $this->setLine(__LINE__) . " Check if this is an array of titles";
-			$newFunction[] = "\t\tif (".$Component."Helper::checkArray(\$title))";
+			$newFunction[] = "\t\tif (" . $Component . "Helper::checkArray(\$title))";
 			$newFunction[] = "\t\t{";
 			$newFunction[] = "\t\t\t\$title[] = \$alias;";
 			$newFunction[] = "\t\t\treturn \$title;";
@@ -5794,14 +5794,14 @@ class Interpretation extends Fields
 			$newFunction[] = "\t{";
 			$newFunction[] = "\t\tif (empty(\$this->alias))";
 			$newFunction[] = "\t\t{";
-			$newFunction[] = "\t\t\t\$this->alias = ".implode(".' '.",$titleData).';';
+			$newFunction[] = "\t\t\t\$this->alias = " . implode(".' '.", $titleData) . ';';
 			$newFunction[] = "\t\t}";
-			$newFunction[] = PHP_EOL ."\t\t\$this->alias = JApplication::stringURLSafe(\$this->alias);";
-			$newFunction[] = PHP_EOL ."\t\tif (trim(str_replace('-', '', \$this->alias)) == '')";
+			$newFunction[] = PHP_EOL . "\t\t\$this->alias = JApplication::stringURLSafe(\$this->alias);";
+			$newFunction[] = PHP_EOL . "\t\tif (trim(str_replace('-', '', \$this->alias)) == '')";
 			$newFunction[] = "\t\t{";
 			$newFunction[] = "\t\t\t\$this->alias = JFactory::getDate()->format('Y-m-d-H-i-s');";
 			$newFunction[] = "\t\t}";
-			$newFunction[] = PHP_EOL ."\t\treturn \$this->alias;";
+			$newFunction[] = PHP_EOL . "\t\treturn \$this->alias;";
 			$newFunction[] = "\t}";
 			return implode(PHP_EOL, $newFunction);
 		}
@@ -6048,6 +6048,7 @@ class Interpretation extends Fields
 					$placeholders = array('[[[component]]]' => $component, '[[[view]]]' => $for);
 					$db .= $this->setPlaceholders($customSql, $placeholders) . PHP_EOL . PHP_EOL;
 				}
+				unset($this->customScriptBuilder['sql']);
 			}
 			return $db;
 		}
@@ -6056,16 +6057,21 @@ class Interpretation extends Fields
 
 	public function setUninstall()
 	{
+		$db = '';
 		if (isset($this->queryBuilder) && ComponentbuilderHelper::checkArray($this->queryBuilder))
 		{
-			$bd = '';
 			foreach ($this->uninstallBuilder as $line)
 			{
-				$bd .= $line . PHP_EOL;
+				$db .= $line . PHP_EOL;
 			}
-			return $bd;
 		}
-		return '';
+		// add custom sql uninstall dump to the file
+		if (isset($this->customScriptBuilder['sql_uninstall']) && ComponentbuilderHelper::checkString($this->customScriptBuilder['sql_uninstall']))
+		{
+			$db .= $this->setPlaceholders($this->customScriptBuilder['sql_uninstall'], $this->placeholders) . PHP_EOL;
+			unset($this->customScriptBuilder['sql_uninstall']);
+		}
+		return $db;
 	}
 
 	public function setLangAdmin()
@@ -11924,7 +11930,7 @@ class Interpretation extends Fields
 								{
 									$keyTableNAme = $item['custom']['table'];
 								}
-								$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\$item->" . $item['name'] . " = " . $Component . "Helper::jsonToString(\$item->" . $item['name'] . ", ', ', '" . $keyTableNAme . "', '".$item['custom']['id']."', '".$item['custom']['text']."');";
+								$fix .= PHP_EOL . "\t" . $tab . "\t\t\t\$item->" . $item['name'] . " = " . $Component . "Helper::jsonToString(\$item->" . $item['name'] . ", ', ', '" . $keyTableNAme . "', '" . $item['custom']['id'] . "', '" . $item['custom']['text'] . "');";
 							}
 							else
 							{

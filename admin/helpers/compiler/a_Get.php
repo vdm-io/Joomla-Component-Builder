@@ -11,7 +11,7 @@
                                                       |_|
   /-------------------------------------------------------------------------------------------------------------------------------/
 
-  @version		2.6.x
+  @version		2.7.x
   @created		30th April, 2015
   @package		Component Builder
   @subpackage	compiler.php
@@ -947,7 +947,8 @@ class Get
 			// build the admin_views settings
 			$component->admin_views = array_map(function($array)
 			{
-				$array = array_map(function($value) {
+				$array = array_map(function($value)
+				{
 					if (!ComponentbuilderHelper::checkArray($value) && !ComponentbuilderHelper::checkObject($value) && strval($value) === strval(intval($value)))
 					{
 						return (int) $value;
@@ -1213,6 +1214,12 @@ class Get
 			$this->customScriptBuilder['sql']['component_sql'] = base64_decode($component->sql);
 		}
 		unset($component->sql);
+		// add_sql_uninstall
+		if ($component->add_sql_uninstall == 1)
+		{
+			$this->customScriptBuilder['sql_uninstall'] = base64_decode($component->sql_uninstall);
+		}
+		unset($component->sql_uninstall);
 		// bom
 		if (ComponentbuilderHelper::checkString($component->bom))
 		{
@@ -1783,27 +1790,28 @@ class Get
 				}
 			}
 			// activate alias builder
-			if (!isset($this->customAliasBuilder[$name_single]) && isset($view->alias_builder_type) && 2 == $view->alias_builder_type
-				&& isset($view->alias_builder) && ComponentbuilderHelper::checkJson($view->alias_builder))
+			if (!isset($this->customAliasBuilder[$name_single]) && isset($view->alias_builder_type) && 2 == $view->alias_builder_type && isset($view->alias_builder) && ComponentbuilderHelper::checkJson($view->alias_builder))
 			{
 				// get the aliasFields
 				$alias_fields = (array) json_decode($view->alias_builder, true);
 				// get the active fields
-				$alias_fields = (array) array_filter($view->fields, function($field)  use($alias_fields) {
-					// check if field is in view fields
-					if (in_array($field['field'], $alias_fields))
+				$alias_fields = (array) array_filter($view->fields, function($field) use($alias_fields)
 					{
-						return true;
-					}
-					return false;
-				});
+						// check if field is in view fields
+						if (in_array($field['field'], $alias_fields))
+						{
+							return true;
+						}
+						return false;
+					});
 				// check if all is well
 				if (ComponentbuilderHelper::checkArray($alias_fields))
 				{
 					// load the field names
-					$this->customAliasBuilder[$name_single] = (array) array_map(function ($field) use($name_list) {
+					$this->customAliasBuilder[$name_single] = (array) array_map(function ($field) use($name_list)
+						{
 							return $this->getFieldName($field, $name_list);
-						},$alias_fields
+						}, $alias_fields
 					);
 				}
 			}
@@ -2167,7 +2175,7 @@ class Get
 							if (!in_array($validationRule, (array) $coreValidationRules))
 							{
 								// get the class methods for this rule if it exists
-								if ($this->validationRules[$validationRule] = ComponentbuilderHelper::getVar('validation_rule', $validationRule, 'name','php'))
+								if ($this->validationRules[$validationRule] = ComponentbuilderHelper::getVar('validation_rule', $validationRule, 'name', 'php'))
 								{
 									// open and set the validation rule
 									$this->validationRules[$validationRule] = $this->setDynamicValues(base64_decode($this->validationRules[$validationRule]));
@@ -5497,13 +5505,13 @@ class Get
 		// get targets to search for
 		$langStringTargets = array_filter(
 			$this->langStringTargets, function($get) use($string)
+		{
+			if (strpos($string, $get) !== false)
 			{
-				if (strpos($string, $get) !== false)
-				{
-					return true;
-				}
-				return false;
-			});
+				return true;
+			}
+			return false;
+		});
 		// check if we should continue
 		if (ComponentbuilderHelper::checkArray($langStringTargets))
 		{
@@ -5745,31 +5753,31 @@ class Get
 	public function bcmath($type, $val1, $val2)
 	{
 		// build function name
-		$function = 'bc'.$type;
+		$function = 'bc' . $type;
 		// use the bcmath function of available
 		if (function_exists($function))
 		{
 			return $function($val1, $val2);
 		}
 		// if function does not exist we use +-*/ operators (since it realy not that serious)
-		switch($type)
+		switch ($type)
 		{
 			// Multiply two numbers
 			case 'mul':
 				return round($val1 * $val2);
-			break;
+				break;
 			// Divide of two numbers
 			case 'div':
 				return round($val1 / $val2);
-			break;
+				break;
 			// Adding two numbers
 			case 'add':
 				return round($val1 + $val2);
-			break;
+				break;
 			// Subtract one number from the other
 			case 'add':
 				return round($val1 - $val2);
-			break;
+				break;
 		}
 		return false;
 	}

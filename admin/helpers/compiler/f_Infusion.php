@@ -11,7 +11,7 @@
                                                       |_|
   /-------------------------------------------------------------------------------------------------------------------------------/
 
-  @version		2.6.x
+  @version		2.7.x
   @created		30th April, 2015
   @package		Component Builder
   @subpackage	compiler.php
@@ -479,10 +479,10 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$viewName_list]['###JVIEWLISTCANDO###'] = $this->setJviewListCanDo($viewName_single, $viewName_list);
 
 					// ###VIEWSCSS### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_list]['###VIEWSCSS###'] = $this->getCustomScriptBuilder('css_views', $viewName_list, '', null, true);
+					$this->fileContentDynamic[$viewName_list]['###VIEWSCSS###'] = $this->getCustomScriptBuilder('css_views', $viewName_single, '', null, true);
 
 					// ###VIEWS_FOOTER_SCRIPT### <<<DYNAMIC>>>
-					$scriptNote = PHP_EOL . '//' . $this->setLine(__LINE__) . ' ' . $viewName_list.' footer script';
+					$scriptNote = PHP_EOL . '//' . $this->setLine(__LINE__) . ' ' . $viewName_list . ' footer script';
 					if ($footerScript = $this->getCustomScriptBuilder('views_footer', $viewName_single, '', $scriptNote, true, false, PHP_EOL))
 					{
 						// only minfy if no php is added to the footer script
@@ -765,7 +765,7 @@ class Infusion extends Interpretation
 				// set the module
 				$this->fileContentDynamic['ajax']['###AJAX_SITE_MODEL_METHODS###'] = $this->setAjaxModelMethods('site');
 			}
-			
+
 			// build the validation rules
 			if (isset($this->validationRules) && ComponentbuilderHelper::checkArray($this->validationRules))
 			{
@@ -775,9 +775,9 @@ class Infusion extends Interpretation
 					$target = array('admin' => 'a_rule_zi');
 					$this->buildDynamique($target, 'rule', $rule);
 					// set the JFormRule Name
-					$this->fileContentDynamic['a_rule_zi_'.$rule]['###Name###'] = ucfirst($rule);
+					$this->fileContentDynamic['a_rule_zi_' . $rule]['###Name###'] = ucfirst($rule);
 					// set the JFormRule PHP
-					$this->fileContentDynamic['a_rule_zi_'.$rule]['###VALIDATION_RULE_METHODS###'] = PHP_EOL . $_php;
+					$this->fileContentDynamic['a_rule_zi_' . $rule]['###VALIDATION_RULE_METHODS###'] = PHP_EOL . $_php;
 				}
 			}
 
@@ -1135,12 +1135,12 @@ class Infusion extends Interpretation
 							if ($percentage < $this->percentageLanguageAdd)
 							{
 								// dont add
-								$this->langNot[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total '.$this->langTag.' strings) only <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
+								$this->langNot[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total ' . $this->langTag . ' strings) only <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
 								continue;
 							}
 						}
 						// show if it was added as well
-						$this->langSet[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total '.$this->langTag.' strings) and <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
+						$this->langSet[$area . ' ' . $tag] = '<b>' . $mainLangLoader[$area] . '</b>(total ' . $this->langTag . ' strings) and <b>' . $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage;
 					}
 					// set naming convention
 					$p = 'admin';
@@ -1172,13 +1172,14 @@ class Infusion extends Interpretation
 					// count the file created
 					$this->fileCount++;
 					// add content to it
-					$lang = array_map(function ($langstring, $placeholder) {
+					$lang = array_map(function ($langstring, $placeholder)
+					{
 						return $placeholder . '="' . $langstring . '"';
 					}, $languageStrings, array_keys($languageStrings));
 					// add to language file
 					$this->writeFile($path . '/' . $fileName, implode(PHP_EOL, $lang));
 					// set the line counter
-					$this->lineCount = $this->lineCount + count((array)$lang);
+					$this->lineCount = $this->lineCount + count((array) $lang);
 					// build xml strings
 					if (!isset($langXML[$p]))
 					{
@@ -1210,4 +1211,5 @@ class Infusion extends Interpretation
 			}
 		}
 	}
+
 }
