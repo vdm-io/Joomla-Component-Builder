@@ -82,13 +82,12 @@ You are in Control
 Get More Demo Content
 ====================
 
-> **You can purchase more [demo content](http://vdm.bz/jcb-packages) for Component Builder:**
+> The cat is out of the bag, JCB fully mapped can now be yours! Including many other JCB mapped components.
 
-+ *Demo Component* see the build on [github](https://github.com/namibia/demo-joomla-3-component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demo.zip) _(free)_
-+ *Advance Demo Component* get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_demoAdvanced.zip) _([buy key](http://vdm.bz/get-advance-demo-key))_
-+ *Sermon Distributor* see the build on [github](https://github.com/SermonDistributor/Joomla-3-Component) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_sermondistributor.zip) _([buy key](http://vdm.bz/get-sermon-distributor-key))_
-+ *Location Data* see the build on [github](https://github.com/vdm-io/Joomla-Location-Data) or get the [JCB Package](https://github.com/vdm-io/JCB-Packages/raw/master/JCB_locationData.zip) _([buy key](http://vdm.bz/get-location-data-key))_
-+ *More Coming...*
+### All you need to do is [explained here](https://vdm.bz/how-to-get-free-vdm-package-keys)!
+
+To install these packages [watch this tutorial](https://vdm.bz/how-to-install-jcb-packages).
+
 
 Where can you get support and help?
 ====================
@@ -118,7 +117,7 @@ Our idea was to almost let this tool serve as a cheat sheet to how things can be
 MAKING IT BETTER!
 ====================
 
-Component Builder is mapped as a component in itself on my local development environment. So we are improving it like you would any other component in it. I am looking for developers with the **skill** and the **desire** to really join us... and then we will [possible give them access](https://www.youtube.com/watch?v=lLOfx9YA7VQ&list=PLQRGFI8XZ_wsfz3NdKawCiYsALuZ-GhwJ) to this, so we can all help improve this simple, yet advanced tool.
+Watch the [proposed development workflow](https://vdm.bz/proposed-development-workflow).
 
 # Build Details
 
@@ -126,11 +125,11 @@ Component Builder is mapped as a component in itself on my local development env
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](http://joomlacomponentbuilder.com)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 11th May, 2018
++ *Last Build*: 17th May, 2018
 + *Version*: 2.7.10
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
-+ *Line count*: **194639**
++ *Line count*: **194614**
 + *Field count*: **1036**
 + *File count*: **1203**
 + *Folder count*: **193**

@@ -123,7 +123,7 @@ abstract class ComponentbuilderEmail
 			$smtpsecure	= $conf->get('smtpsecure');
 			$smtpport 	= $conf->get('smtpport');
 			$sendmail	= $conf->get('sendmail');
-			$mailfrom	= $conf->get('mailfrom');
+			$mailfrom	= $conf->get('emailfrom');
 			$fromname	= $conf->get('fromname');
 			$replyto	= $conf->get('replyto');
 			$replytoname	= $conf->get('replytoname');

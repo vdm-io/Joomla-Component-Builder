@@ -573,10 +573,15 @@ class Structure extends Get
 								}
 								return false;
 							});
-						// check if view was found (this should be true)
-						if (count($dashboard) && isset($dashboard[0]['settings']) && isset($dashboard[0]['settings']->{$keys[$t]}))
+						// set dashboard
+						if (ComponentbuilderHelper::checkArray($dashboard))
 						{
-							$this->dynamicDashboard = ComponentbuilderHelper::safeString($dashboard[0]['settings']->{$keys[$t]});
+							$dashboard = array_values($dashboard)[0];
+						}
+						// check if view was found (this should be true)
+						if (isset($dashboard['settings']) && isset($dashboard['settings']->{$keys[$t]}))
+						{
+							$this->dynamicDashboard = ComponentbuilderHelper::safeString($dashboard['settings']->{$keys[$t]});
 						}
 						else
 						{
