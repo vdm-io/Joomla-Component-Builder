@@ -26,8 +26,6 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 ###BOM###
 
-namespace Joomla\CMS\Form\Rule;
-
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Form\Form;
