@@ -1,27 +1,13 @@
 <?php
-/*--------------------------------------------------------------------------------------------------------|  www.vdm.io  |------/
-    __      __       _     _____                 _                                  _     __  __      _   _               _
-    \ \    / /      | |   |  __ \               | |                                | |   |  \/  |    | | | |             | |
-     \ \  / /_ _ ___| |_  | |  | | _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_  | \  / | ___| |_| |__   ___   __| |
-      \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
-       \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
-        \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
-/-------------------------------------------------------------------------------------------------------------------------------/
-
-	@version		2.7.x
-	@created		30th April, 2015
-	@package		Component Builder
-	@subpackage		script.php
-	@author			Llewellyn van der Merwe <http://joomlacomponentbuilder.com>	
-	@github			Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
-	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Builds Complex Joomla Components 
-                                                             
-/-----------------------------------------------------------------------------------------------------------------------------*/
+/**
+ * @package    Joomla.Component.Builder
+ *
+ * @created    30th April, 2015
+ * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
@@ -2920,7 +2906,7 @@ class com_componentbuilderInstallerScript
 		<p>Please let me know at <a href="mailto:llewellyn@joomlacomponentbuilder.com">llewellyn@joomlacomponentbuilder.com</a>.
 		<br />We at Joomla Component Builder are committed to building extensions that performs proficiently! You can help us, really!
 		<br />Send me your thoughts on improvements that is needed, trust me, I will be very grateful!
-		<br />Visit us at <a href="http://joomlacomponentbuilder.com" target="_blank">http://joomlacomponentbuilder.com</a> today!</p>';
+		<br />Visit us at <a href="http://www.joomlacomponentbuilder.com" target="_blank">http://www.joomlacomponentbuilder.com</a> today!</p>';
 	}
 
 	/**
@@ -3702,7 +3688,7 @@ class com_componentbuilderInstallerScript
 			$db->setQuery($query);
 			$allDone = $db->execute();
 
-			echo '<a target="_blank" href="http://joomlacomponentbuilder.com" title="Component Builder">
+			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>';
 		}
@@ -4875,7 +4861,7 @@ class com_componentbuilderInstallerScript
 				// set a notice that this was done
 				$app->enqueueMessage('<p><b>Best Practice!</b><br />We have removed the composer-vendor folder from the /administrator/components/com_componentbuilder/helpers/ folder and placed it in the /libraries/vdm_io/ folder.</p>', 'Notice');
 			}
-			echo '<a target="_blank" href="http://joomlacomponentbuilder.com" title="Component Builder">
+			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
 				<h3>Upgrade to Version 2.7.10 Was Successful! Let us know if anything is not working as expected.</h3>';
