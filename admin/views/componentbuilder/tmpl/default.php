@@ -44,7 +44,7 @@ JHtml::_('behavior.tooltip');
 			</div>
 			<div class="span3">
 				<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>
-					<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', 'Vast Development Method', 'vdm'); ?>
+					<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', 'Joomla Component Builder', 'vdm'); ?>
 						<?php echo $this->loadTemplate('vdm');?>
 					<?php echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php echo JHtml::_('bootstrap.endAccordion'); ?>

@@ -2918,7 +2918,7 @@ class com_componentbuilderInstallerScript
 		// little notice as after service, in case of bad experience with component.
 		echo '<h2>Did something go wrong? Are you disappointed?</h2>
 		<p>Please let me know at <a href="mailto:llewellyn@joomlacomponentbuilder.com">llewellyn@joomlacomponentbuilder.com</a>.
-		<br />We at Vast Development Method are committed to building extensions that performs proficiently! You can help us, really!
+		<br />We at Joomla Component Builder are committed to building extensions that performs proficiently! You can help us, really!
 		<br />Send me your thoughts on improvements that is needed, trust me, I will be very grateful!
 		<br />Visit us at <a href="http://joomlacomponentbuilder.com" target="_blank">http://joomlacomponentbuilder.com</a> today!</p>';
 	}

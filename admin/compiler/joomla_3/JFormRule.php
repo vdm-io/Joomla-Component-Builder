@@ -26,6 +26,7 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 ###BOM###
 
+// No direct access to this file
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Form\Form;

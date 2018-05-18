@@ -100,7 +100,7 @@ Where can you get support and help?
 + [Community Complaint](http://joomlacomponentbuilder.com/community-complaint)
 + [Open Issue On Github](https://github.com/vdm-io/Joomla-Component-Builder/issues) ^^
 
-Since JCB has [become a community](https://github.com/vdm-io/Joomla-Component-Builder/blob/staging/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/joomla-component-builder) is **no longer solely responsible** for support.
+Since JCB has [become a community](https://github.com/vdm-io/Joomla-Component-Builder/blob/staging/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
 
 We have started a [**JCB forum**](https://groups.google.com/a/vdm.io/d/forum/jcb) where you can post questions, about how things work, or if you need some kind of help in relation to your development of your components.
 
@@ -121,11 +121,11 @@ Watch the [proposed development workflow](https://vdm.bz/proposed-development-wo
 
 # Build Details
 
-+ *Company*: [Vast Development Method](https://www.vdm.io/)
++ *Community*: [Joomla Component Builder](http://joomlacomponentbuilder.com)
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
-+ *Name*: [Component Builder](http://joomlacomponentbuilder.com)
++ *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 17th May, 2018
++ *Last Build*: 18th May, 2018
 + *Version*: 2.7.10
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html

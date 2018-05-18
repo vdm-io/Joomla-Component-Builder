@@ -3885,7 +3885,7 @@ abstract class ComponentbuilderHelper
 	/**
 	 * Prepares the xml document
 	 */
-	public static function xls($rows,$fileName = null,$title = null,$subjectTab = null,$creator = 'Vast Development Method',$description = null,$category = null,$keywords = null,$modified = null)
+	public static function xls($rows,$fileName = null,$title = null,$subjectTab = null,$creator = 'Joomla Component Builder',$description = null,$category = null,$keywords = null,$modified = null)
 	{
 		// set the user
 		$user = JFactory::getUser();
@@ -3919,7 +3919,7 @@ abstract class ComponentbuilderHelper
 		
 		// Set document properties
 		$objPHPExcel->getProperties()->setCreator($creator)
-									 ->setCompany('Vast Development Method')
+									 ->setCompany('Joomla Component Builder')
 									 ->setLastModifiedBy($modified)
 									 ->setTitle($title)
 									 ->setSubject($subjectTab);
