@@ -155,7 +155,7 @@ class Compiler extends Infusion
 					foreach ($mismatch as $string)
 					{
 						$constant = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($string, 'U');
-						$this->app->enqueueMessage(JText::sprintf('The <b>Joomla.JText._(\'%s\')</b> language constant for <b>%s</b> does not have a corresponding <code>JText::script(\'%s\')</code> decalaration, please add it.', $constant, $string, $string), 'Warning');
+						$this->app->enqueueMessage(JText::sprintf('The <b>Joomla.JText._(&apos;%s&apos;)</b> language constant for <b>%s</b> does not have a corresponding <code>JText::script(&apos;%s&apos;)</code> decalaration, please add it.', $constant, $string, $string), 'Warning');
 					}
 					$this->app->enqueueMessage('<hr />', 'Warning');
 				}
@@ -200,9 +200,9 @@ class Compiler extends Infusion
 
 	/**
 	 * Set the dynamic data to the created fils
-	 * 
+	 *
 	 * @return  bool true on success
-	 * 
+	 *
 	 */
 	protected function updateFiles()
 	{
@@ -215,28 +215,7 @@ class Compiler extends Infusion
 			{
 				if (JFile::exists($static['path']))
 				{
-					$this->fileContentStatic[$this->hhh . 'FILENAME' . $this->hhh] = $static['name'];
-					$php = '';
-					if (ComponentbuilderHelper::checkFileType($static['name'], 'php'))
-					{
-						$php = "<?php\n";
-					}
-					$string = ComponentbuilderHelper::getFileContents($static['path']);
-					if (strpos($string, $this->hhh . 'BOM' . $this->hhh) !== false)
-					{
-						list($wast, $code) = explode($this->hhh . 'BOM' . $this->hhh, $string);
-						$string = $php . $bom . $code;
-						$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
-						// add to zip array
-						$this->writeFile($static['path'], $answer);
-					}
-					else
-					{
-						$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
-						// add to zip array
-						$this->writeFile($static['path'], $answer);
-					}
-					$this->lineCount = $this->lineCount + substr_count($answer, PHP_EOL);
+					$this->setFileContent($static['name'], $static['path'], $bom);
 				}
 			}
 			// now we do the dynamic files
@@ -250,32 +229,7 @@ class Compiler extends Infusion
 						{
 							if (JFile::exists($file['path']))
 							{
-								$this->fileContentStatic[$this->hhh . 'FILENAME' . $this->hhh] = $file['name'];
-								// do some weird stuff to improve the verion and dates being added to the license
-								$this->fixLicenseValues($file);
-								$php = '';
-								if (ComponentbuilderHelper::checkFileType($file['name'], 'php'))
-								{
-									$php = "<?php\n";
-								}
-								$string = ComponentbuilderHelper::getFileContents($file['path']);
-								if (strpos($string, $this->hhh . 'BOM' . $this->hhh) !== false)
-								{
-									list($bin, $code) = explode($this->hhh . 'BOM' . $this->hhh, $string);
-									$string = $php . $bom . $code;
-									$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
-									$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
-									// add to zip array
-									$this->writeFile($file['path'], $answer);
-								}
-								else
-								{
-									$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
-									$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
-									// add to zip array
-									$this->writeFile($file['path'], $answer);
-								}
-								$this->lineCount = $this->lineCount + substr_count($answer, PHP_EOL);
+								$this->setFileContent($file['name'], $file['path'], $bom, $file['view']);
 							}
 						}
 					}
@@ -291,10 +245,47 @@ class Compiler extends Infusion
 	}
 
 	/**
-	 * move the local update server xml file to a remote ftp server
-	 * 
+	 * set the file content
+	 *
 	 * @return  void
-	 * 
+	 *
+	 */
+	protected function setFileContent(&$name, &$path, &$bom, $view = null)
+	{
+		// set the file name
+		$this->fileContentStatic[$this->hhh . 'FILENAME' . $this->hhh] = $name;
+		// check if the file should get PHP opening
+		$php = '';
+		if (ComponentbuilderHelper::checkFileType($name, 'php'))
+		{
+			$php = "<?php\n";
+		}
+		// get content of the file
+		$string = ComponentbuilderHelper::getFileContents($path);
+		// see if we should add a BOM
+		if (strpos($string, $this->hhh . 'BOM' . $this->hhh) !== false)
+		{
+			list($wast, $code) = explode($this->hhh . 'BOM' . $this->hhh, $string);
+			$string = $php . $bom . $code;
+		}
+		// set the answer
+		$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
+		// set the dynamic answer
+		if ($view)
+		{
+			$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
+		}
+		// add answer back to file
+		$this->writeFile($path, $answer);
+		// count the file lines
+		$this->lineCount = $this->lineCount + substr_count($answer, PHP_EOL);
+	}
+
+	/**
+	 * move the local update server xml file to a remote ftp server
+	 *
+	 * @return  void
+	 *
 	 */
 	protected function setUpdateServer()
 	{
