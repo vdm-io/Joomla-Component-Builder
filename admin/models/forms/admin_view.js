@@ -1196,10 +1196,13 @@ jQuery(document).ready(function()
 	// now load the fields
 	getAjaxDisplay('admin_fields');
 	getAjaxDisplay('admin_fields_conditions');
+	getAjaxDisplay('admin_fields_relations');
 	// set button
 	addButtonID('admin_fields_conditions','create_edit_buttons', 1); // <-- second
 	// set button to create more fields
 	addButton('field','create_edit_buttons'); // <-- third
+	// set button
+	addButtonID('admin_fields_relations','create_edit_buttons', 1); // <-- forth
 });
 
 function checkAliasField() {

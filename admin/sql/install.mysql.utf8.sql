@@ -956,6 +956,32 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_conditions` (
 	KEY `idx_admin_view` (`admin_view`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_relations` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
+	`addrelations` MEDIUMTEXT NOT NULL,
+	`admin_view` INT(11) NOT NULL DEFAULT 0,
+	`params` text NOT NULL DEFAULT '',
+	`published` TINYINT(3) NOT NULL DEFAULT 1,
+	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`version` INT(10) unsigned NOT NULL DEFAULT 1,
+	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
+	`access` INT(10) unsigned NOT NULL DEFAULT 0,
+	`ordering` INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY  (`id`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`),
+	KEY `idx_admin_view` (`admin_view`)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_admin_views` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
@@ -1643,6 +1669,13 @@ INSERT INTO `#__componentbuilder_admin_fields` (`id`, `addfields`, `admin_view`,
 
 INSERT INTO `#__componentbuilder_admin_fields_conditions` (`id`, `addconditions`, `admin_view`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
 (111, '{\"addconditions0\":{\"target_field\":[\"1011\",\"100\",\"158\",\"196\",\"280\"],\"target_behavior\":\"1\",\"target_relation\":\"0\",\"match_field\":\"682\",\"match_behavior\":\"1\",\"match_options\":\"1|Yes\"}}', 109, 1, '2017-10-12 21:36:00', '0000-00-00 00:00:00', 2, '', '');
+
+--
+-- Dumping data for table `#__componentbuilder_admin_fields_relations`
+--
+
+INSERT INTO `#__componentbuilder_admin_fields_relations` (`id`, `addrelations`, `admin_view`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
+(1, '{\"addrelations0\":{\"listfield\":\"201\",\"joinfields\":[\"279\"],\"join_type\":\"1\",\"set\":\" \"}}', 14, 1, '2018-05-22 01:20:34', '2018-05-22 01:37:07', 2, '', 1);
 
 --
 -- Dumping data for table `#__componentbuilder_component_admin_views`

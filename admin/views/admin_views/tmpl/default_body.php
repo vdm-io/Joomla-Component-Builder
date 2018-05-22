@@ -76,6 +76,9 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 				<?php if ($canDo->get('admin_view.edit') && $admin_field_id = ComponentbuilderHelper::getVar('admin_fields', $item->id, 'admin_view', 'id')): ?>
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=admins_fields&task=admin_fields.edit&id=<?php echo $admin_field_id; ?>&ref=admin_views" title="<?php echo JText::_('COM_COMPONENTBUILDER_EDIT_THE_ADMIN_FIELDS'); ?>" ><span class="icon-list"></span></a>
 				<?php endif; ?>
+				<?php if ($canDo->get('admin_view.edit') && $admin_relation_id = ComponentbuilderHelper::getVar('admin_fields_relations', $item->id, 'admin_view', 'id')): ?>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=admins_fields_relations&task=admin_fields_relations.edit&id=<?php echo $admin_relation_id; ?>&ref=admin_views" title="<?php echo JText::_('COM_COMPONENTBUILDER_EDIT_THE_ADMIN_FIELDS_RELATIONS'); ?>" ><span class="icon-tree-2"></span></a>
+				<?php endif; ?>
 				<?php if ($canDo->get('admin_view.edit') && $admin_condition_id = ComponentbuilderHelper::getVar('admin_fields_conditions', $item->id, 'admin_view', 'id')): ?>
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=admins_fields_conditions&task=admin_fields_conditions.edit&id=<?php echo $admin_condition_id; ?>&ref=admin_views" title="<?php echo JText::_('COM_COMPONENTBUILDER_EDIT_THE_ADMIN_FIELDS_CONDITIONS'); ?>" ><span class="icon-shuffle"></span></a>
 				<?php endif; ?>

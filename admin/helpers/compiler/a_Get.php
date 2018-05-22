@@ -19,6 +19,27 @@ class Get
 {
 
 	/**
+	 * The hash placeholder
+	 * 
+	 * @var     string
+	 */
+	public $hhh = '#' . '#' . '#';
+
+	/**
+	 * The open bracket placeholder
+	 * 
+	 * @var     string
+	 */
+	public $bbb = '[' . '[' . '[';
+
+	/**
+	 * The close bracket placeholder
+	 * 
+	 * @var     string
+	 */
+	public $ddd = ']' . ']' . ']';
+
+	/**
 	 * The app
 	 * 
 	 * @var     object
@@ -834,12 +855,12 @@ class Get
 		$component = ComponentbuilderHelper::convertRepeatableFields($component, $searchRepeatables, $updater);
 
 		// set component place holders
-		$this->placeholders['###component###'] = ComponentbuilderHelper::safeString($component->name_code);
-		$this->placeholders['###Component###'] = ComponentbuilderHelper::safeString($component->name_code, 'F');
-		$this->placeholders['###COMPONENT###'] = ComponentbuilderHelper::safeString($component->name_code, 'U');
-		$this->placeholders['[[[component]]]'] = $this->placeholders['###component###'];
-		$this->placeholders['[[[Component]]]'] = $this->placeholders['###Component###'];
-		$this->placeholders['[[[COMPONENT]]]'] = $this->placeholders['###COMPONENT###'];
+		$this->placeholders[$this->hhh . 'component' . $this->hhh] = ComponentbuilderHelper::safeString($component->name_code);
+		$this->placeholders[$this->hhh . 'Component' . $this->hhh] = ComponentbuilderHelper::safeString($component->name_code, 'F');
+		$this->placeholders[$this->hhh . 'COMPONENT' . $this->hhh] = ComponentbuilderHelper::safeString($component->name_code, 'U');
+		$this->placeholders[$this->bbb . 'component' . $this->ddd] = $this->placeholders[$this->hhh . 'component' . $this->hhh];
+		$this->placeholders[$this->bbb . 'Component' . $this->ddd] = $this->placeholders[$this->hhh . 'Component' . $this->hhh];
+		$this->placeholders[$this->bbb . 'COMPONENT' . $this->ddd] = $this->placeholders[$this->hhh . 'COMPONENT' . $this->hhh];
 
 		// set component sales name
 		$component->sales_name = ComponentbuilderHelper::safeString($component->system_name);
@@ -1376,18 +1397,18 @@ class Get
 			$this->customScriptBuilder['token'][$name_single] = false;
 			$this->customScriptBuilder['token'][$name_list] = false;
 			// set some placeholders
-			$this->placeholders['###view###'] = ComponentbuilderHelper::safeString($name_single);
-			$this->placeholders['###views###'] = ComponentbuilderHelper::safeString($name_list);
-			$this->placeholders['###View###'] = ComponentbuilderHelper::safeString($name_single, 'F');
-			$this->placeholders['###Views###'] = ComponentbuilderHelper::safeString($name_list, 'F');
-			$this->placeholders['###VIEW###'] = ComponentbuilderHelper::safeString($name_single, 'U');
-			$this->placeholders['###VIEWS###'] = ComponentbuilderHelper::safeString($name_list, 'U');
-			$this->placeholders['[[[view]]]'] = $this->placeholders['###view###'];
-			$this->placeholders['[[[views]]]'] = $this->placeholders['###views###'];
-			$this->placeholders['[[[View]]]'] = $this->placeholders['###View###'];
-			$this->placeholders['[[[Views]]]'] = $this->placeholders['###Views###'];
-			$this->placeholders['[[[VIEW]]]'] = $this->placeholders['###VIEW###'];
-			$this->placeholders['[[[VIEWS]]]'] = $this->placeholders['###VIEWS###'];
+			$this->placeholders[$this->hhh . 'view' . $this->hhh] = ComponentbuilderHelper::safeString($name_single);
+			$this->placeholders[$this->hhh . 'views' . $this->hhh] = ComponentbuilderHelper::safeString($name_list);
+			$this->placeholders[$this->hhh . 'View' . $this->hhh] = ComponentbuilderHelper::safeString($name_single, 'F');
+			$this->placeholders[$this->hhh . 'Views' . $this->hhh] = ComponentbuilderHelper::safeString($name_list, 'F');
+			$this->placeholders[$this->hhh . 'VIEW' . $this->hhh] = ComponentbuilderHelper::safeString($name_single, 'U');
+			$this->placeholders[$this->hhh . 'VIEWS' . $this->hhh] = ComponentbuilderHelper::safeString($name_list, 'U');
+			$this->placeholders[$this->bbb . 'view' . $this->ddd] = $this->placeholders[$this->hhh . 'view' . $this->hhh];
+			$this->placeholders[$this->bbb . 'views' . $this->ddd] = $this->placeholders[$this->hhh . 'views' . $this->hhh];
+			$this->placeholders[$this->bbb . 'View' . $this->ddd] = $this->placeholders[$this->hhh . 'View' . $this->hhh];
+			$this->placeholders[$this->bbb . 'Views' . $this->ddd] = $this->placeholders[$this->hhh . 'Views' . $this->hhh];
+			$this->placeholders[$this->bbb . 'VIEW' . $this->ddd] = $this->placeholders[$this->hhh . 'VIEW' . $this->hhh];
+			$this->placeholders[$this->bbb . 'VIEWS' . $this->ddd] = $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
 			// add the tables
 			$view->addtables = (isset($view->addtables) && ComponentbuilderHelper::checkJson($view->addtables)) ? json_decode($view->addtables, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->addtables))
@@ -1819,18 +1840,18 @@ class Get
 				}
 			}
 			// clear placeholders
-			unset($this->placeholders['###view###']);
-			unset($this->placeholders['###views###']);
-			unset($this->placeholders['###View###']);
-			unset($this->placeholders['###Views###']);
-			unset($this->placeholders['###VIEW###']);
-			unset($this->placeholders['###VIEWS###']);
-			unset($this->placeholders['[[[view]]]']);
-			unset($this->placeholders['[[[views]]]']);
-			unset($this->placeholders['[[[View]]]']);
-			unset($this->placeholders['[[[Views]]]']);
-			unset($this->placeholders['[[[VIEW]]]']);
-			unset($this->placeholders['[[[VIEWS]]]']);
+			unset($this->placeholders[$this->hhh . 'view' . $this->hhh]);
+			unset($this->placeholders[$this->hhh . 'views' . $this->hhh]);
+			unset($this->placeholders[$this->hhh . 'View' . $this->hhh]);
+			unset($this->placeholders[$this->hhh . 'Views' . $this->hhh]);
+			unset($this->placeholders[$this->hhh . 'VIEW' . $this->hhh]);
+			unset($this->placeholders[$this->hhh . 'VIEWS' . $this->hhh]);
+			unset($this->placeholders[$this->bbb . 'view' . $this->ddd]);
+			unset($this->placeholders[$this->bbb . 'views' . $this->ddd]);
+			unset($this->placeholders[$this->bbb . 'View' . $this->ddd]);
+			unset($this->placeholders[$this->bbb . 'Views' . $this->ddd]);
+			unset($this->placeholders[$this->bbb . 'VIEW' . $this->ddd]);
+			unset($this->placeholders[$this->bbb . 'VIEWS' . $this->ddd]);
 
 			// store this view to class object
 			$this->_adminViewData[$id] = $view;
@@ -3605,7 +3626,7 @@ class Get
 		if (ComponentbuilderHelper::checkArray($langStringTargets))
 		{
 			// insure string is not broken
-			$content = str_replace('COM_###COMPONENT###', $this->langPrefix, $content);
+			$content = str_replace('COM_' . $this->hhh . 'COMPONENT' . $this->hhh, $this->langPrefix, $content);
 			// reset some buckets
 			$langHolders = array();
 			$langCheck = array();
@@ -3938,9 +3959,9 @@ class Get
 				$data = $this->db->loadObjectList();
 				// start building the MySql dump
 				$dump = "--";
-				$dump .= PHP_EOL . "-- Dumping data for table `#__[[[component]]]_" . $view . "`";
+				$dump .= PHP_EOL . "-- Dumping data for table `#__".$this->bbb."component".$this->ddd."_" . $view . "`";
 				$dump .= PHP_EOL . "--";
-				$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__[[[component]]]_" . $view . "` (";
+				$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__".$this->bbb."component".$this->ddd."_" . $view . "` (";
 				foreach ($data as $line)
 				{
 					$comaSet = 0;
@@ -4442,7 +4463,7 @@ class Get
 			}
 			// check what type of place holders we should load here
 			$placeholderType = (int) $item['comment_type'] . '2';
-			if (stripos($item['code'], '[[[view') !== false || stripos($item['code'], '[[[sview') !== false || stripos($item['code'], '[[[arg') !== false)
+			if (stripos($item['code'], $this->bbb . 'view') !== false || stripos($item['code'], $this->bbb . 'sview') !== false || stripos($item['code'], $this->bbb . 'arg') !== false)
 			{
 				// if view is being set dynamicly then we can't update this code via IDE (TODO)
 				$placeholderType = 3;
@@ -4472,7 +4493,7 @@ class Get
 			$number = 0;
 			foreach ($values as $value)
 			{
-				$this->placeholders['[[[' . $key . $number . ']]]'] = $value;
+				$this->placeholders[$this->bbb . $key . $number . $this->ddd] = $value;
 				$number++;
 			}
 		}
@@ -5043,9 +5064,9 @@ class Get
 		$fileTypes = array('\.php', '\.js');
 		// set some local placeholders
 		$placeholders = array();
-		$placeholders[ComponentbuilderHelper::safeString($this->componentCodeName, 'F') . 'Helper::'] = '[[[Component]]]Helper::';
-		$placeholders['COM_' . ComponentbuilderHelper::safeString($this->componentCodeName, 'U')] = 'COM_[[[COMPONENT]]]';
-		$placeholders['com_' . $this->componentCodeName] = 'com_[[[component]]]';
+		$placeholders[ComponentbuilderHelper::safeString($this->componentCodeName, 'F') . 'Helper::'] = $this->bbb . 'Component' . $this->ddd . 'Helper::';
+		$placeholders['COM_' . ComponentbuilderHelper::safeString($this->componentCodeName, 'U')] = 'COM_' . $this->bbb . 'COMPONENT' . $this->ddd;
+		$placeholders['com_' . $this->componentCodeName] = 'com_' . $this->bbb . 'component' . $this->ddd;
 		foreach ($paths as $target => $path)
 		{
 			// we are changing the working directory to the componet path
@@ -5760,7 +5781,7 @@ class Get
 				return round($val1 + $val2);
 				break;
 			// Subtract one number from the other
-			case 'add':
+			case 'sub':
 				return round($val1 - $val2);
 				break;
 		}

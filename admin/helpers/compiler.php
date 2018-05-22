@@ -72,7 +72,7 @@ class Compiler extends Infusion
 				// first remove the files and folders
 				$this->removeFolder($this->componentPath . '/site');
 				// clear form component xml
-				$xmlPath = $this->componentPath . '/' . $this->fileContentStatic['###component###'] . '.xml';
+				$xmlPath = $this->componentPath . '/' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.xml';
 				$componentXML = ComponentbuilderHelper::getFileContents($xmlPath);
 				$textToSite = ComponentbuilderHelper::getBetween($componentXML, '<files folder="site">', '</files>');
 				$textToSiteLang = ComponentbuilderHelper::getBetween($componentXML, '<languages folder="site">', '</languages>');
@@ -215,16 +215,16 @@ class Compiler extends Infusion
 			{
 				if (JFile::exists($static['path']))
 				{
-					$this->fileContentStatic['###FILENAME###'] = $static['name'];
+					$this->fileContentStatic[$this->hhh . 'FILENAME' . $this->hhh] = $static['name'];
 					$php = '';
 					if (ComponentbuilderHelper::checkFileType($static['name'], 'php'))
 					{
 						$php = "<?php\n";
 					}
 					$string = ComponentbuilderHelper::getFileContents($static['path']);
-					if (strpos($string, '###BOM###') !== false)
+					if (strpos($string, $this->hhh . 'BOM' . $this->hhh) !== false)
 					{
-						list($wast, $code) = explode('###BOM###', $string);
+						list($wast, $code) = explode($this->hhh . 'BOM' . $this->hhh, $string);
 						$string = $php . $bom . $code;
 						$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
 						// add to zip array
@@ -250,7 +250,7 @@ class Compiler extends Infusion
 						{
 							if (JFile::exists($file['path']))
 							{
-								$this->fileContentStatic['###FILENAME###'] = $file['name'];
+								$this->fileContentStatic[$this->hhh . 'FILENAME' . $this->hhh] = $file['name'];
 								// do some weird stuff to improve the verion and dates being added to the license
 								$this->fixLicenseValues($file);
 								$php = '';
@@ -259,9 +259,9 @@ class Compiler extends Infusion
 									$php = "<?php\n";
 								}
 								$string = ComponentbuilderHelper::getFileContents($file['path']);
-								if (strpos($string, '###BOM###') !== false)
+								if (strpos($string, $this->hhh . 'BOM' . $this->hhh) !== false)
 								{
-									list($bin, $code) = explode('###BOM###', $string);
+									list($bin, $code) = explode($this->hhh . 'BOM' . $this->hhh, $string);
 									$string = $php . $bom . $code;
 									$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
 									$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
@@ -321,7 +321,7 @@ class Compiler extends Infusion
 		{
 			foreach ($data['config'] as $key => $value)
 			{
-				if ('###VERSION###' === $key)
+				if ($this->hhh . 'VERSION' . $this->hhh === $key)
 				{
 					// hmm we sould in some way make it known that this version number
 					// is not in relation the the project but to the file only... any ideas?
@@ -340,9 +340,9 @@ class Compiler extends Infusion
 			return true;
 		}
 		// else insure to reset to global
-		$this->fileContentStatic['###CREATIONDATE###'] = $this->fileContentStatic['###CREATIONDATE###GLOBAL'];
-		$this->fileContentStatic['###BUILDDATE###'] = $this->fileContentStatic['###BUILDDATE###GLOBAL'];
-		$this->fileContentStatic['###VERSION###'] = $this->fileContentStatic['###VERSION###GLOBAL'];
+		$this->fileContentStatic[$this->hhh . 'CREATIONDATE' . $this->hhh] = $this->fileContentStatic[$this->hhh . 'CREATIONDATE' . $this->hhh . 'GLOBAL'];
+		$this->fileContentStatic[$this->hhh . 'BUILDDATE' . $this->hhh] = $this->fileContentStatic[$this->hhh . 'BUILDDATE' . $this->hhh . 'GLOBAL'];
+		$this->fileContentStatic[$this->hhh . 'VERSION' . $this->hhh] = $this->fileContentStatic[$this->hhh . 'VERSION' . $this->hhh . 'GLOBAL'];
 	}
 
 	// set all global numbers
@@ -399,7 +399,7 @@ class Compiler extends Infusion
 	private function setReadMe($path)
 	{
 		// set readme data if not set already
-		if (!isset($this->fileContentStatic['###LINE_COUNT###']) || $this->fileContentStatic['###LINE_COUNT###'] != $this->lineCount)
+		if (!isset($this->fileContentStatic[$this->hhh . 'LINE_COUNT' . $this->hhh]) || $this->fileContentStatic[$this->hhh . 'LINE_COUNT' . $this->hhh] != $this->lineCount)
 		{
 			$this->buildReadMeData();
 		}
@@ -414,39 +414,39 @@ class Compiler extends Infusion
 	private function buildReadMeData()
 	{
 		// set some defaults
-		$this->fileContentStatic['###LINE_COUNT###'] = $this->lineCount;
-		$this->fileContentStatic['###FIELD_COUNT###'] = $this->fieldCount;
-		$this->fileContentStatic['###FILE_COUNT###'] = $this->fileCount;
-		$this->fileContentStatic['###FOLDER_COUNT###'] = $this->folderCount;
-		$this->fileContentStatic['###PAGE_COUNT###'] = $this->pageCount;
-		$this->fileContentStatic['###folders###'] = $this->folderSeconds;
-		$this->fileContentStatic['###foldersSeconds###'] = $this->folderSeconds;
-		$this->fileContentStatic['###files###'] = $this->fileSeconds;
-		$this->fileContentStatic['###filesSeconds###'] = $this->fileSeconds;
-		$this->fileContentStatic['###lines###'] = $this->lineSeconds;
-		$this->fileContentStatic['###linesSeconds###'] = $this->lineSeconds;
-		$this->fileContentStatic['###seconds###'] = $this->actualSeconds;
-		$this->fileContentStatic['###actualSeconds###'] = $this->actualSeconds;
-		$this->fileContentStatic['###totalHours###'] = $this->totalHours;
-		$this->fileContentStatic['###totalDays###'] = $this->totalDays;
-		$this->fileContentStatic['###debugging###'] = $this->secondsDebugging;
-		$this->fileContentStatic['###secondsDebugging###'] = $this->secondsDebugging;
-		$this->fileContentStatic['###planning###'] = $this->secondsPlanning;
-		$this->fileContentStatic['###secondsPlanning###'] = $this->secondsPlanning;
-		$this->fileContentStatic['###mapping###'] = $this->secondsMapping;
-		$this->fileContentStatic['###secondsMapping###'] = $this->secondsMapping;
-		$this->fileContentStatic['###office###'] = $this->secondsOffice;
-		$this->fileContentStatic['###secondsOffice###'] = $this->secondsOffice;
-		$this->fileContentStatic['###actualTotalHours###'] = $this->actualTotalHours;
-		$this->fileContentStatic['###actualTotalDays###'] = $this->actualTotalDays;
-		$this->fileContentStatic['###debuggingHours###'] = $this->debuggingHours;
-		$this->fileContentStatic['###planningHours###'] = $this->planningHours;
-		$this->fileContentStatic['###mappingHours###'] = $this->mappingHours;
-		$this->fileContentStatic['###officeHours###'] = $this->officeHours;
-		$this->fileContentStatic['###actualHoursSpent###'] = $this->actualHoursSpent;
-		$this->fileContentStatic['###actualDaysSpent###'] = $this->actualDaysSpent;
-		$this->fileContentStatic['###projectWeekTime###'] = $this->projectWeekTime;
-		$this->fileContentStatic['###projectMonthTime###'] = $this->projectMonthTime;
+		$this->fileContentStatic[$this->hhh . 'LINE_COUNT' . $this->hhh] = $this->lineCount;
+		$this->fileContentStatic[$this->hhh . 'FIELD_COUNT' . $this->hhh] = $this->fieldCount;
+		$this->fileContentStatic[$this->hhh . 'FILE_COUNT' . $this->hhh] = $this->fileCount;
+		$this->fileContentStatic[$this->hhh . 'FOLDER_COUNT' . $this->hhh] = $this->folderCount;
+		$this->fileContentStatic[$this->hhh . 'PAGE_COUNT' . $this->hhh] = $this->pageCount;
+		$this->fileContentStatic[$this->hhh . 'folders' . $this->hhh] = $this->folderSeconds;
+		$this->fileContentStatic[$this->hhh . 'foldersSeconds' . $this->hhh] = $this->folderSeconds;
+		$this->fileContentStatic[$this->hhh . 'files' . $this->hhh] = $this->fileSeconds;
+		$this->fileContentStatic[$this->hhh . 'filesSeconds' . $this->hhh] = $this->fileSeconds;
+		$this->fileContentStatic[$this->hhh . 'lines' . $this->hhh] = $this->lineSeconds;
+		$this->fileContentStatic[$this->hhh . 'linesSeconds' . $this->hhh] = $this->lineSeconds;
+		$this->fileContentStatic[$this->hhh . 'seconds' . $this->hhh] = $this->actualSeconds;
+		$this->fileContentStatic[$this->hhh . 'actualSeconds' . $this->hhh] = $this->actualSeconds;
+		$this->fileContentStatic[$this->hhh . 'totalHours' . $this->hhh] = $this->totalHours;
+		$this->fileContentStatic[$this->hhh . 'totalDays' . $this->hhh] = $this->totalDays;
+		$this->fileContentStatic[$this->hhh . 'debugging' . $this->hhh] = $this->secondsDebugging;
+		$this->fileContentStatic[$this->hhh . 'secondsDebugging' . $this->hhh] = $this->secondsDebugging;
+		$this->fileContentStatic[$this->hhh . 'planning' . $this->hhh] = $this->secondsPlanning;
+		$this->fileContentStatic[$this->hhh . 'secondsPlanning' . $this->hhh] = $this->secondsPlanning;
+		$this->fileContentStatic[$this->hhh . 'mapping' . $this->hhh] = $this->secondsMapping;
+		$this->fileContentStatic[$this->hhh . 'secondsMapping' . $this->hhh] = $this->secondsMapping;
+		$this->fileContentStatic[$this->hhh . 'office' . $this->hhh] = $this->secondsOffice;
+		$this->fileContentStatic[$this->hhh . 'secondsOffice' . $this->hhh] = $this->secondsOffice;
+		$this->fileContentStatic[$this->hhh . 'actualTotalHours' . $this->hhh] = $this->actualTotalHours;
+		$this->fileContentStatic[$this->hhh . 'actualTotalDays' . $this->hhh] = $this->actualTotalDays;
+		$this->fileContentStatic[$this->hhh . 'debuggingHours' . $this->hhh] = $this->debuggingHours;
+		$this->fileContentStatic[$this->hhh . 'planningHours' . $this->hhh] = $this->planningHours;
+		$this->fileContentStatic[$this->hhh . 'mappingHours' . $this->hhh] = $this->mappingHours;
+		$this->fileContentStatic[$this->hhh . 'officeHours' . $this->hhh] = $this->officeHours;
+		$this->fileContentStatic[$this->hhh . 'actualHoursSpent' . $this->hhh] = $this->actualHoursSpent;
+		$this->fileContentStatic[$this->hhh . 'actualDaysSpent' . $this->hhh] = $this->actualDaysSpent;
+		$this->fileContentStatic[$this->hhh . 'projectWeekTime' . $this->hhh] = $this->projectWeekTime;
+		$this->fileContentStatic[$this->hhh . 'projectMonthTime' . $this->hhh] = $this->projectMonthTime;
 	}
 
 	private function zipComponent()

@@ -16,9 +16,9 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controllerform');
 
 /**
- * Admin_view Controller
+ * Admin_fields_relations Controller
  */
-class ComponentbuilderControllerAdmin_view extends JControllerForm
+class ComponentbuilderControllerAdmin_fields_relations extends JControllerForm
 {
 	/**
 	 * Current or most recently performed task.
@@ -31,7 +31,7 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 
 	public function __construct($config = array())
 	{
-		$this->view_list = 'Admin_views'; // safeguard for setting the return view listing to the main view.
+		$this->view_list = 'Admins_fields_relations'; // safeguard for setting the return view listing to the main view.
 		parent::__construct($config);
 	}
 
@@ -47,13 +47,13 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 	protected function allowAdd($data = array())
 	{
 		// Access check.
-		$access = JFactory::getUser()->authorise('admin_view.access', 'com_componentbuilder');
+		$access = JFactory::getUser()->authorise('admin_fields_relations.access', 'com_componentbuilder');
 		if (!$access)
 		{
 			return false;
 		}
 		// In the absense of better information, revert to the component permissions.
-		return JFactory::getUser()->authorise('admin_view.create', $this->option);
+		return JFactory::getUser()->authorise('admin_fields_relations.create', $this->option);
 	}
 
 	/**
@@ -75,7 +75,7 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 
 
 		// Access check.
-		$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $recordId) &&  $user->authorise('admin_view.access', 'com_componentbuilder'));
+		$access = ($user->authorise('admin_fields_relations.access', 'com_componentbuilder.admin_fields_relations.' . (int) $recordId) &&  $user->authorise('admin_fields_relations.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;
@@ -84,10 +84,10 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('admin_view.edit', 'com_componentbuilder.admin_view.' . (int) $recordId);
+			$permission = $user->authorise('admin_fields_relations.edit', 'com_componentbuilder.admin_fields_relations.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('admin_view.edit.own', 'com_componentbuilder.admin_view.' . $recordId))
+				if ($user->authorise('admin_fields_relations.edit.own', 'com_componentbuilder.admin_fields_relations.' . $recordId))
 				{
 					// Now test the owner is the user.
 					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
@@ -106,7 +106,7 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 					// If the owner matches 'me' then allow.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('admin_view.edit.own', 'com_componentbuilder'))
+						if ($user->authorise('admin_fields_relations.edit.own', 'com_componentbuilder'))
 						{
 							return true;
 						}
@@ -116,7 +116,7 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 			}
 		}
 		// Since there is no permission, revert to the component permissions.
-		return $user->authorise('admin_view.edit', $this->option);
+		return $user->authorise('admin_fields_relations.edit', $this->option);
 	}
 
 	/**
@@ -182,10 +182,10 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Set the model
-		$model = $this->getModel('Admin_view', '', array());
+		$model = $this->getModel('Admin_fields_relations', '', array());
 
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=admin_views' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=admins_fields_relations' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}
@@ -306,32 +306,6 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 	 */
 	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{
-		// get the state object (Joomla\CMS\Object\CMSObject)
-		$state = $model->get('state');		
-		// if we save2copy we need to also copy linked tables found!
-		if ($state->task === 'save2copy' && $state->{'admin_view.new'})
-		{
-			// get new ID
-			$newID = $state->{'admin_view.id'};
-			// get old ID
-			$oldID = $this->input->get('id', 0, 'INT');
-			// linked tables to update
-			$_tablesArray = array(
-				'admin_fields',
-				'admin_fields_conditions',
-				'admin_fields_relations'
-			);
-			foreach($_tablesArray as $_updateTable)
-			{
-				// get the linked ID
-				if ($_value = ComponentbuilderHelper::getVar($_updateTable, $oldID, 'admin_view', 'id'))
-				{
-					// copy fields to new admin view
-					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array('admin_view' => $newID));
-				}
-			}
-		}
-
 		return;
 	}
 

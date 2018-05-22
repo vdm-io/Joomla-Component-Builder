@@ -238,6 +238,7 @@ class ComponentbuilderModelAjax extends JModelList
 				'library_files_folders_urls' => 'libraries_files_folders_urls',
 				'admin_fields' => 'admins_fields',
 				'admin_fields_conditions' => 'admins_fields_conditions',
+				'admin_fields_relations' => 'admins_fields_relations',
 				'validation_rule' => 'validation_rules',
 				'field' => 'fields',
 				'component_admin_views' => 'components_admin_views' ,
@@ -410,6 +411,9 @@ class ComponentbuilderModelAjax extends JModelList
 				'type' => 'setURLType',
 				// Admin View
 				'field' => 'setItemNames',
+				'listfield' =>  'setItemNames',
+				'joinfields' =>  'setItemNames',
+				'join_type' =>  'setJoinType',
 				'list' => 'setAdminBehaviour',
 				'title' => 'setYesNo',
 				'alias' => 'setYesNo',
@@ -456,6 +460,10 @@ class ComponentbuilderModelAjax extends JModelList
 			'update' => JText::_('COM_COMPONENTBUILDER_UPDATE'),
 			// Admin View (fields)
 			'field' => JText::_('COM_COMPONENTBUILDER_FIELD'),
+			'listfield' =>  JText::_('COM_COMPONENTBUILDER_LIST_FIELD'),
+			'joinfields' =>  JText::_('COM_COMPONENTBUILDER_JOIN_FIELDS'),
+			'set' =>  JText::_('COM_COMPONENTBUILDER_GLUECODE'),
+			'join_type' =>  JText::_('COM_COMPONENTBUILDER_JOIN_TYPE'),
 			'list' => JText::_('COM_COMPONENTBUILDER_ADMIN_BEHAVIOUR'),
 			'order_list' => JText::_('COM_COMPONENTBUILDER_ORDER_IN_LIST_VIEWS'),
 			'title' => JText::_('COM_COMPONENTBUILDER_TITLE'),
@@ -625,6 +633,7 @@ class ComponentbuilderModelAjax extends JModelList
 				'library_files_folders_urls' => array('addurls','addfiles','addfolders'),
 				'admin_fields' => 'addfields',
 				'admin_fields_conditions' => 'addconditions',
+				'admin_fields_relations' => 'addrelations',
 				'component_admin_views' =>  'addadmin_views',
 				'component_site_views' =>  'addsite_views',
 				'component_custom_admin_views' =>  'addcustom_admin_views');
@@ -755,6 +764,8 @@ class ComponentbuilderModelAjax extends JModelList
 			'field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
 			'target_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
 			'match_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'listfield' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'joinfields' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
 			// joomla component view
 			'siteview' => array('table' => 'site_view', 'tables' => 'site_views', 'id' => 'id', 'name' => 'name', 'text' => 'Site View'),
 			'customadminview' => array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Custom Admin View'),
@@ -830,6 +841,20 @@ class ComponentbuilderModelAjax extends JModelList
 			return JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 		}
 		return JText::_('COM_COMPONENTBUILDER_NO_ITEM_FOUND');
+	}
+
+	protected function setJoinType($header, $value)
+	{
+		switch ($value)
+		{
+			case 1:
+				return JText::_('COM_COMPONENTBUILDER_CONCATENATE');
+			break;
+			case 2:
+				return JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE');
+			break;
+		}
+		return JText::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	protected function setURLType($header, $value)

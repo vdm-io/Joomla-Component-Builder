@@ -112,6 +112,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'help_document' => 'help_documents',
 				'admin_fields' => 'admins_fields',
 				'admin_fields_conditions' => 'admins_fields_conditions',
+				'admin_fields_relations' => 'admins_fields_relations',
 				'component_admin_views' => 'components_admin_views',
 				'component_site_views' => 'components_site_views',
 				'component_custom_admin_views' => 'components_custom_admin_views',

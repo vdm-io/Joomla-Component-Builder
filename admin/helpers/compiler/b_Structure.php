@@ -490,11 +490,11 @@ class Structure extends Get
 						if ($addLocalFolder)
 						{
 							// check if we sould add it to the media xml list
-							if (!isset($this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###']))
+							if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh]))
 							{
-								$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] = '';
+								$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] = '';
 							}
-							$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL . "\t\t<folder>" . $libFolder . "</folder>";
+							$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . "\t\t<folder>" . $libFolder . "</folder>";
 						}
 					}
 					// if config fields are found load into component config (avoiding dublicates)
@@ -755,9 +755,10 @@ class Structure extends Get
 			// do license check
 			$LICENSE = false;
 			$licenseChecker = strtolower($this->componentData->license);
-			if (strpos($licenseChecker, 'gnu') !== false && strpos($licenseChecker, 'gpl') !== false)
+			if (strpos($licenseChecker, 'gnu') !== false && strpos($licenseChecker, '2') !== false &&
+				(strpos($licenseChecker, 'gpl') !== false || strpos($licenseChecker, 'general public license') !== false))
 			{
-				$LICENSE = true;
+				$LICENSE = true; // we only add version 2 auto at this time (TODO)
 			}
 			// do README check
 			$README = false;
@@ -890,20 +891,20 @@ class Structure extends Get
 					if ($view['settings']->name_list != 'null')
 					{
 						$target = array('admin' => $view['settings']->name_list);
-						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+						$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 						$this->buildDynamique($target, 'list', false, $config);
 					}
 					if ($view['settings']->name_single != 'null')
 					{
 						$target = array('admin' => $view['settings']->name_single);
-						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+						$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 						$this->buildDynamique($target, 'single', false, $config);
 					}
 					if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
 					{
 						// setup the front site edit-view files
 						$target = array('site' => $view['settings']->name_single);
-						$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+						$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 						$this->buildDynamique($target, 'edit', false, $config);
 					}
 				}
@@ -927,14 +928,14 @@ class Structure extends Get
 				{
 					// set list view
 					$target = array('site' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+					$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 					$this->buildDynamique($target, 'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('site' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+					$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
@@ -950,14 +951,14 @@ class Structure extends Get
 				{
 					// set list view$view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+					$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 					$this->buildDynamique($target, 'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+					$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
@@ -1278,31 +1279,31 @@ class Structure extends Get
 					$newname = '';
 				}
 				// check if we sould add it to the media xml list
-				if (!isset($this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###']))
+				if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh]))
 				{
-					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] = '';
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] = '';
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'media')
 				{
-					$this->fileContentStatic['###EXSTRA_MEDIA_FOLDERS###'] .= PHP_EOL . "\t\t<folder>" . $lastFolder . "</folder>";
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . "\t\t<folder>" . $lastFolder . "</folder>";
 				}
 				// check if we sould add it to the site xml list
-				if (!isset($this->fileContentStatic['###EXSTRA_SITE_FOLDERS###']))
+				if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh]))
 				{
-					$this->fileContentStatic['###EXSTRA_SITE_FOLDERS###'] = '';
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh] = '';
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'site')
 				{
-					$this->fileContentStatic['###EXSTRA_SITE_FOLDERS###'] .= PHP_EOL . "\t\t<folder>" . $lastFolder . "</folder>";
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh] .= PHP_EOL . "\t\t<folder>" . $lastFolder . "</folder>";
 				}
 				// check if we sould add it to the admin xml list
-				if (!isset($this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###']))
+				if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh]))
 				{
-					$this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###'] = '';
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh] = '';
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'admin')
 				{
-					$this->fileContentStatic['###EXSTRA_ADMIN_FOLDERS###'] .= PHP_EOL . "\t\t\t<folder>" . $lastFolder . "</folder>";
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh] .= PHP_EOL . "\t\t\t<folder>" . $lastFolder . "</folder>";
 				}
 				// make we have not duplicates
 				$key_pointer = ComponentbuilderHelper::safeString($custom['folder']) . '_f' . $pointer_tracker;

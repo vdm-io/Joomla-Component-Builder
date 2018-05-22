@@ -211,14 +211,14 @@ class Interpretation extends Fields
 		if (isset($this->componentData->add_email_helper) && $this->componentData->add_email_helper)
 		{
 			// set email helper in place with component name
-			$component = $this->fileContentStatic['###component###'];
-			$Component = $this->fileContentStatic['###Component###'];
+			$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
+			$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 			$target = array('admin' => 'emailer');
 			$done = $this->buildDynamique($target, 'emailer', $component);
 			if ($done)
 			{
-				// the text for the file ###BAKING###
-				$this->fileContentDynamic['emailer_' . $component]['###BAKING###'] = ''; // <<-- to insure it gets updated
+				// the text for the file BAKING
+				$this->fileContentDynamic['emailer_' . $component][$this->hhh . 'BAKING' . $this->hhh] = ''; // <<-- to insure it gets updated
 				// return the code need to load the abstract class
 				return PHP_EOL . "JLoader::register('" . $Component . "Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/" . $component . "email.php'); ";
 			}
@@ -233,23 +233,23 @@ class Interpretation extends Fields
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			if (!isset($this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###']))
+			if (!isset($this->fileContentStatic[$this->hhh . 'HELPER_SITE_LICENSE_LOCK' . $this->hhh]))
 			{
 				$_VDM = '_' . ComponentbuilderHelper::safeString($this->uniquekey(10), 'U');
 				// add it to the system
-				$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = $this->setHelperLicenseLock($_VDM, 'site');
-				$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = $this->setHelperLicenseLock($_VDM, 'admin');
-				$this->fileContentStatic['###LICENSE_LOCKED_INT###'] = $this->setInitLicenseLock($_VDM);
-				$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = PHP_EOL . PHP_EOL . 'defined(\'' . $_VDM . '\') or die(JText:' . ':_(\'NIE_REG_NIE\'));';
+				$this->fileContentStatic[$this->hhh . 'HELPER_SITE_LICENSE_LOCK' . $this->hhh] = $this->setHelperLicenseLock($_VDM, 'site');
+				$this->fileContentStatic[$this->hhh . 'HELPER_LICENSE_LOCK' . $this->hhh] = $this->setHelperLicenseLock($_VDM, 'admin');
+				$this->fileContentStatic[$this->hhh . 'LICENSE_LOCKED_INT' . $this->hhh] = $this->setInitLicenseLock($_VDM);
+				$this->fileContentStatic[$this->hhh . 'LICENSE_LOCKED_DEFINED' . $this->hhh] = PHP_EOL . PHP_EOL . 'defined(\'' . $_VDM . '\') or die(JText:' . ':_(\'NIE_REG_NIE\'));';
 			}
 		}
 		else
 		{
 			// don't add it to the system
-			$this->fileContentStatic['###HELPER_SITE_LICENSE_LOCK###'] = '';
-			$this->fileContentStatic['###HELPER_LICENSE_LOCK###'] = '';
-			$this->fileContentStatic['###LICENSE_LOCKED_INT###'] = '';
-			$this->fileContentStatic['###LICENSE_LOCKED_DEFINED###'] = '';
+			$this->fileContentStatic[$this->hhh . 'HELPER_SITE_LICENSE_LOCK' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'HELPER_LICENSE_LOCK' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'LICENSE_LOCKED_INT' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'LICENSE_LOCKED_DEFINED' . $this->hhh] = '';
 		}
 	}
 
@@ -260,23 +260,23 @@ class Interpretation extends Fields
 	{
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			if (!isset($this->fileContentDynamic[$view]['###BOOLMETHOD###']))
+			if (!isset($this->fileContentDynamic[$view][$this->hhh . 'BOOLMETHOD' . $this->hhh]))
 			{
 				$boolMethod = 'get' . ComponentbuilderHelper::safeString($this->uniquekey(3, false, 'ddd'), 'W');
 				$globalbool = 'set' . ComponentbuilderHelper::safeString($this->uniquekey(3), 'W');
 				// add it to the system
-				$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###'] = $this->setBoolLicenseLock($boolMethod, $globalbool);
-				$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###'] = $this->checkStatmentLicenseLocked($boolMethod);
-				$this->fileContentDynamic[$view]['###LICENSE_TABLE_LOCKED_CHECK###'] = $this->checkStatmentLicenseLocked($boolMethod, '$table');
-				$this->fileContentDynamic[$view]['###BOOLMETHOD###'] = $boolMethod;
+				$this->fileContentDynamic[$view][$this->hhh . 'LICENSE_LOCKED_SET_BOOL' . $this->hhh] = $this->setBoolLicenseLock($boolMethod, $globalbool);
+				$this->fileContentDynamic[$view][$this->hhh . 'LICENSE_LOCKED_CHECK' . $this->hhh] = $this->checkStatmentLicenseLocked($boolMethod);
+				$this->fileContentDynamic[$view][$this->hhh . 'LICENSE_TABLE_LOCKED_CHECK' . $this->hhh] = $this->checkStatmentLicenseLocked($boolMethod, '$table');
+				$this->fileContentDynamic[$view][$this->hhh . 'BOOLMETHOD' . $this->hhh] = $boolMethod;
 			}
 		}
 		else
 		{
 			// don't add it to the system
-			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_SET_BOOL###'] = '';
-			$this->fileContentDynamic[$view]['###LICENSE_LOCKED_CHECK###'] = '';
-			$this->fileContentDynamic[$view]['###LICENSE_TABLE_LOCKED_CHECK###'] = '';
+			$this->fileContentDynamic[$view][$this->hhh . 'LICENSE_LOCKED_SET_BOOL' . $this->hhh] = '';
+			$this->fileContentDynamic[$view][$this->hhh . 'LICENSE_LOCKED_CHECK' . $this->hhh] = '';
+			$this->fileContentDynamic[$view][$this->hhh . 'LICENSE_TABLE_LOCKED_CHECK' . $this->hhh] = '';
 		}
 	}
 
@@ -309,12 +309,12 @@ class Interpretation extends Fields
 		$bool[] = "\t\t\treturn \$this->" . $globalbool . ";";
 		$bool[] = "\t\t}";
 		$bool[] = "\t\t//" . $this->setLine(__LINE__) . " Get the global params";
-		$bool[] = "\t\t\$params = JComponentHelper::getParams('com_" . $this->fileContentStatic['###component###'] . "', true);";
+		$bool[] = "\t\t\$params = JComponentHelper::getParams('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "', true);";
 		$bool[] = "\t\t\$license_key = \$params->get('license_key', null);";
 		$bool[] = "\t\tif (\$license_key)";
 		$bool[] = "\t\t{";
 		$bool[] = "\t\t\t//" . $this->setLine(__LINE__) . " load the file";
-		$bool[] = "\t\t\tJLoader::import( 'vdm', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic['###component###'] . "');";
+		$bool[] = "\t\t\tJLoader::import( 'vdm', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
 		$bool[] = "\t\t\t\$the = new VDM(\$license_key);";
 		$bool[] = "\t\t\t\$this->" . $globalbool . " = \$the->_is;";
 		$bool[] = "\t\t\treturn \$this->" . $globalbool . ";";
@@ -333,12 +333,12 @@ class Interpretation extends Fields
 		$helper[] = "\tpublic static function isGenuine()";
 		$helper[] = "\t{";
 		$helper[] = "\t\t//" . $this->setLine(__LINE__) . " Get the global params";
-		$helper[] = "\t\t\$params = JComponentHelper::getParams('com_" . $this->fileContentStatic['###component###'] . "', true);";
+		$helper[] = "\t\t\$params = JComponentHelper::getParams('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "', true);";
 		$helper[] = "\t\t\$license_key = \$params->get('license_key', null);";
 		$helper[] = "\t\tif (\$license_key)";
 		$helper[] = "\t\t{";
 		$helper[] = "\t\t\t//" . $this->setLine(__LINE__) . " load the file";
-		$helper[] = "\t\t\tJLoader::import( 'vdm', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic['###component###'] . "');";
+		$helper[] = "\t\t\tJLoader::import( 'vdm', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
 		$helper[] = "\t\t\t\$the = new VDM(\$license_key);";
 		$helper[] = "\t\t\treturn \$the->_is;";
 		$helper[] = "\t\t}";
@@ -352,7 +352,7 @@ class Interpretation extends Fields
 	{
 		$init[] = PHP_EOL . "if (!defined('" . $_VDM . "'))";
 		$init[] = "{";
-		$init[] = "\t\$allow = " . $this->fileContentStatic['###Component###'] . "Helper::isGenuine();";
+		$init[] = "\t\$allow = " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::isGenuine();";
 		$init[] = "\tif (\$allow)";
 		$init[] = "\t{";
 		$init[] = "\t\tdefine('" . $_VDM . "', 1);";
@@ -553,8 +553,8 @@ class Interpretation extends Fields
 
 	public function setGetCryptKey()
 	{
-		// ###ENCRYPT_FILE###
-		$this->fileContentStatic['###ENCRYPT_FILE###'] = '';
+		// ENCRYPT_FILE
+		$this->fileContentStatic[$this->hhh . 'ENCRYPT_FILE' . $this->hhh] = '';
 		if ((isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder)) ||
 			(isset($this->mediumEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->mediumEncryptionBuilder)) ||
 			(isset($this->whmcsEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->whmcsEncryptionBuilder)) ||
@@ -565,13 +565,13 @@ class Interpretation extends Fields
 				// set whmcs encrypt file into place
 				$target = array('admin' => 'whmcs');
 				$done = $this->buildDynamique($target, 'whmcs');
-				// the text for the file ###WHMCS_ENCRYPTION_BODY###
-				$this->fileContentDynamic['whmcs']['###WHMCS_ENCRYPTION_BODY###'] = $this->setWHMCSCryption();
-				// ###ENCRYPT_FILE###
-				$this->fileContentStatic['###WHMCS_ENCRYPT_FILE###'] = PHP_EOL . "\t\t\t<filename>whmcs.php</filename>";
+				// the text for the file WHMCS_ENCRYPTION_BODY
+				$this->fileContentDynamic['whmcs'][$this->hhh . 'WHMCS_ENCRYPTION_BODY' . $this->hhh] = $this->setWHMCSCryption();
+				// ENCRYPT_FILE
+				$this->fileContentStatic[$this->hhh . 'WHMCS_ENCRYPT_FILE' . $this->hhh] = PHP_EOL . "\t\t\t<filename>whmcs.php</filename>";
 			}
 			// get component name
-			$component = $this->fileContentStatic['###component###'];
+			$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 			// set the getCryptKey function to the helper class
 			$function = array();
 			// start building the getCryptKey function/class method
@@ -758,11 +758,11 @@ class Interpretation extends Fields
 			if ($this->componentData->add_update_server && $this->componentData->update_server_target != 3)
 			{
 				$updateXML[] = '</updates>';
-				// ###UPDATE_SERVER_XML###
+				// UPDATE_SERVER_XML
 				$name = str_replace('.xml', '', substr($this->componentData->update_server_url, strrpos($this->componentData->update_server_url, '/') + 1));
 				$target = array('admin' => $name);
 				$this->buildDynamique($target, 'update_server');
-				$this->fileContentDynamic[$name]['###UPDATE_SERVER_XML###'] = implode(PHP_EOL, $updateXML);
+				$this->fileContentDynamic[$name][$this->hhh . 'UPDATE_SERVER_XML' . $this->hhh] = implode(PHP_EOL, $updateXML);
 
 				// set the Update server file name
 				$this->updateServerFileName = $name;
@@ -771,20 +771,20 @@ class Interpretation extends Fields
 		// add the update server link to component XML
 		if ($this->componentData->add_update_server && isset($this->componentData->update_server_url) && ComponentbuilderHelper::checkString($this->componentData->update_server_url))
 		{
-			// ###UPDATESERVER###
+			// UPDATESERVER
 			$updateServer = array();
 			$updateServer[] = PHP_EOL . "\t<updateservers>";
-			$updateServer[] = "\t\t" . '<server type="extension" enabled="1" element="com_' . $this->fileContentStatic['###component###'] . '" name="' . $this->fileContentStatic['###Component_name###'] . '">' . $this->componentData->update_server_url . '</server>';
+			$updateServer[] = "\t\t" . '<server type="extension" enabled="1" element="com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '" name="' . $this->fileContentStatic[$this->hhh . 'Component_name' . $this->hhh] . '">' . $this->componentData->update_server_url . '</server>';
 			$updateServer[] = "\t</updateservers>";
 			// return the array to string
 			$updateServer = implode(PHP_EOL, $updateServer);
 			// add update server details to component XML file
-			$this->fileContentStatic['###UPDATESERVER###'] = $updateServer;
+			$this->fileContentStatic[$this->hhh . 'UPDATESERVER' . $this->hhh] = $updateServer;
 		}
 		else
 		{
 			// add update server details to component XML file
-			$this->fileContentStatic['###UPDATESERVER###'] = '';
+			$this->fileContentStatic[$this->hhh . 'UPDATESERVER' . $this->hhh] = '';
 		}
 		// ensure to update Component version data
 		if (ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
@@ -899,7 +899,7 @@ class Interpretation extends Fields
 			$name = ComponentbuilderHelper::safeString($update['version']);
 			$target = array('admin' => $name);
 			$this->buildDynamique($target, 'sql_update', $update['version']);
-			$this->fileContentDynamic[$name . '_' . $update['version']]['###UPDATE_VERSION_MYSQL###'] = $update['mysql'];
+			$this->fileContentDynamic[$name . '_' . $update['version']][$this->hhh . 'UPDATE_VERSION_MYSQL' . $this->hhh] = $update['mysql'];
 		}
 		elseif (isset($update['url']) && ComponentbuilderHelper::checkString($update['url']))
 		{
@@ -910,12 +910,12 @@ class Interpretation extends Fields
 		{
 			// build update xml
 			$updateXML[] = "\t<update>";
-			$updateXML[] = "\t\t<name>" . $this->fileContentStatic['###Component_name###'] . "</name>";
-			$updateXML[] = "\t\t<description>" . $this->fileContentStatic['###SHORT_DESCRIPTION###'] . "</description>";
-			$updateXML[] = "\t\t<element>com_" . $this->fileContentStatic['###component###'] . "</element>";
+			$updateXML[] = "\t\t<name>" . $this->fileContentStatic[$this->hhh . 'Component_name' . $this->hhh] . "</name>";
+			$updateXML[] = "\t\t<description>" . $this->fileContentStatic[$this->hhh . 'SHORT_DESCRIPTION' . $this->hhh] . "</description>";
+			$updateXML[] = "\t\t<element>com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "</element>";
 			$updateXML[] = "\t\t<type>component</type>";
 			$updateXML[] = "\t\t<version>" . $update['version'] . "</version>";
-			$updateXML[] = "\t\t" . '<infourl title="' . $this->fileContentStatic['###Component_name###'] . '!">' . $this->fileContentStatic['###AUTHORWEBSITE###'] . '</infourl>';
+			$updateXML[] = "\t\t" . '<infourl title="' . $this->fileContentStatic[$this->hhh . 'Component_name' . $this->hhh] . '!">' . $this->fileContentStatic[$this->hhh . 'AUTHORWEBSITE' . $this->hhh] . '</infourl>';
 			$updateXML[] = "\t\t<downloads>";
 			if (!isset($update['url']) || !ComponentbuilderHelper::checkString($update['url']))
 			{
@@ -926,8 +926,8 @@ class Interpretation extends Fields
 			$updateXML[] = "\t\t<tags>";
 			$updateXML[] = "\t\t\t<tag>stable</tag>";
 			$updateXML[] = "\t\t</tags>";
-			$updateXML[] = "\t\t<maintainer>" . $this->fileContentStatic['###AUTHOR###'] . "</maintainer>";
-			$updateXML[] = "\t\t<maintainerurl>" . $this->fileContentStatic['###AUTHORWEBSITE###'] . "</maintainerurl>";
+			$updateXML[] = "\t\t<maintainer>" . $this->fileContentStatic[$this->hhh . 'AUTHOR' . $this->hhh] . "</maintainer>";
+			$updateXML[] = "\t\t<maintainerurl>" . $this->fileContentStatic[$this->hhh . 'AUTHORWEBSITE' . $this->hhh] . "</maintainerurl>";
 			$updateXML[] = "\t\t" . '<targetplatform name="joomla" version="3.*"/>';
 			$updateXML[] = "\t</update>";
 		}
@@ -959,12 +959,12 @@ class Interpretation extends Fields
 			$sitedone = $this->buildDynamique($target, 'help');
 			if ($admindone && $sitedone)
 			{
-				// ###HELP###
-				$this->fileContentStatic['###HELP###'] = $this->setHelp(1);
-				// ###HELP_SITE###
-				$this->fileContentStatic['###HELP_SITE###'] = $this->setHelp(2);
+				// HELP
+				$this->fileContentStatic[$this->hhh . 'HELP' . $this->hhh] = $this->setHelp(1);
+				// HELP_SITE
+				$this->fileContentStatic[$this->hhh . 'HELP_SITE' . $this->hhh] = $this->setHelp(2);
 				// to make sure the file is updated TODO
-				$this->fileContentDynamic['help']['###BLABLA###'] = 'blabla';
+				$this->fileContentDynamic['help'][$this->hhh . 'BLABLA' . $this->hhh] = 'blabla';
 				return true;
 			}
 		}
@@ -990,7 +990,7 @@ class Interpretation extends Fields
 		$help[] = "\t\t\$db	= JFactory::getDbo();";
 		$help[] = "\t\t\$query	= \$db->getQuery(true);";
 		$help[] = "\t\t\$query->select(array('a.id','a.groups','a.target','a.type','a.article','a.url'));";
-		$help[] = "\t\t\$query->from('#__" . $this->fileContentStatic['###component###'] . "_help_document AS a');";
+		$help[] = "\t\t\$query->from('#__" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_help_document AS a');";
 		$help[] = "\t\t\$query->where('a." . $target . " = '.\$db->quote(\$view));";
 		$help[] = "\t\t\$query->where('a.location = " . (int) $location . "');";
 		$help[] = "\t\t\$query->where('a.published = 1');";
@@ -1047,7 +1047,7 @@ class Interpretation extends Fields
 		$help[] = "\tprotected static function loadHelpTextLink(\$id)";
 		$help[] = "\t{";
 		$help[] = "\t\t\$token = JSession::getFormToken();";
-		$help[] = "\t\treturn 'index.php?option=com_" . $this->fileContentStatic['###component###'] . "&task=help.getText&id=' . (int) \$id . '&token=' . \$token;";
+		$help[] = "\t\treturn 'index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&task=help.getText&id=' . (int) \$id . '&token=' . \$token;";
 		$help[] = "\t}";
 		// return the help methods
 		return implode(PHP_EOL, $help);
@@ -1061,7 +1061,7 @@ class Interpretation extends Fields
 			$exel[] = PHP_EOL . PHP_EOL . "\t/**";
 			$exel[] = "\t * Prepares the xml document";
 			$exel[] = "\t */";
-			$exel[] = "\tpublic static function xls(\$rows,\$fileName = null,\$title = null,\$subjectTab = null,\$creator = '" . $this->fileContentStatic['###COMPANYNAME###'] . "',\$description = null,\$category = null,\$keywords = null,\$modified = null)";
+			$exel[] = "\tpublic static function xls(\$rows,\$fileName = null,\$title = null,\$subjectTab = null,\$creator = '" . $this->fileContentStatic[$this->hhh . 'COMPANYNAME' . $this->hhh] . "',\$description = null,\$category = null,\$keywords = null,\$modified = null)";
 			$exel[] = "\t{";
 			$exel[] = "\t\t//" . $this->setLine(__LINE__) . " set the user";
 			$exel[] = "\t\t\$user = JFactory::getUser();";
@@ -1095,7 +1095,7 @@ class Interpretation extends Fields
 			$exel[] = "\t\t";
 			$exel[] = "\t\t//" . $this->setLine(__LINE__) . " Set document properties";
 			$exel[] = "\t\t\$objPHPExcel->getProperties()->setCreator(\$creator)";
-			$exel[] = "\t\t\t\t\t\t\t\t\t ->setCompany('" . $this->fileContentStatic['###COMPANYNAME###'] . "')";
+			$exel[] = "\t\t\t\t\t\t\t\t\t ->setCompany('" . $this->fileContentStatic[$this->hhh . 'COMPANYNAME' . $this->hhh] . "')";
 			$exel[] = "\t\t\t\t\t\t\t\t\t ->setLastModifiedBy(\$modified)";
 			$exel[] = "\t\t\t\t\t\t\t\t\t ->setTitle(\$title)";
 			$exel[] = "\t\t\t\t\t\t\t\t\t ->setSubject(\$subjectTab);";
@@ -1391,7 +1391,7 @@ class Interpretation extends Fields
 		if ($done)
 		{
 			// set the lang
-			$lang = ComponentbuilderHelper::safeString('com_' . $this->fileContentStatic['###component###'] . '_menu_' . $view['settings']->code, 'U');
+			$lang = ComponentbuilderHelper::safeString('com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_menu_' . $view['settings']->code, 'U');
 			$this->langContent['adminsys'][$lang . '_TITLE'] = $view['settings']->name;
 			$this->langContent['adminsys'][$lang . '_OPTION'] = $view['settings']->name;
 			$this->langContent['adminsys'][$lang . '_DESC'] = $view['settings']->description;
@@ -1408,8 +1408,8 @@ class Interpretation extends Fields
 				$xml .= PHP_EOL . "\t" . '<!--' . $this->setLine(__LINE__) . ' Add fields to the request variables for the layout. -->';
 				$xml .= PHP_EOL . "\t" . '<fields name="request">';
 				$xml .= PHP_EOL . "\t\t" . '<fieldset name="request"';
-				$xml .= PHP_EOL . "\t\t\t" . 'addrulepath="/administrator/components/com_' . $this->fileContentStatic['###component###'] . '/models/rules"';
-				$xml .= PHP_EOL . "\t\t\t" . 'addfieldpath="/administrator/components/com_' . $this->fileContentStatic['###component###'] . '/models/fields">';
+				$xml .= PHP_EOL . "\t\t\t" . 'addrulepath="/administrator/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/models/rules"';
+				$xml .= PHP_EOL . "\t\t\t" . 'addfieldpath="/administrator/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/models/fields">';
 				if (isset($this->hasIdRequest[$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->hasIdRequest[$view['settings']->code]))
 				{
 					foreach ($this->hasIdRequest[$view['settings']->code] as $requestFieldXML)
@@ -1436,9 +1436,9 @@ class Interpretation extends Fields
 				{
 					$xml .= PHP_EOL . "\t" . '<!--' . $this->setLine(__LINE__) . ' Adding page parameters -->';
 					$xml .= PHP_EOL . "\t" . '<fields name="params">';
-					$xml .= PHP_EOL . "\t\t" . '<fieldset name="basic" label="COM_' . $this->fileContentStatic['###COMPONENT###'] . '"';
-					$xml .= PHP_EOL . "\t\t\t" . 'addrulepath="/administrator/components/com_' . $this->fileContentStatic['###component###'] . '/models/rules"';
-					$xml .= PHP_EOL . "\t\t\t" . 'addfieldpath="/administrator/components/com_' . $this->fileContentStatic['###component###'] . '/models/fields">';
+					$xml .= PHP_EOL . "\t\t" . '<fieldset name="basic" label="COM_' . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '"';
+					$xml .= PHP_EOL . "\t\t\t" . 'addrulepath="/administrator/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/models/rules"';
+					$xml .= PHP_EOL . "\t\t\t" . 'addfieldpath="/administrator/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/models/fields">';
 					$xml .= implode("\t\t\t", $params);
 					$xml .= PHP_EOL . "\t\t" . '</fieldset>';
 					$xml .= PHP_EOL . "\t" . '</fields>';
@@ -1587,7 +1587,7 @@ class Interpretation extends Fields
 							case 9:
 								// COM_COMPONENTBUILDER_DYNAMIC_GET_ARRAY_VALUE
 
-								$filter .= PHP_EOL . PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(" . $string . "->" . $field . "))";
+								$filter .= PHP_EOL . PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(" . $string . "->" . $field . "))";
 								$filter .= PHP_EOL . "\t" . $tab . "\t{";
 
 								$filter .= PHP_EOL . "\t" . $tab . "\t\t//" . $this->setLine(__LINE__) . " do your thing here";
@@ -1613,11 +1613,11 @@ class Interpretation extends Fields
 							case 10:
 								// COM_COMPONENTBUILDER_DYNAMIC_GET_REPEATABLE_VALUE
 								$filter .= PHP_EOL . PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " filter " . $as . " based on repeatable value";
-								$filter .= PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkString(" . $string . "->" . $field . "))";
+								$filter .= PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkString(" . $string . "->" . $field . "))";
 								$filter .= PHP_EOL . "\t" . $tab . "\t{";
 
 								$filter .= PHP_EOL . "\t\t" . $tab . "\t\$array = json_decode(" . $string . "->" . $field . ",true);";
-								$filter .= PHP_EOL . "\t\t" . $tab . "\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$array))";
+								$filter .= PHP_EOL . "\t\t" . $tab . "\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$array))";
 								$filter .= PHP_EOL . "\t\t" . $tab . "\t{";
 
 								$filter .= PHP_EOL . "\t\t" . $tab . "\t\t//" . $this->setLine(__LINE__) . " do your thing here";
@@ -1680,7 +1680,7 @@ class Interpretation extends Fields
 				{
 					if ('json' === $decode)
 					{
-						$if = PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkJson(" . $string . "->" . $field . "))" . PHP_EOL . "\t" . $tab . "\t{";
+						$if = PHP_EOL . "\t" . $tab . "\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkJson(" . $string . "->" . $field . "))" . PHP_EOL . "\t" . $tab . "\t{";
 						// json_decode
 						$decoder = $string . "->" . $field . " = json_decode(" . $string . "->" . $field . ", true);";
 					}
@@ -1717,7 +1717,7 @@ class Interpretation extends Fields
 	{
 		$fieldPrepare = '';
 		$runplugins = false;
-		$context = 'com_' . $this->fileContentStatic['###component###'] . '.' . $code;
+		$context = 'com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $code;
 		foreach ($checker as $field => $array)
 		{
 			if (strpos($get['selection']['select'], $field) !== false)
@@ -1737,7 +1737,7 @@ class Interpretation extends Fields
 			}
 		}
 		// load dispatcher
-		$this->JEventDispatcher = array('###DISPATCHER###' => ($runplugins ?: ''));
+		$this->JEventDispatcher = array($this->hhh . 'DISPATCHER' . $this->hhh => ($runplugins ?: ''));
 		// return content prepare fix
 		return $fieldPrepare;
 	}
@@ -1753,7 +1753,7 @@ class Interpretation extends Fields
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
 					$fieldUikit .= PHP_EOL . "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " Checking if " . $field . " has uikit components that must be loaded.";
-					$fieldUikit .= PHP_EOL . "\t" . $tab . "\t\$this->uikitComp = " . $this->fileContentStatic['###Component###'] . "Helper::getUikitComp(" . $string . "->" . $field . ",\$this->uikitComp);";
+					$fieldUikit .= PHP_EOL . "\t" . $tab . "\t\$this->uikitComp = " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::getUikitComp(" . $string . "->" . $field . ",\$this->uikitComp);";
 				}
 			}
 		}
@@ -1773,8 +1773,8 @@ class Interpretation extends Fields
 				if ($this->checkJoint($default, $get, $asBucket))
 				{
 					// build custom join string
-					$otherJoin = PHP_EOL . "\t###TAB###\t//" . $this->setLine(__LINE__) . " set " . $default['valueName'] . " to the ###STRING### object.";
-					$otherJoin .= PHP_EOL . "\t###TAB###\t###STRING###->" . $default['valueName'] . " = \$this->get" . $default['methodName'] . "(###STRING###->" . $this->getAsLookup[$get['key']][$get['on_field']] . ");";
+					$otherJoin = PHP_EOL . "\t" . $this->hhh . "TAB" . $this->hhh . "\t//" . $this->setLine(__LINE__) . " set " . $default['valueName'] . " to the " . $this->hhh . "STRING" . $this->hhh . " object.";
+					$otherJoin .= PHP_EOL . "\t" . $this->hhh . "TAB" . $this->hhh . "\t" . $this->hhh . "STRING" . $this->hhh . "->" . $default['valueName'] . " = \$this->get" . $default['methodName'] . "(" . $this->hhh . "STRING" . $this->hhh . "->" . $this->getAsLookup[$get['key']][$get['on_field']] . ");";
 					// load to other join
 					if (!isset($this->otherJoin[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']]))
 					{
@@ -1869,7 +1869,7 @@ class Interpretation extends Fields
 						{
 							$string = PHP_EOL . "\t\t" . $tab . "//" . $this->setLine(__LINE__) . " Check if " . $ter['state_key'] . " is an array with values.";
 							$string .= PHP_EOL . "\t\t" . $tab . "\$array = " . $ter['state_key'] . ";";
-							$string .= PHP_EOL . "\t\t" . $tab . "if (isset(\$array) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$array))";
+							$string .= PHP_EOL . "\t\t" . $tab . "if (isset(\$array) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$array))";
 							$string .= PHP_EOL . "\t\t" . $tab . "{";
 							$string .= PHP_EOL . "\t\t" . $tab . "\t\$query->where('" . $ter['table_key'] . " " . $ter['operator'] . " (' . implode(',', \$array) . ')');";
 							$string .= PHP_EOL . "\t\t" . $tab . "}";
@@ -1882,7 +1882,7 @@ class Interpretation extends Fields
 						{
 							$string = PHP_EOL . "\t\t" . $tab . "//" . $this->setLine(__LINE__) . " Check if " . $ter['state_key'] . " is a string or numeric value.";
 							$string .= PHP_EOL . "\t\t" . $tab . "\$checkValue = " . $ter['state_key'] . ";";
-							$string .= PHP_EOL . "\t\t" . $tab . "if (isset(\$checkValue) && " . $this->fileContentStatic['###Component###'] . "Helper::checkString(\$checkValue))";
+							$string .= PHP_EOL . "\t\t" . $tab . "if (isset(\$checkValue) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkString(\$checkValue))";
 							$string .= PHP_EOL . "\t\t" . $tab . "{";
 							$string .= PHP_EOL . "\t\t" . $tab . "\t\$query->where('" . $ter['table_key'] . " " . $ter['operator'] . " ' . \$db->quote(\$checkValue));";
 							$string .= PHP_EOL . "\t\t" . $tab . "}";
@@ -2014,7 +2014,7 @@ class Interpretation extends Fields
 					// set the string
 					if ($whe['operator'] === 'IN' || $whe['operator'] === 'NOT IN')
 					{
-						$string = "if (isset(" . $whe['value_key'] . ") && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(" . $whe['value_key'] . "))";
+						$string = "if (isset(" . $whe['value_key'] . ") && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(" . $whe['value_key'] . "))";
 						$string .= PHP_EOL . "\t" . $tabe . "\t{";
 						$string .= PHP_EOL . "\t" . $tabe . "\t\t//" . $this->setLine(__LINE__) . " Get where " . $whe['table_key'] . " is " . $whe['value_key'];
 						$string .= PHP_EOL . "\t" . $tabe . "\t\t\$query->where('" . $whe['table_key'] . " " . $whe['operator'] . $value;
@@ -2112,10 +2112,10 @@ class Interpretation extends Fields
 					break;
 			}
 			// check that the default and the redirect page is not the same
-			if (isset($this->fileContentStatic['###SITE_DEFAULT_VIEW###']) && $this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $view['settings']->code)
+			if (isset($this->fileContentStatic[$this->hhh . 'SITE_DEFAULT_VIEW' . $this->hhh]) && $this->fileContentStatic[$this->hhh . 'SITE_DEFAULT_VIEW' . $this->hhh] != $view['settings']->code)
 			{
 				$redirectMessage = "\t\t\t//" . $this->setLine(__LINE__) . " redirect away to the default view if no access allowed.";
-				$redirectString = "JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $this->fileContentStatic['###SITE_DEFAULT_VIEW###'] . "')";
+				$redirectString = "JRoute::_('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $this->fileContentStatic[$this->hhh . 'SITE_DEFAULT_VIEW' . $this->hhh] . "')";
 			}
 			else
 			{
@@ -2123,7 +2123,7 @@ class Interpretation extends Fields
 				$redirectString = 'JURI::root()';
 			}
 			$accessCheck[] = PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " check if this user has permission to access item";
-			$accessCheck[] = "\t\tif (!" . $userString . "->authorise('site." . $view['settings']->code . ".access', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+			$accessCheck[] = "\t\tif (!" . $userString . "->authorise('site." . $view['settings']->code . ".access', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 			$accessCheck[] = "\t\t{";
 			$accessCheck[] = "\t\t\t\$app = JFactory::getApplication();";
 			// set lang
@@ -2205,9 +2205,9 @@ class Interpretation extends Fields
 				if ('site' === $this->target)
 				{
 					// check that the default and the redirect page is not the same
-					if (isset($this->fileContentStatic['###SITE_DEFAULT_VIEW###']) && $this->fileContentStatic['###SITE_DEFAULT_VIEW###'] != $code)
+					if (isset($this->fileContentStatic[$this->hhh . 'SITE_DEFAULT_VIEW' . $this->hhh]) && $this->fileContentStatic[$this->hhh . 'SITE_DEFAULT_VIEW' . $this->hhh] != $code)
 					{
-						$redirectString = "JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $this->fileContentStatic['###SITE_DEFAULT_VIEW###'] . "')";
+						$redirectString = "JRoute::_('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $this->fileContentStatic[$this->hhh . 'SITE_DEFAULT_VIEW' . $this->hhh] . "')";
 					}
 					else
 					{
@@ -2217,7 +2217,7 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					$getItem .= PHP_EOL . "\t" . $tab . "\t\t\$app->redirect('index.php?option=com_" . $this->fileContentStatic['###component###'] . "');";
+					$getItem .= PHP_EOL . "\t" . $tab . "\t\t\$app->redirect('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
 				}
 				$getItem .= PHP_EOL . "\t" . $tab . "\t\treturn false;";
 			}
@@ -2227,7 +2227,7 @@ class Interpretation extends Fields
 			}
 			$getItem .= PHP_EOL . "\t" . $tab . "\t}";
 			// dispatcher placholder
-			$getItem .= "###DISPATCHER###";
+			$getItem .= $this->hhh . "DISPATCHER" . $this->hhh;
 			if (ComponentbuilderHelper::checkArray($get->main_get))
 			{
 				$asBucket = array();
@@ -2276,7 +2276,7 @@ class Interpretation extends Fields
 				}
 			}
 			// set the scripts
-			$Component = $this->fileContentStatic['###Component###'];
+			$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 			$script = '';
 			foreach ($this->cryptionTypes as $cryptionType)
 			{
@@ -2312,12 +2312,12 @@ class Interpretation extends Fields
 				$getItem .= PHP_EOL . "\t" . $tab . "\t\$this->_item[\$pk] = \$data;";
 			}
 			// only update if dispacher placholder is found
-			if (strpos($getItem, '###DISPATCHER###') !== false)
+			if (strpos($getItem, $this->hhh . 'DISPATCHER' . $this->hhh) !== false)
 			{
 				// check if the dispather should be added
 				if (!isset($this->JEventDispatcher) || !ComponentbuilderHelper::checkArray($this->JEventDispatcher))
 				{
-					$this->JEventDispatcher = array('###DISPATCHER###' => '');
+					$this->JEventDispatcher = array($this->hhh . 'DISPATCHER' . $this->hhh => '');
 				}
 				$getItem = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
 			}
@@ -2342,7 +2342,7 @@ class Interpretation extends Fields
 				$main = '';
 				if ($view->gettype == 3)
 				{
-					// ###SITE_GET_ITEM### <<<DYNAMIC>>>
+					// SITE_GET_ITEM <<<DYNAMIC>>>
 					$main .= PHP_EOL . PHP_EOL . "\t\tif (!isset(\$this->initSet) || !\$this->initSet)";
 					$main .= PHP_EOL . "\t\t{";
 					$main .= PHP_EOL . "\t\t\t\$this->user\t\t= JFactory::getUser();";
@@ -2369,13 +2369,13 @@ class Interpretation extends Fields
 					$main .= PHP_EOL . "\t\t\t\$this->initSet\t\t= true;";
 					$main .= PHP_EOL . "\t\t}";
 					$main .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get the global params";
-					$main .= PHP_EOL . "\t\t\$globalParams = JComponentHelper::getParams('com_" . $this->fileContentStatic['###component###'] . "', true);";
+					$main .= PHP_EOL . "\t\t\$globalParams = JComponentHelper::getParams('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "', true);";
 					// set php before listquery
 					if (isset($view->add_php_getlistquery) && $view->add_php_getlistquery == 1 && isset($view->php_getlistquery) && ComponentbuilderHelper::checkString($view->php_getlistquery))
 					{
 						$main .= $this->setPlaceholders($view->php_getlistquery, $this->placeholders);
 					}
-					// ###SITE_GET_LIST_QUERY### <<<DYNAMIC>>>
+					// SITE_GET_LIST_QUERY <<<DYNAMIC>>>
 					$main .= $this->setCustomViewListQuery($view, $view->code, false);
 					// set before items php
 					if (isset($view->add_php_before_getitems) && $view->add_php_before_getitems == 1 && isset($view->php_before_getitems) && ComponentbuilderHelper::checkString($view->php_before_getitems))
@@ -2395,7 +2395,7 @@ class Interpretation extends Fields
 					$main .= PHP_EOL . "\t\t{";
 					$main .= PHP_EOL . "\t\t\treturn false;";
 					$main .= PHP_EOL . "\t\t}";
-					// ###SITE_GET_ITEMS### <<<DYNAMIC>>>
+					// SITE_GET_ITEMS <<<DYNAMIC>>>
 					$main .= $this->setCustomViewGetItems($view, $view->code);
 					$main .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " return items";
 					$main .= PHP_EOL . "\t\treturn \$items;";
@@ -2403,7 +2403,7 @@ class Interpretation extends Fields
 				}
 				// load the main mehtod
 				$methods .= $this->setMainCustomMehtod($main, $view->getcustom, $type);
-				// ###SITE_CUSTOM_METHODS### <<<DYNAMIC>>>
+				// SITE_CUSTOM_METHODS <<<DYNAMIC>>>
 				$methods .= $this->setCustomViewCustomItemMethods($view, $view->code);
 			}
 		}
@@ -2543,7 +2543,7 @@ class Interpretation extends Fields
 			$method .= PHP_EOL . "\t*/";
 			$method .= PHP_EOL . "\tpublic function getUikitComp()";
 			$method .= PHP_EOL . "\t{";
-			$method .= PHP_EOL . "\t\tif (isset(\$this->uikitComp) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$this->uikitComp))";
+			$method .= PHP_EOL . "\t\tif (isset(\$this->uikitComp) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$this->uikitComp))";
 			$method .= PHP_EOL . "\t\t{";
 			$method .= PHP_EOL . "\t\t\treturn \$this->uikitComp;";
 			$method .= PHP_EOL . "\t\t}";
@@ -2597,7 +2597,7 @@ class Interpretation extends Fields
 					$methods .= PHP_EOL . "\t*";
 					$methods .= PHP_EOL . "\t*/";
 					$methods .= PHP_EOL . "\tpublic function get" . $default['methodName'] . "(\$" . $default['on_field'] . ")";
-					$methods .= PHP_EOL . "\t{###CRYPT###";
+					$methods .= PHP_EOL . "\t{" . $this->hhh . "CRYPT" . $this->hhh;
 					$methods .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get a db connection.";
 					$methods .= PHP_EOL . "\t\t\$db = JFactory::getDbo();";
 					$methods .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Create a new query object.";
@@ -2610,7 +2610,7 @@ class Interpretation extends Fields
 					{
 						$methods .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Check if \$" . $default['on_field'] . " is an array with values.";
 						$methods .= PHP_EOL . "\t\t\$array = \$" . $default['on_field'] . ";";
-						$methods .= PHP_EOL . "\t\tif (isset(\$array) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$array, true))";
+						$methods .= PHP_EOL . "\t\tif (isset(\$array) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$array, true))";
 						$methods .= PHP_EOL . "\t\t{";
 						$methods .= PHP_EOL . "\t\t\t\$query->where('" . $get['join_field'] . " " . $get['operator'] . " (' . implode(',', \$array) . ')');";
 						$methods .= PHP_EOL . "\t\t}";
@@ -2663,7 +2663,7 @@ class Interpretation extends Fields
 					$methods .= PHP_EOL . "\t\tif (\$db->getNumRows())";
 					$methods .= PHP_EOL . "\t\t{";
 					// set dispatcher placeholder
-					$methods .= "###DISPATCHER###";
+					$methods .= $this->hhh . "DISPATCHER" . $this->hhh;
 					// set decoding of needed fields
 					if (isset($this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']]))
 					{
@@ -2685,7 +2685,7 @@ class Interpretation extends Fields
 						$contentprepareChecker = $this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']];
 					}
 					// set joined values
-					$placeholders = array('###TAB###' => "\t\t", '###STRING###' => '$item');
+					$placeholders = array($this->hhh . 'TAB' . $this->hhh => "\t\t", $this->hhh . 'STRING' . $this->hhh => '$item');
 					$joinedChecker = (isset($this->otherJoin[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherJoin[$this->target][$default['code']][$default['as']])) ? $this->otherJoin[$this->target][$default['code']][$default['as']] : '';
 					if ((isset($decodeChecker) && ComponentbuilderHelper::checkArray($decodeChecker)) ||
 						(isset($uikitChecker) && ComponentbuilderHelper::checkArray($uikitChecker)) ||
@@ -2765,7 +2765,7 @@ class Interpretation extends Fields
 					$methods .= PHP_EOL . "\t}";
 
 					// set the script if it was found
-					$Component = $this->fileContentStatic['###Component###'];
+					$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 					$script = '';
 					foreach ($this->cryptionTypes as $cryptionType)
 					{
@@ -2777,19 +2777,19 @@ class Interpretation extends Fields
 							$script .= PHP_EOL . "\t\t\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);" . PHP_EOL;
 						}
 					}
-					$methods = str_replace('###CRYPT###', $script, $methods);
+					$methods = str_replace($this->hhh . 'CRYPT' . $this->hhh, $script, $methods);
 				}
 				// insure the crypt placeholder is removed
-				$methods = str_replace('###CRYPT###', '', $methods);
+				$methods = str_replace($this->hhh . 'CRYPT' . $this->hhh, '', $methods);
 			}
 		}
 		// only update if dispacher placholder is found
-		if (strpos($methods, '###DISPATCHER###') !== false)
+		if (strpos($methods, $this->hhh . 'DISPATCHER' . $this->hhh) !== false)
 		{
 			// check if the dispather should be added
 			if (!isset($this->JEventDispatcher) || !ComponentbuilderHelper::checkArray($this->JEventDispatcher))
 			{
-				$this->JEventDispatcher = array('###DISPATCHER###' => '');
+				$this->JEventDispatcher = array($this->hhh . 'DISPATCHER' . $this->hhh => '');
 			}
 			$methods = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $methods);
 		}
@@ -2906,14 +2906,14 @@ class Interpretation extends Fields
 			$this->siteDecrypt[$cryptionType][$code] = false;
 		}
 		// set the component name
-		$Component = $this->fileContentStatic['###Component###'];
+		$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 		// start load the get item
 		if (ComponentbuilderHelper::checkObject($get))
 		{
 			$getItem .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Insure all item fields are adapted where needed.";
 			$getItem .= PHP_EOL . "\t\tif (" . $Component . "Helper::checkArray(\$items))";
 			$getItem .= PHP_EOL . "\t\t{";
-			$getItem .= "###DISPATCHER###";
+			$getItem .= $this->hhh . "DISPATCHER" . $this->hhh;
 			$getItem .= PHP_EOL . "\t\t\tforeach (\$items as \$nr => &\$item)";
 			$getItem .= PHP_EOL . "\t\t\t{";
 			$getItem .= PHP_EOL . "\t\t\t\t//" . $this->setLine(__LINE__) . " Always create a slug for sef URL's";
@@ -2963,12 +2963,12 @@ class Interpretation extends Fields
 				}
 			}
 			// only update if dispacher placholder is found
-			if (strpos($getItem, '###DISPATCHER###') !== false)
+			if (strpos($getItem, $this->hhh . 'DISPATCHER' . $this->hhh) !== false)
 			{
 				// check if the dispather should be added
 				if (!isset($this->JEventDispatcher) || !ComponentbuilderHelper::checkArray($this->JEventDispatcher))
 				{
-					$this->JEventDispatcher = array('###DISPATCHER###' => '');
+					$this->JEventDispatcher = array($this->hhh . 'DISPATCHER' . $this->hhh => '');
 				}
 				$getItem = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $getItem);
 			}
@@ -3034,13 +3034,13 @@ class Interpretation extends Fields
 				// add id to list view
 				if (isset($this->customAdminViewListId[$view['settings']->code]))
 				{
-					// ###HIDDEN_INPUT_VALUES###
-					$this->fileContentDynamic[$view['settings']->code]['###HIDDEN_INPUT_VALUES###'] = PHP_EOL . "\t" . '<input type="hidden" name="id" value="<?php echo $this->app->input->getInt(\'id\', 0); ?>" />';
+					// HIDDEN_INPUT_VALUES
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'HIDDEN_INPUT_VALUES' . $this->hhh] = PHP_EOL . "\t" . '<input type="hidden" name="id" value="<?php echo $this->app->input->getInt(\'id\', 0); ?>" />';
 				}
 				else
 				{
-					// also set the input value ###HIDDEN_INPUT_VALUES###
-					$this->fileContentDynamic[$view['settings']->code]['###HIDDEN_INPUT_VALUES###'] = '';
+					// also set the input value HIDDEN_INPUT_VALUES
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'HIDDEN_INPUT_VALUES' . $this->hhh] = '';
 				}
 			}
 			// add the custom get methods
@@ -3108,48 +3108,48 @@ class Interpretation extends Fields
 		// ensure correct target is set
 		$TARGET = ComponentbuilderHelper::safeString($this->target, 'U');
 
-		// set libraries ###'.$TARGET.'_LIBRARIES_LOADER###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_LIBRARIES_LOADER###'] = $this->setLibrariesLoader($view);
+		// set libraries $TARGET.'_LIBRARIES_LOADER
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_LIBRARIES_LOADER' . $this->hhh] = $this->setLibrariesLoader($view);
 
-		// set uikit ###'.$TARGET.'_UIKIT_LOADER###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_UIKIT_LOADER###'] = $this->setUikitLoader($view);
+		// set uikit $TARGET.'_UIKIT_LOADER
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_UIKIT_LOADER' . $this->hhh] = $this->setUikitLoader($view);
 
-		// set Google Charts ###'.$TARGET.'_GOOGLECHART_LOADER###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_GOOGLECHART_LOADER###'] = $this->setGoogleChartLoader($view);
+		// set Google Charts $TARGET.'_GOOGLECHART_LOADER
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_GOOGLECHART_LOADER' . $this->hhh] = $this->setGoogleChartLoader($view);
 
-		// set Footable ###FOOTABLE_LOADER###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_FOOTABLE_LOADER###'] = $this->setFootableScriptsLoader($view);
+		// set Footable FOOTABLE_LOADER
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_FOOTABLE_LOADER' . $this->hhh] = $this->setFootableScriptsLoader($view);
 
-		// set metadata ###DOCUMENT_METADATA###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_DOCUMENT_METADATA###'] = $this->setDocumentMetadata($view);
+		// set metadata DOCUMENT_METADATA
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_DOCUMENT_METADATA' . $this->hhh] = $this->setDocumentMetadata($view);
 
-		// set custom php scripting ###DOCUMENT_CUSTOM_PHP###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_DOCUMENT_CUSTOM_PHP###'] = $this->setDocumentCustomPHP($view);
+		// set custom php scripting DOCUMENT_CUSTOM_PHP
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_DOCUMENT_CUSTOM_PHP' . $this->hhh] = $this->setDocumentCustomPHP($view);
 
-		// set custom css ###DOCUMENT_CUSTOM_CSS###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_DOCUMENT_CUSTOM_CSS###'] = $this->setDocumentCustomCSS($view);
+		// set custom css DOCUMENT_CUSTOM_CSS
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_DOCUMENT_CUSTOM_CSS' . $this->hhh] = $this->setDocumentCustomCSS($view);
 
-		// set custom javascript ###DOCUMENT_CUSTOM_JS###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_DOCUMENT_CUSTOM_JS###'] = $this->setDocumentCustomJS($view);
+		// set custom javascript DOCUMENT_CUSTOM_JS
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_DOCUMENT_CUSTOM_JS' . $this->hhh] = $this->setDocumentCustomJS($view);
 
-		// set custom css file ###VIEWCSS###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_VIEWCSS###'] = $this->setCustomCSS($view);
+		// set custom css file VIEWCSS
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_VIEWCSS' . $this->hhh] = $this->setCustomCSS($view);
 
-		// set the custom buttons ###CUSTOM_BUTTONS###
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_CUSTOM_BUTTONS###'] = $this->setCustomButtons($view);
+		// set the custom buttons CUSTOM_BUTTONS
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_CUSTOM_BUTTONS' . $this->hhh] = $this->setCustomButtons($view);
 
 		// only set the custom get form method if site target
 		if ('site' === $this->target)
 		{
-			// set the custom get form method  ###SITE_CUSTOM_GET_FORM_METHOD###
-			$this->fileContentDynamic[$view['settings']->code]['###SITE_CUSTOM_GET_FORM_METHOD###'] = $this->setCustomGetForm($view);
+			// set the custom get form method  SITE_CUSTOM_GET_FORM_METHOD
+			$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_CUSTOM_GET_FORM_METHOD' . $this->hhh] = $this->setCustomGetForm($view);
 		}
 
 		// see if we should add get modules to the view.html
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_GET_MODULE###'] = $this->setGetModules($view, $TARGET);
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_GET_MODULE' . $this->hhh] = $this->setGetModules($view, $TARGET);
 
 		// set a JavaScript file if needed
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_LIBRARIES_LOADER###'] .= $this->setJavaScriptFile($view, $TARGET);
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_LIBRARIES_LOADER' . $this->hhh] .= $this->setJavaScriptFile($view, $TARGET);
 
 		// fix just incase we missed it somewhere
 		$this->lang = $tmp;
@@ -3188,10 +3188,10 @@ class Interpretation extends Fields
 			$addModule[] = "\t\t\t}";
 			$addModule[] = "\t\t}";
 			$addModule[] = "\t\t//" . $this->setLine(__LINE__) . " check if modules were found";
-			$addModule[] = "\t\tif (\$found && isset(\$this->setModules[\$position]) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$this->setModules[\$position]))";
+			$addModule[] = "\t\tif (\$found && isset(\$this->setModules[\$position]) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$this->setModules[\$position]))";
 			$addModule[] = "\t\t{";
 			$addModule[] = "\t\t\t//" . $this->setLine(__LINE__) . " set class";
-			$addModule[] = "\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkString(\$class))";
+			$addModule[] = "\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkString(\$class))";
 			$addModule[] = "\t\t\t{";
 			$addModule[] = "\t\t\t\t\$class = ' class=\"'.\$class.'\" ';";
 			$addModule[] = "\t\t\t}";
@@ -3220,11 +3220,11 @@ class Interpretation extends Fields
 			$addModule[] = "\t\treturn false;";
 			$addModule[] = "\t}";
 
-			$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_GET_MODULE_JIMPORT###'] = PHP_EOL . "jimport('joomla.application.module.helper');";
+			$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_GET_MODULE_JIMPORT' . $this->hhh] = PHP_EOL . "jimport('joomla.application.module.helper');";
 
 			return implode(PHP_EOL, $addModule);
 		}
-		$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_GET_MODULE_JIMPORT###'] = '';
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_GET_MODULE_JIMPORT' . $this->hhh] = '';
 		return '';
 	}
 
@@ -3261,50 +3261,50 @@ class Interpretation extends Fields
 			{
 				$viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
 			}
-			// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-			$this->fileContentDynamic[$viewName]['###' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER###'] = '';
-			// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-			$this->fileContentDynamic[$viewName]['###' . $TARGET . '_CUSTOM_BUTTONS_METHOD###'] = '';
+			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
+			$this->fileContentDynamic[$viewName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER' . $this->hhh] = '';
+			// set the custom buttons CUSTOM_BUTTONS_METHOD
+			$this->fileContentDynamic[$viewName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_METHOD' . $this->hhh] = '';
 		}
 		elseif (3 == $type)
 		{
 			// set the names
 			$viewName = ComponentbuilderHelper::safeString($view['settings']->name_single);
 			$viewsName = ComponentbuilderHelper::safeString($view['settings']->name_list);
-			// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER_LIST###
-			$this->fileContentDynamic[$viewsName]['###' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST###'] = '';
-			// set the custom buttons ###CUSTOM_BUTTONS_METHOD_LIST###
-			$this->fileContentDynamic[$viewsName]['###' . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST###'] = '';
+			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER_LIST
+			$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST' . $this->hhh] = '';
+			// set the custom buttons CUSTOM_BUTTONS_METHOD_LIST
+			$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST' . $this->hhh] = '';
 		}
 		// if site add buttons to view
 		if ($this->target === 'site')
 		{
-			// set the custom buttons ###SITE_TOP_BUTTON###
-			$this->fileContentDynamic[$viewName]['###SITE_TOP_BUTTON###'] = '';
-			// set the custom buttons ###SITE_BOTTOM_BUTTON###
-			$this->fileContentDynamic[$viewName]['###SITE_BOTTOM_BUTTON###'] = '';
+			// set the custom buttons SITE_TOP_BUTTON
+			$this->fileContentDynamic[$viewName][$this->hhh . 'SITE_TOP_BUTTON' . $this->hhh] = '';
+			// set the custom buttons SITE_BOTTOM_BUTTON
+			$this->fileContentDynamic[$viewName][$this->hhh . 'SITE_BOTTOM_BUTTON' . $this->hhh] = '';
 			// load into place
 			switch ($view['settings']->button_position)
 			{
 				case 1:
 					// set buttons to top right of the view
-					$this->fileContentDynamic[$viewName]['###SITE_TOP_BUTTON###'] = '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
+					$this->fileContentDynamic[$viewName][$this->hhh . 'SITE_TOP_BUTTON' . $this->hhh] = '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
 					break;
 				case 2:
 					// set buttons to top left of the view
-					$this->fileContentDynamic[$viewName]['###SITE_TOP_BUTTON###'] = '<?php echo $this->toolbar->render(); ?>';
+					$this->fileContentDynamic[$viewName][$this->hhh . 'SITE_TOP_BUTTON' . $this->hhh] = '<?php echo $this->toolbar->render(); ?>';
 					break;
 				case 3:
 					// set buttons to buttom right of the view
-					$this->fileContentDynamic[$viewName]['###SITE_BOTTOM_BUTTON###'] = '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
+					$this->fileContentDynamic[$viewName][$this->hhh . 'SITE_BOTTOM_BUTTON' . $this->hhh] = '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
 					break;
 				case 4:
 					// set buttons to buttom left of the view
-					$this->fileContentDynamic[$viewName]['###SITE_BOTTOM_BUTTON###'] = '<?php echo $this->toolbar->render(); ?>';
+					$this->fileContentDynamic[$viewName][$this->hhh . 'SITE_BOTTOM_BUTTON' . $this->hhh] = '<?php echo $this->toolbar->render(); ?>';
 					break;
 				case 5:
 					// set buttons to buttom left of the view
-					$this->placeholders['[[[SITE_TOOLBAR]]]'] = '<?php echo $this->toolbar->render(); ?>';
+					$this->placeholders[$this->bbb . 'SITE_TOOLBAR' . $this->ddd] = '<?php echo $this->toolbar->render(); ?>';
 					break;
 			}
 		}
@@ -3349,7 +3349,7 @@ class Interpretation extends Fields
 							{
 								$this->onlyFunctionButton[$viewsName] = array();
 							}
-							$this->onlyFunctionButton[$viewsName][] = "\t" . $tab . "if (\$this->user->authorise('" . $viewName . "." . $keyCode . "', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+							$this->onlyFunctionButton[$viewsName][] = "\t" . $tab . "if (\$this->user->authorise('" . $viewName . "." . $keyCode . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 							$this->onlyFunctionButton[$viewsName][] = "\t" . $tab . "{";
 							$this->onlyFunctionButton[$viewsName][] = "\t" . $tab . "\t//" . $this->setLine(__LINE__) . " add " . $custom_button['name'] . " button.";
 							$this->onlyFunctionButton[$viewsName][] = "\t" . $tab . "\tJToolBarHelper::custom('" . $viewsName . "." . $custom_button['method'] . "', '" . $custom_button['icomoon'] . "', '', '" . $keyLang . "', false);";
@@ -3357,7 +3357,7 @@ class Interpretation extends Fields
 						}
 						else
 						{
-							$buttons[] = "\t" . $tab . "\tif (\$this->user->authorise('" . $viewName . "." . $keyCode . "', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+							$buttons[] = "\t" . $tab . "\tif (\$this->user->authorise('" . $viewName . "." . $keyCode . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 							$buttons[] = "\t" . $tab . "\t{";
 							$buttons[] = "\t" . $tab . "\t\t//" . $this->setLine(__LINE__) . " add " . $custom_button['name'] . " button.";
 							$buttons[] = "\t" . $tab . "\t\tJToolBarHelper::custom('" . $viewsName . "." . $custom_button['method'] . "', '" . $custom_button['icomoon'] . "', '', '" . $keyLang . "', false);";
@@ -3372,14 +3372,14 @@ class Interpretation extends Fields
 				// insure the controller and model strings are added
 				if (isset($view['settings']->php_controller_list) && ComponentbuilderHelper::checkString($view['settings']->php_controller_list) && $view['settings']->php_controller_list != '//')
 				{
-					// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-					$this->fileContentDynamic[$viewsName]['###' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST###'] = PHP_EOL . PHP_EOL . $this->setPlaceholders($view['settings']->php_controller_list, $this->placeholders);
+					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
+					$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST' . $this->hhh] = PHP_EOL . PHP_EOL . $this->setPlaceholders($view['settings']->php_controller_list, $this->placeholders);
 				}
 				// load the model
 				if (isset($view['settings']->php_model_list) && ComponentbuilderHelper::checkString($view['settings']->php_model_list) && $view['settings']->php_model_list != '//')
 				{
-					// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-					$this->fileContentDynamic[$viewsName]['###' . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST###'] = PHP_EOL . PHP_EOL . $this->setPlaceholders($view['settings']->php_model_list, $this->placeholders);
+					// set the custom buttons CUSTOM_BUTTONS_METHOD
+					$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST' . $this->hhh] = PHP_EOL . PHP_EOL . $this->setPlaceholders($view['settings']->php_model_list, $this->placeholders);
 				}
 			}
 			else
@@ -3387,22 +3387,22 @@ class Interpretation extends Fields
 				// insure the controller and model strings are added
 				if (ComponentbuilderHelper::checkString($view['settings']->php_controller) && $view['settings']->php_controller != '//')
 				{
-					// set the custom buttons ###CUSTOM_BUTTONS_CONTROLLER###
-					$this->fileContentDynamic[$viewName]['###' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER###'] = PHP_EOL . PHP_EOL . $this->setPlaceholders($view['settings']->php_controller, $this->placeholders);
+					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
+					$this->fileContentDynamic[$viewName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER' . $this->hhh] = PHP_EOL . PHP_EOL . $this->setPlaceholders($view['settings']->php_controller, $this->placeholders);
 					if ('site' === $this->target)
 					{
 						// add the controller for this view
 						// build the file
 						$target = array($this->target => $viewName);
 						$this->buildDynamique($target, 'custom_form');
-						###GET_FORM_CUSTOM###
+						// GET_FORM_CUSTOM
 					}
 				}
 				// load the model
 				if (ComponentbuilderHelper::checkString($view['settings']->php_model) && $view['settings']->php_model != '//')
 				{
-					// set the custom buttons ###CUSTOM_BUTTONS_METHOD###
-					$this->fileContentDynamic[$viewName]['###' . $TARGET . '_CUSTOM_BUTTONS_METHOD###'] = PHP_EOL . PHP_EOL . $this->setPlaceholders($view['settings']->php_model, $this->placeholders);
+					// set the custom buttons CUSTOM_BUTTONS_METHOD
+					$this->fileContentDynamic[$viewName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_METHOD' . $this->hhh] = PHP_EOL . PHP_EOL . $this->setPlaceholders($view['settings']->php_model, $this->placeholders);
 				}
 			}
 			// return buttons if they were build
@@ -3460,19 +3460,19 @@ class Interpretation extends Fields
 			$modified = $this->getLastModifiedDate($view);
 			// add file to view
 			$target = array($this->target => $view['settings']->code);
-			$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+			$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 			$this->buildDynamique($target, 'javascript_file', false, $config);
 			// set path
 			if ('site' === $this->target)
 			{
-				$path = '/components/com_' . $this->fileContentStatic['###component###'] . '/assets/js/' . $view['settings']->code . '.js';
+				$path = '/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/assets/js/' . $view['settings']->code . '.js';
 			}
 			else
 			{
-				$path = '/administrator/components/com_' . $this->fileContentStatic['###component###'] . '/assets/js/' . $view['settings']->code . '.js';
+				$path = '/administrator/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/assets/js/' . $view['settings']->code . '.js';
 			}
 			// add script to file
-			$this->fileContentDynamic[$view['settings']->code]['###' . $TARGET . '_JAVASCRIPT_FILE###'] = $this->setPlaceholders($view['settings']->javascript_file, $this->placeholders);
+			$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_JAVASCRIPT_FILE' . $this->hhh] = $this->setPlaceholders($view['settings']->javascript_file, $this->placeholders);
 			// add script to view
 			return PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add View JavaScript File" . PHP_EOL . "\t\t" . $this->setIncludeLibScript($path);
 		}
@@ -3625,9 +3625,9 @@ class Interpretation extends Fields
 			$chart[] = PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " add the google chart builder class.";
 			$chart[] = "\t\trequire_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/chartbuilder.php';";
 			$chart[] = "\t\t//" . $this->setLine(__LINE__) . " load the google chart js.";
-			$chart[] = "\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/js/google.jsapi.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
-			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
-			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/canvg.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$chart[] = "\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/js/google.jsapi.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$chart[] = "\t\t\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/canvg.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
 			return implode(PHP_EOL, $chart);
 		}
 		return '';
@@ -3650,7 +3650,7 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . "\t\trequire_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
 		}
 		$setter .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Initialize the header checker.";
-		$setter .= PHP_EOL . "\t\t\$HeaderCheck = new " . $this->fileContentStatic['###component###'] . "HeaderCheck;";
+		$setter .= PHP_EOL . "\t\t\$HeaderCheck = new " . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "HeaderCheck;";
 		// check if this view should get libraries
 		if (isset($this->libManager[$this->target][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->libManager[$this->target][$view['settings']->code]))
 		{
@@ -3831,11 +3831,11 @@ class Interpretation extends Fields
 			switch ($pathInfo['extension'])
 			{
 				case 'js':
-					return '$this->document->addScript(' . $JURI . '"' . $path . '", (' . $this->fileContentStatic['###Component###'] . 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");';
+					return '$this->document->addScript(' . $JURI . '"' . $path . '", (' . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");';
 					break;
 				case 'css':
 				case 'less':
-					return '$this->document->addStyleSheet(' . $JURI . '"' . $path . '", (' . $this->fileContentStatic['###Component###'] . 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");';
+					return '$this->document->addStyleSheet(' . $JURI . '"' . $path . '", (' . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");';
 					break;
 				case 'php':
 					if (strpos($path, 'http') === false)
@@ -3852,15 +3852,15 @@ class Interpretation extends Fields
 	{
 		if (strpos($root, '/media/') !== false && strpos($root, '/admin/') === false && strpos($root, '/site/') === false)
 		{
-			return str_replace('/media/', '/media/com_' . $this->fileContentStatic['###component###'] . '/', $root);
+			return str_replace('/media/', '/media/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/', $root);
 		}
 		elseif (strpos($root, '/media/') === false && strpos($root, '/admin/') !== false && strpos($root, '/site/') === false)
 		{
-			return str_replace('/admin/', '/administrator/components/com_' . $this->fileContentStatic['###component###'] . '/', $root);
+			return str_replace('/admin/', '/administrator/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/', $root);
 		}
 		elseif (strpos($root, '/media/') === false && strpos($root, '/admin/') === false && strpos($root, '/site/') !== false)
 		{
-			return str_replace('/site/', '/components/com_' . $this->fileContentStatic['###component###'] . '/', $root);
+			return str_replace('/site/', '/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/', $root);
 		}
 		return $root;
 	}
@@ -3897,12 +3897,12 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " The uikit css.";
 			$setter .= PHP_EOL . $tabV . "\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/uikit'.\$style.\$size.'.css', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/css/uikit'.\$style.\$size.'.css', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " The uikit js.";
 			$setter .= PHP_EOL . $tabV . "\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/uikit'.\$size.'.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/js/uikit'.\$size.'.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 		}
 		// load the components need
@@ -3922,9 +3922,9 @@ class Interpretation extends Fields
 			{
 				$setter .= PHP_EOL . PHP_EOL . $tabV . "\t\t\t//" . $this->setLine(__LINE__) . " Get field uikit components needed in this view.";
 				$setter .= PHP_EOL . $tabV . "\t\t\t\$uikitFieldComp = \$this->get('UikitComp');";
-				$setter .= PHP_EOL . $tabV . "\t\t\tif (isset(\$uikitFieldComp) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$uikitFieldComp))";
+				$setter .= PHP_EOL . $tabV . "\t\t\tif (isset(\$uikitFieldComp) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$uikitFieldComp))";
 				$setter .= PHP_EOL . $tabV . "\t\t\t{";
-				$setter .= PHP_EOL . $tabV . "\t\t\t\tif (isset(\$uikitComp) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$uikitComp))";
+				$setter .= PHP_EOL . $tabV . "\t\t\t\tif (isset(\$uikitComp) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$uikitComp))";
 				$setter .= PHP_EOL . $tabV . "\t\t\t\t{";
 				$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
 				$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\$uikitComp = array_unique(\$uikitComp);";
@@ -3937,26 +3937,26 @@ class Interpretation extends Fields
 			}
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 			$setter .= PHP_EOL . PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " Load the needed uikit components in this view.";
-			$setter .= PHP_EOL . $tabV . "\t\tif (\$uikit != 2 && isset(\$uikitComp) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$uikitComp))";
+			$setter .= PHP_EOL . $tabV . "\t\tif (\$uikit != 2 && isset(\$uikitComp) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t//" . $this->setLine(__LINE__) . " load just in case.";
 			$setter .= PHP_EOL . $tabV . "\t\t\tjimport('joomla.filesystem.file');";
 			$setter .= PHP_EOL . $tabV . "\t\t\t//" . $this->setLine(__LINE__) . " loading...";
 			$setter .= PHP_EOL . $tabV . "\t\t\tforeach (\$uikitComp as \$class)";
 			$setter .= PHP_EOL . $tabV . "\t\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\tforeach (" . $this->fileContentStatic['###Component###'] . "Helper::\$uk_components[\$class] as \$name)";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\tforeach (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::\$uk_components[\$class] as \$name)";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t//" . $this->setLine(__LINE__) . " check if the CSS file exists.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t//" . $this->setLine(__LINE__) . " load the css.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t//" . $this->setLine(__LINE__) . " check if the JavaScript file exists.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t//" . $this->setLine(__LINE__) . " load the js.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/js/components/'.\$name.\$size.'.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t}";
@@ -3966,26 +3966,26 @@ class Interpretation extends Fields
 		{
 			$setter .= PHP_EOL . PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " Load the needed uikit components in this view.";
 			$setter .= PHP_EOL . $tabV . "\t\t\$uikitComp = \$this->get('UikitComp');";
-			$setter .= PHP_EOL . $tabV . "\t\tif (\$uikit != 2 && isset(\$uikitComp) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$uikitComp))";
+			$setter .= PHP_EOL . $tabV . "\t\tif (\$uikit != 2 && isset(\$uikitComp) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t//" . $this->setLine(__LINE__) . " load just in case.";
 			$setter .= PHP_EOL . $tabV . "\t\t\tjimport('joomla.filesystem.file');";
 			$setter .= PHP_EOL . $tabV . "\t\t\t//" . $this->setLine(__LINE__) . " loading...";
 			$setter .= PHP_EOL . $tabV . "\t\t\tforeach (\$uikitComp as \$class)";
 			$setter .= PHP_EOL . $tabV . "\t\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\tforeach (" . $this->fileContentStatic['###Component###'] . "Helper::\$uk_components[\$class] as \$name)";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\tforeach (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::\$uk_components[\$class] as \$name)";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t//" . $this->setLine(__LINE__) . " check if the CSS file exists.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t//" . $this->setLine(__LINE__) . " load the css.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t//" . $this->setLine(__LINE__) . " check if the JavaScript file exists.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\tif (JFile::exists(JPATH_ROOT.'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t{";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t//" . $this->setLine(__LINE__) . " load the js.";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v2/js/components/'.\$name.\$size.'.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v2/js/components/'.\$name.\$size.'.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t\t}";
@@ -4005,12 +4005,12 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " The uikit css.";
 			$setter .= PHP_EOL . $tabV . "\t\tif ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v3/css/uikit'.\$size.'.css', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addStyleSheet(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v3/css/uikit'.\$size.'.css', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 			$setter .= PHP_EOL . $tabV . "\t\t//" . $this->setLine(__LINE__) . " The uikit js.";
 			$setter .= PHP_EOL . $tabV . "\t\tif ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . "\t\t{";
-			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic['###component###'] . "/uikit-v3/js/uikit'.\$size.'.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$setter .= PHP_EOL . $tabV . "\t\t\t\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/uikit-v3/js/uikit'.\$size.'.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
 			$setter .= PHP_EOL . $tabV . "\t\t}";
 			if (2 == $this->uikit)
 			{
@@ -4038,9 +4038,9 @@ class Interpretation extends Fields
 				// build body
 				$body = array();
 				// add limit box
-				if (strpos($view['settings']->default, '[[[LIMITBOX]]]') !== false)
+				if (strpos($view['settings']->default, $this->bbb . 'LIMITBOX' . $this->ddd) !== false)
 				{
-					$this->placeholders['[[[LIMITBOX]]]'] = '<?php echo $this->pagination->getLimitBox(); ?>';
+					$this->placeholders[$this->bbb . 'LIMITBOX' . $this->ddd] = '<?php echo $this->pagination->getLimitBox(); ?>';
 				}
 				$body[] = $this->setPlaceholders($view['settings']->default, $this->placeholders);
 				$body[] = PHP_EOL . '<?php if (isset($this->items) && isset($this->pagination) && isset($this->pagination->pagesTotal) && $this->pagination->pagesTotal > 1): ?>';
@@ -4048,7 +4048,7 @@ class Interpretation extends Fields
 				$body[] = "\t" . '<div class="pagination">';
 				$body[] = "\t\t" . '<?php if ($this->params->def(\'show_pagination_results\', 1)) : ?>';
 
-				if (strpos($view['settings']->default, '[[[LIMITBOX]]]') === false)
+				if (strpos($view['settings']->default, $this->bbb . 'LIMITBOX' . $this->ddd) === false)
 				{
 					$body[] = "\t\t\t" . '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> <?php echo $this->pagination->getLimitBox(); ?></p>';
 				}
@@ -4123,14 +4123,14 @@ class Interpretation extends Fields
 			{
 				// build the file
 				$target = array($this->target => $view['settings']->code);
-				$config = array('###CREATIONDATE###' => $created, '###BUILDDATE###' => $modified, '###VERSION###' => $view['settings']->version);
+				$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 				$this->buildDynamique($target, 'template', $template, $config);
 				// set the file data
 				$TARGET = ComponentbuilderHelper::safeString($this->target, 'U');
-				// ###SITE_TEMPLATE_BODY### <<<DYNAMIC>>>
-				$this->fileContentDynamic[$view['settings']->code . '_' . $template]['###' . $TARGET . '_TEMPLATE_BODY###'] = PHP_EOL . $this->setPlaceholders($data['html'], $this->placeholders);
-				// ###SITE_TEMPLATE_CODE_BODY### <<<DYNAMIC>>>
-				$this->fileContentDynamic[$view['settings']->code . '_' . $template]['###' . $TARGET . '_TEMPLATE_CODE_BODY###'] = $this->setCustomViewTemplateCode($data['php_view']);
+				// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
+				$this->fileContentDynamic[$view['settings']->code . '_' . $template][$this->hhh . $TARGET . '_TEMPLATE_BODY' . $this->hhh] = PHP_EOL . $this->setPlaceholders($data['html'], $this->placeholders);
+				// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
+				$this->fileContentDynamic[$view['settings']->code . '_' . $template][$this->hhh . $TARGET . '_TEMPLATE_CODE_BODY' . $this->hhh] = $this->setCustomViewTemplateCode($data['php_view']);
 			}
 		}
 	}
@@ -4160,19 +4160,19 @@ class Interpretation extends Fields
 				$this->buildDynamique($target, 'layout');
 				// set the file data
 				$TARGET = ComponentbuilderHelper::safeString($this->target, 'U');
-				// ###SITE_LAYOUT_CODE### <<<DYNAMIC>>>
+				// SITE_LAYOUT_CODE <<<DYNAMIC>>>
 				$php_view = (array) explode(PHP_EOL, $data['php_view']);
 				if (ComponentbuilderHelper::checkArray($php_view))
 				{
 					$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
-					$this->fileContentDynamic[$layout]['###' . $TARGET . '_LAYOUT_CODE###'] = $this->setPlaceholders($php_view, $this->placeholders);
+					$this->fileContentDynamic[$layout][$this->hhh . $TARGET . '_LAYOUT_CODE' . $this->hhh] = $this->setPlaceholders($php_view, $this->placeholders);
 				}
 				else
 				{
-					$this->fileContentDynamic[$layout]['###' . $TARGET . '_LAYOUT_CODE###'] = '';
+					$this->fileContentDynamic[$layout][$this->hhh . $TARGET . '_LAYOUT_CODE' . $this->hhh] = '';
 				}
-				// ###SITE_LAYOUT_BODY### <<<DYNAMIC>>>
-				$this->fileContentDynamic[$layout]['###' . $TARGET . '_LAYOUT_BODY###'] = PHP_EOL . $this->setPlaceholders($data['html'], $this->placeholders);
+				// SITE_LAYOUT_BODY <<<DYNAMIC>>>
+				$this->fileContentDynamic[$layout][$this->hhh . $TARGET . '_LAYOUT_BODY' . $this->hhh] = PHP_EOL . $this->setPlaceholders($data['html'], $this->placeholders);
 			}
 		}
 	}
@@ -4217,12 +4217,12 @@ class Interpretation extends Fields
 					if ($type !== 'static')
 					{
 						//var_dump($replacment); echo PHP_EOL;
-						$echos[$replacment] = "###" . $replacment . "###<br />";
+						$echos[$replacment] = "#" . "#" . "#" . $replacment . "#" . "#" . "#<br />";
 					}
 					elseif ($type === 'static')
 					{
 						//var_dump($replacment); echo PHP_EOL;
-						$echos[$replacment] = "###" . $replacment . "###<br />";
+						$echos[$replacment] = "#" . "#" . "#" . $replacment . "#" . "#" . "#<br />";
 					}
 				}
 			}
@@ -4238,7 +4238,7 @@ class Interpretation extends Fields
 	{
 		$script = '';
 		// get the component name
-		$Component = $this->fileContentStatic['###Component###'];
+		$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 		// go from base64 to string
 		if (isset($this->base64Builder[$view]) && ComponentbuilderHelper::checkArray($this->base64Builder[$view]))
 		{
@@ -4378,7 +4378,7 @@ class Interpretation extends Fields
 			}
 		}
 		// turn string into encrypted string
-		$Component = $this->fileContentStatic['###Component###'];
+		$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 		foreach ($this->cryptionTypes as $cryptionType)
 		{
 			if (isset($this->{$cryptionType . 'EncryptionBuilder'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType . 'EncryptionBuilder'}[$view]))
@@ -4407,7 +4407,7 @@ class Interpretation extends Fields
 		// reset
 		$oserver = "";
 		// set component name
-		$component = $this->fileContentStatic['###component###'];
+		$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 		// add the tags observer
 		if (isset($this->tagsBuilder[$view]) && ComponentbuilderHelper::checkString($this->tagsBuilder[$view]))
 		{
@@ -4440,7 +4440,7 @@ class Interpretation extends Fields
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
 			// set component name
-			$component = $this->fileContentStatic['###component###'];
+			$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 			// reset
 			$dbStuff = array();
 			// start loading the content type data
@@ -4527,7 +4527,7 @@ class Interpretation extends Fields
 		$script = $this->setComponentToContentTypes('install');
 
 		// set the component name
-		$component = $this->fileContentStatic['###component###'];
+		$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 
 		// add the assets table update for permissions rules
 		if (isset($this->assetsRules) && ComponentbuilderHelper::checkArray($this->assetsRules))
@@ -4584,7 +4584,7 @@ class Interpretation extends Fields
 		// add the component install notice
 		if (ComponentbuilderHelper::checkString($script))
 		{
-			$script .= PHP_EOL . "\t\t\t" . 'echo \'<a target="_blank" href="' . $this->fileContentStatic['###AUTHORWEBSITE###'] . '" title="' . $this->fileContentStatic['###Component_name###'] . '">';
+			$script .= PHP_EOL . "\t\t\t" . 'echo \'<a target="_blank" href="' . $this->fileContentStatic[$this->hhh . 'AUTHORWEBSITE' . $this->hhh] . '" title="' . $this->fileContentStatic[$this->hhh . 'Component_name' . $this->hhh] . '">';
 			$script .= PHP_EOL . "\t\t\t\t" . '<img src="components/com_' . $component . '/assets/images/vdm-component.' . $this->componentImageType . '"/>';
 			$script .= PHP_EOL . "\t\t\t\t" . '</a>\';';
 
@@ -4601,10 +4601,10 @@ class Interpretation extends Fields
 		$script .= $this->getCustomScriptBuilder('php_postflight', 'update', PHP_EOL . PHP_EOL, null, true);
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
-			$script .= PHP_EOL . "\t\t\t" . 'echo \'<a target="_blank" href="' . $this->fileContentStatic['###AUTHORWEBSITE###'] . '" title="' . $this->fileContentStatic['###Component_name###'] . '">';
-			$script .= PHP_EOL . "\t\t\t\t" . '<img src="components/com_' . $this->fileContentStatic['###component###'] . '/assets/images/vdm-component.' . $this->componentImageType . '"/>';
+			$script .= PHP_EOL . "\t\t\t" . 'echo \'<a target="_blank" href="' . $this->fileContentStatic[$this->hhh . 'AUTHORWEBSITE' . $this->hhh] . '" title="' . $this->fileContentStatic[$this->hhh . 'Component_name' . $this->hhh] . '">';
+			$script .= PHP_EOL . "\t\t\t\t" . '<img src="components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/assets/images/vdm-component.' . $this->componentImageType . '"/>';
 			$script .= PHP_EOL . "\t\t\t\t" . '</a>';
-			$script .= PHP_EOL . "\t\t\t\t<h3>Upgrade to Version " . $this->fileContentStatic['###ACTUALVERSION###'] . " Was Successful! Let us know if anything is not working as expected.</h3>';";
+			$script .= PHP_EOL . "\t\t\t\t<h3>Upgrade to Version " . $this->fileContentStatic[$this->hhh . 'ACTUALVERSION' . $this->hhh] . " Was Successful! Let us know if anything is not working as expected.</h3>';";
 		}
 
 		if (ComponentbuilderHelper::checkString($script))
@@ -4620,7 +4620,7 @@ class Interpretation extends Fields
 		$script = '';
 		if (isset($this->uninstallScriptBuilder) && ComponentbuilderHelper::checkArray($this->uninstallScriptBuilder))
 		{
-			$component = $this->fileContentStatic['###component###'];
+			$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 			// start loading the data to delet
 			$script .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get Application object";
 			$script .= PHP_EOL . "\t\t\$app = JFactory::getApplication();";
@@ -4936,20 +4936,20 @@ class Interpretation extends Fields
 			$routeHelper[] = "\t\t\t\t'" . $viewName_single . "'  => array((int) \$id)";
 			$routeHelper[] = "\t\t\t);";
 			$routeHelper[] = "\t\t\t//" . $this->setLine(__LINE__) . " Create the link";
-			$routeHelper[] = "\t\t\t\$link = 'index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $viewName_single . "&id='. \$id;";
+			$routeHelper[] = "\t\t\t\$link = 'index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $viewName_single . "&id='. \$id;";
 			$routeHelper[] = "\t\t}";
 			$routeHelper[] = "\t\telse";
 			$routeHelper[] = "\t\t{";
 			$routeHelper[] = "\t\t\t//" . $this->setLine(__LINE__) . " Initialize the needel array.";
 			$routeHelper[] = "\t\t\t\$needles = array();";
 			$routeHelper[] = "\t\t\t//" . $this->setLine(__LINE__) . "Create the link but don't add the id.";
-			$routeHelper[] = "\t\t\t\$link = 'index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $viewName_single . "';";
+			$routeHelper[] = "\t\t\t\$link = 'index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $viewName_single . "';";
 			$routeHelper[] = "\t\t}";
 			if ('category' != $viewName_single && 'categories' != $viewName_single)
 			{
 				$routeHelper[] = "\t\tif (\$catid > 1)";
 				$routeHelper[] = "\t\t{";
-				$routeHelper[] = "\t\t\t\$categories = JCategories::getInstance('" . $this->fileContentStatic['###component###'] . "." . $viewName_list . "');";
+				$routeHelper[] = "\t\t\t\$categories = JCategories::getInstance('" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $viewName_list . "');";
 				$routeHelper[] = "\t\t\t\$category = \$categories->get(\$catid);";
 				$routeHelper[] = "\t\t\tif (\$category)";
 				$routeHelper[] = "\t\t\t{";
@@ -5012,7 +5012,7 @@ class Interpretation extends Fields
 						{
 							if (isset($get['selection']['table']))
 							{
-								$viewTable = str_replace('#__' . $this->fileContentStatic['###component###'] . '_', '', $get['selection']['table']);
+								$viewTable = str_replace('#__' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_', '', $get['selection']['table']);
 							}
 						}
 						break;
@@ -5069,7 +5069,7 @@ class Interpretation extends Fields
 
 	public function routerBuildViews(&$view)
 	{
-		if (isset($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']) && ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_BUILD_VIEWS###']))
+		if (isset($this->fileContentStatic[$this->hhh . 'ROUTER_BUILD_VIEWS' . $this->hhh]) && ComponentbuilderHelper::checkString($this->fileContentStatic[$this->hhh . 'ROUTER_BUILD_VIEWS' . $this->hhh]))
 		{
 			return " || \$view === '" . $view . "'";
 		}
@@ -5086,7 +5086,7 @@ class Interpretation extends Fields
 		$batchmove = array();
 		$VIEW = ComponentbuilderHelper::safeString($viewName_single, 'U');
 		// component helper name
-		$Helper = $this->fileContentStatic['###Component###'] . 'Helper';
+		$Helper = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper';
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -5264,7 +5264,7 @@ class Interpretation extends Fields
 		$batchcopy = array();
 		$VIEW = ComponentbuilderHelper::safeString($viewName_single, 'U');
 		// component helper name
-		$Helper = $this->fileContentStatic['###Component###'] . 'Helper';
+		$Helper = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper';
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -5614,12 +5614,12 @@ class Interpretation extends Fields
 			$fixUniqe[] = "\t\t\t\t{";
 			$fixUniqe[] = "\t\t\t\t\t\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(" . implode(' . " " . ', $titleData) . ");";
 			$fixUniqe[] = "\t\t\t\t}";
-			$fixUniqe[] = PHP_EOL . "\t\t\t\t\$table = JTable::getInstance('" . $viewName_single . "', '" . $this->fileContentStatic['###component###'] . "Table');";
+			$fixUniqe[] = PHP_EOL . "\t\t\t\t\$table = JTable::getInstance('" . $viewName_single . "', '" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "Table');";
 			if ($setCategory && count($titles) == 1)
 			{
 				$fixUniqe[] = PHP_EOL . "\t\t\t\tif (\$table->load(array('" . $alias . "' => \$data['" . $alias . "'], '" . $category . "' => \$data['" . $category . "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUniqe[] = "\t\t\t\t{";
-				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:" . ":_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
+				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:" . ":_('COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
 				$fixUniqe[] = PHP_EOL . "\t\t\t\tlist(" . implode('', $titleVars) . ", \$" . $alias . ") = \$this->generateNewTitle(\$data['" . $category . "'], \$data['" . $alias . "'], " . implode('', $titleData) . ");";
 				$fixUniqe[] = "\t\t\t\t\$data['" . $alias . "'] = \$" . $alias . ";";
@@ -5628,7 +5628,7 @@ class Interpretation extends Fields
 			{
 				$fixUniqe[] = PHP_EOL . "\t\t\t\tif (\$table->load(array('" . $alias . "' => \$data['" . $alias . "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUniqe[] = "\t\t\t\t{";
-				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:" . ":_('COM_" . $this->fileContentStatic['###COMPONENT###'] . "_" . $VIEW . "_SAVE_WARNING');";
+				$fixUniqe[] = "\t\t\t\t\t\$msg = JText:" . ":_('COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUniqe[] = "\t\t\t\t}";
 				$fixUniqe[] = PHP_EOL . "\t\t\t\t\$data['" . $alias . "'] = \$this->_generateNewTitle(\$data['" . $alias . "']);";
 			}
@@ -5645,7 +5645,7 @@ class Interpretation extends Fields
 		$fixUniqe[] = "\t\t{";
 		$fixUniqe[] = "\t\t\t//" . $this->setLine(__LINE__) . " Automatic handling of other uniqe fields";
 		$fixUniqe[] = "\t\t\t\$uniqeFields = \$this->getUniqeFields();";
-		$fixUniqe[] = "\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$uniqeFields))";
+		$fixUniqe[] = "\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$uniqeFields))";
 		$fixUniqe[] = "\t\t\t{";
 		$fixUniqe[] = "\t\t\t\tforeach (\$uniqeFields as \$uniqeField)";
 		$fixUniqe[] = "\t\t\t\t{";
@@ -5664,7 +5664,7 @@ class Interpretation extends Fields
 			(array_key_exists($viewName_single, $this->titleBuilder) || isset($this->customAliasBuilder[$viewName_single])))
 		{
 			// get component name
-			$Component = $this->fileContentStatic['###Component###'];
+			$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 			// rest the new function
 			$newFunction = array();
 			$newFunction[] = PHP_EOL . PHP_EOL . "\t/**";
@@ -5809,7 +5809,7 @@ class Interpretation extends Fields
 		if (isset($this->queryBuilder) && ComponentbuilderHelper::checkArray($this->queryBuilder))
 		{
 			// set the main db prefix
-			$component = $this->fileContentStatic['###component###'];
+			$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 			// start building the db
 			$db = '';
 			foreach ($this->queryBuilder as $view => $fields)
@@ -6030,7 +6030,7 @@ class Interpretation extends Fields
 			{
 				foreach ($this->customScriptBuilder['sql'] as $for => $customSql)
 				{
-					$placeholders = array('[[[component]]]' => $component, '[[[view]]]' => $for);
+					$placeholders = array($this->bbb . 'component' . $this->ddd => $component, $this->bbb . 'view' . $this->ddd => $for);
 					$db .= $this->setPlaceholders($customSql, $placeholders) . PHP_EOL . PHP_EOL;
 				}
 				unset($this->customScriptBuilder['sql']);
@@ -6324,7 +6324,7 @@ class Interpretation extends Fields
 		if (isset($this->listBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listBuilder[$viewName_list]))
 		{
 			// component helper name
-			$Helper = $this->fileContentStatic['###Component###'] . 'Helper';
+			$Helper = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper';
 			// setup correct core target
 			$coreLoad = false;
 			if (isset($this->permissionCore[$viewName_single]))
@@ -6452,8 +6452,8 @@ class Interpretation extends Fields
 						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 						// category and linked
 						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_" . $this->fileContentStatic['###component###'] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")): ?>";
-						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic['###component###'] . '.' . $otherViews . '"><?php echo $this->escape($item->category_title); ?></a>';
+						$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")): ?>";
+						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $otherViews . '"><?php echo $this->escape($item->category_title); ?></a>';
 						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
 						$body .= PHP_EOL . "\t\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
 						$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
@@ -6488,11 +6488,11 @@ class Interpretation extends Fields
 							// check if the item has permissions.
 							if ($coreLoadLink && (isset($coreLink['core.edit']) && isset($this->permissionBuilder[$coreLink['core.edit']])) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$coreLink['core.edit']]) && in_array($item['custom']['view'], $this->permissionBuilder[$coreLink['core.edit']]))
 							{
-								$accessCheck = "\$this->user->authorise('" . $coreLink['core.edit'] . "', 'com_" . $this->fileContentStatic['###component###'] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
+								$accessCheck = "\$this->user->authorise('" . $coreLink['core.edit'] . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
 							}
 							else
 							{
-								$accessCheck = "\$this->user->authorise('core.edit', 'com_" . $this->fileContentStatic['###component###'] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
+								$accessCheck = "\$this->user->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
 							}
 						}
 						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'])
@@ -6523,9 +6523,9 @@ class Interpretation extends Fields
 								foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
 								{
 									$customAdminView .= PHP_EOL . "\t\t\t<?php if (\$canDo->get('" . $customLinkView['link'] . ".access')): ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
 									$customAdminView .= PHP_EOL . "\t\t\t<?php else: ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
 									$customAdminView .= PHP_EOL . "\t\t\t<?php endif; ?>";
 								}
 								$customAdminView .= PHP_EOL . "\t\t\t" . '</div>';
@@ -7323,7 +7323,7 @@ class Interpretation extends Fields
 			$fadein[] = "\t// waiting spinner";
 			$fadein[] = "\tvar outerDiv = jQuery('body');";
 			$fadein[] = "\tjQuery('<div id=\"loading\"></div>')";
-			$fadein[] = "\t\t.css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_" . $this->fileContentStatic['###component###'] . "/assets/images/import.gif') 50% 15% no-repeat\")";
+			$fadein[] = "\t\t.css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/assets/images/import.gif') 50% 15% no-repeat\")";
 			$fadein[] = "\t\t.css(\"top\", outerDiv.position().top - jQuery(window).scrollTop())";
 			$fadein[] = "\t\t.css(\"left\", outerDiv.position().left - jQuery(window).scrollLeft())";
 			$fadein[] = "\t\t.css(\"width\", outerDiv.width())";
@@ -7337,15 +7337,15 @@ class Interpretation extends Fields
 			$fadein[] = "\tjQuery('#loading').show();";
 			$fadein[] = "\t// when page is ready remove and show";
 			$fadein[] = "\tjQuery(window).load(function() {";
-			$fadein[] = "\t\tjQuery('#" . $this->fileContentStatic['###component###'] . "_loader').fadeIn('fast');";
+			$fadein[] = "\t\tjQuery('#" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_loader').fadeIn('fast');";
 			$fadein[] = "\t\tjQuery('#loading').hide();";
 			$fadein[] = "\t});";
 			$fadein[] = "</script>";
-			$fadein[] = "<div id=\"" . $this->fileContentStatic['###component###'] . "_loader\" style=\"display: none;\">";
+			$fadein[] = "<div id=\"" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_loader\" style=\"display: none;\">";
 
 			return implode(PHP_EOL, $fadein);
 		}
-		return "<div id=\"" . $this->fileContentStatic['###component###'] . "_loader\">";
+		return "<div id=\"" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_loader\">";
 	}
 
 	/**
@@ -7367,13 +7367,13 @@ class Interpretation extends Fields
 		}
 		if (ComponentbuilderHelper::checkString($items))
 		{
-			// ###LAYOUTITEMS### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutName]['###LAYOUTITEMS###'] = $items;
+			// LAYOUTITEMS <<<DYNAMIC>>>
+			$this->fileContentDynamic[$viewName_single . '_' . $layoutName][$this->hhh . 'LAYOUTITEMS' . $this->hhh] = $items;
 		}
 		else
 		{
-			// ###LAYOUTITEMS### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutName]['###bogus###'] = 'boom';
+			// LAYOUTITEMS <<<DYNAMIC>>>
+			$this->fileContentDynamic[$viewName_single . '_' . $layoutName][$this->hhh . 'bogus' . $this->hhh] = 'boom';
 		}
 	}
 
@@ -7408,30 +7408,30 @@ class Interpretation extends Fields
 			$head = $this->setListHeadLinked($single, $list, $addNewButon, $viewName_single);
 			$body = $this->setListBodyLinked($single, $list, $viewName_single);
 			$functionName = ComponentbuilderHelper::safeString($codeName, 'F');
-			// ###LAYOUTITEMSTABLE### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName]['###LAYOUTITEMSTABLE###'] = $head . $body;
-			// ###LAYOUTITEMSHEADER### <<<DYNAMIC>>>
-			$headerscript = '$edit = "index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $list . '&task=' . $single . '.edit";';
+			// LAYOUTITEMSTABLE <<<DYNAMIC>>>
+			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh] = $head . $body;
+			// LAYOUTITEMSHEADER <<<DYNAMIC>>>
+			$headerscript = '$edit = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $list . '&task=' . $single . '.edit";';
 			if ($addNewButon > 0)
 			{
 				// add the link for new
 				if ($addNewButon == 1 || $addNewButon == 2)
 				{
 					$headerscript .= PHP_EOL . '$ref = ($id) ? "&ref=' . $viewName_single . '&refid=".$id : "";';
-					$headerscript .= PHP_EOL . '$new = "index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $single . '&layout=edit".$ref;';
+					$headerscript .= PHP_EOL . '$new = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $single . '&layout=edit".$ref;';
 				}
 				// and the link for close and new
 				if ($addNewButon == 2 || $addNewButon == 3)
 				{
-					$headerscript .= PHP_EOL . '$close_new = "index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $single . '&layout=edit";';
+					$headerscript .= PHP_EOL . '$close_new = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $single . '&layout=edit";';
 				}
-				$headerscript .= PHP_EOL . '$can = ' . $this->fileContentStatic['###Component###'] . 'Helper::getActions(' . "'" . $single . "'" . ');';
+				$headerscript .= PHP_EOL . '$can = ' . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::getActions(' . "'" . $single . "'" . ');';
 			}
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName]['###LAYOUTITEMSHEADER###'] = $headerscript;
-			// ###LINKEDVIEWITEMS### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWITEMS###'] .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get Linked view data" . PHP_EOL . "\t\t\$this->" . $codeName . " = \$this->get('" . $functionName . "');";
-			// ###LINKEDVIEWTABLESCRIPTS### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWTABLESCRIPTS###'] = $this->setFootableScripts();
+			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh] = $headerscript;
+			// LINKEDVIEWITEMS <<<DYNAMIC>>>
+			$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWITEMS' . $this->hhh] .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Get Linked view data" . PHP_EOL . "\t\t\$this->" . $codeName . " = \$this->get('" . $functionName . "');";
+			// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
+			$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWTABLESCRIPTS' . $this->hhh] = $this->setFootableScripts();
 			if (strpos($parentKey, '-R>') !== false || strpos($parentKey, '-A>') !== false)
 			{
 				list($parent_key) = explode('-', $parentKey);
@@ -7458,29 +7458,29 @@ class Interpretation extends Fields
 			{
 				$_key = $key;
 			}
-			// ###LINKEDVIEWGLOBAL### <<<DYNAMIC>>>
+			// LINKEDVIEWGLOBAL <<<DYNAMIC>>>
 			if (isset($parent_keys) && ComponentbuilderHelper::checkArray($parent_keys))
 			{
 				$globalKey = array();
 				foreach ($parent_keys as $parent_key)
 				{
 					$globalKey[$parent_key] = ComponentbuilderHelper::safeString($_key . $this->uniquekey(4));
-					$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWGLOBAL###'] .= PHP_EOL . "\t\t\$this->" . $globalKey[$parent_key] . " = \$item->" . $parent_key . ";";
+					$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWGLOBAL' . $this->hhh] .= PHP_EOL . "\t\t\$this->" . $globalKey[$parent_key] . " = \$item->" . $parent_key . ";";
 				}
 			}
 			else
 			{
 				// set the global key
 				$globalKey = ComponentbuilderHelper::safeString($_key . $this->uniquekey(4));
-				$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWGLOBAL###'] .= PHP_EOL . "\t\t\$this->" . $globalKey . " = \$item->" . $parent_key . ";";
+				$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWGLOBAL' . $this->hhh] .= PHP_EOL . "\t\t\$this->" . $globalKey . " = \$item->" . $parent_key . ";";
 			}
-			// ###LINKEDVIEWMETHODS### <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single]['###LINKEDVIEWMETHODS###'] .= $this->setListQueryLinked($single, $list, $functionName, $key, $_key, $parentKey, $parent_key, $globalKey);
+			// LINKEDVIEWMETHODS <<<DYNAMIC>>>
+			$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWMETHODS' . $this->hhh] .= $this->setListQueryLinked($single, $list, $functionName, $key, $_key, $parentKey, $parent_key, $globalKey);
 		}
 		else
 		{
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName]['###LAYOUTITEMSTABLE###'] = 'oops! error.....';
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName]['###LAYOUTITEMSHEADER###'] = '';
+			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh] = 'oops! error.....';
+			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh] = '';
 		}
 	}
 
@@ -7493,22 +7493,22 @@ class Interpretation extends Fields
 		if (!isset($this->footableVersion) || 2 == $this->footableVersion) // loading version 2
 		{
 			$foo = PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add the CSS for Footable.";
-			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.core.min.css', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v2/css/footable.core.min.css', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
 			$foo .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Use the Metro Style";
 			$foo .= PHP_EOL . "\t\tif (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . "\t\t{";
-			$foo .= PHP_EOL . "\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.metro.min.css', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+			$foo .= PHP_EOL . "\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v2/css/footable.metro.min.css', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
 			$foo .= PHP_EOL . "\t\t}";
 			$foo .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Use the Legacy Style.";
 			$foo .= PHP_EOL . "\t\telseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . "\t\t{";
-			$foo .= PHP_EOL . "\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/css/footable.standalone.min.css', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+			$foo .= PHP_EOL . "\t\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v2/css/footable.standalone.min.css', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
 			$foo .= PHP_EOL . "\t\t}";
 			$foo .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add the JavaScript for Footable";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.sort.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.filter.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v2/js/footable.paginate.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v2/js/footable.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v2/js/footable.sort.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v2/js/footable.filter.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v2/js/footable.paginate.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
 			if ($init)
 			{
 				$foo .= PHP_EOL . PHP_EOL . "\t\t" . '$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery(' . "'.footable'" . ').footable(); }); jQuery(' . "'.nav-tabs'" . ').on(' . "'click'" . ', ' . "'li'" . ', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery(' . "'.footable'" . ').trigger(' . "'footable_resize'" . '); }";';
@@ -7520,9 +7520,9 @@ class Interpretation extends Fields
 
 			$foo = PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add the CSS for Footable";
 			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
-			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v3/css/footable.standalone.min.css', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addStyleSheet(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v3/css/footable.standalone.min.css', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
 			$foo .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Add the JavaScript for Footable (adding all funtions)";
-			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic['###component###'] . "/footable-v3/js/footable.min.js', (" . $this->fileContentStatic['###Component###'] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$foo .= PHP_EOL . "\t\t\$this->document->addScript(JURI::root() .'media/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/footable-v3/js/footable.min.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
 			if ($init)
 			{
 				$foo .= PHP_EOL . PHP_EOL . "\t\t" . '$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery(' . "'.footable'" . ').footable();});});";';
@@ -7543,7 +7543,7 @@ class Interpretation extends Fields
 		if (isset($this->listBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listBuilder[$viewName_list]))
 		{
 			// component helper name
-			$Helper = $this->fileContentStatic['###Component###'] . 'Helper';
+			$Helper = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper';
 			// make sure the custom links are only added once
 			$firstTimeBeingAdded = true;
 			// setup correct core target
@@ -7617,8 +7617,8 @@ class Interpretation extends Fields
 						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
 						// category and linked
 						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_" . $this->fileContentStatic['###component###'] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")): ?>";
-						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic['###component###'] . '.' . $otherViews . '"><?php echo $displayData->escape($item->category_title); ?></a>';
+						$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")): ?>";
+						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $otherViews . '"><?php echo $displayData->escape($item->category_title); ?></a>';
 						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
 						$body .= PHP_EOL . "\t\t\t\t<?php echo \$displayData->escape(\$item->category_title); ?>";
 						$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
@@ -7665,11 +7665,11 @@ class Interpretation extends Fields
 								// check if the item has permissions.
 								if ($coreLoadLink && isset($this->permissionBuilder[$coreLink['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$coreLink['core.edit']]) && in_array($item['custom']['view'], $this->permissionBuilder[$coreLink['core.edit']]))
 								{
-									$accessCheck = "\$user->authorise('" . $coreLink['core.edit'] . "', 'com_" . $this->fileContentStatic['###component###'] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
+									$accessCheck = "\$user->authorise('" . $coreLink['core.edit'] . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
 								}
 								else
 								{
-									$accessCheck = "\$user->authorise('core.edit', 'com_" . $this->fileContentStatic['###component###'] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
+									$accessCheck = "\$user->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
 								}
 							}
 						}
@@ -7700,9 +7700,9 @@ class Interpretation extends Fields
 								foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
 								{
 									$customAdminView .= PHP_EOL . "\t\t\t<?php if (\$canDo->get('" . $customLinkView['link'] . ".access')): ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic['###component###'] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>&ref=' . $refview . '&refid=<?php echo $id; ?>" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>&ref=' . $refview . '&refid=<?php echo $id; ?>" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
 									$customAdminView .= PHP_EOL . "\t\t\t<?php else: ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic['###COMPONENT###'] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
 									$customAdminView .= PHP_EOL . "\t\t\t<?php endif; ?>";
 								}
 								$customAdminView .= PHP_EOL . "\t\t\t" . '</div>';
@@ -7844,7 +7844,7 @@ class Interpretation extends Fields
 		if (isset($this->listBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listBuilder[$viewName_list]))
 		{
 			// component helper name
-			$Helper = $this->fileContentStatic['###Component###'] . 'Helper';
+			$Helper = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper';
 			$head = '';
 			// only add new button if set
 			if ($addNewButon > 0)
@@ -8014,8 +8014,8 @@ class Interpretation extends Fields
 		{
 			$query .= PHP_EOL . "\t\t\$query->select(\$db->quoteName('c.title','category_title'));";
 		}
-		$query .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " From the " . $this->fileContentStatic['###component###'] . "_" . $viewName_single . " table";
-		$query .= PHP_EOL . "\t\t\$query->from(\$db->quoteName('#__" . $this->fileContentStatic['###component###'] . "_" . $viewName_single . "', 'a'));";
+		$query .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " From the " . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_" . $viewName_single . " table";
+		$query .= PHP_EOL . "\t\t\$query->from(\$db->quoteName('#__" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_" . $viewName_single . "', 'a'));";
 		// add the category
 		if ($addCategory)
 		{
@@ -8097,7 +8097,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\t\t\t\$query->where('a.access = ' . (int) \$access);";
 			$query .= PHP_EOL . "\t\t}";
 			$query .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Implement View Level Access";
-			$query .= PHP_EOL . "\t\tif (!\$user->authorise('core.options', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+			$query .= PHP_EOL . "\t\tif (!\$user->authorise('core.options', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 			$query .= PHP_EOL . "\t\t{";
 			$query .= PHP_EOL . "\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
 			$query .= PHP_EOL . "\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
@@ -8112,23 +8112,23 @@ class Interpretation extends Fields
 		$query .= PHP_EOL . "\t\tif (\$db->getNumRows())";
 		$query .= PHP_EOL . "\t\t{";
 		$query .= PHP_EOL . "\t\t\t\$items = \$db->loadObjectList();";
-		// ###STORE_METHOD_FIX### <<<DYNAMIC>>>
-		$query .= $this->setGetItemsMethodStringFix($viewName_single, $this->fileContentStatic['###Component###'], "\t");
-		// ###SELECTIONTRANSLATIONFIX### <<<DYNAMIC>>>
-		$query .= $this->setSelectionTranslationFix($viewName_list, $this->fileContentStatic['###Component###'], "\t");
+		// STORE_METHOD_FIX <<<DYNAMIC>>>
+		$query .= $this->setGetItemsMethodStringFix($viewName_single, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh], "\t");
+		// SELECTIONTRANSLATIONFIX <<<DYNAMIC>>>
+		$query .= $this->setSelectionTranslationFix($viewName_list, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh], "\t");
 		// filter by child repetable field values
 		if (ComponentbuilderHelper::checkString($globalKey) && $key && strpos($key, '-R>') !== false && strpos($key, '-A>') === false)
 		{
 			list($field, $target) = explode('-R>', $key);
 			$query .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Filter by " . $globalKey . " in this Repetable Field";
-			$query .= PHP_EOL . "\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$items) && isset(\$this->" . $globalKey . "))";
+			$query .= PHP_EOL . "\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$items) && isset(\$this->" . $globalKey . "))";
 			$query .= PHP_EOL . "\t\t\t{";
 			$query .= PHP_EOL . "\t\t\t\tforeach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . "\t\t\t\t{";
-			$query .= PHP_EOL . "\t\t\t\t\tif (isset(\$item->" . $field . ") && " . $this->fileContentStatic['###Component###'] . "Helper::checkJson(\$item->" . $field . "))";
+			$query .= PHP_EOL . "\t\t\t\t\tif (isset(\$item->" . $field . ") && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkJson(\$item->" . $field . "))";
 			$query .= PHP_EOL . "\t\t\t\t\t{";
 			$query .= PHP_EOL . "\t\t\t\t\t\t\$tmpArray = json_decode(\$item->" . $field . ",true);";
-			$query .= PHP_EOL . "\t\t\t\t\t\tif (!isset(\$tmpArray['" . $target . "']) || !" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$tmpArray['" . $target . "']) || !in_array(\$this->" . $globalKey . ", \$tmpArray['" . $target . "']))";
+			$query .= PHP_EOL . "\t\t\t\t\t\tif (!isset(\$tmpArray['" . $target . "']) || !" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$tmpArray['" . $target . "']) || !in_array(\$this->" . $globalKey . ", \$tmpArray['" . $target . "']))";
 			$query .= PHP_EOL . "\t\t\t\t\t\t{";
 			$query .= PHP_EOL . "\t\t\t\t\t\t\tunset(\$items[\$nr]);";
 			$query .= PHP_EOL . "\t\t\t\t\t\t\tcontinue;";
@@ -8151,18 +8151,18 @@ class Interpretation extends Fields
 		{
 			$query .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Filter by " . $globalKey . " Array Field";
 			$query .= PHP_EOL . "\t\t\t\$" . $globalKey . " = \$this->" . $globalKey . ";";
-			$query .= PHP_EOL . "\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$items) && \$" . $globalKey . ")";
+			$query .= PHP_EOL . "\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$items) && \$" . $globalKey . ")";
 			$query .= PHP_EOL . "\t\t\t{";
 			$query .= PHP_EOL . "\t\t\t\tforeach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . "\t\t\t\t{";
 			list($bin, $target) = explode('-A>', $key);
 			if (ComponentbuilderHelper::checkString($target))
 			{
-				$query .= PHP_EOL . "\t\t\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkJson(\$item->" . $target . "))";
+				$query .= PHP_EOL . "\t\t\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkJson(\$item->" . $target . "))";
 				$query .= PHP_EOL . "\t\t\t\t\t{";
 				$query .= PHP_EOL . "\t\t\t\t\t\t\$item->" . $target . " = json_decode(\$item->" . $target . ", true);";
 				$query .= PHP_EOL . "\t\t\t\t\t}";
-				$query .= PHP_EOL . "\t\t\t\t\telseif (!isset(\$item->" . $target . ") || !" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$item->" . $target . "))";
+				$query .= PHP_EOL . "\t\t\t\t\telseif (!isset(\$item->" . $target . ") || !" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$item->" . $target . "))";
 				$query .= PHP_EOL . "\t\t\t\t\t{";
 				$query .= PHP_EOL . "\t\t\t\t\t\tunset(\$items[\$nr]);";
 				$query .= PHP_EOL . "\t\t\t\t\t\tcontinue;";
@@ -8171,11 +8171,11 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				$query .= PHP_EOL . "\t\t\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkJson(\$item->" . $_key . "))";
+				$query .= PHP_EOL . "\t\t\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkJson(\$item->" . $_key . "))";
 				$query .= PHP_EOL . "\t\t\t\t\t{";
 				$query .= PHP_EOL . "\t\t\t\t\t\t\$item->" . $_key . " = json_decode(\$item->" . $_key . ", true);";
 				$query .= PHP_EOL . "\t\t\t\t\t}";
-				$query .= PHP_EOL . "\t\t\t\t\telseif (!isset(\$item->" . $_key . ") || !" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$item->" . $_key . "))";
+				$query .= PHP_EOL . "\t\t\t\t\telseif (!isset(\$item->" . $_key . ") || !" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$item->" . $_key . "))";
 				$query .= PHP_EOL . "\t\t\t\t\t{";
 				$query .= PHP_EOL . "\t\t\t\t\t\tunset(\$items[\$nr]);";
 				$query .= PHP_EOL . "\t\t\t\t\t\tcontinue;";
@@ -8199,11 +8199,11 @@ class Interpretation extends Fields
 			list($bin, $target) = explode('-R>', $parentKey);
 			$query .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Filter by " . $_key . " Repetable Field";
 			$query .= PHP_EOL . "\t\t\t\$" . $globalKey . " = json_decode(\$this->" . $globalKey . ",true);";
-			$query .= PHP_EOL . "\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$items) && isset(\$" . $globalKey . ") && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$" . $globalKey . "))";
+			$query .= PHP_EOL . "\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$items) && isset(\$" . $globalKey . ") && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$" . $globalKey . "))";
 			$query .= PHP_EOL . "\t\t\t{";
 			$query .= PHP_EOL . "\t\t\t\tforeach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . "\t\t\t\t{";
-			$query .= PHP_EOL . "\t\t\t\t\tif (\$item->" . $_key . " && isset(\$" . $globalKey . "['" . $target . "']) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$" . $globalKey . "['" . $target . "']))";
+			$query .= PHP_EOL . "\t\t\t\t\tif (\$item->" . $_key . " && isset(\$" . $globalKey . "['" . $target . "']) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$" . $globalKey . "['" . $target . "']))";
 			$query .= PHP_EOL . "\t\t\t\t\t{";
 			$query .= PHP_EOL . "\t\t\t\t\t\tif (!in_array(\$item->" . $_key . ",\$" . $globalKey . "['" . $target . "']))";
 			$query .= PHP_EOL . "\t\t\t\t\t\t{";
@@ -8228,14 +8228,14 @@ class Interpretation extends Fields
 		{
 			$query .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Filter by " . $globalKey . " Array Field";
 			$query .= PHP_EOL . "\t\t\t\$" . $globalKey . " = \$this->" . $globalKey . ";";
-			$query .= PHP_EOL . "\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$items) && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$" . $globalKey . "))";
+			$query .= PHP_EOL . "\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$items) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$" . $globalKey . "))";
 			$query .= PHP_EOL . "\t\t\t{";
 			$query .= PHP_EOL . "\t\t\t\tforeach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . "\t\t\t\t{";
 			list($bin, $target) = explode('-A>', $parentKey);
 			if (ComponentbuilderHelper::checkString($target))
 			{
-				$query .= PHP_EOL . "\t\t\t\t\tif (\$item->" . $_key . " && " . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$" . $globalKey . "['" . $target . "']))";
+				$query .= PHP_EOL . "\t\t\t\t\tif (\$item->" . $_key . " && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$" . $globalKey . "['" . $target . "']))";
 				$query .= PHP_EOL . "\t\t\t\t\t{";
 				$query .= PHP_EOL . "\t\t\t\t\t\tif (!in_array(\$item->" . $_key . ",\$" . $globalKey . "['" . $target . "']))";
 			}
@@ -8269,8 +8269,8 @@ class Interpretation extends Fields
 		$query .= PHP_EOL . "\t\t}";
 		$query .= PHP_EOL . "\t\treturn false;";
 		$query .= PHP_EOL . "\t}";
-		// ###SELECTIONTRANSLATIONFIXFUNC###<<<DYNAMIC>>>
-		$query .= $this->setSelectionTranslationFixFunc($viewName_list, $this->fileContentStatic['###Component###']);
+		// SELECTIONTRANSLATIONFIXFUNC<<<DYNAMIC>>>
+		$query .= $this->setSelectionTranslationFixFunc($viewName_list, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh]);
 
 		// fixe mothod name clash
 		$query = str_replace('selectionTranslation(', 'selectionTranslation' . $functionName . '(', $query);
@@ -8327,7 +8327,7 @@ class Interpretation extends Fields
 				$method[] = "\t\tJSession::checkToken() or die(JText:" . ":_('JINVALID_TOKEN'));";
 				$method[] = "\t\t//" . $this->setLine(__LINE__) . " check if export is allowed for this user.";
 				$method[] = "\t\t\$user = JFactory::getUser();";
-				$method[] = "\t\tif (\$user->authorise('" . $custom_button['link'] . ".access', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+				$method[] = "\t\tif (\$user->authorise('" . $custom_button['link'] . ".access', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 				$method[] = "\t\t{";
 				$method[] = "\t\t\t//" . $this->setLine(__LINE__) . " Get the input";
 				$method[] = "\t\t\t\$input = JFactory::getApplication()->input;";
@@ -8336,12 +8336,12 @@ class Interpretation extends Fields
 				$method[] = "\t\t\tJArrayHelper::toInteger(\$pks);";
 				$method[] = "\t\t\t//" . $this->setLine(__LINE__) . " convert to string";
 				$method[] = "\t\t\t\$ids = implode('_', \$pks);";
-				$method[] = "\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $custom_button['link'] . "&cid='.\$ids, false));";
+				$method[] = "\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $custom_button['link'] . "&cid='.\$ids, false));";
 				$method[] = "\t\t\treturn;";
 				$method[] = "\t\t}";
 				$method[] = "\t\t//" . $this->setLine(__LINE__) . " Redirect to the list screen with error.";
 				$method[] = "\t\t\$message = JText:" . ":_('" . $this->langPrefix . "_ACCESS_TO_" . $custom_button['NAME'] . "_FAILED');";
-				$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $viewName_list . "', false), \$message, 'error');";
+				$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $viewName_list . "', false), \$message, 'error');";
 				$method[] = "\t\treturn;";
 				$method[] = "\t}";
 				// add to lang array
@@ -8375,7 +8375,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\tpublic function getExportData(\$pks)";
 			$query .= PHP_EOL . "\t{";
 			$query .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " setup the query";
-			$query .= PHP_EOL . "\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$pks))";
+			$query .= PHP_EOL . "\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$pks))";
 			$query .= PHP_EOL . "\t\t{";
 			$query .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Set a value to know this is exporting method.";
 			$query .= PHP_EOL . "\t\t\t\$_export = true;";
@@ -8386,8 +8386,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\t\t\t\$query = \$db->getQuery(true);";
 			$query .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Select some fields";
 			$query .= PHP_EOL . "\t\t\t\$query->select('a.*');";
-			$query .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " From the " . $this->fileContentStatic['###component###'] . "_" . $viewName_single . " table";
-			$query .= PHP_EOL . "\t\t\t\$query->from(\$db->quoteName('#__" . $this->fileContentStatic['###component###'] . "_" . $viewName_single . "', 'a'));";
+			$query .= PHP_EOL . PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " From the " . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_" . $viewName_single . " table";
+			$query .= PHP_EOL . "\t\t\t\$query->from(\$db->quoteName('#__" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_" . $viewName_single . "', 'a'));";
 			$query .= PHP_EOL . "\t\t\t\$query->where('a.id IN (' . implode(',',\$pks) . ')');";
 			// add custom filtering php
 			$query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, PHP_EOL . PHP_EOL . "\t");
@@ -8395,7 +8395,7 @@ class Interpretation extends Fields
 			if (isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
 			{
 				$query .= PHP_EOL . "\t\t\t//" . $this->setLine(__LINE__) . " Implement View Level Access";
-				$query .= PHP_EOL . "\t\t\tif (!\$user->authorise('core.options', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+				$query .= PHP_EOL . "\t\t\tif (!\$user->authorise('core.options', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 				$query .= PHP_EOL . "\t\t\t{";
 				$query .= PHP_EOL . "\t\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
 				$query .= PHP_EOL . "\t\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
@@ -8409,7 +8409,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\t\t\tif (\$db->getNumRows())";
 			$query .= PHP_EOL . "\t\t\t{";
 			$query .= PHP_EOL . "\t\t\t\t\$items = \$db->loadObjectList();";
-			$query .= $this->setGetItemsMethodStringFix($viewName_single, $this->fileContentStatic['###Component###'], "\t\t", true);
+			$query .= $this->setGetItemsMethodStringFix($viewName_single, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh], "\t\t", true);
 			// add custom php to getitems method after all
 			$query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL . PHP_EOL . "\t\t");
 			$query .= PHP_EOL . "\t\t\t\treturn \$items;";
@@ -8443,7 +8443,7 @@ class Interpretation extends Fields
 			$method[] = "\t\tJSession::checkToken() or die(JText:" . ":_('JINVALID_TOKEN'));";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " check if export is allowed for this user.";
 			$method[] = "\t\t\$user = JFactory::getUser();";
-			$method[] = "\t\tif (\$user->authorise('" . $viewName_single . ".export', 'com_" . $this->fileContentStatic['###component###'] . "') && \$user->authorise('core.export', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+			$method[] = "\t\tif (\$user->authorise('" . $viewName_single . ".export', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "') && \$user->authorise('core.export', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 			$method[] = "\t\t{";
 			$method[] = "\t\t\t//" . $this->setLine(__LINE__) . " Get the input";
 			$method[] = "\t\t\t\$input = JFactory::getApplication()->input;";
@@ -8454,16 +8454,16 @@ class Interpretation extends Fields
 			$method[] = "\t\t\t\$model = \$this->getModel('" . ComponentbuilderHelper::safeString($viewName_list, 'F') . "');";
 			$method[] = "\t\t\t//" . $this->setLine(__LINE__) . " get the data to export";
 			$method[] = "\t\t\t\$data = \$model->getExportData(\$pks);";
-			$method[] = "\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkArray(\$data))";
+			$method[] = "\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$data))";
 			$method[] = "\t\t\t{";
 			$method[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " now set the data to the spreadsheet";
 			$method[] = "\t\t\t\t\$date = JFactory::getDate();";
-			$method[] = "\t\t\t\t" . $this->fileContentStatic['###Component###'] . "Helper::xls(\$data,'" . ComponentbuilderHelper::safeString($viewName_list, 'F') . "_'.\$date->format('jS_F_Y'),'" . ComponentbuilderHelper::safeString($viewName_list, 'Ww') . " exported ('.\$date->format('jS F, Y').')','" . ComponentbuilderHelper::safeString($viewName_list, 'w') . "');";
+			$method[] = "\t\t\t\t" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::xls(\$data,'" . ComponentbuilderHelper::safeString($viewName_list, 'F') . "_'.\$date->format('jS_F_Y'),'" . ComponentbuilderHelper::safeString($viewName_list, 'Ww') . " exported ('.\$date->format('jS F, Y').')','" . ComponentbuilderHelper::safeString($viewName_list, 'w') . "');";
 			$method[] = "\t\t\t}";
 			$method[] = "\t\t}";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " Redirect to the list screen with error.";
 			$method[] = "\t\t\$message = JText:" . ":_('" . $this->langPrefix . "_EXPORT_FAILED');";
-			$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $viewName_list . "', false), \$message, 'error');";
+			$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $viewName_list . "', false), \$message, 'error');";
 			$method[] = "\t\treturn;";
 			$method[] = "\t}";
 
@@ -8474,13 +8474,13 @@ class Interpretation extends Fields
 			$method[] = "\t\tJSession::checkToken() or die(JText:" . ":_('JINVALID_TOKEN'));";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " check if import is allowed for this user.";
 			$method[] = "\t\t\$user = JFactory::getUser();";
-			$method[] = "\t\tif (\$user->authorise('" . $viewName_single . ".import', 'com_" . $this->fileContentStatic['###component###'] . "') && \$user->authorise('core.import', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+			$method[] = "\t\tif (\$user->authorise('" . $viewName_single . ".import', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "') && \$user->authorise('core.import', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 			$method[] = "\t\t{";
 			$method[] = "\t\t\t//" . $this->setLine(__LINE__) . " Get the import model";
 			$method[] = "\t\t\t\$model = \$this->getModel('" . ComponentbuilderHelper::safeString($viewName_list, 'F') . "');";
 			$method[] = "\t\t\t//" . $this->setLine(__LINE__) . " get the headers to import";
 			$method[] = "\t\t\t\$headers = \$model->getExImPortHeaders();";
-			$method[] = "\t\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkObject(\$headers))";
+			$method[] = "\t\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkObject(\$headers))";
 			$method[] = "\t\t\t{";
 			$method[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " Load headers to session.";
 			$method[] = "\t\t\t\t\$session = JFactory::getSession();";
@@ -8499,18 +8499,18 @@ class Interpretation extends Fields
 			// if this view has custom script it must have as custom import (model, veiw, controller)
 			if (isset($this->importCustomScripts[$viewName_list]) && $this->importCustomScripts[$viewName_list])
 			{
-				$method[] = "\t\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=import_" . $viewName_list . "', false), \$message);";
+				$method[] = "\t\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=import_" . $viewName_list . "', false), \$message);";
 			}
 			else
 			{
-				$method[] = "\t\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=import', false), \$message);";
+				$method[] = "\t\t\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=import', false), \$message);";
 			}
 			$method[] = "\t\t\t\treturn;";
 			$method[] = "\t\t\t}";
 			$method[] = "\t\t}";
 			$method[] = "\t\t//" . $this->setLine(__LINE__) . " Redirect to the list screen with error.";
 			$method[] = "\t\t\$message = JText:" . ":_('" . $this->langPrefix . "_IMPORT_FAILED');";
-			$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic['###component###'] . "&view=" . $viewName_list . "', false), \$message, 'error');";
+			$method[] = "\t\t\$this->setRedirect(JRoute::_('index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $viewName_list . "', false), \$message, 'error');";
 			$method[] = "\t\treturn;";
 			$method[] = "\t}";
 			return implode(PHP_EOL, $method);
@@ -8568,26 +8568,26 @@ class Interpretation extends Fields
 		$target = array('admin' => 'import_' . $viewName_list);
 		$this->buildDynamique($target, 'customimport');
 		// load the custom script to the files
-		// ###IMPORT_EXT_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list]['###IMPORT_EXT_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_ext', 'import_' . $viewName_list, PHP_EOL, null, true);
-		// ###IMPORT_DISPLAY_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list]['###IMPORT_DISPLAY_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_display', 'import_' . $viewName_list, PHP_EOL, null, true);
-		// ###IMPORT_SETDATE_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list]['###IMPORT_SETDATE_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_setdata', 'import_' . $viewName_list, PHP_EOL, null, true);
-		// ###IMPORT_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list]['###IMPORT_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import', 'import_' . $viewName_list, PHP_EOL, null, true);
-		// ###IMPORT_SAVE_METHOD_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list]['###IMPORT_SAVE_METHOD_CUSTOM###'] = $this->getCustomScriptBuilder('php_import_save', 'import_' . $viewName_list, PHP_EOL, null, true);
-		// ###IMPORT_DEFAULT_VIEW_CUSTOM### <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list]['###IMPORT_DEFAULT_VIEW_CUSTOM###'] = $this->getCustomScriptBuilder('html_import_view', 'import_' . $viewName_list, PHP_EOL, null, true);
+		// IMPORT_EXT_METHOD_CUSTOM <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'IMPORT_EXT_METHOD_CUSTOM' . $this->hhh] = $this->getCustomScriptBuilder('php_import_ext', 'import_' . $viewName_list, PHP_EOL, null, true);
+		// IMPORT_DISPLAY_METHOD_CUSTOM <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'IMPORT_DISPLAY_METHOD_CUSTOM' . $this->hhh] = $this->getCustomScriptBuilder('php_import_display', 'import_' . $viewName_list, PHP_EOL, null, true);
+		// IMPORT_SETDATE_METHOD_CUSTOM <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'IMPORT_SETDATE_METHOD_CUSTOM' . $this->hhh] = $this->getCustomScriptBuilder('php_import_setdata', 'import_' . $viewName_list, PHP_EOL, null, true);
+		// IMPORT_METHOD_CUSTOM <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'IMPORT_METHOD_CUSTOM' . $this->hhh] = $this->getCustomScriptBuilder('php_import', 'import_' . $viewName_list, PHP_EOL, null, true);
+		// IMPORT_SAVE_METHOD_CUSTOM <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'IMPORT_SAVE_METHOD_CUSTOM' . $this->hhh] = $this->getCustomScriptBuilder('php_import_save', 'import_' . $viewName_list, PHP_EOL, null, true);
+		// IMPORT_DEFAULT_VIEW_CUSTOM <<<DYNAMIC>>>
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'IMPORT_DEFAULT_VIEW_CUSTOM' . $this->hhh] = $this->getCustomScriptBuilder('html_import_view', 'import_' . $viewName_list, PHP_EOL, null, true);
 
 		// insure we have the view placeholders setup
-		$this->fileContentDynamic['import_' . $viewName_list]['###VIEW###'] = 'IMPORT_' . $this->placeholders['###VIEWS###'];
-		$this->fileContentDynamic['import_' . $viewName_list]['###View###'] = 'Import_' . $this->placeholders['###views###'];
-		$this->fileContentDynamic['import_' . $viewName_list]['###view###'] = 'import_' . $this->placeholders['###views###'];
-		$this->fileContentDynamic['import_' . $viewName_list]['###VIEWS###'] = 'IMPORT_' . $this->placeholders['###VIEWS###'];
-		$this->fileContentDynamic['import_' . $viewName_list]['###Views###'] = 'Import_' . $this->placeholders['###views###'];
-		$this->fileContentDynamic['import_' . $viewName_list]['###views###'] = 'import_' . $this->placeholders['###views###'];
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'VIEW' . $this->hhh] = 'IMPORT_' . $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'View' . $this->hhh] = 'Import_' . $this->placeholders[$this->hhh . 'views' . $this->hhh];
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'view' . $this->hhh] = 'import_' . $this->placeholders[$this->hhh . 'views' . $this->hhh];
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'VIEWS' . $this->hhh] = 'IMPORT_' . $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'Views' . $this->hhh] = 'Import_' . $this->placeholders[$this->hhh . 'views' . $this->hhh];
+		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh . 'views' . $this->hhh] = 'import_' . $this->placeholders[$this->hhh . 'views' . $this->hhh];
 	}
 
 	public function setListQuery($viewName_single, $viewName_list)
@@ -8615,8 +8615,8 @@ class Interpretation extends Fields
 		{
 			$query .= PHP_EOL . "\t\t\$query->select(\$db->quoteName('c.title','category_title'));";
 		}
-		$query .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " From the " . $this->fileContentStatic['###component###'] . "_item table";
-		$query .= PHP_EOL . "\t\t\$query->from(\$db->quoteName('#__" . $this->fileContentStatic['###component###'] . "_" . $viewName_single . "', 'a'));";
+		$query .= PHP_EOL . PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " From the " . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_item table";
+		$query .= PHP_EOL . "\t\t\$query->from(\$db->quoteName('#__" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "_" . $viewName_single . "', 'a'));";
 		// add the category
 		if ($addCategory)
 		{
@@ -8647,7 +8647,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . "\t\t\t\$query->where('a.access = ' . (int) \$access);";
 			$query .= PHP_EOL . "\t\t}";
 			$query .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " Implement View Level Access";
-			$query .= PHP_EOL . "\t\tif (!\$user->authorise('core.options', 'com_" . $this->fileContentStatic['###component###'] . "'))";
+			$query .= PHP_EOL . "\t\tif (!\$user->authorise('core.options', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 			$query .= PHP_EOL . "\t\t{";
 			$query .= PHP_EOL . "\t\t\t\$groups = implode(',', \$user->getAuthorisedViewLevels());";
 			$query .= PHP_EOL . "\t\t\t\$query->where('a.access IN (' . \$groups . ')');";
@@ -9865,7 +9865,7 @@ class Interpretation extends Fields
 				{
 					$input[$task['task_name']][] = PHP_EOL . "\t\t\t\t\t\t\$" . $task['value_name'] . "Value = \$jinput->get('" . $task['value_name'] . "', " . $task['input_default'] . ", '" . $task['input_filter'] . "');";
 					$valueArray[$task['task_name']][] = "\$" . $task['value_name'] . "Value";
-					$getModel[$task['task_name']] = PHP_EOL . "\t\t\t\t\t\t\t\$result = \$this->getModel('ajax')->" . $task['method_name'] . "([[[valueArray]]]);";
+					$getModel[$task['task_name']] = PHP_EOL . "\t\t\t\t\t\t\t\$result = \$this->getModel('ajax')->" . $task['method_name'] . "(" . $this->bbb . "valueArray" . $this->ddd . ");";
 
 					// see user check is needed
 					if (isset($task['user_check']) && 1 == $task['user_check'])
@@ -9896,7 +9896,7 @@ class Interpretation extends Fields
 					$values = implode(', ', $valueArray[$task]);
 					$ifvalues = implode(' && ', $valueArray[$task]);
 					// set the values to method
-					$getMethod = str_replace('[[[valueArray]]]', $values, $getMethod);
+					$getMethod = str_replace($this->bbb . 'valueArray' . $this->ddd, $values, $getMethod);
 					$cases .= PHP_EOL . "\t\t\t\t\t\tif(" . $ifvalues . $userCheck[$task] . ")";
 					$cases .= PHP_EOL . "\t\t\t\t\t\t{";
 					$cases .= $getMethod;
@@ -10264,32 +10264,32 @@ class Interpretation extends Fields
 				$otherView = $viewName_single;
 			}
 			// load the category helper details in not already loaded
-			if (!isset($this->fileContentDynamic['category' . $otherViews]['###view###']))
+			if (!isset($this->fileContentDynamic['category' . $otherViews][$this->hhh . 'view' . $this->hhh]))
 			{
 				// lets also set the category helper for this view
 				$target = array('site' => 'category' . $viewName_list);
 				$this->buildDynamique($target, 'category');
 				// insure the file gets updated
-				$this->fileContentDynamic['category' . $otherViews]['###view###'] = $otherView;
-				$this->fileContentDynamic['category' . $otherViews]['###View###'] = ucfirst($otherView);
-				$this->fileContentDynamic['category' . $otherViews]['###views###'] = $otherViews;
-				$this->fileContentDynamic['category' . $otherViews]['###Views###'] = ucfirst($otherViews);
+				$this->fileContentDynamic['category' . $otherViews][$this->hhh . 'view' . $this->hhh] = $otherView;
+				$this->fileContentDynamic['category' . $otherViews][$this->hhh . 'View' . $this->hhh] = ucfirst($otherView);
+				$this->fileContentDynamic['category' . $otherViews][$this->hhh . 'views' . $this->hhh] = $otherViews;
+				$this->fileContentDynamic['category' . $otherViews][$this->hhh . 'Views' . $this->hhh] = ucfirst($otherViews);
 				// set script to global helper file
 				$includeHelper = array();
 				$includeHelper[] = "\n//" . $this->setLine(__LINE__) . "Insure this view category file is loaded.";
-				$includeHelper[] = "\$classname = '" . $this->fileContentStatic['###component###'] . ucfirst($viewName_list) . "Categories';";
+				$includeHelper[] = "\$classname = '" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . ucfirst($viewName_list) . "Categories';";
 				$includeHelper[] = "if (!class_exists(\$classname))";
 				$includeHelper[] = "{";
-				$includeHelper[] = "\t\$path = JPATH_SITE . '/components/com_" . $this->fileContentStatic['###component###'] . "/helpers/category" . $viewName_list . ".php';";
+				$includeHelper[] = "\t\$path = JPATH_SITE . '/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/helpers/category" . $viewName_list . ".php';";
 				$includeHelper[] = "\tif (is_file(\$path))";
 				$includeHelper[] = "\t{";
 				$includeHelper[] = "\t\tinclude_once \$path;";
 				$includeHelper[] = "\t}";
 				$includeHelper[] = "}";
-				$this->fileContentStatic['###CATEGORY_CLASS_TREES###'] .= implode("\n", $includeHelper);
+				$this->fileContentStatic[$this->hhh . 'CATEGORY_CLASS_TREES' . $this->hhh] .= implode("\n", $includeHelper);
 			}
 			// return category view string
-			if (isset($this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###']) && ComponentbuilderHelper::checkString($this->fileContentStatic['###ROUTER_CATEGORY_VIEWS###']))
+			if (isset($this->fileContentStatic[$this->hhh . 'ROUTER_CATEGORY_VIEWS' . $this->hhh]) && ComponentbuilderHelper::checkString($this->fileContentStatic[$this->hhh . 'ROUTER_CATEGORY_VIEWS' . $this->hhh]))
 			{
 				return "," . PHP_EOL . "\t\t\t" . '"com_' . $component . '.' . $otherViews . '" => "' . $otherView . '"';
 			}
@@ -10621,9 +10621,9 @@ class Interpretation extends Fields
 		$allow[] = "\t\t\treturn false;";
 		$allow[] = "\t\t}";
 		// load license locker
-		if ($this->componentData->add_license && $this->componentData->license_type == 3 && isset($this->fileContentDynamic[$viewName_single]['###BOOLMETHOD###']))
+		if ($this->componentData->add_license && $this->componentData->license_type == 3 && isset($this->fileContentDynamic[$viewName_single][$this->hhh . 'BOOLMETHOD' . $this->hhh]))
 		{
-			$allow[] = $this->checkStatmentLicenseLocked($this->fileContentDynamic[$viewName_single]['###BOOLMETHOD###']);
+			$allow[] = $this->checkStatmentLicenseLocked($this->fileContentDynamic[$viewName_single][$this->hhh . 'BOOLMETHOD' . $this->hhh]);
 		}
 		// setup correct core target
 		$coreLoad = false;
@@ -11433,7 +11433,7 @@ class Interpretation extends Fields
 					$toolBar .= PHP_EOL . "\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('" . $core['core.version'] . "'));";
 					$toolBar .= PHP_EOL . "\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('" . $core['core.edit'] . "') && \$canVersion)";
 					$toolBar .= PHP_EOL . "\t\t\t\t{";
-					$toolBar .= PHP_EOL . "\t\t\t\t\tJToolbarHelper::versions('com_" . $this->fileContentStatic['###component###'] . "." . $viewName . "', \$this->item->id);";
+					$toolBar .= PHP_EOL . "\t\t\t\t\tJToolbarHelper::versions('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $viewName . "', \$this->item->id);";
 					$toolBar .= PHP_EOL . "\t\t\t\t}";
 				}
 			}
@@ -11444,7 +11444,7 @@ class Interpretation extends Fields
 					$toolBar .= PHP_EOL . "\t\t\t\t\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('" . $core['core.version'] . "'));";
 					$toolBar .= PHP_EOL . "\t\t\t\tif (\$this->state->params->get('save_history', 1) && \$this->canDo->get('core.edit') && \$canVersion)";
 					$toolBar .= PHP_EOL . "\t\t\t\t{";
-					$toolBar .= PHP_EOL . "\t\t\t\t\tJToolbarHelper::versions('com_" . $this->fileContentStatic['###component###'] . "." . $viewName . "', \$this->item->id);";
+					$toolBar .= PHP_EOL . "\t\t\t\t\tJToolbarHelper::versions('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $viewName . "', \$this->item->id);";
 					$toolBar .= PHP_EOL . "\t\t\t\t}";
 				}
 			}
@@ -11466,8 +11466,8 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . "\t\t}";
 			$toolBar .= PHP_EOL . "\t\tJToolbarHelper::divider();";
 			$toolBar .= PHP_EOL . "\t\t//" . $this->setLine(__LINE__) . " set help url for this view if found";
-			$toolBar .= PHP_EOL . "\t\t\$help_url = " . $this->fileContentStatic['###Component###'] . "Helper::getHelpUrl('" . $viewName . "');";
-			$toolBar .= PHP_EOL . "\t\tif (" . $this->fileContentStatic['###Component###'] . "Helper::checkString(\$help_url))";
+			$toolBar .= PHP_EOL . "\t\t\$help_url = " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::getHelpUrl('" . $viewName . "');";
+			$toolBar .= PHP_EOL . "\t\tif (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkString(\$help_url))";
 			$toolBar .= PHP_EOL . "\t\t{";
 			$toolBar .= PHP_EOL . "\t\t\tJToolbarHelper::help('" . $this->langPrefix . "_HELP_MANAGER', false, \$help_url);";
 			$toolBar .= PHP_EOL . "\t\t}";
@@ -11907,9 +11907,9 @@ class Interpretation extends Fields
 							if (isset($item['custom']['table']))
 							{
 								// check if this is a local table
-								if (strpos($item['custom']['table'], '#__' . $this->fileContentStatic['###component###'] . '_') !== false)
+								if (strpos($item['custom']['table'], '#__' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_') !== false)
 								{
-									$keyTableNAme = str_replace('#__' . $this->fileContentStatic['###component###'] . '_', '', $item['custom']['table']);
+									$keyTableNAme = str_replace('#__' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_', '', $item['custom']['table']);
 								}
 								else
 								{
@@ -12346,7 +12346,7 @@ class Interpretation extends Fields
 		$display[] = $tab . "</div>";
 		$display[] = $tab . '<div class="span3">';
 		$display[] = $tab . "\t<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
-		$display[] = $tab . "\t\t<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', '" . $this->fileContentStatic['###COMPANYNAME###'] . "', 'vdm'); ?>";
+		$display[] = $tab . "\t\t<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', '" . $this->fileContentStatic[$this->hhh . 'COMPANYNAME' . $this->hhh] . "', 'vdm'); ?>";
 		$display[] = $tab . "\t\t\t<?php echo \$this->loadTemplate('vdm');?>";
 		$display[] = $tab . "\t\t<?php echo JHtml::_('bootstrap.endSlide'); ?>";
 		$display[] = $tab . "\t<?php echo JHtml::_('bootstrap.endAccordion'); ?>";
@@ -12375,14 +12375,14 @@ class Interpretation extends Fields
 					$display[] = $tab . "\t\t<?php  echo JHtml::_('bootstrap.endSlide'); ?>";
 					$slidecounter++;
 					// build the template file
-					$target = array('custom_admin' => $this->fileContentStatic['###component###']);
+					$target = array('custom_admin' => $this->fileContentStatic[$this->hhh . 'component' . $this->hhh]);
 					$this->buildDynamique($target, 'template', $tempName);
 					// set the file data
 					$TARGET = ComponentbuilderHelper::safeString($this->target, 'U');
-					// ###SITE_TEMPLATE_BODY### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$this->fileContentStatic['###component###'] . '_' . $tempName]['###CUSTOM_ADMIN_TEMPLATE_BODY###'] = PHP_EOL . $html;
-					// ###SITE_TEMPLATE_CODE_BODY### <<<DYNAMIC>>>
-					$this->fileContentDynamic[$this->fileContentStatic['###component###'] . '_' . $tempName]['###CUSTOM_ADMIN_TEMPLATE_CODE_BODY###'] = '';
+					// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
+					$this->fileContentDynamic[$this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_' . $tempName][$this->hhh . 'CUSTOM_ADMIN_TEMPLATE_BODY' . $this->hhh] = PHP_EOL . $html;
+					// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
+					$this->fileContentDynamic[$this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_' . $tempName][$this->hhh . 'CUSTOM_ADMIN_TEMPLATE_CODE_BODY' . $this->hhh] = '';
 				}
 				$display[] = $tab . "\t<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
 				$display[] = $tab . "</div>";
@@ -12931,9 +12931,9 @@ class Interpretation extends Fields
 				$viewName = 'config';
 				$listViewName = 'configs';
 				$placeholders = array(
-					'###component###' => $component,
-					'###view###' => $viewName,
-					'###views###' => $listViewName);
+					$this->hhh . 'component' . $this->hhh => $component,
+					$this->hhh . 'view' . $this->hhh => $viewName,
+					$this->hhh . 'views' . $this->hhh => $listViewName);
 				$view = '';
 				$viewType = 0;
 				// set the custom table key
@@ -15159,7 +15159,7 @@ function vdm_dkim() {
 		}
 	}
 
-	public function getInbetweenStrings($str, $start = '###', $end = '###')
+	public function getInbetweenStrings($str, $start = '#' . '#' . '#', $end = '#' . '#' . '#')
 	{
 		$matches = array();
 		$regex = "/$start([a-zA-Z0-9_]*)$end/";

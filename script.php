@@ -1855,6 +1855,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Admin_fields_relations alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_relations') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$admin_fields_relations_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($admin_fields_relations_found)
+		{
+			// Since there are load the needed  admin_fields_relations type ids
+			$admin_fields_relations_ids = $db->loadColumn();
+			// Remove Admin_fields_relations from the content type table
+			$admin_fields_relations_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_relations') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($admin_fields_relations_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Admin_fields_relations items
+			$admin_fields_relations_done = $db->execute();
+			if ($admin_fields_relations_done);
+			{
+				// If succesfully remove Admin_fields_relations add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Admin_fields_relations items from the contentitem tag map table
+			$admin_fields_relations_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_relations') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($admin_fields_relations_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Admin_fields_relations items
+			$admin_fields_relations_done = $db->execute();
+			if ($admin_fields_relations_done);
+			{
+				// If succesfully remove Admin_fields_relations add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Admin_fields_relations items from the ucm content table
+			$admin_fields_relations_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.admin_fields_relations') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($admin_fields_relations_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Admin_fields_relations items
+			$admin_fields_relations_done = $db->execute();
+			if ($admin_fields_relations_done);
+			{
+				// If succesfully remove Admin_fields_relations add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Admin_fields_relations items are cleared from DB
+			foreach ($admin_fields_relations_ids as $admin_fields_relations_id)
+			{
+				// Remove Admin_fields_relations items from the ucm base table
+				$admin_fields_relations_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $admin_fields_relations_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($admin_fields_relations_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Admin_fields_relations items
+				$db->execute();
+
+				// Remove Admin_fields_relations items from the ucm history table
+				$admin_fields_relations_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $admin_fields_relations_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($admin_fields_relations_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Admin_fields_relations items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Component_admin_views alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_admin_views') );
 		$db->setQuery($query);
@@ -3529,6 +3615,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$admin_fields_conditions_Inserted = $db->insertObject('#__content_types', $admin_fields_conditions);
 
+			// Create the admin_fields_relations content type object.
+			$admin_fields_relations = new stdClass();
+			$admin_fields_relations->type_title = 'Componentbuilder Admin_fields_relations';
+			$admin_fields_relations->type_alias = 'com_componentbuilder.admin_fields_relations';
+			$admin_fields_relations->table = '{"special": {"dbtable": "#__componentbuilder_admin_fields_relations","key": "id","type": "Admin_fields_relations","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$admin_fields_relations->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
+			$admin_fields_relations->router = 'ComponentbuilderHelperRoute::getAdmin_fields_relationsRoute';
+			$admin_fields_relations->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_relations.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$admin_fields_relations_Inserted = $db->insertObject('#__content_types', $admin_fields_relations);
+
 			// Create the component_admin_views content type object.
 			$component_admin_views = new stdClass();
 			$component_admin_views->type_title = 'Componentbuilder Component_admin_views';
@@ -4308,6 +4406,35 @@ class com_componentbuilderInstallerScript
 				$admin_fields_conditions_Inserted = $db->insertObject('#__content_types', $admin_fields_conditions);
 			}
 
+			// Create the admin_fields_relations content type object.
+			$admin_fields_relations = new stdClass();
+			$admin_fields_relations->type_title = 'Componentbuilder Admin_fields_relations';
+			$admin_fields_relations->type_alias = 'com_componentbuilder.admin_fields_relations';
+			$admin_fields_relations->table = '{"special": {"dbtable": "#__componentbuilder_admin_fields_relations","key": "id","type": "Admin_fields_relations","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$admin_fields_relations->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
+			$admin_fields_relations->router = 'ComponentbuilderHelperRoute::getAdmin_fields_relationsRoute';
+			$admin_fields_relations->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_relations.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if admin_fields_relations type is already in content_type DB.
+			$admin_fields_relations_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($admin_fields_relations->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$admin_fields_relations->type_id = $db->loadResult();
+				$admin_fields_relations_Updated = $db->updateObject('#__content_types', $admin_fields_relations, 'type_id');
+			}
+			else
+			{
+				$admin_fields_relations_Inserted = $db->insertObject('#__content_types', $admin_fields_relations);
+			}
+
 			// Create the component_admin_views content type object.
 			$component_admin_views = new stdClass();
 			$component_admin_views->type_title = 'Componentbuilder Component_admin_views';
@@ -4864,7 +4991,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.7.10 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.7.11 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 

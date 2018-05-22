@@ -75,18 +75,18 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'fields_conditions', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_FIELDS_CONDITIONS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'fields', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_FIELDS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('admin_view.fields_conditions_left', $this); ?>
+				<?php echo JLayoutHelper::render('admin_view.fields_left', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('admin_view.fields_conditions_right', $this); ?>
+				<?php echo JLayoutHelper::render('admin_view.fields_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('admin_view.fields_conditions_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('admin_view.fields_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>

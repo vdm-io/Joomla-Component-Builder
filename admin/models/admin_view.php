@@ -729,7 +729,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		{
 			$_tablesArray = array(
 				'admin_fields',
-				'admin_fields_conditions'
+				'admin_fields_conditions',
+				'admin_fields_relations'
 			);
 			foreach($_tablesArray as $_updateTable)
 			{
@@ -769,7 +770,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		{
 			$_tablesArray = array(
 				'admin_fields',
-				'admin_fields_conditions'
+				'admin_fields_conditions',
+				'admin_fields_relations'
 			);
 			foreach($_tablesArray as $_updateTable)
 			{

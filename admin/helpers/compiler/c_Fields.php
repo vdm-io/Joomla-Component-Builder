@@ -384,8 +384,8 @@ class Fields extends Structure
 				$this->accessBuilder[$view_name_single] = $view_name_single;
 			}
 			// main lang prefix
-			$langView = $this->langPrefix . '_' . $this->placeholders['###VIEW###'];
-			$langViews = $this->langPrefix . '_' . $this->placeholders['###VIEWS###'];
+			$langView = $this->langPrefix . '_' . $this->placeholders[$this->hhh . 'VIEW' . $this->hhh];
+			$langViews = $this->langPrefix . '_' . $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
 			// set default lang
 			$this->langContent[$this->lang][$langView] = $view['settings']->name_single;
 			$this->langContent[$this->lang][$langViews] = $view['settings']->name_list;
@@ -2696,17 +2696,17 @@ class Fields extends Structure
 			);
 			// make field dynamic
 			$replace = array(
-				'###TABLE###' => $data['custom']['table'],
-				'###ID###' => $data['custom']['id'],
-				'###TEXT###' => $data['custom']['text'],
-				'###CODE_TEXT###' => $data['code'] . '_' . $data['custom']['text'],
-				'###CODE###' => $data['code'],
-				'###component###' => $this->fileContentStatic['###component###'],
-				'###Component###' => $this->fileContentStatic['###Component###'],
-				'###view_type###' => $view_name_single . '_' . $data['type'],
-				'###type###' => $data['type'],
-				'###view###' => $view_name_single,
-				'###views###' => $view_name_list
+				$this->hhh . 'TABLE' . $this->hhh => $data['custom']['table'],
+				$this->hhh . 'ID' . $this->hhh => $data['custom']['id'],
+				$this->hhh . 'TEXT' . $this->hhh => $data['custom']['text'],
+				$this->hhh . 'CODE_TEXT' . $this->hhh => $data['code'] . '_' . $data['custom']['text'],
+				$this->hhh . 'CODE' . $this->hhh => $data['code'],
+				$this->hhh . 'component' . $this->hhh => $this->fileContentStatic[$this->hhh . 'component' . $this->hhh],
+				$this->hhh . 'Component' . $this->hhh => $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh],
+				$this->hhh . 'view_type' . $this->hhh => $view_name_single . '_' . $data['type'],
+				$this->hhh . 'type' . $this->hhh => $data['type'],
+				$this->hhh . 'view' . $this->hhh => $view_name_single,
+				$this->hhh . 'views' . $this->hhh => $view_name_list
 			);
 			// now load the php script
 			if (isset($data['custom']['php']) && ComponentbuilderHelper::checkArray($data['custom']['php']))
@@ -2780,23 +2780,23 @@ class Fields extends Structure
 				$this->langContent[$this->lang][$groupLangName] = ComponentbuilderHelper::safeString($tempName, 'W');
 				// build the Group Control
 				$this->setGroupControl[$data['type']] = $groupLangName;
-				// ###JFORM_GETGROUPS_PHP### <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_' . $data['type']]['###JFORM_GETGROUPS_PHP###'] = $phpCode;
+				// JFORM_GETGROUPS_PHP <<<DYNAMIC>>>
+				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETGROUPS_PHP' . $this->hhh] = $phpCode;
 
-				// ###JFORM_GETEXCLUDED_PHP### <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_' . $data['type']]['###JFORM_GETEXCLUDED_PHP###'] = $phpxCode;
+				// JFORM_GETEXCLUDED_PHP <<<DYNAMIC>>>
+				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETEXCLUDED_PHP' . $this->hhh] = $phpxCode;
 			}
 			else
 			{
-				// ###JFORM_GETOPTIONS_PHP### <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_' . $data['type']]['###JFORM_GETOPTIONS_PHP###'] = $phpCode;
+				// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
+				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETOPTIONS_PHP' . $this->hhh] = $phpCode;
 			}
-			// ###Type### <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']]['###Type###'] = ComponentbuilderHelper::safeString($data['custom']['type'], 'F');
-			// ###type### <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']]['###type###'] = $data['custom']['type'];
-			// ###type### <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']]['###ADD_BUTTON###'] = $this->setAddButtonToListField($data['custom']);
+			// Type <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'Type' . $this->hhh] = ComponentbuilderHelper::safeString($data['custom']['type'], 'F');
+			// type <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'type' . $this->hhh] = $data['custom']['type'];
+			// type <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'ADD_BUTTON' . $this->hhh] = $this->setAddButtonToListField($data['custom']);
 		}
 	}
 
@@ -2818,15 +2818,15 @@ class Fields extends Structure
 			// check that the component value is set
 			if (!isset($fieldData['component']) || !ComponentbuilderHelper::checkString($fieldData['component']))
 			{
-				$fieldData['component'] = "com_" . $this->fileContentStatic['###component###'];
+				$fieldData['component'] = "com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 			}
 			// check that the componet has the com_ value in it
 			if (strpos($fieldData['component'], 'com_') === false || strpos($fieldData['component'], '=') !== false)
 			{
 				$fieldData['component'] = "com_" . $fieldData['component'];
 			}
-			// make sure the component is update if ### or [[[ component placeholder is used
-			if (strpos($fieldData['component'], '###') !== false || strpos($fieldData['component'], '[[[') !== false) // should not be needed... but
+			// make sure the component is update if # # # or [ [ [ component placeholder is used
+			if (strpos($fieldData['component'], $this->hhh) !== false || strpos($fieldData['component'], $this->bbb) !== false) // should not be needed... but
 			{
 				$fieldData['component'] = $this->setPlaceholders($fieldData['component'], $this->placeholders);
 			}
@@ -2841,7 +2841,7 @@ class Fields extends Structure
 				// set switch to activate easy update
 				$coreLoad = true;
 				// since the view is local to the component use this component name
-				$component = "com_" . $this->fileContentStatic['###component###'];
+				$component = "com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 			}
 			else
 			{

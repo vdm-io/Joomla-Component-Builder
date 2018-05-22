@@ -3085,15 +3085,15 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	Move File to Server
-	* 	
-	* 	@param   string    $localPath    The local path to the file
-	* 	@param   string    $fileName     The the actual file name
-	* 	@param   int       $serverID     The server local id to use
-	* 	@param   int       $protocol      The server protocol to use
-	* 	@param   string    $permission    The permission validation area
-	* 	
-	* 	@return  bool      true on success
+	* Move File to Server
+	*
+	* @param   string    $localPath     The local path to the file
+	* @param   string    $fileName      The the actual file name
+	* @param   int         $serverID       The server local id to use
+	* @param   int         $protocol        The server protocol to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  bool      true on success
 	**/
 	public static function moveToServer($localPath, $fileName, $serverID, $protocol = null, $permission = 'core.export')
 	{
@@ -3128,23 +3128,23 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	the SFTP objects
+	* the SFTP objects
 	**/
 	protected static $sftp = array();
 
 	/**
-	* 	the FTP objects
+	* the FTP objects
 	**/
 	protected static $ftp = array();
 
 	/**
-	* 	get the server object
-	* 	
-	* 	@param   int         $serverID       The server local id to use
-	* 	@param   int         $protocol        The server protocol to use
-	* 	@param   string    $permission    The permission validation area
-	* 	
-	* 	@return  object     on success server object
+	* get the server object
+	*
+	* @param   int         $serverID       The server local id to use
+	* @param   int         $protocol        The server protocol to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  object     on success server object
 	**/
 	public static function getServer($serverID, $protocol = null, $permission = 'core.export')
 	{
@@ -3167,12 +3167,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	get the sftp object
-	* 	
-	* 	@param   int         $serverID       The server local id to use
-	* 	@param   string    $permission    The permission validation area
-	* 	
-	* 	@return  object on success with sftp power
+	* get the sftp object
+	*
+	* @param   int         $serverID       The server local id to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  object on success with sftp power
 	**/
 	public static function getSftp($serverID, $permission = 'core.export')
 	{
@@ -3326,12 +3326,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	get the JClientFtp object
-	* 	
-	* 	@param   int        $serverID       The server local id to use
-	* 	@param   string    $permission    The permission validation area
-	* 	
-	* 	@return  object on success with ftp power
+	* get the JClientFtp object
+	*
+	* @param   int        $serverID         The server local id to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  object on success with ftp power
 	**/
 	public static function getFtp($serverID, $permission)
 	{
@@ -3417,13 +3417,13 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	get the server details
-	* 	
-	* 	@param   int         $serverID       The server local id to use
-	* 	@param   int         $protocol        The server protocol to use
-	* 	@param   string    $permission    The permission validation area
-	* 	
-	* 	@return  object    on success with server details
+	* get the server details
+	*
+	* @param   int         $serverID       The server local id to use
+	* @param   int         $protocol        The server protocol to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  object    on success with server details
 	**/
 	public static function getServerDetails($serverID, $protocol = 2, $permission = 'core.export')
 	{
