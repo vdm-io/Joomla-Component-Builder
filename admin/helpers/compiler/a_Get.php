@@ -488,6 +488,20 @@ class Get
 	public $catOtherName = array();
 
 	/**
+	 * The field relations values
+	 * 
+	 * @var     array
+	 */
+	public $fieldRelations = array();
+
+	/**
+	 * The list join fields
+	 * 
+	 * @var     array
+	 */
+	public $listJoinBuilder = array();
+
+	/**
 	 * The linked admin view tabs
 	 * 
 	 * @var     array
@@ -1340,18 +1354,21 @@ class Get
 					'b.addfields',
 					'b.id',
 					'c.addconditions',
-					'c.id'
+					'c.id',
+					'r.addrelations'
 					), array(
 					'addfields',
 					'addfields_id',
 					'addconditions',
-					'addconditions_id'
+					'addconditions_id',
+					'addrelations'
 					)
 				)
 			);
 			$query->from('#__componentbuilder_admin_view AS a');
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields', 'b') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('b.admin_view') . ')');
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields_conditions', 'c') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('c.admin_view') . ')');
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields_relations', 'r') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('r.admin_view') . ')');
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
 			// Reset the query using our newly populated query object.
@@ -1624,7 +1641,7 @@ class Get
 								$conditionValue['match_type'] = $type;
 								$conditionValue['match_xml'] = $fieldValue['settings']->xml;
 								// if custom field load field being extended
-								if (!ComponentbuilderHelper::typeField($type))
+								if (!ComponentbuilderHelper::fieldCheck($type))
 								{
 									$conditionValue['match_extends'] = ComponentbuilderHelper::getBetween($fieldValue['settings']->xml, 'extends="', '"');
 								}
@@ -1642,6 +1659,35 @@ class Get
 				}
 			}
 			unset($view->addconditions);
+
+			// prep the buckets
+			$this->fieldRelations[$name_list] = array();
+			$this->listJoinBuilder[$name_list] = array();
+			// set the relations
+			$view->addrelations = (isset($view->addrelations) && ComponentbuilderHelper::checkJson($view->addrelations)) ? json_decode($view->addrelations, true) : null;
+			if (ComponentbuilderHelper::checkArray($view->addrelations))
+			{
+				foreach ($view->addrelations as $nr => $relationsValue)
+				{
+					// only add if list view field is selected and joind fields are set
+					if (isset($relationsValue['listfield']) && 
+						is_numeric($relationsValue['listfield']) &&
+						$relationsValue['listfield'] > 0 &&
+						isset($relationsValue['joinfields']) && 
+						ComponentbuilderHelper::checkArray($relationsValue['joinfields']))
+					{
+						// load the field relations
+						$this->fieldRelations[$name_list][(int) $relationsValue['listfield']] = $relationsValue;
+						// load the list joints
+						foreach ($relationsValue['joinfields'] as $join)
+						{
+							$this->listJoinBuilder[$name_list][(int) $join] = (int) $join;
+						}
+					}
+				}
+			}
+			unset($view->addrelations);
+
 			// set linked views
 			$this->linkedAdminViews[$name_single] = null;
 			$view->addlinked_views = (isset($view->addlinked_views) && ComponentbuilderHelper::checkJson($view->addlinked_views)) ? json_decode($view->addlinked_views, true) : null;

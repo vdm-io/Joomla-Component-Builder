@@ -61,16 +61,16 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('library.edit')): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($canDo->get('library.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'libraries.', $canCheckin); ?>
 					<?php endif; ?>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->name); ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $this->escape($item->name); ?>
+				<?php endif; ?>
+			</div>
 
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 				<?php if ($canDo->get('library_config.edit') && $library_config_id = ComponentbuilderHelper::getVar('library_config', $item->id, 'library', 'id')): ?>

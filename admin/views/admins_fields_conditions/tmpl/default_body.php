@@ -61,16 +61,16 @@ $edit = "index.php?option=com_componentbuilder&view=admins_fields_conditions&tas
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('admin_fields_conditions.edit')): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($canDo->get('admin_fields_conditions.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->admin_view_system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'admins_fields_conditions.', $canCheckin); ?>
 					<?php endif; ?>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->admin_view_system_name); ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $this->escape($item->admin_view_system_name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('admin_fields_conditions.edit.state')) : ?>

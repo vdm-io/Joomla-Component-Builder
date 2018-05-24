@@ -101,31 +101,3 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 </div>
 </form>
 </div>
-
-<script type="text/javascript">
-
-
-
-<?php $numberAddconditions = range(0, count( (array) $this->item->addconditions) + 3, 1);?>
-
-// for the values already set
-jQuery(document).ready(function(){
-<?php foreach($numberAddconditions as $fieldNr): ?>
-	jQuery('#adminForm').on('change', '#jform_addconditions__addconditions<?php echo $fieldNr ?>__match_field',function (e) {
-		e.preventDefault();
-		getFieldSelectOptions(<?php echo $fieldNr ?>);
-	});
-<?php endforeach; ?>
-	jQuery(document).on('subform-row-add', function(event, row){
-		var groupName = jQuery(row).data('group');
-		var fieldName = groupName.replace(/([0-9])/g, '');
-		var fieldNr = groupName.replace(/([A-z_])/g, '');
-		if ('addconditions' === fieldName) {
-			jQuery('#adminForm').on('change', '#jform_addconditions__addconditions'+fieldNr+'__match_field',function (e) {
-				e.preventDefault();
-				getFieldSelectOptions(fieldNr);
-			});
-		}
-	});
-});
-</script>

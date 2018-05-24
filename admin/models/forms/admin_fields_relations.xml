@@ -116,6 +116,7 @@
 					class="fieldMedium"
 					multiple="false"
 					required="false"
+					onchange="getCodeGlueOptions(this)"
 					button="false"
 				/>
 				<!-- Joinfields Field. Type: Joinfields. (custom) -->
@@ -127,8 +128,26 @@
 					class="fieldMedium"
 					multiple="true"
 					required="false"
+					onchange="getCodeGlueOptions(this)"
 					button="false"
 				/>
+				<!-- Area Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="area"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_AREA_LABEL"
+					class="list_class"
+					multiple="false"
+					required="false"
+					validate="int"
+					default="1"
+					onchange="getCodeGlueOptions(this)">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODEL</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_VIEW</option>
+				</field>
 				<!-- Join_type Field. Type: List. (joomla) -->
 				<field
 					type="list"
@@ -138,26 +157,26 @@
 					multiple="false"
 					required="false"
 					validate="int"
-					default="1">
+					default="1"
+					onchange="getCodeGlueOptions(this)">
 					<!-- Option Set. -->
 					<option value="1">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CONCATENATE</option>
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CONCATENATE_RAQUO_GLUE</option>
 					<option value="2">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CUSTOM_CODE</option>
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CUSTOM_RAQUO_CODE</option>
 				</field>
-				<!-- Set Field. Type: Text. (joomla) -->
+				<!-- Set Field. Type: Textarea. (joomla) -->
 				<field
-					type="text"
+					type="textarea"
 					name="set"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_SET_LABEL"
-					size="150"
-					maxlength="150"
+					rows="4"
+					cols="5"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_SET_DESCRIPTION"
-					class="text_area"
-					required="false"
-					filter="RAW"
+					class="text_area codefield"
+					filter="raw"
 					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_SET_HINT"
-					autocomplete="on"
+					required="false"
 				/>
 			</form>
 		</field>

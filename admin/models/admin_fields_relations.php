@@ -88,26 +88,6 @@ class ComponentbuilderModelAdmin_fields_relations extends JModelAdmin
 				$addrelations->loadString($item->addrelations);
 				$item->addrelations = $addrelations->toArray();
 			}
-
-			// check what type of conditions array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->addconditions) && isset($item->addconditions['target_field']))
-			{
-				$bucket = array();
-				foreach($item->addconditions as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['addconditions'.$nr][$option] = $value;
-					}
-				}
-				$item->addconditions = $bucket;
-				// update the fields
-				$conditionsUpdate = new stdClass();
-				$conditionsUpdate->id = (int) $item->id;
-				$conditionsUpdate->addconditions = json_encode($bucket);
-				$this->_db->updateObject('#__componentbuilder_admin_fields_conditions', $conditionsUpdate, 'id');
-			}
 			
 			if (!empty($item->id))
 			{

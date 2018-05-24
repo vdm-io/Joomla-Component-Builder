@@ -1075,7 +1075,7 @@ class Fields extends Structure
 				// set the array of field names
 				$this->setFieldsNames($view_name_single, $fieldAttributes['name']);
 
-				if ($this->defaultField($typeName, 'option'))
+				if (ComponentbuilderHelper::fieldCheck($typeName, 'option'))
 				{
 					//reset options array
 					$optionArray = array();
@@ -1087,7 +1087,7 @@ class Fields extends Structure
 						$this->setBuilders($langLabel, $langView, $view_name_single, $view_name_list, $name, $view, $field, $typeName, $multiple, false, $optionArray);
 					}
 				}
-				elseif ($this->defaultField($typeName, 'plain'))
+				elseif (ComponentbuilderHelper::fieldCheck($typeName, 'plain'))
 				{
 					if ($build)
 					{
@@ -1097,7 +1097,7 @@ class Fields extends Structure
 					// now add to the field set
 					$dynamicField = $this->setField('plain', $fieldAttributes, $name, $typeName, $langView, $view_name_single, $view_name_list, $placeholders, $optionArray);
 				}
-				elseif ($this->defaultField($typeName, 'spacer'))
+				elseif (ComponentbuilderHelper::fieldCheck($typeName, 'spacer'))
 				{
 					if ($build)
 					{
@@ -1117,7 +1117,7 @@ class Fields extends Structure
 					// now add to the field set
 					$dynamicField = $this->setField('spacer', $fieldAttributes, $name, $typeName, $langView, $view_name_single, $view_name_list, $placeholders, $optionArray);
 				}
-				elseif ($this->defaultField($typeName, 'special'))
+				elseif (ComponentbuilderHelper::fieldCheck($typeName, 'special'))
 				{
 					// set the repeatable field or subform field
 					if ($typeName === 'repeatable' || $typeName === 'subform')
@@ -1378,12 +1378,12 @@ class Fields extends Structure
 							{
 								//reset options array
 								$r_optionArray = array();
-								if ($this->defaultField($r_typeName, 'option'))
+								if (ComponentbuilderHelper::fieldCheck($r_typeName, 'option'))
 								{
 									// now add to the field set
 									$field .= $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
 								}
-								elseif ($this->defaultField($r_typeName, 'plain'))
+								elseif (ComponentbuilderHelper::fieldCheck($r_typeName, 'plain'))
 								{
 									// now add to the field set
 									$field .= $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
@@ -1465,12 +1465,12 @@ class Fields extends Structure
 							{
 								//reset options array
 								$r_optionArray = array();
-								if ($this->defaultField($r_typeName, 'option'))
+								if (ComponentbuilderHelper::fieldCheck($r_typeName, 'option'))
 								{
 									// now add to the field set
 									$field .= $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
 								}
-								elseif ($this->defaultField($r_typeName, 'plain'))
+								elseif (ComponentbuilderHelper::fieldCheck($r_typeName, 'plain'))
 								{
 									// now add to the field set
 									$field .= $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
@@ -1715,12 +1715,12 @@ class Fields extends Structure
 							{
 								//reset options array
 								$r_optionArray = array();
-								if ($this->defaultField($r_typeName, 'option'))
+								if (ComponentbuilderHelper::fieldCheck($r_typeName, 'option'))
 								{
 									// now add to the field set
 									ComponentbuilderHelper::xmlAppend($fieldSetXML, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 								}
-								elseif ($this->defaultField($r_typeName, 'plain'))
+								elseif (ComponentbuilderHelper::fieldCheck($r_typeName, 'plain'))
 								{
 									// now add to the field set
 									ComponentbuilderHelper::xmlAppend($fieldSetXML, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
@@ -1812,12 +1812,12 @@ class Fields extends Structure
 								{
 									//reset options array
 									$r_optionArray = array();
-									if ($this->defaultField($r_typeName, 'option'))
+									if (ComponentbuilderHelper::fieldCheck($r_typeName, 'option'))
 									{
 										// now add to the field set
 										ComponentbuilderHelper::xmlAppend($form, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 									}
-									elseif ($this->defaultField($r_typeName, 'plain'))
+									elseif (ComponentbuilderHelper::fieldCheck($r_typeName, 'plain'))
 									{
 										// now add to the field set
 										ComponentbuilderHelper::xmlAppend($form, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
@@ -2049,7 +2049,7 @@ class Fields extends Structure
 		$fieldAttributes = array();
 		$setCustom = false;
 		// setup joomla default fields
-		if (!$this->defaultField($typeName))
+		if (!ComponentbuilderHelper::fieldCheck($typeName))
 		{
 			$fieldAttributes['custom'] = array();
 			$setCustom = true;
@@ -2399,6 +2399,10 @@ class Fields extends Structure
 				$this->dbKeys[$view_name_single][] = $name;
 			}
 		}
+		// set list switch
+		$listSwitch = (isset($field['list']) && $field['list'] == 1);
+		// set list join
+		$listJoin = (isset($this->listJoinBuilder[$view_name_list][(int) $field['field']]));
 		// add history to this view
 		if (isset($view['history']) && $view['history'])
 		{
@@ -2443,22 +2447,44 @@ class Fields extends Structure
 			}
 		}
 		// build the list values
-		if ((isset($field['list']) && $field['list'] == 1) && $typeName != 'repeatable' && $typeName != 'subform')
+		if (($listSwitch || $listJoin) && $typeName != 'repeatable' && $typeName != 'subform')
 		{
 			// load to list builder
-			$this->listBuilder[$view_name_list][] = array(
-				'type' => $typeName,
-				'code' => $name,
-				'lang' => $listLangName,
-				'title' => (isset($field['title']) && $field['title']) ? true : false,
-				'alias' => (isset($field['alias']) && $field['alias']) ? true : false,
-				'link' => (isset($field['link']) && $field['link']) ? true : false,
-				'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
-				'custom' => $custom,
-				'multiple' => $multiple,
-				'options' => $options);
-
-			$this->customBuilderList[$view_name_list][] = $name;
+			if ($listSwitch)
+			{
+				$this->listBuilder[$view_name_list][] = array(
+					'id' => (int) $field['field'],
+					'type' => $typeName,
+					'code' => $name,
+					'lang' => $listLangName,
+					'title' => (isset($field['title']) && $field['title']) ? true : false,
+					'alias' => (isset($field['alias']) && $field['alias']) ? true : false,
+					'link' => (isset($field['link']) && $field['link']) ? true : false,
+					'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
+					'custom' => $custom,
+					'multiple' => $multiple,
+					'options' => $options);
+			}
+			// load the list join builder
+			elseif ($listJoin)
+			{
+				$this->listJoinBuilder[$view_name_list][(int) $field['field']] = array(
+					'type' => $typeName,
+					'code' => $name,
+					'lang' => $listLangName,
+					'title' => (isset($field['title']) && $field['title']) ? true : false,
+					'alias' => (isset($field['alias']) && $field['alias']) ? true : false,
+					'link' => (isset($field['link']) && $field['link']) ? true : false,
+					'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
+					'custom' => $custom,
+					'multiple' => $multiple,
+					'options' => $options);
+			}
+			// build custom builder list
+			if ($listSwitch || $listJoin)
+			{
+				$this->customBuilderList[$view_name_list][] = $name;
+			}
 		}
 		// set the hidden field of this view
 		if ($typeName === 'hidden')
@@ -2601,7 +2627,7 @@ class Fields extends Structure
 			}
 
 			// load the json list display fix
-			if ((isset($field['list']) && $field['list'] == 1) && $typeName != 'repeatable' && $typeName != 'subform')
+			if (($listSwitch || $listJoin) && $typeName != 'repeatable' && $typeName != 'subform')
 			{
 				if (ComponentbuilderHelper::checkArray($options))
 				{
@@ -2636,12 +2662,12 @@ class Fields extends Structure
 		// check if field should be added to uikit
 		$this->buildSiteFieldData($view_name_single, $name, 'uikit', $typeName);
 		// load the selection translation fix
-		if (ComponentbuilderHelper::checkArray($options) && (isset($field['list']) && $field['list'] == 1) && $typeName != 'repeatable' && $typeName != 'subform')
+		if (ComponentbuilderHelper::checkArray($options) && ($listSwitch || $listJoin) && $typeName != 'repeatable' && $typeName != 'subform')
 		{
 			$this->selectionTranslationFixBuilder[$view_name_list][$name] = $options;
 		}
 		// build the sort values
-		if ($dbSwitch && (isset($field['sort']) && $field['sort'] == 1) && (isset($field['list']) && $field['list'] == 1) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
+		if ($dbSwitch && (isset($field['sort']) && $field['sort'] == 1) && ($listSwitch || $listJoin) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
 		{
 			$this->sortBuilder[$view_name_list][] = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'custom' => $custom, 'options' => $options);
 		}
@@ -2652,7 +2678,7 @@ class Fields extends Structure
 			$this->searchBuilder[$view_name_list][] = array('type' => $typeName, 'code' => $name, 'custom' => $custom, 'list' => $_list);
 		}
 		// build the filter values
-		if ($dbSwitch && (isset($field['filter']) && $field['filter'] == 1) && (isset($field['list']) && $field['list'] == 1) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
+		if ($dbSwitch && (isset($field['filter']) && $field['filter'] == 1) && ($listSwitch || $listJoin) && (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes' && $typeName != 'repeatable' && $typeName != 'subform'))
 		{
 			$this->filterBuilder[$view_name_list][] = array('type' => $typeName, 'code' => $name, 'lang' => $listLangName, 'database' => $view_name_single, 'function' => ComponentbuilderHelper::safeString($name, 'F'), 'custom' => $custom, 'options' => $options);
 		}
@@ -2991,58 +3017,6 @@ class Fields extends Structure
 			return implode(PHP_EOL, $addButton);
 		}
 		return '';
-	}
-
-	/**
-	 * default Fields
-	 *
-	 * @param   string   $type The field type
-	 * @param   boolean  $option The field grouping
-	 *
-	 * @return  boolean if the field was found
-	 *
-	 */
-	public function defaultField($type, $option = 'default')
-	{
-		// list of default fields
-		// https://docs.joomla.org/Form_field
-		$defaults = array(
-			'default' => array(
-				'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox',
-				'checkboxes', 'color', 'combo', 'componentlayout', 'contentlanguage', 'editor',
-				'chromestyle', 'contenttype', 'databaseconnection', 'editors', 'email', 'file',
-				'filelist', 'folderlist', 'groupedlist', 'hidden', 'file', 'headertag', 'helpsite',
-				'imagelist', 'integer', 'language', 'list', 'media', 'menu', 'note', 'number', 'password',
-				'plugins', 'radio', 'repeatable', 'range', 'rules', 'subform', 'sessionhandler', 'spacer', 'sql', 'tag',
-				'tel', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition', 'moduletag',
-				'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
-			),
-			'plain' => array(
-				'accesslevel', 'checkbox', 'cachehandler', 'calendar', 'category', 'chromestyle', 'color',
-				'contenttype', 'combo', 'componentlayout', 'databaseconnection', 'editor', 'editors',
-				'email', 'file', 'filelist', 'folderlist', 'headertag', 'helpsite',
-				'hidden', 'imagelist', 'integer', 'language', 'media', 'menu',
-				'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules',
-				'sessionhandler', 'tag', 'tel', 'text', 'textarea',
-				'timezone', 'url', 'user', 'usergroup'
-			),
-			'spacer' => array(
-				'note', 'spacer'
-			),
-			'option' => array(
-				'plugins', 'checkboxes', 'contentlanguage', 'list', 'radio', 'sql'
-			),
-			'special' => array(
-				'contentlanguage', 'groupedlist', 'moduleposition', 'plugin',
-				'repeatable', 'templatestyle', 'subform'
-			)
-		);
-
-		if (in_array($type, $defaults[$option]))
-		{
-			return true;
-		}
-		return false;
 	}
 
 	/**

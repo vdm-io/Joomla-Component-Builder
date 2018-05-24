@@ -61,16 +61,16 @@ $edit = "index.php?option=com_componentbuilder&view=layouts&task=layout.edit";
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($canDo->get('core.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'layouts.', $canCheckin); ?>
 					<?php endif; ?>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->name); ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $this->escape($item->name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->alias); ?>
@@ -79,13 +79,13 @@ $edit = "index.php?option=com_componentbuilder&view=layouts&task=layout.edit";
 			<?php echo $this->escape($item->description); ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int)$item->dynamic_get)): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int)$item->dynamic_get)): ?>
 					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->dynamic_get; ?>&ref=layouts"><?php echo $this->escape($item->dynamic_get_name); ?></a>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->dynamic_get_name); ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $this->escape($item->dynamic_get_name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('core.edit.state')) : ?>

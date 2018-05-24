@@ -1801,7 +1801,7 @@ abstract class ComponentbuilderHelper
 		return $sufix === "" || ($sufix == substr(strrchr($file, "."), -strlen($sufix)));
 	}
 
-	public static function imageInfo($path,$request = 'type')
+	public static function imageInfo($path, $request = 'type')
 	{
 		// set image
 		$image = JPATH_SITE.'/'.$path;
@@ -1914,37 +1914,79 @@ abstract class ComponentbuilderHelper
 		return  array_unique($bucket);
 	}
 
-	public static function typeField($type,$option = 'default')
+
+	/**
+	 * Field Grouping https://docs.joomla.org/Form_field
+	 **/
+	protected static $fieldGroups = array(
+		'default' => array(
+			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox',
+			'checkboxes', 'color', 'combo', 'componentlayout', 'contentlanguage', 'editor',
+			'chromestyle', 'contenttype', 'databaseconnection', 'editors', 'email', 'file',
+			'filelist', 'folderlist', 'groupedlist', 'hidden', 'file', 'headertag', 'helpsite',
+			'imagelist', 'integer', 'language', 'list', 'media', 'menu', 'note', 'number', 'password',
+			'plugins', 'radio', 'repeatable', 'range', 'rules', 'subform', 'sessionhandler', 'spacer', 'sql', 'tag',
+			'tel', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition', 'moduletag',
+			'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
+		),
+		'plain' => array(
+			'accesslevel', 'checkbox', 'cachehandler', 'calendar', 'category', 'chromestyle', 'color',
+			'contenttype', 'combo', 'componentlayout', 'databaseconnection', 'editor', 'editors',
+			'email', 'file', 'filelist', 'folderlist', 'headertag', 'helpsite',
+			'hidden', 'imagelist', 'integer', 'language', 'media', 'menu',
+			'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules',
+			'sessionhandler', 'tag', 'tel', 'text', 'textarea',
+			'timezone', 'url', 'user', 'usergroup'
+		), 
+		'text' => array(
+			'calendar','color','editor','email','password','tel','text','textarea','url','number','range'
+		), 
+		'list' => array(
+			'checkboxes','checkbox','list','radio'
+		), 
+		'dynamic' => array(
+			'category','headertag','tag','rules','user','file','filelist','folderlist','imagelist','integer','timezone','media','meter'
+		),
+		'spacer' => array(
+			'note', 'spacer'
+		),
+		'option' => array(
+			'plugins', 'checkboxes', 'contentlanguage', 'list', 'radio', 'sql'
+		),
+		'special' => array(
+			'contentlanguage', 'groupedlist', 'moduleposition', 'plugin',
+			'repeatable', 'templatestyle', 'subform'
+		)
+	);
+
+	/**
+	 * Field Checker
+	 *
+	 * @param   string   $type The field type
+	 * @param   boolean  $option The field grouping
+	 *
+	 * @return  boolean if the field was found
+	 */
+	public static function fieldCheck($type, $option = 'default')
 	{
-		// list of default fields
-		// https://docs.joomla.org/Form_field
-		$fields = array(
-			'default' => array(
-				'accesslevel','cachehandler','calendar','captcha','category','checkbox',
-				'checkboxes','color','combo','componentlayout','contentlanguage','editor',
-				'chromestyle','contenttype','databaseconnection','editors','email','file',
-				'filelist','folderlist','groupedlist','hidden','file','headertag','helpsite',
-				'imagelist','integer','language','list','media','menu','note','password',
-				'plugins','range','radio','repeatable','rules','subform','sessionhandler','spacer','sql','tag',
-				'tel','menuitem','modulelayout','meter','moduleorder','moduleposition','moduletag',
-				'templatestyle','text','textarea','timezone','url','user','usergroup'
-			), 
-			'text' => array(
-				'calendar','color','editor','email','password','tel','text','textarea','url','number','range'
-			), 
-			'list' => array(
-				'checkboxes','checkbox','list','radio'
-			), 
-			'dynamic' => array(
-				'category','headertag','tag','rules','user','file','filelist','folderlist','imagelist','integer','timezone','media','meter'
-			)
-		);
-		
-		if (in_array($type,$fields[$option]))
+		// now check
+		if (isset(self::$fieldGroups[$option]) && in_array($type, self::$fieldGroups[$option]))
 		{
 			return true;
 		}
-		return false;		
+		return false;
+	}
+
+	/**
+	 * get the spacer IDs
+	 *
+	 * @return  array  ids of the spacer field types
+	 */
+	public static function getSpacerIds()
+	{
+		// get the database object to use quote
+		$db = JFactory::getDbo();
+		return self::getVars('fieldtype', (array) array_map(function($name) use($db) { return $db->quote(ucfirst($name)); }, self::$fieldGroups['spacer']), 'name', 'id');
 	}
 
 	/**

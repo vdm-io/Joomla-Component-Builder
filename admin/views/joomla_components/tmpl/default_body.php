@@ -61,16 +61,16 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('joomla_component.edit')): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($canDo->get('joomla_component.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_components.', $canCheckin); ?>
 					<?php endif; ?>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->system_name); ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $this->escape($item->system_name); ?>
+				<?php endif; ?>
+			</div>
 
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 				<?php if ($canDo->get('component_admin_views.edit') && $component_admin_views_id = ComponentbuilderHelper::getVar('component_admin_views', $item->id, 'joomla_component', 'id')): ?>

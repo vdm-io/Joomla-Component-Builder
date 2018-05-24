@@ -59,14 +59,14 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 		$canDo = ComponentbuilderHelper::getActions('joomla_component',$item,'joomla_components');
 	?>
 	<tr>
-		<td class="nowrap">
+		<td>
 			<?php if ($canDo->get('joomla_component.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=server&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
-					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_components.', $canCheckin); ?>
-					<?php endif; ?>
+				<?php if ($item->checked_out): ?>
+					<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_components.', $canCheckin); ?>
+				<?php endif; ?>
 			<?php else: ?>
-				<div class="name"><?php echo $displayData->escape($item->system_name); ?></div>
+				<?php echo $displayData->escape($item->system_name); ?>
 			<?php endif; ?>
 		</td>
 		<td>

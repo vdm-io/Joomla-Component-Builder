@@ -76,12 +76,20 @@ class JFormFieldJoinfields extends JFormFieldList
 			// filter by fields linked
 			if (ComponentbuilderHelper::checkArray($fieldIds))
 			{
+				// get list of field types that does not work in list views (note, spacer)
+				$spacers = ComponentbuilderHelper::getSpacerIds();
 				$query = $db->getQuery(true);
-				$query->select($db->quoteName(array('a.id','a.name'),array('id','name')));
+				$query->select($db->quoteName(array('a.id','a.name','t.name'),array('id','name','type')));
 				$query->from($db->quoteName('#__componentbuilder_field', 'a'));
+				$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 't') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('t.id') . ')');
 				$query->where($db->quoteName('a.published') . ' >= 1');
 				// only load these fields
 				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $fieldIds) . ')');
+				// none of these field types
+				if (ComponentbuilderHelper::checkArray($spacers))
+				{
+					$query->where($db->quoteName('a.fieldtype') . ' NOT IN (' . implode(',', $spacers) . ')');
+				}
 				$query->order('a.name ASC');
 				$db->setQuery((string)$query);
 				$items = $db->loadObjectList();
@@ -90,12 +98,12 @@ class JFormFieldJoinfields extends JFormFieldList
 				{
 					foreach($items as $item)
 					{
-						$options[] = JHtml::_('select.option', $item->id, $item->name);
+						$options[] = JHtml::_('select.option', $item->id, $item->name . ' [' . $item->type . ']');
 					}
 				}
 				return $options;
 			}
 		}
-		return false;
+		return array(JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_ADD_MORE_FIELDS_TO_THIS_ADMIN_VIEW')));
 	}
 }

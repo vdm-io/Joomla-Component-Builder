@@ -1092,7 +1092,7 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			$result		= $this->_db->loadObject();
 			$result->name	= strtolower($result->name);
-			if (ComponentbuilderHelper::typeField($result->name,'list'))
+			if (ComponentbuilderHelper::fieldCheck($result->name,'list'))
 			{
 				// load the values form params
 				$xml = json_decode($result->xml);
@@ -1136,15 +1136,15 @@ class ComponentbuilderModelAjax extends JModelList
 				// return found field options
 				return $optionSet;
 			}
-			elseif (ComponentbuilderHelper::typeField($result->name,'text'))
+			elseif (ComponentbuilderHelper::fieldCheck($result->name,'text'))
 			{
 				return "keywords=\"\"\nlength=\"\"";
 			}
-			elseif (ComponentbuilderHelper::typeField($result->name,'dynamic'))
+			elseif (ComponentbuilderHelper::fieldCheck($result->name,'dynamic'))
 			{
 				return 'dynamic_list';
 			}
-			elseif (ComponentbuilderHelper::typeField($result->name))
+			elseif (ComponentbuilderHelper::fieldCheck($result->name))
 			{
 				return 'match field type not supported. Select another!';
 			}
@@ -2565,6 +2565,52 @@ class ComponentbuilderModelAjax extends JModelList
 			}
 		}
 		return $xml;
+	}
+
+	// Used in admin_fields_relations
+	public function getCodeGlueOptions($listfield, $joinfields, $type, $area)
+	{
+		// CONCATENATE GLUE
+		if ($type == 1)
+		{
+			// MODEL
+			if ($area == 1)
+			{
+				return ', ';
+			}
+			// VIEW
+			elseif ($area == 2)
+			{
+				return '<br />';
+			}
+		}
+		// CUSTOM CODE
+		elseif ($type == 2)
+		{
+			// build fields array
+			$fields = array_map( function ($id) {
+				return (int) $id;
+			}, (array) explode(',', $joinfields));
+			// add the list field to array
+			array_unshift($fields, (int) $listfield);
+			// get field names
+			$names = array_map( function ($id) {
+				return '[' . $id . ']=> ' . ComponentbuilderHelper::getVar('field', $id, 'id', 'name');
+			}, $fields);
+			// create note
+			$note = "// ". implode('; ', $names);
+			// MODEL
+			if ($area == 1)
+			{
+				return $note . PHP_EOL . PHP_EOL . '$item->[' . implode("] . ', ' . \$item->[", $fields) . '];';
+			}
+			// VIEW
+			elseif ($area == 2)
+			{
+				return '$this->escape($item->[' . implode("]) . '<br />' . \$this->escape(\$item->[", $fields). ']);' . PHP_EOL . PHP_EOL . $note;
+			}
+		}
+		return false;
 	}
 
 	// Used in get_snippets

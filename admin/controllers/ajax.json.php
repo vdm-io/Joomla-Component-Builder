@@ -53,6 +53,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('checkRuleName', 'ajax');
 		$this->registerTask('fieldOptions', 'ajax');
 		$this->registerTask('getFieldPropertyDesc', 'ajax');
+		$this->registerTask('getCodeGlueOptions', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
 		$this->registerTask('setSnippetGithub', 'ajax');
 		$this->registerTask('getSnippets', 'ajax');
@@ -1002,6 +1003,47 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($propertyValue && $fieldtypeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getFieldPropertyDesc($propertyValue, $fieldtypeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getCodeGlueOptions':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$listfieldValue = $jinput->get('listfield', NULL, 'INT');
+						$joinfieldsValue = $jinput->get('joinfields', NULL, 'STRING');
+						$typeValue = $jinput->get('type', NULL, 'INT');
+						$areaValue = $jinput->get('area', NULL, 'INT');
+						if($listfieldValue && $joinfieldsValue && $typeValue && $areaValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getCodeGlueOptions($listfieldValue, $joinfieldsValue, $typeValue, $areaValue);
 						}
 						else
 						{

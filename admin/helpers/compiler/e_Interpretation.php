@@ -6327,6 +6327,7 @@ class Interpretation extends Fields
 			$Helper = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper';
 			// setup correct core target
 			$coreLoad = false;
+			$core = null;
 			if (isset($this->permissionCore[$viewName_single]))
 			{
 				$core = $this->permissionCore[$viewName_single];
@@ -6409,199 +6410,44 @@ class Interpretation extends Fields
 			// start adding the dynamic
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
-				$checkoutTriger = false;
-				if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && isset($item['custom']['table']) && ComponentbuilderHelper::checkString($item['custom']['table']))
+				// set some defaults
+				$customAdminViewButtons = '';
+				// set the item default class
+				$itemClass = 'hidden-phone';
+				// get list item code
+				$itemCode = $this->getListItemCode($item, $viewName_list, $doNotEscape);
+				// is this a linked item
+				if ($item['link'] || (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user'))
 				{
-					$item['id'] = $item['code'];
-					if (!$item['multiple'])
-					{
-						$item['code'] = $item['code'] . '_' . $item['custom']['text'];
-					}
-				}
-				// check if translated value is used
-				if (isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list]) && array_key_exists($item['code'], $this->selectionTranslationFixBuilder[$viewName_list]))
-				{
-					$itemCode = '<?php echo JText:' . ':_($item->' . $item['code'] . '); ?>';
-				}
-				elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['text'] === 'user')
-				{
-					$itemCode = '<?php echo JFactory::getUser((int)$item->' . $item['code'] . ')->name; ?>';
-				}
-				elseif ($doNotEscape)
-				{
-					if (in_array($item['code'], $this->doNotEscape[$viewName_list]))
-					{
-						$itemCode = '<?php echo $item->' . $item['code'] . '; ?>';
-					}
-					else
-					{
-						$itemCode = '<?php echo $this->escape($item->' . $item['code'] . '); ?>';
-					}
+					// set some defaults
+					$checkoutTriger = false;
+					// set the item default class
+					$itemClass = 'nowrap';
+					// get list item link
+					$itemLink = $this->getListItemLink($item, $checkoutTriger, $viewName_single, $viewName_list);
+					// get list item link autority
+					$itemLinkAutority = $this->getListItemLinkAutority($item, $viewName_single, $viewName_list, $coreLoad, $core);
+					// set item row
+					$itemRow = $this->getListItemLinkRow($itemCode, $itemLink, $itemLinkAutority, $viewName_list, $checkoutTriger);
 				}
 				else
 				{
-					$itemCode = '<?php echo $this->escape($item->' . $item['code'] . '); ?>';
+					// set item row
+					$itemRow = PHP_EOL . "\t\t\t<?php echo " . $itemCode . "; ?>";
 				}
-				if ($item['link'])
+				// check if buttons was aready added
+				if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
 				{
-					// allways rest custom links
-					$customAdminView = '';
-					// if to be linked
-					if ($item['type'] === 'category' && !$item['title'])
-					{
-						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
-						// category and linked
-						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")): ?>";
-						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $otherViews . '"><?php echo $this->escape($item->category_title); ?></a>';
-						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-						$body .= PHP_EOL . "\t\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
-						$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					elseif ($item['type'] === 'user' && !$item['title'])
-					{
-						// user and linked
-						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . "User = JFactory::getUser(\$item->" . $item['code'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
-						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['code'] . ' ?>"><?php echo $' . $item['code'] . 'User->name; ?></a>';
-						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-						$body .= PHP_EOL . "\t\t\t\t<?php echo \$" . $item['code'] . "User->name; ?>";
-						$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					else
-					{
-						$add = true;
-						if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] != 'user' && !$item['title'])
-						{
-							// link to that item instead
-							$link = 'index.php?option=' . $item['custom']['component'] . '&view=' . $item['custom']['views'] . '&task=' . $item['custom']['view'] . '.edit&id=<?php echo $item->' . $item['id'] . '; ?>&ref=' . $viewName_list;
-
-							$coreLoadLink = false;
-							if (isset($this->permissionCore[$item['custom']['view']]))
-							{
-								$coreLink = $this->permissionCore[$item['custom']['view']];
-								$coreLoadLink = true;
-							}
-							// check if the item has permissions.
-							if ($coreLoadLink && (isset($coreLink['core.edit']) && isset($this->permissionBuilder[$coreLink['core.edit']])) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$coreLink['core.edit']]) && in_array($item['custom']['view'], $this->permissionBuilder[$coreLink['core.edit']]))
-							{
-								$accessCheck = "\$this->user->authorise('" . $coreLink['core.edit'] . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
-							}
-							else
-							{
-								$accessCheck = "\$this->user->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
-							}
-						}
-						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'])
-						{
-							// user and linked
-							$body .= PHP_EOL . "\t\t<?php \$" . $item['id'] . " = JFactory::getUser(\$item->" . $item['id'] . "); ?>";
-							$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-							$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
-							$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['id'] . ' ?>"><?php echo $' . $item['id'] . '->name; ?></a>';
-							$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-							$body .= PHP_EOL . "\t\t\t\t<?php echo \$" . $item['id'] . "->name; ?>";
-							$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-							$body .= PHP_EOL . "\t\t</td>";
-
-							$add = false;
-						}
-						else
-						{
-							// start building the links
-							$link = '<?php echo $edit; ?>&id=<?php echo $item->id; ?>';
-							// check if custom links should be added to this list views
-							if (isset($this->customAdminViewListLink[$viewName_list]) && ComponentbuilderHelper::checkArray($this->customAdminViewListLink[$viewName_list]) && $firstTimeBeingAdded)
-							{
-								// make sure the custom links are only added once
-								$firstTimeBeingAdded = false;
-								// start building the links
-								$customAdminView = PHP_EOL . "\t\t\t" . '<div class="btn-group">';
-								foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
-								{
-									$customAdminView .= PHP_EOL . "\t\t\t<?php if (\$canDo->get('" . $customLinkView['link'] . ".access')): ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
-									$customAdminView .= PHP_EOL . "\t\t\t<?php else: ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
-									$customAdminView .= PHP_EOL . "\t\t\t<?php endif; ?>";
-								}
-								$customAdminView .= PHP_EOL . "\t\t\t" . '</div>';
-							}
-							// check if the item has permissions.
-							if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.edit']]))
-							{
-								// set permissions.
-								$accessCheck = "\$canDo->get('" . $core['core.edit'] . "')";
-							}
-							else
-							{
-								// set permissions.
-								$accessCheck = "\$canDo->get('core.edit')";
-							}
-							// triger the checked out script to be added
-							$checkoutTriger = true;
-						}
-
-						if ($add)
-						{
-							// set as linked
-							$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-							$body .= PHP_EOL . "\t\t\t<?php if (" . $accessCheck . "): ?>";
-							$body .= PHP_EOL . "\t\t\t\t" . '<div class="name">' . PHP_EOL . "\t\t\t\t\t" . '<a href="' . $link . '">' . $itemCode . '</a>';
-							if ($checkoutTriger)
-							{
-								$body .= PHP_EOL . "\t\t\t\t\t<?php if (\$item->checked_out): ?>";
-								$body .= PHP_EOL . "\t\t\t\t\t\t<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '" . $viewName_list . ".', \$canCheckin); ?>";
-								$body .= PHP_EOL . "\t\t\t\t\t<?php endif; ?>";
-							}
-							$body .= PHP_EOL . "\t\t\t\t" . '</div>';
-							$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-							$body .= PHP_EOL . "\t\t\t\t" . '<div class="name">' . $itemCode . '</div>';
-							$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-							$body .= $customAdminView;
-							$body .= PHP_EOL . "\t\t</td>";
-						}
-					}
+					// get custom admin view buttons
+					$customAdminViewButtons = $this->getCustomAdminViewButtons($item, $viewName_single, $viewName_list, $coreLoad);
+					// make sure the custom admin view buttons are only added once
+					$firstTimeBeingAdded = false;
 				}
-				else
-				{
-					if ($item['type'] === 'category')
-					{
-						$body .= PHP_EOL . "\t\t<td class=\"" . $this->setListFieldClass($item['code'], $viewName_list, 'hidden-phone') . "\">";
-						$body .= PHP_EOL . "\t\t\t<?php echo \$this->escape(\$item->category_title); ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user')
-					{
-						// custom user and linked
-						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . " = JFactory::getUser(\$item->" . $item['id'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap hidden-phone') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php if (\$this->user->authorise('core.edit', 'com_users')): ?>";
-						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['id'] . ' ?>"><?php echo $' . $item['code'] . '->name; ?></a>';
-						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-						$body .= PHP_EOL . "\t\t\t\t<?php echo \$" . $item['code'] . "->name; ?>";
-						$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					elseif ($item['type'] === 'user')
-					{
-						// user name only
-						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . "User = JFactory::getUser(\$item->" . $item['code'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php echo \$" . $item['code'] . "User->name; ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					else
-					{
-						// normal not linked
-						$body .= PHP_EOL . "\t\t<td class=\"" . $this->setListFieldClass($item['code'], $viewName_list, 'hidden-phone') . "\">";
-						$body .= PHP_EOL . "\t\t\t" . $itemCode;
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-				}
+				// add row to body
+				$body .= PHP_EOL . "\t\t<td class=\"" . $this->setListFieldClass($item['code'], $viewName_list, $itemClass) . "\">";
+				$body .= $itemRow;
+				$body .= $customAdminViewButtons;
+				$body .= PHP_EOL . "\t\t</td>";
 			}
 			// add the defaults
 			if (!isset($this->fieldsNames[$viewName_single]['published']))
@@ -6642,6 +6488,192 @@ class Interpretation extends Fields
 			return $body;
 		}
 		return '';
+	}
+
+	protected function getListItemLinkRow($itemCode, $itemLink, $itemLinkAutority, $viewName_list, $checkoutTriger, $class = true)
+	{
+		// add class
+		$tab = '';
+		if ($class)
+		{
+			$link .= PHP_EOL . "\t\t\t" . '<div class="name">';
+			$tab = "\t";
+		}
+		// the link logic
+		$link .= PHP_EOL . $tab . "\t\t\t<?php if (" . $itemLinkAutority . "): ?>";
+		$link .= PHP_EOL . $tab . "\t\t\t\t" . '<a href="' . $itemLink . '"><?php echo ' . $itemCode . '; ?></a>';
+		if ($checkoutTriger)
+		{
+			$link .= PHP_EOL . $tab . "\t\t\t\t<?php if (\$item->checked_out): ?>";
+			$link .= PHP_EOL . $tab . "\t\t\t\t\t<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '" . $viewName_list . ".', \$canCheckin); ?>";
+			$link .= PHP_EOL . $tab . "\t\t\t\t<?php endif; ?>";
+		}
+		$link .= PHP_EOL . $tab . "\t\t\t<?php else: ?>";
+		$link .= PHP_EOL . $tab . "\t\t\t\t<?php echo " . $itemCode . "; ?>";
+		$link .= PHP_EOL . $tab . "\t\t\t<?php endif; ?>";
+		// add class
+		if ($class)
+		{
+			$link .= PHP_EOL . "\t\t\t</div>";
+		}
+		// return the link logic
+		return $link;
+	}
+
+	protected function getCustomAdminViewButtons($viewName_list, $ref = '')
+	{
+		$customAdminViewButton = '';
+		// check if custom links should be added to this list views
+		if (isset($this->customAdminViewListLink[$viewName_list]) && ComponentbuilderHelper::checkArray($this->customAdminViewListLink[$viewName_list]))
+		{
+			// start building the links
+			$customAdminViewButton .= PHP_EOL . "\t\t\t" . '<div class="btn-group">';
+			foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
+			{
+				$customAdminViewButton .= PHP_EOL . "\t\t\t<?php if (\$canDo->get('" . $customLinkView['link'] . ".access')): ?>";
+				$customAdminViewButton .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>' . $ref . '" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+				$customAdminViewButton .= PHP_EOL . "\t\t\t<?php else: ?>";
+				$customAdminViewButton .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
+				$customAdminViewButton .= PHP_EOL . "\t\t\t<?php endif; ?>";
+			}
+			$customAdminViewButton .= PHP_EOL . "\t\t\t" . '</div>';
+		}
+		return $customAdminViewButton;
+	}
+
+	protected function getListItemCode(&$item, $viewName_list, $doNotEscape, $escape = '$this->escape')
+	{
+		// first update the code id needed
+		if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && isset($item['custom']['table']) && ComponentbuilderHelper::checkString($item['custom']['table']))
+		{
+			$item['id_code'] = $item['code'];
+			if (!$item['multiple'])
+			{
+				$item['code'] = $item['code'] . '_' . $item['custom']['text'];
+			}
+		}
+		// check if category
+		if ($item['type'] === 'category' && !$item['title'])
+		{
+			return $escape . '($item->category_title)';
+		}
+		// check if user
+		elseif ($item['type'] === 'user')
+		{
+			return 'JFactory::getUser((int)$item->' . $item['code'] . ')->name';
+		}
+		// check if custom user
+		elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && isset($item['id_code']))
+		{
+			return 'JFactory::getUser((int)$item->' . $item['id_code'] . ')->name';
+		}
+		// check if translated value is used
+		elseif (isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list]) && array_key_exists($item['code'], $this->selectionTranslationFixBuilder[$viewName_list]))
+		{
+			return 'JText:' . ':_($item->' . $item['code'] . ')';
+		}
+		elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['text'] === 'user')
+		{
+			return 'JFactory::getUser((int)$item->' . $item['code'] . ')->name';
+		}
+		elseif ($doNotEscape)
+		{
+			if (in_array($item['code'], $this->doNotEscape[$viewName_list]))
+			{
+				return '$item->' . $item['code'];
+			}
+		}
+		// default
+		return $escape . '($item->' . $item['code'] . ')';
+	}
+
+	protected function getListItemLink($item, &$checkoutTriger, $viewName_single, $viewName_list, $ref = null)
+	{
+		// set referal if not set
+		$referal = '';
+		if (!$ref)
+		{
+			$ref = '&ref=' . $viewName_list;
+		}
+		// in linked tab/view so must add ref to default
+		else
+		{
+			$referal = $ref;
+		}
+		// if to be linked
+		if ($item['type'] === 'category' && !$item['title'])
+		{
+			// get the other view
+			$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
+			// return the link to category
+			return 'index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $otherViews;
+		}
+		elseif ($item['type'] === 'user' && !$item['title'])
+		{
+			// return user link
+			return 'index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['code'] . ' ?>';
+		}
+		elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] != 'user' && !$item['title'] && isset($item['id_code']))
+		{
+			// link to that linked item
+			return 'index.php?option=' . $item['custom']['component'] . '&view=' . $item['custom']['views'] . '&task=' . $item['custom']['view'] . '.edit&id=<?php echo $item->' . $item['id_code'] . '; ?>' . $ref;
+		}
+		elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'] && isset($item['id_code']))
+		{
+			// return user link
+			return 'index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['id_code'] . ' ?>';
+		}
+		// make sure to triger the checkout
+		$checkoutTriger = true;
+		// basic default item link
+		return '<?php echo $edit; ?>&id=<?php echo $item->id; ?>'.$referal;
+	}
+
+	protected function getListItemLinkAutority($item, $viewName_single, $viewName_list, $coreLoad, $core, $user = '$this->user')
+	{
+		// if to be linked
+		if ($item['type'] === 'category' && !$item['title'])
+		{
+			// get the other view
+			$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
+			// return the autority to category
+			return $user . "->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")";
+		}
+		elseif ($item['type'] === 'user' && !$item['title'])
+		{
+			// return user autority
+			return $user . "->authorise('core.edit', 'com_users')";
+		}
+		elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] != 'user' && !$item['title'] && isset($item['id_code']))
+		{
+			// link to that linked item
+			$coreLoadLink = false;
+			if (isset($this->permissionCore[$item['custom']['view']]))
+			{
+				$coreLink = $this->permissionCore[$item['custom']['view']];
+				$coreLoadLink = true;
+			}
+			// check if the item has permissions.
+			if ($coreLoadLink && (isset($coreLink['core.edit']) && isset($this->permissionBuilder[$coreLink['core.edit']])) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$coreLink['core.edit']]) && in_array($item['custom']['view'], $this->permissionBuilder[$coreLink['core.edit']]))
+			{
+				return $user . "->authorise('" . $coreLink['core.edit'] . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id_code'] . ")";
+			}
+			// return default for this external item
+			return $user . "->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id_code'] . ")";
+		}
+		elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'] && isset($item['id_code']))
+		{
+			// return user link
+			return $user . "->authorise('core.edit', 'com_users')";
+		}
+		// check if the item has custom permissions.
+		elseif ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.edit']]))
+		{
+			// set permissions.
+			return "\$canDo->get('" . $core['core.edit'] . "')";
+		}
+		// set core permissions.
+		return "\$canDo->get('core.edit')";
 	}
 
 	protected function setListFieldClass($name, $listViewName, $default = '')
@@ -7548,6 +7580,7 @@ class Interpretation extends Fields
 			$firstTimeBeingAdded = true;
 			// setup correct core target
 			$coreLoad = false;
+			$core = null;
 			if (isset($this->permissionCore[$viewName_single]))
 			{
 				$core = $this->permissionCore[$viewName_single];
@@ -7572,212 +7605,44 @@ class Interpretation extends Fields
 			// start adding the dynamic
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
+				// set the ref
+				$ref = '&ref=' . $refview . '&refid=<?php echo $id; ?>';
+				// set some defaults
+				$customAdminViewButtons = '';
+				// get list item code
+				$itemCode = $this->getListItemCode($item, $viewName_list, $doNotEscape, '$displayData->escape');
+				// is this a linked item
+				if (($item['link'] || (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user')) && (!isset($item['custom']) || !isset($item['custom']['view']) || $refview !== $item['custom']['view']))
+				{
+					// set some defaults
+					$checkoutTriger = false;
+					// get list item link
+					$itemLink = $this->getListItemLink($item, $checkoutTriger, $viewName_single, $viewName_list, $ref);
+					// get list item link autority
+					$itemLinkAutority = $this->getListItemLinkAutority($item, $viewName_single, $viewName_list, $coreLoad, $core, '$user');
+					// set item row
+					$itemRow = $this->getListItemLinkRow($itemCode, $itemLink, $itemLinkAutority, $viewName_list, $checkoutTriger, false);
+				}
+				else
+				{
+					// set item row
+					$itemRow = PHP_EOL . "\t\t\t<?php echo " . $itemCode . "; ?>";
+				}
+				// check if buttons was aready added
+				if ($firstTimeBeingAdded) // TODO we must improve this to allow morw items to be targeted instead of just the first item :)
+				{
+					// get custom admin view buttons
+					$customAdminViewButtons = $this->getCustomAdminViewButtons($item, $viewName_single, $viewName_list, $coreLoad, $ref);
+					// make sure the custom admin view buttons are only added once
+					$firstTimeBeingAdded = false;
+				}
+				// add row to body
+				$body .= PHP_EOL . "\t\t<td>";
+				$body .= $itemRow;
+				$body .= $customAdminViewButtons;
+				$body .= PHP_EOL . "\t\t</td>";
+				// increment counter
 				$counter++;
-				$checkoutTriger = false;
-				if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && isset($item['custom']['table']) && ComponentbuilderHelper::checkString($item['custom']['table']))
-				{
-					$item['id'] = $item['code'];
-					if (!$item['multiple'])
-					{
-						$item['code'] = $item['code'] . '_' . $item['custom']['text'];
-					}
-				}
-				// check if translated vlaue is used
-				if (isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list]) && array_key_exists($item['code'], $this->selectionTranslationFixBuilder[$viewName_list]))
-				{
-					$itemCode = '<?php echo JText:' . ':_($item->' . $item['code'] . '); ?>';
-				}
-				elseif ($item['custom']['text'] === 'user')
-				{
-					$itemCode = '<?php echo JFactory::getUser((int)$item->' . $item['code'] . ')->name; ?>';
-				}
-				elseif ($doNotEscape)
-				{
-					if (in_array($item['code'], $this->doNotEscape[$viewName_list]))
-					{
-						$itemCode = '<?php echo $item->' . $item['code'] . '; ?>';
-					}
-					else
-					{
-						$itemCode = '<?php echo $displayData->escape($item->' . $item['code'] . '); ?>';
-					}
-				}
-				else
-				{
-					$itemCode = '<?php echo $displayData->escape($item->' . $item['code'] . '); ?>';
-				}
-
-				if ($item['link'])
-				{
-					// allways rest custom links
-					$customAdminView = '';
-					// if to be linked
-					if ($item['type'] === 'category' && !$item['title'])
-					{
-						$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
-						// category and linked
-						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $otherViews . ".category.' . (int)\$item->" . $item['code'] . ")): ?>";
-						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->' . $item['code'] . '; ?>&extension=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $otherViews . '"><?php echo $displayData->escape($item->category_title); ?></a>';
-						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-						$body .= PHP_EOL . "\t\t\t\t<?php echo \$displayData->escape(\$item->category_title); ?>";
-						$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					elseif ($item['type'] === 'user' && !$item['title'])
-					{
-						// user and linked
-						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . "User = JFactory::getUser(\$item->" . $item['code'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
-						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['code'] . ' ?>"><?php echo $' . $item['code'] . 'User->name; ?></a>';
-						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-						$body .= PHP_EOL . "\t\t\t\t<?php echo \$" . $item['code'] . "User->name; ?>";
-						$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					else
-					{
-						$add = true;
-						if (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] != 'user' && !$item['title'])
-						{
-							if ($refview === $item['custom']['view'])
-							{
-								// normal not linked
-								$body .= PHP_EOL . "\t\t<td>";
-								$body .= PHP_EOL . "\t\t\t" . $itemCode;
-								$body .= PHP_EOL . "\t\t</td>";
-
-								$add = false;
-							}
-							else
-							{
-								// link to that item instead
-								$link = 'index.php?option=' . $item['custom']['component'] . '&view=' . $item['custom']['views'] . '&task=' . $item['custom']['view'] . '.edit&id=<?php echo $item->' . $item['id'] . '; ?>&ref=' . $refview . '&refid=<?php echo $id; ?>';
-
-
-								$coreLoadLink = false;
-								if (isset($this->permissionCore[$item['custom']['view']]))
-								{
-									$coreLink = $this->permissionCore[$item['custom']['view']];
-									$coreLoadLink = true;
-								}
-								// check if the item has permissions.
-								if ($coreLoadLink && isset($this->permissionBuilder[$coreLink['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$coreLink['core.edit']]) && in_array($item['custom']['view'], $this->permissionBuilder[$coreLink['core.edit']]))
-								{
-									$accessCheck = "\$user->authorise('" . $coreLink['core.edit'] . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
-								}
-								else
-								{
-									$accessCheck = "\$user->authorise('core.edit', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $item['custom']['view'] . ".' . (int)\$item->" . $item['id'] . ")";
-								}
-							}
-						}
-						elseif (isset($item['custom']) && ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user' && !$item['title'])
-						{
-							// user and linked
-							$body .= PHP_EOL . "\t\t<?php \$_" . $item['id'] . " = JFactory::getUser(\$item->" . $item['id'] . "); ?>";
-							$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-							$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
-							$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['id'] . ' ?>"><?php echo $_' . $item['id'] . '->name; ?></a>';
-							$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-							$body .= PHP_EOL . "\t\t\t\t<?php echo \$_" . $item['id'] . "->name; ?>";
-							$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-							$body .= PHP_EOL . "\t\t</td>";
-
-							$add = false;
-						}
-						else
-						{
-							$link = '<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=' . $refview . '&refid=<?php echo $id; ?>';
-							// check if custom links should be added to this list views
-							if (isset($this->customAdminViewListLink[$viewName_list]) && ComponentbuilderHelper::checkArray($this->customAdminViewListLink[$viewName_list]) && $firstTimeBeingAdded)
-							{
-								// make sure the custom links are only added once
-								$firstTimeBeingAdded = false;
-								// start building the links
-								$customAdminView = PHP_EOL . "\t\t\t" . '<div class="btn-group">';
-								foreach ($this->customAdminViewListLink[$viewName_list] as $customLinkView)
-								{
-									$customAdminView .= PHP_EOL . "\t\t\t<?php if (\$canDo->get('" . $customLinkView['link'] . ".access')): ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini" href="index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $customLinkView['link'] . '&id=<?php echo $item->id; ?>&ref=' . $refview . '&refid=<?php echo $id; ?>" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>" ><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
-									$customAdminView .= PHP_EOL . "\t\t\t<?php else: ?>";
-									$customAdminView .= PHP_EOL . "\t\t\t\t" . '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:' . ':_(' . "'COM_" . $this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] . '_' . $customLinkView['NAME'] . "'" . '); ?>"><span class="icon-' . $customLinkView['icon'] . '"></span></a>';
-									$customAdminView .= PHP_EOL . "\t\t\t<?php endif; ?>";
-								}
-								$customAdminView .= PHP_EOL . "\t\t\t" . '</div>';
-							}
-							// check if the item has permissions.
-							if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.edit']]))
-							{
-								// set permissions.
-								$accessCheck = "\$canDo->get('" . $core['core.edit'] . "')";
-							}
-							else
-							{
-								// set permissions.
-								$accessCheck = "\$canDo->get('core.edit')";
-							}
-							// triger the checked out script to be added
-							$checkoutTriger = true;
-						}
-
-						if ($add)
-						{
-							// set as linked
-							$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-							$body .= PHP_EOL . "\t\t\t<?php if (" . $accessCheck . "): ?>";
-							$body .= PHP_EOL . "\t\t\t\t" . '<a href="' . $link . '">' . $itemCode . '</a>';
-							if ($checkoutTriger)
-							{
-								$body .= PHP_EOL . "\t\t\t\t\t<?php if (\$item->checked_out): ?>";
-								$body .= PHP_EOL . "\t\t\t\t\t\t<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '" . $viewName_list . ".', \$canCheckin); ?>";
-								$body .= PHP_EOL . "\t\t\t\t\t<?php endif; ?>";
-							}
-							$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-							$body .= PHP_EOL . "\t\t\t\t" . '<div class="name">' . $itemCode . '</div>';
-							$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-							$body .= $customAdminView;
-							$body .= PHP_EOL . "\t\t</td>";
-						}
-					}
-				}
-				else
-				{
-					if ($item['type'] === 'category')
-					{
-						$body .= PHP_EOL . "\t\t<td>";
-						$body .= PHP_EOL . "\t\t\t<?php echo \$displayData->escape(\$item->category_title); ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					elseif (ComponentbuilderHelper::checkArray($item['custom']) && $item['custom']['extends'] === 'user')
-					{
-						// custom user and linked
-						$body .= PHP_EOL . "\t\t<?php \$_" . $item['code'] . " = JFactory::getUser(\$item->" . $item['id'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td>';
-						$body .= PHP_EOL . "\t\t\t<?php if (\$user->authorise('core.edit', 'com_users')): ?>";
-						$body .= PHP_EOL . "\t\t\t\t" . '<a href="index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->' . $item['id'] . ' ?>"><?php echo $_' . $item['code'] . '->name; ?></a>';
-						$body .= PHP_EOL . "\t\t\t<?php else: ?>";
-						$body .= PHP_EOL . "\t\t\t\t<?php echo \$_" . $item['code'] . "->name; ?>";
-						$body .= PHP_EOL . "\t\t\t<?php endif; ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					elseif ($item['type'] === 'user')
-					{
-						// user name only
-						$body .= PHP_EOL . "\t\t<?php \$" . $item['code'] . "User = JFactory::getUser(\$item->" . $item['code'] . "); ?>";
-						$body .= PHP_EOL . "\t\t" . '<td class="' . $this->setListFieldClass($item['code'], $viewName_list, 'nowrap') . '">';
-						$body .= PHP_EOL . "\t\t\t<?php echo \$" . $item['code'] . "User->name; ?>";
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-					else
-					{
-						// normal not linked
-						$body .= PHP_EOL . "\t\t<td>";
-						$body .= PHP_EOL . "\t\t\t" . $itemCode;
-						$body .= PHP_EOL . "\t\t</td>";
-					}
-				}
 			}
 			$counter = $counter + 2;
 			$data_value = (3 == $this->footableVersion) ? 'data-sort-value' : 'data-value';
@@ -9303,7 +9168,7 @@ class Interpretation extends Fields
 					}
 					// set target type
 					$targetTypeSufix = "";
-					if ($this->defaultField($target['type'], 'spacer'))
+					if (ComponentbuilderHelper::fieldCheck($target['type'], 'spacer'))
 					{
 						// target a class if this is a note or spacer
 						$targetType = ".";
@@ -9369,7 +9234,7 @@ class Interpretation extends Fields
 		{
 			case 1: // Is
 				// only 4 list/radio/checkboxes
-				if (ComponentbuilderHelper::typeField($type, 'list') || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
+				if (ComponentbuilderHelper::fieldCheck($type, 'list') || ComponentbuilderHelper::fieldCheck($type, 'dynamic') || !ComponentbuilderHelper::fieldCheck($type))
 				{
 					if (ComponentbuilderHelper::checkArray($options))
 					{
@@ -9400,7 +9265,7 @@ class Interpretation extends Fields
 				break;
 			case 2: // Is Not
 				// only 4 list/radio/checkboxes
-				if (ComponentbuilderHelper::typeField($type, 'list') || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
+				if (ComponentbuilderHelper::fieldCheck($type, 'list') || ComponentbuilderHelper::fieldCheck($type, 'dynamic') || !ComponentbuilderHelper::fieldCheck($type))
 				{
 					if (ComponentbuilderHelper::checkArray($options))
 					{
@@ -9431,7 +9296,7 @@ class Interpretation extends Fields
 				break;
 			case 3: // Any Selection
 				// only 4 list/radio/checkboxes/dynamic_list
-				if (ComponentbuilderHelper::typeField($type, 'list') || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
+				if (ComponentbuilderHelper::fieldCheck($type, 'list') || ComponentbuilderHelper::fieldCheck($type, 'dynamic') || !ComponentbuilderHelper::fieldCheck($type))
 				{
 					if (ComponentbuilderHelper::checkArray($options))
 					{
@@ -9469,21 +9334,21 @@ class Interpretation extends Fields
 				break;
 			case 4: // Active (not empty)
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					$string .= 'isSet(' . $value . ')';
 				}
 				break;
 			case 5: // Unactive (empty)
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					$string .= '!isSet(' . $value . ')';
 				}
 				break;
 			case 6: // Key Word All (case-sensitive)
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					if (ComponentbuilderHelper::checkArray($options['keywords']))
 					{
@@ -9507,7 +9372,7 @@ class Interpretation extends Fields
 				break;
 			case 7: // Key Word Any (case-sensitive)
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					if (ComponentbuilderHelper::checkArray($options['keywords']))
 					{
@@ -9531,7 +9396,7 @@ class Interpretation extends Fields
 				break;
 			case 8: // Key Word All (case-insensitive)
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					if (ComponentbuilderHelper::checkArray($options['keywords']))
 					{
@@ -9556,7 +9421,7 @@ class Interpretation extends Fields
 				break;
 			case 9: // Key Word Any (case-insensitive)
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					if (ComponentbuilderHelper::checkArray($options['keywords']))
 					{
@@ -9581,7 +9446,7 @@ class Interpretation extends Fields
 				break;
 			case 10: // Min Length
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					if (ComponentbuilderHelper::checkArray($options))
 					{
@@ -9598,7 +9463,7 @@ class Interpretation extends Fields
 				break;
 			case 11: // Max Length
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					if (ComponentbuilderHelper::checkArray($options))
 					{
@@ -9615,7 +9480,7 @@ class Interpretation extends Fields
 				break;
 			case 12: // Exact Length
 				// only 4 text_field
-				if (ComponentbuilderHelper::typeField($type, 'text'))
+				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
 					if (ComponentbuilderHelper::checkArray($options))
 					{
@@ -9643,7 +9508,7 @@ class Interpretation extends Fields
 		$buket = array();
 		if (ComponentbuilderHelper::checkString($options))
 		{
-			if (ComponentbuilderHelper::typeField($type, 'list') || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
+			if (ComponentbuilderHelper::fieldCheck($type, 'list') || ComponentbuilderHelper::fieldCheck($type, 'dynamic') || !ComponentbuilderHelper::fieldCheck($type))
 			{
 				$optionsArray = array_map('trim', (array) explode(PHP_EOL, $options));
 				if (!ComponentbuilderHelper::checkArray($optionsArray))
@@ -9663,7 +9528,7 @@ class Interpretation extends Fields
 					}
 				}
 			}
-			elseif (ComponentbuilderHelper::typeField($type, 'text'))
+			elseif (ComponentbuilderHelper::fieldCheck($type, 'text'))
 			{
 				// check to get the key words if set
 				$keywords = ComponentbuilderHelper::getBetween($options, 'keywords="', '"');
@@ -9721,12 +9586,12 @@ class Interpretation extends Fields
 			// this is only since 3.3.4
 			$select = 'var ' . $keyName . ' = jQuery("#jform_' . $name . '_id").val();';
 		}
-		elseif ($type === 'list' || ComponentbuilderHelper::typeField($type, 'dynamic') || !ComponentbuilderHelper::typeField($type))
+		elseif ($type === 'list' || ComponentbuilderHelper::fieldCheck($type, 'dynamic') || !ComponentbuilderHelper::fieldCheck($type))
 		{
 			$select = 'var ' . $keyName . ' = jQuery("#jform_' . $name . '").val();';
 			$isArray = true;
 		}
-		elseif (ComponentbuilderHelper::typeField($type, 'text'))
+		elseif (ComponentbuilderHelper::fieldCheck($type, 'text'))
 		{
 			$select = 'var ' . $keyName . ' = jQuery("#jform_' . $name . '").val();';
 		}

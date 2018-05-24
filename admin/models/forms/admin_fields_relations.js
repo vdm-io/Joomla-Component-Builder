@@ -11,10 +11,33 @@
 
 
 
-function getFieldSelectOptions_server(fieldId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json";
-	if(token.length > 0 && fieldId > 0){
-		var request = 'token='+token+'&id='+fieldId;
+// little script to set the value
+function getCodeGlueOptions(field) {
+	// get the ID
+	var id = jQuery(field).attr('id');
+	var target = id.split('__');
+	//set the subID
+	var subID = target[0]+'__'+target[1];
+	// get listfield value
+	var listfield = jQuery('#'+subID+'__listfield').val();
+	// get joinfields values
+	var joinfields = jQuery('#'+subID+'__joinfields').val();
+	// get type value
+	var type = jQuery('#'+subID+'__join_type').val();
+	// get area value
+	var area = jQuery('#'+subID+'__area').val();
+	// get codeGlueOptions
+	getCodeGlueOptions_server(listfield, joinfields, type, area).done(function(result) {
+		if(result){
+			jQuery('#'+subID+'__set').val(result);
+		}
+	});
+}
+
+function getCodeGlueOptions_server(listfield, joinfields, type, area){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getCodeGlueOptions&format=json";
+	if(token.length > 0 && listfield > 0 && joinfields.length >= 1 && type > 0 && area > 0) {
+		var request = 'token='+token+'&listfield='+listfield+'&type='+type+'&area='+area+'&joinfields='+joinfields;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -23,22 +46,6 @@ function getFieldSelectOptions_server(fieldId){
 		data: request,
 		jsonp: 'callback'
 	});
-}
-
-function getFieldSelectOptions(fieldKey){
-	// first check if the field is set
-	if(jQuery("#jform_addconditions__addconditions"+fieldKey+"__match_field").length) {
-		var fieldId = jQuery("#jform_addconditions__addconditions"+fieldKey+"__match_field option:selected").val();
-		getFieldSelectOptions_server(fieldId).done(function(result) {
-			if(result){
-				jQuery('textarea#jform_addconditions__addconditions'+fieldKey+'__match_options').val(result);
-			}
-			else
-			{
-				jQuery('textarea#jform_addconditions__addconditions'+fieldKey+'__match_options').val('');
-			}
-		});
-	}
 }
 
  

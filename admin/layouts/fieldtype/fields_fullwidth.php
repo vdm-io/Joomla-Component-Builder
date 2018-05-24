@@ -68,14 +68,14 @@ $can = ComponentbuilderHelper::getActions('field');
 		$canDo = ComponentbuilderHelper::getActions('field',$item,'fields');
 	?>
 	<tr>
-		<td class="nowrap">
+		<td>
 			<?php if ($canDo->get('field.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=fieldtype&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->name); ?></a>
-					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'fields.', $canCheckin); ?>
-					<?php endif; ?>
+				<?php if ($item->checked_out): ?>
+					<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'fields.', $canCheckin); ?>
+				<?php endif; ?>
 			<?php else: ?>
-				<div class="name"><?php echo $displayData->escape($item->name); ?></div>
+				<?php echo $displayData->escape($item->name); ?>
 			<?php endif; ?>
 		</td>
 		<td>
@@ -93,7 +93,7 @@ $can = ComponentbuilderHelper::getActions('field');
 		<td>
 			<?php echo JText::_($item->store); ?>
 		</td>
-		<td class="nowrap">
+		<td>
 			<?php if ($user->authorise('core.edit', 'com_componentbuilder.fields.category.' . (int)$item->catid)): ?>
 				<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.fields"><?php echo $displayData->escape($item->category_title); ?></a>
 			<?php else: ?>

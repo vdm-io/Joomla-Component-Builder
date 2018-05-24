@@ -61,16 +61,16 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('language_translation.edit')): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($canDo->get('language_translation.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $item->source; ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'language_translations.', $canCheckin); ?>
 					<?php endif; ?>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $item->source; ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $item->source; ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('language_translation.edit.state')) : ?>

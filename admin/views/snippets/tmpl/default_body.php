@@ -61,16 +61,16 @@ $edit = "index.php?option=com_componentbuilder&view=snippets&task=snippet.edit";
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($canDo->get('core.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'snippets.', $canCheckin); ?>
 					<?php endif; ?>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->name); ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $this->escape($item->name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->url); ?>
@@ -82,13 +82,13 @@ $edit = "index.php?option=com_componentbuilder&view=snippets&task=snippet.edit";
 			<?php echo $this->escape($item->heading); ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($this->user->authorise('library.edit', 'com_componentbuilder.library.' . (int)$item->library)): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($this->user->authorise('library.edit', 'com_componentbuilder.library.' . (int)$item->library)): ?>
 					<a href="index.php?option=com_componentbuilder&view=libraries&task=library.edit&id=<?php echo $item->library; ?>&ref=snippets"><?php echo $this->escape($item->library_name); ?></a>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->library_name); ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $this->escape($item->library_name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('core.edit.state')) : ?>
