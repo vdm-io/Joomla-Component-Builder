@@ -104,11 +104,9 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && JFactory::getUser()->authorise('admin_view.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -194,10 +192,10 @@ class ComponentbuilderModelAdmin_views extends JModelList
 	}
 
 	/**
-	* Method to get list export data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list export data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getExportData($pks)
 	{
 		// setup the query
@@ -237,11 +235,9 @@ class ComponentbuilderModelAdmin_views extends JModelList
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && $user->authorise('admin_view.access', 'com_componentbuilder'));
+						$access = (JFactory::getUser()->authorise('admin_view.access', 'com_componentbuilder.admin_view.' . (int) $item->id) && JFactory::getUser()->authorise('admin_view.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -385,16 +381,16 @@ class ComponentbuilderModelAdmin_views extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

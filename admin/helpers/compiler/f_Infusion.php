@@ -184,19 +184,19 @@ class Infusion extends Interpretation
 				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT' . $this->hhh] = PHP_EOL . PHP_EOL . '// Triger the Global Admin Event';
 				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT' . $this->hhh] .= PHP_EOL . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::globalEvent($document);';
 				// ADMIN_GLOBAL_EVENT_HELPER
-				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] = PHP_EOL . PHP_EOL . "\t" . '/**';
-				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . '*	The Global Admin Event Method.';
-				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . '**/';
-				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . 'public static function globalEvent($document)';
-				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . '{';
+				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] = PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
+				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '*	The Global Admin Event Method.';
+				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '**/';
+				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . 'public static function globalEvent($document)';
+				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '{';
 				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->setPlaceholders($this->customScriptBuilder['component_php_admin_event'], $this->placeholders);
-				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . '}';
+				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '}';
 			}
 
 			// now load the readme file if needed
 			if ($this->componentData->addreadme == 1)
 			{
-				$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FILES' . $this->hhh] .= PHP_EOL . "\t\t\t<filename>README.txt</filename>";
+				$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FILES' . $this->hhh] .= PHP_EOL . $this->_t(3) . "<filename>README.txt</filename>";
 			}
 
 			// HELPER_CREATEUSER
@@ -243,7 +243,7 @@ class Infusion extends Interpretation
 				// set site edit view array
 				if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
 				{
-					$site_edit_view_array[] = "\t\t\t\t'" . $viewName_single . "'";
+					$site_edit_view_array[] = $this->_t(4) . "'" . $viewName_single . "'";
 					$this->lang = 'both';
 				}
 				// check if help is being loaded
@@ -252,7 +252,7 @@ class Infusion extends Interpretation
 				$this->setCustomAdminViewListLink($view, $viewName_list);
 
 				// set view array
-				$viewarray[] = "\t\t\t\t'" . $viewName_single . "' => '" . $viewName_list . "'";
+				$viewarray[] = $this->_t(4) . "'" . $viewName_single . "' => '" . $viewName_list . "'";
 				// set the view names
 				if (isset($view['settings']->name_single) && $view['settings']->name_single != 'null')
 				{
@@ -342,7 +342,7 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$viewName_single][$this->hhh . 'METHOD_ITEM_SAVE' . $this->hhh] = $this->setMethodItemSave($viewName_single);
 
 					// POSTSAVEHOOK <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_single][$this->hhh . 'POSTSAVEHOOK' . $this->hhh] = $this->getCustomScriptBuilder('php_postsavehook', $viewName_single, PHP_EOL, null, true, PHP_EOL . "\t\treturn;", PHP_EOL . PHP_EOL . "\t\treturn;");
+					$this->fileContentDynamic[$viewName_single][$this->hhh . 'POSTSAVEHOOK' . $this->hhh] = $this->getCustomScriptBuilder('php_postsavehook', $viewName_single, PHP_EOL, null, true, PHP_EOL . $this->_t(2) . "return;", PHP_EOL . PHP_EOL . $this->_t(2) . "return;");
 
 					// VIEWCSS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single][$this->hhh . 'VIEWCSS' . $this->hhh] = $this->getCustomScriptBuilder('css_view', $viewName_single, '', null, true);
@@ -393,11 +393,11 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$viewName_list][$this->hhh . 'CHECKINCALL' . $this->hhh] = '';
 					}
 					// ADMIN_CUSTOM_BUTTONS_LIST
-					$this->fileContentDynamic[$viewName_list][$this->hhh . 'ADMIN_CUSTOM_BUTTONS_LIST' . $this->hhh] = $this->setCustomButtons($view, 3, "\t");
+					$this->fileContentDynamic[$viewName_list][$this->hhh . 'ADMIN_CUSTOM_BUTTONS_LIST' . $this->hhh] = $this->setCustomButtons($view, 3, $this->_t(1));
 					$this->fileContentDynamic[$viewName_list][$this->hhh . 'ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST' . $this->hhh] = $this->setFunctionOnlyButtons($viewName_list);
 
 					// GET_ITEMS_METHOD_STRING_FIX <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_list][$this->hhh . 'GET_ITEMS_METHOD_STRING_FIX' . $this->hhh] = $this->setGetItemsMethodStringFix($viewName_single, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh]);
+					$this->fileContentDynamic[$viewName_list][$this->hhh . 'GET_ITEMS_METHOD_STRING_FIX' . $this->hhh] = $this->setGetItemsMethodStringFix($viewName_single, $viewName_list, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh]);
 
 					// GET_ITEMS_METHOD_AFTER_ALL <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_list][$this->hhh . 'GET_ITEMS_METHOD_AFTER_ALL' . $this->hhh] = $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL);
@@ -611,7 +611,7 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'CUSTOM_ADMIN_BEFORE_GET_ITEM' . $this->hhh] = $this->getCustomScriptBuilder($this->target . '_php_before_getitem', $view['settings']->code, '', null, true);
 
 						// CUSTOM_ADMIN_GET_ITEM <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'CUSTOM_ADMIN_GET_ITEM' . $this->hhh] = $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code, "\t\t");
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'CUSTOM_ADMIN_GET_ITEM' . $this->hhh] = $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code, $this->_t(2));
 
 						// CUSTOM_ADMIN_AFTER_GET_ITEM <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'CUSTOM_ADMIN_AFTER_GET_ITEM' . $this->hhh] = $this->getCustomScriptBuilder($this->target . '_php_after_getitem', $view['settings']->code, '', null, true);
@@ -848,7 +848,7 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_BEFORE_GET_ITEM' . $this->hhh] = $this->getCustomScriptBuilder($this->target . '_php_before_getitem', $view['settings']->code, '', null, true);
 
 						// SITE_GET_ITEM <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_GET_ITEM' . $this->hhh] = $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code, "\t\t");
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_GET_ITEM' . $this->hhh] = $this->setCustomViewGetItem($view['settings']->main_get, $view['settings']->code, $this->_t(2));
 
 						// SITE_AFTER_GET_ITEM <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_AFTER_GET_ITEM' . $this->hhh] = $this->getCustomScriptBuilder($this->target . '_php_after_getitem', $view['settings']->code, '', null, true);
@@ -913,13 +913,13 @@ class Infusion extends Interpretation
 					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT' . $this->hhh] = PHP_EOL . PHP_EOL . '// Triger the Global Site Event';
 					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT' . $this->hhh] .= PHP_EOL . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::globalEvent($document);';
 					// SITE_GLOBAL_EVENT_HELPER
-					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] = PHP_EOL . PHP_EOL . "\t" . '/**';
-					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . '*	The Global Site Event Method.';
-					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . '**/';
-					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . 'public static function globalEvent($document)';
-					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . '{';
+					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] = PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
+					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '*	The Global Site Event Method.';
+					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '**/';
+					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . 'public static function globalEvent($document)';
+					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '{';
 					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->setPlaceholders($this->customScriptBuilder['component_php_site_event'], $this->placeholders);
-					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . "\t" . '}';
+					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '}';
 				}
 				// setup the layouts
 				$this->setCustomViewLayouts();
@@ -1179,11 +1179,11 @@ class Infusion extends Interpretation
 				$replace = array();
 				if (isset($langXML['admin']) && ComponentbuilderHelper::checkArray($langXML['admin']))
 				{
-					$replace[$this->hhh . 'ADMIN_LANGUAGES' . $this->hhh] = implode(PHP_EOL . "\t\t\t", $langXML['admin']);
+					$replace[$this->hhh . 'ADMIN_LANGUAGES' . $this->hhh] = implode(PHP_EOL . $this->_t(3), $langXML['admin']);
 				}
 				if (!$this->removeSiteFolder && isset($langXML['site']) && ComponentbuilderHelper::checkArray($langXML['site']))
 				{
-					$replace[$this->hhh . 'SITE_LANGUAGES' . $this->hhh] = implode(PHP_EOL . "\t\t", $langXML['site']);
+					$replace[$this->hhh . 'SITE_LANGUAGES' . $this->hhh] = implode(PHP_EOL . $this->_t(2), $langXML['site']);
 				}
 				// build xml path
 				$xmlPath = $this->componentPath . '/' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.xml';

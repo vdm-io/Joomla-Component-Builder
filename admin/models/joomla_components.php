@@ -307,11 +307,12 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			$this->setData($table, $pks, $field);
 		}
-		// add fields and conditions
+		// add fields conditions and relations
 		if (isset($this->smartIDs['admin_view']) && ComponentbuilderHelper::checkArray($this->smartIDs['admin_view']))
 		{
 			$this->setData('admin_fields', array_values($this->smartIDs['admin_view']), 'admin_view');
 			$this->setData('admin_fields_conditions', array_values($this->smartIDs['admin_view']), 'admin_view');
+			$this->setData('admin_fields_relations', array_values($this->smartIDs['admin_view']), 'admin_view');
 		}
 		// add validation rules
 		if (isset($this->smartIDs['validation_rule']) && ComponentbuilderHelper::checkArray($this->smartIDs['validation_rule']))
@@ -715,9 +716,16 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					// actions to take if table is admin_fields_conditions
 					if ('admin_fields_conditions' === $table)
 					{
-						// add fields
+						// add fields (all should already be added)
 						$this->setData('field', $this->getValues($item->addconditions, 'subform', 'target_field'), 'id');
 						$this->setData('field', $this->getValues($item->addconditions, 'subform', 'match_field'), 'id');
+					}
+					// actions to take if table is admin_fields_relations
+					if ('admin_fields_relations' === $table)
+					{
+						// add fields (all should already be added)
+						$this->setData('field', $this->getValues($item->addrelations, 'subform', 'listfield'), 'id');
+						$this->setData('field', $this->getValues($item->addrelations, 'subform', 'joinfields'), 'id');
 					}
 					// actions to take if table is field
 					if ('field' === $table)
@@ -847,7 +855,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$tables = array(
 				'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
 				'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
-				'admin_fields', 'admin_fields_conditions', 'component_admin_views', 'component_site_views',
+				'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'component_admin_views', 'component_site_views',
 				'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 				'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
 			);
@@ -1604,6 +1612,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$targets['admin_view']['not_base64'] = array();
 		$targets['admin_view']['name'] = 'system_name';
 
+		// #__componentbuilder_admin_fields_relations
+		$targets['library'] = array();
+		$targets['library']['search'] = array('id', 'admin_view', 'addrelations');
+		$targets['library']['view'] = 'admin_fields_relations';
+		$targets['library']['not_base64'] = array('addrelations' => 'json');
+		$targets['library']['name'] = 'admin_view->id:admin_view.system_name';
+
 		// #__componentbuilder_custom_admin_view
 		$targets['custom_admin_view'] = array();
 		$targets['custom_admin_view']['search'] = array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
@@ -1651,7 +1666,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 
 		// #__componentbuilder_library
 		$targets['library'] = array();
-		$targets['library']['view'] = 'libraries';
 		$targets['library']['search'] = array('id', 'name', 'php_setdocument');
 		$targets['library']['view'] = 'libraries';
 		$targets['library']['not_base64'] = array();
@@ -1748,11 +1762,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && JFactory::getUser()->authorise('joomla_component.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -1848,10 +1860,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	}
 
 	/**
-	* Method to get list export data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list export data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getExportData($pks)
 	{
 		// setup the query
@@ -1896,11 +1908,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
+						$access = (JFactory::getUser()->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && JFactory::getUser()->authorise('joomla_component.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -2022,16 +2032,16 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

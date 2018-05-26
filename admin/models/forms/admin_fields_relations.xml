@@ -144,7 +144,9 @@
 					onchange="getCodeGlueOptions(this)">
 					<!-- Option Set. -->
 					<option value="1">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODEL</option>
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODEL_BEFORE_MODELLING</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODEL_AFTER_MODELLING</option>
 					<option value="2">
 						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_VIEW</option>
 				</field>

@@ -457,7 +457,7 @@ class Fields extends Structure
 		$readOnly = false;
 		if ($view['settings']->type == 2)
 		{
-			$readOnly = "\t\t\t" . 'readonly="true"' . PHP_EOL . "\t\t\t" . 'disabled="true"';
+			$readOnly = $this->_t(3) . 'readonly="true"' . PHP_EOL . $this->_t(3) . 'disabled="true"';
 		}
 		// start adding dynamc fields
 		$dynamicFields = '';
@@ -471,157 +471,157 @@ class Fields extends Structure
 		// set the default fields
 		$fieldSet = array();
 		$fieldSet[] = '<fieldset name="details">';
-		$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Default Fields. -->";
-		$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Id Field. Type: Text (joomla) -->";
+		$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Default Fields. -->";
+		$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Id Field. Type: Text (joomla) -->";
 		// if id is not set
 		if (!isset($this->fieldsNames[$view_name_single]['id']))
 		{
-			$fieldSet[] = "\t\t<field";
-			$fieldSet[] = "\t\t\tname=" . '"id"';
-			$fieldSet[] = "\t\t\t" . 'type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"';
-			$fieldSet[] = "\t\t\t" . 'description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"';
-			$fieldSet[] = "\t\t\t" . 'readonly="true"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(2) . "<field";
+			$fieldSet[] = $this->_t(3) . "name=" . '"id"';
+			$fieldSet[] = $this->_t(3) . 'type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"';
+			$fieldSet[] = $this->_t(3) . 'description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"';
+			$fieldSet[] = $this->_t(3) . 'readonly="true"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if created is not set
 		if (!isset($this->fieldsNames[$view_name_single]['created']))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla) -->";
-			$fieldSet[] = "\t\t<field";
-			$fieldSet[] = "\t\t\tname=" . '"created"';
-			$fieldSet[] = "\t\t\ttype=" . '"calendar"';
-			$fieldSet[] = "\t\t\tlabel=" . '"' . $langView . '_CREATED_DATE_LABEL"';
-			$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_CREATED_DATE_DESC"';
-			$fieldSet[] = "\t\t\tsize=" . '"22"';
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Date Created Field. Type: Calendar (joomla) -->";
+			$fieldSet[] = $this->_t(2) . "<field";
+			$fieldSet[] = $this->_t(3) . "name=" . '"created"';
+			$fieldSet[] = $this->_t(3) . "type=" . '"calendar"';
+			$fieldSet[] = $this->_t(3) . "label=" . '"' . $langView . '_CREATED_DATE_LABEL"';
+			$fieldSet[] = $this->_t(3) . "description=" . '"' . $langView . '_CREATED_DATE_DESC"';
+			$fieldSet[] = $this->_t(3) . "size=" . '"22"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = "\t\t\tformat=" . '"%Y-%m-%d %H:%M:%S"';
-			$fieldSet[] = "\t\t\tfilter=" . '"user_utc"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(3) . "format=" . '"%Y-%m-%d %H:%M:%S"';
+			$fieldSet[] = $this->_t(3) . "filter=" . '"user_utc"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if created_by is not set
 		if (!isset($this->fieldsNames[$view_name_single]['created_by']))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " User Created Field. Type: User (joomla) -->";
-			$fieldSet[] = "\t\t<field";
-			$fieldSet[] = "\t\t\tname=" . '"created_by"';
-			$fieldSet[] = "\t\t\ttype=" . '"user"';
-			$fieldSet[] = "\t\t\tlabel=" . '"' . $langView . '_CREATED_BY_LABEL"';
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " User Created Field. Type: User (joomla) -->";
+			$fieldSet[] = $this->_t(2) . "<field";
+			$fieldSet[] = $this->_t(3) . "name=" . '"created_by"';
+			$fieldSet[] = $this->_t(3) . "type=" . '"user"';
+			$fieldSet[] = $this->_t(3) . "label=" . '"' . $langView . '_CREATED_BY_LABEL"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_CREATED_BY_DESC"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(3) . "description=" . '"' . $langView . '_CREATED_BY_DESC"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if published is not set
 		if (!isset($this->fieldsNames[$view_name_single]['published']))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Published Field. Type: List (joomla) -->";
-			$fieldSet[] = "\t\t<field name=" . '"published" type="list" label="JSTATUS"';
-			$fieldSet[] = "\t\t\tdescription=" . '"JFIELD_PUBLISHED_DESC" class="chzn-color-state"';
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Published Field. Type: List (joomla) -->";
+			$fieldSet[] = $this->_t(2) . "<field name=" . '"published" type="list" label="JSTATUS"';
+			$fieldSet[] = $this->_t(3) . "description=" . '"JFIELD_PUBLISHED_DESC" class="chzn-color-state"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = "\t\t\tfilter=" . '"intval" size="1" default="1" >';
-			$fieldSet[] = "\t\t\t<option value=" . '"1">';
-			$fieldSet[] = "\t\t\t\tJPUBLISHED</option>";
-			$fieldSet[] = "\t\t\t<option value=" . '"0">';
-			$fieldSet[] = "\t\t\t\tJUNPUBLISHED</option>";
-			$fieldSet[] = "\t\t\t<option value=" . '"2">';
-			$fieldSet[] = "\t\t\t\tJARCHIVED</option>";
-			$fieldSet[] = "\t\t\t<option value=" . '"-2">';
-			$fieldSet[] = "\t\t\t\tJTRASHED</option>";
-			$fieldSet[] = "\t\t</field>";
+			$fieldSet[] = $this->_t(3) . "filter=" . '"intval" size="1" default="1" >';
+			$fieldSet[] = $this->_t(3) . "<option value=" . '"1">';
+			$fieldSet[] = $this->_t(4) . "JPUBLISHED</option>";
+			$fieldSet[] = $this->_t(3) . "<option value=" . '"0">';
+			$fieldSet[] = $this->_t(4) . "JUNPUBLISHED</option>";
+			$fieldSet[] = $this->_t(3) . "<option value=" . '"2">';
+			$fieldSet[] = $this->_t(4) . "JARCHIVED</option>";
+			$fieldSet[] = $this->_t(3) . "<option value=" . '"-2">';
+			$fieldSet[] = $this->_t(4) . "JTRASHED</option>";
+			$fieldSet[] = $this->_t(2) . "</field>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if modified is not set
 		if (!isset($this->fieldsNames[$view_name_single]['modified']))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla) -->";
-			$fieldSet[] = "\t\t" . '<field name="modified" type="calendar" class="readonly"';
-			$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_MODIFIED_DATE_LABEL" description="' . $langView . '_MODIFIED_DATE_DESC"';
-			$fieldSet[] = "\t\t\t" . 'size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />';
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Date Modified Field. Type: Calendar (joomla) -->";
+			$fieldSet[] = $this->_t(2) . '<field name="modified" type="calendar" class="readonly"';
+			$fieldSet[] = $this->_t(3) . 'label="' . $langView . '_MODIFIED_DATE_LABEL" description="' . $langView . '_MODIFIED_DATE_DESC"';
+			$fieldSet[] = $this->_t(3) . 'size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />';
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if modified_by is not set
 		if (!isset($this->fieldsNames[$view_name_single]['modified_by']))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla) -->";
-			$fieldSet[] = "\t\t" . '<field name="modified_by" type="user"';
-			$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_MODIFIED_BY_LABEL"';
-			$fieldSet[] = "\t\t\tdescription=" . '"' . $langView . '_MODIFIED_BY_DESC"';
-			$fieldSet[] = "\t\t\t" . 'class="readonly"';
-			$fieldSet[] = "\t\t\t" . 'readonly="true"';
-			$fieldSet[] = "\t\t\t" . 'filter="unset"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " User Modified Field. Type: User (joomla) -->";
+			$fieldSet[] = $this->_t(2) . '<field name="modified_by" type="user"';
+			$fieldSet[] = $this->_t(3) . 'label="' . $langView . '_MODIFIED_BY_LABEL"';
+			$fieldSet[] = $this->_t(3) . "description=" . '"' . $langView . '_MODIFIED_BY_DESC"';
+			$fieldSet[] = $this->_t(3) . 'class="readonly"';
+			$fieldSet[] = $this->_t(3) . 'readonly="true"';
+			$fieldSet[] = $this->_t(3) . 'filter="unset"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// check if view has access
 		if (isset($this->accessBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view_name_single]) && !isset($this->fieldsNames[$view_name_single]['access']))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla) -->";
-			$fieldSet[] = "\t\t" . '<field name="access"';
-			$fieldSet[] = "\t\t\t" . 'type="accesslevel"';
-			$fieldSet[] = "\t\t\t" . 'label="JFIELD_ACCESS_LABEL"';
-			$fieldSet[] = "\t\t\t" . 'description="JFIELD_ACCESS_DESC"';
-			$fieldSet[] = "\t\t\t" . 'default="1"';
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Access Field. Type: Accesslevel (joomla) -->";
+			$fieldSet[] = $this->_t(2) . '<field name="access"';
+			$fieldSet[] = $this->_t(3) . 'type="accesslevel"';
+			$fieldSet[] = $this->_t(3) . 'label="JFIELD_ACCESS_LABEL"';
+			$fieldSet[] = $this->_t(3) . 'description="JFIELD_ACCESS_DESC"';
+			$fieldSet[] = $this->_t(3) . 'default="1"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = "\t\t\t" . 'required="false"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(3) . 'required="false"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if ordering is not set
 		if (!isset($this->fieldsNames[$view_name_single]['ordering']))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla) -->";
-			$fieldSet[] = "\t\t<field";
-			$fieldSet[] = "\t\t\t" . 'name="ordering"';
-			$fieldSet[] = "\t\t\t" . 'type="number"';
-			$fieldSet[] = "\t\t\t" . 'class="inputbox validate-ordering"';
-			$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_ORDERING_LABEL' . '"';
-			$fieldSet[] = "\t\t\t" . 'description=""';
-			$fieldSet[] = "\t\t\t" . 'default="0"';
-			$fieldSet[] = "\t\t\t" . 'size="6"';
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Ordering Field. Type: Numbers (joomla) -->";
+			$fieldSet[] = $this->_t(2) . "<field";
+			$fieldSet[] = $this->_t(3) . 'name="ordering"';
+			$fieldSet[] = $this->_t(3) . 'type="number"';
+			$fieldSet[] = $this->_t(3) . 'class="inputbox validate-ordering"';
+			$fieldSet[] = $this->_t(3) . 'label="' . $langView . '_ORDERING_LABEL' . '"';
+			$fieldSet[] = $this->_t(3) . 'description=""';
+			$fieldSet[] = $this->_t(3) . 'default="0"';
+			$fieldSet[] = $this->_t(3) . 'size="6"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = "\t\t\t" . 'required="false"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(3) . 'required="false"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if version is not set
 		if (!isset($this->fieldsNames[$view_name_single]['version']))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Version Field. Type: Text (joomla) -->";
-			$fieldSet[] = "\t\t<field";
-			$fieldSet[] = "\t\t\t" . 'name="version"';
-			$fieldSet[] = "\t\t\t" . 'type="text"';
-			$fieldSet[] = "\t\t\t" . 'class="readonly"';
-			$fieldSet[] = "\t\t\t" . 'label="' . $langView . '_VERSION_LABEL"';
-			$fieldSet[] = "\t\t\t" . 'description="' . $langView . '_VERSION_DESC"';
-			$fieldSet[] = "\t\t\t" . 'size="6"';
-			$fieldSet[] = "\t\t\t" . 'readonly="true"';
-			$fieldSet[] = "\t\t\t" . 'filter="unset"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Version Field. Type: Text (joomla) -->";
+			$fieldSet[] = $this->_t(2) . "<field";
+			$fieldSet[] = $this->_t(3) . 'name="version"';
+			$fieldSet[] = $this->_t(3) . 'type="text"';
+			$fieldSet[] = $this->_t(3) . 'class="readonly"';
+			$fieldSet[] = $this->_t(3) . 'label="' . $langView . '_VERSION_LABEL"';
+			$fieldSet[] = $this->_t(3) . 'description="' . $langView . '_VERSION_DESC"';
+			$fieldSet[] = $this->_t(3) . 'size="6"';
+			$fieldSet[] = $this->_t(3) . 'readonly="true"';
+			$fieldSet[] = $this->_t(3) . 'filter="unset"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -629,77 +629,77 @@ class Fields extends Structure
 		if (isset($this->metadataBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view_name_single]))
 		{
 			// metakey
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla) -->";
-			$fieldSet[] = "\t\t<field";
-			$fieldSet[] = "\t\t\t" . 'name="metakey"';
-			$fieldSet[] = "\t\t\t" . 'type="textarea"';
-			$fieldSet[] = "\t\t\t" . 'label="JFIELD_META_KEYWORDS_LABEL"';
-			$fieldSet[] = "\t\t\t" . 'description="JFIELD_META_KEYWORDS_DESC"';
-			$fieldSet[] = "\t\t\t" . 'rows="3"';
-			$fieldSet[] = "\t\t\t" . 'cols="30"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla) -->";
+			$fieldSet[] = $this->_t(2) . "<field";
+			$fieldSet[] = $this->_t(3) . 'name="metakey"';
+			$fieldSet[] = $this->_t(3) . 'type="textarea"';
+			$fieldSet[] = $this->_t(3) . 'label="JFIELD_META_KEYWORDS_LABEL"';
+			$fieldSet[] = $this->_t(3) . 'description="JFIELD_META_KEYWORDS_DESC"';
+			$fieldSet[] = $this->_t(3) . 'rows="3"';
+			$fieldSet[] = $this->_t(3) . 'cols="30"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 			// metadesc
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla) -->";
-			$fieldSet[] = "\t\t<field";
-			$fieldSet[] = "\t\t\t" . 'name="metadesc"';
-			$fieldSet[] = "\t\t\t" . 'type="textarea"';
-			$fieldSet[] = "\t\t\t" . 'label="JFIELD_META_DESCRIPTION_LABEL"';
-			$fieldSet[] = "\t\t\t" . 'description="JFIELD_META_DESCRIPTION_DESC"';
-			$fieldSet[] = "\t\t\t" . 'rows="3"';
-			$fieldSet[] = "\t\t\t" . 'cols="30"';
-			$fieldSet[] = "\t\t/>";
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla) -->";
+			$fieldSet[] = $this->_t(2) . "<field";
+			$fieldSet[] = $this->_t(3) . 'name="metadesc"';
+			$fieldSet[] = $this->_t(3) . 'type="textarea"';
+			$fieldSet[] = $this->_t(3) . 'label="JFIELD_META_DESCRIPTION_LABEL"';
+			$fieldSet[] = $this->_t(3) . 'description="JFIELD_META_DESCRIPTION_DESC"';
+			$fieldSet[] = $this->_t(3) . 'rows="3"';
+			$fieldSet[] = $this->_t(3) . 'cols="30"';
+			$fieldSet[] = $this->_t(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// load the dynamic fields now
 		if (ComponentbuilderHelper::checkString($dynamicFields))
 		{
-			$fieldSet[] = "\t\t<!--" . $this->setLine(__LINE__) . " Dynamic Fields. -->" . $dynamicFields;
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Dynamic Fields. -->" . $dynamicFields;
 		}
 		// close fieldset
-		$fieldSet[] = "\t</fieldset>";
+		$fieldSet[] = $this->_t(1) . "</fieldset>";
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view_name_single]))
 		{
-			$fieldSet[] = PHP_EOL . "\t<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
-			$fieldSet[] = "\t<fields" . ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
-			$fieldSet[] = "\t\t" . '<fieldset name="vdmmetadata"';
-			$fieldSet[] = "\t\t\t" . 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
+			$fieldSet[] = PHP_EOL . $this->_t(1) . "<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
+			$fieldSet[] = $this->_t(1) . "<fields" . ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
+			$fieldSet[] = $this->_t(2) . '<fieldset name="vdmmetadata"';
+			$fieldSet[] = $this->_t(3) . 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
 			// robots
-			$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Robots Field. Type: List (joomla) -->";
-			$fieldSet[] = "\t\t\t" . '<field name="robots"';
-			$fieldSet[] = "\t\t\t\t" . 'type="list"';
-			$fieldSet[] = "\t\t\t\t" . 'label="JFIELD_METADATA_ROBOTS_LABEL"';
-			$fieldSet[] = "\t\t\t\t" . 'description="JFIELD_METADATA_ROBOTS_DESC" >';
-			$fieldSet[] = "\t\t\t\t" . '<option value="">JGLOBAL_USE_GLOBAL</option>';
-			$fieldSet[] = "\t\t\t\t" . '<option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>';
-			$fieldSet[] = "\t\t\t\t" . '<option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>';
-			$fieldSet[] = "\t\t\t\t" . '<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>';
-			$fieldSet[] = "\t\t\t\t" . '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
-			$fieldSet[] = "\t\t\t" . '</field>';
+			$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Robots Field. Type: List (joomla) -->";
+			$fieldSet[] = $this->_t(3) . '<field name="robots"';
+			$fieldSet[] = $this->_t(4) . 'type="list"';
+			$fieldSet[] = $this->_t(4) . 'label="JFIELD_METADATA_ROBOTS_LABEL"';
+			$fieldSet[] = $this->_t(4) . 'description="JFIELD_METADATA_ROBOTS_DESC" >';
+			$fieldSet[] = $this->_t(4) . '<option value="">JGLOBAL_USE_GLOBAL</option>';
+			$fieldSet[] = $this->_t(4) . '<option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>';
+			$fieldSet[] = $this->_t(4) . '<option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>';
+			$fieldSet[] = $this->_t(4) . '<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>';
+			$fieldSet[] = $this->_t(4) . '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
+			$fieldSet[] = $this->_t(3) . '</field>';
 			// count the static field created
 			$this->fieldCount++;
 			// author
-			$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Author Field. Type: Text (joomla) -->";
-			$fieldSet[] = "\t\t\t" . '<field name="author"';
-			$fieldSet[] = "\t\t\t\t" . 'type="text"';
-			$fieldSet[] = "\t\t\t\t" . 'label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"';
-			$fieldSet[] = "\t\t\t\t" . 'size="20"';
-			$fieldSet[] = "\t\t\t/>";
+			$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Author Field. Type: Text (joomla) -->";
+			$fieldSet[] = $this->_t(3) . '<field name="author"';
+			$fieldSet[] = $this->_t(4) . 'type="text"';
+			$fieldSet[] = $this->_t(4) . 'label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"';
+			$fieldSet[] = $this->_t(4) . 'size="20"';
+			$fieldSet[] = $this->_t(3) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 			// rights
-			$fieldSet[] = "\t\t\t<!--" . $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla) -->";
-			$fieldSet[] = "\t\t\t" . '<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"';
-			$fieldSet[] = "\t\t\t\t" . 'description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"';
-			$fieldSet[] = "\t\t\t\t" . 'cols="30" rows="2"';
-			$fieldSet[] = "\t\t\t/>";
+			$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla) -->";
+			$fieldSet[] = $this->_t(3) . '<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"';
+			$fieldSet[] = $this->_t(4) . 'description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"';
+			$fieldSet[] = $this->_t(4) . 'cols="30" rows="2"';
+			$fieldSet[] = $this->_t(3) . "/>";
 			// count the static field created
 			$this->fieldCount++;
-			$fieldSet[] = "\t\t</fieldset>";
-			$fieldSet[] = "\t</fields>";
+			$fieldSet[] = $this->_t(2) . "</fieldset>";
+			$fieldSet[] = $this->_t(1) . "</fields>";
 		}
 		// retunr the set
 		return implode(PHP_EOL, $fieldSet);
@@ -1212,14 +1212,14 @@ class Fields extends Structure
 		if ($setType === 'option')
 		{
 			// now add to the field set
-			$field .= PHP_EOL . "\t" . $taber . "\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-			$field .= PHP_EOL . "\t" . $taber . "\t<field";
+			$field .= PHP_EOL . $this->_t(1) . $taber . $this->_t(1) . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
+			$field .= PHP_EOL . $this->_t(1) . $taber . $this->_t(1) . "<field";
 			$optionSet = '';
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$field .= PHP_EOL . "\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$field .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . $property . '="' . $value . '"';
 				}
 				elseif ($property === 'option')
 				{
@@ -1238,7 +1238,7 @@ class Fields extends Structure
 								// add to lang array
 								$this->langContent[$this->lang][$langValue] = $t;
 								// no add to option set
-								$optionSet .= PHP_EOL . "\t" . $taber . "\t\t" . '<option value="' . $v . '">' . PHP_EOL . "\t" . $taber . "\t\t\t" . $langValue . '</option>';
+								$optionSet .= PHP_EOL . $this->_t(1) . $taber . $this->_t(2) . '<option value="' . $v . '">' . PHP_EOL . $this->_t(1) . $taber . $this->_t(3) . $langValue . '</option>';
 								$optionArray[$v] = $langValue;
 							}
 							else
@@ -1248,7 +1248,7 @@ class Fields extends Structure
 								// add to lang array
 								$this->langContent[$this->lang][$langValue] = $option;
 								// no add to option set
-								$optionSet .= PHP_EOL . "\t\t" . $taber . "\t" . '<option value="' . $option . '">' . PHP_EOL . "\t\t" . $taber . "\t\t" . $langValue . '</option>';
+								$optionSet .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . '<option value="' . $option . '">' . PHP_EOL . $this->_t(2) . $taber . $this->_t(2) . $langValue . '</option>';
 								$optionArray[$option] = $langValue;
 							}
 						}
@@ -1264,7 +1264,7 @@ class Fields extends Structure
 							// add to lang array
 							$this->langContent[$this->lang][$langValue] = $t;
 							// no add to option set
-							$optionSet .= PHP_EOL . "\t\t" . $taber . "\t" . '<option value="' . $v . '">' . PHP_EOL . "\t\t" . $taber . "\t\t" . $langValue . '</option>';
+							$optionSet .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . '<option value="' . $v . '">' . PHP_EOL . $this->_t(2) . $taber . $this->_t(2) . $langValue . '</option>';
 							$optionArray[$v] = $langValue;
 						}
 						else
@@ -1274,7 +1274,7 @@ class Fields extends Structure
 							// add to lang array
 							$this->langContent[$this->lang][$langValue] = $value;
 							// no add to option set
-							$optionSet .= PHP_EOL . "\t\t" . $taber . "\t" . '<option value="' . $value . '">' . PHP_EOL . "\t\t" . $taber . "\t\t" . $langValue . '</option>';
+							$optionSet .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . '<option value="' . $value . '">' . PHP_EOL . $this->_t(2) . $taber . $this->_t(2) . $langValue . '</option>';
 							$optionArray[$value] = $langValue;
 						}
 					}
@@ -1283,41 +1283,41 @@ class Fields extends Structure
 			if (ComponentbuilderHelper::checkString($optionSet))
 			{
 				$field .= '>';
-				$field .= PHP_EOL . "\t\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " Option Set. -->";
+				$field .= PHP_EOL . $this->_t(3) . $taber . "<!--" . $this->setLine(__LINE__) . " Option Set. -->";
 				$field .= $optionSet;
-				$field .= PHP_EOL . "\t\t" . $taber . "</field>";
+				$field .= PHP_EOL . $this->_t(2) . $taber . "</field>";
 			}
 			elseif ($typeName === 'sql')
 			{
 				$optionArray = false;
-				$field .= PHP_EOL . "\t\t" . $taber . "/>";
+				$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
 			}
 			else
 			{
 				$optionArray = false;
-				$field .= PHP_EOL . "\t\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->";
-				$field .= PHP_EOL . "\t\t" . $taber . "/>";
+				$field .= PHP_EOL . $this->_t(3) . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->";
+				$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
 			}
 		}
 		elseif ($setType === 'plain')
 		{
 			// now add to the field set
-			$field .= PHP_EOL . "\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-			$field .= PHP_EOL . "\t\t" . $taber . "<field";
+			$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
+			$field .= PHP_EOL . $this->_t(2) . $taber . "<field";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$field .= PHP_EOL . "\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$field .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . $property . '="' . $value . '"';
 				}
 			}
-			$field .= PHP_EOL . "\t\t" . $taber . "/>";
+			$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
 		}
 		elseif ($setType === 'spacer')
 		{
 			// now add to the field set
-			$field .= PHP_EOL . "\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". A None Database Field. (joomla) -->";
-			$field .= PHP_EOL . "\t\t<field";
+			$field .= PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". A None Database Field. (joomla) -->";
+			$field .= PHP_EOL . $this->_t(2) . "<field";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
@@ -1333,19 +1333,19 @@ class Fields extends Structure
 			if ($typeName === 'repeatable')
 			{
 				// now add to the field set
-				$field .= PHP_EOL . "\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-				$field .= PHP_EOL . "\t\t<field";
+				$field .= PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
+				$field .= PHP_EOL . $this->_t(2) . "<field";
 				$fieldsSet = array();
 				foreach ($fieldAttributes as $property => $value)
 				{
 					if ($property != 'fields')
 					{
-						$field .= PHP_EOL . "\t\t\t" . $property . '="' . $value . '"';
+						$field .= PHP_EOL . $this->_t(3) . $property . '="' . $value . '"';
 					}
 				}
 				$field .= ">";
-				$field .= PHP_EOL . "\t\t\t" . '<fields name="' . $fieldAttributes['name'] . '_fields" label="">';
-				$field .= PHP_EOL . "\t\t\t\t" . '<fieldset hidden="true" name="' . $fieldAttributes['name'] . '_modal" repeat="true">';
+				$field .= PHP_EOL . $this->_t(3) . '<fields name="' . $fieldAttributes['name'] . '_fields" label="">';
+				$field .= PHP_EOL . $this->_t(4) . '<fieldset hidden="true" name="' . $fieldAttributes['name'] . '_modal" repeat="true">';
 				if (strpos($fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
@@ -1370,7 +1370,7 @@ class Fields extends Structure
 							$r_multiple = false;
 							$r_langLabel = '';
 							// add the tabs needed
-							$r_taber = "\t\t\t";
+							$r_taber = $this->_t(3);
 							// get field values
 							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $view_name_list, $view_name_single, $placeholders, true);
 							// check if values were set
@@ -1413,26 +1413,26 @@ class Fields extends Structure
 						}
 					}
 				}
-				$field .= PHP_EOL . "\t\t\t\t</fieldset>";
-				$field .= PHP_EOL . "\t\t\t</fields>";
-				$field .= PHP_EOL . "\t\t</field>";
+				$field .= PHP_EOL . $this->_t(4) . "</fieldset>";
+				$field .= PHP_EOL . $this->_t(3) . "</fields>";
+				$field .= PHP_EOL . $this->_t(2) . "</field>";
 			}
 			// set the subform fields (it is a repeatable without the modal) 
 			elseif ($typeName === 'subform')
 			{
 				// now add to the field set
-				$field .= PHP_EOL . "\t\t<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-				$field .= PHP_EOL . "\t\t<field";
+				$field .= PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
+				$field .= PHP_EOL . $this->_t(2) . "<field";
 				$fieldsSet = array();
 				foreach ($fieldAttributes as $property => $value)
 				{
 					if ($property != 'fields')
 					{
-						$field .= PHP_EOL . "\t\t\t" . $property . '="' . $value . '"';
+						$field .= PHP_EOL . $this->_t(3) . $property . '="' . $value . '"';
 					}
 				}
 				$field .= ">";
-				$field .= PHP_EOL . "\t\t\t" . '<form hidden="true" name="list_' . $fieldAttributes['name'] . '_modal" repeat="true">';
+				$field .= PHP_EOL . $this->_t(3) . '<form hidden="true" name="list_' . $fieldAttributes['name'] . '_modal" repeat="true">';
 				if (strpos($fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
@@ -1457,7 +1457,7 @@ class Fields extends Structure
 							$r_multiple = false;
 							$r_langLabel = '';
 							// add the tabs needed
-							$r_taber = "\t\t";
+							$r_taber = $this->_t(2);
 							// get field values
 							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $view_name_list, $view_name_single, $placeholders, true);
 							// check if values were set
@@ -1500,23 +1500,23 @@ class Fields extends Structure
 						}
 					}
 				}
-				$field .= PHP_EOL . "\t\t\t</form>";
-				$field .= PHP_EOL . "\t\t</field>";
+				$field .= PHP_EOL . $this->_t(3) . "</form>";
+				$field .= PHP_EOL . $this->_t(2) . "</field>";
 			}
 		}
 		elseif ($setType === 'custom')
 		{
 			// now add to the field set
-			$field .= PHP_EOL . "\t\t" . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (custom) -->";
-			$field .= PHP_EOL . "\t\t" . $taber . "<field";
+			$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (custom) -->";
+			$field .= PHP_EOL . $this->_t(2) . $taber . "<field";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$field .= PHP_EOL . "\t\t" . $taber . "\t" . $property . '="' . $value . '"';
+					$field .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . $property . '="' . $value . '"';
 				}
 			}
-			$field .= PHP_EOL . "\t\t" . $taber . "/>";
+			$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
 			// incase the field is in the config and has not been set
 			if ('config' === $view_name_single && 'configs' === $view_name_list)
 			{
@@ -2465,26 +2465,33 @@ class Fields extends Structure
 					'multiple' => $multiple,
 					'options' => $options);
 			}
-			// load the list join builder
-			elseif ($listJoin)
-			{
-				$this->listJoinBuilder[$view_name_list][(int) $field['field']] = array(
-					'type' => $typeName,
-					'code' => $name,
-					'lang' => $listLangName,
-					'title' => (isset($field['title']) && $field['title']) ? true : false,
-					'alias' => (isset($field['alias']) && $field['alias']) ? true : false,
-					'link' => (isset($field['link']) && $field['link']) ? true : false,
-					'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
-					'custom' => $custom,
-					'multiple' => $multiple,
-					'options' => $options);
-			}
 			// build custom builder list
 			if ($listSwitch || $listJoin)
 			{
 				$this->customBuilderList[$view_name_list][] = $name;
 			}
+		}
+		// load the list join builder
+		if ($listJoin)
+		{
+			$this->listJoinBuilder[$view_name_list][(int) $field['field']] = array(
+				'type' => $typeName,
+				'code' => $name,
+				'lang' => $listLangName,
+				'title' => (isset($field['title']) && $field['title']) ? true : false,
+				'alias' => (isset($field['alias']) && $field['alias']) ? true : false,
+				'link' => (isset($field['link']) && $field['link']) ? true : false,
+				'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
+				'custom' => $custom,
+				'multiple' => $multiple,
+				'options' => $options);
+		}
+		// update the field relations
+		if (isset($this->fieldRelations[$view_name_list]) && isset($this->fieldRelations[$view_name_list][(int) $field['field']]))
+		{
+			$this->fieldRelations[$view_name_list][(int) $field['field']]['type'] = $typeName;
+			$this->fieldRelations[$view_name_list][(int) $field['field']]['code'] = $name;
+			$this->fieldRelations[$view_name_list][(int) $field['field']]['custom'] = $custom;
 		}
 		// set the hidden field of this view
 		if ($typeName === 'hidden')
@@ -2717,7 +2724,7 @@ class Fields extends Structure
 			$this->buildDynamique($target, 'field' . $data['custom']['extends'], $data['custom']['type']);
 			// set tab and break replacements
 			$tabBreak = array(
-				'\t' => "\t",
+				'\t' => $this->_t(1),
 				'\n' => PHP_EOL
 			);
 			// make field dynamic
@@ -2749,7 +2756,7 @@ class Fields extends Structure
 						}
 						else
 						{
-							$phpCode .= PHP_EOL . "\t\t" . $this->setPlaceholders($code, $tabBreak);
+							$phpCode .= PHP_EOL . $this->_t(2) . $this->setPlaceholders($code, $tabBreak);
 						}
 					}
 				}
@@ -2783,7 +2790,7 @@ class Fields extends Structure
 							}
 							else
 							{
-								$phpxCode .= PHP_EOL . "\t\t" . $this->setPlaceholders($code, $tabBreak);
+								$phpxCode .= PHP_EOL . $this->_t(2) . $this->setPlaceholders($code, $tabBreak);
 							}
 						}
 					}
@@ -2882,137 +2889,137 @@ class Fields extends Structure
 			}
 			// start building the add buttons/s
 			$addButton = array();
-			$addButton[] = PHP_EOL . PHP_EOL . "\t/**";
-			$addButton[] = "\t * Override to add new button";
-			$addButton[] = "\t *";
-			$addButton[] = "\t * @return  string  The field input markup.";
-			$addButton[] = "\t *";
-			$addButton[] = "\t * @since   3.2";
-			$addButton[] = "\t */";
-			$addButton[] = "\tprotected function getInput()";
-			$addButton[] = "\t{";
-			$addButton[] = "\t\t//" . $this->setLine(__LINE__) . " see if we should add buttons";
-			$addButton[] = "\t\t\$setButton = \$this->getAttribute('button');";
-			$addButton[] = "\t\t//" . $this->setLine(__LINE__) . " get html";
-			$addButton[] = "\t\t\$html = parent::getInput();";
-			$addButton[] = "\t\t//" . $this->setLine(__LINE__) . " if true set button";
-			$addButton[] = "\t\tif (\$setButton === 'true')";
-			$addButton[] = "\t\t{";
-			$addButton[] = "\t\t\t\$button = array();";
-			$addButton[] = "\t\t\t\$script = array();";
-			$addButton[] = "\t\t\t\$buttonName = \$this->getAttribute('name');";
-			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " get the input from url";
-			$addButton[] = "\t\t\t\$app = JFactory::getApplication();";
-			$addButton[] = "\t\t\t\$jinput = \$app->input;";
-			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " get the view name & id";
-			$addButton[] = "\t\t\t\$values = \$jinput->getArray(array(";
-			$addButton[] = "\t\t\t\t'id' => 'int',";
-			$addButton[] = "\t\t\t\t'view' => 'word'";
-			$addButton[] = "\t\t\t));";
-			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " check if new item";
-			$addButton[] = "\t\t\t\$ref = '';";
-			$addButton[] = "\t\t\t\$refJ = '';";
+			$addButton[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
+			$addButton[] = $this->_t(1) . " * Override to add new button";
+			$addButton[] = $this->_t(1) . " *";
+			$addButton[] = $this->_t(1) . " * @return  string  The field input markup.";
+			$addButton[] = $this->_t(1) . " *";
+			$addButton[] = $this->_t(1) . " * @since   3.2";
+			$addButton[] = $this->_t(1) . " */";
+			$addButton[] = $this->_t(1) . "protected function getInput()";
+			$addButton[] = $this->_t(1) . "{";
+			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " see if we should add buttons";
+			$addButton[] = $this->_t(2) . "\$setButton = \$this->getAttribute('button');";
+			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " get html";
+			$addButton[] = $this->_t(2) . "\$html = parent::getInput();";
+			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " if true set button";
+			$addButton[] = $this->_t(2) . "if (\$setButton === 'true')";
+			$addButton[] = $this->_t(2) . "{";
+			$addButton[] = $this->_t(3) . "\$button = array();";
+			$addButton[] = $this->_t(3) . "\$script = array();";
+			$addButton[] = $this->_t(3) . "\$buttonName = \$this->getAttribute('name');";
+			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get the input from url";
+			$addButton[] = $this->_t(3) . "\$app = JFactory::getApplication();";
+			$addButton[] = $this->_t(3) . "\$jinput = \$app->input;";
+			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get the view name & id";
+			$addButton[] = $this->_t(3) . "\$values = \$jinput->getArray(array(";
+			$addButton[] = $this->_t(4) . "'id' => 'int',";
+			$addButton[] = $this->_t(4) . "'view' => 'word'";
+			$addButton[] = $this->_t(3) . "));";
+			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " check if new item";
+			$addButton[] = $this->_t(3) . "\$ref = '';";
+			$addButton[] = $this->_t(3) . "\$refJ = '';";
 			if ($refLoad)
 			{
-				$addButton[] = "\t\t\tif (!is_null(\$values['id']) && strlen(\$values['view']))";
-				$addButton[] = "\t\t\t{";
-				$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " only load referal if not new item.";
-				$addButton[] = "\t\t\t\t\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
-				$addButton[] = "\t\t\t\t\$refJ = '&ref=' . \$values['view'] . '&refid=' . \$values['id'];";
-				$addButton[] = "\t\t\t}";
+				$addButton[] = $this->_t(3) . "if (!is_null(\$values['id']) && strlen(\$values['view']))";
+				$addButton[] = $this->_t(3) . "{";
+				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " only load referal if not new item.";
+				$addButton[] = $this->_t(4) . "\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
+				$addButton[] = $this->_t(4) . "\$refJ = '&ref=' . \$values['view'] . '&refid=' . \$values['id'];";
+				$addButton[] = $this->_t(3) . "}";
 			}
 			else
 			{
-				$addButton[] = "\t\t\tif (!is_null(\$values['id']) && strlen(\$values['view']))";
-				$addButton[] = "\t\t\t{";
-				$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " get the return value.";
-				$addButton[] = "\t\t\t\t\$_uri = (string) JUri::getInstance();";
-				$addButton[] = "\t\t\t\t\$_return = urlencode(base64_encode(\$_uri));";
-				$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " load return value.";
-				$addButton[] = "\t\t\t\t\$ref = '&amp;return=' . \$_return;";
-				$addButton[] = "\t\t\t\t\$refJ = '&return=' . \$_return;";
-				$addButton[] = "\t\t\t}";
+				$addButton[] = $this->_t(3) . "if (!is_null(\$values['id']) && strlen(\$values['view']))";
+				$addButton[] = $this->_t(3) . "{";
+				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " get the return value.";
+				$addButton[] = $this->_t(4) . "\$_uri = (string) JUri::getInstance();";
+				$addButton[] = $this->_t(4) . "\$_return = urlencode(base64_encode(\$_uri));";
+				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " load return value.";
+				$addButton[] = $this->_t(4) . "\$ref = '&amp;return=' . \$_return;";
+				$addButton[] = $this->_t(4) . "\$refJ = '&return=' . \$_return;";
+				$addButton[] = $this->_t(3) . "}";
 			}
-			$addButton[] = "\t\t\t\$user = JFactory::getUser();";
-			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " only add if user allowed to create " . $fieldData['view'];
+			$addButton[] = $this->_t(3) . "\$user = JFactory::getUser();";
+			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " only add if user allowed to create " . $fieldData['view'];
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($fieldData['view'], $this->permissionBuilder['global'][$core['core.create']]))
 			{
-				$addButton[] = "\t\t\tif (\$user->authorise('" . $core['core.create'] . "', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
+				$addButton[] = $this->_t(3) . "if (\$user->authorise('" . $core['core.create'] . "', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
 			else
 			{
-				$addButton[] = "\t\t\tif (\$user->authorise('core.create', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
+				$addButton[] = $this->_t(3) . "if (\$user->authorise('core.create', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
-			$addButton[] = "\t\t\t{";
-			$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " build Create button";
-			$addButton[] = "\t\t\t\t\$buttonNamee = trim(\$buttonName);";
-			$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/_+/', ' ', \$buttonNamee);";
-			$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
-			$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
-			$addButton[] = "\t\t\t\t\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
-			$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText:" . ":sprintf('" . $this->langPrefix . "_CREATE_NEW_S', \$buttonNamee).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
-			$addButton[] = "\t\t\t\t\thref=\"index.php?option=" . $fieldData['component'] . "&amp;view=" . $fieldData['view'] . "&amp;layout=edit'.\$ref.'\" >";
-			$addButton[] = "\t\t\t\t\t<span class=\"icon-new icon-white\"></span></a>';";
-			$addButton[] = "\t\t\t}";
-			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " only add if user allowed to edit " . $fieldData['view'];
+			$addButton[] = $this->_t(3) . "{";
+			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " build Create button";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = trim(\$buttonName);";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace('/_+/', ' ', \$buttonNamee);";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
+			$addButton[] = $this->_t(4) . "\$button[] = '<a id=\"'.\$buttonName.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText:" . ":sprintf('" . $this->langPrefix . "_CREATE_NEW_S', \$buttonNamee).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
+			$addButton[] = $this->_t(5) . "href=\"index.php?option=" . $fieldData['component'] . "&amp;view=" . $fieldData['view'] . "&amp;layout=edit'.\$ref.'\" >";
+			$addButton[] = $this->_t(5) . "<span class=\"icon-new icon-white\"></span></a>';";
+			$addButton[] = $this->_t(3) . "}";
+			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " only add if user allowed to edit " . $fieldData['view'];
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($fieldData['view'], $this->permissionBuilder['global'][$core['core.edit']]))
 			{
-				$addButton[] = "\t\t\tif ((\$buttonName === '" . $fieldData['view'] . "' || \$buttonName === '" . $fieldData['views'] . "') && \$user->authorise('" . $core['core.edit'] . "', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
+				$addButton[] = $this->_t(3) . "if ((\$buttonName === '" . $fieldData['view'] . "' || \$buttonName === '" . $fieldData['views'] . "') && \$user->authorise('" . $core['core.edit'] . "', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
 			else
 			{
-				$addButton[] = "\t\t\tif ((\$buttonName === '" . $fieldData['view'] . "' || \$buttonName === '" . $fieldData['views'] . "')  && \$user->authorise('core.edit', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
+				$addButton[] = $this->_t(3) . "if ((\$buttonName === '" . $fieldData['view'] . "' || \$buttonName === '" . $fieldData['views'] . "')  && \$user->authorise('core.edit', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
-			$addButton[] = "\t\t\t{";
-			$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " build edit button";
-			$addButton[] = "\t\t\t\t\$buttonNamee = trim(\$buttonName);";
-			$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/_+/', ' ', \$buttonNamee);";
-			$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
-			$addButton[] = "\t\t\t\t\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
-			$addButton[] = "\t\t\t\t\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
-			$addButton[] = "\t\t\t\t\$button[] = '<a id=\"'.\$buttonName.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText:" . ":sprintf('" . $this->langPrefix . "_EDIT_S', \$buttonNamee).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
-			$addButton[] = "\t\t\t\t\t<span class=\"icon-edit\"></span></a>';";
-			$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " build script";
-			$addButton[] = "\t\t\t\t\$script[] = \"";
-			$addButton[] = "\t\t\t\t\tjQuery(document).ready(function() {";
-			$addButton[] = "\t\t\t\t\t\tjQuery('#adminForm').on('change', '#jform_\".\$buttonName.\"',function (e) {";
-			$addButton[] = "\t\t\t\t\t\t\te.preventDefault();";
-			$addButton[] = "\t\t\t\t\t\t\tvar \".\$buttonName.\"Value = jQuery('#jform_\".\$buttonName.\"').val();";
-			$addButton[] = "\t\t\t\t\t\t\t\".\$buttonName.\"Button(\".\$buttonName.\"Value);";
-			$addButton[] = "\t\t\t\t\t\t});";
-			$addButton[] = "\t\t\t\t\t\tvar \".\$buttonName.\"Value = jQuery('#jform_\".\$buttonName.\"').val();";
-			$addButton[] = "\t\t\t\t\t\t\".\$buttonName.\"Button(\".\$buttonName.\"Value);";
-			$addButton[] = "\t\t\t\t\t});";
-			$addButton[] = "\t\t\t\t\tfunction \".\$buttonName.\"Button(value) {";
-			$addButton[] = "\t\t\t\t\t\tif (value > 0) {"; // TODO not ideal since value may not be an (int)
-			$addButton[] = "\t\t\t\t\t\t\t// hide the create button";
-			$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Create').hide();";
-			$addButton[] = "\t\t\t\t\t\t\t// show edit button";
-			$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Edit').show();";
-			$addButton[] = "\t\t\t\t\t\t\tvar url = 'index.php?option=" . $fieldData['component'] . "&view=" . $fieldData['views'] . "&task=" . $fieldData['view'] . ".edit&id='+value+'\".\$refJ.\"';"; // TODO this value may not be the ID
-			$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Edit').attr('href', url);";
-			$addButton[] = "\t\t\t\t\t\t} else {";
-			$addButton[] = "\t\t\t\t\t\t\t// show the create button";
-			$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Create').show();";
-			$addButton[] = "\t\t\t\t\t\t\t// hide edit button";
-			$addButton[] = "\t\t\t\t\t\t\tjQuery('#\".\$buttonName.\"Edit').hide();";
-			$addButton[] = "\t\t\t\t\t\t}";
-			$addButton[] = "\t\t\t\t\t}\";";
-			$addButton[] = "\t\t\t}";
-			$addButton[] = "\t\t\t//" . $this->setLine(__LINE__) . " check if button was created for " . $fieldData['view'] . " field.";
-			$addButton[] = "\t\t\tif (is_array(\$button) && count(\$button) > 0)";
-			$addButton[] = "\t\t\t{";
-			$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " Load the needed script.";
-			$addButton[] = "\t\t\t\t\$document = JFactory::getDocument();";
-			$addButton[] = "\t\t\t\t\$document->addScriptDeclaration(implode(' ',\$script));";
-			$addButton[] = "\t\t\t\t//" . $this->setLine(__LINE__) . " return the button attached to input field.";
-			$addButton[] = "\t\t\t\treturn '<div class=\"input-append\">' .\$html . implode('',\$button).'</div>';";
-			$addButton[] = "\t\t\t}";
-			$addButton[] = "\t\t}";
-			$addButton[] = "\t\treturn \$html;";
-			$addButton[] = "\t}";
+			$addButton[] = $this->_t(3) . "{";
+			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " build edit button";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = trim(\$buttonName);";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace('/_+/', ' ', \$buttonNamee);";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
+			$addButton[] = $this->_t(4) . "\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
+			$addButton[] = $this->_t(4) . "\$button[] = '<a id=\"'.\$buttonName.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText:" . ":sprintf('" . $this->langPrefix . "_EDIT_S', \$buttonNamee).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
+			$addButton[] = $this->_t(5) . "<span class=\"icon-edit\"></span></a>';";
+			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " build script";
+			$addButton[] = $this->_t(4) . "\$script[] = \"";
+			$addButton[] = $this->_t(5) . "jQuery(document).ready(function() {";
+			$addButton[] = $this->_t(6) . "jQuery('#adminForm').on('change', '#jform_\".\$buttonName.\"',function (e) {";
+			$addButton[] = $this->_t(7) . "e.preventDefault();";
+			$addButton[] = $this->_t(7) . "var \".\$buttonName.\"Value = jQuery('#jform_\".\$buttonName.\"').val();";
+			$addButton[] = $this->_t(7) . "\".\$buttonName.\"Button(\".\$buttonName.\"Value);";
+			$addButton[] = $this->_t(6) . "});";
+			$addButton[] = $this->_t(6) . "var \".\$buttonName.\"Value = jQuery('#jform_\".\$buttonName.\"').val();";
+			$addButton[] = $this->_t(6) . "\".\$buttonName.\"Button(\".\$buttonName.\"Value);";
+			$addButton[] = $this->_t(5) . "});";
+			$addButton[] = $this->_t(5) . "function \".\$buttonName.\"Button(value) {";
+			$addButton[] = $this->_t(6) . "if (value > 0) {"; // TODO not ideal since value may not be an (int)
+			$addButton[] = $this->_t(7) . "// hide the create button";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Create').hide();";
+			$addButton[] = $this->_t(7) . "// show edit button";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Edit').show();";
+			$addButton[] = $this->_t(7) . "var url = 'index.php?option=" . $fieldData['component'] . "&view=" . $fieldData['views'] . "&task=" . $fieldData['view'] . ".edit&id='+value+'\".\$refJ.\"';"; // TODO this value may not be the ID
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Edit').attr('href', url);";
+			$addButton[] = $this->_t(6) . "} else {";
+			$addButton[] = $this->_t(7) . "// show the create button";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Create').show();";
+			$addButton[] = $this->_t(7) . "// hide edit button";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Edit').hide();";
+			$addButton[] = $this->_t(6) . "}";
+			$addButton[] = $this->_t(5) . "}\";";
+			$addButton[] = $this->_t(3) . "}";
+			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " check if button was created for " . $fieldData['view'] . " field.";
+			$addButton[] = $this->_t(3) . "if (is_array(\$button) && count(\$button) > 0)";
+			$addButton[] = $this->_t(3) . "{";
+			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Load the needed script.";
+			$addButton[] = $this->_t(4) . "\$document = JFactory::getDocument();";
+			$addButton[] = $this->_t(4) . "\$document->addScriptDeclaration(implode(' ',\$script));";
+			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " return the button attached to input field.";
+			$addButton[] = $this->_t(4) . "return '<div class=\"input-append\">' .\$html . implode('',\$button).'</div>';";
+			$addButton[] = $this->_t(3) . "}";
+			$addButton[] = $this->_t(2) . "}";
+			$addButton[] = $this->_t(2) . "return \$html;";
+			$addButton[] = $this->_t(1) . "}";
 
 			return implode(PHP_EOL, $addButton);
 		}

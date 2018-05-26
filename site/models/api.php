@@ -149,11 +149,11 @@ class ComponentbuilderModelApi extends JModelItem
 
 
 	/**
-	* Get the uikit needed components
-	*
-	* @return mixed  An array of objects on success.
-	*
-	*/
+	 * Get the uikit needed components
+	 *
+	 * @return mixed  An array of objects on success.
+	 *
+	 */
 	public function getUikitComp()
 	{
 		if (isset($this->uikitComp) && ComponentbuilderHelper::checkArray($this->uikitComp))

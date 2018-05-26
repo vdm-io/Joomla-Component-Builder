@@ -325,7 +325,7 @@
 				COM_COMPONENTBUILDER_CONFIG_ON</option>
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_OFF</option>
-		</field>		
+		</field>
 		<!-- Mailer Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -346,7 +346,7 @@
 				COM_COMPONENTBUILDER_CONFIG_SENDMAIL</option>
 			<option value="smtp">
 				COM_COMPONENTBUILDER_CONFIG_SMTP</option>
-		</field>		
+		</field>
 		<!-- Emailfrom Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -361,7 +361,7 @@
 			message="Error! Please add email address here."
 			hint="COM_COMPONENTBUILDER_CONFIG_EMAILFROM_HINT"
 			showon="mailer:smtp,sendmail,default"
-		/>		
+		/>
 		<!-- Fromname Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -375,7 +375,7 @@
 			message="Error! Please add some name here."
 			hint="COM_COMPONENTBUILDER_CONFIG_FROMNAME_HINT"
 			showon="mailer:smtp,sendmail,default"
-		/>		
+		/>
 		<!-- Email reply to Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -390,7 +390,7 @@
 			message="Error! Please add email address here."
 			hint="COM_COMPONENTBUILDER_CONFIG_EMAILREPLY_HINT"
 			showon="mailer:smtp,sendmail,default"
-		/>		
+		/>
 		<!-- Reply to name Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -404,7 +404,7 @@
 			message="Error! Please add some name here."
 			hint="COM_COMPONENTBUILDER_CONFIG_REPLYNAME_HINT"
 			showon="mailer:smtp,sendmail,default"
-		/>		
+		/>
 		<!-- Sendmail Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -419,7 +419,7 @@
 			message="Error! Please add path to you local sendmail here."
 			hint="COM_COMPONENTBUILDER_CONFIG_SENDMAIL_HINT"
 			showon="mailer:sendmail"
-		/>		
+		/>
 		<!-- Smtpauth Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -434,7 +434,7 @@
 				COM_COMPONENTBUILDER_CONFIG_YES</option>
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>		
+		</field>
 		<!-- Smtpsecure Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -453,7 +453,7 @@
 				COM_COMPONENTBUILDER_CONFIG_SSL</option>
 			<option value="tls">
 				COM_COMPONENTBUILDER_CONFIG_TLS</option>
-		</field>		
+		</field>
 		<!-- Smtpport Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -468,7 +468,7 @@
 			message="Error! Please add the port number of your SMTP server here."
 			hint="COM_COMPONENTBUILDER_CONFIG_SMTPPORT_HINT"
 			showon="mailer:smtp"
-		/>		
+		/>
 		<!-- Smtpuser Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -482,7 +482,7 @@
 			message="Error! Please add the username for SMTP server here."
 			hint="COM_COMPONENTBUILDER_CONFIG_SMTPUSER_HINT"
 			showon="mailer:smtp"
-		/>		
+		/>
 		<!-- Smtppass Field. Type: Password. (joomla) -->
 		<field
 			type="password"
@@ -494,7 +494,7 @@
 			filter="raw"
 			message="Error! Please add the password for SMTP server here."
 			showon="mailer:smtp"
-		/>		
+		/>
 		<!-- Smtphost Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -529,7 +529,7 @@
 				COM_COMPONENTBUILDER_CONFIG_YES</option>
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>		
+		</field>
 		<!-- Dkim_domain Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -544,7 +544,7 @@
 			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_DOMAIN_HINT"
 			showon="dkim:1"
 			onchange="vdm_dkim();"
-		/>		
+		/>
 		<!-- Dkim_selector Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -560,7 +560,7 @@
 			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_SELECTOR_HINT"
 			showon="dkim:1"
 			onchange="vdm_dkim();"
-		/>		
+		/>
 		<!-- Dkim_passphrase Field. Type: Password. (joomla) -->
 		<field
 			type="password"
@@ -572,7 +572,7 @@
 			filter="raw"
 			message="Error! Please add  passphrase here."
 			showon="dkim:1"
-		/>		
+		/>
 		<!-- Dkim_identity Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -586,7 +586,7 @@
 			message="Error! Please add  DKIM Identity here."
 			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_IDENTITY_HINT"
 			showon="dkim:1"
-		/>		
+		/>
 		<!-- Dkim_private_key Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -597,7 +597,7 @@
 			description="COM_COMPONENTBUILDER_CONFIG_DKIM_PRIVATE_KEY_DESCRIPTION"
 			class="input-xxlarge span12"
 			showon="dkim:1"
-		/>		
+		/>
 		<!-- Dkim_public_key Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -609,9 +609,9 @@
 			class="input-xxlarge span12"
 			showon="dkim:1"
 			onchange="vdm_dkim();"
-		/>		
+		/>
 		<!-- Note_dkim_use Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_dkim_use" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DKIM_USE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DKIM_USE_DESCRIPTION" heading="h4" class="note_dkim_use" showon="dkim:1" />		
+		<field type="note" name="note_dkim_use" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DKIM_USE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DKIM_USE_DESCRIPTION" heading="h4" class="note_dkim_use" showon="dkim:1" />
 		<!-- Dkim_key Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -625,7 +625,7 @@
 			message="Error! Please add KEY here."
 			hint="COM_COMPONENTBUILDER_CONFIG_DKIM_KEY_HINT"
 			showon="dkim:1"
-		/>		
+		/>
 		<!-- Dkim_value Field. Type: Text. (joomla) -->
 		<field
 			type="text"

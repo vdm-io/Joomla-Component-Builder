@@ -104,16 +104,18 @@ class ComponentbuilderModelLibraries extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('library.access', 'com_componentbuilder.library.' . (int) $item->id) && $user->authorise('library.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('library.access', 'com_componentbuilder.library.' . (int) $item->id) && JFactory::getUser()->authorise('library.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
 					continue;
 				}
+
+  				// convert how
+  				$item->how = $this->selectionTranslation($item->how, 'how');
+
 
 			}
 		} 
@@ -125,10 +127,6 @@ class ComponentbuilderModelLibraries extends JModelList
 			{
 				// convert type
 				$item->type = $this->selectionTranslation($item->type, 'type');
-
-				// convert how
-				$item->how = $this->selectionTranslation($item->how, 'how');
-
 			}
 		}
  
@@ -138,10 +136,10 @@ class ComponentbuilderModelLibraries extends JModelList
 	}
 
 	/**
-	* Method to convert selection values to translatable string.
-	*
-	* @return translatable string
-	*/
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
 	public function selectionTranslation($value,$name)
 	{
 		// Array of type language strings
@@ -283,16 +281,16 @@ class ComponentbuilderModelLibraries extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

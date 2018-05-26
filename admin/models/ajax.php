@@ -2092,6 +2092,13 @@ class ComponentbuilderModelAjax extends JModelList
 		$targets['admin_view']['not_base64'] = array();
 		$targets['admin_view']['name'] = 'system_name';
 
+		// #__componentbuilder_admin_fields_relations
+		$targets['library'] = array();
+		$targets['library']['search'] = array('id', 'admin_view', 'addrelations');
+		$targets['library']['view'] = 'admin_fields_relations';
+		$targets['library']['not_base64'] = array('addrelations' => 'json');
+		$targets['library']['name'] = 'admin_view->id:admin_view.system_name';
+
 		// #__componentbuilder_custom_admin_view
 		$targets['custom_admin_view'] = array();
 		$targets['custom_admin_view']['search'] = array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
@@ -2139,7 +2146,6 @@ class ComponentbuilderModelAjax extends JModelList
 
 		// #__componentbuilder_library
 		$targets['library'] = array();
-		$targets['library']['view'] = 'libraries';
 		$targets['library']['search'] = array('id', 'name', 'php_setdocument');
 		$targets['library']['view'] = 'libraries';
 		$targets['library']['not_base64'] = array();
@@ -2597,17 +2603,19 @@ class ComponentbuilderModelAjax extends JModelList
 			$names = array_map( function ($id) {
 				return '[' . $id . ']=> ' . ComponentbuilderHelper::getVar('field', $id, 'id', 'name');
 			}, $fields);
-			// create note
-			$note = "// ". implode('; ', $names);
 			// MODEL
-			if ($area == 1)
+			if ($area == 1 || $area == 3)
 			{
-				return $note . PHP_EOL . PHP_EOL . '$item->[' . implode("] . ', ' . \$item->[", $fields) . '];';
+				// create note
+				$note = "// ". implode('; ', $names);
+				return $note . PHP_EOL . '$item->{'.(int)$listfield.'} = $item->{' . implode("} . ', ' . \$item->{", $fields) . '};';
 			}
 			// VIEW
 			elseif ($area == 2)
 			{
-				return '$this->escape($item->[' . implode("]) . '<br />' . \$this->escape(\$item->[", $fields). ']);' . PHP_EOL . PHP_EOL . $note;
+				// create note
+				$note = "<!--  " . implode('; ', $names) . " -->";
+				return '[field=' . implode("]<br />[field=", $fields). ']' . PHP_EOL . PHP_EOL . $note;
 			}
 		}
 		return false;

@@ -655,7 +655,14 @@ class Get
 	 */
 	public $setTidyWarning = false;
 
-	/*	 * *
+	/**
+	 * Set tab/spacer
+	 * 
+	 * @var   string
+	 */
+	public $tabSpacer = "\t";
+
+	/**
 	 * Constructor
 	 */
 
@@ -743,6 +750,19 @@ class Get
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Set the tab/space
+	 * 
+	 * @param   int   $nr  The number of tag/space
+	 * 
+	 * @return  string
+	 * 
+	 */
+	public function _t($nr)
+	{
+		return str_repeat($this->tabSpacer, (int) $nr);
 	}
 
 	/**
@@ -1670,12 +1690,17 @@ class Get
 				foreach ($view->addrelations as $nr => $relationsValue)
 				{
 					// only add if list view field is selected and joind fields are set
-					if (isset($relationsValue['listfield']) && 
+					if (isset($relationsValue['listfield']) &&
 						is_numeric($relationsValue['listfield']) &&
 						$relationsValue['listfield'] > 0 &&
-						isset($relationsValue['joinfields']) && 
+						isset($relationsValue['joinfields']) &&
 						ComponentbuilderHelper::checkArray($relationsValue['joinfields']))
 					{
+						// do a dynamic update on the set values
+						if (isset($relationsValue['set']) && ComponentbuilderHelper::checkString($relationsValue['set']))
+						{
+							$relationsValue['set'] = $this->setDynamicValues($relationsValue['set']);
+						}
 						// load the field relations
 						$this->fieldRelations[$name_list][(int) $relationsValue['listfield']] = $relationsValue;
 						// load the list joints
@@ -3876,7 +3901,7 @@ class Get
 				}
 				if (ComponentbuilderHelper::checkArray($gets) && ComponentbuilderHelper::checkArray($keys))
 				{
-					$querySelect = '$query->select($db->quoteName(' . PHP_EOL . "\t\t\t" . 'array(' . implode(',', $gets) . '),' . PHP_EOL . "\t\t\t" . 'array(' . implode(',', $keys) . ')));';
+					$querySelect = '$query->select($db->quoteName(' . PHP_EOL . $this->_t(3) . 'array(' . implode(',', $gets) . '),' . PHP_EOL . $this->_t(3) . 'array(' . implode(',', $keys) . ')));';
 					$queryFrom = '$db->quoteName(' . $this->db->quote($table) . ', ' . $this->db->quote($as) . ')';
 					// return the select query
 					return array('select' => $querySelect, 'from' => $queryFrom, 'name' => $queryName, 'table' => $table, 'type' => $type, 'select_gets' => $gets, 'select_keys' => $keys);
@@ -4005,9 +4030,9 @@ class Get
 				$data = $this->db->loadObjectList();
 				// start building the MySql dump
 				$dump = "--";
-				$dump .= PHP_EOL . "-- Dumping data for table `#__".$this->bbb."component".$this->ddd."_" . $view . "`";
+				$dump .= PHP_EOL . "-- Dumping data for table `#__" . $this->bbb . "component" . $this->ddd . "_" . $view . "`";
 				$dump .= PHP_EOL . "--";
-				$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__".$this->bbb."component".$this->ddd."_" . $view . "` (";
+				$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__" . $this->bbb . "component" . $this->ddd . "_" . $view . "` (";
 				foreach ($data as $line)
 				{
 					$comaSet = 0;

@@ -90,11 +90,9 @@ class ComponentbuilderModelComponents_site_views extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('component_site_views.access', 'com_componentbuilder.component_site_views.' . (int) $item->id) && $user->authorise('component_site_views.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('component_site_views.access', 'com_componentbuilder.component_site_views.' . (int) $item->id) && JFactory::getUser()->authorise('component_site_views.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -188,16 +186,16 @@ class ComponentbuilderModelComponents_site_views extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

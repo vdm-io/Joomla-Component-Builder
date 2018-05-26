@@ -25,7 +25,6 @@ class Compiler extends Infusion
 	 * 
 	 * @var      string
 	 */
-
 	private $tempPath;
 
 	/*
@@ -677,4 +676,5 @@ class Compiler extends Infusion
 
 		// any help to improve this is welcome...
 	}
+
 }

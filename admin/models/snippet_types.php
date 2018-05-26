@@ -96,11 +96,9 @@ class ComponentbuilderModelSnippet_types extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('snippet_type.access', 'com_componentbuilder.snippet_type.' . (int) $item->id) && $user->authorise('snippet_type.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('snippet_type.access', 'com_componentbuilder.snippet_type.' . (int) $item->id) && JFactory::getUser()->authorise('snippet_type.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -207,16 +205,16 @@ class ComponentbuilderModelSnippet_types extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

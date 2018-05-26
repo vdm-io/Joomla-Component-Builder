@@ -108,11 +108,9 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('custom_code.access', 'com_componentbuilder.custom_code.' . (int) $item->id) && $user->authorise('custom_code.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('custom_code.access', 'com_componentbuilder.custom_code.' . (int) $item->id) && JFactory::getUser()->authorise('custom_code.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -159,10 +157,10 @@ class ComponentbuilderModelCustom_codes extends JModelList
 	}
 
 	/**
-	* Method to convert selection values to translatable string.
-	*
-	* @return translatable string
-	*/
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
 	public function selectionTranslation($value,$name)
 	{
 		// Array of target language strings
@@ -303,10 +301,10 @@ class ComponentbuilderModelCustom_codes extends JModelList
 	}
 
 	/**
-	* Method to get list export data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list export data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getExportData($pks)
 	{
 		// setup the query
@@ -346,11 +344,9 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('custom_code.access', 'com_componentbuilder.custom_code.' . (int) $item->id) && $user->authorise('custom_code.access', 'com_componentbuilder'));
+						$access = (JFactory::getUser()->authorise('custom_code.access', 'com_componentbuilder.custom_code.' . (int) $item->id) && JFactory::getUser()->authorise('custom_code.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -446,16 +442,16 @@ class ComponentbuilderModelCustom_codes extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

@@ -3695,8 +3695,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Load the Component Help URLs.
-	**/
+	 *	Load the Component Help URLs.
+	 **/
 	public static function getHelpUrl($view)
 	{
 		$user	= JFactory::getUser();
@@ -3733,15 +3733,15 @@ abstract class ComponentbuilderHelper
 						// set joomla article
 						case 1:
 							return self::loadArticleLink($help->article);
-						break;
+							break;
 						// set help text
 						case 2:
 							return self::loadHelpTextLink($help->id);
-						break;
+							break;
 						// set Link
 						case 3:
 							return $help->url;
-						break;
+							break;
 					}
 				}
 			}
@@ -3750,16 +3750,16 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Get the Article Link.
-	**/
+	 *	Get the Article Link.
+	 **/
 	protected static function loadArticleLink($id)
 	{
 		return JURI::root().'index.php?option=com_content&view=article&id='.$id.'&tmpl=component&layout=modal';
 	}
 
 	/**
-	*	Get the Help Text Link.
-	**/
+	 *	Get the Help Text Link.
+	 **/
 	protected static function loadHelpTextLink($id)
 	{
 		$token = JSession::getFormToken();
@@ -4064,8 +4064,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	UIKIT Component Classes
-	**/
+	 *  UIKIT Component Classes
+	 **/
 	public static $uk_components = array(
 			'data-uk-grid' => array(
 				'grid' ),
@@ -4119,15 +4119,15 @@ abstract class ComponentbuilderHelper
 			'upload-drop' => array(
 				'upload', 'form-file' )
 			);
-	
+
 	/**
-	* 	Add UIKIT Components
-	**/
+	 *  Add UIKIT Components
+	 **/
 	public static $uikit = false;
 
 	/**
-	* 	Get UIKIT Components
-	**/
+	 *  Get UIKIT Components
+	 **/
 	public static function getUikitComp($content,$classes = array())
 	{
 		if (strpos($content,'class="uk-') !== false)
@@ -4157,7 +4157,7 @@ abstract class ComponentbuilderHelper
 				}
 				return $temp;
 			}
-		}	
+		}
 		if (self::checkArray($classes))
 		{
 			return $classes;

@@ -100,11 +100,9 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('dynamic_get.access', 'com_componentbuilder.dynamic_get.' . (int) $item->id) && $user->authorise('dynamic_get.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('dynamic_get.access', 'com_componentbuilder.dynamic_get.' . (int) $item->id) && JFactory::getUser()->authorise('dynamic_get.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -123,8 +121,6 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 				$item->main_source = $this->selectionTranslation($item->main_source, 'main_source');
 				// convert gettype
 				$item->gettype = $this->selectionTranslation($item->gettype, 'gettype');
-				// convert addcalculation
-				$item->addcalculation = $this->selectionTranslation($item->addcalculation, 'addcalculation');
 			}
 		}
  
@@ -134,10 +130,10 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 	}
 
 	/**
-	* Method to convert selection values to translatable string.
-	*
-	* @return translatable string
-	*/
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
 	public function selectionTranslation($value,$name)
 	{
 		// Array of main_source language strings
@@ -170,19 +166,6 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 				return $gettypeArray[$value];
 			}
 		}
-		// Array of addcalculation language strings
-		if ($name === 'addcalculation')
-		{
-			$addcalculationArray = array(
-				1 => 'COM_COMPONENTBUILDER_DYNAMIC_GET_YES',
-				0 => 'COM_COMPONENTBUILDER_DYNAMIC_GET_NO'
-			);
-			// Now check if value is found in this array
-			if (isset($addcalculationArray[$value]) && ComponentbuilderHelper::checkString($addcalculationArray[$value]))
-			{
-				return $addcalculationArray[$value];
-			}
-		}
 		return $value;
 	}
 	
@@ -204,10 +187,6 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
-
-		// From the componentbuilder_admin_view table.
-		$query->select($db->quoteName('h.system_name','view_table_main_system_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_view', 'h') . ' ON (' . $db->quoteName('a.view_table_main') . ' = ' . $db->quoteName('h.id') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -272,10 +251,10 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 	}
 
 	/**
-	* Method to get list export data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list export data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getExportData($pks)
 	{
 		// setup the query
@@ -315,11 +294,9 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('dynamic_get.access', 'com_componentbuilder.dynamic_get.' . (int) $item->id) && $user->authorise('dynamic_get.access', 'com_componentbuilder'));
+						$access = (JFactory::getUser()->authorise('dynamic_get.access', 'com_componentbuilder.dynamic_get.' . (int) $item->id) && JFactory::getUser()->authorise('dynamic_get.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -410,16 +387,16 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

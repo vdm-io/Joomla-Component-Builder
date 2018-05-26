@@ -104,11 +104,9 @@ class ComponentbuilderModelLayouts extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('layout.access', 'com_componentbuilder.layout.' . (int) $item->id) && $user->authorise('layout.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('layout.access', 'com_componentbuilder.layout.' . (int) $item->id) && JFactory::getUser()->authorise('layout.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -203,10 +201,10 @@ class ComponentbuilderModelLayouts extends JModelList
 	}
 
 	/**
-	* Method to get list export data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list export data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getExportData($pks)
 	{
 		// setup the query
@@ -246,11 +244,9 @@ class ComponentbuilderModelLayouts extends JModelList
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('layout.access', 'com_componentbuilder.layout.' . (int) $item->id) && $user->authorise('layout.access', 'com_componentbuilder'));
+						$access = (JFactory::getUser()->authorise('layout.access', 'com_componentbuilder.layout.' . (int) $item->id) && JFactory::getUser()->authorise('layout.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -330,16 +326,16 @@ class ComponentbuilderModelLayouts extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

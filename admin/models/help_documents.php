@@ -108,11 +108,9 @@ class ComponentbuilderModelHelp_documents extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('help_document.access', 'com_componentbuilder.help_document.' . (int) $item->id) && $user->authorise('help_document.access', 'com_componentbuilder'));
+				$access = (JFactory::getUser()->authorise('help_document.access', 'com_componentbuilder.help_document.' . (int) $item->id) && JFactory::getUser()->authorise('help_document.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -160,10 +158,10 @@ class ComponentbuilderModelHelp_documents extends JModelList
 	}
 
 	/**
-	* Method to convert selection values to translatable string.
-	*
-	* @return translatable string
-	*/
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
 	public function selectionTranslation($value,$name)
 	{
 		// Array of type language strings
@@ -289,10 +287,10 @@ class ComponentbuilderModelHelp_documents extends JModelList
 	}
 
 	/**
-	* Method to get list export data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list export data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getExportData($pks)
 	{
 		// setup the query
@@ -332,11 +330,9 @@ class ComponentbuilderModelHelp_documents extends JModelList
 				// set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('help_document.access', 'com_componentbuilder.help_document.' . (int) $item->id) && $user->authorise('help_document.access', 'com_componentbuilder'));
+						$access = (JFactory::getUser()->authorise('help_document.access', 'com_componentbuilder.help_document.' . (int) $item->id) && JFactory::getUser()->authorise('help_document.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -413,16 +409,16 @@ class ComponentbuilderModelHelp_documents extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
-		
+
 		if ($time)
 		{
 

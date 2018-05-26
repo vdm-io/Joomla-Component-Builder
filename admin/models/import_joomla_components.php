@@ -698,7 +698,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$tables = array(
 			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
 			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
-			'admin_fields', 'admin_fields_conditions', 'component_admin_views', 'component_site_views',
+			'admin_fields', 'admin_fields_conditions', 'admin_fields_relations', 'component_admin_views', 'component_site_views',
 			'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
 		);
@@ -2009,12 +2009,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 			case 'admin_fields':
 			case 'admin_fields_conditions':
+			case 'admin_fields_relations':
 				// diverged id already updated
 				if (!$diverged)
 				{
 					// update the admin_view ID where needed
 					$item = $this->setNewID($item, 'admin_view', 'admin_view', $type);
 				}
+				$updaterR = array();
 				// set the updater
 				if ('admin_fields' === $type)
 				{
@@ -2034,7 +2036,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						unset($item->addconditions);
 					}
 				}
-				else
+				elseif ('admin_fields_conditions' === $type)
 				{
 					// repeatable fields to update
 					$updaterR = array(
@@ -2047,10 +2049,20 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						'addconditions' => array('target_field' => 'field', 'match_field' => 'field')
 					);
 				}
+				elseif ('admin_fields_relations' === $type)
+				{
+					// subform fields to target
+					$updaterT = array(
+						// subformfield => field => type_value
+						'addrelations' => array('listfield' => 'field', 'joinfields' => 'field')
+					);		
+				}
 
 				// update the repeatable fields
-				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
-				
+				if (isset($updaterR) && ComponentbuilderHelper::checkArray($updaterR))
+				{
+					$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				}
 				// update the subform ids
 				$this->updateSubformsIDs($item, $type, $updaterT);
 		}
@@ -2390,6 +2402,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				case 'admin_fields':
 				case 'admin_fields_conditions':
+				case 'admin_fields_relations':
 					// get by admin_view (since there should only be one of each name)
 					$getter = array('admin_view');
 					$this->specialValue = array();

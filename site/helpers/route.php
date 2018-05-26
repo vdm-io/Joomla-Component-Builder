@@ -24,8 +24,8 @@ abstract class ComponentbuilderHelperRoute
 	protected static $lookup;
 
 	/**
-	* @param int The route of the Api
-	*/
+	 * @param int The route of the Api
+	 */
 	public static function getApiRoute($id = 0, $catid = 0)
 	{
 		if ($id > 0)

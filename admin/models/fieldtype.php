@@ -121,10 +121,10 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	}
 
 	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getWadfields()
 	{
 		// Get the user object.
@@ -189,11 +189,9 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			// set values to display correctly.
 			if (ComponentbuilderHelper::checkArray($items))
 			{
-				// get user object.
-				$user = JFactory::getUser();
 				foreach ($items as $nr => &$item)
 				{
-					$access = ($user->authorise('field.access', 'com_componentbuilder.field.' . (int) $item->id) && $user->authorise('field.access', 'com_componentbuilder'));
+					$access = (JFactory::getUser()->authorise('field.access', 'com_componentbuilder.field.' . (int) $item->id) && JFactory::getUser()->authorise('field.access', 'com_componentbuilder'));
 					if (!$access)
 					{
 						unset($items[$nr]);
@@ -225,10 +223,10 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	}
 
 	/**
-	* Method to convert selection values to translatable string.
-	*
-	* @return translatable string
-	*/
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
 	public function selectionTranslationWadfields($value,$name)
 	{
 		// Array of datatype language strings
@@ -503,7 +501,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	protected function canEditState($record)
 	{
 		$user = JFactory::getUser();
-		$recordId	= (!empty($record->id)) ? $record->id : 0;
+		$recordId = (!empty($record->id)) ? $record->id : 0;
 
 		if ($recordId)
 		{
@@ -769,7 +767,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return  mixed  An array of new IDs on success, boolean false on failure.
 	 *
-	 * @since	12.2
+	 * @since 12.2
 	 */
 	protected function batchCopy($values, $pks, $contexts)
 	{
@@ -876,7 +874,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$this->table->id = 0;
 
 			// TODO: Deal with ordering?
-			// $this->table->ordering	= 1;
+			// $this->table->ordering = 1;
 
 			// Check the row.
 			if (!$this->table->check())
@@ -921,7 +919,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return  boolean  True if successful, false otherwise and internal error is set.
 	 *
-	 * @since	12.2
+	 * @since 12.2
 	 */
 	protected function batchMove($values, $pks, $contexts)
 	{
@@ -1127,13 +1125,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	}
 
 	/**
-	* Method to change the title
-	*
-	* @param   string   $title   The title.
-	*
-	* @return	array  Contains the modified title and alias.
-	*
-	*/
+	 * Method to change the title
+	 *
+	 * @param   string   $title   The title.
+	 *
+	 * @return	array  Contains the modified title and alias.
+	 *
+	 */
 	protected function _generateNewTitle($title)
 	{
 

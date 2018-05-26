@@ -312,10 +312,10 @@ class ComponentbuilderTableServer extends JTable
 	}
 
 	/**
-	* This view does not actually have an alias
-	*
-	* @return  bool
-	*/
+	 * This view does not actually have an alias
+	 *
+	 * @return  bool
+	 */
 	public function generateAlias()
 	{
 		return false;

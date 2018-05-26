@@ -494,7 +494,7 @@ class Structure extends Get
 							{
 								$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] = '';
 							}
-							$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . "\t\t<folder>" . $libFolder . "</folder>";
+							$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(2) . "<folder>" . $libFolder . "</folder>";
 						}
 					}
 					// if config fields are found load into component config (avoiding dublicates)
@@ -1285,7 +1285,7 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'media')
 				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . "\t\t<folder>" . $lastFolder . "</folder>";
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(2) . "<folder>" . $lastFolder . "</folder>";
 				}
 				// check if we sould add it to the site xml list
 				if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh]))
@@ -1294,7 +1294,7 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'site')
 				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh] .= PHP_EOL . "\t\t<folder>" . $lastFolder . "</folder>";
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(2) . "<folder>" . $lastFolder . "</folder>";
 				}
 				// check if we sould add it to the admin xml list
 				if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh]))
@@ -1303,7 +1303,7 @@ class Structure extends Get
 				}
 				if (count($pathArray) == 1 && $firstFolder === 'admin')
 				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh] .= PHP_EOL . "\t\t\t<folder>" . $lastFolder . "</folder>";
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(3) . "<folder>" . $lastFolder . "</folder>";
 				}
 				// make we have not duplicates
 				$key_pointer = ComponentbuilderHelper::safeString($custom['folder']) . '_f' . $pointer_tracker;
