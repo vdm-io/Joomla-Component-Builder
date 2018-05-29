@@ -62,6 +62,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		'getKeyFrom' => null
 		);
 	public $activeType = 'export';
+	public $backupType = 1;
 
 	protected $params;
 	protected $tempPath;
