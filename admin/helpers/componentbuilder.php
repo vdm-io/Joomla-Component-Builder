@@ -4625,7 +4625,7 @@ abstract class ComponentbuilderHelper
 					}
 				}
 				// check if there are any view values remaining
-				if (count($_result))
+				if (count((array)$_result))
 				{
 					$_result = json_encode($_result);
 					$_result = array($_result);
@@ -4819,7 +4819,7 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function checkArray($array, $removeEmptyString = false)
 	{
-		if (isset($array) && is_array($array) && count($array) > 0)
+		if (isset($array) && is_array($array) && count((array)$array) > 0)
 		{
 			// also make sure the empty strings are removed
 			if ($removeEmptyString)
@@ -4922,7 +4922,7 @@ abstract class ComponentbuilderHelper
 		{
 			$initial = strlen($string);
 			$words = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
-			$words_count = count($words);
+			$words_count = count((array)$words);
 
 			$word_length = 0;
 			$last_word = 0;

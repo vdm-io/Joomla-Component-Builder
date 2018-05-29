@@ -232,7 +232,7 @@ abstract class ###Component###Email
 		if (is_array($mailreply))
 		{
 			$mail->ClearReplyTos();
-			$numReplyTo = count($mailreply);
+			$numReplyTo = count((array)$mailreply);
 			for ($i=0; $i < $numReplyTo; $i++)
 			{
 				$mail->addReplyTo($mailreply[$i], $replyname[$i]);

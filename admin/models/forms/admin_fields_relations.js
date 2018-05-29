@@ -26,12 +26,19 @@ function getCodeGlueOptions(field) {
 	var type = jQuery('#'+subID+'__join_type').val();
 	// get area value
 	var area = jQuery('#'+subID+'__area').val();
-	// get codeGlueOptions
-	getCodeGlueOptions_server(listfield, joinfields, type, area).done(function(result) {
-		if(result){
-			jQuery('#'+subID+'__set').val(result);
-		}
-	});
+	// check that values are set
+	if (_isSet(listfield) && _isSet(joinfields) && _isSet(type) && _isSet(area)) {
+		// get codeGlueOptions
+		getCodeGlueOptions_server(listfield, joinfields, type, area).done(function(result) {
+			if(result){
+				jQuery('#'+subID+'__set').val(result);
+			} else {
+				jQuery('#'+subID+'__set').val('');
+			}
+		});
+	} else {
+		jQuery('#'+subID+'__set').val('');
+	}
 }
 
 function getCodeGlueOptions_server(listfield, joinfields, type, area){
@@ -48,4 +55,12 @@ function getCodeGlueOptions_server(listfield, joinfields, type, area){
 	});
 }
 
+// the isSet function
+function _isSet(val)
+{
+	if ((val != undefined) && (val != null) && 0 !== val.length){
+		return true;
+	}
+	return false;
+}
  

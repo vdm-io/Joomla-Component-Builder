@@ -6886,6 +6886,12 @@ class Interpretation extends Fields
 			// build the dynamic fields
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
+				// check if we have an over-ride
+				if (isset($this->listHeadOverRide[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listHeadOverRide[$viewName_list]) && isset($this->listHeadOverRide[$viewName_list][$item['id']]))
+				{
+					$item['lang'] = $this->listHeadOverRide[$viewName_list][$item['id']];
+				}
+				// set the custom code
 				if (ComponentbuilderHelper::checkArray($item['custom']))
 				{
 					$item['code'] = $item['code'] . '_' . $item['custom']['text'];
@@ -7953,6 +7959,11 @@ class Interpretation extends Fields
 			// build the dynamic fields
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
+				// check if we have an over-ride
+				if (isset($this->listHeadOverRide[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listHeadOverRide[$viewName_list]) && isset($this->listHeadOverRide[$viewName_list][$item['id']]))
+				{
+					$item['lang'] = $this->listHeadOverRide[$viewName_list][$item['id']];
+				}
 				$setin = (2 == $this->footableVersion) ? ' data-hide="phone"' : ' data-breakpoints="xs sm"';
 				if ($controller > 3)
 				{

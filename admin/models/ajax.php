@@ -413,6 +413,8 @@ class ComponentbuilderModelAjax extends JModelList
 				'field' => 'setItemNames',
 				'listfield' =>  'setItemNames',
 				'joinfields' =>  'setItemNames',
+				'area' => 'setAreaName',
+				'set' => 'setCode',
 				'join_type' =>  'setJoinType',
 				'list' => 'setAdminBehaviour',
 				'title' => 'setYesNo',
@@ -992,6 +994,28 @@ class ComponentbuilderModelAjax extends JModelList
 			return $this->tabNames[$value];
 		}
 		return JText::_('COM_COMPONENTBUILDER_DETAILS');
+	}
+
+	protected function setAreaName($header, $value)
+	{
+		switch ($value)
+		{
+			case 1:
+				return JText::_('COM_COMPONENTBUILDER_MODEL_BEFORE_MODELLING');
+			break;
+			case 2:
+				return JText::_('COM_COMPONENTBUILDER_VIEW');
+			break;
+			case 3:
+				return JText::_('COM_COMPONENTBUILDER_MODEL_AFTER_MODELLING');
+			break;
+		}
+		return  JText::_('COM_COMPONENTBUILDER_NOT_SET');
+	}
+
+	protected function setCode($header, $value)
+	{
+		return nl2br(htmlspecialchars($value));
 	}
 
 	protected function setYesNo($header, $value)
@@ -2580,7 +2604,7 @@ class ComponentbuilderModelAjax extends JModelList
 		if ($type == 1)
 		{
 			// MODEL
-			if ($area == 1)
+			if ($area == 1 || $area == 3)
 			{
 				return ', ';
 			}

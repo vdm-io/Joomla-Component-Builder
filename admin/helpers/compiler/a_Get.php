@@ -502,6 +502,13 @@ class Get
 	public $listJoinBuilder = array();
 
 	/**
+	 * The list head over ride
+	 * 
+	 * @var     array
+	 */
+	public $listHeadOverRide = array();
+
+	/**
 	 * The linked admin view tabs
 	 * 
 	 * @var     array
@@ -1683,6 +1690,7 @@ class Get
 			// prep the buckets
 			$this->fieldRelations[$name_list] = array();
 			$this->listJoinBuilder[$name_list] = array();
+			$this->listHeadOverRide[$name_list] = array();
 			// set the relations
 			$view->addrelations = (isset($view->addrelations) && ComponentbuilderHelper::checkJson($view->addrelations)) ? json_decode($view->addrelations, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->addrelations))
@@ -1707,6 +1715,18 @@ class Get
 						foreach ($relationsValue['joinfields'] as $join)
 						{
 							$this->listJoinBuilder[$name_list][(int) $join] = (int) $join;
+						}
+						// set header over-ride
+						if (isset($relationsValue['column_name']) && ComponentbuilderHelper::checkString($relationsValue['column_name']))
+						{
+							$check_column_name = trim(strtolower($relationsValue['column_name']));
+							// confirm it should really make the over ride
+							if ('default' !== $check_column_name)
+							{
+								$column_name_lang = ComponentbuilderHelper::safeString($name_list, 'U') . '_' . ComponentbuilderHelper::safeString($relationsValue['column_name'], 'U');
+								$this->langContent['admin'][$column_name_lang] = trim($relationsValue['column_name']);
+								$this->listHeadOverRide[$name_list][(int) $relationsValue['listfield']] = $column_name_lang;
+							}
 						}
 					}
 				}

@@ -119,6 +119,21 @@
 					onchange="getCodeGlueOptions(this)"
 					button="false"
 				/>
+				<!-- Column_name Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="column_name"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_LABEL"
+					size="50"
+					maxlength="50"
+					default="Default"
+					class="text_area"
+					required="false"
+					filter="STRING"
+					message="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_MESSAGE"
+					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_HINT"
+					autocomplete="on"
+				/>
 				<!-- Joinfields Field. Type: Joinfields. (custom) -->
 				<field
 					type="joinfields"

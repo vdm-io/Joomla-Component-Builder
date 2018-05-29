@@ -1677,7 +1677,8 @@ INSERT INTO `#__componentbuilder_admin_fields_conditions` (`id`, `addconditions`
 INSERT INTO `#__componentbuilder_admin_fields_relations` (`id`, `addrelations`, `admin_view`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
 (1, '', 14, 1, '2018-05-22 01:20:34', '2018-05-23 03:37:27', 9, '', 1),
 (2, '', 22, 1, '2018-05-23 03:38:52', '2018-05-26 07:37:25', 18, '', 2),
-(3, '', 13, 1, '2018-05-24 17:04:40', '2018-05-24 17:12:52', 4, '', 3);
+(3, '', 13, 1, '2018-05-24 17:04:40', '2018-05-24 17:12:52', 4, '', 3),
+(4, '{\"addrelations0\":{\"listfield\":\"913\",\"column_name\":\"Preacher Details\",\"joinfields\":[\"691\"],\"area\":\"2\",\"join_type\":\"1\",\"set\":\"<br \\/>\"}}', 54, 1, '2018-05-28 07:00:41', '2018-05-28 09:45:25', 7, '', 4);
 
 --
 -- Dumping data for table `#__componentbuilder_component_admin_views`
