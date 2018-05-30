@@ -663,6 +663,13 @@ class Get
 	public $setTidyWarning = false;
 
 	/**
+	 * Tab/spacer bucket (to speed-up the build)
+	 * 
+	 * @var   array
+	 */
+	public $tabSpacerBucket = array();
+
+	/**
 	 * Set tab/spacer
 	 * 
 	 * @var   string
@@ -769,7 +776,14 @@ class Get
 	 */
 	public function _t($nr)
 	{
-		return str_repeat($this->tabSpacer, (int) $nr);
+		// check if we already have the string
+		if (!isset($this->tabSpacerBucket[$nr]))
+		{
+			// get the string
+			$this->tabSpacerBucket[$nr] = str_repeat($this->tabSpacer, (int) $nr);
+		}
+		// return stored string
+		return $this->tabSpacerBucket[$nr];
 	}
 
 	/**
