@@ -191,8 +191,7 @@ class Interpretation extends Fields
 	 *
 	 * @param   int   $nr  The line number
 	 *
-	 * @return  void
-	 *
+	 * @return  string
 	 */
 	private function setLine($nr)
 	{
@@ -254,7 +253,10 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * @param $view
+	 * set Lock License Per
+	 *
+	 * @param type $view
+	 * @param type $target
 	 */
 	public function setLockLicensePer(&$view, $target)
 	{
@@ -280,6 +282,14 @@ class Interpretation extends Fields
 		}
 	}
 
+	/**
+	 * Check statment license locked
+	 *
+	 * @param type $boolMethod
+	 * @param type $thIIS
+	 *
+	 * @return string
+	 */
 	public function checkStatmentLicenseLocked($boolMethod, $thIIS = '$this')
 	{
 		$statment[] = PHP_EOL . $this->_t(2) . "if (!" . $thIIS . "->" . $boolMethod . "())";
@@ -293,6 +303,14 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $statment);
 	}
 
+	/**
+	 * set Bool License Lock
+	 *
+	 * @param type $boolMethod
+	 * @param type $globalbool
+	 *
+	 * @return string
+	 */
 	public function setBoolLicenseLock($boolMethod, $globalbool)
 	{
 		$bool[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
@@ -325,6 +343,14 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $bool);
 	}
 
+	/**
+	 * set Helper License Lock
+	 *
+	 * @param type $_VDM
+	 * @param type $target
+	 *
+	 * @return string
+	 */
 	public function setHelperLicenseLock($_VDM, $target)
 	{
 		$helper[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
@@ -348,6 +374,13 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $helper);
 	}
 
+	/**
+	 * set Init License Lock
+	 *
+	 * @param type $_VDM
+	 *
+	 * @return string
+	 */
 	public function setInitLicenseLock($_VDM)
 	{
 		$init[] = PHP_EOL . "if (!defined('" . $_VDM . "'))";
@@ -362,6 +395,11 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $init);
 	}
 
+	/**
+	 * set WHMCS Cryption
+	 *
+	 * @return string
+	 */
 	public function setWHMCSCryption()
 	{
 		// make sure we have the correct file
@@ -549,6 +587,11 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	/**
+	 * set Get Crypt Key
+	 *
+	 * @return string
+	 */
 	public function setGetCryptKey()
 	{
 		// ENCRYPT_FILE
@@ -714,6 +757,9 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	/**
+	 * set Version Controller
+	 */
 	public function setVersionController()
 	{
 		if (ComponentbuilderHelper::checkArray($this->componentData->version_update) || ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
@@ -821,6 +867,12 @@ class Interpretation extends Fields
 		}
 	}
 
+	/**
+	 * set Dynamic Update XML SQL
+	 *
+	 * @param array $updateXML
+	 * @param bool $current_version
+	 */
 	public function setDynamicUpdateXMLSQL(&$updateXML, $current_version = false)
 	{
 		// start building the update
@@ -864,6 +916,13 @@ class Interpretation extends Fields
 		$this->setUpdateXMLSQL($update_, $updateXML, $addDynamicSQL);
 	}
 
+	/**
+	 * set Update XML SQL
+	 *
+	 * @param array $update
+	 * @param array $updateXML
+	 * @param boolean $addDynamicSQL
+	 */
 	public function setUpdateXMLSQL(&$update, &$updateXML, &$addDynamicSQL)
 	{
 		// ensure version naming is correct
@@ -931,6 +990,11 @@ class Interpretation extends Fields
 		}
 	}
 
+	/**
+	 * no Help
+	 *
+	 * @return string
+	 */
 	public function noHelp()
 	{
 		$help = array();
@@ -6496,23 +6560,36 @@ class Interpretation extends Fields
 		{
 			// set the fields array
 			$field = array();
+			// use custom code
+			$useCustomCode = (isset($this->fieldRelations[$viewName_list][(int) $item['id']]['join_type']) && $this->fieldRelations[$viewName_list][(int) $item['id']]['join_type'] == 2 &&
+				isset($this->fieldRelations[$viewName_list][(int) $item['id']]['set']) && ComponentbuilderHelper::checkString($this->fieldRelations[$viewName_list][(int) $item['id']]['set']));
 			// load the main list view field
 			$field['[field=' . (int) $item['id'] . ']'] = $this->getListItem($item, $viewName_single, $viewName_list, $itemClass, $doNotEscape, $coreLoad, $core, false, $ref, $escape, $user, $refview);
+			// code name
+			if (isset($item['code']) && $useCustomCode)
+			{
+				$field['$item->{' . (int) $item['id'] . '}'] = '$item->' . $item['code'];
+			}
 			// now load the relations
 			foreach ($this->fieldRelations[$viewName_list][(int) $item['id']]['joinfields'] as $join)
 			{
 				$blankClass = '';
 				if (isset($this->listJoinBuilder[$viewName_list]) && isset($this->listJoinBuilder[$viewName_list][(int) $join]))
 				{
+					// code block
 					$field['[field=' . (int) $join . ']'] = $this->getListItem($this->listJoinBuilder[$viewName_list][(int) $join], $viewName_single, $viewName_list, $blankClass, $doNotEscape, $coreLoad, $core, false, $ref, $escape, $user, $refview);
+					// code name
+					if (isset($this->listJoinBuilder[$viewName_list][(int) $join]['code']) && $useCustomCode)
+					{
+						$field['$item->{' . (int) $join . '}'] = '$item->' . $this->listJoinBuilder[$viewName_list][(int) $join]['code'];
+					}
 				}
 			}
 			// join based on join type
-			if (isset($this->fieldRelations[$viewName_list][(int) $item['id']]['join_type']) && $this->fieldRelations[$viewName_list][(int) $item['id']]['join_type'] == 2 &&
-				isset($this->fieldRelations[$viewName_list][(int) $item['id']]['set']) && ComponentbuilderHelper::checkString($this->fieldRelations[$viewName_list][(int) $item['id']]['set']))
+			if ($useCustomCode)
 			{
 				// custom code
-				return PHP_EOL . $this->_t(3) . "<div>" . str_replace(array_keys($field), array_values($field), $this->fieldRelations[$viewName_list][(int) $item['id']]['set']) . PHP_EOL . $this->_t(3) . "</div>";
+				return PHP_EOL . $this->_t(3) . "<div>" . $this->setPlaceholders(str_replace(array_keys($field), array_values($field), $this->fieldRelations[$viewName_list][(int) $item['id']]['set']), $this->placeholders) . PHP_EOL . $this->_t(3) . "</div>";
 			}
 			elseif (isset($this->fieldRelations[$viewName_list][(int) $item['id']]['set']) && ComponentbuilderHelper::checkString($this->fieldRelations[$viewName_list][(int) $item['id']]['set']))
 			{
@@ -6520,7 +6597,7 @@ class Interpretation extends Fields
 				return PHP_EOL . $this->_t(3) . "<div>" . implode($this->fieldRelations[$viewName_list][(int) $item['id']]['set'], $field) . PHP_EOL . $this->_t(3) . "</div>";
 			}
 			// default
-			return PHP_EOL . $this->_t(3) . "<div>" . implode(' ', $field) . PHP_EOL . $this->_t(3) . "</div>";
+			return PHP_EOL . $this->_t(3) . "<div>" . implode('', $field) . PHP_EOL . $this->_t(3) . "</div>";
 		}
 		return $this->getListItem($item, $viewName_single, $viewName_list, $itemClass, $doNotEscape, $coreLoad, $core, $class, $ref, $escape, $user, $refview);
 	}

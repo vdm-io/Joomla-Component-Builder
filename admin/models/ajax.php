@@ -233,24 +233,29 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 
+	protected $rowNumbers = array(
+		'admin_fields_conditions' => 80,
+		'admin_fields' => 50
+	);
+
 	protected $buttonArray = array(
-				'library_config' => 'libraries_config',
-				'library_files_folders_urls' => 'libraries_files_folders_urls',
-				'admin_fields' => 'admins_fields',
-				'admin_fields_conditions' => 'admins_fields_conditions',
-				'admin_fields_relations' => 'admins_fields_relations',
-				'validation_rule' => 'validation_rules',
-				'field' => 'fields',
-				'component_admin_views' => 'components_admin_views' ,
-				'component_site_views' => 'components_site_views',
-				'component_custom_admin_views' => 'components_custom_views',
-				'component_updates' => 'components_updates',
-				'component_mysql_tweaks' => 'components_mysql_tweaks',
-				'component_custom_admin_menus' => 'components_custom_admin_menus',
-				'component_config' => 'components_config',
-				'component_dashboard' => 'components_dashboard',
-				'component_files_folders' => 'components_files_folders',
-				'language' => true);
+		'library_config' => 'libraries_config',
+		'library_files_folders_urls' => 'libraries_files_folders_urls',
+		'admin_fields' => 'admins_fields',
+		'admin_fields_conditions' => 'admins_fields_conditions',
+		'admin_fields_relations' => 'admins_fields_relations',
+		'validation_rule' => 'validation_rules',
+		'field' => 'fields',
+		'component_admin_views' => 'components_admin_views' ,
+		'component_site_views' => 'components_site_views',
+		'component_custom_admin_views' => 'components_custom_views',
+		'component_updates' => 'components_updates',
+		'component_mysql_tweaks' => 'components_mysql_tweaks',
+		'component_custom_admin_menus' => 'components_custom_admin_menus',
+		'component_config' => 'components_config',
+		'component_dashboard' => 'components_dashboard',
+		'component_files_folders' => 'components_files_folders',
+		'language' => true);
 
 	public function getButton($type, $size)
 	{
@@ -702,15 +707,17 @@ class ComponentbuilderModelAjax extends JModelList
 			$this->checkRepeatableConversion($fieldsData, $fieldName, $id, $idName);
 			// get the table
 			$table = $this->getSubformTable($type, $fieldsData);
+			// get row number
+			$number = (isset($this->rowNumbers[$type]) && $this->rowNumbers[$type]) ? $this->rowNumbers[$type] : false;
 			// set notice of bad practice
 			$notice = '';
-			if ($idName === 'admin_view' && isset($this->rowNumber) && $this->rowNumber > 50)
+			if ($number && isset($this->rowNumber) && $this->rowNumber > $number)
 			{
-				$notice = '<div class="alert alert-warning">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_FIFTY_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $typeName, $typeName, $typeName) . '</div>';
+				$notice = '<div class="alert alert-warning">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $number, $typeName, $typeName, $typeName) . '</div>';
 			}
-			elseif ($idName === 'admin_view' && isset($this->rowNumber))
+			elseif ($number && isset($this->rowNumber))
 			{
-				$notice = '<div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_FIFTY_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $typeName) . '</div>';
+				$notice = '<div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $number, $typeName) . '</div>';
 			}
 			// return table
 			return $notice.$table;
