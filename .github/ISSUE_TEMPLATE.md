@@ -1,20 +1,5 @@
-### Steps to reproduce the issue
+JCB and all its projects are leaving gitHub... this is going to take some time since JCB/VDM is so integrated with github,
 
+The new address is [https://gitlab.com/jcb-repos/Joomla-Component-Builder](https://gitlab.com/jcb-repos/Joomla-Component-Builder).
 
-### Expected result
-
-
-### Actual result
-
-
-### System information (as much as possible)
-- OS Name & Version: 
-- MySql Version: 
-- Apache Version: 
-- PHP Version: 
-- Joomla Version: 
-- JCB Version: 
-- Browser: 
-
-### Additional comments
-
+Please make sure to open your issues there!!
