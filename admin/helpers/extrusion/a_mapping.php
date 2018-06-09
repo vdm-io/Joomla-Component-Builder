@@ -55,32 +55,33 @@ class Mapping
 	/**
 	 *	The needed set of keys needed to set
 	 */
-	protected $setting = array('id' => 'default', 'buildcompsql' => 'base64', 'addadmin_views' => 'json', 'name_code' => 'safeString');
+	protected $setting = array('id' => 'default', 'buildcompsql' => 'base64', 'name_code' => 'safeString');
 	
 	/**
 	 *	The needed set of keys needed to set
 	 */
 	protected $notRequiered = array('id', 'asset_id', 'published', 
-					'created_by', 'modified_by', 'created', 'modified', 'checked_out','checked_out_time',
-					'version', 'hits', 'access', 'ordering', 
-					'metakey', 'metadesc', 'metadata', 'params');
+		'created_by', 'modified_by', 'created', 'modified', 'checked_out','checked_out_time',
+		'version', 'hits', 'access', 'ordering', 
+		'metakey', 'metadesc', 'metadata', 'params');
 	
 	/**
 	 *	The datatypes and it linked field types (basic)
 	 *	(TODO) We may need to set this dynamicly
 	 */
 	protected $dataTypes = array(	'VARCHAR' => 'Text', 'CHAR' => 'Text',
-					'MEDIUMTEXT' => 'Textarea', 'LONGTEXT'  => 'Textarea',
-					'TEXT' => 'Textarea', 'DATETIME' => 'Calendar',
-					'DATE' => 'Text', 'TIME' => 'Text', 'TINYINT' => 'Text',
-					'BIGINT' => 'Text', 'INT' => 'Text',  'FLOAT' => 'Text',
-					'DECIMAL' => 'Text', 'DOUBLE' => 'Text');
+		'MEDIUMTEXT' => 'Textarea', 'LONGTEXT'  => 'Textarea',
+		'TEXT' => 'Textarea', 'DATETIME' => 'Calendar',
+		'DATE' => 'Text', 'TIME' => 'Text', 'TINYINT' => 'Text',
+		'BIGINT' => 'Text', 'INT' => 'Text',  'FLOAT' => 'Text',
+		'DECIMAL' => 'Text', 'DOUBLE' => 'Text');
 	
 	/**
 	 *	The datasize identifiers
 	 */
-	protected $dataSize = array(	'CHAR', 'VARCHAR', 'INT', 'TINYINT',
-					'BIGINT', 'FLOAT', 'DECIMAL', 'DOUBLE');
+	protected $dataSize = array(
+		'CHAR', 'VARCHAR', 'INT', 'TINYINT',
+		'BIGINT', 'FLOAT', 'DECIMAL', 'DOUBLE');
 	
 	/**
 	 *	The default identifiers
@@ -101,7 +102,7 @@ class Mapping
 		// set the app to insure messages can be set
 		$this->app = JFactory::getApplication();
 		
-		if ($data)
+		if (ComponentbuilderHelper::checkArray($data))
 		{
 			if (isset($data['buildcomp']) && 1 == $data['buildcomp'] && isset($data['buildcompsql']))
 			{
@@ -128,6 +129,12 @@ class Mapping
 								break;
 						}
 					}
+				}
+				// get linked admin views
+				$addadmin_views = ComponentbuilderHelper::getVar('component_admin_views', $data['id'], 'joomla_component', 'addadmin_views');
+				if (ComponentbuilderHelper::checkJson($addadmin_views))
+				{
+					$this->addadmin_views = json_decode($addadmin_views, true);
 				}
 				// set the map of the views needed
 				if ($this->setMap())

@@ -37,12 +37,13 @@ class Builder extends Mapping
 	public		$user;
 	public		$today;
 	public		$db;
-	public		$views		= array();
-	protected	$fields		= array();
-	protected	$title		= array();
-	protected	$description	= array();
-	protected	$alias		= array();
-	protected	$list		= array();
+	public		$views = array();
+	public		$admin_fields = array();
+	protected	$fields = array();
+	protected	$title = array();
+	protected	$description = array();
+	protected	$alias = array();
+	protected	$list = array();
 	
 	/**
 	 *	Field that should not be used in name, alias, disc, and list view
@@ -62,10 +63,10 @@ class Builder extends Mapping
 			$data['buildcomp'] = 0;
 			$data['buildcompsql'] = '';
 			// set some globals
-			$this->db	= JFactory::getDbo();
-			$this->user	= JFactory::getUser();
-			$this->today	= JFactory::getDate()->toSql();
-			
+			$this->db = JFactory::getDbo();
+			$this->user = JFactory::getUser();
+			$this->today = JFactory::getDate()->toSql();
+
 			// no start the building of the views and fields
 			if ($this->setBuild())
 			{
@@ -100,22 +101,21 @@ class Builder extends Mapping
 	protected function setView(&$name)
 	{
 		// set the view object
-		$object				= new stdClass();
-		$object->system_name		= ComponentbuilderHelper::safeString($name, 'W') . ' (dynamic build)';
-		$object->name_single		= $name;
-		$object->name_list		= $name. 's';
-		$object->short_description	= $name. ' view (dynamic build)';
-		$object->type			= 1;
-		$object->description		= $name. ' view (dynamic build)';
-		$object->add_fadein		= 1;
-		$object->add_sql		= (isset($this->addSql[$name])) ? $this->addSql[$name]: 0;
-		$object->source			= (isset($this->source[$name])) ? $this->source[$name]: 0;
-		$object->sql			= (isset($this->sql[$name])) ? base64_encode($this->sql[$name]): '';
-		$object->addpermissions		= '{"action":["view.edit","view.edit.own","view.edit.state","view.create","view.delete","view.access"],"implementation":["3","3","3","3","3","3"]}';
-		$object->addfields		= $this->addFields($name);
-		$object->created		= $this->today;
-		$object->created_by		= $this->user->id;
-		$object->published		= 1;
+		$object = new stdClass();
+		$object->system_name = ComponentbuilderHelper::safeString($name, 'W') . ' (dynamic build)';
+		$object->name_single = $name;
+		$object->name_list = $name. 's';
+		$object->short_description = $name. ' view (dynamic build)';
+		$object->type = 1;
+		$object->description = $name. ' view (dynamic build)';
+		$object->add_fadein = 1;
+		$object->add_sql = (isset($this->addSql[$name])) ? $this->addSql[$name]: 0;
+		$object->source = (isset($this->source[$name])) ? $this->source[$name]: 0;
+		$object->sql = (isset($this->sql[$name])) ? base64_encode($this->sql[$name]): '';
+		$object->addpermissions = '{"action":["view.edit","view.edit.own","view.edit.state","view.create","view.delete","view.access"],"implementation":["3","3","3","3","3","3"]}';
+		$object->created = $this->today;
+		$object->created_by = $this->user->id;
+		$object->published = 1;
 		// add to data base
 		if ($this->db->insertObject('#__componentbuilder_admin_view', $object))
 		{
@@ -124,7 +124,8 @@ class Builder extends Mapping
 			ComponentbuilderHelper::setAsset($id, 'admin_view');
 			// load the views
 			$this->views[] = $id;
-			return true;
+			// load the admin view fields
+			return $this->addFields($name, $id);
 		}
 		return false;
 	}
@@ -132,26 +133,12 @@ class Builder extends Mapping
 	/**
 	 *	Add the fields to the view
 	 */
-	protected function addFields(&$view)
+	protected function addFields(&$view, &$view_id)
 	{
 		if (isset($this->fields[$view]))
 		{
 			// set some defaults
-			$addField = array (
-				'field'		=> array(),
-				'list'		=> array(),
-				'order_list'	=> array(),
-				'title'		=> array(),
-				'alias'		=> array(),
-				'sort'		=> array(),
-				'search'	=> array(),
-				'filter'	=> array(),
-				'link'		=> array(),
-				'tab'		=> array(),
-				'alignment'	=> array(),
-				'order_edit'	=> array(),
-				'permission'	=> array()
-			);
+			$addField = array ();
 			$fixLink = (isset($this->title[$view])) ? 0 : 1;
 			// build the field data... hmmm
 			foreach ($this->fields[$view] as $nr => $id)
@@ -171,23 +158,32 @@ class Builder extends Mapping
 					$fixLink = 0;
 				}
 				// load the field values
-				$addField['field'][]		= $id;
-				$addField['list'][]		= $isList;
-				$addField['order_list'][]	= ($key) ? $key : 0;
-				$addField['title'][]		= $isTitle;
-				$addField['alias'][]		= $isAlias;
-				$addField['sort'][]		= $isList;
-				$addField['search'][]		= $isList;
-				$addField['filter'][]		= $isList;
-				$addField['link'][]		= $isLink;
-				$addField['tab'][]		= 1;
-				$addField['alignment'][]	= ($isTitle || $isAlias) ? 4 : $alignment;
-				$addField['order_edit'][]	= $nr;
-				$addField['permission'][]	= 0;
+				$addField['addfields'.$nr]['field'] = $id;
+				$addField['addfields'.$nr]['list'] = $isList;
+				$addField['addfields'.$nr]['order_list'] = ($key) ? $key : 0;
+				$addField['addfields'.$nr]['title'] = $isTitle;
+				$addField['addfields'.$nr]['alias'] = $isAlias;
+				$addField['addfields'.$nr]['sort'] = $isList;
+				$addField['addfields'.$nr]['search'] = $isList;
+				$addField['addfields'.$nr]['filter'] = $isList;
+				$addField['addfields'.$nr]['link'] = $isLink;
+				$addField['addfields'.$nr]['tab'] = 1;
+				$addField['addfields'.$nr]['alignment'] = ($isTitle || $isAlias) ? 4 : $alignment;
+				$addField['addfields'.$nr]['order_edit'] = $nr;
+				$addField['addfields'.$nr]['permission'] = 0;
 			}
-			return json_encode($addField);
+			
+			// set the field object
+			$object = new stdClass();
+			$object->admin_view = $view_id;
+			$object->addfields = json_encode($addField, JSON_FORCE_OBJECT);
+			$object->created = $this->today;
+			$object->created_by = $this->user->id;
+			$object->published = 1;
+			// add to data base
+			return $this->db->insertObject('#__componentbuilder_admin_fields', $object);
 		}
-		return '';
+		return false;
 	}
 	
 	/**
@@ -198,21 +194,21 @@ class Builder extends Mapping
 		if ($fieldType = $this->getFieldType($field['fieldType']))
 		{
 			// set the field object
-			$object				= new stdClass();
-			$object->name			= $field['label'] . ' (dynamic build)';
-			$object->fieldtype		= $fieldType;
-			$object->datatype		= $field['dataType'];
-			$object->indexes		= $field['key'];
-			$object->null_switch		= $field['null'];
-			$object->datalenght		= $field['size'];
-			$object->datalenght_other	= $field['sizeOther'];
-			$object->datadefault		= $field['default'];
-			$object->datadefault_other	= $field['defaultOther'];
-			$object->created		= $this->today;
-			$object->created_by		= $this->user->id;
-			$object->published		= 1;
-			$object->store			= 0;
-			$object->xml			= $this->setFieldXML($field, $fieldType);
+			$object = new stdClass();
+			$object->name = $field['label'] . ' (dynamic build)';
+			$object->fieldtype = $fieldType;
+			$object->datatype = $field['dataType'];
+			$object->indexes = $field['key'];
+			$object->null_switch = $field['null'];
+			$object->datalenght = $field['size'];
+			$object->datalenght_other = $field['sizeOther'];
+			$object->datadefault = $field['default'];
+			$object->datadefault_other = $field['defaultOther'];
+			$object->created = $this->today;
+			$object->created_by = $this->user->id;
+			$object->published = 1;
+			$object->store = 0;
+			$object->xml = $this->setFieldXML($field, $fieldType);
 			// add to data base
 			if ($this->db->insertObject('#__componentbuilder_field', $object))
 			{

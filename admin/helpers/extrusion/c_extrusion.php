@@ -36,106 +36,82 @@ class Extrusion extends Builder
 	 */
 	public function __construct(&$data)
 	{
-		// first we run the perent constructor
-		if (parent::__construct($data))
+		// make sure we have an id
+		if (isset($data['id']) && $data['id'] > 0)
 		{
-			// link the view data to the component
-			$data['addadmin_views'] = $this->linkAdminViews();
-			if (ComponentbuilderHelper::checkJson($data['addadmin_views']))
+			// first we run the perent constructor
+			if (parent::__construct($data))
 			{
-				$this->app->enqueueMessage(
-					JText::_('All the fields and views from your sql dump has been created and linked to this component.'),
-					'Success'
-				);
-				return true;
+				// link the view data to the component
+				if ($this->setAdminViews($data['id']))
+				{
+					$this->app->enqueueMessage(
+						JText::_('All the fields and views from your sql dump has been created and linked to this component.'),
+						'Success'
+					);
+					return true;
+				}
 			}
+			return false;
 		}
+		$this->app->enqueueMessage(
+			JText::_('Please try again, this error usualy happens if it is a new component, beacues we need a component ID to do this build with your sql dump.'),
+			'Error'
+		);
 		return false;
 	}
 	
 	/**
 	 *	link the build views to the component
 	 */
-	protected function linkAdminViews()
+	protected function setAdminViews(&$component_id)
 	{
 		// check if views were set
 		if (ComponentbuilderHelper::checkArray($this->views))
 		{
-			// insure arrays are set
-			if (!isset($this->addadmin_views['adminview']))
+			$count = 0;
+			if (ComponentbuilderHelper::checkArray($this->addadmin_views))
 			{
-				$this->addadmin_views['adminview'] = array();
-			}
-			if (!isset($this->addadmin_views['icomoon']))
-			{
-				$this->addadmin_views['icomoon'] = array();
-			}
-			if (!isset($this->addadmin_views['mainmenu']))
-			{
-				$this->addadmin_views['mainmenu'] = array();
-			}
-			if (!isset($this->addadmin_views['dashboard_add']))
-			{
-				$this->addadmin_views['dashboard_add'] = array();
-			}
-			if (!isset($this->addadmin_views['dashboard_list']))
-			{
-				$this->addadmin_views['dashboard_list'] = array();
-			}
-			if (!isset($this->addadmin_views['submenu']))
-			{
-				$this->addadmin_views['submenu'] = array();
-			}
-			if (!isset($this->addadmin_views['checkin']))
-			{
-				$this->addadmin_views['checkin'] = array();
-			}
-			if (!isset($this->addadmin_views['history']))
-			{
-				$this->addadmin_views['history'] = array();
-			}
-			if (!isset($this->addadmin_views['metadata']))
-			{
-				$this->addadmin_views['metadata'] = array();
-			}
-			if (!isset($this->addadmin_views['access']))
-			{
-				$this->addadmin_views['access'] = array();
-			}
-			if (!isset($this->addadmin_views['port']))
-			{
-				$this->addadmin_views['port'] = array();
-			}
-			if (!isset($this->addadmin_views['edit_create_site_view']))
-			{
-				$this->addadmin_views['edit_create_site_view'] = array();
-			}
-			if (!isset($this->addadmin_views['order']))
-			{
-				$this->addadmin_views['order'] = array();
+				$count = (int) count((array)$this->addadmin_views) + 3;
 			}
 			// set the admin view data linking
-			foreach ($this->views as $id)
+			foreach ($this->views as $nr => $id)
 			{
-				$this->addadmin_views['adminview'][] = $id;
-				$this->addadmin_views['icomoon'][] = 'joomla';
-				$this->addadmin_views['mainmenu'][] = 1;
-				$this->addadmin_views['dashboard_add'][] = 1;
-				$this->addadmin_views['dashboard_list'][] = 1;
-				$this->addadmin_views['submenu'][] = 1;
-				$this->addadmin_views['checkin'][] = 1;
-				$this->addadmin_views['history'][] = 1;
-				$this->addadmin_views['metadata'][] = 1;
-				$this->addadmin_views['access'][] = 1;
-				$this->addadmin_views['port'][] = 1;
-				$this->addadmin_views['edit_create_site_view'][] = 0;
-				$this->addadmin_views['order'][] = count($this->addadmin_views['order']) + 1;
+				$pointer = $count + $nr;
+				$this->addadmin_views['addadmin_views'.$pointer]['adminview'] = $id;
+				$this->addadmin_views['addadmin_views'.$pointer]['icomoon'] = 'joomla';
+				$this->addadmin_views['addadmin_views'.$pointer]['mainmenu'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['dashboard_add'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['dashboard_list'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['submenu'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['checkin'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['history'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['metadata'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['access'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['port'] = 1;
+				$this->addadmin_views['addadmin_views'.$pointer]['edit_create_site_view'] = 0;
+				$this->addadmin_views['addadmin_views'.$pointer]['order'] = $pointer + 1;
 			}
 		}
 		if (isset($this->addadmin_views) && ComponentbuilderHelper::checkArray($this->addadmin_views))
 		{
-			return json_encode($this->addadmin_views);
+			// set the field object
+			$object = new stdClass();
+			$object->joomla_component = $component_id;
+			$object->addadmin_views = json_encode($this->addadmin_views, JSON_FORCE_OBJECT);
+			$object->created = $this->today;
+			$object->created_by = $this->user->id;
+			$object->published = 1;
+			// check if it is already set
+			if ($item_id = ComponentbuilderHelper::getVar('component_admin_views', $component_id, 'joomla_component', 'id'))
+			{
+				// set ID
+				$object->id = (int) $item_id;
+				return $this->db->updateObject('#__componentbuilder_component_admin_views', $object, 'id');
+			}
+			// add to data base
+			return $this->db->insertObject('#__componentbuilder_component_admin_views', $object);
 		}
-		return '';
+		return false;
 	}	
 }
