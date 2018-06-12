@@ -66,25 +66,25 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		parent::populateState();
 	}
 	
-	public $canmerge 		 	= 1;
-	public $postfix 		 	= false;
-	public $forceUpdate 	 	= 0;
-	public $hasKey 		 	= 0;
-	public $sleutle 		 	= null;
-	public $data 		 		= false;
+	public $canmerge = 1;
+	public $postfix = false;
+	public $forceUpdate = 0;
+	public $hasKey = 0;
+	public $sleutle = null;
+	public $data = false;
 	public $app;
 
-	protected $dir 		 		= false;
-	protected $target 		 	= false;
-	protected $newID 		 	= array();
-	protected $updateAfter 	 	= array('field' => array(), 'adminview' => array());
-	protected $divergedDataMover 	= array();
-	protected $fieldTypes		 	= array();
-	protected $isMultiple		 	= array();
-	protected $specialValue 	 	= false;
-	protected $checksum  	 	= null;
-	protected $checksumURLs  	= array('vdm' => 'https://raw.githubusercontent.com/vdm-io/JCB-Packages/master/', 'jcb' => 'https://raw.githubusercontent.com/vdm-io/JCB-Community-Packages/master/');
-	protected $mustMerge		= array('validation_rule', 'fieldtype', 'snippet', 'language', 'language_translation');
+	protected $dir = false;
+	protected $target = false;
+	protected $newID = array();
+	protected $updateAfter = array('field' => array(), 'adminview' => array());
+	protected $divergedDataMover = array();
+	protected $fieldTypes = array();
+	protected $isMultiple = array();
+	protected $specialValue = false;
+	protected $checksum = null;
+	protected $checksumURLs = array('vdm' => 'https://raw.githubusercontent.com/vdm-io/JCB-Packages/master/', 'jcb' => 'https://raw.githubusercontent.com/vdm-io/JCB-Community-Packages/master/');
+	protected $mustMerge = array('validation_rule', 'fieldtype', 'snippet', 'language', 'language_translation');
 
 	/**
 	 * Import an spreadsheet from either folder, url or upload.
@@ -1007,6 +1007,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	**/
 	public function updateAfterAll()
 	{
+// update the fields
 		if (ComponentbuilderHelper::checkArray($this->updateAfter['field']))
 		{
 			// update repeatable
@@ -1080,7 +1081,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// get the field from db
 				if ($addlinked_views = ComponentbuilderHelper::getVar('admin_view', $adminview, 'id', 'addlinked_views'))
-				{					
+				{
 					if (ComponentbuilderHelper::checkJson($addlinked_views))
 					{
 						$addlinked_views = json_decode($addlinked_views, true);
@@ -1094,13 +1095,62 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						{
 							// only update the view IDs
 							$addlinked_views = $this->updateSubformIDs($addlinked_views, 'admin_view', array('adminview' => 'admin_view'));
-						}						
+						}
 						// update the fields
 						$object = new stdClass;
 						$object->id = $adminview;
 						$object->addlinked_views = json_encode($addlinked_views, JSON_FORCE_OBJECT);
 						// update the admin view
 						$this->_db->updateObject('#__componentbuilder_admin_view', $object, 'id');
+					}
+				}
+			}
+		}
+		// update the joomla_component dashboard
+		if (ComponentbuilderHelper::checkArray($this->updateAfter['joomla_component']))
+		{
+			// update dashboard of the components
+			foreach ($this->updateAfter['joomla_component'] as $component)
+			{
+				if (isset($this->newID['joomla_component'][(int) $component]))
+				{
+					$component = $this->newID['joomla_component'][(int) $component];
+				}
+				// get the dashboard from db
+				if ($dashboard = ComponentbuilderHelper::getVar('joomla_component', $component, 'id', 'dashboard'))
+				{
+					if (ComponentbuilderHelper::checkString($dashboard))
+					{
+						// get id
+						$id = (int) preg_replace("/[^0-9]/", "", $dashboard);
+						// update the value
+						$update = false;
+						// admin_view
+						if ((strpos($dashboard, 'A') !== false || strpos($dashboard, 'a') !== false) && isset($this->newID['admin_view'][$id]))
+						{
+							// set the new value
+							$dashboard = 'A_' . $this->newID['admin_view'][$id];
+							// update the value
+							$update = true;
+						}
+						// custom_admin_view
+						elseif ((strpos($dashboard, 'C') !== false || strpos($dashboard, 'c') !== false) && isset($this->newID['custom_admin_view'][$id]))
+						{
+							// set the new value
+							$dashboard = 'C_' . $this->newID['custom_admin_view'][$id];
+							// update the value
+							$update = true;
+						}
+						// did we get a new value
+						if ($update)
+						{
+							// now update the joomla_component dashboard value
+							$object = new stdClass;
+							$object->id = (int) $component;
+							$object->dashboard = $dashboard;
+							// update the admin view
+							$this->_db->updateObject('#__componentbuilder_joomla_component', $object, 'id');
+						}
 					}
 				}
 			}
@@ -1573,6 +1623,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 			break;
 			case 'joomla_component':
+				// update custom dash after
+				if (isset($item->dashboard_type) && 2 == $item->dashboard_type)
+				{
+					// update the custom dash ID
+					$this->updateAfter['joomla_component'][$item->id] = $item->id; // dashboard
+				}
 				// set the anchors getters
 				$getter = array('joomla_component' => $item->id);
 				// update the addconfig
