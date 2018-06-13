@@ -1670,16 +1670,7 @@ INSERT INTO `#__componentbuilder_admin_fields` (`id`, `addfields`, `admin_view`,
 INSERT INTO `#__componentbuilder_admin_fields_conditions` (`id`, `addconditions`, `admin_view`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
 (111, '{\"addconditions0\":{\"target_field\":[\"1011\",\"100\",\"158\",\"196\",\"280\"],\"target_behavior\":\"1\",\"target_relation\":\"0\",\"match_field\":\"682\",\"match_behavior\":\"1\",\"match_options\":\"1|Yes\"}}', 109, 1, '2017-10-12 21:36:00', '0000-00-00 00:00:00', 2, '', '');
 
---
--- Dumping data for table `#__componentbuilder_admin_fields_relations`
---
 
-INSERT INTO `#__componentbuilder_admin_fields_relations` (`id`, `addrelations`, `admin_view`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
-(1, '', 14, 1, '2018-05-22 01:20:34', '2018-05-23 03:37:27', 9, '', 1),
-(2, '', 22, 1, '2018-05-23 03:38:52', '2018-05-26 07:37:25', 18, '', 2),
-(3, '', 13, 1, '2018-05-24 17:04:40', '2018-05-24 17:12:52', 4, '', 3),
-(4, '{\"addrelations0\":{\"listfield\":\"913\",\"column_name\":\"Preacher Details\",\"joinfields\":[\"691\"],\"area\":\"2\",\"join_type\":\"1\",\"set\":\"<br \\/>\"}}', 54, 1, '2018-05-28 07:00:41', '2018-05-28 09:45:25', 7, '', 4),
-(5, '{\"addrelations0\":{\"listfield\":\"2209\",\"column_name\":\"Member\",\"joinfields\":[\"1004\",\"1207\",\"1302\",\"1005\",\"280\"],\"area\":\"2\",\"join_type\":\"2\",\"set\":\"[field=2209]\\r\\n<?php if ([[[Component]]]Helper::checkString($item->{1005})): ?>\\r\\n<br \\/>\\r\\n[field=1005]\\r\\n<?php endif; ?>\\r\\n<?php if ([[[Component]]]Helper::checkString($item->{1004})): ?>\\r\\n<br \\/>\\r\\n[field=1004]\\r\\n<?php endif; ?>\\r\\n<?php if ([[[Component]]]Helper::checkString($item->{1302})): ?>\\r\\n<br \\/>\\r\\n[field=1302]\\r\\n<?php endif; ?>\\r\\n<?php if ([[[Component]]]Helper::checkString($item->{1207})): ?>\\r\\n<br \\/>\\r\\n[field=1207]\\r\\n<?php endif; ?>\\r\\n<?php if ([[[Component]]]Helper::checkString($item->{280})): ?>\\r\\n<br \\/>\\r\\n[field=280]\\r\\n<?php endif; ?>\"},\"addrelations1\":{\"listfield\":\"608\",\"column_name\":\"Phone\",\"joinfields\":[\"1160\"],\"area\":\"2\",\"join_type\":\"2\",\"set\":\"<?php if ([[[Component]]]Helper::checkString($item->{608})): ?>\\r\\n[field=608]\\r\\n<?php endif; ?>\\r\\n<?php if ([[[Component]]]Helper::checkString($item->{1160})): ?>\\r\\n<?php if ([[[Component]]]Helper::checkString($item->{608})): ?><br \\/><?php endif; ?>\\r\\n[field=1160]\\r\\n<?php endif; ?>\"}}', 177, 1, '2018-06-12 21:23:39', '0000-00-00 00:00:00', 1, '', 5);
 
 --
 -- Dumping data for table `#__componentbuilder_component_admin_views`
