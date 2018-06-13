@@ -1007,8 +1007,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	**/
 	public function updateAfterAll()
 	{
-// update the fields
-		if (ComponentbuilderHelper::checkArray($this->updateAfter['field']))
+		// update the fields
+		if (isset($this->updateAfter['field']) && ComponentbuilderHelper::checkArray($this->updateAfter['field']))
 		{
 			// update repeatable
 			foreach ($this->updateAfter['field'] as $field)
@@ -1070,7 +1070,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		// do a after all run on admin views that need it
-		if (ComponentbuilderHelper::checkArray($this->updateAfter['adminview']))
+		if (isset($this->updateAfter['adminview']) && ComponentbuilderHelper::checkArray($this->updateAfter['adminview']))
 		{
 			// update the addlinked_views
 			foreach ($this->updateAfter['adminview'] as $adminview)
@@ -1107,7 +1107,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		// update the joomla_component dashboard
-		if (ComponentbuilderHelper::checkArray($this->updateAfter['joomla_component']))
+		if (isset($this->updateAfter['joomla_component']) && ComponentbuilderHelper::checkArray($this->updateAfter['joomla_component']))
 		{
 			// update dashboard of the components
 			foreach ($this->updateAfter['joomla_component'] as $component)
@@ -1150,6 +1150,87 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 							$object->dashboard = $dashboard;
 							// update the admin view
 							$this->_db->updateObject('#__componentbuilder_joomla_component', $object, 'id');
+						}
+					}
+				}
+			}
+		}
+		// update the admin_fields_relations
+		if (isset($this->updateAfter['relations']) && ComponentbuilderHelper::checkArray($this->updateAfter['relations']))
+		{
+			// update repeatable
+			foreach ($this->updateAfter['relations'] as $relation)
+			{
+				// check if we must update this relation
+				$update = false;
+				if (isset($this->newID['admin_fields_relations'][$relation]))
+				{
+					$relation = $this->newID['admin_fields_relations'][$relation];
+				}
+				// get the set relation from db
+				if ($addrelations = ComponentbuilderHelper::getVar('admin_fields_relations', $relation, 'id', 'addrelations'))
+				{
+					if (ComponentbuilderHelper::checkJson($addrelations))
+					{
+						$addrelations = json_decode($addrelations, true);
+						if (ComponentbuilderHelper::checkArray($addrelations))
+						{
+							foreach ($addrelations as $nr => &$value)
+							{
+								// reset the buckets
+								$bucket = array();
+								// get fields
+								$found = ComponentbuilderHelper::getAllBetween($value['set'], '[field=', ']');
+								// if found
+								if (ComponentbuilderHelper::checkArray($found))
+								{
+									$bucket[] = $found;
+								}
+								// get fields
+								$found = ComponentbuilderHelper::getAllBetween($value['set'], '$item->{', '}');
+								// if found
+								if (ComponentbuilderHelper::checkArray($found))
+								{
+									$bucket[] = $found;
+								}
+								// check if we have values
+								if (ComponentbuilderHelper::checkArray($bucket))
+								{
+									$fields = ComponentbuilderHelper::mergeArrays($bucket);
+									// reset the buckets
+									$bucket = array();
+									if (ComponentbuilderHelper::checkArray($fields))
+									{
+										foreach ($fields as $field)
+										{
+											if (isset($this->newID['field'][(int) $field]))
+											{
+												$bucket['[field=' . (int) $field . ']'] = '[field=' . (int) $this->newID['field'][(int) $field] . ']';
+												$bucket['$item->{' . (int) $field . '}'] = '$item->{' . (int) $this->newID['field'][(int) $field] . '}';
+											}
+											else
+											{
+												$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_BADMIN_FIELDS_RELATIONSB_IDS_MISMATCH_IN_BFIELDSB_AND_WAS_NOT_UPDATED_IN_THE_CUSTOM_CODE', $relation, $field), 'warning');
+											}
+										}
+										// check if we have a bucket of values to update
+										if (ComponentbuilderHelper::checkArray($bucket))
+										{
+											$value['set'] = str_replace(array_keys($bucket), array_values($bucket), $value['set']);
+											$update = true;
+										}
+									}
+								}
+							}
+							// update only if needed
+							if ($update)
+							{
+								$object = new stdClass;
+								$object->id = $relation;
+								$object->addrelations = json_encode($addrelations, JSON_FORCE_OBJECT);
+								// update the field
+								$this->_db->updateObject('#__componentbuilder_admin_fields_relations', $object, 'id');
+							}
 						}
 					}
 				}
@@ -2111,7 +2192,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$updaterT = array(
 						// subformfield => field => type_value
 						'addrelations' => array('listfield' => 'field', 'joinfields' => 'field')
-					);		
+					);
+					// special fix for custom code
+					$this->updateAfter['relations'][$item->id] = $item->id; // addrelations->set
 				}
 
 				// update the repeatable fields
@@ -2369,12 +2452,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// load the created and id
 			$query->where($this->_db->quoteName('a.created') . ' = '. $this->_db->quote($item->created));
 			$query->where($this->_db->quoteName('a.id') .' = '. (int) $item->id);
+			// set to run query
 			$runQuery = true;
 		}
 		elseif (componentbuilderHelper::checkArray($get))
 		{
 			foreach ($get as $field)
 			{
+				// set to run query
+				$runQuery = true;
 				if (isset($item->{$field}))
 				{
 					// set the value
@@ -2399,18 +2485,21 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					}
 					else
 					{
-						return false;
+						// do not run query
+						$runQuery = false;
 					}
-					$runQuery = true;
 				}
 				else
 				{
-					return false;
+					// do not run query
+					$runQuery = false;
 				}
 			}
 		}
 		elseif (isset($item->{$get}))
 		{
+			// set to run query
+			$runQuery = true;
 			// set the value
 			$value = $item->{$get};
 			// check if we have special value
@@ -2433,9 +2522,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 			else
 			{
-				return false; // really not needed but who knows for sure...
+				$runQuery = false; // really not needed but who knows for sure...
 			}
-			$runQuery = true;
 		}
 		// since where has been set run the query
 		if ($runQuery)
@@ -2486,12 +2574,18 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// get by name and xml to target correct field
 					if ($retry == 2)
 					{
-						// get by id name..
+						// get by name + xml...
 						$getter = array('name','datatype','store','indexes','null_switch','xml');
+						$retryAgain = 3;
+					}
+					elseif ($retry == 3)
+					{
+						// get by name + created...
+						$getter = array('name','datatype','created');
 					}
 					else
 					{
-						// get by id name..
+						// get by name + xml or type..
 						$getter = array('name','datatype','store','indexes','null_switch');
 						// lets try to add the fieldtype
 						if (isset($item->fieldtype) && is_numeric($item->fieldtype) && $item->fieldtype > 0 && isset($this->newID['fieldtype'][(int) $item->fieldtype]) && $this->newID['fieldtype'][(int) $item->fieldtype] > 0)
@@ -2504,6 +2598,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						else
 						{
 							$getter[] = 'xml';
+							$retryAgain = 3;
 						}
 					}
 					break;
