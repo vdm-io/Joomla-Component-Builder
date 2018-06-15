@@ -101,7 +101,7 @@ class Mapping
 	{
 		// set the app to insure messages can be set
 		$this->app = JFactory::getApplication();
-		
+
 		if (ComponentbuilderHelper::checkArray($data))
 		{
 			if (isset($data['buildcomp']) && 1 == $data['buildcomp'] && isset($data['buildcompsql']))
@@ -155,7 +155,7 @@ class Mapping
 		);
 		return false;
 	}
-	
+
 	/**
 	 *	The mapping function
 	 *	To Map the views and fields that are needed
@@ -169,7 +169,8 @@ class Mapping
 			foreach ($queries as $query)
 			{
 				// only use create table queries
-				if (strpos($query, 'CREATE TABLE IF NOT EXISTS `') !== false)
+				if (strpos($query, 'CREATE TABLE IF NOT EXISTS') !== false ||
+					strpos($query, 'CREATE TABLE') !== false)
 				{
 					if ($tableName = $this->getTableName($query))
 					{
@@ -205,15 +206,24 @@ class Mapping
 		}
 		return false;
 	}
-	
+
 	/**
 	 *	Get the table name
 	 */
 	protected function getTableName(&$query)
 	{
-		$tableName = ComponentbuilderHelper::getBetween($query, '`#__', "`");
+		if (strpos($query, '`#__') !== false)
+		{
+			// get table name
+			$tableName = ComponentbuilderHelper::getBetween($query, '`#__', "`");
+		}
+		elseif (strpos($query, "'#__") !== false)
+		{
+			// get table name
+			$tableName = ComponentbuilderHelper::getBetween($query, "'#__", "'");
+		}
 		// if it still was not found
-		if (!ComponentbuilderHelper::checkString($tableName))
+		if (!isset($tableName) || !ComponentbuilderHelper::checkString($tableName))
 		{
 			// skip this query
 			return false;
@@ -231,13 +241,13 @@ class Mapping
 		// skip this query
 		return false;
 	}
-	
+
 	/**
 	 *	Get the field details
 	 */
 	protected function getFields(&$query)
 	{	
-		$rows = array_map('trim', explode("\n", $query));
+		$rows = array_map('trim', explode(PHP_EOL, $query));
 		$fields = array();
 		foreach ($rows as $row)
 		{
@@ -306,7 +316,7 @@ class Mapping
 		}
 		return false;
 	}
-	
+
 	/**
 	 *	Get the field types
 	 */
@@ -325,7 +335,7 @@ class Mapping
 		}
 		return false;
 	}
-	
+
 	/**
 	 *	Get the field size
 	 */
@@ -337,7 +347,7 @@ class Mapping
 		}
 		return '';
 	}
-	
+
 	/**
 	 *	Get the field default
 	 */
@@ -355,7 +365,7 @@ class Mapping
 		}
 		return '';
 	}
-	
+
 	/**
 	 *	Get the field Null Value
 	 */
@@ -373,7 +383,7 @@ class Mapping
 		}
 		return 'NULL';
 	}
-	
+
 	/**
 	 *	Get the field key status
 	 */

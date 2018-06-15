@@ -1417,6 +1417,11 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "'password1' => \$password, // First password field";
 			$method[] = $this->_t(3) . "'password2' => \$password2, // Confirm password field";
 			$method[] = $this->_t(3) . "'block' => 0 );";
+			$method[] = $this->_t(2) . "// set groups if found";
+			$method[] = $this->_t(2) . "if (isset(\$new['groups']) && self::checkArray(\$new['groups']))";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "\$data['groups'] = \$new['groups'];";
+			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "// register the new user";
 			$method[] = $this->_t(2) . "\$done = \$model->save(\$data);";
 			$method[] = $this->_t(2) . "// if user is updated";
