@@ -29,6 +29,13 @@ abstract class ComponentbuilderEmail
 	public static $mailer = null;
 
 	/**
+	 * Custom Headers
+	 *
+	 * @var    array
+	 */
+	protected static $header = array();
+
+	/**
 	 * Get a configuration object
 	 *
 	 */
@@ -41,7 +48,7 @@ abstract class ComponentbuilderEmail
 
 		return self::$config;
 	}
-	
+
 	/**
 	 * Get a mailer object.
 	 *
@@ -148,6 +155,17 @@ abstract class ComponentbuilderEmail
 	}
 
 	/**
+	 * Set a Mail custom header.
+	 *
+	 * @return  void
+	 */
+	public static function setHeader($target, $value)
+	{
+		// set the header
+		self::$header[$target] = $value;
+	}
+
+	/**
 	 * Send an email
 	 *
 	 * @return  bool on success
@@ -155,7 +173,6 @@ abstract class ComponentbuilderEmail
 	 */
 	public static function send($recipient, $subject, $body, $textonly, $mode = 0, $bounce_email = null, $idsession = null, $mailreply = null, $replyname = null , $mailfrom = null, $fromname = null, $cc = null, $bcc = null, $attachment = null, $embeded = null , $embeds = null)
 	{
-		
 	 	// Get a JMail instance
 		$mail = self::getMailer();
 		
@@ -182,7 +199,16 @@ abstract class ComponentbuilderEmail
 		{
 			$mail->addCustomHeader('X-VDMmethodID:'.$idsession);
 		}
-		
+
+		// set headers if found
+		if (isset(self::$header) && is_array(self::$header) && count((array)self::$header) > 0)
+		{
+			foreach (self::$header as $_target => $_value)
+			{
+				$mail->addCustomHeader($_target.':'.$_value);
+			}
+		}
+
 		// set the subject & Body
 		$mail->setSubject($subject);
 		$mail->setBody($body);
@@ -226,7 +252,7 @@ abstract class ComponentbuilderEmail
 			$mail->ClearReplyTos();
 			$mail->addReplyTo($mailreply, $replyname);
 		}
-		
+
 		// check if we can add the DKIM to email
 		if ($conf->get('enable_dkim'))
 		{
@@ -244,20 +270,20 @@ abstract class ComponentbuilderEmail
 				$mail->DKIM_private	= $tmp;
 			}
 		}
-		
+
 		$sendmail = $mail->Send();
 		
 		if ($conf->get('enable_dkim') && !empty($conf->get('dkim_domain')) && !empty($conf->get('dkim_selector')) && !empty($conf->get('dkim_private')) && !empty($conf->get('dkim_public')))
 		{
 			@unlink($tmp);
 		}
-		
+
 		if (method_exists('ComponentbuilderHelper','storeMessage'))
 		{
 			// store the massage if the method is set
 			ComponentbuilderHelper::storeMessage($sendmail, $recipient, $subject, $body, $textonly, $mode, 'email');
 		}
-		
+
 		return $sendmail;
 	}
 
