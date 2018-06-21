@@ -12064,7 +12064,7 @@ class Interpretation extends Fields
 			}
 		}
 		// close the foreach if needed
-		if (ComponentbuilderHelper::checkString($fix))
+		if (ComponentbuilderHelper::checkString($fix) || $export)
 		{
 			// start the loop
 			$forEachStart = PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " set values to display correctly.";
