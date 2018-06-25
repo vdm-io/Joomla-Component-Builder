@@ -368,18 +368,22 @@
 			name="not_required"
 			default="[]"
 		/>
-		<!-- Php_getlistquery Field. Type: Textarea. (joomla) -->
+		<!-- Php_getlistquery Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_getlistquery"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_GETLISTQUERY_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_GETLISTQUERY_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_GETLISTQUERY_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Filter Field. Type: Subform. (joomla) -->
 		<field

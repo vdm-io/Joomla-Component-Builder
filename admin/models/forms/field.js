@@ -341,7 +341,7 @@ function vvvvwas(add_css_view_vvvvwas)
 	// set the function logic
 	if (add_css_view_vvvvwas == 1)
 	{
-		jQuery('#jform_css_view').closest('.control-group').show();
+		jQuery('#jform_css_view-lbl').closest('.control-group').show();
 		if (jform_vvvvwasvzz_required)
 		{
 			updateFieldRequired('css_view',0);
@@ -354,7 +354,7 @@ function vvvvwas(add_css_view_vvvvwas)
 	}
 	else
 	{
-		jQuery('#jform_css_view').closest('.control-group').hide();
+		jQuery('#jform_css_view-lbl').closest('.control-group').hide();
 		if (!jform_vvvvwasvzz_required)
 		{
 			updateFieldRequired('css_view',1);
@@ -372,7 +372,7 @@ function vvvvwat(add_css_views_vvvvwat)
 	// set the function logic
 	if (add_css_views_vvvvwat == 1)
 	{
-		jQuery('#jform_css_views').closest('.control-group').show();
+		jQuery('#jform_css_views-lbl').closest('.control-group').show();
 		if (jform_vvvvwatwaa_required)
 		{
 			updateFieldRequired('css_views',0);
@@ -385,7 +385,7 @@ function vvvvwat(add_css_views_vvvvwat)
 	}
 	else
 	{
-		jQuery('#jform_css_views').closest('.control-group').hide();
+		jQuery('#jform_css_views-lbl').closest('.control-group').hide();
 		if (!jform_vvvvwatwaa_required)
 		{
 			updateFieldRequired('css_views',1);

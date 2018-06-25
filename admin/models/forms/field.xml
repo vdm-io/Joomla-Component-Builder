@@ -219,18 +219,22 @@
 			description="COM_COMPONENTBUILDER_FIELD_CATID_DESCRIPTION"
 			class="inputbox"
 		/>
-		<!-- Css_views Field. Type: Textarea. (joomla) -->
+		<!-- Css_views Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="css_views"
 			label="COM_COMPONENTBUILDER_FIELD_CSS_VIEWS_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_FIELD_CSS_VIEWS_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="css"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_FIELD_CSS_VIEWS_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Add_css_views Field. Type: Radio. (joomla) -->
 		<field
@@ -246,18 +250,22 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_FIELD_NO</option>
 		</field>
-		<!-- Css_view Field. Type: Textarea. (joomla) -->
+		<!-- Css_view Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="css_view"
 			label="COM_COMPONENTBUILDER_FIELD_CSS_VIEW_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_FIELD_CSS_VIEW_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="css"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_FIELD_CSS_VIEW_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Add_css_view Field. Type: Radio. (joomla) -->
 		<field

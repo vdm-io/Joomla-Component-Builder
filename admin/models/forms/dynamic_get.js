@@ -894,7 +894,7 @@ function vvvvvzr(add_php_getlistquery_vvvvvzr,gettype_vvvvvzr)
 	// set this function logic
 	if (add_php_getlistquery && gettype)
 	{
-		jQuery('#jform_php_getlistquery').closest('.control-group').show();
+		jQuery('#jform_php_getlistquery-lbl').closest('.control-group').show();
 		if (jform_vvvvvzrvzg_required)
 		{
 			updateFieldRequired('php_getlistquery',0);
@@ -907,7 +907,7 @@ function vvvvvzr(add_php_getlistquery_vvvvvzr,gettype_vvvvvzr)
 	}
 	else
 	{
-		jQuery('#jform_php_getlistquery').closest('.control-group').hide();
+		jQuery('#jform_php_getlistquery-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvzrvzg_required)
 		{
 			updateFieldRequired('php_getlistquery',1);

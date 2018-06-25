@@ -180,18 +180,22 @@
 			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_VIEW_HINT"
 			required="true"
 		/>
-		<!-- Php_document Field. Type: Textarea. (joomla) -->
+		<!-- Php_document Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_document"
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_LABEL"
-			rows="17"
-			cols="5"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="50"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_DOCUMENT_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Ajax_input Field. Type: Subform. (joomla) -->
 		<field
@@ -524,18 +528,22 @@
 			required="true"
 			button="true"
 		/>
-		<!-- Php_ajaxmethod Field. Type: Textarea. (joomla) -->
+		<!-- Php_ajaxmethod Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_ajaxmethod"
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_AJAXMETHOD_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_AJAXMETHOD_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_AJAXMETHOD_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Dynamic_get Field. Type: Dynamicgets. (custom) -->
 		<field
@@ -1127,33 +1135,41 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Php_controller Field. Type: Textarea. (joomla) -->
+		<!-- Php_controller Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_controller"
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_CONTROLLER_HINT"
 			required="false"
+			validate="code"
 		/>
 		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
-		<!-- Php_model Field. Type: Textarea. (joomla) -->
+		<!-- Php_model Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_model"
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHP_MODEL_HINT"
 			required="false"
+			validate="code"
 		/>
 	</fieldset>
 	
