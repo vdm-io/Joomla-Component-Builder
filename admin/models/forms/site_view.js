@@ -64,7 +64,7 @@ function vvvvvyo(add_php_view_vvvvvyo)
 	// set the function logic
 	if (add_php_view_vvvvvyo == 1)
 	{
-		jQuery('#jform_php_view').closest('.control-group').show();
+		jQuery('#jform_php_view-lbl').closest('.control-group').show();
 		if (jform_vvvvvyovyi_required)
 		{
 			updateFieldRequired('php_view',0);
@@ -77,7 +77,7 @@ function vvvvvyo(add_php_view_vvvvvyo)
 	}
 	else
 	{
-		jQuery('#jform_php_view').closest('.control-group').hide();
+		jQuery('#jform_php_view-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvyovyi_required)
 		{
 			updateFieldRequired('php_view',1);
@@ -95,7 +95,7 @@ function vvvvvyp(add_php_jview_display_vvvvvyp)
 	// set the function logic
 	if (add_php_jview_display_vvvvvyp == 1)
 	{
-		jQuery('#jform_php_jview_display').closest('.control-group').show();
+		jQuery('#jform_php_jview_display-lbl').closest('.control-group').show();
 		if (jform_vvvvvypvyj_required)
 		{
 			updateFieldRequired('php_jview_display',0);
@@ -108,7 +108,7 @@ function vvvvvyp(add_php_jview_display_vvvvvyp)
 	}
 	else
 	{
-		jQuery('#jform_php_jview_display').closest('.control-group').hide();
+		jQuery('#jform_php_jview_display-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvypvyj_required)
 		{
 			updateFieldRequired('php_jview_display',1);
@@ -126,7 +126,7 @@ function vvvvvyq(add_php_jview_vvvvvyq)
 	// set the function logic
 	if (add_php_jview_vvvvvyq == 1)
 	{
-		jQuery('#jform_php_jview').closest('.control-group').show();
+		jQuery('#jform_php_jview-lbl').closest('.control-group').show();
 		if (jform_vvvvvyqvyk_required)
 		{
 			updateFieldRequired('php_jview',0);
@@ -139,7 +139,7 @@ function vvvvvyq(add_php_jview_vvvvvyq)
 	}
 	else
 	{
-		jQuery('#jform_php_jview').closest('.control-group').hide();
+		jQuery('#jform_php_jview-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvyqvyk_required)
 		{
 			updateFieldRequired('php_jview',1);
@@ -188,7 +188,7 @@ function vvvvvys(add_css_document_vvvvvys)
 	// set the function logic
 	if (add_css_document_vvvvvys == 1)
 	{
-		jQuery('#jform_css_document').closest('.control-group').show();
+		jQuery('#jform_css_document-lbl').closest('.control-group').show();
 		if (jform_vvvvvysvym_required)
 		{
 			updateFieldRequired('css_document',0);
@@ -201,7 +201,7 @@ function vvvvvys(add_css_document_vvvvvys)
 	}
 	else
 	{
-		jQuery('#jform_css_document').closest('.control-group').hide();
+		jQuery('#jform_css_document-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvysvym_required)
 		{
 			updateFieldRequired('css_document',1);
@@ -219,7 +219,7 @@ function vvvvvyt(add_javascript_file_vvvvvyt)
 	// set the function logic
 	if (add_javascript_file_vvvvvyt == 1)
 	{
-		jQuery('#jform_javascript_file').closest('.control-group').show();
+		jQuery('#jform_javascript_file-lbl').closest('.control-group').show();
 		if (jform_vvvvvytvyn_required)
 		{
 			updateFieldRequired('javascript_file',0);
@@ -232,7 +232,7 @@ function vvvvvyt(add_javascript_file_vvvvvyt)
 	}
 	else
 	{
-		jQuery('#jform_javascript_file').closest('.control-group').hide();
+		jQuery('#jform_javascript_file-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvytvyn_required)
 		{
 			updateFieldRequired('javascript_file',1);
@@ -250,7 +250,7 @@ function vvvvvyu(add_js_document_vvvvvyu)
 	// set the function logic
 	if (add_js_document_vvvvvyu == 1)
 	{
-		jQuery('#jform_js_document').closest('.control-group').show();
+		jQuery('#jform_js_document-lbl').closest('.control-group').show();
 		if (jform_vvvvvyuvyo_required)
 		{
 			updateFieldRequired('js_document',0);
@@ -263,7 +263,7 @@ function vvvvvyu(add_js_document_vvvvvyu)
 	}
 	else
 	{
-		jQuery('#jform_js_document').closest('.control-group').hide();
+		jQuery('#jform_js_document-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvyuvyo_required)
 		{
 			updateFieldRequired('js_document',1);
@@ -281,7 +281,7 @@ function vvvvvyv(add_css_vvvvvyv)
 	// set the function logic
 	if (add_css_vvvvvyv == 1)
 	{
-		jQuery('#jform_css').closest('.control-group').show();
+		jQuery('#jform_css-lbl').closest('.control-group').show();
 		if (jform_vvvvvyvvyp_required)
 		{
 			updateFieldRequired('css',0);
@@ -294,7 +294,7 @@ function vvvvvyv(add_css_vvvvvyv)
 	}
 	else
 	{
-		jQuery('#jform_css').closest('.control-group').hide();
+		jQuery('#jform_css-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvyvvyp_required)
 		{
 			updateFieldRequired('css',1);

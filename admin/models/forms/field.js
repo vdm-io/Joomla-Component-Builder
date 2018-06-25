@@ -403,7 +403,7 @@ function vvvvwau(add_javascript_view_footer_vvvvwau)
 	// set the function logic
 	if (add_javascript_view_footer_vvvvwau == 1)
 	{
-		jQuery('#jform_javascript_view_footer').closest('.control-group').show();
+		jQuery('#jform_javascript_view_footer-lbl').closest('.control-group').show();
 		if (jform_vvvvwauwab_required)
 		{
 			updateFieldRequired('javascript_view_footer',0);
@@ -416,7 +416,7 @@ function vvvvwau(add_javascript_view_footer_vvvvwau)
 	}
 	else
 	{
-		jQuery('#jform_javascript_view_footer').closest('.control-group').hide();
+		jQuery('#jform_javascript_view_footer-lbl').closest('.control-group').hide();
 		if (!jform_vvvvwauwab_required)
 		{
 			updateFieldRequired('javascript_view_footer',1);
@@ -434,7 +434,7 @@ function vvvvwav(add_javascript_views_footer_vvvvwav)
 	// set the function logic
 	if (add_javascript_views_footer_vvvvwav == 1)
 	{
-		jQuery('#jform_javascript_views_footer').closest('.control-group').show();
+		jQuery('#jform_javascript_views_footer-lbl').closest('.control-group').show();
 		if (jform_vvvvwavwac_required)
 		{
 			updateFieldRequired('javascript_views_footer',0);
@@ -447,7 +447,7 @@ function vvvvwav(add_javascript_views_footer_vvvvwav)
 	}
 	else
 	{
-		jQuery('#jform_javascript_views_footer').closest('.control-group').hide();
+		jQuery('#jform_javascript_views_footer-lbl').closest('.control-group').hide();
 		if (!jform_vvvvwavwac_required)
 		{
 			updateFieldRequired('javascript_views_footer',1);

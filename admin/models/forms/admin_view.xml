@@ -1022,18 +1022,22 @@
 			required="true"
 			validate="code"
 		/>
-		<!-- Javascript_view_footer Field. Type: Textarea. (joomla) -->
+		<!-- Javascript_view_footer Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="javascript_view_footer"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Php_batchmove Field. Type: Editor. (joomla) -->
 		<field
@@ -1148,18 +1152,22 @@
 			required="true"
 			validate="code"
 		/>
-		<!-- Javascript_views_footer Field. Type: Textarea. (joomla) -->
+		<!-- Javascript_views_footer Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="javascript_views_footer"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Php_after_delete Field. Type: Editor. (joomla) -->
 		<field

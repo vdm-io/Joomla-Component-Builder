@@ -129,7 +129,7 @@ Watch the [proposed development workflow](https://vdm.bz/proposed-development-wo
 + *Version*: 2.8.0
 + *Copyright*: Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **185910**
++ *Line count*: **186015**
 + *Field count*: **1054**
 + *File count*: **1237**
 + *Folder count*: **197**

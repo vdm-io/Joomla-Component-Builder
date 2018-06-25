@@ -141,18 +141,22 @@
 			required="false"
 			button="true"
 		/>
-		<!-- Php_view Field. Type: Textarea. (joomla) -->
+		<!-- Php_view Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_view"
 			label="COM_COMPONENTBUILDER_TEMPLATE_PHP_VIEW_LABEL"
-			rows="17"
-			cols="5"
 			description="COM_COMPONENTBUILDER_TEMPLATE_PHP_VIEW_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_TEMPLATE_PHP_VIEW_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Add_php_view Field. Type: Radio. (joomla) -->
 		<field
@@ -186,17 +190,22 @@
 			name="not_required"
 			default="[]"
 		/>
-		<!-- Template Field. Type: Textarea. (joomla) -->
+		<!-- Template Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="template"
 			label="COM_COMPONENTBUILDER_TEMPLATE_TEMPLATE_LABEL"
-			rows="20"
+			description="COM_COMPONENTBUILDER_TEMPLATE_TEMPLATE_DESCRIPTION"
+			width="100%"
+			height="500px"
 			cols="15"
-			class="text_area span12"
+			rows="30"
+			buttons="no"
+			syntax="html"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_TEMPLATE_TEMPLATE_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Note_snippet_usage Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_snippet_usage" label="COM_COMPONENTBUILDER_TEMPLATE_NOTE_SNIPPET_USAGE_LABEL" heading="h4" class="snippet-usage note_snippet_usage" />

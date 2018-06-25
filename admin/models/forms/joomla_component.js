@@ -130,7 +130,7 @@ function vvvvvvv(add_php_helper_admin_vvvvvvv)
 	// set the function logic
 	if (add_php_helper_admin_vvvvvvv == 1)
 	{
-		jQuery('#jform_php_helper_admin').closest('.control-group').show();
+		jQuery('#jform_php_helper_admin-lbl').closest('.control-group').show();
 		if (jform_vvvvvvvvvv_required)
 		{
 			updateFieldRequired('php_helper_admin',0);
@@ -143,7 +143,7 @@ function vvvvvvv(add_php_helper_admin_vvvvvvv)
 	}
 	else
 	{
-		jQuery('#jform_php_helper_admin').closest('.control-group').hide();
+		jQuery('#jform_php_helper_admin-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvvvvvv_required)
 		{
 			updateFieldRequired('php_helper_admin',1);
@@ -161,7 +161,7 @@ function vvvvvvw(add_php_helper_site_vvvvvvw)
 	// set the function logic
 	if (add_php_helper_site_vvvvvvw == 1)
 	{
-		jQuery('#jform_php_helper_site').closest('.control-group').show();
+		jQuery('#jform_php_helper_site-lbl').closest('.control-group').show();
 		if (jform_vvvvvvwvvw_required)
 		{
 			updateFieldRequired('php_helper_site',0);
@@ -174,7 +174,7 @@ function vvvvvvw(add_php_helper_site_vvvvvvw)
 	}
 	else
 	{
-		jQuery('#jform_php_helper_site').closest('.control-group').hide();
+		jQuery('#jform_php_helper_site-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvvwvvw_required)
 		{
 			updateFieldRequired('php_helper_site',1);
@@ -192,7 +192,7 @@ function vvvvvvx(add_php_helper_both_vvvvvvx)
 	// set the function logic
 	if (add_php_helper_both_vvvvvvx == 1)
 	{
-		jQuery('#jform_php_helper_both').closest('.control-group').show();
+		jQuery('#jform_php_helper_both-lbl').closest('.control-group').show();
 		if (jform_vvvvvvxvvx_required)
 		{
 			updateFieldRequired('php_helper_both',0);
@@ -205,7 +205,7 @@ function vvvvvvx(add_php_helper_both_vvvvvvx)
 	}
 	else
 	{
-		jQuery('#jform_php_helper_both').closest('.control-group').hide();
+		jQuery('#jform_php_helper_both-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvvxvvx_required)
 		{
 			updateFieldRequired('php_helper_both',1);
@@ -223,7 +223,7 @@ function vvvvvvy(add_css_admin_vvvvvvy)
 	// set the function logic
 	if (add_css_admin_vvvvvvy == 1)
 	{
-		jQuery('#jform_css_admin').closest('.control-group').show();
+		jQuery('#jform_css_admin-lbl').closest('.control-group').show();
 		if (jform_vvvvvvyvvy_required)
 		{
 			updateFieldRequired('css_admin',0);
@@ -236,7 +236,7 @@ function vvvvvvy(add_css_admin_vvvvvvy)
 	}
 	else
 	{
-		jQuery('#jform_css_admin').closest('.control-group').hide();
+		jQuery('#jform_css_admin-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvvyvvy_required)
 		{
 			updateFieldRequired('css_admin',1);
@@ -254,7 +254,7 @@ function vvvvvvz(add_css_site_vvvvvvz)
 	// set the function logic
 	if (add_css_site_vvvvvvz == 1)
 	{
-		jQuery('#jform_css_site').closest('.control-group').show();
+		jQuery('#jform_css_site-lbl').closest('.control-group').show();
 		if (jform_vvvvvvzvvz_required)
 		{
 			updateFieldRequired('css_site',0);
@@ -267,7 +267,7 @@ function vvvvvvz(add_css_site_vvvvvvz)
 	}
 	else
 	{
-		jQuery('#jform_css_site').closest('.control-group').hide();
+		jQuery('#jform_css_site-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvvzvvz_required)
 		{
 			updateFieldRequired('css_site',1);
@@ -285,7 +285,7 @@ function vvvvvwa(add_javascript_vvvvvwa)
 	// set the function logic
 	if (add_javascript_vvvvvwa == 1)
 	{
-		jQuery('#jform_javascript').closest('.control-group').show();
+		jQuery('#jform_javascript-lbl').closest('.control-group').show();
 		if (jform_vvvvvwavwa_required)
 		{
 			updateFieldRequired('javascript',0);
@@ -298,7 +298,7 @@ function vvvvvwa(add_javascript_vvvvvwa)
 	}
 	else
 	{
-		jQuery('#jform_javascript').closest('.control-group').hide();
+		jQuery('#jform_javascript-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvwavwa_required)
 		{
 			updateFieldRequired('javascript',1);
@@ -423,7 +423,7 @@ function vvvvvwf(add_admin_event_vvvvvwf)
 	// set the function logic
 	if (add_admin_event_vvvvvwf == 1)
 	{
-		jQuery('#jform_php_admin_event').closest('.control-group').show();
+		jQuery('#jform_php_admin_event-lbl').closest('.control-group').show();
 		if (jform_vvvvvwfvwe_required)
 		{
 			updateFieldRequired('php_admin_event',0);
@@ -436,7 +436,7 @@ function vvvvvwf(add_admin_event_vvvvvwf)
 	}
 	else
 	{
-		jQuery('#jform_php_admin_event').closest('.control-group').hide();
+		jQuery('#jform_php_admin_event-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvwfvwe_required)
 		{
 			updateFieldRequired('php_admin_event',1);
@@ -454,7 +454,7 @@ function vvvvvwg(add_site_event_vvvvvwg)
 	// set the function logic
 	if (add_site_event_vvvvvwg == 1)
 	{
-		jQuery('#jform_php_site_event').closest('.control-group').show();
+		jQuery('#jform_php_site_event-lbl').closest('.control-group').show();
 		if (jform_vvvvvwgvwf_required)
 		{
 			updateFieldRequired('php_site_event',0);
@@ -467,7 +467,7 @@ function vvvvvwg(add_site_event_vvvvvwg)
 	}
 	else
 	{
-		jQuery('#jform_php_site_event').closest('.control-group').hide();
+		jQuery('#jform_php_site_event-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvwgvwf_required)
 		{
 			updateFieldRequired('php_site_event',1);
@@ -564,7 +564,7 @@ function vvvvvwl(add_php_postflight_install_vvvvvwl)
 	// set the function logic
 	if (add_php_postflight_install_vvvvvwl == 1)
 	{
-		jQuery('#jform_php_postflight_install').closest('.control-group').show();
+		jQuery('#jform_php_postflight_install-lbl').closest('.control-group').show();
 		if (jform_vvvvvwlvwh_required)
 		{
 			updateFieldRequired('php_postflight_install',0);
@@ -577,7 +577,7 @@ function vvvvvwl(add_php_postflight_install_vvvvvwl)
 	}
 	else
 	{
-		jQuery('#jform_php_postflight_install').closest('.control-group').hide();
+		jQuery('#jform_php_postflight_install-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvwlvwh_required)
 		{
 			updateFieldRequired('php_postflight_install',1);
@@ -595,7 +595,7 @@ function vvvvvwm(add_php_postflight_update_vvvvvwm)
 	// set the function logic
 	if (add_php_postflight_update_vvvvvwm == 1)
 	{
-		jQuery('#jform_php_postflight_update').closest('.control-group').show();
+		jQuery('#jform_php_postflight_update-lbl').closest('.control-group').show();
 		if (jform_vvvvvwmvwi_required)
 		{
 			updateFieldRequired('php_postflight_update',0);
@@ -608,7 +608,7 @@ function vvvvvwm(add_php_postflight_update_vvvvvwm)
 	}
 	else
 	{
-		jQuery('#jform_php_postflight_update').closest('.control-group').hide();
+		jQuery('#jform_php_postflight_update-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvwmvwi_required)
 		{
 			updateFieldRequired('php_postflight_update',1);
@@ -626,7 +626,7 @@ function vvvvvwn(add_php_method_uninstall_vvvvvwn)
 	// set the function logic
 	if (add_php_method_uninstall_vvvvvwn == 1)
 	{
-		jQuery('#jform_php_method_uninstall').closest('.control-group').show();
+		jQuery('#jform_php_method_uninstall-lbl').closest('.control-group').show();
 		if (jform_vvvvvwnvwj_required)
 		{
 			updateFieldRequired('php_method_uninstall',0);
@@ -639,7 +639,7 @@ function vvvvvwn(add_php_method_uninstall_vvvvvwn)
 	}
 	else
 	{
-		jQuery('#jform_php_method_uninstall').closest('.control-group').hide();
+		jQuery('#jform_php_method_uninstall-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvwnvwj_required)
 		{
 			updateFieldRequired('php_method_uninstall',1);
@@ -657,7 +657,7 @@ function vvvvvwo(add_php_preflight_install_vvvvvwo)
 	// set the function logic
 	if (add_php_preflight_install_vvvvvwo == 1)
 	{
-		jQuery('#jform_php_preflight_install').closest('.control-group').show();
+		jQuery('#jform_php_preflight_install-lbl').closest('.control-group').show();
 		if (jform_vvvvvwovwk_required)
 		{
 			updateFieldRequired('php_preflight_install',0);
@@ -670,7 +670,7 @@ function vvvvvwo(add_php_preflight_install_vvvvvwo)
 	}
 	else
 	{
-		jQuery('#jform_php_preflight_install').closest('.control-group').hide();
+		jQuery('#jform_php_preflight_install-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvwovwk_required)
 		{
 			updateFieldRequired('php_preflight_install',1);
@@ -688,7 +688,7 @@ function vvvvvwp(add_php_preflight_update_vvvvvwp)
 	// set the function logic
 	if (add_php_preflight_update_vvvvvwp == 1)
 	{
-		jQuery('#jform_php_preflight_update').closest('.control-group').show();
+		jQuery('#jform_php_preflight_update-lbl').closest('.control-group').show();
 		if (jform_vvvvvwpvwl_required)
 		{
 			updateFieldRequired('php_preflight_update',0);
@@ -701,7 +701,7 @@ function vvvvvwp(add_php_preflight_update_vvvvvwp)
 	}
 	else
 	{
-		jQuery('#jform_php_preflight_update').closest('.control-group').hide();
+		jQuery('#jform_php_preflight_update-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvwpvwl_required)
 		{
 			updateFieldRequired('php_preflight_update',1);

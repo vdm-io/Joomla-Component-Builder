@@ -24,7 +24,7 @@ function vvvvvza(add_php_view_vvvvvza)
 	// set the function logic
 	if (add_php_view_vvvvvza == 1)
 	{
-		jQuery('#jform_php_view').closest('.control-group').show();
+		jQuery('#jform_php_view-lbl').closest('.control-group').show();
 		if (jform_vvvvvzavyu_required)
 		{
 			updateFieldRequired('php_view',0);
@@ -37,7 +37,7 @@ function vvvvvza(add_php_view_vvvvvza)
 	}
 	else
 	{
-		jQuery('#jform_php_view').closest('.control-group').hide();
+		jQuery('#jform_php_view-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvzavyu_required)
 		{
 			updateFieldRequired('php_view',1);

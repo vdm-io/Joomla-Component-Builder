@@ -383,7 +383,7 @@ function vvvvvzg(addcalculation_vvvvvzg)
 	// set the function logic
 	if (addcalculation_vvvvvzg == 1)
 	{
-		jQuery('#jform_php_calculation').closest('.control-group').show();
+		jQuery('#jform_php_calculation-lbl').closest('.control-group').show();
 		if (jform_vvvvvzgvza_required)
 		{
 			updateFieldRequired('php_calculation',0);
@@ -396,7 +396,7 @@ function vvvvvzg(addcalculation_vvvvvzg)
 	}
 	else
 	{
-		jQuery('#jform_php_calculation').closest('.control-group').hide();
+		jQuery('#jform_php_calculation-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvzgvza_required)
 		{
 			updateFieldRequired('php_calculation',1);
@@ -549,7 +549,7 @@ function vvvvvzl(main_source_vvvvvzl)
 	// set this function logic
 	if (main_source)
 	{
-		jQuery('#jform_php_custom_get').closest('.control-group').show();
+		jQuery('#jform_php_custom_get-lbl').closest('.control-group').show();
 		if (jform_vvvvvzlvzb_required)
 		{
 			updateFieldRequired('php_custom_get',0);
@@ -562,7 +562,7 @@ function vvvvvzl(main_source_vvvvvzl)
 	}
 	else
 	{
-		jQuery('#jform_php_custom_get').closest('.control-group').hide();
+		jQuery('#jform_php_custom_get-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvzlvzb_required)
 		{
 			updateFieldRequired('php_custom_get',1);
@@ -664,7 +664,7 @@ function vvvvvzn(add_php_before_getitem_vvvvvzn,gettype_vvvvvzn)
 	// set this function logic
 	if (add_php_before_getitem && gettype)
 	{
-		jQuery('#jform_php_before_getitem').closest('.control-group').show();
+		jQuery('#jform_php_before_getitem-lbl').closest('.control-group').show();
 		if (jform_vvvvvznvzc_required)
 		{
 			updateFieldRequired('php_before_getitem',0);
@@ -677,7 +677,7 @@ function vvvvvzn(add_php_before_getitem_vvvvvzn,gettype_vvvvvzn)
 	}
 	else
 	{
-		jQuery('#jform_php_before_getitem').closest('.control-group').hide();
+		jQuery('#jform_php_before_getitem-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvznvzc_required)
 		{
 			updateFieldRequired('php_before_getitem',1);
@@ -742,7 +742,7 @@ function vvvvvzo(add_php_after_getitem_vvvvvzo,gettype_vvvvvzo)
 	// set this function logic
 	if (add_php_after_getitem && gettype)
 	{
-		jQuery('#jform_php_after_getitem').closest('.control-group').show();
+		jQuery('#jform_php_after_getitem-lbl').closest('.control-group').show();
 		if (jform_vvvvvzovzd_required)
 		{
 			updateFieldRequired('php_after_getitem',0);
@@ -755,7 +755,7 @@ function vvvvvzo(add_php_after_getitem_vvvvvzo,gettype_vvvvvzo)
 	}
 	else
 	{
-		jQuery('#jform_php_after_getitem').closest('.control-group').hide();
+		jQuery('#jform_php_after_getitem-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvzovzd_required)
 		{
 			updateFieldRequired('php_after_getitem',1);
@@ -972,7 +972,7 @@ function vvvvvzs(add_php_before_getitems_vvvvvzs,gettype_vvvvvzs)
 	// set this function logic
 	if (add_php_before_getitems && gettype)
 	{
-		jQuery('#jform_php_before_getitems').closest('.control-group').show();
+		jQuery('#jform_php_before_getitems-lbl').closest('.control-group').show();
 		if (jform_vvvvvzsvzh_required)
 		{
 			updateFieldRequired('php_before_getitems',0);
@@ -985,7 +985,7 @@ function vvvvvzs(add_php_before_getitems_vvvvvzs,gettype_vvvvvzs)
 	}
 	else
 	{
-		jQuery('#jform_php_before_getitems').closest('.control-group').hide();
+		jQuery('#jform_php_before_getitems-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvzsvzh_required)
 		{
 			updateFieldRequired('php_before_getitems',1);
@@ -1050,7 +1050,7 @@ function vvvvvzt(add_php_after_getitems_vvvvvzt,gettype_vvvvvzt)
 	// set this function logic
 	if (add_php_after_getitems && gettype)
 	{
-		jQuery('#jform_php_after_getitems').closest('.control-group').show();
+		jQuery('#jform_php_after_getitems-lbl').closest('.control-group').show();
 		if (jform_vvvvvztvzi_required)
 		{
 			updateFieldRequired('php_after_getitems',0);
@@ -1063,7 +1063,7 @@ function vvvvvzt(add_php_after_getitems_vvvvvzt,gettype_vvvvvzt)
 	}
 	else
 	{
-		jQuery('#jform_php_after_getitems').closest('.control-group').hide();
+		jQuery('#jform_php_after_getitems-lbl').closest('.control-group').hide();
 		if (!jform_vvvvvztvzi_required)
 		{
 			updateFieldRequired('php_after_getitems',1);

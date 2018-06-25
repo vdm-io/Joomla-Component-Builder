@@ -405,33 +405,41 @@
 		</field>
 		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
-		<!-- Javascript_view_footer Field. Type: Textarea. (joomla) -->
+		<!-- Javascript_view_footer Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="javascript_view_footer"
 			label="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Note_no_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_no_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_no_database_settings_needed" />
-		<!-- Javascript_views_footer Field. Type: Textarea. (joomla) -->
+		<!-- Javascript_views_footer Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="javascript_views_footer"
 			label="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEWS_FOOTER_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEWS_FOOTER_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEWS_FOOTER_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field

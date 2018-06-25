@@ -185,18 +185,22 @@
 		/>
 		<!-- Note_placeholders_explained Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_placeholders_explained" label="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_PLACEHOLDERS_EXPLAINED_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_PLACEHOLDERS_EXPLAINED_DESCRIPTION" heading="h4" class="note_placeholders_explained" />
-		<!-- Code Field. Type: Textarea. (joomla) -->
+		<!-- Code Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="code"
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_CODE_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_CUSTOM_CODE_CODE_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_CODE_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Note_jcb_placeholder Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_jcb_placeholder" label="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_JCB_PLACEHOLDER_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_JCB_PLACEHOLDER_DESCRIPTION" heading="h4" class="span12 note_jcb_placeholder" />

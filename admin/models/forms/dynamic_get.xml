@@ -244,18 +244,22 @@
 		</field>
 		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_DYNAMIC_GET_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_DYNAMIC_GET_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
-		<!-- Php_custom_get Field. Type: Textarea. (joomla) -->
+		<!-- Php_custom_get Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_custom_get"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CUSTOM_GET_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CUSTOM_GET_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CUSTOM_GET_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Db_selection Field. Type: Textarea. (joomla) -->
 		<field
@@ -321,18 +325,22 @@
 			message="COM_COMPONENTBUILDER_DYNAMIC_GET_GETCUSTOM_MESSAGE"
 			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_GETCUSTOM_HINT"
 		/>
-		<!-- Php_before_getitem Field. Type: Textarea. (joomla) -->
+		<!-- Php_before_getitem Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_before_getitem"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_BEFORE_GETITEM_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_BEFORE_GETITEM_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_BEFORE_GETITEM_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Pagination Field. Type: Radio. (joomla) -->
 		<field
@@ -349,18 +357,22 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_DYNAMIC_GET_NO</option>
 		</field>
-		<!-- Php_after_getitem Field. Type: Textarea. (joomla) -->
+		<!-- Php_after_getitem Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_after_getitem"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_AFTER_GETITEM_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_AFTER_GETITEM_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_AFTER_GETITEM_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field
@@ -499,18 +511,22 @@
 				/>
 			</form>
 		</field>
-		<!-- Php_before_getitems Field. Type: Textarea. (joomla) -->
+		<!-- Php_before_getitems Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_before_getitems"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_BEFORE_GETITEMS_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_BEFORE_GETITEMS_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_BEFORE_GETITEMS_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Where Field. Type: Subform. (joomla) -->
 		<field
@@ -591,18 +607,22 @@
 				/>
 			</form>
 		</field>
-		<!-- Php_after_getitems Field. Type: Textarea. (joomla) -->
+		<!-- Php_after_getitems Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_after_getitems"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_AFTER_GETITEMS_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_AFTER_GETITEMS_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_AFTER_GETITEMS_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Order Field. Type: Subform. (joomla) -->
 		<field
@@ -1090,18 +1110,22 @@
 				/>
 			</form>
 		</field>
-		<!-- Php_calculation Field. Type: Textarea. (joomla) -->
+		<!-- Php_calculation Field. Type: Editor. (joomla) -->
 		<field
-			type="textarea"
+			type="editor"
 			name="php_calculation"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CALCULATION_LABEL"
-			rows="30"
-			cols="15"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CALCULATION_DESCRIPTION"
-			class="text_area span12"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CALCULATION_HINT"
 			required="true"
+			validate="code"
 		/>
 		<!-- Join_db_table Field. Type: Subform. (joomla) -->
 		<field
