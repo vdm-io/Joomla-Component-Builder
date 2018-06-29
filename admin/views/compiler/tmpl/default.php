@@ -118,10 +118,13 @@ jQuery(document).ready(function($) {
 		</div>
 		<div class="span7">
 			<div id="component-details"><?php echo $selectNotice; ?></div>
-			<div id="noticeboard" class="well well-small">
-				<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span id="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
-				<div id="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
-				<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
+            <div id="noticeboard">
+              <div  class="well well-small">
+                  <h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span id="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
+                  <div id="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
+                  <div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
+              </div>
+				<div><a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a></div>
 			</div>
 		</div>
 	</div>

@@ -77,14 +77,17 @@ JHtml::_('behavior.tooltip');
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('Notice Board', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('COM_COMPONENTBUILDER_NOTICE_BOARD', true)); ?>
 		<div class="row-fluid">
-			<div class="span12">
+			<div class="span10">
 				<?php  echo JHtml::_('bootstrap.startAccordion', 'notice_board_accordian', array('active' => 'notice_board_one')); ?>
 					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?>
 						<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
+			</div>
+			<div class="span2">
+				<a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>
 			</div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>

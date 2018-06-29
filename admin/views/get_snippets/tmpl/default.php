@@ -100,7 +100,7 @@ JHtml::_('behavior.keepalive');
 							<span class="uk-hidden-medium"><?php echo JText::_('COM_COMPONENTBUILDER_BULK'); ?></span>
 						</a>
 					</li>
-				</li>
+				</ul>
 			</div>
 		</nav>
 	</div>

@@ -33,12 +33,21 @@ class JFormRuleCode extends FormRule
 	 * @param   Form               $form     The form object for which the field is being tested.
 	 *
 	 * @return  boolean  True if the value is valid, false otherwise.
-	 *
-	 * @since   11.1
 	 */
 	public function test(\SimpleXMLElement $element, $value, $group = null, Registry $input = null, Form $form = null)
 	{
 		// This removes all validation (is dangerous) but needed to submit code via JCB
 		return true;
+
+		/**
+		 * My idea is to add some kind of validation to improve JCB code (per/language)
+		 *
+		 * So at this time this code validation is used for JavaScript,CSS,HTML and PHP.
+		 * We can see what language is being worked on with the syntax property in the $element. (in JCB)
+		 * What complicates things is the placeholders, of both custom code, component, and view names.
+		 * Ideally we could strip them and then validate the code to being syntactically correct.
+		 * But since some of the placeholders form part of the class/function names and the more, it seems like we are pressed for a much more advance solution.
+		 * If you have any ideas to how we can go about to do this, then please open an issue on github and lets begin. (this is a nice to have, so don't break a leg...)
+		 */
 	}
 }

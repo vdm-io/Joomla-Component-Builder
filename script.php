@@ -4991,7 +4991,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.8.0 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.8.1 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 
