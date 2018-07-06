@@ -336,11 +336,18 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 
 		// update all editors to use this components global editor
 		$global_editor = JComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
+		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
-		foreach ($editors as $editor)
+		// check if we found any
+		if (ComponentbuilderHelper::checkArray($editors))
 		{
-			$name = (string) $editor['name'];
-			$form->setFieldAttribute($name, 'editor', $global_editor);
+			foreach ($editors as $editor)
+			{
+				// get the field names
+				$name = (string) $editor['name'];
+				// set the field editor value (with none as fallback)
+				$form->setFieldAttribute($name, 'editor', $global_editor . '|none');
+			}
 		}
 
 		return $form;

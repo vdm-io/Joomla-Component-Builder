@@ -99,9 +99,6 @@ class Mapping
 	 */
 	public function __construct($data = false)
 	{
-		// set the app to insure messages can be set
-		$this->app = JFactory::getApplication();
-
 		if (ComponentbuilderHelper::checkArray($data))
 		{
 			if (isset($data['buildcomp']) && 1 == $data['buildcomp'] && isset($data['buildcompsql']))

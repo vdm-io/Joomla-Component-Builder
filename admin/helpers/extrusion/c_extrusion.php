@@ -36,6 +36,8 @@ class Extrusion extends Builder
 	 */
 	public function __construct(&$data)
 	{
+		// set the app to insure messages can be set
+		$this->app = JFactory::getApplication();
 		// make sure we have an id
 		if (isset($data['id']) && $data['id'] > 0)
 		{
