@@ -193,7 +193,7 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 		return $result;
 	}
-	
+
 	protected function hasCurl()
 	{
 		return function_exists('curl_version');

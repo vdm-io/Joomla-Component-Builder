@@ -1184,7 +1184,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		}
 
 		// we check if component should be build from sql file
-		ComponentbuilderHelper::dynamicBuilder($data, 1);
+		if (isset($data['buildcomp']) && 1 == $data['buildcomp'])
+		{
+			ComponentbuilderHelper::dynamicBuilder($data, 1);
+		}
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
