@@ -232,7 +232,6 @@ class ComponentbuilderModelTemplate extends JModelAdmin
 			$form->setFieldAttribute($name, 'editor', $global_editor);
 		}
 
-
 		return $form;
 	}
 

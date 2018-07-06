@@ -185,7 +185,6 @@ class ComponentbuilderModelAdmin_fields_relations extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

@@ -185,7 +185,6 @@ class ComponentbuilderModelLibrary_config extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

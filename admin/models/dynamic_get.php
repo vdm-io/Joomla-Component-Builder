@@ -344,7 +344,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$form->setFieldAttribute($name, 'editor', $global_editor);
 		}
 
-
 		return $form;
 	}
 

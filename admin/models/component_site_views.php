@@ -216,7 +216,6 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

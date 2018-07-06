@@ -216,7 +216,6 @@ class ComponentbuilderModelComponent_mysql_tweaks extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

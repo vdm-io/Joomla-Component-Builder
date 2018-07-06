@@ -205,7 +205,6 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

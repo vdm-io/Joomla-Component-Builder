@@ -207,7 +207,6 @@ class ComponentbuilderModelValidation_rule extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

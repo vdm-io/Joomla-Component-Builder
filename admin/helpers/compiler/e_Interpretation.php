@@ -10939,7 +10939,7 @@ class Interpretation extends Fields
 		// load custom script if found
 		$allow[] = $this->_t(2) . "}" . $this->getCustomScriptBuilder('php_getform', $viewName_single, PHP_EOL . PHP_EOL);
 		// setup the default script
-		$allow[] = PHP_EOL . $this->_t(2) . "return \$form;";
+		$allow[] = $this->_t(2) . "return \$form;";
 
 		return implode(PHP_EOL, $allow);
 	}

@@ -450,7 +450,6 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

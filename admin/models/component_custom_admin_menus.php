@@ -216,7 +216,6 @@ class ComponentbuilderModelComponent_custom_admin_menus extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

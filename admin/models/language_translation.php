@@ -215,7 +215,6 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

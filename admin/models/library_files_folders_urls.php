@@ -217,7 +217,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 

@@ -355,7 +355,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$form->setFieldAttribute($name, 'editor', $global_editor);
 		}
 
-
 		return $form;
 	}
 
