@@ -217,7 +217,6 @@ class ComponentbuilderModelComponent_custom_admin_menus extends JModelAdmin
 			}
 		}
 
-
 		return $form;
 	}
 

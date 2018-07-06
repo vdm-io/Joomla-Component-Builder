@@ -208,7 +208,6 @@ class ComponentbuilderModelValidation_rule extends JModelAdmin
 			}
 		}
 
-
 		return $form;
 	}
 

@@ -176,7 +176,6 @@ class ComponentbuilderModelSnippet_type extends JModelAdmin
 			}
 		}
 
-
 		return $form;
 	}
 

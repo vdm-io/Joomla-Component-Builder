@@ -176,7 +176,6 @@ class ComponentbuilderModelLanguage extends JModelAdmin
 			}
 		}
 
-
 		return $form;
 	}
 

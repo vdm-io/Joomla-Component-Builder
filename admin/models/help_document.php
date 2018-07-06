@@ -182,7 +182,6 @@ class ComponentbuilderModelHelp_document extends JModelAdmin
 			}
 		}
 
-
 		return $form;
 	}
 

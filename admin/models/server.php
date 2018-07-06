@@ -317,7 +317,6 @@ class ComponentbuilderModelServer extends JModelAdmin
 			}
 		}
 
-
 		return $form;
 	}
 

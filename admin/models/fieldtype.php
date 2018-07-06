@@ -451,7 +451,6 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			}
 		}
 
-
 		return $form;
 	}
 

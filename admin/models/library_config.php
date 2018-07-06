@@ -186,7 +186,6 @@ class ComponentbuilderModelLibrary_config extends JModelAdmin
 			}
 		}
 
-
 		return $form;
 	}
 
