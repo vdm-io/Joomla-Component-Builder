@@ -27,6 +27,8 @@ $fields = $displayData->get('fields') ?: array(
 	'php_getitems_after_all',
 	'add_php_getlistquery',
 	'php_getlistquery',
+	'add_php_getform',
+	'php_getform',
 	'add_php_before_save',
 	'php_before_save',
 	'add_php_save',

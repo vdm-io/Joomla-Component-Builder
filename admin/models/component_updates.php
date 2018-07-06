@@ -217,6 +217,7 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 

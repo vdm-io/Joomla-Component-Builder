@@ -217,6 +217,7 @@ class ComponentbuilderModelComponent_custom_admin_views extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 

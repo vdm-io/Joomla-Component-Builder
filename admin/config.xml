@@ -47,6 +47,20 @@
 		/>
 		<field type="spacer" name="spacerHistory" hr="true" />
 
+		<!-- Editor Field. Type: Plugins. (joomla) -->
+		<field
+			type="plugins"
+			name="editor"
+			label="COM_COMPONENTBUILDER_CONFIG_EDITOR_LABEL"
+			default="none"
+			description="COM_COMPONENTBUILDER_CONFIG_EDITOR_DESCRIPTION"
+			folder="editors"
+			filter="cmd"
+		/>
+		<!-- No Manual Options Were Added In Field Settings. -->
+
+		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
 		<!-- Manage_jcb_package_directories Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -79,8 +93,8 @@
 			<option value="jcb">
 				COM_COMPONENTBUILDER_CONFIG_JCB_COMMUNITY_PACKAGES</option>
 		</field>
-		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
+		<!-- Spacer_hr_two Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_two" hr="true" class="spacer_hr_two" />
 		<!-- Add_menu_prefix Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -111,8 +125,8 @@
 			autocomplete="on"
 			showon="add_menu_prefix:1"
 		/>
-		<!-- Spacer_hr_two Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_two" hr="true" class="spacer_hr_two" />
+		<!-- Spacer_hr_three Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_three" hr="true" class="spacer_hr_three" />
 		<!-- Minify Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -127,8 +141,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NO</option>
 		</field>
-		<!-- Spacer_hr_three Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_three" hr="true" class="spacer_hr_three" />
+		<!-- Spacer_hr_four Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_four" hr="true" class="spacer_hr_four" />
 		<!-- Set_browser_storage Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -180,8 +194,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NEVER_UPDATE</option>
 		</field>
-		<!-- Spacer_hr_four Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_four" hr="true" class="spacer_hr_four" />
+		<!-- Spacer_hr_five Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_five" hr="true" class="spacer_hr_five" />
 		<!-- Note_language_global Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_language_global" label="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_DESCRIPTION" heading="h4" class="alert alert-info note_language_global" />
 		<!-- Language Field. Type: Lang. (custom) -->
@@ -208,8 +222,8 @@
 			max="100"
 			step="10"
 		/>
-		<!-- Spacer_hr_five Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_five" hr="true" class="spacer_hr_five" />
+		<!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_six" hr="true" class="spacer_hr_six" />
 		<!-- Compiler_field_builder_type Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -226,8 +240,8 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_CONFIG_SIMPLEXMLELEMENT_CLASS</option>
 		</field>
-		<!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_six" hr="true" class="spacer_hr_six" />
+		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
 		<!-- Api Field. Type: User. (joomla) -->
 		<field
 			type="user"
@@ -235,8 +249,8 @@
 			label="COM_COMPONENTBUILDER_CONFIG_API_LABEL"
 			description="COM_COMPONENTBUILDER_CONFIG_API_DESCRIPTION"
 		/>
-		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
+		<!-- Spacer_hr_eight Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_eight" hr="true" class="spacer_hr_eight" />
 		<field name="autorTitle"
 			type="spacer"
 			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR"

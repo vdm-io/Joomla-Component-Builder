@@ -10937,6 +10937,8 @@ class Interpretation extends Fields
 		$allow[] = $this->_t(4) . "\$form->setValue(\$redirectedField, null, \$redirectedValue);";
 		$allow[] = $this->_t(3) . "}";
 		$allow[] = $this->_t(2) . "}";
+		// load custom script if found
+		$allow[] = $this->getCustomScriptBuilder('php_getform', $viewName_single);
 		// setup the default script
 		$allow[] = PHP_EOL . $this->_t(2) . "return \$form;";
 

@@ -186,6 +186,7 @@ class ComponentbuilderModelAdmin_fields_relations extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 

@@ -14,7 +14,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->wadfields;
+$items	= $displayData->waefields;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";

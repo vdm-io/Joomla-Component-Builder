@@ -1295,8 +1295,8 @@ class Fields extends Structure
 			else
 			{
 				$optionArray = false;
-				$field .= PHP_EOL . $this->_t(3) . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->";
 				$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
+				$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->" . PHP_EOL;
 			}
 		}
 		elseif ($setType === 'plain')

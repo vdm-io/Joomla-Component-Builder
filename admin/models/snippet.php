@@ -182,6 +182,7 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 

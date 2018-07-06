@@ -362,6 +362,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			}
 		}
 
+		// update all editors to use this components global editor
+		$global_editor = JComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
+		$editors = $form->getXml()->xpath("//field[@type='editor']");
+		foreach ($editors as $editor)
+		{
+			$name = (string) $editor['name'];
+			$form->setFieldAttribute($name, 'editor', $global_editor);
+		}
+
+
 		return $form;
 	}
 

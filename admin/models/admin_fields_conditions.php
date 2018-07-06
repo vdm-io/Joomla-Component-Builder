@@ -206,6 +206,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 

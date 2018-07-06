@@ -217,6 +217,7 @@ class ComponentbuilderModelComponent_mysql_tweaks extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 

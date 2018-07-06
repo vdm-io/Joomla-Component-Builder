@@ -223,6 +223,7 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 

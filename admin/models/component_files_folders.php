@@ -242,6 +242,7 @@ class ComponentbuilderModelComponent_files_folders extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 

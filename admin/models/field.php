@@ -232,6 +232,7 @@ class ComponentbuilderModelField extends JModelAdmin
 			}
 		}
 
+
 		return $form;
 	}
 
