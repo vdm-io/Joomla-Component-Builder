@@ -81,6 +81,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected $divergedDataMover = array();
 	protected $fieldTypes = array();
 	protected $isMultiple = array();
+	protected $tableColumns = array();
+	protected $fieldImportErrors = array();
 	protected $specialValue = false;
 	protected $checksum = null;
 	protected $checksumURLs = array('vdm' => 'https://raw.githubusercontent.com/vdm-io/JCB-Packages/master/', 'jcb' => 'https://raw.githubusercontent.com/vdm-io/JCB-Community-Packages/master/');
@@ -702,13 +704,25 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
 		);
+		// get prefix
+		$prefix = $this->_db->getPrefix();
+		// get local tables
+		$localTables = $this->_db->getTableList();
 		// smart table loop
 		foreach ($tables as $table)
 		{
-			// save the table to database
-			if (!$this->saveSmartItems($table))
+			//  only continue the import if the table is available locally
+			if (in_array($prefix . 'componentbuilder_' . $table, $localTables))
 			{
-				return false;
+				// save the table to database
+				if (!$this->saveSmartItems($table))
+				{
+					return false;
+				}
+			}
+			else
+			{
+				$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_TABLE_BSB_NOT_FOUND_IN_THE_LOCAL_DATABASE_SO_ITS_VALUES_COULD_NOT_BE_IMPORTED_PLEASE_UPDATE_YOUR_JCB_INSTALL_AND_TRY_AGAIN', '#__componentbuilder_' . $table), 'warning');
 			}
 		}
 		// do a after all run on all items that need it
@@ -2205,6 +2219,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// update the subform ids
 				$this->updateSubformsIDs($item, $type, $updaterT);
 		}
+		// remove all fields/columns not part of the current table
+		$this->removingFields($type, $item);
 		// final action prep
 		switch($action)
 		{
@@ -2234,6 +2250,56 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 		}
 		return false;
+	}
+
+	/**
+	* remove all fields/columns not part of the current table
+	*
+	* @param string $type       The table this item belongs to
+	* @param object $item      The item to clean
+	*
+	* @return viod
+	*/
+	protected function removingFields($type, &$item)
+	{
+		// get the columns
+		$columns = $this->getTableColumns("#__componentbuilder_" . $type);
+		if (ComponentbuilderHelper::checkArray($columns))
+		{
+			foreach ($item as $name => $value)
+			{
+				if (!isset($columns[$name]))
+				{
+					// we must show a warning that this field was not imported (but just once)
+					if (!isset($this->fieldImportErrors[$type.$name]))
+					{
+						$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FIELD_BSB_NOT_FOUND_IN_LOCAL_DATABASE_TABLE_S_SO_IMPORTED_OF_ITS_VALUES_FAILED_PLEASE_UPDATE_YOUR_JCB_INSTALL_AND_TRY_AGAIN', $name, '#__componentbuilder_' . $type), 'warning');
+						// make sure the message is not loaded again
+						$this->fieldImportErrors[$type.$name] = true;
+					}
+					// remove the field & value
+					unset($item->{$name});
+				}
+			}
+		}
+	}
+
+	/**
+	* get table columns
+	*
+	* @param string $table       The table
+	*
+	* @return array
+	*/
+	protected function getTableColumns($table)
+	{
+		// check if the columns are in memory
+		if (!isset($this->tableColumns[$table]))
+		{
+			// get the columns
+			$this->tableColumns[$table] = $this->_db->getTableColumns($table);
+		}
+		return $this->tableColumns[$table];
 	}
 
 	/**

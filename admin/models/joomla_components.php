@@ -1607,7 +1607,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'php_after_delete','php_after_publish','php_ajaxmethod','php_allowedit','php_batchcopy',
 			'php_batchmove','php_before_delete','php_before_publish','php_before_save','php_controller',
 			'php_controller_list','php_document','php_getitem','php_getitems','php_getitems_after_all',
-			'php_getlistquery','php_import','php_import_display','php_import_ext','php_import_headers',
+			'php_getlistquery','php_import','php_import_display','php_import_ext','php_import_headers','php_getform',
 			'php_import_save','php_import_setdata','php_model','php_model_list','php_postsavehook','php_save');
 		$targets['admin_view']['view'] = 'admin_views';
 		$targets['admin_view']['not_base64'] = array();
