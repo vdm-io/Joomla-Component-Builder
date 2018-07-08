@@ -36,30 +36,19 @@ class Extrusion extends Builder
 	 */
 	public function __construct(&$data)
 	{
-		// set the app to insure messages can be set
-		$this->app = JFactory::getApplication();
-		// make sure we have an id
-		if (isset($data['id']) && $data['id'] > 0)
+		// first we run the perent constructor
+		if (parent::__construct($data))
 		{
-			// first we run the perent constructor
-			if (parent::__construct($data))
+			// link the view data to the component
+			if ($this->setAdminViews($data['id']))
 			{
-				// link the view data to the component
-				if ($this->setAdminViews($data['id']))
-				{
-					$this->app->enqueueMessage(
-						JText::_('All the fields and views from your sql dump has been created and linked to this component.'),
-						'Success'
-					);
-					return true;
-				}
+				$this->app->enqueueMessage(
+					JText::_('All the fields and views from your sql dump has been created and linked to this component.'),
+					'Success'
+				);
+				return true;
 			}
-			return false;
 		}
-		$this->app->enqueueMessage(
-			JText::_('Please try again, this error usualy happens if it is a new component, beacues we need a component ID to do this build with your sql dump.'),
-			'Error'
-		);
 		return false;
 	}
 	

@@ -328,12 +328,12 @@ class Interpretation extends Fields
 		$bool[] = $this->_t(2) . "}";
 		$bool[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the global params";
 		$bool[] = $this->_t(2) . "\$params = JComponentHelper::getParams('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "', true);";
-		$bool[] = $this->_t(2) . "\$license_key = \$params->get('license_key', null);";
-		$bool[] = $this->_t(2) . "if (\$license_key)";
+		$bool[] = $this->_t(2) . "\$whmcs_key = \$params->get('whmcs_key', null);";
+		$bool[] = $this->_t(2) . "if (\$whmcs_key)";
 		$bool[] = $this->_t(2) . "{";
 		$bool[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " load the file";
 		$bool[] = $this->_t(3) . "JLoader::import( 'whmcs', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
-		$bool[] = $this->_t(3) . "\$the = new WHMCS(\$license_key);";
+		$bool[] = $this->_t(3) . "\$the = new WHMCS(\$whmcs_key);";
 		$bool[] = $this->_t(3) . "\$this->" . $globalbool . " = \$the->_is;";
 		$bool[] = $this->_t(3) . "return \$this->" . $globalbool . ";";
 		$bool[] = $this->_t(2) . "}";
@@ -360,12 +360,12 @@ class Interpretation extends Fields
 		$helper[] = $this->_t(1) . "{";
 		$helper[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the global params";
 		$helper[] = $this->_t(2) . "\$params = JComponentHelper::getParams('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "', true);";
-		$helper[] = $this->_t(2) . "\$license_key = \$params->get('license_key', null);";
-		$helper[] = $this->_t(2) . "if (\$license_key)";
+		$helper[] = $this->_t(2) . "\$whmcs_key = \$params->get('whmcs_key', null);";
+		$helper[] = $this->_t(2) . "if (\$whmcs_key)";
 		$helper[] = $this->_t(2) . "{";
 		$helper[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " load the file";
 		$helper[] = $this->_t(3) . "JLoader::import( 'whmcs', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
-		$helper[] = $this->_t(3) . "\$the = new WHMCS(\$license_key);";
+		$helper[] = $this->_t(3) . "\$the = new WHMCS(\$whmcs_key);";
 		$helper[] = $this->_t(3) . "return \$the->_is;";
 		$helper[] = $this->_t(2) . "}";
 		$helper[] = $this->_t(2) . "return false;";
@@ -671,7 +671,7 @@ class Interpretation extends Fields
 				$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " WHMCS Encryption Type";
 				$function[] = $this->_t(2) . "if ('whmcs' === \$type || 'advanced' === \$type)";
 				$function[] = $this->_t(2) . "{";
-				$function[] = $this->_t(3) . "\$key = \$params->get('advanced_key', \$default);";
+				$function[] = $this->_t(3) . "\$key = \$params->get('whmcs_key', \$default);";
 				$function[] = $this->_t(3) . "if (self::checkString(\$key))";
 				$function[] = $this->_t(3) . "{";
 				$function[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " load the file";
@@ -13154,7 +13154,7 @@ class Interpretation extends Fields
 			// these are the coustom settings
 			$this->setCustomControlConfigFieldsets($lang);
 		}
-		// we cad add more event (timers as we need)
+		// we can add more event (timers as we need)
 	}
 
 	public function setSiteControlConfigFieldsets($lang)
@@ -13365,40 +13365,6 @@ class Interpretation extends Fields
 		$this->configFieldSets[] = $this->_t(2) . 'name="global_config"';
 		$this->configFieldSets[] = $this->_t(2) . 'label="' . $lang . '_GLOBAL_LABEL"';
 		$this->configFieldSets[] = $this->_t(2) . 'description="' . $lang . '_GLOBAL_DESC">';
-		// set application update License Key
-		if ($this->componentData->add_license && 1 != $this->componentData->license_type)
-		{
-			// set licence type switch
-			switch ($this->componentData->license_type)
-			{
-				case 2:
-					// for updates
-					$this->langContent[$this->lang][$lang . '_LICENSE_KEY_NOTE_LABEL'] = "Your License Key";
-					$this->langContent[$this->lang][$lang . '_LICENSE_KEY_NOTE_DESC'] = "To get updates you must add the license key here that you recieved from " . $this->componentData->companyname;
-					// set the field
-					$this->configFieldSets[] = $this->_t(2) . '<field type="note" name="license_key_note" class="alert alert-info" label="' . $lang . '_LICENSE_KEY_NOTE_LABEL" description="' . $lang . '_LICENSE_KEY_NOTE_DESC"  />';
-					break;
-				case 3:
-					// with vdm to lock down ownership
-					$this->langContent[$this->lang][$lang . '_LICENSE_KEY_NOTE_LABEL'] = "Your License Key";
-					$this->langContent[$this->lang][$lang . '_LICENSE_KEY_NOTE_DESC'] = "To use this component you must add the license key here that you recieved from " . $this->componentData->companyname;
-					// set the field
-					$this->configFieldSets[] = $this->_t(2) . '<field type="note" name="license_key_note" class="alert alert-info" label="' . $lang . '_LICENSE_KEY_NOTE_LABEL" description="' . $lang . '_LICENSE_KEY_NOTE_DESC"  />';
-					break;
-			}
-			// setup lang
-			$this->langContent[$this->lang][$lang . '_LICENSE_KEY_LABEL'] = "License Key";
-			$this->langContent[$this->lang][$lang . '_LICENSE_KEY_DESC'] = "Add your license key here.";
-			// add the field
-			$this->configFieldSets[] = $this->_t(2) . '<field name="license_key"';
-			$this->configFieldSets[] = $this->_t(3) . 'type="text"';
-			$this->configFieldSets[] = $this->_t(3) . 'label="' . $lang . '_LICENSE_KEY_LABEL"';
-			$this->configFieldSets[] = $this->_t(3) . 'description="' . $lang . '_LICENSE_KEY_DESC"';
-			$this->configFieldSets[] = $this->_t(3) . 'size="60"';
-			$this->configFieldSets[] = $this->_t(3) . 'default=""';
-			$this->configFieldSets[] = $this->_t(2) . "/>";
-			$this->configFieldSets[] = $this->_t(2) . '<field type="spacer" name="spacerLicense" hr="true" />';
-		}
 		// setup lang
 		$this->langContent[$this->lang][$lang . '_GLOBAL_LABEL'] = "Global";
 		$this->langContent[$this->lang][$lang . '_GLOBAL_DESC'] = "The Global Parameters";
@@ -14694,44 +14660,51 @@ function vdm_dkim() {
 				// set field lang label and description
 				if ($this->componentData->add_license && $this->componentData->license_type == 3)
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = "License Key";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = $this->componentData->companyname . " License Key";
 					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the license key you recieved from " . $this->componentData->companyname . " here.";
 				}
 				elseif ($this->componentData->add_license && $this->componentData->license_type == 2)
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = "Update Key";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = $this->componentData->companyname . " Update Key";
 					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the update key you recieved from " . $this->componentData->companyname . " here.";
 				}
 				else
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = "WHMCS Key";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = $this->componentData->companyname . " Key";
 					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the key you recieved from " . $this->componentData->companyname . " here.";
 				}
 				// ajust the notice based on license
-				if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
+				if ($this->componentData->license_type == 3)
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Field Encryption (whmcs)";
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "When using this (whmcs) encryption you need to get a key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.<br />Never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your " . $this->componentData->companyname . " License Key";
+				}
+				elseif ($this->componentData->license_type == 2)
+				{
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your " . $this->componentData->companyname . " Update Key";
 				}
 				else
 				{
-					if ($this->componentData->license_type == 3)
+					if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
 					{
-						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your License Key";
-					}
-					elseif ($this->componentData->license_type == 2)
-					{
-						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your Update Key";
+						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your " . $this->componentData->companyname . " Field Encryption Key";
 					}
 					else
 					{
-						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your Key (whmcs)";
+						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your " . $this->componentData->companyname . " Key";
 					}
+				}
+				// add the description based on global settings
+				if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
+				{
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "You need to get this key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.<br />When using the " . $this->componentData->companyname . " field encryption you can never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+				}
+				else
+				{
 					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "You need to get this key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.";
 				}
 				// set the fields
 				$this->configFieldSets[] = $this->_t(2) . '<field type="note" name="whmcs_key_note" class="alert alert-info" label="' . $lang . '_WHMCS_KEY_NOTE_LABEL" description="' . $lang . '_WHMCS_KEY_NOTE_DESC"  />';
-				$this->configFieldSets[] = $this->_t(2) . '<field name="advanced_key"'; // We are going to change this field to whmcs_key (TODO)
+				$this->configFieldSets[] = $this->_t(2) . '<field name="whmcs_key"'; // We had to change this from license_key & advanced_key to whmcs_key
 				$this->configFieldSets[] = $this->_t(3) . 'type="text"';
 				$this->configFieldSets[] = $this->_t(3) . 'label="' . $lang . '_WHMCS_KEY_LABEL"';
 				$this->configFieldSets[] = $this->_t(3) . 'description="' . $lang . '_WHMCS_KEY_DESC"';

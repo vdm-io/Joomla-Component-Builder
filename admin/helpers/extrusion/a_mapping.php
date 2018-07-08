@@ -99,52 +99,64 @@ class Mapping
 	 */
 	public function __construct($data = false)
 	{
+		// set the app to insure messages can be set
+		$this->app = JFactory::getApplication();
+		// check that we have data
 		if (ComponentbuilderHelper::checkArray($data))
 		{
-			if (isset($data['buildcomp']) && 1 == $data['buildcomp'] && isset($data['buildcompsql']))
+			// make sure we have an id
+			if (isset($data['id']) && $data['id'] > 0)
 			{
-				foreach ($data as $key => $value)
+				if (isset($data['buildcomp']) && 1 == $data['buildcomp'] && isset($data['buildcompsql']))
 				{
-					if (isset($this->setting[$key]))
+					foreach ($data as $key => $value)
 					{
-						switch($this->setting[$key])
+						if (isset($this->setting[$key]))
 						{
-							case 'base64':
-								// set needed value
-								$this->$key = base64_decode($value);
-								break;
-							case 'json':
-								// set needed value
-								$this->$key = json_decode($value, true);
-								break;
-							case 'safeString':
-								// set needed value
-								$this->$key = ComponentbuilderHelper::safeString($value);
-								break;
-							default :
-								$this->$key = $value;
-								break;
+							switch($this->setting[$key])
+							{
+								case 'base64':
+									// set needed value
+									$this->$key = base64_decode($value);
+									break;
+								case 'json':
+									// set needed value
+									$this->$key = json_decode($value, true);
+									break;
+								case 'safeString':
+									// set needed value
+									$this->$key = ComponentbuilderHelper::safeString($value);
+									break;
+								default :
+									$this->$key = $value;
+									break;
+							}
 						}
 					}
+					// get linked admin views
+					$addadmin_views = ComponentbuilderHelper::getVar('component_admin_views', $data['id'], 'joomla_component', 'addadmin_views');
+					if (ComponentbuilderHelper::checkJson($addadmin_views))
+					{
+						$this->addadmin_views = json_decode($addadmin_views, true);
+					}
+					// set the map of the views needed
+					if ($this->setMap())
+					{
+						return true;
+					}
+					$this->app->enqueueMessage(
+						JText::_('No "CREATE TABLE.." were found, please check your sql.'),
+						'Error'
+					);
+					return false;
 				}
-				// get linked admin views
-				$addadmin_views = ComponentbuilderHelper::getVar('component_admin_views', $data['id'], 'joomla_component', 'addadmin_views');
-				if (ComponentbuilderHelper::checkJson($addadmin_views))
-				{
-					$this->addadmin_views = json_decode($addadmin_views, true);
-				}
-				// set the map of the views needed
-				if ($this->setMap())
-				{
-					return true;
-				}
-				$this->app->enqueueMessage(
-					JText::_('No "CREATE TABLE.." were found, please check your sql.'),
-					'Error'
-				);
-				return false;
+				return false; // not set so just return without any error
 			}
-			return false; // not set so just return without any error
+			$this->app->enqueueMessage(
+				JText::_('Please try again, this error usualy happens if it is a new component, beacues we need a component ID to do this build with your sql dump.'),
+				'Error'
+			);
+			return false;
 		}
 		$this->app->enqueueMessage(
 			JText::_('Could not find the data needed to continue.'),
