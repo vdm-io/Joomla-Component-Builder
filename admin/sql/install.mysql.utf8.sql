@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	`update_server_target` TINYINT(1) NOT NULL DEFAULT 0,
 	`update_server_url` VARCHAR(255) NOT NULL DEFAULT '',
 	`website` CHAR(255) NOT NULL DEFAULT '',
+	`whmcs_buy_link` VARCHAR(255) NOT NULL DEFAULT '',
 	`whmcs_key` VARCHAR(255) NOT NULL DEFAULT '',
 	`whmcs_url` VARCHAR(255) NOT NULL DEFAULT '',
 	`params` text NOT NULL DEFAULT '',
@@ -99,15 +100,16 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_state` (`published`),
 	KEY `idx_system_name` (`system_name`),
 	KEY `idx_name_code` (`name_code`),
+	KEY `idx_adduikit` (`adduikit`),
+	KEY `idx_add_update_server` (`add_update_server`),
 	KEY `idx_add_placeholders` (`add_placeholders`),
 	KEY `idx_mvc_versiondate` (`mvc_versiondate`),
-	KEY `idx_add_email_helper` (`add_email_helper`),
 	KEY `idx_debug_linenr` (`debug_linenr`),
-	KEY `idx_adduikit` (`adduikit`),
+	KEY `idx_add_email_helper` (`add_email_helper`),
 	KEY `idx_add_license` (`add_license`),
 	KEY `idx_license_type` (`license_type`),
 	KEY `idx_update_server_target` (`update_server_target`),
-	KEY `idx_add_update_server` (`add_update_server`),
+	KEY `idx_creatuserhelper` (`creatuserhelper`),
 	KEY `idx_addfootable` (`addfootable`),
 	KEY `idx_add_php_helper_both` (`add_php_helper_both`),
 	KEY `idx_add_php_helper_admin` (`add_php_helper_admin`),
@@ -123,11 +125,10 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_add_php_postflight_update` (`add_php_postflight_update`),
 	KEY `idx_add_php_method_uninstall` (`add_php_method_uninstall`),
 	KEY `idx_add_sql` (`add_sql`),
-	KEY `idx_emptycontributors` (`emptycontributors`),
 	KEY `idx_add_sql_uninstall` (`add_sql_uninstall`),
+	KEY `idx_emptycontributors` (`emptycontributors`),
 	KEY `idx_addreadme` (`addreadme`),
-	KEY `idx_add_sales_server` (`add_sales_server`),
-	KEY `idx_creatuserhelper` (`creatuserhelper`)
+	KEY `idx_add_sales_server` (`add_sales_server`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
@@ -1514,7 +1515,7 @@ INSERT INTO `#__componentbuilder_field` (`id`, `add_css_view`, `add_css_views`, 
 (196, '', '', '', '', '', '', '', '', '', 64, '', 'VARCHAR', '', '', '', 'Mobile Phone', 'NOT NULL', '', 23, '\"<field type=\\\"text\\\" \\r\\nname=\\\"mobile_phone\\\" \\r\\nlabel=\\\"Mobile Phone\\\" \\r\\nsize=\\\"10\\\" \\r\\nmaxlength=\\\"50\\\" \\r\\ndefault=\\\"\\\" \\r\\ndescription=\\\"Enter Mobile Phone Number\\\" \\r\\nclass=\\\"text_area\\\" \\r\\nfilter=\\\"STRING\\\" \\r\\nvalidated=\\\"tel\\\" \\r\\nrequired=\\\"true\\\" \\r\\nmessage=\\\"Error! Please add mobile phone number here.\\\" \\r\\nhint=\\\"Mobile Phone Here\\\"  \\/>\"', 1, '2015-04-07 22:12:58', '2016-03-28 14:00:02', 2, '', 7),
 (199, '', '', '', '', '', '', '', '', '', 255, '', 'VARCHAR', 2, '', '', 'Name', 'NOT NULL', '', 24, '\"<field\\r\\n\\ttype=\\\"text\\\" \\r\\n\\tname=\\\"name\\\" \\r\\n\\tlabel=\\\"Name\\\" \\r\\n\\tsize=\\\"40\\\" \\r\\n\\tmaxlength=\\\"150\\\" \\r\\n\\tdescription=\\\"Enter Name Here\\\" \\r\\n\\tclass=\\\"text_area\\\" \\r\\n\\treadonly=\\\"false\\\" \\r\\n\\tdisabled=\\\"false\\\" \\r\\n\\trequired=\\\"true\\\"\\r\\n\\tfilter=\\\"STRING\\\" \\r\\n\\tmessage=\\\"Error! Please add name here.\\\" \\r\\n\\thint=\\\"Name Here\\\" \\r\\n\\/>\"', 1, '2015-03-19 17:30:59', '2017-10-25 20:26:02', 8, '', 4),
 (203, '', '', '', '', '', '', '', '', '', 1, '', 'INT', '', '', '', 'Not Required', 'NOT NULL', '', 9, '\"<field \\r\\n\\ttype=\\\"hidden\\\" \\r\\n\\tname=\\\"not_required\\\" \\r\\n\\tdefault=\\\"[]\\\" \\r\\n\\/>\"', 1, '2015-05-08 16:19:16', '2015-08-25 21:15:22', 1, '', 19),
-(280, '', '', '', '', '', '', '', '', '', 255, '', 'VARCHAR', '', '', '', 'Website', 'NOT NULL', '', 27, '\"<field \\r\\n\\ttype=\\\"url\\\" \\r\\n\\tname=\\\"website\\\" \\r\\n\\tlabel=\\\"Website\\\" \\r\\n\\tsize=\\\"60\\\" \\r\\n\\tmaxlength=\\\"150\\\" \\r\\n\\tdefault=\\\"\\\" \\r\\n\\tdescription=\\\"Enter website address\\\" \\r\\n\\tclass=\\\"text_area\\\" \\r\\n\\treadonly=\\\"\\\" \\r\\n\\tdisabled=\\\"\\\" \\r\\n\\trequired=\\\"\\\" \\r\\n\\tfilter=\\\"url\\\" \\r\\n\\tvalidated=\\\"url\\\" \\r\\n\\tmessage=\\\"Error! Please add website here.\\\" \\r\\n\\thint=\\\"http:\\/\\/www.example.com\\\" \\r\\n\\/>\"', 1, '2015-04-08 00:36:16', '2015-08-25 21:15:22', 1, '', 105),
+(280, '', '', '', '', '', '', '', '', '', 255, '', 'VARCHAR', '', '', '', 'Website', 'NOT NULL', '', 27, '\"<field\\n\\ttype=\\\"url\\\"\\n\\tname=\\\"website\\\"\\n\\tlabel=\\\"Website\\\"\\n\\tsize=\\\"60\\\"\\n\\tmaxlength=\\\"150\\\"\\n\\tdescription=\\\"Enter website address\\\"\\n\\tclass=\\\"text_area\\\"\\n\\tfilter=\\\"url\\\"\\n\\tvalidated=\\\"url\\\"\\n\\tmessage=\\\"Error! Please add website here.\\\"\\n\\thint=\\\"http:\\/\\/www.example.com\\\"\\n\\tscheme=\\\"http,https\\\"\\n\\/>\"', 1, '2015-04-08 00:36:16', '2018-07-08 00:11:05', 2, '', 105),
 (682, '', '', '', '', '', '', '', '', '', 1, '', 'TINYINT', 2, '', '', 'Add More', 'NOT NULL', '', 17, '\"<field \\r\\n\\ttype=\\\"radio\\\" \\r\\n\\tname=\\\"add\\\" \\r\\n\\tlabel=\\\"Add More\\\" \\r\\n\\tdescription=\\\"\\\" \\r\\n\\tclass=\\\"btn-group btn-group-yesno\\\" \\r\\n\\toption=\\\"1|Yes,0|No\\\" \\r\\n\\tdefault=\\\"0\\\" \\r\\n\\trequired=\\\"true\\\" \\r\\n\\/>\"', 1, '2015-08-05 01:18:20', '2018-03-30 09:30:45', 4, '', 196),
 (1011, '', '', '', '', '', '', '', 'Other', '0000-00-00', '', '', 'DATE', '', '', '', 'Date of Birth', 'NOT NULL', '', 1, '\"<field \\r\\n\\ttype=\\\"calendar\\\" \\r\\n\\tname=\\\"dateofbirth\\\" \\r\\n\\tlabel=\\\"Date of Birth\\\" \\r\\n\\tdefault=\\\"1970-01-01\\\" \\r\\n\\tdescription=\\\"Your date of birth\\\" \\r\\n\\tclass=\\\"\\\" \\r\\n\\tformat=\\\"%Y-%m-%d\\\" \\r\\n\\tfilter=\\\"\\\" \\r\\n\\trequired=\\\"\\\" \\r\\n\\/>\"', 1, '2015-12-07 01:47:32', '2015-12-07 02:15:24', 3, '', 649);
 

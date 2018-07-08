@@ -25,6 +25,7 @@ $fields = $displayData->get('fields') ?: array(
 	'note_whmcs_lisencing_note',
 	'whmcs_key',
 	'whmcs_url',
+	'whmcs_buy_link',
 	'license',
 	'bom',
 	'image'

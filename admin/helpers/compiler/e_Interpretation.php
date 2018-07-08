@@ -234,12 +234,12 @@ class Interpretation extends Fields
 		{
 			if (!isset($this->fileContentStatic[$this->hhh . 'HELPER_SITE_LICENSE_LOCK' . $this->hhh]))
 			{
-				$_VDM = '_' . ComponentbuilderHelper::safeString($this->uniquekey(10), 'U');
+				$_WHMCS = '_' . ComponentbuilderHelper::safeString($this->uniquekey(10), 'U');
 				// add it to the system
-				$this->fileContentStatic[$this->hhh . 'HELPER_SITE_LICENSE_LOCK' . $this->hhh] = $this->setHelperLicenseLock($_VDM, 'site');
-				$this->fileContentStatic[$this->hhh . 'HELPER_LICENSE_LOCK' . $this->hhh] = $this->setHelperLicenseLock($_VDM, 'admin');
-				$this->fileContentStatic[$this->hhh . 'LICENSE_LOCKED_INT' . $this->hhh] = $this->setInitLicenseLock($_VDM);
-				$this->fileContentStatic[$this->hhh . 'LICENSE_LOCKED_DEFINED' . $this->hhh] = PHP_EOL . PHP_EOL . 'defined(\'' . $_VDM . '\') or die(JText:' . ':_(\'NIE_REG_NIE\'));';
+				$this->fileContentStatic[$this->hhh . 'HELPER_SITE_LICENSE_LOCK' . $this->hhh] = $this->setHelperLicenseLock($_WHMCS, 'site');
+				$this->fileContentStatic[$this->hhh . 'HELPER_LICENSE_LOCK' . $this->hhh] = $this->setHelperLicenseLock($_WHMCS, 'admin');
+				$this->fileContentStatic[$this->hhh . 'LICENSE_LOCKED_INT' . $this->hhh] = $this->setInitLicenseLock($_WHMCS);
+				$this->fileContentStatic[$this->hhh . 'LICENSE_LOCKED_DEFINED' . $this->hhh] = PHP_EOL . PHP_EOL . 'defined(\'' . $_WHMCS . '\') or die(JText:' . ':_(\'NIE_REG_NIE\'));';
 			}
 		}
 		else
@@ -332,8 +332,8 @@ class Interpretation extends Fields
 		$bool[] = $this->_t(2) . "if (\$license_key)";
 		$bool[] = $this->_t(2) . "{";
 		$bool[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " load the file";
-		$bool[] = $this->_t(3) . "JLoader::import( 'vdm', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
-		$bool[] = $this->_t(3) . "\$the = new VDM(\$license_key);";
+		$bool[] = $this->_t(3) . "JLoader::import( 'whmcs', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
+		$bool[] = $this->_t(3) . "\$the = new WHMCS(\$license_key);";
 		$bool[] = $this->_t(3) . "\$this->" . $globalbool . " = \$the->_is;";
 		$bool[] = $this->_t(3) . "return \$this->" . $globalbool . ";";
 		$bool[] = $this->_t(2) . "}";
@@ -346,12 +346,12 @@ class Interpretation extends Fields
 	/**
 	 * set Helper License Lock
 	 *
-	 * @param type $_VDM
+	 * @param type $_WHMCS
 	 * @param type $target
 	 *
 	 * @return string
 	 */
-	public function setHelperLicenseLock($_VDM, $target)
+	public function setHelperLicenseLock($_WHMCS, $target)
 	{
 		$helper[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
 		$helper[] = $this->_t(1) . " * Check if this install has a license.";
@@ -364,8 +364,8 @@ class Interpretation extends Fields
 		$helper[] = $this->_t(2) . "if (\$license_key)";
 		$helper[] = $this->_t(2) . "{";
 		$helper[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " load the file";
-		$helper[] = $this->_t(3) . "JLoader::import( 'vdm', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
-		$helper[] = $this->_t(3) . "\$the = new VDM(\$license_key);";
+		$helper[] = $this->_t(3) . "JLoader::import( 'whmcs', JPATH_ADMINISTRATOR .'/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "');";
+		$helper[] = $this->_t(3) . "\$the = new WHMCS(\$license_key);";
 		$helper[] = $this->_t(3) . "return \$the->_is;";
 		$helper[] = $this->_t(2) . "}";
 		$helper[] = $this->_t(2) . "return false;";
@@ -377,18 +377,18 @@ class Interpretation extends Fields
 	/**
 	 * set Init License Lock
 	 *
-	 * @param type $_VDM
+	 * @param type $_WHMCS
 	 *
 	 * @return string
 	 */
-	public function setInitLicenseLock($_VDM)
+	public function setInitLicenseLock($_WHMCS)
 	{
-		$init[] = PHP_EOL . "if (!defined('" . $_VDM . "'))";
+		$init[] = PHP_EOL . "if (!defined('" . $_WHMCS . "'))";
 		$init[] = "{";
 		$init[] = $this->_t(1) . "\$allow = " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::isGenuine();";
 		$init[] = $this->_t(1) . "if (\$allow)";
 		$init[] = $this->_t(1) . "{";
-		$init[] = $this->_t(2) . "define('" . $_VDM . "', 1);";
+		$init[] = $this->_t(2) . "define('" . $_WHMCS . "', 1);";
 		$init[] = $this->_t(1) . "}";
 		$init[] = "}";
 		// return the initializing statement
@@ -6149,7 +6149,7 @@ class Interpretation extends Fields
 		$this->langContent['admin'][$this->langPrefix . '_NOT_FOUND_OR_ACCESS_DENIED'] = "Not found or access denied!";
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>License not set for " . $componentName . ".</h1><p>Notify your administrator!<br />The license can be obtained from " . $this->componentData->companyname . ".</p></center>";
+			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>License not set for " . $componentName . ".</h1><p>Notify your administrator!<br />The license can be obtained from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.</p></center>";
 		}
 		// add the langug files needed to import and export data
 		if ($this->addEximport)
@@ -14711,7 +14711,7 @@ function vdm_dkim() {
 				if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
 				{
 					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Field Encryption (whmcs)";
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "When using this (whmcs) encryption you need to get a key from " . $this->componentData->companyname . ".<br />Never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "When using this (whmcs) encryption you need to get a key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.<br />Never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
 				}
 				else
 				{
@@ -14727,7 +14727,7 @@ function vdm_dkim() {
 					{
 						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your Key (whmcs)";
 					}
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "You need to get this key from " . $this->componentData->companyname . ".";
+					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "You need to get this key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.";
 				}
 				// set the fields
 				$this->configFieldSets[] = $this->_t(2) . '<field type="note" name="whmcs_key_note" class="alert alert-info" label="' . $lang . '_WHMCS_KEY_NOTE_LABEL" description="' . $lang . '_WHMCS_KEY_NOTE_DESC"  />';

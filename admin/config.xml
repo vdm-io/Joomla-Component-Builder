@@ -1031,6 +1031,7 @@
 			required="false"
 			filter="url"
 			validated="url"
+			scheme="http,https"
 			message="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_EXPORT_BUY_LINK_HINT"
 		/>

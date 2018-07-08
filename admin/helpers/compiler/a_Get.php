@@ -949,6 +949,28 @@ class Get
 		// set the uikit switch
 		$this->uikit = $component->adduikit;
 
+		// set whmcs links if needed
+		if (1 == $component->add_license && (!isset($component->whmcs_buy_link) || !ComponentbuilderHelper::checkString($component->whmcs_buy_link)))
+		{
+			// update with the whmcs url
+			if (isset($component->whmcs_url) && ComponentbuilderHelper::checkString($component->whmcs_url))
+			{
+				$component->whmcs_buy_link = $component->whmcs_url;
+			}
+			// use the company website
+			elseif (isset($component->website) && ComponentbuilderHelper::checkString($component->website))
+			{
+				$component->whmcs_buy_link = $component->website;
+				$component->whmcs_url = rtrim($component->website, '/').'/whmcs';
+			}
+			// none set
+			else
+			{
+				$component->whmcs_buy_link = '#';
+				$component->whmcs_url = '#';
+			}
+		}
+
 		// set the footable switch
 		if ($component->addfootable)
 		{

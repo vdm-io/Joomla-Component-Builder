@@ -549,12 +549,14 @@ function vvvvvwk(add_license_vvvvvwk)
 		jQuery('.note_whmcs_lisencing_note').closest('.control-group').show();
 		jQuery('#jform_whmcs_key').closest('.control-group').show();
 		jQuery('#jform_whmcs_url').closest('.control-group').show();
+		jQuery('#jform_whmcs_buy_link').closest('.control-group').show();
 	}
 	else
 	{
 		jQuery('.note_whmcs_lisencing_note').closest('.control-group').hide();
 		jQuery('#jform_whmcs_key').closest('.control-group').hide();
 		jQuery('#jform_whmcs_url').closest('.control-group').hide();
+		jQuery('#jform_whmcs_buy_link').closest('.control-group').hide();
 	}
 }
 
