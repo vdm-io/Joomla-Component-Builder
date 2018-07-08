@@ -423,7 +423,7 @@ class Interpretation extends Fields
 				$encrypt[] = "/**";
 				$encrypt[] = "* " . $this->setLine(__LINE__) . "WHMCS Class ";
 				$encrypt[] = "**/";
-				$encrypt[] = PHP_EOL . "class WHMCS";
+				$encrypt[] = "class WHMCS";
 				$encrypt[] = "{";
 				$encrypt[] = $this->_t(1) . "public \$_key = false;";
 				$encrypt[] = $this->_t(1) . "public \$_is = false;";
@@ -584,7 +584,9 @@ class Interpretation extends Fields
 				return implode(PHP_EOL, $encrypt);
 			}
 		}
-		return '';
+		// give notice of this issue
+		$this->app->enqueueMessage(JText::sprintf('The <b>WHMCS class</b> could not be added to this component. You will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes.', $this->libraries[$id]->name), 'error');
+		return "//" . $this->setLine(__LINE__) . " The WHMCS class could not be added to this component." . PHP_EOL . "//" . $this->setLine(__LINE__) . " Please note that you will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes.";
 	}
 
 	/**

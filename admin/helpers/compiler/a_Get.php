@@ -970,6 +970,13 @@ class Get
 				$component->whmcs_url = '#';
 			}
 		}
+		// since the license details are not set clear
+		else
+		{
+			$component->whmcs_key = '';
+			$component->whmcs_buy_link = '';
+			$component->whmcs_url = '';
+		}
 
 		// set the footable switch
 		if ($component->addfootable)
