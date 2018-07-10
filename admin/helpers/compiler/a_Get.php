@@ -971,7 +971,7 @@ class Get
 			}
 		}
 		// since the license details are not set clear
-		else
+		elseif (0 == $component->add_license)
 		{
 			$component->whmcs_key = '';
 			$component->whmcs_buy_link = '';
