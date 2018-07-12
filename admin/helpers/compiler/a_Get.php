@@ -495,6 +495,13 @@ class Get
 	public $fieldRelations = array();
 
 	/**
+	 * Default Fields
+	 * 
+	 * @var    array
+	 */
+	public $defaultFields = array('created', 'created_by', 'modified', 'modified_by', 'published', 'ordering', 'access', 'version', 'hits', 'id');
+
+	/**
 	 * The list join fields
 	 * 
 	 * @var     array
@@ -1540,112 +1547,118 @@ class Get
 			$view->addfields = (isset($view->addfields) && ComponentbuilderHelper::checkJson($view->addfields)) ? json_decode($view->addfields, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->addfields))
 			{
+				$ignoreFields = array();
+				// load the field data
+				$view->fields = array_map(function($field) use($name_single, $name_list, &$ignoreFields)
+				{
+					// set hash 
+					static $hash = 123467890; // (TODO) I found this making duplicates
+					// load hash
+					$field['hash'] = md5($field['field'] . $hash);
+					// increment hash
+					$hash++;
+					// set the settings
+					$field['settings'] = $this->getFieldData($field['field'], $name_single, $name_list);
+					// set real field name
+					$field['base_name'] = $this->getFieldName($field);
+					// set code name for field type
+					$field['type_name'] = $this->getFieldType($field);
+					// check if this field is a default field OR 
+					// check if this is none database related field
+					if (in_array($field['base_name'], $this->defaultFields) || 
+						ComponentbuilderHelper::fieldCheck($field['type_name'], 'spacer') ||
+						$field['list'] == 2) // 2 = none database
+					{
+						$ignoreFields[$field['field']] = $field['field'];
+					}
+					// set unigue name keeper
+					$this->setUniqueNameCounter($field['base_name'], $name_list);
+					// return field
+					return $field;
+				}, array_values($view->addfields));
 				// build update SQL
 				if ($old_view = $this->getHistoryWatch('admin_fields', $view->addfields_id))
 				{
 					// add new fields were added
 					if (isset($old_view->addfields) && ComponentbuilderHelper::checkJson($old_view->addfields))
 					{
-						$this->setUpdateSQL(json_decode($old_view->addfields, true), $view->addfields, 'field', $name_single);
+						$this->setUpdateSQL(json_decode($old_view->addfields, true), $view->addfields, 'field', $name_single, $ignoreFields);
 					}
 					// clear this data
 					unset($old_view);
 				}
-				if (ComponentbuilderHelper::checkArray($view->addfields))
+				// sort the fields acording to order
+				usort($view->fields, function($a, $b)
 				{
-					// load the field data
-					$view->fields = array_map(function($field) use($name_single, $name_list)
+					if (isset($a['order_list']) && isset($b['order_list']))
 					{
-						// set hash 
-						static $hash = 123467890; // (TODO) I found this making duplicates
-						// load hash
-						$field['hash'] = md5($field['field'] . $hash);
-						// increment hash
-						$hash++;
-						// set the settings
-						$field['settings'] = $this->getFieldData($field['field'], $name_single, $name_list);
-						// set real field name
-						$field['base_name'] = $this->getFieldName($field);
-						// set unigue name keeper
-						$this->setUniqueNameCounter($field['base_name'], $name_list);
-						// return field
-						return $field;
-					}, array_values($view->addfields));
-
-					// sort the fields acording to order
-					usort($view->fields, function($a, $b)
-					{
-						if (isset($a['order_list']) && isset($b['order_list']))
+						if ($a['order_list'] != 0 && $b['order_list'] != 0)
 						{
-							if ($a['order_list'] != 0 && $b['order_list'] != 0)
-							{
-								return $a['order_list'] - $b['order_list'];
-							}
-							elseif ($b['order_list'] != 0 && $a['order_list'] == 0)
-							{
-								return 1;
-							}
-							elseif ($a['order_list'] != 0 && $b['order_list'] == 0)
-							{
-								return 0;
-							}
+							return $a['order_list'] - $b['order_list'];
+						}
+						elseif ($b['order_list'] != 0 && $a['order_list'] == 0)
+						{
 							return 1;
 						}
-						return 0;
-					});
-
-					// do some house cleaning (for fields)
-					foreach ($view->fields as $field)
-					{
-						// so first we lock the field name in
-						$field_name = $this->getFieldName($field, $name_list);
-						// check if the field changed since the last compilation
-						if (ComponentbuilderHelper::checkObject($field['settings']->history))
+						elseif ($a['order_list'] != 0 && $b['order_list'] == 0)
 						{
-							// check if the datatype changed
-							if (isset($field['settings']->history->datatype))
+							return 0;
+						}
+						return 1;
+					}
+					return 0;
+				});
+				// do some house cleaning (for fields)
+				foreach ($view->fields as $field)
+				{
+					// so first we lock the field name in
+					$field_name = $this->getFieldName($field, $name_list);
+					// check if the field changed since the last compilation (default fields never change and are always added)
+					if (!isset($ignoreFields[$field['field']]) && ComponentbuilderHelper::checkObject($field['settings']->history))
+					{
+						// check if the datatype changed
+						if (isset($field['settings']->history->datatype))
+						{
+							$this->setUpdateSQL($field['settings']->history->datatype, $field['settings']->datatype, 'field.datatype', $name_single . '.' . $field_name);
+						}
+						// check if the datatype lenght changed
+						if (isset($field['settings']->history->datalenght) && isset($field['settings']->history->datalenght_other))
+						{
+							$this->setUpdateSQL($field['settings']->history->datalenght . $field['settings']->history->datalenght_other, $field['settings']->datalenght . $field['settings']->datalenght_other, 'field.lenght', $name_single . '.' . $field_name);
+						}
+						// check if the name changed
+						if (isset($field['settings']->history->xml) && ComponentbuilderHelper::checkJson($field['settings']->history->xml))
+						{
+							// only run if this is not an alias or a tag
+							if ((!isset($field['alias']) || !$field['alias']) && 'tag' !== $field['settings']->type_name)
 							{
-								$this->setUpdateSQL($field['settings']->history->datatype, $field['settings']->datatype, 'field.datatype', $name_single . '.' . $field_name);
-							}
-							// check if the datatype lenght changed
-							if (isset($field['settings']->history->datalenght) && isset($field['settings']->history->datalenght_other))
-							{
-								$this->setUpdateSQL($field['settings']->history->datalenght . $field['settings']->history->datalenght_other, $field['settings']->datalenght . $field['settings']->datalenght_other, 'field.lenght', $name_single . '.' . $field_name);
-							}
-							// check if the name changed
-							if (isset($field['settings']->history->xml) && ComponentbuilderHelper::checkJson($field['settings']->history->xml))
-							{
-								// only run if this is not an alias or a tag
-								if ((!isset($field['alias']) || !$field['alias']) && 'tag' !== $field['settings']->type_name)
-								{
-									// build temp field bucket
-									$tmpfield = array();
-									$tmpfield['settings'] = new stdClass();
-									// convert the xml json string to normal string
-									$tmpfield['settings']->xml = $this->setDynamicValues(json_decode($field['settings']->history->xml));
-									// add properties from current field as it is generic
-									$tmpfield['settings']->properties = $field['settings']->properties;
-									// add the old name
-									$tmpfield['settings']->name = $field['settings']->history->name;
-									// add the field type from current field since it is generic
-									$tmpfield['settings']->type_name = $field['settings']->type_name;
-									// get the old name
-									$old_field_name = $this->getFieldName($tmpfield);
+								// build temp field bucket
+								$tmpfield = array();
+								$tmpfield['settings'] = new stdClass();
+								// convert the xml json string to normal string
+								$tmpfield['settings']->xml = $this->setDynamicValues(json_decode($field['settings']->history->xml));
+								// add properties from current field as it is generic
+								$tmpfield['settings']->properties = $field['settings']->properties;
+								// add the old name
+								$tmpfield['settings']->name = $field['settings']->history->name;
+								// add the field type from current field since it is generic
+								$tmpfield['settings']->type_name = $field['settings']->type_name;
+								// get the old name
+								$old_field_name = $this->getFieldName($tmpfield);
 
-									// only run this if not a multi field
-									if (!isset($this->uniqueNames[$name_list]['names'][$field_name]))
-									{
-										// this only works when the field is not multiple of the same field
-										$this->setUpdateSQL($old_field_name, $field_name, 'field.name', $name_single . '.' . $field_name);
-									}
-									elseif ($old_field_name !== $field_name)
-									{
-										// give a notice atleast that the multi fields could have changed and no DB update was done
-										$this->app->enqueueMessage(JText::sprintf('You have a field called <b>%s</b> that has been added multiple times to the <b>%s</b> view, the name of that field has changed to <b>%s</b>. Normaly we would automaticly add the update SQL to your component, but with multiple fields this does not work automaticly since it could be that noting changed and it just seems like it did. Therefore you will have to do this manualy if it actualy did change!', $field_name, $name_single, $old_field_name), 'Notice');
-									}
-									// remove tmp
-									unset($tmpfield);
+								// only run this if not a multi field
+								if (!isset($this->uniqueNames[$name_list]['names'][$field_name]))
+								{
+									// this only works when the field is not multiple of the same field
+									$this->setUpdateSQL($old_field_name, $field_name, 'field.name', $name_single . '.' . $field_name);
 								}
+								elseif ($old_field_name !== $field_name)
+								{
+									// give a notice atleast that the multi fields could have changed and no DB update was done
+									$this->app->enqueueMessage(JText::sprintf('You have a field called <b>%s</b> that has been added multiple times to the <b>%s</b> view, the name of that field has changed to <b>%s</b>. Normaly we would automaticly add the update SQL to your component, but with multiple fields this does not work automaticly since it could be that noting changed and it just seems like it did. Therefore you will have to do this manualy if it actualy did change!', $field_name, $name_single, $old_field_name), 'Notice');
+								}
+								// remove tmp
+								unset($tmpfield);
 							}
 						}
 					}
@@ -2498,6 +2511,11 @@ class Get
 	 */
 	public function getFieldType(&$field)
 	{
+		// check if we have done this already
+		if (isset($field['type_name']))
+		{
+			return $field['type_name'];
+		}
 		// set the type name
 		$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
 		// check that we have the poperties
@@ -2507,16 +2525,17 @@ class Get
 			{
 				if ($property['name'] === 'type')
 				{
+					// if custom (we must use the xml value)
 					if ($type_name === 'custom' || $type_name === 'customuser')
 					{
 						$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
 					}
-					// use field core type
-					elseif (ComponentbuilderHelper::checkString($type_name))
+					// use field core type (name)
+					elseif (ComponentbuilderHelper::checkString($type_name) || (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']) && $property['adjustable'] == 0))
 					{
 						$type = $type_name;
 					}
-					// make sure none adjustable fields are set (should be same as above)
+					// make sure none adjustable fields are set (should be same as above) (TODO) hmmm we need look at this again
 					elseif (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']) && $property['adjustable'] == 0)
 					{
 						$type = $property['example'];
@@ -3022,11 +3041,12 @@ class Get
 	 * @param   mix      $new    The new values
 	 * @param   string   $type   The type of values
 	 * @param   int      $key    The id/key where values changed
+	 * @param   array    $ignore The ids to ignore
 	 *
 	 * @return  void
 	 * 
 	 */
-	protected function setUpdateSQL($old, $new, $type, $key = null)
+	protected function setUpdateSQL($old, $new, $type, $key = null, $ignore = null)
 	{
 		// check if there were new items added
 		if (ComponentbuilderHelper::checkArray($new) && ComponentbuilderHelper::checkArray($old))
@@ -3037,8 +3057,14 @@ class Get
 				foreach ($new[$type] as $item)
 				{
 					$newItem = true;
+					// check if this is an id to ignore
+					if (ComponentbuilderHelper::checkArray($ignore) && in_array($item, $ignore))
+					{
+						// don't add ignored ids
+						$newItem = false;
+					}
 					// check if this is old repeatable field
-					if (isset($old[$type]) && ComponentbuilderHelper::checkArray($old[$type]))
+					elseif (isset($old[$type]) && ComponentbuilderHelper::checkArray($old[$type]))
 					{
 						if (!in_array($item, $old[$type]))
 						{
@@ -3084,12 +3110,18 @@ class Get
 			{
 				foreach ($new as $item)
 				{
-					// search to see if this is a new value
-					$newItem = true;
 					if (isset($item[$type]))
 					{
+						// search to see if this is a new value
+						$newItem = true;
+						// check if this is an id to ignore
+						if (ComponentbuilderHelper::checkArray($ignore) && in_array($item[$type], $ignore))
+						{
+							// don't add ignored ids
+							$newItem = false;
+						}
 						// check if this is old repeatable field
-						if (isset($old[$type]) && ComponentbuilderHelper::checkArray($old[$type]))
+						elseif (isset($old[$type]) && ComponentbuilderHelper::checkArray($old[$type]))
 						{
 							if (in_array($item[$type], $old[$type]))
 							{
@@ -3120,16 +3152,12 @@ class Get
 						{
 							$newItem = false;
 						}
-					}
-					else
-					{
-						break;
-					}
-					// add if new
-					if ($newItem)
-					{
-						// we have a new item, lets add to SQL
-						$this->setAddSQL($type, $item[$type], $key);
+						// add if new
+						if ($newItem)
+						{
+							// we have a new item, lets add to SQL
+							$this->setAddSQL($type, $item[$type], $key);
+						}
 					}
 				}
 			}

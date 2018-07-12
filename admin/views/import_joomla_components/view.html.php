@@ -59,7 +59,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			// add title to the page
 			JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_JCB_PACKAGE_IMPORT'),'upload');
 			// add refesh button.
-			JToolBarHelper::custom('refresh', 'refresh', '', 'COM_COMPONENTBUILDER_REFRESH', false);
+			JToolBarHelper::custom('joomla_component.refresh', 'refresh', '', 'COM_COMPONENTBUILDER_REFRESH', false);
 		}
 		// get the session object
 		$session = JFactory::getSession();

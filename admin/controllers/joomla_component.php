@@ -35,6 +35,31 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 		parent::__construct($config);
 	}
 
+	public function refresh()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// check if import is allowed for this user.
+		$user = JFactory::getUser();
+		if ($user->authorise('joomla_component.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
+		{
+			$session = JFactory::getSession();
+			$session->set('backto_VDM_IMPORT', 'joomla_components');
+			$session->set('dataType_VDM_IMPORTINTO', 'smart_package');
+			// clear the session
+			componentbuilderHelper::set('vdmGithubPackages', null);
+			componentbuilderHelper::set('communityGithubPackages', null);
+			// Redirect to import view.
+			$message = JText::_('COM_COMPONENTBUILDER_YOU_CAN_NOW_SELECT_THE_COMPONENT_BZIPB_PACKAGE_YOU_WOULD_LIKE_TO_IMPORTBR_SMALLPLEASE_NOTE_THAT_SMART_COMPONENT_IMPORT_ONLY_WORKS_WITH_THE_FOLLOWING_FORMAT_BZIPBSMALL');
+			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', false), $message);
+			return;
+		}
+		// Redirect to the list screen with error.
+		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_IMPORT_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		return;
+	}
+
         /**
 	 * Method override to check if you can add a new record.
 	 *

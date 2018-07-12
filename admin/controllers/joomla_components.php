@@ -97,6 +97,8 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 
 	public function smartImport()
 	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
 		$user = JFactory::getUser();
 		if ($user->authorise('joomla_component.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
@@ -355,6 +357,8 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 
 	public function cloner()
 	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		// Get the model
 		$model = $this->getModel('Joomla_components');
 		// check if export is allowed for this user.

@@ -36,13 +36,14 @@ JHtml::_('behavior.keepalive');
 <?php else: ?>
 	Joomla.submitbutton = function(task)
 	{
-		if ('refresh' === task){
+		if ('joomla_component.refresh' === task){
 			jQuery('#loading').css('display', 'block');
 			// clear the history
 			jQuery.jStorage.flush();
 			// now start the update
 			autoJCBpackageInfo();
-			jQuery('#loading').hide();
+			// also clear the session memory around the component list
+			Joomla.submitform(task);
 		} else {
 			var form = document.getElementById('adminForm');
 			// do field validation

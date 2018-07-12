@@ -4226,16 +4226,16 @@ abstract class ComponentbuilderHelper
 					{
 						if ($external)
 						{
-							if ($name = self::getVar(null, $val, $id, $name, '=', $table))
+							if ($_name = self::getVar(null, $val, $id, $name, '=', $table))
 							{
-								$names[] = $name;
+								$names[] = $_name;
 							}
 						}
 						else
 						{
-							if ($name = self::getVar($table, $val, $id, $name))
+							if ($_name = self::getVar($table, $val, $id, $name))
 							{
-								$names[] = $name;
+								$names[] = $_name;
 							}
 						}
 					}

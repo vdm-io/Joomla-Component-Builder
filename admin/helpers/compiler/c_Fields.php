@@ -320,13 +320,6 @@ class Fields extends Structure
 	public $fieldsNames = array();
 
 	/**
-	 * Default Fields
-	 * 
-	 * @var    array
-	 */
-	public $defaultFields = array('created', 'created_by', 'modified', 'modified_by', 'published', 'ordering', 'access', 'version', 'hits', 'id');
-
-	/**
 	 * Default Fields set to publishing
 	 * 
 	 * @var    array
