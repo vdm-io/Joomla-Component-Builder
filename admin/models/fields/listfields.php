@@ -88,6 +88,7 @@ class JFormFieldListfields extends JFormFieldList
 				$options = array();
 				if ($items)
 				{
+					$options[] = JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
 					foreach($items as $item)
 					{
 						$options[] = JHtml::_('select.option', $item->id, $item->name);

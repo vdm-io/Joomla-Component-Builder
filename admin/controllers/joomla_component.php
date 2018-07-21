@@ -47,8 +47,8 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 			$session->set('backto_VDM_IMPORT', 'joomla_components');
 			$session->set('dataType_VDM_IMPORTINTO', 'smart_package');
 			// clear the session
-			componentbuilderHelper::set('vdmGithubPackages', null);
-			componentbuilderHelper::set('communityGithubPackages', null);
+			ComponentbuilderHelper::set('vdmGithubPackages', null);
+			ComponentbuilderHelper::set('communityGithubPackages', null);
 			// Redirect to import view.
 			$message = JText::_('COM_COMPONENTBUILDER_YOU_CAN_NOW_SELECT_THE_COMPONENT_BZIPB_PACKAGE_YOU_WOULD_LIKE_TO_IMPORTBR_SMALLPLEASE_NOTE_THAT_SMART_COMPONENT_IMPORT_ONLY_WORKS_WITH_THE_FOLLOWING_FORMAT_BZIPBSMALL');
 			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', false), $message);

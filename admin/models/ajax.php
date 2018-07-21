@@ -428,7 +428,7 @@ class ComponentbuilderModelAjax extends JModelList
 				'search' => 'setYesNo',
 				'filter' => 'setYesNo',
 				'link' => 'setYesNo',
-				'permission' => 'setYesNo',
+				'permission' => 'setPermissions',
 				'tab' => 'setTabName',
 				'alignment' => 'setAlignmentName',
 				'target_field' => 'setItemNames',
@@ -850,6 +850,42 @@ class ComponentbuilderModelAjax extends JModelList
 			return JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 		}
 		return JText::_('COM_COMPONENTBUILDER_NO_ITEM_FOUND');
+	}
+
+	protected function setPermissions($header, $values)
+	{
+		// check if value is array
+		if (!ComponentbuilderHelper::checkArray($values))
+		{
+			$values = array($values);
+		}
+		// check if value is array
+		if (ComponentbuilderHelper::checkArray($values))
+		{
+			// Editing, Access, View
+			$bucket = array();
+			foreach ($values as $value)
+			{
+				switch ($value)
+				{
+					case 1:
+						$bucket[] = JText::_('COM_COMPONENTBUILDER_EDITING');
+					break;
+					case 2:
+						$bucket[] = JText::_('COM_COMPONENTBUILDER_ACCESS');
+					break;
+					case 3:
+						$bucket[] = JText::_('COM_COMPONENTBUILDER_VIEW');
+					break;
+				}
+			}
+			// check if value is array
+			if (ComponentbuilderHelper::checkArray($bucket))
+			{
+				return implode(', ', $bucket);
+			}
+		}
+		return JText::_('COM_COMPONENTBUILDER_NONE');
 	}
 
 	protected function setJoinType($header, $value)
@@ -2625,11 +2661,18 @@ class ComponentbuilderModelAjax extends JModelList
 		elseif ($type == 2)
 		{
 			// build fields array
-			$fields = array_map( function ($id) {
-				return (int) $id;
-			}, (array) explode(',', $joinfields));
-			// add the list field to array
-			array_unshift($fields, (int) $listfield);
+			if ('none' !== $joinfields)
+			{
+				$fields = array_map( function ($id) {
+					return (int) $id;
+				}, (array) explode(',', $joinfields));
+				// add the list field to array
+				array_unshift($fields, (int) $listfield);
+			}
+			else
+			{
+				$fields = array((int) $listfield);
+			}
 			// get field names
 			$names = array_map( function ($id) {
 				return '[' . $id . ']=> ' . ComponentbuilderHelper::getVar('field', $id, 'id', 'name');

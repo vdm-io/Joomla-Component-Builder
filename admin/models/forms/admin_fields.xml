@@ -270,14 +270,16 @@
 					name="permission"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_DESCRIPTION"
-					class="fieldMid"
-					multiple="false"
+					class="fieldMedium"
+					multiple="true"
 					required="false">
 					<!-- Option Set. -->
-					<option value="0">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_NONE</option>
-					<option value=" 1">
+					<option value="1">
 						COM_COMPONENTBUILDER_ADMIN_FIELDS_EDITING</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_ACCESS</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_VIEW</option>
 				</field>
 			</form>
 		</field>

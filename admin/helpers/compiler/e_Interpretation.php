@@ -166,6 +166,27 @@ class Interpretation extends Fields
 	protected $hasCatIdRequest = array();
 
 	/**
+	 * All fields with permissions
+	 *
+	 * @var    array
+	 */
+	protected $permissionFields = array();
+
+	/**
+	 * Custom Admin View List Link
+	 *
+	 * @var    array
+	 */
+	protected $customAdminViewListLink = array();
+
+	/**
+	 * load Tracker of fields to fix
+	 *
+	 * @var    array
+	 */
+	protected $loadTracker = array();
+
+	/**
 	 * View Has Id Request
 	 *
 	 * @var    array
@@ -1613,8 +1634,13 @@ class Interpretation extends Fields
 		{
 			foreach ($filters as $field => $ter)
 			{
-				if (strpos($get['selection']['select'], $ter['table_key']) !== false)
+				// build load counter
+				$key = md5('setCustomViewFieldDecodeFilter' . $code . $get['key'] . $string . $ter['table_key']);
+				// check if we should load this again
+				if (strpos($get['selection']['select'], $ter['table_key']) !== false && !isset($this->loadTracker[$key]))
 				{
+					// set the key
+					$this->loadTracker[$key] = $key;
 					$as = '';
 					$felt = '';
 					list($as, $felt) = array_map('trim', explode('.', $ter['table_key']));
@@ -1729,8 +1755,13 @@ class Interpretation extends Fields
 		$fieldDecode = '';
 		foreach ($checker as $field => $array)
 		{
-			if (strpos($get['selection']['select'], $field) !== false && ComponentbuilderHelper::checkArray($array['decode']))
+			// build load counter
+			$key = md5('setCustomViewFieldDecode' . $code . $get['key'] . $string . $field);
+			// check if we should load this again
+			if (strpos($get['selection']['select'], $field) !== false && !isset($this->loadTracker[$key]) && ComponentbuilderHelper::checkArray($array['decode']))
 			{
+				// set the key
+				$this->loadTracker[$key] = $key;
 				// insure it is unique
 				$array['decode'] = (array) array_unique(array_reverse((array) $array['decode']));
 				// now loop the array
@@ -1763,7 +1794,7 @@ class Interpretation extends Fields
 					}
 
 					// build decoder string
-					$fieldDecode .= $if . PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Decode " . $field;
+					$fieldDecode .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Check if we can decode " . $field .$if . PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Decode " . $field;
 					$fieldDecode .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . $decoder . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "}";
 				}
 			}
@@ -1778,8 +1809,13 @@ class Interpretation extends Fields
 		$context = 'com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $code;
 		foreach ($checker as $field => $array)
 		{
-			if (strpos($get['selection']['select'], $field) !== false)
+			// build load counter
+			$key = md5('setCustomViewFieldonContentPrepareChecker' . $code . $get['key'] . $string . $field);
+			// check if we should load this again
+			if (strpos($get['selection']['select'], $field) !== false && !isset($this->loadTracker[$key]))
 			{
+				// set the key
+				$this->loadTracker[$key] = $key;
 				// build decoder string
 				if (!$runplugins)
 				{
@@ -1795,7 +1831,10 @@ class Interpretation extends Fields
 			}
 		}
 		// load dispatcher
-		$this->JEventDispatcher = array($this->hhh . 'DISPATCHER' . $this->hhh => ($runplugins ?: ''));
+		if ($runplugins)
+		{
+			$this->JEventDispatcher = array($this->hhh . 'DISPATCHER' . $this->hhh => $runplugins);
+		}
 		// return content prepare fix
 		return $fieldPrepare;
 	}
@@ -1805,8 +1844,13 @@ class Interpretation extends Fields
 		$fieldUikit = '';
 		foreach ($checker as $field => $array)
 		{
-			if (strpos($get['selection']['select'], $field) !== false)
+			// build load counter
+			$key = md5('setCustomViewFieldUikitChecker' . $code . $get['key'] . $string . $field);
+			// check if we should load this again
+			if (strpos($get['selection']['select'], $field) !== false && !isset($this->loadTracker[$key]))
 			{
+				// set the key
+				$this->loadTracker[$key] = $key;
 				// only load for uikit version 2 (TODO) we may need to add another check here
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
@@ -2632,6 +2676,7 @@ class Interpretation extends Fields
 	public function setCustomViewCustomItemMethods(&$main_get, $code)
 	{
 		$methods = '';
+		$this->JEventDispatcher = '';
 		// first set the needed item/s methods
 		if (ComponentbuilderHelper::checkObject($main_get))
 		{
@@ -3938,9 +3983,9 @@ class Interpretation extends Fields
 			if (2 == $this->uikit)
 			{
 				$setter .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Load uikit version.";
-				$setter .= PHP_EOL . $this->_t(2) . "\$uikitVersion = \$this->params->get('uikit_version', 2);";
+				$setter .= PHP_EOL . $this->_t(2) . "\$this->uikitVersion = \$this->params->get('uikit_version', 2);";
 				$setter .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Use Uikit Version 2";
-				$setter .= PHP_EOL . $this->_t(2) . "if (2 == \$uikitVersion)";
+				$setter .= PHP_EOL . $this->_t(2) . "if (2 == \$this->uikitVersion)";
 				$setter .= PHP_EOL . $this->_t(2) . "{";
 				$tabV = $this->_t(1);
 			}
@@ -4055,7 +4100,7 @@ class Interpretation extends Fields
 			{
 				$setter .= PHP_EOL . $this->_t(2) . "}";
 				$setter .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Use Uikit Version 3";
-				$setter .= PHP_EOL . $this->_t(2) . "elseif (3 == \$uikitVersion)";
+				$setter .= PHP_EOL . $this->_t(2) . "elseif (3 == \$this->uikitVersion)";
 				$setter .= PHP_EOL . $this->_t(2) . "{";
 			}
 			// add version 3 fiels to page
@@ -6485,7 +6530,7 @@ class Interpretation extends Fields
 				if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
 				{
 					// get custom admin view buttons
-					$customAdminViewButtons = $this->getCustomAdminViewButtons($item, $viewName_single, $viewName_list, $coreLoad);
+					$customAdminViewButtons = $this->getCustomAdminViewButtons($viewName_list);
 					// make sure the custom admin view buttons are only added once
 					$firstTimeBeingAdded = false;
 				}
@@ -6558,18 +6603,13 @@ class Interpretation extends Fields
 	protected function getListItemBuilder($item, $viewName_single, $viewName_list, &$itemClass, $doNotEscape, $coreLoad, $core, $class = true, $ref = null, $escape = '$this->escape', $user = '$this->user', $refview = null)
 	{
 		// check if we have relation fields
-		if (isset($this->fieldRelations[$viewName_list]) &&
-			isset($this->fieldRelations[$viewName_list][(int) $item['id']]) &&
-			isset($this->fieldRelations[$viewName_list][(int) $item['id']]['area']) &&
-			$this->fieldRelations[$viewName_list][(int) $item['id']]['area'] == 2 &&
-			isset($this->fieldRelations[$viewName_list][(int) $item['id']]['joinfields']) &&
-			ComponentbuilderHelper::checkArray($this->fieldRelations[$viewName_list][(int) $item['id']]['joinfields']))
+		if (isset($this->fieldRelations[$viewName_list]) && isset($this->fieldRelations[$viewName_list][(int) $item['id']]) && isset($this->fieldRelations[$viewName_list][(int) $item['id']][2]))
 		{
 			// set the fields array
 			$field = array();
 			// use custom code
-			$useCustomCode = (isset($this->fieldRelations[$viewName_list][(int) $item['id']]['join_type']) && $this->fieldRelations[$viewName_list][(int) $item['id']]['join_type'] == 2 &&
-				isset($this->fieldRelations[$viewName_list][(int) $item['id']]['set']) && ComponentbuilderHelper::checkString($this->fieldRelations[$viewName_list][(int) $item['id']]['set']));
+			$useCustomCode = (isset($this->fieldRelations[$viewName_list][(int) $item['id']][2]['join_type']) && $this->fieldRelations[$viewName_list][(int) $item['id']][2]['join_type'] == 2 &&
+				isset($this->fieldRelations[$viewName_list][(int) $item['id']][2]['set']) && ComponentbuilderHelper::checkString($this->fieldRelations[$viewName_list][(int) $item['id']][2]['set']));
 			// load the main list view field
 			$field['[field=' . (int) $item['id'] . ']'] = $this->getListItem($item, $viewName_single, $viewName_list, $itemClass, $doNotEscape, $coreLoad, $core, false, $ref, $escape, $user, $refview);
 			// code name
@@ -6578,17 +6618,21 @@ class Interpretation extends Fields
 				$field['$item->{' . (int) $item['id'] . '}'] = '$item->' . $item['code'];
 			}
 			// now load the relations
-			foreach ($this->fieldRelations[$viewName_list][(int) $item['id']]['joinfields'] as $join)
+			if (isset($this->fieldRelations[$viewName_list][(int) $item['id']][2]['joinfields']) &&
+				ComponentbuilderHelper::checkArray($this->fieldRelations[$viewName_list][(int) $item['id']][2]['joinfields']))
 			{
-				$blankClass = '';
-				if (isset($this->listJoinBuilder[$viewName_list]) && isset($this->listJoinBuilder[$viewName_list][(int) $join]))
+				foreach ($this->fieldRelations[$viewName_list][(int) $item['id']][2]['joinfields'] as $join)
 				{
-					// code block
-					$field['[field=' . (int) $join . ']'] = $this->getListItem($this->listJoinBuilder[$viewName_list][(int) $join], $viewName_single, $viewName_list, $blankClass, $doNotEscape, $coreLoad, $core, false, $ref, $escape, $user, $refview);
-					// code name
-					if (isset($this->listJoinBuilder[$viewName_list][(int) $join]['code']) && $useCustomCode)
+					$blankClass = '';
+					if (isset($this->listJoinBuilder[$viewName_list]) && isset($this->listJoinBuilder[$viewName_list][(int) $join]))
 					{
-						$field['$item->{' . (int) $join . '}'] = '$item->' . $this->listJoinBuilder[$viewName_list][(int) $join]['code'];
+						// code block
+						$field['[field=' . (int) $join . ']'] = $this->getListItem($this->listJoinBuilder[$viewName_list][(int) $join], $viewName_single, $viewName_list, $blankClass, $doNotEscape, $coreLoad, $core, false, $ref, $escape, $user, $refview);
+						// code name
+						if (isset($this->listJoinBuilder[$viewName_list][(int) $join]['code']) && $useCustomCode)
+						{
+							$field['$item->{' . (int) $join . '}'] = '$item->' . $this->listJoinBuilder[$viewName_list][(int) $join]['code'];
+						}
 					}
 				}
 			}
@@ -6596,12 +6640,12 @@ class Interpretation extends Fields
 			if ($useCustomCode)
 			{
 				// custom code
-				return PHP_EOL . $this->_t(3) . "<div>" . $this->setPlaceholders(str_replace(array_keys($field), array_values($field), $this->fieldRelations[$viewName_list][(int) $item['id']]['set']), $this->placeholders) . PHP_EOL . $this->_t(3) . "</div>";
+				return PHP_EOL . $this->_t(3) . "<div>" . $this->setPlaceholders(str_replace(array_keys($field), array_values($field), $this->fieldRelations[$viewName_list][(int) $item['id']][2]['set']), $this->placeholders) . PHP_EOL . $this->_t(3) . "</div>";
 			}
-			elseif (isset($this->fieldRelations[$viewName_list][(int) $item['id']]['set']) && ComponentbuilderHelper::checkString($this->fieldRelations[$viewName_list][(int) $item['id']]['set']))
+			elseif (isset($this->fieldRelations[$viewName_list][(int) $item['id']]['set']) && ComponentbuilderHelper::checkString($this->fieldRelations[$viewName_list][(int) $item['id']][2]['set']))
 			{
 				// concatenate
-				return PHP_EOL . $this->_t(3) . "<div>" . implode($this->fieldRelations[$viewName_list][(int) $item['id']]['set'], $field) . PHP_EOL . $this->_t(3) . "</div>";
+				return PHP_EOL . $this->_t(3) . "<div>" . implode($this->fieldRelations[$viewName_list][(int) $item['id']][2]['set'], $field) . PHP_EOL . $this->_t(3) . "</div>";
 			}
 			// default
 			return PHP_EOL . $this->_t(3) . "<div>" . implode('', $field) . PHP_EOL . $this->_t(3) . "</div>";
@@ -7868,7 +7912,7 @@ class Interpretation extends Fields
 				if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
 				{
 					// get custom admin view buttons
-					$customAdminViewButtons = $this->getCustomAdminViewButtons($item, $viewName_single, $viewName_list, $coreLoad, $ref);
+					$customAdminViewButtons = $this->getCustomAdminViewButtons($viewName_list, $ref);
 					// make sure the custom admin view buttons are only added once
 					$firstTimeBeingAdded = false;
 				}
@@ -10899,30 +10943,27 @@ class Interpretation extends Fields
 		// handel the fields permissions
 		if (isset($this->permissionFields[$viewName_single]) && ComponentbuilderHelper::checkArray($this->permissionFields[$viewName_single]))
 		{
-			foreach ($this->permissionFields[$viewName_single] as $fieldName => $fieldType)
+			foreach ($this->permissionFields[$viewName_single] as $fieldName => $permission_options)
 			{
-				$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
-				$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".edit." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-				$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".edit." . $fieldName . "', 'com_" . $component . "')))";
-				$allow[] = $this->_t(2) . "{";
-				$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-				$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'disabled', 'true');";
-				$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-				$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'readonly', 'true');";
-				if ('radio' === $fieldType || 'repeatable' === $fieldType)
+				foreach($permission_options as $permission_option => $fieldType)
 				{
-					$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable radio button for display.";
-					$allow[] = $this->_t(3) . "\$class = \$form->getFieldAttribute('" . $fieldName . "', 'class', '');";
-					$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'class', \$class.' disabled no-click');";
+					switch ($permission_option)
+					{
+						case 'edit':
+							$this->setPermissionEditFields($allow, $viewName_single, $fieldName, $fieldType, $component);
+						break;
+						case 'access':
+							$this->setPermissionAccessFields($allow, $viewName_single, $fieldName, $fieldType, $component);
+						break;
+						case 'view':
+							$this->setPermissionViewFields($allow, $viewName_single, $fieldName, $fieldType, $component);
+						break;
+						case 'edit.own':
+						case 'access.own':
+							// this must still be build (TODO)
+						break;
+					}
 				}
-				$allow[] = $this->_t(3) . "if (!\$form->getValue('" . $fieldName . "'))";
-				$allow[] = $this->_t(3) . "{";
-				$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-				$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'filter', 'unset');";
-				$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-				$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'required', 'false');";
-				$allow[] = $this->_t(3) . "}";
-				$allow[] = $this->_t(2) . "}";
 			}
 		}
 		// add the redirect trick to set the field of origin
@@ -10944,6 +10985,63 @@ class Interpretation extends Fields
 		$allow[] = $this->_t(2) . "return \$form;";
 
 		return implode(PHP_EOL, $allow);
+	}
+	
+	protected function setPermissionEditFields(&$allow, $viewName_single, $fieldName, $fieldType, $component)
+	{
+		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
+		$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".edit." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+		$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".edit." . $fieldName . "', 'com_" . $component . "')))";
+		$allow[] = $this->_t(2) . "{";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'disabled', 'true');";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'readonly', 'true');";
+		if ('radio' === $fieldType || 'repeatable' === $fieldType)
+		{
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable radio button for display.";
+			$allow[] = $this->_t(3) . "\$class = \$form->getFieldAttribute('" . $fieldName . "', 'class', '');";
+			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'class', \$class.' disabled no-click');";
+		}
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " If there is no value continue.";
+		$allow[] = $this->_t(3) . "if (!\$form->getValue('" . $fieldName . "'))";
+		$allow[] = $this->_t(3) . "{";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'filter', 'unset');";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'required', 'false');";
+		$allow[] = $this->_t(3) . "}";
+		$allow[] = $this->_t(2) . "}";
+	}
+	
+	protected function setPermissionAccessFields(&$allow, $viewName_single, $fieldName, $fieldType, $component)
+	{
+		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the from the form based on " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
+		$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".access." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+		$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".access." . $fieldName . "', 'com_" . $component . "')))";
+		$allow[] = $this->_t(2) . "{";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Remove the field";
+		$allow[] = $this->_t(3) . "\$form->removeField('" . $fieldName . "');";
+		$allow[] = $this->_t(2) . "}";
+	}
+	
+	protected function setPermissionViewFields(&$allow, $viewName_single, $fieldName, $fieldType, $component)
+	{
+		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on View " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
+		$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".view." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+		$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".view." . $fieldName . "', 'com_" . $component . "')))";
+		$allow[] = $this->_t(2) . "{";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Make the field hidded.";
+		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'type', 'hidden');";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " If there is no value continue.";
+		$allow[] = $this->_t(3) . "if (!\$form->getValue('" . $fieldName . "'))";
+		$allow[] = $this->_t(3) . "{";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'filter', 'unset');";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'required', 'false');";
+		$allow[] = $this->_t(3) . "}";
+		$allow[] = $this->_t(2) . "}";
 	}
 
 	public function setJmodelAdminAllowEdit($viewName_single, $viewName_list)
@@ -11840,11 +11938,14 @@ class Interpretation extends Fields
 		// load the relations before modeling
 		if (isset($this->fieldRelations[$viewName_list]) && ComponentbuilderHelper::checkArray($this->fieldRelations[$viewName_list]))
 		{
-			foreach ($this->fieldRelations[$viewName_list] as $field)
+			foreach ($this->fieldRelations[$viewName_list] as $field_id => $fields)
 			{
-				if (isset($field['area']) && $field['area'] == 1 && isset($field['code']))
+				foreach ($fields as $area => $field)
 				{
-					$fix .= $this->setModelFieldRelation($field, $viewName_list);
+					if ($area == 1 && isset($field['code']))
+					{
+						$fix .= $this->setModelFieldRelation($field, $viewName_list, $tab);
+					}
 				}
 			}
 		}
@@ -12058,11 +12159,14 @@ class Interpretation extends Fields
 		// load the relations after modeling
 		if (isset($this->fieldRelations[$viewName_list]) && ComponentbuilderHelper::checkArray($this->fieldRelations[$viewName_list]))
 		{
-			foreach ($this->fieldRelations[$viewName_list] as $field)
+			foreach ($this->fieldRelations[$viewName_list] as $fields)
 			{
-				if (isset($field['area']) && $field['area'] == 3 && isset($field['code']))
+				foreach ($fields as $area => $field)
 				{
-					$fix .= $this->setModelFieldRelation($field, $viewName_list);
+					if ($area == 3 && isset($field['code']))
+					{
+						$fix .= $this->setModelFieldRelation($field, $viewName_list, $tab);
+					}
 				}
 			}
 		}
@@ -12115,7 +12219,7 @@ class Interpretation extends Fields
 		return $script . $forEachStart . $fix;
 	}
 
-	protected function setModelFieldRelation($item, $viewName_list)
+	protected function setModelFieldRelation($item, $viewName_list, $tab)
 	{
 		$fix = '';
 		// set fields
@@ -12123,9 +12227,12 @@ class Interpretation extends Fields
 		// set list field name
 		$field['$item->{' . (int) $item['listfield'] . '}'] = '$item->' . $item['code'];
 		// load joint field names
-		foreach ($item['joinfields'] as $join)
+		if (isset($item['joinfields']) && ComponentbuilderHelper::checkArray($item['joinfields']))
 		{
-			$field['$item->{' . (int) $join . '}'] = '$item->' . $this->listJoinBuilder[$viewName_list][(int) $join]['code'];
+			foreach ($item['joinfields'] as $join)
+			{
+				$field['$item->{' . (int) $join . '}'] = '$item->' . $this->listJoinBuilder[$viewName_list][(int) $join]['code'];
+			}
 		}
 		// set based on join_type
 		if ($item['join_type'] == 2)
@@ -12140,7 +12247,7 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//" . $this->setLine(__LINE__) . " concatenate these fields";
 			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "\$item->" . $item['code'] . ' = ' . implode(" . '" . str_replace("'", '&apos;', $item['set']) . "' . ", $field) . ';';
 		}
-		return $fix;
+		return $this->setPlaceholders($fix, $this->placeholders);
 	}
 
 	public function setSelectionTranslationFix($views, $Component, $tab = '')
@@ -14892,7 +14999,6 @@ function vdm_dkim() {
 				$this->addCustomButtonPermissions($view['settings'], $view['settings']->name_single, $nameView);
 				if ($nameView != 'component')
 				{
-
 					// add menu controll view that has menus options
 					foreach ($menuControllers as $menuController)
 					{
@@ -14922,41 +15028,53 @@ function vdm_dkim() {
 					// check if there are fields
 					if (ComponentbuilderHelper::checkArray($view['settings']->fields))
 					{
+						// field permission options
+						$permission_options = array(1 => 'edit', 2 => 'access', 3 => 'view');
 						// check the fields for their permission settings
 						foreach ($view['settings']->fields as $field)
 						{
 							// see if field require permissions to be set
-							if (isset($field['permission']) && $field['permission'])
+							if (isset($field['permission']) && ComponentbuilderHelper::checkArray($field['permission']))
 							{
 								if (ComponentbuilderHelper::checkArray($field['settings']->properties))
 								{
-									foreach ($field['settings']->properties as $property)
-									{
-										if ($property['name'] === 'type')
-										{
-											$propertyType = $property;
-										}
-									}
 									$fieldType = $this->getFieldType($field);
 									$fieldName = $this->getFieldName($field, $nameViews);
-									$fieldView = array();
-									// set the permission for this field
-									$fieldView['action'] = 'view.edit.' . $fieldName;
-									$fieldView['implementation'] = '3';
-									if (ComponentbuilderHelper::checkArray($view['settings']->permissions))
+									// loop the permission options
+									foreach ($field['permission'] as $permission_id)
 									{
-										array_push($view['settings']->permissions, $fieldView);
-									}
-									else
-									{
-										$view['settings']->permissions = array();
-										$view['settings']->permissions[] = $fieldView;
-									}
-									// insure that no default field get loaded
-									if (!in_array($fieldName, $this->defaultFields))
-									{
-										// load to global field permission set
-										$this->permissionFields[$nameView][$fieldName] = $fieldType;
+										// set the permission key word
+										$permission_option = $permission_options[$permission_id];
+										// reset the bucket
+										$fieldView = array();
+										// set the permission for this field
+										$fieldView['action'] = 'view.' . $permission_option . '.' . $fieldName;
+										$fieldView['implementation'] = '3';
+										// check if persmissions was laready set
+										if (isset($view['settings']->permissions) && ComponentbuilderHelper::checkArray($view['settings']->permissions))
+										{
+											array_push($view['settings']->permissions, $fieldView);
+										}
+										else
+										{
+											$view['settings']->permissions = array();
+											$view['settings']->permissions[] = $fieldView;
+										}
+										// insure that no default field get loaded
+										if (!in_array($fieldName, $this->defaultFields))
+										{
+											// make sure the array is set
+											if (!isset($this->permissionFields[$nameView]) || !ComponentbuilderHelper::checkArray($this->permissionFields[$nameView]))
+											{
+												$this->permissionFields[$nameView] = array();
+											}
+											if (!isset($this->permissionFields[$nameView][$fieldName]) || !ComponentbuilderHelper::checkArray($this->permissionFields[$nameView][$fieldName]))
+											{
+												$this->permissionFields[$nameView][$fieldName] = array();
+											}
+											// load to global field permission set
+											$this->permissionFields[$nameView][$fieldName][$permission_option] = $fieldType;
+										}
 									}
 								}
 							}
@@ -15114,6 +15232,7 @@ function vdm_dkim() {
 					$w_NameList = $view['settings']->name;
 					$w_NameSingle = $view['settings']->name;
 				}
+				// set the title based on the name builder
 				switch ($nameBuilder)
 				{
 					case 'edit':
@@ -15192,7 +15311,7 @@ function vdm_dkim() {
 						// set edit title
 						$permission['title'] = $W_NameList . ' ' . ComponentbuilderHelper::safeString($customName, 'W');
 						// set edit description
-						$permission['description'] = ' Allows the users in this group to update the ' . ComponentbuilderHelper::safeString($customName, 'w') . ' of the ' . $w_NameSingle;
+						$permission['description'] = ' Allows the users in this group to ' . ComponentbuilderHelper::safeString($customName, 'w') . ' of ' . $w_NameSingle;
 						break;
 				}
 				// if core is not used update all core strings

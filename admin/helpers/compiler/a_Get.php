@@ -1563,11 +1563,16 @@ class Get
 					$field['base_name'] = $this->getFieldName($field);
 					// set code name for field type
 					$field['type_name'] = $this->getFieldType($field);
-					// check if this field is a default field OR 
+					// check if value is array
+					if (isset($field['permission']) && !ComponentbuilderHelper::checkArray($field['permission']) && is_numeric($field['permission']) && $field['permission'] > 0)
+					{
+						$field['permission'] = array($field['permission']);
+					}
+					// check if this field is a default field OR
 					// check if this is none database related field
-					if (in_array($field['base_name'], $this->defaultFields) || 
+					if (in_array($field['base_name'], $this->defaultFields) ||
 						ComponentbuilderHelper::fieldCheck($field['type_name'], 'spacer') ||
-						$field['list'] == 2) // 2 = none database
+						(isset($field['list']) && $field['list'] == 2)) // 2 = none database
 					{
 						$ignoreFields[$field['field']] = $field['field'];
 					}
@@ -1754,23 +1759,28 @@ class Get
 				foreach ($view->addrelations as $nr => $relationsValue)
 				{
 					// only add if list view field is selected and joind fields are set
-					if (isset($relationsValue['listfield']) &&
-						is_numeric($relationsValue['listfield']) &&
-						$relationsValue['listfield'] > 0 &&
-						isset($relationsValue['joinfields']) &&
-						ComponentbuilderHelper::checkArray($relationsValue['joinfields']))
+					if (isset($relationsValue['listfield']) && is_numeric($relationsValue['listfield']) && $relationsValue['listfield'] > 0 &&
+						isset($relationsValue['area']) && is_numeric($relationsValue['area']) && $relationsValue['area'] > 0)
 					{
 						// do a dynamic update on the set values
 						if (isset($relationsValue['set']) && ComponentbuilderHelper::checkString($relationsValue['set']))
 						{
 							$relationsValue['set'] = $this->setDynamicValues($relationsValue['set']);
 						}
-						// load the field relations
-						$this->fieldRelations[$name_list][(int) $relationsValue['listfield']] = $relationsValue;
-						// load the list joints
-						foreach ($relationsValue['joinfields'] as $join)
+						// check that the arrays are set
+						if (!isset($this->fieldRelations[$name_list][(int) $relationsValue['listfield']]) || !ComponentbuilderHelper::checkArray($this->fieldRelations[$name_list][(int) $relationsValue['listfield']]))
 						{
-							$this->listJoinBuilder[$name_list][(int) $join] = (int) $join;
+							$this->fieldRelations[$name_list][(int) $relationsValue['listfield']] = array();
+						}
+						// load the field relations
+						$this->fieldRelations[$name_list][ (int) $relationsValue['listfield']][ (int) $relationsValue['area']] = $relationsValue;
+						// load the list joints
+						if (isset($relationsValue['joinfields']) && ComponentbuilderHelper::checkArray($relationsValue['joinfields']))
+						{
+							foreach ($relationsValue['joinfields'] as $join)
+							{
+								$this->listJoinBuilder[$name_list][(int) $join] = (int) $join;
+							}
 						}
 						// set header over-ride
 						if (isset($relationsValue['column_name']) && ComponentbuilderHelper::checkString($relationsValue['column_name']))
@@ -3914,7 +3924,7 @@ class Get
 	 * @param   string         $method_key  The method unique key
 	 * @param   string         $view_code  The code name of the view
 	 * @param   string         $string  The data string
-	 * @param   string || INT  $asset  The asset in question
+	 * @param   string         $asset  The asset in question
 	 * @param   string         $as  The as string
 	 * @param   int            $row_type  The row type
 	 * @param   string         $type  The target type (db||view)
@@ -3948,20 +3958,19 @@ class Get
 				{
 					if (strpos($line, 'AS') !== false)
 					{
-						list($get, $key) = explode("AS", $line);
+						$lineArray = explode("AS", $line);
 					}
 					elseif (strpos($line, 'as') !== false)
 					{
-						list($get, $key) = explode("as", $line);
+						$lineArray = explode("as", $line);
 					}
 					else
 					{
-						$get = $line;
-						$key = null;
+						$lineArray = array($line, null);
 					}
 					// set the get and key
-					$get = trim($get);
-					$key = trim($key);
+					$get = trim($lineArray[0]);
+					$key = trim($lineArray[1]);
 					// only add the view (we must adapt this)
 					if (isset($this->getAsLookup[$method_key][$get]) && 'a' != $as && 1 == $row_type && 'view' === $type && strpos('#' . $key, '#' . $view . '_') === false)
 					{
@@ -3983,10 +3992,18 @@ class Get
 							$this->getAsLookup[$method_key][$get] = $key;
 							$keys[] = $this->db->quote($key);
 						}
+						// make sure we have the view name
 						if (ComponentbuilderHelper::checkString($view))
 						{
+							// prep the field name
 							$field = str_replace($as . '.', '', $get);
-							$this->siteFields[$view][$field][$method_key] = array('site' => $view_code, 'get' => $get, 'as' => $as, 'key' => $key);
+							// make sure the array is set
+							if (!isset($this->siteFields[$view][$field]))
+							{
+								$this->siteFields[$view][$field] = array();
+							}
+							// load to the site fields memory bucket
+							$this->siteFields[$view][$field][$method_key . '___' . $as] = array('site' => $view_code, 'get' => $get, 'as' => $as, 'key' => $key);
 						}
 					}
 				}

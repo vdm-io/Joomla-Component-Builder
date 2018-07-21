@@ -742,6 +742,7 @@ class Fields extends Structure
 				'name' => 'id',
 				'type' => 'text',
 				'class' => 'readonly',
+				'readonly' => "true",
 				'label' => 'JGLOBAL_FIELD_ID_LABEL',
 				'description' => 'JGLOBAL_FIELD_ID_DESC',
 				'size' => 10,
@@ -1986,8 +1987,12 @@ class Fields extends Structure
 		$textareas = array('textarea', 'editor');
 		if (isset($this->siteFields[$view][$field]) && ComponentbuilderHelper::checkArray($this->siteFields[$view][$field]))
 		{
-			foreach ($this->siteFields[$view][$field] as $code => $array)
+			foreach ($this->siteFields[$view][$field] as $codeString => $array)
 			{
+				// get the code array
+				$codeArray = explode('___', $codeString);
+				// set the code
+				$code = trim($codeArray[0]);
 				// set the decoding methods
 				if (in_array($set, $decode))
 				{
@@ -2041,6 +2046,7 @@ class Fields extends Structure
 		// reset array
 		$fieldAttributes = array();
 		$setCustom = false;
+		$setReadonly = false;
 		// setup joomla default fields
 		if (!ComponentbuilderHelper::fieldCheck($typeName))
 		{
@@ -2168,6 +2174,11 @@ class Fields extends Structure
 				{
 					// set read only
 					$xmlValue = 'true';
+					// trip the switch for readonly
+					if ($property['name'] === 'readonly')
+					{
+						$setReadonly = true;
+					}
 				}
 				elseif ($property['name'] === 'multiple')
 				{
@@ -2306,6 +2317,11 @@ class Fields extends Structure
 					{
 						$fieldAttributes['validate'] = ComponentbuilderHelper::safeString($validationRule);
 					}
+				}
+				// make sure ID is always readonly
+				if ($fieldAttributes['name'] === 'id' && !$setReadonly)
+				{
+					$fieldAttributes['readonly'] = 'true';
 				}
 			}
 		}
@@ -2480,11 +2496,15 @@ class Fields extends Structure
 				'options' => $options);
 		}
 		// update the field relations
-		if (isset($this->fieldRelations[$view_name_list]) && isset($this->fieldRelations[$view_name_list][(int) $field['field']]))
+		if (isset($this->fieldRelations[$view_name_list]) && isset($this->fieldRelations[$view_name_list][(int) $field['field']]) 
+			&& ComponentbuilderHelper::checkArray($this->fieldRelations[$view_name_list][(int) $field['field']]))
 		{
-			$this->fieldRelations[$view_name_list][(int) $field['field']]['type'] = $typeName;
-			$this->fieldRelations[$view_name_list][(int) $field['field']]['code'] = $name;
-			$this->fieldRelations[$view_name_list][(int) $field['field']]['custom'] = $custom;
+			foreach ($this->fieldRelations[$view_name_list][(int) $field['field']] as $area => &$field_values)
+			{
+				$field_values['type'] = $typeName;
+				$field_values['code'] = $name;
+				$field_values['custom'] = $custom;
+			}
 		}
 		// set the hidden field of this view
 		if ($typeName === 'hidden')

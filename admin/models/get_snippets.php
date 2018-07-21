@@ -107,9 +107,6 @@ class ComponentbuilderModelGet_snippets extends JModelList
 		// Insure all item fields are adapted where needed.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
-			// Load the JEvent Dispatcher
-			JPluginHelper::importPlugin('content');
-			$this->_dispatcher = JEventDispatcher::getInstance();
 			foreach ($items as $nr => &$item)
 			{
 				// Always create a slug for sef URL's

@@ -20,14 +20,14 @@ function getCodeGlueOptions(field) {
 	var subID = target[0]+'__'+target[1];
 	// get listfield value
 	var listfield = jQuery('#'+subID+'__listfield').val();
-	// get joinfields values
-	var joinfields = jQuery('#'+subID+'__joinfields').val();
 	// get type value
 	var type = jQuery('#'+subID+'__join_type').val();
 	// get area value
 	var area = jQuery('#'+subID+'__area').val();
 	// check that values are set
-	if (_isSet(listfield) && _isSet(joinfields) && _isSet(type) && _isSet(area)) {
+	if (_isSet(listfield) && _isSet(type) && _isSet(area)) {
+		// get joinfields values
+		var joinfields = jQuery('#'+subID+'__joinfields').val();
 		// get codeGlueOptions
 		getCodeGlueOptions_server(listfield, joinfields, type, area).done(function(result) {
 			if(result){
@@ -43,7 +43,11 @@ function getCodeGlueOptions(field) {
 
 function getCodeGlueOptions_server(listfield, joinfields, type, area){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getCodeGlueOptions&format=json";
-	if(token.length > 0 && listfield > 0 && joinfields.length >= 1 && type > 0 && area > 0) {
+	// make sure the joinfields are set
+	if (!_isSet(joinfields)) {
+		joinfields = 'none';
+	}
+	if(token.length > 0 && listfield > 0 && type > 0 && area > 0) {
 		var request = 'token='+token+'&listfield='+listfield+'&type='+type+'&area='+area+'&joinfields='+joinfields;
 	}
 	return jQuery.ajax({
