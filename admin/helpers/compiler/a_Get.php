@@ -2341,7 +2341,7 @@ class Get
 								if ($this->validationRules[$validationRule] = ComponentbuilderHelper::getVar('validation_rule', $validationRule, 'name', 'php'))
 								{
 									// open and set the validation rule
-									$this->validationRules[$validationRule] = $this->setDynamicValues(base64_decode($this->validationRules[$validationRule]));
+									$this->validationRules[$validationRule] = $this->setPlaceholders($this->setDynamicValues(base64_decode($this->validationRules[$validationRule])), $this->placeholders);
 								}
 								else
 								{

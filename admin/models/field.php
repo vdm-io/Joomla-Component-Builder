@@ -930,7 +930,7 @@ class ComponentbuilderModelField extends JModelAdmin
 			if (ComponentbuilderHelper::checkString($typephpx))
 			{
 				// load the type_phpx property
-				$bucket[] = "\t".'type_phpx_1="'. str_replace('"', "'", $typephp).'"';
+				$bucket[] = "\t".'type_phpx_1="'. str_replace('"', "'", $typephpx).'"';
 			}
 			// if the bucket has been loaded
 			if (ComponentbuilderHelper::checkArray($bucket))
