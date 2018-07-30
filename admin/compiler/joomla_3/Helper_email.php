@@ -138,16 +138,16 @@ abstract class ###Component###Email
 			$replyto	= $conf->get('replyto');
 			$replytoname	= $conf->get('replytoname');
 		}
+
+		// Set global sender
+		$mail->setSender(array($mailfrom, $fromname));
 			
 		// set the global reply-to if found
 		if ($replyto && $replytoname)
 		{
 			$mail->ClearReplyTos();
-			$mail->addReplyTo( array( $replyto, $replytoname ) );
+			$mail->addReplyTo($replyto, $replytoname);
 		}
-
-		// Set global sender
-		$mail->setSender(array($mailfrom, $fromname));
 
 		// Default mailer is to use PHP's mail function
 		switch ($mailer)
@@ -195,9 +195,6 @@ abstract class ###Component###Email
 		
 		// set component params
 		$conf = self::getConfig();
-		
-		// do some house cleaning
-		$mail->ClearReplyTos();
 		
 		// set if we have override
 		if ($mailfrom && $fromname)

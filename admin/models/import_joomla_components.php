@@ -300,7 +300,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						// set error
 						if (!$checksum)
 						{
-							$checksumMessage =  JText::_('COM_COMPONENTBUILDER_BBEST_TO_NOT_CONTINUEBBR_THIS_PACKAGE_BFAILEDB_CHECKSUM_VALIDATION_THIS_COULD_BE_A_SERIOUS_SECURITY_BREACH_DO_NOT_CONTINUE');
+							$checksumMessage =  JText::_('COM_COMPONENTBUILDER_BBEST_TO_NOT_CONTINUEBBR_YOU_CAN_REFRESH_AND_TRY_AGAINBR_BUT_NOTE_THAT_THIS_PACKAGE_BFAILEDB_CHECKSUM_VALIDATION_THIS_COULD_BE_A_SERIOUS_SECURITY_BREACH_DO_NOT_CONTINUE');
 							$checksumStatus = 'error';
 						}
 					}
