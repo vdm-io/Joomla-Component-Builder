@@ -754,6 +754,46 @@ abstract class ###Component###Helper
 	}
 
 	/**
+	 * get the field object
+	 *
+	 * @param   array      $attributes   The array of attributes
+	 * @param   string     $default      The default of the field
+	 * @param   array      $options      The options to apply to the XML element
+	 *
+	 * @return  object
+	 *
+	 */
+	public static function getFieldObject($attributes, $default = '', $options = null)
+	{
+		// make sure we have a type
+		if (isset($attributes['type']))
+		{
+			// make sure the form helper class is loaded
+			if (!method_exists('JFormHelper', 'loadFieldType'))
+			{
+				jimport('joomla.form.form');
+			}
+			// get field type
+			$field = JFormHelper::loadFieldType($attributes['type'],true);
+			// start field xml
+			$XML = new SimpleXMLElement('<field/>');
+			// load the attributes
+			self::xmlAddAttributes($XML, $attributes);
+			// check if we have options
+			if (self::checkArray($options))
+			{
+				// load the options
+				self::xmlAddOptions($XML, $options);
+			}
+			// setup the field
+			$field->setup($XML, $default);
+			// return the field object
+			return $field;
+		}
+		return false;
+	}
+
+	/**
 	 * Render Bool Button
 	 *
 	 * @param   array   $args   All the args for the button
@@ -771,8 +811,6 @@ abstract class ###Component###Helper
 		$args = func_get_args();
 		// check if there is additional button class
 		$additional = isset($args[1]) ? (string) $args[1] : ''; // not used at this time
-		// start the xml
-		$buttonXML = new SimpleXMLElement('<field/>');
 		// button attributes
 		$buttonAttributes = array(
 			'type' => 'radio',
@@ -781,22 +819,12 @@ abstract class ###Component###Helper
 			'class' => 'btn-group',
 			'filter' => 'INT',
 			'default' => isset($args[2]) ? (int) $args[2] : 0);
-		// load the haskey attributes
-		self::xmlAddAttributes($buttonXML, $buttonAttributes);
 		// set the button options
 		$buttonOptions = array(
 			'1' => isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES',
 			'0' => isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO');
-		// load the button options
-		self::xmlAddOptions($buttonXML, $buttonOptions);
-
-		// get the radio element
-		$button = JFormHelper::loadFieldType('radio');
-
-		// run
-		$button->setup($buttonXML, $buttonAttributes['default']);
-
-		return $button->input;
+		// return the input
+		return self::getFieldObject($buttonAttributes, $buttonAttributes['default'], $buttonOptions)->input;
 	}
 
 	/**
