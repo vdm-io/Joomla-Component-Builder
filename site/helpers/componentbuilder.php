@@ -4029,8 +4029,8 @@ abstract class ComponentbuilderHelper
 	 */
 	public static function getFieldObject($attributes, $default = '', $options = null)
 	{
-		// make sure we have a type
-		if (isset($attributes['type']))
+		// make sure we have attributes and a type value
+		if (self::checkArray($attributes) && isset($attributes['type']))
 		{
 			// make sure the form helper class is loaded
 			if (!method_exists('JFormHelper', 'loadFieldType'))

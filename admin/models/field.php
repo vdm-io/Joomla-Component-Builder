@@ -231,6 +231,23 @@ class ComponentbuilderModelField extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update all editors to use this components global editor
+		$global_editor = JComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
+		// now get all the editor fields
+		$editors = $form->getXml()->xpath("//field[@type='editor']");
+		// check if we found any
+		if (ComponentbuilderHelper::checkArray($editors))
+		{
+			foreach ($editors as $editor)
+			{
+				// get the field names
+				$name = (string) $editor['name'];
+				// set the field editor value (with none as fallback)
+				$form->setFieldAttribute($name, 'editor', $global_editor . '|none');
+			}
+		}
+
 		return $form;
 	}
 

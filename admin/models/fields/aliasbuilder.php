@@ -35,7 +35,7 @@ class JFormFieldAliasbuilder extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		// load the db opbject
+		// load the db object
 		$db = JFactory::getDBO();		
 		// get the input from url
 		$jinput = JFactory::getApplication()->input;

@@ -75,6 +75,18 @@ class Get
 	public $addPlaceholders = false;
 
 	/**
+	 * The placeholders for custom code keys
+	 * 
+	 * @var     array
+	 */
+	protected $customCodeKeyPlacholders = array(
+		'&#91;' => '[',
+		'&#93;' => ']',
+		'&#44;' => ',',
+		'&#43;' => '+'
+		);
+
+	/**
 	 * The Component data
 	 * 
 	 * @var      object
@@ -2817,7 +2829,7 @@ class Get
 							case 3:
 								// set custom script
 								$result->main_get[0]['selection'] = array(
-									'select' => base64_decode($result->php_custom_get),
+									'select' => $this->setDynamicValues(base64_decode($result->php_custom_get)),
 									'from' => '', 'table' => '', 'type' => '');
 								break;
 						}
@@ -3840,6 +3852,8 @@ class Get
 			{
 				$langOnly[] = ComponentbuilderHelper::getAllBetween($content, "JustTEXT:" . ":_('", "')");
 				$langOnly[] = ComponentbuilderHelper::getAllBetween($content, 'JustTEXT:' . ':_("', '")');
+				// merge lang only
+				$langOnly = ComponentbuilderHelper::mergeArrays($langOnly);
 			}
 			// set language data
 			foreach ($langStringTargets as $langStringTarget)
@@ -3865,6 +3879,11 @@ class Get
 						// load the language targets
 						foreach ($langStringTargets as $langStringTarget)
 						{
+							// need some special treatment here
+							if ($langStringTarget === 'JustTEXT:' . ':_(')
+							{
+								continue;
+							}
 							$langHolders[$langStringTarget . "'" . $string . "'"] = $langStringTarget . "'" . $keyLang . "'";
 							$langHolders[$langStringTarget . '"' . $string . '"'] = $langStringTarget . '"' . $keyLang . '"';
 						}
@@ -3874,7 +3893,6 @@ class Get
 			// the uppercase loading only (for arrays and other tricks)
 			if (ComponentbuilderHelper::checkArray($langOnly))
 			{
-				$langOnly = ComponentbuilderHelper::mergeArrays($langOnly);
 				foreach ($langOnly as $string)
 				{
 					if ($keyLang = $this->setLang($string))
@@ -4331,15 +4349,23 @@ class Get
 	 * Set the dynamic values in strings here
 	 * 
 	 * @param   string   $string The content to check
+	 * @param   int      $debug  The switch to debug the update
+	 *				We can now at any time debug the 
+	 *				dynamic build values if it gets broken
 	 *
 	 * @return  string
 	 * 
 	 */
-	public function setDynamicValues($string)
+	public function setDynamicValues($string, $debug = 0)
 	{
 		if (ComponentbuilderHelper::checkString($string))
 		{
-			return $this->setLangStrings($this->setCustomCodeData($this->setExternalCodeString($string)));
+			$string = $this->setLangStrings($this->setCustomCodeData($this->setExternalCodeString($string, $debug), $debug));
+		}
+		// if debug
+		if ($debug)
+		{
+			jexit();
 		}
 		return $string;
 	}
@@ -4348,15 +4374,22 @@ class Get
 	 * Set the external code string & load it in to string
 	 * 
 	 * @param   string   $string The content to check
+	 * @param   int      $debug  The switch to debug the update
 	 *
 	 * @return  string
 	 * 
 	 */
-	public function setExternalCodeString($string)
+	public function setExternalCodeString($string, $debug = 0)
 	{
 		// check if content has custom code place holder
 		if (strpos($string, '[EXTERNA' . 'LCODE=') !== false)
 		{
+			// if debug
+			if ($debug)
+			{
+				echo 'External Code String:';
+				var_dump($string);
+			}
 			// target content
 			$bucket = array();
 			$found = ComponentbuilderHelper::getAllBetween($string, '[EXTERNA' . 'LCODE=', ']');
@@ -4401,6 +4434,12 @@ class Get
 				{
 					$string = $this->setPlaceholders($string, $bucket);
 				}
+			}
+			// if debug
+			if ($debug)
+			{
+				echo 'External Code String After Update:';
+				var_dump($string);
 			}
 		}
 		return $string;
@@ -4481,17 +4520,24 @@ class Get
 	 * We start set the custom code data & can load it in to string
 	 * 
 	 * @param   string   $string The content to check
+	 * @param   int      $debug  The switch to debug the update
 	 *
 	 * @return  string
 	 * 
 	 */
-	public function setCustomCodeData($string)
+	public function setCustomCodeData($string, $debug = 0)
 	{
 		// insure the code is loaded
 		$loaded = false;
 		// check if content has custom code place holder
 		if (strpos($string, '[CUSTO' . 'MCODE=') !== false)
 		{
+			// if debug
+			if ($debug)
+			{
+				echo 'Custom Code String:';
+				var_dump($string);
+			}
 			// the ids found in this content
 			$bucket = array();
 			$found = ComponentbuilderHelper::getAllBetween($string, '[CUSTO' . 'MCODE=', ']');
@@ -4499,6 +4545,12 @@ class Get
 			{
 				foreach ($found as $key)
 				{
+					// if debug
+					if ($debug)
+					{
+						echo '$key before update:';
+						var_dump($key);
+					}
 					// check if we have args
 					if (is_numeric($key))
 					{
@@ -4554,12 +4606,16 @@ class Get
 							{
 								if (strpos($array[1], ',') !== false)
 								{
-									$this->customCodeData[$id]['args'][$key] = explode(',', $array[1]);
+									// update the function values with the custom code key placholdres (this allow the use of [] + and , in the values)
+									$this->customCodeData[$id]['args'][$key] = array_map(function($_key) {
+											return $this->setPlaceholders($_key, $this->customCodeKeyPlacholders);
+										}, (array) explode(',', $array[1]));
 								}
 								elseif (ComponentbuilderHelper::checkString($array[1]))
 								{
 									$this->customCodeData[$id]['args'][$key] = array();
-									$this->customCodeData[$id]['args'][$key][] = $array[1];
+									// update the function values with the custom code key placholdres (this allow the use of [] + and , in the values)
+									$this->customCodeData[$id]['args'][$key][] = $this->setPlaceholders($array[1], $this->customCodeKeyPlacholders);
 								}
 							}
 						}
@@ -4570,6 +4626,12 @@ class Get
 					}
 					$bucket[$id] = $id;
 				}
+			}
+			// if debug
+			if ($debug)
+			{
+				echo 'Bucket:';
+				var_dump($bucket);
 			}
 			// check if any custom code placeholders where found
 			if (ComponentbuilderHelper::checkArray($bucket))
@@ -4582,10 +4644,22 @@ class Get
 				// revert lang to current setting
 				$this->lang = $_tmpLang;
 			}
+			// if debug
+			if ($debug)
+			{
+				echo 'Loaded:';
+				var_dump($loaded);
+			}
 			// when the custom code is loaded
 			if ($loaded === true)
 			{
-				$string = $this->insertCustomCode($string);
+				$string = $this->insertCustomCode($string, $debug);
+			}
+			// if debug
+			if ($debug)
+			{
+				echo 'Custom Code String After Update:';
+				var_dump($string);
 			}
 		}
 		return $string;
@@ -4595,16 +4669,31 @@ class Get
 	 * Insert the custom code into the string
 	 * 
 	 * @param   string   $string The content to check
+	 * @param   int      $debug  The switch to debug the update
 	 *
 	 * @return  string on success
 	 * 
 	 */
-	protected function insertCustomCode($string)
+	protected function insertCustomCode($string, $debug = 0)
 	{
 		$code = array();
+		// if debug
+		if ($debug)
+		{
+			echo '$this->customCode:';
+			var_dump($this->customCode);
+		}
 		foreach ($this->customCode as $item)
 		{
-			$this->buildCustomCodePlaceholders($item, $code);
+			$this->buildCustomCodePlaceholders($item, $code, $debug);
+		}
+		// if debug
+		if ($debug)
+		{
+			echo 'Place holders to Update String:';
+			var_dump($code);
+			echo 'Custom Code String Before Update:';
+			var_dump($string);
 		}
 		// now update the string
 		return $this->setPlaceholders($string, $code);
@@ -4614,21 +4703,34 @@ class Get
 	 * Insert the custom code into the string
 	 * 
 	 * @param   string   $string The content to check
+	 * @param   int      $debug  The switch to debug the update
 	 *
 	 * @return  string on success
 	 * 
 	 */
-	protected function buildCustomCodePlaceholders($item, &$code)
+	protected function buildCustomCodePlaceholders($item, &$code, $debug = 0)
 	{
 		// check if there is args for this code
 		if (isset($this->customCodeData[$item['id']]['args']) && ComponentbuilderHelper::checkArray($this->customCodeData[$item['id']]['args']))
 		{
 			// since we have args we cant update this code via IDE (TODO)
 			$placeholder = $this->getPlaceHolder(3, null);
+			// if debug
+			if ($debug)
+			{
+				echo 'Custom Code Placeholders:';
+				var_dump($placeholder);
+			}
 			// we have args and so need to load each
 			foreach ($this->customCodeData[$item['id']]['args'] as $key => $args)
 			{
 				$this->setThesePlaceHolders('arg', $args);
+				// if debug
+				if ($debug)
+				{
+					echo 'Custom Code Global Placholders:';
+					var_dump($this->placeholders);
+				}
 				$code['[CUSTOM' . 'CODE=' . $key . ']'] = $placeholder['start'] . PHP_EOL . $this->setPlaceholders($item['code'], $this->placeholders) . $placeholder['end'];
 			}
 			// always clear the args

@@ -1578,16 +1578,19 @@ class Interpretation extends Fields
 				{
 					// load this unuiqe key
 					$this->customViewQueryChecker[$this->target][] = $checker;
-					if (ComponentbuilderHelper::checkString($the_get['selection']['type']))
+					if (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))
 					{
 						$getItem = PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get from " . $the_get['selection']['table'] . " as " . $the_get['as'];
+						// set the selection
+						$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . $the_get['selection']['select'];
 					}
 					else
 					{
 						$getItem = PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get data";
+						// set the selection
+						$getItem .= PHP_EOL . $this->setPlaceholders($the_get['selection']['select'], $this->placeholders);
 					}
-					// set the selection
-					$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . $the_get['selection']['select'];
+					// load the from selection
 					if (($nr == 0 && (!isset($the_get['join_field']) || !ComponentbuilderHelper::checkString($the_get['join_field'])) && (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))) ||
 						($type === 'custom' && (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))))
 					{
@@ -5108,7 +5111,7 @@ class Interpretation extends Fields
 			{
 				foreach ($viewArray['settings']->main_get->main_get as $get)
 				{
-					if ($get['as'] === 'a')
+					if (isset($get['as']) && $get['as'] === 'a')
 					{
 						if (isset($get['selection']) && ComponentbuilderHelper::checkArray($get['selection']) && isset($get['selection']['select_gets']) && ComponentbuilderHelper::checkArray($get['selection']['select_gets']))
 						{
