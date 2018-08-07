@@ -12,9 +12,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// import Joomla view library
-jimport('joomla.application.component.view');
-
 /**
  * Joomla_component View class
  */
@@ -37,16 +34,24 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 		$jinput = JFactory::getApplication()->input;
 		$this->ref = $jinput->get('ref', 0, 'word');
 		$this->refid = $jinput->get('refid', 0, 'int');
+		$return = $jinput->get('return', null, 'base64');
+		// set the referral string
 		$this->referral = '';
-		if ($this->refid)
+		if ($this->refid && $this->ref)
 		{
-			// return to the item that refered to this item
-			$this->referral = '&ref='.(string)$this->ref.'&refid='.(int)$this->refid;
+			// return to the item that referred to this item
+			$this->referral = '&ref=' . (string)$this->ref . '&refid=' . (int)$this->refid;
 		}
 		elseif($this->ref)
 		{
-			// return to the list view that refered to this item
-			$this->referral = '&ref='.(string)$this->ref;
+			// return to the list view that referred to this item
+			$this->referral = '&ref=' . (string)$this->ref;
+		}
+		// check return value
+		if (!is_null($return))
+		{
+			// add the return value
+			$this->referral .= '&return=' . (string)$return;
 		}
 
 		// Set the toolbar
@@ -78,7 +83,7 @@ class ComponentbuilderViewJoomla_component extends JViewLegacy
 
 		JToolbarHelper::title( JText::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EDIT'), 'pencil-2 article-add');
 		// Built the actions for new and existing records.
-		if ($this->refid || $this->ref)
+		if (ComponentbuilderHelper::checkString($this->referral))
 		{
 			if ($this->canDo->get('joomla_component.create') && $isNew)
 			{

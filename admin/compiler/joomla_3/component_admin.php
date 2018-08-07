@@ -28,17 +28,13 @@ defined('_JEXEC') or die('Restricted access');
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+JHtml::_('behavior.tabstate');
 
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_###component###'))
 {
-	return JError::raiseWaring(404, JText::_('JERROR_ALERTNOAUTHOR'));
+	throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 };
-
-// Load cms libraries
-JLoader::registerPrefix('J', JPATH_PLATFORM . '/cms');
-// Load joomla libraries without overwrite
-JLoader::registerPrefix('J', JPATH_PLATFORM . '/joomla',false);
 
 // Add CSS file for all pages
 $document = JFactory::getDocument();
@@ -46,11 +42,8 @@ $document->addStyleSheet('components/com_###component###/assets/css/admin.css');
 $document->addScript('components/com_###component###/assets/js/admin.js');
 
 // require helper files
-JLoader::register('###Component###Helper', dirname(__FILE__) . '/helpers/###component###.php'); ###HELPER_EMAIL###
-JLoader::register('JHtmlBatch_', dirname(__FILE__) . '/helpers/html/batch_.php');###LICENSE_LOCKED_INT### ###ADMIN_GLOBAL_EVENT###
-
-// import joomla controller library
-jimport('joomla.application.component.controller');
+JLoader::register('###Component###Helper', __DIR__ . '/helpers/###component###.php'); ###HELPER_EMAIL###
+JLoader::register('JHtmlBatch_', __DIR__ . '/helpers/html/batch_.php');###LICENSE_LOCKED_INT### ###ADMIN_GLOBAL_EVENT###
 
 // Get an instance of the controller prefixed by ###Component###
 $controller = JControllerLegacy::getInstance('###Component###');

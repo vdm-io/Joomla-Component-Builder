@@ -20,7 +20,7 @@ JHtml::_('behavior.keepalive');
 $componentParams = JComponentHelper::getParams('com_componentbuilder');
 ?>
 <div id="componentbuilder_loader">
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 	<?php echo JLayoutHelper::render('snippet.details_above', $this); ?>
 <div class="form-horizontal">

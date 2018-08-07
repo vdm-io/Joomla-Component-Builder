@@ -29,29 +29,26 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.helper');
-
 /**
  * ###Component### Ajax Model
  */
 class ###Component###ModelAjax extends JModelList
 {
 	protected $app_params;
-	
-	public function __construct() 
+
+	public function __construct()
 	{		
 		parent::__construct();		
 		// get params
-		$this->app_params	= JComponentHelper::getParams('com_###component###');
-		
+		$this->app_params = JComponentHelper::getParams('com_###component###');
 	}
-	
+
 	public function setFieldRequired($name,$form,$status)
 	{
 		// get the session
-		$session	= JFactory::getSession();
+		$session = JFactory::getSession();
 		// get this forms set fields
-		$fields		= $session->get($form.'_requiredFieldFix');
+		$fields = $session->get($form.'_requiredFieldFix');
 		if(###Component###Helper::checkArray($fields))
 		{
 			if ($status == 1)
@@ -62,7 +59,8 @@ class ###Component###ModelAjax extends JModelList
 			else
 			{	
 				// remove from array
-				if(($key = array_search($name, $fields)) !== false) {
+				if(($key = array_search($name, $fields)) !== false)
+				{
 					unset($fields[$key]);
 				}
 			}

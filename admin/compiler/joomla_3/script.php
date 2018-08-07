@@ -30,8 +30,6 @@ defined('_JEXEC') or die('Restricted access');
 defined('_JEXEC') or die('Restricted access');
 
 JHTML::_('behavior.modal');
-jimport('joomla.installer.installer');
-jimport('joomla.installer.helper');
 
 /**
  * Script File of ###Component### Component

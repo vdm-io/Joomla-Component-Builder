@@ -12,9 +12,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// import Joomla view library
-jimport('joomla.application.component.view');
-
 /**
  * Componentbuilder View class for the Components_custom_admin_menus
  */

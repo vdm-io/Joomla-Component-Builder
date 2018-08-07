@@ -12,10 +12,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// Component Helper
-jimport('joomla.application.component.helper');
-jimport('joomla.application.categories');
-
 /**
  * Componentbuilder Route Helper
  **/

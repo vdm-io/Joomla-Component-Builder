@@ -31,9 +31,6 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
 
-// import Joomla modelform library
-jimport('joomla.application.component.modeladmin');
-
 /**
  * ###Component### ###View### Model
  */
@@ -66,6 +63,9 @@ class ###Component###Model###View### extends JModelAdmin
 	 */
 	public function getTable($type = '###view###', $prefix = '###Component###Table', $config = array())
 	{
+		// add table path for when model gets used from other component
+		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_###component###/tables');
+		// get instance of the table
 		return JTable::getInstance($type, $prefix, $config);
 	}###ADMIN_CUSTOM_BUTTONS_METHOD###
     

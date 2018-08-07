@@ -14,9 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
 
-// import Joomla modelform library
-jimport('joomla.application.component.modeladmin');
-
 /**
  * Componentbuilder Field Model
  */
@@ -49,6 +46,9 @@ class ComponentbuilderModelField extends JModelAdmin
 	 */
 	public function getTable($type = 'field', $prefix = 'ComponentbuilderTable', $config = array())
 	{
+		// add table path for when model gets used from other component
+		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_componentbuilder/tables');
+		// get instance of the table
 		return JTable::getInstance($type, $prefix, $config);
 	}
 
@@ -221,10 +221,14 @@ class ComponentbuilderModelField extends JModelAdmin
 		// Only load these values if no id is found
 		if (0 == $id)
 		{
-			// Set redirected field name
-			$redirectedField = $jinput->get('ref', null, 'STRING');
-			// Set redirected field value
-			$redirectedValue = $jinput->get('refid', 0, 'INT');
+			// Set redirected view name
+			$redirectedView = $jinput->get('ref', null, 'STRING');
+			// Set field name (or fall back to view name)
+			$redirectedField = $jinput->get('field', $redirectedView, 'STRING');
+			// Set redirected view id
+			$redirectedId = $jinput->get('refid', 0, 'INT');
+			// Set field id (or fall back to redirected view id)
+			$redirectedValue = $jinput->get('field_id', $redirectedId, 'INT');
 			if (0 != $redirectedValue && $redirectedField)
 			{
 				// Now set the local-redirected field default value

@@ -66,7 +66,7 @@ class Compiler extends Infusion
 				$this->repoPath = $this->params->get('git_folder_path', null);
 			}
 			// remove site folder if not needed (TODO add check if custom script was moved to site folder then we must do a more complex cleanup here)
-			if ($this->removeSiteFolder)
+			if ($this->removeSiteFolder && $this->removeSiteEditFolder)
 			{
 				// first remove the files and folders
 				$this->removeFolder($this->componentPath . '/site');

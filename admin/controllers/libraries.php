@@ -12,24 +12,33 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// import Joomla controlleradmin library
-jimport('joomla.application.component.controlleradmin');
-
 /**
  * Libraries Controller
  */
 class ComponentbuilderControllerLibraries extends JControllerAdmin
 {
-	protected $text_prefix = 'COM_COMPONENTBUILDER_LIBRARIES';
 	/**
-	 * Proxy for getModel.
-	 * @since	2.5
+	 * The prefix to use with controller messages.
+	 *
+	 * @var    string
+	 * @since  1.6
 	 */
-	public function getModel($name = 'Library', $prefix = 'ComponentbuilderModel', $config = array())
+	protected $text_prefix = 'COM_COMPONENTBUILDER_LIBRARIES';
+
+	/**
+	 * Method to get a model object, loading it if required.
+	 *
+	 * @param   string  $name    The model name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  JModelLegacy  The model.
+	 *
+	 * @since   1.6
+	 */
+	public function getModel($name = 'Library', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
-		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
-		
-		return $model;
+		return parent::getModel($name, $prefix, $config);
 	}  
 
 	public function getSnippets()

@@ -29,9 +29,6 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED###
 
-// import Joomla view library
-jimport('joomla.application.component.view');
-
 /**
  * ###Component### ###View### View
  */

@@ -27,10 +27,7 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); ###LICENSE_LOCKED_DEFINED###
-
-// import Joomla view library
-jimport('joomla.application.component.view');###CUSTOM_ADMIN_GET_MODULE_JIMPORT###
+defined('_JEXEC') or die('Restricted access'); ###LICENSE_LOCKED_DEFINED######CUSTOM_ADMIN_GET_MODULE_JIMPORT###
 
 /**
  * ###Component### View class for the ###SView###

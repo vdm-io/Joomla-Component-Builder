@@ -22,6 +22,7 @@ class Infusion extends Interpretation
 	public $importCustomScripts = array();
 	public $langFiles = array();
 	public $removeSiteFolder = false;
+	public $removeSiteEditFolder = true;
 	public $langNot = array();
 	public $langSet = array();
 
@@ -245,6 +246,8 @@ class Infusion extends Interpretation
 				{
 					$site_edit_view_array[] = $this->_t(4) . "'" . $viewName_single . "'";
 					$this->lang = 'both';
+					// insure site view does not get removed
+					$this->removeSiteEditFolder = false;
 				}
 				// check if help is being loaded
 				$this->checkHelp($viewName_single);
@@ -895,6 +898,18 @@ class Infusion extends Interpretation
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 				}
+				// setup the layouts
+				$this->setCustomViewLayouts();
+			}
+			else
+			{
+				// clear all site folder since none is needed
+				$this->removeSiteFolder = true;
+			}
+			// load the site statics
+			if (!$this->removeSiteFolder || !$this->removeSiteEditFolder)
+			{
+				$this->target = 'site';
 				// if no default site view was set, the redirect to root
 				if (!isset($this->fileContentStatic[$this->hhh . 'SITE_DEFAULT_VIEW' . $this->hhh]))
 				{
@@ -921,13 +936,6 @@ class Infusion extends Interpretation
 					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->setPlaceholders($this->customScriptBuilder['component_php_site_event'], $this->placeholders);
 					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] .= PHP_EOL . $this->_t(1) . '}';
 				}
-				// setup the layouts
-				$this->setCustomViewLayouts();
-			}
-			else
-			{
-				// clear all site folder since none is needed
-				$this->removeSiteFolder = true;
 			}
 
 			// PREINSTALLSCRIPT
@@ -1076,13 +1084,13 @@ class Infusion extends Interpretation
 			$mainLangLoader['adminsys'] = count($this->languages[$this->langTag]['adminsys']);
 		}
 		// check the site lang is set
-		if (!$this->removeSiteFolder && $this->setLangSite())
+		if ((!$this->removeSiteFolder || !$this->removeSiteEditFolder) && $this->setLangSite())
 		{
 			$values[] = array_values($this->languages[$this->langTag]['site']);
 			$mainLangLoader['site'] = count($this->languages[$this->langTag]['site']);
 		}
 		// check the site system lang is set
-		if (!$this->removeSiteFolder && $this->setLangSiteSys())
+		if ((!$this->removeSiteFolder || !$this->removeSiteEditFolder) && $this->setLangSiteSys())
 		{
 			$values[] = array_values($this->languages[$this->langTag]['sitesys']);
 			$mainLangLoader['sitesys'] = count($this->languages[$this->langTag]['sitesys']);
@@ -1132,7 +1140,7 @@ class Infusion extends Interpretation
 					$t = '';
 					if (strpos($area, 'site') !== false)
 					{
-						if ($this->removeSiteFolder)
+						if ($this->removeSiteFolder  && $this->removeSiteEditFolder)
 						{
 							continue;
 						}
@@ -1181,7 +1189,7 @@ class Infusion extends Interpretation
 				{
 					$replace[$this->hhh . 'ADMIN_LANGUAGES' . $this->hhh] = implode(PHP_EOL . $this->_t(3), $langXML['admin']);
 				}
-				if (!$this->removeSiteFolder && isset($langXML['site']) && ComponentbuilderHelper::checkArray($langXML['site']))
+				if ((!$this->removeSiteFolder || !$this->removeSiteEditFolder) && isset($langXML['site']) && ComponentbuilderHelper::checkArray($langXML['site']))
 				{
 					$replace[$this->hhh . 'SITE_LANGUAGES' . $this->hhh] = implode(PHP_EOL . $this->_t(2), $langXML['site']);
 				}

@@ -319,7 +319,7 @@ abstract class ###Component###Email
 		$body[] = "<head>";
 		$body[] = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
 		$body[] = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
-		$body[] = "<title>".$subject."</title>";
+		$body[] = "<title>" . $subject . "</title>";
 		$body[] = "<style type=\"text/css\">";
 		$body[] = "#outlook a {padding:0;}";
 		$body[] = ".ExternalClass {width:100%;}";

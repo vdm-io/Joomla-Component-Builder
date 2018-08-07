@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+JHtml::_('behavior.tabstate');
 
 // Set the component css/js
 $document = JFactory::getDocument();
@@ -18,22 +19,18 @@ $document->addStyleSheet('components/com_componentbuilder/assets/css/site.css');
 $document->addScript('components/com_componentbuilder/assets/js/site.js');
 
 // Require helper files
-JLoader::register('ComponentbuilderHelper', dirname(__FILE__) . '/helpers/componentbuilder.php'); 
+JLoader::register('ComponentbuilderHelper', __DIR__ . '/helpers/componentbuilder.php'); 
 JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
-JLoader::register('ComponentbuilderHelperRoute', dirname(__FILE__) . '/helpers/route.php'); 
+JLoader::register('ComponentbuilderHelperRoute', __DIR__ . '/helpers/route.php'); 
 
 // Triger the Global Site Event
 ComponentbuilderHelper::globalEvent($document);
-
-// import joomla controller library
-jimport('joomla.application.component.controller');
 
 // Get an instance of the controller prefixed by Componentbuilder
 $controller = JControllerLegacy::getInstance('Componentbuilder');
 
 // Perform the request task
-$jinput = JFactory::getApplication()->input;
-$controller->execute($jinput->get('task', null, 'CMD'));
+$controller->execute(JFactory::getApplication()->input->get('task'));
 
 // Redirect if set by the controller
 $controller->redirect();

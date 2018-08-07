@@ -27,7 +27,6 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-
 defined('_JEXEC') or die('Restricted access');
 
 $form = $displayData->getForm();

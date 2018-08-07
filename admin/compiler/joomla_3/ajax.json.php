@@ -29,9 +29,6 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// import Joomla controllerform library
-jimport('joomla.application.component.controller');
-
 /**
  * ###Component### Ajax Controller
  */
@@ -47,14 +44,14 @@ class ###Component###ControllerAjax extends JControllerLegacy
 		// load the tasks
 		$this->registerTask('fieldRequired', 'ajax');
 	}
-	
+
 	public function ajax()
 	{
-		$user 		= JFactory::getUser();
-		$jinput 	= JFactory::getApplication()->input;
+		$user = JFactory::getUser();
+		$jinput = JFactory::getApplication()->input;
 		// Check Token!
-		$token 		= JSession::getFormToken();
-		$call_token	= $jinput->get('token', 0, 'ALNUM');
+		$token = JSession::getFormToken();
+		$call_token = $jinput->get('token', 0, 'ALNUM');
 		if($user->id != 0 && $token == $call_token)
 		{
 			$task = $this->getTask();

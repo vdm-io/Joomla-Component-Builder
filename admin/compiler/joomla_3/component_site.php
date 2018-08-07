@@ -28,6 +28,7 @@ defined('_JEXEC') or die('Restricted access');
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+JHtml::_('behavior.tabstate');
 
 // Set the component css/js
 $document = JFactory::getDocument();
@@ -35,18 +36,14 @@ $document->addStyleSheet('components/com_###component###/assets/css/site.css');
 $document->addScript('components/com_###component###/assets/js/site.js');
 
 // Require helper files
-JLoader::register('###Component###Helper', dirname(__FILE__) . '/helpers/###component###.php'); ###HELPER_EMAIL###
-JLoader::register('###Component###HelperRoute', dirname(__FILE__) . '/helpers/route.php');###LICENSE_LOCKED_INT### ###SITE_GLOBAL_EVENT###
-
-// import joomla controller library
-jimport('joomla.application.component.controller');
+JLoader::register('###Component###Helper', __DIR__ . '/helpers/###component###.php'); ###HELPER_EMAIL###
+JLoader::register('###Component###HelperRoute', __DIR__ . '/helpers/route.php');###LICENSE_LOCKED_INT### ###SITE_GLOBAL_EVENT###
 
 // Get an instance of the controller prefixed by ###Component###
 $controller = JControllerLegacy::getInstance('###Component###');
 
 // Perform the request task
-$jinput = JFactory::getApplication()->input;
-$controller->execute($jinput->get('task', null, 'CMD'));
+$controller->execute(JFactory::getApplication()->input->get('task'));
 
 // Redirect if set by the controller
 $controller->redirect();

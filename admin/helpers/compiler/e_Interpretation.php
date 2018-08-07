@@ -10973,10 +10973,14 @@ class Interpretation extends Fields
 		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Only load these values if no id is found";
 		$allow[] = $this->_t(2) . "if (0 == \$id)";
 		$allow[] = $this->_t(2) . "{";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set redirected field name";
-		$allow[] = $this->_t(3) . "\$redirectedField = \$jinput->get('ref', null, 'STRING');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set redirected field value";
-		$allow[] = $this->_t(3) . "\$redirectedValue = \$jinput->get('refid', 0, 'INT');";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set redirected view name";
+		$allow[] = $this->_t(3) . "\$redirectedView = \$jinput->get('ref', null, 'STRING');";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set field name (or fall back to view name)";
+		$allow[] = $this->_t(3) . "\$redirectedField = \$jinput->get('field', \$redirectedView, 'STRING');";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set redirected view id";
+		$allow[] = $this->_t(3) . "\$redirectedId = \$jinput->get('refid', 0, 'INT');";
+		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set field id (or fall back to redirected view id)";
+		$allow[] = $this->_t(3) . "\$redirectedValue = \$jinput->get('field_id', \$redirectedId, 'INT');";
 		$allow[] = $this->_t(3) . "if (0 != \$redirectedValue && \$redirectedField)";
 		$allow[] = $this->_t(3) . "{";
 		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Now set the local-redirected field default value";
@@ -11559,7 +11563,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(2) . "\$isNew = \$this->item->id == 0;";
 			$toolBar .= PHP_EOL . PHP_EOL . $this->_t(2) . "JToolbarHelper::title( JText:" . ":_(\$isNew ? '" . $viewNameLang_new . "' : '" . $viewNameLang_edit . "'), 'pencil-2 article-add');";
 			$toolBar .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Built the actions for new and existing records.";
-			$toolBar .= PHP_EOL . $this->_t(2) . "if (\$this->refid || \$this->ref)";
+			$toolBar .= PHP_EOL . $this->_t(2) . "if (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh]. "Helper::checkString(\$this->referral))";
 			$toolBar .= PHP_EOL . $this->_t(2) . "{";
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName, $this->permissionBuilder['global'][$core['core.create']]))
 			{
