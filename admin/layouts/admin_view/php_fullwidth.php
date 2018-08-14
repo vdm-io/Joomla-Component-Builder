@@ -34,6 +34,8 @@ $fields = $displayData->get('fields') ?: array(
 	'php_save',
 	'add_php_postsavehook',
 	'php_postsavehook',
+	'add_php_allowadd',
+	'php_allowadd',
 	'add_php_allowedit',
 	'php_allowedit',
 	'add_php_batchcopy',

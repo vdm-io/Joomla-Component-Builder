@@ -114,7 +114,7 @@
 					name="field"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_DESCRIPTION"
-					class="list_class"
+					class="list_class fieldFull"
 					multiple="false"
 					required="false"
 					button="false"

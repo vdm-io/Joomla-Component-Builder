@@ -10469,6 +10469,8 @@ class Interpretation extends Fields
 		$allow = array();
 		// set component name
 		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		// prepare custom permission script
+		$customAllow = $this->getCustomScriptBuilder('php_allowadd', $viewName_single, '', null, true);
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -10533,22 +10535,26 @@ class Interpretation extends Fields
 		}
 		else
 		{
+			$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get user object.";
+			$allow[] = $this->_t(2) . "\$user = JFactory::getUser();";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder['global'][$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.access']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.access']]))
 			{
-				$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Access check.";
-				$allow[] = $this->_t(2) . "\$access = JFactory::getUser()->authorise('" . $core['core.access'] . "', 'com_" . $component . "');";
+				$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Access check.";
+				$allow[] = $this->_t(2) . "\$access = \$user->authorise('" . $core['core.access'] . "', 'com_" . $component . "');";
 				$allow[] = $this->_t(2) . "if (!\$access)";
 				$allow[] = $this->_t(2) . "{";
 				$allow[] = $this->_t(3) . "return false;";
 				$allow[] = $this->_t(2) . "}";
 			}
+			// load custom permission script
+			$allow[] = $customAllow;
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create']) && isset($this->permissionBuilder['global'][$core['core.create']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.create']]) && in_array($viewName_single, $this->permissionBuilder['global'][$core['core.create']]))
 			{
 				// setup the default script
 				$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " In the absense of better information, revert to the component permissions.";
-				$allow[] = $this->_t(2) . "return JFactory::getUser()->authorise('" . $core['core.create'] . "', \$this->option);";
+				$allow[] = $this->_t(2) . "return \$user->authorise('" . $core['core.create'] . "', \$this->option);";
 			}
 			else
 			{

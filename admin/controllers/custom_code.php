@@ -50,14 +50,17 @@ class ComponentbuilderControllerCustom_code extends JControllerForm
 	 */
 	protected function allowAdd($data = array())
 	{
+		// Get user object.
+		$user = JFactory::getUser();
 		// Access check.
-		$access = JFactory::getUser()->authorise('custom_code.access', 'com_componentbuilder');
+		$access = $user->authorise('custom_code.access', 'com_componentbuilder');
 		if (!$access)
 		{
 			return false;
 		}
+
 		// In the absense of better information, revert to the component permissions.
-		return JFactory::getUser()->authorise('custom_code.create', $this->option);
+		return $user->authorise('custom_code.create', $this->option);
 	}
 
 	/**
@@ -197,48 +200,36 @@ class ComponentbuilderControllerCustom_code extends JControllerForm
 
 		$cancel = parent::cancel($key);
 
-		if ($cancel)
+		if (!is_null($return) && JUri::isInternal(base64_decode($return)))
 		{
-			if (!is_null($return) && JUri::isInternal(base64_decode($return)))
-			{
-				$redirect = base64_decode($return);
+			$redirect = base64_decode($return);
 
-				// Redirect to the return value.
-				$this->setRedirect(
-					JRoute::_(
-						$redirect, false
-					)
-				);
-			}
-			elseif ($this->refid && $this->ref)
-			{
-				$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
-
-				// Redirect to the item screen.
-				$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . $redirect, false
-					)
-				);
-			}
-			elseif ($this->ref)
-			{
-				$redirect = '&view='.(string)$this->ref;
-
-				// Redirect to the list screen.
-				$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . $redirect, false
-					)
-				);
-			}
-		}
-		else
-		{
-			// Redirect to the items screen.
+			// Redirect to the return value.
 			$this->setRedirect(
 				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_list, false
+					$redirect, false
+				)
+			);
+		}
+		elseif ($this->refid && $this->ref)
+		{
+			$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
+
+			// Redirect to the item screen.
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . $redirect, false
+				)
+			);
+		}
+		elseif ($this->ref)
+		{
+			$redirect = '&view='.(string)$this->ref;
+
+			// Redirect to the list screen.
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
 		}
@@ -273,43 +264,40 @@ class ComponentbuilderControllerCustom_code extends JControllerForm
 
 		$saved = parent::save($key, $urlVar);
 
-		if ($saved)
+		// This is not needed since parent save already does this
+		// Due to the ref and refid implementation we need to add this
+		if ($canReturn)
 		{
-			// This is not needed since parent save already does this
-			// Due to the ref and refid implementation we need to add this
-			if ($canReturn)
-			{
-				$redirect = base64_decode($return);
+			$redirect = base64_decode($return);
 
-				// Redirect to the return value.
-				$this->setRedirect(
-					JRoute::_(
-						$redirect, false
-					)
-				);
-			}
-			elseif ($this->refid && $this->ref)
-			{
-				$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
+			// Redirect to the return value.
+			$this->setRedirect(
+				JRoute::_(
+					$redirect, false
+				)
+			);
+		}
+		elseif ($this->refid && $this->ref)
+		{
+			$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
 
-				// Redirect to the item screen.
-				$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . $redirect, false
-					)
-				);
-			}
-			elseif ($this->ref)
-			{
-				$redirect = '&view=' . (string)$this->ref;
+			// Redirect to the item screen.
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . $redirect, false
+				)
+			);
+		}
+		elseif ($this->ref)
+		{
+			$redirect = '&view=' . (string)$this->ref;
 
-				// Redirect to the list screen.
-				$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . $redirect, false
-					)
-				);
-			}
+			// Redirect to the list screen.
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . $redirect, false
+				)
+			);
 		}
 		return $saved;
 	}
