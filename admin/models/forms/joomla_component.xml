@@ -731,6 +731,8 @@
 			directory="administrator/components/com_componentbuilder/compiler"
 			default="default.txt"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BOM_DESCRIPTION"
+			filter="\.txt"
+			hide_none="true"
 			hide_default="true"
 		/>
 		<!-- Update_server_target Field. Type: Radio. (joomla) -->

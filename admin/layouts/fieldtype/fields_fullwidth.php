@@ -13,18 +13,35 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->waffields;
-$user	= JFactory::getUser();
-$id	= $displayData->item->id;
+$items = $displayData->waffields;
+$user = JFactory::getUser();
+$id = $displayData->item->id;
+// set the edit URL
 $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
-$ref = ($id) ? "&ref=fieldtype&refid=".$id : "";
+// set a return value
+$return = ($id) ? "index.php?option=com_componentbuilder&view=fieldtype&layout=edit&id=" . $id : "";
+// check for a return value
+$jinput = JFactory::getApplication()->input;
+if ($_return = $jinput->get('return', null, 'base64'))
+{
+	$return .= "&return=" . $_return;
+}
+// set the referral values
+$ref = ($id) ? "&ref=fieldtype&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "";
+// set the create new URL
 $new = "index.php?option=com_componentbuilder&view=field&layout=edit".$ref;
+// set the create new and close URL
+$close_new = "index.php?option=com_componentbuilder&view=field&layout=edit";
+// load the action object
 $can = ComponentbuilderHelper::getActions('field');
 
 ?>
 <div class="form-vertical">
 <?php if ($can->get('field.create')): ?>
-	<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a><br /><br />
+	<div class="btn-group">
+		<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a>
+		<a class="btn btn-small" onclick="Joomla.submitbutton('fieldtype.cancel');" href="<?php echo $close_new; ?>"><span class="icon-new"></span> <?php echo JText::_('COM_COMPONENTBUILDER_CLOSE_NEW'); ?></a>
+	</div><br /><br />
 <?php endif; ?>
 <?php if (ComponentbuilderHelper::checkArray($items)): ?>
 <table class="footable table data fields" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
@@ -69,7 +86,7 @@ $can = ComponentbuilderHelper::getActions('field');
 	<tr>
 		<td>
 			<?php if ($canDo->get('field.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=fieldtype&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?><?php echo $ref; ?>"><?php echo $displayData->escape($item->name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'fields.', $canCheckin); ?>
 				<?php endif; ?>

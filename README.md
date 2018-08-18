@@ -125,11 +125,11 @@ Watch the [proposed development workflow](https://vdm.bz/proposed-development-wo
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 14th August, 2018
++ *Last Build*: 18th August, 2018
 + *Version*: 2.8.6
 + *Copyright*: Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **186762**
++ *Line count*: **187148**
 + *Field count*: **1061**
 + *File count*: **1240**
 + *Folder count*: **197**

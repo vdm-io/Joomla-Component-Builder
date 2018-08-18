@@ -53,7 +53,8 @@ class JFormFieldLibrary extends JFormFieldList
 			// get the view name & id
 			$values = $jinput->getArray(array(
 				'id' => 'int',
-				'view' => 'word'
+				'view' => 'word',
+				'return' => 'base64'
 			));
 			// check if new item
 			$ref = '';
@@ -63,6 +64,12 @@ class JFormFieldLibrary extends JFormFieldList
 				// only load referal if not new item.
 				$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
 				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
+				// get the return value.
+				$_uri = (string) JUri::getInstance();
+				$_return = urlencode(base64_encode($_uri));
+				// load return value.
+				$ref .= '&amp;return=' . $_return;
+				$refJ .= '&return=' . $_return;
 			}
 			$user = JFactory::getUser();
 			// only add if user allowed to create library

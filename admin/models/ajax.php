@@ -210,6 +210,7 @@ class ComponentbuilderModelAjax extends JModelList
 			$vdm = $jinput->get('vdm', null, 'WORD');
 			if ($vdm) 
 			{
+				// set view and id
 				if ($view = ComponentbuilderHelper::get($vdm))
 				{
 					$current = (array) explode('__', $view);
@@ -220,6 +221,14 @@ class ComponentbuilderModelAjax extends JModelList
 							'a_id' => (int) $current[1],
 							'a_view' => $current[0]
 						);
+					}
+				}
+				// set return if found
+				if ($return = ComponentbuilderHelper::get($vdm . '__return'))
+				{
+					if (ComponentbuilderHelper::checkString($return))
+					{
+						$this->viewid[$call]['a_return'] = $return;
 					}
 				}
 			}
@@ -269,11 +278,17 @@ class ComponentbuilderModelAjax extends JModelList
 				$ref = '';
 				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
 				{
-					// only load referal if not new item.
-					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
+					// check if we have a return value
+					$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+					if (isset($values['a_return']))
+					{
+						$return_url .= '&return=' . (string) $values['a_return'];
+					}
+					// only load referral if not new item.
+					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
 				}
 				// build url (A tag)
-				$startAtag = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit'.$ref.'\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
+				$startAtag = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
 				// build the smaller button
 				if (2 == $size)
 				{
@@ -317,8 +332,14 @@ class ComponentbuilderModelAjax extends JModelList
 				$ref = '';
 				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
 				{
+					// set the return value
+					$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+					if (isset($values['a_return']))
+					{
+						$return_url .= '&return=' . (string) $values['a_return'];
+					}
 					// only load referral if not new item.
-					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'];
+					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
 					// get item id
 					if ($id = ComponentbuilderHelper::getVar($type, $values['a_id'], $values['a_view'], 'id'))
 					{
@@ -658,7 +679,14 @@ class ComponentbuilderModelAjax extends JModelList
 			// check if we are in the correct view.
 			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
 			{
-				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'];
+				// set a return value
+				$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+				if (isset($values['a_return']))
+				{
+					$return_url .= '&return=' . (string) $values['a_return'];
+				}
+				// set the ref
+				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'] . '&return=' . urlencode(base64_encode($return_url));
 				// load the results
 				$result = array();
 				// return field table
@@ -810,7 +838,7 @@ class ComponentbuilderModelAjax extends JModelList
 						}
 					}
 					// set edit link
-					$link = ($edit) ? $this->addEditLink($item, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables']) : '';
+					$link = ($edit) ? ComponentbuilderHelper::getEditButton($item, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
 					// load item
 					$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$item] . $link;
 				}
@@ -836,7 +864,7 @@ class ComponentbuilderModelAjax extends JModelList
 					}
 				}
 				// set edit link
-				$link = ($edit) ? $this->addEditLink($value, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables']) : '';
+				$link = ($edit) ? ComponentbuilderHelper::getEditButton($value, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
 				// load item
 				$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$value] . $link;
 			}
@@ -953,31 +981,6 @@ class ComponentbuilderModelAjax extends JModelList
 			break;
 		}
 		return JText::_('COM_COMPONENTBUILDER_NOT_SET');
-	}
-
-	protected function addEditLink($id, $view, $views)
-	{
-		// can edit
-		if ($this->canEdit($id, $view))
-		{
-			$edit = "index.php?option=com_componentbuilder&view=".$views."&task=".$view.".edit&id=".$id.$this->ref;
-			$title = ComponentbuilderHelper::safeString(JText::_('COM_COMPONENTBUILDER_EDIT').' '.$view, 'W');
-			return ' <a onclick="UIkit.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$edit.'\' })"  href="javascript:void(0)" class="uk-icon-pencil" title="'.$title.'"></a>';
-			
-		}
-		return '';
-	}
-
-	protected $user;
-
-	protected function canEdit($id, $view = 'admin_fields')
-	{
-		// load field permission check
-		if (!ComponentbuilderHelper::checkObject($this->user)) // TODO && $this->user instanceof JUser)
-		{
-			$this->user = JFactory::getUser();
-		}
-		return $this->user->authorise($view.'.edit', 'com_componentbuilder.'.$view.'.' . (int) $id);
 	}
 
 	protected function setAdminBehaviour($header, $value)
@@ -1284,8 +1287,14 @@ class ComponentbuilderModelAjax extends JModelList
 			// check if we have any linked to config
 			if (isset($this->linkedKeys[$values['a_view']]))
 			{
+				// set a return value
+				$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+				if (isset($values['a_return']))
+				{
+					$return_url .= '&return=' . (string) $values['a_return'];
+				}
 				// make sure the ref is set
-				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'];
+				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'] . '&return=' . urlencode(base64_encode($return_url));
 				// get the linked to
 				if ($linked = $this->getLinkedTo($values['a_view'], $values['a_id']))
 				{
@@ -1454,7 +1463,7 @@ class ComponentbuilderModelAjax extends JModelList
 							$type_name = ' (' . $type_name . ') ';
 						}
 						// set edit link
-						$link = ($edit) ? $this->addEditLink($item->id, $search['table'], $search['tables']) : '';
+						$link = ($edit) ? ComponentbuilderHelper::getEditButton($item->id, $search['table'], $search['tables'], $this->ref) : '';
 						// build the linked
 						$linked[] = JText::_($search['linked']) . $type_name . ' - ' . $linked_name . ' ' . $link;
 					}

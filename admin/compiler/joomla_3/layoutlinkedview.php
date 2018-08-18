@@ -18,9 +18,9 @@ defined('_JEXEC') or die('Restricted access');
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->###LAYOUTITEMS###;
-$user	= JFactory::getUser();
-$id	= $displayData->item->id;
+$items = $displayData->###LAYOUTITEMS###;
+$user = JFactory::getUser();
+$id = $displayData->item->id;
 ###LAYOUTITEMSHEADER###
 
 ?>

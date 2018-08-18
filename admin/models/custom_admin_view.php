@@ -206,9 +206,14 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			}
 			else
 			{
+				// set the vast development method key
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'custom_admin_view__'.$id);
 				ComponentbuilderHelper::set('custom_admin_view__'.$id, $this->vastDevMod);
+				// set a return value if found
+				$jinput = JFactory::getApplication()->input;
+				$return = $jinput->get('return', null, 'base64');
+				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 			}
 
 			// check what type of custom_button array we have here (should be subform... but just incase)

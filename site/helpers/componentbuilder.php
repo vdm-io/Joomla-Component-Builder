@@ -3547,6 +3547,108 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	* Get the edit button
+	* 
+	* @param  int        $item           The item to edit
+	* @param  string   $view           The type of item to edit
+	* @param  string   $views         The list view controller name
+	* @param  string   $ref              The return path
+	* @param  string   $headsup    The message to show on click of button
+	*
+	* @return  string    On success the full html edit button
+	* 
+	*/
+	public static function getEditButton(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE')
+	{
+		// get URL
+		$url = self::getEditURL($item, $view, $views, $ref, $component);
+		// check if we found any
+		if (self::checkString($url))
+		{
+			// check that we have the ID
+			if (self::checkObject($item) && isset($item->id))
+			{
+				// check if the checked_out is available
+				if (isset($item->checked_out))
+				{
+					$checked_out = (int) $item->checked_out;
+				}
+			}
+			elseif (self::checkArray($item) && isset($item['id']))
+			{
+				// check if the checked_out is available
+				if (isset($item['checked_out']))
+				{
+					$checked_out = (int) $item['checked_out'];
+				}
+			}
+			// set the link title
+			$title = self::safeString(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
+			// check that there is a check message
+			if (self::checkString($headsup))
+			{
+				$href = 'onclick="UIkit.modal.confirm(\''.JText::_($headsup).'\', function(){ window.location.href = \'' . $url . '\' })"  href="javascript:void(0)"';
+			}
+			else
+			{
+				$href = 'href="' . $url . '"';
+			}
+			// check if it is checked out
+			if (isset($checked_out) && $checked_out > 0)
+			{
+				// is this user the one who checked it out
+				if ($checked_out == JFactory::getUser()->id)
+				{
+					return ' <a ' . $href . ' class="uk-icon-lock" title="' . $title . '"></a>';
+				}
+				return ' <a href="#" disabled class="uk-icon-lock" title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', self::safeString($view, 'W'), JFactory::getUser($checked_out)->name) . '"></a>'; 
+			}
+			// return normal edit link
+			return ' <a ' . $href . ' class="uk-icon-pencil" title="' . $title . '"></a>';
+		}
+		return '';
+	}
+
+	/**
+	* Get the edit URL
+	* 
+	* @param  int        $item           The item to edit
+	* @param  string   $view           The type of item to edit
+	* @param  string   $ref              The return path
+	*
+	* @return  string    On success the edit url
+	* 
+	*/
+	public static function  getEditURL(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder')
+	{
+		// check that we have the ID
+		if (self::checkObject($item) && isset($item->id))
+		{
+			$id = (int) $item->id;
+		}
+		elseif (self::checkArray($item) && isset($item['id']))
+		{
+			$id = (int) $item['id'];
+		}
+		elseif (is_numeric($item))
+		{
+			$id = (int) $item;
+		}
+		// check ID
+		if (isset($id) && $id > 0)
+		{
+			// can edit
+			if (JFactory::getUser()->authorise($view . '.edit', $component . '.' . $view . '.' . (int) $id))
+			{
+				// set the edit link
+				return JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $id . $ref);
+			}
+		}
+		return false;
+	}
+
+
+	/**
 	* 	the Crypt objects
 	**/
 	protected static $CRYPT = array();

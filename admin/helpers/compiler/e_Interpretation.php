@@ -7740,20 +7740,33 @@ class Interpretation extends Fields
 			// LAYOUTITEMSTABLE <<<DYNAMIC>>>
 			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh] = $head . $body;
 			// LAYOUTITEMSHEADER <<<DYNAMIC>>>
-			$headerscript = '$edit = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $list . '&task=' . $single . '.edit";';
+			$headerscript .= '//' . $this->setLine(__LINE__) . ' set the edit URL';
+			$headerscript .= PHP_EOL . '$edit = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $list . '&task=' . $single . '.edit";';
+			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set a return value';
+			$headerscript .= PHP_EOL . '$return = ($id) ? "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $viewName_single . '&layout=edit&id=" . $id : "";';
+			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' check for a return value';
+			$headerscript .= PHP_EOL . '$jinput = JFactory::getApplication()->input;';
+			$headerscript .= PHP_EOL . "if (\$_return = \$jinput->get('return', null, 'base64'))";
+			$headerscript .= PHP_EOL . '{';
+			$headerscript .= PHP_EOL . $this->_t(1) . '$return .= "&return=" . $_return;';
+			$headerscript .= PHP_EOL . '}';
+			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set the referral values';
+			$headerscript .= PHP_EOL . '$ref = ($id) ? "&ref=' . $viewName_single . '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "";';
 			if ($addNewButon > 0)
 			{
 				// add the link for new
 				if ($addNewButon == 1 || $addNewButon == 2)
 				{
-					$headerscript .= PHP_EOL . '$ref = ($id) ? "&ref=' . $viewName_single . '&refid=".$id : "";';
+					$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set the create new URL';
 					$headerscript .= PHP_EOL . '$new = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $single . '&layout=edit".$ref;';
 				}
 				// and the link for close and new
 				if ($addNewButon == 2 || $addNewButon == 3)
 				{
+					$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set the create new and close URL';
 					$headerscript .= PHP_EOL . '$close_new = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $single . '&layout=edit";';
 				}
+				$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' load the action object';
 				$headerscript .= PHP_EOL . '$can = ' . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::getActions(' . "'" . $single . "'" . ');';
 			}
 			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh] = $headerscript;
@@ -7906,7 +7919,7 @@ class Interpretation extends Fields
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
 				// set the ref
-				$ref = '&ref=' . $refview . '&refid=<?php echo $id; ?>';
+				$ref = '<?php echo $ref; ?>';
 				// set some defaults
 				$customAdminViewButtons = '';
 				// set the item row

@@ -13,10 +13,21 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->waplinked_components;
-$user	= JFactory::getUser();
-$id	= $displayData->item->id;
+$items = $displayData->waplinked_components;
+$user = JFactory::getUser();
+$id = $displayData->item->id;
+// set the edit URL
 $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";
+// set a return value
+$return = ($id) ? "index.php?option=com_componentbuilder&view=server&layout=edit&id=" . $id : "";
+// check for a return value
+$jinput = JFactory::getApplication()->input;
+if ($_return = $jinput->get('return', null, 'base64'))
+{
+	$return .= "&return=" . $_return;
+}
+// set the referral values
+$ref = ($id) ? "&ref=server&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "";
 
 ?>
 <div class="form-vertical">
@@ -60,7 +71,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 	<tr>
 		<td>
 			<?php if ($canDo->get('joomla_component.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=server&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?><?php echo $ref; ?>"><?php echo $displayData->escape($item->system_name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_components.', $canCheckin); ?>
 				<?php endif; ?>

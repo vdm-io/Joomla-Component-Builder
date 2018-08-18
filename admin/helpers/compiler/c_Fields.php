@@ -2927,7 +2927,8 @@ class Fields extends Structure
 			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get the view name & id";
 			$addButton[] = $this->_t(3) . "\$values = \$jinput->getArray(array(";
 			$addButton[] = $this->_t(4) . "'id' => 'int',";
-			$addButton[] = $this->_t(4) . "'view' => 'word'";
+			$addButton[] = $this->_t(4) . "'view' => 'word',";
+			$addButton[] = $this->_t(4) . "'return' => 'base64'";
 			$addButton[] = $this->_t(3) . "));";
 			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " check if new item";
 			$addButton[] = $this->_t(3) . "\$ref = '';";
@@ -2939,6 +2940,12 @@ class Fields extends Structure
 				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " only load referal if not new item.";
 				$addButton[] = $this->_t(4) . "\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
 				$addButton[] = $this->_t(4) . "\$refJ = '&ref=' . \$values['view'] . '&refid=' . \$values['id'];";
+				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " get the return value.";
+				$addButton[] = $this->_t(4) . "\$_uri = (string) JUri::getInstance();";
+				$addButton[] = $this->_t(4) . "\$_return = urlencode(base64_encode(\$_uri));";
+				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " load return value.";
+				$addButton[] = $this->_t(4) . "\$ref .= '&amp;return=' . \$_return;";
+				$addButton[] = $this->_t(4) . "\$refJ .= '&return=' . \$_return;";
 				$addButton[] = $this->_t(3) . "}";
 			}
 			else
