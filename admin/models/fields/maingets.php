@@ -53,15 +53,14 @@ class JFormFieldMaingets extends JFormFieldList
 			// get the view name & id
 			$values = $jinput->getArray(array(
 				'id' => 'int',
-				'view' => 'word',
-				'return' => 'base64'
+				'view' => 'word'
 			));
 			// check if new item
 			$ref = '';
 			$refJ = '';
 			if (!is_null($values['id']) && strlen($values['view']))
 			{
-				// only load referal if not new item.
+				// only load referral if not new item.
 				$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
 				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
 				// get the return value.

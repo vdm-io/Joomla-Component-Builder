@@ -2861,10 +2861,12 @@ class Fields extends Structure
 			isset($fieldData['view']) && isset($fieldData['views']) &&
 			ComponentbuilderHelper::checkString($fieldData['view']) && ComponentbuilderHelper::checkString($fieldData['views']))
 		{
+			// set local component
+			$local_component = "com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 			// check that the component value is set
 			if (!isset($fieldData['component']) || !ComponentbuilderHelper::checkString($fieldData['component']))
 			{
-				$fieldData['component'] = "com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
+				$fieldData['component'] = $local_component;
 			}
 			// check that the componet has the com_ value in it
 			if (strpos($fieldData['component'], 'com_') === false || strpos($fieldData['component'], '=') !== false)
@@ -2876,6 +2878,14 @@ class Fields extends Structure
 			{
 				$fieldData['component'] = $this->setPlaceholders($fieldData['component'], $this->placeholders);
 			}
+			// fall back on the field component
+			$component = $fieldData['component'];
+			// check if we should add ref tags (since it only works well on local views)
+			if ($local_component !== $component)
+			{
+				// do not add ref tags
+				$refLoad = false;
+			}
 			// get core permissions
 			$coreLoad = false;
 			// add ref tags
@@ -2886,19 +2896,6 @@ class Fields extends Structure
 				$core = $this->permissionCore[$fieldData['view']];
 				// set switch to activate easy update
 				$coreLoad = true;
-				// since the view is local to the component use this component name
-				$component = "com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
-			}
-			else
-			{
-				// fall back on the field component
-				$component = $fieldData['component'];
-			}
-			// check if we should add ref tags
-			if ($fieldData['component'] !== $component)
-			{
-				// do not add ref tags
-				$refLoad = false;
 			}
 			// start building the add buttons/s
 			$addButton = array();
@@ -2927,8 +2924,7 @@ class Fields extends Structure
 			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get the view name & id";
 			$addButton[] = $this->_t(3) . "\$values = \$jinput->getArray(array(";
 			$addButton[] = $this->_t(4) . "'id' => 'int',";
-			$addButton[] = $this->_t(4) . "'view' => 'word',";
-			$addButton[] = $this->_t(4) . "'return' => 'base64'";
+			$addButton[] = $this->_t(4) . "'view' => 'word'";
 			$addButton[] = $this->_t(3) . "));";
 			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " check if new item";
 			$addButton[] = $this->_t(3) . "\$ref = '';";
@@ -2937,7 +2933,7 @@ class Fields extends Structure
 			{
 				$addButton[] = $this->_t(3) . "if (!is_null(\$values['id']) && strlen(\$values['view']))";
 				$addButton[] = $this->_t(3) . "{";
-				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " only load referal if not new item.";
+				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " only load referral if not new item.";
 				$addButton[] = $this->_t(4) . "\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
 				$addButton[] = $this->_t(4) . "\$refJ = '&ref=' . \$values['view'] . '&refid=' . \$values['id'];";
 				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " get the return value.";
@@ -2952,6 +2948,9 @@ class Fields extends Structure
 			{
 				$addButton[] = $this->_t(3) . "if (!is_null(\$values['id']) && strlen(\$values['view']))";
 				$addButton[] = $this->_t(3) . "{";
+				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " only load field details if not new item.";
+				$addButton[] = $this->_t(4) . "\$ref = '&amp;field=' . \$values['view'] . '&amp;field_id=' . \$values['id'];";
+				$addButton[] = $this->_t(4) . "\$refJ = '&field=' . \$values['view'] . '&field_id=' . \$values['id'];";
 				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " get the return value.";
 				$addButton[] = $this->_t(4) . "\$_uri = (string) JUri::getInstance();";
 				$addButton[] = $this->_t(4) . "\$_return = urlencode(base64_encode(\$_uri));";

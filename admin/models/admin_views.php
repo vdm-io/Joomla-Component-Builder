@@ -29,8 +29,12 @@ class ComponentbuilderModelAdmin_views extends JModelList
 				'a.modified_by','modified_by',
 				'a.system_name','system_name',
 				'a.name_single','name_single',
-				'a.name_list','name_list',
-				'a.short_description','short_description'
+				'a.short_description','short_description',
+				'a.add_fadein','add_fadein',
+				'a.type','type',
+				'a.add_custom_import','add_custom_import',
+				'a.add_custom_button','add_custom_button',
+				'a.add_php_ajax','add_php_ajax'
 			);
 		}
 
@@ -57,11 +61,23 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		$name_single = $this->getUserStateFromRequest($this->context . '.filter.name_single', 'filter_name_single');
 		$this->setState('filter.name_single', $name_single);
 
-		$name_list = $this->getUserStateFromRequest($this->context . '.filter.name_list', 'filter_name_list');
-		$this->setState('filter.name_list', $name_list);
-
 		$short_description = $this->getUserStateFromRequest($this->context . '.filter.short_description', 'filter_short_description');
 		$this->setState('filter.short_description', $short_description);
+
+		$add_fadein = $this->getUserStateFromRequest($this->context . '.filter.add_fadein', 'filter_add_fadein');
+		$this->setState('filter.add_fadein', $add_fadein);
+
+		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
+		$this->setState('filter.type', $type);
+
+		$add_custom_import = $this->getUserStateFromRequest($this->context . '.filter.add_custom_import', 'filter_add_custom_import');
+		$this->setState('filter.add_custom_import', $add_custom_import);
+
+		$add_custom_button = $this->getUserStateFromRequest($this->context . '.filter.add_custom_button', 'filter_add_custom_button');
+		$this->setState('filter.add_custom_button', $add_custom_button);
+
+		$add_php_ajax = $this->getUserStateFromRequest($this->context . '.filter.add_php_ajax', 'filter_add_php_ajax');
+		$this->setState('filter.add_php_ajax', $add_php_ajax);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -111,10 +127,104 @@ class ComponentbuilderModelAdmin_views extends JModelList
 				}
 
 			}
-		}  
+		} 
+
+		// set selection value to a translatable value
+		if (ComponentbuilderHelper::checkArray($items))
+		{
+			foreach ($items as $nr => &$item)
+			{
+				// convert add_fadein
+				$item->add_fadein = $this->selectionTranslation($item->add_fadein, 'add_fadein');
+				// convert type
+				$item->type = $this->selectionTranslation($item->type, 'type');
+				// convert add_custom_import
+				$item->add_custom_import = $this->selectionTranslation($item->add_custom_import, 'add_custom_import');
+				// convert add_custom_button
+				$item->add_custom_button = $this->selectionTranslation($item->add_custom_button, 'add_custom_button');
+				// convert add_php_ajax
+				$item->add_php_ajax = $this->selectionTranslation($item->add_php_ajax, 'add_php_ajax');
+			}
+		}
+ 
         
 		// return items
 		return $items;
+	}
+
+	/**
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
+	public function selectionTranslation($value,$name)
+	{
+		// Array of add_fadein language strings
+		if ($name === 'add_fadein')
+		{
+			$add_fadeinArray = array(
+				1 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD',
+				0 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_REMOVE'
+			);
+			// Now check if value is found in this array
+			if (isset($add_fadeinArray[$value]) && ComponentbuilderHelper::checkString($add_fadeinArray[$value]))
+			{
+				return $add_fadeinArray[$value];
+			}
+		}
+		// Array of type language strings
+		if ($name === 'type')
+		{
+			$typeArray = array(
+				1 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_READWRITE',
+				2 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_READONLY'
+			);
+			// Now check if value is found in this array
+			if (isset($typeArray[$value]) && ComponentbuilderHelper::checkString($typeArray[$value]))
+			{
+				return $typeArray[$value];
+			}
+		}
+		// Array of add_custom_import language strings
+		if ($name === 'add_custom_import')
+		{
+			$add_custom_importArray = array(
+				1 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_YES',
+				0 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_NO'
+			);
+			// Now check if value is found in this array
+			if (isset($add_custom_importArray[$value]) && ComponentbuilderHelper::checkString($add_custom_importArray[$value]))
+			{
+				return $add_custom_importArray[$value];
+			}
+		}
+		// Array of add_custom_button language strings
+		if ($name === 'add_custom_button')
+		{
+			$add_custom_buttonArray = array(
+				1 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_YES',
+				0 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_NO'
+			);
+			// Now check if value is found in this array
+			if (isset($add_custom_buttonArray[$value]) && ComponentbuilderHelper::checkString($add_custom_buttonArray[$value]))
+			{
+				return $add_custom_buttonArray[$value];
+			}
+		}
+		// Array of add_php_ajax language strings
+		if ($name === 'add_php_ajax')
+		{
+			$add_php_ajaxArray = array(
+				1 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_YES',
+				0 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_NO'
+			);
+			// Now check if value is found in this array
+			if (isset($add_php_ajaxArray[$value]) && ComponentbuilderHelper::checkString($add_php_ajaxArray[$value]))
+			{
+				return $add_php_ajaxArray[$value];
+			}
+		}
+		return $value;
 	}
 	
 	/**
@@ -172,10 +282,35 @@ class ComponentbuilderModelAdmin_views extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.name_single LIKE '.$search.' OR a.name_list LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.type LIKE '.$search.' OR a.description LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.name_single LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.description LIKE '.$search.' OR a.type LIKE '.$search.' OR a.name_list LIKE '.$search.')');
 			}
 		}
 
+		// Filter by Add_fadein.
+		if ($add_fadein = $this->getState('filter.add_fadein'))
+		{
+			$query->where('a.add_fadein = ' . $db->quote($db->escape($add_fadein)));
+		}
+		// Filter by Type.
+		if ($type = $this->getState('filter.type'))
+		{
+			$query->where('a.type = ' . $db->quote($db->escape($type)));
+		}
+		// Filter by Add_custom_import.
+		if ($add_custom_import = $this->getState('filter.add_custom_import'))
+		{
+			$query->where('a.add_custom_import = ' . $db->quote($db->escape($add_custom_import)));
+		}
+		// Filter by Add_custom_button.
+		if ($add_custom_button = $this->getState('filter.add_custom_button'))
+		{
+			$query->where('a.add_custom_button = ' . $db->quote($db->escape($add_custom_button)));
+		}
+		// Filter by Add_php_ajax.
+		if ($add_php_ajax = $this->getState('filter.add_php_ajax'))
+		{
+			$query->where('a.add_php_ajax = ' . $db->quote($db->escape($add_php_ajax)));
+		}
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
@@ -241,10 +376,10 @@ class ComponentbuilderModelAdmin_views extends JModelList
 							continue;
 						}
 
-						// decode php_import_save
-						$item->php_import_save = base64_decode($item->php_import_save);
 						// decode html_import_view
 						$item->html_import_view = base64_decode($item->html_import_view);
+						// decode php_import_save
+						$item->php_import_save = base64_decode($item->php_import_save);
 						// decode php_import_headers
 						$item->php_import_headers = base64_decode($item->php_import_headers);
 						// decode php_getitems
@@ -375,8 +510,12 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.name_single');
-		$id .= ':' . $this->getState('filter.name_list');
 		$id .= ':' . $this->getState('filter.short_description');
+		$id .= ':' . $this->getState('filter.add_fadein');
+		$id .= ':' . $this->getState('filter.type');
+		$id .= ':' . $this->getState('filter.add_custom_import');
+		$id .= ':' . $this->getState('filter.add_custom_button');
+		$id .= ':' . $this->getState('filter.add_php_ajax');
 
 		return parent::getStoreId($id);
 	}

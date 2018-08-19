@@ -2699,20 +2699,30 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					}
 					break;
 				case 'custom_code':
-					// get by code to insure its correctly matched
-					$getter = array('code', 'comment_type', 'target');
+					// search for custom code
+					$getter = array('comment_type', 'target');
 					// add some more advanced search
 					if (isset($item->path) && ComponentbuilderHelper::checkString($item->path))
 					{
 						$getter[] = 'path';
 					}
-					elseif (isset($item->function_name) && ComponentbuilderHelper::checkString($item->function_name))
+					// add function name search
+					if (isset($item->function_name) && ComponentbuilderHelper::checkString($item->function_name))
 					{
 						$getter[] = 'function_name';
+						// remove path
+						if (($key = array_search('path', $getter)) !== false) {
+							unset($getter[$key]);
+						}
 					}
-					elseif (isset($item->hashtarget) && ComponentbuilderHelper::checkString($item->hashtarget))
+					// add hash target search
+					if (isset($item->hashtarget) && ComponentbuilderHelper::checkString($item->hashtarget))
 					{
 						$getter[] = 'hashtarget';
+						// remove function name
+						if (($key = array_search('function_name', $getter)) !== false) {
+							unset($getter[$key]);
+						}
 					}
 					break;
 				case 'dynamic_get':

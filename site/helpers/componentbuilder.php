@@ -3549,10 +3549,10 @@ abstract class ComponentbuilderHelper
 	/**
 	* Get the edit button
 	* 
-	* @param  int        $item           The item to edit
-	* @param  string   $view           The type of item to edit
-	* @param  string   $views         The list view controller name
-	* @param  string   $ref              The return path
+	* @param  int      $item       The item to edit
+	* @param  string   $view       The type of item to edit
+	* @param  string   $views      The list view controller name
+	* @param  string   $ref        The return path
 	* @param  string   $headsup    The message to show on click of button
 	*
 	* @return  string    On success the full html edit button
@@ -3612,9 +3612,9 @@ abstract class ComponentbuilderHelper
 	/**
 	* Get the edit URL
 	* 
-	* @param  int        $item           The item to edit
-	* @param  string   $view           The type of item to edit
-	* @param  string   $ref              The return path
+	* @param  int      $item   The item to edit
+	* @param  string   $view   The type of item to edit
+	* @param  string   $ref    The return path
 	*
 	* @return  string    On success the edit url
 	* 

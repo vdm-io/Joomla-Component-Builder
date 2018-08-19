@@ -29,7 +29,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				'a.modified_by','modified_by',
 				'a.system_name','system_name',
 				'a.name_code','name_code',
-				'a.component_version','component_version',
 				'a.short_description','short_description',
 				'a.companyname','companyname',
 				'a.author','author'
@@ -1710,9 +1709,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$name_code = $this->getUserStateFromRequest($this->context . '.filter.name_code', 'filter_name_code');
 		$this->setState('filter.name_code', $name_code);
 
-		$component_version = $this->getUserStateFromRequest($this->context . '.filter.component_version', 'filter_component_version');
-		$this->setState('filter.component_version', $component_version);
-
 		$short_description = $this->getUserStateFromRequest($this->context . '.filter.short_description', 'filter_short_description');
 		$this->setState('filter.short_description', $short_description);
 
@@ -1831,7 +1827,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.name_code LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.companyname LIKE '.$search.' OR a.author LIKE '.$search.' OR a.name LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.name_code LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.companyname LIKE '.$search.' OR a.author LIKE '.$search.' OR a.email LIKE '.$search.' OR a.website LIKE '.$search.' OR a.name LIKE '.$search.')');
 			}
 		}
 
@@ -1915,20 +1911,20 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							continue;
 						}
 
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-						// decode sql_uninstall
-						$item->sql_uninstall = base64_decode($item->sql_uninstall);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
 						// decode php_site_event
 						$item->php_site_event = base64_decode($item->php_site_event);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode css_admin
+						$item->css_admin = base64_decode($item->css_admin);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode sql_uninstall
+						$item->sql_uninstall = base64_decode($item->sql_uninstall);
 						// decode php_helper_both
 						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_helper_admin
@@ -2021,7 +2017,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.name_code');
-		$id .= ':' . $this->getState('filter.component_version');
 		$id .= ':' . $this->getState('filter.short_description');
 		$id .= ':' . $this->getState('filter.companyname');
 		$id .= ':' . $this->getState('filter.author');

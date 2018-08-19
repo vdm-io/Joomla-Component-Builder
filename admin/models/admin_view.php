@@ -86,16 +86,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_import_save))
-			{
-				// base64 Decode php_import_save.
-				$item->php_import_save = base64_decode($item->php_import_save);
-			}
-
 			if (!empty($item->html_import_view))
 			{
 				// base64 Decode html_import_view.
 				$item->html_import_view = base64_decode($item->html_import_view);
+			}
+
+			if (!empty($item->php_import_save))
+			{
+				// base64 Decode php_import_save.
+				$item->php_import_save = base64_decode($item->php_import_save);
 			}
 
 			if (!empty($item->php_import_headers))
@@ -326,20 +326,20 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->addlinked_views = $addlinked_views->toArray();
 			}
 
-			if (!empty($item->alias_builder))
-			{
-				// Convert the alias_builder field to an array.
-				$alias_builder = new Registry;
-				$alias_builder->loadString($item->alias_builder);
-				$item->alias_builder = $alias_builder->toArray();
-			}
-
 			if (!empty($item->addtables))
 			{
 				// Convert the addtables field to an array.
 				$addtables = new Registry;
 				$addtables->loadString($item->addtables);
 				$item->addtables = $addtables->toArray();
+			}
+
+			if (!empty($item->alias_builder))
+			{
+				// Convert the alias_builder field to an array.
+				$alias_builder = new Registry;
+				$alias_builder->loadString($item->alias_builder);
+				$item->alias_builder = $alias_builder->toArray();
 			}
 
 			if (!empty($item->custom_button))
@@ -1256,19 +1256,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['addlinked_views'] = '';
 		}
 
-		// Set the alias_builder items to data.
-		if (isset($data['alias_builder']) && is_array($data['alias_builder']))
-		{
-			$alias_builder = new JRegistry;
-			$alias_builder->loadArray($data['alias_builder']);
-			$data['alias_builder'] = (string) $alias_builder;
-		}
-		elseif (!isset($data['alias_builder']))
-		{
-			// Set the empty alias_builder to data
-			$data['alias_builder'] = '';
-		}
-
 		// Set the addtables items to data.
 		if (isset($data['addtables']) && is_array($data['addtables']))
 		{
@@ -1280,6 +1267,19 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		{
 			// Set the empty addtables to data
 			$data['addtables'] = '';
+		}
+
+		// Set the alias_builder items to data.
+		if (isset($data['alias_builder']) && is_array($data['alias_builder']))
+		{
+			$alias_builder = new JRegistry;
+			$alias_builder->loadArray($data['alias_builder']);
+			$data['alias_builder'] = (string) $alias_builder;
+		}
+		elseif (!isset($data['alias_builder']))
+		{
+			// Set the empty alias_builder to data
+			$data['alias_builder'] = '';
 		}
 
 		// Set the custom_button items to data.
@@ -1308,16 +1308,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['ajax_input'] = '';
 		}
 
-		// Set the php_import_save string to base64 string.
-		if (isset($data['php_import_save']))
-		{
-			$data['php_import_save'] = base64_encode($data['php_import_save']);
-		}
-
 		// Set the html_import_view string to base64 string.
 		if (isset($data['html_import_view']))
 		{
 			$data['html_import_view'] = base64_encode($data['html_import_view']);
+		}
+
+		// Set the php_import_save string to base64 string.
+		if (isset($data['php_import_save']))
+		{
+			$data['php_import_save'] = base64_encode($data['php_import_save']);
 		}
 
 		// Set the php_import_headers string to base64 string.
