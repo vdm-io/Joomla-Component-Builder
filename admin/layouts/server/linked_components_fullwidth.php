@@ -39,13 +39,13 @@ $ref = ($id) ? "&ref=server&refid=" . $id . "&return=" . urlencode(base64_encode
 			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('JOOMLA_COMPONENTS_CODE_NAME'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_CODE_NAME'); ?>
 		</th>
 		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('JOOMLA_COMPONENTS_DESCRIPTION'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_DESCRIPTION'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('JOOMLA_COMPONENTS_COMPANY_DETAILS'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_COMPANY_DETAILS'); ?>
 		</th>
 		<th width="10" data-breakpoints="xs sm md">
 			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_STATUS'); ?>

@@ -1801,7 +1801,7 @@ class Get
 							// confirm it should really make the over ride
 							if ('default' !== $check_column_name)
 							{
-								$column_name_lang = ComponentbuilderHelper::safeString($name_list, 'U') . '_' . ComponentbuilderHelper::safeString($relationsValue['column_name'], 'U');
+								$column_name_lang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($name_list, 'U') . '_' . ComponentbuilderHelper::safeString($relationsValue['column_name'], 'U');
 								$this->langContent['admin'][$column_name_lang] = trim($relationsValue['column_name']);
 								$this->listHeadOverRide[$name_list][(int) $relationsValue['listfield']] = $column_name_lang;
 							}

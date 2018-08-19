@@ -33,10 +33,10 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_ADMIN_VIEW_SYSTEM_NAME_LABEL', 'system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'ADMIN_VIEWS_NAMES', 'name_single', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_ADMIN_VIEWS_NAMES', 'name_single', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'ADMIN_VIEWS_DETAILS', 'short_description', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_ADMIN_VIEWS_DETAILS', 'short_description', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

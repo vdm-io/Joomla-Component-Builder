@@ -33,13 +33,13 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_LABEL', 'system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'JOOMLA_COMPONENTS_CODE_NAME', 'name_code', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_CODE_NAME', 'name_code', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'JOOMLA_COMPONENTS_DESCRIPTION', 'short_description', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_DESCRIPTION', 'short_description', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'JOOMLA_COMPONENTS_COMPANY_DETAILS', 'companyname', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_COMPANY_DETAILS', 'companyname', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >
