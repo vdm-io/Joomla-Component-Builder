@@ -325,13 +325,13 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
-	KEY `idx_codename` (`codename`),
-	KEY `idx_add_php_ajax` (`add_php_ajax`),
+	KEY `idx_main_get` (`main_get`),
 	KEY `idx_add_css` (`add_css`),
-	KEY `idx_add_js_document` (`add_js_document`),
 	KEY `idx_add_javascript_file` (`add_javascript_file`),
 	KEY `idx_add_css_document` (`add_css_document`),
-	KEY `idx_main_get` (`main_get`),
+	KEY `idx_add_js_document` (`add_js_document`),
+	KEY `idx_codename` (`codename`),
+	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_dynamic_get` (`dynamic_get`),
 	KEY `idx_add_php_document` (`add_php_document`),
 	KEY `idx_add_php_view` (`add_php_view`),
@@ -356,6 +356,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	`ajax_input` TEXT NOT NULL,
 	`button_position` TINYINT(1) NOT NULL DEFAULT 1,
 	`codename` VARCHAR(255) NOT NULL DEFAULT '',
+	`context` VARCHAR(255) NOT NULL DEFAULT '',
 	`css` TEXT NOT NULL,
 	`css_document` TEXT NOT NULL,
 	`custom_button` TEXT NOT NULL,
@@ -397,18 +398,19 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
-	KEY `idx_codename` (`codename`),
-	KEY `idx_add_php_ajax` (`add_php_ajax`),
-	KEY `idx_add_css` (`add_css`),
+	KEY `idx_main_get` (`main_get`),
 	KEY `idx_add_css_document` (`add_css_document`),
 	KEY `idx_add_javascript_file` (`add_javascript_file`),
 	KEY `idx_add_js_document` (`add_js_document`),
-	KEY `idx_main_get` (`main_get`),
+	KEY `idx_context` (`context`),
+	KEY `idx_codename` (`codename`),
+	KEY `idx_add_css` (`add_css`),
+	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_dynamic_get` (`dynamic_get`),
-	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_add_php_document` (`add_php_document`),
-	KEY `idx_button_position` (`button_position`),
+	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_add_php_view` (`add_php_view`),
+	KEY `idx_button_position` (`button_position`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
 	KEY `idx_add_php_jview` (`add_php_jview`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -422,7 +424,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
 	`dynamic_get` INT(11) NOT NULL DEFAULT 0,
 	`libraries` TEXT NOT NULL,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
-	`not_required` INT(1) NOT NULL DEFAULT 0,
 	`php_view` MEDIUMTEXT NOT NULL,
 	`snippet` INT(11) NOT NULL DEFAULT 0,
 	`template` TEXT NOT NULL,
@@ -445,9 +446,9 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
-	KEY `idx_alias` (`alias`),
+	KEY `idx_dynamic_get` (`dynamic_get`),
 	KEY `idx_add_php_view` (`add_php_view`),
-	KEY `idx_dynamic_get` (`dynamic_get`)
+	KEY `idx_alias` (`alias`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
@@ -460,7 +461,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
 	`layout` TEXT NOT NULL,
 	`libraries` TEXT NOT NULL,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
-	`not_required` INT(1) NOT NULL DEFAULT 0,
 	`php_view` MEDIUMTEXT NOT NULL,
 	`snippet` INT(11) NOT NULL DEFAULT 0,
 	`params` text NOT NULL DEFAULT '',
@@ -482,9 +482,9 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
-	KEY `idx_alias` (`alias`),
 	KEY `idx_dynamic_get` (`dynamic_get`),
-	KEY `idx_add_php_view` (`add_php_view`)
+	KEY `idx_add_php_view` (`add_php_view`),
+	KEY `idx_alias` (`alias`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
@@ -518,6 +518,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	`php_custom_get` MEDIUMTEXT NOT NULL,
 	`php_getlistquery` MEDIUMTEXT NOT NULL,
 	`php_router_parse` MEDIUMTEXT NOT NULL,
+	`plugin_events` VARCHAR(255) NOT NULL DEFAULT '',
 	`view_selection` TEXT NOT NULL,
 	`view_table_main` INT(11) NOT NULL DEFAULT 0,
 	`where` TEXT NOT NULL,
@@ -543,10 +544,10 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_main_source` (`main_source`),
 	KEY `idx_gettype` (`gettype`),
 	KEY `idx_add_php_router_parse` (`add_php_router_parse`),
-	KEY `idx_add_php_after_getitems` (`add_php_after_getitems`),
 	KEY `idx_add_php_before_getitems` (`add_php_before_getitems`),
-	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
+	KEY `idx_add_php_after_getitems` (`add_php_after_getitems`),
 	KEY `idx_add_php_after_getitem` (`add_php_after_getitem`),
+	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
 	KEY `idx_add_php_before_getitem` (`add_php_before_getitem`),
 	KEY `idx_getcustom` (`getcustom`),
 	KEY `idx_pagination` (`pagination`)
@@ -895,10 +896,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
 	`version` INT(10) unsigned NOT NULL DEFAULT 1,
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
-	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
@@ -1314,7 +1313,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
 --
 
 INSERT INTO `#__componentbuilder_joomla_component` (`id`, `add_license`, `license_type`, `mvc_versiondate`, `add_css_admin`, `add_css_site`, `add_email_helper`, `add_javascript`, `add_php_helper_admin`, `add_php_helper_both`, `add_php_helper_site`, `add_php_postflight_install`, `add_php_method_uninstall`, `add_php_postflight_update`, `add_php_preflight_install`, `add_php_preflight_update`, `add_placeholders`, `add_sql`, `add_sql_uninstall`, `addfootable`, `adduikit`, `add_admin_event`, `add_site_event`, `add_update_server`, `add_sales_server`, `sales_server`, `update_server`, `update_server_target`, `update_server_url`, `php_admin_event`, `php_site_event`, `addreadme`, `readme`, `author`, `bom`, `buildcomp`, `buildcompsql`, `companyname`, `component_version`, `copyright`, `creatuserhelper`, `css_admin`, `css_site`, `dashboard`, `dashboard_type`, `debug_linenr`, `description`, `email`, `emptycontributors`, `export_buy_link`, `joomla_source_link`, `export_key`, `image`, `javascript`, `license`, `name`, `system_name`, `toignore`, `name_code`, `number`, `php_helper_admin`, `php_helper_both`, `php_helper_site`, `php_postflight_install`, `php_method_uninstall`, `php_postflight_update`, `php_preflight_install`, `php_preflight_update`, `short_description`, `sql`, `sql_uninstall`, `website`, `published`, `created`, `modified`, `hits`, `ordering`, `whmcs_key`, `whmcs_url`) VALUES
-(25, '', 1, '', '', '', '', '', '', '', 1, 1, '', '', '', '', '', '', '', '', 1, '', '', 1, '', '', '', 2, 'https://raw.githubusercontent.com/namibia/demo-joomla-3-component/master/demo_updateserver.xml', '', '', 1, 'IyAjIyNDb21wb25lbnRfbmFtZSMjIyAoIyMjVkVSU0lPTiMjIykNCg0KIVsjIyNDb21wb25lbnRfbmFtZSMjIyBpbWFnZV0oaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL25hbWliaWEvZGVtby1qb29tbGEtMy1jb21wb25lbnQvbWFzdGVyL2FkbWluL2Fzc2V0cy9pbWFnZXMvdmRtLWNvbXBvbmVudC5qcGcgIlRoZSAjIyNDb21wb25lbnRfbmFtZSMjIyIpDQoNCiMjI0RFU0NSSVBUSU9OIyMjDQoNCiMgQnVpbGQgRGV0YWlscw0KDQorICpDb21wYW55KjogWyMjI0NPTVBBTllOQU1FIyMjXSgjIyNBVVRIT1JXRUJTSVRFIyMjKQ0KKyAqQXV0aG9yKjogWyMjI0FVVEhPUiMjI10obWFpbHRvOiMjI0FVVEhPUkVNQUlMIyMjKQ0KKyAqTmFtZSo6IFsjIyNDb21wb25lbnRfbmFtZSMjI10oIyMjQVVUSE9SV0VCU0lURSMjIykNCisgKkZpcnN0IEJ1aWxkKjogIyMjQ1JFQVRJT05EQVRFIyMjDQorICpMYXN0IEJ1aWxkKjogIyMjQlVJTEREQVRFIyMjDQorICpWZXJzaW9uKjogIyMjVkVSU0lPTiMjIw0KKyAqQ29weXJpZ2h0KjogIyMjQ09QWVJJR0hUIyMjDQorICpMaWNlbnNlKjogIyMjTElDRU5TRSMjIw0KDQojIyBCdWlsZCBUaW1lDQoNCioqIyMjdG90YWxIb3VycyMjIyBIb3VycyoqIG9yICoqIyMjdG90YWxEYXlzIyMjIEVpZ2h0IEhvdXIgRGF5cyoqIChhY3R1YWwgdGltZSB0aGUgYXV0aG9yIHNhdmVkIC0NCmR1ZSB0byBbQXV0b21hdGVkIENvbXBvbmVudCBCdWlsZGVyXShodHRwczovL3d3dy52ZG0uaW8vam9vbWxhLWNvbXBvbmVudC1idWlsZGVyKSkNCg0KPiAoaWYgY3JlYXRpbmcgYSBmb2xkZXIgYW5kIGZpbGUgdG9vayAqKjUgc2Vjb25kcyoqIGFuZCB3cml0aW5nIG9uZSBsaW5lIG9mIGNvZGUgdG9vayAqKjEwIHNlY29uZHMqKiwNCj4gbmV2ZXIgbWFraW5nIG9uZSBtaXN0YWtlIG9yIHRha2luZyBhbnkgY29mZmVlIGJyZWFrLikNCg0KKyAqTGluZSBjb3VudCo6ICoqIyMjTElORV9DT1VOVCMjIyoqDQorICpGaWxlIGNvdW50KjogKiojIyNGSUxFX0NPVU5UIyMjKioNCisgKkZvbGRlciBjb3VudCo6ICoqIyMjRk9MREVSX0NPVU5UIyMjKioNCg0KKiojIyNhY3R1YWxIb3Vyc1NwZW50IyMjIEhvdXJzKiogb3IgKiojIyNhY3R1YWxEYXlzU3BlbnQjIyMgRWlnaHQgSG91ciBEYXlzKiogKHRoZSBhY3R1YWwgdGltZSB0aGUgYXV0aG9yIHNwZW50KQ0KDQo+ICh3aXRoIHRoZSBmb2xsb3dpbmcgYnJlYWsgZG93bjoNCj4gKipkZWJ1Z2dpbmcgQCMjI2RlYnVnZ2luZ0hvdXJzIyMjaG91cnMqKiA9IGNvZGluZ3RpbWUgLyA0Ow0KPiAqKnBsYW5uaW5nIEAjIyNwbGFubmluZ0hvdXJzIyMjaG91cnMqKiA9IGNvZGluZ3RpbWUgLyA3Ow0KPiAqKm1hcHBpbmcgQCMjI21hcHBpbmdIb3VycyMjI2hvdXJzKiogPSBjb2Rpbmd0aW1lIC8gMTA7DQo+ICoqb2ZmaWNlIEAjIyNvZmZpY2VIb3VycyMjI2hvdXJzKiogPSBjb2Rpbmd0aW1lIC8gNjspDQoNCioqIyMjYWN0dWFsVG90YWxIb3VycyMjIyBIb3VycyoqIG9yICoqIyMjYWN0dWFsVG90YWxEYXlzIyMjIEVpZ2h0IEhvdXIgRGF5cyoqDQooYSB0b3RhbCBvZiB0aGUgcmVhbGlzdGljIHRpbWUgZnJhbWUgZm9yIHRoaXMgcHJvamVjdCkNCg0KPiAoaWYgY3JlYXRpbmcgYSBmb2xkZXIgYW5kIGZpbGUgdG9vayAqKjUgc2Vjb25kcyoqIGFuZCB3cml0aW5nIG9uZSBsaW5lIG9mIGNvZGUgdG9vayAqKjEwIHNlY29uZHMqKiwNCj4gd2l0aCB0aGUgbm9ybWFsIGV2ZXJ5ZGF5IHJlYWxpdGllcyBhdCB0aGUgb2ZmaWNlLCB0aGF0IGluY2x1ZGVzIHRoZSBjb21wb25lbnQgcGxhbm5pbmcsIG1hcHBpbmcgJiBkZWJ1Z2dpbmcuKQ0KDQpQcm9qZWN0IGR1cmF0aW9uOiAqKiMjI3Byb2plY3RXZWVrVGltZSMjIyB3ZWVrcyoqIG9yICoqIyMjcHJvamVjdE1vbnRoVGltZSMjIyBtb250aHMqKg0KDQo+IFRoaXMgKipjb21wb25lbnQqKiB3YXMgYnVpbGQgd2l0aCBhIEpvb21sYSBbQXV0b21hdGVkIENvbXBvbmVudCBCdWlsZGVyXShodHRwczovL3d3dy52ZG0uaW8vam9vbWxhLWNvbXBvbmVudC1idWlsZGVyKS4NCj4gRGV2ZWxvcGVkIGJ5IFtMbGV3ZWxseW4gdmFuIGRlciBNZXJ3ZV0obWFpbHRvOmpvb21sYUB2ZG0uaW8pDQoNCiMjIERvbmF0aW9ucw0KDQpJZiB5b3Ugd2FudCB0byBzdXBwb3J0IHRoaXMgcHJvamVjdCwgcGxlYXNlIGNvbnNpZGVyIGRvbmF0aW5nOg0KKiBQYXlQYWw6IFtwYXlwYWwubWUvcGF5dmRtXShodHRwczovL3d3dy5wYXlwYWwubWUvcGF5dmRtKQ0KKiBCaXRjb2luOiAxRkx4aVQ2d3l4Z1ozYm9ldmlMa1lKMURScHA0MXV6cHhhDQoqIEV0aGVyZXVtOiAweDI0MzM5MmRhYTNjOWM4YmM4NDFmY2FjZjdjN2Y3MjU0MWNiMTY4MjMg', 'Llewellyn van der Merwe', 'default.txt', '', '', 'Vast Development Method', '2.0.0', 'Copyright (C) 2015. All Rights Reserved', '', '', '', '', 1, '', 'Just a basic demo of the most basic implementations of the [Joomla](http://www.joomla.org) Component Builder\'s ability.', 'joomla@vdm.io', '', '', 'https://github.com/namibia/demo-joomla-3-component', 'RwiK8HuaQC08/cxtksjDithxSsskmEEl1C8Hnm4nxDY=', 'images/vdm/demo500.jpg', '', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html', 'Demo', 'Demo', '.git', 'demo', 4, '', '', 'CS8qKg0KCSAqCUNoYW5nZSB0byBuaWNlIGZhbmN5IGRhdGUNCgkgKi8NCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGZhbmN5RGF0ZSgkZGF0ZSkNCgl7DQoJCWlmICghc2VsZjo6aXNWYWxpZFRpbWVTdGFtcCgkZGF0ZSkpDQoJCXsNCgkJCSRkYXRlID0gc3RydG90aW1lKCRkYXRlKTsNCgkJfQ0KCQlyZXR1cm4gZGF0ZSgnalMgXG9cZiBGIFknLCRkYXRlKTsNCgl9DQoNCgkvKioNCgkgKglDaGFuZ2UgdG8gbmljZSBmYW5jeSB0aW1lIGFuZCBkYXRlDQoJICovDQoJcHVibGljIHN0YXRpYyBmdW5jdGlvbiBmYW5jeURhdGVUaW1lKCR0aW1lKQ0KCXsNCgkJaWYgKCFzZWxmOjppc1ZhbGlkVGltZVN0YW1wKCR0aW1lKSkNCgkJew0KCQkJJHRpbWUgPSBzdHJ0b3RpbWUoJHRpbWUpOw0KCQl9DQoJCXJldHVybiBkYXRlKCcoRzppKSBqUyBcb1xmIEYgWScsJHRpbWUpOw0KCX0NCg0KCS8qKg0KCSAqCUNoYW5nZSB0byBuaWNlIGhvdXI6bWludXRlcyB0aW1lDQoJICovDQoJcHVibGljIHN0YXRpYyBmdW5jdGlvbiBmYW5jeVRpbWUoJHRpbWUpDQoJew0KCQlpZiAoIXNlbGY6OmlzVmFsaWRUaW1lU3RhbXAoJHRpbWUpKQ0KCQl7DQoJCQkkdGltZSA9IHN0cnRvdGltZSgkdGltZSk7DQoJCX0NCgkJcmV0dXJuIGRhdGUoJ0c6aScsJHRpbWUpOw0KCX0NCg0KCS8qKg0KCSAqCUNoZWNrIGlmIHN0cmluZyBpcyBhIHZhbGlkIHRpbWUgc3RhbXANCgkgKi8NCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGlzVmFsaWRUaW1lU3RhbXAoJHRpbWVzdGFtcCkNCgl7DQoJCXJldHVybiAoKGludCkgJHRpbWVzdGFtcCA9PT0gJHRpbWVzdGFtcCkNCgkJJiYgKCR0aW1lc3RhbXAgPD0gUEhQX0lOVF9NQVgpDQoJCSYmICgkdGltZXN0YW1wID49IH5QSFBfSU5UX01BWCk7DQoJfQ0K', 'CQkvLyBHZXQgQXBwbGljYXRpb24gb2JqZWN0DQoJCSRhcHAgPSBKRmFjdG9yeTo6Z2V0QXBwbGljYXRpb24oKTsNCgkJJGFwcC0+ZW5xdWV1ZU1lc3NhZ2UoJ1RoaXMgaXMgYSBkZW1vIGNvbXBvbmVudCBkZXZlbG9wZWQgaW4gPGEgaHJlZj0iaHR0cDovL3ZkbS5iei9jb21wb25lbnQtYnVpbGRlciIgdGFnZXQ9Il9iYWxuayIgdGl0bGU9Ikpvb21sYSBDb21wb25lbnQgQnVpbGRlciI+SkNCPC9hPiEgWW91IGNhbiBidWlsZCBtb3JlIGNvbXBvbmVudHMgbGlrZSB0aGlzIHdpdGggSkNCLCBjaGVja291dCBvdXIgcGFnZSBvbiA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdmRtLWlvL0pvb21sYS1Db21wb25lbnQtQnVpbGRlciIgdGFnZXQ9Il9iYWxuayIgdGl0bGU9Ikpvb21sYSBDb21wb25lbnQgQnVpbGRlciI+Z2l0aHViPC9hPiBmb3IgbW9yZSBpbmZvLiBUaGUgZnV0dXJlIG9mIDxhIGhyZWY9Imh0dHA6Ly92ZG0uYnovY29tcG9uZW50LWJ1aWxkZXIiIHRhZ2V0PSJfYmFsbmsiIHRpdGxlPSJKb29tbGEgQ29tcG9uZW50IEJ1aWxkZXIiPkpvb21sYSBDb21wb25lbnQgRGV2ZWxvcG1lbnQ8L2E+IGlzIEhlcmUhJywgJ0luZm8nKTs=', '', '', '', '', 'Demo Component', '', '', 'https://www.vdm.io/', 1, '2016-10-18 11:44:09', '2018-05-05 13:24:21', '', 3, '5HwMIpP4dQ9R+g5iJus4DgNfra9VosE6DEhoKY+3wfM=', '');
+(25, '', 1, '', '', '', '', '', '', '', 1, 1, '', '', '', '', '', '', '', '', 1, '', '', 1, '', '', '', 2, 'https://raw.githubusercontent.com/namibia/demo-joomla-3-component/master/demo_updateserver.xml', '', '', 1, 'IyAjIyNDb21wb25lbnRfbmFtZSMjIyAoIyMjVkVSU0lPTiMjIykNCg0KIVsjIyNDb21wb25lbnRfbmFtZSMjIyBpbWFnZV0oaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL25hbWliaWEvZGVtby1qb29tbGEtMy1jb21wb25lbnQvbWFzdGVyL2FkbWluL2Fzc2V0cy9pbWFnZXMvdmRtLWNvbXBvbmVudC5qcGcgIlRoZSAjIyNDb21wb25lbnRfbmFtZSMjIyIpDQoNCiMjI0RFU0NSSVBUSU9OIyMjDQoNCiMgQnVpbGQgRGV0YWlscw0KDQorICpDb21wYW55KjogWyMjI0NPTVBBTllOQU1FIyMjXSgjIyNBVVRIT1JXRUJTSVRFIyMjKQ0KKyAqQXV0aG9yKjogWyMjI0FVVEhPUiMjI10obWFpbHRvOiMjI0FVVEhPUkVNQUlMIyMjKQ0KKyAqTmFtZSo6IFsjIyNDb21wb25lbnRfbmFtZSMjI10oIyMjQVVUSE9SV0VCU0lURSMjIykNCisgKkZpcnN0IEJ1aWxkKjogIyMjQ1JFQVRJT05EQVRFIyMjDQorICpMYXN0IEJ1aWxkKjogIyMjQlVJTEREQVRFIyMjDQorICpWZXJzaW9uKjogIyMjVkVSU0lPTiMjIw0KKyAqQ29weXJpZ2h0KjogIyMjQ09QWVJJR0hUIyMjDQorICpMaWNlbnNlKjogIyMjTElDRU5TRSMjIw0KDQojIyBCdWlsZCBUaW1lDQoNCioqIyMjdG90YWxIb3VycyMjIyBIb3VycyoqIG9yICoqIyMjdG90YWxEYXlzIyMjIEVpZ2h0IEhvdXIgRGF5cyoqIChhY3R1YWwgdGltZSB0aGUgYXV0aG9yIHNhdmVkIC0NCmR1ZSB0byBbQXV0b21hdGVkIENvbXBvbmVudCBCdWlsZGVyXShodHRwczovL3d3dy52ZG0uaW8vam9vbWxhLWNvbXBvbmVudC1idWlsZGVyKSkNCg0KPiAoaWYgY3JlYXRpbmcgYSBmb2xkZXIgYW5kIGZpbGUgdG9vayAqKjUgc2Vjb25kcyoqIGFuZCB3cml0aW5nIG9uZSBsaW5lIG9mIGNvZGUgdG9vayAqKjEwIHNlY29uZHMqKiwNCj4gbmV2ZXIgbWFraW5nIG9uZSBtaXN0YWtlIG9yIHRha2luZyBhbnkgY29mZmVlIGJyZWFrLikNCg0KKyAqTGluZSBjb3VudCo6ICoqIyMjTElORV9DT1VOVCMjIyoqDQorICpGaWxlIGNvdW50KjogKiojIyNGSUxFX0NPVU5UIyMjKioNCisgKkZvbGRlciBjb3VudCo6ICoqIyMjRk9MREVSX0NPVU5UIyMjKioNCg0KKiojIyNhY3R1YWxIb3Vyc1NwZW50IyMjIEhvdXJzKiogb3IgKiojIyNhY3R1YWxEYXlzU3BlbnQjIyMgRWlnaHQgSG91ciBEYXlzKiogKHRoZSBhY3R1YWwgdGltZSB0aGUgYXV0aG9yIHNwZW50KQ0KDQo+ICh3aXRoIHRoZSBmb2xsb3dpbmcgYnJlYWsgZG93bjoNCj4gKipkZWJ1Z2dpbmcgQCMjI2RlYnVnZ2luZ0hvdXJzIyMjaG91cnMqKiA9IGNvZGluZ3RpbWUgLyA0Ow0KPiAqKnBsYW5uaW5nIEAjIyNwbGFubmluZ0hvdXJzIyMjaG91cnMqKiA9IGNvZGluZ3RpbWUgLyA3Ow0KPiAqKm1hcHBpbmcgQCMjI21hcHBpbmdIb3VycyMjI2hvdXJzKiogPSBjb2Rpbmd0aW1lIC8gMTA7DQo+ICoqb2ZmaWNlIEAjIyNvZmZpY2VIb3VycyMjI2hvdXJzKiogPSBjb2Rpbmd0aW1lIC8gNjspDQoNCioqIyMjYWN0dWFsVG90YWxIb3VycyMjIyBIb3VycyoqIG9yICoqIyMjYWN0dWFsVG90YWxEYXlzIyMjIEVpZ2h0IEhvdXIgRGF5cyoqDQooYSB0b3RhbCBvZiB0aGUgcmVhbGlzdGljIHRpbWUgZnJhbWUgZm9yIHRoaXMgcHJvamVjdCkNCg0KPiAoaWYgY3JlYXRpbmcgYSBmb2xkZXIgYW5kIGZpbGUgdG9vayAqKjUgc2Vjb25kcyoqIGFuZCB3cml0aW5nIG9uZSBsaW5lIG9mIGNvZGUgdG9vayAqKjEwIHNlY29uZHMqKiwNCj4gd2l0aCB0aGUgbm9ybWFsIGV2ZXJ5ZGF5IHJlYWxpdGllcyBhdCB0aGUgb2ZmaWNlLCB0aGF0IGluY2x1ZGVzIHRoZSBjb21wb25lbnQgcGxhbm5pbmcsIG1hcHBpbmcgJiBkZWJ1Z2dpbmcuKQ0KDQpQcm9qZWN0IGR1cmF0aW9uOiAqKiMjI3Byb2plY3RXZWVrVGltZSMjIyB3ZWVrcyoqIG9yICoqIyMjcHJvamVjdE1vbnRoVGltZSMjIyBtb250aHMqKg0KDQo+IFRoaXMgKipjb21wb25lbnQqKiB3YXMgYnVpbGQgd2l0aCBhIEpvb21sYSBbQXV0b21hdGVkIENvbXBvbmVudCBCdWlsZGVyXShodHRwczovL3d3dy52ZG0uaW8vam9vbWxhLWNvbXBvbmVudC1idWlsZGVyKS4NCj4gRGV2ZWxvcGVkIGJ5IFtMbGV3ZWxseW4gdmFuIGRlciBNZXJ3ZV0obWFpbHRvOmpvb21sYUB2ZG0uaW8pDQoNCiMjIERvbmF0aW9ucw0KDQpJZiB5b3Ugd2FudCB0byBzdXBwb3J0IHRoaXMgcHJvamVjdCwgcGxlYXNlIGNvbnNpZGVyIGRvbmF0aW5nOg0KKiBQYXlQYWw6IFtwYXlwYWwubWUvcGF5dmRtXShodHRwczovL3d3dy5wYXlwYWwubWUvcGF5dmRtKQ0KKiBCaXRjb2luOiAxRkx4aVQ2d3l4Z1ozYm9ldmlMa1lKMURScHA0MXV6cHhhDQoqIEV0aGVyZXVtOiAweDI0MzM5MmRhYTNjOWM4YmM4NDFmY2FjZjdjN2Y3MjU0MWNiMTY4MjMg', 'Llewellyn van der Merwe', 'default.txt', '', '', 'Vast Development Method', '2.0.0', 'Copyright (C) 2015. All Rights Reserved', '', '', '', '', 1, '', 'Just a basic demo of the most basic implementations of the [Joomla](http://www.joomla.org) Component Builder\'s ability.', 'joomla@vdm.io', '', '', 'https://github.com/namibia/demo-joomla-3-component', 'ssoiRTgyHnjpbecX2FNhW3d1xwZw3anFWZAhImJtELo=', 'images/vdm/demo500.jpg', '', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html', 'Demo', 'Demo', '.git', 'demo', 4, '', '', 'CS8qKg0KCSAqCUNoYW5nZSB0byBuaWNlIGZhbmN5IGRhdGUNCgkgKi8NCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGZhbmN5RGF0ZSgkZGF0ZSkNCgl7DQoJCWlmICghc2VsZjo6aXNWYWxpZFRpbWVTdGFtcCgkZGF0ZSkpDQoJCXsNCgkJCSRkYXRlID0gc3RydG90aW1lKCRkYXRlKTsNCgkJfQ0KCQlyZXR1cm4gZGF0ZSgnalMgXG9cZiBGIFknLCRkYXRlKTsNCgl9DQoNCgkvKioNCgkgKglDaGFuZ2UgdG8gbmljZSBmYW5jeSB0aW1lIGFuZCBkYXRlDQoJICovDQoJcHVibGljIHN0YXRpYyBmdW5jdGlvbiBmYW5jeURhdGVUaW1lKCR0aW1lKQ0KCXsNCgkJaWYgKCFzZWxmOjppc1ZhbGlkVGltZVN0YW1wKCR0aW1lKSkNCgkJew0KCQkJJHRpbWUgPSBzdHJ0b3RpbWUoJHRpbWUpOw0KCQl9DQoJCXJldHVybiBkYXRlKCcoRzppKSBqUyBcb1xmIEYgWScsJHRpbWUpOw0KCX0NCg0KCS8qKg0KCSAqCUNoYW5nZSB0byBuaWNlIGhvdXI6bWludXRlcyB0aW1lDQoJICovDQoJcHVibGljIHN0YXRpYyBmdW5jdGlvbiBmYW5jeVRpbWUoJHRpbWUpDQoJew0KCQlpZiAoIXNlbGY6OmlzVmFsaWRUaW1lU3RhbXAoJHRpbWUpKQ0KCQl7DQoJCQkkdGltZSA9IHN0cnRvdGltZSgkdGltZSk7DQoJCX0NCgkJcmV0dXJuIGRhdGUoJ0c6aScsJHRpbWUpOw0KCX0NCg0KCS8qKg0KCSAqCUNoZWNrIGlmIHN0cmluZyBpcyBhIHZhbGlkIHRpbWUgc3RhbXANCgkgKi8NCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGlzVmFsaWRUaW1lU3RhbXAoJHRpbWVzdGFtcCkNCgl7DQoJCXJldHVybiAoKGludCkgJHRpbWVzdGFtcCA9PT0gJHRpbWVzdGFtcCkNCgkJJiYgKCR0aW1lc3RhbXAgPD0gUEhQX0lOVF9NQVgpDQoJCSYmICgkdGltZXN0YW1wID49IH5QSFBfSU5UX01BWCk7DQoJfQ0K', 'CQkvLyBHZXQgQXBwbGljYXRpb24gb2JqZWN0DQoJCSRhcHAgPSBKRmFjdG9yeTo6Z2V0QXBwbGljYXRpb24oKTsNCgkJJGFwcC0+ZW5xdWV1ZU1lc3NhZ2UoJ1RoaXMgaXMgYSBkZW1vIGNvbXBvbmVudCBkZXZlbG9wZWQgaW4gPGEgaHJlZj0iaHR0cDovL3ZkbS5iei9jb21wb25lbnQtYnVpbGRlciIgdGFnZXQ9Il9iYWxuayIgdGl0bGU9Ikpvb21sYSBDb21wb25lbnQgQnVpbGRlciI+SkNCPC9hPiEgWW91IGNhbiBidWlsZCBtb3JlIGNvbXBvbmVudHMgbGlrZSB0aGlzIHdpdGggSkNCLCBjaGVja291dCBvdXIgcGFnZSBvbiA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdmRtLWlvL0pvb21sYS1Db21wb25lbnQtQnVpbGRlciIgdGFnZXQ9Il9iYWxuayIgdGl0bGU9Ikpvb21sYSBDb21wb25lbnQgQnVpbGRlciI+Z2l0aHViPC9hPiBmb3IgbW9yZSBpbmZvLiBUaGUgZnV0dXJlIG9mIDxhIGhyZWY9Imh0dHA6Ly92ZG0uYnovY29tcG9uZW50LWJ1aWxkZXIiIHRhZ2V0PSJfYmFsbmsiIHRpdGxlPSJKb29tbGEgQ29tcG9uZW50IEJ1aWxkZXIiPkpvb21sYSBDb21wb25lbnQgRGV2ZWxvcG1lbnQ8L2E+IGlzIEhlcmUhJywgJ0luZm8nKTs=', '', '', '', '', 'Demo Component', '', '', 'https://www.vdm.io/', 1, '2016-10-18 11:44:09', '2018-08-22 15:02:03', '', 3, '9K0W+p28QsHgdHuzrpCNpctEhN3vABrEKYTyV3qaQmg=', '');
 
 --
 -- Dumping data for table `#__componentbuilder_admin_view`
@@ -1685,7 +1684,7 @@ INSERT INTO `#__componentbuilder_admin_fields_conditions` (`id`, `addconditions`
 --
 
 INSERT INTO `#__componentbuilder_component_admin_views` (`id`, `addadmin_views`, `joomla_component`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
-(27, '{\"addadmin_views0\":{\"adminview\":\"109\",\"icomoon\":\"eye-open\",\"mainmenu\":\"1\",\"dashboard_add\":\"1\",\"dashboard_list\":\"1\",\"submenu\":\"1\",\"checkin\":\"1\",\"history\":\"1\",\"metadata\":\"1\",\"access\":\"1\",\"port\":\"1\",\"edit_create_site_view\":\"1\",\"order\":\"1\"}}', 25, 1, '2017-10-28 03:56:26', '2017-10-28 04:13:39', 2, '', '');
+(27, '{\"addadmin_views0\":{\"adminview\":\"109\",\"icomoon\":\"eye-open\",\"mainmenu\":\"1\",\"dashboard_add\":\"1\",\"dashboard_list\":\"1\",\"submenu\":\"1\",\"checkin\":\"1\",\"history\":\"1\",\"joomla_fields\":\"1\",\"metadata\":\"1\",\"access\":\"1\",\"port\":\"1\",\"edit_create_site_view\":\"1\",\"order\":\"1\"}}', 25, 1, '2017-10-28 03:56:26', '2018-08-22 19:18:19', 6, '', '');
 
 --
 -- Dumping data for table `#__componentbuilder_component_site_views`
@@ -1706,7 +1705,7 @@ INSERT INTO `#__componentbuilder_component_custom_admin_views` (`id`, `addcustom
 --
 
 INSERT INTO `#__componentbuilder_component_updates` (`id`, `joomla_component`, `version_update`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
-(27, 25, '{\"version_update0\":{\"version\":\"1.0.5\",\"mysql\":\"\",\"url\":\"https:\\/\\/github.com\\/namibia\\/demo-joomla-3-component\\/archive\\/v1.0.5.zip\"},\"version_update1\":{\"version\":\"2.0.0\",\"mysql\":\"\",\"url\":\"https:\\/\\/github.com\\/namibia\\/demo-joomla-3-component\\/archive\\/v2.0.0.zip\"}}', 1, '2017-10-28 03:56:26', '0000-00-00 00:00:00', 2, '', '');
+(27, 25, '{\"version_update0\":{\"version\":\"1.0.5\",\"mysql\":\"\",\"url\":\"https:\\/\\/github.com\\/namibia\\/demo-joomla-3-component\\/archive\\/v1.0.5.zip\"},\"version_update1\":{\"version\":\"2.0.0\",\"mysql\":\"\",\"url\":\"https:\\/\\/github.com\\/namibia\\/demo-joomla-3-component\\/archive\\/v2.0.0.zip\"}}', 1, '2017-10-28 03:56:26', '2018-08-22 15:01:42', 5, '', '');
 
 --
 -- Dumping data for table `#__componentbuilder_component_mysql_tweaks`

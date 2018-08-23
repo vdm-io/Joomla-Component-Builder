@@ -92,10 +92,10 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->php_document = base64_decode($item->php_document);
 			}
 
-			if (!empty($item->php_jview))
+			if (!empty($item->php_view))
 			{
-				// base64 Decode php_jview.
-				$item->php_jview = base64_decode($item->php_jview);
+				// base64 Decode php_view.
+				$item->php_view = base64_decode($item->php_view);
 			}
 
 			if (!empty($item->default))
@@ -104,16 +104,22 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->default = base64_decode($item->default);
 			}
 
-			if (!empty($item->php_view))
-			{
-				// base64 Decode php_view.
-				$item->php_view = base64_decode($item->php_view);
-			}
-
 			if (!empty($item->php_jview_display))
 			{
 				// base64 Decode php_jview_display.
 				$item->php_jview_display = base64_decode($item->php_jview_display);
+			}
+
+			if (!empty($item->php_jview))
+			{
+				// base64 Decode php_jview.
+				$item->php_jview = base64_decode($item->php_jview);
+			}
+
+			if (!empty($item->php_model))
+			{
+				// base64 Decode php_model.
+				$item->php_model = base64_decode($item->php_model);
 			}
 
 			if (!empty($item->javascript_file))
@@ -152,10 +158,12 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$item->php_controller = base64_decode($item->php_controller);
 			}
 
-			if (!empty($item->php_model))
+			if (!empty($item->custom_get))
 			{
-				// base64 Decode php_model.
-				$item->php_model = base64_decode($item->php_model);
+				// Convert the custom_get field to an array.
+				$custom_get = new Registry;
+				$custom_get->loadString($item->custom_get);
+				$item->custom_get = $custom_get->toArray();
 			}
 
 			if (!empty($item->ajax_input))
@@ -172,14 +180,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 				$libraries = new Registry;
 				$libraries->loadString($item->libraries);
 				$item->libraries = $libraries->toArray();
-			}
-
-			if (!empty($item->custom_get))
-			{
-				// Convert the custom_get field to an array.
-				$custom_get = new Registry;
-				$custom_get->loadString($item->custom_get);
-				$item->custom_get = $custom_get->toArray();
 			}
 
 			if (!empty($item->custom_button))
@@ -270,15 +270,18 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	 *
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array    $options   Optional array of options for the form creation.
 	 *
 	 * @return  mixed  A JForm object on success, false on failure
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true)
+	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
 	{
+		// set load data option
+		$options['load_data'] = $loadData;
 		// Get the form.
-		$form = $this->loadForm('com_componentbuilder.site_view', 'site_view', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_componentbuilder.site_view', 'site_view', $options);
 
 		if (empty($form))
 		{
@@ -995,6 +998,29 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		{
 			$data['system_name'] = $data['name'];
 		}
+		// if codename is empty create from name
+		if (empty($data['codename']) || !ComponentbuilderHelper::checkString($data['codename']))
+		{
+			$data['codename'] = ComponentbuilderHelper::safeString($data['name']);
+		}
+		// if context is empty create from codename
+		if (empty($data['context']) || !ComponentbuilderHelper::checkString($data['context']))
+		{
+			$data['context'] = $data['codename'];
+		}
+
+		// Set the custom_get items to data.
+		if (isset($data['custom_get']) && is_array($data['custom_get']))
+		{
+			$custom_get = new JRegistry;
+			$custom_get->loadArray($data['custom_get']);
+			$data['custom_get'] = (string) $custom_get;
+		}
+		elseif (!isset($data['custom_get']))
+		{
+			// Set the empty custom_get to data
+			$data['custom_get'] = '';
+		}
 
 		// Set the ajax_input items to data.
 		if (isset($data['ajax_input']) && is_array($data['ajax_input']))
@@ -1022,19 +1048,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$data['libraries'] = '';
 		}
 
-		// Set the custom_get items to data.
-		if (isset($data['custom_get']) && is_array($data['custom_get']))
-		{
-			$custom_get = new JRegistry;
-			$custom_get->loadArray($data['custom_get']);
-			$data['custom_get'] = (string) $custom_get;
-		}
-		elseif (!isset($data['custom_get']))
-		{
-			// Set the empty custom_get to data
-			$data['custom_get'] = '';
-		}
-
 		// Set the custom_button items to data.
 		if (isset($data['custom_button']) && is_array($data['custom_button']))
 		{
@@ -1054,10 +1067,10 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$data['php_document'] = base64_encode($data['php_document']);
 		}
 
-		// Set the php_jview string to base64 string.
-		if (isset($data['php_jview']))
+		// Set the php_view string to base64 string.
+		if (isset($data['php_view']))
 		{
-			$data['php_jview'] = base64_encode($data['php_jview']);
+			$data['php_view'] = base64_encode($data['php_view']);
 		}
 
 		// Set the default string to base64 string.
@@ -1066,16 +1079,22 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 			$data['default'] = base64_encode($data['default']);
 		}
 
-		// Set the php_view string to base64 string.
-		if (isset($data['php_view']))
-		{
-			$data['php_view'] = base64_encode($data['php_view']);
-		}
-
 		// Set the php_jview_display string to base64 string.
 		if (isset($data['php_jview_display']))
 		{
 			$data['php_jview_display'] = base64_encode($data['php_jview_display']);
+		}
+
+		// Set the php_jview string to base64 string.
+		if (isset($data['php_jview']))
+		{
+			$data['php_jview'] = base64_encode($data['php_jview']);
+		}
+
+		// Set the php_model string to base64 string.
+		if (isset($data['php_model']))
+		{
+			$data['php_model'] = base64_encode($data['php_model']);
 		}
 
 		// Set the javascript_file string to base64 string.
@@ -1112,12 +1131,6 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		if (isset($data['php_controller']))
 		{
 			$data['php_controller'] = base64_encode($data['php_controller']);
-		}
-
-		// Set the php_model string to base64 string.
-		if (isset($data['php_model']))
-		{
-			$data['php_model'] = base64_encode($data['php_model']);
 		}
         
 		// Set the Params Items to data

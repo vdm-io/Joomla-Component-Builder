@@ -124,10 +124,10 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				if ($item->target == 2)
 				{
 					$item->component_system_name = $item->system_name;
-					$item->path = '<code>[CUSTO'.'MCODE='.$item->id.']</code>'; // so it is not detected
+					$item->path = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
 					if (ComponentbuilderHelper::checkString($item->function_name))
 					{
-						$item->path =  '<code>[CUSTO'.'MCODE='.$item->function_name.']</code>'; // so it is not detected
+						$item->path =  '[CUSTO'.'MCODE='.$item->function_name.']'; // so it is not detected
 					}
 					$item->type = 2;
 				}
@@ -372,10 +372,10 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				if ($item->target == 2)
 				{
 					$item->component_system_name = $item->system_name;
-					$item->path = '<code>[CUSTO'.'MCODE='.$item->id.']</code>'; // so it is not detected
+					$item->path = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
 					if (ComponentbuilderHelper::checkString($item->function_name))
 					{
-						$item->path =  '<code>[CUSTO'.'MCODE='.$item->function_name.']</code>'; // so it is not detected
+						$item->path =  '[CUSTO'.'MCODE='.$item->function_name.']'; // so it is not detected
 					}
 					$item->type = 2;
 				}

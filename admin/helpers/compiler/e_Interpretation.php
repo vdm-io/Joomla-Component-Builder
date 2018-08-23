@@ -3120,6 +3120,14 @@ class Interpretation extends Fields
 		$method = '';
 		if (isset($view['settings']->main_get) && ComponentbuilderHelper::checkObject($view['settings']->main_get))
 		{
+			
+			// add events if needed
+			if ($view['settings']->main_get->gettype == 1 && ComponentbuilderHelper::checkArray($view['settings']->main_get->plugin_events))
+			{
+				// load the dispatcher
+				$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Initialise dispatcher.";
+				$method .= PHP_EOL . $this->_t(2) . "\$dispatcher = JEventDispatcher::getInstance();";
+			}
 			if ($view['settings']->main_get->gettype == 1)
 			{
 				// for single views
@@ -3191,7 +3199,31 @@ class Interpretation extends Fields
 			$method .= PHP_EOL . $this->_t(2) . "{";
 			$method .= PHP_EOL . $this->_t(3) . "throw new Exception(implode(" . '"\n", $errors), 500);';
 			$method .= PHP_EOL . $this->_t(2) . "}";
-
+			// add events if needed
+			if ($view['settings']->main_get->gettype == 1 && ComponentbuilderHelper::checkArray($view['settings']->main_get->plugin_events))
+			{
+				$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Process the content plugins.";
+				$method .= PHP_EOL . $this->_t(2) . "JPluginHelper::importPlugin('content');";
+				$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Setup Event Object.";
+				$method .= PHP_EOL . $this->_t(2) . "\$this->item->event = new stdClass;";
+				// load the defaults
+				foreach ($view['settings']->main_get->plugin_events as $plugin_event)
+				{
+					// load the events
+					if ('onContentPrepare' === $plugin_event)
+					{
+						// TODO the onContentPrepare already gets triggered on the fields of its relation
+						// $method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " onContentPrepare Event Trigger.";
+						// $method .= PHP_EOL . $this->_t(2) . "\$dispatcher->trigger('onContentPrepare', array ('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . ".article', &\$this->item, &\$this->params, 0));";
+					}
+					else
+					{
+						$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " " . $plugin_event . " Event Trigger.";
+						$method .= PHP_EOL . $this->_t(2) . "\$results = \$dispatcher->trigger('" . $plugin_event . "', array('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . ".article', &\$this->item, &\$this->params, 0));";
+						$method .= PHP_EOL . $this->_t(2) . '$this->item->event->' . $plugin_event . ' = trim(implode("\n", $results));';
+					}
+				}
+			}
 			$method .= PHP_EOL . PHP_EOL . $this->_t(2) . "parent::display(\$tpl);";
 		}
 		return $method;
@@ -4737,6 +4769,94 @@ class Interpretation extends Fields
 				// set a var value
 				$view = ComponentbuilderHelper::safeString($viewName);
 
+				// check if it has field relations
+				if (isset($this->uninstallScriptFields) && isset($this->uninstallScriptFields[$viewName]))
+				{
+					// First check if data is till in table
+					$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
+					$script .= PHP_EOL . $this->_t(2) . "\$query = \$db->getQuery(true);";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Select ids from fields";
+					$script .= PHP_EOL . $this->_t(2) . "\$query->select(\$db->quoteName('id'));";
+					$script .= PHP_EOL . $this->_t(2) . "\$query->from(\$db->quoteName('#__fields'));";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Where " . $viewName . " context is found";
+					$script .= PHP_EOL . $this->_t(2) . "\$query->where( \$db->quoteName('context') . ' = '. \$db->quote('" . $typeAlias . "') );";
+					$script .= PHP_EOL . $this->_t(2) . "\$db->setQuery(\$query);";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Execute query to see if context is found";
+					$script .= PHP_EOL . $this->_t(2) . "\$db->execute();";
+					$script .= PHP_EOL . $this->_t(2) . "\$" . $view . "_found = \$db->getNumRows();";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Now check if there were any rows";
+					$script .= PHP_EOL . $this->_t(2) . "if (\$" . $view . "_found)";
+					$script .= PHP_EOL . $this->_t(2) . "{";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Since there are load the needed  " . $view . " field ids";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_field_ids = \$db->loadColumn();";
+
+					// Now remove the actual type entry
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Remove " . $viewName . " from the field table";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_condition = array( \$db->quoteName('context') . ' = '. \$db->quote('" . $typeAlias . "') );";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
+					$script .= PHP_EOL . $this->_t(3) . "\$query = \$db->getQuery(true);";
+					$script .= PHP_EOL . $this->_t(3) . "\$query->delete(\$db->quoteName('#__fields'));";
+					$script .= PHP_EOL . $this->_t(3) . "\$query->where(\$" . $view . "_condition);";
+					$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Execute the query to remove " . $viewName . " items";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_done = \$db->execute();";
+					$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
+					$script .= PHP_EOL . $this->_t(3) . "{";
+					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
+					// TODO lang is not translated
+					$script .= PHP_EOL . $this->_t(4) . "\$app->enqueueMessage(JText:" . ":_('The fields with type (" . $typeAlias . ") context was removed from the <b>#__fields</b> table'));";
+					$script .= PHP_EOL . $this->_t(3) . "}";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Also Remove " . $viewName . " field values";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_condition = array( \$db->quoteName('field_id') . ' IN ('. implode(',', \$" . $view . "_field_ids) .')');";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
+					$script .= PHP_EOL . $this->_t(3) . "\$query = \$db->getQuery(true);";
+					$script .= PHP_EOL . $this->_t(3) . "\$query->delete(\$db->quoteName('#__fields_values'));";
+					$script .= PHP_EOL . $this->_t(3) . "\$query->where(\$" . $view . "_condition);";
+					$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Execute the query to remove " . $viewName . " field values";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_done = \$db->execute();";
+					$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
+					$script .= PHP_EOL . $this->_t(3) . "{";
+					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
+					// TODO lang is not translated
+					$script .= PHP_EOL . $this->_t(4) . "\$app->enqueueMessage(JText:" . ":_('The fields values for " . $viewName . " was removed from the <b>#__fields_values</b> table'));";
+					$script .= PHP_EOL . $this->_t(3) . "}";
+					$script .= PHP_EOL . $this->_t(2) . "}";
+
+					// First check if data is till in table
+					$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
+					$script .= PHP_EOL . $this->_t(2) . "\$query = \$db->getQuery(true);";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Select ids from field groups";
+					$script .= PHP_EOL . $this->_t(2) . "\$query->select(\$db->quoteName('id'));";
+					$script .= PHP_EOL . $this->_t(2) . "\$query->from(\$db->quoteName('#__fields_groups'));";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Where " . $viewName . " context is found";
+					$script .= PHP_EOL . $this->_t(2) . "\$query->where( \$db->quoteName('context') . ' = '. \$db->quote('" . $typeAlias . "') );";
+					$script .= PHP_EOL . $this->_t(2) . "\$db->setQuery(\$query);";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Execute query to see if context is found";
+					$script .= PHP_EOL . $this->_t(2) . "\$db->execute();";
+					$script .= PHP_EOL . $this->_t(2) . "\$" . $view . "_found = \$db->getNumRows();";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Now check if there were any rows";
+					$script .= PHP_EOL . $this->_t(2) . "if (\$" . $view . "_found)";
+					$script .= PHP_EOL . $this->_t(2) . "{";
+
+					// Now remove the actual type entry
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Remove " . $viewName . " from the field groups table";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_condition = array( \$db->quoteName('context') . ' = '. \$db->quote('" . $typeAlias . "') );";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
+					$script .= PHP_EOL . $this->_t(3) . "\$query = \$db->getQuery(true);";
+					$script .= PHP_EOL . $this->_t(3) . "\$query->delete(\$db->quoteName('#__fields_groups'));";
+					$script .= PHP_EOL . $this->_t(3) . "\$query->where(\$" . $view . "_condition);";
+					$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Execute the query to remove " . $viewName . " items";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_done = \$db->execute();";
+					$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
+					$script .= PHP_EOL . $this->_t(3) . "{";
+					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
+					// TODO lang is not translated
+					$script .= PHP_EOL . $this->_t(4) . "\$app->enqueueMessage(JText:" . ":_('The field groups with type (" . $typeAlias . ") context was removed from the <b>#__fields_groups</b> table'));";
+					$script .= PHP_EOL . $this->_t(3) . "}";
+					$script .= PHP_EOL . $this->_t(2) . "}";
+				}
 				// First check if data is till in table
 				$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
 				$script .= PHP_EOL . $this->_t(2) . "\$query = \$db->getQuery(true);";
@@ -4765,7 +4885,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Execute the query to remove " . $viewName . " items";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_done = \$db->execute();";
-				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done);";
+				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
 				// TODO lang is not translated
@@ -4782,7 +4902,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Execute the query to remove " . $viewName . " items";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_done = \$db->execute();";
-				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done);";
+				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
 				// TODO lang is not translated
@@ -4799,7 +4919,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Execute the query to remove " . $viewName . " items";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view . "_done = \$db->execute();";
-				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done);";
+				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " If succesfully remove " . $viewName . " add queued success message.";
 				// TODO lang is not translated
@@ -4851,7 +4971,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . $this->_t(2) . "\$query->where(\$" . $component . "_condition);";
 			$script .= PHP_EOL . $this->_t(2) . "\$db->setQuery(\$query);";
 			$script .= PHP_EOL . $this->_t(2) . "\$" . $view . "_done = \$db->execute();";
-			$script .= PHP_EOL . $this->_t(2) . "if (\$" . $view . "_done);";
+			$script .= PHP_EOL . $this->_t(2) . "if (\$" . $view . "_done)";
 			$script .= PHP_EOL . $this->_t(2) . "{";
 			$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " If succesfully remove " . $component . " add queued success message.";
 			// TODO lang is not translated
@@ -4947,6 +5067,7 @@ class Interpretation extends Fields
 			$customfieldlinks = (isset($this->customFieldLinksBuilder[$view]) && ComponentbuilderHelper::checkString($this->customFieldLinksBuilder[$view])) ? $this->customFieldLinksBuilder[$view] : '';
 			// build uninstall script for content types
 			$this->uninstallScriptBuilder[$View] = 'com_' . $component . '.' . $view;
+			$this->uninstallScriptContent[$view] = $view;
 			// check if this view has metadata
 			if (isset($this->metadataBuilder[$view]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view]))
 			{
@@ -4996,6 +5117,7 @@ class Interpretation extends Fields
 		$View = ComponentbuilderHelper::safeString($view, 'F');
 		// build uninstall script for content types
 		$this->uninstallScriptBuilder[$View . ' ' . $category] = 'com_' . $component . '.' . $views . '.category';
+		$this->uninstallScriptContent[$View . ' ' . $category] = $View . ' ' . $category;
 		// set the title
 		$array['type_title'] = $Component . ' ' . $View . ' ' . ComponentbuilderHelper::safeString($category, 'F');
 		// set the alias
@@ -7396,6 +7518,13 @@ class Interpretation extends Fields
 				}
 				// set counter
 				$tabCounter++;
+			}
+			// add joomla field sets if needed
+			if (isset($view['joomla_fields']) && $view['joomla_fields'] == 1)
+			{
+				$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php \$this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>";
+				$body .= PHP_EOL . $this->_t(1) . "<?php \$this->tab_name = '" . $viewName_single . "Tab'; ?>";
+				$body .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('joomla.edit.params', \$this); ?>";
 			}
 			// set default publishing tab lang
 			$tabLangName = $langView . '_PUBLISHING';
@@ -10797,7 +10926,7 @@ class Interpretation extends Fields
 		// allways load these
 		$allow = array();
 		$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the form.";
-		$allow[] = $this->_t(2) . "\$form = \$this->loadForm('com_" . $component . "." . $viewName_single . "', '" . $viewName_single . "', array('control' => 'jform', 'load_data' => \$loadData));";
+		$allow[] = $this->_t(2) . "\$form = \$this->loadForm('com_" . $component . "." . $viewName_single . "', '" . $viewName_single . "', \$options);";
 		$allow[] = PHP_EOL . $this->_t(2) . "if (empty(\$form))";
 		$allow[] = $this->_t(2) . "{";
 		$allow[] = $this->_t(3) . "return false;";
@@ -12857,11 +12986,13 @@ class Interpretation extends Fields
 			{
 				// set custom menu
 				$menus .= $this->addCustomSubMenu($view, $codeName, $lang);
+				$nameSingle = ComponentbuilderHelper::safeString($view['settings']->name_single);
+				$nameList = ComponentbuilderHelper::safeString($view['settings']->name_list);
+				$nameUpper = ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
 				if (isset($view['submenu']) && $view['submenu'] == 1)
 				{
 					// setup access defaults
 					$tab = "";
-					$nameSingle = ComponentbuilderHelper::safeString($view['settings']->name_single);
 					$coreLoad = false;
 					if (isset($this->permissionCore[$nameSingle]))
 					{
@@ -12876,8 +13007,6 @@ class Interpretation extends Fields
 						// add tab to lines to follow
 						$tab = $this->_t(1);
 					}
-					$nameList = ComponentbuilderHelper::safeString($view['settings']->name_list);
-					$nameUpper = ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
 					$menus .= PHP_EOL . $this->_t(2) . $tab . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
 					$this->langContent[$this->lang][$lang . "_" . $nameUpper] = $view['settings']->name_list;
 					// check if category has another name
@@ -12900,6 +13029,20 @@ class Interpretation extends Fields
 					{
 						$menus .= PHP_EOL . $this->_t(2) . "}";
 					}
+				}
+				// set the Joomla cutstom fields options
+				if (isset($view['joomla_fields']) && $view['joomla_fields'] == 1)
+				{
+					$menus .= PHP_EOL . $this->_t(2) . "if (JComponentHelper::isEnabled('com_fields'))";
+					$menus .= PHP_EOL . $this->_t(2) . "{";
+					$menus .= PHP_EOL . $this->_t(3) . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "_FIELDS'), 'index.php?option=com_fields&context=com_" . $codeName . "." . $nameSingle . "', \$submenu === 'fields.fields');";
+					$menus .= PHP_EOL . $this->_t(3) . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "_FIELDS_GROUPS'), 'index.php?option=com_fields&view=groups&context=com_" . $codeName . "." . $nameSingle . "', \$submenu === 'fields.groups');";
+					$menus .= PHP_EOL . $this->_t(2) . "}";
+					$this->langContent[$this->lang][$lang . "_" . $nameUpper . "_FIELDS"] = $view['settings']->name_list . ' Fields';
+					$this->langContent[$this->lang][$lang . "_" . $nameUpper . "_FIELDS_GROUPS"] = $view['settings']->name_list . ' Field Groups';
+					// build uninstall script for fields
+					$this->uninstallScriptBuilder[$nameSingle] = 'com_' . $codeName . '.' . $nameSingle;
+					$this->uninstallScriptFields[$nameSingle] = $nameSingle;
 				}
 			}
 			if (isset($this->lastCustomSubMenu) && ComponentbuilderHelper::checkArray($this->lastCustomSubMenu))
@@ -14883,6 +15026,27 @@ function vdm_dkim() {
 		return $component;
 	}
 
+	public function setAccessSectionsJoomlaFields()
+	{
+		$component = '';
+		// set all the core field permissions
+		$component .= PHP_EOL . $this->_t(1) . '<section name="fieldgroup">';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.create" title="JACTION_CREATE" description="COM_FIELDS_GROUP_PERMISSION_CREATE_DESC" />';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.delete" title="JACTION_DELETE" description="COM_FIELDS_GROUP_PERMISSION_DELETE_DESC" />';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.edit" title="JACTION_EDIT" description="COM_FIELDS_GROUP_PERMISSION_EDIT_DESC" />';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_FIELDS_GROUP_PERMISSION_EDITSTATE_DESC" />';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_FIELDS_GROUP_PERMISSION_EDITOWN_DESC" />';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.edit.value" title="JACTION_EDITVALUE" description="COM_FIELDS_GROUP_PERMISSION_EDITVALUE_DESC" />';
+		$component .= PHP_EOL . $this->_t(1) . '</section>';
+		$component .= PHP_EOL . $this->_t(1) . '<section name="field">';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.delete" title="JACTION_DELETE" description="COM_FIELDS_FIELD_PERMISSION_DELETE_DESC" />';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.edit" title="JACTION_EDIT" description="COM_FIELDS_FIELD_PERMISSION_EDIT_DESC" />';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_FIELDS_FIELD_PERMISSION_EDITSTATE_DESC" />';
+		$component .= PHP_EOL . $this->_t(2) . '<action name="core.edit.value" title="JACTION_EDITVALUE" description="COM_FIELDS_FIELD_PERMISSION_EDITVALUE_DESC" />';
+		$component .= PHP_EOL . $this->_t(1) . '</section>';
+		return $component;
+	}
+
 	public function setAccessSections()
 	{
 		// set the default component access values
@@ -14926,6 +15090,11 @@ function vdm_dkim() {
 		$this->componentHead[] = $this->_t(2) . '<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />';
 		$this->componentHead[] = $this->_t(2) . '<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_ACCESS_EDITSTATE_DESC" />';
 		$this->componentHead[] = $this->_t(2) . '<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />';
+		// set the Joomla fields
+		if ($this->setJoomlaFields)
+		{
+			$this->componentHead[] = $this->_t(2) . '    <action name="core.edit.value" title="JACTION_EDITVALUE" description="JACTION_EDITVALUE_COMPONENT_DESC" />';
+		}
 		// new custom created by permissions
 		$created_byTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Edit Created By', 'U');
 		$created_byDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Edit Created By', 'U') . '_DESC';

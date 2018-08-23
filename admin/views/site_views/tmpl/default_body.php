@@ -73,16 +73,35 @@ $edit = "index.php?option=com_componentbuilder&view=site_views&task=site_view.ed
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->name); ?>
+			<div><?php echo JText::_('COM_COMPONENTBUILDER_NAME'); ?>: <b>
+			<?php echo $this->escape($item->name); ?></b><br />
+	<?php echo JText::_('COM_COMPONENTBUILDER_CODE'); ?>: <b>
+			<?php echo $this->escape($item->codename); ?></b><br />
+	<?php if (ComponentbuilderHelper::checkString($item->context)): ?>
+	<?php echo JText::_('COM_COMPONENTBUILDER_CONTEXT'); ?>: <b>
+			<?php echo $this->escape($item->context); ?></b>
+	<?php endif; ?>
+			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->codename); ?>
+			<div><em>
+			<?php echo $this->escape($item->description); ?></em>
+			<ul style="list-style: none">
+				<li><?php echo JText::_("COM_COMPONENTBUILDER_CUSTOM_BUTTON"); ?>: <b>
+			<?php echo JText::_($item->add_custom_button); ?></b></li>
+				<li><?php echo JText::_("COM_COMPONENTBUILDER_AJAX"); ?>: <b>
+			<?php echo JText::_($item->add_php_ajax); ?></b></li>
+			</ul>
+			</div>
 		</td>
-		<td class="hidden-phone">
-			<?php echo $this->escape($item->description); ?>
-		</td>
-		<td class="hidden-phone">
-			<?php echo $this->escape($item->snippet_name); ?>
+		<td class="nowrap">
+			<div class="name">
+				<?php if ($this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int)$item->main_get)): ?>
+					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->main_get; ?>&ref=site_views"><?php echo $this->escape($item->main_get_name); ?></a>
+				<?php else: ?>
+					<?php echo $this->escape($item->main_get_name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('core.edit.state')) : ?>

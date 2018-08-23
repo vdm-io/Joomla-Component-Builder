@@ -615,6 +615,17 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_HISTORY_DESCRIPTION"
 					class="inputbox"
 				/>
+				<!-- Joomla_fields Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="joomla_fields"
+					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_JOOMLA_FIELDS_LABEL"
+					value="1"
+					default="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_JOOMLA_FIELDS_DESCRIPTION"
+					class="inputbox"
+				/>
 				<!-- Metadata Field. Type: Checkbox. (joomla) -->
 				<field
 					type="checkbox"

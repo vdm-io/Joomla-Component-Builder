@@ -101,19 +101,6 @@
 			message="COM_COMPONENTBUILDER_LAYOUT_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_LAYOUT_NAME_HINT"
 		/>
-		<!-- Alias Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="alias"
-			label="COM_COMPONENTBUILDER_LAYOUT_ALIAS_LABEL"
-			size="40"
-			maxlength="50"
-			description="COM_COMPONENTBUILDER_LAYOUT_ALIAS_DESCRIPTION"
-			class="text_area"
-			filter="CMD"
-			message="COM_COMPONENTBUILDER_LAYOUT_ALIAS_MESSAGE"
-			hint="COM_COMPONENTBUILDER_LAYOUT_ALIAS_HINT"
-		/>
 		<!-- Description Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -227,6 +214,19 @@
 		/>
 		<!-- Note_libraries_selection Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_libraries_selection" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_LIBRARIES_SELECTION_LABEL" description="COM_COMPONENTBUILDER_LAYOUT_NOTE_LIBRARIES_SELECTION_DESCRIPTION" heading="h4" class="alert alert-info note_libraries_selection" />
+		<!-- Alias Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="alias"
+			label="COM_COMPONENTBUILDER_LAYOUT_ALIAS_LABEL"
+			size="40"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_LAYOUT_ALIAS_DESCRIPTION"
+			class="text_area"
+			filter="CMD"
+			message="COM_COMPONENTBUILDER_LAYOUT_ALIAS_MESSAGE"
+			hint="COM_COMPONENTBUILDER_LAYOUT_ALIAS_HINT"
+		/>
 	</fieldset>
 	
 	<!-- Access Control Fields. -->

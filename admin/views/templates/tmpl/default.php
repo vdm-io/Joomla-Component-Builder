@@ -83,3 +83,29 @@ if ($this->saveOrder)
 <input type="hidden" name="task" value="" />
 <?php echo JHtml::_('form.token'); ?>
 </form>
+<script type="text/javascript">
+// templates footer script
+
+jQuery.fn.selText = function() {
+    var obj = this[0];
+    if (jQuery.browser.msie) {
+        var range = obj.offsetParent.createTextRange();
+        range.moveToElementText(obj);
+        range.select();
+    } else if (jQuery.browser.mozilla || $.browser.opera) {
+        var selection = obj.ownerDocument.defaultView.getSelection();
+        var range = obj.ownerDocument.createRange();
+        range.selectNodeContents(obj);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else if (jQuery.browser.safari) {
+        var selection = obj.ownerDocument.defaultView.getSelection();
+        selection.setBaseAndExtent(obj, 0, obj, 1);
+    }
+    return this;
+}
+// make sure the code bocks are active
+jQuery("code").click(function() {
+	jQuery(this).selText().addClass("selected");
+});
+</script>

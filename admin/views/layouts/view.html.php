@@ -210,6 +210,28 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 				);
 			}
 		}
+
+		// Set Add Php View Selection
+		$this->add_php_viewOptions = $this->getTheAdd_php_viewSelections();
+		if ($this->add_php_viewOptions)
+		{
+			// Add Php View Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_LAYOUT_ADD_PHP_VIEW_LABEL').' -',
+				'filter_add_php_view',
+				JHtml::_('select.options', $this->add_php_viewOptions, 'value', 'text', $this->state->get('filter.add_php_view'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Add Php View Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LAYOUT_ADD_PHP_VIEW_LABEL').' -',
+					'batch[add_php_view]',
+					JHtml::_('select.options', $this->add_php_viewOptions, 'value', 'text')
+				);
+			}
+		}
 	}
 
 	/**
@@ -256,10 +278,45 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_LAYOUT_NAME_LABEL'),
-			'a.alias' => JText::_('COM_COMPONENTBUILDER_LAYOUT_ALIAS_LABEL'),
 			'a.description' => JText::_('COM_COMPONENTBUILDER_LAYOUT_DESCRIPTION_LABEL'),
 			'g.name' => JText::_('COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
+	}
+
+	protected function getTheAdd_php_viewSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('add_php_view'));
+		$query->from($db->quoteName('#__componentbuilder_layout'));
+		$query->order($db->quoteName('add_php_view') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $add_php_view)
+			{
+				// Translate the add_php_view selection
+				$text = $model->selectionTranslation($add_php_view,'add_php_view');
+				// Now add the add_php_view and its text to the options array
+				$_filter[] = JHtml::_('select.option', $add_php_view, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
 	}
 }

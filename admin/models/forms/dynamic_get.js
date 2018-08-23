@@ -100,6 +100,9 @@ jQuery(document).ready(function()
 	var gettype_vvvvwaa = jQuery("#jform_gettype").val();
 	var add_php_router_parse_vvvvwaa = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
 	vvvvwaa(gettype_vvvvwaa,add_php_router_parse_vvvvwaa);
+
+	var gettype_vvvvwac = jQuery("#jform_gettype").val();
+	vvvvwac(gettype_vvvvwac);
 });
 
 // the vvvvvzd function
@@ -1372,6 +1375,44 @@ function add_php_router_parse_vvvvwaa_SomeFunc(add_php_router_parse_vvvvwaa)
 {
 	// set the function logic
 	if (add_php_router_parse_vvvvwaa == 1)
+	{
+		return true;
+	}
+	return false;
+}
+
+// the vvvvwac function
+function vvvvwac(gettype_vvvvwac)
+{
+	if (isSet(gettype_vvvvwac) && gettype_vvvvwac.constructor !== Array)
+	{
+		var temp_vvvvwac = gettype_vvvvwac;
+		var gettype_vvvvwac = [];
+		gettype_vvvvwac.push(temp_vvvvwac);
+	}
+	else if (!isSet(gettype_vvvvwac))
+	{
+		var gettype_vvvvwac = [];
+	}
+	var gettype = gettype_vvvvwac.some(gettype_vvvvwac_SomeFunc);
+
+
+	// set this function logic
+	if (gettype)
+	{
+		jQuery('#jform_plugin_events').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('#jform_plugin_events').closest('.control-group').hide();
+	}
+}
+
+// the vvvvwac Some function
+function gettype_vvvvwac_SomeFunc(gettype_vvvvwac)
+{
+	// set the function logic
+	if (gettype_vvvvwac == 1)
 	{
 		return true;
 	}

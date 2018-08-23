@@ -1501,16 +1501,24 @@ class ComponentbuilderModelAjax extends JModelList
 			$templateString = array();
 			// get the view name & id
 			$values = $this->getViewID();
-			// check if we are in the correct view.
+			// set a return value
+			$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+			if (isset($values['a_return']))
+			{
+				$return_url .= '&return=' . (string) $values['a_return'];
+			}
+			// start the ref builder
+			$ref = '';
 			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
 			{
 				// set the return ref
-				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'];
+				$ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'] . '&return=' . urlencode(base64_encode($return_url));
 			}
+			// load the template data
 			foreach ($results as $result)
 			{
-				$edit = ($button = $this->addEditLink($result->id, 'template', 'templates')) ? $button : '';
-				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && $button = $this->addEditLink($result->dynamic_get, 'dynamic_get', 'dynamic_gets')) ? $button : '';
+				$edit = (($button = ComponentbuilderHelper::getEditButton($result->id, 'template', 'templates', $ref)) !== false) ? $button : '';
+				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && ($button = ComponentbuilderHelper::getEditButton($result->dynamic_get, 'dynamic_get', 'dynamic_gets', $ref)) !== false) ? $button : '';
 				$result->name = (ComponentbuilderHelper::checkString($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
 				$templateString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo \$this->loadTemplate('".ComponentbuilderHelper::safeString($result->alias)."'); ?&gt;</code> ".$edit."</td>";
 			}
@@ -1546,16 +1554,23 @@ class ComponentbuilderModelAjax extends JModelList
 			$layoutString = array();
 			// get the view name & id
 			$values = $this->getViewID();
-			// check if we are in the correct view.
+			// set a return value
+			$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+			if (isset($values['a_return']))
+			{
+				$return_url .= '&return=' . (string) $values['a_return'];
+			}
+			// start the ref builder
+			$ref = '';
 			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
 			{
 				// set the return ref
-				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'];
+				$ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'] . '&return=' . urlencode(base64_encode($return_url));
 			}
 			foreach ($results as $result)
 			{
-				$edit = ($button = $this->addEditLink($result->id, 'layout', 'layouts')) ? $button : '';
-				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && $button = $this->addEditLink($result->dynamic_get, 'dynamic_get', 'dynamic_gets')) ? $button : '';
+				$edit = (($button = ComponentbuilderHelper::getEditButton($result->id, 'layout', 'layouts', $ref)) !== false) ? $button : '';
+				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && ($button = ComponentbuilderHelper::getEditButton($result->dynamic_get, 'dynamic_get', 'dynamic_gets', $ref)) !== false) ? $button : '';
 				$result->name = (ComponentbuilderHelper::checkString($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
 
 				switch ($result->gettype)

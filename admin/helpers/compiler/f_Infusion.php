@@ -557,7 +557,11 @@ class Infusion extends Interpretation
 					$this->fileContentStatic[$this->hhh . 'ACCESS_SECTIONS' . $this->hhh] = '';
 				}
 				$this->fileContentStatic[$this->hhh . 'ACCESS_SECTIONS' . $this->hhh] .= $this->setAccessSectionsCategory($viewName_single, $viewName_list);
-
+				// set the Joomla Fields ACCESS section if needed
+				if (isset($view['joomla_fields']) && $view['joomla_fields'] == 1)
+				{
+					$this->fileContentStatic[$this->hhh . 'ACCESS_SECTIONS' . $this->hhh] .= $this->setAccessSectionsJoomlaFields();
+				}
 				// HELPER_EXEL
 				$this->fileContentStatic[$this->hhh . 'HELPER_EXEL' . $this->hhh] = $this->setExelHelperMethods();
 			}

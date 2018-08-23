@@ -188,6 +188,72 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
 		} 
+
+		// Set Main Get Name Selection
+		$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->getOptions();
+		if ($this->main_getNameOptions)
+		{
+			// Main Get Name Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL').' -',
+				'filter_main_get',
+				JHtml::_('select.options', $this->main_getNameOptions, 'value', 'text', $this->state->get('filter.main_get'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Main Get Name Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL').' -',
+					'batch[main_get]',
+					JHtml::_('select.options', $this->main_getNameOptions, 'value', 'text')
+				);
+			}
+		}
+
+		// Set Add Php Ajax Selection
+		$this->add_php_ajaxOptions = $this->getTheAdd_php_ajaxSelections();
+		if ($this->add_php_ajaxOptions)
+		{
+			// Add Php Ajax Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',
+				'filter_add_php_ajax',
+				JHtml::_('select.options', $this->add_php_ajaxOptions, 'value', 'text', $this->state->get('filter.add_php_ajax'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Add Php Ajax Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',
+					'batch[add_php_ajax]',
+					JHtml::_('select.options', $this->add_php_ajaxOptions, 'value', 'text')
+				);
+			}
+		}
+
+		// Set Add Custom Button Selection
+		$this->add_custom_buttonOptions = $this->getTheAdd_custom_buttonSelections();
+		if ($this->add_custom_buttonOptions)
+		{
+			// Add Custom Button Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
+				'filter_add_custom_button',
+				JHtml::_('select.options', $this->add_custom_buttonOptions, 'value', 'text', $this->state->get('filter.add_custom_button'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Add Custom Button Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
+					'batch[add_custom_button]',
+					JHtml::_('select.options', $this->add_custom_buttonOptions, 'value', 'text')
+				);
+			}
+		}
 	}
 
 	/**
@@ -235,9 +301,81 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 			'a.published' => JText::_('JSTATUS'),
 			'a.system_name' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_LABEL'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_LABEL'),
-			'a.codename' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_LABEL'),
 			'a.description' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DESCRIPTION_LABEL'),
+			'g.name' => JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
+	}
+
+	protected function getTheAdd_php_ajaxSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('add_php_ajax'));
+		$query->from($db->quoteName('#__componentbuilder_custom_admin_view'));
+		$query->order($db->quoteName('add_php_ajax') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $add_php_ajax)
+			{
+				// Translate the add_php_ajax selection
+				$text = $model->selectionTranslation($add_php_ajax,'add_php_ajax');
+				// Now add the add_php_ajax and its text to the options array
+				$_filter[] = JHtml::_('select.option', $add_php_ajax, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
+	}
+
+	protected function getTheAdd_custom_buttonSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('add_custom_button'));
+		$query->from($db->quoteName('#__componentbuilder_custom_admin_view'));
+		$query->order($db->quoteName('add_custom_button') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $add_custom_button)
+			{
+				// Translate the add_custom_button selection
+				$text = $model->selectionTranslation($add_custom_button,'add_custom_button');
+				// Now add the add_custom_button and its text to the options array
+				$_filter[] = JHtml::_('select.option', $add_custom_button, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
 	}
 }

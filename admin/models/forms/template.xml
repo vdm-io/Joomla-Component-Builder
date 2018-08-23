@@ -101,19 +101,6 @@
 			message="COM_COMPONENTBUILDER_TEMPLATE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_TEMPLATE_NAME_HINT"
 		/>
-		<!-- Alias Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="alias"
-			label="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_LABEL"
-			size="40"
-			maxlength="50"
-			description="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_DESCRIPTION"
-			class="text_area"
-			filter="CMD"
-			message="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_MESSAGE"
-			hint="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_HINT"
-		/>
 		<!-- Description Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -130,13 +117,12 @@
 			message="COM_COMPONENTBUILDER_TEMPLATE_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_TEMPLATE_DESCRIPTION_HINT"
 		/>
-		<!-- Snippet Field. Type: Snippets. (custom) -->
+		<!-- Dynamic_get Field. Type: Dynamicget. (custom) -->
 		<field
-			type="snippets"
-			name="snippet"
-			label="COM_COMPONENTBUILDER_TEMPLATE_SNIPPET_LABEL"
-			description="COM_COMPONENTBUILDER_TEMPLATE_SNIPPET_DESCRIPTION"
-			class="list_class"
+			type="dynamicget"
+			name="dynamic_get"
+			label="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL"
+			description="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_DESCRIPTION"
 			multiple="false"
 			required="false"
 			button="true"
@@ -174,16 +160,6 @@
 		</field>
 		<!-- Dynamic_values Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="dynamic_values" label="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_VALUES_LABEL" description="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_VALUES_DESCRIPTION" heading="h4" class="dynamic_values" />
-		<!-- Dynamic_get Field. Type: Dynamicget. (custom) -->
-		<field
-			type="dynamicget"
-			name="dynamic_get"
-			label="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL"
-			description="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_DESCRIPTION"
-			multiple="false"
-			required="false"
-			button="true"
-		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field
 			type="hidden"
@@ -209,6 +185,17 @@
 		/>
 		<!-- Note_snippet_usage Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_snippet_usage" label="COM_COMPONENTBUILDER_TEMPLATE_NOTE_SNIPPET_USAGE_LABEL" heading="h4" class="snippet-usage note_snippet_usage" />
+		<!-- Snippet Field. Type: Snippets. (custom) -->
+		<field
+			type="snippets"
+			name="snippet"
+			label="COM_COMPONENTBUILDER_TEMPLATE_SNIPPET_LABEL"
+			description="COM_COMPONENTBUILDER_TEMPLATE_SNIPPET_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			required="false"
+			button="true"
+		/>
 		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_uikit_snippet" label="COM_COMPONENTBUILDER_TEMPLATE_NOTE_UIKIT_SNIPPET_LABEL" heading="h4" class="snippet-code note_uikit_snippet" />
 		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
@@ -227,6 +214,19 @@
 		/>
 		<!-- Note_libraries_selection Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_libraries_selection" label="COM_COMPONENTBUILDER_TEMPLATE_NOTE_LIBRARIES_SELECTION_LABEL" description="COM_COMPONENTBUILDER_TEMPLATE_NOTE_LIBRARIES_SELECTION_DESCRIPTION" heading="h4" class="alert alert-info note_libraries_selection" />
+		<!-- Alias Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="alias"
+			label="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_LABEL"
+			size="40"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_DESCRIPTION"
+			class="text_area"
+			filter="CMD"
+			message="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_MESSAGE"
+			hint="COM_COMPONENTBUILDER_TEMPLATE_ALIAS_HINT"
+		/>
 	</fieldset>
 	
 	<!-- Access Control Fields. -->

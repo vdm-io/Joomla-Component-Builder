@@ -122,21 +122,6 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 <script type="text/javascript">
 
-// #jform_protocol listeners for protocol_vvvvway function
-jQuery('#jform_protocol').on('keyup',function()
-{
-	var protocol_vvvvway = jQuery("#jform_protocol").val();
-	vvvvway(protocol_vvvvway);
-
-});
-jQuery('#adminForm').on('change', '#jform_protocol',function (e)
-{
-	e.preventDefault();
-	var protocol_vvvvway = jQuery("#jform_protocol").val();
-	vvvvway(protocol_vvvvway);
-
-});
-
 // #jform_protocol listeners for protocol_vvvvwaz function
 jQuery('#jform_protocol').on('keyup',function()
 {
@@ -156,135 +141,150 @@ jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 jQuery('#jform_protocol').on('keyup',function()
 {
 	var protocol_vvvvwba = jQuery("#jform_protocol").val();
-	var authentication_vvvvwba = jQuery("#jform_authentication").val();
-	vvvvwba(protocol_vvvvwba,authentication_vvvvwba);
+	vvvvwba(protocol_vvvvwba);
 
 });
 jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
 	var protocol_vvvvwba = jQuery("#jform_protocol").val();
-	var authentication_vvvvwba = jQuery("#jform_authentication").val();
-	vvvvwba(protocol_vvvvwba,authentication_vvvvwba);
+	vvvvwba(protocol_vvvvwba);
 
 });
 
-// #jform_authentication listeners for authentication_vvvvwba function
-jQuery('#jform_authentication').on('keyup',function()
-{
-	var protocol_vvvvwba = jQuery("#jform_protocol").val();
-	var authentication_vvvvwba = jQuery("#jform_authentication").val();
-	vvvvwba(protocol_vvvvwba,authentication_vvvvwba);
-
-});
-jQuery('#adminForm').on('change', '#jform_authentication',function (e)
-{
-	e.preventDefault();
-	var protocol_vvvvwba = jQuery("#jform_protocol").val();
-	var authentication_vvvvwba = jQuery("#jform_authentication").val();
-	vvvvwba(protocol_vvvvwba,authentication_vvvvwba);
-
-});
-
-// #jform_protocol listeners for protocol_vvvvwbc function
+// #jform_protocol listeners for protocol_vvvvwbb function
 jQuery('#jform_protocol').on('keyup',function()
 {
-	var protocol_vvvvwbc = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbc = jQuery("#jform_authentication").val();
-	vvvvwbc(protocol_vvvvwbc,authentication_vvvvwbc);
+	var protocol_vvvvwbb = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbb = jQuery("#jform_authentication").val();
+	vvvvwbb(protocol_vvvvwbb,authentication_vvvvwbb);
 
 });
 jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
-	var protocol_vvvvwbc = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbc = jQuery("#jform_authentication").val();
-	vvvvwbc(protocol_vvvvwbc,authentication_vvvvwbc);
+	var protocol_vvvvwbb = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbb = jQuery("#jform_authentication").val();
+	vvvvwbb(protocol_vvvvwbb,authentication_vvvvwbb);
 
 });
 
-// #jform_authentication listeners for authentication_vvvvwbc function
+// #jform_authentication listeners for authentication_vvvvwbb function
 jQuery('#jform_authentication').on('keyup',function()
 {
-	var protocol_vvvvwbc = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbc = jQuery("#jform_authentication").val();
-	vvvvwbc(protocol_vvvvwbc,authentication_vvvvwbc);
+	var protocol_vvvvwbb = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbb = jQuery("#jform_authentication").val();
+	vvvvwbb(protocol_vvvvwbb,authentication_vvvvwbb);
 
 });
 jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 {
 	e.preventDefault();
-	var protocol_vvvvwbc = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbc = jQuery("#jform_authentication").val();
-	vvvvwbc(protocol_vvvvwbc,authentication_vvvvwbc);
+	var protocol_vvvvwbb = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbb = jQuery("#jform_authentication").val();
+	vvvvwbb(protocol_vvvvwbb,authentication_vvvvwbb);
 
 });
 
-// #jform_protocol listeners for protocol_vvvvwbe function
+// #jform_protocol listeners for protocol_vvvvwbd function
 jQuery('#jform_protocol').on('keyup',function()
 {
-	var protocol_vvvvwbe = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbe = jQuery("#jform_authentication").val();
-	vvvvwbe(protocol_vvvvwbe,authentication_vvvvwbe);
+	var protocol_vvvvwbd = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbd = jQuery("#jform_authentication").val();
+	vvvvwbd(protocol_vvvvwbd,authentication_vvvvwbd);
 
 });
 jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
-	var protocol_vvvvwbe = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbe = jQuery("#jform_authentication").val();
-	vvvvwbe(protocol_vvvvwbe,authentication_vvvvwbe);
+	var protocol_vvvvwbd = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbd = jQuery("#jform_authentication").val();
+	vvvvwbd(protocol_vvvvwbd,authentication_vvvvwbd);
 
 });
 
-// #jform_authentication listeners for authentication_vvvvwbe function
+// #jform_authentication listeners for authentication_vvvvwbd function
 jQuery('#jform_authentication').on('keyup',function()
 {
-	var protocol_vvvvwbe = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbe = jQuery("#jform_authentication").val();
-	vvvvwbe(protocol_vvvvwbe,authentication_vvvvwbe);
+	var protocol_vvvvwbd = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbd = jQuery("#jform_authentication").val();
+	vvvvwbd(protocol_vvvvwbd,authentication_vvvvwbd);
 
 });
 jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 {
 	e.preventDefault();
-	var protocol_vvvvwbe = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbe = jQuery("#jform_authentication").val();
-	vvvvwbe(protocol_vvvvwbe,authentication_vvvvwbe);
+	var protocol_vvvvwbd = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbd = jQuery("#jform_authentication").val();
+	vvvvwbd(protocol_vvvvwbd,authentication_vvvvwbd);
 
 });
 
-// #jform_protocol listeners for protocol_vvvvwbg function
+// #jform_protocol listeners for protocol_vvvvwbf function
 jQuery('#jform_protocol').on('keyup',function()
 {
-	var protocol_vvvvwbg = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbg = jQuery("#jform_authentication").val();
-	vvvvwbg(protocol_vvvvwbg,authentication_vvvvwbg);
+	var protocol_vvvvwbf = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbf = jQuery("#jform_authentication").val();
+	vvvvwbf(protocol_vvvvwbf,authentication_vvvvwbf);
 
 });
 jQuery('#adminForm').on('change', '#jform_protocol',function (e)
 {
 	e.preventDefault();
-	var protocol_vvvvwbg = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbg = jQuery("#jform_authentication").val();
-	vvvvwbg(protocol_vvvvwbg,authentication_vvvvwbg);
+	var protocol_vvvvwbf = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbf = jQuery("#jform_authentication").val();
+	vvvvwbf(protocol_vvvvwbf,authentication_vvvvwbf);
 
 });
 
-// #jform_authentication listeners for authentication_vvvvwbg function
+// #jform_authentication listeners for authentication_vvvvwbf function
 jQuery('#jform_authentication').on('keyup',function()
 {
-	var protocol_vvvvwbg = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbg = jQuery("#jform_authentication").val();
-	vvvvwbg(protocol_vvvvwbg,authentication_vvvvwbg);
+	var protocol_vvvvwbf = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbf = jQuery("#jform_authentication").val();
+	vvvvwbf(protocol_vvvvwbf,authentication_vvvvwbf);
 
 });
 jQuery('#adminForm').on('change', '#jform_authentication',function (e)
 {
 	e.preventDefault();
-	var protocol_vvvvwbg = jQuery("#jform_protocol").val();
-	var authentication_vvvvwbg = jQuery("#jform_authentication").val();
-	vvvvwbg(protocol_vvvvwbg,authentication_vvvvwbg);
+	var protocol_vvvvwbf = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbf = jQuery("#jform_authentication").val();
+	vvvvwbf(protocol_vvvvwbf,authentication_vvvvwbf);
+
+});
+
+// #jform_protocol listeners for protocol_vvvvwbh function
+jQuery('#jform_protocol').on('keyup',function()
+{
+	var protocol_vvvvwbh = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbh = jQuery("#jform_authentication").val();
+	vvvvwbh(protocol_vvvvwbh,authentication_vvvvwbh);
+
+});
+jQuery('#adminForm').on('change', '#jform_protocol',function (e)
+{
+	e.preventDefault();
+	var protocol_vvvvwbh = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbh = jQuery("#jform_authentication").val();
+	vvvvwbh(protocol_vvvvwbh,authentication_vvvvwbh);
+
+});
+
+// #jform_authentication listeners for authentication_vvvvwbh function
+jQuery('#jform_authentication').on('keyup',function()
+{
+	var protocol_vvvvwbh = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbh = jQuery("#jform_authentication").val();
+	vvvvwbh(protocol_vvvvwbh,authentication_vvvvwbh);
+
+});
+jQuery('#adminForm').on('change', '#jform_authentication',function (e)
+{
+	e.preventDefault();
+	var protocol_vvvvwbh = jQuery("#jform_protocol").val();
+	var authentication_vvvvwbh = jQuery("#jform_authentication").val();
+	vvvvwbh(protocol_vvvvwbh,authentication_vvvvwbh);
 
 });
 

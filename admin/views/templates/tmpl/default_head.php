@@ -30,16 +30,13 @@ defined('_JEXEC') or die('Restricted access');
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_TEMPLATE_NAME_LABEL', 'name', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_TEMPLATES_NAMES', 'name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_TEMPLATE_ALIAS_LABEL', 'alias', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_TEMPLATES_DETAILS', 'description', $this->listDirn, $this->listOrder); ?>
 	</th>
-	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_TEMPLATE_DESCRIPTION_LABEL', 'description', $this->listDirn, $this->listOrder); ?>
-	</th>
-	<th class="nowrap hidden-phone" >
-			<?php echo JText::_('COM_COMPONENTBUILDER_TEMPLATE_SNIPPET_LABEL'); ?>
+	<th class="nowrap" >
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL', 'dynamic_get_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

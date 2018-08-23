@@ -30,13 +30,10 @@ defined('_JEXEC') or die('Restricted access');
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LAYOUT_NAME_LABEL', 'name', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LAYOUTS_NAMES', 'name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LAYOUT_ALIAS_LABEL', 'alias', $this->listDirn, $this->listOrder); ?>
-	</th>
-	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LAYOUT_DESCRIPTION_LABEL', 'description', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LAYOUTS_DETAILS', 'description', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_LABEL', 'dynamic_get_name', $this->listDirn, $this->listOrder); ?>

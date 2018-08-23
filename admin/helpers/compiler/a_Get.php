@@ -371,6 +371,13 @@ class Get
 	public $setTagHistory = false;
 
 	/**
+	 * The Joomla Fields Switch
+	 * 
+	 * @var      boolean
+	 */
+	public $setJoomlaFields = false;
+
+	/**
 	 * The site edit views
 	 * 
 	 * @var     array
@@ -1077,6 +1084,10 @@ class Get
 				if (isset($array['history']) && $array['history'] && !$this->setTagHistory)
 				{
 					$this->setTagHistory = true;
+				}
+				if (isset($array['joomla_fields']) && $array['joomla_fields'] && !$this->setJoomlaFields)
+				{
+					$this->setJoomlaFields = true;
 				}
 				// has become a lacacy issue, can't remove this
 				$array['view'] = $array['adminview'];
@@ -2973,6 +2984,15 @@ class Get
 						if (!ComponentbuilderHelper::checkArray($result->global))
 						{
 							unset($result->global);
+						}
+						// load the events if any is set
+						if ($result->gettype == 1 && ComponentbuilderHelper::checkJson($result->plugin_events))
+						{
+							$result->plugin_events = json_decode($result->plugin_events, true);
+						}
+						else
+						{
+							$result->plugin_events = '';
 						}
 					}
 					return $results;

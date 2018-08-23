@@ -28,8 +28,9 @@ class ComponentbuilderModelTemplates extends JModelList
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.name','name',
-				'a.alias','alias',
-				'a.description','description'
+				'a.description','description',
+				'a.dynamic_get','dynamic_get',
+				'a.add_php_view','add_php_view'
 			);
 		}
 
@@ -53,11 +54,14 @@ class ComponentbuilderModelTemplates extends JModelList
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
 		$this->setState('filter.name', $name);
 
-		$alias = $this->getUserStateFromRequest($this->context . '.filter.alias', 'filter_alias');
-		$this->setState('filter.alias', $alias);
-
 		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
 		$this->setState('filter.description', $description);
+
+		$dynamic_get = $this->getUserStateFromRequest($this->context . '.filter.dynamic_get', 'filter_dynamic_get');
+		$this->setState('filter.dynamic_get', $dynamic_get);
+
+		$add_php_view = $this->getUserStateFromRequest($this->context . '.filter.add_php_view', 'filter_add_php_view');
+		$this->setState('filter.add_php_view', $add_php_view);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -107,10 +111,44 @@ class ComponentbuilderModelTemplates extends JModelList
 				}
 
 			}
-		}  
+		} 
+
+		// set selection value to a translatable value
+		if (ComponentbuilderHelper::checkArray($items))
+		{
+			foreach ($items as $nr => &$item)
+			{
+				// convert add_php_view
+				$item->add_php_view = $this->selectionTranslation($item->add_php_view, 'add_php_view');
+			}
+		}
+ 
         
 		// return items
 		return $items;
+	}
+
+	/**
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
+	public function selectionTranslation($value,$name)
+	{
+		// Array of add_php_view language strings
+		if ($name === 'add_php_view')
+		{
+			$add_php_viewArray = array(
+				1 => 'COM_COMPONENTBUILDER_TEMPLATE_YES',
+				0 => 'COM_COMPONENTBUILDER_TEMPLATE_NO'
+			);
+			// Now check if value is found in this array
+			if (isset($add_php_viewArray[$value]) && ComponentbuilderHelper::checkString($add_php_viewArray[$value]))
+			{
+				return $add_php_viewArray[$value];
+			}
+		}
+		return $value;
 	}
 	
 	/**
@@ -132,9 +170,9 @@ class ComponentbuilderModelTemplates extends JModelList
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_template', 'a'));
 
-		// From the componentbuilder_snippet table.
-		$query->select($db->quoteName('g.name','snippet_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet', 'g') . ' ON (' . $db->quoteName('a.snippet') . ' = ' . $db->quoteName('g.id') . ')');
+		// From the componentbuilder_dynamic_get table.
+		$query->select($db->quoteName('g.name','dynamic_get_name'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'g') . ' ON (' . $db->quoteName('a.dynamic_get') . ' = ' . $db->quoteName('g.id') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -172,10 +210,20 @@ class ComponentbuilderModelTemplates extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.alias LIKE '.$search.' OR a.description LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.description LIKE '.$search.' OR a.dynamic_get LIKE '.$search.' OR g.name LIKE '.$search.' OR a.alias LIKE '.$search.')');
 			}
 		}
 
+		// Filter by dynamic_get.
+		if ($dynamic_get = $this->getState('filter.dynamic_get'))
+		{
+			$query->where('a.dynamic_get = ' . $db->quote($db->escape($dynamic_get)));
+		}
+		// Filter by Add_php_view.
+		if ($add_php_view = $this->getState('filter.add_php_view'))
+		{
+			$query->where('a.add_php_view = ' . $db->quote($db->escape($add_php_view)));
+		}
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
@@ -306,8 +354,9 @@ class ComponentbuilderModelTemplates extends JModelList
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.name');
-		$id .= ':' . $this->getState('filter.alias');
 		$id .= ':' . $this->getState('filter.description');
+		$id .= ':' . $this->getState('filter.dynamic_get');
+		$id .= ':' . $this->getState('filter.add_php_view');
 
 		return parent::getStoreId($id);
 	}

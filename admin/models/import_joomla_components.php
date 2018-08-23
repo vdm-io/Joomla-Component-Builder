@@ -765,7 +765,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				$oldID = (int) $item->id;
 				// first check if exist
-				if ($canmerge && $local = $this->getLocalItem($item, $table, 1))
+				if ($canmerge && ($local = $this->getLocalItem($item, $table, 1)) !== false)
 				{
 					// display more import info
 					if ($this->moreInfo)
@@ -786,10 +786,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						// make sure we have the correct ID set
 						$item->id = $local->id;
 						// yes it is newer, lets update (or is being forced)
-						if ($canEdit && $id = $this->updateLocalItem($item, $table, $canState))
+						if ($canEdit && ($id = $this->updateLocalItem($item, $table, $canState)) !== false)
 						{
 							// we had success in
-							$this->newID[$table][$oldID] = (int) $id;
+							$this->newID[$table][$oldID] = (int) $local->id;
 							// display more import info
 							if ($this->moreInfo)
 							{
@@ -812,7 +812,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						$this->newID[$table][$oldID] = (int) $local->id;
 					}
 				}
-				elseif ($canCreate && $id = $this->addLocalItem($item, $table))
+				elseif ($canCreate && ($id = $this->addLocalItem($item, $table)) !== false)
 				{
 					// not found in local db so add
 					$this->newID[$table][$oldID] = (int) $id;
@@ -1025,9 +1025,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		if (isset($this->updateAfter['field']) && ComponentbuilderHelper::checkArray($this->updateAfter['field']))
 		{
 			// update repeatable
-			foreach ($this->updateAfter['field'] as $field)
+			foreach ($this->updateAfter['field'] as $field => $action)
 			{
-				if (isset($this->newID['field'][$field]))
+				if ('add' === $action && isset($this->newID['field'][$field]))
 				{
 					$field = $this->newID['field'][$field];
 				}
@@ -1087,9 +1087,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		if (isset($this->updateAfter['adminview']) && ComponentbuilderHelper::checkArray($this->updateAfter['adminview']))
 		{
 			// update the addlinked_views
-			foreach ($this->updateAfter['adminview'] as $adminview)
+			foreach ($this->updateAfter['adminview'] as $adminview => $action)
 			{
-				if (isset($this->newID['admin_view'][(int) $adminview]))
+				if ('add' === $action && isset($this->newID['admin_view'][(int) $adminview]))
 				{
 					$adminview = $this->newID['admin_view'][(int) $adminview];
 				}
@@ -1124,9 +1124,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		if (isset($this->updateAfter['joomla_component']) && ComponentbuilderHelper::checkArray($this->updateAfter['joomla_component']))
 		{
 			// update dashboard of the components
-			foreach ($this->updateAfter['joomla_component'] as $component)
+			foreach ($this->updateAfter['joomla_component'] as $component => $action)
 			{
-				if (isset($this->newID['joomla_component'][(int) $component]))
+				if ('add' === $action && isset($this->newID['joomla_component'][(int) $component]))
 				{
 					$component = $this->newID['joomla_component'][(int) $component];
 				}
@@ -1173,11 +1173,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		if (isset($this->updateAfter['relations']) && ComponentbuilderHelper::checkArray($this->updateAfter['relations']))
 		{
 			// update repeatable
-			foreach ($this->updateAfter['relations'] as $relation)
+			foreach ($this->updateAfter['relations'] as $relation => $action)
 			{
 				// check if we must update this relation
 				$update = false;
-				if (isset($this->newID['admin_fields_relations'][$relation]))
+				if ('add' === $action && isset($this->newID['admin_fields_relations'][$relation]))
 				{
 					$relation = $this->newID['admin_fields_relations'][$relation];
 				}
@@ -1577,7 +1577,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// update multi field values
 					if ($this->checkMultiFields($item->fieldtype))
 					{
-						$this->updateAfter['field'][$item->id] = $item->id; // multi field
+						$this->updateAfter['field'][(int) $item->id] = $action; // multi field
 					}
 				}
 				elseif (!is_numeric($item->fieldtype) || $item->fieldtype == 0)
@@ -1685,7 +1685,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// update the addlinked_views
 				if (isset($item->addlinked_views) && ComponentbuilderHelper::checkJson($item->addlinked_views))
 				{
-					$this->updateAfter['adminview'][$item->id] = $item->id; // addlinked_views
+					$this->updateAfter['adminview'][(int) $item->id] = $action; // addlinked_views
 				}
 				elseif (isset($item->addlinked_views))
 				{
@@ -1722,7 +1722,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if (isset($item->dashboard_type) && 2 == $item->dashboard_type)
 				{
 					// update the custom dash ID
-					$this->updateAfter['joomla_component'][$item->id] = $item->id; // dashboard
+					$this->updateAfter['joomla_component'][(int) $item->id] = $action; // dashboard
 				}
 				// set the anchors getters
 				$getter = array('joomla_component' => $item->id);
@@ -2208,7 +2208,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						'addrelations' => array('listfield' => 'field', 'joinfields' => 'field')
 					);
 					// special fix for custom code
-					$this->updateAfter['relations'][$item->id] = $item->id; // addrelations->set
+					$this->updateAfter['relations'][(int) $item->id] = $action; // addrelations->set
 				}
 
 				// update the repeatable fields
@@ -2447,7 +2447,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// update the item
 			if ($result = $this->_db->updateObject('#__componentbuilder_' . $type, $update, 'id'))
 			{
-				// return current ID
+				// return success
 				return $update->id;
 			}
 		}
@@ -2716,7 +2716,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 					}
 					// add hash target search
-					if (isset($item->hashtarget) && ComponentbuilderHelper::checkString($item->hashtarget))
+					elseif (isset($item->hashtarget) && ComponentbuilderHelper::checkString($item->hashtarget))
 					{
 						$getter[] = 'hashtarget';
 						// remove function name

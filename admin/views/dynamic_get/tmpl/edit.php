@@ -51,8 +51,11 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 
 	<?php echo JHtml::_('bootstrap.addTab', 'dynamic_getTab', 'main', JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
+			<div class="span6">
 				<?php echo JLayoutHelper::render('dynamic_get.main_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('dynamic_get.main_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
@@ -602,6 +605,21 @@ jQuery('#adminForm').on('change', '#jform_add_php_router_parse',function (e)
 	var gettype_vvvvwaa = jQuery("#jform_gettype").val();
 	var add_php_router_parse_vvvvwaa = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
 	vvvvwaa(gettype_vvvvwaa,add_php_router_parse_vvvvwaa);
+
+});
+
+// #jform_gettype listeners for gettype_vvvvwac function
+jQuery('#jform_gettype').on('keyup',function()
+{
+	var gettype_vvvvwac = jQuery("#jform_gettype").val();
+	vvvvwac(gettype_vvvvwac);
+
+});
+jQuery('#adminForm').on('change', '#jform_gettype',function (e)
+{
+	e.preventDefault();
+	var gettype_vvvvwac = jQuery("#jform_gettype").val();
+	vvvvwac(gettype_vvvvwac);
 
 });
 

@@ -134,6 +134,14 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->php_calculation = base64_decode($item->php_calculation);
 			}
 
+			if (!empty($item->join_db_table))
+			{
+				// Convert the join_db_table field to an array.
+				$join_db_table = new Registry;
+				$join_db_table->loadString($item->join_db_table);
+				$item->join_db_table = $join_db_table->toArray();
+			}
+
 			if (!empty($item->filter))
 			{
 				// Convert the filter field to an array.
@@ -174,12 +182,10 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->join_view_table = $join_view_table->toArray();
 			}
 
-			if (!empty($item->join_db_table))
+			if (!empty($item->plugin_events))
 			{
-				// Convert the join_db_table field to an array.
-				$join_db_table = new Registry;
-				$join_db_table->loadString($item->join_db_table);
-				$item->join_db_table = $join_db_table->toArray();
+				// JSON Decode plugin_events.
+				$item->plugin_events = json_decode($item->plugin_events);
 			}
 
 
@@ -259,15 +265,18 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	 *
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array    $options   Optional array of options for the form creation.
 	 *
 	 * @return  mixed  A JForm object on success, false on failure
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true)
+	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
 	{
+		// set load data option
+		$options['load_data'] = $loadData;
 		// Get the form.
-		$form = $this->loadForm('com_componentbuilder.dynamic_get', 'dynamic_get', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_componentbuilder.dynamic_get', 'dynamic_get', $options);
 
 		if (empty($form))
 		{
@@ -977,6 +986,19 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		} 
 
+		// Set the join_db_table items to data.
+		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
+		{
+			$join_db_table = new JRegistry;
+			$join_db_table->loadArray($data['join_db_table']);
+			$data['join_db_table'] = (string) $join_db_table;
+		}
+		elseif (!isset($data['join_db_table']))
+		{
+			// Set the empty join_db_table to data
+			$data['join_db_table'] = '';
+		}
+
 		// Set the filter items to data.
 		if (isset($data['filter']) && is_array($data['filter']))
 		{
@@ -1042,17 +1064,10 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['join_view_table'] = '';
 		}
 
-		// Set the join_db_table items to data.
-		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
+		// Set the plugin_events string to JSON string.
+		if (isset($data['plugin_events']))
 		{
-			$join_db_table = new JRegistry;
-			$join_db_table->loadArray($data['join_db_table']);
-			$data['join_db_table'] = (string) $join_db_table;
-		}
-		elseif (!isset($data['join_db_table']))
-		{
-			// Set the empty join_db_table to data
-			$data['join_db_table'] = '';
+			$data['plugin_events'] = (string) json_encode($data['plugin_events']);
 		}
 
 		// Set the php_custom_get string to base64 string.

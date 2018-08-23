@@ -18,7 +18,6 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'published',
 	'ordering',
-	'access',
 	'version',
 	'hits',
 	'id'

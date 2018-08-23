@@ -3619,7 +3619,7 @@ abstract class ComponentbuilderHelper
 	* @return  string    On success the edit url
 	* 
 	*/
-	public static function  getEditURL(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder')
+	public static function  getEditURL(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true)
 	{
 		// check that we have the ID
 		if (self::checkObject($item) && isset($item->id))
@@ -3641,7 +3641,11 @@ abstract class ComponentbuilderHelper
 			if (JFactory::getUser()->authorise($view . '.edit', $component . '.' . $view . '.' . (int) $id))
 			{
 				// set the edit link
-				return JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $id . $ref);
+				if ($jRoute)
+				{
+					return JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $id . $ref);
+				}
+				return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $id . $ref;
 			}
 		}
 		return false;
