@@ -69,6 +69,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
+	<?php $this->tab_name = 'component_files_foldersTab'; ?>
+	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
 	<?php if ($this->canDo->get('component_files_folders.delete') || $this->canDo->get('component_files_folders.edit.created_by') || $this->canDo->get('component_files_folders.edit.state') || $this->canDo->get('component_files_folders.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'component_files_foldersTab', 'publishing', JText::_('COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

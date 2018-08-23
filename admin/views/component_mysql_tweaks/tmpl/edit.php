@@ -59,6 +59,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
+	<?php $this->tab_name = 'component_mysql_tweaksTab'; ?>
+	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
 	<?php if ($this->canDo->get('component_mysql_tweaks.delete') || $this->canDo->get('component_mysql_tweaks.edit.created_by') || $this->canDo->get('component_mysql_tweaks.edit.state') || $this->canDo->get('component_mysql_tweaks.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'component_mysql_tweaksTab', 'publishing', JText::_('COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

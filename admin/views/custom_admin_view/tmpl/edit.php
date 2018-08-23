@@ -109,6 +109,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
+	<?php $this->tab_name = 'custom_admin_viewTab'; ?>
+	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
 	<?php if ($this->canDo->get('core.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.state') || $this->canDo->get('core.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'custom_admin_viewTab', 'publishing', JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

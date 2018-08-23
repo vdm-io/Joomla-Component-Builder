@@ -173,6 +173,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
+	<?php $this->tab_name = 'joomla_componentTab'; ?>
+	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
 	<?php if ($this->canDo->get('joomla_component.delete') || $this->canDo->get('joomla_component.edit.created_by') || $this->canDo->get('joomla_component.edit.state') || $this->canDo->get('joomla_component.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'publishing', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

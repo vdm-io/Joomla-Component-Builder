@@ -15,7 +15,8 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = array(
-	'system_name'
+	'system_name',
+	'context'
 );
 
 ?>

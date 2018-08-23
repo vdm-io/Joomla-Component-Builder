@@ -59,6 +59,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
+	<?php $this->tab_name = 'admin_fields_relationsTab'; ?>
+	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
 	<?php if ($this->canDo->get('admin_fields_relations.delete') || $this->canDo->get('admin_fields_relations.edit.created_by') || $this->canDo->get('admin_fields_relations.edit.state') || $this->canDo->get('admin_fields_relations.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_fields_relationsTab', 'publishing', JText::_('COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

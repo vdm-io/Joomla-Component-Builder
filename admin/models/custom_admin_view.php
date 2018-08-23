@@ -86,16 +86,16 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_view))
-			{
-				// base64 Decode php_view.
-				$item->php_view = base64_decode($item->php_view);
-			}
-
 			if (!empty($item->php_jview_display))
 			{
 				// base64 Decode php_jview_display.
 				$item->php_jview_display = base64_decode($item->php_jview_display);
+			}
+
+			if (!empty($item->php_view))
+			{
+				// base64 Decode php_view.
+				$item->php_view = base64_decode($item->php_view);
 			}
 
 			if (!empty($item->default))
@@ -975,6 +975,31 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 
 		// always reset the snippets
 		$data['snippet'] = 0;
+		// if system name is empty create from name
+		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		{
+			$data['system_name'] = $data['name'];
+		}
+		// if codename is empty create from name
+		if (empty($data['codename']) || !ComponentbuilderHelper::checkString($data['codename']))
+		{
+			$data['codename'] = ComponentbuilderHelper::safeString($data['name']);
+		}
+		else
+		{
+			// always make safe string
+			$data['codename'] = ComponentbuilderHelper::safeString($data['codename']);
+		}
+		// if context is empty create from codename
+		if (empty($data['context']) || !ComponentbuilderHelper::checkString($data['context']))
+		{
+			$data['context'] = $data['codename'];
+		}
+		else
+		{
+			// always make safe string
+			$data['context'] = ComponentbuilderHelper::safeString($data['context']);
+		}
 
 		// Set the custom_get items to data.
 		if (isset($data['custom_get']) && is_array($data['custom_get']))
@@ -1028,16 +1053,16 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$data['custom_button'] = '';
 		}
 
-		// Set the php_view string to base64 string.
-		if (isset($data['php_view']))
-		{
-			$data['php_view'] = base64_encode($data['php_view']);
-		}
-
 		// Set the php_jview_display string to base64 string.
 		if (isset($data['php_jview_display']))
 		{
 			$data['php_jview_display'] = base64_encode($data['php_jview_display']);
+		}
+
+		// Set the php_view string to base64 string.
+		if (isset($data['php_view']))
+		{
+			$data['php_view'] = base64_encode($data['php_view']);
 		}
 
 		// Set the default string to base64 string.

@@ -59,6 +59,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
+	<?php $this->tab_name = 'library_configTab'; ?>
+	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
 	<?php if ($this->canDo->get('library_config.delete') || $this->canDo->get('library_config.edit.created_by') || $this->canDo->get('library_config.edit.state') || $this->canDo->get('library_config.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'library_configTab', 'publishing', JText::_('COM_COMPONENTBUILDER_LIBRARY_CONFIG_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

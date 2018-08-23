@@ -58,6 +58,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
+	<?php $this->tab_name = 'language_translationTab'; ?>
+	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
 	<?php if ($this->canDo->get('language_translation.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('language_translation.edit.state') || $this->canDo->get('core.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'language_translationTab', 'publishing', JText::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

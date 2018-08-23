@@ -65,6 +65,10 @@ $componentParams = JComponentHelper::getParams('com_componentbuilder');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
+	<?php $this->tab_name = 'custom_codeTab'; ?>
+	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
 	<?php if ($this->canDo->get('custom_code.delete') || $this->canDo->get('custom_code.edit.created_by') || $this->canDo->get('custom_code.edit.state') || $this->canDo->get('custom_code.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'custom_codeTab', 'publishing', JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">

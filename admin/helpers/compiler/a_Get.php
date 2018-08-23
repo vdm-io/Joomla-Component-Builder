@@ -2097,6 +2097,16 @@ class Get
 		$view->code = $this->uniqueCode(ComponentbuilderHelper::safeString($view->codename));
 		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
 		$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');
+		// load context if not set
+		if (!isset($view->context) || !ComponentbuilderHelper::checkString($view->context))
+		{
+			$view->context = $view->code;
+		}
+		else
+		{
+			// always make sure context is a safe string
+			$view->context = ComponentbuilderHelper::safeString($view->context);
+		}
 		// load the library
 		if (!isset($this->libManager[$this->target]))
 		{
@@ -2168,10 +2178,10 @@ class Get
 			}
 		}
 		// set the main get data
-		$main_get = $this->setGetData(array($view->main_get), $view->code);
+		$main_get = $this->setGetData(array($view->main_get), $view->code, $view->context);
 		$view->main_get = $main_get[0];
 		// set the custom_get data
-		$view->custom_get = $this->setGetData(json_decode($view->custom_get, true), $view->code);
+		$view->custom_get = $this->setGetData(json_decode($view->custom_get, true), $view->code, $view->context);
 		// set array adding array of scripts
 		$addArray = array('php_view', 'php_jview', 'php_jview_display', 'php_document', 'javascript_file', 'js_document', 'css_document', 'css');
 		foreach ($addArray as $scripter)
@@ -2750,13 +2760,14 @@ class Get
 	/**
 	 * Set get Data
 	 * 
-	 * @param   array    $ids  The ids of the dynamic get
+	 * @param   array    $ids        The ids of the dynamic get
 	 * @param   string   $view_code  The view code name
+	 * @param   string   $context    The context for events
 	 *
 	 * @return  oject the get dynamicGet data
 	 * 
 	 */
-	public function setGetData($ids, $view_code)
+	public function setGetData($ids, $view_code, $context)
 	{
 		if (ComponentbuilderHelper::checkArray($ids))
 		{
@@ -2828,6 +2839,7 @@ class Get
 								$result->main_get[0]['selection'] = $this->setDataSelection($result->key, $view_code, $result->view_selection, $result->view_table_main, 'a', '', 'view');
 								$result->main_get[0]['as'] = 'a';
 								$result->main_get[0]['key'] = $result->key;
+								$result->main_get[0]['context'] = $context;
 								unset($result->view_selection);
 								break;
 							case 2:
@@ -2835,6 +2847,7 @@ class Get
 								$result->main_get[0]['selection'] = $this->setDataSelection($result->key, $view_code, $result->db_selection, $result->db_table_main, 'a', '', 'db');
 								$result->main_get[0]['as'] = 'a';
 								$result->main_get[0]['key'] = $result->key;
+								$result->main_get[0]['context'] = $context;
 								unset($result->db_selection);
 								break;
 							case 3:
@@ -2864,6 +2877,7 @@ class Get
 									$join_field = array_map('trim', explode('.', $option['join_field']));
 									$option['selection'] = $this->setDataSelection($result->key, $view_code, $option['selection'], $option['view_table'], $option['as'], $option['row_type'], 'view');
 									$option['key'] = $result->key;
+									$option['context'] = $context;
 									// load to the getters
 									if ($option['row_type'] == 1)
 									{
@@ -2910,6 +2924,7 @@ class Get
 									$join_field = array_map('trim', explode('.', $option1['join_field']));
 									$option1['selection'] = $this->setDataSelection($result->key, $view_code, $option1['selection'], $option1['db_table'], $option1['as'], $option1['row_type'], 'db');
 									$option1['key'] = $result->key;
+									$option1['context'] = $context;
 									// load to the getters
 									if ($option1['row_type'] == 1)
 									{

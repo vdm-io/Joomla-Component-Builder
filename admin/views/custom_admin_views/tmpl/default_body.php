@@ -76,7 +76,11 @@ $edit = "index.php?option=com_componentbuilder&view=custom_admin_views&task=cust
 			<div><?php echo JText::_('COM_COMPONENTBUILDER_NAME'); ?>: <b>
 			<?php echo $this->escape($item->name); ?></b><br />
 	<?php echo JText::_('COM_COMPONENTBUILDER_CODE'); ?>: <b>
-			<?php echo $this->escape($item->codename); ?></b>
+			<?php echo $this->escape($item->codename); ?></b><br />
+	<?php if (ComponentbuilderHelper::checkString($item->context)): ?>
+	<?php echo JText::_('COM_COMPONENTBUILDER_CONTEXT'); ?>: <b>
+			<?php echo $this->escape($item->context); ?></b>
+	<?php endif; ?>
 			</div>
 		</td>
 		<td class="hidden-phone">

@@ -103,11 +103,13 @@ class ComponentbuilderModelCompiler extends JModelList
 			{
 				// Always create a slug for sef URL's
 				$item->slug = (isset($item->alias) && isset($item->id)) ? $item->id.':'.$item->alias : $item->id;
+				// Check if item has params, or pass whole item.
+				$params = (isset($item->params) && ComponentbuilderHelper::checkJson($item->params)) ? json_decode($item->params) : $item;
 				// Make sure the content prepare plugins fire on copyright
 				$_copyright = new stdClass();
 				$_copyright->text =& $item->copyright; // value must be in text
 				// Since all values are now in text (Joomla Limitation), we also add the field name (copyright) to context
-				$this->_dispatcher->trigger("onContentPrepare", array('com_componentbuilder.compiler.copyright', &$_copyright, &$this->params, 0));
+				$this->_dispatcher->trigger("onContentPrepare", array('com_componentbuilder.compiler.copyright', &$_copyright, &$params, 0));
 				// Checking if copyright has uikit components that must be loaded.
 				$this->uikitComp = ComponentbuilderHelper::getUikitComp($item->copyright,$this->uikitComp);
 			}

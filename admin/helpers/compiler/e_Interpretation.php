@@ -1809,7 +1809,13 @@ class Interpretation extends Fields
 	{
 		$fieldPrepare = '';
 		$runplugins = false;
-		$context = 'com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $code;
+		// set component
+		$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
+		// set context 
+		$context = (isset($get['context'])) ? $get['context'] : $code;
+		$context = 'com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.' . $context;
+		// load parms builder only once
+		$params = false;
 		foreach ($checker as $field => $array)
 		{
 			// build load counter
@@ -1826,11 +1832,17 @@ class Interpretation extends Fields
 					$runplugins .= PHP_EOL . $tab . $this->_t(1) . "JPluginHelper::importPlugin('content');";
 					$runplugins .= PHP_EOL . $tab . $this->_t(1) . '$this->_dispatcher = JEventDispatcher::getInstance();';
 				}
+				if (!$params)
+				{
+					$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Check if item has params, or pass whole item.";
+					$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$params = (isset(" . $string . "->params) && " . $Component . "Helper::checkJson(" . $string . "->params)) ? json_decode(" . $string . "->params) : " . $string . ";";
+					$params = true;
+				}
 				$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Make sure the content prepare plugins fire on " . $field;
 				$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$_" . $field . " = new stdClass();";
 				$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$_" . $field . '->text =& ' . $string . '->' . $field . '; //' . $this->setLine(__LINE__) . ' value must be in text';
 				$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Since all values are now in text (Joomla Limitation), we also add the field name (" . $field . ") to context";
-				$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . '$this->_dispatcher->trigger("onContentPrepare", array(\'' . $context . '.' . $field . '\', &$_' . $field . ', &$this->params, 0));'; // we can improve the params later (TODO)
+				$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . '$this->_dispatcher->trigger("onContentPrepare", array(\'' . $context . '.' . $field . '\', &$_' . $field . ', &$params, 0));';
 			}
 		}
 		// load dispatcher
@@ -3206,6 +3218,8 @@ class Interpretation extends Fields
 				$method .= PHP_EOL . $this->_t(2) . "JPluginHelper::importPlugin('content');";
 				$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Setup Event Object.";
 				$method .= PHP_EOL . $this->_t(2) . "\$this->item->event = new stdClass;";
+				$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Check if item has params, or pass global params";
+				$method .= PHP_EOL . $this->_t(2) . "\$params = (isset(\$this->item->params) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkJson(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
 				// load the defaults
 				foreach ($view['settings']->main_get->plugin_events as $plugin_event)
 				{
@@ -3219,7 +3233,7 @@ class Interpretation extends Fields
 					else
 					{
 						$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " " . $plugin_event . " Event Trigger.";
-						$method .= PHP_EOL . $this->_t(2) . "\$results = \$dispatcher->trigger('" . $plugin_event . "', array('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . ".article', &\$this->item, &\$this->params, 0));";
+						$method .= PHP_EOL . $this->_t(2) . "\$results = \$dispatcher->trigger('" . $plugin_event . "', array('com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "." . $view['settings']->context . "', &\$this->item, &\$params, 0));";
 						$method .= PHP_EOL . $this->_t(2) . '$this->item->event->' . $plugin_event . ' = trim(implode("\n", $results));';
 					}
 				}
@@ -7519,13 +7533,10 @@ class Interpretation extends Fields
 				// set counter
 				$tabCounter++;
 			}
-			// add joomla field sets if needed
-			if (isset($view['joomla_fields']) && $view['joomla_fields'] == 1)
-			{
-				$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php \$this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>";
-				$body .= PHP_EOL . $this->_t(1) . "<?php \$this->tab_name = '" . $viewName_single . "Tab'; ?>";
-				$body .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('joomla.edit.params', \$this); ?>";
-			}
+			// add option to load forms loded in via plugins
+			$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php \$this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>";
+			$body .= PHP_EOL . $this->_t(1) . "<?php \$this->tab_name = '" . $viewName_single . "Tab'; ?>";
+			$body .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('joomla.edit.params', \$this); ?>";
 			// set default publishing tab lang
 			$tabLangName = $langView . '_PUBLISHING';
 			// add to lang array
@@ -7869,7 +7880,7 @@ class Interpretation extends Fields
 			// LAYOUTITEMSTABLE <<<DYNAMIC>>>
 			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh] = $head . $body;
 			// LAYOUTITEMSHEADER <<<DYNAMIC>>>
-			$headerscript .= '//' . $this->setLine(__LINE__) . ' set the edit URL';
+			$headerscript = '//' . $this->setLine(__LINE__) . ' set the edit URL';
 			$headerscript .= PHP_EOL . '$edit = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $list . '&task=' . $single . '.edit";';
 			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set a return value';
 			$headerscript .= PHP_EOL . '$return = ($id) ? "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $viewName_single . '&layout=edit&id=" . $id : "";';

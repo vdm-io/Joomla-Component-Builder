@@ -1003,10 +1003,20 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 		{
 			$data['codename'] = ComponentbuilderHelper::safeString($data['name']);
 		}
+		else
+		{
+			// always make safe string
+			$data['codename'] = ComponentbuilderHelper::safeString($data['codename']);
+		}
 		// if context is empty create from codename
 		if (empty($data['context']) || !ComponentbuilderHelper::checkString($data['context']))
 		{
 			$data['context'] = $data['codename'];
+		}
+		else
+		{
+			// always make safe string
+			$data['context'] = ComponentbuilderHelper::safeString($data['context']);
 		}
 
 		// Set the custom_get items to data.
