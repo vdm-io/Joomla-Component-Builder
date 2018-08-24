@@ -14,26 +14,13 @@ defined('_JEXEC') or die('Restricted access');
 
 $form = $displayData->getForm();
 
-$fields = $displayData->get('fields') ?: array(
-	'note_on_permissions',
-	'addpermissions',
-	'note_on_tabs',
-	'addtabs',
-	'note_custom_tabs_note',
-	'note_on_linked_views',
-	'addlinked_views'
+$fields = array(
+	'admin_view'
 );
 
 ?>
-<div class="form-vertical">
-<?php foreach($fields as $field): ?>
-    <div class="control-group">
-        <div class="control-label">
-            <?php echo $form->getLabel($field); ?>
-        </div>
-        <div class="controls">
-            <?php echo $form->getInput($field); ?>
-        </div>
-    </div>
-<?php endforeach; ?>
+<div class="form-inline form-inline-header">
+	<?php foreach($fields as $field){
+		echo $form->renderField($field);
+	} ?>
 </div>

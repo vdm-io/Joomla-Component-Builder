@@ -310,6 +310,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$this->setData('admin_fields', array_values($this->smartIDs['admin_view']), 'admin_view');
 			$this->setData('admin_fields_conditions', array_values($this->smartIDs['admin_view']), 'admin_view');
 			$this->setData('admin_fields_relations', array_values($this->smartIDs['admin_view']), 'admin_view');
+			$this->setData('admin_custom_tabs', array_values($this->smartIDs['admin_view']), 'admin_view');
 		}
 		// add validation rules
 		if (isset($this->smartIDs['validation_rule']) && ComponentbuilderHelper::checkArray($this->smartIDs['validation_rule']))
@@ -852,8 +853,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$tables = array(
 				'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
 				'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
-				'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'component_admin_views', 'component_site_views',
-				'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
+				'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
+				'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 				'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
 			);
 			// smart table loop

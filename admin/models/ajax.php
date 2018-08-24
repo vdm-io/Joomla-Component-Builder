@@ -251,6 +251,7 @@ class ComponentbuilderModelAjax extends JModelList
 		'admin_fields' => 'admins_fields',
 		'admin_fields_conditions' => 'admins_fields_conditions',
 		'admin_fields_relations' => 'admins_fields_relations',
+		'admin_custom_tabs' => 'admins_custom_tabs',
 		'validation_rule' => 'validation_rules',
 		'field' => 'fields',
 		'component_admin_views' => 'components_admin_views' ,

@@ -542,6 +542,13 @@ class Get
 	public $linkedAdminViews = array();
 
 	/**
+	 * The custom admin view tabs
+	 * 
+	 * @var     array
+	 */
+	public $customTabs = array();
+
+	/**
 	 * The Add Ajax Switch
 	 * 
 	 * @var    boolean
@@ -1455,13 +1462,15 @@ class Get
 					'b.id',
 					'c.addconditions',
 					'c.id',
-					'r.addrelations'
+					'r.addrelations',
+					't.tabs'
 					), array(
 					'addfields',
 					'addfields_id',
 					'addconditions',
 					'addconditions_id',
-					'addrelations'
+					'addrelations',
+					'customtabs'
 					)
 				)
 			);
@@ -1469,6 +1478,7 @@ class Get
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields', 'b') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('b.admin_view') . ')');
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields_conditions', 'c') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('c.admin_view') . ')');
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields_relations', 'r') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('r.admin_view') . ')');
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_custom_tabs', 't') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('t.admin_view') . ')');
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
 			// Reset the query using our newly populated query object.
@@ -1533,7 +1543,73 @@ class Get
 				$view->tables = array_values($view->addtables);
 			}
 			unset($view->addtables);
-			// add the tabs
+
+			// set custom tabs
+			$this->customTabs[$name_single] = null;
+			$view->customtabs = (isset($view->customtabs) && ComponentbuilderHelper::checkJson($view->customtabs)) ? json_decode($view->customtabs, true) : null;
+			if (ComponentbuilderHelper::checkArray($view->customtabs))
+			{
+				// setup custom tabs to global data sets
+				$this->customTabs[$name_single] = array_map( function ($tab) use($name_single) {
+					// set the view name
+					$tab['view'] = $name_single;
+					// load the dynamic data
+					$tab['html'] = $this->setDynamicValues($tab['html']);
+					// set the tab name
+					$tab['name'] = (isset($tab['name']) && ComponentbuilderHelper::checkString($tab['name'])) ? $tab['name'] : 'Tab';
+					// set lang
+					$tab['lang'] = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($tab['view'], 'U') . '_' . ComponentbuilderHelper::safeString($tab['name'], 'U');
+					$this->langContent['both'][$tab['lang']] = trim($tab['name']);
+					// set code name
+					$tab['code'] = ComponentbuilderHelper::safeString($tab['name']);
+					// check if the permissions for the tab should be added
+					$_tab = '';
+					if (isset($tab['permission']) && $tab['permission'] == 1)
+					{
+						$_tab = $this->_t(1);
+					}
+					// check if the php of the tab is set, if not load it now
+					if (strpos($tab['html'], 'bootstrap.addTab') === false && strpos($tab['html'], 'bootstrap.endTab') === false)
+					{
+						// add the tab
+						$tmp = PHP_EOL . $_tab . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $tab['view'] . "Tab', '" . $tab['code'] . "', JText::_('" . $tab['lang'] . "', true)); ?>";
+						$tmp .= PHP_EOL . $_tab . $this->_t(2) . '<div class="row-fluid form-horizontal-desktop">';
+						$tmp .= PHP_EOL . $_tab . $this->_t(3) . '<div class="span12">';
+						$tmp .= PHP_EOL . $_tab . $this->_t(4) . implode(PHP_EOL . $_tab . $this->_t(4), (array) explode(PHP_EOL, trim($tab['html'])));
+						$tmp .= PHP_EOL . $_tab . $this->_t(3) . '</div>';
+						$tmp .= PHP_EOL . $_tab . $this->_t(2) . '</div>';
+						$tmp .= PHP_EOL . $_tab . $this->_t(1) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+						// update html
+						$tab['html'] = $tmp;
+					}
+					else
+					{
+						$tab['html'] = PHP_EOL . $_tab. $this->_t(1) . implode(PHP_EOL . $_tab. $this->_t(1), (array) explode(PHP_EOL, trim($tab['html'])));
+					}
+					// add the permissions if needed
+					if (isset($tab['permission']) && $tab['permission'] == 1)
+					{
+						$tmp = PHP_EOL . $this->_t(1) . "<?php if (\$this->canDo->get('" . $tab['view'] . "." . $tab['code'] . ".viewtab')) : ?>";
+						$tmp .= $tab['html'];
+						$tmp .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
+						// update html
+						$tab['html'] = $tmp;
+						// set lang for permissions
+						$tab['lang_permission'] = $tab['lang'] . '_TAB_PERMISSION';
+						$tab['lang_permission_desc'] = $tab['lang'] . '_TAB_PERMISSION_DESC';
+						$tab['lang_permission_title'] = $this->placeholders[$this->hhh . 'Views' . $this->hhh] . ' View ' . $tab['name'] . ' Tab';
+						$this->langContent['both'][$tab['lang_permission']] = $tab['lang_permission_title'];
+						$this->langContent['both'][$tab['lang_permission_desc']] = 'Allow the users in this group to view ' . $tab['name'] . ' Tab of ' . $this->placeholders[$this->hhh . 'views' . $this->hhh];
+						// set the sort key
+						$tab['sortKey'] = ComponentbuilderHelper::safeString($tab['lang_permission_title']);
+					}
+					// return tab
+					return $tab;
+				}, array_values($view->customtabs));
+			}
+			unset($view->customtabs);
+
+			// add the local tabs
 			$view->addtabs = (isset($view->addtabs) && ComponentbuilderHelper::checkJson($view->addtabs)) ? json_decode($view->addtabs, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->addtabs))
 			{

@@ -35,7 +35,7 @@ class JFormFieldViewtabs extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		// get the input from url
+				// get the input from url
 		$jinput = JFactory::getApplication()->input;
 		// get the view name & id
 		$fieldsID = $jinput->getInt('id', 0);
@@ -43,9 +43,27 @@ class JFormFieldViewtabs extends JFormFieldList
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.addtabs'),array('id','addtabs')));
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_fields', 'b') . ' ON (' . $db->quoteName('a.id') . ' = ' . $db->quoteName('b.admin_view') . ')');
+		if ($fieldsID > 0)
+		{
+			$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_fields', 'b') . ' ON (' . $db->quoteName('a.id') . ' = ' . $db->quoteName('b.admin_view') . ')');
+			$query->where($db->quoteName('b.id') . '  = ' . (int) $fieldsID);
+		}
+		else
+		{
+			// get the refs if found
+			$ref = $jinput->get('ref', 0, 'WORD');
+			$refid = $jinput->getInt('refid', 0);
+			if ('admin_view' === $ref && $refid > 0)
+			{
+				$query->where($db->quoteName('a.id') . ' = ' . (int) $refid);
+			}
+			else
+			{
+				// kry maar niks
+				$query->where($db->quoteName('a.id') . ' = 0');
+			}
+		}
 		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->where($db->quoteName('b.id') . '  = ' . (int) $fieldsID);
 		$query->order('a.addtabs ASC');
 		$db->setQuery((string)$query);
 		$item = $db->loadObject();

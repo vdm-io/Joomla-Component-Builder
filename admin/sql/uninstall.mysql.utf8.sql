@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS `#__componentbuilder_help_document`;
 DROP TABLE IF EXISTS `#__componentbuilder_admin_fields`;
 DROP TABLE IF EXISTS `#__componentbuilder_admin_fields_conditions`;
 DROP TABLE IF EXISTS `#__componentbuilder_admin_fields_relations`;
+DROP TABLE IF EXISTS `#__componentbuilder_admin_custom_tabs`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_admin_views`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_site_views`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_custom_admin_views`;

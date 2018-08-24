@@ -15,13 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_on_permissions',
-	'addpermissions',
-	'note_on_tabs',
-	'addtabs',
-	'note_custom_tabs_note',
-	'note_on_linked_views',
-	'addlinked_views'
+	'tabs'
 );
 
 ?>

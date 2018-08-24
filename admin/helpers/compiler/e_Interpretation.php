@@ -7259,6 +7259,8 @@ class Interpretation extends Fields
 					}
 				}
 			}
+			// custom tab searching array
+			$searchTabs = array();
 			// start tab set
 			$bucket = array();
 			$leftside = '';
@@ -7270,12 +7272,16 @@ class Interpretation extends Fields
 			ksort($this->tabCounter[$viewName_single]);
 			foreach ($this->tabCounter[$viewName_single] as $tabNr => $tabName)
 			{
+				// check if we must load a custom tab
+				
 				$tabWidth = 12;
 				$lrCounter = 0;
 				// set tab lang
 				$tabLangName = $langView . '_' . ComponentbuilderHelper::safeString($tabName, 'U');
 				// set tab code name
 				$tabCodeName = ComponentbuilderHelper::safeString($tabName);
+				/// set the values to use in search latter
+				$searchTabs[$tabCodeName] = $tabNr;
 				// add to lang array
 				if (!isset($this->langContent[$this->lang][$tabLangName]))
 				{
@@ -7480,6 +7486,11 @@ class Interpretation extends Fields
 				{
 					$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.startTabSet', '" . $viewName_single . "Tab', array('active' => '" . $tabCodeName . "')); ?>";
 				}
+				// check if custom tab must be added
+				if (($_customTabHTML = $this->addCustomTabs($searchTabs[$tabCodeName], $viewName_single, 1)) !== false)
+				{
+					$body .= $_customTabHTML;
+				}
 				// if this is a linked view set permissions
 				$closeIT = false;
 				if (isset($linkedViewIdentifier) && ComponentbuilderHelper::checkArray($linkedViewIdentifier) && in_array($tabCodeName, $linkedViewIdentifier))
@@ -7530,10 +7541,15 @@ class Interpretation extends Fields
 				{
 					$body .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
 				}
+				// check if custom tab must be added
+				if (($_customTabHTML = $this->addCustomTabs($searchTabs[$tabCodeName], $viewName_single, 2)) !== false)
+				{
+					$body .= $_customTabHTML;
+				}
 				// set counter
 				$tabCounter++;
 			}
-			// add option to load forms loded in via plugins
+			// add option to load forms loded in via plugins (TODO) we may want to move these tab locations
 			$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php \$this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>";
 			$body .= PHP_EOL . $this->_t(1) . "<?php \$this->tab_name = '" . $viewName_single . "Tab'; ?>";
 			$body .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('joomla.edit.params', \$this); ?>";
@@ -7698,6 +7714,11 @@ class Interpretation extends Fields
 						$publishingPer[] = "\$this->canDo->get('" . $core_permission . "')";
 					}
 				}
+				// check if custom tab must be added
+				if (($_customTabHTML = $this->addCustomTabs(15, $viewName_single, 1)) !== false)
+				{
+					$body .= $_customTabHTML;
+				}
 				$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php if (" . implode(' || ', $publishingPer) . ") : ?>";
 				// set the default publishing tab
 				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeNameLeft . "', JText:" . ":_('" . $tabLangName . "', true)); ?>";
@@ -7717,6 +7738,11 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . $this->_t(2) . "</div>";
 				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
 				$body .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
+				// check if custom tab must be added
+				if (($_customTabHTML = $this->addCustomTabs(15, $viewName_single, 2)) !== false)
+				{
+					$body .= $_customTabHTML;
+				}
 			}
 			// make sure we dont load it to a view with the name component
 			if ($viewName_single != 'component')
@@ -7780,6 +7806,32 @@ class Interpretation extends Fields
 			return $header . $left . $body . $right . $footer;
 		}
 		return '';
+	}
+
+	protected function addCustomTabs($nr, $name_single, $target)
+	{
+		// check if this view is having custom tabs
+		if (isset($this->customTabs[$name_single]) && ComponentbuilderHelper::checkArray($this->customTabs[$name_single]))
+		{
+			$html = array();
+			foreach ($this->customTabs[$name_single] as $customTab)
+			{
+				if (ComponentbuilderHelper::checkArray($customTab) && isset($customTab['html']))
+				{
+					if ($customTab['tab'] == $nr && $customTab['position'] == $target
+						&& isset($customTab['html']) && ComponentbuilderHelper::checkString($customTab['html']))
+					{
+						$html[] = $customTab['html'];
+					}
+				}
+			}
+			// return if found
+			if (ComponentbuilderHelper::checkArray($html))
+			{
+				return PHP_EOL . implode(PHP_EOL, $html);
+			}
+		}
+		return false;
 	}
 
 	public function setFadeInEfect(&$view)
@@ -15201,6 +15253,17 @@ function vdm_dkim() {
 				// set view name
 				$nameView = ComponentbuilderHelper::safeString($view['settings']->name_single);
 				$nameViews = ComponentbuilderHelper::safeString($view['settings']->name_list);
+				// add custom tab permissions if found
+				if (isset($this->customTabs[$nameView]) && ComponentbuilderHelper::checkArray($this->customTabs[$nameView]))
+				{
+					foreach ($this->customTabs[$nameView] as $_customTab)
+					{
+						if (isset($_customTab['permission']) && $_customTab['permission'] == 1)
+						{
+							$this->componentGlobal[$_customTab['sortKey']] = $this->_t(2) . '<action name="' . $_customTab['view'] . '.' . $_customTab['code'] . '.viewtab" title="' . $_customTab['lang_permission'] . '" description="' . $_customTab['lang_permission_desc'] . '" />';
+						}
+					}
+				}
 				// add the custom permissions to use the buttons of this view
 				$this->addCustomButtonPermissions($view['settings'], $view['settings']->name_single, $nameView);
 				if ($nameView != 'component')

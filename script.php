@@ -1939,6 +1939,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Admin_custom_tabs alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_custom_tabs') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$admin_custom_tabs_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($admin_custom_tabs_found)
+		{
+			// Since there are load the needed  admin_custom_tabs type ids
+			$admin_custom_tabs_ids = $db->loadColumn();
+			// Remove Admin_custom_tabs from the content type table
+			$admin_custom_tabs_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_custom_tabs') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($admin_custom_tabs_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Admin_custom_tabs items
+			$admin_custom_tabs_done = $db->execute();
+			if ($admin_custom_tabs_done)
+			{
+				// If succesfully remove Admin_custom_tabs add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Admin_custom_tabs items from the contentitem tag map table
+			$admin_custom_tabs_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_custom_tabs') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($admin_custom_tabs_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Admin_custom_tabs items
+			$admin_custom_tabs_done = $db->execute();
+			if ($admin_custom_tabs_done)
+			{
+				// If succesfully remove Admin_custom_tabs add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Admin_custom_tabs items from the ucm content table
+			$admin_custom_tabs_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.admin_custom_tabs') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($admin_custom_tabs_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Admin_custom_tabs items
+			$admin_custom_tabs_done = $db->execute();
+			if ($admin_custom_tabs_done)
+			{
+				// If succesfully remove Admin_custom_tabs add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Admin_custom_tabs items are cleared from DB
+			foreach ($admin_custom_tabs_ids as $admin_custom_tabs_id)
+			{
+				// Remove Admin_custom_tabs items from the ucm base table
+				$admin_custom_tabs_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $admin_custom_tabs_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($admin_custom_tabs_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Admin_custom_tabs items
+				$db->execute();
+
+				// Remove Admin_custom_tabs items from the ucm history table
+				$admin_custom_tabs_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $admin_custom_tabs_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($admin_custom_tabs_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Admin_custom_tabs items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Component_admin_views alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_admin_views') );
 		$db->setQuery($query);
@@ -3378,9 +3464,9 @@ class com_componentbuilderInstallerScript
 			$admin_view->type_title = 'Componentbuilder Admin_view';
 			$admin_view->type_alias = 'com_componentbuilder.admin_view';
 			$admin_view->table = '{"special": {"dbtable": "#__componentbuilder_admin_view","key": "id","type": "Admin_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "null","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_getitems","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_single":"name_single","short_description":"short_description","add_php_batchmove":"add_php_batchmove","add_php_allowedit":"add_php_allowedit","add_php_postsavehook":"add_php_postsavehook","add_php_before_save":"add_php_before_save","add_php_getlistquery":"add_php_getlistquery","add_php_getitems":"add_php_getitems","icon":"icon","add_sql":"add_sql","add_fadein":"add_fadein","description":"description","icon_category":"icon_category","icon_add":"icon_add","add_php_after_publish":"add_php_after_publish","html_import_view":"html_import_view","add_php_after_delete":"add_php_after_delete","type":"type","not_required":"not_required","php_import_save":"php_import_save","add_php_getitems_after_all":"add_php_getitems_after_all","add_php_getform":"add_php_getform","add_php_save":"add_php_save","add_php_allowadd":"add_php_allowadd","add_php_batchcopy":"add_php_batchcopy","add_php_before_publish":"add_php_before_publish","add_php_before_delete":"add_php_before_delete","alias_builder_type":"alias_builder_type","add_php_document":"add_php_document","add_custom_import":"add_custom_import","alias_builder":"alias_builder","php_import_headers":"php_import_headers","name_list":"name_list","php_getitems":"php_getitems","add_css_view":"add_css_view","php_getitems_after_all":"php_getitems_after_all","css_view":"css_view","php_getlistquery":"php_getlistquery","add_css_views":"add_css_views","php_getform":"php_getform","css_views":"css_views","php_before_save":"php_before_save","add_javascript_view_file":"add_javascript_view_file","php_save":"php_save","javascript_view_file":"javascript_view_file","php_postsavehook":"php_postsavehook","add_javascript_view_footer":"add_javascript_view_footer","php_allowadd":"php_allowadd","javascript_view_footer":"javascript_view_footer","php_allowedit":"php_allowedit","add_javascript_views_file":"add_javascript_views_file","php_batchcopy":"php_batchcopy","javascript_views_file":"javascript_views_file","php_batchmove":"php_batchmove","add_javascript_views_footer":"add_javascript_views_footer","php_before_publish":"php_before_publish","javascript_views_footer":"javascript_views_footer","php_after_publish":"php_after_publish","add_custom_button":"add_custom_button","php_before_delete":"php_before_delete","php_after_delete":"php_after_delete","php_controller":"php_controller","php_document":"php_document","php_model":"php_model","source":"source","php_controller_list":"php_controller_list","sql":"sql","php_model_list":"php_model_list","add_php_ajax":"add_php_ajax","php_import_display":"php_import_display","php_ajaxmethod":"php_ajaxmethod","php_import":"php_import","php_import_setdata":"php_import_setdata","add_php_getitem":"add_php_getitem","php_import_ext":"php_import_ext","php_getitem":"php_getitem"}}';
+			$admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "null","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_getitem","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_single":"name_single","short_description":"short_description","add_php_batchcopy":"add_php_batchcopy","add_php_allowadd":"add_php_allowadd","add_php_save":"add_php_save","add_php_getform":"add_php_getform","add_php_getitems_after_all":"add_php_getitems_after_all","icon":"icon","add_php_document":"add_php_document","add_fadein":"add_fadein","description":"description","icon_category":"icon_category","icon_add":"icon_add","add_php_before_publish":"add_php_before_publish","add_custom_import":"add_custom_import","add_php_before_delete":"add_php_before_delete","name_list":"name_list","type":"type","php_import_headers":"php_import_headers","not_required":"not_required","add_php_getitems":"add_php_getitems","add_php_getlistquery":"add_php_getlistquery","add_php_before_save":"add_php_before_save","add_php_postsavehook":"add_php_postsavehook","add_php_allowedit":"add_php_allowedit","add_php_batchmove":"add_php_batchmove","add_php_after_publish":"add_php_after_publish","add_php_after_delete":"add_php_after_delete","add_sql":"add_sql","alias_builder_type":"alias_builder_type","html_import_view":"html_import_view","php_import_save":"php_import_save","alias_builder":"alias_builder","php_getitem":"php_getitem","php_getitems":"php_getitems","php_getitems_after_all":"php_getitems_after_all","add_css_view":"add_css_view","php_getlistquery":"php_getlistquery","css_view":"css_view","php_getform":"php_getform","add_css_views":"add_css_views","php_before_save":"php_before_save","css_views":"css_views","php_save":"php_save","add_javascript_view_file":"add_javascript_view_file","php_postsavehook":"php_postsavehook","javascript_view_file":"javascript_view_file","php_allowadd":"php_allowadd","add_javascript_view_footer":"add_javascript_view_footer","php_allowedit":"php_allowedit","javascript_view_footer":"javascript_view_footer","php_batchcopy":"php_batchcopy","add_javascript_views_file":"add_javascript_views_file","php_batchmove":"php_batchmove","javascript_views_file":"javascript_views_file","php_before_publish":"php_before_publish","add_javascript_views_footer":"add_javascript_views_footer","php_after_publish":"php_after_publish","javascript_views_footer":"javascript_views_footer","php_before_delete":"php_before_delete","add_custom_button":"add_custom_button","php_after_delete":"php_after_delete","php_document":"php_document","php_controller":"php_controller","source":"source","php_model":"php_model","sql":"sql","php_controller_list":"php_controller_list","php_model_list":"php_model_list","php_import_display":"php_import_display","add_php_ajax":"add_php_ajax","php_import":"php_import","php_ajaxmethod":"php_ajaxmethod","php_import_setdata":"php_import_setdata","php_import_ext":"php_import_ext","add_php_getitem":"add_php_getitem"}}';
 			$admin_view->router = 'ComponentbuilderHelperRoute::getAdmin_viewRoute';
-			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_php_batchmove","add_php_allowedit","add_php_postsavehook","add_php_before_save","add_php_getlistquery","add_php_getitems","add_sql","add_fadein","add_php_after_publish","add_php_after_delete","type","add_php_getitems_after_all","add_php_getform","add_php_save","add_php_allowadd","add_php_batchcopy","add_php_before_publish","add_php_before_delete","add_php_document","add_custom_import","add_css_view","add_css_views","add_javascript_view_file","add_javascript_view_footer","add_javascript_views_file","add_javascript_views_footer","add_custom_button","source","add_php_ajax","add_php_getitem"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}';
+			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_php_batchcopy","add_php_allowadd","add_php_save","add_php_getform","add_php_getitems_after_all","add_php_document","add_fadein","add_php_before_publish","add_custom_import","add_php_before_delete","type","add_php_getitems","add_php_getlistquery","add_php_before_save","add_php_postsavehook","add_php_allowedit","add_php_batchmove","add_php_after_publish","add_php_after_delete","add_sql","add_css_view","add_css_views","add_javascript_view_file","add_javascript_view_footer","add_javascript_views_file","add_javascript_views_footer","add_custom_button","source","add_php_ajax","add_php_getitem"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$admin_view_Inserted = $db->insertObject('#__content_types', $admin_view);
@@ -3625,6 +3711,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$admin_fields_relations_Inserted = $db->insertObject('#__content_types', $admin_fields_relations);
 
+			// Create the admin_custom_tabs content type object.
+			$admin_custom_tabs = new stdClass();
+			$admin_custom_tabs->type_title = 'Componentbuilder Admin_custom_tabs';
+			$admin_custom_tabs->type_alias = 'com_componentbuilder.admin_custom_tabs';
+			$admin_custom_tabs->table = '{"special": {"dbtable": "#__componentbuilder_admin_custom_tabs","key": "id","type": "Admin_custom_tabs","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$admin_custom_tabs->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
+			$admin_custom_tabs->router = 'ComponentbuilderHelperRoute::getAdmin_custom_tabsRoute';
+			$admin_custom_tabs->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_custom_tabs.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$admin_custom_tabs_Inserted = $db->insertObject('#__content_types', $admin_custom_tabs);
+
 			// Create the component_admin_views content type object.
 			$component_admin_views = new stdClass();
 			$component_admin_views->type_title = 'Componentbuilder Component_admin_views';
@@ -3829,9 +3927,9 @@ class com_componentbuilderInstallerScript
 			$admin_view->type_title = 'Componentbuilder Admin_view';
 			$admin_view->type_alias = 'com_componentbuilder.admin_view';
 			$admin_view->table = '{"special": {"dbtable": "#__componentbuilder_admin_view","key": "id","type": "Admin_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "null","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_getitems","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_single":"name_single","short_description":"short_description","add_php_batchmove":"add_php_batchmove","add_php_allowedit":"add_php_allowedit","add_php_postsavehook":"add_php_postsavehook","add_php_before_save":"add_php_before_save","add_php_getlistquery":"add_php_getlistquery","add_php_getitems":"add_php_getitems","icon":"icon","add_sql":"add_sql","add_fadein":"add_fadein","description":"description","icon_category":"icon_category","icon_add":"icon_add","add_php_after_publish":"add_php_after_publish","html_import_view":"html_import_view","add_php_after_delete":"add_php_after_delete","type":"type","not_required":"not_required","php_import_save":"php_import_save","add_php_getitems_after_all":"add_php_getitems_after_all","add_php_getform":"add_php_getform","add_php_save":"add_php_save","add_php_allowadd":"add_php_allowadd","add_php_batchcopy":"add_php_batchcopy","add_php_before_publish":"add_php_before_publish","add_php_before_delete":"add_php_before_delete","alias_builder_type":"alias_builder_type","add_php_document":"add_php_document","add_custom_import":"add_custom_import","alias_builder":"alias_builder","php_import_headers":"php_import_headers","name_list":"name_list","php_getitems":"php_getitems","add_css_view":"add_css_view","php_getitems_after_all":"php_getitems_after_all","css_view":"css_view","php_getlistquery":"php_getlistquery","add_css_views":"add_css_views","php_getform":"php_getform","css_views":"css_views","php_before_save":"php_before_save","add_javascript_view_file":"add_javascript_view_file","php_save":"php_save","javascript_view_file":"javascript_view_file","php_postsavehook":"php_postsavehook","add_javascript_view_footer":"add_javascript_view_footer","php_allowadd":"php_allowadd","javascript_view_footer":"javascript_view_footer","php_allowedit":"php_allowedit","add_javascript_views_file":"add_javascript_views_file","php_batchcopy":"php_batchcopy","javascript_views_file":"javascript_views_file","php_batchmove":"php_batchmove","add_javascript_views_footer":"add_javascript_views_footer","php_before_publish":"php_before_publish","javascript_views_footer":"javascript_views_footer","php_after_publish":"php_after_publish","add_custom_button":"add_custom_button","php_before_delete":"php_before_delete","php_after_delete":"php_after_delete","php_controller":"php_controller","php_document":"php_document","php_model":"php_model","source":"source","php_controller_list":"php_controller_list","sql":"sql","php_model_list":"php_model_list","add_php_ajax":"add_php_ajax","php_import_display":"php_import_display","php_ajaxmethod":"php_ajaxmethod","php_import":"php_import","php_import_setdata":"php_import_setdata","add_php_getitem":"add_php_getitem","php_import_ext":"php_import_ext","php_getitem":"php_getitem"}}';
+			$admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "null","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_getitem","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_single":"name_single","short_description":"short_description","add_php_batchcopy":"add_php_batchcopy","add_php_allowadd":"add_php_allowadd","add_php_save":"add_php_save","add_php_getform":"add_php_getform","add_php_getitems_after_all":"add_php_getitems_after_all","icon":"icon","add_php_document":"add_php_document","add_fadein":"add_fadein","description":"description","icon_category":"icon_category","icon_add":"icon_add","add_php_before_publish":"add_php_before_publish","add_custom_import":"add_custom_import","add_php_before_delete":"add_php_before_delete","name_list":"name_list","type":"type","php_import_headers":"php_import_headers","not_required":"not_required","add_php_getitems":"add_php_getitems","add_php_getlistquery":"add_php_getlistquery","add_php_before_save":"add_php_before_save","add_php_postsavehook":"add_php_postsavehook","add_php_allowedit":"add_php_allowedit","add_php_batchmove":"add_php_batchmove","add_php_after_publish":"add_php_after_publish","add_php_after_delete":"add_php_after_delete","add_sql":"add_sql","alias_builder_type":"alias_builder_type","html_import_view":"html_import_view","php_import_save":"php_import_save","alias_builder":"alias_builder","php_getitem":"php_getitem","php_getitems":"php_getitems","php_getitems_after_all":"php_getitems_after_all","add_css_view":"add_css_view","php_getlistquery":"php_getlistquery","css_view":"css_view","php_getform":"php_getform","add_css_views":"add_css_views","php_before_save":"php_before_save","css_views":"css_views","php_save":"php_save","add_javascript_view_file":"add_javascript_view_file","php_postsavehook":"php_postsavehook","javascript_view_file":"javascript_view_file","php_allowadd":"php_allowadd","add_javascript_view_footer":"add_javascript_view_footer","php_allowedit":"php_allowedit","javascript_view_footer":"javascript_view_footer","php_batchcopy":"php_batchcopy","add_javascript_views_file":"add_javascript_views_file","php_batchmove":"php_batchmove","javascript_views_file":"javascript_views_file","php_before_publish":"php_before_publish","add_javascript_views_footer":"add_javascript_views_footer","php_after_publish":"php_after_publish","javascript_views_footer":"javascript_views_footer","php_before_delete":"php_before_delete","add_custom_button":"add_custom_button","php_after_delete":"php_after_delete","php_document":"php_document","php_controller":"php_controller","source":"source","php_model":"php_model","sql":"sql","php_controller_list":"php_controller_list","php_model_list":"php_model_list","php_import_display":"php_import_display","add_php_ajax":"add_php_ajax","php_import":"php_import","php_ajaxmethod":"php_ajaxmethod","php_import_setdata":"php_import_setdata","php_import_ext":"php_import_ext","add_php_getitem":"add_php_getitem"}}';
 			$admin_view->router = 'ComponentbuilderHelperRoute::getAdmin_viewRoute';
-			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_php_batchmove","add_php_allowedit","add_php_postsavehook","add_php_before_save","add_php_getlistquery","add_php_getitems","add_sql","add_fadein","add_php_after_publish","add_php_after_delete","type","add_php_getitems_after_all","add_php_getform","add_php_save","add_php_allowadd","add_php_batchcopy","add_php_before_publish","add_php_before_delete","add_php_document","add_custom_import","add_css_view","add_css_views","add_javascript_view_file","add_javascript_view_footer","add_javascript_views_file","add_javascript_views_footer","add_custom_button","source","add_php_ajax","add_php_getitem"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}';
+			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_php_batchcopy","add_php_allowadd","add_php_save","add_php_getform","add_php_getitems_after_all","add_php_document","add_fadein","add_php_before_publish","add_custom_import","add_php_before_delete","type","add_php_getitems","add_php_getlistquery","add_php_before_save","add_php_postsavehook","add_php_allowedit","add_php_batchmove","add_php_after_publish","add_php_after_delete","add_sql","add_css_view","add_css_views","add_javascript_view_file","add_javascript_view_footer","add_javascript_views_file","add_javascript_views_footer","add_custom_button","source","add_php_ajax","add_php_getitem"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if admin_view type is already in content_type DB.
 			$admin_view_id = null;
@@ -4433,6 +4531,35 @@ class com_componentbuilderInstallerScript
 				$admin_fields_relations_Inserted = $db->insertObject('#__content_types', $admin_fields_relations);
 			}
 
+			// Create the admin_custom_tabs content type object.
+			$admin_custom_tabs = new stdClass();
+			$admin_custom_tabs->type_title = 'Componentbuilder Admin_custom_tabs';
+			$admin_custom_tabs->type_alias = 'com_componentbuilder.admin_custom_tabs';
+			$admin_custom_tabs->table = '{"special": {"dbtable": "#__componentbuilder_admin_custom_tabs","key": "id","type": "Admin_custom_tabs","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$admin_custom_tabs->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
+			$admin_custom_tabs->router = 'ComponentbuilderHelperRoute::getAdmin_custom_tabsRoute';
+			$admin_custom_tabs->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_custom_tabs.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if admin_custom_tabs type is already in content_type DB.
+			$admin_custom_tabs_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($admin_custom_tabs->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$admin_custom_tabs->type_id = $db->loadResult();
+				$admin_custom_tabs_Updated = $db->updateObject('#__content_types', $admin_custom_tabs, 'type_id');
+			}
+			else
+			{
+				$admin_custom_tabs_Inserted = $db->insertObject('#__content_types', $admin_custom_tabs);
+			}
+
 			// Create the component_admin_views content type object.
 			$component_admin_views = new stdClass();
 			$component_admin_views->type_title = 'Componentbuilder Component_admin_views';
@@ -4989,7 +5116,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.8.9 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.8.10 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 

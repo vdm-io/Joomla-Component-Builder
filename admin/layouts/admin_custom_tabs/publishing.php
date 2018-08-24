@@ -12,28 +12,32 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+$app = JFactory::getApplication();
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_on_permissions',
-	'addpermissions',
-	'note_on_tabs',
-	'addtabs',
-	'note_custom_tabs_note',
-	'note_on_linked_views',
-	'addlinked_views'
+	'created',
+	'created_by',
+	'modified',
+	'modified_by'
 );
 
-?>
-<div class="form-vertical">
-<?php foreach($fields as $field): ?>
-    <div class="control-group">
-        <div class="control-label">
-            <?php echo $form->getLabel($field); ?>
-        </div>
-        <div class="controls">
-            <?php echo $form->getInput($field); ?>
-        </div>
-    </div>
-<?php endforeach; ?>
-</div>
+$hiddenFields = $displayData->get('hidden_fields') ?: array();
+
+foreach ($fields as $field)
+{
+	$field = is_array($field) ? $field : array($field);
+	foreach ($field as $f)
+	{
+		if ($form->getField($f))
+		{
+			if (in_array($f, $hiddenFields))
+			{
+				$form->setFieldAttribute($f, 'type', 'hidden');
+			}
+
+			echo $form->renderField($f);
+			break;
+		}
+	}
+}

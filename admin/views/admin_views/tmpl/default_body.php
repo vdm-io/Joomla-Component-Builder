@@ -96,7 +96,12 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 							'view' => 'admin_fields_conditions',
 							'views' => 'admins_fields_conditions',
 							'title' => JText::_('COM_COMPONENTBUILDER_THE_ADMIN_FIELDS_CONDITIONS'),
-							'icon' => 'shuffle')
+							'icon' => 'shuffle'),
+						array(
+							'view' => 'admin_custom_tabs',
+							'views' => 'admins_custom_tabs',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_ADMIN_CUSTOM_TABS'),
+							'icon' => 'folder-plus')
 						);
 				}
 			?>

@@ -1273,6 +1273,8 @@ jQuery(document).ready(function()
 	addButton('field','create_edit_buttons'); // <-- third
 	// set button
 	addButtonID('admin_fields_relations','create_edit_buttons', 1); // <-- forth
+	// set button
+	addButtonID('admin_custom_tabs','addtabs-lbl', 1); // <-- fifth
 });
 
 function checkAliasField() {
