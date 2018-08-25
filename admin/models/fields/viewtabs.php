@@ -45,13 +45,19 @@ class JFormFieldViewtabs extends JFormFieldList
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
 		if ($fieldsID > 0)
 		{
-			$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_fields', 'b') . ' ON (' . $db->quoteName('a.id') . ' = ' . $db->quoteName('b.admin_view') . ')');
+			$viewName = $jinput->get('view', null, 'WORD');
+			// only allow for fields and custom tabs
+			if ('admin_fields' !== $viewName && 'admin_custom_tabs' !== $viewName)
+			{
+				return false;
+			}
+			$query->join('LEFT', $db->quoteName('#__componentbuilder_' . $viewName, 'b') . ' ON (' . $db->quoteName('a.id') . ' = ' . $db->quoteName('b.admin_view') . ')');
 			$query->where($db->quoteName('b.id') . '  = ' . (int) $fieldsID);
 		}
 		else
 		{
 			// get the refs if found
-			$ref = $jinput->get('ref', 0, 'WORD');
+			$ref = $jinput->get('ref', null, 'WORD');
 			$refid = $jinput->getInt('refid', 0);
 			if ('admin_view' === $ref && $refid > 0)
 			{
@@ -68,7 +74,7 @@ class JFormFieldViewtabs extends JFormFieldList
 		$db->setQuery((string)$query);
 		$item = $db->loadObject();
 		$options = array();
-		if (isset($item->addtabs) && strlen($item->addtabs) > 5)
+		if (isset($item->addtabs) && ComponentbuilderHelper::checkJson($item->addtabs))
 		{
 			$items = json_decode($item->addtabs, true);
 			$nr = 1;
