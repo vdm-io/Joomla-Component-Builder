@@ -2509,6 +2509,58 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	 * bc math wrapper (very basic not for accounting)
+	 *
+	 * @param   string   $type    The type bc math
+	 * @param   int      $val1    The first value
+	 * @param   int      $val2    The second value
+	 * @param   int      $scale   The scale value
+	 *
+	 * @return int
+	 *
+	 */
+	public static function bcmath($type, $val1, $val2, $scale = 0)
+	{
+		// build function name
+		$function = 'bc' . $type;
+		// use the bcmath function of available
+		if (function_exists($function))
+		{
+			return $function($val1, $val2, $scale);
+		}
+		// if function does not exist we use +-*/ operators (fallback - not ideal)
+		switch ($type)
+		{
+			// Multiply two numbers
+			case 'mul':
+				return (string) round($val1 * $val2, $scale);
+				break;
+			// Divide of two numbers
+			case 'div':
+				return (string) round($val1 / $val2, $scale);
+				break;
+			// Adding two numbers
+			case 'add':
+				return (string) round($val1 + $val2, $scale);
+				break;
+			// Subtract one number from the other
+			case 'sub':
+				return (string) round($val1 - $val2, $scale);
+				break;
+			// Raise an arbitrary precision number to another
+			case 'pow':
+				return (string) round(pow($val1, $val2), $scale);
+				break;
+			// Compare two arbitrary precision numbers
+			case 'comp':
+				return (round($val1,2) == round($val2,2));
+				break;
+		}
+		return false;
+	}
+
+
+	/**
 	* 	the locker
 	*
 	*  	@var array 

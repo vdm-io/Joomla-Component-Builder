@@ -1122,8 +1122,8 @@ class Infusion extends Interpretation
 					if ($this->langTag !== $tag)
 					{
 						$langStringNr = count($languageStrings);
-						$langStringSum = $this->bcmath('mul', $langStringNr, 100);
-						$percentage = $this->bcmath('div', $langStringSum, $mainLangLoader[$area]);
+						$langStringSum = ComponentbuilderHelper::bcmath('mul', $langStringNr, 100);
+						$percentage = ComponentbuilderHelper::bcmath('div', $langStringSum, $mainLangLoader[$area]);
 						$stringNAme = ($langStringNr == 1) ? '(string ' . $tag . ' translated)' : '(strings ' . $tag . ' translated)';
 						// force load if debug lines are added
 						if (!$this->debugLinenr)
