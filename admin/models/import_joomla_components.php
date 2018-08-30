@@ -749,6 +749,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	{
 		if (isset($this->data[$table]) && ComponentbuilderHelper::checkArray($this->data[$table]))
 		{
+			// add pre import event
+			$this->preImportEvent($table);
 			// get global action permissions
 			$canDo = ComponentbuilderHelper::getActions($table);
 			$canEdit = $canDo->get('core.edit');
@@ -834,6 +836,38 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 		}
 		return true;
+	}
+
+	/**
+	* Check if this table needs some house cleaning before we import the data
+	*
+	* @return  void
+	*
+	**/
+	protected function preImportEvent($table)
+	{
+		// if this is custom code table
+		// remove all custom code linked to these components
+		// since some code may have been removed and changed
+		// best unpublish all and let the import publish those still active
+		if ('custom_code' === $table && isset($this->newID['joomla_component']) && ComponentbuilderHelper::checkArray($this->newID['joomla_component']))
+		{
+			$query = $this->_db->getQuery(true);
+			// Field to update.
+			$fields = array(
+			    $this->_db->quoteName('published') . ' = 0'
+			);
+
+			// Conditions for which records should be updated.
+			$conditions = array(
+			    $this->_db->quoteName('component') . ' IN (' . implode(', ', array_values($this->newID['joomla_component'])) . ')'
+			);
+
+			$query->update($this->_db->quoteName('#__componentbuilder_custom_code'))->set($fields)->where($conditions);
+
+			$this->_db->setQuery($query);
+			$this->_db->execute();
+		}
 	}
 
 	/**
@@ -2706,28 +2740,38 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'custom_code':
 					// search for custom code
 					$getter = array('comment_type', 'target');
-					// add some more advanced search
-					if (isset($item->path) && ComponentbuilderHelper::checkString($item->path))
+					$this->specialValue = array();
+					// search for Hash (automation)
+					if (isset($item->target) && $item->target == 1)
 					{
 						$getter[] = 'path';
+						$getter[] = 'hashtarget';
+						$getter[] = 'component';
+						// Yet if diverged it makes sense that the ID is updated.
+						if ($diverged)
+						{
+							// set a special value
+							$this->specialValue['component'] = (int) $item->component;
+						}
+						elseif (isset($this->newID['joomla_component'][(int) $item->component]))
+						{
+							// set a special value
+							$this->specialValue['component'] = $this->newID['joomla_component'][(int) $item->component];
+						}
+						// (TODO) I have seen this happen, seems dangerous! 
+						else
+						{
+							return false;
+						}
 					}
-					// add function name search
-					if (isset($item->function_name) && ComponentbuilderHelper::checkString($item->function_name))
+					// search for JCB (manual)
+					elseif (isset($item->target) && $item->target == 2)
 					{
 						$getter[] = 'function_name';
-						// remove path
-						if (($key = array_search('path', $getter)) !== false) {
-							unset($getter[$key]);
-						}
 					}
-					// add hash target search
-					elseif (isset($item->hashtarget) && ComponentbuilderHelper::checkString($item->hashtarget))
+					else
 					{
-						$getter[] = 'hashtarget';
-						// remove function name
-						if (($key = array_search('function_name', $getter)) !== false) {
-							unset($getter[$key]);
-						}
+						return false;
 					}
 					break;
 				case 'dynamic_get':

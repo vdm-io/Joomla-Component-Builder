@@ -119,7 +119,6 @@ class ComponentbuilderModelCompiler extends JModelList
 		return $items;
 	}
 
-
 	/**
 	 * Get the uikit needed components
 	 *

@@ -594,37 +594,10 @@ class ComponentbuilderModelAjax extends JModelList
 				// set the number of rows
 				$this->rowNumber = count($rows);
 				// return the table
-				return $this->setSubformTable($head, $rows, $idName);
+				return ComponentbuilderHelper::setSubformTable($head, $rows, $idName);
 			}
 		}
 		return false;
-	}
-
-	protected function setSubformTable($head, $rows, $idName)
-	{
-		$table[] = "<div class=\"row-fluid\" id=\"vdm_table_display_".$idName."\">";
-		$table[] = "\t<div class=\"subform-repeatable-wrapper subform-table-layout subform-table-sublayout-section-byfieldsets\">";
-		$table[] = "\t\t<div class=\"subform-repeatable\">";
-		$table[] = "\t\t\t<table class=\"adminlist table table-striped table-bordered\">";
-		$table[] = "\t\t\t\t<thead>";
-		$table[] = "\t\t\t\t\t<tr>";
-		$table[] = "\t\t\t\t\t\t<th>" .  implode("</th><th>", $head) . "</th>";
-		$table[] = "\t\t\t\t\t</tr>";
-		$table[] = "\t\t\t\t</thead>";
-		$table[] = "\t\t\t\t<tbody>";
-		foreach ($rows as $row)
-		{
-			$table[] = "\t\t\t\t\t<tr class=\"subform-repeatable-group\">";
-			$table[] = "\t\t\t\t\t\t" . $row;
-			$table[] = "\t\t\t\t\t</tr>";
-		}
-		$table[] = "\t\t\t\t</tbody>";
-		$table[] = "\t\t\t</table>";
-		$table[] = "\t\t</div>";
-		$table[] = "\t</div>";
-		$table[] = "</div>";
-		// return the table
-		return implode("\n", $table);
 	}
 
 	protected function setSubformValue($header, $value)

@@ -141,7 +141,6 @@ class ComponentbuilderModelApi extends JModelItem
 		return $this->_item[$pk];
 	} 
 
-
 	/**
 	 * Get the uikit needed components
 	 *

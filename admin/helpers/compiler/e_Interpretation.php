@@ -1608,20 +1608,22 @@ class Interpretation extends Fields
 					}
 
 					// set the method defaults
-					$default = $this->setCustomViewMethodDefaults($the_get, $code);
-					if (isset($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]) && ComponentbuilderHelper::checkString($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]) && !in_array($check, $mainAsArray))
+					if (($default = $this->setCustomViewMethodDefaults($the_get, $code)) !== false)
 					{
-						// load to other query
-						if (!isset($this->otherQuery[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']]))
+						if (isset($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]) && ComponentbuilderHelper::checkString($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]) && !in_array($check, $mainAsArray))
 						{
-							$this->otherQuery[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']] = '';
+							// load to other query
+							if (!isset($this->otherQuery[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']]))
+							{
+								$this->otherQuery[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']] = '';
+							}
+							$this->otherQuery[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']] .= $getItem;
 						}
-						$this->otherQuery[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']] .= $getItem;
-					}
-					else
-					{
-						$mainAsArray[] = $default['as'];
-						$query .= $getItem;
+						else
+						{
+							$mainAsArray[] = $default['as'];
+							$query .= $getItem;
+						}
 					}
 				}
 			}
@@ -1886,24 +1888,26 @@ class Interpretation extends Fields
 			foreach ($gets as $get)
 			{
 				// set the value name $default
-				$default = $this->setCustomViewMethodDefaults($get, $code);
-				if ($this->checkJoint($default, $get, $asBucket))
+				if (($default = $this->setCustomViewMethodDefaults($get, $code)) !== false)
 				{
-					// build custom join string
-					$otherJoin = PHP_EOL . $this->_t(1) . $this->hhh . "TAB" . $this->hhh . $this->_t(1) . "//" . $this->setLine(__LINE__) . " set " . $default['valueName'] . " to the " . $this->hhh . "STRING" . $this->hhh . " object.";
-					$otherJoin .= PHP_EOL . $this->_t(1) . $this->hhh . "TAB" . $this->hhh . $this->_t(1) . $this->hhh . "STRING" . $this->hhh . "->" . $default['valueName'] . " = \$this->get" . $default['methodName'] . "(" . $this->hhh . "STRING" . $this->hhh . "->" . $this->getAsLookup[$get['key']][$get['on_field']] . ");";
-					// load to other join
-					if (!isset($this->otherJoin[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']]))
+					if ($this->checkJoint($default, $get, $asBucket))
 					{
-						$this->otherJoin[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']] = '';
+						// build custom join string
+						$otherJoin = PHP_EOL . $this->_t(1) . $this->hhh . "TAB" . $this->hhh . $this->_t(1) . "//" . $this->setLine(__LINE__) . " set " . $default['valueName'] . " to the " . $this->hhh . "STRING" . $this->hhh . " object.";
+						$otherJoin .= PHP_EOL . $this->_t(1) . $this->hhh . "TAB" . $this->hhh . $this->_t(1) . $this->hhh . "STRING" . $this->hhh . "->" . $default['valueName'] . " = \$this->get" . $default['methodName'] . "(" . $this->hhh . "STRING" . $this->hhh . "->" . $this->getAsLookup[$get['key']][$get['on_field']] . ");";
+						// load to other join
+						if (!isset($this->otherJoin[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']]))
+						{
+							$this->otherJoin[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']] = '';
+						}
+						$this->otherJoin[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']] .= $otherJoin;
 					}
-					$this->otherJoin[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']] .= $otherJoin;
-				}
-				else
-				{
-					// build custom join string
-					$customJoin .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " set " . $default['valueName'] . " to the " . $string . " object.";
-					$customJoin .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . $string . "->" . $default['valueName'] . " = \$this->get" . $default['methodName'] . "(" . $string . "->" . $this->getAsLookup[$get['key']][$get['on_field']] . ");";
+					else
+					{
+						// build custom join string
+						$customJoin .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " set " . $default['valueName'] . " to the " . $string . " object.";
+						$customJoin .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . $string . "->" . $default['valueName'] . " = \$this->get" . $default['methodName'] . "(" . $string . "->" . $this->getAsLookup[$get['key']][$get['on_field']] . ");";
+					}
 				}
 			}
 			return $customJoin;
@@ -2350,46 +2354,49 @@ class Interpretation extends Fields
 				$asBucket = array();
 				foreach ($get->main_get as $main_get)
 				{
-					if (isset($this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']]))
+					if (isset($main_get['key']) && isset($main_get['as']))
 					{
-						$decodeChecker = $this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']];
-						if (ComponentbuilderHelper::checkArray($decodeChecker))
+						if (isset($this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']]))
 						{
-							// set decoding of needed fields
-							$getItem .= $this->setCustomViewFieldDecode($main_get, $decodeChecker, '$data', $code, $tab);
+							$decodeChecker = $this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']];
+							if (ComponentbuilderHelper::checkArray($decodeChecker))
+							{
+								// set decoding of needed fields
+								$getItem .= $this->setCustomViewFieldDecode($main_get, $decodeChecker, '$data', $code, $tab);
+							}
 						}
-					}
 
-					if (isset($this->siteFieldDecodeFilter[$this->target][$code][$main_get['key']][$main_get['as']]))
-					{
-						$decodeFilter = $this->siteFieldDecodeFilter[$this->target][$code][$main_get['key']][$main_get['as']];
-						if (ComponentbuilderHelper::checkArray($decodeFilter))
+						if (isset($this->siteFieldDecodeFilter[$this->target][$code][$main_get['key']][$main_get['as']]))
 						{
-							// also filter fields if needed
-							$getItem .= $this->setCustomViewFieldDecodeFilter($main_get, $decodeFilter, '$data', '$data', $code, $tab);
+							$decodeFilter = $this->siteFieldDecodeFilter[$this->target][$code][$main_get['key']][$main_get['as']];
+							if (ComponentbuilderHelper::checkArray($decodeFilter))
+							{
+								// also filter fields if needed
+								$getItem .= $this->setCustomViewFieldDecodeFilter($main_get, $decodeFilter, '$data', '$data', $code, $tab);
+							}
 						}
-					}
 
-					if (isset($this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']]))
-					{
-						$contentprepareChecker = $this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']];
-						if (ComponentbuilderHelper::checkArray($contentprepareChecker))
+						if (isset($this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']]))
 						{
-							// set contentprepare checkers on needed fields
-							$getItem .= $this->setCustomViewFieldonContentPrepareChecker($main_get, $contentprepareChecker, '$data', $code, $tab);
+							$contentprepareChecker = $this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']];
+							if (ComponentbuilderHelper::checkArray($contentprepareChecker))
+							{
+								// set contentprepare checkers on needed fields
+								$getItem .= $this->setCustomViewFieldonContentPrepareChecker($main_get, $contentprepareChecker, '$data', $code, $tab);
+							}
 						}
-					}
 
-					if (isset($this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']]))
-					{
-						$uikitChecker = $this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']];
-						if (ComponentbuilderHelper::checkArray($uikitChecker))
+						if (isset($this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']]))
 						{
-							// set uikit checkers on needed fields
-							$getItem .= $this->setCustomViewFieldUikitChecker($main_get, $uikitChecker, '$data', $code, $tab);
+							$uikitChecker = $this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']];
+							if (ComponentbuilderHelper::checkArray($uikitChecker))
+							{
+								// set uikit checkers on needed fields
+								$getItem .= $this->setCustomViewFieldUikitChecker($main_get, $uikitChecker, '$data', $code, $tab);
+							}
 						}
+						$asBucket[] = $main_get['as'];
 					}
-					$asBucket[] = $main_get['as'];
 				}
 			}
 			// set the scripts
@@ -2705,199 +2712,204 @@ class Interpretation extends Fields
 						$this->siteDecrypt[$cryptionType][$code] = false;
 					}
 					// set the method defaults
-					$default = $this->setCustomViewMethodDefaults($get, $code);
-					// build custom method
-					$methods .= PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
-					$methods .= PHP_EOL . $this->_t(1) . " * Method to get an array of " . $default['name'] . " Objects.";
-					$methods .= PHP_EOL . $this->_t(1) . " *";
-					$methods .= PHP_EOL . $this->_t(1) . " * @return mixed  An array of " . $default['name'] . " Objects on success, false on failure.";
-					$methods .= PHP_EOL . $this->_t(1) . " *";
-					$methods .= PHP_EOL . $this->_t(1) . " */";
-					$methods .= PHP_EOL . $this->_t(1) . "public function get" . $default['methodName'] . "(\$" . $default['on_field'] . ")";
-					$methods .= PHP_EOL . $this->_t(1) . "{" . $this->hhh . "CRYPT" . $this->hhh;
-					$methods .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get a db connection.";
-					$methods .= PHP_EOL . $this->_t(2) . "\$db = JFactory::getDbo();";
-					$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
-					$methods .= PHP_EOL . $this->_t(2) . "\$query = \$db->getQuery(true);";
-					$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get from " . $get['selection']['table'] . " as " . $default['as'];
-					$methods .= PHP_EOL . $this->_t(2) . $get['selection']['select'];
-					$methods .= PHP_EOL . $this->_t(2) . '$query->from(' . $get['selection']['from'] . ');';
-					// set the string
-					if ($get['operator'] === 'IN' || $get['operator'] === 'NOT IN')
+					if (($default = $this->setCustomViewMethodDefaults($get, $code)) !== false)
 					{
-						$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Check if \$" . $default['on_field'] . " is an array with values.";
-						$methods .= PHP_EOL . $this->_t(2) . "\$array = \$" . $default['on_field'] . ";";
-						$methods .= PHP_EOL . $this->_t(2) . "if (isset(\$array) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$array, true))";
+						// build custom method
+						$methods .= PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
+						$methods .= PHP_EOL . $this->_t(1) . " * Method to get an array of " . $default['name'] . " Objects.";
+						$methods .= PHP_EOL . $this->_t(1) . " *";
+						$methods .= PHP_EOL . $this->_t(1) . " * @return mixed  An array of " . $default['name'] . " Objects on success, false on failure.";
+						$methods .= PHP_EOL . $this->_t(1) . " *";
+						$methods .= PHP_EOL . $this->_t(1) . " */";
+						$methods .= PHP_EOL . $this->_t(1) . "public function get" . $default['methodName'] . "(\$" . $default['on_field'] . ")";
+						$methods .= PHP_EOL . $this->_t(1) . "{" . $this->hhh . "CRYPT" . $this->hhh;
+						$methods .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get a db connection.";
+						$methods .= PHP_EOL . $this->_t(2) . "\$db = JFactory::getDbo();";
+						$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
+						$methods .= PHP_EOL . $this->_t(2) . "\$query = \$db->getQuery(true);";
+						$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get from " . $get['selection']['table'] . " as " . $default['as'];
+						$methods .= PHP_EOL . $this->_t(2) . $get['selection']['select'];
+						$methods .= PHP_EOL . $this->_t(2) . '$query->from(' . $get['selection']['from'] . ');';
+						// set the string
+						if ($get['operator'] === 'IN' || $get['operator'] === 'NOT IN')
+						{
+							$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Check if \$" . $default['on_field'] . " is an array with values.";
+							$methods .= PHP_EOL . $this->_t(2) . "\$array = \$" . $default['on_field'] . ";";
+							$methods .= PHP_EOL . $this->_t(2) . "if (isset(\$array) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$array, true))";
+							$methods .= PHP_EOL . $this->_t(2) . "{";
+							$methods .= PHP_EOL . $this->_t(3) . "\$query->where('" . $get['join_field'] . " " . $get['operator'] . " (' . implode(',', \$array) . ')');";
+							$methods .= PHP_EOL . $this->_t(2) . "}";
+							$methods .= PHP_EOL . $this->_t(2) . "else";
+							$methods .= PHP_EOL . $this->_t(2) . "{";
+							$methods .= PHP_EOL . $this->_t(3) . "return false;";
+							$methods .= PHP_EOL . $this->_t(2) . "}";
+						}
+						else
+						{
+							$methods .= PHP_EOL . $this->_t(2) . "\$query->where('" . $get['join_field'] . " " . $get['operator'] . " ' . \$db->quote(\$" . $default['on_field'] . "));";
+						}
+						// check if other queries should be loaded
+						$queryChecker = (isset($this->otherQuery[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherQuery[$this->target][$default['code']][$default['as']])) ? $this->otherQuery[$this->target][$default['code']][$default['as']] : '';
+						if (ComponentbuilderHelper::checkArray($queryChecker))
+						{
+							foreach ($queryChecker as $query)
+							{
+								$methods .= $query;
+							}
+						}
+						// add any other filter that was set
+						if (isset($this->otherFilter[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherFilter[$this->target][$default['code']][$default['as']]))
+						{
+							foreach ($this->otherFilter[$this->target][$default['code']][$default['as']] as $field => $string)
+							{
+								$methods .= $string;
+							}
+						}
+						// add any other where that was set
+						if (isset($this->otherWhere[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherWhere[$this->target][$default['code']][$default['as']]))
+						{
+							foreach ($this->otherWhere[$this->target][$default['code']][$default['as']] as $field => $string)
+							{
+								$methods .= $string;
+							}
+						}
+						// add any other order that was set
+						if (isset($this->otherOrder[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherOrder[$this->target][$default['code']][$default['as']]))
+						{
+							foreach ($this->otherOrder[$this->target][$default['code']][$default['as']] as $field => $string)
+							{
+								$methods .= $string;
+							}
+						}
+						$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
+						$methods .= PHP_EOL . $this->_t(2) . "\$db->setQuery(\$query);";
+						$methods .= PHP_EOL . $this->_t(2) . "\$db->execute();";
+						$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " check if there was data returned";
+						$methods .= PHP_EOL . $this->_t(2) . "if (\$db->getNumRows())";
 						$methods .= PHP_EOL . $this->_t(2) . "{";
-						$methods .= PHP_EOL . $this->_t(3) . "\$query->where('" . $get['join_field'] . " " . $get['operator'] . " (' . implode(',', \$array) . ')');";
-						$methods .= PHP_EOL . $this->_t(2) . "}";
-						$methods .= PHP_EOL . $this->_t(2) . "else";
-						$methods .= PHP_EOL . $this->_t(2) . "{";
-						$methods .= PHP_EOL . $this->_t(3) . "return false;";
-						$methods .= PHP_EOL . $this->_t(2) . "}";
-					}
-					else
-					{
-						$methods .= PHP_EOL . $this->_t(2) . "\$query->where('" . $get['join_field'] . " " . $get['operator'] . " ' . \$db->quote(\$" . $default['on_field'] . "));";
-					}
-					// check if other queries should be loaded
-					$queryChecker = (isset($this->otherQuery[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherQuery[$this->target][$default['code']][$default['as']])) ? $this->otherQuery[$this->target][$default['code']][$default['as']] : '';
-					if (ComponentbuilderHelper::checkArray($queryChecker))
-					{
-						foreach ($queryChecker as $query)
+						// set dispatcher placeholder
+						$methods .= $this->hhh . "DISPATCHER" . $this->hhh;
+						// set decoding of needed fields
+						if (isset($this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']]))
 						{
-							$methods .= $query;
+							$decodeChecker = $this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']];
 						}
-					}
-					// add any other filter that was set
-					if (isset($this->otherFilter[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherFilter[$this->target][$default['code']][$default['as']]))
-					{
-						foreach ($this->otherFilter[$this->target][$default['code']][$default['as']] as $field => $string)
+						// also filter fields if needed
+						if (isset($this->siteFieldDecodeFilter[$this->target][$default['code']][$get['key']][$default['as']]))
 						{
-							$methods .= $string;
+							$decodeFilter = $this->siteFieldDecodeFilter[$this->target][$default['code']][$get['key']][$default['as']];
 						}
-					}
-					// add any other where that was set
-					if (isset($this->otherWhere[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherWhere[$this->target][$default['code']][$default['as']]))
-					{
-						foreach ($this->otherWhere[$this->target][$default['code']][$default['as']] as $field => $string)
+						// set uikit checkers on needed fields
+						if (isset($this->siteFieldData['uikit'][$default['code']][$get['key']][$default['as']]))
 						{
-							$methods .= $string;
+							$uikitChecker = $this->siteFieldData['uikit'][$default['code']][$get['key']][$default['as']];
 						}
-					}
-					// add any other order that was set
-					if (isset($this->otherOrder[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherOrder[$this->target][$default['code']][$default['as']]))
-					{
-						foreach ($this->otherOrder[$this->target][$default['code']][$default['as']] as $field => $string)
+						// set contnetprepare on needed fields
+						if (isset($this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']]))
 						{
-							$methods .= $string;
+							$contentprepareChecker = $this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']];
 						}
-					}
-					$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
-					$methods .= PHP_EOL . $this->_t(2) . "\$db->setQuery(\$query);";
-					$methods .= PHP_EOL . $this->_t(2) . "\$db->execute();";
-					$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " check if there was data returned";
-					$methods .= PHP_EOL . $this->_t(2) . "if (\$db->getNumRows())";
-					$methods .= PHP_EOL . $this->_t(2) . "{";
-					// set dispatcher placeholder
-					$methods .= $this->hhh . "DISPATCHER" . $this->hhh;
-					// set decoding of needed fields
-					if (isset($this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']]))
-					{
-						$decodeChecker = $this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']];
-					}
-					// also filter fields if needed
-					if (isset($this->siteFieldDecodeFilter[$this->target][$default['code']][$get['key']][$default['as']]))
-					{
-						$decodeFilter = $this->siteFieldDecodeFilter[$this->target][$default['code']][$get['key']][$default['as']];
-					}
-					// set uikit checkers on needed fields
-					if (isset($this->siteFieldData['uikit'][$default['code']][$get['key']][$default['as']]))
-					{
-						$uikitChecker = $this->siteFieldData['uikit'][$default['code']][$get['key']][$default['as']];
-					}
-					// set contnetprepare on needed fields
-					if (isset($this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']]))
-					{
-						$contentprepareChecker = $this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']];
-					}
-					// set joined values
-					$placeholders = array($this->hhh . 'TAB' . $this->hhh => $this->_t(2), $this->hhh . 'STRING' . $this->hhh => '$item');
-					$joinedChecker = (isset($this->otherJoin[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherJoin[$this->target][$default['code']][$default['as']])) ? $this->otherJoin[$this->target][$default['code']][$default['as']] : '';
-					if ((isset($decodeChecker) && ComponentbuilderHelper::checkArray($decodeChecker)) ||
-						(isset($uikitChecker) && ComponentbuilderHelper::checkArray($uikitChecker)) ||
-						(isset($decodeFilter) && ComponentbuilderHelper::checkArray($decodeFilter)) ||
-						(isset($contentprepareChecker) && ComponentbuilderHelper::checkArray($contentprepareChecker)) ||
-						ComponentbuilderHelper::checkArray($joinedChecker))
-					{
-						$decoder = '';
-						if (isset($decodeChecker) && ComponentbuilderHelper::checkArray($decodeChecker))
+						// set joined values
+						$placeholders = array($this->hhh . 'TAB' . $this->hhh => $this->_t(2), $this->hhh . 'STRING' . $this->hhh => '$item');
+						$joinedChecker = (isset($this->otherJoin[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherJoin[$this->target][$default['code']][$default['as']])) ? $this->otherJoin[$this->target][$default['code']][$default['as']] : '';
+						if ((isset($decodeChecker) && ComponentbuilderHelper::checkArray($decodeChecker)) ||
+							(isset($uikitChecker) && ComponentbuilderHelper::checkArray($uikitChecker)) ||
+							(isset($decodeFilter) && ComponentbuilderHelper::checkArray($decodeFilter)) ||
+							(isset($contentprepareChecker) && ComponentbuilderHelper::checkArray($contentprepareChecker)) ||
+							ComponentbuilderHelper::checkArray($joinedChecker))
 						{
-							// also filter fields if needed
-							$decoder = $this->setCustomViewFieldDecode($get, $decodeChecker, '$item', $default['code'], $this->_t(2));
-						}
-						$decoder_filter = '';
-						if (isset($decodeFilter) && ComponentbuilderHelper::checkArray($decodeFilter))
-						{
-							$decoder_filter = $this->setCustomViewFieldDecodeFilter($get, $decodeFilter, '$item', '$items[$nr]', $default['code'], $this->_t(2));
-						}
-						$contentprepare = '';
-						if (isset($contentprepareChecker) && ComponentbuilderHelper::checkArray($contentprepareChecker))
-						{
-							$contentprepare = $this->setCustomViewFieldonContentPrepareChecker($get, $contentprepareChecker, '$item', $default['code'], $this->_t(2));
-						}
-						$uikit = '';
-						if (isset($uikitChecker) && ComponentbuilderHelper::checkArray($uikitChecker))
-						{
-							$uikit = $this->setCustomViewFieldUikitChecker($get, $uikitChecker, '$item', $default['code'], $this->_t(2));
-						}
-						$joine = '';
-						if (ComponentbuilderHelper::checkArray($joinedChecker))
-						{
-							foreach ($joinedChecker as $joinedString)
+							$decoder = '';
+							if (isset($decodeChecker) && ComponentbuilderHelper::checkArray($decodeChecker))
 							{
-								$joine .= $this->setPlaceholders($joinedString, $placeholders);
+								// also filter fields if needed
+								$decoder = $this->setCustomViewFieldDecode($get, $decodeChecker, '$item', $default['code'], $this->_t(2));
 							}
-						}
-						if (ComponentbuilderHelper::checkString($decoder) || ComponentbuilderHelper::checkString($contentprepare) || ComponentbuilderHelper::checkString($uikit) || ComponentbuilderHelper::checkString($decoder_filter) || ComponentbuilderHelper::checkString($joine))
-						{
-							$methods .= PHP_EOL . $this->_t(3) . "\$items = \$db->loadObjectList();";
-							$methods .= PHP_EOL . PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Convert the parameter fields into objects.";
-							$methods .= PHP_EOL . $this->_t(3) . "foreach (\$items as \$nr => &\$item)";
-							$methods .= PHP_EOL . $this->_t(3) . "{";
-							if (ComponentbuilderHelper::checkString($decoder))
+							$decoder_filter = '';
+							if (isset($decodeFilter) && ComponentbuilderHelper::checkArray($decodeFilter))
 							{
-								$methods .= $decoder;
+								$decoder_filter = $this->setCustomViewFieldDecodeFilter($get, $decodeFilter, '$item', '$items[$nr]', $default['code'], $this->_t(2));
 							}
-							if (ComponentbuilderHelper::checkString($decoder_filter))
+							$contentprepare = '';
+							if (isset($contentprepareChecker) && ComponentbuilderHelper::checkArray($contentprepareChecker))
 							{
-								$methods .= $decoder_filter;
+								$contentprepare = $this->setCustomViewFieldonContentPrepareChecker($get, $contentprepareChecker, '$item', $default['code'], $this->_t(2));
 							}
-							if (ComponentbuilderHelper::checkString($contentprepare))
+							$uikit = '';
+							if (isset($uikitChecker) && ComponentbuilderHelper::checkArray($uikitChecker))
 							{
-								$methods .= $contentprepare;
+								$uikit = $this->setCustomViewFieldUikitChecker($get, $uikitChecker, '$item', $default['code'], $this->_t(2));
 							}
-							if (ComponentbuilderHelper::checkString($uikit))
+							$joine = '';
+							if (ComponentbuilderHelper::checkArray($joinedChecker))
 							{
-								$methods .= $uikit;
+								foreach ($joinedChecker as $joinedString)
+								{
+									$joine .= $this->setPlaceholders($joinedString, $placeholders);
+								}
 							}
-							if (ComponentbuilderHelper::checkString($joine))
+							if (ComponentbuilderHelper::checkString($decoder) || ComponentbuilderHelper::checkString($contentprepare) || ComponentbuilderHelper::checkString($uikit) || ComponentbuilderHelper::checkString($decoder_filter) || ComponentbuilderHelper::checkString($joine))
 							{
-								$methods .= $joine;
+								$methods .= PHP_EOL . $this->_t(3) . "\$items = \$db->loadObjectList();";
+								$methods .= PHP_EOL . PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Convert the parameter fields into objects.";
+								$methods .= PHP_EOL . $this->_t(3) . "foreach (\$items as \$nr => &\$item)";
+								$methods .= PHP_EOL . $this->_t(3) . "{";
+								if (ComponentbuilderHelper::checkString($decoder))
+								{
+									$methods .= $decoder;
+								}
+								if (ComponentbuilderHelper::checkString($decoder_filter))
+								{
+									$methods .= $decoder_filter;
+								}
+								if (ComponentbuilderHelper::checkString($contentprepare))
+								{
+									$methods .= $contentprepare;
+								}
+								if (ComponentbuilderHelper::checkString($uikit))
+								{
+									$methods .= $uikit;
+								}
+								if (ComponentbuilderHelper::checkString($joine))
+								{
+									$methods .= $joine;
+								}
+								$methods .= PHP_EOL . $this->_t(3) . "}";
+								$methods .= PHP_EOL . $this->_t(3) . "return \$items;";
 							}
-							$methods .= PHP_EOL . $this->_t(3) . "}";
-							$methods .= PHP_EOL . $this->_t(3) . "return \$items;";
+							else
+							{
+								$methods .= PHP_EOL . $this->_t(3) . "return \$db->loadObjectList();";
+							}
 						}
 						else
 						{
 							$methods .= PHP_EOL . $this->_t(3) . "return \$db->loadObjectList();";
 						}
-					}
-					else
-					{
-						$methods .= PHP_EOL . $this->_t(3) . "return \$db->loadObjectList();";
-					}
-					$methods .= PHP_EOL . $this->_t(2) . "}";
-					$methods .= PHP_EOL . $this->_t(2) . "return false;";
-					$methods .= PHP_EOL . $this->_t(1) . "}";
+						$methods .= PHP_EOL . $this->_t(2) . "}";
+						$methods .= PHP_EOL . $this->_t(2) . "return false;";
+						$methods .= PHP_EOL . $this->_t(1) . "}";
 
-					// set the script if it was found
-					$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
-					$script = '';
-					foreach ($this->cryptionTypes as $cryptionType)
-					{
-						if (isset($this->siteDecrypt[$cryptionType][$code]) && $this->siteDecrypt[$cryptionType][$code])
+						// set the script if it was found
+						$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
+						$script = '';
+						foreach ($this->cryptionTypes as $cryptionType)
 						{
-							$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
-							$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
-							$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
-							$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);" . PHP_EOL;
+							if (isset($this->siteDecrypt[$cryptionType][$code]) && $this->siteDecrypt[$cryptionType][$code])
+							{
+								$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
+								$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
+								$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
+								$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);" . PHP_EOL;
+							}
 						}
+						$methods = str_replace($this->hhh . 'CRYPT' . $this->hhh, $script, $methods);
 					}
-					$methods = str_replace($this->hhh . 'CRYPT' . $this->hhh, $script, $methods);
 				}
 				// insure the crypt placeholder is removed
-				$methods = str_replace($this->hhh . 'CRYPT' . $this->hhh, '', $methods);
+				if (ComponentbuilderHelper::checkString($methods))
+				{
+					$methods = str_replace($this->hhh . 'CRYPT' . $this->hhh, '', $methods);
+				}
 			}
 		}
 		// only update if dispacher placholder is found
@@ -2910,23 +2922,32 @@ class Interpretation extends Fields
 			}
 			$methods = str_replace(array_keys($this->JEventDispatcher), array_values($this->JEventDispatcher), $methods);
 		}
-		return $methods . PHP_EOL;
+		// insure the crypt placeholder is removed
+		if (ComponentbuilderHelper::checkString($methods))
+		{
+			return $methods . PHP_EOL;
+		}
+		return '';
 	}
 
 	public function setCustomViewMethodDefaults($get, $code)
 	{
-		$key = substr(ComponentbuilderHelper::safeString(preg_replace('/[0-9]+/', '', md5($get['key'])), 'F'), 0, 4);
-		$method['on_field'] = (isset($get['on_field'])) ? $this->removeAsDot($get['on_field']) : null;
-		$method['join_field'] = (isset($get['join_field'])) ? ComponentbuilderHelper::safeString($this->removeAsDot($get['join_field'])) : null;
-		$method['Join_field'] = (isset($method['join_field'])) ? ComponentbuilderHelper::safeString($method['join_field'], 'F') : null;
-		$method['name'] = ComponentbuilderHelper::safeString($get['selection']['name'], 'F');
-		$method['code'] = ComponentbuilderHelper::safeString($code);
-		$method['AS'] = ComponentbuilderHelper::safeString($get['as'], 'U');
-		$method['as'] = ComponentbuilderHelper::safeString($get['as']);
-		$method['valueName'] = $method['on_field'] . $method['Join_field'] . $method['name'] . $method['AS'];
-		$method['methodName'] = ComponentbuilderHelper::safeString($method['on_field'], 'F') . $method['Join_field'] . $method['name'] . $key . '_' . $method['AS'];
-		// return
-		return $method;
+		if (isset($get['key']) && isset($get['as']))
+		{
+			$key = substr(ComponentbuilderHelper::safeString(preg_replace('/[0-9]+/', '', md5($get['key'])), 'F'), 0, 4);
+			$method['on_field'] = (isset($get['on_field'])) ? $this->removeAsDot($get['on_field']) : null;
+			$method['join_field'] = (isset($get['join_field'])) ? ComponentbuilderHelper::safeString($this->removeAsDot($get['join_field'])) : null;
+			$method['Join_field'] = (isset($method['join_field'])) ? ComponentbuilderHelper::safeString($method['join_field'], 'F') : null;
+			$method['name'] = ComponentbuilderHelper::safeString($get['selection']['name'], 'F');
+			$method['code'] = ComponentbuilderHelper::safeString($code);
+			$method['AS'] = ComponentbuilderHelper::safeString($get['as'], 'U');
+			$method['as'] = ComponentbuilderHelper::safeString($get['as']);
+			$method['valueName'] = $method['on_field'] . $method['Join_field'] . $method['name'] . $method['AS'];
+			$method['methodName'] = ComponentbuilderHelper::safeString($method['on_field'], 'F') . $method['Join_field'] . $method['name'] . $key . '_' . $method['AS'];
+			// return
+			return $method;
+		}
+		return false;
 	}
 
 	/**

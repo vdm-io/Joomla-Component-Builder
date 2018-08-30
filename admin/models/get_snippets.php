@@ -115,7 +115,6 @@ class ComponentbuilderModelGet_snippets extends JModelList
 		return $items;
 	}
 
-
 	/**
 	 * Get the uikit needed components
 	 *

@@ -2228,7 +2228,7 @@ abstract class ComponentbuilderHelper
 				}
 				$display[] = '</ul>';
 				// if we have a source link we add it
-				if (isset($info['joomla_source_link']) && self::checkArray($info['joomla_source_link']) && self::checkString($info['joomla_source_link'][$key]))
+				if (isset($info['joomla_source_link']) && self::checkArray($info['joomla_source_link']) && isset($info['joomla_source_link'][$key]) && self::checkString($info['joomla_source_link'][$key]))
 				{
 					$display[] = '<a class="uk-button uk-button-mini uk-width-1-1 uk-margin-small-bottom " href="'.$info['joomla_source_link'][$key].'" target="_blank" title="Source Code for Joomla Component ('.$name.')">source code</a>';
 				}
@@ -3684,6 +3684,44 @@ abstract class ComponentbuilderHelper
 		self::$CRYPT[$TYPE] = new $CLASS();
 		// return the object
 		return self::$CRYPT[$TYPE];
+	}
+
+
+	/**
+	 * set subform type table
+	 *
+	 * @param   array   $head    The header names
+	 * @param   array   $rows    The row values
+	 * @param   string  $idName  The prefix to the table id
+	 *
+	 * @return string
+	 *
+	 */
+	public static function setSubformTable($head, $rows, $idName)
+	{
+		$table[] = "<div class=\"row-fluid\" id=\"vdm_table_display_".$idName."\">";
+		$table[] = "\t<div class=\"subform-repeatable-wrapper subform-table-layout subform-table-sublayout-section-byfieldsets\">";
+		$table[] = "\t\t<div class=\"subform-repeatable\">";
+		$table[] = "\t\t\t<table class=\"adminlist table table-striped table-bordered\">";
+		$table[] = "\t\t\t\t<thead>";
+		$table[] = "\t\t\t\t\t<tr>";
+		$table[] = "\t\t\t\t\t\t<th>" .  implode("</th><th>", $head) . "</th>";
+		$table[] = "\t\t\t\t\t</tr>";
+		$table[] = "\t\t\t\t</thead>";
+		$table[] = "\t\t\t\t<tbody>";
+		foreach ($rows as $row)
+		{
+			$table[] = "\t\t\t\t\t<tr class=\"subform-repeatable-group\">";
+			$table[] = "\t\t\t\t\t\t" . $row;
+			$table[] = "\t\t\t\t\t</tr>";
+		}
+		$table[] = "\t\t\t\t</tbody>";
+		$table[] = "\t\t\t</table>";
+		$table[] = "\t\t</div>";
+		$table[] = "\t</div>";
+		$table[] = "</div>";
+		// return the table
+		return implode("\n", $table);
 	}
 
 	

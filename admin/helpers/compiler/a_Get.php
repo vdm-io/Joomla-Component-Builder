@@ -1554,7 +1554,7 @@ class Get
 					// set the view name
 					$tab['view'] = $name_single;
 					// load the dynamic data
-					$tab['html'] = $this->setDynamicValues($tab['html']);
+					$tab['html'] = $this->setPlaceholders($this->setDynamicValues($tab['html']), $this->placeholders);
 					// set the tab name
 					$tab['name'] = (isset($tab['name']) && ComponentbuilderHelper::checkString($tab['name'])) ? $tab['name'] : 'Tab';
 					// set lang
@@ -2927,10 +2927,30 @@ class Get
 								unset($result->db_selection);
 								break;
 							case 3:
+								// get the custom query
+								$customQueryString = $this->setDynamicValues(base64_decode($result->php_custom_get));
+								// get the table name
+								$_searchQuery = ComponentbuilderHelper::getBetween($customQueryString, '$query->from(', ')');
+								if (ComponentbuilderHelper::checkString($_searchQuery) && strpos($_searchQuery, '#__') !== false)
+								{
+									$_queryName = ComponentbuilderHelper::getBetween($_searchQuery, '#__', "'");
+									if (!ComponentbuilderHelper::checkString($_queryName))
+									{
+										$_queryName = ComponentbuilderHelper::getBetween($_searchQuery, '#__', '"');
+									}
+								}
+								// set to blank if not found
+								if (!isset($_queryName) || !ComponentbuilderHelper::checkString($_queryName))
+								{
+									$_queryName = '';
+								}
 								// set custom script
 								$result->main_get[0]['selection'] = array(
-									'select' => $this->setDynamicValues(base64_decode($result->php_custom_get)),
-									'from' => '', 'table' => '', 'type' => '');
+									'select' => $customQueryString,
+									'from' => '', 'table' => '', 'type' => '', 'name' => $_queryName);
+								$result->main_get[0]['as'] = 'a';
+								$result->main_get[0]['key'] = $result->key;
+								$result->main_get[0]['context'] = $context;
 								break;
 						}
 						// set join_view_table details
