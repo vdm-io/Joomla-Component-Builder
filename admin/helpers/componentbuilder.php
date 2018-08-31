@@ -2338,6 +2338,11 @@ abstract class ComponentbuilderHelper
 	*/
 	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
 	{
+		// make sure to always have a string/path
+		if(!self::checkString($default))
+		{
+			$default = JPATH_SITE . '/images/';
+		}
 		// get the global settings
 		if (!self::checkObject(self::$params))
 		{
@@ -2407,6 +2412,11 @@ abstract class ComponentbuilderHelper
 	*/
 	public static function getFolderPath($type = 'path', $target = 'folderpath', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
 	{
+		// make sure to always have a string/path
+		if(!self::checkString($default))
+		{
+			$default = JPATH_SITE . '/images/';
+		}
 		// get the global settings
 		if (!self::checkObject(self::$params))
 		{
@@ -2523,7 +2533,7 @@ abstract class ComponentbuilderHelper
 	{
 		// build function name
 		$function = 'bc' . $type;
-		// use the bcmath function of available
+		// use the bcmath function if available
 		if (function_exists($function))
 		{
 			return $function($val1, $val2, $scale);
@@ -2559,6 +2569,32 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
+	/**
+	 * Basic sum of an array with more precision
+	 *
+	 * @param   array   $array    The values to sum
+	 * @param   int      $scale   The scale value
+	 *
+	 * @return float
+	 *
+	 */
+	public static function bcsum($array, $scale = 4)
+	{
+		// use the bcadd function if available
+		if (function_exists('bcadd'))
+		{
+			// set the start value
+			$value = 0.0;
+			// loop the values and run bcadd
+			foreach($array as $val)
+			{
+				$value = bcadd($value, $val, $scale);
+			}
+			return $value;
+		}
+		// fall back on array sum
+		return array_sum($array);
+	}
 
 	/**
 	* 	the locker
@@ -3599,12 +3635,13 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get the edit button
+	* Get an edit button
 	* 
 	* @param  int      $item       The item to edit
 	* @param  string   $view       The type of item to edit
 	* @param  string   $views      The list view controller name
 	* @param  string   $ref        The return path
+	* @param  string   $component  The component these views belong to
 	* @param  string   $headsup    The message to show on click of button
 	*
 	* @return  string    On success the full html edit button
@@ -3639,7 +3676,7 @@ abstract class ComponentbuilderHelper
 			// check that there is a check message
 			if (self::checkString($headsup))
 			{
-				$href = 'onclick="UIkit.modal.confirm(\''.JText::_($headsup).'\', function(){ window.location.href = \'' . $url . '\' })"  href="javascript:void(0)"';
+				$href = 'onclick="UIkit2.modal.confirm(\''.JText::_($headsup).'\', function(){ window.location.href = \'' . $url . '\' })"  href="javascript:void(0)"';
 			}
 			else
 			{
@@ -3664,9 +3701,12 @@ abstract class ComponentbuilderHelper
 	/**
 	* Get the edit URL
 	* 
-	* @param  int      $item   The item to edit
-	* @param  string   $view   The type of item to edit
-	* @param  string   $ref    The return path
+	* @param  int      $item        The item to edit
+	* @param  string   $view        The type of item to edit
+	* @param  string   $views       The list view controller name
+	* @param  string   $ref         The return path
+	* @param  string   $component   The component these views belong to
+	* @param  bool     $jRoute      The switch to add use JRoute or not
 	*
 	* @return  string    On success the edit url
 	* 

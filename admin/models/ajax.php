@@ -342,7 +342,7 @@ class ComponentbuilderModelAjax extends JModelList
 					// only load referral if not new item.
 					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
 					// get item id
-					if ($id = ComponentbuilderHelper::getVar($type, $values['a_id'], $values['a_view'], 'id'))
+					if (($id = ComponentbuilderHelper::getVar($type, $values['a_id'], $values['a_view'], 'id')) !== false && $id > 0)
 					{
 						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
 						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_EDIT');
