@@ -2336,7 +2336,7 @@ abstract class ComponentbuilderHelper
 	* @return  string    On success the path or url is returned based on the type requested
 	*
 	*/
-	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
+	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = '', $createIfNotSet = true)
 	{
 		// make sure to always have a string/path
 		if(!self::checkString($default))
@@ -2410,7 +2410,7 @@ abstract class ComponentbuilderHelper
 	*	@return  string    On success the path or url is returned based on the type requested
 	* 
 	*/
-	public static function getFolderPath($type = 'path', $target = 'folderpath', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
+	public static function getFolderPath($type = 'path', $target = 'folderpath', $default = '', $createIfNotSet = true)
 	{
 		// make sure to always have a string/path
 		if(!self::checkString($default))
