@@ -1049,9 +1049,17 @@ class ComponentbuilderModelAjax extends JModelList
 	{
 		if (1 == $value)
 		{
-			return JText::_('COM_COMPONENTBUILDER_SHOW');
+			return JText::_('COM_COMPONENTBUILDER_SHOW_TOGGLE');
 		}
-		return JText::_('COM_COMPONENTBUILDER_HIDE');
+		elseif (3 == $value)
+		{
+			return JText::_('COM_COMPONENTBUILDER_SHOW_ONLY');
+		}
+		elseif (4 == $value)
+		{
+			return JText::_('COM_COMPONENTBUILDER_HIDE_ONLY');
+		}
+		return JText::_('COM_COMPONENTBUILDER_HIDE_TOGGLE');
 	}
 
 	protected function setTargetRelation($header, $value)

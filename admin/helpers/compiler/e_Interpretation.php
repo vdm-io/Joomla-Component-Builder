@@ -9195,19 +9195,18 @@ class Interpretation extends Fields
 			$ifValue = array();
 			$targetControls = array();
 			$functions = array();
+
 			foreach ($viewArray['settings']->conditions as $condition)
 			{
 				if (isset($condition['match_name']) && ComponentbuilderHelper::checkString($condition['match_name']))
 				{
 					$uniqueVar = $this->uniquekey(7);
 					$matchName = $condition['match_name'] . '_' . $uniqueVar;
-					$targetBehavior = ($condition['target_behavior'] == 1) ? 'show' : 'hide';
-					$targetDefault = ($condition['target_behavior'] == 1) ? 'hide' : 'show';
+					$targetBehavior = ($condition['target_behavior'] == 1 || $condition['target_behavior'] == 3) ? 'show' : 'hide';
+					$targetDefault = ($condition['target_behavior'] == 1 || $condition['target_behavior'] == 3) ? 'hide' : 'show';
 
-					// make sure only one relation is set
-					$firstTime = true;
 					// set the realtation if any
-					if ($condition['target_relation'] && $firstTime)
+					if ($condition['target_relation'])
 					{
 						// chain to other items of the same target
 						$relations = $this->getTargetRelationScript($viewArray['settings']->conditions, $condition, $viewName);
@@ -9216,6 +9215,7 @@ class Interpretation extends Fields
 							// set behavior and default array
 							$behaviors[$matchName] = $targetBehavior;
 							$defaults[$matchName] = $targetDefault;
+							$toggleSwitch[$matchName] = ($condition['target_behavior'] == 1 || $condition['target_behavior'] == 2) ? true : false;
 							// set the type buket
 							$typeBuket[$matchName] = $condition['match_type'];
 							// set function array
@@ -9230,7 +9230,6 @@ class Interpretation extends Fields
 							// set the target controls
 							$targetControls[$matchName] = $this->setTargetControlsScript($condition['target_field'], $targetBehavior, $targetDefault, $uniqueVar, $viewName);
 
-							$firstTime = false;
 							foreach ($relations as $relation)
 							{
 								if (ComponentbuilderHelper::checkString($relation['match_name']))
@@ -9254,6 +9253,7 @@ class Interpretation extends Fields
 						// set behavior and default array
 						$behaviors[$matchName] = $targetBehavior;
 						$defaults[$matchName] = $targetDefault;
+						$toggleSwitch[$matchName] = ($condition['target_behavior'] == 1 || $condition['target_behavior'] == 2) ? true : false;
 						// set the type buket
 						$typeBuket[$matchName] = $condition['match_type'];
 						// set function array
@@ -9279,7 +9279,7 @@ class Interpretation extends Fields
 			if (ComponentbuilderHelper::checkArray($functions))
 			{
 				// now build the initial script
-				$initial .= "// Initial Script" . PHP_EOL . "jQuery(document).ready(function()";
+				$initial .= "//" . $this->setLine(__LINE__) . " Initial Script" . PHP_EOL . "jQuery(document).ready(function()";
 				$initial .= PHP_EOL . "{";
 				foreach ($functions as $function => $matchKeys)
 				{
@@ -9310,7 +9310,7 @@ class Interpretation extends Fields
 								$name = $name . '_id';
 							}
 
-							$listener .= PHP_EOL . "// #jform_" . $name . " listeners for " . $l_matchKey . " function";
+							$listener .= PHP_EOL . "//" . $this->setLine(__LINE__) . " #jform_" . $name . " listeners for " . $l_matchKey . " function";
 							$listener .= PHP_EOL . "jQuery('#jform_" . $name . "').on('keyup',function()";
 							$listener .= PHP_EOL . "{";
 							$listener .= $funcCall['code'];
@@ -9346,7 +9346,7 @@ class Interpretation extends Fields
 					{
 						$addArray = true;
 					}
-					$func .= PHP_EOL . "// the " . $f_function . " function";
+					$func .= PHP_EOL . "//" . $this->setLine(__LINE__) . " the " . $f_function . " function";
 					$func .= PHP_EOL . "function " . $f_function . "(";
 					$fucounter = 0;
 					foreach ($f_matchKeys as $fu_matchKey)
@@ -9378,7 +9378,7 @@ class Interpretation extends Fields
 							$func .= PHP_EOL . $this->_t(1) . "var " . $name . " = " . $a_matchKey . ".some(" . $a_matchKey . "_SomeFunc);" . PHP_EOL;
 
 							// setup the map function
-							$map .= PHP_EOL . "// the " . $f_function . " Some function";
+							$map .= PHP_EOL . "//" . $this->setLine(__LINE__) . " the " . $f_function . " Some function";
 							$map .= PHP_EOL . "function " . $a_matchKey . "_SomeFunc(" . $a_matchKey . ")";
 							$map .= PHP_EOL . "{";
 							$map .= PHP_EOL . $this->_t(1) . "//" . $this->setLine(__LINE__) . " set the function logic";
@@ -9434,6 +9434,11 @@ class Interpretation extends Fields
 								}
 								$ifcounter++;
 							}
+							else
+							{
+								var_dump($functions);
+								var_dump($ifValue);exit;
+							}
 						}
 						$func .= ")" . PHP_EOL . $this->_t(1) . "{";
 					}
@@ -9452,13 +9457,16 @@ class Interpretation extends Fields
 							$head .= $action['requiredVar'];
 						}
 					}
-					$func .= PHP_EOL . $this->_t(1) . "}" . PHP_EOL . $this->_t(1) . "else" . PHP_EOL . $this->_t(1) . "{";
-					foreach ($controls as $target => $action)
+					if ($toggleSwitch[$f_matchKeys[0]])
 					{
-						$func .= $action['default'];
-						if (ComponentbuilderHelper::checkString($action['hide']))
+						$func .= PHP_EOL . $this->_t(1) . "}" . PHP_EOL . $this->_t(1) . "else" . PHP_EOL . $this->_t(1) . "{";
+						foreach ($controls as $target => $action)
 						{
-							$func .= $action[$targetDefault];
+							$func .= $action['default'];
+							if (ComponentbuilderHelper::checkString($action['hide']))
+							{
+								$func .= $action[$targetDefault];
+							}
 						}
 					}
 					$func .= PHP_EOL . $this->_t(1) . "}" . PHP_EOL . "}" . PHP_EOL . $map;
@@ -9612,7 +9620,7 @@ class Interpretation extends Fields
 		// convert to name array
 		foreach ($condition['target_field'] as $targetField)
 		{
-			if (ComponentbuilderHelper::checkArray($targetField))
+			if (ComponentbuilderHelper::checkArray($targetField) && isset($targetField['name']))
 			{
 				$currentTargets[] = $targetField['name'];
 			}
@@ -9622,7 +9630,8 @@ class Interpretation extends Fields
 		{
 			// reset found
 			$found = false;
-			if ($relation['match_field'] != $condition['match_field'])
+			// chain only none matching fields
+			if ($relation['match_field'] !== $condition['match_field'] && $relation['target_relation']) // Made this change to see if it improves the expected result (TODO)
 			{
 				if (ComponentbuilderHelper::checkArray($relation['target_field']))
 				{

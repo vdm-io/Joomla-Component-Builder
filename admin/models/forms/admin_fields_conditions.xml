@@ -131,9 +131,13 @@
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_SHOW</option>
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_SHOW_TOGGLE</option>
 					<option value="2">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_HIDE</option>
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_HIDE_TOGGLE</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_SHOW_ONLY</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_HIDE_ONLY</option>
 				</field>
 				<!-- Target_relation Field. Type: List. (joomla) -->
 				<field

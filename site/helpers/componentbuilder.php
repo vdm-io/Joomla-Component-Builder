@@ -2400,14 +2400,14 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	*	Get the file path or url
+	* Get the file path or url
 	* 
-	*	@param  string   $type              The (url/path) type to return
-	*	@param  string   $target            The Params Target name (if set)
-	*	@param  string   $default           The default path if not set in Params (fallback path)
-	*	@param  bool     $createIfNotSet    The switch to create the folder if not found
+	* @param  string   $type              The (url/path) type to return
+	* @param  string   $target            The Params Target name (if set)
+	* @param  string   $default           The default path if not set in Params (fallback path)
+	* @param  bool     $createIfNotSet    The switch to create the folder if not found
 	*
-	*	@return  string    On success the path or url is returned based on the type requested
+	* @return  string    On success the path or url is returned based on the type requested
 	* 
 	*/
 	public static function getFolderPath($type = 'path', $target = 'folderpath', $default = '', $createIfNotSet = true)
@@ -2448,7 +2448,7 @@ abstract class ComponentbuilderHelper
 	/**
 	* get the content of a file
 	*
-	* @param  string          $path    The path to the file
+	* @param  string        $path   The path to the file
 	* @param  string/bool   $none   The return value if no content was found
 	*
 	* @return  string   On success
@@ -2597,34 +2597,37 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	the locker
+	* the locker
 	*
-	*  	@var array 
+	* @var array 
 	**/
 	protected static $locker = array();
 
 	/**
-	* 	the dynamic replacement salt
+	* the dynamic replacement salt
 	*
-	*  	@var array 
+	* @var array 
 	**/
 	protected static $globalSalt = array();
 
 	/**
-	* 	the timer
+	* the timer
 	*
-	*  	@var object
+	* @var object
 	**/
 	protected static $keytimer;
 
 	/**
-	*	To Lock string
+	* To Lock string
 	*
-	*	@param string  $string       The string/array to lock
-	*	@param string  $key          The custom key to use
-	*	@param int      $salt           The switch to add salt and type of salt
-	*	@param int      $dynamic    The dynamic replacement array of salt build string
-	*	@param int      $urlencode  The switch to control url encoding
+	* @param string   $string     The string/array to lock
+	* @param string   $key        The custom key to use
+	* @param int      $salt       The switch to add salt and type of salt
+	* @param int      $dynamic    The dynamic replacement array of salt build string
+	* @param int      $urlencode  The switch to control url encoding
+	*
+	* @return string    Encrypted String
+	*
 	**/
 	public static function lock($string, $key = null, $salt = 2, $dynamic = null, $urlencode = true)
 	{
@@ -2638,13 +2641,13 @@ abstract class ComponentbuilderHelper
 			{
 				$timer = $salt;
 			}
+			// set the default key
+			$key = self::salt($timer, $dynamic);
+			// try getting the system key
 			if (method_exists(get_called_class(), "getCryptKey")) 
 			{
-				$key = self::getCryptKey('basic', self::salt($timer, $dynamic));
-			}
-			else
-			{
-				$key = self::salt($timer, $dynamic);
+				// try getting the medium key first the fall back to basic, and then default
+				$key = self::getCryptKey('medium', self::getCryptKey('basic', $key));
 			}
 		}
 		// check if we have a salt timer
@@ -2663,7 +2666,7 @@ abstract class ComponentbuilderHelper
 			$string = serialize($string);
 		}
 		// prep for url
-		if ($urlencode)
+		if ($urlencode && method_exists(get_called_class(), "base64_urlencode"))
 		{
 			return self::base64_urlencode(self::$locker[$key]->encryptString($string));
 		}
@@ -2671,13 +2674,16 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	To un-Lock string
+	* To un-Lock string
 	*
-	*	@param string  $string       The string to unlock
-	*	@param string  $key          The custom key to use
-	*	@param int      $salt           The switch to add salt and type of salt
-	*	@param int      $dynamic    The dynamic replacement array of salt build string
-	*	@param int      $urlencode  The switch to control url decoding
+	* @param string  $string       The string to unlock
+	* @param string  $key          The custom key to use
+	* @param int      $salt           The switch to add salt and type of salt
+	* @param int      $dynamic    The dynamic replacement array of salt build string
+	* @param int      $urlencode  The switch to control url decoding
+	*
+	* @return string    Decrypted String
+	*
 	**/
 	public static function unlock($string, $key = null, $salt = 2, $dynamic = null, $urlencode = true)
 	{
@@ -2691,14 +2697,13 @@ abstract class ComponentbuilderHelper
 			{
 				$timer = $salt;
 			}
-			// get secure key
+			// set the default key
+			$key = self::salt($timer, $dynamic);
+			// try getting the system key
 			if (method_exists(get_called_class(), "getCryptKey")) 
 			{
-				$key = self::getCryptKey('basic', self::salt($timer, $dynamic));
-			}
-			else
-			{
-				$key = self::salt($timer, $dynamic);
+				// try getting the medium key first the fall back to basic, and then default
+				$key = self::getCryptKey('medium', self::getCryptKey('basic', $key));
 			}
 		}
 		// check if we have a salt timer
@@ -2712,7 +2717,7 @@ abstract class ComponentbuilderHelper
 			self::$locker[$key] = new FOFEncryptAes($key, 128);
 		}
 		// make sure we have real base64
-		if ($urlencode)
+		if ($urlencode && method_exists(get_called_class(), "base64_urldecode"))
 		{
 			$string = self::base64_urldecode($string);
 		}
@@ -2730,10 +2735,13 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	The Salt
+	* The Salt
 	*
-	*	@param int      $type          The type of length the salt should be valid
-	*	@param int      $dynamic    The dynamic replacement array of salt build string
+	* @param int   $type      The type of length the salt should be valid
+	* @param int   $dynamic   The dynamic replacement array of salt build string
+	*
+	* @return string
+	*
 	**/
 	public static function salt($type = 1, $dynamic = null)
 	{
@@ -2778,9 +2786,9 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	The function to insure the salt is valid within the given period (third try)
+	* The function to insure the salt is valid within the given period (third try)
 	*
-	*	@param int $main    The main number
+	* @param int $main    The main number
 	*/
 	protected static function periodFix($main)
 	{
@@ -2788,8 +2796,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Check if a string is serialized
-	*	@param string $string
+	* Check if a string is serialized
+	*
+	* @param  string   $string
+	*
+	* @return Boolean
+	*
 	*/
 	public static function is_serial($string)
 	{
@@ -2797,7 +2809,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Get dynamic replacement salt
+	* Get dynamic replacement salt
 	*/
 	public static function getDynamicSalt($dynamic = null)
 	{
@@ -2814,7 +2826,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	The random or dynamic secret salt
+	* The random or dynamic secret salt
 	*/
 	public static function getSecretSalt($string = null, $size = 9)
 	{
@@ -2837,7 +2849,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Get global replacement salt
+	* Get global replacement salt
 	*/
 	public static function getGlobalSalt()
 	{
@@ -2877,7 +2889,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Close public protocol
+	* Close public protocol
 	*/
 	public static function closePublicProtocol($id, $public)
 	{
@@ -2904,7 +2916,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Open public protocol
+	* Open public protocol
 	*/
 	public static function openPublicProtocol($SECRET, $ID, $PUBLIC)
 	{
