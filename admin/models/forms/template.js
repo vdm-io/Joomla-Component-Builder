@@ -25,6 +25,7 @@ function vvvvvzb(add_php_view_vvvvvzb)
 	if (add_php_view_vvvvvzb == 1)
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').show();
+		// add required attribute to php_view field
 		if (jform_vvvvvzbvyv_required)
 		{
 			updateFieldRequired('php_view',0);
@@ -33,11 +34,11 @@ function vvvvvzb(add_php_view_vvvvvzb)
 			jQuery('#jform_php_view').addClass('required');
 			jform_vvvvvzbvyv_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').hide();
+		// remove required attribute from php_view field
 		if (!jform_vvvvvzbvyv_required)
 		{
 			updateFieldRequired('php_view',1);

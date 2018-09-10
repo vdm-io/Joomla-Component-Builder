@@ -70,6 +70,7 @@ function vvvvwap(datalenght_vvvvwap)
 	if (datalenght)
 	{
 		jQuery('#jform_datalenght_other').closest('.control-group').show();
+		// add required attribute to datalenght_other field
 		if (jform_vvvvwapvzx_required)
 		{
 			updateFieldRequired('datalenght_other',0);
@@ -78,11 +79,11 @@ function vvvvwap(datalenght_vvvvwap)
 			jQuery('#jform_datalenght_other').addClass('required');
 			jform_vvvvwapvzx_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_datalenght_other').closest('.control-group').hide();
+		// remove required attribute from datalenght_other field
 		if (!jform_vvvvwapvzx_required)
 		{
 			updateFieldRequired('datalenght_other',1);
@@ -125,6 +126,7 @@ function vvvvwaq(datadefault_vvvvwaq)
 	if (datadefault)
 	{
 		jQuery('#jform_datadefault_other').closest('.control-group').show();
+		// add required attribute to datadefault_other field
 		if (jform_vvvvwaqvzy_required)
 		{
 			updateFieldRequired('datadefault_other',0);
@@ -133,11 +135,11 @@ function vvvvwaq(datadefault_vvvvwaq)
 			jQuery('#jform_datadefault_other').addClass('required');
 			jform_vvvvwaqvzy_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_datadefault_other').closest('.control-group').hide();
+		// remove required attribute from datadefault_other field
 		if (!jform_vvvvwaqvzy_required)
 		{
 			updateFieldRequired('datadefault_other',1);
@@ -182,6 +184,7 @@ function vvvvwar(datatype_vvvvwar)
 		jQuery('#jform_datadefault').closest('.control-group').show();
 		jQuery('#jform_datalenght').closest('.control-group').show();
 		jQuery('#jform_indexes').closest('.control-group').show();
+		// add required attribute to indexes field
 		if (jform_vvvvwarvzz_required)
 		{
 			updateFieldRequired('indexes',0);
@@ -190,13 +193,13 @@ function vvvvwar(datatype_vvvvwar)
 			jQuery('#jform_indexes').addClass('required');
 			jform_vvvvwarvzz_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_datadefault').closest('.control-group').hide();
 		jQuery('#jform_datalenght').closest('.control-group').hide();
 		jQuery('#jform_indexes').closest('.control-group').hide();
+		// remove required attribute from indexes field
 		if (!jform_vvvvwarvzz_required)
 		{
 			updateFieldRequired('indexes',1);
@@ -239,6 +242,7 @@ function vvvvwas(datatype_vvvvwas)
 	if (datatype)
 	{
 		jQuery('#jform_store').closest('.control-group').show();
+		// add required attribute to store field
 		if (jform_vvvvwaswaa_required)
 		{
 			updateFieldRequired('store',0);
@@ -247,11 +251,11 @@ function vvvvwas(datatype_vvvvwas)
 			jQuery('#jform_store').addClass('required');
 			jform_vvvvwaswaa_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_store').closest('.control-group').hide();
+		// remove required attribute from store field
 		if (!jform_vvvvwaswaa_required)
 		{
 			updateFieldRequired('store',1);
@@ -342,6 +346,7 @@ function vvvvwav(add_css_view_vvvvwav)
 	if (add_css_view_vvvvwav == 1)
 	{
 		jQuery('#jform_css_view-lbl').closest('.control-group').show();
+		// add required attribute to css_view field
 		if (jform_vvvvwavwab_required)
 		{
 			updateFieldRequired('css_view',0);
@@ -350,11 +355,11 @@ function vvvvwav(add_css_view_vvvvwav)
 			jQuery('#jform_css_view').addClass('required');
 			jform_vvvvwavwab_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_css_view-lbl').closest('.control-group').hide();
+		// remove required attribute from css_view field
 		if (!jform_vvvvwavwab_required)
 		{
 			updateFieldRequired('css_view',1);
@@ -373,6 +378,7 @@ function vvvvwaw(add_css_views_vvvvwaw)
 	if (add_css_views_vvvvwaw == 1)
 	{
 		jQuery('#jform_css_views-lbl').closest('.control-group').show();
+		// add required attribute to css_views field
 		if (jform_vvvvwawwac_required)
 		{
 			updateFieldRequired('css_views',0);
@@ -381,11 +387,11 @@ function vvvvwaw(add_css_views_vvvvwaw)
 			jQuery('#jform_css_views').addClass('required');
 			jform_vvvvwawwac_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_css_views-lbl').closest('.control-group').hide();
+		// remove required attribute from css_views field
 		if (!jform_vvvvwawwac_required)
 		{
 			updateFieldRequired('css_views',1);
@@ -404,6 +410,7 @@ function vvvvwax(add_javascript_view_footer_vvvvwax)
 	if (add_javascript_view_footer_vvvvwax == 1)
 	{
 		jQuery('#jform_javascript_view_footer-lbl').closest('.control-group').show();
+		// add required attribute to javascript_view_footer field
 		if (jform_vvvvwaxwad_required)
 		{
 			updateFieldRequired('javascript_view_footer',0);
@@ -412,11 +419,11 @@ function vvvvwax(add_javascript_view_footer_vvvvwax)
 			jQuery('#jform_javascript_view_footer').addClass('required');
 			jform_vvvvwaxwad_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_javascript_view_footer-lbl').closest('.control-group').hide();
+		// remove required attribute from javascript_view_footer field
 		if (!jform_vvvvwaxwad_required)
 		{
 			updateFieldRequired('javascript_view_footer',1);
@@ -435,6 +442,7 @@ function vvvvway(add_javascript_views_footer_vvvvway)
 	if (add_javascript_views_footer_vvvvway == 1)
 	{
 		jQuery('#jform_javascript_views_footer-lbl').closest('.control-group').show();
+		// add required attribute to javascript_views_footer field
 		if (jform_vvvvwaywae_required)
 		{
 			updateFieldRequired('javascript_views_footer',0);
@@ -443,11 +451,11 @@ function vvvvway(add_javascript_views_footer_vvvvway)
 			jQuery('#jform_javascript_views_footer').addClass('required');
 			jform_vvvvwaywae_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_javascript_views_footer-lbl').closest('.control-group').hide();
+		// remove required attribute from javascript_views_footer field
 		if (!jform_vvvvwaywae_required)
 		{
 			updateFieldRequired('javascript_views_footer',1);

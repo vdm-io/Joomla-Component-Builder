@@ -4388,12 +4388,10 @@ class Interpretation extends Fields
 				{
 					if ($type !== 'static')
 					{
-						//var_dump($replacment); echo PHP_EOL;
 						$echos[$replacment] = "#" . "#" . "#" . $replacment . "#" . "#" . "#<br />";
 					}
 					elseif ($type === 'static')
 					{
-						//var_dump($replacment); echo PHP_EOL;
 						$echos[$replacment] = "#" . "#" . "#" . $replacment . "#" . "#" . "#<br />";
 					}
 				}
@@ -9228,7 +9226,7 @@ class Interpretation extends Fields
 							// set the if values
 							$ifValue[$matchName] = $this->ifValueScript($matchName, $condition['match_behavior'], $condition['match_type'], $options);
 							// set the target controls
-							$targetControls[$matchName] = $this->setTargetControlsScript($condition['target_field'], $targetBehavior, $targetDefault, $uniqueVar, $viewName);
+							$targetControls[$matchName] = $this->setTargetControlsScript($toggleSwitch[$matchName], $condition['target_field'], $targetBehavior, $targetDefault, $uniqueVar, $viewName);
 
 							foreach ($relations as $relation)
 							{
@@ -9266,7 +9264,7 @@ class Interpretation extends Fields
 						// set the if values
 						$ifValue[$matchName] = $this->ifValueScript($matchName, $condition['match_behavior'], $condition['match_type'], $options);
 						// set the target controls
-						$targetControls[$matchName] = $this->setTargetControlsScript($condition['target_field'], $targetBehavior, $targetDefault, $uniqueVar, $viewName);
+						$targetControls[$matchName] = $this->setTargetControlsScript($toggleSwitch[$matchName], $condition['target_field'], $targetBehavior, $targetDefault, $uniqueVar, $viewName);
 					}
 				}
 			}
@@ -9434,11 +9432,6 @@ class Interpretation extends Fields
 								}
 								$ifcounter++;
 							}
-							else
-							{
-								var_dump($functions);
-								var_dump($ifValue);exit;
-							}
 						}
 						$func .= ")" . PHP_EOL . $this->_t(1) . "{";
 					}
@@ -9451,19 +9444,21 @@ class Interpretation extends Fields
 					foreach ($controls as $target => $action)
 					{
 						$func .= $action['behavior'];
-						if (ComponentbuilderHelper::checkString($action['hide']))
+						if (ComponentbuilderHelper::checkString($action[$targetBehavior]))
 						{
 							$func .= $action[$targetBehavior];
 							$head .= $action['requiredVar'];
 						}
 					}
+					// check if this is a toggle switch
 					if ($toggleSwitch[$f_matchKeys[0]])
 					{
 						$func .= PHP_EOL . $this->_t(1) . "}" . PHP_EOL . $this->_t(1) . "else" . PHP_EOL . $this->_t(1) . "{";
+						// load the default behavior
 						foreach ($controls as $target => $action)
 						{
 							$func .= $action['default'];
-							if (ComponentbuilderHelper::checkString($action['hide']))
+							if (ComponentbuilderHelper::checkString($action[$targetDefault]))
 							{
 								$func .= $action[$targetDefault];
 							}
@@ -9680,7 +9675,7 @@ class Interpretation extends Fields
 		return false;
 	}
 
-	public function setTargetControlsScript($targets, $targetBehavior, $targetDefault, $uniqueVar, $viewName)
+	public function setTargetControlsScript($toggleSwitch, $targets, $targetBehavior, $targetDefault, $uniqueVar, $viewName)
 	{
 		$bucket = array();
 		if (ComponentbuilderHelper::checkArray($targets) && !in_array($uniqueVar, $this->targetControlsScriptChecker))
@@ -9725,25 +9720,48 @@ class Interpretation extends Fields
 					// the hide required function
 					if ($target['required'] === 'yes')
 					{
-						$hide = PHP_EOL . $this->_t(2) . "if (!jform_" . $unique . "_required)";
-						$hide .= PHP_EOL . $this->_t(2) . "{";
-						$hide .= PHP_EOL . $this->_t(3) . "updateFieldRequired('" . $target['name'] . "',1);";
-						$hide .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').removeAttr('required');";
-						$hide .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').removeAttr('aria-required');";
-						$hide .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').removeClass('required');";
-						$hide .= PHP_EOL . $this->_t(3) . "jform_" . $unique . "_required = true;";
-						$hide .= PHP_EOL . $this->_t(2) . "}";
-						$bucket[$target['name']]['hide'] = $hide;
-						// the show required function
-						$show = PHP_EOL . $this->_t(2) . "if (jform_" . $unique . "_required)";
-						$show .= PHP_EOL . $this->_t(2) . "{";
-						$show .= PHP_EOL . $this->_t(3) . "updateFieldRequired('" . $target['name'] . "',0);";
-						$show .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').prop('required','required');";
-						$show .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').attr('aria-required',true);";
-						$show .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').addClass('required');";
-						$show .= PHP_EOL . $this->_t(3) . "jform_" . $unique . "_required = false;";
-						$show .= PHP_EOL . $this->_t(2) . "}" . PHP_EOL;
-						$bucket[$target['name']]['show'] = $show;
+						if ($toggleSwitch)
+						{
+							$hide = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " remove required attribute from " . $target['name'] . " field";
+							$hide .= PHP_EOL . $this->_t(2) . "if (!jform_" . $unique . "_required)";
+							$hide .= PHP_EOL . $this->_t(2) . "{";
+							$hide .= PHP_EOL . $this->_t(3) . "updateFieldRequired('" . $target['name'] . "',1);";
+							$hide .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').removeAttr('required');";
+							$hide .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').removeAttr('aria-required');";
+							$hide .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').removeClass('required');";
+							$hide .= PHP_EOL . $this->_t(3) . "jform_" . $unique . "_required = true;";
+							$hide .= PHP_EOL . $this->_t(2) . "}";
+							$bucket[$target['name']]['hide'] = $hide;
+							// the show required function
+							$show = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " add required attribute to " . $target['name'] . " field";
+							$show .= PHP_EOL . $this->_t(2) . "if (jform_" . $unique . "_required)";
+							$show .= PHP_EOL . $this->_t(2) . "{";
+							$show .= PHP_EOL . $this->_t(3) . "updateFieldRequired('" . $target['name'] . "',0);";
+							$show .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').prop('required','required');";
+							$show .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').attr('aria-required',true);";
+							$show .= PHP_EOL . $this->_t(3) . "jQuery('#jform_" . $target['name'] . "').addClass('required');";
+							$show .= PHP_EOL . $this->_t(3) . "jform_" . $unique . "_required = false;";
+							$show .= PHP_EOL . $this->_t(2) . "}";
+							$bucket[$target['name']]['show'] = $show;
+						}
+						else
+						{
+							$hide = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " remove required attribute from " . $target['name'] . " field";
+							$hide .= PHP_EOL . $this->_t(2) . "updateFieldRequired('" . $target['name'] . "',1);";
+							$hide .= PHP_EOL . $this->_t(2) . "jQuery('#jform_" . $target['name'] . "').removeAttr('required');";
+							$hide .= PHP_EOL . $this->_t(2) . "jQuery('#jform_" . $target['name'] . "').removeAttr('aria-required');";
+							$hide .= PHP_EOL . $this->_t(2) . "jQuery('#jform_" . $target['name'] . "').removeClass('required');";
+							$hide .= PHP_EOL . $this->_t(2) . "jform_" . $unique . "_required = true;" . PHP_EOL;
+							$bucket[$target['name']]['hide'] = $hide;
+							// the show required function
+							$show = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " add required attribute to " . $target['name'] . " field";
+							$show .= PHP_EOL . $this->_t(2) . "updateFieldRequired('" . $target['name'] . "',0);";
+							$show .= PHP_EOL . $this->_t(2) . "jQuery('#jform_" . $target['name'] . "').prop('required','required');";
+							$show .= PHP_EOL . $this->_t(2) . "jQuery('#jform_" . $target['name'] . "').attr('aria-required',true);";
+							$show .= PHP_EOL . $this->_t(2) . "jQuery('#jform_" . $target['name'] . "').addClass('required');";
+							$show .= PHP_EOL . $this->_t(2) . "jform_" . $unique . "_required = false;" . PHP_EOL;
+							$bucket[$target['name']]['show'] = $show;
+						}
 						// make sure that the axaj and other needed things for this view is loaded
 						$this->validationFixBuilder[$viewName][] = $target['name'];
 					}
@@ -9860,7 +9878,6 @@ class Interpretation extends Fields
 							// TODO this needs a closer look, a bit buggy
 							$userFix = " && " . $value . " != 0";
 						}
-						//echo '<pre>'; var_dump($type);exit;
 						$string .= 'isSet(' . $value . ')' . $userFix;
 					}
 				}

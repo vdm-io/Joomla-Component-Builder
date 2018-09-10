@@ -2696,6 +2696,11 @@ class Get
 		{
 			return $this->uniqueFieldNames[$listViewName . $field['hash']];
 		}
+		// always make sure we have a field name and type
+		if (!isset($field['settings']) || !isset($field['settings']->type_name) || !isset($field['settings']->name))
+		{
+			return 'error';
+		}
 		// set the type name
 		$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
 		// set the name of the field

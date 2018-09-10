@@ -964,7 +964,7 @@ class Structure extends Get
 			}
 			$back = true;
 		}
-		// chekc if we had success
+		// check if we had success
 		if ($back || $front)
 		{
 			return true;
@@ -1308,9 +1308,11 @@ class Structure extends Get
 				// make we have not duplicates
 				$key_pointer = ComponentbuilderHelper::safeString($custom['folder']) . '_f' . $pointer_tracker;
 				$pointer_tracker++;
+				// fix custom path
+				$custom['path'] = ltrim($custom['path'], '/');
 				// set new folder to object
 				$versionData->move->static->$key_pointer = new stdClass();
-				$versionData->move->static->$key_pointer->naam = $custom['folder'];
+				$versionData->move->static->$key_pointer->naam = str_replace('//','/', $custom['folder']);
 				$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
 				$versionData->move->static->$key_pointer->rename = $rename;
 				$versionData->move->static->$key_pointer->newName = $newname;
@@ -1359,7 +1361,7 @@ class Structure extends Get
 				$pointer_tracker++;
 				// set new file to object
 				$versionData->move->static->$key_pointer = new stdClass();
-				$versionData->move->static->$key_pointer->naam = $custom['file'];
+				$versionData->move->static->$key_pointer->naam = str_replace('//','/',$custom['file']);
 				// update the dynamic component name placholders in file names
 				$custom['path'] = $this->setPlaceholders($custom['path'], $this->placeholders);
 				// get the path info
@@ -1374,6 +1376,9 @@ class Structure extends Get
 				}
 				elseif ('full' === $customPath)
 				{
+					// fix custom path
+					$custom['path'] = ltrim($custom['path'], '/');
+					// get file array
 					$fileArray = explode('/', $custom['file']);
 					// set the info
 					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
@@ -1383,7 +1388,7 @@ class Structure extends Get
 				else
 				{
 					// fix custom path
-					$custom['path'] = trim($custom['path'], '/');
+					$custom['path'] = ltrim($custom['path'], '/');
 					// set the info
 					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
 					$versionData->move->static->$key_pointer->rename = false;

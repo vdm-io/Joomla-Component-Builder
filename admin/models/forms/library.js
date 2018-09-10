@@ -98,6 +98,7 @@ function vvvvwai(how_vvvvwai)
 	if (how)
 	{
 		jQuery('#jform_php_setdocument').closest('.control-group').show();
+		// add required attribute to php_setdocument field
 		if (jform_vvvvwaivzv_required)
 		{
 			updateFieldRequired('php_setdocument',0);
@@ -106,11 +107,11 @@ function vvvvwai(how_vvvvwai)
 			jQuery('#jform_php_setdocument').addClass('required');
 			jform_vvvvwaivzv_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_php_setdocument').closest('.control-group').hide();
+		// remove required attribute from php_setdocument field
 		if (!jform_vvvvwaivzv_required)
 		{
 			updateFieldRequired('php_setdocument',1);
@@ -340,6 +341,7 @@ function vvvvwao(type_vvvvwao)
 	if (type_vvvvwao == 2)
 	{
 		jQuery('#jform_libraries').closest('.control-group').show();
+		// add required attribute to libraries field
 		if (jform_vvvvwaovzw_required)
 		{
 			updateFieldRequired('libraries',0);
@@ -348,11 +350,11 @@ function vvvvwao(type_vvvvwao)
 			jQuery('#jform_libraries').addClass('required');
 			jform_vvvvwaovzw_required = false;
 		}
-
 	}
 	else
 	{
 		jQuery('#jform_libraries').closest('.control-group').hide();
+		// remove required attribute from libraries field
 		if (!jform_vvvvwaovzw_required)
 		{
 			updateFieldRequired('libraries',1);
