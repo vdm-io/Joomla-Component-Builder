@@ -901,6 +901,10 @@ class Infusion extends Interpretation
 
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
+		
+					// set the site form if needed
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_TOP_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, 1);
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_BOTTOM_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, 2);
 				}
 				// setup the layouts
 				$this->setCustomViewLayouts();

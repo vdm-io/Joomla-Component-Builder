@@ -145,6 +145,13 @@ class Interpretation extends Fields
 	public $customAdminAdded = array();
 
 	/**
+	 * Switch to add form to site views
+	 *
+	 * @var    array
+	 */
+	public $addSiteForm = array();
+
+	/**
 	 * The extensions params
 	 *
 	 * @var    array
@@ -3307,15 +3314,11 @@ class Interpretation extends Fields
 		// set custom css file VIEWCSS
 		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_VIEWCSS' . $this->hhh] = $this->setCustomCSS($view);
 
+		// incase no buttons are found
+		$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_JAVASCRIPT_FOR_BUTTONS' . $this->hhh] = '';
+
 		// set the custom buttons CUSTOM_BUTTONS
 		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_CUSTOM_BUTTONS' . $this->hhh] = $this->setCustomButtons($view);
-
-		// only set the custom get form method if site target
-		if ('site' === $this->target)
-		{
-			// set the custom get form method  SITE_CUSTOM_GET_FORM_METHOD
-			$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_CUSTOM_GET_FORM_METHOD' . $this->hhh] = $this->setCustomGetForm($view);
-		}
 
 		// see if we should add get modules to the view.html
 		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_GET_MODULE' . $this->hhh] = $this->setGetModules($view, $TARGET);
@@ -3397,11 +3400,6 @@ class Interpretation extends Fields
 			return implode(PHP_EOL, $addModule);
 		}
 		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_GET_MODULE_JIMPORT' . $this->hhh] = '';
-		return '';
-	}
-
-	public function setCustomGetForm(&$view)
-	{
 		return '';
 	}
 
@@ -3498,9 +3496,9 @@ class Interpretation extends Fields
 					if (3 !== $type && ($custom_button['target'] != 2 || $this->target === 'site'))
 					{
 						// add cpanel button TODO does not work well on site with permissions
-						if ($custom_button['target'] == 2)
+						if ($custom_button['target'] == 2 || $this->target === 'site')
 						{
-							$buttons[] = $this->_t(1) . $tab . $this->_t(1) . "if (\$this->user->authorise('" . $viewName . "." . $keyCode . "'))";
+							$buttons[] = $this->_t(1) . $tab . $this->_t(1) . "if (\$this->user->authorise('" . $viewName . "." . $keyCode . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 						}
 						else
 						{
@@ -3580,10 +3578,30 @@ class Interpretation extends Fields
 			// return buttons if they were build
 			if (ComponentbuilderHelper::checkArray($buttons))
 			{
+				// only for site views
+				if ('site' === $this->target)
+				{
+					// set the custom get form method  SITE_JAVASCRIPT_FOR_BUTTONS
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_JAVASCRIPT_FOR_BUTTONS' . $this->hhh] = $this->setJavaScriptForButtons();
+					// insure the form is added
+					$this->addSiteForm[$view['settings']->code] = true;
+				}
 				return PHP_EOL . implode(PHP_EOL, $buttons);
 			}
 		}
 		return '';
+	}
+
+	public function setJavaScriptForButtons()
+	{
+		// add behavior.framework to insure Joomla function is on the page
+		$script = array();
+		$script[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Add the needed Javascript to insure that the buttons work.";
+		$script[] = $this->_t(2) . "JHtml::_('behavior.framework', true);";
+		$script[] = $this->_t(2) . "\$this->document->addScriptDeclaration(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
+
+		// return the script
+		return PHP_EOL . implode(PHP_EOL, $script);
 	}
 
 	public function setFunctionOnlyButtons($viewName_list)
@@ -4216,7 +4234,6 @@ class Interpretation extends Fields
 				}
 				$body[] = $this->setPlaceholders($view['settings']->default, $this->placeholders);
 				$body[] = PHP_EOL . '<?php if (isset($this->items) && isset($this->pagination) && isset($this->pagination->pagesTotal) && $this->pagination->pagesTotal > 1): ?>';
-				$body[] = '<form name="adminForm" method="post">';
 				$body[] = $this->_t(1) . '<div class="pagination">';
 				$body[] = $this->_t(2) . '<?php if ($this->params->def(\'show_pagination_results\', 1)) : ?>';
 
@@ -4231,14 +4248,34 @@ class Interpretation extends Fields
 				$body[] = $this->_t(2) . '<?php endif; ?>';
 				$body[] = $this->_t(2) . '<?php echo $this->pagination->getPagesLinks(); ?>';
 				$body[] = $this->_t(1) . '</div>';
-				$body[] = '</form>';
 				$body[] = '<?php endif; ?>';
-
+				// insure the form is added
+				$this->addSiteForm[$view['settings']->code] = true;
+				// return the body
 				return implode(PHP_EOL, $body);
 			}
 			else
 			{
 				return PHP_EOL . $this->setPlaceholders($view['settings']->default, $this->placeholders);
+			}
+		}
+		return '';
+	}
+	
+	public function setCustomViewForm(&$view, $type)
+	{
+		if (isset($this->addSiteForm[$view]) && $this->addSiteForm[$view])
+		{
+			switch($type)
+			{
+				case 1:
+					// top
+					return '<form action="<?php echo JRoute::_(\'index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '\'); ?>" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
+					break;
+				case 2:
+					// bottom
+					return PHP_EOL . '<input type="hidden" name="task" value="" />' . PHP_EOL . "<?php echo JHtml::_('form.token'); ?>" . PHP_EOL . '</form>';
+					break;
 			}
 		}
 		return '';

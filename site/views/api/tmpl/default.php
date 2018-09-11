@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access'); 
 
 ?>
- 
+  
 <div class="uk-alert uk-alert-danger" data-uk-alert>
     <h2><?php echo JText::_('COM_COMPONENTBUILDER_ERROR'); ?></h2>
 </div>  

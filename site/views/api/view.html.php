@@ -77,7 +77,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 			$this->document->addScript(JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		}     
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/components/com_componentbuilder/assets/css/api.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
+		$this->document->addStyleSheet(JURI::root(true) .'/components/com_componentbuilder/assets/css/api.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');  
 	}
 
 	/**
