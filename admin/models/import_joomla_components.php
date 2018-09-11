@@ -1451,7 +1451,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// convert back to json
 			if ($isJsonTarget)
 			{
-				$item[$target] = json_encode($item[$target]);
+				$item[$target] = json_encode($item[$target], JSON_FORCE_OBJECT);
 			}
 		}
 		elseif (ComponentbuilderHelper::checkObject($item) && isset($item->{$target}))
@@ -1511,7 +1511,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// convert back to json
 			if ($isJsonTarget)
 			{
-				$item->{$target} = json_encode($item->{$target});
+				$item->{$target} = json_encode($item->{$target}, JSON_FORCE_OBJECT);
 			}
 		}
 		// return as json if received as json
@@ -2110,7 +2110,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if (isset($components) && ComponentbuilderHelper::checkArray($components))
 				{
 					// load it back
-					$item->components = json_encode(array_values($components));
+					$item->components = json_encode(array_values($components), JSON_FORCE_OBJECT);
 				}
 				// merge the translations where needed
 				if (isset($item->translation) && isset($item->localTranslation) 
