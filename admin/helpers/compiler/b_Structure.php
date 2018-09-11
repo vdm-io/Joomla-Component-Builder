@@ -818,6 +818,13 @@ class Structure extends Get
 					}
 					else
 					{
+						// get base name && get the path only
+						$packageFullPath0nly = str_replace(basename($packageFullPath), '', $packageFullPath);
+						// check if path exist, if not creat it
+						if (!JFolder::exists($packageFullPath0nly))
+						{
+							JFolder::create($packageFullPath0nly);
+						}
 						// move the file to its place
 						JFile::copy($currentFullPath, $packageFullPath);
 						// count the file created
@@ -838,7 +845,7 @@ class Structure extends Get
 					else
 					{
 						// move the folder to its place
-						JFolder::copy($currentFullPath, $packageFullPath);
+						JFolder::copy($currentFullPath, $packageFullPath, '', true);
 						// count the folder created
 						$this->folderCount++;
 					}
