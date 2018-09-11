@@ -86,7 +86,7 @@ class ComponentbuilderModelCompiler extends JModelList
 			// redirect away if not a correct (TODO for now we go to default view)
 			$app->redirect('index.php?option=com_componentbuilder');
 			return false;
-		} 
+		}
 		// load parent items
 		$items = parent::getItems();
 
@@ -113,7 +113,7 @@ class ComponentbuilderModelCompiler extends JModelList
 				// Checking if copyright has uikit components that must be loaded.
 				$this->uikitComp = ComponentbuilderHelper::getUikitComp($item->copyright,$this->uikitComp);
 			}
-		} 
+		}
 
 		// return items
 		return $items;
@@ -132,7 +132,7 @@ class ComponentbuilderModelCompiler extends JModelList
 			return $this->uikitComp;
 		}
 		return false;
-	}  
+	}
 
 	public $compiler;
 

@@ -39,5 +39,5 @@ class ComponentbuilderControllerComponents_files_folders extends JControllerAdmi
 	public function getModel($name = 'Component_files_folders', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

@@ -37,7 +37,7 @@ class ComponentbuilderTableComponent_files_folders extends JTable
 		parent::__construct('#__componentbuilder_component_files_folders', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.component_files_folders')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.component_files_folders'));
 	}	
  
 	public function bind($array, $ignore = '')

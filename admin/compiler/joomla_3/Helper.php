@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
  * ###Component### component helper.
  */
 abstract class ###Component###Helper
-{###ADMIN_GLOBAL_EVENT_HELPER### ###CUSTOM_HELPER_SCRIPT### ###BOTH_CUSTOM_HELPER_SCRIPT###
+{###ADMIN_GLOBAL_EVENT_HELPER######CUSTOM_HELPER_SCRIPT######BOTH_CUSTOM_HELPER_SCRIPT###
 	/**
 	*	Load the Component xml manifest.
 	**/
@@ -96,7 +96,7 @@ abstract class ###Component###Helper
 		$user = JFactory::getUser();
 		// load the submenus to sidebar
 		###SUBMENU###
-	}###HELPER_CREATEUSER### ###HELPER_UIKIT### ###HELPER_EXEL###
+	}###HELPER_CREATEUSER######HELPER_UIKIT######HELPER_EXEL###
 
 	/**
 	 * Get a Variable 

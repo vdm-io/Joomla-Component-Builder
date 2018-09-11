@@ -134,7 +134,7 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -387,7 +387,7 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -677,7 +677,7 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -809,7 +809,7 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the dashboard_tab items to data.
 		if (isset($data['dashboard_tab']) && is_array($data['dashboard_tab']))

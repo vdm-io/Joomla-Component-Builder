@@ -126,7 +126,7 @@ class ComponentbuilderModelValidation_rule extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -377,7 +377,7 @@ class ComponentbuilderModelValidation_rule extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -667,7 +667,7 @@ class ComponentbuilderModelValidation_rule extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -799,7 +799,7 @@ class ComponentbuilderModelValidation_rule extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the php string to base64 string.
 		if (isset($data['php']))

@@ -39,5 +39,5 @@ class ComponentbuilderControllerComponents_dashboard extends JControllerAdmin
 	public function getModel($name = 'Component_dashboard', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

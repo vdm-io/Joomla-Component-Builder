@@ -64,7 +64,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		$HeaderCheck = new componentbuilderHeaderCheck;
 
 		// Add View JavaScript File
-		$this->document->addScript(JURI::root(true) . "/administrator/components/com_componentbuilder/assets/js/get_snippets.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript"); 
+		$this->document->addScript(JURI::root(true) . "/administrator/components/com_componentbuilder/assets/js/get_snippets.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -117,7 +117,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 					}
 				}
 			}
-		}   
+		}
 		// load the local snippets
 		if (ComponentbuilderHelper::checkArray($this->items))
 		{
@@ -239,7 +239,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			$this->document->addScriptDeclaration("var local_snippets = ". json_encode($local_snippets).";");
 		}
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/get_snippets.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
+		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/get_snippets.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 	}
 
 	/**

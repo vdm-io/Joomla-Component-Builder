@@ -115,7 +115,7 @@ class ###Component###View###View### extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/###view###.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###AJAXTOKE### ###LINKEDVIEWTABLESCRIPTS###
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/###view###.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
 		$this->document->addScript(JURI::root() . $this->script, (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_###component###/views/###view###/submitbutton.js", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); ###DOCUMENT_CUSTOM_PHP###
 		JText::script('view not acceptable. Error');

@@ -245,7 +245,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -549,7 +549,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			}
 		}
 		return parent::validate($form, $data, $group);
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -839,7 +839,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -971,7 +971,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// always reset the snippets
 		$data['snippet'] = 0;

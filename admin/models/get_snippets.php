@@ -94,7 +94,7 @@ class ComponentbuilderModelGet_snippets extends JModelList
 			// redirect away if not a correct (TODO for now we go to default view)
 			$app->redirect('index.php?option=com_componentbuilder');
 			return false;
-		} 
+		}
 		// load parent items
 		$items = parent::getItems();
 
@@ -109,7 +109,7 @@ class ComponentbuilderModelGet_snippets extends JModelList
 				// Always create a slug for sef URL's
 				$item->slug = (isset($item->alias) && isset($item->id)) ? $item->id.':'.$item->alias : $item->id;
 			}
-		} 
+		}
 
 		// return items
 		return $items;
@@ -128,5 +128,5 @@ class ComponentbuilderModelGet_snippets extends JModelList
 			return $this->uikitComp;
 		}
 		return false;
-	}  
+	}
 }

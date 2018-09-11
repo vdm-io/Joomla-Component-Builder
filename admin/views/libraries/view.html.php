@@ -116,7 +116,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -131,7 +131,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 		{
 			// add Get Snippets button.
 			JToolBarHelper::custom('libraries.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
-		} 
+		}
 
 		// set help url for this view if found
 		$help_url = ComponentbuilderHelper::getHelpUrl('libraries');
@@ -177,7 +177,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 
 		// Set How Selection
 		$this->howOptions = JFormHelper::loadFieldType('Filebehaviour')->getOptions();

@@ -37,7 +37,7 @@ class ComponentbuilderTableValidation_rule extends JTable
 		parent::__construct('#__componentbuilder_validation_rule', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.validation_rule')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.validation_rule'));
 	}	
  
 	public function bind($array, $ignore = '')

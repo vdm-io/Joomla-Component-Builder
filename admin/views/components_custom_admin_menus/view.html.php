@@ -116,7 +116,7 @@ class ComponentbuilderViewComponents_custom_admin_menus extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -126,7 +126,7 @@ class ComponentbuilderViewComponents_custom_admin_menus extends JViewLegacy
 			{
 				JToolbarHelper::trash('components_custom_admin_menus.trash');
 			}
-		} 
+		}
 
 		// set help url for this view if found
 		$help_url = ComponentbuilderHelper::getHelpUrl('components_custom_admin_menus');
@@ -172,7 +172,7 @@ class ComponentbuilderViewComponents_custom_admin_menus extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 	}
 
 	/**

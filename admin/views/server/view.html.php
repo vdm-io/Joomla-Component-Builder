@@ -188,7 +188,7 @@ class ComponentbuilderViewServer extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_SERVER_NEW' : 'COM_COMPONENTBUILDER_SERVER_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/server.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/server.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 
 		// Add the CSS for Footable
 		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');

@@ -187,7 +187,7 @@ class ComponentbuilderViewDynamic_get extends JViewLegacy
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_DYNAMIC_GET_NEW' : 'COM_COMPONENTBUILDER_DYNAMIC_GET_EDIT'));
 		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/dynamic_get.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 		// Add Ajax Token
-		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';");
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/dynamic_get/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 

@@ -39,5 +39,5 @@ class ComponentbuilderControllerAdmins_custom_tabs extends JControllerAdmin
 	public function getModel($name = 'Admin_custom_tabs', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

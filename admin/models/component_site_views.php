@@ -128,7 +128,7 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -381,7 +381,7 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -671,7 +671,7 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -803,7 +803,7 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the addsite_views items to data.
 		if (isset($data['addsite_views']) && is_array($data['addsite_views']))

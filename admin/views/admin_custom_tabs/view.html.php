@@ -185,7 +185,7 @@ class ComponentbuilderViewAdmin_custom_tabs extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_CUSTOM_TABS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_CUSTOM_TABS_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_custom_tabs.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_custom_tabs.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_custom_tabs/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 		JText::script('view not acceptable. Error');

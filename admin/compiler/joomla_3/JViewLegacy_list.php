@@ -116,7 +116,7 @@ class ###Component###View###Views### extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			}###CUSTOM_ADMIN_DYNAMIC_BUTTONS### ###ADMIN_CUSTOM_BUTTONS_LIST###
+			}###CUSTOM_ADMIN_DYNAMIC_BUTTONS######ADMIN_CUSTOM_BUTTONS_LIST###
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -126,7 +126,7 @@ class ###Component###View###Views### extends JViewLegacy
 			{
 				JToolbarHelper::trash('###views###.trash');
 			}###EXPORTBUTTON###
-		}###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST### ###IMPORTBUTTON###
+		}###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST######IMPORTBUTTON###
 
 		// set help url for this view if found
 		$help_url = ###Component###Helper::getHelpUrl('###views###');
@@ -172,7 +172,7 @@ class ###Component###View###Views### extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		}###CATEGORYFILTER### ###OTHERFILTERS###
+		}###CATEGORYFILTER######OTHERFILTERS###
 	}
 
 	/**

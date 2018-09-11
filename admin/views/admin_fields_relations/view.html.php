@@ -187,7 +187,7 @@ class ComponentbuilderViewAdmin_fields_relations extends JViewLegacy
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_EDIT'));
 		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_fields_relations.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 		// Add Ajax Token
-		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';");
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_fields_relations/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 		JText::script('view not acceptable. Error');

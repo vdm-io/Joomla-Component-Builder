@@ -128,7 +128,7 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -381,7 +381,7 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -671,7 +671,7 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -803,7 +803,7 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the version_update items to data.
 		if (isset($data['version_update']) && is_array($data['version_update']))

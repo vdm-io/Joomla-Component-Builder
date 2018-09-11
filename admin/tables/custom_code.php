@@ -37,7 +37,7 @@ class ComponentbuilderTableCustom_code extends JTable
 		parent::__construct('#__componentbuilder_custom_code', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.custom_code')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.custom_code'));
 	}	
  
 	public function bind($array, $ignore = '')

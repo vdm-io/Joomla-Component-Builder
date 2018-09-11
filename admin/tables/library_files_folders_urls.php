@@ -37,7 +37,7 @@ class ComponentbuilderTableLibrary_files_folders_urls extends JTable
 		parent::__construct('#__componentbuilder_library_files_folders_urls', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.library_files_folders_urls')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.library_files_folders_urls'));
 	}	
  
 	public function bind($array, $ignore = '')

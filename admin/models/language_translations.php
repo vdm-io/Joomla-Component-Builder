@@ -79,7 +79,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -99,7 +99,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 				}
 
 			}
-		}  
+		}
 			// show all languages that are already set for this string
 			if (!isset($_export) && ComponentbuilderHelper::checkArray($items))
 			{
@@ -447,7 +447,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			}
 		}
 		return $headers;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.

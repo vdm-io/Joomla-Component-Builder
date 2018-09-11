@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
  * ###Component### component helper
  */
 abstract class ###Component###Helper
-{###SITE_GLOBAL_EVENT_HELPER### ###SITE_CUSTOM_HELPER_SCRIPT### ###BOTH_CUSTOM_HELPER_SCRIPT###
+{###SITE_GLOBAL_EVENT_HELPER######SITE_CUSTOM_HELPER_SCRIPT######BOTH_CUSTOM_HELPER_SCRIPT###
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
@@ -459,7 +459,7 @@ abstract class ###Component###Helper
 			'0' => isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO');
 		// return the input
 		return self::getFieldObject($buttonAttributes, $buttonAttributes['default'], $buttonOptions)->input;
-	}###HELPER_UIKIT### ###HELPER_CREATEUSER###
+	}###HELPER_UIKIT######HELPER_CREATEUSER###
 
 	/**
 	 * Get a variable 

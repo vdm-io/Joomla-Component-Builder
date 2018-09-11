@@ -97,7 +97,7 @@ class ComponentbuilderModelAdmin_custom_tabs extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -350,7 +350,7 @@ class ComponentbuilderModelAdmin_custom_tabs extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -640,7 +640,7 @@ class ComponentbuilderModelAdmin_custom_tabs extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -772,7 +772,7 @@ class ComponentbuilderModelAdmin_custom_tabs extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the tabs items to data.
 		if (isset($data['tabs']) && is_array($data['tabs']))

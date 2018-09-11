@@ -258,7 +258,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -562,7 +562,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			}
 		}
 		return parent::validate($form, $data, $group);
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -852,7 +852,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -984,7 +984,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the join_db_table items to data.
 		if (isset($data['join_db_table']) && is_array($data['join_db_table']))

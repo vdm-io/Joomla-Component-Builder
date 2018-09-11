@@ -123,7 +123,7 @@ class ###Component###View###View### extends JViewLegacy
 		$this->document->addStyleSheet(JURI::root()."administrator/templates/isis/css/template.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 		$this->document->addScript(JURI::root()."administrator/templates/isis/js/template.js", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		// the default style of this view
-		$this->document->addStyleSheet(JURI::root()."components/com_###component###/assets/css/###view###.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###AJAXTOKE### ###LINKEDVIEWTABLESCRIPTS###
+		$this->document->addStyleSheet(JURI::root()."components/com_###component###/assets/css/###view###.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
 		// default javascript of this view
 		$this->document->addScript(JURI::root().$this->script, (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root(). "components/com_###component###/views/###view###/submitbutton.js", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); ###DOCUMENT_CUSTOM_PHP###

@@ -185,7 +185,7 @@ class ComponentbuilderViewSnippet_type extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_SNIPPET_TYPE_NEW' : 'COM_COMPONENTBUILDER_SNIPPET_TYPE_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/snippet_type.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/snippet_type.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/snippet_type/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 		JText::script('view not acceptable. Error');

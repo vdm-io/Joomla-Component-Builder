@@ -37,9 +37,9 @@ class ###Component###View###SView### extends JViewLegacy
 	 * Prepares the document
 	 */
 	protected function _prepareDocument()
-	{###SITE_LIBRARIES_LOADER### ###SITE_UIKIT_LOADER### ###SITE_GOOGLECHART_LOADER### ###SITE_FOOTABLE_LOADER### ###SITE_DOCUMENT_METADATA### ###SITE_DOCUMENT_CUSTOM_PHP### 
+	{###SITE_LIBRARIES_LOADER######SITE_UIKIT_LOADER######SITE_GOOGLECHART_LOADER######SITE_FOOTABLE_LOADER######SITE_DOCUMENT_METADATA######SITE_DOCUMENT_CUSTOM_PHP### 
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/components/com_###component###/assets/css/###sview###.css', (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###SITE_DOCUMENT_CUSTOM_CSS### ###SITE_DOCUMENT_CUSTOM_JS### ###SITE_JAVASCRIPT_FOR_BUTTONS###
+		$this->document->addStyleSheet(JURI::root(true) .'/components/com_###component###/assets/css/###sview###.css', (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###SITE_DOCUMENT_CUSTOM_CSS######SITE_DOCUMENT_CUSTOM_JS######SITE_JAVASCRIPT_FOR_BUTTONS###
 	}
 
 	/**

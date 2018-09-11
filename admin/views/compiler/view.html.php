@@ -172,7 +172,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
-		$HeaderCheck = new componentbuilderHeaderCheck; 
+		$HeaderCheck = new componentbuilderHeaderCheck;
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -217,7 +217,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 					}
 				}
 			}
-		}   
+		}
 		// add marked library
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
 		// add the document default css file
@@ -227,7 +227,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			.j-sidebar-container {
 			margin: -37px 0 0 -1px !important;
 			}
-		"); 
+		");
 		// Set the Custom JS script to view
 		$this->document->addScriptDeclaration("
 			function getComponentDetails_server(id){

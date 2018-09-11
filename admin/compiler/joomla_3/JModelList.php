@@ -78,9 +78,9 @@ class ###Component###Model###Views### extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{###LICENSE_LOCKED_CHECK### ###CHECKINCALL###
+	{###LICENSE_LOCKED_CHECK######CHECKINCALL###
 		// load parent items
-		$items = parent::getItems();###GET_ITEMS_METHOD_STRING_FIX### ###SELECTIONTRANSLATIONFIX### ###GET_ITEMS_METHOD_AFTER_ALL###
+		$items = parent::getItems();###GET_ITEMS_METHOD_STRING_FIX######SELECTIONTRANSLATIONFIX######GET_ITEMS_METHOD_AFTER_ALL###
         
 		// return items
 		return $items;
@@ -94,7 +94,7 @@ class ###Component###Model###Views### extends JModelList
 	protected function getListQuery()
 	{###LICENSE_LOCKED_CHECK###
 		###LISTQUERY###
-	}###MODELEXPORTMETHOD### ###LICENSE_LOCKED_SET_BOOL###
+	}###MODELEXPORTMETHOD######LICENSE_LOCKED_SET_BOOL###
 	
 	/**
 	 * Method to get a store id based on model configuration state.

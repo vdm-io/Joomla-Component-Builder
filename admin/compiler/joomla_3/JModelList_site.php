@@ -62,14 +62,14 @@ class ###Component###Model###SViews### extends JModelList
 	 */
 	public function getItems()
 	{
-		$user = JFactory::getUser();###USER_PERMISSION_CHECK_ACCESS### ###LICENSE_LOCKED_CHECK### ###SITE_BEFORE_GET_ITEMS###
+		$user = JFactory::getUser();###USER_PERMISSION_CHECK_ACCESS######LICENSE_LOCKED_CHECK######SITE_BEFORE_GET_ITEMS###
 		// load parent items
 		$items = parent::getItems();
 
 		// Get the global params
-		$globalParams = JComponentHelper::getParams('com_###component###', true);###SITE_GET_ITEMS### ###SITE_AFTER_GET_ITEMS###
+		$globalParams = JComponentHelper::getParams('com_###component###', true);###SITE_GET_ITEMS######SITE_AFTER_GET_ITEMS###
 
 		// return items
 		return $items;
-	}###LICENSE_LOCKED_SET_BOOL### ###SITE_CUSTOM_METHODS### ###SITE_CUSTOM_BUTTONS_METHOD### ###SITE_CUSTOM_GET_FORM_METHOD###
+	}###LICENSE_LOCKED_SET_BOOL######SITE_CUSTOM_METHODS######SITE_CUSTOM_BUTTONS_METHOD###
 }

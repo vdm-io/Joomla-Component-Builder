@@ -39,5 +39,5 @@ class ComponentbuilderControllerComponents_custom_admin_menus extends JControlle
 	public function getModel($name = 'Component_custom_admin_menus', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

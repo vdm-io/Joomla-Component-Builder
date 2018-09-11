@@ -116,7 +116,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 			if ($this->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder'))
 			{
 				// add Export JCB Packages button.
@@ -151,7 +151,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		{
 			// add Import JCB Packages button.
 			JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_JCB_PACKAGES', false);
-		} 
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_component.import'))
 		{
@@ -202,7 +202,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 
 		// Set Companyname Selection
 		$this->companynameOptions = $this->getTheCompanynameSelections();

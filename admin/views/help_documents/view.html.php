@@ -116,7 +116,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -131,7 +131,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 			{
 				JToolBarHelper::custom('help_documents.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-		} 
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('help_document.import'))
 		{
@@ -182,7 +182,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();

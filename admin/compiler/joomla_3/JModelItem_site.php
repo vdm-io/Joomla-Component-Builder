@@ -116,5 +116,5 @@ class ###Component###Model###SView### extends JModelItem
 		}###SITE_AFTER_GET_ITEM###
 
 		return $this->_item[$pk];
-	}###LICENSE_LOCKED_SET_BOOL### ###SITE_CUSTOM_METHODS### ###SITE_CUSTOM_BUTTONS_METHOD### ###SITE_CUSTOM_GET_FORM_METHOD###
+	}###LICENSE_LOCKED_SET_BOOL######SITE_CUSTOM_METHODS######SITE_CUSTOM_BUTTONS_METHOD###
 }

@@ -39,5 +39,5 @@ class ComponentbuilderControllerAdmins_fields_relations extends JControllerAdmin
 	public function getModel($name = 'Admin_fields_relations', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

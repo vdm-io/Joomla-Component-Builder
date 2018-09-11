@@ -103,7 +103,7 @@ class ComponentbuilderModelSite_views extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -123,7 +123,7 @@ class ComponentbuilderModelSite_views extends JModelList
 				}
 
 			}
-		} 
+		}
 
 		// set selection value to a translatable value
 		if (ComponentbuilderHelper::checkArray($items))
@@ -136,7 +136,7 @@ class ComponentbuilderModelSite_views extends JModelList
 				$item->add_custom_button = $this->selectionTranslation($item->add_custom_button, 'add_custom_button');
 			}
 		}
- 
+
         
 		// return items
 		return $items;
@@ -388,7 +388,7 @@ class ComponentbuilderModelSite_views extends JModelList
 			return $headers;
 		}
 		return false;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.

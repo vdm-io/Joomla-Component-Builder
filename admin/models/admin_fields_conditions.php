@@ -117,7 +117,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -370,7 +370,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -660,7 +660,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -792,7 +792,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the addconditions items to data.
 		if (isset($data['addconditions']) && is_array($data['addconditions']))

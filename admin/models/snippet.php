@@ -95,7 +95,7 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -346,7 +346,7 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -636,7 +636,7 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -768,7 +768,7 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// set the contributor details if not set
 		if (strlen($data['contributor_company']) < 1 || strlen($data['contributor_name']) < 1 || strlen($data['contributor_email']) < 3 || strlen($data['contributor_website']) < 3)

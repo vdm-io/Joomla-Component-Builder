@@ -116,7 +116,7 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -136,7 +136,7 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 		{
 			// add Get Snippets button.
 			JToolBarHelper::custom('site_views.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
-		} 
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('site_view.import'))
 		{
@@ -187,7 +187,7 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 
 		// Set Main Get Name Selection
 		$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->getOptions();

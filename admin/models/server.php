@@ -228,7 +228,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 			return $items;
 		}
 		return false;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -517,7 +517,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 			}
 		}
 		return parent::validate($form, $data, $group);
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -807,7 +807,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -939,7 +939,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Get the basic encryption key.
 		$basickey = ComponentbuilderHelper::getCryptKey('basic');

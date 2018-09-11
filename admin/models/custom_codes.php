@@ -95,7 +95,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -132,7 +132,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 					$item->type = 2;
 				}
 			}
-		} 
+		}
 
 		// set selection value to a translatable value
 		if (ComponentbuilderHelper::checkArray($items))
@@ -147,7 +147,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				$item->comment_type = $this->selectionTranslation($item->comment_type, 'comment_type');
 			}
 		}
- 
+
         
 		// return items
 		return $items;
@@ -412,7 +412,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 			return $headers;
 		}
 		return false;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.

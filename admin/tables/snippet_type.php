@@ -37,7 +37,7 @@ class ComponentbuilderTableSnippet_type extends JTable
 		parent::__construct('#__componentbuilder_snippet_type', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.snippet_type')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.snippet_type'));
 	}	
  
 	public function bind($array, $ignore = '')

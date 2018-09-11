@@ -39,5 +39,5 @@ class ComponentbuilderControllerComponents_custom_admin_views extends JControlle
 	public function getModel($name = 'Component_custom_admin_views', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

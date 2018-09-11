@@ -37,7 +37,7 @@ class ComponentbuilderTableComponent_custom_admin_menus extends JTable
 		parent::__construct('#__componentbuilder_component_custom_admin_menus', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.component_custom_admin_menus')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.component_custom_admin_menus'));
 	}	
  
 	public function bind($array, $ignore = '')

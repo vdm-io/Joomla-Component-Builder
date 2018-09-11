@@ -116,7 +116,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -131,7 +131,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 			{
 				JToolBarHelper::custom('dynamic_gets.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
-		} 
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('dynamic_get.import'))
 		{
@@ -182,7 +182,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 
 		// Set Main Source Selection
 		$this->main_sourceOptions = $this->getTheMain_sourceSelections();

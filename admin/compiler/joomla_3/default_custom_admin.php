@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED### ###CUSTOM_ADMIN_CODE_BODY###
+defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED######CUSTOM_ADMIN_CODE_BODY###
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');

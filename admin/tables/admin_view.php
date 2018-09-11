@@ -37,7 +37,7 @@ class ComponentbuilderTableAdmin_view extends JTable
 		parent::__construct('#__componentbuilder_admin_view', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.admin_view')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.admin_view'));
 	}	
  
 	public function bind($array, $ignore = '')

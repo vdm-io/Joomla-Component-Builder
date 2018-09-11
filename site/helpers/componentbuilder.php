@@ -25,7 +25,7 @@ abstract class ComponentbuilderHelper
 	{
 		// the Session keeps track of all data related to the current session of this user
 		self::loadSession();
-	}  
+	}
 
 	/**
 	* 	Locked Libraries (we can not have these change)
@@ -4439,7 +4439,7 @@ abstract class ComponentbuilderHelper
 			return $classes;
 		}
 		return false;
-	} 
+	}
 
 	/**
 	 * Get a variable 

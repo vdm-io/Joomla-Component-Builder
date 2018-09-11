@@ -37,7 +37,7 @@ class ComponentbuilderTableTemplate extends JTable
 		parent::__construct('#__componentbuilder_template', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.template')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.template'));
 	}	
  
 	public function bind($array, $ignore = '')

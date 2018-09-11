@@ -37,7 +37,7 @@ class ComponentbuilderTableLanguage extends JTable
 		parent::__construct('#__componentbuilder_language', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.language')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.language'));
 	}	
  
 	public function bind($array, $ignore = '')

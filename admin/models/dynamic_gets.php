@@ -87,7 +87,7 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -107,7 +107,7 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 				}
 
 			}
-		} 
+		}
 
 		// set selection value to a translatable value
 		if (ComponentbuilderHelper::checkArray($items))
@@ -120,7 +120,7 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 				$item->gettype = $this->selectionTranslation($item->gettype, 'gettype');
 			}
 		}
- 
+
         
 		// return items
 		return $items;
@@ -359,7 +359,7 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 			return $headers;
 		}
 		return false;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.

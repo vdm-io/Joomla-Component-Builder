@@ -39,5 +39,5 @@ class ComponentbuilderControllerSnippet_types extends JControllerAdmin
 	public function getModel($name = 'Snippet_type', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

@@ -116,7 +116,7 @@ class ComponentbuilderViewAdmins_fields_relations extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -126,7 +126,7 @@ class ComponentbuilderViewAdmins_fields_relations extends JViewLegacy
 			{
 				JToolbarHelper::trash('admins_fields_relations.trash');
 			}
-		} 
+		}
 
 		// set help url for this view if found
 		$help_url = ComponentbuilderHelper::getHelpUrl('admins_fields_relations');
@@ -172,7 +172,7 @@ class ComponentbuilderViewAdmins_fields_relations extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 	}
 
 	/**

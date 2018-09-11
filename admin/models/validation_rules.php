@@ -83,7 +83,7 @@ class ComponentbuilderModelValidation_rules extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -103,7 +103,7 @@ class ComponentbuilderModelValidation_rules extends JModelList
 				}
 
 			}
-		}  
+		}
         
 		// return items
 		return $items;
@@ -278,7 +278,7 @@ class ComponentbuilderModelValidation_rules extends JModelList
 			return $headers;
 		}
 		return false;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.

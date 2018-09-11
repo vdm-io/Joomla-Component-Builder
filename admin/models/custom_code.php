@@ -95,7 +95,7 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -401,7 +401,7 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 			}
 		}
 		return parent::validate($form, $data, $group);
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -691,7 +691,7 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -823,7 +823,7 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the code string to base64 string.
 		if (isset($data['code']))

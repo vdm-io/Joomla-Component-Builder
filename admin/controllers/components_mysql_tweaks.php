@@ -39,5 +39,5 @@ class ComponentbuilderControllerComponents_mysql_tweaks extends JControllerAdmin
 	public function getModel($name = 'Component_mysql_tweaks', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

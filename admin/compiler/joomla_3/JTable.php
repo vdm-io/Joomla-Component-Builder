@@ -39,7 +39,7 @@ class ###Component###Table###View### extends JTable
 	 */
 	function __construct(&$db) 
 	{
-		parent::__construct('#__###component###_###view###', 'id', $db);###JTABLECONSTRUCTOR### ###LICENSE_LOCKED_CHECK###
+		parent::__construct('#__###component###_###view###', 'id', $db);###JTABLECONSTRUCTOR######LICENSE_LOCKED_CHECK###
 	}	
  
 	public function bind($array, $ignore = '')

@@ -116,7 +116,7 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -136,7 +136,7 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 		{
 			// add Get Snippets button.
 			JToolBarHelper::custom('templates.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
-		} 
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('template.import'))
 		{
@@ -187,7 +187,7 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 
 		// Set Dynamic Get Name Selection
 		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->getOptions();

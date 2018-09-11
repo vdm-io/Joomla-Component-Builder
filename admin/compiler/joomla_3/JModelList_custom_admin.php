@@ -71,14 +71,14 @@ class ###Component###Model###SViews### extends JModelList
 			// redirect away if not a correct (TODO for now we go to default view)
 			$app->redirect('index.php?option=com_###component###');
 			return false;
-		}###LICENSE_LOCKED_CHECK### ###CUSTOM_ADMIN_BEFORE_GET_ITEMS###
+		}###LICENSE_LOCKED_CHECK######CUSTOM_ADMIN_BEFORE_GET_ITEMS###
 		// load parent items
 		$items = parent::getItems();
 
 		// Get the global params
-		$globalParams = JComponentHelper::getParams('com_###component###', true);###CUSTOM_ADMIN_GET_ITEMS### ###CUSTOM_ADMIN_AFTER_GET_ITEMS###
+		$globalParams = JComponentHelper::getParams('com_###component###', true);###CUSTOM_ADMIN_GET_ITEMS######CUSTOM_ADMIN_AFTER_GET_ITEMS###
 
 		// return items
 		return $items;
-	}###CUSTOM_ADMIN_CUSTOM_METHODS### ###LICENSE_LOCKED_SET_BOOL### ###CUSTOM_ADMIN_CUSTOM_BUTTONS_METHOD###
+	}###CUSTOM_ADMIN_CUSTOM_METHODS######LICENSE_LOCKED_SET_BOOL######CUSTOM_ADMIN_CUSTOM_BUTTONS_METHOD###
 }

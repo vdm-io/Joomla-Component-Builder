@@ -25,7 +25,7 @@ abstract class ComponentbuilderHelper
 	{
 		// the Session keeps track of all data related to the current session of this user
 		self::loadSession();
-	}  
+	}
 
 	/**
 	* 	Locked Libraries (we can not have these change)
@@ -4054,7 +4054,7 @@ abstract class ComponentbuilderHelper
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_componentbuilder&view=help_documents', $submenu === 'help_documents');
 		}
-	} 
+	}
 
 	/**
 	 *  UIKIT Component Classes
@@ -4156,7 +4156,7 @@ abstract class ComponentbuilderHelper
 			return $classes;
 		}
 		return false;
-	} 
+	}
 
 	/**
 	 * Prepares the xml document

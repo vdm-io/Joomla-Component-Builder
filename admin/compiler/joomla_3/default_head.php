@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); ###LICENSE_LOCKED_DEFINED###
+defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED###
 
 ?>
 ###LISTHEAD###

@@ -39,5 +39,5 @@ class ComponentbuilderControllerLibraries_files_folders_urls extends JController
 	public function getModel($name = 'Library_files_folders_urls', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

@@ -44,5 +44,5 @@ class ###Component###Controller###Views### extends JControllerAdmin
 	public function getModel($name = '###View###', $prefix = '###Component###Model', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}###CONTROLLEREXIMPORTMETHOD### ###CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER### ###ADMIN_CUSTOM_BUTTONS_CONTROLLER_LIST###
+	}###CONTROLLEREXIMPORTMETHOD######CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER######ADMIN_CUSTOM_BUTTONS_CONTROLLER_LIST###
 }

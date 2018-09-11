@@ -37,7 +37,7 @@ class ComponentbuilderTableDynamic_get extends JTable
 		parent::__construct('#__componentbuilder_dynamic_get', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.dynamic_get')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.dynamic_get'));
 	}	
  
 	public function bind($array, $ignore = '')

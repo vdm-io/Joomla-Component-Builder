@@ -39,7 +39,7 @@ class ComponentbuilderControllerLibraries extends JControllerAdmin
 	public function getModel($name = 'Library', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 
 	public function getSnippets()
 	{

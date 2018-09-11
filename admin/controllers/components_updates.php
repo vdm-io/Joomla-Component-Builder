@@ -39,5 +39,5 @@ class ComponentbuilderControllerComponents_updates extends JControllerAdmin
 	public function getModel($name = 'Component_updates', $prefix = 'ComponentbuilderModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
-	}  
+	}
 }

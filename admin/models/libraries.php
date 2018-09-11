@@ -91,7 +91,7 @@ class ComponentbuilderModelLibraries extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -115,7 +115,7 @@ class ComponentbuilderModelLibraries extends JModelList
 
 
 			}
-		} 
+		}
 
 		// set selection value to a translatable value
 		if (ComponentbuilderHelper::checkArray($items))
@@ -126,7 +126,7 @@ class ComponentbuilderModelLibraries extends JModelList
 				$item->type = $this->selectionTranslation($item->type, 'type');
 			}
 		}
- 
+
         
 		// return items
 		return $items;
@@ -252,7 +252,7 @@ class ComponentbuilderModelLibraries extends JModelList
 		}
 
 		return $query;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.

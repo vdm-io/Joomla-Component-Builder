@@ -300,7 +300,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			}
 		}
 		return $value;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -551,7 +551,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -850,7 +850,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -998,7 +998,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// Set the properties items to data.
 		if (isset($data['properties']) && is_array($data['properties']))

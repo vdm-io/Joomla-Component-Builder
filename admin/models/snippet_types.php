@@ -83,7 +83,7 @@ class ComponentbuilderModelSnippet_types extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -103,7 +103,7 @@ class ComponentbuilderModelSnippet_types extends JModelList
 				}
 
 			}
-		}  
+		}
         
 		// return items
 		return $items;
@@ -178,7 +178,7 @@ class ComponentbuilderModelSnippet_types extends JModelList
 		}
 
 		return $query;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.

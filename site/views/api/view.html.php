@@ -57,7 +57,7 @@ class ComponentbuilderViewApi extends JViewLegacy
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );
 		// Initialize the header checker.
-		$HeaderCheck = new componentbuilderHeaderCheck; 
+		$HeaderCheck = new componentbuilderHeaderCheck;
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -75,9 +75,9 @@ class ComponentbuilderViewApi extends JViewLegacy
 		if ((!$HeaderCheck->js_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
 			$this->document->addScript(JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
-		}     
+		} 
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/components/com_componentbuilder/assets/css/api.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');  
+		$this->document->addStyleSheet(JURI::root(true) .'/components/com_componentbuilder/assets/css/api.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 	}
 
 	/**

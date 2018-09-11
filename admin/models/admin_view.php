@@ -428,7 +428,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
@@ -734,7 +734,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			}
 		}
 		return parent::validate($form, $data, $group);
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -1080,7 +1080,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -1212,7 +1212,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
 
 		// if system name is empty create from name_single
 		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))

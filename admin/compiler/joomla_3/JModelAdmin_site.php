@@ -94,7 +94,7 @@ class ###Component###Model###View### extends JModelAdmin
 		}###LINKEDVIEWGLOBAL###
 
 		return $item;
-	}###LINKEDVIEWMETHODS### ###LICENSE_LOCKED_SET_BOOL###
+	}###LINKEDVIEWMETHODS######LICENSE_LOCKED_SET_BOOL###
 
 	/**
 	 * Method to get the record form.
@@ -238,7 +238,7 @@ class ###Component###Model###View### extends JModelAdmin
 		}
 
 		return $data;
-	}###VALIDATIONFIX### ###UNIQUEFIELDS###
+	}###VALIDATIONFIX######UNIQUEFIELDS###
 	
 	/**
 	 * Method to delete one or more records.
@@ -373,7 +373,7 @@ class ###Component###Model###View### extends JModelAdmin
 		$this->cleanCache();
 
 		return true;
-	}###MODEL_BATCH_COPY### ###MODEL_BATCH_MOVE###
+	}###MODEL_BATCH_COPY######MODEL_BATCH_MOVE###
 	
 	/**
 	 * Method to save the form data.
@@ -397,7 +397,7 @@ class ###Component###Model###View### extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		}###CHECKBOX_SAVE### ###METHOD_ITEM_SAVE###
+		}###CHECKBOX_SAVE######METHOD_ITEM_SAVE###
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))

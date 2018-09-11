@@ -37,7 +37,7 @@ class ComponentbuilderTableComponent_mysql_tweaks extends JTable
 		parent::__construct('#__componentbuilder_component_mysql_tweaks', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.component_mysql_tweaks')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.component_mysql_tweaks'));
 	}	
  
 	public function bind($array, $ignore = '')

@@ -37,7 +37,7 @@ class ComponentbuilderTableFieldtype extends JTable
 		parent::__construct('#__componentbuilder_fieldtype', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.fieldtype')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.fieldtype'));
 	}	
  
 	public function bind($array, $ignore = '')

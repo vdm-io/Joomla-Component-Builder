@@ -139,7 +139,7 @@ class ComponentbuilderModelApi extends JModelItem
 		}
 
 		return $this->_item[$pk];
-	} 
+	}
 
 	/**
 	 * Get the uikit needed components
@@ -154,7 +154,7 @@ class ComponentbuilderModelApi extends JModelItem
 			return $this->uikitComp;
 		}
 		return false;
-	} 
+	}
 
 	public $messages = array();
 	public $model;
@@ -222,5 +222,5 @@ class ComponentbuilderModelApi extends JModelItem
 		// set that the component was not found
 		$this->messages[] = JText::_('COM_COMPONENTBUILDER_COMPONENT_WAS_NOT_FOUND');
 		return false;
-	} ###SITE_CUSTOM_GET_FORM_METHOD###
+	}
 }

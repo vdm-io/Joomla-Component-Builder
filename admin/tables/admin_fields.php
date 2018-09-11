@@ -37,7 +37,7 @@ class ComponentbuilderTableAdmin_fields extends JTable
 		parent::__construct('#__componentbuilder_admin_fields', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.admin_fields')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.admin_fields'));
 	}	
  
 	public function bind($array, $ignore = '')

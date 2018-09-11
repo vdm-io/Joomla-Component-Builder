@@ -37,7 +37,7 @@ class ComponentbuilderTableAdmin_custom_tabs extends JTable
 		parent::__construct('#__componentbuilder_admin_custom_tabs', 'id', $db);
 
 		// Adding History Options
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.admin_custom_tabs')); 
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_componentbuilder.admin_custom_tabs'));
 	}	
  
 	public function bind($array, $ignore = '')
