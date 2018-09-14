@@ -3729,10 +3729,20 @@ abstract class ComponentbuilderHelper
 		if (self::checkObject($item) && isset($item->id))
 		{
 			$id = (int) $item->id;
+			// check if created_by is available
+			if (isset($item->created_by) && $item->created_by > 0)
+			{
+				$created_by = (int) $item->created_by;
+			}
 		}
 		elseif (self::checkArray($item) && isset($item['id']))
 		{
 			$id = (int) $item['id'];
+			// check if created_by is available
+			if (isset($item['created_by']) && $item['created_by'] > 0)
+			{
+				$created_by = (int) $item['created_by'];
+			}
 		}
 		elseif (is_numeric($item))
 		{
@@ -3741,8 +3751,20 @@ abstract class ComponentbuilderHelper
 		// check ID
 		if (isset($id) && $id > 0)
 		{
+			// get user object
+			$user = JFactory::getUser();
 			// can edit
-			if (JFactory::getUser()->authorise($view . '.edit', $component . '.' . $view . '.' . (int) $id))
+			if ($user->authorise($view . '.edit', $component . '.' . $view . '.' . (int) $id) ||
+				(
+					isset($created_by) && $created_by == $user->id &&
+					(
+						($user->authorise($view . '.edit.own', $component . '.' . $view . '.' . (int) $id) &&
+							$user->authorise($view . '.edit.own', $component)) ||
+						($user->authorise('core.edit.own', $component . '.' . $view . '.' . (int) $id) &&
+							$user->authorise('core.edit.own', $component))
+					)
+				)
+			)
 			{
 				// set the edit link
 				if ($jRoute)
@@ -4539,183 +4561,127 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	*	Get the actions permissions
+	* Get the action permissions
+	*
+	* @param  string   $view     The related view name
+	* @param  int      $record   The item to act upon
+	* @param  string   $views    The related list view name
+	*
+	* @return  object   The JObject of permission/authorised actions
+	* 
 	**/
-	public static function getActions($view,&$record = null,$views = null)
+	public static function getActions($view, &$record = null, $views = null)
 	{
-		jimport('joomla.access.access');
-
-		$user	= JFactory::getUser();
-		$result	= new JObject;
-		$view	= self::safeString($view);
+		// get the user object
+		$user = JFactory::getUser();
+		// load the JObject
+		$result = new JObject;
+		// make view name safe (just incase)
+		$view = self::safeString($view);
 		if (self::checkString($views))
 		{
 			$views = self::safeString($views);
  		}
 		// get all actions from component
-		$actions = JAccess::getActions('com_componentbuilder', 'component');
-		// set acctions only set in component settiongs
-		$componentActions = array('core.admin','core.manage','core.options','core.export');
+		$actions = JAccess::getActionsFromFile(
+			JPATH_ADMINISTRATOR . '/components/com_componentbuilder/access.xml',
+			"/access/section[@name='component']/"
+		);
+		// if non found then return empty JObject
+		if (empty($actions))
+		{
+			return $result;
+		}
+		// get created by if not found
+		if (self::checkObject($record) && !isset($record->created_by) && isset($record->id))
+		{
+			$record->created_by = self::getVar($view, 'id', $record->id, 'created_by');
+		}
+		// set actions only set in component settings
+		$componentActions = array('core.admin', 'core.manage', 'core.options', 'core.export');
 		// loop the actions and set the permissions
 		foreach ($actions as $action)
 		{
 			// set to use component default
-			$fallback= true;
-			if (self::checkObject($record) && isset($record->id) && $record->id > 0 && !in_array($action->name,$componentActions))
+			$fallback = true;
+			// reset permission per/action
+			$permission = false;
+			$catpermission = false;
+			// set area
+			$area = 'comp';
+			// check if the record has an ID and the action is item related (not a component action)
+			if (self::checkObject($record) && isset($record->id) && $record->id > 0 && !in_array($action->name, $componentActions) &&
+				(strpos($action->name, 'core.') !== false || strpos($action->name, $view . '.') !== false))
 			{
+				// we are in item
+				$area = 'item';
 				// The record has been set. Check the record permissions.
-				$permission = $user->authorise($action->name, 'com_componentbuilder.'.$view.'.' . (int) $record->id);
-				if (!$permission) // TODO removed && !is_null($permission)
+				$permission = $user->authorise($action->name, 'com_componentbuilder.' . $view . '.' . (int) $record->id);
+				// if no permission found, check edit own
+				if (!$permission)
 				{
-					if ($action->name == 'core.edit' || $action->name == $view.'.edit')
+					// With edit, if the created_by matches current user then dig deeper.
+					if (($action->name === 'core.edit' || $action->name === $view . '.edit') && $record->created_by > 0 && ($record->created_by == $user->id))
 					{
-						if ($user->authorise('core.edit.own', 'com_componentbuilder.'.$view.'.' . (int) $record->id))
+						// the correct target
+						$coreCheck = (array) explode('.', $action->name);
+						// check that we have both local and global access
+						if ($user->authorise($coreCheck[0] . '.edit.own', 'com_componentbuilder.' . $view . '.' . (int) $record->id) &&
+							$user->authorise($coreCheck[0]  . '.edit.own', 'com_componentbuilder'))
 						{
-							// If the owner matches 'me' then allow.
-							if (isset($record->created_by) && $record->created_by > 0 && ($record->created_by == $user->id))
-							{
-								$result->set($action->name, true);
-								// set not to use component default
-								$fallback= false;
-							}
-							else
-							{
-								$result->set($action->name, false);
-								// set not to use component default
-								$fallback= false;
-							}
+							// allow edit
+							$result->set($action->name, true);
+							// set not to use global default
+							// because we already validated it
+							$fallback = false;
 						}
-						elseif ($user->authorise($view.'edit.own', 'com_componentbuilder.'.$view.'.' . (int) $record->id))
+						else
 						{
-							// If the owner matches 'me' then allow.
-							if (isset($record->created_by) && $record->created_by > 0 && ($record->created_by == $user->id))
-							{
-								$result->set($action->name, true);
-								// set not to use component default
-								$fallback= false;
-							}
-							else
-							{
-								$result->set($action->name, false);
-								// set not to use component default
-								$fallback= false;
-							}
-						}
-						elseif ($user->authorise('core.edit.own', 'com_componentbuilder'))
-						{
-							// If the owner matches 'me' then allow.
-							if (isset($record->created_by) && $record->created_by > 0 && ($record->created_by == $user->id))
-							{
-								$result->set($action->name, true);
-								// set not to use component default
-								$fallback= false;
-							}
-							else
-							{
-								$result->set($action->name, false);
-								// set not to use component default
-								$fallback= false;
-							}
-						}
-						elseif ($user->authorise($view.'edit.own', 'com_componentbuilder'))
-						{
-							// If the owner matches 'me' then allow.
-							if (isset($record->created_by) && $record->created_by > 0 && ($record->created_by == $user->id))
-							{
-								$result->set($action->name, true);
-								// set not to use component default
-								$fallback= false;
-							}
-							else
-							{
-								$result->set($action->name, false);
-								// set not to use component default
-								$fallback= false;
-							}
+							// do not allow edit
+							$result->set($action->name, false);
+							$fallback = false;
 						}
 					}
 				}
 				elseif (self::checkString($views) && isset($record->catid) && $record->catid > 0)
 				{
+					// we are in item
+					$area = 'category';
+					// set the core check
+					$coreCheck = explode('.', $action->name);
+					$core = $coreCheck[0];
 					// make sure we use the core. action check for the categories
-					if (strpos($action->name,$view) !== false && strpos($action->name,'core.') === false ) {
-						$coreCheck		= explode('.',$action->name);
-						$coreCheck[0]	= 'core';
-						$categoryCheck	= implode('.',$coreCheck);
+					if (strpos($action->name, $view) !== false && strpos($action->name, 'core.') === false )
+					{
+						$coreCheck[0] = 'core';
+						$categoryCheck = implode('.', $coreCheck);
 					}
 					else
 					{
 						$categoryCheck = $action->name;
 					}
 					// The record has a category. Check the category permissions.
-					$catpermission = $user->authorise($categoryCheck, 'com_componentbuilder.'.$views.'.category.' . (int) $record->catid);
+					$catpermission = $user->authorise($categoryCheck, 'com_componentbuilder.' . $views . '.category.' . (int) $record->catid);
 					if (!$catpermission && !is_null($catpermission))
 					{
-						if ($action->name == 'core.edit' || $action->name == $view.'.edit')
+						// With edit, if the created_by matches current user then dig deeper.
+						if (($action->name === 'core.edit' || $action->name === $view . '.edit') && $record->created_by > 0 && ($record->created_by == $user->id))
 						{
-							if ($user->authorise('core.edit.own', 'com_componentbuilder.'.$views.'.category.' . (int) $record->catid))
+							// check that we have both local and global access
+							if ($user->authorise('core.edit.own', 'com_componentbuilder.' . $views . '.category.' . (int) $record->catid) &&
+								$user->authorise($core . '.edit.own', 'com_componentbuilder'))
 							{
-								// If the owner matches 'me' then allow.
-								if (isset($record->created_by) && $record->created_by > 0 && ($record->created_by == $user->id))
-								{
-									$result->set($action->name, true);
-									// set not to use component default
-									$fallback= false;
-								}
-								else
-								{
-									$result->set($action->name, false);
-									// set not to use component default
-									$fallback= false;
-								}
+								// allow edit
+								$result->set($action->name, true);
+								// set not to use global default
+								// because we already validated it
+								$fallback = false;
 							}
-							elseif ($user->authorise($view.'edit.own', 'com_componentbuilder.'.$views.'.category.' . (int) $record->catid))
+							else
 							{
-								// If the owner matches 'me' then allow.
-								if (isset($record->created_by) && $record->created_by > 0 && ($record->created_by == $user->id))
-								{
-									$result->set($action->name, true);
-									// set not to use component default
-									$fallback= false;
-								}
-								else
-								{
-									$result->set($action->name, false);
-									// set not to use component default
-									$fallback= false;
-								}
-							}
-							elseif ($user->authorise('core.edit.own', 'com_componentbuilder'))
-							{
-								// If the owner matches 'me' then allow.
-								if (isset($record->created_by) && $record->created_by > 0 && ($record->created_by == $user->id))
-								{
-									$result->set($action->name, true);
-									// set not to use component default
-									$fallback= false;
-								}
-								else
-								{
-									$result->set($action->name, false);
-									// set not to use component default
-									$fallback= false;
-								}
-							}
-							elseif ($user->authorise($view.'edit.own', 'com_componentbuilder'))
-							{
-								// If the owner matches 'me' then allow.
-								if (isset($record->created_by) && $record->created_by > 0 && ($record->created_by == $user->id))
-								{
-									$result->set($action->name, true);
-									// set not to use component default
-									$fallback= false;
-								}
-								else
-								{
-									$result->set($action->name, false);
-									// set not to use component default
-									$fallback= false;
-								}
+								// do not allow edit
+								$result->set($action->name, false);
+								$fallback = false;
 							}
 						}
 					}
@@ -4724,7 +4690,19 @@ abstract class ComponentbuilderHelper
 			// if allowed then fallback on component global settings
 			if ($fallback)
 			{
-				$result->set($action->name, $user->authorise($action->name, 'com_componentbuilder'));
+				// if item/category blocks access then don't fall back on global
+				if ((($area === 'item') && !$permission) || (($area === 'category') && !$catpermission))
+				{
+					// do not allow
+					$result->set($action->name, false);
+				}
+				// Finally remember the global settings have the final say. (even if item allow)
+				// The local item permissions can block, but it can't open and override of global permissions.
+				// Since items are created by users and global permissions is set by system admin.
+				else
+				{
+					$result->set($action->name, $user->authorise($action->name, 'com_componentbuilder'));
+				}
 			}
 		}
 		return $result;
