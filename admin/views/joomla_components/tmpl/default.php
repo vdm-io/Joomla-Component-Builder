@@ -102,16 +102,22 @@ jQuery('<div id="loading"></div>')
 
 // when the clone button is clicked
 jQuery('#toolbar').on('click',"button.button-save-copy", function(e){
-	jQuery('#loading').show();
+	if (document.adminForm.boxchecked.value != 0){
+		jQuery('#loading').show();
+	}
 });
 
 // when the backup button is clicked
 jQuery('#toolbar').on('click',"button.button-archive", function(e){
-	jQuery('#loading').show();
+	if (document.adminForm.boxchecked.value != 0){
+		jQuery('#loading').show();
+	}
 });
 
 // when the export button is clicked
 jQuery('#toolbar').on('click',"button.button-download", function(e){
-	jQuery('#loading').show();
+	if (document.adminForm.boxchecked.value != 0){
+		jQuery('#loading').show();
+	}
 });
 </script>

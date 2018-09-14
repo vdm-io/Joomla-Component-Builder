@@ -120,7 +120,7 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 			if ($this->user->authorise('snippet.share_snippets', 'com_componentbuilder'))
 			{
 				// add Share Snippets button.
-				JToolBarHelper::custom('snippets.shareSnippets', 'share', '', 'COM_COMPONENTBUILDER_SHARE_SNIPPETS', false);
+				JToolBarHelper::custom('snippets.shareSnippets', 'share', '', 'COM_COMPONENTBUILDER_SHARE_SNIPPETS', 'true');
 			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))

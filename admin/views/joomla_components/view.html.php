@@ -120,17 +120,12 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			if ($this->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder'))
 			{
 				// add Export JCB Packages button.
-				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_JCB_PACKAGES', false);
-			}
-			if ($this->user->authorise('joomla_component.backup', 'com_componentbuilder'))
-			{
-				// add Backup button.
-				JToolBarHelper::custom('joomla_components.backup', 'archive', '', 'COM_COMPONENTBUILDER_BACKUP', false);
+				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_JCB_PACKAGES', 'true');
 			}
 			if ($this->user->authorise('joomla_component.clone', 'com_componentbuilder'))
 			{
 				// add Clone button.
-				JToolBarHelper::custom('joomla_components.cloner', 'save-copy', '', 'COM_COMPONENTBUILDER_CLONE', false);
+				JToolBarHelper::custom('joomla_components.cloner', 'save-copy', '', 'COM_COMPONENTBUILDER_CLONE', 'true');
 			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
@@ -151,6 +146,11 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		{
 			// add Import JCB Packages button.
 			JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_JCB_PACKAGES', false);
+		}
+		if ($this->user->authorise('joomla_component.backup', 'com_componentbuilder'))
+		{
+			// add Backup button.
+			JToolBarHelper::custom('joomla_components.backup', 'archive', '', 'COM_COMPONENTBUILDER_BACKUP', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_component.import'))

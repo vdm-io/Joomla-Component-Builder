@@ -3419,6 +3419,8 @@ class Interpretation extends Fields
 
 	public function setCustomButtons(&$view, $type = 1, $tab = '')
 	{
+		// do not validate selection
+		$validateSelection = 'false';
 		// ensure correct target is set
 		$TARGET = ComponentbuilderHelper::safeString($this->target, 'U');
 		if (1 == $type || 2 == $type)
@@ -3445,6 +3447,8 @@ class Interpretation extends Fields
 			$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST' . $this->hhh] = '';
 			// set the custom buttons CUSTOM_BUTTONS_METHOD_LIST
 			$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST' . $this->hhh] = '';
+			// validate selection
+			$validateSelection = 'true';
 		}
 		// if site add buttons to view
 		if ($this->target === 'site')
@@ -3512,7 +3516,7 @@ class Interpretation extends Fields
 					// load the list button
 					elseif (3 == $type && $custom_button['target'] != 1)
 					{
-						// add cpanel button TODO does not work well on site with permissions
+						// This is only for list admin views
 						if (isset($custom_button['type']) && $custom_button['type'] == 2)
 						{
 							if (!isset($this->onlyFunctionButton[$viewsName]))
@@ -3530,7 +3534,7 @@ class Interpretation extends Fields
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1) . "if (\$this->user->authorise('" . $viewName . "." . $keyCode . "', 'com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "'))";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1) . "{";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " add " . $custom_button['name'] . " button.";
-							$buttons[] = $this->_t(1) . $tab . $this->_t(2) . "JToolBarHelper::custom('" . $viewsName . "." . $custom_button['method'] . "', '" . $custom_button['icomoon'] . "', '', '" . $keyLang . "', false);";
+							$buttons[] = $this->_t(1) . $tab . $this->_t(2) . "JToolBarHelper::custom('" . $viewsName . "." . $custom_button['method'] . "', '" . $custom_button['icomoon'] . "', '', '" . $keyLang . "', '" . $validateSelection . "');";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1) . "}";
 						}
 					}
