@@ -17,7 +17,7 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
-$componentParams = JComponentHelper::getParams('com_componentbuilder');
+$componentParams = $this->params; // will be removed just use $this->params instead
 ?>
 <script type="text/javascript">
 	// waiting spinner

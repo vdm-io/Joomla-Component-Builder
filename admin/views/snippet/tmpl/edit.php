@@ -17,7 +17,7 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
-$componentParams = JComponentHelper::getParams('com_componentbuilder');
+$componentParams = $this->params; // will be removed just use $this->params instead
 ?>
 <div id="componentbuilder_loader">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">

@@ -22,7 +22,7 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
-$componentParams = JComponentHelper::getParams('com_###component###');
+$componentParams = $this->params; // will be removed just use $this->params instead
 ?>
 ###EDITBODYFADEIN###
 <form action="<?php echo JRoute::_('index.php?option=com_###component###&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">

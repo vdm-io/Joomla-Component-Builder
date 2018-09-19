@@ -3666,6 +3666,13 @@ abstract class ComponentbuilderHelper
 		// check if we found any
 		if (self::checkString($url))
 		{
+			// get the global settings
+			if (!self::checkObject(self::$params))
+			{
+				self::$params = JComponentHelper::getParams('com_componentbuilder');
+			}
+			// get UIKIT version
+			$uikit = self::$params->get('uikit_version', 2);
 			// check that we have the ID
 			if (self::checkObject($item) && isset($item->id))
 			{
@@ -3688,13 +3695,36 @@ abstract class ComponentbuilderHelper
 			// check that there is a check message
 			if (self::checkString($headsup))
 			{
-				$href = 'onclick="UIkit2.modal.confirm(\''.JText::_($headsup).'\', function(){ window.location.href = \'' . $url . '\' })"  href="javascript:void(0)"';
+				if (3 == $uikit)
+				{
+					$href = 'onclick="UIkit.modal.confirm(\''.JText::_($headsup).'\').then( function(){ window.location.href = \'' . $url . '\' } )"  href="javascript:void(0)"';
+				}
+				else
+				{
+					$href = 'onclick="UIkit2.modal.confirm(\''.JText::_($headsup).'\', function(){ window.location.href = \'' . $url . '\' })"  href="javascript:void(0)"';
+				}
 			}
 			else
 			{
 				$href = 'href="' . $url . '"';
 			}
-			// check if it is checked out
+			// return UIKIT version 3
+			if (3 == $uikit)
+			{
+				// check if it is checked out
+				if (isset($checked_out) && $checked_out > 0)
+				{
+					// is this user the one who checked it out
+					if ($checked_out == JFactory::getUser()->id)
+					{
+						return ' <a ' . $href . ' uk-icon="icon: lock" title="' . $title . '"></a>';
+					}
+					return ' <a href="#" disabled uk-icon="icon: lock" title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', self::safeString($view, 'W'), JFactory::getUser($checked_out)->name) . '"></a>'; 
+				}
+				// return normal edit link
+				return ' <a ' . $href . ' uk-icon="icon: pencil" title="' . $title . '"></a>';
+			}
+			// check if it is checked out (return UIKIT version 2)
 			if (isset($checked_out) && $checked_out > 0)
 			{
 				// is this user the one who checked it out
@@ -3725,53 +3755,45 @@ abstract class ComponentbuilderHelper
 	*/
 	public static function  getEditURL(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true)
 	{
+		// build record
+		$record = new stdClass();
 		// check that we have the ID
 		if (self::checkObject($item) && isset($item->id))
 		{
-			$id = (int) $item->id;
+			$record->id = (int) $item->id;
 			// check if created_by is available
 			if (isset($item->created_by) && $item->created_by > 0)
 			{
-				$created_by = (int) $item->created_by;
+				$record->created_by = (int) $item->created_by;
 			}
 		}
 		elseif (self::checkArray($item) && isset($item['id']))
 		{
-			$id = (int) $item['id'];
+			$record->id = (int) $item['id'];
 			// check if created_by is available
 			if (isset($item['created_by']) && $item['created_by'] > 0)
 			{
-				$created_by = (int) $item['created_by'];
+				$record->created_by = (int) $item['created_by'];
 			}
 		}
 		elseif (is_numeric($item))
 		{
-			$id = (int) $item;
+			$record->id = (int) $item;
 		}
 		// check ID
-		if (isset($id) && $id > 0)
+		if (isset($record->id) && $record->id > 0)
 		{
-			// get user object
-			$user = JFactory::getUser();
+			// get user action permission to edit
+			$action = self::getActions($view, $record, $views, 'edit', str_replace('com_', '', $component));
 			// can edit
-			if ($user->authorise($view . '.edit', $component . '.' . $view . '.' . (int) $id) ||
-				(
-					isset($created_by) && $created_by == $user->id &&
-					(
-						($user->authorise($view . '.edit.own', $component . '.' . $view . '.' . (int) $id) &&
-							$user->authorise($view . '.edit.own', $component)) ||
-						($user->authorise('core.edit.own', $component . '.' . $view . '.' . (int) $id) &&
-							$user->authorise('core.edit.own', $component))
-					)
-				)
-			)
+			if ($action->get($view . '.edit'))
 			{
 				// set the edit link
 				if ($jRoute)
 				{
-					return JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $id . $ref);
+					return JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
 				}
-				return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $id . $ref;
+				return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref;
 			}
 		}
 		return false;
@@ -4620,14 +4642,16 @@ abstract class ComponentbuilderHelper
 	/**
 	* Get the action permissions
 	*
-	* @param  string   $view     The related view name
-	* @param  int      $record   The item to act upon
-	* @param  string   $views    The related list view name
+	* @param  string   $view        The related view name
+	* @param  int      $record      The item to act upon
+	* @param  string   $views       The related list view name
+	* @param  mixed    $target      Only get this permission (like edit, create, delete)
+	* @param  string   $component   The target component
 	*
 	* @return  object   The JObject of permission/authorised actions
 	* 
 	**/
-	public static function getActions($view, &$record = null, $views = null)
+	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'componentbuilder')
 	{
 		// get the user object
 		$user = JFactory::getUser();
@@ -4641,7 +4665,7 @@ abstract class ComponentbuilderHelper
  		}
 		// get all actions from component
 		$actions = JAccess::getActionsFromFile(
-			JPATH_ADMINISTRATOR . '/components/com_componentbuilder/access.xml',
+			JPATH_ADMINISTRATOR . '/components/com_' . $component . '/access.xml',
 			"/access/section[@name='component']/"
 		);
 		// if non found then return empty JObject
@@ -4652,13 +4676,33 @@ abstract class ComponentbuilderHelper
 		// get created by if not found
 		if (self::checkObject($record) && !isset($record->created_by) && isset($record->id))
 		{
-			$record->created_by = self::getVar($view, 'id', $record->id, 'created_by');
+			$record->created_by = self::getVar($view, $record->id, 'id', 'created_by', '=', $component);
 		}
 		// set actions only set in component settings
 		$componentActions = array('core.admin', 'core.manage', 'core.options', 'core.export');
+		// check if we have a target
+		$checkTarget = false;
+		if ($target)
+		{
+			// convert to an array
+			if (self::checkString($target))
+			{
+				$target = array($target);
+			}
+			// check if we are good to go
+			if (self::checkArray($target))
+			{
+				$checkTarget = true;
+			}
+		}
 		// loop the actions and set the permissions
 		foreach ($actions as $action)
 		{
+			// check target action filter
+			if ($checkTarget && self::filterActions($view, $action->name, $target))
+			{
+				continue;
+			}
 			// set to use component default
 			$fallback = true;
 			// reset permission per/action
@@ -4673,7 +4717,7 @@ abstract class ComponentbuilderHelper
 				// we are in item
 				$area = 'item';
 				// The record has been set. Check the record permissions.
-				$permission = $user->authorise($action->name, 'com_componentbuilder.' . $view . '.' . (int) $record->id);
+				$permission = $user->authorise($action->name, 'com_' . $component . '.' . $view . '.' . (int) $record->id);
 				// if no permission found, check edit own
 				if (!$permission)
 				{
@@ -4683,8 +4727,8 @@ abstract class ComponentbuilderHelper
 						// the correct target
 						$coreCheck = (array) explode('.', $action->name);
 						// check that we have both local and global access
-						if ($user->authorise($coreCheck[0] . '.edit.own', 'com_componentbuilder.' . $view . '.' . (int) $record->id) &&
-							$user->authorise($coreCheck[0]  . '.edit.own', 'com_componentbuilder'))
+						if ($user->authorise($coreCheck[0] . '.edit.own', 'com_' . $component . '.' . $view . '.' . (int) $record->id) &&
+							$user->authorise($coreCheck[0]  . '.edit.own', 'com_' . $component))
 						{
 							// allow edit
 							$result->set($action->name, true);
@@ -4718,15 +4762,15 @@ abstract class ComponentbuilderHelper
 						$categoryCheck = $action->name;
 					}
 					// The record has a category. Check the category permissions.
-					$catpermission = $user->authorise($categoryCheck, 'com_componentbuilder.' . $views . '.category.' . (int) $record->catid);
+					$catpermission = $user->authorise($categoryCheck, 'com_' . $component . '.' . $views . '.category.' . (int) $record->catid);
 					if (!$catpermission && !is_null($catpermission))
 					{
 						// With edit, if the created_by matches current user then dig deeper.
 						if (($action->name === 'core.edit' || $action->name === $view . '.edit') && $record->created_by > 0 && ($record->created_by == $user->id))
 						{
 							// check that we have both local and global access
-							if ($user->authorise('core.edit.own', 'com_componentbuilder.' . $views . '.category.' . (int) $record->catid) &&
-								$user->authorise($core . '.edit.own', 'com_componentbuilder'))
+							if ($user->authorise('core.edit.own', 'com_' . $component . '.' . $views . '.category.' . (int) $record->catid) &&
+								$user->authorise($core . '.edit.own', 'com_' . $component))
 							{
 								// allow edit
 								$result->set($action->name, true);
@@ -4758,11 +4802,34 @@ abstract class ComponentbuilderHelper
 				// Since items are created by users and global permissions is set by system admin.
 				else
 				{
-					$result->set($action->name, $user->authorise($action->name, 'com_componentbuilder'));
+					$result->set($action->name, $user->authorise($action->name, 'com_' . $component));
 				}
 			}
 		}
 		return $result;
+	}
+
+	/**
+	* Filter the action permissions
+	*
+	* @param  string   $action   The action to check
+	* @param  array    $targets  The array of target actions
+	*
+	* @return  boolean   true if action should be filtered out
+	* 
+	**/
+	protected static function filterActions(&$view, &$action, &$targets)
+	{
+		foreach ($targets as $target)
+		{
+			if (strpos($action, $view . '.' . $target) !== false ||
+				strpos($action, 'core.' . $target) !== false)
+			{
+				return false;
+				break;
+			}
+		}
+		return true;
 	}
 
 	/**

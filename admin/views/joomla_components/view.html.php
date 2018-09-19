@@ -117,15 +117,15 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
 			}
-			if ($this->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder'))
-			{
-				// add Export JCB Packages button.
-				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_JCB_PACKAGES', 'true');
-			}
 			if ($this->user->authorise('joomla_component.clone', 'com_componentbuilder'))
 			{
 				// add Clone button.
 				JToolBarHelper::custom('joomla_components.cloner', 'save-copy', '', 'COM_COMPONENTBUILDER_CLONE', 'true');
+			}
+			if ($this->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder'))
+			{
+				// add Export JCB Packages button.
+				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_JCB_PACKAGES', 'true');
 			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))

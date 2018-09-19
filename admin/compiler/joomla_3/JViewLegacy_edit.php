@@ -28,13 +28,15 @@ class ###Component###View###View### extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
+		// set params
+		$this->params = JComponentHelper::getParams('com_###component###');
 		// Assign the variables
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$this->script = $this->get('Script');
 		$this->state = $this->get('State');
 		// get action permissions
-		$this->canDo = ###Component###Helper::getActions('###view###',$this->item);
+		$this->canDo = ###Component###Helper::getActions('###view###', $this->item);
 		// get input
 		$jinput = JFactory::getApplication()->input;
 		$this->ref = $jinput->get('ref', 0, 'word');

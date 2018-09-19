@@ -303,14 +303,16 @@ abstract class ###Component###Helper
 	/**
 	* Get the action permissions
 	*
-	* @param  string   $view     The related view name
-	* @param  int      $record   The item to act upon
-	* @param  string   $views    The related list view name
+	* @param  string   $view        The related view name
+	* @param  int      $record      The item to act upon
+	* @param  string   $views       The related list view name
+	* @param  mixed    $target      Only get this permission (like edit, create, delete)
+	* @param  string   $component   The target component
 	*
 	* @return  object   The JObject of permission/authorised actions
 	* 
 	**/
-	public static function getActions($view, &$record = null, $views = null)
+	public static function getActions($view, &$record = null, $views = null, $target = null, $component = '###component###')
 	{
 		// get the user object
 		$user = JFactory::getUser();
@@ -324,7 +326,7 @@ abstract class ###Component###Helper
  		}
 		// get all actions from component
 		$actions = JAccess::getActionsFromFile(
-			JPATH_ADMINISTRATOR . '/components/com_###component###/access.xml',
+			JPATH_ADMINISTRATOR . '/components/com_' . $component . '/access.xml',
 			"/access/section[@name='component']/"
 		);
 		// if non found then return empty JObject
@@ -335,13 +337,33 @@ abstract class ###Component###Helper
 		// get created by if not found
 		if (self::checkObject($record) && !isset($record->created_by) && isset($record->id))
 		{
-			$record->created_by = self::getVar($view, 'id', $record->id, 'created_by');
+			$record->created_by = self::getVar($view, $record->id, 'id', 'created_by', '=', $component);
 		}
 		// set actions only set in component settings
 		$componentActions = array('core.admin', 'core.manage', 'core.options', 'core.export');
+		// check if we have a target
+		$checkTarget = false;
+		if ($target)
+		{
+			// convert to an array
+			if (self::checkString($target))
+			{
+				$target = array($target);
+			}
+			// check if we are good to go
+			if (self::checkArray($target))
+			{
+				$checkTarget = true;
+			}
+		}
 		// loop the actions and set the permissions
 		foreach ($actions as $action)
 		{
+			// check target action filter
+			if ($checkTarget && self::filterActions($view, $action->name, $target))
+			{
+				continue;
+			}
 			// set to use component default
 			$fallback = true;
 			// reset permission per/action
@@ -356,7 +378,7 @@ abstract class ###Component###Helper
 				// we are in item
 				$area = 'item';
 				// The record has been set. Check the record permissions.
-				$permission = $user->authorise($action->name, 'com_###component###.' . $view . '.' . (int) $record->id);
+				$permission = $user->authorise($action->name, 'com_' . $component . '.' . $view . '.' . (int) $record->id);
 				// if no permission found, check edit own
 				if (!$permission)
 				{
@@ -366,8 +388,8 @@ abstract class ###Component###Helper
 						// the correct target
 						$coreCheck = (array) explode('.', $action->name);
 						// check that we have both local and global access
-						if ($user->authorise($coreCheck[0] . '.edit.own', 'com_###component###.' . $view . '.' . (int) $record->id) &&
-							$user->authorise($coreCheck[0]  . '.edit.own', 'com_###component###'))
+						if ($user->authorise($coreCheck[0] . '.edit.own', 'com_' . $component . '.' . $view . '.' . (int) $record->id) &&
+							$user->authorise($coreCheck[0]  . '.edit.own', 'com_' . $component))
 						{
 							// allow edit
 							$result->set($action->name, true);
@@ -401,15 +423,15 @@ abstract class ###Component###Helper
 						$categoryCheck = $action->name;
 					}
 					// The record has a category. Check the category permissions.
-					$catpermission = $user->authorise($categoryCheck, 'com_###component###.' . $views . '.category.' . (int) $record->catid);
+					$catpermission = $user->authorise($categoryCheck, 'com_' . $component . '.' . $views . '.category.' . (int) $record->catid);
 					if (!$catpermission && !is_null($catpermission))
 					{
 						// With edit, if the created_by matches current user then dig deeper.
 						if (($action->name === 'core.edit' || $action->name === $view . '.edit') && $record->created_by > 0 && ($record->created_by == $user->id))
 						{
 							// check that we have both local and global access
-							if ($user->authorise('core.edit.own', 'com_###component###.' . $views . '.category.' . (int) $record->catid) &&
-								$user->authorise($core . '.edit.own', 'com_###component###'))
+							if ($user->authorise('core.edit.own', 'com_' . $component . '.' . $views . '.category.' . (int) $record->catid) &&
+								$user->authorise($core . '.edit.own', 'com_' . $component))
 							{
 								// allow edit
 								$result->set($action->name, true);
@@ -441,11 +463,34 @@ abstract class ###Component###Helper
 				// Since items are created by users and global permissions is set by system admin.
 				else
 				{
-					$result->set($action->name, $user->authorise($action->name, 'com_###component###'));
+					$result->set($action->name, $user->authorise($action->name, 'com_' . $component));
 				}
 			}
 		}
 		return $result;
+	}
+
+	/**
+	* Filter the action permissions
+	*
+	* @param  string   $action   The action to check
+	* @param  array    $targets  The array of target actions
+	*
+	* @return  boolean   true if action should be filtered out
+	* 
+	**/
+	protected static function filterActions(&$view, &$action, &$targets)
+	{
+		foreach ($targets as $target)
+		{
+			if (strpos($action, $view . '.' . $target) !== false ||
+				strpos($action, 'core.' . $target) !== false)
+			{
+				return false;
+				break;
+			}
+		}
+		return true;
 	}
 
 	/**

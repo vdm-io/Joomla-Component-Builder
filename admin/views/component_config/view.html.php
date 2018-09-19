@@ -23,13 +23,15 @@ class ComponentbuilderViewComponent_config extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
+		// set params
+		$this->params = JComponentHelper::getParams('com_componentbuilder');
 		// Assign the variables
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$this->script = $this->get('Script');
 		$this->state = $this->get('State');
 		// get action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('component_config',$this->item);
+		$this->canDo = ComponentbuilderHelper::getActions('component_config', $this->item);
 		// get input
 		$jinput = JFactory::getApplication()->input;
 		$this->ref = $jinput->get('ref', 0, 'word');
