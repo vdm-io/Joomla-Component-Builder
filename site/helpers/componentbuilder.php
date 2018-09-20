@@ -3785,8 +3785,14 @@ abstract class ComponentbuilderHelper
 		{
 			// get user action permission to edit
 			$action = self::getActions($view, $record, $views, 'edit', str_replace('com_', '', $component));
+			// check if the view permission is set
+			if (($edit = $action->get($view . '.edit', 'none-set')) === 'none-set')
+			{
+				// fall back on the core permission then
+				$edit = $action->get('core.edit', 'none-set');
+			}
 			// can edit
-			if ($action->get($view . '.edit'))
+			if ($edit)
 			{
 				// set the edit link
 				if ($jRoute)
