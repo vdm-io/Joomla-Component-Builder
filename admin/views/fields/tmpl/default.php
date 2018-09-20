@@ -83,3 +83,25 @@ if ($this->saveOrder)
 <input type="hidden" name="task" value="" />
 <?php echo JHtml::_('form.token'); ?>
 </form>
+<script type="text/javascript">
+// fields footer script
+
+// waiting spinner
+var outerDiv = jQuery('body');
+jQuery('<div id="loading"></div>')
+	.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
+	.css("top", outerDiv.position().top - jQuery(window).scrollTop())
+	.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
+	.css("width", outerDiv.width())
+	.css("height", outerDiv.height())
+	.css("position", "fixed")
+	.css("opacity", "0.80")
+	.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
+	.css("filter", "alpha(opacity = 80)")
+	.css("display", "none")
+	.appendTo(outerDiv);
+// when the expand button is clicked
+jQuery('#toolbar').on('click',"button.button-expand-2", function(e){
+	jQuery('#loading').show();
+});
+</script>

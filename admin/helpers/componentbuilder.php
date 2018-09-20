@@ -3656,7 +3656,7 @@ abstract class ComponentbuilderHelper
 	* @param  string   $component  The component these views belong to
 	* @param  string   $headsup    The message to show on click of button
 	*
-	* @return  string    On success the full html edit button
+	* @return  string    On success the full html link
 	* 
 	*/
 	public static function getEditButton(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE')

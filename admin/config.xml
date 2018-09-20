@@ -688,9 +688,9 @@
 				COM_COMPONENTBUILDER_CONFIG_EXPANSION</option>
 		</field>
 		<!-- Note_development_method_default Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_development_method_default" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_DEFAULT_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_DEFAULT_DESCRIPTION" heading="h4" class="alert alert-info note_development_method_default" showon="development_method:1" />
+		<field type="note" name="note_development_method_default" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_DEFAULT_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_DEFAULT_DESCRIPTION" heading="h2" class="alert alert-info note_development_method_default" showon="development_method:1" />
 		<!-- Note_development_method_expansion Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_development_method_expansion" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_EXPANSION_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_EXPANSION_DESCRIPTION" heading="h4" class="alert alert-info note_development_method_expansion" showon="development_method:2" />
+		<field type="note" name="note_development_method_expansion" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_EXPANSION_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_EXPANSION_DESCRIPTION" heading="h2" class="alert alert-info note_development_method_expansion" showon="development_method:2" />
 		<!-- Expansion Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"

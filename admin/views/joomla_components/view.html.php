@@ -147,10 +147,20 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			// add Import JCB Packages button.
 			JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_JCB_PACKAGES', false);
 		}
+		if ($this->user->authorise('joomla_component.run_expansion', 'com_componentbuilder'))
+		{
+			// add Run Expansion button.
+			JToolBarHelper::custom('joomla_components.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+		}
 		if ($this->user->authorise('joomla_component.backup', 'com_componentbuilder'))
 		{
 			// add Backup button.
 			JToolBarHelper::custom('joomla_components.backup', 'archive', '', 'COM_COMPONENTBUILDER_BACKUP', false);
+		}
+		if ($this->user->authorise('joomla_component.clear_tmp', 'com_componentbuilder'))
+		{
+			// add Clear tmp button.
+			JToolBarHelper::custom('joomla_components.clearTmp', 'purge', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_component.import'))

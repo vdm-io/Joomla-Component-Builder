@@ -184,7 +184,7 @@ class ComponentbuilderControllerApi extends JControllerForm
 		// quite only if auto backup (adding this script from custom code :)
 		if ('backup' === 'backup')
 		{
-			echo "# Error\n".JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
+			echo "# Error\n" . JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
 			// clear session
 			JFactory::getApplication()->getSession()->destroy();
 			jexit();
@@ -193,6 +193,11 @@ class ComponentbuilderControllerApi extends JControllerForm
 		return;
 	}
 
+	/**
+	 * Run the Expansion
+	 *
+	 * @return  mix
+	 */
 	public function expand()
 	{
 		// get params first
@@ -287,19 +292,29 @@ class ComponentbuilderControllerApi extends JControllerForm
 		// check if message is to be returned
 		if (1== $returnOptionsBuild)
 		{
-			jexit('Expansion Disabled!');
+			jexit('Expansion Disabled! Expansion can be enabled by your system administrator in the global Options of JCB under the Development Method tab.');
 		}
 		// return bool
 		echo 0;
 		jexit();
 	}
 
+	/**
+	 * Get API User
+	 *
+	 * @return  object
+	 */
 	protected function getApiUser()
 	{
 		// return user object
 		return JFactory::getUser($this->params->get('api', 0, 'INT'));
 	}
 
+	/**
+	 * Run worker request
+	 *
+	 * @return  mix
+	 */
 	public function worker()
 	{
 		// get input values
@@ -351,6 +366,11 @@ class ComponentbuilderControllerApi extends JControllerForm
 		jexit();
 	}
 
+	/**
+	 * Load the needed script
+	 *
+	 * @return  void
+	 */
 	protected function _autoloader()
 	{
 		// include component compiler

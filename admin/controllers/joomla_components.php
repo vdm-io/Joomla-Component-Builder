@@ -104,6 +104,79 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		return;
 	}
 
+
+	/**
+	 * Run the Expansion
+	 *
+	 * @return  void
+	 */
+	public function runExpansion()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		// check if user has the right
+		$user = JFactory::getUser();
+		// set page redirect
+		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false);
+		// set massage
+		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
+		// check if this user has the right to run expansion
+		if($user->authorise('compiler.run_expansion', 'com_componentbuilder'))
+		{
+			// set massage
+			$message = JText::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
+			// run expansion via API
+			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
+			// is there a message returned
+			if (!is_numeric($result) && ComponentbuilderHelper::checkString($result))
+			{
+				$this->setRedirect($redirect_url, $result);
+				return true;
+			}
+			elseif (is_numeric($result) && 1 == $result)
+			{
+				$message = JText::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
+				$this->setRedirect($redirect_url, $message, 'message');
+				return true;
+			}
+		}
+		$this->setRedirect($redirect_url, $message, 'error');
+		return false;
+	}
+
+
+	/**
+	 * Clear tmp folder
+	 *
+	 * @return  true on success
+	 */
+	public function clearTmp()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		// check if user has the right
+		$user = JFactory::getUser();
+		// set page redirect
+		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false);
+		$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
+		if($user->authorise('core.admin', 'com_componentbuilder'))
+		{
+			// get the model
+			$model = $this->getModel('compiler');
+			// get tmp folder
+			$comConfig = JFactory::getConfig();
+			$tmp = $comConfig->get('tmp_path');
+			if ($model->emptyFolder($tmp))
+			{
+				$message = JText::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEAR_SUCCESSFULLYB');
+				$this->setRedirect($redirect_url, $message, 'message');
+				return true;
+			}
+		}
+		$this->setRedirect($redirect_url, $message, 'error');
+		return false;
+	}
+
 	public function smartImport()
 	{
 		// check if import is allowed for this user.
@@ -122,7 +195,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_IMPORT_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
-	}  
+	}
 
 	public function smartExport()
 	{
@@ -353,7 +426,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		// quite only if auto backup (adding this script from custom code :)
 		if ('backup' === 'manualBackup')
 		{
-			echo "# Error\n".JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
+			echo "# Error\n" . JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
 			// clear session
 			JFactory::getApplication()->getSession()->destroy();
 			jexit();

@@ -304,6 +304,11 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		// JToolBarHelper::custom('compiler.back', 'undo-2', '', 'COM_COMPONENTBUILDER_BACK', false);
 		// add cpanel button
 		JToolBarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
+		if ($this->canDo->get('compiler.run_expansion'))
+		{
+			// add Run Expansion button.
+			JToolBarHelper::custom('compiler.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+		}
 		if ($this->canDo->get('compiler.clear_tmp'))
 		{
 			// add Clear tmp button.
