@@ -1912,43 +1912,43 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							continue;
 						}
 
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode sql_uninstall
-						$item->sql_uninstall = base64_decode($item->sql_uninstall);
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_helper_admin
 						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
+						// decode php_preflight_update
+						$item->php_preflight_update = base64_decode($item->php_preflight_update);
+						// decode css_site
+						$item->css_site = base64_decode($item->css_site);
 						// decode php_helper_site
 						$item->php_helper_site = base64_decode($item->php_helper_site);
 						// decode javascript
 						$item->javascript = base64_decode($item->javascript);
-						// decode css_site
-						$item->css_site = base64_decode($item->css_site);
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
+						// decode readme
+						$item->readme = base64_decode($item->readme);
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
-						// decode php_preflight_update
-						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
-						// decode readme
-						$item->readme = base64_decode($item->readme);
+						// decode php_site_event
+						$item->php_site_event = base64_decode($item->php_site_event);
+						// decode css_admin
+						$item->css_admin = base64_decode($item->css_admin);
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode sql_uninstall
+						$item->sql_uninstall = base64_decode($item->sql_uninstall);
 						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
 						{
 							// decrypt export_key

@@ -105,6 +105,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_CONFIG_ADDCONFIG_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addconfig_modal" repeat="true">
 				<!-- Field Field. Type: Fields. (custom) -->
@@ -115,6 +116,7 @@
 					description="COM_COMPONENTBUILDER_LIBRARY_CONFIG_FIELD_DESCRIPTION"
 					class="list_class fieldFull"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>

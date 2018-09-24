@@ -93,6 +93,7 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			readonly="true"
 			button="false"
@@ -105,6 +106,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_ADDSITE_VIEWS_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addsite_views_modal" repeat="true">
 				<!-- Siteview Field. Type: Siteviews. (custom) -->
@@ -115,6 +117,7 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_SITEVIEW_DESCRIPTION"
 					class="fieldMedium"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>
@@ -146,6 +149,7 @@
 					name="default_view"
 					label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_DEFAULT_VIEW_LABEL"
 					value="1"
+					default=""
 					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_DEFAULT_VIEW_DESCRIPTION"
 					class="inputbox"
@@ -167,6 +171,7 @@
 					name="public_access"
 					label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_PUBLIC_ACCESS_LABEL"
 					value="1"
+					default=""
 					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_PUBLIC_ACCESS_DESCRIPTION"
 					class="inputbox"

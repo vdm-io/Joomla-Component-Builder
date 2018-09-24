@@ -110,7 +110,8 @@
 			class="list_class"
 			multiple="false"
 			filter="INT"
-			required="true">
+			required="true"
+			default="">
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_SERVER_SELECT_AN_OPTION</option>
@@ -136,6 +137,7 @@
 			label="COM_COMPONENTBUILDER_SERVER_SIGNATURE_LABEL"
 			size="250"
 			maxlength="250"
+			default=""
 			description="COM_COMPONENTBUILDER_SERVER_SIGNATURE_DESCRIPTION"
 			class="text_area span12"
 			required="true"
@@ -151,6 +153,7 @@
 			label="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_LABEL"
 			rows="15"
 			cols="5"
+			default=""
 			description="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_DESCRIPTION"
 			class="input-xxlarge span12"
 			hint="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_HINT"
@@ -162,6 +165,7 @@
 			name="secret"
 			label="COM_COMPONENTBUILDER_SERVER_SECRET_LABEL"
 			size="60"
+			default=""
 			description="COM_COMPONENTBUILDER_SERVER_SECRET_DESCRIPTION"
 			message="Error! Please add the passphrase here."
 			class="text_area"
@@ -173,6 +177,7 @@
 			name="password"
 			label="COM_COMPONENTBUILDER_SERVER_PASSWORD_LABEL"
 			size="60"
+			default=""
 			description="COM_COMPONENTBUILDER_SERVER_PASSWORD_DESCRIPTION"
 			message="Error! Please add the password here."
 			class="text_area"
@@ -204,7 +209,8 @@
 			class="list_class"
 			multiple="false"
 			filter="INT"
-			required="true">
+			required="true"
+			default="">
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_SERVER_SELECT_AN_OPTION</option>
@@ -258,6 +264,7 @@
 			label="COM_COMPONENTBUILDER_SERVER_HOST_LABEL"
 			size="40"
 			maxlength="150"
+			default=""
 			description="COM_COMPONENTBUILDER_SERVER_HOST_DESCRIPTION"
 			class="text_area"
 			required="true"
@@ -272,6 +279,7 @@
 			label="COM_COMPONENTBUILDER_SERVER_USERNAME_LABEL"
 			size="60"
 			maxlength="150"
+			default=""
 			description="COM_COMPONENTBUILDER_SERVER_USERNAME_DESCRIPTION"
 			class="text_area"
 			required="true"

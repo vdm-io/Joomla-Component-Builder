@@ -110,7 +110,8 @@
 			class="list_class"
 			multiple="false"
 			filter="INT"
-			required="true">
+			required="true"
+			default="">
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_DYNAMIC_GET_PLEASE_SELECT</option>
@@ -160,6 +161,7 @@
 					description="COM_COMPONENTBUILDER_DYNAMIC_GET_DB_TABLE_DESCRIPTION"
 					class="list_class"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>
@@ -407,6 +409,7 @@
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_DESCRIPTION"
 			multiple="false"
+			default=""
 			required="true"
 		/>
 		<!-- Add_php_router_parse Field. Type: Radio. (joomla) -->
@@ -578,6 +581,7 @@
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_DB_TABLE_MAIN_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			button="false"
 		/>
@@ -943,7 +947,8 @@
 					class="list_class"
 					multiple="false"
 					filter="WORD"
-					required="false">
+					required="false"
+					default="">
 					<!-- Option Set. -->
 					<option value="ASC">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_ASCENDING</option>
@@ -1161,6 +1166,7 @@
 					label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_LABEL"
 					description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_DESCRIPTION"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>

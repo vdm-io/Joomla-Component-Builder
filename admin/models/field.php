@@ -907,10 +907,12 @@ class ComponentbuilderModelField extends JModelAdmin
 		$properties = $input->get('properties', null, 'ARRAY');
 		// get the extra properties
 		$extraproperties = $input->get('extraproperties', null, 'ARRAY');
-		// get the type phpx property
-		$typephpx = $input->get('property_type_phpx', null, 'RAW');
 		// get the type php property
-		$typephp = $input->get('property_type_php', null, 'RAW');
+		$typephp = array();
+		foreach (ComponentbuilderHelper::$phpFieldArray as $x)
+		{
+			$typephp[$x] = $input->get('property_type_php' . $x, null, 'RAW');
+		}
 		// make sure we have an array
 		if (ComponentbuilderHelper::checkArray($properties))
 		{
@@ -919,7 +921,7 @@ class ComponentbuilderModelField extends JModelAdmin
 			foreach($properties as $property)
 			{
 				// make sure we have the correct values
-				if (ComponentbuilderHelper::checkArray($property) && isset($property['name']) && ComponentbuilderHelper::checkString($property['name']) && isset($property['value']))
+				if (ComponentbuilderHelper::checkArray($property) && isset($property['name']) && ComponentbuilderHelper::checkString($property['name']) && (isset($property['value']) || 'default' === $property['name']))
 				{
 					// fix the name (TODO)
 					// $property['name'] = ComponentbuilderHelper::safeString($property['name']);
@@ -933,7 +935,7 @@ class ComponentbuilderModelField extends JModelAdmin
 						break;
 					}
 					// load the property
-					$bucket[] = "\t".$property['name'].'="'. str_replace('"', "&quot;", $property['value']).'"';
+					$bucket[] = "\t" . $property['name'] . '="' . str_replace('"', "&quot;", $property['value']) . '"';
 				}
 			}
 			// make sure we have an array
@@ -945,26 +947,24 @@ class ComponentbuilderModelField extends JModelAdmin
 					if (ComponentbuilderHelper::checkArray($xproperty) && isset($xproperty['name']) && ComponentbuilderHelper::checkString($xproperty['name']) && isset($xproperty['value']))
 					{
 						// load the extra property
-						$bucket[] = "\t".ComponentbuilderHelper::safeString($xproperty['name']).'="'. str_replace('"', "&quot;", $xproperty['value']).'"';
+						$bucket[] = "\t" . ComponentbuilderHelper::safeString($xproperty['name']) . '="' . str_replace('"', "&quot;", $xproperty['value']) . '"';
 					}
 				}
 			}
-			// make sure we have a string
-			if (ComponentbuilderHelper::checkString($typephp))
+			// load the PHP
+			foreach ($typephp as $x => $phpvalue)
 			{
-				// load the type_php property
-				$bucket[] = "\t".'type_php_1="'. str_replace('"', "'", $typephp).'"';
-			}
-			// make sure we have a string
-			if (ComponentbuilderHelper::checkString($typephpx))
-			{
-				// load the type_phpx property
-				$bucket[] = "\t".'type_phpx_1="'. str_replace('"', "'", $typephpx).'"';
+				// make sure we have a string
+				if (ComponentbuilderHelper::checkString($phpvalue))
+				{
+					// load the type_php property
+					$bucket[] = "\t" . 'type_php' . $x . '_1="__.o0=base64=Oo.__' . base64_encode($phpvalue) . '"';
+				}
 			}
 			// if the bucket has been loaded
 			if (ComponentbuilderHelper::checkArray($bucket))
 			{
-				$data['xml'] = "<field".PHP_EOL.implode(PHP_EOL, $bucket).PHP_EOL."/>";
+				$data['xml'] = "<field" . PHP_EOL . implode(PHP_EOL, $bucket) . PHP_EOL . "/>";
 			}
 		}
 

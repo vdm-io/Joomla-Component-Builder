@@ -93,6 +93,7 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			readonly="true"
 			button="false"
@@ -104,6 +105,7 @@
 			label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ADDCUSTOM_ADMIN_VIEWS_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addcustom_admin_views_modal" repeat="true">
 				<!-- Customadminview Field. Type: Customadminviews. (custom) -->
@@ -114,6 +116,7 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_CUSTOMADMINVIEW_DESCRIPTION"
 					class="fieldMedium"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>
@@ -125,7 +128,8 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ICOMOON_DESCRIPTION"
 					class="list_class fieldMedium"
 					multiple="false"
-					required="false">
+					required="false"
+					default="">
 					<!-- Option Set. -->
 					<option value="joomla">
 						COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_JOOMLA</option>
@@ -611,6 +615,7 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ADMINVIEWS_DESCRIPTION"
 					class="fieldMedium"
 					multiple="true"
+					default=""
 					required="false"
 					button="false"
 				/>
@@ -622,6 +627,7 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_BEFORE_DESCRIPTION"
 					class="list_class fieldMedium"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>

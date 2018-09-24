@@ -2051,6 +2051,11 @@ class Fields extends Structure
 		if (!ComponentbuilderHelper::fieldCheck($typeName))
 		{
 			$fieldAttributes['custom'] = array();
+			// is this an own custom field
+			if (isset($field['own_custom']))
+			{
+				$fieldAttributes['custom']['own_custom'] = $field['own_custom'];
+			}
 			$setCustom = true;
 		}
 		// setup a default field
@@ -2093,19 +2098,18 @@ class Fields extends Structure
 					// replace the placeholders
 					$xmlValue = $this->setPlaceholders($xmlValue, $placeholders);
 				}
-				elseif (strpos($property['name'], 'type_php_') !== false && $setCustom)
+				// catch all PHP here
+				elseif (strpos($property['name'], 'type_php') !== false && $setCustom)
 				{
 					// set the line number
-					$phpLine = (int) str_replace('type_php_', '', $property['name']);
+					$phpLine = (int) preg_replace('/[^0-9]/', '', $property['name']);
+					// set the type key
+					$phpKey = (string) trim( str_replace('type_', '', preg_replace('/[0-9]+/', '', $property['name'])), '_');
 					// load the php for the custom field file
-					$fieldAttributes['custom']['php'][$phpLine] = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
-				}
-				elseif (strpos($property['name'], 'type_phpx_') !== false && $setCustom)
-				{
-					// set the line number
-					$phpLine = (int) str_replace('type_phpx_', '', $property['name']);
-					// load the php for the custom field file
-					$fieldAttributes['custom']['phpx'][$phpLine] = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
+					$fieldAttributes['custom'][$phpKey][$phpLine] =
+						$this->setDynamicValues(ComponentbuilderHelper::openValidBase64(
+							ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"')
+						));
 				}
 				elseif ($property['name'] === 'prime_php' && $setCustom)
 				{
@@ -2285,6 +2289,12 @@ class Fields extends Structure
 					}
 					// now set the value
 					$fieldAttributes[$property['name']] = $xmlValue;
+				}
+				// validate that the default field is set
+				elseif ($property['name'] === 'default' && ($xmlValidateValue = ComponentbuilderHelper::getBetween($field['settings']->xml, 'default="', '"', 'none-set')) !== 'none-set')
+				{
+					// we must allow empty defaults
+					$fieldAttributes['default'] = $xmlValue;
 				}
 			}
 			// do some nice twigs beyond the default
@@ -2730,119 +2740,164 @@ class Fields extends Structure
 	public function setCustomFieldTypeFile($data, $view_name_list, $view_name_single)
 	{
 		// make sure it is not already been build or if it is prime
-		if ((isset($data['custom']['prime_php']) && $data['custom']['prime_php'] == 1) || !isset($this->fileContentDynamic['customfield_' . $data['type']]) || !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_' . $data['type']]))
+		if (isset($data['custom']) && isset($data['custom']['extends']) && ((isset($data['custom']['prime_php']) && $data['custom']['prime_php'] == 1) || !isset($this->fileContentDynamic['customfield_' . $data['type']]) || !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_' . $data['type']])))
 		{
-			// first build the custom field type file
-			$target = array('admin' => 'customfield');
-			$this->buildDynamique($target, 'field' . $data['custom']['extends'], $data['custom']['type']);
 			// set tab and break replacements
 			$tabBreak = array(
 				'\t' => $this->_t(1),
 				'\n' => PHP_EOL
 			);
-			// make field dynamic
+			// set the [[[PLACEHOLDER]]] options
 			$replace = array(
-				$this->hhh . 'TABLE' . $this->hhh => $data['custom']['table'],
-				$this->hhh . 'ID' . $this->hhh => $data['custom']['id'],
-				$this->hhh . 'TEXT' . $this->hhh => $data['custom']['text'],
-				$this->hhh . 'CODE_TEXT' . $this->hhh => $data['code'] . '_' . $data['custom']['text'],
-				$this->hhh . 'CODE' . $this->hhh => $data['code'],
-				$this->hhh . 'component' . $this->hhh => $this->fileContentStatic[$this->hhh . 'component' . $this->hhh],
-				$this->hhh . 'Component' . $this->hhh => $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh],
-				$this->hhh . 'view_type' . $this->hhh => $view_name_single . '_' . $data['type'],
-				$this->hhh . 'type' . $this->hhh => $data['type'],
-				$this->hhh . 'view' . $this->hhh => $view_name_single,
-				$this->hhh . 'views' . $this->hhh => $view_name_list
+				$this->bbb . 'TABLE' . $this->ddd => $data['custom']['table'],
+				$this->bbb . 'ID' . $this->ddd => $data['custom']['id'],
+				$this->bbb . 'TEXT' . $this->ddd => $data['custom']['text'],
+				$this->bbb . 'CODE_TEXT' . $this->ddd => $data['code'] . '_' . $data['custom']['text'],
+				$this->bbb . 'CODE' . $this->ddd => $data['code'],
+				$this->bbb . 'view_type' . $this->ddd => $view_name_single . '_' . $data['type'],
+				$this->bbb . 'type' . $this->ddd => $data['type'],
+				$this->bbb . 'com_component' . $this->ddd => (isset($data['custom']['component']) && ComponentbuilderHelper::checkString($data['custom']['component'])) ? ComponentbuilderHelper::safeString($data['custom']['component']) : 'com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh],
+				// set the generic values
+				$this->bbb . 'component' . $this->ddd => $this->fileContentStatic[$this->hhh . 'component' . $this->hhh],
+				$this->bbb . 'Component' . $this->ddd => $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh],
+				$this->bbb . 'view' . $this->ddd => (isset($data['custom']['view']) && ComponentbuilderHelper::checkString($data['custom']['view'])) ? ComponentbuilderHelper::safeString($data['custom']['view']) : $view_name_single,
+				$this->bbb . 'views' . $this->ddd => (isset($data['custom']['views']) && ComponentbuilderHelper::checkString($data['custom']['views'])) ? ComponentbuilderHelper::safeString($data['custom']['views']) : $view_name_list
 			);
-			// now load the php script
-			if (isset($data['custom']['php']) && ComponentbuilderHelper::checkArray($data['custom']['php']))
+			// now set the ###PLACEHOLDER### options
+			foreach ($replace as $replacekey => $replacevalue)
 			{
-				// make sure the ar is reset
-				$phpCode = '';
-				foreach ($data['custom']['php'] as $line => $code)
+				// update the key value
+				$replacekey = str_replace(array($this->bbb, $this->ddd), array($this->hhh, $this->hhh), $replacekey);
+				// now set the value
+				$replace[$replacekey] = $replacevalue;
+			}
+			// start loading the field type
+			$this->fileContentDynamic['customfield_' . $data['type']] = array();
+			// Type <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'Type' . $this->hhh] = ComponentbuilderHelper::safeString($data['custom']['type'], 'F');
+			// type <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'type' . $this->hhh] = ComponentbuilderHelper::safeString($data['custom']['type']);
+			// is this a own custom field
+			if (isset($data['custom']['own_custom']))
+			{
+				// make sure the button option notice is set to notify the developer that the button option is not available in own custom field types
+				if (isset($data['custom']['add_button']) && ($data['custom']['add_button'] === 'true' || 1 == $data['custom']['add_button']))
 				{
-					if (ComponentbuilderHelper::checkString($code))
+					// set notice
+					$this->app->enqueueMessage(JText::_('The option to add a dynamic button is not available in <b>own custom field types</b>, you will have to custom code it.'), 'error');
+				}
+				// load another file
+				$target = array('admin' => 'customfield');
+				$this->buildDynamique($target, 'fieldcustom', $data['custom']['type']);
+				// JFORM_extens <<<DYNAMIC>>>
+				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_extends' . $this->hhh] = ComponentbuilderHelper::safeString($data['custom']['extends']);
+				// JFORM_EXTENDS <<<DYNAMIC>>>
+				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_EXTENDS' . $this->hhh] = ComponentbuilderHelper::safeString($data['custom']['extends'], 'F');
+				// JFORM_TYPE_PHP <<<DYNAMIC>>>
+				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_TYPE_PHP' . $this->hhh] = PHP_EOL . PHP_EOL . $this->_t(1) . "//" . $this->setLine(__LINE__) . " A " . $data['custom']['own_custom'] . " Field";
+				// load the other PHP options
+				foreach (ComponentbuilderHelper::$phpFieldArray as $x)
+				{
+					// reset the php bucket
+					$phpBucket = '';
+					// only set if avaliable
+					if (isset($data['custom']['php' . $x]) && ComponentbuilderHelper::checkArray($data['custom']['php' . $x]))
 					{
-						if ($line == 1)
+						foreach ($data['custom']['php' . $x] as $line => $code)
 						{
-							$phpCode .= $this->setPlaceholders($code, $tabBreak);
+							if (ComponentbuilderHelper::checkString($code))
+							{
+								$phpBucket .= PHP_EOL . $this->setPlaceholders($code, $tabBreak);
+							}
 						}
-						else
-						{
-							$phpCode .= PHP_EOL . $this->_t(2) . $this->setPlaceholders($code, $tabBreak);
-						}
+						// JFORM_TYPE_PHP <<<DYNAMIC>>>
+						$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_TYPE_PHP' . $this->hhh] .= PHP_EOL . $this->setPlaceholders($phpBucket, $replace);
 					}
 				}
-				// replace the placholders
-				$phpCode = $this->setPlaceholders($phpCode, $replace);
 			}
 			else
 			{
-				$phpCode = 'return null;';
-			}
-			// catch empty stuff
-			if (!ComponentbuilderHelper::checkString($phpCode))
-			{
-				$phpCode = 'return null;';
-			}
-			// some house cleaning for users
-			if ($data['custom']['extends'] === 'user')
-			{
-				// now load the php xclude script
-				if (ComponentbuilderHelper::checkArray($data['custom']['phpx']))
+				// first build the custom field type file
+				$target = array('admin' => 'customfield');
+				$this->buildDynamique($target, 'field' . $data['custom']['extends'], $data['custom']['type']);
+				// make sure the value is reset
+				$phpCode = '';
+				// now load the php script
+				if (isset($data['custom']['php']) && ComponentbuilderHelper::checkArray($data['custom']['php']))
 				{
-					// make sure the ar is reset
-					$phpxCode = '';
-					foreach ($data['custom']['phpx'] as $line => $code)
+					foreach ($data['custom']['php'] as $line => $code)
 					{
 						if (ComponentbuilderHelper::checkString($code))
 						{
 							if ($line == 1)
 							{
-								$phpxCode .= $this->setPlaceholders($code, $tabBreak);
+								$phpCode .= $this->setPlaceholders($code, $tabBreak);
 							}
 							else
 							{
-								$phpxCode .= PHP_EOL . $this->_t(2) . $this->setPlaceholders($code, $tabBreak);
+								$phpCode .= PHP_EOL . $this->_t(2) . $this->setPlaceholders($code, $tabBreak);
 							}
 						}
 					}
 					// replace the placholders
-					$phpxCode = $this->setPlaceholders($phpxCode, $replace);
+					$phpCode = $this->setPlaceholders($phpCode, $replace);
+				}
+				// catch empty stuff
+				if (!ComponentbuilderHelper::checkString($phpCode))
+				{
+					$phpCode = 'return null;';
+				}
+				// some house cleaning for users
+				if ($data['custom']['extends'] === 'user')
+				{
+					// make sure the value is reset
+					$phpxCode = '';
+					// now load the php xclude script
+					if (ComponentbuilderHelper::checkArray($data['custom']['phpx']))
+					{
+						foreach ($data['custom']['phpx'] as $line => $code)
+						{
+							if (ComponentbuilderHelper::checkString($code))
+							{
+								if ($line == 1)
+								{
+									$phpxCode .= $this->setPlaceholders($code, $tabBreak);
+								}
+								else
+								{
+									$phpxCode .= PHP_EOL . $this->_t(2) . $this->setPlaceholders($code, $tabBreak);
+								}
+							}
+						}
+						// replace the placholders
+						$phpxCode = $this->setPlaceholders($phpxCode, $replace);
+					}
+					// catch empty stuff
+					if (!ComponentbuilderHelper::checkString($phpxCode))
+					{
+						$phpxCode = 'return null;';
+					}
+					// temp holder for name
+					$tempName = $data['custom']['label'] . ' Group';
+					// set lang
+					$groupLangName = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($tempName, 'U');
+					// add to lang array
+					$this->langContent[$this->lang][$groupLangName] = ComponentbuilderHelper::safeString($tempName, 'W');
+					// build the Group Control
+					$this->setGroupControl[$data['type']] = $groupLangName;
+					// JFORM_GETGROUPS_PHP <<<DYNAMIC>>>
+					$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETGROUPS_PHP' . $this->hhh] = $phpCode;
+					// JFORM_GETEXCLUDED_PHP <<<DYNAMIC>>>
+					$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETEXCLUDED_PHP' . $this->hhh] = $phpxCode;
 				}
 				else
 				{
-					$phpxCode = 'return null;';
+					// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
+					$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETOPTIONS_PHP' . $this->hhh] = $phpCode;
 				}
-				if (!ComponentbuilderHelper::checkString($phpxCode))
-				{
-					$phpxCode = 'return null;';
-				}
-				// temp holder for name
-				$tempName = $data['custom']['label'] . ' Group';
-				// set lang
-				$groupLangName = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($tempName, 'U');
-				// add to lang array
-				$this->langContent[$this->lang][$groupLangName] = ComponentbuilderHelper::safeString($tempName, 'W');
-				// build the Group Control
-				$this->setGroupControl[$data['type']] = $groupLangName;
-				// JFORM_GETGROUPS_PHP <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETGROUPS_PHP' . $this->hhh] = $phpCode;
-
-				// JFORM_GETEXCLUDED_PHP <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETEXCLUDED_PHP' . $this->hhh] = $phpxCode;
+				// type <<<DYNAMIC>>>
+				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'ADD_BUTTON' . $this->hhh] = $this->setAddButtonToListField($data['custom']);
 			}
-			else
-			{
-				// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JFORM_GETOPTIONS_PHP' . $this->hhh] = $phpCode;
-			}
-			// Type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'Type' . $this->hhh] = ComponentbuilderHelper::safeString($data['custom']['type'], 'F');
-			// type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'type' . $this->hhh] = $data['custom']['type'];
-			// type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'ADD_BUTTON' . $this->hhh] = $this->setAddButtonToListField($data['custom']);
 		}
 	}
 

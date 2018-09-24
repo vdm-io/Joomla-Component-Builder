@@ -93,6 +93,7 @@
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADMIN_VIEW_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			readonly="true"
 			button="false"
@@ -105,6 +106,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addconditions_modal" repeat="true">
 				<!-- Target_field Field. Type: Targetfields. (custom) -->
@@ -115,6 +117,7 @@
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_FIELD_DESCRIPTION"
 					class="fieldMedium"
 					multiple="true"
+					default=""
 					required="false"
 					button="false"
 				/>
@@ -163,6 +166,7 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_DESCRIPTION"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>

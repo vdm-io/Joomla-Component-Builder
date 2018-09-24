@@ -124,6 +124,7 @@
 			label="COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_LABEL"
 			description="COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_DESCRIPTION"
 			multiple="false"
+			default=""
 			required="false"
 			button="true"
 		/>
@@ -221,6 +222,7 @@
 			label="COM_COMPONENTBUILDER_LAYOUT_ALIAS_LABEL"
 			size="40"
 			maxlength="50"
+			default=""
 			description="COM_COMPONENTBUILDER_LAYOUT_ALIAS_DESCRIPTION"
 			class="text_area"
 			filter="CMD"

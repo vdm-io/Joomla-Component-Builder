@@ -109,6 +109,7 @@
 			description="COM_COMPONENTBUILDER_FIELD_FIELDTYPE_DESCRIPTION"
 			class="btn-group"
 			multiple="false"
+			default=""
 			required="true"
 			button="true"
 		/>
@@ -120,7 +121,8 @@
 			description="COM_COMPONENTBUILDER_FIELD_DATATYPE_DESCRIPTION"
 			class="btn-group"
 			multiple="false"
-			required="true">
+			required="true"
+			default="">
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_FIELD_SELECT_AN_OPTION</option>
@@ -216,6 +218,7 @@
 			name="catid"
 			label="COM_COMPONENTBUILDER_FIELD_CATID_LABEL"
 			extension="com_componentbuilder.fields"
+			default=""
 			description="COM_COMPONENTBUILDER_FIELD_CATID_DESCRIPTION"
 			class="inputbox"
 		/>
@@ -290,7 +293,8 @@
 			label="COM_COMPONENTBUILDER_FIELD_DATALENGHT_LABEL"
 			description="COM_COMPONENTBUILDER_FIELD_DATALENGHT_DESCRIPTION"
 			class="btn-group"
-			multiple="false">
+			multiple="false"
+			default="">
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_FIELD_NONE_SET</option>
@@ -358,7 +362,8 @@
 			label="COM_COMPONENTBUILDER_FIELD_DATADEFAULT_LABEL"
 			description="COM_COMPONENTBUILDER_FIELD_DATADEFAULT_DESCRIPTION"
 			class="btn-group"
-			multiple="false">
+			multiple="false"
+			default="">
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_FIELD_NONE</option>

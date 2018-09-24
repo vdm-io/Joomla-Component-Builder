@@ -119,6 +119,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_translation_modal" repeat="true">
 				<!-- Translation Field. Type: Textarea. (joomla) -->

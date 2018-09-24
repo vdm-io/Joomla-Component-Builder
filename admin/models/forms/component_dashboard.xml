@@ -93,6 +93,7 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			readonly="true"
 			button="false"
@@ -104,6 +105,7 @@
 			label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_DASHBOARD_TAB_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
+			default=""
 			icon="list"
 			filter="raw">
 			<form hidden="true" name="list_dashboard_tab_modal" repeat="true">
@@ -146,6 +148,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HTML_LABEL"
 					rows="20"
 					cols="30"
+					default=""
 					class="text_area tab_html"
 					filter="raw"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HTML_HINT"

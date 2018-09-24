@@ -93,6 +93,7 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			readonly="true"
 			button="false"
@@ -105,6 +106,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_UPDATE_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_version_update_modal" repeat="true">
 				<!-- Version Field. Type: Text. (joomla) -->
@@ -114,6 +116,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_LABEL"
 					size="10"
 					maxlength="50"
+					default=""
 					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_DESCRIPTION"
 					class="text_area"
 					readonly="false"
@@ -130,6 +133,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_MYSQL_LABEL"
 					rows="30"
 					cols="15"
+					default=""
 					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_MYSQL_DESCRIPTION"
 					class="text_area mysql_update"
 					filter="raw"
@@ -143,6 +147,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_URL_LABEL"
 					size="60"
 					maxlength="150"
+					default=""
 					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_URL_DESCRIPTION"
 					class="text_area version_url"
 					required="false"

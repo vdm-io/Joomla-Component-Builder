@@ -93,6 +93,7 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			readonly="true"
 			button="false"
@@ -104,6 +105,7 @@
 			label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_ADDCUSTOMMENUS_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addcustommenus_modal" repeat="true">
 				<!-- Name Field. Type: Text. (joomla) -->
@@ -129,6 +131,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_CODE_LABEL"
 					size="40"
 					maxlength="50"
+					default=""
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_CODE_DESCRIPTION"
 					class="text_area"
 					required="false"
@@ -158,6 +161,7 @@
 					name="icon"
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_ICON_LABEL"
 					directory="images"
+					default=""
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_ICON_DESCRIPTION"
 					hide_default="true"
 				/>
@@ -202,6 +206,7 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_BEFORE_DESCRIPTION"
 					class="list_class fieldMedium"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>

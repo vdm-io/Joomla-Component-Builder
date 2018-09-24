@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'spacer_hr_six',
+	'spacer_hr_seven',
 	'note_on_contributors',
 	'addcontributors',
 	'emptycontributors',

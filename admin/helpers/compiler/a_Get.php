@@ -2635,45 +2635,55 @@ class Get
 		{
 			return $field['type_name'];
 		}
-		// set the type name
-		$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
 		// check that we have the poperties
 		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
 		{
-			foreach ($field['settings']->properties as $property)
+			// search for own custom fields
+			if (strpos($field['settings']->type_name, '@') !== false)
 			{
-				if ($property['name'] === 'type')
+				// set own custom field
+				$field['own_custom'] = $field['settings']->type_name;
+				$field['settings']->type_name = 'Custom';
+			}
+			// set the type name
+			$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
+			// if custom (we must use the xml value)
+			if ($type_name === 'custom' || $type_name === 'customuser')
+			{
+				$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
+			}
+			else
+			{
+				// loop over properties looking for the type value
+				foreach ($field['settings']->properties as $property)
 				{
-					// if custom (we must use the xml value)
-					if ($type_name === 'custom' || $type_name === 'customuser')
+					if ($property['name'] === 'type') // type field is never ajustable (unless custom)
 					{
-						$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
+						// force the default value
+						if (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']))
+						{
+							$type = ComponentbuilderHelper::safeString($property['example']);
+						}
+						// fallback on type name set in name field
+						elseif (ComponentbuilderHelper::checkString($type_name))
+						{
+							$type = $type_name;
+						}
+						// fall back on the xml settings (not ideal)
+						else
+						{
+							$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xml, 'type="', '"'));
+						}
+						// exit foreach loop
+						break;
 					}
-					// use field core type (name)
-					elseif (ComponentbuilderHelper::checkString($type_name) || (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']) && $property['adjustable'] == 0))
-					{
-						$type = $type_name;
-					}
-					// make sure none adjustable fields are set (should be same as above) (TODO) hmmm we need look at this again
-					elseif (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']) && $property['adjustable'] == 0)
-					{
-						$type = $property['example'];
-					}
-					// fall back on the xml settings (not ideal)
-					else
-					{
-						$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xml, 'type="', '"'));
-					}
-
-					// check if the value is set
-					if (ComponentbuilderHelper::checkString($type))
-					{
-						// add the value
-						return $type;
-					}
-					// exit foreach loop
-					break;
 				}
+			}
+			// check if the value is set
+			if (ComponentbuilderHelper::checkString($type))
+			{
+				// add the value
+				return $type;
 			}
 		}
 		// fall back to text

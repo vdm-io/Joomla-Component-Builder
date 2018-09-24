@@ -108,6 +108,7 @@
 			label="COM_COMPONENTBUILDER_LANGUAGE_LANGTAG_LABEL"
 			size="10"
 			maxlength="10"
+			default=""
 			description="COM_COMPONENTBUILDER_LANGUAGE_LANGTAG_DESCRIPTION"
 			class="text_area"
 			filter="STRING"

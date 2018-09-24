@@ -107,6 +107,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDFOLDERSFULLPATH_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addfoldersfullpath_modal" repeat="true">
 				<!-- Folderpath Field. Type: Text. (joomla) -->
@@ -116,6 +117,7 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_FOLDERPATH_LABEL"
 					size="70"
 					maxlength="300"
+					default=""
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_FOLDERPATH_DESCRIPTION"
 					class="text_area"
 					required="false"
@@ -145,6 +147,7 @@
 					name="rename"
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_RENAME_LABEL"
 					value="1"
+					default=""
 					required="false"
 					class="inputbox"
 				/>
@@ -160,6 +163,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDFILESFULLPATH_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addfilesfullpath_modal" repeat="true">
 				<!-- Filepath Field. Type: Text. (joomla) -->
@@ -169,6 +173,7 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_FILEPATH_LABEL"
 					size="70"
 					maxlength="300"
+					default=""
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_FILEPATH_DESCRIPTION"
 					class="text_area"
 					required="false"
@@ -198,6 +203,7 @@
 					name="notnew"
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_LABEL"
 					value="1"
+					default=""
 					required="false"
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
 					class="inputbox"
@@ -214,6 +220,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDFOLDERS_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addfolders_modal" repeat="true">
 				<!-- Folder Field. Type: Customfolderlist. (custom) -->
@@ -250,6 +257,7 @@
 					name="rename"
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_RENAME_LABEL"
 					value="1"
+					default=""
 					required="false"
 					class="inputbox"
 				/>
@@ -265,6 +273,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDFILES_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addfiles_modal" repeat="true">
 				<!-- File Field. Type: Customfilelist. (custom) -->
@@ -301,6 +310,7 @@
 					name="notnew"
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_LABEL"
 					value="1"
+					default=""
 					required="false"
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
 					class="inputbox"
@@ -317,6 +327,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_ADDURLS_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addurls_modal" repeat="true">
 				<!-- Url Field. Type: Url. (joomla) -->
@@ -326,6 +337,7 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_URL_LABEL"
 					size="150"
 					maxlength="250"
+					default=""
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_URL_DESCRIPTION"
 					class="text_area"
 					required="false"

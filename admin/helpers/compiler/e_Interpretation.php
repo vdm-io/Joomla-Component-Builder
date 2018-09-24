@@ -13358,17 +13358,37 @@ class Interpretation extends Fields
 			$lang = $this->langPrefix . '_MENU';
 			// set the code name
 			$codeName = ComponentbuilderHelper::safeString($this->componentData->name_code);
-			// set main menu name to lang
-			$addPrefix = $this->params->get('add_menu_prefix', 1);
+			// default prefix is none
+			$prefix = '';
+			// check if local is set
+			if (isset($this->componentData->add_menu_prefix) && is_numeric($this->componentData->add_menu_prefix))
+			{
+				// set main menu prefix switch
+				$addPrefix = $this->componentData->add_menu_prefix;
+				if ($addPrefix == 1 && isset($this->componentData->menu_prefix) && ComponentbuilderHelper::checkString($this->componentData->menu_prefix))
+				{
+					$prefix = trim($this->componentData->menu_prefix) . ' ';
+				}
+			}
+			else
+			{
+				// set main menu prefix switch
+				$addPrefix = $this->params->get('add_menu_prefix', 1);
+				if ($addPrefix == 1)
+				{
+					$prefix = trim($this->params->get('menu_prefix', '&#187;')) . ' ';
+				}
+			}
+			// add the prefix
 			if ($addPrefix == 1)
 			{
-				$prefix = trim($this->params->get('menu_prefix', '&#187;'));
-				$this->langContent['adminsys'][$lang] = $prefix . ' ' . $this->componentData->name;
+				$this->langContent['adminsys'][$lang] = $prefix . $this->componentData->name;
 			}
 			else
 			{
 				$this->langContent['adminsys'][$lang] = $this->componentData->name;
 			}
+			// loop over the admin views
 			foreach ($this->componentData->admin_views as $view)
 			{
 				// set custom menu
@@ -15401,7 +15421,7 @@ function vdm_dkim() {
 									foreach ($field['permission'] as $permission_id)
 									{
 										// set the permission key word
-										$permission_option = $permission_options[$permission_id];
+										$permission_option = $permission_options[ (int) $permission_id];
 										// reset the bucket
 										$fieldView = array();
 										// set the permission for this field

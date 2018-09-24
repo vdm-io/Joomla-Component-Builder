@@ -92,6 +92,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_LABEL"
 			size="10"
 			maxlength="50"
+			default=""
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
@@ -137,6 +138,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_DESCRIPTION"
 			multiple="false"
+			default=""
 			required="true"
 			button="true"
 		/>
@@ -318,6 +320,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_LABEL"
 			size="80"
 			maxlength="150"
+			default=""
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CODENAME_DESCRIPTION"
 			class="text_area"
 			filter="CMD"
@@ -331,6 +334,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CUSTOM_GET_LABEL"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CUSTOM_GET_DESCRIPTION"
 			multiple="true"
+			default=""
 		/>
 		<!-- Js_document Field. Type: Editor. (joomla) -->
 		<field
@@ -387,6 +391,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_AJAX_INPUT_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_ajax_input_modal" repeat="true">
 				<!-- Value_name Field. Type: Text. (joomla) -->
@@ -598,6 +603,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DYNAMIC_GET_LABEL"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DYNAMIC_GET_DESCRIPTION"
 			multiple="false"
+			default=""
 			required="false"
 		/>
 		<!-- Add_php_document Field. Type: Radio. (joomla) -->
@@ -676,7 +682,8 @@
 					description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICOMOON_DESCRIPTION"
 					class="list_class fieldMedium"
 					multiple="false"
-					required="false">
+					required="false"
+					default="">
 					<!-- Option Set. -->
 					<option value="joomla">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_JOOMLA</option>
@@ -1122,6 +1129,7 @@
 					label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_LABEL"
 					size="40"
 					maxlength="50"
+					default=""
 					description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_DESCRIPTION"
 					class="text_area"
 					required="false"

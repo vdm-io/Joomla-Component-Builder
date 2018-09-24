@@ -33,6 +33,11 @@ abstract class ComponentbuilderHelper
 	public static $libraryNames = array(1 => 'No Library', 2 => 'Bootstrap v4', 3 => 'Uikit v3', 4 => 'Uikit v2', 5 => 'FooTable v2', 6 => 'FooTable v3');
 
 	/**
+	* 	Array of php fields Allowed (16)
+	**/
+	public static $phpFieldArray = array('', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'x');
+
+	/**
 	* 	The global params
 	**/
 	protected static $params = false;
@@ -670,7 +675,7 @@ abstract class ComponentbuilderHelper
 		if ($db->getNumRows())
 		{
 			$result = $db->loadObject();
-			$properties = json_decode($result->properties,true);
+			$properties = json_decode($result->properties, true);
 			$field = array(
 				'subform' => array(),
 				'nameListOptions' => array(),
@@ -684,11 +689,11 @@ abstract class ComponentbuilderHelper
 			// value to check since there are false and null values even 0 in the values returned
 			$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
 			// set the headers
-			$field['values_description'] .= '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_PROPERTY').'</th><th>'.JText::_('COM_COMPONENTBUILDER_EXAMPLE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></thead><tbody>';
+			$field['values_description'] .= '<thead><tr><th class="uk-text-right">' . JText::_('COM_COMPONENTBUILDER_PROPERTY') . '</th><th>' . JText::_('COM_COMPONENTBUILDER_EXAMPLE') . '</th><th>' . JText::_('COM_COMPONENTBUILDER_DESCRIPTION') . '</th></thead><tbody>';
 			foreach ($properties as $property)
 			{
 				$example = (isset($property['example']) && self::checkString($property['example'])) ? $property['example'] : '';
-				$field['values_description'] .= '<tr><td class="uk-text-right"><code>'.$property['name'].'</code></td><td>'.$example.'</td><td>'.$property['description'].'</td></tr>';
+				$field['values_description'] .= '<tr><td class="uk-text-right"><code>' . $property['name'] . '</code></td><td>' . $example . '</td><td>' . $property['description'] . '</td></tr>';
 				// check if we should load the value
 				$value = self::getValueFromXMLstring($xml, $property['name'], $confirmation);
 				// check if this is a php field
@@ -709,7 +714,7 @@ abstract class ComponentbuilderHelper
 				if(self::checkArray($settings) && isset($settings[$property['name']]))
 				{
 					// add the xml values
-					$field['values'] .= PHP_EOL."\t".$property['name'].'="'.$settings[$property['name']].'" ';
+					$field['values'] .= PHP_EOL . "\t" . $property['name'] . '="'. $settings[$property['name']] . '" ';
 					// add the json values
 					if ($addPHP)
 					{
@@ -723,7 +728,7 @@ abstract class ComponentbuilderHelper
 				elseif (!$xml || $confirmation !== $value)
 				{
 					// add the xml values
-					$field['values'] .= PHP_EOL."\t" . $property['name'] . '="'. ($confirmation !== $value) ? $value : $example .'" ';
+					$field['values'] .= PHP_EOL."\t" . $property['name'] . '="' . ($confirmation !== $value) ? $value : $example .'" ';
 					// add the json values
 					if ($addPHP)
 					{
@@ -742,7 +747,7 @@ abstract class ComponentbuilderHelper
 				// increment the number
 				$nr++;
 			}
-			$field['values'] .= PHP_EOL."/>";
+			$field['values'] .= PHP_EOL . "/>";
 			$field['values_description'] .= '</tbody></table>';
 			// return found field options
 			return $field;
@@ -750,11 +755,16 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	public static function getValueFromXMLstring($xml, $get, $confirmation)
+	public static function getValueFromXMLstring(&$xml, &$get, $confirmation = '')
 	{
 		if (self::checkString($xml))
 		{
-			return self::getBetween($xml, $get.'="', '"', $confirmation);
+			// if we have a PHP value, we must base64 decode it
+			if (strpos($get, 'type_php') !== false)
+			{
+				return self::openValidBase64(self::getBetween($xml, $get.'="', '"', $confirmation));
+			}
+			return self::getBetween($xml, $get . '="', '"', $confirmation);
 		}
 		return $confirmation;
 	}
@@ -2253,6 +2263,38 @@ abstract class ComponentbuilderHelper
 		}
 		return '<div>'.JText::_('COM_COMPONENTBUILDER_NO_COMPONENT_DETAILS_FOUND_SO_IT_IS_NOT_SAFE_TO_CONTINUE').'</div>';
 	}
+
+	/**
+	 * open base64 string if stored as base64
+	 *
+	 * @param   string   $data   The base64 string
+	 * @param   string   $key    We store the string with that suffix :)
+	 *
+	 * @return  string   The opened string
+	 *
+	 */
+	public static function openValidBase64($data, $key = '__.o0=base64=Oo.__')
+	{
+		// check that we have a string
+		if (self::checkString($data))
+		{
+			// check if we have a key
+			if (self::checkString($key))
+			{
+				if (strpos($data, $key) !== false)
+				{
+					return base64_decode(str_replace($key, '', $data));
+				}
+			}
+			// fallback to this, not perfect method
+			elseif (base64_encode(base64_decode($data, true)) === $data)
+			{
+				return base64_decode($data);
+			}
+		}
+		return $data;
+	}
+
 
 	/**
 	* 	prepare base64 string for url

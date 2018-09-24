@@ -92,6 +92,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SYSTEM_NAME_LABEL"
 			size="10"
 			maxlength="50"
+			default=""
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_SYSTEM_NAME_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
@@ -330,6 +331,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addtables_modal" repeat="true">
 				<!-- Table Field. Type: Dbtables. (custom) -->
@@ -441,7 +443,8 @@
 					class="list_class"
 					multiple="false"
 					filter="CMD"
-					required="false">
+					required="false"
+					default="">
 					<!-- Option Set. -->
 					<option value="core.edit">
 						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDIT</option>
@@ -533,6 +536,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABS_DESCRIPTION"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_addtabs_modal" repeat="true">
 				<!-- Name Field. Type: Text. (joomla) -->
@@ -617,6 +621,7 @@
 					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADMINVIEW_DESCRIPTION"
 					class="fieldMedium"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>
@@ -1268,7 +1273,8 @@
 					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_DESCRIPTION"
 					class="list_class fieldMedium"
 					multiple="false"
-					required="false">
+					required="false"
+					default="">
 					<!-- Option Set. -->
 					<option value="joomla">
 						COM_COMPONENTBUILDER_ADMIN_VIEW_JOOMLA</option>
@@ -1714,6 +1720,7 @@
 					label="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_LABEL"
 					size="40"
 					maxlength="50"
+					default=""
 					description="COM_COMPONENTBUILDER_ADMIN_VIEW_METHOD_DESCRIPTION"
 					class="text_area"
 					required="false"
@@ -1799,6 +1806,7 @@
 			name="source"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCE_LABEL"
 			class="btn-group btn-group-yesno"
+			default=""
 			required="true">
 			<!-- Option Set. -->
 			<option value="1">
@@ -1949,6 +1957,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_AJAX_INPUT_LABEL"
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
+			default=""
 			icon="list">
 			<form hidden="true" name="list_ajax_input_modal" repeat="true">
 				<!-- Value_name Field. Type: Text. (joomla) -->

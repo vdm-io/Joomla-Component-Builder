@@ -400,6 +400,11 @@
 					"rename": "layoutmetadata",
 					"type": "layoutmetadata"
 				},
+				"JFormFieldCustom.php": {
+					"path": "c0mp0n3nt/admin/models/fields",
+					"rename": "JFormFieldCustom",
+					"type": "fieldcustom"
+				},
 				"JFormFieldList.php": {
 					"path": "c0mp0n3nt/admin/models/fields",
 					"rename": "JFormFieldList",

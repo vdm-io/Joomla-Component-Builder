@@ -93,6 +93,7 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			readonly="true"
 			button="false"
@@ -105,6 +106,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADDADMIN_VIEWS_DESCRIPTION"
+			default=""
 			icon="list"
 			min="1">
 			<form hidden="true" name="list_addadmin_views_modal" repeat="true">
@@ -116,6 +118,7 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADMINVIEW_DESCRIPTION"
 					class="fieldMedium"
 					multiple="false"
+					default=""
 					required="false"
 					button="false"
 				/>
@@ -127,7 +130,8 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ICOMOON_DESCRIPTION"
 					class="list_class fieldMedium"
 					multiple="false"
-					required="false">
+					required="false"
+					default="">
 					<!-- Option Set. -->
 					<option value="joomla">
 						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_JOOMLA</option>
@@ -567,6 +571,7 @@
 					name="dashboard_add"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_DASHBOARD_ADD_LABEL"
 					value="1"
+					default=""
 					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_DASHBOARD_ADD_DESCRIPTION"
 					class="inputbox"
@@ -654,6 +659,7 @@
 					name="port"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_PORT_LABEL"
 					value="1"
+					default=""
 					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_PORT_DESCRIPTION"
 					class="inputbox"
@@ -664,6 +670,7 @@
 					name="edit_create_site_view"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_EDIT_CREATE_SITE_VIEW_LABEL"
 					value="1"
+					default=""
 					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_EDIT_CREATE_SITE_VIEW_DESCRIPTION"
 					class="inputbox"

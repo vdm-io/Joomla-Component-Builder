@@ -17,9 +17,12 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'note_component_files_folders',
 	'spacer_hr_four',
+	'add_menu_prefix',
+	'menu_prefix',
+	'spacer_hr_five',
 	'to_ignore_note',
 	'toignore',
-	'spacer_hr_five',
+	'spacer_hr_six',
 	'jcb_export_package_note',
 	'export_key',
 	'joomla_source_link',

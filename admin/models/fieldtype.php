@@ -376,6 +376,74 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
 		}
+		// Modify the form based on Edit Name access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.name', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.name', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('name', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('name', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('name'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Properties access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.properties', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.properties', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('properties', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('properties', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('properties'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('properties', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('properties', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Description access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.description', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.description', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('description', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('description', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('description'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('description', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('description', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Short Description access controls.
+		if ($id != 0 && (!$user->authorise('fieldtype.edit.short_description', 'com_componentbuilder.fieldtype.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('fieldtype.edit.short_description', 'com_componentbuilder')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('short_description', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('short_description', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('short_description'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('short_description', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('short_description', 'required', 'false');
+			}
+		}
 		// Only load these values if no id is found
 		if (0 == $id)
 		{
