@@ -2094,9 +2094,8 @@ class Fields extends Structure
 				}
 				elseif ($property['name'] === 'extension' || $property['name'] === 'directory' || $property['name'] === 'formsource')
 				{
-					$xmlValue = ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
-					// replace the placeholders
-					$xmlValue = $this->setPlaceholders($xmlValue, $placeholders);
+					// get value & replace the placeholders
+					$xmlValue = $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"'), $placeholders);
 				}
 				// catch all PHP here
 				elseif (strpos($property['name'], 'type_php') !== false && $setCustom)
@@ -2123,27 +2122,23 @@ class Fields extends Structure
 				}
 				elseif ($property['name'] === 'view' && $setCustom)
 				{
-					// load the view name
-					$fieldAttributes['custom']['view'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"'));
+					// load the view name & replace the placeholders
+					$fieldAttributes['custom']['view'] = ComponentbuilderHelper::safeString($this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"'), $placeholders));
 				}
 				elseif ($property['name'] === 'views' && $setCustom)
 				{
-					// load the views name
-					$fieldAttributes['custom']['views'] = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"'));
+					// load the views name & replace the placeholders
+					$fieldAttributes['custom']['views'] = ComponentbuilderHelper::safeString($this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"'), $placeholders));
 				}
 				elseif ($property['name'] === 'component' && $setCustom)
 				{
-					// load the component name
-					$fieldAttributes['custom']['component'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'component="', '"');
-					// replace the placeholders
-					$fieldAttributes['custom']['component'] = $this->setPlaceholders($fieldAttributes['custom']['component'], $placeholders);
+					// load the component name & replace the placeholders
+					$fieldAttributes['custom']['component'] = $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'component="', '"'), $placeholders);
 				}
 				elseif ($property['name'] === 'table' && $setCustom)
 				{
-					// load the main table that is queried
-					$fieldAttributes['custom']['table'] = ComponentbuilderHelper::getBetween($field['settings']->xml, 'table="', '"');
-					// replace the placeholders
-					$fieldAttributes['custom']['table'] = $this->setPlaceholders($fieldAttributes['custom']['table'], $placeholders);
+					// load the main table that is queried & replace the placeholders
+					$fieldAttributes['custom']['table'] = $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'table="', '"'), $placeholders);
 				}
 				elseif ($property['name'] === 'value_field' && $setCustom)
 				{
