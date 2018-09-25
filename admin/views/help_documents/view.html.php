@@ -229,7 +229,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		}
 
 		// Set Admin View Selection
-		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->getOptions();
+		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->options;
 		if ($this->admin_viewOptions)
 		{
 			// Admin View Filter
@@ -251,7 +251,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		}
 
 		// Set Site View Selection
-		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->getOptions();
+		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->options;
 		if ($this->site_viewOptions)
 		{
 			// Site View Filter

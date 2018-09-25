@@ -190,7 +190,7 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		}
 
 		// Set Component System Name Selection
-		$this->componentSystem_nameOptions = JFormHelper::loadFieldType('Component')->getOptions();
+		$this->componentSystem_nameOptions = JFormHelper::loadFieldType('Component')->options;
 		if ($this->componentSystem_nameOptions)
 		{
 			// Component System Name Filter

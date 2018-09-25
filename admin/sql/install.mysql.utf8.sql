@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_addreadme` (`addreadme`),
 	KEY `idx_emptycontributors` (`emptycontributors`),
 	KEY `idx_add_sales_server` (`add_sales_server`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -185,6 +185,9 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`javascript_view_footer` TEXT NOT NULL,
 	`javascript_views_file` TEXT NOT NULL,
 	`javascript_views_footer` TEXT NOT NULL,
+	`mysql_table_charset` VARCHAR(64) NOT NULL DEFAULT 1,
+	`mysql_table_collate` VARCHAR(64) NOT NULL DEFAULT 1,
+	`mysql_table_engine` VARCHAR(64) NOT NULL DEFAULT 1,
 	`name_list` CHAR(64) NOT NULL DEFAULT '',
 	`name_single` CHAR(64) NOT NULL DEFAULT '',
 	`php_after_delete` MEDIUMTEXT NOT NULL,
@@ -239,38 +242,41 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name_single` (`name_single`),
-	KEY `idx_add_php_batchcopy` (`add_php_batchcopy`),
-	KEY `idx_add_php_allowadd` (`add_php_allowadd`),
-	KEY `idx_add_php_save` (`add_php_save`),
-	KEY `idx_add_php_getform` (`add_php_getform`),
-	KEY `idx_add_php_getitems_after_all` (`add_php_getitems_after_all`),
-	KEY `idx_add_php_document` (`add_php_document`),
 	KEY `idx_add_fadein` (`add_fadein`),
-	KEY `idx_add_php_before_publish` (`add_php_before_publish`),
-	KEY `idx_add_custom_import` (`add_custom_import`),
-	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
-	KEY `idx_name_list` (`name_list`),
 	KEY `idx_type` (`type`),
-	KEY `idx_add_php_getitems` (`add_php_getitems`),
-	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
-	KEY `idx_add_php_before_save` (`add_php_before_save`),
-	KEY `idx_add_php_postsavehook` (`add_php_postsavehook`),
-	KEY `idx_add_php_allowedit` (`add_php_allowedit`),
-	KEY `idx_add_php_batchmove` (`add_php_batchmove`),
-	KEY `idx_add_php_after_publish` (`add_php_after_publish`),
-	KEY `idx_add_php_after_delete` (`add_php_after_delete`),
 	KEY `idx_add_sql` (`add_sql`),
+	KEY `idx_mysql_table_charset` (`mysql_table_charset`),
+	KEY `idx_add_custom_import` (`add_custom_import`),
+	KEY `idx_name_list` (`name_list`),
+	KEY `idx_add_php_getitems_after_all` (`add_php_getitems_after_all`),
 	KEY `idx_add_css_view` (`add_css_view`),
+	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
+	KEY `idx_add_php_getform` (`add_php_getform`),
 	KEY `idx_add_css_views` (`add_css_views`),
+	KEY `idx_add_php_before_save` (`add_php_before_save`),
+	KEY `idx_add_php_save` (`add_php_save`),
 	KEY `idx_add_javascript_view_file` (`add_javascript_view_file`),
+	KEY `idx_add_php_postsavehook` (`add_php_postsavehook`),
+	KEY `idx_add_php_allowadd` (`add_php_allowadd`),
 	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`),
+	KEY `idx_add_php_allowedit` (`add_php_allowedit`),
+	KEY `idx_add_php_batchcopy` (`add_php_batchcopy`),
 	KEY `idx_add_javascript_views_file` (`add_javascript_views_file`),
+	KEY `idx_add_php_batchmove` (`add_php_batchmove`),
+	KEY `idx_add_php_before_publish` (`add_php_before_publish`),
 	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`),
+	KEY `idx_add_php_after_publish` (`add_php_after_publish`),
+	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
 	KEY `idx_add_custom_button` (`add_custom_button`),
+	KEY `idx_add_php_after_delete` (`add_php_after_delete`),
+	KEY `idx_add_php_document` (`add_php_document`),
+	KEY `idx_mysql_table_engine` (`mysql_table_engine`),
+	KEY `idx_mysql_table_collate` (`mysql_table_collate`),
 	KEY `idx_source` (`source`),
 	KEY `idx_add_php_ajax` (`add_php_ajax`),
-	KEY `idx_add_php_getitem` (`add_php_getitem`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+	KEY `idx_add_php_getitem` (`add_php_getitem`),
+	KEY `idx_add_php_getitems` (`add_php_getitems`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -344,7 +350,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
 	KEY `idx_add_php_jview` (`add_php_jview`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -419,7 +425,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	KEY `idx_button_position` (`button_position`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
 	KEY `idx_add_php_jview` (`add_php_jview`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -455,7 +461,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
 	KEY `idx_dynamic_get` (`dynamic_get`),
 	KEY `idx_add_php_view` (`add_php_view`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -491,7 +497,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
 	KEY `idx_dynamic_get` (`dynamic_get`),
 	KEY `idx_add_php_view` (`add_php_view`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -557,7 +563,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_add_php_before_getitem` (`add_php_before_getitem`),
 	KEY `idx_getcustom` (`getcustom`),
 	KEY `idx_pagination` (`pagination`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -599,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	KEY `idx_function_name` (`function_name`),
 	KEY `idx_to_line` (`to_line`),
 	KEY `idx_from_line` (`from_line`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -632,7 +638,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_how` (`how`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -670,7 +676,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (
 	KEY `idx_name` (`name`),
 	KEY `idx_type` (`type`),
 	KEY `idx_library` (`library`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_validation_rule` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -698,7 +704,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_validation_rule` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -755,7 +761,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
 	KEY `idx_datadefault` (`datadefault`),
 	KEY `idx_datalenght_other` (`datalenght_other`),
 	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -785,7 +791,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_catid` (`catid`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_language_translation` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -811,7 +817,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_language_translation` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_language` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -837,7 +843,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_language` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_server` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -875,7 +881,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_server` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_protocol` (`protocol`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -914,7 +920,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 	KEY `idx_article` (`article`),
 	KEY `idx_target` (`target`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -940,7 +946,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_admin_view` (`admin_view`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_conditions` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -966,7 +972,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_conditions` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_admin_view` (`admin_view`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_relations` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -992,7 +998,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_relations` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_admin_view` (`admin_view`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_custom_tabs` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1018,7 +1024,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_custom_tabs` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_admin_view` (`admin_view`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_admin_views` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1044,7 +1050,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_admin_views` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_site_views` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1070,7 +1076,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_site_views` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_views` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1096,7 +1102,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_views` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_updates` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1122,7 +1128,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_updates` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_mysql_tweaks` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1148,7 +1154,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_mysql_tweaks` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_menus` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1174,7 +1180,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_menus` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_config` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1200,7 +1206,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_config` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_dashboard` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1227,7 +1233,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_dashboard` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_files_folders` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1256,7 +1262,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_files_folders` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet_type` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1282,7 +1288,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet_type` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_config` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1308,7 +1314,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_config` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_library` (`library`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1338,7 +1344,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_library` (`library`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `#__componentbuilder_joomla_component`
@@ -1483,13 +1489,13 @@ INSERT INTO `#__componentbuilder_snippet` (`id`, `contributor_company`, `contrib
 (86, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'You can link multiple images to the same lightbox and switch between them from within the lightbox, thus creating a gallery. Just add the {group:\'my-group\'} option to the data attribute of each item using the same name on all items that you want to group. Make sure to include the CSS from the Slidenav component, so you can navigate between the items.', 'Create a fancy lightbox for images and videos utilizing the Modal component.', 4, 'Lightbox groups-image', 'PGRpdiBkYXRhLXVrLWdyaWQtbWFyZ2luPSIiIGNsYXNzPSJ1ay1ncmlkIHVrLWdyaWQtd2lkdGgtbWVkaXVtLTEtNCI+DQogICAgPGRpdj4NCiAgICAgICAgPGEgdGl0bGU9IlRpdGxlIiBkYXRhLXVrLWxpZ2h0Ym94PSJ7Z3JvdXA6J2dyb3VwMSd9IiBocmVmPSJpbWFnZXMvcGxhY2Vob2xkZXJfODAweDYwMF8xLmpwZyI+DQogICAgICAgICAgICA8aW1nIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBhbHQ9IiIgc3JjPSJpbWFnZXMvcGxhY2Vob2xkZXJfODAweDYwMF8xLmpwZyI+DQogICAgICAgIDwvYT4NCiAgICA8L2Rpdj4NCiAgICA8ZGl2Pg0KICAgICAgICA8YSB0aXRsZT0iVGl0bGUiIGRhdGEtdWstbGlnaHRib3g9Intncm91cDonZ3JvdXAxJ30iIGRhdGEtbGlnaHRib3gtdHlwZT0iaW1hZ2UiIGhyZWY9ImltYWdlcy9wbGFjZWhvbGRlcl84MDB4NjAwXzIuanBnIj4NCiAgICAgICAgICAgIDxpbWcgd2lkdGg9IjgwMCIgaGVpZ2h0PSI2MDAiIGFsdD0iIiBzcmM9ImltYWdlcy9wbGFjZWhvbGRlcl84MDB4NjAwXzIuanBnIj4NCiAgICAgICAgPC9hPg0KICAgIDwvZGl2Pg0KICAgIDxkaXY+DQogICAgICAgIDxhIHRpdGxlPSJUaXRsZSIgZGF0YS11ay1saWdodGJveD0ie2dyb3VwOidncm91cDEnfSIgZGF0YS1saWdodGJveC10eXBlPSJpbWFnZSIgaHJlZj0iaW1hZ2VzL3BsYWNlaG9sZGVyXzgwMHg2MDBfMy5qcGciPg0KICAgICAgICAgICAgPGltZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgYWx0PSIiIHNyYz0iaW1hZ2VzL3BsYWNlaG9sZGVyXzgwMHg2MDBfMy5qcGciPg0KICAgICAgICA8L2E+DQogICAgPC9kaXY+DQogICAgPGRpdj4NCiAgICAgICAgPGEgdGl0bGU9IlRpdGxlIiBkYXRhLXVrLWxpZ2h0Ym94PSJ7Z3JvdXA6J2dyb3VwMSd9IiBkYXRhLWxpZ2h0Ym94LXR5cGU9ImltYWdlIiBocmVmPSJpbWFnZXMvcGxhY2Vob2xkZXJfODAweDYwMF80LmpwZyI+DQogICAgICAgICAgICA8aW1nIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBhbHQ9IiIgc3JjPSJpbWFnZXMvcGxhY2Vob2xkZXJfODAweDYwMF80LmpwZyI+DQogICAgICAgIDwvYT4NCiAgICA8L2Rpdj4NCjwvZGl2Pg==', 5, 'http://getuikit.com/docs/lightbox.html', 'To apply this component, add the data-uk-lightbox attribute to an anchor linking to the image you wish to display. If a title attribute exists it will be displayed as a caption for the lightbox.', '', 1, '2015-06-01 20:21:01', '2017-11-11 22:09:27', 20, '', 9),
 (87, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'A lightbox is not restricted to images. Other media, like videos, can be displayed inside a lightbox and it will automatically generate the correct output by evaluating your path.', 'Create a fancy lightbox for images and videos utilizing the Modal component.', 4, 'Lightbox content-sources', 'PHA+DQogICAgPGEgdGl0bGU9IlRpdGxlIiBkYXRhLXVrLWxpZ2h0Ym94PSJ7Z3JvdXA6J2dyb3VwMid9IiBocmVmPSJpbWFnZXMvcGxhY2Vob2xkZXJfODAweDYwMF8xLmpwZyIgY2xhc3M9InVrLWJ1dHRvbiI+SW1hZ2U8L2E+DQogICAgPGEgZGF0YS11ay1saWdodGJveD0ie2dyb3VwOidncm91cDInfSIgaHJlZj0iaHR0cDovL3d3dy5xdWlya3Ntb2RlLm9yZy9odG1sNS92aWRlb3MvYmlnX2J1Y2tfYnVubnkubXA0IiBjbGFzcz0idWstYnV0dG9uIj5NUDQ8L2E+DQogICAgPGEgZGF0YS11ay1saWdodGJveD0ie2dyb3VwOidncm91cDInfSIgaHJlZj0iaHR0cDovL3ZpbWVvLmNvbS8xMDg0NTM3IiBjbGFzcz0idWstYnV0dG9uIj5WaW1lbzwvYT4NCiAgICA8YSBkYXRhLXVrLWxpZ2h0Ym94PSJ7Z3JvdXA6J2dyb3VwMid9IiBocmVmPSJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVlFN1Z6bEx0cC00IiBjbGFzcz0idWstYnV0dG9uIj5Zb3VUdWJlPC9hPg0KPC9wPg==', 5, 'http://getuikit.com/docs/lightbox.html', 'To apply this component, add the data-uk-lightbox attribute to an anchor linking to the image you wish to display. If a title attribute exists it will be displayed as a caption for the lightbox.', '', 1, '2015-06-01 20:22:21', '2017-11-11 22:09:27', 19, '', 9),
 (88, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'To display multiple content sections at the same time without one collapsing when the other one is opened, add the {collapse: false} option to the date attribute.', 'Create a list of items, allowing each item\'s content to be expanded and collapsed by clicking its header.', 4, 'Accordion', 'PGRpdiBjbGFzcz0idWstYWNjb3JkaW9uIiBkYXRhLXVrLWFjY29yZGlvbj4NCg0KICAgIDxoMyBjbGFzcz0idWstYWNjb3JkaW9uLXRpdGxlIj4uLi48L2gzPg0KICAgIDxkaXYgY2xhc3M9InVrLWFjY29yZGlvbi1jb250ZW50Ij4uLi48L2Rpdj4NCg0KICAgIDxoMyBjbGFzcz0idWstYWNjb3JkaW9uLXRpdGxlIj4uLi48L2gzPg0KICAgIDxkaXYgY2xhc3M9InVrLWFjY29yZGlvbi1jb250ZW50Ij4uLi48L2Rpdj4NCg0KICAgIDxoMyBjbGFzcz0idWstYWNjb3JkaW9uLXRpdGxlIj4uLi48L2gzPg0KICAgIDxkaXYgY2xhc3M9InVrLWFjY29yZGlvbi1jb250ZW50Ij4uLi48L2Rpdj4NCg0KPC9kaXY+', 5, 'http://getuikit.com/docs/accordion.html', 'To apply the Accordion component, add the uk-accordion class and the data-uk-accordion attribute to a container element. Add the uk-accordion-content class to each of the content sections within the container. Finally, add the uk-accordion-title class to any element, like a heading, above the content section to create a toggle.', '', 1, '2015-06-01 20:24:59', '2017-11-11 22:09:27', 20, '', 10),
-(98, 'Most Wanted Web Services, Inc.', 'sales@mwweb.host', 'Steve Voorhees', 'https://mostwantedwebhosting.com', 'Provide contextual feedback messages for typical user actions with the handful of available and flexible alert messages.', 'alert-heading', 2, 'Alerts - Heading', 'PGRpdiBjbGFzcz0iYWxlcnQgYWxlcnQtc3VjY2VzcyIgcm9sZT0iYWxlcnQiPg0KICA8aDQgY2xhc3M9ImFsZXJ0LWhlYWRpbmciPldlbGwgZG9uZSE8L2g0Pg0KICBZb3Ugc3VjY2Vzc2Z1bGx5IHJlYWQgdGhpcyBpbXBvcnRhbnQgYWxlcnQgbWVzc2FnZS4NCjwvZGl2Pg==', 7, 'https://getbootstrap.com/docs/4.0/components/alerts/', 'Alerts are available for any length of text, as well as an optional dismiss button. For proper styling, use one of the eight required contextual classes (e.g., .alert-success).', '', 1, '2017-11-01 00:00:00', '2017-11-21 23:06:26', 1, '', 17),
 (90, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'This is a input field for uikit form', 'Add Input field - row', 4, 'Input field', 'ICAgICAgICA8ZGl2IGNsYXNzPSJ1ay1mb3JtLXJvdyI+DQoJCTxsYWJlbCBjbGFzcz0idWstZm9ybS1sYWJlbCIgPg0KCQkJPD9waHAgZWNobyBKVGV4dDo6XygnTGFiZWwnKTsgPz4NCgkJPC9sYWJlbD4NCgkJPGlucHV0IHR5cGU9InRleHQiIG5hbWU9ImtleSIgcGxhY2Vob2xkZXI9Ijw/cGhwIGVjaG8gSlRleHQ6Ol8oJ2FkZCBzb21lIHRleHQgaGVyZSEnKTsgPz4iPiA8c3BhbiBjbGFzcz0idWstZm9ybS1oZWxwLWlubGluZSI+PD9waHAgZWNobyBKVGV4dDo6XygnaGVscCBuZWVkZWQnKTsgPz48L3NwYW4+DQoJPC9kaXY+', 3, 'http://getuikit.com/docs/form.html', '', '', 1, '2015-11-29 03:54:40', '2017-11-11 22:09:27', 20, '', 12),
 (91, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'This is a textarea field for uikit form', 'Add textarea - row', 4, 'Textarea', 'CTxkaXYgY2xhc3M9InVrLWZvcm0tcm93Ij4NCgkJPGxhYmVsIGNsYXNzPSJ1ay1mb3JtLWxhYmVsIiA+DQoJCQk8P3BocCBlY2hvIEpUZXh0OjpfKCdMYWJlbCcpOyA/Pg0KCQk8L2xhYmVsPg0KCQk8dGV4dGFyZWEgY29scz0iIiByb3dzPSIiICBzdHlsZT0id2lkdGg6IDEwMCU7IGhlaWdodDogMjE2cHg7IiBwbGFjZWhvbGRlcj0iPD9waHAgZWNobyBKVGV4dDo6XygnYWRkIHNvbWUgdGV4dCBoZXJlIScpOyA/PiI+PHx8fHxGSVh8fHx8fHx0ZXh0YXJlYT4NCgkJPHAgY2xhc3M9InVrLWZvcm0taGVscC1ibG9jayI+PD9waHAgZWNobyBKVGV4dDo6XygnaGVscCBuZWVkZWQnKTsgPz48L3A+DQoJPC9kaXY+', 3, 'http://getuikit.com/docs/form.html', '', '', 1, '2015-11-29 03:55:57', '2017-11-11 22:09:27', 22, '', 12),
 (92, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'This is a uikit form', 'Add Form', 4, 'Form', 'PGZvcm0gY2xhc3M9InVrLWZvcm0iPg0KICAgIDxmaWVsZHNldD4NCiAgICAgICAgPGxlZ2VuZD48P3BocCBlY2hvIEpUZXh0OjpfKCdMZWdlbmQnKTsgPz48L2xlZ2VuZD4NCiAgICAgICAgPGRpdiBjbGFzcz0idWstZm9ybS1yb3ciPg0KCQk8bGFiZWwgY2xhc3M9InVrLWZvcm0tbGFiZWwiID4NCgkJCTw/cGhwIGVjaG8gSlRleHQ6Ol8oJ0xhYmVsJyk7ID8+DQoJCTwvbGFiZWw+DQoJCTxpbnB1dCB0eXBlPSJ0ZXh0IiBuYW1lPSJrZXkiIHBsYWNlaG9sZGVyPSI8P3BocCBlY2hvIEpUZXh0OjpfKCdhZGQgc29tZSB0ZXh0IGhlcmUhJyk7ID8+Ij4gPHNwYW4gY2xhc3M9InVrLWZvcm0taGVscC1pbmxpbmUiPjw/cGhwIGVjaG8gSlRleHQ6Ol8oJ2hlbHAgbmVlZGVkJyk7ID8+PC9zcGFuPg0KCTwvZGl2Pg0KICAgICAgICA8ZGl2IGNsYXNzPSJ1ay1mb3JtLXJvdyI+DQoJCTxsYWJlbCBjbGFzcz0idWstZm9ybS1sYWJlbCIgPg0KCQkJPD9waHAgZWNobyBKVGV4dDo6XygnTGFiZWwnKTsgPz4NCgkJPC9sYWJlbD4NCgkJPHRleHRhcmVhIGNvbHM9IiIgcm93cz0iIiAgc3R5bGU9IndpZHRoOiAxMDAlOyBoZWlnaHQ6IDIxNnB4OyIgcGxhY2Vob2xkZXI9Ijw/cGhwIGVjaG8gSlRleHQ6Ol8oJ2FkZCBzb21lIHRleHQgaGVyZSEnKTsgPz4iPjx8fHx8fEZJWHx8fHx8dGV4dGFyZWE+DQoJCTxwIGNsYXNzPSJ1ay1mb3JtLWhlbHAtYmxvY2siPjw/cGhwIGVjaG8gSlRleHQ6Ol8oJ2hlbHAgbmVlZGVkJyk7ID8+PC9wPg0KCTwvZGl2Pg0KICAgIDwvZmllbGRzZXQ+DQo8L2Zvcm0+', 1, 'http://getuikit.com/docs/form.html', 'To apply this component, add the .uk-form class to a form element. All form control elements are placed side by side within the next row.', '', 1, '2015-11-29 03:57:03', '2017-11-20 23:42:28', 21, '', 12),
-(97, 'Most Wanted Web Services, Inc.', 'sales@mwweb.host', 'Steve Voorhees', 'https://mostwantedwebhosting.com', 'Provide contextual feedback messages for typical user actions with the handful of available and flexible alert messages.', 'alert-success', 2, 'Alerts - Success', 'PGRpdiBjbGFzcz0iYWxlcnQgYWxlcnQtc3VjY2VzcyIgcm9sZT0iYWxlcnQiPg0KICAgIDxzdHJvbmc+V2VsbCBkb25lITwvc3Ryb25nPiBZb3Ugc3VjY2Vzc2Z1bGx5IHJlYWQgdGhpcw0KICAgIGltcG9ydGFudCBhbGVydCBtZXNzYWdlLg0KPC9kaXY+', 7, 'https://getbootstrap.com/docs/4.0/components/alerts/', 'Alerts are available for any length of text, as well as an optional dismiss button. For proper styling, use one of the eight required contextual classes (e.g., .alert-success).', '', 1, '2017-11-01 00:00:00', '2017-11-13 10:12:34', 1, '', 16),
 (95, 'Vast Development Method', 'joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', '', 'Create a list of items that can be shown individually by clicking an item\'s header.', 3, 'Accordion', 'PHVsIHVrLWFjY29yZGlvbj4NCiAgICA8bGkgY2xhc3M9InVrLW9wZW4iPg0KICAgICAgICA8aDMgY2xhc3M9InVrLWFjY29yZGlvbi10aXRsZSI+SXRlbSAxPC9oMz4NCiAgICAgICAgPGRpdiBjbGFzcz0idWstYWNjb3JkaW9uLWNvbnRlbnQiPg0KICAgICAgICAgICAgPHA+TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdCwgc2VkIGRvIGVpdXNtb2QgdGVtcG9yIGluY2lkaWR1bnQgdXQgbGFib3JlIGV0IGRvbG9yZSBtYWduYSBhbGlxdWEuPC9wPg0KICAgICAgICA8L2Rpdj4NCiAgICA8L2xpPg0KICAgIDxsaT4NCiAgICAgICAgPGgzIGNsYXNzPSJ1ay1hY2NvcmRpb24tdGl0bGUiPkl0ZW0gMjwvaDM+DQogICAgICAgIDxkaXYgY2xhc3M9InVrLWFjY29yZGlvbi1jb250ZW50Ij4NCiAgICAgICAgICAgIDxwPlV0IGVuaW0gYWQgbWluaW0gdmVuaWFtLCBxdWlzIG5vc3RydWQgZXhlcmNpdGF0aW9uIHVsbGFtY28gbGFib3JpcyBuaXNpIHV0IGFsaXF1aXAgZXggZWEgY29tbW9kbyBjb25zZXF1YXQuIER1aXMgYXV0ZSBpcnVyZSBkb2xvciByZXByZWhlbmRlcml0LjwvcD4NCiAgICAgICAgPC9kaXY+DQogICAgPC9saT4NCiAgICA8bGk+DQogICAgICAgIDxoMyBjbGFzcz0idWstYWNjb3JkaW9uLXRpdGxlIj5JdGVtIDM8L2gzPg0KICAgICAgICA8ZGl2IGNsYXNzPSJ1ay1hY2NvcmRpb24tY29udGVudCI+DQogICAgICAgICAgICA8cD5EdWlzIGF1dGUgaXJ1cmUgZG9sb3IgaW4gcmVwcmVoZW5kZXJpdCBpbiB2b2x1cHRhdGUgdmVsaXQgZXNzZSBjaWxsdW0gZG9sb3JlIGV1IGZ1Z2lhdCBudWxsYSBwYXJpYXR1ci4gRXhjZXB0ZXVyIHNpbnQgb2NjYWVjYXQgY3VwaWRhdGF0IHByb2lkZW50LjwvcD4NCiAgICAgICAgPC9kaXY+DQogICAgPC9saT4NCjwvdWw+', 15, 'https://getuikit.com/docs/accordion', 'The Accordion component consists of a parent container with the uk-accordion attribute, and a title and content part for each accordion item.\r\n\r\n.uk-accordion-title -  Defines and styles the toggle for each accordion item. Typically used on a heading.\r\n\r\n.uk-accordion-content - Defines the content part for each accordion item.\r\n\r\n', '', 1, '2017-11-20 17:21:09', '2017-11-20 23:41:14', 1, '', 14),
 (96, 'Vast Development Method', 'Joomla@vdm.io', 'Llewellyn van der Merwe', 'https://www.vdm.io/', 'FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome – No matter how many columns of data you may have in them.\r\n\r\nHave you ever wanted to show a lot of data in a table, but hate how badly it scales on smaller mobile devices? The FooTable jQuery plugin solves this problem by allowing you to hide certain columns on smaller devices, but still allowing the user to expand each row to see the columns that were hidden.', 'metro-blue', 5, 'FooTable', 'PHRhYmxlIGNsYXNzPSJmb290YWJsZSBtZXRyby1ibHVlIiBkYXRhLWZpbHRlcj0iI2ZpbHRlciIgZGF0YS1wYWdlLXNpemU9IjUiPg0KICA8dGhlYWQ+DQogICAgPHRyPg0KICAgICAgPHRoIGRhdGEtdG9nZ2xlPSJ0cnVlIj5OYW1lPC90aD4NCiAgICAgIDx0aCBkYXRhLWhpZGU9InBob25lLHRhYmxldCI+UGhvbmU8L3RoPg0KICAgICAgPHRoIGRhdGEtaGlkZT0icGhvbmUsdGFibGV0Ij5FbWFpbDwvdGg+DQogICAgPC90cj4NCiAgPC90aGVhZD4NCiAgPHRib2R5Pg0KICAgIDx0cj4NCiAgICAgIDx0ZD5Cb2IgTWFuPC90ZD4NCiAgICAgIDx0ZD41NTUtMTIzNDU8L3RkPg0KICAgICAgPHRkPmJvYkBob21lLmNvbTwvdGQ+DQogICAgPC90cj4NCiAgICA8dHI+DQogICAgICA8dGQ+QnJpZGdldCBKb25lczwvdGQ+DQogICAgICA8dGQ+NTQ0LTc3NjY1NTwvdGQ+DQogICAgICA8dGQ+YmpvbmVzQG15c2l0ZS5jb208L3RkPg0KICAgIDwvdHI+DQogICAgPHRyPg0KICAgICAgPHRkPlRvbSBKb25lczwvdGQ+DQogICAgICA8dGQ+NTU1LTk5OTExPC90ZD4NCiAgICAgIDx0ZD5jcnVpc2UxQGNyYXp5LmNvbTwvdGQ+DQogICAgPC90cj4NCiAgPC90Ym9keT4NCjwvdGFibGU+', 32, 'https://github.com/fooplugins/FooTable/tree/V2', '', '', 1, '2015-09-26 14:07:03', '2017-11-25 22:24:55', 3, '', 15),
+(97, 'Most Wanted Web Services, Inc.', 'sales@mwweb.host', 'Steve Voorhees', 'https://mostwantedwebhosting.com', 'Provide contextual feedback messages for typical user actions with the handful of available and flexible alert messages.', 'alert-success', 2, 'Alerts - Success', 'PGRpdiBjbGFzcz0iYWxlcnQgYWxlcnQtc3VjY2VzcyIgcm9sZT0iYWxlcnQiPg0KICAgIDxzdHJvbmc+V2VsbCBkb25lITwvc3Ryb25nPiBZb3Ugc3VjY2Vzc2Z1bGx5IHJlYWQgdGhpcw0KICAgIGltcG9ydGFudCBhbGVydCBtZXNzYWdlLg0KPC9kaXY+', 7, 'https://getbootstrap.com/docs/4.0/components/alerts/', 'Alerts are available for any length of text, as well as an optional dismiss button. For proper styling, use one of the eight required contextual classes (e.g., .alert-success).', '', 1, '2017-11-01 00:00:00', '2017-11-13 10:12:34', 1, '', 16),
+(98, 'Most Wanted Web Services, Inc.', 'sales@mwweb.host', 'Steve Voorhees', 'https://mostwantedwebhosting.com', 'Provide contextual feedback messages for typical user actions with the handful of available and flexible alert messages.', 'alert-heading', 2, 'Alerts - Heading', 'PGRpdiBjbGFzcz0iYWxlcnQgYWxlcnQtc3VjY2VzcyIgcm9sZT0iYWxlcnQiPg0KICA8aDQgY2xhc3M9ImFsZXJ0LWhlYWRpbmciPldlbGwgZG9uZSE8L2g0Pg0KICBZb3Ugc3VjY2Vzc2Z1bGx5IHJlYWQgdGhpcyBpbXBvcnRhbnQgYWxlcnQgbWVzc2FnZS4NCjwvZGl2Pg==', 7, 'https://getbootstrap.com/docs/4.0/components/alerts/', 'Alerts are available for any length of text, as well as an optional dismiss button. For proper styling, use one of the eight required contextual classes (e.g., .alert-success).', '', 1, '2017-11-01 00:00:00', '2017-11-21 23:06:26', 1, '', 17),
 (99, 'Most Wanted Web Services, Inc.', 'sales@mwweb.host', 'Steve Voorhees', 'https://mostwantedwebhosting.com', 'Provide contextual feedback messages for typical user actions with the handful of available and flexible alert messages.', 'alert-link', 2, 'Alerts - Link', 'PGRpdiBjbGFzcz0iYWxlcnQgYWxlcnQtZGFuZ2VyIiByb2xlPSJhbGVydCI+DQogIDxzdHJvbmc+T2ggc25hcCE8L3N0cm9uZz4NCiAgPGEgaHJlZj0iIyIgY2xhc3M9ImFsZXJ0LWxpbmsiPkNoYW5nZSBhIGZldyB0aGluZ3MgdXA8L2E+DQogIGFuZCB0cnkgc3VibWl0dGluZyBhZ2Fpbi4NCjwvZGl2Pg==', 7, 'https://getbootstrap.com/docs/4.0/components/alerts/', 'Alerts are available for any length of text, as well as an optional dismiss button. For proper styling, use one of the eight required contextual classes (e.g., .alert-success).', '', 1, '2017-11-01 00:00:00', '2017-11-21 23:06:19', 1, '', 17),
 (100, 'Most Wanted Web Services, Inc.', 'sales@mwweb.host', 'Steve Voorhees', 'https://mostwantedwebhosting.com', 'Provide contextual feedback messages for typical user actions with the handful of available and flexible alert messages.', 'alert-danger', 2, 'Alerts - Danger', 'PGRpdiBjbGFzcz0iYWxlcnQgYWxlcnQtZGFuZ2VyIiByb2xlPSJhbGVydCI+DQogIDxzdHJvbmc+T2ggc25hcCE8L3N0cm9uZz4gQ2hhbmdlIGEgZmV3IHRoaW5ncyB1cCBhbmQgdHJ5IHN1Ym1pdHRpbmcgYWdhaW4uDQo8L2Rpdj4=', 7, 'https://getbootstrap.com/docs/4.0/components/alerts/', 'Alerts are available for any length of text, as well as an optional dismiss button. For proper styling, use one of the eight required contextual classes (e.g., .alert-success).', '', 1, '2017-11-01 00:00:00', '2017-11-21 23:06:19', 1, '', 17),
 (101, 'Most Wanted Web Services, Inc.', 'sales@mwweb.host', 'Steve Voorhees', 'https://mostwantedwebhosting.com', 'Provide contextual feedback messages for typical user actions with the handful of available and flexible alert messages.', 'alert-dismissible', 2, 'Alerts - Dismissible', 'PGRpdiBjbGFzcz0iYWxlcnQgYWxlcnQtd2FybmluZyBhbGVydC1kaXNtaXNzaWJsZSBmYWRlIHNob3ciIHJvbGU9ImFsZXJ0Ij4NCiAgPGJ1dHRvbiB0eXBlPSJidXR0b24iIGNsYXNzPSJjbG9zZSIgZGF0YS1kaXNtaXNzPSJhbGVydCIgYXJpYS1sYWJlbD0iQ2xvc2UiPg0KICAgIDxzcGFuIGFyaWEtaGlkZGVuPSJ0cnVlIj7Dlzwvc3Bhbj4NCiAgPC9idXR0b24+DQogIDxzdHJvbmc+SG9seSBndWFjYW1vbGUhPC9zdHJvbmc+IFlvdSBzaG91bGQgY2hlY2sgaW4gb24gc29tZSBvZiB0aG9zZSBmaWVsZHMgYmVsb3cuDQo8L2Rpdj4=', 7, 'https://getbootstrap.com/docs/4.0/components/alerts/', 'Alerts are available for any length of text, as well as an optional dismiss button. For proper styling, use one of the eight required contextual classes (e.g., .alert-success).', '', 1, '2017-11-01 00:00:00', '2017-11-21 23:06:23', 1, '', 17),

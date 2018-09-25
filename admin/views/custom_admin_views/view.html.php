@@ -190,7 +190,7 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 		}
 
 		// Set Main Get Name Selection
-		$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->getOptions();
+		$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->options;
 		if ($this->main_getNameOptions)
 		{
 			// Main Get Name Filter

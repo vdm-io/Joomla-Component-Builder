@@ -129,76 +129,104 @@
 			message="COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_HINT"
 		/>
-		<!-- Add_php_batchcopy Field. Type: Radio. (joomla) -->
+		<!-- Php_batchcopy Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_batchcopy"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHCOPY_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Add_php_allowadd Field. Type: Radio. (joomla) -->
+			type="editor"
+			name="php_batchcopy"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Php_allowadd Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_allowadd"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWADD_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Add_php_save Field. Type: Radio. (joomla) -->
+			type="editor"
+			name="php_allowadd"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWADD_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWADD_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Php_save Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_SAVE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Add_php_getform Field. Type: Radio. (joomla) -->
+			type="editor"
+			name="php_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Php_getform Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_getform"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETFORM_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Add_php_getitems_after_all Field. Type: Radio. (joomla) -->
+			type="editor"
+			name="php_getform"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETFORM_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETFORM_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Php_getitems_after_all Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_getitems_after_all"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_AFTER_ALL_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="editor"
+			name="php_getitems_after_all"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Php_import_save Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_import_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_HINT"
+			required="true"
+		/>
 		<!-- Icon Field. Type: Media. (joomla) -->
 		<field
 			type="media"
@@ -207,20 +235,23 @@
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
 			directory=""
 		/>
-		<!-- Add_php_document Field. Type: Radio. (joomla) -->
+		<!-- Php_document Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_document"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="editor"
+			name="php_document"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_DOCUMENT_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_DOCUMENT_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="50"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
 		<!-- Add_fadein Field. Type: Radio. (joomla) -->
@@ -265,101 +296,42 @@
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_DESCRIPTION"
 			directory=""
 		/>
-		<!-- Add_php_before_publish Field. Type: Radio. (joomla) -->
+		<!-- Php_before_publish Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_before_publish"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_PUBLISH_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Add_custom_import Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_custom_import"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Add_php_before_delete Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_php_before_delete"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_DELETE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Name_list Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="name_list"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_LABEL"
-			size="40"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_DESCRIPTION"
-			class="inputbox"
-			readonly="false"
-			disabled="false"
+			type="editor"
+			name="php_before_publish"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_PUBLISH_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_PUBLISH_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
 			required="true"
-			filter="STRING"
-			message="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_MESSAGE"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_HINT"
+			validate="code"
 		/>
-		<!-- Addtables Field. Type: Subform. (joomla) -->
+		<!-- Note_beginner_import Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_beginner_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_DESCRIPTION" heading="h4" class="alert alert-info note_beginner_import" />
+		<!-- Php_before_delete Field. Type: Editor. (joomla) -->
 		<field
-			type="subform"
-			name="addtables"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
-			multiple="true"
-			default=""
-			icon="list">
-			<form hidden="true" name="list_addtables_modal" repeat="true">
-				<!-- Table Field. Type: Dbtables. (custom) -->
-				<field
-					type="dbtables"
-					name="table"
-					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE_LABEL"
-					class="list_class"
-					multiple="false"
-					default="0"
-					required="false"
-					button="false"
-				/>
-				<!-- Sourcemap Field. Type: Textarea. (joomla) -->
-				<field
-					type="textarea"
-					name="sourcemap"
-					label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_LABEL"
-					rows="22"
-					cols="30"
-					description="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_DESCRIPTION"
-					class="text_area span4"
-					filter="HTML"
-					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_HINT"
-					required="false"
-				/>
-			</form>
-		</field>
+			type="editor"
+			name="php_before_delete"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Type Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -375,55 +347,58 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_READONLY</option>
 		</field>
-		<!-- Php_import_headers Field. Type: Textarea. (joomla) -->
+		<!-- Add_sql Field. Type: Radio. (joomla) -->
 		<field
-			type="textarea"
-			name="php_import_headers"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_HINT"
-			required="true"
-		/>
+			type="radio"
+			name="add_sql"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_SQL_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field
 			type="hidden"
 			name="not_required"
 			default="[]"
 		/>
-		<!-- Add_php_getitems Field. Type: Radio. (joomla) -->
+		<!-- Html_import_view Field. Type: Textarea. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_getitems"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="textarea"
+			name="html_import_view"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_HINT"
+			required="true"
+		/>
 		<!-- Note_on_permissions Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_on_permissions" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_PERMISSIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_permissions" />
-		<!-- Add_php_getlistquery Field. Type: Radio. (joomla) -->
+		<!-- Php_getitems Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_getlistquery"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETLISTQUERY_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="editor"
+			name="php_getitems"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Addpermissions Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -498,36 +473,42 @@
 				</field>
 			</form>
 		</field>
-		<!-- Add_php_before_save Field. Type: Radio. (joomla) -->
+		<!-- Php_getlistquery Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_before_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_SAVE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="editor"
+			name="php_getlistquery"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Note_on_tabs Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_on_tabs" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_TABS_DESCRIPTION" heading="h4" class="alert alert-info note_on_tabs" />
-		<!-- Add_php_postsavehook Field. Type: Radio. (joomla) -->
+		<!-- Php_before_save Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_postsavehook"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_POSTSAVEHOOK_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="editor"
+			name="php_before_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Addtabs Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -557,52 +538,61 @@
 				/>
 			</form>
 		</field>
-		<!-- Add_php_allowedit Field. Type: Radio. (joomla) -->
+		<!-- Php_postsavehook Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_allowedit"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWEDIT_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="editor"
+			name="php_postsavehook"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Note_custom_tabs_note Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_custom_tabs_note" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CUSTOM_TABS_NOTE_DESCRIPTION" heading="h5" class="alert alert-success note_custom_tabs_note" />
-		<!-- Add_php_batchmove Field. Type: Radio. (joomla) -->
+		<!-- Php_allowedit Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_batchmove"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHMOVE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="editor"
+			name="php_allowedit"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Note_on_linked_views Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_on_linked_views" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_LINKED_VIEWS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ON_LINKED_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_linked_views" />
-		<!-- Add_php_after_publish Field. Type: Radio. (joomla) -->
+		<!-- Php_batchmove Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_after_publish"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_PUBLISH_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+			type="editor"
+			name="php_batchmove"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Addlinked_views Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -693,486 +683,6 @@
 				</field>
 			</form>
 		</field>
-		<!-- Add_php_after_delete Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_php_after_delete"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_DELETE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Note_create_edit_notice Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_create_edit_notice" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_DESCRIPTION" heading="h4" class="alert alert-info note_create_edit_notice" />
-		<!-- Add_sql Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_sql"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_SQL_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Alias_builder_type Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="alias_builder_type"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_TYPE_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_TYPE_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_DEFAULT</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM</option>
-		</field>
-		<!-- Note_beginner_import Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_beginner_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_BEGINNER_IMPORT_DESCRIPTION" heading="h4" class="alert alert-info note_beginner_import" />
-		<!-- Note_alias_builder_custom Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_alias_builder_custom" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ALIAS_BUILDER_CUSTOM_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ALIAS_BUILDER_CUSTOM_DESCRIPTION" heading="h4" class="alert alert-info note_alias_builder_custom" showon="alias_builder_type:2" />
-		<!-- Html_import_view Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="html_import_view"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_HINT"
-			required="true"
-		/>
-		<!-- Note_alias_builder_default Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_alias_builder_default" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ALIAS_BUILDER_DEFAULT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ALIAS_BUILDER_DEFAULT_DESCRIPTION" heading="h4" class="alert alert-info note_alias_builder_default" showon="alias_builder_type:1" />
-		<!-- Php_import_save Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_import_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_HINT"
-			required="true"
-		/>
-		<!-- Alias_builder Field. Type: Aliasbuilder. (custom) -->
-		<field
-			type="aliasbuilder"
-			name="alias_builder"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_DESCRIPTION"
-			class="list_class fieldFull"
-			multiple="true"
-			showon="alias_builder_type:2"
-		/>
-		<!-- Php_getitem Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_getitem"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Note_create_edit_buttons Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_create_edit_buttons" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_BUTTONS_DESCRIPTION" class="note_create_edit_buttons" />
-		<!-- Php_getitems Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_getitems"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Note_create_edit_display Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_create_edit_display" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_DISPLAY_DESCRIPTION" class="note_create_edit_display" />
-		<!-- Php_getitems_after_all Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_getitems_after_all"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_AFTER_ALL_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Add_css_view Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_css_view"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CSS_VIEW_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Php_getlistquery Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_getlistquery"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETLISTQUERY_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Css_view Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="css_view"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEW_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEW_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="css"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Php_getform Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_getform"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETFORM_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETFORM_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Add_css_views Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_css_views"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CSS_VIEWS_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Php_before_save Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_before_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_SAVE_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Css_views Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="css_views"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEWS_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEWS_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="css"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Php_save Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_save"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_SAVE_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Add_javascript_view_file Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_javascript_view_file"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEW_FILE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Php_postsavehook Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_postsavehook"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_POSTSAVEHOOK_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Javascript_view_file Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="javascript_view_file"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FILE_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FILE_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="javascript"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Php_allowadd Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_allowadd"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWADD_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWADD_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Add_javascript_view_footer Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_javascript_view_footer"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEW_FOOTER_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Php_allowedit Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_allowedit"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_ALLOWEDIT_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Javascript_view_footer Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="javascript_view_footer"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="javascript"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Php_batchcopy Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_batchcopy"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHCOPY_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Add_javascript_views_file Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_javascript_views_file"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEWS_FILE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
-		<!-- Php_batchmove Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_batchmove"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BATCHMOVE_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Javascript_views_file Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="javascript_views_file"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FILE_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FILE_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="javascript"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Php_before_publish Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_before_publish"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_PUBLISH_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_PUBLISH_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Add_javascript_views_footer Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_javascript_views_footer"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEWS_FOOTER_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
 		<!-- Php_after_publish Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -1190,54 +700,8 @@
 			required="true"
 			validate="code"
 		/>
-		<!-- Javascript_views_footer Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="javascript_views_footer"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="javascript"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Php_before_delete Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_before_delete"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_BEFORE_DELETE_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Add_custom_button Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_custom_button"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
-		</field>
+		<!-- Note_create_edit_notice Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_create_edit_notice" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_NOTICE_DESCRIPTION" heading="h4" class="alert alert-info note_create_edit_notice" />
 		<!-- Php_after_delete Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -1255,6 +719,611 @@
 			required="true"
 			validate="code"
 		/>
+		<!-- Alias_builder_type Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="alias_builder_type"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_TYPE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_TYPE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM</option>
+		</field>
+		<!-- Mysql_table_charset Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="mysql_table_charset"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_CHARSET_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_CHARSET_DESCRIPTION"
+			class="list_class bestview"
+			multiple="false"
+			filter="CMD"
+			required="true"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GLOBAL_DEFAULT_UTFEIGHT</option>
+			<option value="big5">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_BIGFIVE_BIGFIVE_TRADITIONAL_CHINESE_MOST_SUITABLE_COLLATION_BIGFIVE_CHINESE_CI</option>
+			<option value="dec8">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_DECEIGHT_DEC_WEST_EUROPEAN_MOST_SUITABLE_COLLATION_DECEIGHT_SWEDISH_CI</option>
+			<option value="cp850">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_FIFTY_DOS_WEST_EUROPEAN_MOST_SUITABLE_COLLATION_CPEIGHT_HUNDRED_AND_FIFTY_GENERAL_CI</option>
+			<option value="hp8">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_HPEIGHT_HP_WEST_EUROPEAN_MOST_SUITABLE_COLLATION_HPEIGHT_ENGLISH_CI</option>
+			<option value="koi8r">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KOIEIGHTR_KOIEIGHTR_RELCOM_RUSSIAN_MOST_SUITABLE_COLLATION_KOIEIGHTR_GENERAL_CI</option>
+			<option value="latin1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_CPONETWO_HUNDRED_AND_FIFTY_TWO_WEST_EUROPEAN_MOST_SUITABLE_COLLATION_LATINONE_SWEDISH_CI</option>
+			<option value="latin2">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINTWO_ISO_EIGHT_THOUSAND_EIGHT_HUNDRED_AND_FIFTY_NINETWO_CENTRAL_EUROPEAN_MOST_SUITABLE_COLLATION_LATINTWO_GENERAL_CI</option>
+			<option value="swe7">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_SWESEVEN_SEVENBIT_SWEDISH_MOST_SUITABLE_COLLATION_SWESEVEN_SWEDISH_CI</option>
+			<option value="ascii">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_ASCII_US_ASCII_MOST_SUITABLE_COLLATION_ASCII_GENERAL_CI</option>
+			<option value="ujis">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UJIS_EUCJP_JAPANESE_MOST_SUITABLE_COLLATION_UJIS_JAPANESE_CI</option>
+			<option value="sjis">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_SJIS_SHIFTJIS_JAPANESE_MOST_SUITABLE_COLLATION_SJIS_JAPANESE_CI</option>
+			<option value="hebrew">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_HEBREW_ISO_EIGHT_THOUSAND_EIGHT_HUNDRED_AND_FIFTY_NINEEIGHT_HEBREW_MOST_SUITABLE_COLLATION_HEBREW_GENERAL_CI</option>
+			<option value="tis620">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_TISSIX_HUNDRED_AND_TWENTY_TISSIX_HUNDRED_AND_TWENTY_THAI_MOST_SUITABLE_COLLATION_TISSIX_HUNDRED_AND_TWENTY_THAI_CI</option>
+			<option value="euckr">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_EUCKR_EUCKR_KOREAN_MOST_SUITABLE_COLLATION_EUCKR_KOREAN_CI</option>
+			<option value="koi8u">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KOIEIGHTU_KOIEIGHTU_UKRAINIAN_MOST_SUITABLE_COLLATION_KOIEIGHTU_GENERAL_CI</option>
+			<option value="gb2312">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBTWO_THOUSAND_THREE_HUNDRED_AND_TWELVE_GBTWO_THOUSAND_THREE_HUNDRED_AND_TWELVE_SIMPLIFIED_CHINESE_MOST_SUITABLE_COLLATION_GBTWO_THOUSAND_THREE_HUNDRED_AND_TWELVE_CHINESE_CI</option>
+			<option value="greek">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GREEK_ISO_EIGHT_THOUSAND_EIGHT_HUNDRED_AND_FIFTY_NINESEVEN_GREEK_MOST_SUITABLE_COLLATION_GREEK_GENERAL_CI</option>
+			<option value="cp1250">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_WINDOWS_CENTRAL_EUROPEAN_MOST_SUITABLE_COLLATION_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_GENERAL_CI</option>
+			<option value="gbk">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBK_GBK_SIMPLIFIED_CHINESE_MOST_SUITABLE_COLLATION_GBK_CHINESE_CI</option>
+			<option value="latin5">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINFIVE_ISO_EIGHTY_EIGHTFIVENINENINE_TURKISH_MOST_SUITABLE_COLLATION_LATINFIVE_TURKISH_CI</option>
+			<option value="armscii8">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_ARMSCIIEIGHT_ARMSCIIEIGHT_ARMENIAN_MOST_SUITABLE_COLLATION_ARMSCIIEIGHT_GENERAL_CI</option>
+			<option value="utf8">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_UTFEIGHT_UNICODE_MOST_SUITABLE_COLLATION_UTFEIGHT_GENERAL_CI</option>
+			<option value="ucs2">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_UCSTWO_UNICODE_MOST_SUITABLE_COLLATION_UCSTWO_GENERAL_CI</option>
+			<option value="cp866">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_SIXTY_SIX_DOS_RUSSIAN_MOST_SUITABLE_COLLATION_CPEIGHT_HUNDRED_AND_SIXTY_SIX_GENERAL_CI</option>
+			<option value="keybcs2">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KEYBCSTWO_DOS_KAMENICKY_CZECHSLOVAK_MOST_SUITABLE_COLLATION_KEYBCSTWO_GENERAL_CI</option>
+			<option value="macce">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_MACCE_MAC_CENTRAL_EUROPEAN_MOST_SUITABLE_COLLATION_MACCE_GENERAL_CI</option>
+			<option value="macroman">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_MACROMAN_MAC_WEST_EUROPEAN_MOST_SUITABLE_COLLATION_MACROMAN_GENERAL_CI</option>
+			<option value="cp852">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_FIFTY_TWO_DOS_CENTRAL_EUROPEAN_MOST_SUITABLE_COLLATION_CPEIGHT_HUNDRED_AND_FIFTY_TWO_GENERAL_CI</option>
+			<option value="latin7">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINSEVEN_ISO_EIGHT_THOUSAND_EIGHT_HUNDRED_AND_FIFTY_NINETHIRTEEN_BALTIC_MOST_SUITABLE_COLLATION_LATINSEVEN_GENERAL_CI</option>
+			<option value="utf8mb4">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_UTFEIGHT_UNICODE_MOST_SUITABLE_COLLATION_UTFEIGHTMBFOUR_GENERAL_CI</option>
+			<option value="cp1251">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE_WINDOWS_CYRILLIC_MOST_SUITABLE_COLLATION_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE_GENERAL_CI</option>
+			<option value="utf16">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_UTFSIXTEEN_UNICODE_MOST_SUITABLE_COLLATION_UTFSIXTEEN_GENERAL_CI</option>
+			<option value="utf16le">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEENLE_UTFSIXTEENLE_UNICODE_MOST_SUITABLE_COLLATION_UTFSIXTEENLE_GENERAL_CI</option>
+			<option value="cp1256">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SIX_WINDOWS_ARABIC_MOST_SUITABLE_COLLATION_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SIX_GENERAL_CI</option>
+			<option value="cp1257">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SEVEN_WINDOWS_BALTIC_MOST_SUITABLE_COLLATION_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SEVEN_GENERAL_CI</option>
+			<option value="utf32">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_UTFTHIRTY_TWO_UNICODE_MOST_SUITABLE_COLLATION_UTFTHIRTY_TWO_GENERAL_CI</option>
+			<option value="binary">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_BINARY_BINARY_PSEUDO_CHARSET_MOST_SUITABLE_COLLATION_BINARY</option>
+			<option value="geostd8">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GEOSTDEIGHT_GEOSTDEIGHT_GEORGIAN_MOST_SUITABLE_COLLATION_GEOSTDEIGHT_GENERAL_CI</option>
+			<option value="cp932">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPNINE_HUNDRED_AND_THIRTY_TWO_SJIS_FOR_WINDOWS_JAPANESE_MOST_SUITABLE_COLLATION_CPNINE_HUNDRED_AND_THIRTY_TWO_JAPANESE_CI</option>
+			<option value="eucjpms">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_EUCJPMS_UJIS_FOR_WINDOWS_JAPANESE_MOST_SUITABLE_COLLATION_EUCJPMS_JAPANESE_CI</option>
+			<option value="gb18030">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBEIGHTEEN_THOUSAND_AND_THIRTY_CHINA_NATIONAL_STANDARD_GBEIGHTEEN_THOUSAND_AND_THIRTY_MOST_SUITABLE_COLLATION_GBEIGHTEEN_THOUSAND_AND_THIRTY_CHINESE_CI</option>
+		</field>
+		<!-- Note_alias_builder_custom Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_alias_builder_custom" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ALIAS_BUILDER_CUSTOM_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ALIAS_BUILDER_CUSTOM_DESCRIPTION" heading="h4" class="alert alert-info note_alias_builder_custom" showon="alias_builder_type:2" />
+		<!-- Addtables Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addtables"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			default=""
+			icon="list">
+			<form hidden="true" name="list_addtables_modal" repeat="true">
+				<!-- Table Field. Type: Dbtables. (custom) -->
+				<field
+					type="dbtables"
+					name="table"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE_LABEL"
+					class="list_class"
+					multiple="false"
+					default="0"
+					required="false"
+					button="false"
+				/>
+				<!-- Sourcemap Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="sourcemap"
+					label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_LABEL"
+					rows="22"
+					cols="30"
+					description="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_DESCRIPTION"
+					class="text_area span4"
+					filter="HTML"
+					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_HINT"
+					required="false"
+				/>
+			</form>
+		</field>
+		<!-- Note_alias_builder_default Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_alias_builder_default" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ALIAS_BUILDER_DEFAULT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ALIAS_BUILDER_DEFAULT_DESCRIPTION" heading="h4" class="alert alert-info note_alias_builder_default" showon="alias_builder_type:1" />
+		<!-- Add_custom_import Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_custom_import"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Alias_builder Field. Type: Aliasbuilder. (custom) -->
+		<field
+			type="aliasbuilder"
+			name="alias_builder"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_DESCRIPTION"
+			class="list_class fieldFull"
+			multiple="true"
+			showon="alias_builder_type:2"
+		/>
+		<!-- Php_import_headers Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_import_headers"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_HINT"
+			required="true"
+		/>
+		<!-- Note_create_edit_buttons Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_create_edit_buttons" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_BUTTONS_DESCRIPTION" class="note_create_edit_buttons" />
+		<!-- Name_list Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="name_list"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_DESCRIPTION"
+			class="inputbox"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_MESSAGE"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_HINT"
+		/>
+		<!-- Note_create_edit_display Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_create_edit_display" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CREATE_EDIT_DISPLAY_DESCRIPTION" class="note_create_edit_display" />
+		<!-- Add_php_getitems_after_all Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_getitems_after_all"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_AFTER_ALL_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_css_view Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_css_view"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CSS_VIEW_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_php_getlistquery Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_getlistquery"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETLISTQUERY_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Css_view Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="css_view"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEW_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEW_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="css"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Add_php_getform Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_getform"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETFORM_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_css_views Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_css_views"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CSS_VIEWS_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_php_before_save Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_before_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_SAVE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Css_views Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="css_views"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEWS_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEWS_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="css"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Add_php_save Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_save"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_SAVE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_javascript_view_file Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_javascript_view_file"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEW_FILE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_php_postsavehook Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_postsavehook"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_POSTSAVEHOOK_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Javascript_view_file Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="javascript_view_file"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FILE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FILE_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Add_php_allowadd Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_allowadd"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWADD_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_javascript_view_footer Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_javascript_view_footer"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEW_FOOTER_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_php_allowedit Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_allowedit"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWEDIT_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Javascript_view_footer Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="javascript_view_footer"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Add_php_batchcopy Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_batchcopy"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHCOPY_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_javascript_views_file Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_javascript_views_file"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEWS_FILE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_php_batchmove Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_batchmove"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHMOVE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Javascript_views_file Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="javascript_views_file"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FILE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FILE_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Add_php_before_publish Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_before_publish"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_PUBLISH_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_javascript_views_footer Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_javascript_views_footer"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEWS_FOOTER_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_php_after_publish Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_after_publish"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_PUBLISH_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Javascript_views_footer Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="javascript_views_footer"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
+		<!-- Add_php_before_delete Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_before_delete"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_DELETE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_custom_button Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_custom_button"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Add_php_after_delete Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_after_delete"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_DELETE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
 		<!-- Custom_button Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -1766,29 +1835,544 @@
 				</field>
 			</form>
 		</field>
-		<!-- Php_document Field. Type: Editor. (joomla) -->
+		<!-- Add_php_document Field. Type: Radio. (joomla) -->
 		<field
-			type="editor"
-			name="php_document"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_DOCUMENT_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_DOCUMENT_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="50"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
+			type="radio"
+			name="add_php_document"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
 		<!-- Php_controller Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
 			name="php_controller"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="false"
+			validate="code"
+		/>
+		<!-- Mysql_table_engine Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="mysql_table_engine"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_ENGINE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_ENGINE_DESCRIPTION"
+			class="list_class bestview"
+			multiple="false"
+			filter="CMD"
+			required="true"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GLOBAL_DEFAULT_MYISAM</option>
+			<option value="MyISAM">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_MYISAM</option>
+			<option value="InnoDB">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_INNODB</option>
+			<option value="MEMORY">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_MEMORY</option>
+			<option value="ARCHIVE">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_ARCHIVE</option>
+			<option value="PERFORMANCE_SCHEMA">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_PERFORMANCE_SCHEMA</option>
+		</field>
+		<!-- Php_model Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="php_model"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="false"
+			validate="code"
+		/>
+		<!-- Mysql_table_collate Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="mysql_table_collate"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_COLLATE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_COLLATE_DESCRIPTION"
+			class="list_class bestview"
+			multiple="false"
+			filter="CMD"
+			required="true"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GLOBAL_DEFAULT_UTFEIGHT_GENERAL_CI</option>
+			<option value="big5_chinese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_BIGFIVE_CHINESE_CI_CHARSET_BIGFIVE</option>
+			<option value="big5_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_BIGFIVE_BIN_CHARSET_BIGFIVE</option>
+			<option value="dec8_swedish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_DECEIGHT_SWEDISH_CI_CHARSET_DECEIGHT</option>
+			<option value="dec8_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_DECEIGHT_BIN_CHARSET_DECEIGHT</option>
+			<option value="cp850_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_FIFTY_GENERAL_CI_CHARSET_CPEIGHT_HUNDRED_AND_FIFTY</option>
+			<option value="cp850_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_FIFTY_BIN_CHARSET_CPEIGHT_HUNDRED_AND_FIFTY</option>
+			<option value="hp8_english_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_HPEIGHT_ENGLISH_CI_CHARSET_HPEIGHT</option>
+			<option value="hp8_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_HPEIGHT_BIN_CHARSET_HPEIGHT</option>
+			<option value="koi8r_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KOIEIGHTR_GENERAL_CI_CHARSET_KOIEIGHTR</option>
+			<option value="koi8r_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KOIEIGHTR_BIN_CHARSET_KOIEIGHTR</option>
+			<option value="latin1_german1_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_GERMANONE_CI_CHARSET_LATINONE</option>
+			<option value="latin1_swedish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_SWEDISH_CI_CHARSET_LATINONE</option>
+			<option value="latin1_danish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_DANISH_CI_CHARSET_LATINONE</option>
+			<option value="latin1_german2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_GERMANTWO_CI_CHARSET_LATINONE</option>
+			<option value="latin1_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_BIN_CHARSET_LATINONE</option>
+			<option value="latin1_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_GENERAL_CI_CHARSET_LATINONE</option>
+			<option value="latin1_general_cs">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_GENERAL_CS_CHARSET_LATINONE</option>
+			<option value="latin1_spanish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINONE_SPANISH_CI_CHARSET_LATINONE</option>
+			<option value="latin2_czech_cs">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINTWO_CZECH_CS_CHARSET_LATINTWO</option>
+			<option value="latin2_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINTWO_GENERAL_CI_CHARSET_LATINTWO</option>
+			<option value="latin2_hungarian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINTWO_HUNGARIAN_CI_CHARSET_LATINTWO</option>
+			<option value="latin2_croatian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINTWO_CROATIAN_CI_CHARSET_LATINTWO</option>
+			<option value="latin2_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINTWO_BIN_CHARSET_LATINTWO</option>
+			<option value="swe7_swedish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_SWESEVEN_SWEDISH_CI_CHARSET_SWESEVEN</option>
+			<option value="swe7_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_SWESEVEN_BIN_CHARSET_SWESEVEN</option>
+			<option value="ascii_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_ASCII_GENERAL_CI_CHARSET_ASCII</option>
+			<option value="ascii_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_ASCII_BIN_CHARSET_ASCII</option>
+			<option value="ujis_japanese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UJIS_JAPANESE_CI_CHARSET_UJIS</option>
+			<option value="ujis_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UJIS_BIN_CHARSET_UJIS</option>
+			<option value="sjis_japanese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_SJIS_JAPANESE_CI_CHARSET_SJIS</option>
+			<option value="sjis_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_SJIS_BIN_CHARSET_SJIS</option>
+			<option value="hebrew_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_HEBREW_GENERAL_CI_CHARSET_HEBREW</option>
+			<option value="hebrew_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_HEBREW_BIN_CHARSET_HEBREW</option>
+			<option value="tis620_thai_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_TISSIX_HUNDRED_AND_TWENTY_THAI_CI_CHARSET_TISSIX_HUNDRED_AND_TWENTY</option>
+			<option value="tis620_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_TISSIX_HUNDRED_AND_TWENTY_BIN_CHARSET_TISSIX_HUNDRED_AND_TWENTY</option>
+			<option value="euckr_korean_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_EUCKR_KOREAN_CI_CHARSET_EUCKR</option>
+			<option value="euckr_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_EUCKR_BIN_CHARSET_EUCKR</option>
+			<option value="koi8u_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KOIEIGHTU_GENERAL_CI_CHARSET_KOIEIGHTU</option>
+			<option value="koi8u_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KOIEIGHTU_BIN_CHARSET_KOIEIGHTU</option>
+			<option value="gb2312_chinese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBTWO_THOUSAND_THREE_HUNDRED_AND_TWELVE_CHINESE_CI_CHARSET_GBTWO_THOUSAND_THREE_HUNDRED_AND_TWELVE</option>
+			<option value="gb2312_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBTWO_THOUSAND_THREE_HUNDRED_AND_TWELVE_BIN_CHARSET_GBTWO_THOUSAND_THREE_HUNDRED_AND_TWELVE</option>
+			<option value="greek_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GREEK_GENERAL_CI_CHARSET_GREEK</option>
+			<option value="greek_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GREEK_BIN_CHARSET_GREEK</option>
+			<option value="cp1250_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_GENERAL_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY</option>
+			<option value="cp1250_czech_cs">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_CZECH_CS_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY</option>
+			<option value="cp1250_croatian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_CROATIAN_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY</option>
+			<option value="cp1250_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_BIN_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY</option>
+			<option value="cp1250_polish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_POLISH_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY</option>
+			<option value="gbk_chinese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBK_CHINESE_CI_CHARSET_GBK</option>
+			<option value="gbk_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBK_BIN_CHARSET_GBK</option>
+			<option value="latin5_turkish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINFIVE_TURKISH_CI_CHARSET_LATINFIVE</option>
+			<option value="latin5_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINFIVE_BIN_CHARSET_LATINFIVE</option>
+			<option value="armscii8_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_ARMSCIIEIGHT_GENERAL_CI_CHARSET_ARMSCIIEIGHT</option>
+			<option value="armscii8_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_ARMSCIIEIGHT_BIN_CHARSET_ARMSCIIEIGHT</option>
+			<option value="utf8_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_GENERAL_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_BIN_CHARSET_UTFEIGHT</option>
+			<option value="utf8_unicode_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_UNICODE_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_icelandic_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_ICELANDIC_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_latvian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_LATVIAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_romanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_ROMANIAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_slovenian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_SLOVENIAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_polish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_POLISH_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_estonian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_ESTONIAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_spanish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_SPANISH_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_swedish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_SWEDISH_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_turkish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_TURKISH_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_czech_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_CZECH_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_danish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_DANISH_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_lithuanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_LITHUANIAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_slovak_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_SLOVAK_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_spanish2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_SPANISHTWO_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_roman_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_ROMAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_persian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_PERSIAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_esperanto_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_ESPERANTO_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_hungarian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_HUNGARIAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_sinhala_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_SINHALA_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_german2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_GERMANTWO_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_croatian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_CROATIAN_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_unicode_520_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_UNICODE_FIVE_HUNDRED_AND_TWENTY_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_vietnamese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_VIETNAMESE_CI_CHARSET_UTFEIGHT</option>
+			<option value="utf8_general_mysql500_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHT_GENERAL_MYSQLFIVE_HUNDRED_CI_CHARSET_UTFEIGHT</option>
+			<option value="ucs2_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_GENERAL_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_BIN_CHARSET_UCSTWO</option>
+			<option value="ucs2_unicode_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_UNICODE_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_icelandic_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_ICELANDIC_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_latvian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_LATVIAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_romanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_ROMANIAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_slovenian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_SLOVENIAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_polish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_POLISH_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_estonian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_ESTONIAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_spanish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_SPANISH_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_swedish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_SWEDISH_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_turkish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_TURKISH_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_czech_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_CZECH_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_danish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_DANISH_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_lithuanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_LITHUANIAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_slovak_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_SLOVAK_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_spanish2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_SPANISHTWO_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_roman_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_ROMAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_persian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_PERSIAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_esperanto_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_ESPERANTO_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_hungarian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_HUNGARIAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_sinhala_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_SINHALA_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_german2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_GERMANTWO_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_croatian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_CROATIAN_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_unicode_520_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_UNICODE_FIVETWOZERO_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_vietnamese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_VIETNAMESE_CI_CHARSET_UCSTWO</option>
+			<option value="ucs2_general_mysql500_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UCSTWO_GENERAL_MYSQLFIVE_HUNDRED_CI_CHARSET_UCSTWO</option>
+			<option value="cp866_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_SIXTY_SIX_GENERAL_CI_CHARSET_CPEIGHT_HUNDRED_AND_SIXTY_SIX</option>
+			<option value="cp866_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_SIXTY_SIX_BIN_CHARSET_CPEIGHT_HUNDRED_AND_SIXTY_SIX</option>
+			<option value="keybcs2_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KEYBCSTWO_GENERAL_CI_CHARSET_KEYBCSTWO</option>
+			<option value="keybcs2_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_KEYBCSTWO_BIN_CHARSET_KEYBCSTWO</option>
+			<option value="macce_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_MACCE_GENERAL_CI_CHARSET_MACCE</option>
+			<option value="macce_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_MACCE_BIN_CHARSET_MACCE</option>
+			<option value="macroman_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_MACROMAN_GENERAL_CI_CHARSET_MACROMAN</option>
+			<option value="macroman_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_MACROMAN_BIN_CHARSET_MACROMAN</option>
+			<option value="cp852_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_FIFTY_TWO_GENERAL_CI_CHARSET_CPEIGHT_HUNDRED_AND_FIFTY_TWO</option>
+			<option value="cp852_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPEIGHT_HUNDRED_AND_FIFTY_TWO_BIN_CHARSET_CPEIGHT_HUNDRED_AND_FIFTY_TWO</option>
+			<option value="latin7_estonian_cs">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINSEVEN_ESTONIAN_CS_CHARSET_LATINSEVEN</option>
+			<option value="latin7_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINSEVEN_GENERAL_CI_CHARSET_LATINSEVEN</option>
+			<option value="latin7_general_cs">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINSEVEN_GENERAL_CS_CHARSET_LATINSEVEN</option>
+			<option value="latin7_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_LATINSEVEN_BIN_CHARSET_LATINSEVEN</option>
+			<option value="utf8mb4_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_GENERAL_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_BIN_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_unicode_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_UNICODE_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_icelandic_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_ICELANDIC_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_latvian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_LATVIAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_romanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_ROMANIAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_slovenian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_SLOVENIAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_polish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_POLISH_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_estonian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_ESTONIAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_spanish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_SPANISH_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_swedish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_SWEDISH_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_turkish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_TURKISH_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_czech_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_CZECH_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_danish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_DANISH_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_lithuanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_LITHUANIAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_slovak_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_SLOVAK_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_spanish2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_SPANISHTWO_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_roman_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_ROMAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_persian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_PERSIAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_esperanto_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_ESPERANTO_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_hungarian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_HUNGARIAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_sinhala_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_SINHALA_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_german2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_GERMANTWO_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_croatian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_CROATIAN_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_unicode_520_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_UNICODE_FIVE_HUNDRED_AND_TWENTY_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="utf8mb4_vietnamese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFEIGHTMBFOUR_VIETNAMESE_CI_CHARSET_UTFEIGHTMBFOUR</option>
+			<option value="cp1251_bulgarian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE_BULGARIAN_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE</option>
+			<option value="cp1251_ukrainian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE_UKRAINIAN_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE</option>
+			<option value="cp1251_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE_BIN_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE</option>
+			<option value="cp1251_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE_GENERAL_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE</option>
+			<option value="cp1251_general_cs">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE_GENERAL_CS_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_ONE</option>
+			<option value="utf16_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_GENERAL_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_BIN_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_unicode_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_UNICODE_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_icelandic_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_ICELANDIC_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_latvian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_LATVIAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_romanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_ROMANIAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_slovenian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_SLOVENIAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_polish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_POLISH_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_estonian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_ESTONIAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_spanish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_SPANISH_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_swedish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_SWEDISH_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_turkish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_TURKISH_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_czech_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_CZECH_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_danish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_DANISH_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_lithuanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_LITHUANIAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_slovak_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_SLOVAK_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_spanish2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_SPANISHTWO_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_roman_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_ROMAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_persian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_PERSIAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_esperanto_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_ESPERANTO_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_hungarian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_HUNGARIAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_sinhala_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_SINHALA_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_german2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_GERMANTWO_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_croatian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_CROATIAN_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_unicode_520_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_UNICODE_FIVE_HUNDRED_AND_TWENTY_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16_vietnamese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEEN_VIETNAMESE_CI_CHARSET_UTFSIXTEEN</option>
+			<option value="utf16le_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEENLE_GENERAL_CI_CHARSET_UTFSIXTEENLE</option>
+			<option value="utf16le_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFSIXTEENLE_BIN_CHARSET_UTFSIXTEENLE</option>
+			<option value="cp1256_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SIX_GENERAL_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SIX</option>
+			<option value="cp1256_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SIX_BIN_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SIX</option>
+			<option value="cp1257_lithuanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SEVEN_LITHUANIAN_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SEVEN</option>
+			<option value="cp1257_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SEVEN_BIN_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SEVEN</option>
+			<option value="cp1257_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SEVEN_GENERAL_CI_CHARSET_CPONE_THOUSAND_TWO_HUNDRED_AND_FIFTY_SEVEN</option>
+			<option value="utf32_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_GENERAL_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_BIN_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_unicode_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_UNICODE_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_icelandic_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_ICELANDIC_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_latvian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_LATVIAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_romanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_ROMANIAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_slovenian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_SLOVENIAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_polish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_POLISH_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_estonian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_ESTONIAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_spanish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_SPANISH_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_swedish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_SWEDISH_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_turkish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_TURKISH_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_czech_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_CZECH_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_danish_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_DANISH_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_lithuanian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_LITHUANIAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_slovak_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_SLOVAK_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_spanish2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_SPANISHTWO_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_roman_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_ROMAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_persian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_PERSIAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_esperanto_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_ESPERANTO_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_hungarian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_HUNGARIAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_sinhala_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_SINHALA_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_german2_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_GERMANTWO_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_croatian_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_CROATIAN_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_unicode_520_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_UNICODE_FIVE_HUNDRED_AND_TWENTY_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="utf32_vietnamese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_UTFTHIRTY_TWO_VIETNAMESE_CI_CHARSET_UTFTHIRTY_TWO</option>
+			<option value="binary">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_BINARY_CHARSET_BINARY</option>
+			<option value="geostd8_general_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GEOSTDEIGHT_GENERAL_CI_CHARSET_GEOSTDEIGHT</option>
+			<option value="geostd8_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GEOSTDEIGHT_BIN_CHARSET_GEOSTDEIGHT</option>
+			<option value="cp932_japanese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPNINE_HUNDRED_AND_THIRTY_TWO_JAPANESE_CI_CHARSET_CPNINE_HUNDRED_AND_THIRTY_TWO</option>
+			<option value="cp932_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_CPNINE_HUNDRED_AND_THIRTY_TWO_BIN_CHARSET_CPNINE_HUNDRED_AND_THIRTY_TWO</option>
+			<option value="eucjpms_japanese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_EUCJPMS_JAPANESE_CI_CHARSET_EUCJPMS</option>
+			<option value="eucjpms_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_EUCJPMS_BIN_CHARSET_EUCJPMS</option>
+			<option value="gb18030_chinese_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBEIGHTEEN_THOUSAND_AND_THIRTY_CHINESE_CI_CHARSET_GBEIGHTEEN_THOUSAND_AND_THIRTY</option>
+			<option value="gb18030_bin">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBEIGHTEEN_THOUSAND_AND_THIRTY_BIN_CHARSET_GBEIGHTEEN_THOUSAND_AND_THIRTY</option>
+			<option value="gb18030_unicode_520_ci">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_GBEIGHTEEN_THOUSAND_AND_THIRTY_UNICODE_FIVE_HUNDRED_AND_TWENTY_CI_CHARSET_GBEIGHTEEN_THOUSAND_AND_THIRTY</option>
+		</field>
+		<!-- Php_controller_list Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="php_controller_list"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_DESCRIPTION"
 			width="100%"
 			height="450px"
 			cols="15"
@@ -1814,16 +2398,16 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_DUMP</option>
 		</field>
-		<!-- Php_model Field. Type: Editor. (joomla) -->
+		<!-- Php_model_list Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
-			name="php_model"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_DESCRIPTION"
+			name="php_model_list"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LIST_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LIST_DESCRIPTION"
 			width="100%"
 			height="450px"
-			cols="15"
-			rows="30"
+			cols="30"
+			rows="15"
 			buttons="no"
 			syntax="php"
 			editor="codemirror|none"
@@ -1844,55 +2428,6 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_HINT"
 			required="true"
 		/>
-		<!-- Php_controller_list Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_controller_list"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="false"
-			validate="code"
-		/>
-		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
-		<!-- Php_model_list Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_model_list"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LIST_LABEL"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LIST_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="30"
-			rows="15"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="false"
-			validate="code"
-		/>
-		<!-- Php_import_display Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_import_display"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DISPLAY_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DISPLAY_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DISPLAY_HINT"
-			required="true"
-		/>
 		<!-- Add_php_ajax Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1907,19 +2442,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
-		<!-- Php_import Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_import"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HINT"
-			required="true"
-		/>
+		<!-- Note_advanced_import Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_advanced_import" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_ADVANCED_IMPORT_DESCRIPTION" heading="h4" class="alert alert-success note_advanced_import" />
 		<!-- Php_ajaxmethod Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -1937,17 +2461,17 @@
 			required="true"
 			validate="code"
 		/>
-		<!-- Php_import_setdata Field. Type: Textarea. (joomla) -->
+		<!-- Php_import_display Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
-			name="php_import_setdata"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SETDATA_LABEL"
+			name="php_import_display"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DISPLAY_LABEL"
 			rows="30"
 			cols="15"
-			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SETDATA_DESCRIPTION"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DISPLAY_DESCRIPTION"
 			class="text_area span12"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SETDATA_HINT"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DISPLAY_HINT"
 			required="true"
 		/>
 		<!-- Ajax_input Field. Type: Subform. (joomla) -->
@@ -2082,6 +2606,63 @@
 				/>
 			</form>
 		</field>
+		<!-- Php_import Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_import"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HINT"
+			required="true"
+		/>
+		<!-- Add_php_getitem Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_getitem"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEM_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
+		</field>
+		<!-- Php_import_setdata Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_import_setdata"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SETDATA_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SETDATA_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SETDATA_HINT"
+			required="true"
+		/>
+		<!-- Php_getitem Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="php_getitem"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Php_import_ext Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -2095,11 +2676,11 @@
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_EXT_HINT"
 			required="true"
 		/>
-		<!-- Add_php_getitem Field. Type: Radio. (joomla) -->
+		<!-- Add_php_getitems Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_getitem"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEM_LABEL"
+			name="add_php_getitems"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETITEMS_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">

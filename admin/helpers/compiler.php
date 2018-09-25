@@ -95,10 +95,12 @@ class Compiler extends Infusion
 			{
 				if (ComponentbuilderHelper::checkArray($this->langNot))
 				{
+					$this->app->enqueueMessage(JText::_('<hr /><h3>Language Warning</h3>'), 'Warning');
 					foreach ($this->langNot as $tag => $percentage)
 					{
 						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> language has %s&#37; translated, you will need to translate %s&#37; of the language strings before it will be added.', $tag, $percentage, $this->percentageLanguageAdd), 'Warning');
 					}
+					$this->app->enqueueMessage(JText::_('<hr /><h3>Language Notice</h3>'), 'Notice');
 					$this->app->enqueueMessage(JText::sprintf('<b>You can change this percentage of translated strings required in the global options of JCB.</b><br />Please watch this <a href=%s>tutorial for more help surrounding the JCB translations manager</a>.', '"https://youtu.be/zzAcVkn_cWU?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE" target="_blank" title="JCB Tutorial surrounding Translation Manager"'), 'Notice');
 				}
 				// set why the strings were added
@@ -110,6 +112,7 @@ class Compiler extends Infusion
 				// show languages that were added
 				if (ComponentbuilderHelper::checkArray($this->langSet))
 				{
+					$this->app->enqueueMessage(JText::_('<hr /><h3>Language Notice</h3>'), 'Notice');
 					foreach ($this->langSet as $tag => $percentage)
 					{
 						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> language has %s&#37; translated. Was addeded %s', $tag, $percentage, $whyAddedLang), 'Notice');
@@ -142,6 +145,7 @@ class Compiler extends Infusion
 				// set a notice if we have a mismatch
 				if (isset($mismatch) && ComponentbuilderHelper::checkArray($mismatch))
 				{
+					$this->app->enqueueMessage(JText::_('<hr /><h3>Language Warning</h3>'), 'Warning');
 					if (count($mismatch) > 1)
 					{
 						$this->app->enqueueMessage(JText::_('<h3>Please check the following mismatching Joomla.JText language constants.</h3>'), 'Warning');
@@ -156,7 +160,6 @@ class Compiler extends Infusion
 						$constant = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($string, 'U');
 						$this->app->enqueueMessage(JText::sprintf('The <b>Joomla.JText._(&apos;%s&apos;)</b> language constant for <b>%s</b> does not have a corresponding <code>JText::script(&apos;%s&apos;)</code> decalaration, please add it.', $constant, $string, $string), 'Warning');
 					}
-					$this->app->enqueueMessage('<hr />', 'Warning');
 				}
 			}
 			// check if we should add a EXTERNALCODE notice
@@ -169,7 +172,6 @@ class Compiler extends Infusion
 				// the notice
 				$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Notice</h3>'), 'Notice');
 				$this->app->enqueueMessage(JText::sprintf('There has been <b>%s - %s</b> added to this component as EXTERNALCODE. To avoid shipping your component with malicious %s always make sure that the correct <b>code/string values</b> were used.', $externalCount, $externalCodeString, $externalCodeString), 'Notice');
-				$this->app->enqueueMessage('<hr />', 'Notice');
 			}
 			// end the timer here
 			$this->time_end = microtime(true);
@@ -273,6 +275,11 @@ class Compiler extends Infusion
 		if ($view)
 		{
 			$answer = $this->setPlaceholders($answer, $this->fileContentDynamic[$view], 3);
+		}
+		// check if this file needs extra care :)
+		if (isset($this->updateFileContent[$path]))
+		{
+			$answer = $this->setDynamicValues($answer);
 		}
 		// add answer back to file
 		$this->writeFile($path, $answer);
@@ -594,6 +601,7 @@ class Compiler extends Infusion
 						{
 							// Load escaped code since the target endhash has changed
 							$this->loadEscapedCode($file, $target, $lineBites);
+							$this->app->enqueueMessage(JText::_('<hr /><h3>Custom Code Warning</h3>'), 'Warning');
 							$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'Warning');
 						}
 					}
@@ -601,12 +609,14 @@ class Compiler extends Infusion
 					{
 						// Load escaped code since the target hash has changed
 						$this->loadEscapedCode($file, $target, $lineBites);
+						$this->app->enqueueMessage(JText::_('<hr /><h3>Custom Code Warning</h3>'), 'Warning');
 						$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'Warning');
 					}
 				}
 				else
 				{
 					// Give developer a notice that file is not found.
+					$this->app->enqueueMessage(JText::_('<hr /><h3>Custom Code Warning</h3>'), 'Warning');
 					$this->app->enqueueMessage(JText::sprintf('File <b>%s</b> could not be found, so the custom code for this file could not be addded.', $target['path']), 'Warning');
 				}
 			}

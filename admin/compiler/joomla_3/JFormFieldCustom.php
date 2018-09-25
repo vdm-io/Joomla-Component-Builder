@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// import the list field type
+// import the ###JFORM_extends### field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('###JFORM_extends###');
 

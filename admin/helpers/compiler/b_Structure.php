@@ -236,6 +236,13 @@ class Structure extends Get
 	public $fileContentStatic = array();
 
 	/**
+	 * The standard folders
+	 * 
+	 * @var      array
+	 */
+	public $stdFolders = array('site', 'admin', 'media');
+
+	/**
 	 * Dynamic File Content
 	 * 
 	 * @var      array
@@ -276,6 +283,13 @@ class Structure extends Get
 	 * @var      array
 	 */
 	public $notNew = array();
+
+	/**
+	 * Update the file content
+	 * 
+	 * @var      array
+	 */
+	public $updateFileContent = array();
 
 	/**
 	 * The new files
@@ -320,6 +334,18 @@ class Structure extends Get
 		// first we run the perent constructor
 		if (parent::__construct($config))
 		{
+			// set incase no extra admin folder are loaded
+			$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh] = '';
+			// set incase no extra site folder are loaded
+			$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh] = '';
+			// set incase no extra media folder are loaded
+			$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] = '';
+			// set incase no extra admin files are loaded
+			$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FILES' . $this->hhh] = '';
+			// set incase no extra site files are loaded
+			$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FILES' . $this->hhh] = '';
+			// set incase no extra media files are loaded
+			$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FILES' . $this->hhh] = '';
 			// run global updater
 			ComponentbuilderHelper::runGlobalUpdater();
 			// set the Joomla version
@@ -489,11 +515,7 @@ class Structure extends Get
 						// only add if local
 						if ($addLocalFolder)
 						{
-							// check if we sould add it to the media xml list
-							if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh]))
-							{
-								$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] = '';
-							}
+							// add folder to ml of media folders
 							$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(2) . "<folder>" . $libFolder . "</folder>";
 						}
 					}
@@ -571,24 +593,28 @@ class Structure extends Get
 						else
 						{
 							// set massage that something is wrong
+							$this->app->enqueueMessage(JText::_('<hr /><h3>Dashboard Error</h3>'), 'Error');
 							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> (<b>%s</b>) is not available in your component! Please insure to only used %s, for a dynamic dashboard, that are still linked to your component.', $names[$t], $this->componentData->dashboard, $type_names), 'Error');
 						}
 					}
 					else
 					{
 						// set massage that something is wrong
+						$this->app->enqueueMessage(JText::_('<hr /><h3>Dashboard Error</h3>'), 'Error');
 						$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> (<b>%s</b>) is not available in your component! Please insure to only used %s, for a dynamic dashboard, that are still linked to your component.', $names[$t], $this->componentData->dashboard, $type_names), 'Error');
 					}
 				}
 				else
 				{
 					// the target value is wrong
+					$this->app->enqueueMessage(JText::_('<hr /><h3>Dashboard Error</h3>'), 'Error');
 					$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> value for the dynamic dashboard is invalid.', $this->componentData->dashboard), 'Error');
 				}
 			}
 			else
 			{
 				// the target value is wrong
+				$this->app->enqueueMessage(JText::_('<hr /><h3>Dashboard Error</h3>'), 'Error');
 				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> value for the dynamic dashboard is invalid.', $this->componentData->dashboard), 'Error');
 			}
 			// if default was changed to dynamic dashboard the remove default tab and methods
@@ -767,8 +793,6 @@ class Structure extends Get
 			{
 				$README = true;
 			}
-			// set the standard folders
-			$stdFolders = array('site', 'admin', 'media');
 			// start moving
 			foreach ($this->joomlaVersionData->move->static as $ftem => $details)
 			{
@@ -814,6 +838,7 @@ class Structure extends Get
 				{
 					if (!JFile::exists($currentFullPath))
 					{
+						$this->app->enqueueMessage(JText::_('<hr /><h3>File Path Error</h3>'), 'Error');
 						$this->app->enqueueMessage(JText::sprintf('The file path: <b>%s</b> does not exist, and was not added!', $currentFullPath), 'Error');
 					}
 					else
@@ -834,12 +859,21 @@ class Structure extends Get
 						{
 							$this->newFiles['static'][] = array('path' => $packageFullPath, 'name' => $new, 'zip' => $zipFullPath);
 						}
+						// ensure we update this file if needed
+						if (isset($this->updateFileContent[$ftem]) && $this->updateFileContent[$ftem])
+						{
+							// remove the pointer
+							unset($this->updateFileContent[$ftem]);
+							// set the full path
+							$this->updateFileContent[$packageFullPath] = $packageFullPath;
+						}
 					}
 				}
 				elseif ($details->type === 'folder')
 				{
 					if (!JFolder::exists($currentFullPath))
 					{
+						$this->app->enqueueMessage(JText::_('<hr /><h3>Folder Path Error</h3>'), 'Error');
 						$this->app->enqueueMessage(JText::sprintf('The folder path: <b>%s</b> does not exist, and was not added!', $currentFullPath), 'Error');
 					}
 					else
@@ -851,18 +885,39 @@ class Structure extends Get
 					}
 				}
 				// check if we should add the dynamic folder moving script to the installer script
-				if (!$this->setMoveFolders)
+				$checker = array_values((array) explode('/', $zipFullPath));
+				// TODO <-- this may not be the best way, will keep an eye on this.
+				// We basicly only want to check if a folder is added that is not in the stdFolders array
+				if (isset($checker[0]) && ComponentbuilderHelper::checkString($checker[0]) && !in_array($checker[0], $this->stdFolders))
 				{
-					$checker = explode('/', $zipFullPath);
-					// TODO <-- this may not be the best way, will keep an eye on this.
-					// We basicly only want to check if a folder is added that is not in the stdFolders array
-					if (isset($checker[0]) && ComponentbuilderHelper::checkString($checker[0]) && !in_array($checker[0], $stdFolders))
+					// check if we should add the dynamic folder moving script to the installer script
+					if (!$this->setMoveFolders)
 					{
 						// add the setDynamicF0ld3rs() method to the install scipt.php file
 						$this->setMoveFolders = true;
 						// set message that this was done (will still add a tutorial link later)
-						$this->app->enqueueMessage(JText::sprintf('<p><b>Dynamic folder/s were detected.</b><br />A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder/s are copied into the correct place when this componet is installed!</p>'), 'Notice');
+						$this->app->enqueueMessage(JText::_('<hr /><h3>Dynamic folder/s were detected.</h3>'), 'Notice');
+						$this->app->enqueueMessage(JText::sprintf('A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder/s are copied into the correct place when this componet is installed!'), 'Notice');
 					}
+				}
+				elseif (count($checker) == 2 && ComponentbuilderHelper::checkString($checker[0]) && in_array($checker[0], $this->stdFolders))
+				{
+					// set the target
+					$eNAME = 'FILES';
+					$ename = 'filename';
+					if ($details->type === 'folder')
+					{
+						$eNAME = 'FOLDERS';
+						$ename = 'folder';
+					}
+					// set the tab
+					$eTab = $this->_t(2);
+					if ('admin' === $checker[0])
+					{
+						$eTab = $this->_t(3);
+					}
+					// set the xml file
+					$this->fileContentStatic[$this->hhh . 'EXSTRA_' . ComponentbuilderHelper::safeString($checker[0], 'U') . '_' . $eNAME . $this->hhh] .= PHP_EOL . $eTab . "<" . $ename . ">" . $checker[1] . "</" . $ename . ">";
 				}
 			}
 			return true;
@@ -1260,11 +1315,6 @@ class Structure extends Get
 					$custom['path'] = str_replace('/' . $lastFolder, '', $custom['path']);
 					$rename = 'new';
 					$newname = $lastFolder;
-					// add fix to insure it gets added to xml if needed
-					if (($tkey = array_search($lastFolder, $pathArray)) !== false)
-					{
-						unset($pathArray[$tkey]);
-					}
 				}
 				elseif ('full' === $customPath)
 				{
@@ -1273,11 +1323,6 @@ class Structure extends Get
 					$lastFolder = end($folderArray);
 					$rename = 'new';
 					$newname = $lastFolder;
-					// add fix to insure it gets added to xml if needed
-					if (($tkey = array_search($lastFolder, $pathArray)) !== false)
-					{
-						unset($pathArray[$tkey]);
-					}
 				}
 				else
 				{
@@ -1285,46 +1330,19 @@ class Structure extends Get
 					$rename = false;
 					$newname = '';
 				}
-				// check if we sould add it to the media xml list
-				if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh]))
-				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] = '';
-				}
-				if (count($pathArray) == 1 && $firstFolder === 'media')
-				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(2) . "<folder>" . $lastFolder . "</folder>";
-				}
-				// check if we sould add it to the site xml list
-				if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh]))
-				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh] = '';
-				}
-				if (count($pathArray) == 1 && $firstFolder === 'site')
-				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(2) . "<folder>" . $lastFolder . "</folder>";
-				}
-				// check if we sould add it to the admin xml list
-				if (!isset($this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh]))
-				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh] = '';
-				}
-				if (count($pathArray) == 1 && $firstFolder === 'admin')
-				{
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(3) . "<folder>" . $lastFolder . "</folder>";
-				}
-				// make we have not duplicates
+				// insure we have no duplicates
 				$key_pointer = ComponentbuilderHelper::safeString($custom['folder']) . '_f' . $pointer_tracker;
 				$pointer_tracker++;
 				// fix custom path
 				$custom['path'] = ltrim($custom['path'], '/');
 				// set new folder to object
-				$versionData->move->static->$key_pointer = new stdClass();
-				$versionData->move->static->$key_pointer->naam = str_replace('//','/', $custom['folder']);
-				$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
-				$versionData->move->static->$key_pointer->rename = $rename;
-				$versionData->move->static->$key_pointer->newName = $newname;
-				$versionData->move->static->$key_pointer->type = 'folder';
-				$versionData->move->static->$key_pointer->custom = $customPath;
+				$versionData->move->static->{$key_pointer} = new stdClass();
+				$versionData->move->static->{$key_pointer}->naam = str_replace('//','/', $custom['folder']);
+				$versionData->move->static->{$key_pointer}->path = 'c0mp0n3nt/' . $custom['path'];
+				$versionData->move->static->{$key_pointer}->rename = $rename;
+				$versionData->move->static->{$key_pointer}->newName = $newname;
+				$versionData->move->static->{$key_pointer}->type = 'folder';
+				$versionData->move->static->{$key_pointer}->custom = $customPath;
 			}
 			unset($this->componentData->folders);
 			unset($custom);
@@ -1367,8 +1385,8 @@ class Structure extends Get
 				$key_pointer = ComponentbuilderHelper::safeString($custom['file']) . '_g' . $pointer_tracker;
 				$pointer_tracker++;
 				// set new file to object
-				$versionData->move->static->$key_pointer = new stdClass();
-				$versionData->move->static->$key_pointer->naam = str_replace('//','/',$custom['file']);
+				$versionData->move->static->{$key_pointer} = new stdClass();
+				$versionData->move->static->{$key_pointer}->naam = str_replace('//','/',$custom['file']);
 				// update the dynamic component name placholders in file names
 				$custom['path'] = $this->setPlaceholders($custom['path'], $this->placeholders);
 				// get the path info
@@ -1377,36 +1395,41 @@ class Structure extends Get
 				{
 					$pathInfo['dirname'] = trim($pathInfo['dirname'], '/');
 					// set the info
-					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $pathInfo['dirname'];
-					$versionData->move->static->$key_pointer->rename = 'new';
-					$versionData->move->static->$key_pointer->newName = $pathInfo['basename'];
+					$versionData->move->static->{$key_pointer}->path = 'c0mp0n3nt/' . $pathInfo['dirname'];
+					$versionData->move->static->{$key_pointer}->rename = 'new';
+					$versionData->move->static->{$key_pointer}->newName = $pathInfo['basename'];
 				}
 				elseif ('full' === $customPath)
 				{
 					// fix custom path
 					$custom['path'] = ltrim($custom['path'], '/');
 					// get file array
-					$fileArray = explode('/', $custom['file']);
+					$fileArray = (array) explode('/', $custom['file']);
 					// set the info
-					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
-					$versionData->move->static->$key_pointer->rename = 'new';
-					$versionData->move->static->$key_pointer->newName = end($fileArray);
+					$versionData->move->static->{$key_pointer}->path = 'c0mp0n3nt/' . $custom['path'];
+					$versionData->move->static->{$key_pointer}->rename = 'new';
+					$versionData->move->static->{$key_pointer}->newName = end($fileArray);
 				}
 				else
 				{
 					// fix custom path
 					$custom['path'] = ltrim($custom['path'], '/');
 					// set the info
-					$versionData->move->static->$key_pointer->path = 'c0mp0n3nt/' . $custom['path'];
-					$versionData->move->static->$key_pointer->rename = false;
+					$versionData->move->static->{$key_pointer}->path = 'c0mp0n3nt/' . $custom['path'];
+					$versionData->move->static->{$key_pointer}->rename = false;
 				}
+				$versionData->move->static->{$key_pointer}->type = 'file';
+				$versionData->move->static->{$key_pointer}->custom = $customPath;
 				// check if file should be updated
 				if (!isset($custom['notnew']) || $custom['notnew'] == 0 || $custom['notnew'] != 1)
 				{
 					$this->notNew[] = $key_pointer;
 				}
-				$versionData->move->static->$key_pointer->type = 'file';
-				$versionData->move->static->$key_pointer->custom = $customPath;
+				else
+				{
+					// update the file content
+					$this->updateFileContent[$key_pointer] = true;
+				}
 			}
 			unset($this->componentData->files);
 			unset($custom);

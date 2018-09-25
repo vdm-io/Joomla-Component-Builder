@@ -441,9 +441,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 
 	public function getWiki()
 	{
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration('
-		var gewiki = "https://raw.githubusercontent.com/wiki/vdm-io/Joomla-Component-Builder/Home.md";
+		JFactory::getDocument()->addScriptDeclaration('
+		var gewiki = "'. JURI::root() . 'administrator/components/com_componentbuilder/wiki_menu.txt";
 		jQuery(document).ready(function () {
 			jQuery.get(gewiki)
 			.success(function(wiki) { 
@@ -454,10 +453,9 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			});
 		});');
 
-		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_TEXT_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
-	 
 
 	public function getNoticeboard()
 	{

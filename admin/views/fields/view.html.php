@@ -207,7 +207,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		}
 
 		// Set Fieldtype Name Selection
-		$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->getOptions();
+		$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->options;
 		if ($this->fieldtypeNameOptions)
 		{
 			// Fieldtype Name Filter

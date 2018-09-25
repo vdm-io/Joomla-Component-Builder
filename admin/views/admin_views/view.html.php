@@ -211,28 +211,6 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 			}
 		}
 
-		// Set Add Custom Import Selection
-		$this->add_custom_importOptions = $this->getTheAdd_custom_importSelections();
-		if ($this->add_custom_importOptions)
-		{
-			// Add Custom Import Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
-				'filter_add_custom_import',
-				JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text', $this->state->get('filter.add_custom_import'))
-			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Add Custom Import Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
-					'batch[add_custom_import]',
-					JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text')
-				);
-			}
-		}
-
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
 		if ($this->typeOptions)
@@ -251,6 +229,28 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_LABEL').' -',
 					'batch[type]',
 					JHtml::_('select.options', $this->typeOptions, 'value', 'text')
+				);
+			}
+		}
+
+		// Set Add Custom Import Selection
+		$this->add_custom_importOptions = $this->getTheAdd_custom_importSelections();
+		if ($this->add_custom_importOptions)
+		{
+			// Add Custom Import Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
+				'filter_add_custom_import',
+				JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text', $this->state->get('filter.add_custom_import'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Add Custom Import Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
+					'batch[add_custom_import]',
+					JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text')
 				);
 			}
 		}
@@ -386,42 +386,6 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheAdd_custom_importSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('add_custom_import'));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->order($db->quoteName('add_custom_import') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $add_custom_import)
-			{
-				// Translate the add_custom_import selection
-				$text = $model->selectionTranslation($add_custom_import,'add_custom_import');
-				// Now add the add_custom_import and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_custom_import, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
 	protected function getTheTypeSelections()
 	{
 		// Get a db connection.
@@ -452,6 +416,42 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 				$text = $model->selectionTranslation($type,'type');
 				// Now add the type and its text to the options array
 				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
+	}
+
+	protected function getTheAdd_custom_importSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('add_custom_import'));
+		$query->from($db->quoteName('#__componentbuilder_admin_view'));
+		$query->order($db->quoteName('add_custom_import') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $add_custom_import)
+			{
+				// Translate the add_custom_import selection
+				$text = $model->selectionTranslation($add_custom_import,'add_custom_import');
+				// Now add the add_custom_import and its text to the options array
+				$_filter[] = JHtml::_('select.option', $add_custom_import, JText::_($text));
 			}
 			return $_filter;
 		}

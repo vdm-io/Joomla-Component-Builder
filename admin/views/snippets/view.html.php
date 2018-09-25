@@ -195,7 +195,7 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		}
 
 		// Set Type Name Selection
-		$this->typeNameOptions = JFormHelper::loadFieldType('Snippettype')->getOptions();
+		$this->typeNameOptions = JFormHelper::loadFieldType('Snippettype')->options;
 		if ($this->typeNameOptions)
 		{
 			// Type Name Filter
@@ -217,7 +217,7 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		}
 
 		// Set Library Name Selection
-		$this->libraryNameOptions = JFormHelper::loadFieldType('Library')->getOptions();
+		$this->libraryNameOptions = JFormHelper::loadFieldType('Library')->options;
 		if ($this->libraryNameOptions)
 		{
 			// Library Name Filter

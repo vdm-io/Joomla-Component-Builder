@@ -613,7 +613,8 @@ class Interpretation extends Fields
 			}
 		}
 		// give notice of this issue
-		$this->app->enqueueMessage(JText::sprintf('The <b>WHMCS class</b> could not be added to this component. You will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes.', $this->libraries[$id]->name), 'error');
+		$this->app->enqueueMessage(JText::_('<hr /><h3>WHMCS Error</h3>'), 'Error');
+		$this->app->enqueueMessage(JText::sprintf('The <b>WHMCS class</b> could not be added to this component. You will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes.', $this->libraries[$id]->name), 'Error');
 		return "//" . $this->setLine(__LINE__) . " The WHMCS class could not be added to this component." . PHP_EOL . "//" . $this->setLine(__LINE__) . " Please note that you will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes.";
 	}
 
@@ -624,8 +625,9 @@ class Interpretation extends Fields
 	 */
 	public function setGetCryptKey()
 	{
-		// ENCRYPT_FILE
-		$this->fileContentStatic[$this->hhh . 'ENCRYPT_FILE' . $this->hhh] = '';
+		// WHMCS_ENCRYPT_FILE
+		$this->fileContentStatic[$this->hhh . 'WHMCS_ENCRYPT_FILE' . $this->hhh] = '';
+		// check if encryption is ative
 		if ((isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder)) ||
 			(isset($this->mediumEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->mediumEncryptionBuilder)) ||
 			(isset($this->whmcsEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->whmcsEncryptionBuilder)) ||
@@ -3890,7 +3892,8 @@ class Interpretation extends Fields
 		// Start script builder for library files
 		if (!isset($this->libwarning[$id]))
 		{
-			$this->app->enqueueMessage(JText::sprintf('The conditional script builder for <b>%s</b> is not ready, sorry!', $this->libraries[$id]->name), 'warning');
+			$this->app->enqueueMessage(JText::_('<hr /><h3>Conditional Script Warning</h3>'), 'Warning');
+			$this->app->enqueueMessage(JText::sprintf('The conditional script builder for <b>%s</b> is not ready, sorry!', $this->libraries[$id]->name), 'Warning');
 			// set the warning only once
 			$this->libwarning[$id] = true;
 		}
@@ -6314,13 +6317,42 @@ class Interpretation extends Fields
 						$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_" . $key . "` (`" . $key . "`)";
 					}
 				}
-				$db_ .= PHP_EOL . ") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
+				// easy bucket
+				$easy = array();
+				// get the mysql table settings
+				foreach ($this->mysqlTableKeys as $_mysqlTableKey => $_mysqlTableVal)
+				{
+					if (isset($this->mysqlTableSetting[$view]) 
+						&& ComponentbuilderHelper::checkArray($this->mysqlTableSetting[$view]) 
+						&& isset($this->mysqlTableSetting[$view][$_mysqlTableKey]))
+					{
+						$easy[$_mysqlTableKey] = $this->mysqlTableSetting[$view][$_mysqlTableKey];
+					}
+					else
+					{
+						$easy[$_mysqlTableKey] = $this->mysqlTableKeys[$_mysqlTableKey]['default'];
+					}
+				}
+				$db_ .= PHP_EOL . ") ENGINE=" . $easy['engine'] . " AUTO_INCREMENT=0 DEFAULT CHARSET=" . $easy['charset'] . " DEFAULT COLLATE=" . $easy['collate'] . ";";
 
 				// check if this is a new table that should be added via update SQL
 				if (isset($this->addSQL['adminview']) && ComponentbuilderHelper::checkArray($this->addSQL['adminview']) && in_array($view, $this->addSQL['adminview']))
 				{
 					// build the update array
 					$this->updateSQLBuilder["CREATETABLEIFNOTEXISTS`#__" . $component . "_" . $view . "`"] = $db_;
+				}
+				// check if the table engine has changed
+				if (isset($this->updateSQL['table_engine']) && isset($this->updateSQL['table_engine'][$view]))
+				{
+					// build the update array
+					$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_" . $view . "`ENGINE=" . $easy['engine']] = "ALTER TABLE `#__" . $component . "_" . $view . "` ENGINE = " . $easy['engine'] . ";";
+				}
+				// check if the table charset OR collation has changed (must be updated together)
+				if ((isset($this->updateSQL['table_charset']) && isset($this->updateSQL['table_charset'][$view])) ||
+					(isset($this->updateSQL['table_collate']) && isset($this->updateSQL['table_collate'][$view])))
+				{
+					// build the update array
+					$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_" . $view . "CONVERTTOCHARACTERSET" . $easy['charset'] . "COLLATE" . $easy['collate']] = "ALTER TABLE `#__" . $component . "_" . $view . "` CONVERT TO CHARACTER SET " . $easy['charset'] . " COLLATE " . $easy['collate'] . ";";
 				}
 
 				// add to main DB string
@@ -7637,7 +7669,8 @@ class Interpretation extends Fields
 						}
 						else
 						{
-							$this->app->enqueueMessage(JText::sprintf('Your <b>%s</b> field could not be added, since the <b>%s</b> alignment position is not available in the %s (publishing) tab. Please only target <b>Left or right</b> in the publishing tab.', $df_name, $alignmentNames[$df_alignment], $viewName_single), 'warning');
+							$this->app->enqueueMessage(JText::_('<hr /><h3>Field Warning</h3>'), 'Warning');
+							$this->app->enqueueMessage(JText::sprintf('Your <b>%s</b> field could not be added, since the <b>%s</b> alignment position is not available in the %s (publishing) tab. Please only target <b>Left or right</b> in the publishing tab.', $df_name, $alignmentNames[$df_alignment], $viewName_single), 'Warning');
 						}
 					}
 				}
@@ -7700,6 +7733,7 @@ class Interpretation extends Fields
 					// only triger the info notice if there were custom fields targeted to the right alignment position.
 					if ($fieldsAddedRight)
 					{
+						$this->app->enqueueMessage(JText::_('<hr /><h3>Field Notice</h3>'), 'Notice');
 						$this->app->enqueueMessage(JText::sprintf('Your field/s added to the <b>right</b> alignment position in the %s (publishing) tab was added to the <b>left</b>. Since we have metadata fields on the right. Fields can only be loaded to the right of the publishing tab if there is no metadata fields.', $viewName_single), 'Notice');
 					}
 					// set the publishing layout
@@ -10594,7 +10628,7 @@ class Interpretation extends Fields
 					$codeName = $filter['code'] . ComponentbuilderHelper::safeString($filter['custom']['text'], 'F');
 					$type = ComponentbuilderHelper::safeString($filter['custom']['type'], 'F');
 					$otherFilter[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Set " . $CodeName . " Selection";
-					$otherFilter[] = $this->_t(2) . "\$this->" . $codeName . "Options = JFormHelper::loadFieldType('" . $type . "')->getOptions();";
+					$otherFilter[] = $this->_t(2) . "\$this->" . $codeName . "Options = JFormHelper::loadFieldType('" . $type . "')->options;";
 					$otherFilter[] = $this->_t(2) . "if (\$this->" . $codeName . "Options)";
 					$otherFilter[] = $this->_t(2) . "{";
 					$otherFilter[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " " . $CodeName . " Filter";

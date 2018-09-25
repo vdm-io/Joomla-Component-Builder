@@ -180,7 +180,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 		}
 
 		// Set How Selection
-		$this->howOptions = JFormHelper::loadFieldType('Filebehaviour')->getOptions();
+		$this->howOptions = JFormHelper::loadFieldType('Filebehaviour')->options;
 		if ($this->howOptions)
 		{
 			// How Filter

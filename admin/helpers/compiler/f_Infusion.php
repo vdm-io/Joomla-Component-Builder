@@ -175,9 +175,6 @@ class Infusion extends Interpretation
 			// ADMIN_GLOBAL_EVENT
 			$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT' . $this->hhh] = '';
 
-			// set incase no extra admin files are loaded
-			$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FILES' . $this->hhh] = '';
-
 			// now load the data for the global event if needed
 			if ($this->componentData->add_admin_event == 1)
 			{

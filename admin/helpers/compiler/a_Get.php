@@ -710,6 +710,24 @@ class Get
 	public $tabSpacer = "\t";
 
 	/**
+	 * mysql table setting keys
+	 * 
+	 * @var    array
+	 */
+	public $mysqlTableKeys = array(
+		'engine' => array('default' => 'MyISAM'),
+		'charset' => array('default' => 'utf8'),
+		'collate' => array('default' => 'utf8_general_ci')
+		);
+
+	/**
+	 * mysql table settings
+	 * 
+	 * @var    array
+	 */
+	public $mysqlTableSetting = array();
+
+	/**
 	 * Constructor
 	 */
 
@@ -737,7 +755,8 @@ class Get
 				// we do not have the tidy extention set fall back to StringManipulation
 				$this->fieldBuilderType = 1;
 				// load the sugestion to use string manipulation
-				$this->app->enqueueMessage(JText::_('Since you do not have <b>Tidy</b> extentsion setup on your system, we could not use the SimpleXMLElement class. We instead used <b>string manipulation</b> to build all your fields, this is a faster method, you must inspect the xml files in your component package to see if you are satisfied with the result.<br />You can make this method your default by opening the global options of JCB and under the <b>Global</b> tab set the <b>Field Builder Type</b> to string manipulation.<hr />'), 'Notice');
+				$this->app->enqueueMessage(JText::_('<hr /><h3>Field Notice</h3>'), 'Notice');
+				$this->app->enqueueMessage(JText::_('Since you do not have <b>Tidy</b> extentsion setup on your system, we could not use the SimpleXMLElement class. We instead used <b>string manipulation</b> to build all your fields, this is a faster method, you must inspect the xml files in your component package to see if you are satisfied with the result.<br />You can make this method your default by opening the global options of JCB and under the <b>Global</b> tab set the <b>Field Builder Type</b> to string manipulation.'), 'Notice');
 			}
 			// load the compiler path
 			$this->compilerPath = $this->params->get('compiler_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
@@ -1759,6 +1778,7 @@ class Get
 								elseif ($old_field_name !== $field_name)
 								{
 									// give a notice atleast that the multi fields could have changed and no DB update was done
+									$this->app->enqueueMessage(JText::_('<hr /><h3>Field Notice</h3>'), 'Notice');
 									$this->app->enqueueMessage(JText::sprintf('You have a field called <b>%s</b> that has been added multiple times to the <b>%s</b> view, the name of that field has changed to <b>%s</b>. Normaly we would automaticly add the update SQL to your component, but with multiple fields this does not work automaticly since it could be that noting changed and it just seems like it did. Therefore you will have to do this manualy if it actualy did change!', $field_name, $name_single, $old_field_name), 'Notice');
 								}
 								// remove tmp
@@ -1776,6 +1796,20 @@ class Get
 				if (ComponentbuilderHelper::checkString($old_view->name_single))
 				{
 					$this->setUpdateSQL(ComponentbuilderHelper::safeString($old_view->name_single), $name_single, 'table_name', $name_single);
+				}
+				// loop the mysql table settings
+				foreach ($this->mysqlTableKeys as $_mysqlTableKey => $_mysqlTableVal)
+				{
+					// check if the table engine changed
+					if (isset($old_view->{'mysql_table_' . $_mysqlTableKey}) && isset($view->{'mysql_table_' . $_mysqlTableKey}))
+					{
+						$this->setUpdateSQL( $old_view->{'mysql_table_' . $_mysqlTableKey}, $view->{'mysql_table_' . $_mysqlTableKey}, 'table_' . $_mysqlTableKey, $name_single);
+					}
+					// check if there is no history on table engine, and it changed from the default/global
+					elseif (isset($view->{'mysql_table_' . $_mysqlTableKey}) && ComponentbuilderHelper::checkString($view->{'mysql_table_' . $_mysqlTableKey}) && !is_numeric($view->{'mysql_table_' . $_mysqlTableKey}))
+					{
+						$this->setUpdateSQL($_mysqlTableVal['default'], $view->{'mysql_table_' . $_mysqlTableKey}, 'table_' . $_mysqlTableKey, $name_single);
+					}
 				}
 				// clear this data
 				unset($old_view);
@@ -2094,6 +2128,25 @@ class Get
 					$this->customScriptBuilder['sql'][$name_single] = base64_decode($view->sql);
 					unset($view->sql);
 				}
+			}
+			// load table settings
+			if (!isset($this->mysqlTableSetting[$name_single]))
+			{
+				$this->mysqlTableSetting[$name_single] = array();
+			}
+			// set mySql Table Settings
+			foreach ($this->mysqlTableKeys as $_mysqlTableKey => $_mysqlTableVal)
+			{
+				if (isset($view->{'mysql_table_' . $_mysqlTableKey}) && ComponentbuilderHelper::checkString($view->{'mysql_table_' . $_mysqlTableKey}) && !is_numeric($view->{'mysql_table_' . $_mysqlTableKey}))
+				{
+					$this->mysqlTableSetting[$name_single][$_mysqlTableKey] = $view->{'mysql_table_' . $_mysqlTableKey};
+				}
+				else
+				{
+					$this->mysqlTableSetting[$name_single][$_mysqlTableKey] = $_mysqlTableVal['default'];
+				}
+				// remove the table values since we moved to another object
+				unset($view->{'mysql_table_' . $_mysqlTableKey});
 			}
 			// clear placeholders
 			unset($this->placeholders[$this->hhh . 'view' . $this->hhh]);
@@ -3330,7 +3383,7 @@ class Get
 				}
 			}
 		}
-		elseif ($key && ComponentbuilderHelper::checkString($new) && ComponentbuilderHelper::checkString($old) && $new !== $old)
+		elseif ($key && ((ComponentbuilderHelper::checkString($new) && ComponentbuilderHelper::checkString($old)) || (is_numeric($new) && is_numeric($old))) && $new !== $old)
 		{
 			// the string changed, lets add to SQL update
 			if (!isset($this->updateSQL[$type]) || !ComponentbuilderHelper::checkArray($this->updateSQL[$type]))
@@ -4560,7 +4613,6 @@ class Get
 							// set the notice
 							$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
 							$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> is not a valid url/path!', $key), 'Warning');
-							$this->app->enqueueMessage('<hr />', 'Warning');
 							// remove the placeholder
 							$bucket[$key] = '';
 						}
@@ -4570,7 +4622,8 @@ class Get
 						// set key
 						$key = '[EXTERNA' . 'LCODE=' . $target . ']';
 						// set the notice
-						$this->app->enqueueMessage(JText::sprintf('%s, you do not have permission to use <b>EXTERNALCODE</b> feature (so it was removed from the compilation), please contact you system administrator for more info!<br /><small>(admin access required)</small>', $this->user->get('name')), 'Error');
+						$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Error</h3>'), 'Error');
+						$this->app->enqueueMessage(JText::sprintf('%s, you do not have permission to use <b>EXTERNALCODE</b> feature (so <b>%s</b> was removed from the compilation), please contact you system administrator for more info!<br /><small>(admin access required)</small>', $this->user->get('name'), $key), 'Error');
 						// remove the placeholder
 						$bucket[$key] = '';
 					}
@@ -4630,7 +4683,6 @@ class Get
 						// give notice of the change
 						$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
 						$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been <b>changed</b> since the last compilation, please investigate to insure the changes are safe!', $key), 'Warning');
-						$this->app->enqueueMessage('<hr />', 'Warning');
 					}
 				}
 				else
@@ -4644,7 +4696,6 @@ class Get
 					// give notice the first time this is added
 					$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Notice</h3>'), 'Notice');
 					$this->app->enqueueMessage(JText::sprintf('The code/string from <b>%s</b> has been added for the <b>first time</b>, please investigate to insure the correct code/string was used!', $key), 'Notice');
-					$this->app->enqueueMessage('<hr />', 'Notice');
 				}
 			}
 			else
@@ -4652,7 +4703,6 @@ class Get
 				// set notice that we could not get a valid string from the target
 				$this->app->enqueueMessage(JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning');
 				$this->app->enqueueMessage(JText::sprintf('The <b>%s</b> returned an invalid string!', $key), 'Warning');
-				$this->app->enqueueMessage('<hr />', 'Warning');
 			}
 		}
 		// add to local bucket
@@ -5689,6 +5739,7 @@ class Get
 						{
 							// reset found comment type
 							$commentType = 0;
+							$this->app->enqueueMessage(JText::_('<hr /><h3>Custom Codes Warning</h3>'), 'Warning');
 							$this->app->enqueueMessage(JText::sprintf('We found dynamic code <b>all in one line</b>, and ignored it! Please review (%s) for more details!', $path), 'Warning');
 							continue;
 						}

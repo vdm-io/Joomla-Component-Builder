@@ -2783,8 +2783,9 @@ class Fields extends Structure
 				// make sure the button option notice is set to notify the developer that the button option is not available in own custom field types
 				if (isset($data['custom']['add_button']) && ($data['custom']['add_button'] === 'true' || 1 == $data['custom']['add_button']))
 				{
-					// set notice
-					$this->app->enqueueMessage(JText::_('The option to add a dynamic button is not available in <b>own custom field types</b>, you will have to custom code it.'), 'error');
+					// set error
+					$this->app->enqueueMessage(JText::_('<hr /><h3>Dynamic Button Error</h3>'), 'Error');
+					$this->app->enqueueMessage(JText::_('The option to add a dynamic button is not available in <b>own custom field types</b>, you will have to custom code it.'), 'Error');
 				}
 				// load another file
 				$target = array('admin' => 'customfield');
@@ -3128,7 +3129,8 @@ class Fields extends Structure
 			// set the warning only once
 			$this->setTidyWarning = true;
 			// now set the warning
-			$this->app->enqueueMessage(JText::_('You must enable the <b>Tidy</b> extension in your php.ini file so we can tidy up your xml! If you need help please <a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/197#issuecomment-351181754" target="_blank">start here</a>!'), 'error');
+			$this->app->enqueueMessage(JText::_('<hr /><h3>Tidy Error</h3>'), 'Error');
+			$this->app->enqueueMessage(JText::_('You must enable the <b>Tidy</b> extension in your php.ini file so we can tidy up your xml! If you need help please <a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/197#issuecomment-351181754" target="_blank">start here</a>!'), 'Error');
 		}
 		return $xmlString;
 	}

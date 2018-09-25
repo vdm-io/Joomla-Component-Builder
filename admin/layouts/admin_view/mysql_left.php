@@ -15,6 +15,9 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
+	'mysql_table_engine',
+	'mysql_table_charset',
+	'mysql_table_collate',
 	'add_sql',
 	'source',
 	'addtables'
