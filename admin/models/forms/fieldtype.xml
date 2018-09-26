@@ -127,20 +127,20 @@
 					message="COM_COMPONENTBUILDER_FIELDTYPE_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
 				/>
-				<!-- Example Field. Type: Text. (joomla) -->
+				<!-- Example Field. Type: Textarea. (joomla) -->
 				<field
-					type="text"
+					type="textarea"
 					name="example"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_LABEL"
-					size="40"
-					maxlength="150"
-					class="text_area"
-					readonly="false"
-					disabled="false"
-					required="false"
-					filter="STRING"
+					rows="2"
+					cols="15"
+					default=""
+					description="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_DESCRIPTION"
 					message="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_MESSAGE"
+					class="text_area span12"
+					filter="RAW"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_HINT"
+					required="false"
 				/>
 				<!-- Adjustable Field. Type: Checkbox. (joomla) -->
 				<field
