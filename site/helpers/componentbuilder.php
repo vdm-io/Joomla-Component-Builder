@@ -2036,6 +2036,10 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function set($key, $value)
 	{
+		if (!isset(self::$session) || !self::checkObject(self::$session))
+		{
+			self::$session = JFactory::getSession();
+		}
 		// set to local memory to speed up program
 		self::$localSession[$key] = $value;
 		// load to session for later use
@@ -2047,6 +2051,10 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function get($key, $default = null)
 	{
+		if (!isset(self::$session) || !self::checkObject(self::$session))
+		{
+			self::$session = JFactory::getSession();
+		}
 		// check if in local memory
 		if (!isset(self::$localSession[$key]))
 		{

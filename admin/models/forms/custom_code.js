@@ -237,14 +237,14 @@ function setCustomCodePlaceholder() {
 	var ide = jQuery('#jform_id').val();
 	var functioName = jQuery('#jform_function_name').val();
 	if (ide > 0 && functioName.length > 2) {
-		jQuery('#jcb-placeholder').html('<code>[CUSTO'+'MCODE='+ide+']</code> or <code>[CUSTO'+'MCODE='+functioName+']</code>');
-		jQuery('#jcb-placeholder-arg').html('<code>[CUSTO'+'MCODE='+ide+'&#43;value1,value2]</code>  or <code>[CUSTO'+'MCODE='+functioName+'&#43;value1,value2]</code>');
+		jQuery('#jcb-placeholder').html('<code>[CUSTO'+'MCODE='+functioName+']</code>');
+		jQuery('#jcb-placeholder-arg').html('<code>[CUSTO'+'MCODE='+functioName+'&#43;value1,value2]</code>');
 	} else if (ide > 0){
-		jQuery('#jcb-placeholder').html('<code>[CUSTO'+'MCODE='+ide+']</code> or <code>[not ready]</code>');
-		jQuery('#jcb-placeholder-arg').html('<code>[CUSTO'+'MCODE='+ide+'&#43;value1,value2]</code>  or <code>[not ready]</code>');
+		jQuery('#jcb-placeholder').html('<code>[not ready]</code>');
+		jQuery('#jcb-placeholder-arg').html('<code>[not ready]</code>');
 	} else if (functioName.length > 2) {
-		jQuery('#jcb-placeholder').html('<code>[save to see]</code> or <code>[CUSTO'+'MCODE='+functioName+']</code>');
-		jQuery('#jcb-placeholder-arg').html('<code>[save to see]</code>  or <code>[CUSTO'+'MCODE='+functioName+'&#43;value1,value2]</code>');
+		jQuery('#jcb-placeholder').html('<code><code>[CUSTO'+'MCODE='+functioName+']</code>');
+		jQuery('#jcb-placeholder-arg').html('<code>[CUSTO'+'MCODE='+functioName+'&#43;value1,value2]</code>');
 	} else {
 		jQuery('#jcb-placeholder').html('<code>[save to see]</code>');
 		jQuery('#jcb-placeholder-arg').html('<code>[save to see]</code>');
@@ -308,7 +308,7 @@ function usedin(functioName, ide) {
 	jQuery('#note-usedin-not').hide();
 	jQuery('#note-usedin-found').hide();
 	jQuery('#loading-usedin').show();
-	var targets = ['a','b','c','d','e','f','g','h','i','j'];
+	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l']; // if you update this, also update [customcode-codeUsedInHtmlNote]!
 	var run = 0;
 	var usedinChecker = setInterval(function(){ 
 		var target = targets[run];
