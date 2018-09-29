@@ -2075,23 +2075,8 @@ class ComponentbuilderModelAjax extends JModelList
 							if (isset($target['base64_search']) && isset($target['base64_search'][$key])
 								&& isset($target['base64_search'][$key]['start']) && strpos($value, $target['base64_search'][$key]['start']) !== false)
 							{
-								// first get the start property (if dynamic)
-								if (isset($target['base64_search'][$key]['_start']))
-								{
-									$_start_property = $target['base64_search'][$key]['start'];
-									$_start_property .= ComponentbuilderHelper::getBetween($value, $target['base64_search'][$key]['start'], $target['base64_search'][$key]['_start']);
-									$_start_property .= $target['base64_search'][$key]['_start'];
-								}
-								else
-								{
-									$_start_property = $target['base64_search'][$key]['start'];
-								}
-								// get the base64 string
-								$_base64 = ComponentbuilderHelper::getBetween($value, $_start_property, $target['base64_search'][$key]['end']);
-								// now open the base64 text
-								$_tmp = ComponentbuilderHelper::openValidBase64($_base64);
-								// insert it back into the value (so we still search the whole string)
-								$value = str_replace($_base64, $_tmp, $value);
+								// search and open the base64 strings
+								$this->searchOpenBase64($value, $target['base64_search'][$key]);
 							}
 							// check if place holder set
 							if (strpos($value, '[CUSTOMC' . 'ODE=' . (string) $functioName . ']') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . ']') !== false ||
@@ -2124,6 +2109,70 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 		return false;
 	}
+
+	/**
+	* Search for base64 strings and decode them
+	*
+	*  @param   string    $value  The string to search
+	*  @param   array    $target   The target search values
+	* 
+	*  @return  void
+	* 
+	*/
+	protected function searchOpenBase64(&$value, &$target)
+	{
+		// first get the start property (if dynamic)
+		$starts =  array();
+		if (isset($target['_start']))
+		{
+			// get all values
+			$allBetween = ComponentbuilderHelper::getAllBetween($value, $target['start'], $target['_start']);
+			// just again make sure we found some
+			if (ComponentbuilderHelper::checkArray($allBetween))
+			{
+				if (count((array) $allBetween) > 1)
+				{
+					// search for many
+					foreach ($allBetween as $between)
+					{
+						// load the starting property
+						$start = $target['start'];
+						$start .= $between;
+						$start .= $target['_start'];
+
+						$starts[] = $start;
+					}
+				}
+				else
+				{
+					// load the starting property
+					$start = $target['start'];
+					$start .= array_values($allBetween)[0];
+					$start .= $target['_start'];
+
+					$starts[] = $start;
+				}
+			}
+		}
+		else
+		{
+			$starts[] = $target['start'];
+		}
+		// has any been found
+		if (ComponentbuilderHelper::checkArray($starts))
+		{
+			foreach ($starts as $_start)
+			{
+				// get the base64 string
+				$base64 = ComponentbuilderHelper::getBetween($value, $_start, $target['end']);
+				// now open the base64 text
+				$tmp = ComponentbuilderHelper::openValidBase64($base64);
+				// insert it back into the value (so we still search the whole string)
+				$value = str_replace($base64, $tmp, $value);
+			}
+		}
+	}
+
 
 	/**
 	 * The code search keys/targets
