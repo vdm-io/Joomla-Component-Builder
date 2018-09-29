@@ -243,7 +243,7 @@ function setCustomCodePlaceholder() {
 		jQuery('#jcb-placeholder').html('<code>[not ready]</code>');
 		jQuery('#jcb-placeholder-arg').html('<code>[not ready]</code>');
 	} else if (functioName.length > 2) {
-		jQuery('#jcb-placeholder').html('<code><code>[CUSTO'+'MCODE='+functioName+']</code>');
+		jQuery('#jcb-placeholder').html('<code>[CUSTO'+'MCODE='+functioName+']</code>');
 		jQuery('#jcb-placeholder-arg').html('<code>[CUSTO'+'MCODE='+functioName+'&#43;value1,value2]</code>');
 	} else {
 		jQuery('#jcb-placeholder').html('<code>[save to see]</code>');

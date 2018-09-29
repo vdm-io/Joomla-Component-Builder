@@ -2233,7 +2233,7 @@ class ComponentbuilderModelAjax extends JModelList
 	/**
 	* Get the keys of the values to search custom code in
 	*
-	*  @param   string    $targe  The table targeted
+	*  @param   string    $target  The table targeted
 	*  @param   string    $type   The type of get
 	* 
 	*  @return  array      The query options

@@ -2075,9 +2075,17 @@ class Interpretation extends Fields
 			foreach ($order as $or)
 			{
 				list($as, $field) = array_map('trim', explode('.', $or['table_key']));
-
-				// set the string
-				$string = "\$query->order('" . $or['table_key'] . " " . $or['direction'] . "');";
+				// check if random
+				if ('RAND' === $or['direction'])
+				{
+					// set the string
+					$string = "\$query->order('RAND()');";
+				}
+				else
+				{
+					// set the string
+					$string = "\$query->order('" . $or['table_key'] . " " . $or['direction'] . "');";
+				}
 				// sort where
 				if ($as === 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
 				{
