@@ -1353,13 +1353,25 @@ class Fields extends Structure
 				// only continue if we have a field set
 				if (ComponentbuilderHelper::checkArray($fieldsSets))
 				{
-					foreach ($fieldsSets as $fieldId)
+					// set the resolver
+					$_resolverKey = $fieldAttributes['name'];
+					// load the field data
+					$fieldsSets = array_map(function($id) use($view_name_single, $view_name_list, $_resolverKey) {
+						// start field
+						$field = array();
+						$field['field'] = $id;
+						// set the field details
+						$this->setFieldDetails($field, $view_name_single, $view_name_list, $_resolverKey);
+						// return field
+						return $field;
+					}, array_values($fieldsSets));
+					// start the build
+					foreach ($fieldsSets as $fieldData)
 					{
-						// get the field data
-						$fieldData['settings'] = $this->getFieldData($fieldId, $view_name_single);
+						// if we have settings continue
 						if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 						{
-							$r_name = $this->getFieldName($fieldData);
+							$r_name = $this->getFieldName($fieldData, $view_name_list, $_resolverKey);
 							$r_typeName = $this->getFieldType($fieldData);
 							$r_multiple = false;
 							$r_langLabel = '';
@@ -1440,13 +1452,25 @@ class Fields extends Structure
 				// only continue if we have a field set
 				if (ComponentbuilderHelper::checkArray($fieldsSets))
 				{
-					foreach ($fieldsSets as $fieldId)
+					// set the resolver
+					$_resolverKey = $fieldAttributes['name'];
+					// load the field data
+					$fieldsSets = array_map(function($id) use($view_name_single, $view_name_list, $_resolverKey) {
+						// start field
+						$field = array();
+						$field['field'] = $id;
+						// set the field details
+						$this->setFieldDetails($field, $view_name_single, $view_name_list, $_resolverKey);
+						// return field
+						return $field;
+					}, array_values($fieldsSets));
+					// start the build
+					foreach ($fieldsSets as $fieldData)
 					{
-						// get the field data
-						$fieldData['settings'] = $this->getFieldData($fieldId, $view_name_single);
+						// if we have settings continue
 						if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 						{
-							$r_name = $this->getFieldName($fieldData);
+							$r_name = $this->getFieldName($fieldData, $view_name_list, $_resolverKey);
 							$r_typeName = $this->getFieldType($fieldData);
 							$r_multiple = false;
 							$r_langLabel = '';
@@ -1691,14 +1715,25 @@ class Fields extends Structure
 				// only continue if we have a field set
 				if (ComponentbuilderHelper::checkArray($fieldsSets))
 				{
-					foreach ($fieldsSets as $fieldId)
+					// set the resolver
+					$_resolverKey = $fieldAttributes['name'];
+					// load the field data
+					$fieldsSets = array_map(function($id) use($view_name_single, $view_name_list, $_resolverKey) {
+						// start field
+						$field = array();
+						$field['field'] = $id;
+						// set the field details
+						$this->setFieldDetails($field, $view_name_single, $view_name_list, $_resolverKey);
+						// return field
+						return $field;
+					}, array_values($fieldsSets));
+					// start the build
+					foreach ($fieldsSets as $fieldData)
 					{
-						// get the field data
-						$fieldData = array();
-						$fieldData['settings'] = $this->getFieldData($fieldId, $view_name_single);
+						// if we have settings continue
 						if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 						{
-							$r_name = $this->getFieldName($fieldData);
+							$r_name = $this->getFieldName($fieldData, $view_name_list, $_resolverKey);
 							$r_typeName = $this->getFieldType($fieldData);
 							$r_multiple = false;
 							$r_langLabel = '';
@@ -1788,14 +1823,25 @@ class Fields extends Structure
 					// only continue if we have a field set
 					if (ComponentbuilderHelper::checkArray($fieldsSets))
 					{
-						foreach ($fieldsSets as $fieldId)
+						// set the resolver
+						$_resolverKey = $fieldAttributes['name'];
+						// load the field data
+						$fieldsSets = array_map(function($id) use($view_name_single, $view_name_list, $_resolverKey) {
+							// start field
+							$field = array();
+							$field['field'] = $id;
+							// set the field details
+							$this->setFieldDetails($field, $view_name_single, $view_name_list, $_resolverKey);
+							// return field
+							return $field;
+						}, array_values($fieldsSets));
+						// start the build
+						foreach ($fieldsSets as $fieldData)
 						{
-							// get the field data
-							$fieldData = array();
-							$fieldData['settings'] = $this->getFieldData($fieldId, $view_name_single);
+							// if we have settings continue
 							if (ComponentbuilderHelper::checkObject($fieldData['settings']))
 							{
-								$r_name = $this->getFieldName($fieldData);
+								$r_name = $this->getFieldName($fieldData, $view_name_list, $_resolverKey);
 								$r_typeName = $this->getFieldType($fieldData);
 								$r_multiple = false;
 								$r_langLabel = '';
@@ -2052,9 +2098,9 @@ class Fields extends Structure
 		{
 			$fieldAttributes['custom'] = array();
 			// is this an own custom field
-			if (isset($field['own_custom']))
+			if (isset($field['settings']->own_custom))
 			{
-				$fieldAttributes['custom']['own_custom'] = $field['own_custom'];
+				$fieldAttributes['custom']['own_custom'] = $field['settings']->own_custom;
 			}
 			$setCustom = true;
 		}

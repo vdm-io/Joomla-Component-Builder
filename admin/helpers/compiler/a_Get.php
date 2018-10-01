@@ -1177,22 +1177,14 @@ class Get
 		$component->addconfig = (isset($component->addconfig) && ComponentbuilderHelper::checkJson($component->addconfig)) ? json_decode($component->addconfig, true) : null;
 		if (ComponentbuilderHelper::checkArray($component->addconfig))
 		{
-			$component->config = array_map(function($field)
-			{
-				// set hash 
-				static $hash = 1;
-				// load hash
-				$field['hash'] = md5($field['field'] . $hash);
-				// increment hash
-				$hash++;
+			$component->config = array_map(function($field) {
+				// make sure the alias and title is 0
 				$field['alias'] = 0;
 				$field['title'] = 0;
-				// load the settings
-				$field['settings'] = $this->getFieldData($field['field']);
-				// set real field name
-				$field['base_name'] = $this->getFieldName($field);
-				// set unigue name keeper
-				$this->setUniqueNameCounter($this->getFieldName($field), 'configs');
+				// set the field details
+				$this->setFieldDetails($field);
+				// set unique name counter
+				$this->setUniqueNameCounter($field['base_name'], 'configs');
 				// return field
 				return $field;
 			}, array_values($component->addconfig));
@@ -1669,23 +1661,8 @@ class Get
 				// load the field data
 				$view->fields = array_map(function($field) use($name_single, $name_list, &$ignoreFields)
 				{
-					// set hash 
-					static $hash = 123467890; // (TODO) I found this making duplicates
-					// load hash
-					$field['hash'] = md5($field['field'] . $hash);
-					// increment hash
-					$hash++;
-					// set the settings
-					$field['settings'] = $this->getFieldData($field['field'], $name_single, $name_list);
-					// set real field name
-					$field['base_name'] = $this->getFieldName($field);
-					// set code name for field type
-					$field['type_name'] = $this->getFieldType($field);
-					// check if value is array
-					if (isset($field['permission']) && !ComponentbuilderHelper::checkArray($field['permission']) && is_numeric($field['permission']) && $field['permission'] > 0)
-					{
-						$field['permission'] = array($field['permission']);
-					}
+					// set the field details
+					$this->setFieldDetails($field, $name_single, $name_list);
 					// check if this field is a default field OR
 					// check if this is none database related field
 					if (in_array($field['base_name'], $this->defaultFields) ||
@@ -1694,8 +1671,6 @@ class Get
 					{
 						$ignoreFields[$field['field']] = $field['field'];
 					}
-					// set unigue name keeper
-					$this->setUniqueNameCounter($field['base_name'], $name_list);
 					// return field
 					return $field;
 				}, array_values($view->addfields));
@@ -2674,6 +2649,55 @@ class Get
 	}
 
 	/**
+	 * set Field details
+	 * 
+	 * @param   object   $field           The field object
+	 * @param   string   $singleViewName  The single view name
+	 * @param   string   $listViewName    The list view name
+	 * @param   string   $amicably        The peaceful resolve
+	 * 
+	 * @return  void
+	 * 
+	 */
+	public function setFieldDetails(&$field, $singleViewName = null, $listViewName = null, $amicably = '')
+	{
+		// set hash
+		static $hash = 123467890;
+		// load hash if not found
+		if (!isset($field['hash']))
+		{
+			$field['hash'] = md5($field['field'] . $hash);
+			// increment hash
+			$hash++;
+		}
+		// set the settings
+		if (!isset($field['settings']))
+		{
+			$field['settings'] = $this->getFieldData($field['field'], $singleViewName, $listViewName);
+		}
+		// set real field name
+		if (!isset($field['base_name']))
+		{
+			$field['base_name'] = $this->getFieldName($field);
+		}
+		// set code name for field type
+		if (!isset($field['type_name']))
+		{
+			$field['type_name'] = $this->getFieldType($field);
+		}
+		// check if value is array
+		if (isset($field['permission']) && !ComponentbuilderHelper::checkArray($field['permission']) && is_numeric($field['permission']) && $field['permission'] > 0)
+		{
+			$field['permission'] = array($field['permission']);
+		}
+		// set unigue name keeper
+		if ($listViewName)
+		{
+			$this->setUniqueNameCounter($field['base_name'], $listViewName . $amicably);
+		}
+	}
+
+	/**
 	 * Get the field's actual type
 	 * 
 	 * @param   object   $field   The field object
@@ -2695,7 +2719,7 @@ class Get
 			if (strpos($field['settings']->type_name, '@') !== false)
 			{
 				// set own custom field
-				$field['own_custom'] = $field['settings']->type_name;
+				$field['settings']->own_custom = $field['settings']->type_name;
 				$field['settings']->type_name = 'Custom';
 			}
 			// set the type name
@@ -2748,16 +2772,17 @@ class Get
 	 * 
 	 * @param   object   $field         The field object
 	 * @param   string   $listViewName  The list view name
+	 * @param   string   $amicably      The peaceful resolve
 	 * 
 	 * @return  string   Success returns field name
 	 * 
 	 */
-	public function getFieldName(&$field, $listViewName = null)
+	public function getFieldName(&$field, $listViewName = null, $amicably = '')
 	{
 		// return the unique name if already set
-		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']) && isset($this->uniqueFieldNames[$listViewName . $field['hash']]))
+		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']) && isset($this->uniqueFieldNames[$listViewName . $amicably . $field['hash']]))
 		{
-			return $this->uniqueFieldNames[$listViewName . $field['hash']];
+			return $this->uniqueFieldNames[$listViewName . $amicably . $field['hash']];
 		}
 		// always make sure we have a field name and type
 		if (!isset($field['settings']) || !isset($field['settings']->type_name) || !isset($field['settings']->name))
@@ -2834,9 +2859,9 @@ class Get
 		// return the value unique
 		if (ComponentbuilderHelper::checkString($listViewName) && isset($field['hash']))
 		{
-			$this->uniqueFieldNames[$listViewName . $field['hash']] = $this->uniqueName($name, $listViewName);
+			$this->uniqueFieldNames[$listViewName . $amicably . $field['hash']] = $this->uniqueName($name, $listViewName . $amicably);
 			// now return the unique name
-			return $this->uniqueFieldNames[$listViewName . $field['hash']];
+			return $this->uniqueFieldNames[$listViewName . $amicably . $field['hash']];
 		}
 		// fall back to global
 		return $name;
