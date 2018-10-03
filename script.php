@@ -3308,10 +3308,12 @@ class com_componentbuilderInstallerScript
 						)
 					);
 				}
+				// start the active table array
+				$activeTable = array();
 				// get table columns to confirm that this is an old installation
-				$activeColumns = $db->getTableColumns('#__componentbuilder_admin_view');
+				$activeTable['admin_view'] = $db->getTableColumns('#__componentbuilder_admin_view');
 				// target version less then 2.5.7
-				if (isset($activeColumns['addfields']) && (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 6) || ($this->JCBversion[1] < 5))))
+				if (isset($activeTable['admin_view']['addfields']) && (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 6) || ($this->JCBversion[1] < 5))))
 				{
 					// do some conversions in the admin_view table
 					$convertRepeatable($db, 'admin_view', array('id', 'ajax_input', 'custom_button', 'addtables', 'addlinked_views', 'addconditions', 'addfields', 'addtabs', 'addpermissions'),
@@ -3345,9 +3347,9 @@ class com_componentbuilderInstallerScript
 				// the set move values
 				$this->setMoveValues = array();
 				// get table columns to confirm that this is an old installation
-				$activeColumns = $db->getTableColumns('#__componentbuilder_joomla_component');
+				$activeTable['joomla_component'] = $db->getTableColumns('#__componentbuilder_joomla_component');
 				// target version less then 2.6.0
-				if (isset($activeColumns['addadmin_views']) && (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 9) || ($this->JCBversion[1] < 6))))
+				if (isset($activeTable['joomla_component']['addadmin_views']) && (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 9) || ($this->JCBversion[1] < 6))))
 				{
 					// do some conversions in the admin_view table
 					$convertRepeatable($db, 'joomla_component', array('id', 'addadmin_views', 'addconfig', 'addcontributors', 'addcustom_admin_views', 'addcustommenus', 'addfiles', 'addfolders', 'addsite_views', 'dashboard_tab', 'sql_tweak', 'version_update'),
@@ -3418,6 +3420,50 @@ class com_componentbuilderInstallerScript
 							{
 								$this->setMoveValues[$move] = $db->loadObjectList();
 							}
+						}
+					}
+				}
+				// target version less then 2.9.7
+				if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && (($this->JCBversion[1] == 9 && $this->JCBversion[2] <= 6) || $this->JCBversion[1] < 9))
+				{
+					// we basically just dump the unused columns from #__componentbuilder_joomla_component
+					$columnToDrop['joomla_component'] = array(
+						'addconfig',
+						'addadmin_views',
+						'addcustom_admin_views',
+						'addsite_views',
+						'version_update',
+						'sql_tweak',
+						'addcustommenus',
+						'dashboard_tab',
+						'php_dashboard_methods',
+						'addfiles',
+						'addfolders');
+					// and from from #__componentbuilder_admin_view
+					$columnToDrop['admin_view'] = array(
+						'addfields',
+						'addconditions');
+					// only drop those that exist
+					foreach ($columnToDrop as $table => $columns)
+					{
+						// start drop array
+						$drop = array();
+						foreach ($columns as $column)
+						{
+							if (isset($activeTable[$table][$column]))
+							{
+								// load the column
+								$drop[$column] = $column;
+							}
+						}
+						// now run query if needed
+						if (ComponentbuilderHelper::checkArray($drop))
+						{
+							// build query
+							$query = 'ALTER TABLE `#__componentbuilder_' . $table . '` DROP `' . implode('`, DROP `', $drop) . '`';
+							// set query
+							$db->setQuery($query);
+							$db->execute();
 						}
 					}
 				}
