@@ -3000,6 +3000,8 @@ class Get
 						// reset buckets
 						$result->main_get = array();
 						$result->custom_get = array();
+						// should joineds and other weaks be added
+						$addDynamicTweaksJoints = true;
 						// set source data
 						switch ($result->main_source)
 						{
@@ -3044,149 +3046,165 @@ class Get
 								$result->main_get[0]['as'] = 'a';
 								$result->main_get[0]['key'] = $result->key;
 								$result->main_get[0]['context'] = $context;
+								// do not add
+								$addDynamicTweaksJoints = false;
 								break;
 						}
-						// set join_view_table details
-						$result->join_view_table = json_decode($result->join_view_table, true);
-						if (ComponentbuilderHelper::checkArray($result->join_view_table))
+						// only add if main source is not custom
+						if ($addDynamicTweaksJoints)
 						{
-							foreach ($result->join_view_table as $nr => &$option)
+							// set join_view_table details
+							$result->join_view_table = json_decode($result->join_view_table, true);
+							if (ComponentbuilderHelper::checkArray($result->join_view_table))
 							{
-								if (ComponentbuilderHelper::checkString($option['selection']))
+								foreach ($result->join_view_table as $nr => &$option)
 								{
-									// convert the type
-									$option['type'] = $typeArray[$option['type']];
-									// convert the operator
-									$option['operator'] = $operatorArray[$option['operator']];
-									// get the on field values
-									$on_field = array(); // array(on_field_as, on_field)
-									$on_field = array_map('trim', explode('.', $option['on_field']));
-									// get the join field values
-									$join_field = array(); // array(join_field_as, join_field) 
-									$join_field = array_map('trim', explode('.', $option['join_field']));
-									$option['selection'] = $this->setDataSelection($result->key, $view_code, $option['selection'], $option['view_table'], $option['as'], $option['row_type'], 'view');
-									$option['key'] = $result->key;
-									$option['context'] = $context;
-									// load to the getters
-									if ($option['row_type'] == 1)
+									if (ComponentbuilderHelper::checkString($option['selection']))
 									{
-										$result->main_get[] = $option;
-										if ($on_field[0] === 'a')
+										// convert the type
+										$option['type'] = $typeArray[$option['type']];
+										// convert the operator
+										$option['operator'] = $operatorArray[$option['operator']];
+										// get the on field values
+										$on_field = array(); // array(on_field_as, on_field)
+										$on_field = array_map('trim', explode('.', $option['on_field']));
+										// get the join field values
+										$join_field = array(); // array(join_field_as, join_field) 
+										$join_field = array_map('trim', explode('.', $option['join_field']));
+										$option['selection'] = $this->setDataSelection($result->key, $view_code, $option['selection'], $option['view_table'], $option['as'], $option['row_type'], 'view');
+										$option['key'] = $result->key;
+										$option['context'] = $context;
+										// load to the getters
+										if ($option['row_type'] == 1)
 										{
-											$this->siteMainGet[$this->target][$view_code][$option['as']] = $option['as'];
+											$result->main_get[] = $option;
+											if ($on_field[0] === 'a')
+											{
+												$this->siteMainGet[$this->target][$view_code][$option['as']] = $option['as'];
+											}
+											else
+											{
+												$this->siteDynamicGet[$this->target][$view_code][$option['as']][$join_field[1]] = $on_field[0];
+											}
 										}
-										else
+										elseif ($option['row_type'] == 2)
 										{
-											$this->siteDynamicGet[$this->target][$view_code][$option['as']][$join_field[1]] = $on_field[0];
+											$result->custom_get[] = $option;
+											if ($on_field[0] != 'a')
+											{
+												$this->siteDynamicGet[$this->target][$view_code][$option['as']][$join_field[1]] = $on_field[0];
+											}
 										}
 									}
-									elseif ($option['row_type'] == 2)
-									{
-										$result->custom_get[] = $option;
-										if ($on_field[0] != 'a')
-										{
-											$this->siteDynamicGet[$this->target][$view_code][$option['as']][$join_field[1]] = $on_field[0];
-										}
-									}
-								}
-								unset($result->join_view_table[$nr]);
-							}
-						}
-						unset($result->join_view_table);
-						// set join_db_table details
-						$result->join_db_table = json_decode($result->join_db_table, true);
-						if (ComponentbuilderHelper::checkArray($result->join_db_table))
-						{
-							foreach ($result->join_db_table as $nr => &$option1)
-							{
-								if (ComponentbuilderHelper::checkString($option1['selection']))
-								{
-									// convert the type
-									$option1['type'] = $typeArray[$option1['type']];
-									// convert the operator
-									$option1['operator'] = $operatorArray[$option1['operator']];
-									// get the on field values
-									$on_field = array(); // array(on_field_as, on_field)
-									$on_field = array_map('trim', explode('.', $option1['on_field']));
-									// get the join field values
-									$join_field = array(); // array(join_field_as, join_field) 
-									$join_field = array_map('trim', explode('.', $option1['join_field']));
-									$option1['selection'] = $this->setDataSelection($result->key, $view_code, $option1['selection'], $option1['db_table'], $option1['as'], $option1['row_type'], 'db');
-									$option1['key'] = $result->key;
-									$option1['context'] = $context;
-									// load to the getters
-									if ($option1['row_type'] == 1)
-									{
-										$result->main_get[] = $option1;
-										if ($on_field[0] === 'a')
-										{
-											$this->siteMainGet[$this->target][$view_code][$option1['as']] = $option1['as'];
-										}
-										else
-										{
-											$this->siteDynamicGet[$this->target][$view_code][$option1['as']][$join_field[1]] = $on_field[0];
-										}
-									}
-									elseif ($option1['row_type'] == 2)
-									{
-										$result->custom_get[] = $option1;
-										if ($on_field[0] != 'a')
-										{
-											$this->siteDynamicGet[$this->target][$view_code][$option1['as']][$join_field[1]] = $on_field[0];
-										}
-									}
-								}
-								unset($result->join_db_table[$nr]);
-							}
-						}
-						unset($result->join_db_table);
-						// set filter details
-						$result->filter = json_decode($result->filter, true);
-						if (ComponentbuilderHelper::checkArray($result->filter))
-						{
-							foreach ($result->filter as $nr => &$option2)
-							{
-								if (isset($option2['operator']))
-								{
-									$option2['operator'] = $operatorArray[$option2['operator']];
-									$option2['key'] = $result->key;
-								}
-								else
-								{
-									unset($result->filter[$nr]);
+									unset($result->join_view_table[$nr]);
 								}
 							}
-						}
-						// set where details
-						$result->where = json_decode($result->where, true);
-						if (ComponentbuilderHelper::checkArray($result->where))
-						{
-							foreach ($result->where as $nr => &$option3)
+							unset($result->join_view_table);
+							// set join_db_table details
+							$result->join_db_table = json_decode($result->join_db_table, true);
+							if (ComponentbuilderHelper::checkArray($result->join_db_table))
 							{
-								if (isset($option3['operator']))
+								foreach ($result->join_db_table as $nr => &$option1)
 								{
-									$option3['operator'] = $operatorArray[$option3['operator']];
+									if (ComponentbuilderHelper::checkString($option1['selection']))
+									{
+										// convert the type
+										$option1['type'] = $typeArray[$option1['type']];
+										// convert the operator
+										$option1['operator'] = $operatorArray[$option1['operator']];
+										// get the on field values
+										$on_field = array(); // array(on_field_as, on_field)
+										$on_field = array_map('trim', explode('.', $option1['on_field']));
+										// get the join field values
+										$join_field = array(); // array(join_field_as, join_field) 
+										$join_field = array_map('trim', explode('.', $option1['join_field']));
+										$option1['selection'] = $this->setDataSelection($result->key, $view_code, $option1['selection'], $option1['db_table'], $option1['as'], $option1['row_type'], 'db');
+										$option1['key'] = $result->key;
+										$option1['context'] = $context;
+										// load to the getters
+										if ($option1['row_type'] == 1)
+										{
+											$result->main_get[] = $option1;
+											if ($on_field[0] === 'a')
+											{
+												$this->siteMainGet[$this->target][$view_code][$option1['as']] = $option1['as'];
+											}
+											else
+											{
+												$this->siteDynamicGet[$this->target][$view_code][$option1['as']][$join_field[1]] = $on_field[0];
+											}
+										}
+										elseif ($option1['row_type'] == 2)
+										{
+											$result->custom_get[] = $option1;
+											if ($on_field[0] != 'a')
+											{
+												$this->siteDynamicGet[$this->target][$view_code][$option1['as']][$join_field[1]] = $on_field[0];
+											}
+										}
+									}
+									unset($result->join_db_table[$nr]);
 								}
-								else
+							}
+							unset($result->join_db_table);
+							// set filter details
+							$result->filter = json_decode($result->filter, true);
+							if (ComponentbuilderHelper::checkArray($result->filter))
+							{
+								foreach ($result->filter as $nr => &$option2)
 								{
-									unset($result->where[$nr]);
+									if (isset($option2['operator']))
+									{
+										$option2['operator'] = $operatorArray[$option2['operator']];
+										$option2['key'] = $result->key;
+									}
+									else
+									{
+										unset($result->filter[$nr]);
+									}
 								}
+							}
+							// set where details
+							$result->where = json_decode($result->where, true);
+							if (ComponentbuilderHelper::checkArray($result->where))
+							{
+								foreach ($result->where as $nr => &$option3)
+								{
+									if (isset($option3['operator']))
+									{
+										$option3['operator'] = $operatorArray[$option3['operator']];
+									}
+									else
+									{
+										unset($result->where[$nr]);
+									}
+								}
+							}
+							else
+							{
+								unset($result->where);
+							}
+							// set order details
+							$result->order = json_decode($result->order, true);
+							if (!ComponentbuilderHelper::checkArray($result->order))
+							{
+								unset($result->order);
+							}
+							// set global details
+							$result->global = json_decode($result->global, true);
+							if (!ComponentbuilderHelper::checkArray($result->global))
+							{
+								unset($result->global);
 							}
 						}
 						else
 						{
+							// when we have a custom query script we do not add the dynamic options
+							unset($result->join_view_table);
+							unset($result->join_db_table);
+							unset($result->filter);
 							unset($result->where);
-						}
-						// set order details
-						$result->order = json_decode($result->order, true);
-						if (!ComponentbuilderHelper::checkArray($result->order))
-						{
 							unset($result->order);
-						}
-						// set global details
-						$result->global = json_decode($result->global, true);
-						if (!ComponentbuilderHelper::checkArray($result->global))
-						{
 							unset($result->global);
 						}
 						// load the events if any is set
