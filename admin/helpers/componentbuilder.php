@@ -2295,7 +2295,7 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			// fallback to this, not perfect method
-			elseif (base64_encode(base64_decode($data, true)) === $data)
+			if (base64_encode(base64_decode($data, true)) === $data)
 			{
 				return base64_decode($data);
 			}
