@@ -136,12 +136,18 @@ function checkAdminBehaviour(field) {
 		jQuery('#'+subID+'__search').prop('checked', false).trigger('change');
 		jQuery('#'+subID+'__filter').prop('checked', false).trigger('change');
 		jQuery('#'+subID+'__link').prop('checked', false).trigger('change');
-	} else if (1 == value) {
+	} else if (1 == value || 3 == value  || 4 == value) {
 		// get number of items
 		var numItems = jQuery('.count-the-items1235').length + 10;
 		// show in list view
 		if (target[2] == 'list') {
-			jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BSHOW_IN_LIST_VIEWB_OPTION_WILL_ADD_THIS_FIELD_TO_THE_ADMIN_LIST_VIEW'), timeout: 5000, status: 'primary', pos: 'top-right'});
+			if (1 == value) {
+				jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BSHOW_IN_ALL_LIST_VIEWSB_OPTION_WILL_ADD_THIS_FIELD_TO_ALL_LIST_VIEWS_ADMIN_AMP_LINKED'), timeout: 5000, status: 'primary', pos: 'top-right'});
+			} else if (3 == value) {
+				jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BONLY_IN_ADMIN_LIST_VIEWB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_ADMIN_LIST_VIEW_NOT_TO_ANY_LINKED_VIEWS'), timeout: 5000, status: 'primary', pos: 'top-right'});
+			} else if (4 == value) {
+				jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BONLY_IN_LINKED_LIST_VIEWSB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_LINKED_LIST_VIEW_IF_THIS_VIEW_GETS_LINKED_TO_OTHER_VIEW_NOT_TO_THIS_ADMIN_LIST_VIEW'), timeout: 5000, status: 'primary', pos: 'top-right'});
+			}
 		}
 		// check if the order list already has a value
 		var orderList = jQuery('#'+subID+'__order_list').val();

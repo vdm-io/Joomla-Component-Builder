@@ -2107,6 +2107,8 @@ class Fields extends Structure
 		// setup a default field
 		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
 		{
+			// we need a deeper php code search tracker
+			$phpTracker = array();
 			foreach ($field['settings']->properties as $property)
 			{
 				// reset
@@ -2155,6 +2157,8 @@ class Fields extends Structure
 						$this->setDynamicValues(ComponentbuilderHelper::openValidBase64(
 							ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"')
 						));
+					// load tracker
+					$phpTracker['type_' . $phpKey] = $phpKey;
 				}
 				elseif ($property['name'] === 'prime_php' && $setCustom)
 				{
@@ -2338,6 +2342,24 @@ class Fields extends Structure
 					$fieldAttributes['default'] = $xmlValue;
 				}
 			}
+			// check if all php is loaded using the tracker
+			if (ComponentbuilderHelper::checkArray($phpTracker))
+			{
+				// litle search validation
+				$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
+				foreach ($phpTracker as $searchKey => $phpKey)
+				{
+					// we must search for more code in the xml just incase
+					foreach(range(2, 30) as $phpLine)
+					{
+						$get_ = $searchKey . '_' . $phpLine;
+						if (!isset($fieldAttributes['custom'][$phpKey][$phpLine]) && ($value = ComponentbuilderHelper::getValueFromXMLstring($field['settings']->xml, $get_, $confirmation)) !== $confirmation)
+						{
+							$fieldAttributes['custom'][$phpKey][$phpLine] = $this->setDynamicValues(ComponentbuilderHelper::openValidBase64($value));
+						}
+					}
+				}
+			}
 			// do some nice twigs beyond the default
 			if (isset($fieldAttributes['name']))
 			{
@@ -2460,7 +2482,7 @@ class Fields extends Structure
 			}
 		}
 		// set list switch
-		$listSwitch = (isset($field['list']) && $field['list'] == 1);
+		$listSwitch = (isset($field['list']) && ($field['list'] == 1 || $field['list'] == 3 || $field['list'] == 4 ));
 		// set list join
 		$listJoin = (isset($this->listJoinBuilder[$view_name_list][(int) $field['field']]));
 		// add history to this view
@@ -2523,7 +2545,8 @@ class Fields extends Structure
 					'sort' => (isset($field['sort']) && $field['sort']) ? true : false,
 					'custom' => $custom,
 					'multiple' => $multiple,
-					'options' => $options);
+					'options' => $options,
+					'target' => (int) $field['list']);
 			}
 			// build custom builder list
 			if ($listSwitch || $listJoin)

@@ -686,6 +686,8 @@ abstract class ComponentbuilderHelper
 				'description' => $result->description);
 			// number pointer
 			$nr = 0;
+			// php tracker (we must try to load alteast 17 rows
+			$phpTracker = array();
 			// value to check since there are false and null values even 0 in the values returned
 			$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
 			// set the headers
@@ -701,6 +703,9 @@ abstract class ComponentbuilderHelper
 				if (strpos($property['name'], 'type_php') !== false)
 				{
 					$addPHP = true;
+					// set the line number
+					$phpLine = (int) preg_replace('/[^0-9]/', '', $property['name']);
+					// set the key
 					$phpKey = trim(preg_replace('/[0-9]+/', '', $property['name']), '_');
 					// start array if not already set
 					if (!isset($field['php'][$phpKey]))
@@ -708,6 +713,8 @@ abstract class ComponentbuilderHelper
 						$field['php'][$phpKey] = array();
 						$field['php'][$phpKey]['value'] = array();
 						$field['php'][$phpKey]['desc'] = $property['description'];
+						// start tracker
+						$phpTracker[$phpKey] = 1;
 					}
 				}
 				// was the settings for the property passed
@@ -718,7 +725,8 @@ abstract class ComponentbuilderHelper
 					// add the json values
 					if ($addPHP)
 					{
-						$field['php'][$phpKey]['value'][] = $settings[$property['name']];
+						$field['php'][$phpKey]['value'][$phpLine] = $settings[$property['name']];
+						$phpTracker[$phpKey]++;
 					}
 					else
 					{
@@ -732,7 +740,8 @@ abstract class ComponentbuilderHelper
 					// add the json values
 					if ($addPHP)
 					{
-						$field['php'][$phpKey]['value'][] = ($confirmation !== $value) ? $value : $example;
+						$field['php'][$phpKey]['value'][$phpLine] = ($confirmation !== $value) ? $value : $example;
+						$phpTracker[$phpKey]++;
 					}
 					else
 					{
@@ -746,6 +755,25 @@ abstract class ComponentbuilderHelper
 				}
 				// increment the number
 				$nr++;
+			}
+			// check if all php is loaded using the tracker
+			if (self::checkString($xml) && isset($phpTracker) && self::checkArray($phpTracker))
+			{
+				foreach ($phpTracker as $phpKey => $start)
+				{
+					if ($start < 30)
+					{
+						// we must search for more code in the xml just incase
+						foreach(range(2, 30) as $t_nr)
+						{
+							$get_ = $phpKey . '_' . $t_nr;
+							if (!isset($field['php'][$phpKey]['value'][$t_nr]) && ($value = self::getValueFromXMLstring($xml, $get_, $confirmation)) !== $confirmation)
+							{
+								$field['php'][$phpKey]['value'][$t_nr] = $value;
+							}
+						}
+					}
+				}
 			}
 			$field['values'] .= PHP_EOL . "/>";
 			$field['values_description'] .= '</tbody></table>';
@@ -5192,11 +5220,11 @@ abstract class ComponentbuilderHelper
 	*
 	*	@input	array   The array to check
 	*
-	*	@returns bool true on success
+	*	@returns bool/int  number of items in array on success
 	**/
 	public static function checkArray($array, $removeEmptyString = false)
 	{
-		if (isset($array) && is_array($array) && count((array)$array) > 0)
+		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
 		{
 			// also make sure the empty strings are removed
 			if ($removeEmptyString)
@@ -5210,7 +5238,7 @@ abstract class ComponentbuilderHelper
 				}
 				return self::checkArray($array, false);
 			}
-			return true;
+			return $nr;
 		}
 		return false;
 	}

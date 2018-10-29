@@ -846,11 +846,11 @@ abstract class ###Component###Helper
 	*
 	*	@input	array   The array to check
 	*
-	*	@returns bool true on success
+	*	@returns bool/int  number of items in array on success
 	**/
 	public static function checkArray($array, $removeEmptyString = false)
 	{
-		if (isset($array) && is_array($array) && count((array)$array) > 0)
+		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
 		{
 			// also make sure the empty strings are removed
 			if ($removeEmptyString)
@@ -864,7 +864,7 @@ abstract class ###Component###Helper
 				}
 				return self::checkArray($array, false);
 			}
-			return true;
+			return $nr;
 		}
 		return false;
 	}

@@ -427,6 +427,8 @@
 						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITOWN</option>
 					<option value="core.edit.state">
 						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITSTATE</option>
+					<option value="core.edit.access">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITACCESS</option>
 					<option value="core.edit.created_by">
 						COM_COMPONENTBUILDER_ADMIN_VIEW_COREEDITCREATED_BY</option>
 					<option value="core.edit.created">
@@ -441,6 +443,8 @@
 						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITOWN</option>
 					<option value="view.edit.state">
 						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITSTATE</option>
+					<option value="view.edit.access">
+						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITACCESS</option>
 					<option value="view.edit.created_by">
 						COM_COMPONENTBUILDER_ADMIN_VIEW_VIEWEDITCREATED_BY</option>
 					<option value="view.edit.created">

@@ -1075,7 +1075,10 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$properties->loadArray($data['properties']);
 			$data['properties'] = (string) $properties;
 		}
-		elseif (!isset($data['properties']))
+		// Also check permission since the value may be removed due to permissions
+		// Then we do not want to clear it out, but simple ignore the empty properties
+		elseif (!isset($data['properties'])
+			&& JFactory::getUser()->authorise('fieldtype.edit.properties', 'com_componentbuilder'))
 		{
 			// Set the empty properties to data
 			$data['properties'] = '';

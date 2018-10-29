@@ -2713,7 +2713,7 @@ class Get
 			return $field['type_name'];
 		}
 		// check that we have the poperties
-		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
+		if (isset($field['settings']) && ComponentbuilderHelper::checkObject($field['settings']) && isset($field['settings']->properties) && ComponentbuilderHelper::checkArray($field['settings']->properties))
 		{
 			// search for own custom fields
 			if (strpos($field['settings']->type_name, '@') !== false)
@@ -4316,139 +4316,155 @@ class Get
 			$counter = 'a';
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
+			// switch to onlu trigger the run of the query if we have tables to query
+			$runQuery = false;
 			foreach ($tables as $table)
 			{
-				if ($counter === 'a')
+				if (isset($table['table']))
 				{
-					// the main table fields
-					if (strpos($table['sourcemap'], PHP_EOL) !== false)
+					if ($counter === 'a')
 					{
-						$fields = explode(PHP_EOL, $table['sourcemap']);
-						if (ComponentbuilderHelper::checkArray($fields))
+						// the main table fields
+						if (strpos($table['sourcemap'], PHP_EOL) !== false)
 						{
-							// reset array buckets
-							$sourceArray = array();
-							$targetArray = array();
-							foreach ($fields as $field)
+							$fields = explode(PHP_EOL, $table['sourcemap']);
+							if (ComponentbuilderHelper::checkArray($fields))
 							{
-								if (strpos($field, "=>") !== false)
+								// reset array buckets
+								$sourceArray = array();
+								$targetArray = array();
+								foreach ($fields as $field)
 								{
-									list($source, $target) = explode("=>", $field);
-									$sourceArray[] = $counter . '.' . trim($source);
-									$targetArray[] = trim($target);
+									if (strpos($field, "=>") !== false)
+									{
+										list($source, $target) = explode("=>", $field);
+										$sourceArray[] = $counter . '.' . trim($source);
+										$targetArray[] = trim($target);
+									}
 								}
-							}
-							if (ComponentbuilderHelper::checkArray($sourceArray) && ComponentbuilderHelper::checkArray($targetArray))
-							{
-								// add to query
-								$query->select($this->db->quoteName($sourceArray, $targetArray));
-								$query->from('#__' . $table['table'] . ' AS a');
-							}
-							// we may need to filter the selection
-							if (isset($this->sqlTweak[$view_id]['where']))
-							{
-								// add to query the where filter
-								$query->where('a.id IN (' . $this->sqlTweak[$view_id]['where'] . ')');
-							}
-						}
-					}
-				}
-				else
-				{
-					// the other tables
-					if (strpos($table['sourcemap'], PHP_EOL) !== false)
-					{
-						$fields = explode(PHP_EOL, $table['sourcemap']);
-						if (ComponentbuilderHelper::checkArray($fields))
-						{
-							// reset array buckets
-							$sourceArray = array();
-							$targetArray = array();
-							foreach ($fields as $field)
-							{
-								if (strpos($field, "=>") !== false)
+								if (ComponentbuilderHelper::checkArray($sourceArray) && ComponentbuilderHelper::checkArray($targetArray))
 								{
-									list($source, $target) = explode("=>", $field);
-									$sourceArray[] = $counter . '.' . trim($source);
-									$targetArray[] = trim($target);
-								}
-								if (strpos($field, "==") !== false)
-								{
-									list($aKey, $bKey) = explode("==", $field);
 									// add to query
-									$query->join('LEFT', $this->db->quoteName('#__' . $table['table'], $counter) . ' ON (' . $this->db->quoteName('a.' . trim($aKey)) . ' = ' . $this->db->quoteName($counter . '.' . trim($bKey)) . ')');
+									$query->select($this->db->quoteName($sourceArray, $targetArray));
+									$query->from('#__' . $table['table'] . ' AS a');
+									$runQuery = true;
+								}
+								// we may need to filter the selection
+								if (isset($this->sqlTweak[$view_id]['where']))
+								{
+									// add to query the where filter
+									$query->where('a.id IN (' . $this->sqlTweak[$view_id]['where'] . ')');
 								}
 							}
-							if (ComponentbuilderHelper::checkArray($sourceArray) && ComponentbuilderHelper::checkArray($targetArray))
-							{
-								// add to query
-								$query->select($this->db->quoteName($sourceArray, $targetArray));
-							}
 						}
-					}
-				}
-				$counter++;
-			}
-			// now get the data
-			$this->db->setQuery($query);
-			$this->db->execute();
-			if ($this->db->getNumRows())
-			{
-				// get the data
-				$data = $this->db->loadObjectList();
-				// start building the MySql dump
-				$dump = "--";
-				$dump .= PHP_EOL . "-- Dumping data for table `#__" . $this->bbb . "component" . $this->ddd . "_" . $view . "`";
-				$dump .= PHP_EOL . "--";
-				$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__" . $this->bbb . "component" . $this->ddd . "_" . $view . "` (";
-				foreach ($data as $line)
-				{
-					$comaSet = 0;
-					foreach ($line as $fieldName => $fieldValue)
-					{
-						if ($comaSet == 0)
-						{
-							$dump .= $this->db->quoteName($fieldName);
-						}
-						else
-						{
-							$dump .= ", " . $this->db->quoteName($fieldName);
-						}
-						$comaSet++;
-					}
-					break;
-				}
-				$dump .= ") VALUES";
-				$coma = 0;
-				foreach ($data as $line)
-				{
-					if ($coma == 0)
-					{
-						$dump .= PHP_EOL . "(";
 					}
 					else
 					{
-						$dump .= "," . PHP_EOL . "(";
-					}
-					$comaSet = 0;
-					foreach ($line as $fieldName => $fieldValue)
-					{
-						if ($comaSet == 0)
+						// the other tables
+						if (strpos($table['sourcemap'], PHP_EOL) !== false)
 						{
-							$dump .= $this->mysql_escape($fieldValue);
+							$fields = explode(PHP_EOL, $table['sourcemap']);
+							if (ComponentbuilderHelper::checkArray($fields))
+							{
+								// reset array buckets
+								$sourceArray = array();
+								$targetArray = array();
+								foreach ($fields as $field)
+								{
+									if (strpos($field, "=>") !== false)
+									{
+										list($source, $target) = explode("=>", $field);
+										$sourceArray[] = $counter . '.' . trim($source);
+										$targetArray[] = trim($target);
+									}
+									if (strpos($field, "==") !== false)
+									{
+										list($aKey, $bKey) = explode("==", $field);
+										// add to query
+										$query->join('LEFT', $this->db->quoteName('#__' . $table['table'], $counter) . ' ON (' . $this->db->quoteName('a.' . trim($aKey)) . ' = ' . $this->db->quoteName($counter . '.' . trim($bKey)) . ')');
+									}
+								}
+								if (ComponentbuilderHelper::checkArray($sourceArray) && ComponentbuilderHelper::checkArray($targetArray))
+								{
+									// add to query
+									$query->select($this->db->quoteName($sourceArray, $targetArray));
+								}
+							}
+						}
+					}
+					$counter++;
+				}
+				else
+				{
+					// see where
+					// var_dump($view);
+					// jexit();
+				}
+			}
+			// check if we should run query
+			if ($runQuery)
+			{
+				// now get the data
+				$this->db->setQuery($query);
+				$this->db->execute();
+				if ($this->db->getNumRows())
+				{
+					// get the data
+					$data = $this->db->loadObjectList();
+					// start building the MySql dump
+					$dump = "--";
+					$dump .= PHP_EOL . "-- Dumping data for table `#__" . $this->bbb . "component" . $this->ddd . "_" . $view . "`";
+					$dump .= PHP_EOL . "--";
+					$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__" . $this->bbb . "component" . $this->ddd . "_" . $view . "` (";
+					foreach ($data as $line)
+					{
+						$comaSet = 0;
+						foreach ($line as $fieldName => $fieldValue)
+						{
+							if ($comaSet == 0)
+							{
+								$dump .= $this->db->quoteName($fieldName);
+							}
+							else
+							{
+								$dump .= ", " . $this->db->quoteName($fieldName);
+							}
+							$comaSet++;
+						}
+						break;
+					}
+					$dump .= ") VALUES";
+					$coma = 0;
+					foreach ($data as $line)
+					{
+						if ($coma == 0)
+						{
+							$dump .= PHP_EOL . "(";
 						}
 						else
 						{
-							$dump .= ", " . $this->mysql_escape($fieldValue);
+							$dump .= "," . PHP_EOL . "(";
 						}
-						$comaSet++;
+						$comaSet = 0;
+						foreach ($line as $fieldName => $fieldValue)
+						{
+							if ($comaSet == 0)
+							{
+								$dump .= $this->mysql_escape($fieldValue);
+							}
+							else
+							{
+								$dump .= ", " . $this->mysql_escape($fieldValue);
+							}
+							$comaSet++;
+						}
+						$dump .= ")";
+						$coma++;
 					}
-					$dump .= ")";
-					$coma++;
+					$dump .= ";";
+					// return build dump query
+					return $dump;
 				}
-				$dump .= ";";
-				// return build dump query
-				return $dump;
 			}
 		}
 		return false;

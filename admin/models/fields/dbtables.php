@@ -35,18 +35,22 @@ class JFormFieldDbtables extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
+		// get db object
 		$db = JFactory::getDBO();
+		// get all tables
 		$tables= $db->getTableList();
+		// get config
 		$config = JFactory::getConfig();
+		$dbprefix = version_compare(JVERSION,'3.0','lt') ? $config->getValue('config.dbprefix') : $config->get('dbprefix');
 		$options = array();
-		$db = JFactory::getDBO(); $options[] = JHtml::_('select.option', '', 'Select an option');
+		$options[] = JHtml::_('select.option', '', 'Select an option');
 		for ($i=0; $i < count($tables); $i++)
 		{
 			//only tables with primary key
 			$db->setQuery('SHOW FIELDS FROM `'.$tables[$i].'` WHERE LOWER( `Key` ) = \'pri\'');
 			if ($db->loadResult())
 			{
-				$dbprefix = version_compare(JVERSION,'3.0','lt') ? $config->getValue('config.dbprefix') : $config->get('dbprefix'); $key = $i+1;
+				$key = $i+1;
 				$options[$key] = new stdClass;
 				$options[$key]->value = str_replace($dbprefix, '', $tables[$i]);
 				$options[$key]->text = $tables[$i];

@@ -308,7 +308,8 @@ function usedin(functioName, ide) {
 	jQuery('#note-usedin-not').hide();
 	jQuery('#note-usedin-found').hide();
 	jQuery('#loading-usedin').show();
-	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l']; // if you update this, also update [customcode-codeUsedInHtmlNote]!
+	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l']; // if you update this, also update (below 11) & [customcode-codeUsedInHtmlNote]!
+	var targetNumber = 11;
 	var run = 0;
 	var usedinChecker = setInterval(function(){ 
 		var target = targets[run];
@@ -321,7 +322,7 @@ function usedin(functioName, ide) {
 			} else {
 				jQuery('#usedin-'+target).hide();
 			}
-			if (target === 'i') {
+			if (run == targetNumber) {
 				jQuery('#loading-usedin').hide();
 				if (found) {
 					jQuery('#note-usedin-found').show();
@@ -330,7 +331,7 @@ function usedin(functioName, ide) {
 				}
 			}
 		});
-		if (run == 9) {
+		if (run == targetNumber) {
 			clearInterval(usedinChecker);
 		}
 		run++;

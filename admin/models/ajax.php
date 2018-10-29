@@ -2180,97 +2180,97 @@ class ComponentbuilderModelAjax extends JModelList
 	 * @var      array
 	 */
 	protected $codeSearchKeys = array(
-		// #__componentbuilder_joomla_component
+		// #__componentbuilder_joomla_component (a)
 		'joomla_component' => array(
-			'search' => array('id', 'system_name', 'php_preflight_install','php_postflight_install',
-				'php_preflight_update','php_postflight_update','php_method_uninstall',
-				'php_helper_admin','php_admin_event','php_helper_both','php_helper_site',
-				'php_site_event','javascript'),
+			'search' => array('id', 'system_name', 'php_preflight_install', 'php_postflight_install',
+				'php_preflight_update', 'php_postflight_update', 'php_method_uninstall',
+				'php_helper_admin', 'php_admin_event', 'php_helper_both', 'php_helper_site',
+				'php_site_event', 'javascript'),
 			'views' => 'joomla_components',
 			'not_base64' => array(),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_component_dashboard
+		// #__componentbuilder_component_dashboard (b)
 		'component_dashboard' => array(
-			'search' => array('id', 'joomla_component', 'php_dashboard_methods','dashboard_tab'),
+			'search' => array('id', 'joomla_component', 'php_dashboard_methods', 'dashboard_tab'),
 			'views' => 'components_dashboard',
 			'not_base64' => array('dashboard_tab' => 'json'),
 			'name' => 'joomla_component->id:joomla_component.system_name'
 		),
-		// #__componentbuilder_admin_view
+		// #__componentbuilder_admin_view (c)
 		'admin_view' => array(
-			'search' => array('id', 'system_name', 'javascript_view_file','javascript_view_footer',
-				'javascript_views_file','javascript_views_footer','html_import_view',
-				'php_after_delete','php_after_publish','php_ajaxmethod','php_allowedit','php_batchcopy',
-				'php_batchmove','php_before_delete','php_before_publish','php_before_save','php_controller',
-				'php_controller_list','php_document','php_getitem','php_getitems','php_getitems_after_all',
-				'php_getlistquery','php_import','php_import_display','php_import_ext','php_import_headers','php_getform',
-				'php_import_save','php_import_setdata','php_model','php_model_list','php_postsavehook','php_save'),
+			'search' => array('id', 'system_name', 'javascript_view_file', 'javascript_view_footer',
+				'javascript_views_file', 'javascript_views_footer', 'html_import_view',
+				'php_after_delete', 'php_after_publish', 'php_ajaxmethod', 'php_allowedit', 'php_batchcopy',
+				'php_batchmove', 'php_before_delete', 'php_before_publish', 'php_before_save', 'php_controller',
+				'php_controller_list', 'php_document', 'php_getitem', 'php_getitems', 'php_getitems_after_all',
+				'php_getlistquery', 'php_import', 'php_import_display', 'php_import_ext', 'php_import_headers', 'php_getform',
+				'php_import_save', 'php_import_setdata', 'php_model', 'php_model_list', 'php_postsavehook', 'php_save'),
 			'views' => 'admin_views',
 			'not_base64' => array(),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_admin_fields_relations
+		// #__componentbuilder_admin_fields_relations (d)
 		'admin_fields_relations' => array(
 			'search' => array('id', 'admin_view', 'addrelations'),
 			'views' => 'admins_fields_relations',
 			'not_base64' => array('addrelations' => 'json'),
 			'name' => 'admin_view->id:admin_view.system_name'
 		),
-		// #__componentbuilder_custom_admin_view
+		// #__componentbuilder_custom_admin_view (e)
 		'custom_admin_view' => array(
-			'search' => array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
-				'js_document','css_document','css','php_ajaxmethod','php_model','php_controller'),
+			'search' => array('id', 'system_name', 'default', 'php_view', 'php_jview', 'php_jview_display', 'php_document',
+				'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
 			'views' => 'custom_admin_views',
 			'not_base64' => array(),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_site_view
+		// #__componentbuilder_site_view (f)
 		'site_view' => array(
-			'search' => array('id', 'system_name', 'default','php_view','php_jview','php_jview_display','php_document',
-				'js_document','css_document','css','php_ajaxmethod','php_model','php_controller'),
+			'search' => array('id', 'system_name', 'default', 'php_view', 'php_jview', 'php_jview_display', 'php_document',
+				'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
 			'views' => 'site_views',
 			'not_base64' => array(),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_field
+		// #__componentbuilder_field (g)
 		'field' => array(
-			'search' => array('id', 'name', 'xml','javascript_view_footer','javascript_views_footer'),
+			'search' => array('id', 'name', 'xml', 'javascript_view_footer', 'javascript_views_footer'),
 			'views' => 'fields',
 			'not_base64' => array('xml' => 'json'),
 			'base64_search' => array('xml' => array('start' => 'type_php', '_start' => '="', 'end' => '"')),
 			'name' => 'name'
 		),
-		// #__componentbuilder_fieldtype
+		// #__componentbuilder_fieldtype (h)
 		'fieldtype' => array(
 			'search' => array('id', 'name', 'properties'),
 			'views' => 'fieldtypes',
 			'not_base64' => array('properties' => 'json'),
 			'name' => 'name'
 		),
-		// #__componentbuilder_dynamic_get
+		// #__componentbuilder_dynamic_get (i)
 		'dynamic_get' => array(
-			'search' => array('id', 'name', 'php_before_getitem','php_after_getitem','php_before_getitems','php_after_getitems',
+			'search' => array('id', 'name', 'php_before_getitem', 'php_after_getitem', 'php_before_getitems', 'php_after_getitems',
 				'php_getlistquery'),
 			'views' => 'dynamic_gets',
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_template
+		// #__componentbuilder_template (j)
 		'template' => array(
-			'search' => array('id', 'name', 'php_view','template'),
+			'search' => array('id', 'name', 'php_view', 'template'),
 			'views' => 'templates',
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_layout
+		// #__componentbuilder_layout (k)
 		'layout' => array(
-			'search' => array('id', 'name', 'php_view','layout'),
+			'search' => array('id', 'name', 'php_view', 'layout'),
 			'views' => 'layouts',
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_library
+		// #__componentbuilder_library (l)
 		'library' => array(
 			'search' => array('id', 'name', 'php_setdocument'),
 			'views' => 'libraries',

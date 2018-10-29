@@ -4554,6 +4554,9 @@ class Interpretation extends Fields
 	public function setMethodItemSave(&$view)
 	{
 		$script = '';
+		// get component name
+		$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
+		$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
 		// check if there was script added before modeling of data
 		$script .= $this->getCustomScriptBuilder('php_before_save', $view, PHP_EOL . PHP_EOL);
 		// turn array into JSON string
@@ -4568,7 +4571,22 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $jsonItem . "->loadArray(\$data['" . $jsonItem . "']);";
 				$script .= PHP_EOL . $this->_t(3) . "\$data['" . $jsonItem . "'] = (string) \$" . $jsonItem . ";";
 				$script .= PHP_EOL . $this->_t(2) . "}";
-				$script .= PHP_EOL . $this->_t(2) . "elseif (!isset(\$data['" . $jsonItem . "']))";
+				if (isset($this->permissionFields[$view]) && isset($this->permissionFields[$view][$jsonItem]) && ComponentbuilderHelper::checkArray($this->permissionFields[$view][$jsonItem]))
+				{
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Also check permission since the value may be removed due to permissions";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Then we do not want to clear it out, but simple ignore the empty " . $jsonItem;
+					$script .= PHP_EOL . $this->_t(2) . "elseif (!isset(\$data['" . $jsonItem . "'])";
+					// only add permission that are available
+					foreach ($this->permissionFields[$view][$jsonItem] as $permission_option => $fieldType)
+					{
+						$script .= PHP_EOL . $this->_t(3) . "&& JFactory::getUser()->authorise('" . $view . "." . $permission_option . "." . $jsonItem . "', 'com_" . $component . "')";
+					}
+					$script .= ")";
+				}
+				else
+				{
+					$script .= PHP_EOL . $this->_t(2) . "elseif (!isset(\$data['" . $jsonItem . "']))";
+				}
 				$script .= PHP_EOL . $this->_t(2) . "{";
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set the empty " . $jsonItem . " to data";
 				$script .= PHP_EOL . $this->_t(3) . "\$data['" . $jsonItem . "'] = '';";
@@ -4600,7 +4618,6 @@ class Interpretation extends Fields
 			}
 		}
 		// turn string into encrypted string
-		$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 		foreach ($this->cryptionTypes as $cryptionType)
 		{
 			if (isset($this->{$cryptionType . 'EncryptionBuilder'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType . 'EncryptionBuilder'}[$view]))
@@ -6759,25 +6776,29 @@ class Interpretation extends Fields
 			// start adding the dynamic
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
-				// set some defaults
-				$customAdminViewButtons = '';
-				// set the item default class
-				$itemClass = 'hidden-phone';
-				// set the item row
-				$itemRow = $this->getListItemBuilder($item, $viewName_single, $viewName_list, $itemClass, $doNotEscape, $coreLoad, $core);
-				// check if buttons was aready added
-				if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
+				// check if target is admin list
+				if (1 == $item['target'] || 3 == $item['target'])
 				{
-					// get custom admin view buttons
-					$customAdminViewButtons = $this->getCustomAdminViewButtons($viewName_list);
-					// make sure the custom admin view buttons are only added once
-					$firstTimeBeingAdded = false;
+					// set some defaults
+					$customAdminViewButtons = '';
+					// set the item default class
+					$itemClass = 'hidden-phone';
+					// set the item row
+					$itemRow = $this->getListItemBuilder($item, $viewName_single, $viewName_list, $itemClass, $doNotEscape, $coreLoad, $core);
+					// check if buttons was aready added
+					if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
+					{
+						// get custom admin view buttons
+						$customAdminViewButtons = $this->getCustomAdminViewButtons($viewName_list);
+						// make sure the custom admin view buttons are only added once
+						$firstTimeBeingAdded = false;
+					}
+					// add row to body
+					$body .= PHP_EOL . $this->_t(2) . "<td class=\"" . $this->getListFieldClass($item['code'], $viewName_list, $itemClass) . "\">";
+					$body .= $itemRow;
+					$body .= $customAdminViewButtons;
+					$body .= PHP_EOL . $this->_t(2) . "</td>";
 				}
-				// add row to body
-				$body .= PHP_EOL . $this->_t(2) . "<td class=\"" . $this->getListFieldClass($item['code'], $viewName_list, $itemClass) . "\">";
-				$body .= $itemRow;
-				$body .= $customAdminViewButtons;
-				$body .= PHP_EOL . $this->_t(2) . "</td>";
 			}
 			// add the defaults
 			if (!isset($this->fieldsNames[$viewName_single]['published']))
@@ -7253,30 +7274,34 @@ class Interpretation extends Fields
 			// build the dynamic fields
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
-				// check if we have an over-ride
-				if (isset($this->listHeadOverRide[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listHeadOverRide[$viewName_list]) && isset($this->listHeadOverRide[$viewName_list][$item['id']]))
+				// check if target is admin list
+				if (1 == $item['target'] || 3 == $item['target'])
 				{
-					$item['lang'] = $this->listHeadOverRide[$viewName_list][$item['id']];
+					// check if we have an over-ride
+					if (isset($this->listHeadOverRide[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listHeadOverRide[$viewName_list]) && isset($this->listHeadOverRide[$viewName_list][$item['id']]))
+					{
+						$item['lang'] = $this->listHeadOverRide[$viewName_list][$item['id']];
+					}
+					// set the custom code
+					if (ComponentbuilderHelper::checkArray($item['custom']))
+					{
+						$item['code'] = $item['code'] . '_' . $item['custom']['text'];
+					}
+					$class = 'nowrap hidden-phone';
+					if ($item['link'])
+					{
+						$class = 'nowrap';
+					}
+					$title = "<?php echo JText:" . ":_('" . $item['lang'] . "'); ?>";
+					if ($item['sort'])
+					{
+						$title = "<?php echo JHtml::_('grid.sort', '" . $item['lang'] . "', '" . $item['code'] . "', \$this->listDirn, \$this->listOrder); ?>";
+					}
+					$head .= PHP_EOL . $this->_t(1) . '<th class="' . $class . '" >';
+					$head .= PHP_EOL . $this->_t(3) . $title;
+					$head .= PHP_EOL . $this->_t(1) . "</th>";
+					$this->listColnrBuilder[$viewName_list] ++;
 				}
-				// set the custom code
-				if (ComponentbuilderHelper::checkArray($item['custom']))
-				{
-					$item['code'] = $item['code'] . '_' . $item['custom']['text'];
-				}
-				$class = 'nowrap hidden-phone';
-				if ($item['link'])
-				{
-					$class = 'nowrap';
-				}
-				$title = "<?php echo JText:" . ":_('" . $item['lang'] . "'); ?>";
-				if ($item['sort'])
-				{
-					$title = "<?php echo JHtml::_('grid.sort', '" . $item['lang'] . "', '" . $item['code'] . "', \$this->listDirn, \$this->listOrder); ?>";
-				}
-				$head .= PHP_EOL . $this->_t(1) . '<th class="' . $class . '" >';
-				$head .= PHP_EOL . $this->_t(3) . $title;
-				$head .= PHP_EOL . $this->_t(1) . "</th>";
-				$this->listColnrBuilder[$viewName_list] ++;
 			}
 			// set default
 			if (!isset($this->fieldsNames[$viewName_single]['published']))
@@ -8212,27 +8237,31 @@ class Interpretation extends Fields
 			// start adding the dynamic
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
-				// set the ref
-				$ref = '<?php echo $ref; ?>';
-				// set some defaults
-				$customAdminViewButtons = '';
-				// set the item row
-				$itemRow = $this->getListItemBuilder($item, $viewName_single, $viewName_list, $itemClass, $doNotEscape, $coreLoad, $core, false, $ref, '$displayData->escape', '$user', $refview);
-				// check if buttons was aready added
-				if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
+				// check if target is linked list view
+				if (1 == $item['target'] || 4 == $item['target'])
 				{
-					// get custom admin view buttons
-					$customAdminViewButtons = $this->getCustomAdminViewButtons($viewName_list, $ref);
-					// make sure the custom admin view buttons are only added once
-					$firstTimeBeingAdded = false;
+					// set the ref
+					$ref = '<?php echo $ref; ?>';
+					// set some defaults
+					$customAdminViewButtons = '';
+					// set the item row
+					$itemRow = $this->getListItemBuilder($item, $viewName_single, $viewName_list, $itemClass, $doNotEscape, $coreLoad, $core, false, $ref, '$displayData->escape', '$user', $refview);
+					// check if buttons was aready added
+					if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
+					{
+						// get custom admin view buttons
+						$customAdminViewButtons = $this->getCustomAdminViewButtons($viewName_list, $ref);
+						// make sure the custom admin view buttons are only added once
+						$firstTimeBeingAdded = false;
+					}
+					// add row to body
+					$body .= PHP_EOL . $this->_t(2) . "<td>";
+					$body .= $itemRow;
+					$body .= $customAdminViewButtons;
+					$body .= PHP_EOL . $this->_t(2) . "</td>";
+					// increment counter
+					$counter++;
 				}
-				// add row to body
-				$body .= PHP_EOL . $this->_t(2) . "<td>";
-				$body .= $itemRow;
-				$body .= $customAdminViewButtons;
-				$body .= PHP_EOL . $this->_t(2) . "</td>";
-				// increment counter
-				$counter++;
 			}
 			$counter = $counter + 2;
 			$data_value = (3 == $this->footableVersion) ? 'data-sort-value' : 'data-value';
@@ -8397,31 +8426,35 @@ class Interpretation extends Fields
 			// build the dynamic fields
 			foreach ($this->listBuilder[$viewName_list] as $item)
 			{
-				// check if we have an over-ride
-				if (isset($this->listHeadOverRide[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listHeadOverRide[$viewName_list]) && isset($this->listHeadOverRide[$viewName_list][$item['id']]))
+				// check if target is linked list view
+				if (1 == $item['target'] || 4 == $item['target'])
 				{
-					$item['lang'] = $this->listHeadOverRide[$viewName_list][$item['id']];
-				}
-				$setin = (2 == $this->footableVersion) ? ' data-hide="phone"' : ' data-breakpoints="xs sm"';
-				if ($controller > 3)
-				{
-					$setin = (2 == $this->footableVersion) ? ' data-hide="phone,tablet"' : ' data-breakpoints="xs sm md"';
-				}
+					// check if we have an over-ride
+					if (isset($this->listHeadOverRide[$viewName_list]) && ComponentbuilderHelper::checkArray($this->listHeadOverRide[$viewName_list]) && isset($this->listHeadOverRide[$viewName_list][$item['id']]))
+					{
+						$item['lang'] = $this->listHeadOverRide[$viewName_list][$item['id']];
+					}
+					$setin = (2 == $this->footableVersion) ? ' data-hide="phone"' : ' data-breakpoints="xs sm"';
+					if ($controller > 3)
+					{
+						$setin = (2 == $this->footableVersion) ? ' data-hide="phone,tablet"' : ' data-breakpoints="xs sm md"';
+					}
 
-				if ($controller > 6)
-				{
-					$setin = (2 == $this->footableVersion) ? ' data-hide="all"' : ' data-breakpoints="all"';
-				}
+					if ($controller > 6)
+					{
+						$setin = (2 == $this->footableVersion) ? ' data-hide="all"' : ' data-breakpoints="all"';
+					}
 
-				if ($item['link'] && $firstLink)
-				{
-					$setin = (2 == $this->footableVersion) ? ' data-toggle="true"' : '';
-					$firstLink = false;
+					if ($item['link'] && $firstLink)
+					{
+						$setin = (2 == $this->footableVersion) ? ' data-toggle="true"' : '';
+						$firstLink = false;
+					}
+					$head .= PHP_EOL . $this->_t(2) . "<th" . $setin . $htmlFix . ">";
+					$head .= PHP_EOL . $this->_t(3) . "<?php echo JText:" . ":_('" . $item['lang'] . "'); ?>";
+					$head .= PHP_EOL . $this->_t(2) . "</th>";
+					$controller++;
 				}
-				$head .= PHP_EOL . $this->_t(2) . "<th" . $setin . $htmlFix . ">";
-				$head .= PHP_EOL . $this->_t(3) . "<?php echo JText:" . ":_('" . $item['lang'] . "'); ?>";
-				$head .= PHP_EOL . $this->_t(2) . "</th>";
-				$controller++;
 			}
 			// set some V3 attr
 			$data_hide = (2 == $this->footableVersion) ? 'data-hide="phone,tablet"' : 'data-breakpoints="xs sm md"';
@@ -11284,6 +11317,19 @@ class Interpretation extends Fields
 		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
 		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('created', 'filter', 'unset');";
 		$allow[] = $this->_t(2) . "}";
+		// check if the item has access permissions.
+		if ($coreLoad && isset($core['core.edit.access']) && isset($this->permissionBuilder[$core['core.edit.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.access']]) && in_array($viewName_single, $this->permissionBuilder[$core['core.edit.access']]))
+		{
+			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit Access 'access' controls.";
+			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.access'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.access'] . "', 'com_" . $component . "')))";
+			$allow[] = $this->_t(2) . "{";
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('access', 'disabled', 'true');";
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('access', 'filter', 'unset');";
+			$allow[] = $this->_t(2) . "}";
+		}
 		// handel the fields permissions
 		if (isset($this->permissionFields[$viewName_single]) && ComponentbuilderHelper::checkArray($this->permissionFields[$viewName_single]))
 		{
@@ -11382,12 +11428,21 @@ class Interpretation extends Fields
 		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Make the field hidded.";
 		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'type', 'hidden');";
 		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " If there is no value continue.";
-		$allow[] = $this->_t(3) . "if (!\$form->getValue('" . $fieldName . "'))";
+		$allow[] = $this->_t(3) . "if (!(\$val = \$form->getValue('" . $fieldName . "')))";
 		$allow[] = $this->_t(3) . "{";
 		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
 		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'filter', 'unset');";
 		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
 		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'required', 'false');";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Make sure";
+		$allow[] = $this->_t(4) . "\$form->setValue('" . $fieldName . "', null, '');";
+		$allow[] = $this->_t(3) . "}";
+		$allow[] = $this->_t(3) . "elseif (" . ucfirst($component) . "Helper::checkArray(\$val))";
+		$allow[] = $this->_t(3) . "{";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " We have to unset then (TODO)";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Hiddend field can not handel array value";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Even if we conver to json we get an error";
+		$allow[] = $this->_t(4) . "\$form->removeField('" . $fieldName . "');";
 		$allow[] = $this->_t(3) . "}";
 		$allow[] = $this->_t(2) . "}";
 	}
@@ -12336,6 +12391,8 @@ class Interpretation extends Fields
 						// JSON_ARRAY_ENCODE
 						$decode = 'json_decode';
 						$suffix_decode = ', true';
+						// fallback on json
+						$item['method'] = 1;
 						break;
 				}
 
@@ -12486,7 +12543,7 @@ class Interpretation extends Fields
 						{
 							if (!$export)
 							{
-								// For thos we have not cached yet.
+								// For those we have not cached yet.
 								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//" . $this->setLine(__LINE__) . " convert " . $item['name'];
 								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "\$item->" . $item['name'] . " = " . $Component . "Helper::jsonToString(\$item->" . $item['name'] . ");";
 							}
@@ -15469,7 +15526,7 @@ function vdm_dkim() {
 										// set the permission for this field
 										$fieldView['action'] = 'view.' . $permission_option . '.' . $fieldName;
 										$fieldView['implementation'] = '3';
-										// check if persmissions was laready set
+										// check if persmissions was already set
 										if (isset($view['settings']->permissions) && ComponentbuilderHelper::checkArray($view['settings']->permissions))
 										{
 											array_push($view['settings']->permissions, $fieldView);
@@ -15600,6 +15657,7 @@ function vdm_dkim() {
 					$view['settings']->permissions[] = $versionView;
 				}
 			}
+			// add batch permissions
 			if ($type === 'admin')
 			{
 				// set batch control
@@ -15615,6 +15673,7 @@ function vdm_dkim() {
 					$view['settings']->permissions[] = $batchView;
 				}
 			}
+			// load the permissions
 			foreach ($view['settings']->permissions as $permission)
 			{
 				// set acction name
@@ -15639,6 +15698,12 @@ function vdm_dkim() {
 				array_shift($actionNameBuilder);
 				$nameBuilder = trim(implode('___', $actionNameBuilder));
 				$customName = trim(implode(' ', $actionNameBuilder));
+				// check if we have access set for this view (if not skip)
+				if ($nameBuilder === 'edit___access' && $type === 'admin' && (!isset($view['access']) || $view['access'] != 1))
+				{
+					continue;
+				}
+				// build the names
 				if ($type === 'admin')
 				{
 					$W_NameList = ComponentbuilderHelper::safeString($view['settings']->name_list, 'W');
@@ -15665,6 +15730,12 @@ function vdm_dkim() {
 						$permission['title'] = $W_NameList . ' Edit Own';
 						// set edit description
 						$permission['description'] = ' Allows the users in this group to edit ' . $w_NameList . ' created by them';
+						break;
+					case 'edit___access':
+						// set edit title
+						$permission['title'] = $W_NameList . ' Edit Access';
+						// set edit description
+						$permission['description'] = ' Allows the users in this group to change the access of the ' . $w_NameList;
 						break;
 					case 'edit___state':
 						// set edit title

@@ -136,7 +136,11 @@
 					<option value="">
 						COM_COMPONENTBUILDER_ADMIN_FIELDS_DEFAULT</option>
 					<option value="1">
-						COM_COMPONENTBUILDER_ADMIN_FIELDS_SHOW_IN_LIST_VIEW</option>
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_SHOW_IN_ALL_LIST_VIEWS</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_ONLY_IN_ADMIN_LIST_VIEW</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_ONLY_IN_LINKED_LIST_VIEWS</option>
 					<option value="2">
 						COM_COMPONENTBUILDER_ADMIN_FIELDS_NONE_DB</option>
 				</field>

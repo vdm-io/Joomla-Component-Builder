@@ -161,7 +161,6 @@
 					description="COM_COMPONENTBUILDER_DYNAMIC_GET_DB_TABLE_DESCRIPTION"
 					class="list_class"
 					multiple="false"
-					default=""
 					required="false"
 					button="false"
 				/>
@@ -581,7 +580,6 @@
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_DB_TABLE_MAIN_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			default=""
 			required="true"
 			button="false"
 		/>

@@ -328,7 +328,8 @@ class ComponentbuilderControllerAdmin_view extends JControllerForm
 			$_tablesArray = array(
 				'admin_fields',
 				'admin_fields_conditions',
-				'admin_fields_relations'
+				'admin_fields_relations',
+				'admin_custom_tabs'
 			);
 			foreach($_tablesArray as $_updateTable)
 			{
