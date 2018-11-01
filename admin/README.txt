@@ -117,7 +117,15 @@ Our idea was to almost let this tool serve as a cheat sheet to how things can be
 MAKING IT BETTER!
 ====================
 
-Watch the [proposed development workflow](https://vdm.bz/proposed-development-workflow).
+Get involved on the forums, and the GitHub issues, and you can even help us develop/improve the pipeline of JCB for continues delivery. We really want to see JCB remain the tool of choice for all Joomla Component Development needs and ideas.
+
+TODO
+======
+
+- Add automatic (REST) API ability for all components build with JCB. So we can link any component build with JCB to an Android/Apple APP.
+- Add automatic unit testing. To nurture pipeline integration for all components build with JCB.
+- Team collaborative development across JCB installations offline and online.
+- Documentation (maintained by the community) for JCB. (help us select the best system for this)
 
 # Build Details
 
@@ -125,11 +133,11 @@ Watch the [proposed development workflow](https://vdm.bz/proposed-development-wo
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 29th October, 2018
++ *Last Build*: 1st November, 2018
 + *Version*: 2.9.7
 + *Copyright*: Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **195735**
++ *Line count*: **195751**
 + *Field count*: **1087**
 + *File count*: **1277**
 + *Folder count*: **201**
