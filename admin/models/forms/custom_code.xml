@@ -204,7 +204,7 @@
 			validate="code"
 		/>
 		<!-- Note_jcb_placeholder Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_jcb_placeholder" label="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_JCB_PLACEHOLDER_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_JCB_PLACEHOLDER_DESCRIPTION" heading="h4" class="span12 note_jcb_placeholder" />
+		<field type="note" name="note_jcb_placeholder" label="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_JCB_PLACEHOLDER_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_JCB_PLACEHOLDER_DESCRIPTION" heading="h4" class="alert alert-info note_jcb_placeholder" />
 		<!-- Hashendtarget Field. Type: Text. (joomla) -->
 		<field
 			type="text"

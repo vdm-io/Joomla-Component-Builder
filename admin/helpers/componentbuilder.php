@@ -28,135 +28,50 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	Locked Libraries (we can not have these change)
+	* Locked Libraries (we can not have these change)
 	**/
 	public static $libraryNames = array(1 => 'No Library', 2 => 'Bootstrap v4', 3 => 'Uikit v3', 4 => 'Uikit v2', 5 => 'FooTable v2', 6 => 'FooTable v3');
 
 	/**
-	* 	Array of php fields Allowed (16)
+	* Array of php fields Allowed (16)
 	**/
 	public static $phpFieldArray = array('', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'x');
 
 	/**
-	* 	The global params
+	* The global params
 	**/
 	protected static $params = false;
 
 	/**
-	* 	The global updater
+	* The global updater
 	**/
 	protected static $globalUpdater = array();
 
 	/**
-	* 	The local company details
+	* The local company details
 	**/
 	protected static $localCompany = array();
 
 	/**
-	* 	The snippet paths
+	* The snippet paths
 	**/
 	public static $snippetPath = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/';
 	public static $snippetsPath = 'https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master';
 
 	/**
-	*	The VDM packages paths
+	* The VDM packages paths
 	**/
 	public static $vdmGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
 	public static $vdmGithubPackageUrl = "https://github.com/vdm-io/JCB-Packages/raw/master/";
 
 	/**
-	*	The JCB packages paths
+	* The JCB packages paths
 	**/
 	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Community-Packages/git/trees/master";
 	public static $jcbGithubPackageUrl = "https://github.com/vdm-io/JCB-Community-Packages/raw/master/";
 
 	// not needed at this time (maybe latter)
 	public static $accessToken = "";
-
-	/**
-	*	get the github repo file list
-	*
-	*	@return  array on success
-	* 
-	*/
-	public static function getGithubRepoFileList($type, $target)
-	{
-		// get the current Packages (public)
-		if (!$repoData = self::get($type))
-		{
-			if (self::urlExists($target))
-			{
-				$repoData = self::getFileContents($target);
-				if (self::checkJson($repoData))
-				{
-					$test = json_decode($repoData);
-					if (self::checkObject($test) && isset($test->tree) && self::checkArray($test->tree) )
-					{
-						// remember to set it
-						self::set($type, $repoData);
-					}
-					// check if we have error message from github
-					elseif ($errorMessage = self::githubErrorHandeler(array('error' => null), $test))
-					{
-						if (self::checkString($errorMessage['error']))
-						{
-							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
-						}
-						$repoData = false;
-					}
-				}
-				else
-				{
-					$repoData = false;
-				}
-			}
-			else
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $target), 'Error');
-			}
-		}
-		// check if we could find packages
-		if (isset($repoData) && self::checkJson($repoData))
-		{
-			$repoData = json_decode($repoData);
-			if (self::checkObject($repoData) && isset($repoData->tree) && self::checkArray($repoData->tree) )
-			{
-				return $repoData->tree;
-			}
-		}
-		return false;
-	}
-
-	/**
-	*	get the github error messages
-	*
-	*	@return  array of errors on success
-	* 
-	*/
-	protected static function githubErrorHandeler($message, &$github)
-	{
-		if (self::checkObject($github) && isset($github->message) && self::checkString($github->message))
-		{
-			// set the message
-			$errorMessage = $github->message;
-			// add the documentation URL
-			if (isset($github->documentation_url) && self::checkString($github->documentation_url))
-			{
-				$errorMessage = $errorMessage.'<br />'.$github->documentation_url;
-			}
-			// check the message
-			if (strpos($errorMessage, 'Authenticated') !== false)
-			{
-				// add little more help if it is an access token issue
-				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_AN_BACCESS_TOKENB_TO_GETBIBLE_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO', $errorMessage);
-			}
-			// set error notice
-			$message['error'] = $errorMessage;
-			// we have error message
-			return $message;
-		}
-		return false;
-	}
 
 	/**
 	 * The array of constant paths
@@ -583,72 +498,6 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 * Remove folders with files
-	 * 
-	 * @param   string   $dir     The path to folder to remove
-	 * @param   boolean  $ignore  The folders and files to ignore and not remove
-	 *
-	 * @return  boolean   True in all is removed
-	 * 
-	 */
-	public static function removeFolder($dir, $ignore = false)
-	{
-		if (JFolder::exists($dir))
-		{
-			$it = new RecursiveDirectoryIterator($dir);
-			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			foreach ($it as $file)
-			{
-				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
-				if ($file->isDir())
-				{
-					$keeper = false;
-					if (self::checkArray($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-					if ($keeper)
-					{
-						continue;
-					}
-					JFolder::delete($file->getPathname());
-				}
-				else
-				{
-					$keeper = false;
-					if (self::checkArray($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-					if ($keeper)
-					{
-						continue;
-					}
-					JFile::delete($file->getPathname());
-				}
-			}
-			if (!self::checkArray($ignore))
-			{
-				return JFolder::delete($dir);
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	* 	The dynamic builder of views, tables and fields
 	**/
 	public static function dynamicBuilder(&$data, $type)
@@ -656,6 +505,614 @@ abstract class ComponentbuilderHelper
 		self::autoLoader('extrusion');
 		$extruder = new Extrusion($data);
 	}
+
+	/*
+	 * Convert repeatable field to subform
+	 * 
+	 * @param   array    $item       The array to convert
+	 * @param   string   $name      The main field name
+	 *
+	 * @return  array
+	 */
+	public static function convertRepeatable($item, $name)
+	{
+		// continue only if we have an array
+		if (self::checkArray($item))
+		{
+			$bucket = array();
+			foreach ($item as $key => $values)
+			{
+				foreach ($values as $nr => $value)
+				{
+					if (!isset($bucket[$name . $nr]) || !self::checkArray($bucket[$name . $nr]))
+					{
+						$bucket[$name . $nr] = array();
+					}
+					$bucket[$name . $nr][$key] = $value;
+				}
+			}
+			return $bucket;
+		}
+		return $item;
+	}
+
+	/*
+	 * Convert repeatable field to subform
+	 * 
+	 * @param   object     $item            The item to update
+	 * @param   array      $searcher        The fields to check and update
+	 * @param   array      $updater         To update the local table
+	 *
+	 * @return void
+	 */
+	public static function convertRepeatableFields($object, $searcher, $updater = array())
+	{
+		// update the repeatable fields
+		foreach ($searcher as  $key => $sleutel)
+		{
+			if (isset($object->{$key}))
+			{
+				$isJson = false;
+				if (self::checkJson($object->{$key}))
+				{
+					$object->{$key} = json_decode($object->{$key}, true);
+					$isJson = true;
+				}
+				// check if this is old values for repeatable fields
+				if (self::checkArray($object->{$key}) && isset($object->{$key}[$sleutel]))
+				{
+					// load it back
+					$object->{$key} = self::convertRepeatable($object->{$key}, $key);
+					// add to global updater
+					if (
+						self::checkArray($object->{$key}) && self::checkArray($updater) && 
+						(
+							( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) ) || 
+							( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
+						)
+					   )
+					{
+						$_key = null;
+						$_value = null;
+						$_table = null;
+						// check if we have unique id table for this repeatable/subform field
+						if ( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
+						{
+							$_key = $updater['unique'][$key]['key'];
+							$_value = $updater['unique'][$key]['val'];
+							$_table = $updater['unique'][$key]['table'];
+						}
+						elseif ( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) )
+						{
+							$_key = $updater['key'];
+							$_value = $updater['val'];
+							$_table = $updater['table'];
+						}
+						// continue only if values are valid
+						if (self::checkString($_table) && self::checkString($_key) && $_value > 0)
+						{
+							// set target table & item
+							$target = trim($_table) . '.' . trim($_key) . '.' . trim($_value);
+							if (!isset(self::$globalUpdater[$target]))
+							{
+								self::$globalUpdater[$target] = new stdClass;
+								self::$globalUpdater[$target]->{$_key} = (int) $_value;
+							}
+							// load the new subform values to global updater
+							self::$globalUpdater[$target]->{$key} = json_encode($object->{$key});
+						}
+					}
+				}
+				// no set back to json if came in as json
+				if ($isJson && self::checkArray($object->{$key}))
+				{
+					$object->{$key} = json_encode($object->{$key}); 
+				}
+				// remove if not json or array
+				elseif (!self::checkArray($object->{$key}) && !self::checkJson($object->{$key}))
+				{
+					unset($object->{$key});
+				}
+			}
+		}
+		return $object;
+	}
+
+	/**
+	 * Run Global Updater if any are set
+	 * 
+	 * @return  void
+	 * 
+	 */
+	public static function runGlobalUpdater()
+	{
+		// check if any updates are set to run
+		if (self::checkArray(self::$globalUpdater))
+		{
+			// get the database object
+			$db = JFactory::getDbo();
+			foreach (self::$globalUpdater as $tableKeyID => $object)
+			{
+				// get the table
+				$table = explode('.', $tableKeyID);
+				// update the item
+				$db->updateObject('#__componentbuilder_' . (string) $table[0] , $object, (string) $table[1]);
+			}
+			// rest updater
+			self::$globalUpdater = array();
+		}
+	}
+
+	/**
+	 * Copy Any Item (only use for direct database copying)
+	 * 
+	 * @param   int        $id         The item to copy
+	 * @param   string   $table     The table and model to copy from and with
+	 * @param   array    $config   The values that should change
+	 *
+	 * @return  boolean   True if success
+	 * 
+	 */
+	public static function copyItem($id, $type, $config = array())
+	{
+		// only continue if we have an id
+		if ((int) $id > 0)
+		{
+			// get the model
+			$model = self::getModel($type);
+			$app   = \JFactory::getApplication();
+			// get item
+			if ($item = $model->getItem($id))
+			{
+				// update values that should change
+				if (self::checkArray($config))
+				{
+					foreach($config as $key => $value)
+					{
+						if (isset($item->{$key}))
+						{
+							$item->{$key} = $value;
+						}
+					}
+				}
+				// clone the object
+				$data = array();
+				foreach ($item as $key => $value)
+				{
+					$data[$key] = $value;
+				}			
+				// reset some values
+				$data['id'] = 0;
+				$data['version'] = 1;
+				if (isset($data['tags']))
+				{
+					$data['tags'] = null;
+				}
+				if (isset($data['associations']))
+				{
+					$data['associations'] = array();
+				}
+				// remove some unneeded values
+				unset($data['params']);
+				unset($data['asset_id']);
+				unset($data['checked_out']);
+				unset($data['checked_out_time']);
+				// Attempt to save the data.
+				if ($model->save($data))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* the basic localkey
+	**/
+	protected static $localkey = false;
+
+	/**
+	* get the localkey
+	**/	
+	public static function getLocalKey()
+	{
+		if (!self::$localkey)
+		{
+			// get the basic key
+			self::$localkey = md5(self::getCryptKey('basic', 'localKey34fdWEkl'));
+		}
+		return self::$localkey;
+	}
+
+	/**
+	 * indent HTML
+	 */
+	public static function indent($html)
+	{
+		// load the class
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/indenter.php';
+		// set new indenter
+		$indenter = new Indenter();
+		// return indented html
+		return $indenter->indent($html);
+	}
+
+	public static function checkFileType($file, $sufix)
+	{
+		// now check if the file ends with the sufix
+		return $sufix === "" || ($sufix == substr(strrchr($file, "."), -strlen($sufix)));
+	}
+
+	public static function imageInfo($path, $request = 'type')
+	{
+		// set image
+		$image = JPATH_SITE.'/'.$path;
+		// check if exists
+		if (file_exists($image) && $result = @getimagesize($image))
+		{
+			// return type request
+			switch ($request)
+			{
+				case 'width':
+					return $result[0];
+					break;
+				case 'height':
+					return $result[1];
+					break;
+				case 'type':
+					$extensions = array(
+						IMAGETYPE_GIF => "gif",
+						IMAGETYPE_JPEG => "jpg",
+						IMAGETYPE_PNG => "png",
+						IMAGETYPE_SWF => "swf",
+						IMAGETYPE_PSD => "psd",
+						IMAGETYPE_BMP => "bmp",
+						IMAGETYPE_TIFF_II => "tiff",
+						IMAGETYPE_TIFF_MM => "tiff",
+						IMAGETYPE_JPC => "jpc",
+						IMAGETYPE_JP2 => "jp2",
+						IMAGETYPE_JPX => "jpx",
+						IMAGETYPE_JB2 => "jb2",
+						IMAGETYPE_SWC => "swc",
+						IMAGETYPE_IFF => "iff",
+						IMAGETYPE_WBMP => "wbmp",
+						IMAGETYPE_XBM => "xbm",
+						IMAGETYPE_ICO => "ico"
+					);
+					return $extensions[$result[2]];
+					break;
+				case 'attr':
+					return $result[3];
+					break;
+				case 'all':
+				default:
+					return $result;
+					break;
+			}
+		}
+		return false;
+	}
+
+	/**
+	*  set the session defaults if not set
+	**/
+	protected static function setSessionDefaults()
+	{
+		// noting for now
+		return true;
+	}
+
+	/**
+	* check if it is a new hash
+	**/
+	public static function newHash($hash, $name = 'backup', $type = 'hash', $key = '',  $fileType = 'txt')
+	{
+		// make sure we have a hash
+		if (self::checkString($hash))
+		{
+			// first get the file path
+			$path_filename = self::getFilePath('path', $name.$type, $fileType, $key, JPATH_COMPONENT_ADMINISTRATOR);
+			// set as read if not already set
+			if ($content = self::getFileContents($path_filename, false))
+			{
+				if ($hash == $content)
+				{
+					return false;
+				}
+			}
+			// set the hash
+			return self::writeFile($path_filename, $hash);
+		}
+		return false;
+	}
+
+	protected static $pkOwnerSearch = array(
+		'company' => 'COM_COMPONENTBUILDER_DTCOMPANYDTDDSDD',
+		'owner' => 'COM_COMPONENTBUILDER_DTOWNERDTDDSDD',
+		'email' => 'COM_COMPONENTBUILDER_DTEMAILDTDDSDD',
+		'website' => 'COM_COMPONENTBUILDER_DTWEBSITEDTDDSDD',
+		'license' => 'COM_COMPONENTBUILDER_DTLICENSEDTDDSDD',
+		'copyright' => 'COM_COMPONENTBUILDER_DTCOPYRIGHTDTDDSDD'
+		);
+
+	/**
+	* get the JCB package owner details display
+	**/
+	public static function getPackageOwnerDetailsDisplay(&$info, $trust = false)
+	{
+		$hasOwner = false;
+		$ownerDetails = '<h2 class="module-title nav-header">' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
+		$ownerDetails .= '<dl class="uk-description-list-horizontal">';
+		// load the list items
+		foreach (self::$pkOwnerSearch as $key => $dd)
+		{
+			if ($value = self::getPackageOwnerValue($key, $info))
+			{
+				$ownerDetails .= JText::sprintf($dd, $value);
+				// check if we have a owner/source name
+				if (('owner' === $key || 'company' === $key) && !$hasOwner)
+				{
+					$hasOwner = true;
+					$owner = $value;
+				}
+			}
+		}
+		$ownerDetails .= '</dl>';
+
+		// provide some details to how the user can get a key
+		if ($hasOwner && isset($info['getKeyFrom']['buy_link']) && self::checkString($info['getKeyFrom']['buy_link']))
+		{
+			$ownerDetails .= '<hr />';
+			$ownerDetails .= JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_SSA', 'class="btn btn-primary" href="'.$info['getKeyFrom']['buy_link'].'" target="_blank" title="get a key from '.$owner.'"', $owner);
+		}
+		// add more custom links
+		elseif ($hasOwner && isset($info['getKeyFrom']['buy_links']) && self::checkArray($info['getKeyFrom']['buy_links']))
+		{
+			$buttons = array();
+			foreach ($info['getKeyFrom']['buy_links'] as $keyName => $link)
+			{
+				$buttons[] = JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROM_SB_FOR_A_SSA', $owner, 'class="btn btn-primary" href="'.$link.'" target="_blank" title="get a key from '.$owner.'"', $keyName);
+			}
+			$ownerDetails .= '<hr />';
+			$ownerDetails .= implode('<br />', $buttons);
+		}
+		// return the owner details
+		if (!$hasOwner)
+		{
+			$ownerDetails = '<h2>' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS_NOT_FOUND') . '</h2>';
+			if (!$trust)
+			{
+				$ownerDetails .= '<p style="color: #922924;">' . JText::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE') . '</p>';
+			}
+		}
+		return '<div>'.$ownerDetails.'</div>';
+	}
+
+	public static function getPackageOwnerValue($key, &$info)
+	{
+		$source = (isset($info['source']) && isset($info['source'][$key])) ? 'source' : ((isset($info['getKeyFrom']) && isset($info['getKeyFrom'][$key])) ? 'getKeyFrom' : false);
+		if ($source && self::checkString($info[$source][$key]))
+		{
+			return $info[$source][$key];
+		}
+		return false;
+	}
+
+	/**
+	*  get the JCB package component key status
+	**/
+	public static function getPackageComponentsKeyStatus(&$info)
+	{
+		// check the package key status
+		if (!isset($info['key']))
+		{
+			if (isset($info['getKeyFrom']) && isset($info['getKeyFrom']['owner']))
+			{
+				// this just confirms it for older packages
+				$info['key'] = true;
+			}
+			else
+			{
+				// this just confirms it for older packages
+				$info['key'] = false;
+			}
+		}
+		return $info['key'];
+	}
+
+	protected static $compOwnerSearch = array(
+		'ul' => array (
+			'companyname' => 'COM_COMPONENTBUILDER_ICOMPANYI_BSB',
+			'author' => 'COM_COMPONENTBUILDER_IAUTHORI_BSB',
+			'email' => 'COM_COMPONENTBUILDER_IEMAILI_BSB',
+			'website' => 'COM_COMPONENTBUILDER_IWEBSITEI_BSB',
+			),
+		'other' => array(
+			'license' => 'COM_COMPONENTBUILDER_HFOUR_CLASSNAVHEADERLICENSEHFOURPSP',
+			'copyright' => 'COM_COMPONENTBUILDER_HFOUR_CLASSNAVHEADERCOPYRIGHTHFOURPSP'
+			)
+		);
+
+	/**
+	* get the JCB package component details display
+	**/
+	public static function getPackageComponentsDetailsDisplay(&$info)
+	{
+		// check if these components need a key
+		$needKey = self::getPackageComponentsKeyStatus($info);
+		if (isset($info['name']) && self::checkArray($info['name'])) 
+		{
+			$cAmount = count((array) $info['name']);
+			$class2 = ($cAmount == 1) ? 'span12' : 'span6';
+			$counter = 1;
+			$display = array();
+			foreach ($info['name'] as $key => $value)
+			{
+				// set the name
+				$name= $value . ' v' . $info['component_version'][$key];
+				if ($cAmount > 1 && $counter == 3)
+				{
+					$display[] = '</div>';
+					$counter = 1;
+				}
+				if ($cAmount > 1 && $counter == 1)
+				{
+					$display[] = '<div>';
+				}
+				$display[] = '<div class="well well-small ' . $class2 . '">';
+				$display[] = '<h3>';
+				$display[] = $name;
+				if ($needKey)
+				{
+					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_PAIDLOCKED') . '</em>';
+				}
+				else
+				{
+					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_FREEOPEN') . '</em>';
+				}
+				$display[] = '</h3><h4>';
+				$display[] = $info['short_description'][$key];
+				$display[] = '</h4>';
+				$display[] = '<ul class="uk-list uk-list-striped">';
+				// load the list items
+				foreach (self::$compOwnerSearch['ul'] as $li => $value)
+				{
+					if (isset($info[$li]) && isset($info[$li][$key]))
+					{
+						$display[] = '<li>'.JText::sprintf($value, $info[$li][$key]).'</li>';
+					}
+				}
+				$display[] = '</ul>';
+				// if we have a source link we add it
+				if (isset($info['joomla_source_link']) && self::checkArray($info['joomla_source_link']) && isset($info['joomla_source_link'][$key]) && self::checkString($info['joomla_source_link'][$key]))
+				{
+					$display[] = '<a class="uk-button uk-button-mini uk-width-1-1 uk-margin-small-bottom " href="'.$info['joomla_source_link'][$key].'" target="_blank" title="Source Code for Joomla Component ('.$name.')">source code</a>';
+				}
+				// load other
+				foreach (self::$compOwnerSearch['other'] as $other => $value)
+				{
+					if (isset($info[$other]) && isset($info[$other][$key]))
+					{
+						$display[] = JText::sprintf($value, $info[$other][$key]);
+					}
+				}
+				$display[] = '</div>';
+
+				$counter++;
+			}
+			// close the div if needed
+			if ($cAmount > 1)
+			{
+				$display[] = '</div>';
+			}
+			return implode("\n",$display);
+		}
+		return '<div>'.JText::_('COM_COMPONENTBUILDER_NO_COMPONENT_DETAILS_FOUND_SO_IT_IS_NOT_SAFE_TO_CONTINUE').'</div>';
+	}
+
+	/**
+	 * The array of dynamic content
+	 * 
+	 * @var     array
+	 */
+	protected static $dynamicContent = array(
+		// The banners by size
+		'banner' => array(
+			'728-90' => array(
+				'<a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>',
+				'<a href="https://magazine.joomla.org" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img alt="Joomla! Community Magazine | Because community matters..." src="https://magazine.joomla.org/images/banners/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>'
+			),
+			'160-600' => array(
+				'<a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>',
+				'<a href="https://magazine.joomla.org" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img src="https://magazine.joomla.org/images/banners/JCM_2010_120x600.png" alt="Joomla! Community Magazine | Because community matters..." width="120" height="600" border="0"/></a>'
+			)
+		),
+		// The build-gif by size
+		'builder-gif' => array(
+			'707-400' => array(
+				'<img src="components/com_componentbuilder/assets/images/ajax-loader.gif" />'
+			)
+		)
+	);
+
+	/**
+	 * get the dynamic content
+	 * 
+	 * @param   string   $type     The type of content
+	 * @param   string    $size   The size of the content
+	 *
+	 * @return  string   on success
+	 * 
+	 */
+	public static function getDynamicContent($type, $size, $default = '')
+	{
+		if (isset(self::$dynamicContent[$type]) && isset(self::$dynamicContent[$type][$size]) && ($nr = self::checkArray(self::$dynamicContent[$type][$size])))
+		{
+			// get the random item number
+			$get = (int) rand(0, --$nr);
+			// return found content
+			return self::$dynamicContent[$type][$size][$get];
+		}
+		return $default;
+	}
+
+	/**
+	* 	the Butler
+	**/
+	public static $session = array();
+
+	/**
+	* 	the Butler Assistant 
+	**/
+	protected static $localSession = array();
+
+	/**
+	* 	start a session if not already set, and load with data
+	**/
+	public static function loadSession()
+	{
+		if (!isset(self::$session) || !self::checkObject(self::$session))
+		{
+			self::$session = JFactory::getSession();
+		}
+		// set the defaults
+		self::setSessionDefaults();
+	}
+
+	/**
+	* 	give Session more to keep
+	**/
+	public static function set($key, $value)
+	{
+		if (!isset(self::$session) || !self::checkObject(self::$session))
+		{
+			self::$session = JFactory::getSession();
+		}
+		// set to local memory to speed up program
+		self::$localSession[$key] = $value;
+		// load to session for later use
+		return self::$session->set($key, self::$localSession[$key]);
+	}
+
+	/**
+	* 	get info from Session
+	**/
+	public static function get($key, $default = null)
+	{
+		if (!isset(self::$session) || !self::checkObject(self::$session))
+		{
+			self::$session = JFactory::getSession();
+		}
+		// check if in local memory
+		if (!isset(self::$localSession[$key]))
+		{
+			// set to local memory to speed up program
+			self::$localSession[$key] = self::$session->get($key, $default);
+		}
+		return self::$localSession[$key];
+	}
+
 
 	public static function getFieldOptions($value, $type, $settings = array(), $xml = null)
 	{
@@ -882,117 +1339,158 @@ abstract class ComponentbuilderHelper
 	}
 
 
-	/*
-	 * Convert repeatable field to subform
+	/**
+	 * Remove folders with files
 	 * 
-	 * @param   array    $item       The array to convert
-	 * @param   string   $name      The main field name
+	 * @param   string   $dir     The path to folder to remove
+	 * @param   boolean  $ignore  The folders and files to ignore and not remove
 	 *
-	 * @return  array
+	 * @return  boolean   True in all is removed
+	 * 
 	 */
-	public static function convertRepeatable($item, $name)
+	public static function removeFolder($dir, $ignore = false)
 	{
-		// continue only if we have an array
-		if (self::checkArray($item))
+		if (JFolder::exists($dir))
 		{
-			$bucket = array();
-			foreach ($item as $key => $values)
+			$it = new RecursiveDirectoryIterator($dir);
+			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+			foreach ($it as $file)
 			{
-				foreach ($values as $nr => $value)
+				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
+				if ($file->isDir())
 				{
-					if (!isset($bucket[$name . $nr]) || !self::checkArray($bucket[$name . $nr]))
+					$keeper = false;
+					if (self::checkArray($ignore))
 					{
-						$bucket[$name . $nr] = array();
+						foreach ($ignore as $keep)
+						{
+							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
+							{
+								$keeper = true;
+							}
+						}
 					}
-					$bucket[$name . $nr][$key] = $value;
+					if ($keeper)
+					{
+						continue;
+					}
+					JFolder::delete($file->getPathname());
+				}
+				else
+				{
+					$keeper = false;
+					if (self::checkArray($ignore))
+					{
+						foreach ($ignore as $keep)
+						{
+							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
+							{
+								$keeper = true;
+							}
+						}
+					}
+					if ($keeper)
+					{
+						continue;
+					}
+					JFile::delete($file->getPathname());
 				}
 			}
-			return $bucket;
+			if (!self::checkArray($ignore))
+			{
+				return JFolder::delete($dir);
+			}
+			return true;
 		}
-		return $item;
+		return false;
 	}
 
-	/*
-	 * Convert repeatable field to subform
-	 * 
-	 * @param   object     $item            The item to update
-	 * @param   array      $searcher        The fields to check and update
-	 * @param   array      $updater         To update the local table
-	 *
-	 * @return void
-	 */
-	public static function convertRepeatableFields($object, $searcher, $updater = array())
+
+	/**
+	*	get the github repo file list
+	*
+	*	@return  array on success
+	* 
+	*/
+	public static function getGithubRepoFileList($type, $target)
 	{
-		// update the repeatable fields
-		foreach ($searcher as  $key => $sleutel)
+		// get the current Packages (public)
+		if (!$repoData = self::get($type))
 		{
-			if (isset($object->{$key}))
+			if (self::urlExists($target))
 			{
-				$isJson = false;
-				if (self::checkJson($object->{$key}))
+				$repoData = self::getFileContents($target);
+				if (self::checkJson($repoData))
 				{
-					$object->{$key} = json_decode($object->{$key}, true);
-					$isJson = true;
-				}
-				// check if this is old values for repeatable fields
-				if (self::checkArray($object->{$key}) && isset($object->{$key}[$sleutel]))
-				{
-					// load it back
-					$object->{$key} = self::convertRepeatable($object->{$key}, $key);
-					// add to global updater
-					if (
-						self::checkArray($object->{$key}) && self::checkArray($updater) && 
-						(
-							( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) ) || 
-							( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
-						)
-					   )
+					$test = json_decode($repoData);
+					if (self::checkObject($test) && isset($test->tree) && self::checkArray($test->tree) )
 					{
-						$_key = null;
-						$_value = null;
-						$_table = null;
-						// check if we have unique id table for this repeatable/subform field
-						if ( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
+						// remember to set it
+						self::set($type, $repoData);
+					}
+					// check if we have error message from github
+					elseif ($errorMessage = self::githubErrorHandeler(array('error' => null), $test))
+					{
+						if (self::checkString($errorMessage['error']))
 						{
-							$_key = $updater['unique'][$key]['key'];
-							$_value = $updater['unique'][$key]['val'];
-							$_table = $updater['unique'][$key]['table'];
+							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
 						}
-						elseif ( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) )
-						{
-							$_key = $updater['key'];
-							$_value = $updater['val'];
-							$_table = $updater['table'];
-						}
-						// continue only if values are valid
-						if (self::checkString($_table) && self::checkString($_key) && $_value > 0)
-						{
-							// set target table & item
-							$target = trim($_table) . '.' . trim($_key) . '.' . trim($_value);
-							if (!isset(self::$globalUpdater[$target]))
-							{
-								self::$globalUpdater[$target] = new stdClass;
-								self::$globalUpdater[$target]->{$_key} = (int) $_value;
-							}
-							// load the new subform values to global updater
-							self::$globalUpdater[$target]->{$key} = json_encode($object->{$key});
-						}
+						$repoData = false;
 					}
 				}
-				// no set back to json if came in as json
-				if ($isJson && self::checkArray($object->{$key}))
+				else
 				{
-					$object->{$key} = json_encode($object->{$key}); 
-				}
-				// remove if not json or array
-				elseif (!self::checkArray($object->{$key}) && !self::checkJson($object->{$key}))
-				{
-					unset($object->{$key});
+					$repoData = false;
 				}
 			}
+			else
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $target), 'Error');
+			}
 		}
-		return $object;
+		// check if we could find packages
+		if (isset($repoData) && self::checkJson($repoData))
+		{
+			$repoData = json_decode($repoData);
+			if (self::checkObject($repoData) && isset($repoData->tree) && self::checkArray($repoData->tree) )
+			{
+				return $repoData->tree;
+			}
+		}
+		return false;
 	}
+
+	/**
+	*	get the github error messages
+	*
+	*	@return  array of errors on success
+	* 
+	*/
+	protected static function githubErrorHandeler($message, &$github)
+	{
+		if (self::checkObject($github) && isset($github->message) && self::checkString($github->message))
+		{
+			// set the message
+			$errorMessage = $github->message;
+			// add the documentation URL
+			if (isset($github->documentation_url) && self::checkString($github->documentation_url))
+			{
+				$errorMessage = $errorMessage.'<br />'.$github->documentation_url;
+			}
+			// check the message
+			if (strpos($errorMessage, 'Authenticated') !== false)
+			{
+				// add little more help if it is an access token issue
+				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_AN_BACCESS_TOKENB_TO_GETBIBLE_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO', $errorMessage);
+			}
+			// set error notice
+			$message['error'] = $errorMessage;
+			// we have error message
+			return $message;
+		}
+		return false;
+	}
+
 
 	public static function getDynamicScripts($type, $fieldName = false)
 	{
@@ -1713,181 +2211,6 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	/**
-	 * Run Global Updater if any are set
-	 * 
-	 * @return  void
-	 * 
-	 */
-	public static function runGlobalUpdater()
-	{
-		// check if any updates are set to run
-		if (self::checkArray(self::$globalUpdater))
-		{
-			// get the database object
-			$db = JFactory::getDbo();
-			foreach (self::$globalUpdater as $tableKeyID => $object)
-			{
-				// get the table
-				$table = explode('.', $tableKeyID);
-				// update the item
-				$db->updateObject('#__componentbuilder_' . (string) $table[0] , $object, (string) $table[1]);
-			}
-			// rest updater
-			self::$globalUpdater = array();
-		}
-	}
-
-	/**
-	 * Copy Any Item (only use for direct database copying)
-	 * 
-	 * @param   int        $id         The item to copy
-	 * @param   string   $table     The table and model to copy from and with
-	 * @param   array    $config   The values that should change
-	 *
-	 * @return  boolean   True if success
-	 * 
-	 */
-	public static function copyItem($id, $type, $config = array())
-	{
-		// only continue if we have an id
-		if ((int) $id > 0)
-		{
-			// get the model
-			$model = self::getModel($type);
-			$app   = \JFactory::getApplication();
-			// get item
-			if ($item = $model->getItem($id))
-			{
-				// update values that should change
-				if (self::checkArray($config))
-				{
-					foreach($config as $key => $value)
-					{
-						if (isset($item->{$key}))
-						{
-							$item->{$key} = $value;
-						}
-					}
-				}
-				// clone the object
-				$data = array();
-				foreach ($item as $key => $value)
-				{
-					$data[$key] = $value;
-				}			
-				// reset some values
-				$data['id'] = 0;
-				$data['version'] = 1;
-				if (isset($data['tags']))
-				{
-					$data['tags'] = null;
-				}
-				if (isset($data['associations']))
-				{
-					$data['associations'] = array();
-				}
-				// remove some unneeded values
-				unset($data['params']);
-				unset($data['asset_id']);
-				unset($data['checked_out']);
-				unset($data['checked_out_time']);
-				// Attempt to save the data.
-				if ($model->save($data))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	* 	the basic localkey
-	**/
-	protected static $localkey = false;
-
-	/**
-	* 	get the localkey
-	**/	
-	public static function getLocalKey()
-	{
-		if (!self::$localkey)
-		{
-			// get the basic key
-			self::$localkey = md5(self::getCryptKey('basic', 'localKey34fdWEkl'));
-		}
-		return self::$localkey;
-	}
-
-	/**
-	 *	indent HTML
-	 */
-	public static function indent($html)
-	{
-		// load the class
-		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/indenter.php';
-		// set new indenter
-		$indenter = new Indenter();
-		// return indented html
-		return $indenter->indent($html);
-	}
-
-	public static function checkFileType($file, $sufix)
-	{
-		// now check if the file ends with the sufix
-		return $sufix === "" || ($sufix == substr(strrchr($file, "."), -strlen($sufix)));
-	}
-
-	public static function imageInfo($path, $request = 'type')
-	{
-		// set image
-		$image = JPATH_SITE.'/'.$path;
-		// check if exists
-		if (file_exists($image) && $result = @getimagesize($image))
-		{
-			// return type request
-			switch ($request)
-			{
-				case 'width':
-					return $result[0];
-					break;
-				case 'height':
-					return $result[1];
-					break;
-				case 'type':
-					$extensions = array(
-						IMAGETYPE_GIF => "gif",
-						IMAGETYPE_JPEG => "jpg",
-						IMAGETYPE_PNG => "png",
-						IMAGETYPE_SWF => "swf",
-						IMAGETYPE_PSD => "psd",
-						IMAGETYPE_BMP => "bmp",
-						IMAGETYPE_TIFF_II => "tiff",
-						IMAGETYPE_TIFF_MM => "tiff",
-						IMAGETYPE_JPC => "jpc",
-						IMAGETYPE_JP2 => "jp2",
-						IMAGETYPE_JPX => "jpx",
-						IMAGETYPE_JB2 => "jb2",
-						IMAGETYPE_SWC => "swc",
-						IMAGETYPE_IFF => "iff",
-						IMAGETYPE_WBMP => "wbmp",
-						IMAGETYPE_XBM => "xbm",
-						IMAGETYPE_ICO => "ico"
-					);
-					return $extensions[$result[2]];
-					break;
-				case 'attr':
-					return $result[3];
-					break;
-				case 'all':
-				default:
-					return $result;
-					break;
-			}
-		}
-		return false;
-	}
 
 	/**
 	* get between
@@ -2027,278 +2350,6 @@ abstract class ComponentbuilderHelper
 		return self::getVars('fieldtype', (array) array_map(function($name) use($db) { return $db->quote(ucfirst($name)); }, self::$fieldGroups['spacer']), 'name', 'id');
 	}
 
-	/**
-	* 	set the session defaults if not set
-	**/
-	protected static function setSessionDefaults()
-	{
-		// noting for now
-		return true;
-	}
-
-	/**
-	* 	the Butler
-	**/
-	public static $session = array();
-
-	/**
-	* 	the Butler Assistant 
-	**/
-	protected static $localSession = array();
-
-	/**
-	* 	start a session if not already set, and load with data
-	**/
-	public static function loadSession()
-	{
-		if (!isset(self::$session) || !self::checkObject(self::$session))
-		{
-			self::$session = JFactory::getSession();
-		}
-		// set the defaults
-		self::setSessionDefaults();
-	}
-
-	/**
-	* 	give Session more to keep
-	**/
-	public static function set($key, $value)
-	{
-		if (!isset(self::$session) || !self::checkObject(self::$session))
-		{
-			self::$session = JFactory::getSession();
-		}
-		// set to local memory to speed up program
-		self::$localSession[$key] = $value;
-		// load to session for later use
-		return self::$session->set($key, self::$localSession[$key]);
-	}
-
-	/**
-	* 	get info from Session
-	**/
-	public static function get($key, $default = null)
-	{
-		if (!isset(self::$session) || !self::checkObject(self::$session))
-		{
-			self::$session = JFactory::getSession();
-		}
-		// check if in local memory
-		if (!isset(self::$localSession[$key]))
-		{
-			// set to local memory to speed up program
-			self::$localSession[$key] = self::$session->get($key, $default);
-		}
-		return self::$localSession[$key];
-	}
-
-	/**
-	* 	check if it is a new hash
-	**/
-	public static function newHash($hash, $name = 'backup', $type = 'hash', $key = '',  $fileType = 'txt')
-	{
-		// make sure we have a hash
-		if (self::checkString($hash))
-		{
-			// first get the file path
-			$path_filename = self::getFilePath('path', $name.$type, $fileType, $key, JPATH_COMPONENT_ADMINISTRATOR);
-			// set as read if not already set
-			if ($content = self::getFileContents($path_filename, false))
-			{
-				if ($hash == $content)
-				{
-					return false;
-				}
-			}
-			// set the hash
-			return self::writeFile($path_filename, $hash);
-		}
-		return false;
-	}
-
-	protected static $pkOwnerSearch = array(
-		'company' => 'COM_COMPONENTBUILDER_DTCOMPANYDTDDSDD',
-		'owner' => 'COM_COMPONENTBUILDER_DTOWNERDTDDSDD',
-		'email' => 'COM_COMPONENTBUILDER_DTEMAILDTDDSDD',
-		'website' => 'COM_COMPONENTBUILDER_DTWEBSITEDTDDSDD',
-		'license' => 'COM_COMPONENTBUILDER_DTLICENSEDTDDSDD',
-		'copyright' => 'COM_COMPONENTBUILDER_DTCOPYRIGHTDTDDSDD'
-		);
-
-	/**
-	* 	get the JCB package owner details display
-	**/
-	public static function getPackageOwnerDetailsDisplay(&$info, $trust = false)
-	{
-		$hasOwner = false;
-		$ownerDetails = '<h2 class="module-title nav-header">' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
-		$ownerDetails .= '<dl class="uk-description-list-horizontal">';
-		// load the list items
-		foreach (self::$pkOwnerSearch as $key => $dd)
-		{
-			if ($value = self::getPackageOwnerValue($key, $info))
-			{
-				$ownerDetails .= JText::sprintf($dd, $value);
-				// check if we have a owner/source name
-				if (('owner' === $key || 'company' === $key) && !$hasOwner)
-				{
-					$hasOwner = true;
-					$owner = $value;
-				}
-			}
-		}				
-		$ownerDetails .= '</dl>';
-
-		// provide some details to how the user can get a key
-		if ($hasOwner && isset($info['getKeyFrom']['buy_link']) && self::checkString($info['getKeyFrom']['buy_link']))
-		{
-			$ownerDetails .= '<hr />';
-			$ownerDetails .= JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_SSA', 'class="btn btn-primary" href="'.$info['getKeyFrom']['buy_link'].'" target="_blank" title="get a key from '.$owner.'"', $owner);
-		}
-		// add more custom links
-		elseif ($hasOwner && isset($info['getKeyFrom']['buy_links']) && self::checkArray($info['getKeyFrom']['buy_links']))
-		{
-			$buttons = array();
-			foreach ($info['getKeyFrom']['buy_links'] as $keyName => $link)
-			{
-				$buttons[] = JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROM_SB_FOR_A_SSA', $owner, 'class="btn btn-primary" href="'.$link.'" target="_blank" title="get a key from '.$owner.'"', $keyName);
-			}
-			$ownerDetails .= '<hr />';
-			$ownerDetails .= implode('<br />', $buttons);
-		}
-		// return the owner details
-		if (!$hasOwner)
-		{
-			$ownerDetails = '<h2>' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS_NOT_FOUND') . '</h2>';
-			if (!$trust)
-			{
-				$ownerDetails .= '<p style="color: #922924;">' . JText::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE') . '</p>';
-			}
-		}
-		return '<div>'.$ownerDetails.'</div>';
-	}
-
-	public static function getPackageOwnerValue($key, &$info)
-	{
-		$source = (isset($info['source']) && isset($info['source'][$key])) ? 'source' : ((isset($info['getKeyFrom']) && isset($info['getKeyFrom'][$key])) ? 'getKeyFrom' : false);
-		if ($source && self::checkString($info[$source][$key]))
-		{
-			return $info[$source][$key];
-		}
-		return false;
-	}
-
-	/**
-	* 	get the JCB package component key status
-	**/
-	public static function getPackageComponentsKeyStatus(&$info)
-	{
-		// check the package key status
-		if (!isset($info['key']))
-		{
-			if (isset($info['getKeyFrom']) && isset($info['getKeyFrom']['owner']))
-			{
-				// this just confirms it for older packages
-				$info['key'] = true;
-			}
-			else
-			{
-				// this just confirms it for older packages
-				$info['key'] = false;
-			}
-		}
-		return $info['key'];
-	}
-
-	protected static $compOwnerSearch = array(
-		'ul' => array (
-			'companyname' => 'COM_COMPONENTBUILDER_ICOMPANYI_BSB',
-			'author' => 'COM_COMPONENTBUILDER_IAUTHORI_BSB',
-			'email' => 'COM_COMPONENTBUILDER_IEMAILI_BSB',
-			'website' => 'COM_COMPONENTBUILDER_IWEBSITEI_BSB',
-			),
-		'other' => array(
-			'license' => 'COM_COMPONENTBUILDER_HFOUR_CLASSNAVHEADERLICENSEHFOURPSP',
-			'copyright' => 'COM_COMPONENTBUILDER_HFOUR_CLASSNAVHEADERCOPYRIGHTHFOURPSP'
-			)
-		);
-
-	/**
-	* 	get the JCB package component details display
-	**/
-	public static function getPackageComponentsDetailsDisplay(&$info)
-	{
-		// check if these components need a key
-		$needKey = self::getPackageComponentsKeyStatus($info);
-		if (isset($info['name']) && self::checkArray($info['name'])) 
-		{
-			$cAmount = count((array) $info['name']);
-			$class2 = ($cAmount == 1) ? 'span12' : 'span6';
-			$counter = 1;
-			$display = array();
-			foreach ($info['name'] as $key => $value)
-			{
-				// set the name
-				$name= $value . ' v' . $info['component_version'][$key];
-				if ($cAmount > 1 && $counter == 3)
-				{
-					$display[] = '</div>';
-					$counter = 1;
-				}
-				if ($cAmount > 1 && $counter == 1)
-				{
-					$display[] = '<div>';
-				}
-				$display[] = '<div class="well well-small ' . $class2 . '">';
-				$display[] = '<h3>';
-				$display[] = $name;
-				if ($needKey)
-				{
-					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_PAIDLOCKED') . '</em>';
-				}
-				else
-				{
-					$display[] = ' - <em>' . JText::sprintf('COM_COMPONENTBUILDER_FREEOPEN') . '</em>';
-				}
-				$display[] = '</h3><h4>';
-				$display[] = $info['short_description'][$key];
-				$display[] = '</h4>';
-				$display[] = '<ul class="uk-list uk-list-striped">';
-				// load the list items
-				foreach (self::$compOwnerSearch['ul'] as $li => $value)
-				{
-					if (isset($info[$li]) && isset($info[$li][$key]))
-					{
-						$display[] = '<li>'.JText::sprintf($value, $info[$li][$key]).'</li>';
-					}
-				}
-				$display[] = '</ul>';
-				// if we have a source link we add it
-				if (isset($info['joomla_source_link']) && self::checkArray($info['joomla_source_link']) && isset($info['joomla_source_link'][$key]) && self::checkString($info['joomla_source_link'][$key]))
-				{
-					$display[] = '<a class="uk-button uk-button-mini uk-width-1-1 uk-margin-small-bottom " href="'.$info['joomla_source_link'][$key].'" target="_blank" title="Source Code for Joomla Component ('.$name.')">source code</a>';
-				}
-				// load other
-				foreach (self::$compOwnerSearch['other'] as $other => $value)
-				{
-					if (isset($info[$other]) && isset($info[$other][$key]))
-					{
-						$display[] = JText::sprintf($value, $info[$other][$key]);
-					}
-				}
-				$display[] = '</div>';
-
-				$counter++;
-			}
-			// close the div if needed
-			if ($cAmount > 1)
-			{
-				$display[] = '</div>';
-			}
-			return implode("\n",$display);
-		}
-		return '<div>'.JText::_('COM_COMPONENTBUILDER_NO_COMPONENT_DETAILS_FOUND_SO_IT_IS_NOT_SAFE_TO_CONTINUE').'</div>';
-	}
 
 	/**
 	 * open base64 string if stored as base64

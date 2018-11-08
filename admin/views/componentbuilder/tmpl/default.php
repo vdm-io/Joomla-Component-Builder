@@ -87,7 +87,7 @@ JHtml::_('behavior.tooltip');
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
 			<div class="span2">
-				<a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>
+				<?php echo ComponentbuilderHelper::getDynamicContent('banner', '160-600'); ?>
 			</div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
