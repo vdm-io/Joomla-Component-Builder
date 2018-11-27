@@ -4781,7 +4781,7 @@ class Get
 	 * @return  string
 	 * 
 	 */
-	public function setCustomCodeData($string, $debug = 0)
+	public function setCustomCodeData($string, $debug = 0, $not = null)
 	{
 		// insure the code is loaded
 		$loaded = false;
@@ -4880,6 +4880,11 @@ class Get
 					{
 						continue;
 					}
+					// make sure to remove the not if set
+					if ($not && is_numeric($not) && $not > 0 && $not == $id)
+					{
+						continue;
+					}
 					$bucket[$id] = $id;
 				}
 			}
@@ -4896,7 +4901,7 @@ class Get
 				// insure we add the langs to both site and admin
 				$this->lang = 'both';
 				// now load the code to memory
-				$loaded = $this->getCustomCode($bucket, false);
+				$loaded = $this->getCustomCode($bucket, false, $debug);
 				// revert lang to current setting
 				$this->lang = $_tmpLang;
 			}
@@ -4939,6 +4944,7 @@ class Get
 			echo '$this->customCode:';
 			var_dump($this->customCode);
 		}
+		// load the code
 		foreach ($this->customCode as $item)
 		{
 			$this->buildCustomCodePlaceholders($item, $code, $debug);
@@ -5418,7 +5424,7 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	public function getCustomCode($ids = null, $setLang = true)
+	public function getCustomCode($ids = null, $setLang = true, $debug = 0)
 	{
 		// should the result be stored in memory
 		$loadInMemory = false;
@@ -5427,7 +5433,7 @@ class Get
 		$query->from($this->db->quoteName('#__componentbuilder_custom_code', 'a'));
 		if (ComponentbuilderHelper::checkArray($ids))
 		{
-			if ($idArray = $this->customCodeMemory($ids))
+			if ($idArray = $this->checkCustomCodeMemory($ids))
 			{
 				$query->select($this->db->quoteName(array('a.id', 'a.code', 'a.comment_type')));
 				$query->where($this->db->quoteName('a.id') . ' IN (' . implode(',', $idArray) . ')');
@@ -5466,6 +5472,11 @@ class Get
 				{
 					$customCode['code'] = $this->setLangStrings($customCode['code']);
 				}
+				// check for more custom code (since this is a custom code placeholder)
+				else
+				{
+					$customCode['code'] = $this->setCustomCodeData($customCode['code'], $debug, $nr);
+				}
 				if (isset($customCode['hashtarget']))
 				{
 					$customCode['hashtarget'] = explode("__", $customCode['hashtarget']);
@@ -5492,7 +5503,7 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	protected function customCodeMemory($ids)
+	protected function checkCustomCodeMemory($ids)
 	{
 		// reset custom code
 		$this->customCode = array();

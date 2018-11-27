@@ -1727,6 +1727,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'views' => 'libraries',
 			'not_base64' => array(),
 			'name' => 'name'
+		),
+		// #__componentbuilder_custom_code (m)
+		'custom_code' => array(
+			'search' => array('id', 'system_name', 'code'),
+			'views' => 'custom_codes',
+			'not_base64' => array(),
+			'name' => 'system_name'
 		)
 	);
 

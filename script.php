@@ -3467,6 +3467,16 @@ class com_componentbuilderInstallerScript
 						}
 					}
 				}
+				// target version less then 2.9.8
+				if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && (($this->JCBversion[1] == 9 && $this->JCBversion[2] <= 7) || $this->JCBversion[1] < 9))
+				{
+					// check if this install has the wiki file (just remove it)
+					$wiki_menu = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/wiki_menu.txt';
+					if (JFile::exists($wiki_menu))
+					{
+						JFile::delete($wiki_menu);
+					}
+				}
 			}
 		}
 		// do any install needed
