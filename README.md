@@ -1,5 +1,7 @@
 # Joomla Component Builder (JCB)
 [![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases) [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
+[![Backers on Open Collective](https://opencollective.com/Joomla-Component-Builder/backers/badge.svg)](#backers) 
+[![Sponsors on Open Collective](https://opencollective.com/Joomla-Component-Builder/sponsors/badge.svg)](#sponsors) 
 
 This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -145,9 +147,40 @@ TODO
 > This **component** was build with a Joomla [Automated Component Builder](http://joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 
+## Contributors
+
+This project exists thanks to all the people who contribute. 
+<a href="https://github.com/vdm-io/Joomla-Component-Builder/graphs/contributors"><img src="https://opencollective.com/Joomla-Component-Builder/contributors.svg?width=890&button=false" /></a>
+
+
 ## Donations
 
 Come on buy VDM a coffee :)
  * PayPal: [paypal.me/asseblief](https://www.paypal.me/asseblief) (Asseblief = Please) in Afrikaans
  * Bitcoin: 18vURxYpPFjvNk8BnUy1ovCAyQmY3MzkSf
  * Ethereum: 0x9548144662b47327c954f3e214edb96662d51218
+
+
+### Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/Joomla-Component-Builder#backer)]
+
+<a href="https://opencollective.com/Joomla-Component-Builder#backers" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/backers.svg?width=890"></a>
+
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/Joomla-Component-Builder#sponsor)]
+
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/0/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/1/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/2/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/3/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/4/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/5/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/6/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/7/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/8/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/Joomla-Component-Builder/sponsor/9/website" target="_blank"><img src="https://opencollective.com/Joomla-Component-Builder/sponsor/9/avatar.svg"></a>
+
+
