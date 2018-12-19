@@ -110,29 +110,32 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 
 
-<?php $fieldNrs = range(1,50,1); ?>
-<?php foreach($fieldNrs as $nr): ?>jQuery('#jform_addadmin_views_modal').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
-	// update the icon if changed
-	var vala_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
-	// build new span
-	var span = '<span id="icon_addadmin_views_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
-	// remove old one 
-	jQuery('#icon_addadmin_views_fields_icomoon_<?php echo $nr; ?>').remove();
-	// add the new icon
-	jQuery('#jform_addadmin_views_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
+jQuery(document).ready(function(){
+	jQuery(document).on('subform-row-add', function(event, row){
+		var group_key = jQuery(row).context.dataset.group;
+		jQuery(row).find('#jform_addadmin_views__' + group_key + '__submenu').prop('checked', true);
+		jQuery(row).find('#jform_addadmin_views__' + group_key + '__checkin').prop('checked', true);
+		jQuery(row).find('#jform_addadmin_views__' + group_key + '__history').prop('checked', true);
+		jQuery(row).find('#jform_addadmin_views__' + group_key + '__access').prop('checked', true);
+		jQuery(row).find('#jform_addadmin_views__' + group_key + '__port').prop('checked', true);
+	})
+});
+jQuery(document).ready(function(){
+	jQuery(document).on('subform-row-add', function(event, row){
+		getIconImage(jQuery(row).find('.icomoon342'));
+	});
 });
 
-jQuery(document).ready(function() {
-jQuery('input.form-field-repeatable').on('row-add', function (e) {
-	// show the icon if set
-	var vala_<?php echo $nr; ?> = jQuery('#jform_addadmin_views_fields_icomoon-<?php echo $nr; ?>').val();
-	// build new span
-	var span = '<span id="icon_addadmin_views_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
+function getIconImage(field) {
+	// get the ID
+	var id = jQuery(field).attr('id');
 	// remove old one 
-	jQuery('#icon_addadmin_views_fields_icomoon_<?php echo $nr; ?>').remove();
-	// add the new icon
-	jQuery('#jform_addadmin_views_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
-});
-});
-<?php endforeach; ?>
+	jQuery('#image_'+id).remove();
+	// get value
+	var value = jQuery('#'+id).val();
+	// build new one
+	var span = '<span id="image_'+id+'" class="icon-'+value+'" style="position: absolute; top: 8px; right: -20px;"></span>';
+	// add the icon
+	jQuery('#'+id+'_chzn').append(span);
+}
 </script>

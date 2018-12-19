@@ -106,7 +106,7 @@
 			layout="joomla.form.field.subform.repeatable-table"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADDADMIN_VIEWS_DESCRIPTION"
-			default=""
+			default="[{&quot;submenu&quot;:&quot;1&quot;,&quot;checkin&quot;:&quot;1&quot;,&quot;history&quot;:&quot;1&quot;,&quot;access&quot;:&quot;1&quot;,&quot;port&quot;:&quot;1&quot;}]"
 			icon="list"
 			min="1">
 			<form hidden="true" name="list_addadmin_views_modal" repeat="true">
@@ -128,10 +128,10 @@
 					name="icomoon"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ICOMOON_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ICOMOON_DESCRIPTION"
-					class="list_class fieldMedium"
+					class="list_class fieldMedium icomoon342"
 					multiple="false"
 					required="false"
-					default="">
+					onchange="getIconImage(this);">
 					<!-- Option Set. -->
 					<option value="joomla">
 						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_JOOMLA</option>

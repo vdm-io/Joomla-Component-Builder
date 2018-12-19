@@ -3157,6 +3157,7 @@ class Get
 									if (isset($option2['operator']))
 									{
 										$option2['operator'] = $operatorArray[$option2['operator']];
+										$option2['state_key'] = $this->setPlaceholders($this->setDynamicValues($option2['state_key']), $this->placeholders);
 										$option2['key'] = $result->key;
 									}
 									else

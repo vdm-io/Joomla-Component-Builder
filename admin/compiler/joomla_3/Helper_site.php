@@ -72,7 +72,7 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Load the Component xml manifest.
+	* Load the Component xml manifest.
 	**/
 	public static function manifest()
 	{
@@ -81,12 +81,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Joomla version object
+	* Joomla version object
 	**/	
 	protected static $JVersion;
 
 	/**
-	*	set/get Joomla version
+	* set/get Joomla version
 	**/
 	public static function jVersion()
 	{
@@ -99,7 +99,7 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Load the Contributors details.
+	* Load the Contributors details.
 	**/
 	public static function getContributors()
 	{
@@ -137,7 +137,7 @@ abstract class ###Component###Helper
 	}###HELP_SITE###
 
 	/**
-	*	Get any component's model
+	* Get any component's model
 	**/
 	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $component = '###Component###', $config = array())
 	{
@@ -181,9 +181,9 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Add to asset Table
+	* Add to asset Table
 	*/
-	public static function setAsset($id,$table)
+	public static function setAsset($id, $table, $inherit = true)
 	{
 		$parent = JTable::getInstance('Asset');
 		$parent->loadByName('com_###component###');
@@ -200,8 +200,6 @@ abstract class ###Component###Helper
 
 		if ($error)
 		{
-			$this->setError($error);
-
 			return false;
 		}
 		else
@@ -217,7 +215,7 @@ abstract class ###Component###Helper
 			$asset->name      = $name;
 			$asset->title     = $title;
 			// get the default asset rules
-			$rules = self::getDefaultAssetRules('com_###component###',$table);
+			$rules = self::getDefaultAssetRules('com_###component###', $table, $inherit);
 			if ($rules instanceof JAccessRules)
 			{
 				$asset->rules = (string) $rules;
@@ -245,55 +243,62 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	 *	Gets the default asset Rules for a component/view.
+	 * Gets the default asset Rules for a component/view.
 	 */
-	protected static function getDefaultAssetRules($component,$view)
+	protected static function getDefaultAssetRules($component, $view, $inherit = true)
 	{
-		// Need to find the asset id by the name of the component.
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true)
-			->select($db->quoteName('id'))
-			->from($db->quoteName('#__assets'))
-			->where($db->quoteName('name') . ' = ' . $db->quote($component));
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->loadRowList())
+		// if new or inherited
+		$assetId = 0;
+		// Only get the actual item rules if not inheriting
+		if (!$inherit)
 		{
-			// asset alread set so use saved rules
-			$assetId = (int) $db->loadResult();
-			$result =  JAccess::getAssetRules($assetId);
-			if ($result instanceof JAccessRules)
+			// Need to find the asset id by the name of the component.
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select($db->quoteName('id'))
+				->from($db->quoteName('#__assets'))
+				->where($db->quoteName('name') . ' = ' . $db->quote($component));
+			$db->setQuery($query);
+			$db->execute();
+			// check that there is a value
+			if ($db->getNumRows())
 			{
-				$_result = (string) $result;
-				$_result = json_decode($_result);
-				foreach ($_result as $name => &$rule)
-				{
-					$v = explode('.', $name);
-					if ($view !== $v[0])
-					{
-						// remove since it is not part of this view
-						unset($_result->$name);
-					}
-					else
-					{
-						// clear the value since we inherit
-						$rule = array();
-					}
-				}
-				// check if there are any view values remaining
-				if (count((array)$_result))
-				{
-					$_result = json_encode($_result);
-					$_result = array($_result);
-					// Instantiate and return the JAccessRules object for the asset rules.
-					$rules = new JAccessRules($_result);
-
-					return $rules;
-				}
-				return $result;
+				// asset already set so use saved rules
+				$assetId = (int) $db->loadResult();
 			}
 		}
-		return JAccess::getAssetRules(0);
+		// get asset rules
+		$result =  JAccess::getAssetRules($assetId);
+		if ($result instanceof JAccessRules)
+		{
+			$_result = (string) $result;
+			$_result = json_decode($_result);
+			foreach ($_result as $name => &$rule)
+			{
+				$v = explode('.', $name);
+				if ($view !== $v[0])
+				{
+					// remove since it is not part of this view
+					unset($_result->$name);
+				}
+				elseif ($inherit)
+				{
+					// clear the value since we inherit
+					$rule = array();
+				}
+			}
+			// check if there are any view values remaining
+			if (count($_result))
+			{
+				$_result = json_encode($_result);
+				$_result = array($_result);
+				// Instantiate and return the JAccessRules object for the asset rules.
+				$rules = new JAccessRules($_result);
+				// return filtered rules
+				return $rules;
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -809,11 +814,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Check if have an json string
+	* Check if have an json string
 	*
-	*	@input	string   The json string to check
+	* @input	string   The json string to check
 	*
-	*	@returns bool true on success
+	* @returns bool true on success
 	**/
 	public static function checkJson($string)
 	{
@@ -826,11 +831,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Check if have an object with a length
+	* Check if have an object with a length
 	*
-	*	@input	object   The object to check
+	* @input	object   The object to check
 	*
-	*	@returns bool true on success
+	* @returns bool true on success
 	**/
 	public static function checkObject($object)
 	{
@@ -842,11 +847,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Check if have an array with a length
+	* Check if have an array with a length
 	*
-	*	@input	array   The array to check
+	* @input	array   The array to check
 	*
-	*	@returns bool/int  number of items in array on success
+	* @returns bool/int  number of items in array on success
 	**/
 	public static function checkArray($array, $removeEmptyString = false)
 	{
@@ -870,11 +875,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Check if have a string with a length
+	* Check if have a string with a length
 	*
-	*	@input	string   The string to check
+	* @input	string   The string to check
 	*
-	*	@returns bool true on success
+	* @returns bool true on success
 	**/
 	public static function checkString($string)
 	{
@@ -886,10 +891,10 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Check if we are connected
-	*	Thanks https://stackoverflow.com/a/4860432/1429677
+	* Check if we are connected
+	* Thanks https://stackoverflow.com/a/4860432/1429677
 	*
-	*	@returns bool true on success
+	* @returns bool true on success
 	**/
 	public static function isConnected()
 	{
@@ -911,11 +916,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Merge an array of array's
+	* Merge an array of array's
 	*
-	*	@input	array   The arrays you would like to merge
+	* @input	array   The arrays you would like to merge
 	*
-	*	@returns array on success
+	* @returns array on success
 	**/
 	public static function mergeArrays($arrays)
 	{
@@ -941,11 +946,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Shorten a string
+	* Shorten a string
 	*
-	*	@input	string   The you would like to shorten
+	* @input	string   The you would like to shorten
 	*
-	*	@returns string on success
+	* @returns string on success
 	**/
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
@@ -982,11 +987,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Making strings safe (various ways)
+	* Making strings safe (various ways)
 	*
-	*	@input	string   The you would like to make safe
+	* @input	string   The you would like to make safe
 	*
-	*	@returns string on success
+	* @returns string on success
 	**/
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
@@ -1126,11 +1131,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Convert an integer into an English word string
-	*	Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
+	* Convert an integer into an English word string
+	* Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
 	*
-	*	@input	an int
-	*	@returns a string
+	* @input	an int
+	* @returns a string
 	**/
 	public static function numberToString($x)
 	{
@@ -1217,9 +1222,9 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	*	Random Key
+	* Random Key
 	*
-	*	@returns a string
+	* @returns a string
 	**/
 	public static function randomkey($size)
 	{

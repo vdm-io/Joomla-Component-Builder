@@ -1344,10 +1344,10 @@
 					name="icomoon"
 					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_DESCRIPTION"
-					class="list_class fieldMedium"
+					class="list_class fieldMedium icomoon342"
 					multiple="false"
 					required="false"
-					default="">
+					onchange="getIconImage(this);">
 					<!-- Option Set. -->
 					<option value="joomla">
 						COM_COMPONENTBUILDER_ADMIN_VIEW_JOOMLA</option>

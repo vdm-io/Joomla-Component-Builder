@@ -339,31 +339,6 @@ jQuery(function() {
 jQuery('#jform_snippet').closest('.input-append').addClass('jform_snippet_input_width');
 jQuery('#jform_main_get').closest('.input-append').addClass('jform_main_get_input_width');
 jQuery('#jform_dynamic_get').closest('.input-append').addClass('jform_dynamic_get_input_width');
-<?php $fieldNrs = range(1,7,1); ?>
-<?php foreach($fieldNrs as $nr): ?>jQuery('#jform_custom_button_modal').on('change', 'select[name="icomoon-<?php echo $nr; ?>"]',function (e) {
-	// update the icon if changed
-	var vala_<?php echo $nr; ?> = jQuery('select[name="icomoon-<?php echo $nr; ?>"] option:selected').val();
-	// build new span
-	var span = '<span id="icon_custom_button_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
-	// remove old one 
-	jQuery('#icon_custom_button_fields_icomoon_<?php echo $nr; ?>').remove();
-	// add the new icon
-	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
-});
-
-jQuery(document).ready(function() {
-jQuery('input.form-field-repeatable').on('row-add', function (e) {
-	// show the icon if set
-	var vala_<?php echo $nr; ?> = jQuery('#jform_custom_button_fields_icomoon-<?php echo $nr; ?>').val();
-	// build new span
-	var span = '<span id="icon_custom_button_fields_icomoon_<?php echo $nr; ?>" class="icon-'+vala_<?php echo $nr; ?>+'"></span>';
-	// remove old one 
-	jQuery('#icon_custom_button_fields_icomoon_<?php echo $nr; ?>').remove();
-	// add the new icon
-	jQuery('#jform_custom_button_fields_icomoon_<?php echo $nr; ?>_chzn').closest("td").append(span);
-});
-});
-<?php endforeach; ?>
 jQuery(function() {
     jQuery("code").click(function() {
         jQuery(this).selText().addClass("selected");
@@ -440,4 +415,22 @@ jQuery(document).ready( function($) {
 	$(".loading-dots").text(dots);
   } , 500);
 }); 
+jQuery(document).ready(function(){
+	jQuery(document).on('subform-row-add', function(event, row){
+		getIconImage(jQuery(row).find('.icomoon342'));
+	});
+});
+
+function getIconImage(field) {
+	// get the ID
+	var id = jQuery(field).attr('id');
+	// remove old one 
+	jQuery('#image_'+id).remove();
+	// get value
+	var value = jQuery('#'+id).val();
+	// build new one
+	var span = '<span id="image_'+id+'" class="icon-'+value+'" style="position: absolute; top: 8px; right: -20px;"></span>';
+	// add the icon
+	jQuery('#'+id+'_chzn').append(span);
+}
 </script>
