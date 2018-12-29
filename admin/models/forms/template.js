@@ -234,16 +234,16 @@ jQuery(document).ready(function($)
 });
 
 function getSnippets_server(libraries){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getSnippets&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getSnippets&raw=true&format=json";
 	if(token.length > 0 && libraries.length > 0){
 		var request = 'token='+token+'&libraries='+JSON.stringify(libraries);
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 function getSnippets(){

@@ -979,16 +979,16 @@ function getAjaxDisplay(type){
 }
 
 function getAjaxDisplay_server(type){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getAjaxDisplay&format=json&vdm="+vastDevMod;
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getAjaxDisplay&format=json&raw=true&vdm="+vastDevMod;
 	if(token.length > 0 && type.length > 0){
 		var request = 'token='+token+'&type=' + type;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -1012,16 +1012,16 @@ function dasboardSwitch(value){
 
 
 function addButtonID_server(type, size){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButtonID&format=json&vdm="+vastDevMod);
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButtonID&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0 && size > 0){
 		var request = 'token='+token+'&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 function addButtonID(type, where, size){
@@ -1037,16 +1037,16 @@ function addButtonID(type, where, size){
 }
 
 function addButton_server(type, size){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
 		var request = 'token='+token+'&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 function addButton(type, where, size){
@@ -1061,5 +1061,4 @@ function addButton(type, where, size){
 			}
 		}
 	})
-}
- 
+} 

@@ -522,16 +522,16 @@ jQuery(document).ready(function()
 });
 
 function getLinked_server(type){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&vdm="+vastDevMod;
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod;
 	if(token.length > 0 && type > 0){
 		var request = 'token='+token+'&type='+type;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -544,16 +544,16 @@ function getLinked(){
 }
 
 function addButton_server(type, size){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&vdm="+vastDevMod);
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
 		var request = 'token='+token+'&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 function addButton(type, where, size){
@@ -574,16 +574,16 @@ function addButton(type, where, size){
 var rowIdKey = 'properties';
 
 function getFieldOptions_server(fieldtype){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldOptions&format=json&vdm="+vastDevMod;
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldOptions&format=json&raw=true&vdm="+vastDevMod;
 	if(token.length > 0 && fieldtype > 0){
 		var request = 'token='+token+'&id='+fieldtype;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -734,31 +734,31 @@ function propertyIsSet(prop, id, targetForm) {
 }
 
 function getFieldPropertyDesc_server(fieldtype, property){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getFieldPropertyDesc&format=json&vdm="+vastDevMod;
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getFieldPropertyDesc&format=json&raw=true&vdm="+vastDevMod;
 	if(token.length > 0 && (fieldtype > 0 || fieldtype.length > 0)&& property.length > 0){
 		var request = 'token='+token+'&fieldtype='+fieldtype+'&property='+property;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
 
 function getValidationRulesTable_server(){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getValidationRulesTable&format=json&vdm="+vastDevMod;
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getValidationRulesTable&format=json&raw=true&vdm="+vastDevMod;
 	if(token.length > 0){
 		var request = 'token='+token+'&id=1';
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 

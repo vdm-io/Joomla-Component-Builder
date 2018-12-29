@@ -5270,8 +5270,10 @@ class Interpretation extends Fields
 			$routeHelper[] = $this->_t(2) . "else";
 			$routeHelper[] = $this->_t(2) . "{";
 			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Initialize the needel array.";
-			$routeHelper[] = $this->_t(3) . "\$needles = array();";
-			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . "Create the link but don't add the id.";
+			$routeHelper[] = $this->_t(3) . "\$needles = array(";
+			$routeHelper[] = $this->_t(4) . "'" . $viewName_single . "'  => array()";
+			$routeHelper[] = $this->_t(3) . ");";
+			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Create the link but don't add the id.";
 			$routeHelper[] = $this->_t(3) . "\$link = 'index.php?option=com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "&view=" . $viewName_single . "';";
 			$routeHelper[] = $this->_t(2) . "}";
 			if ('category' != $viewName_single && 'categories' != $viewName_single)
@@ -7110,7 +7112,7 @@ class Interpretation extends Fields
 		$referal = '';
 		if (!$ref)
 		{
-			$ref = '&ref=' . $viewName_list;
+			$ref = '&return=<?php echo $this->return_here; ?>';
 		}
 		// in linked tab/view so must add ref to default
 		else

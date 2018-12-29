@@ -350,6 +350,15 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			{
 				$this->setData('custom_code', array_values($this->smartIDs['custom_code']), 'id');
 			}
+			// set limiter
+			$limit = 0;
+			// and add those custom codes found in custom codes
+			while (isset($this->smartIDs['custom_code']) && ComponentbuilderHelper::checkArray($this->smartIDs['custom_code']) && $limit < 100)
+			{
+				$this->setData('custom_code', array_values($this->smartIDs['custom_code']), 'id');
+				// make sure we break
+				$limit++; // just in case (should not be needed)
+			}
 		}
 	}
 
@@ -603,6 +612,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				elseif ('layout' === $table)
 				{
 					$this->smartIDs['layout'] = array();
+				}
+				elseif ('custom_code' === $table && 'id' === $key)
+				{
+					$this->smartIDs['custom_code'] = array();
 				}
 				// start loading the data
 				if (!isset($this->smartBox[$table]))

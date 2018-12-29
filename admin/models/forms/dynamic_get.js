@@ -1485,16 +1485,16 @@ jQuery(document).ready(function()
 });
 
 function getLinked_server(type){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&vdm="+vastDevMod;
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod;
 	if(token.length > 0 && type > 0){
 		var request = 'token='+token+'&type='+type;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -1508,7 +1508,7 @@ function getLinked(){
 
 function getViewTableColumns_server(viewId,asKey,rowType)
 {
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.viewTableColumns&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.viewTableColumns&format=json&raw=true";
 	if (token.length > 0 && viewId > 0 && asKey.length > 0)
 	{
 		var request = 'token='+token+'&as='+asKey+'&type='+rowType+'&id='+viewId;
@@ -1516,9 +1516,9 @@ function getViewTableColumns_server(viewId,asKey,rowType)
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -1538,7 +1538,7 @@ function getViewTableColumns(id,asKey,key,rowType,main, table_, nr_)
 
 function getDbTableColumns_server(name,asKey,rowType)
 {
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.dbTableColumns&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.dbTableColumns&format=json&raw=true";
 	if (token.length > 0 && name.length > 0 && asKey.length > 0)
 	{
 		var request = 'token='+token+'&as='+asKey+'&type='+rowType+'&name='+name;
@@ -1546,9 +1546,9 @@ function getDbTableColumns_server(name,asKey,rowType)
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -1628,16 +1628,16 @@ function updateSubItems(fieldName, fieldNr, table_, nr_){
 }
 
 function getDynamicScripts_server(typpe){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getDynamicScripts&format=json&vdm="+vastDevMod;
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getDynamicScripts&format=json&raw=true&vdm="+vastDevMod;
 	if(token.length > 0 && typpe.length > 0){
 		var request = 'token='+token+'&type='+typpe;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 

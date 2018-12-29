@@ -97,7 +97,7 @@ $edit = "index.php?option=com_componentbuilder&view=site_views&task=site_view.ed
 		<td class="nowrap">
 			<div class="name">
 				<?php if ($this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int)$item->main_get)): ?>
-					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->main_get; ?>&ref=site_views"><?php echo $this->escape($item->main_get_name); ?></a>
+					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->main_get; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->main_get_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->main_get_name); ?>
 				<?php endif; ?>

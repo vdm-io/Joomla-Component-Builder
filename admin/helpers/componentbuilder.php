@@ -2356,11 +2356,12 @@ abstract class ComponentbuilderHelper
 	 *
 	 * @param   string   $data   The base64 string
 	 * @param   string   $key    We store the string with that suffix :)
+	 * @param   string   $default    The default switch
 	 *
 	 * @return  string   The opened string
 	 *
 	 */
-	public static function openValidBase64($data, $key = '__.o0=base64=Oo.__')
+	public static function openValidBase64($data, $key = '__.o0=base64=Oo.__', $default = 'string')
 	{
 		// check that we have a string
 		if (self::checkString($data))
@@ -2379,7 +2380,12 @@ abstract class ComponentbuilderHelper
 				return base64_decode($data);
 			}
 		}
-		return $data;
+		// check if we should just return the string
+		if ('string' === $default)
+		{
+			return $data;
+		}
+		return $default;
 	}
 
 
