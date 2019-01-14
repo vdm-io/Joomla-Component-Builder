@@ -614,7 +614,7 @@ class Interpretation extends Fields
 		}
 		// give notice of this issue
 		$this->app->enqueueMessage(JText::_('<hr /><h3>WHMCS Error</h3>'), 'Error');
-		$this->app->enqueueMessage(JText::sprintf('The <b>WHMCS class</b> could not be added to this component. You will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes.', $this->libraries[$id]->name), 'Error');
+		$this->app->enqueueMessage(JText::sprintf('The <b>WHMCS class</b> could not be added to this component. You will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes. If you have done this, then please check that you have your own <b>Basic Encryption<b/> set in the global settings of JCB. Then open and save this component again, making sure that your WHMCS settings are still correct.', $this->libraries[$id]->name), 'Error');
 		return "//" . $this->setLine(__LINE__) . " The WHMCS class could not be added to this component." . PHP_EOL . "//" . $this->setLine(__LINE__) . " Please note that you will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes.";
 	}
 

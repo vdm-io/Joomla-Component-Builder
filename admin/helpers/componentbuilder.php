@@ -1354,9 +1354,15 @@ abstract class ComponentbuilderHelper
 		{
 			$it = new RecursiveDirectoryIterator($dir);
 			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+			// remove ending /
+			$dir = rtrim($dir, '/');
+			// now loop the files & folders
 			foreach ($it as $file)
 			{
 				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
+				// set file dir
+				$file_dir = $file->getPathname();
+				// check if this is a dir or a file
 				if ($file->isDir())
 				{
 					$keeper = false;
@@ -1364,7 +1370,7 @@ abstract class ComponentbuilderHelper
 					{
 						foreach ($ignore as $keep)
 						{
-							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
+							if (strpos($file_dir, $dir.'/'.$keep) !== false)
 							{
 								$keeper = true;
 							}
@@ -1374,7 +1380,7 @@ abstract class ComponentbuilderHelper
 					{
 						continue;
 					}
-					JFolder::delete($file->getPathname());
+					JFolder::delete($file_dir);
 				}
 				else
 				{
@@ -1383,7 +1389,7 @@ abstract class ComponentbuilderHelper
 					{
 						foreach ($ignore as $keep)
 						{
-							if (strpos($file->getPathname(), $dir.'/'.$keep) !== false)
+							if (strpos($file_dir, $dir.'/'.$keep) !== false)
 							{
 								$keeper = true;
 							}
@@ -1393,9 +1399,10 @@ abstract class ComponentbuilderHelper
 					{
 						continue;
 					}
-					JFile::delete($file->getPathname());
+					JFile::delete($file_dir);
 				}
 			}
+			// delete the root folder if not ignore found
 			if (!self::checkArray($ignore))
 			{
 				return JFolder::delete($dir);

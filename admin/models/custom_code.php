@@ -826,29 +826,31 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 		}
 
 		// few checks with the new option of using custom code in custom code
-		if (isset($data['code']) && ($placholders = ComponentbuilderHelper::getAllBetween($data['code'], '[CUSTOM' . 'CODE=', ']'))
-			&& ComponentbuilderHelper::checkArray($placholders))
+		if (isset($data['code']) && ($placeholders = ComponentbuilderHelper::getAllBetween($data['code'], '[CUSTOM' . 'CODE=', ']'))
+			&& ComponentbuilderHelper::checkArray($placeholders))
 		{
 			// make sure custom code as Hash (automation)  target does not have other custom code placeholders
 			if (isset($data['target']) && 1 == $data['target'])
 			{
-				foreach ($placholders as $placholder)
+				foreach ($placeholders as $placeholder)
 				{
-					$data['code'] = str_replace('[CUSTOM' . 'CODE=' . $placholder . ']', '', $data['code']);
+					$data['code'] = str_replace('[CUSTOM' . 'CODE=' . $placeholder . ']', '', $data['code']);
 				}
 				// set title
-				$title = (count($placholders) == 1) ? JText::_('COM_COMPONENTBUILDER_PLACEHOLDER_REMOVED') : JText::_('COM_COMPONENTBUILDER_PLACEHOLDERS_REMOVED');
+				$title = (count($placeholders) == 1) ? JText::_('COM_COMPONENTBUILDER_PLACEHOLDER_REMOVED') : JText::_('COM_COMPONENTBUILDER_PLACEHOLDERS_REMOVED');
 				// show message that we have had to remove the custom placeholders
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_HTHREESHTHREEPCUSTOM_CODE_CAN_ONLY_BE_USED_IN_OTHER_CUSTOM_CODE_IF_SET_AS_BJCB_MANUALB_YOU_CAN_NOT_ADD_THEM_TO_EMHASH_AUTOMATIONEM_CODE_AT_THIS_POINTP', $title), 'Warning');
 			}
 			// make sure that the same custom code is not added to itself
 			else
 			{
-				foreach ($placholders as $placholder)
+				foreach ($placeholders as $placeholder)
 				{
-					if (strpos($placholder, $data['function_name']) !== false)
+					// strip the placeholder down to just the function name
+					$_placeholder = (array) explode('+', $placeholder);
+					if ($_placeholder[0] === $data['function_name'])
 					{
-						$data['code'] = str_replace('[CUSTOM' . 'CODE=' . $placholder . ']', '', $data['code']);
+						$data['code'] = str_replace('[CUSTOM' . 'CODE=' . $placeholder . ']', '', $data['code']);
 						// show message that we have had to remove the custom placeholders
 						JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTHREEPLACEHOLDER_REMOVEDHTHREEPBTHISB_CUSTOM_CODE_CAN_ONLY_BE_USED_IN_BOTHERB_CUSTOM_CODE_NOT_IN_IT_SELF_SINCE_THAT_WILL_CAUSE_A_INFINITE_LOOP_IN_THE_COMPILERP'), 'Warning');
 						// stop the loop :)

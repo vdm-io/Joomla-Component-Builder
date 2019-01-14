@@ -20,6 +20,13 @@ defined('_JEXEC') or die('Restricted access');
 abstract class ###Component###Email
 {
 	/**
+	 * The active recipient
+	 *
+	 * @var    activeRecipient (array)
+	 */
+	public static $active = array();
+
+	/**
 	 * Configuraiton object
 	 *
 	 * @var    JConfig
@@ -52,6 +59,44 @@ abstract class ###Component###Email
 		}
 
 		return self::$config;
+	}
+
+	/**
+	 * Returns the global mailer object, only creating it if it doesn't already exist.
+	 *
+	 */
+	public static function getMailerInstance()
+	{
+		if (!self::$mailer)
+		{
+			self::$mailer = self::createMailer();
+		}
+
+		return self::$mailer;
+	}
+
+	/**
+	 * Check that a string looks like an email address.
+	 * @param string $address The email address to check
+	 * @param string|callable $patternselect A selector for the validation pattern to use :
+	 * * `auto` Pick best pattern automatically;
+	 * * `pcre8` Use the squiloople.com pattern, requires PCRE > 8.0, PHP >= 5.3.2, 5.2.14;
+	 * * `pcre` Use old PCRE implementation;
+	 * * `php` Use PHP built-in FILTER_VALIDATE_EMAIL;
+	 * * `html5` Use the pattern given by the HTML5 spec for 'email' type form input elements.
+	 * * `noregex` Don't use a regex: super fast, really dumb.
+	 * Alternatively you may pass in a callable to inject your own validator, for example:
+	 * PHPMailer::validateAddress('user@example.com', function($address) {
+	 *     return (strpos($address, '@') !== false);
+	 * });
+	 * You can also set the PHPMailer::$validator static to a callable, allowing built-in methods to use your validator.
+	 * @return boolean
+	 * @static
+	 * @access public
+	 */
+	public static function validateAddress($address, $patternselect = null)
+	{
+		return self::getMailerInstance()->validateAddress($address, $patternselect);
 	}
 
 	/**
@@ -282,11 +327,68 @@ abstract class ###Component###Email
 
 		if (method_exists('###Component###Helper','storeMessage'))
 		{
-			// store the massage if the method is set
-			###Component###Helper::storeMessage($sendmail, $recipient, $subject, $body, $textonly, $mode, 'email');
+			// if we have active recipient details
+			if (isset(self::$active[$recipient]))
+			{
+				// store the massage if the method is set
+				###Component###Helper::storeMessage($sendmail, self::$active[$recipient], $subject, $body, $textonly, $mode, 'email');
+				// clear memory
+				unset(self::$active[$recipient]);
+			}
+			else
+			{
+				// store the massage if the method is set
+				###Component###Helper::storeMessage($sendmail, $recipient, $subject, $body, $textonly, $mode, 'email');
+			}
 		}
 
 		return $sendmail;
+	}
+
+	/**
+	 * Set html text (in a row) and subject (as title) to a email table.
+	 *      do not use <p> instead use <br />
+	 *	in your html that you pass to this method
+	 *      since it is a table row it does not
+	 *      work well with paragraphs
+	 *
+	 * @return  string on success
+	 *
+	 */
+	public static function setBasicBody($html, $subject)
+	{
+		$body = array();
+		$body[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
+		$body[] = "<html xmlns=\"http://www.w3.org/1999/xhtml\">";
+		$body[] = "<head>";
+		$body[] = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
+		$body[] = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
+		$body[] = "<title>" . $subject . "</title>";
+		$body[] = "<style type=\"text/css\">";
+		$body[] = "#outlook a {padding:0;}";
+		$body[] = ".ExternalClass {width:100%;}";
+		$body[] = ".ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} ";
+		$body[] = "p {margin: 0; padding: 0; font-size: 0px; line-height: 0px;} ";
+		$body[] = "table td {border-collapse: collapse;}";
+		$body[] = "table {border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }";
+		$body[] = "img {display: block; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}";
+		$body[] = "a img {border: none;}";
+		$body[] = "a {text-decoration: none; color: #000001;}";
+		$body[] = "a.phone {text-decoration: none; color: #000001 !important; pointer-events: auto; cursor: default;}";
+		$body[] = "span {font-size: 13px; line-height: 17px; font-family: monospace; color: #000001;}";
+		$body[] = "</style>";
+		$body[] = "<!--[if gte mso 9]>";
+		$body[] = "<style>";
+		$body[] = "/* Target Outlook 2007 and 2010 */";
+		$body[] = "</style>";
+		$body[] = "<![endif]-->";
+		$body[] = "</head>";
+		$body[] = "<body style=\"width:100%; margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;\">";
+		$body[] = $html;
+		$body[] = "</body>";
+		$body[] = "</html>";
+
+		return implode("\n", $body);
 	}
 
 	/**

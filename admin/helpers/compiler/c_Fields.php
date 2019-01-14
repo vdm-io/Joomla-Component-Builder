@@ -1427,18 +1427,18 @@ class Fields extends Structure
 			elseif ($typeName === 'subform')
 			{
 				// now add to the field set
-				$field .= PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
-				$field .= PHP_EOL . $this->_t(2) . "<field";
+				$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(__LINE__) . " " . ComponentbuilderHelper::safeString($name, 'F') . " Field. Type: " . ComponentbuilderHelper::safeString($typeName, 'F') . ". (joomla) -->";
+				$field .= PHP_EOL . $this->_t(2) . $taber . "<field";
 				$fieldsSet = array();
 				foreach ($fieldAttributes as $property => $value)
 				{
 					if ($property != 'fields')
 					{
-						$field .= PHP_EOL . $this->_t(3) . $property . '="' . $value . '"';
+						$field .= PHP_EOL . $this->_t(3) . $taber . $property . '="' . $value . '"';
 					}
 				}
 				$field .= ">";
-				$field .= PHP_EOL . $this->_t(3) . '<form hidden="true" name="list_' . $fieldAttributes['name'] . '_modal" repeat="true">';
+				$field .= PHP_EOL . $this->_t(3) . $taber . '<form hidden="true" name="list_' . $fieldAttributes['name'] . '_modal" repeat="true">';
 				if (strpos($fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
@@ -1475,7 +1475,7 @@ class Fields extends Structure
 							$r_multiple = false;
 							$r_langLabel = '';
 							// add the tabs needed
-							$r_taber = $this->_t(2);
+							$r_taber = $this->_t(2) . $taber;
 							// get field values
 							$r_fieldValues = $this->setFieldAttributes($fieldData, $view, $r_name, $r_typeName, $r_multiple, $r_langLabel, $langView, $view_name_list, $view_name_single, $placeholders, true);
 							// check if values were set
@@ -1492,6 +1492,24 @@ class Fields extends Structure
 								{
 									// now add to the field set
 									$field .= $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
+								}
+								elseif ($r_typeName === 'subform')
+								{
+									// set nested depth
+									if (isset($fieldAttributes['nested_depth']))
+									{
+										$r_fieldValues['nested_depth'] = ++$fieldAttributes['nested_depth'];
+									}
+									else
+									{
+										$r_fieldValues['nested_depth'] = 1;
+									}
+									// only continue if nest is bellow 20 (this should be a safe limit)
+									if ($r_fieldValues['nested_depth'] <= 20)
+									{
+										// now add to the field set
+										$field .= $this->setField('special', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
+									}
 								}
 								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 								{
@@ -1518,8 +1536,8 @@ class Fields extends Structure
 						}
 					}
 				}
-				$field .= PHP_EOL . $this->_t(3) . "</form>";
-				$field .= PHP_EOL . $this->_t(2) . "</field>";
+				$field .= PHP_EOL . $this->_t(3) . $taber . "</form>";
+				$field .= PHP_EOL . $this->_t(2) . $taber . "</field>";
 			}
 		}
 		elseif ($setType === 'custom')
@@ -1861,6 +1879,25 @@ class Fields extends Structure
 									{
 										// now add to the field set
 										ComponentbuilderHelper::xmlAppend($form, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
+									}
+									elseif ($r_typeName === 'subform')
+									{
+										// set nested depth
+										if (isset($fieldAttributes['nested_depth']))
+										{
+											$r_fieldValues['nested_depth'] = ++$fieldAttributes['nested_depth'];
+										}
+										else
+										{
+											$r_fieldValues['nested_depth'] = 1;
+										}
+										// only continue if nest is bellow 20 (this should be a safe limit)
+										if ($r_fieldValues['nested_depth'] <= 20)
+										{
+											// now add to the field set
+											ComponentbuilderHelper::xmlAppend($form, $this->setField('special', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
+										}
+										
 									}
 									elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 									{

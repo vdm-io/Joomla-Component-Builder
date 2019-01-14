@@ -136,6 +136,14 @@
 				COM_COMPONENTBUILDER_FIELD_MEDIUMTEXT</option>
 			<option value="LONGTEXT">
 				COM_COMPONENTBUILDER_FIELD_LONGTEXT</option>
+			<option value="BLOB">
+				COM_COMPONENTBUILDER_FIELD_BLOB</option>
+			<option value="TINYBLOB">
+				COM_COMPONENTBUILDER_FIELD_TINYBLOB</option>
+			<option value="MEDIUMBLOB">
+				COM_COMPONENTBUILDER_FIELD_MEDIUMBLOB</option>
+			<option value="LONGBLOB">
+				COM_COMPONENTBUILDER_FIELD_LONGBLOB</option>
 			<option value="DATETIME">
 				COM_COMPONENTBUILDER_FIELD_DATETIME</option>
 			<option value="DATE">
