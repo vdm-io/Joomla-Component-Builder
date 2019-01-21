@@ -4915,7 +4915,7 @@ class Get
 			// when the custom code is loaded
 			if ($loaded === true)
 			{
-				$string = $this->insertCustomCode($string, $debug);
+				$string = $this->insertCustomCode($bucket, $string, $debug);
 			}
 			// if debug
 			if ($debug)
@@ -4936,19 +4936,13 @@ class Get
 	 * @return  string on success
 	 * 
 	 */
-	protected function insertCustomCode($string, $debug = 0)
+	protected function insertCustomCode($ids, $string, $debug = 0)
 	{
 		$code = array();
-		// if debug
-		if ($debug)
-		{
-			echo '$this->customCode:';
-			var_dump($this->customCode);
-		}
 		// load the code
-		foreach ($this->customCode as $item)
+		foreach ($ids as $id)
 		{
-			$this->buildCustomCodePlaceholders($item, $code, $debug);
+			$this->buildCustomCodePlaceholders($this->customCodeMemory[$id], $code, $debug);
 		}
 		// if debug
 		if ($debug)

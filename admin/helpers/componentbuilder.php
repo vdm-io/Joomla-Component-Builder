@@ -3895,8 +3895,13 @@ abstract class ComponentbuilderHelper
 	* @return  string    On success the edit url
 	* 
 	*/
-	public static function  getEditURL(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true)
+	public static function getEditURL(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true)
 	{
+		// make sure the user has access to view
+		if (!JFactory::getUser()->authorise($view. '.access', $component))
+		{
+			return false;
+		}
 		// build record
 		$record = new stdClass();
 		// check that we have the ID
