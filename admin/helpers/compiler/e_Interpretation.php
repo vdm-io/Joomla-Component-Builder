@@ -6360,13 +6360,25 @@ class Interpretation extends Fields
 						$easy[$_mysqlTableKey] = $this->mysqlTableKeys[$_mysqlTableKey]['default'];
 					}
 				}
-				$db_ .= PHP_EOL . ") ENGINE=" . $easy['engine'] . " AUTO_INCREMENT=0 DEFAULT CHARSET=" . $easy['charset'] . " DEFAULT COLLATE=" . $easy['collate'] . ";";
+				// add a little fix for the row_format
+				if (ComponentbuilderHelper::checkString($easy['row_format']))
+				{
+					$easy['row_format'] = ' ROW_FORMAT=' . $easy['row_format'];
+				}
+				// now build db string
+				$db_ .= PHP_EOL . ") ENGINE=" . $easy['engine'] . " AUTO_INCREMENT=0 DEFAULT CHARSET=" . $easy['charset'] . " DEFAULT COLLATE=" . $easy['collate'] . $easy['row_format'] . ";";
 
 				// check if this is a new table that should be added via update SQL
 				if (isset($this->addSQL['adminview']) && ComponentbuilderHelper::checkArray($this->addSQL['adminview']) && in_array($view, $this->addSQL['adminview']))
 				{
 					// build the update array
 					$this->updateSQLBuilder["CREATETABLEIFNOTEXISTS`#__" . $component . "_" . $view . "`"] = $db_;
+				}
+				// check if the table row_format has changed
+				if (ComponentbuilderHelper::checkString($easy['row_format']) && isset($this->updateSQL['table_row_format']) && isset($this->updateSQL['table_row_format'][$view]))
+				{
+					// build the update array
+					$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_" . $view . "`" . trim($easy['row_format'])] = "ALTER TABLE `#__" . $component . "_" . $view . "`" . $easy['row_format'] . ";";
 				}
 				// check if the table engine has changed
 				if (isset($this->updateSQL['table_engine']) && isset($this->updateSQL['table_engine'][$view]))

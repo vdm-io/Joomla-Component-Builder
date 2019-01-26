@@ -1,0 +1,37 @@
+ALTER TABLE `#__componentbuilder_language_translation` CHANGE `source` `source` MEDIUMTEXT NOT NULL;
+
+ALTER TABLE `#__componentbuilder_admin_view` ADD `mysql_table_row_format` VARCHAR(64) NOT NULL DEFAULT 0 AFTER `mysql_table_engine`;
+
+ALTER TABLE `#__componentbuilder_joomla_component` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_admin_view` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_custom_admin_view` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_site_view` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_template` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_layout` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_dynamic_get` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_custom_code` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_library` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_snippet` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_validation_rule` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_field` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_fieldtype` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_language_translation` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_language` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_server` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_help_document` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_admin_fields` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_admin_fields_conditions` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_admin_fields_relations` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_admin_custom_tabs` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_admin_views` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_site_views` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_custom_admin_views` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_updates` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_mysql_tweaks` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_custom_admin_menus` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_config` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_dashboard` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_component_files_folders` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_snippet_type` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_library_config` ROW_FORMAT=DYNAMIC;
+ALTER TABLE `#__componentbuilder_library_files_folders_urls` ROW_FORMAT=DYNAMIC;

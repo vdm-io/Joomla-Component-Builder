@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_addreadme` (`addreadme`),
 	KEY `idx_emptycontributors` (`emptycontributors`),
 	KEY `idx_add_sales_server` (`add_sales_server`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -188,6 +188,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`mysql_table_charset` VARCHAR(64) NOT NULL DEFAULT 1,
 	`mysql_table_collate` VARCHAR(64) NOT NULL DEFAULT 1,
 	`mysql_table_engine` VARCHAR(64) NOT NULL DEFAULT 1,
+	`mysql_table_row_format` VARCHAR(64) NOT NULL DEFAULT 0,
 	`name_list` CHAR(64) NOT NULL DEFAULT '',
 	`name_single` CHAR(64) NOT NULL DEFAULT '',
 	`php_after_delete` MEDIUMTEXT NOT NULL,
@@ -242,41 +243,42 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name_single` (`name_single`),
+	KEY `idx_add_php_batchcopy` (`add_php_batchcopy`),
+	KEY `idx_add_php_allowadd` (`add_php_allowadd`),
+	KEY `idx_add_php_save` (`add_php_save`),
+	KEY `idx_add_php_getform` (`add_php_getform`),
+	KEY `idx_add_php_getitems_after_all` (`add_php_getitems_after_all`),
+	KEY `idx_add_php_document` (`add_php_document`),
 	KEY `idx_add_fadein` (`add_fadein`),
+	KEY `idx_add_php_before_publish` (`add_php_before_publish`),
+	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
+	KEY `idx_mysql_table_collate` (`mysql_table_collate`),
 	KEY `idx_type` (`type`),
-	KEY `idx_add_sql` (`add_sql`),
-	KEY `idx_mysql_table_charset` (`mysql_table_charset`),
 	KEY `idx_add_custom_import` (`add_custom_import`),
 	KEY `idx_name_list` (`name_list`),
-	KEY `idx_add_php_getitems_after_all` (`add_php_getitems_after_all`),
-	KEY `idx_add_css_view` (`add_css_view`),
 	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
-	KEY `idx_add_php_getform` (`add_php_getform`),
-	KEY `idx_add_css_views` (`add_css_views`),
 	KEY `idx_add_php_before_save` (`add_php_before_save`),
-	KEY `idx_add_php_save` (`add_php_save`),
-	KEY `idx_add_javascript_view_file` (`add_javascript_view_file`),
 	KEY `idx_add_php_postsavehook` (`add_php_postsavehook`),
-	KEY `idx_add_php_allowadd` (`add_php_allowadd`),
-	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`),
 	KEY `idx_add_php_allowedit` (`add_php_allowedit`),
-	KEY `idx_add_php_batchcopy` (`add_php_batchcopy`),
-	KEY `idx_add_javascript_views_file` (`add_javascript_views_file`),
 	KEY `idx_add_php_batchmove` (`add_php_batchmove`),
-	KEY `idx_add_php_before_publish` (`add_php_before_publish`),
-	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`),
 	KEY `idx_add_php_after_publish` (`add_php_after_publish`),
-	KEY `idx_add_php_before_delete` (`add_php_before_delete`),
-	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_add_php_after_delete` (`add_php_after_delete`),
-	KEY `idx_add_php_document` (`add_php_document`),
 	KEY `idx_mysql_table_engine` (`mysql_table_engine`),
-	KEY `idx_mysql_table_collate` (`mysql_table_collate`),
+	KEY `idx_add_sql` (`add_sql`),
+	KEY `idx_add_css_view` (`add_css_view`),
+	KEY `idx_add_css_views` (`add_css_views`),
+	KEY `idx_add_javascript_view_file` (`add_javascript_view_file`),
+	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`),
+	KEY `idx_add_javascript_views_file` (`add_javascript_views_file`),
+	KEY `idx_add_javascript_views_footer` (`add_javascript_views_footer`),
+	KEY `idx_add_custom_button` (`add_custom_button`),
+	KEY `idx_mysql_table_charset` (`mysql_table_charset`),
+	KEY `idx_mysql_table_row_format` (`mysql_table_row_format`),
 	KEY `idx_source` (`source`),
 	KEY `idx_add_php_ajax` (`add_php_ajax`),
 	KEY `idx_add_php_getitem` (`add_php_getitem`),
 	KEY `idx_add_php_getitems` (`add_php_getitems`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -350,7 +352,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
 	KEY `idx_add_php_jview` (`add_php_jview`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -425,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	KEY `idx_button_position` (`button_position`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
 	KEY `idx_add_php_jview` (`add_php_jview`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -461,7 +463,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
 	KEY `idx_dynamic_get` (`dynamic_get`),
 	KEY `idx_add_php_view` (`add_php_view`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -497,7 +499,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
 	KEY `idx_dynamic_get` (`dynamic_get`),
 	KEY `idx_add_php_view` (`add_php_view`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -563,7 +565,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_add_php_before_getitem` (`add_php_before_getitem`),
 	KEY `idx_getcustom` (`getcustom`),
 	KEY `idx_pagination` (`pagination`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -605,7 +607,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	KEY `idx_function_name` (`function_name`),
 	KEY `idx_to_line` (`to_line`),
 	KEY `idx_from_line` (`from_line`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -638,7 +640,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_how` (`how`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -676,7 +678,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (
 	KEY `idx_name` (`name`),
 	KEY `idx_type` (`type`),
 	KEY `idx_library` (`library`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_validation_rule` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -704,7 +706,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_validation_rule` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -761,7 +763,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
 	KEY `idx_datadefault` (`datadefault`),
 	KEY `idx_datalenght_other` (`datalenght_other`),
 	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -791,13 +793,13 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_catid` (`catid`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_language_translation` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
 	`components` TEXT NOT NULL,
-	`source` TEXT NOT NULL,
+	`source` MEDIUMTEXT NOT NULL,
 	`translation` TEXT NOT NULL,
 	`params` text NOT NULL DEFAULT '',
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
@@ -817,7 +819,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_language_translation` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_language` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -843,7 +845,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_language` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_server` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -881,7 +883,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_server` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_protocol` (`protocol`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -920,7 +922,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 	KEY `idx_article` (`article`),
 	KEY `idx_target` (`target`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -946,7 +948,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_admin_view` (`admin_view`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_conditions` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -972,7 +974,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_conditions` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_admin_view` (`admin_view`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_relations` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -998,7 +1000,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_relations` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_admin_view` (`admin_view`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_custom_tabs` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1024,7 +1026,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_custom_tabs` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_admin_view` (`admin_view`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_admin_views` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1050,7 +1052,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_admin_views` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_site_views` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1076,7 +1078,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_site_views` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_views` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1102,7 +1104,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_views` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_updates` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1128,7 +1130,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_updates` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_mysql_tweaks` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1154,7 +1156,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_mysql_tweaks` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_menus` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1180,7 +1182,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_menus` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_config` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1206,7 +1208,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_config` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_dashboard` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1233,7 +1235,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_dashboard` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_files_folders` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1262,7 +1264,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_files_folders` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_joomla_component` (`joomla_component`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet_type` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1288,7 +1290,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet_type` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_config` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1314,7 +1316,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_config` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_library` (`library`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1344,7 +1346,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
 	KEY `idx_library` (`library`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 --
 -- Dumping data for table `#__componentbuilder_joomla_component`
@@ -1844,7 +1846,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_external_code` (
 	`target` VARCHAR(255) NOT NULL DEFAULT '',
 	`hash` VARCHAR(64) NOT NULL DEFAULT '',
 	PRIMARY KEY  (`target`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 

@@ -18,6 +18,7 @@ $fields = $displayData->get('fields') ?: array(
 	'mysql_table_engine',
 	'mysql_table_charset',
 	'mysql_table_collate',
+	'mysql_table_row_format',
 	'add_sql',
 	'source',
 	'addtables'

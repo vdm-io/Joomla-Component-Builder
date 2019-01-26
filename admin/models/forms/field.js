@@ -271,7 +271,7 @@ function vvvvwas(datatype_vvvvwas)
 function datatype_vvvvwas_SomeFunc(datatype_vvvvwas)
 {
 	// set the function logic
-	if (datatype_vvvvwas == 'CHAR' || datatype_vvvvwas == 'VARCHAR' || datatype_vvvvwas == 'TEXT' || datatype_vvvvwas == 'MEDIUMTEXT' || datatype_vvvvwas == 'LONGTEXT')
+	if (datatype_vvvvwas == 'CHAR' || datatype_vvvvwas == 'VARCHAR' || datatype_vvvvwas == 'TEXT' || datatype_vvvvwas == 'MEDIUMTEXT' || datatype_vvvvwas == 'LONGTEXT' || datatype_vvvvwas == 'BLOB' || datatype_vvvvwas == 'TINYBLOB' || datatype_vvvvwas == 'MEDIUMBLOB' || datatype_vvvvwas == 'LONGBLOB')
 	{
 		return true;
 	}
@@ -332,7 +332,7 @@ function store_vvvvwat_SomeFunc(store_vvvvwat)
 function datatype_vvvvwat_SomeFunc(datatype_vvvvwat)
 {
 	// set the function logic
-	if (datatype_vvvvwat == 'CHAR' || datatype_vvvvwat == 'VARCHAR' || datatype_vvvvwat == 'TEXT' || datatype_vvvvwat == 'MEDIUMTEXT' || datatype_vvvvwat == 'LONGTEXT')
+	if (datatype_vvvvwat == 'CHAR' || datatype_vvvvwat == 'VARCHAR' || datatype_vvvvwat == 'TEXT' || datatype_vvvvwat == 'MEDIUMTEXT' || datatype_vvvvwat == 'LONGTEXT' || datatype_vvvvwat == 'BLOB' || datatype_vvvvwat == 'TINYBLOB' || datatype_vvvvwat == 'MEDIUMBLOB' || datatype_vvvvwat == 'LONGBLOB')
 	{
 		return true;
 	}

@@ -718,7 +718,8 @@ class Get
 	public $mysqlTableKeys = array(
 		'engine' => array('default' => 'MyISAM'),
 		'charset' => array('default' => 'utf8'),
-		'collate' => array('default' => 'utf8_general_ci')
+		'collate' => array('default' => 'utf8_general_ci'),
+		'row_format' => array('default' => '')
 		);
 
 	/**
