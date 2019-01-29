@@ -1012,6 +1012,174 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	* get the database table columns
+	**/
+	public static function getDbTableColumns($tableName, $as, $type)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+        	// get the columns
+		$columns = $db->getTableColumns("#__" . $tableName);
+		// set the type (multi or single)
+		$unique = '';
+		if (1 == $type)
+		{
+			$unique = self::safeString($tableName) . '_';
+		}
+		if (self::checkArray($columns))
+		{
+        		// build the return string
+			$tableColumns = array();
+			foreach ($columns as $column => $typeCast)
+			{
+				$tableColumns[] =  $as . "." . $column . ' AS ' . $unique . $column;
+			}
+			return implode("\n", $tableColumns);
+		}
+		return false;
+	}
+
+	/**
+	* get the view table columns
+	**/
+	public static function getViewTableColumns($admin_view, $as, $type)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.addfields', 'b.name_single')));
+		$query->from($db->quoteName('#__componentbuilder_admin_fields', 'a'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_view', 'b') . ' ON (' . $db->quoteName('a.admin_view') . ' = ' . $db->quoteName('b.id') . ')');
+		$query->where($db->quoteName('b.published') . ' = 1');
+		$query->where($db->quoteName('a.admin_view') . ' = ' . (int) $admin_view);
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$result = $db->loadObject();
+			$tableName = '';
+			if (1 == $type)
+			{
+				$tableName = self::safeString($result->name_single) . '_';
+			}
+			$addfields = json_decode($result->addfields, true);
+			if (self::checkArray($addfields))
+			{
+				// reset all buckets
+				$field = array();
+				$fields = array();
+				// get data
+				foreach ($addfields as $nr => $value)
+				{
+					$tmp = self::getFieldNameAndType((int) $value['field']);
+					if (self::checkArray($tmp))
+					{
+						$field[$nr] = $tmp;
+					}
+					// insure it is set to alias if needed
+					if (isset($value['alias']) && $value['alias'] == 1)
+					{
+						$field[$nr]['name'] = 'alias';
+					}
+					// remove a field that is not being stored in the database
+					if (!isset($value['list']) || $value['list'] == 2)
+					{
+						unset($field[$nr]);
+					}
+				}
+				// add the basic defaults
+				$fields[] = $as . ".id AS " . $tableName . "id";
+				$fields[] = $as . ".asset_id AS " . $tableName . "asset_id";
+				// load data
+				foreach ($field as $n => $f)
+				{
+					if (self::checkArray($f))
+					{
+						$fields[] = $as . "." . $f['name'] . " AS " . $tableName . $f['name'];
+					}
+				}
+				// add the basic defaults
+				$fields[] = $as . ".published AS " . $tableName . "published";
+				$fields[] = $as . ".created_by AS " . $tableName . "created_by";
+				$fields[] = $as . ".modified_by AS " . $tableName . "modified_by";
+				$fields[] = $as . ".created AS " . $tableName . "created";
+				$fields[] = $as . ".modified AS " . $tableName . "modified";
+				$fields[] = $as . ".version AS " . $tableName . "version";
+				$fields[] = $as . ".hits AS " . $tableName . "hits";
+				if (0) // TODO access is not set here but per/view in the form linking this admin view to which these field belong to the components (boooo I know but that is the case and so we can't ever really know at this point if this view has access set)
+				{
+					$fields[] = $as . ".access AS " . $tableName . "access";
+				}
+				$fields[] = $as . ".ordering AS " . $tableName . "ordering";
+				// return the field of this view
+				return implode("\n", $fields);
+			}
+		}
+		return false;
+	}
+
+	protected static function getFieldNameAndType($id)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Order it by the ordering field.
+		$query->select($db->quoteName(array('a.name', 'a.xml')));
+		$query->select($db->quoteName(array('c.name'), array('type_name')));
+		$query->from('#__componentbuilder_field AS a');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('c.id') . ')');
+		$query->where($db->quoteName('a.id') . ' = '. $db->quote($id));
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
+			$field = $db->loadObject();
+			// load the values form params
+			$field->xml = json_decode($field->xml);
+			$field->type_name = self::safeString($field->type_name);
+			$load = true;
+			// if category then name must be catid (only one per view)
+			if ($field->type_name == 'category')
+			{
+				$name = 'catid';
+			}
+			// if tag is set then enable all tag options for this view (only one per view)
+			elseif ($field->type_name == 'tag')
+			{
+				$name = 'tags';
+			}
+			// don't add spacers or notes
+			elseif ($field->type_name == 'spacer' || $field->type_name == 'note')
+			{
+				// make sure the name is unique
+				return false;
+			}
+			else
+			{
+				$name = self::safeString(self::getBetween($field->xml,'name="','"'));
+			}
+
+			// use field core name only if not found in xml
+			if (!self::checkString($name))
+			{
+				$name = self::safeString($field->name);;
+			}
+			return array('name' => $name, 'type' => $field->type_name);
+		}
+		return false;
+	}
+
+	/**
 	 * The array of dynamic content
 	 * 
 	 * @var     array

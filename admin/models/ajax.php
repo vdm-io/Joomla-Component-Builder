@@ -1593,173 +1593,26 @@ class ComponentbuilderModelAjax extends JModelList
 	// Used in dynamic_get
 	public function getViewTableColumns($admin_view, $as, $type)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.addfields', 'b.name_single')));
-		$query->from($db->quoteName('#__componentbuilder_admin_fields', 'a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_view', 'b') . ' ON (' . $db->quoteName('a.admin_view') . ' = ' . $db->quoteName('b.id') . ')');
-		$query->where($db->quoteName('b.published') . ' = 1');
-		$query->where($db->quoteName('a.admin_view') . ' = '. (int) $admin_view);
-		 
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$result = $db->loadObject();
-			$description = '';
-			$tableName = '';
-			if (1 == $type)
-			{
-				$tableName = ComponentbuilderHelper::safeString($result->name_single).'_';
-			}
-			$addfields = json_decode($result->addfields,true);
-			if (ComponentbuilderHelper::checkArray($addfields))
-			{
-				$fields = array();
-				// get data
-				foreach ($addfields as $nr => $value)
-				{
-					$tmp = $this->getFieldData((int) $value['field']);
-					if (ComponentbuilderHelper::checkArray($tmp))
-					{
-						$field[$nr] = $tmp;
-					}
-					// insure it is set to alias if needed
-					if (isset($value['alias']) && $value['alias'] == 1)
-					{
-						$field[$nr]['name'] = 'alias';
-					}
-				}
-				// add the basic defaults
-				$fields[] = $as.".id AS ".$tableName."id";
-				$fields[] = $as.".asset_id AS ".$tableName."asset_id";
-				// load data
-				foreach ($field as $n => $f)
-				{
-					if (ComponentbuilderHelper::checkArray($f))
-					{
-						$fields[] = $as.".".$f['name']." AS ".$tableName.$f['name'];
-					}
-				}
-				// add the basic defaults
-				$fields[] = $as.".published AS ".$tableName."published";
-				$fields[] = $as.".created_by AS ".$tableName."created_by";
-				$fields[] = $as.".modified_by AS ".$tableName."modified_by";
-				$fields[] = $as.".created AS ".$tableName."created";
-				$fields[] = $as.".modified AS ".$tableName."modified";
-				$fields[] = $as.".version AS ".$tableName."version";
-				$fields[] = $as.".hits AS ".$tableName."hits";
-				if (0)
-				{
-					$fields[] = $as.".access AS ".$tableName."access";
-				}
-				$fields[] = $as.".ordering AS ".$tableName."ordering";
-				$viewFields = $description.implode("\n",$fields);
-			}
-			return $viewFields;
-		}
-		return false;
+		return ComponentbuilderHelper::getViewTableColumns($admin_view, $as, $type);
 	}
 
-	protected function getFieldData($id)
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		
-		// Order it by the ordering field.
-		$query->select($db->quoteName(array('a.name','a.xml')));
-		$query->select($db->quoteName(array('c.name'),array('type_name')));
-		$query->from('#__componentbuilder_field AS a');
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('c.id') . ')');
-		$query->where($db->quoteName('a.id') . ' = '. $db->quote($id));
-		 
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
-			$field = $db->loadObject();
-			// load the values form params
-			$field->xml = json_decode($field->xml);
-			$field->type_name = ComponentbuilderHelper::safeString($field->type_name);
-			$load = true;
-			// if category then name must be catid (only one per view)
-			if ($field->type_name == 'category')
-			{
-				$name = 'catid';
-				
-			}
-			// if tag is set then enable all tag options for this view (only one per view)
-			elseif ($field->type_name == 'tag')
-			{
-				$name = 'tags';
-			}
-			// don't add spacers or notes
-			elseif ($field->type_name == 'spacer' || $field->type_name == 'note')
-			{
-				// make sure the name is unique
-				return false;
-			}
-			else
-			{
-				$name = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field->xml,'name="','"'));
-			}
-			
-			// use field core name only if not found in xml
-			if (!ComponentbuilderHelper::checkString($name))
-			{
-				$name = ComponentbuilderHelper::safeString($field->name);;
-			}
-			return array('name' => $name, 'type' => $field->type_name);
-		}
-		return false;
-	}
-    
 	public function getDbTableColumns($tableName, $as, $type)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-        	// get the columns
-		$columns = $db->getTableColumns("#__".$tableName);
-		// set the type (multi or single)
-		$unique = ''; 
-		if (1 == $type)
-		{
-			$unique = ComponentbuilderHelper::safeString($tableName).'_';
-		}
-		if (ComponentbuilderHelper::checkArray($columns))
-		{
-        		// build the return string
-			$tableColumns = array();
-			foreach ($columns as $column => $typeCast)
-			{
-				$tableColumns[] =  $as.".".$column . ' AS ' . $unique . $column;
-			}
-			return implode("\n",$tableColumns);
-		}
-		return false;
+		return ComponentbuilderHelper::getDbTableColumns($tableName, $as, $type);
 	}
 
 	public function getDynamicValues($id, $view)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
-		 
+
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('getcustom', 'gettype', 'main_source', 'view_selection', 'db_selection', 'join_view_table', 'join_db_table', 'addcalculation', 'php_calculation')));
+		$query->select($db->quoteName(array('getcustom', 'gettype', 'select_all', 'db_table_main', 'view_table_main', 'main_source', 'view_selection', 'db_selection', 'join_view_table', 'join_db_table', 'addcalculation', 'php_calculation')));
 		$query->from($db->quoteName('#__componentbuilder_dynamic_get'));
 		$query->where($db->quoteName('published') . ' = 1');
-		$query->where($db->quoteName('id') . ' = '. (int) $id);
-		 
+		$query->where($db->quoteName('id') . ' = ' . (int) $id);
+
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 		$db->execute();
@@ -1772,11 +1625,19 @@ class ComponentbuilderModelAjax extends JModelList
 			// get the main values (name)
 			if ($result->main_source == 1)
 			{
-				$selections[] = explode("\n",$result->view_selection);
+				if ($result->select_all == 1) 
+				{
+					$result->view_selection = ComponentbuilderHelper::getViewTableColumns($result->view_table_main, 'a', $result->gettype);
+				}
+				$selections[] = explode("\n", $result->view_selection);
 			}
 			elseif ($result->main_source == 2) 
 			{
-				$selections[] = explode("\n",$result->db_selection);
+				if ($result->select_all == 1) 
+				{
+					$result->db_selection = ComponentbuilderHelper::getDbTableColumns($result->db_table_main, 'a', $result->gettype);
+				}
+				$selections[] = explode("\n", $result->db_selection);
 			}
 			elseif ($result->main_source == 3)
 			{
@@ -1798,14 +1659,20 @@ class ComponentbuilderModelAjax extends JModelList
 			{
 				foreach ($result->join_view_table as $join_view_table)
 				{
+					// check if all is selected
+					if (strpos($join_view_table['selection'], '*') !== false)
+					{
+						$join_view_table['selection'] = ComponentbuilderHelper::getViewTableColumns($join_view_table['view_table'], $join_view_table['as'], $join_view_table['row_type']);
+					}
+					// build selection
 					if ($join_view_table['row_type'] == '1')
 					{
-						$selections[] = explode("\n",$join_view_table['selection']);
+						$selections[] = explode("\n", $join_view_table['selection']);
 					}
 					elseif ($join_view_table['row_type'] == '2')
 					{
 						$names = $this->setListMethodName(array($join_view_table['on_field'],$join_view_table['join_field']),$join_view_table['view_table'],$join_view_table['as'],1);
-						$selectionsList[implode('',$names)] = explode("\n",$join_view_table['selection']);
+						$selectionsList[implode('',$names)] = explode("\n", $join_view_table['selection']);
 					}
 				}
 				unset($result->join_view_table);
@@ -1814,14 +1681,20 @@ class ComponentbuilderModelAjax extends JModelList
 			{
 				foreach ($result->join_db_table as $join_db_table)
 				{
+					// check if all is selected
+					if (strpos($join_db_table['selection'], '*') !== false)
+					{
+						$join_db_table['selection'] = ComponentbuilderHelper::getViewTableColumns($join_db_table['view_table'], $join_db_table['as'], $join_db_table['row_type']);
+					}
+					// build selections
 					if ($join_db_table['row_type'] == '1')
 					{
-						$selections[] = explode("\n",$join_db_table['selection']);
+						$selections[] = explode("\n", $join_db_table['selection']);
 					}
 					elseif ($join_db_table['row_type'] == '2')
 					{
 						$names = $this->setListMethodName(array($join_db_table['on_field'],$join_db_table['join_field']),$join_db_table['db_table'],$join_db_table['as'],2);
-						$selectionsList[implode('',$names)] = explode("\n",$join_db_table['selection']);
+						$selectionsList[implode('',$names)] = explode("\n", $join_db_table['selection']);
 					}
 				}
 				unset($result->join_db_table);
@@ -1946,7 +1819,7 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 		return false;
 	}
-	
+
 	protected function setListMethodName($names, $table, $as, $type)
 	{
 		$methodNames = array();
@@ -1991,7 +1864,7 @@ class ComponentbuilderModelAjax extends JModelList
 		$methodNames[] = ComponentbuilderHelper::safeString($as,'U');
 		return $methodNames;
 	}
-	
+
 	protected function getViewName($id)
 	{
 		// Get the view name

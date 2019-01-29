@@ -3008,16 +3008,26 @@ class Get
 						switch ($result->main_source)
 						{
 							case 1:
+								// check if auto sync is set
+								if ($result->select_all == 1)
+								{
+									$result->view_selection = '*';
+								}
 								// set the view data
-								$result->main_get[0]['selection'] = $this->setDataSelection($result->key, $view_code, $result->view_selection, $result->view_table_main, 'a', '', 'view');
+								$result->main_get[0]['selection'] = $this->setDataSelection($result->key, $view_code, $result->view_selection, $result->view_table_main, 'a', null, 'view');
 								$result->main_get[0]['as'] = 'a';
 								$result->main_get[0]['key'] = $result->key;
 								$result->main_get[0]['context'] = $context;
 								unset($result->view_selection);
 								break;
 							case 2:
+								// check if auto sync is set
+								if ($result->select_all == 1)
+								{
+									$result->db_selection = '*';
+								}
 								// set the database data
-								$result->main_get[0]['selection'] = $this->setDataSelection($result->key, $view_code, $result->db_selection, $result->db_table_main, 'a', '', 'db');
+								$result->main_get[0]['selection'] = $this->setDataSelection($result->key, $view_code, $result->db_selection, $result->db_table_main, 'a', null, 'db');
 								$result->main_get[0]['as'] = 'a';
 								$result->main_get[0]['key'] = $result->key;
 								$result->main_get[0]['context'] = $context;
@@ -4199,21 +4209,42 @@ class Get
 	{
 		if (ComponentbuilderHelper::checkString($string))
 		{
-			$lines = explode(PHP_EOL, $string);
+			if ('db' === $type)
+			{
+				$table = '#__' . $asset;
+				$queryName = $asset;
+				$view = '';
+			}
+			elseif ('view' === $type)
+			{
+				$view = $this->getViewTableName($asset);
+				$table = '#__' . $this->componentCodeName . '_' . $view;
+				$queryName = $view;
+			}
+			// just get all values from table if * is found
+			if ($string === '*' || strpos($string, '*') !== false)
+			{
+				if ($type == 'view')
+				{
+					$_string = ComponentbuilderHelper::getViewTableColumns($asset, $as, $row_type);
+				}
+				else
+				{
+					$_string = ComponentbuilderHelper::getDbTableColumns($asset, $as, $row_type);
+				}
+				// get only selected values
+				$lines = explode(PHP_EOL, $_string);
+				// make sure to set the string to *
+				$string = '*';
+			}
+			else
+			{
+				// get only selected values
+				$lines = explode(PHP_EOL, $string);
+			}
+			// only continue if lines are available
 			if (ComponentbuilderHelper::checkArray($lines))
 			{
-				if ('db' === $type)
-				{
-					$table = '#__' . $asset;
-					$queryName = $asset;
-					$view = '';
-				}
-				elseif ('view' === $type)
-				{
-					$view = $this->getViewTableName($asset);
-					$table = '#__' . $this->componentCodeName . '_' . $view;
-					$queryName = $view;
-				}
 				$gets = array();
 				$keys = array();
 				// first load all options
@@ -4272,7 +4303,16 @@ class Get
 				}
 				if (ComponentbuilderHelper::checkArray($gets) && ComponentbuilderHelper::checkArray($keys))
 				{
-					$querySelect = '$query->select($db->quoteName(' . PHP_EOL . $this->_t(3) . 'array(' . implode(',', $gets) . '),' . PHP_EOL . $this->_t(3) . 'array(' . implode(',', $keys) . ')));';
+					// single joined selection needs the prefix to the values to avoid conflict in the names
+					// so we most still add then AS
+					if ($string == '*' && 1 != $row_type)
+					{
+						$querySelect = "\$query->select('" . $as . ".*');";
+					}
+					else
+					{
+						$querySelect = '$query->select($db->quoteName(' . PHP_EOL . $this->_t(3) . 'array(' . implode(',', $gets) . '),' . PHP_EOL . $this->_t(3) . 'array(' . implode(',', $keys) . ')));';
+					}
 					$queryFrom = '$db->quoteName(' . $this->db->quote($table) . ', ' . $this->db->quote($as) . ')';
 					// return the select query
 					return array('select' => $querySelect, 'from' => $queryFrom, 'name' => $queryName, 'table' => $table, 'type' => $type, 'select_gets' => $gets, 'select_keys' => $keys);

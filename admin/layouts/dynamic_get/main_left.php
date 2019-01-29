@@ -17,8 +17,9 @@ $form = $displayData->getForm();
 $fields = $displayData->get('fields') ?: array(
 	'main_source',
 	'view_table_main',
-	'view_selection',
 	'db_table_main',
+	'select_all',
+	'view_selection',
 	'db_selection'
 );
 
