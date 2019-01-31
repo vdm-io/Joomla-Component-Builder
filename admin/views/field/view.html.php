@@ -202,7 +202,9 @@ class ComponentbuilderViewField extends JViewLegacy
 		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
 		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';");
+		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		// add return_here
+		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) JUri::getInstance())) . "';");
 		// add the libs for subform (since not adding it via xml but ajax)
 		JHtml::_('jquery.ui', array('core', 'sortable'));
 		JHtml::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));

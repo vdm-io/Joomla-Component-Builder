@@ -51,6 +51,11 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		// get instance of the table
 		return JTable::getInstance($type, $prefix, $config);
 	}
+
+	public function getVDM()
+	{
+		return $this->vastDevMod;
+	}
     
 	/**
 	 * Method to get a single record.
@@ -89,6 +94,31 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$item->properties = $properties->toArray();
 			}
 
+
+			if (empty($item->id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $item->id;
+			}
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('fieldtype__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				// set the vast development method key
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'fieldtype__'.$id);
+				ComponentbuilderHelper::set('fieldtype__'.$id, $this->vastDevMod);
+				// set a return value if found
+				$jinput = JFactory::getApplication()->input;
+				$return = $jinput->get('return', null, 'base64');
+				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+			}
 			// check what type of properties array we have here (should be subform... but just incase)
 			// This could happen due to huge data sets
 			if (isset($item->properties) && isset($item->properties['name']))

@@ -232,6 +232,8 @@ jQuery(document).ready(function()
 		jQuery('#html-comment-info').hide();
 		jQuery('#phpjs-comment-info').show();
 	}
+	// check and load all the custom code edit buttons
+	getEditCustomCodeButtons();
 });
 function setCustomCodePlaceholder() {
 	var ide = jQuery('#jform_id').val();
@@ -308,8 +310,8 @@ function usedin(functioName, ide) {
 	jQuery('#note-usedin-not').hide();
 	jQuery('#note-usedin-found').hide();
 	jQuery('#loading-usedin').show();
-	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m']; // if you update this, also update (below 11) & [customcode-codeUsedInHtmlNote]!
-	var targetNumber = 12;
+	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n']; // if you update this, also update (below 13) & [customcode-codeUsedInHtmlNote]!
+	var targetNumber = 13;
 	var run = 0;
 	var usedinChecker = setInterval(function(){ 
 		var target = targets[run];
@@ -340,7 +342,7 @@ function usedin(functioName, ide) {
 function usedin_server(functioName, ide, target){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.usedin&format=json";
 	if(token.length > 0){
-		var request = 'token='+token+'&functioName='+functioName+'&id='+ide+'&target='+target;
+		var request = 'token='+token+'&functioName='+functioName+'&id='+ide+'&target='+target+'&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -349,4 +351,43 @@ function usedin_server(functioName, ide, target){
 		data: request,
 		jsonp: 'callback'
 	});
+}
+
+function getEditCustomCodeButtons_server(id){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	if(token.length > 0 && id > 0){
+		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getEditCustomCodeButtons(){
+	// get the id
+	id = jQuery("#jform_id").val();
+	getEditCustomCodeButtons_server(id).done(function(result) {
+		if(isObject(result)){
+			jQuery.each(result, function( field, buttons ) {
+				jQuery('<div class="control-group"><div class="control-label"><label>Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
+				jQuery.each(buttons, function( name, button ) {
+					jQuery(".control-customcode-buttons-"+field).append(button);
+				});
+			});
+		}
+	})
+}
+
+// check object is not empty
+function isObject(obj) {
+	for(var prop in obj) {
+		if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+			return true;
+		}
+	}
+	return false;
 } 

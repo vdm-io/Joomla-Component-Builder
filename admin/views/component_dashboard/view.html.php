@@ -188,8 +188,14 @@ class ComponentbuilderViewComponent_dashboard extends JViewLegacy
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_EDIT'));
 		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/component_dashboard.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		// Add Ajax Token
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';");
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/component_dashboard/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
+		// add var key
+		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		// add return_here
+		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) JUri::getInstance())) . "';");
 		JText::script('view not acceptable. Error');
 	}
 }

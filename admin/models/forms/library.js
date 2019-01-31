@@ -410,10 +410,104 @@ jQuery(document).ready(function()
 	// now load the displays
 	getAjaxDisplay('library_config');
 	getAjaxDisplay('library_files_folders_urls');
+
+	// check and load all the customcode edit buttons
+	setTimeout(getEditCustomCodeButtons, 300);
 });
 
 function addData(result,where){
 	jQuery(result).insertAfter(jQuery(where).closest('.control-group'));
+}
+
+function getAjaxDisplay(type){
+	getAjaxDisplay_server(type).done(function(result) {
+		if (result) {
+			jQuery('#display_'+type).html(result);
+		}
+		// set button
+		addButtonID(type,'header_'+type+'_buttons', 2); // <-- little edit button
+	});
+}
+
+function getAjaxDisplay_server(type){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getAjaxDisplay&format=json&raw=true&vdm="+vastDevMod;
+	if (token.length > 0 && type.length > 0) {
+		var request = 'token='+token+'&type=' + type;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getFieldSelectOptions_server(fieldId){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json&raw=true";
+	if (token.length > 0 && fieldId > 0) {
+		var request = 'token='+token+'&id='+fieldId;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getFieldSelectOptions(fieldKey){
+	// first check if the field is set
+	if(jQuery("#jform_addconditions__addconditions"+fieldKey+"__option_field").length) {
+		var fieldId = jQuery("#jform_addconditions__addconditions"+fieldKey+"__option_field option:selected").val();
+		getFieldSelectOptions_server(fieldId).done(function(result) {
+			if(result) {
+				jQuery('textarea#jform_addconditions__addconditions'+fieldKey+'__field_options').val(result);
+			} else {
+				jQuery('textarea#jform_addconditions__addconditions'+fieldKey+'__field_options').val('');
+			}
+		});
+	}
+}
+
+function getEditCustomCodeButtons_server(id){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	if(token.length > 0 && id > 0){
+		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getEditCustomCodeButtons(){
+	// get the id
+	id = jQuery("#jform_id").val();
+	getEditCustomCodeButtons_server(id).done(function(result) {
+		if(isObject(result)){
+			jQuery.each(result, function( field, buttons ) {
+				jQuery('<div class="control-group"><div class="control-label"><label>Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
+				jQuery.each(buttons, function( name, button ) {
+					jQuery(".control-customcode-buttons-"+field).append(button);
+				});
+			});
+		}
+	})
+}
+
+// check object is not empty
+function isObject(obj) {
+	for(var prop in obj) {
+		if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 function addButtonID_server(type, size){
@@ -488,56 +582,4 @@ function getLinked(){
 			jQuery('#display_linked_to').html(result);
 		}
 	});
-}
-
-function getAjaxDisplay(type){
-	getAjaxDisplay_server(type).done(function(result) {
-		if (result) {
-			jQuery('#display_'+type).html(result);
-		}
-		// set button
-		addButtonID(type,'header_'+type+'_buttons', 2); // <-- little edit button
-	});
-}
-
-function getAjaxDisplay_server(type){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getAjaxDisplay&format=json&raw=true&vdm="+vastDevMod;
-	if (token.length > 0 && type.length > 0) {
-		var request = 'token='+token+'&type=' + type;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
-function getFieldSelectOptions_server(fieldId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json&raw=true";
-	if (token.length > 0 && fieldId > 0) {
-		var request = 'token='+token+'&id='+fieldId;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
-function getFieldSelectOptions(fieldKey){
-	// first check if the field is set
-	if(jQuery("#jform_addconditions__addconditions"+fieldKey+"__option_field").length) {
-		var fieldId = jQuery("#jform_addconditions__addconditions"+fieldKey+"__option_field option:selected").val();
-		getFieldSelectOptions_server(fieldId).done(function(result) {
-			if(result) {
-				jQuery('textarea#jform_addconditions__addconditions'+fieldKey+'__field_options').val(result);
-			} else {
-				jQuery('textarea#jform_addconditions__addconditions'+fieldKey+'__field_options').val('');
-			}
-		});
-	}
 } 

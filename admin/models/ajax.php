@@ -1876,6 +1876,101 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	// Used in custom_code
+	public function getEditCustomCodeButtons($id)
+	{
+		$view = $this->getViewID();
+		// only continue if this is a legitimate call
+		if (isset($view['a_id']) && $view['a_id'] == $id && isset($view['a_view']) && ($target = $this->getCodeSearchKeys($view['a_view'], 'query_')) !== false)
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select($db->quoteName($target['select']))
+				->from($db->quoteName('#__componentbuilder_' . $target['table'], 'a'))
+				->where('a.id = ' . (int) $id);
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->loadRowList())
+			{
+				$data = $db->loadAssoc();
+				// some helper for some fields
+				$helper = array('xml' => 'note_select_field_type');
+				// reset the bucket
+				$bucket = array();
+				foreach ($data as $key => $value)
+				{
+					if ('id' !== $key && $target['name'] !== $key)
+					{
+						if (!isset($target['not_base64'][$key]))
+						{
+							$value = ComponentbuilderHelper::openValidBase64($value, null);
+						}
+						elseif ('json' === $target['not_base64'][$key] && 'xml' === $key) // just for field search
+						{
+							$value = json_decode($value);
+						}
+						// check if we should search for base64 string inside the text
+						if (isset($target['base64_search']) && isset($target['base64_search'][$key])
+							&& isset($target['base64_search'][$key]['start']) && strpos($value, $target['base64_search'][$key]['start']) !== false)
+						{
+							// search and open the base64 strings
+							$this->searchOpenBase64($value, $target['base64_search'][$key]);
+						}
+						// check if place holder set
+						if (strpos($value, '[CUSTOMC' . 'ODE=') !== false)
+						{
+							// get all custom codes in value
+							$bucket[$key] = ComponentbuilderHelper::getAllBetween($value, '[CUSTOMC' . 'ODE=', ']');
+						}
+					}
+				}
+				// check if any values found
+				if (ComponentbuilderHelper::checkArray($bucket))
+				{
+					// get input
+					$jinput = JFactory::getApplication()->input;
+					$return_here = $jinput->get('return_here', null, 'base64');
+					// set the return here value if not found
+					if (ComponentbuilderHelper::checkString($return_here))
+					{
+						$return_here =  '&return=' . $return_here;
+					}
+					else
+					{
+						$return_here =  '&ref=' . $view['a_view'] . '&refid=' . (int) $id;
+					}
+					// reset the buttons bucket
+					$buttons = array();
+					foreach ($bucket as $field => $customcodes)
+					{
+						$edit_icon = '<span class="icon-edit" aria-hidden="true"></span> ';
+						// see if the field needs some help :)
+						if (isset($helper[$field]))
+						{
+							$field = $helper[$field];
+						}
+						$buttons[$field] = array();
+						foreach ($customcodes as $customcode)
+						{
+							$key = (array) explode('+', $customcode);
+							if (!isset($buttons[$field][$key[0]]) && ($_id = ComponentbuilderHelper::getVar('custom_code', $key[0], 'function_name')) !== false
+								&& ($button = ComponentbuilderHelper::getEditTextButton($edit_icon . $key[0], $_id, 'custom_code', 'custom_codes', $return_here, 'com_componentbuilder', false, 'btn btn-small button-edit" style="margin: 0 0 5px 0;')) 
+								&& ComponentbuilderHelper::checkString($button))
+							{
+								$buttons[$field][$key[0]] = $button;
+							}
+						}
+					}
+					// only continue if we have buttons in array
+					if (ComponentbuilderHelper::checkArray($buttons, true))
+					{
+						return $buttons;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public function checkFunctionName($name, $id)
 	{
 		$nameArray = (array) $this->splitAtUpperCase($name);
@@ -1970,10 +2065,26 @@ class ComponentbuilderModelAjax extends JModelList
 				// check if any values found
 				if (ComponentbuilderHelper::checkArray($bucket))
 				{
+					// get input
+					$jinput = JFactory::getApplication()->input;
+					$return_here = $jinput->get('return_here', null, 'base64');
+					// set the return here value if not found
+					if (ComponentbuilderHelper::checkString($return_here))
+					{
+						$return_here =  '&return=' . $return_here;
+					}
+					else
+					{
+						$return_here = '&ref=custom_code&refid=' . (int) $id;
+					}
 					$usedin = array();
 					foreach ($bucket as $editId => $values)
 					{
-						$usedin[] = '<a href="index.php?option=com_componentbuilder&ref=custom_code&refid=' . (int) $id . '&view=' . $target['views'] . '&task=' . $target['table'] . '.edit&id=' . (int) $editId . '">' . $values['name'] . '</a> (' . implode(', ', $values['fields']) . ')';
+						if (($button = ComponentbuilderHelper::getEditTextButton($values['name'], $editId, $target['table'], $target['views'], $return_here, 'com_componentbuilder', false, ''))
+							&& ComponentbuilderHelper::checkString($button))
+						{
+							$usedin[] = $button. ' (' . implode(', ', $values['fields']) . ')';
+						}
 					}
 					$html = '<ul><li>' . implode('</li><li>', $usedin) . '</li></ul>';
 					return array('in' => $html, 'id' => $targeting);
@@ -2156,6 +2267,13 @@ class ComponentbuilderModelAjax extends JModelList
 			'views' => 'custom_codes',
 			'not_base64' => array(),
 			'name' => 'system_name'
+		),
+		// #__componentbuilder_validation_rule (n)
+		'validation_rule' => array(
+			'search' => array('id', 'name', 'php'),
+			'views' => 'validation_rules',
+			'not_base64' => array(),
+			'name' => 'name'
 		)
 	);
 
@@ -2188,7 +2306,7 @@ class ComponentbuilderModelAjax extends JModelList
 			}
 		}
 		// return result ready for a.query
-		if ('query' === $type && isset($this->codeSearchKeys[$target]))
+		if (('query' === $type || 'query_' === $type) && isset($this->codeSearchKeys[$target]))
 		{
 			// set the targets
 			$codeSearchTarget = $this->codeSearchKeys[$target];

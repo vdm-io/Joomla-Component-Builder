@@ -366,7 +366,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			else
 			{
 				$id = $item->id;
-			}			
+			}
 			// set the id and view name to session
 			if ($vdm = ComponentbuilderHelper::get('admin_view__'.$id))
 			{

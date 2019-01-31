@@ -519,56 +519,9 @@ jQuery(document).ready(function()
 	var fieldText = jQuery("#jform_fieldtype option:selected").text().toLowerCase();
 	// now check if database input is needed
 	dbChecker(fieldText);
+	// check and load all the custom code edit buttons
+	getEditCustomCodeButtons();
 });
-
-function getLinked_server(type){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod;
-	if(token.length > 0 && type > 0){
-		var request = 'token='+token+'&type='+type;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
-function getLinked(){
-	getLinked_server(1).done(function(result) {
-		if(result){
-			jQuery('#display_linked_to').html(result);
-		}
-	});
-}
-
-function addButton_server(type, size){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type.length > 0){
-		var request = 'token='+token+'&type='+type+'&size='+size;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-function addButton(type, where, size){
-	// just to insure that default behaviour still works
-	size = typeof size !== 'undefined' ? size : 1;
-	addButton_server(type, size).done(function(result) {
-		if(result){
-			if (2 == size) {
-				jQuery('#'+where).html(result);
-			} else {
-				addData(result, '#jform_'+where);
-			}
-		}
-	})
-}
 
 // the options row id key
 var rowIdKey = 'properties';
@@ -815,4 +768,92 @@ function dbChecker(type){
 		jQuery('.note_no_database_settings_needed').closest('.control-group').hide();
 		jQuery('.note_database_settings_needed').closest('.control-group').show();
 	}
+}
+
+function getLinked_server(type){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod;
+	if(token.length > 0 && type > 0){
+		var request = 'token='+token+'&type='+type;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getLinked(){
+	getLinked_server(1).done(function(result) {
+		if(result){
+			jQuery('#display_linked_to').html(result);
+		}
+	});
+}
+
+function addButton_server(type, size){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && type.length > 0){
+		var request = 'token='+token+'&type='+type+'&size='+size;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+function addButton(type, where, size){
+	// just to insure that default behaviour still works
+	size = typeof size !== 'undefined' ? size : 1;
+	addButton_server(type, size).done(function(result) {
+		if(result){
+			if (2 == size) {
+				jQuery('#'+where).html(result);
+			} else {
+				addData(result, '#jform_'+where);
+			}
+		}
+	})
+}
+
+function getEditCustomCodeButtons_server(id){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	if(token.length > 0 && id > 0){
+		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getEditCustomCodeButtons(){
+	// get the id
+	id = jQuery("#jform_id").val();
+	getEditCustomCodeButtons_server(id).done(function(result) {
+		if(isObject(result)){
+			jQuery.each(result, function( field, buttons ) {
+				jQuery('<div class="control-group"><div class="control-label"><label>Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
+				jQuery.each(buttons, function( name, button ) {
+					jQuery(".control-customcode-buttons-"+field).append(button);
+				});
+			});
+		}
+	})
+}
+
+// check object is not empty
+function isObject(obj) {
+	for(var prop in obj) {
+		if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+			return true;
+		}
+	}
+	return false;
 } 

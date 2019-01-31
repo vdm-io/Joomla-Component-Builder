@@ -191,6 +191,8 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_FIELDTYPE_NEW' : 'COM_COMPONENTBUILDER_FIELDTYPE_EDIT'));
 		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/fieldtype.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		// Add Ajax Token
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';");
 
 		// Add the CSS for Footable
 		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
@@ -203,6 +205,60 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
 
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/fieldtype/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
+
+		// get Uikit Version
+		$this->uikitVersion = $this->params->get('uikit_version', 2);
+		// Load uikit options.
+		$uikit = $this->params->get('uikit_load');
+		$isAdmin = JFactory::getApplication()->isClient('administrator');
+		// Set script size.
+		$size = $this->params->get('uikit_min');
+		// Use Uikit Version 2
+		if (2 == $this->uikitVersion && ($isAdmin || $uikit != 2))
+		{
+			// Set css style.
+			$style = $this->params->get('uikit_style');
+			// only load if needed
+			if ($isAdmin || $uikit != 3)
+			{
+				// add the style sheets
+				$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/uikit' . $style . $size . '.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			}
+			// add the style sheets
+			$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/accordion' . $style . $size . '.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/tooltip' . $style . $size . '.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/notify' . $style . $size . '.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/form-file' . $style . $size . '.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/progress' . $style . $size . '.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/placeholder' . $style . $size . '.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2//css/components/upload' . $style . $size . '.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			// only load if needed
+			if ($isAdmin || $uikit != 3)
+			{
+				// add JavaScripts
+				$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit' . $size . '.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+			}
+			// add JavaScripts
+			$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/accordion' . $size . '.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+			$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/tooltip' . $size . '.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+			$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox' . $size . '.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+			$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify' . $size . '.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+			$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/upload' . $size . '.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		}
+		// Use Uikit Version 3
+		elseif (3 == $this->uikitVersion && ($isAdmin || $uikit != 2))
+		{
+			// add the style sheets
+			$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v3/css/uikit'.$size.'.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+			// add JavaScripts
+			$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v3/js/uikit'.$size.'.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+			// add icons
+			$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v3/js/uikit-icons'.$size.'.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		}
+		// add var key
+		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		// add return_here
+		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) JUri::getInstance())) . "';");
 		JText::script('view not acceptable. Error');
 	}
 }

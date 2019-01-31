@@ -1312,6 +1312,8 @@ jQuery(document).ready(function()
 	addButtonID('admin_fields_relations','create_edit_buttons', 1); // <-- forth
 	// set button
 	addButtonID('admin_custom_tabs','addtabs-lbl', 1); // <-- fifth
+	// check and load all the customcode edit buttons
+	getEditCustomCodeButtons();
 });
 
 function checkAliasField() {
@@ -1369,80 +1371,6 @@ function getAjaxDisplay_server(type){
 
 function addData(result,where){
 	jQuery(result).insertAfter(jQuery(where).closest('.control-group'));
-}
-
-function addButtonID_server(type, size){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButtonID&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type.length > 0 && size > 0){
-		var request = 'token='+token+'&type='+type+'&size='+size;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-function addButtonID(type, where, size){
-	addButtonID_server(type, size).done(function(result) {
-		if(result){
-			if (2 == size) {
-				jQuery('#'+where).html(result);
-			} else {
-				addData(result, '#jform_'+where);
-			}
-		}
-	});
-}
-
-function addButton_server(type, size){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type.length > 0){
-		var request = 'token='+token+'&type='+type+'&size='+size;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-function addButton(type, where, size){
-	// just to insure that default behaviour still works
-	size = typeof size !== 'undefined' ? size : 1;
-	addButton_server(type, size).done(function(result) {
-		if(result){
-			if (2 == size) {
-				jQuery('#'+where).html(result);
-			} else {
-				addData(result, '#jform_'+where);
-			}
-		}
-	})
-}
-
-function getLinked_server(type){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod;
-	if(token.length > 0 && type > 0){
-		var request = 'token='+token+'&type='+type;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
-function getLinked(){
-	getLinked_server(1).done(function(result) {
-		if(result){
-			jQuery('#display_linked_to').html(result);
-		}
-	});
 }
 
 function getTableColumns_server(tableName){
@@ -1557,4 +1485,117 @@ function getDynamicScripts(id){
 			});
 		}
 	}
+}
+
+function getEditCustomCodeButtons_server(id){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	if(token.length > 0 && id > 0){
+		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getEditCustomCodeButtons(){
+	// get the id
+	id = jQuery("#jform_id").val();
+	getEditCustomCodeButtons_server(id).done(function(result) {
+		if(isObject(result)){
+			jQuery.each(result, function( field, buttons ) {
+				jQuery('<div class="control-group"><div class="control-label"><label>Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
+				jQuery.each(buttons, function( name, button ) {
+					jQuery(".control-customcode-buttons-"+field).append(button);
+				});
+			});
+		}
+	})
+}
+
+// check object is not empty
+function isObject(obj) {
+	for(var prop in obj) {
+		if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function addButtonID_server(type, size){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButtonID&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && type.length > 0 && size > 0){
+		var request = 'token='+token+'&type='+type+'&size='+size;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+function addButtonID(type, where, size){
+	addButtonID_server(type, size).done(function(result) {
+		if(result){
+			if (2 == size) {
+				jQuery('#'+where).html(result);
+			} else {
+				addData(result, '#jform_'+where);
+			}
+		}
+	});
+}
+
+function addButton_server(type, size){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && type.length > 0){
+		var request = 'token='+token+'&type='+type+'&size='+size;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+function addButton(type, where, size){
+	// just to insure that default behaviour still works
+	size = typeof size !== 'undefined' ? size : 1;
+	addButton_server(type, size).done(function(result) {
+		if(result){
+			if (2 == size) {
+				jQuery('#'+where).html(result);
+			} else {
+				addData(result, '#jform_'+where);
+			}
+		}
+	})
+}
+
+function getLinked_server(type){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod;
+	if(token.length > 0 && type > 0){
+		var request = 'token='+token+'&type='+type;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getLinked(){
+	getLinked_server(1).done(function(result) {
+		if(result){
+			jQuery('#display_linked_to').html(result);
+		}
+	});
 } 

@@ -4051,6 +4051,106 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	* Get an edit text button
+	* 
+	* @param  string   $text       The button text
+	* @param  int      $item       The item to edit
+	* @param  string   $view       The type of item to edit
+	* @param  string   $views      The list view controller name
+	* @param  string   $ref        The return path
+	* @param  string   $component  The component these views belong to
+	* @param  string   $headsup    The message to show on click of button
+	*
+	* @return  string    On success the full html link
+	* 
+	*/
+	public static function getEditTextButton($text, &$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true, $class = 'uk-button', $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE')
+	{
+		// make sure we have text
+		if (!self::checkString($text))
+		{
+			return self::getEditButton($item, $view, $views, $ref, $component, $headsup);
+		}
+		// get URL
+		$url = self::getEditURL($item, $view, $views, $ref, $component, $jRoute);
+		// check if we found any
+		if (self::checkString($url))
+		{
+			// get the global settings
+			if (!self::checkObject(self::$params))
+			{
+				self::$params = JComponentHelper::getParams('com_componentbuilder');
+			}
+			// get UIKIT version
+			$uikit = self::$params->get('uikit_version', 2);
+			// check that we have the ID
+			if (self::checkObject($item) && isset($item->id))
+			{
+				// check if the checked_out is available
+				if (isset($item->checked_out))
+				{
+					$checked_out = (int) $item->checked_out;
+				}
+			}
+			elseif (self::checkArray($item) && isset($item['id']))
+			{
+				// check if the checked_out is available
+				if (isset($item['checked_out']))
+				{
+					$checked_out = (int) $item['checked_out'];
+				}
+			}
+			// set the link title
+			$title = self::safeString(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
+			// check that there is a check message
+			if (self::checkString($headsup))
+			{
+				if (3 == $uikit)
+				{
+					$href = 'onclick="UIkit.modal.confirm(\''.JText::_($headsup).'\').then( function(){ window.location.href = \'' . $url . '\' } )"  href="javascript:void(0)"';
+				}
+				else
+				{
+					$href = 'onclick="UIkit2.modal.confirm(\''.JText::_($headsup).'\', function(){ window.location.href = \'' . $url . '\' })"  href="javascript:void(0)"';
+				}
+			}
+			else
+			{
+				$href = 'href="' . $url . '"';
+			}
+			// return UIKIT version 3
+			if (3 == $uikit)
+			{
+				// check if it is checked out
+				if (isset($checked_out) && $checked_out > 0)
+				{
+					// is this user the one who checked it out
+					if ($checked_out == JFactory::getUser()->id)
+					{
+						return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
+					}
+					return ' <a class="' . $class . '" href="#" disabled title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', self::safeString($view, 'W'), JFactory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
+				}
+				// return normal edit link
+				return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
+			}
+			// check if it is checked out (return UIKIT version 2)
+			if (isset($checked_out) && $checked_out > 0)
+			{
+				// is this user the one who checked it out
+				if ($checked_out == JFactory::getUser()->id)
+				{
+					return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
+				}
+				return ' <a class="' . $class . '" href="#" disabled title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', self::safeString($view, 'W'), JFactory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
+			}
+			// return normal edit link
+			return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
+		}
+		return '';
+	}
+
+	/**
 	* Get the edit URL
 	* 
 	* @param  int      $item        The item to edit

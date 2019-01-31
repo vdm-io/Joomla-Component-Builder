@@ -1747,6 +1747,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'views' => 'custom_codes',
 			'not_base64' => array(),
 			'name' => 'system_name'
+		),
+		// #__componentbuilder_validation_rule (n)
+		'validation_rule' => array(
+			'search' => array('id', 'name', 'php'),
+			'views' => 'validation_rules',
+			'not_base64' => array(),
+			'name' => 'name'
 		)
 	);
 
@@ -1779,7 +1786,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			}
 		}
 		// return result ready for a.query
-		if ('query' === $type && isset($this->codeSearchKeys[$target]))
+		if (('query' === $type || 'query_' === $type) && isset($this->codeSearchKeys[$target]))
 		{
 			// set the targets
 			$codeSearchTarget = $this->codeSearchKeys[$target];

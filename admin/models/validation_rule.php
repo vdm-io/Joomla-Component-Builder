@@ -100,7 +100,7 @@ class ComponentbuilderModelValidation_rule extends JModelAdmin
 			else
 			{
 				$id = $item->id;
-			}			
+			}
 			// set the id and view name to session
 			if ($vdm = ComponentbuilderHelper::get('validation_rule__'.$id))
 			{

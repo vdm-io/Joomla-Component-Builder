@@ -196,7 +196,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			else
 			{
 				$id = $item->id;
-			}			
+			}
 			// set the id and view name to session
 			if ($vdm = ComponentbuilderHelper::get('dynamic_get__'.$id))
 			{
