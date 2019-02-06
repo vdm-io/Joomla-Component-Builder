@@ -286,13 +286,13 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		$model = componentbuilderHelper::getModel('joomla_components', JPATH_ADMINISTRATOR . '/components/com_componentbuilder');
 		// set user
 		$model->user = $this->getApiUser();
+		// make sure to set active type (adding this script from custom code :)
+		$model->activeType = 'manualBackup';
 		// check if export is allowed for this user. (we need this sorry)
 		if ($model->user->authorise('joomla_component.export', 'com_componentbuilder') && $model->user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// get all component IDs to backup
 			$pks = componentbuilderHelper::getComponentIDs();
-			// make sure to set active type to backup
-			$model->activeType = 'manualBackup';
 			// set auto loader
 			ComponentbuilderHelper::autoLoader('smart');
 			// manual backup message
@@ -413,7 +413,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 				}				
 			}
 			// quite only if auto backup (adding this script from custom code :)
-			if ('backup' === 'manualBackup')
+			if ('backup' === $model->activeType)
 			{
 				echo "# " . $backupNoticeStatus . "\n" .implode("\n", $backupNotice);
 				// clear session
@@ -424,7 +424,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 			return;
 		}
 		// quite only if auto backup (adding this script from custom code :)
-		if ('backup' === 'manualBackup')
+		if ('backup' === $model->activeType)
 		{
 			echo "# Error\n" . JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
 			// clear session

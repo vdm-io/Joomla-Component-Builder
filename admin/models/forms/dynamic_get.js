@@ -1523,10 +1523,6 @@ jQuery(document).ready(function()
 	getLinked();
 	var valueSwitch = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
 	getDynamicScripts(valueSwitch);
-	// get the selected value of the select_all
-	var select_all =  jQuery("#jform_select_all input[type='radio']:checked").val();
-	// make sure the selection is correct
-	setSelectAll(select_all);
 	// check and load all the custom code edit buttons
 	getEditCustomCodeButtons();
 });
