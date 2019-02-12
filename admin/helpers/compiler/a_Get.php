@@ -5513,12 +5513,23 @@ class Get
 				{
 					$customCode['code'] = $this->setCustomCodeData($customCode['code'], $debug, $nr);
 				}
+				// build the hash array
 				if (isset($customCode['hashtarget']))
 				{
 					$customCode['hashtarget'] = explode("__", $customCode['hashtarget']);
+					// is this a replace code, set end has array
 					if ($customCode['type'] == 1 && strpos($customCode['hashendtarget'], '__') !== false)
 					{
 						$customCode['hashendtarget'] = explode("__", $customCode['hashendtarget']);
+						// NOW see if this is an end of page target (TODO not sure if the string is always d41d8cd98f00b204e9800998ecf8427e)
+						// I know this fix is not air-tight, but it should work as the value of an empty line when md5'ed is ^^^^
+						// Then if the line number is only >>>one<<< it is almost always end of the page.
+						// So I am using those two values to detect end of page replace ending, to avoid mismatching the ending target hash.
+						if ($customCode['hashendtarget'][0] == 1 && 'd41d8cd98f00b204e9800998ecf8427e' === $customCode['hashendtarget'][1])
+						{
+							// unset since this will force the replacement unto end of page.
+							unset($customCode['hashendtarget']);
+						}
 					}
 				}
 			}

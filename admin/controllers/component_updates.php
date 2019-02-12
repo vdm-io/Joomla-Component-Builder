@@ -315,6 +315,24 @@ class ComponentbuilderControllerComponent_updates extends JControllerForm
 	 */
 	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{
+		// update the component version to match the updated last version
+		if (isset($validData['joomla_component']) && is_numeric($validData['joomla_component']) && $validData['joomla_component'] > 0)
+		{
+			$objectUpdate = new stdClass();
+			$objectUpdate->id = (int) $validData['joomla_component'];
+			if (isset($validData['version_update']) && ComponentbuilderHelper::checkArray($validData['version_update'])
+				&& ($component_version = end($validData['version_update'])['version'])
+				&& ComponentbuilderHelper::checkString($component_version))
+			{
+				$objectUpdate->component_version = $component_version;
+			}
+			// be sure to update the table if we have a value
+			if (isset($objectUpdate->component_version))
+			{
+				JFactory::getDbo()->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'id');
+			}
+		}
+
 		return;
 	}
 

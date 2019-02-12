@@ -103,6 +103,7 @@ Where can you get support and help?
 ====================
 
 + [The JCB Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE)
++ [German Basic Introduction](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wu0tDFxJtZFwW7AxA4JHQV7)
 + [Hello World Tutorial](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 + [The JCB! Wiki](https://github.com/vdm-io/Joomla-Component-Builder/wiki)
 + [JCB Google Group/forum](https://vdm.bz/jcb-forum)
@@ -144,11 +145,11 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 6th February, 2019
++ *Last Build*: 12th February, 2019
 + *Version*: 2.9.11
 + *Copyright*: Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **195865**
++ *Line count*: **195885**
 + *Field count*: **1089**
 + *File count*: **1277**
 + *Folder count*: **201**
