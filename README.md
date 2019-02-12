@@ -92,7 +92,7 @@ You are in Control
 Get More Demo Content
 ====================
 
-> The cat is out of the bag, [JCB](http://joomlacomponentbuilder.com) fully mapped can now be yours! Including many other [JCB](http://joomlacomponentbuilder.com) mapped components.
+> You can now get access to the WOW factor, [JCB](http://joomlacomponentbuilder.com) fully mapped can now be yours! Including many other [JCB](http://joomlacomponentbuilder.com) mapped components.
 
 ### All you need to do is [explained here](https://vdm.bz/how-to-get-free-vdm-package-keys)!
 
@@ -149,7 +149,7 @@ TODO
 + *Version*: 2.9.11
 + *Copyright*: Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **195885**
++ *Line count*: **195897**
 + *Field count*: **1089**
 + *File count*: **1277**
 + *Folder count*: **201**
