@@ -2295,7 +2295,7 @@ class Fields extends Structure
 				else
 				{
 					// set the rest of the fields
-					$xmlValue = (string) ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"');
+					$xmlValue = (string) $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, $property['name'] . '="', '"'), $placeholders);
 				}
 
 				// check if translatable
@@ -2871,6 +2871,14 @@ class Fields extends Structure
 				$replacekey = str_replace(array($this->bbb, $this->ddd), array($this->hhh, $this->hhh), $replacekey);
 				// now set the value
 				$replace[$replacekey] = $replacevalue;
+			}
+			// load the global placeholders
+			if (ComponentbuilderHelper::checkArray($this->globalPlaceholders))
+			{
+				foreach ($this->globalPlaceholders as $globalPlaceholder => $gloabalValue)
+				{
+					$replace[$globalPlaceholder] = $gloabalValue;
+				}
 			}
 			// start loading the field type
 			$this->fileContentDynamic['customfield_' . $data['type']] = array();

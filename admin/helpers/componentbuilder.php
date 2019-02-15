@@ -1180,6 +1180,20 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	* validate that a placeholder is unique
+	**/
+	public static function validateUniquePlaceholder($string)
+	{
+		$string = self::safeString($string);
+		// this list may grow as we find more cases that break the compiler (just open an issue on github)
+		if (in_array($string, array('component', 'view', 'views')))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * The array of dynamic content
 	 * 
 	 * @var     array
@@ -4475,6 +4489,10 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('custom_code.access', 'com_componentbuilder') && $user->authorise('custom_code.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_CODES'), 'index.php?option=com_componentbuilder&view=custom_codes', $submenu === 'custom_codes');
+		}
+		if ($user->authorise('placeholder.access', 'com_componentbuilder') && $user->authorise('placeholder.submenu', 'com_componentbuilder'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_PLACEHOLDERS'), 'index.php?option=com_componentbuilder&view=placeholders', $submenu === 'placeholders');
 		}
 		if ($user->authorise('library.access', 'com_componentbuilder') && $user->authorise('library.submenu', 'com_componentbuilder'))
 		{

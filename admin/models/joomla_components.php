@@ -298,7 +298,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'component_updates' => 'joomla_component',
 			'component_mysql_tweaks' => 'joomla_component',
 			'component_custom_admin_menus' => 'joomla_component',
-			'component_dashboard' => 'joomla_component' );
+			'component_dashboard' => 'joomla_component',
+			'component_placeholders' => 'joomla_component' );
 		// load all tables linked to joomla_component
 		foreach($linkedTables as $table => $field)
 		{
@@ -868,7 +869,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
 				'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 				'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
-				'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
+				'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
+				'component_placeholders'
 			);
 			// smart table loop
 			foreach ($tables as $table)

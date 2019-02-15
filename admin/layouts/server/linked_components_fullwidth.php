@@ -108,6 +108,11 @@ $ref = ($id) ? "&ref=server&refid=" . $id . "&return=" . urlencode(base64_encode
 						);
 					$_buttons[1] = array(
 						array(
+							'view' => 'component_placeholders',
+							'views' => 'components_placeholders',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_PLACEHOLDERS'),
+							'icon' => 'search'),
+						array(
 							'view' => 'component_updates',
 							'views' => 'components_updates',
 							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_UPDATES'),

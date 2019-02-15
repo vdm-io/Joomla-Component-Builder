@@ -735,6 +735,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Placeholder alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.placeholder') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$placeholder_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($placeholder_found)
+		{
+			// Since there are load the needed  placeholder type ids
+			$placeholder_ids = $db->loadColumn();
+			// Remove Placeholder from the content type table
+			$placeholder_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.placeholder') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($placeholder_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Placeholder items
+			$placeholder_done = $db->execute();
+			if ($placeholder_done)
+			{
+				// If succesfully remove Placeholder add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Placeholder items from the contentitem tag map table
+			$placeholder_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.placeholder') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($placeholder_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Placeholder items
+			$placeholder_done = $db->execute();
+			if ($placeholder_done)
+			{
+				// If succesfully remove Placeholder add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Placeholder items from the ucm content table
+			$placeholder_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.placeholder') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($placeholder_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Placeholder items
+			$placeholder_done = $db->execute();
+			if ($placeholder_done)
+			{
+				// If succesfully remove Placeholder add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Placeholder items are cleared from DB
+			foreach ($placeholder_ids as $placeholder_id)
+			{
+				// Remove Placeholder items from the ucm base table
+				$placeholder_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $placeholder_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($placeholder_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Placeholder items
+				$db->execute();
+
+				// Remove Placeholder items from the ucm history table
+				$placeholder_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $placeholder_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($placeholder_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Placeholder items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Library alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library') );
 		$db->setQuery($query);
@@ -2799,6 +2885,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Component_placeholders alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_placeholders') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$component_placeholders_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($component_placeholders_found)
+		{
+			// Since there are load the needed  component_placeholders type ids
+			$component_placeholders_ids = $db->loadColumn();
+			// Remove Component_placeholders from the content type table
+			$component_placeholders_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_placeholders') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($component_placeholders_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_placeholders items
+			$component_placeholders_done = $db->execute();
+			if ($component_placeholders_done)
+			{
+				// If succesfully remove Component_placeholders add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Component_placeholders items from the contentitem tag map table
+			$component_placeholders_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_placeholders') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($component_placeholders_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_placeholders items
+			$component_placeholders_done = $db->execute();
+			if ($component_placeholders_done)
+			{
+				// If succesfully remove Component_placeholders add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Component_placeholders items from the ucm content table
+			$component_placeholders_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.component_placeholders') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($component_placeholders_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_placeholders items
+			$component_placeholders_done = $db->execute();
+			if ($component_placeholders_done)
+			{
+				// If succesfully remove Component_placeholders add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Component_placeholders items are cleared from DB
+			foreach ($component_placeholders_ids as $component_placeholders_id)
+			{
+				// Remove Component_placeholders items from the ucm base table
+				$component_placeholders_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $component_placeholders_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($component_placeholders_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Component_placeholders items
+				$db->execute();
+
+				// Remove Component_placeholders items from the ucm history table
+				$component_placeholders_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $component_placeholders_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($component_placeholders_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Component_placeholders items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Snippet_type alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet_type') );
 		$db->setQuery($query);
@@ -3599,6 +3771,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$custom_code_Inserted = $db->insertObject('#__content_types', $custom_code);
 
+			// Create the placeholder content type object.
+			$placeholder = new stdClass();
+			$placeholder->type_title = 'Componentbuilder Placeholder';
+			$placeholder->type_alias = 'com_componentbuilder.placeholder';
+			$placeholder->table = '{"special": {"dbtable": "#__componentbuilder_placeholder","key": "id","type": "Placeholder","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$placeholder->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "target","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"target":"target","value":"value"}}';
+			$placeholder->router = 'ComponentbuilderHelperRoute::getPlaceholderRoute';
+			$placeholder->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/placeholder.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$placeholder_Inserted = $db->insertObject('#__content_types', $placeholder);
+
 			// Create the library content type object.
 			$library = new stdClass();
 			$library->type_title = 'Componentbuilder Library';
@@ -3886,6 +4070,18 @@ class com_componentbuilderInstallerScript
 
 			// Set the object into the content types table.
 			$component_files_folders_Inserted = $db->insertObject('#__content_types', $component_files_folders);
+
+			// Create the component_placeholders content type object.
+			$component_placeholders = new stdClass();
+			$component_placeholders->type_title = 'Componentbuilder Component_placeholders';
+			$component_placeholders->type_alias = 'com_componentbuilder.component_placeholders';
+			$component_placeholders->table = '{"special": {"dbtable": "#__componentbuilder_component_placeholders","key": "id","type": "Component_placeholders","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$component_placeholders->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
+			$component_placeholders->router = 'ComponentbuilderHelperRoute::getComponent_placeholdersRoute';
+			$component_placeholders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_placeholders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$component_placeholders_Inserted = $db->insertObject('#__content_types', $component_placeholders);
 
 			// Create the snippet_type content type object.
 			$snippet_type = new stdClass();
@@ -4179,6 +4375,35 @@ class com_componentbuilderInstallerScript
 			else
 			{
 				$custom_code_Inserted = $db->insertObject('#__content_types', $custom_code);
+			}
+
+			// Create the placeholder content type object.
+			$placeholder = new stdClass();
+			$placeholder->type_title = 'Componentbuilder Placeholder';
+			$placeholder->type_alias = 'com_componentbuilder.placeholder';
+			$placeholder->table = '{"special": {"dbtable": "#__componentbuilder_placeholder","key": "id","type": "Placeholder","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$placeholder->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "target","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"target":"target","value":"value"}}';
+			$placeholder->router = 'ComponentbuilderHelperRoute::getPlaceholderRoute';
+			$placeholder->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/placeholder.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if placeholder type is already in content_type DB.
+			$placeholder_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($placeholder->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$placeholder->type_id = $db->loadResult();
+				$placeholder_Updated = $db->updateObject('#__content_types', $placeholder, 'type_id');
+			}
+			else
+			{
+				$placeholder_Inserted = $db->insertObject('#__content_types', $placeholder);
 			}
 
 			// Create the library content type object.
@@ -4877,6 +5102,35 @@ class com_componentbuilderInstallerScript
 				$component_files_folders_Inserted = $db->insertObject('#__content_types', $component_files_folders);
 			}
 
+			// Create the component_placeholders content type object.
+			$component_placeholders = new stdClass();
+			$component_placeholders->type_title = 'Componentbuilder Component_placeholders';
+			$component_placeholders->type_alias = 'com_componentbuilder.component_placeholders';
+			$component_placeholders->table = '{"special": {"dbtable": "#__componentbuilder_component_placeholders","key": "id","type": "Component_placeholders","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$component_placeholders->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
+			$component_placeholders->router = 'ComponentbuilderHelperRoute::getComponent_placeholdersRoute';
+			$component_placeholders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_placeholders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if component_placeholders type is already in content_type DB.
+			$component_placeholders_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_placeholders->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_placeholders->type_id = $db->loadResult();
+				$component_placeholders_Updated = $db->updateObject('#__content_types', $component_placeholders, 'type_id');
+			}
+			else
+			{
+				$component_placeholders_Inserted = $db->insertObject('#__content_types', $component_placeholders);
+			}
+
 			// Create the snippet_type content type object.
 			$snippet_type = new stdClass();
 			$snippet_type->type_title = 'Componentbuilder Snippet_type';
@@ -5172,7 +5426,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.9.11 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.9.13 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 

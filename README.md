@@ -12,7 +12,7 @@ The Component Builder for [Joomla](https://extensions.joomla.org/extension/compo
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.9.11) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.9.13) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -106,10 +106,11 @@ Where can you get support and help?
 + [German Basic Introduction](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wu0tDFxJtZFwW7AxA4JHQV7)
 + [Hello World Tutorial](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 + [The JCB! Wiki](https://github.com/vdm-io/Joomla-Component-Builder/wiki)
-+ [JCB Google Group/forum](https://vdm.bz/jcb-forum)
++ [Google Group](https://vdm.bz/jcb-forum)
 + [Report a Security Issue](http://joomlacomponentbuilder.com/report-security-issues)
 + [Community Complaint](http://joomlacomponentbuilder.com/community-complaint)
 + [Open Issue On Github](https://github.com/vdm-io/Joomla-Component-Builder/issues) ^^
++ [Telegram Group](https://t.me/jcb_group)
 + [JCB IRC Channel](https://vdm.bz/jcb-irc)
 
 Since [JCB](http://joomlacomponentbuilder.com) has [become a community](https://github.com/vdm-io/Joomla-Component-Builder/blob/staging/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
@@ -145,14 +146,14 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 12th February, 2019
-+ *Version*: 2.9.11
++ *Last Build*: 15th February, 2019
++ *Version*: 2.9.13
 + *Copyright*: Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **195897**
-+ *Field count*: **1089**
-+ *File count*: **1277**
-+ *Folder count*: **201**
++ *Line count*: **202937**
++ *Field count*: **1113**
++ *File count*: **1336**
++ *Folder count*: **209**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](http://joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)

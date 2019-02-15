@@ -98,6 +98,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'layout' => 'layouts',
 				'dynamic_get' => 'dynamic_gets',
 				'custom_code' => 'custom_codes',
+				'placeholder' => 'placeholders',
 				'library' => 'libraries',
 				'snippet' => 'snippets',
 				'validation_rule' => 'validation_rules',
@@ -120,6 +121,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'component_config' => 'components_config',
 				'component_dashboard' => 'components_dashboard',
 				'component_files_folders' => 'components_files_folders',
+				'component_placeholders' => 'components_placeholders',
 				'snippet_type' => 'snippet_types',
 				'library_config' => 'libraries_config',
 				'library_files_folders_urls' => 'libraries_files_folders_urls'

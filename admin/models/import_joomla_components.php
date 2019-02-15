@@ -702,7 +702,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
 			'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 			'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
-			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
+			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
+			'component_placeholders'
 		);
 		// get prefix
 		$prefix = $this->_db->getPrefix();
@@ -2056,6 +2057,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
+			case 'component_placeholders':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
+			break;
 			case 'component_files_folders':
 				// diverged id already updated
 				if (!$diverged)
@@ -2845,6 +2854,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'component_custom_admin_menus':
 				case 'component_config':
 				case 'component_dashboard':
+				case 'component_placeholders':
 				case 'component_files_folders':
 						// get by joomla_component (since there should only be one of each component)
 						$getter = array('joomla_component');

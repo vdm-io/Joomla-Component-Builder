@@ -930,6 +930,16 @@ class ComponentbuilderModelField extends JModelAdmin
 					{
 						// fix the values
 						case 'name':
+							// check if we have placeholder in name
+							if (strpos($property['value'], '[[[') !== false || strpos($property['value'], '###') !== false)
+							{
+								$property['value'] = trim($property['value']);
+							}
+							else
+							{
+								$property['value'] = ComponentbuilderHelper::safeString($property['value']);
+							}
+						break;
 						case 'type':
 							$property['value'] = ComponentbuilderHelper::safeString($property['value']);
 						break;

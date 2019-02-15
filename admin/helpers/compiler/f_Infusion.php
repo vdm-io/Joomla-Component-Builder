@@ -213,6 +213,15 @@ class Infusion extends Interpretation
 			// add the helper emailer if set
 			$this->fileContentStatic[$this->hhh . 'HELPER_EMAIL' . $this->hhh] = $this->addEmailHelper();
 
+			// load the global placeholders
+			if (ComponentbuilderHelper::checkArray($this->globalPlaceholders))
+			{
+				foreach ($this->globalPlaceholders as $globalPlaceholder => $gloabalValue)
+				{
+					$this->fileContentStatic[$globalPlaceholder] = $gloabalValue;
+				}
+			}
+
 			// reset view array
 			$viewarray = array();
 			$site_edit_view_array = array();

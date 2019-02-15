@@ -13645,10 +13645,26 @@ class Interpretation extends Fields
 				$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 				$viewName = 'config';
 				$listViewName = 'configs';
-				$placeholders = array(
-					$this->hhh . 'component' . $this->hhh => $component,
-					$this->hhh . 'view' . $this->hhh => $viewName,
-					$this->hhh . 'views' . $this->hhh => $listViewName);
+				// set place holders
+				$placeholders = array();
+				$placeholders[$this->hhh . 'component' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentData->name_code);
+				$placeholders[$this->hhh . 'Component' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentData->name_code, 'F');
+				$placeholders[$this->hhh . 'COMPONENT' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentData->name_code, 'U');
+				$placeholders[$this->hhh . 'view' . $this->hhh] = $viewName;
+				$placeholders[$this->hhh . 'views' . $this->hhh] = $listViewName;
+				$placeholders[$this->bbb . 'component' . $this->ddd] = $placeholders[$this->hhh . 'component' . $this->hhh];
+				$placeholders[$this->bbb . 'Component' . $this->ddd] = $placeholders[$this->hhh . 'Component' . $this->hhh];
+				$placeholders[$this->bbb . 'COMPONENT' . $this->ddd] = $placeholders[$this->hhh . 'COMPONENT' . $this->hhh];
+				$placeholders[$this->bbb . 'view' . $this->ddd] = $viewName;
+				$placeholders[$this->bbb . 'views' . $this->ddd] = $listViewName;
+				// load the global placeholders
+				if (ComponentbuilderHelper::checkArray($this->globalPlaceholders))
+				{
+					foreach ($this->globalPlaceholders as $globalPlaceholder => $gloabalValue)
+					{
+						$placeholders[$globalPlaceholder] = $gloabalValue;
+					}
+				}
 				$view = '';
 				$viewType = 0;
 				// set the custom table key
@@ -13676,8 +13692,8 @@ class Interpretation extends Fields
 					{
 						$this->configFieldSetsCustomField[$field['tabname']][] = $xmlField;
 						// set global params to db on install
-						$fieldName = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xmlField, 'name="', '"'));
-						$fieldDefault = ComponentbuilderHelper::getBetween($xmlField, 'default="', '"');
+						$fieldName = ComponentbuilderHelper::safeString($this->setPlaceholders(ComponentbuilderHelper::getBetween($xmlField, 'name="', '"'), $placeholders));
+						$fieldDefault = $this->setPlaceholders(ComponentbuilderHelper::getBetween($xmlField, 'default="', '"'), $placeholders);
 						if (isset($field['custom_value']) && ComponentbuilderHelper::checkString($field['custom_value']))
 						{
 							// add array if found

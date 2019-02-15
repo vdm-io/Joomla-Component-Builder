@@ -54,6 +54,13 @@ class Get
 	public $params;
 
 	/**
+	 * The global placeholders
+	 * 
+	 * @var     array
+	 */
+	public $globalPlaceholders = array();
+
+	/**
 	 * The placeholders
 	 * 
 	 * @var     array
@@ -781,6 +788,8 @@ class Get
 				$this->user = JFactory::getUser();
 				// Get a db connection.
 				$this->db = JFactory::getDbo();
+				// get global placeholders
+				$this->globalPlaceholders = $this->getGlobalPlaceholders();
 				// check if this component is install on the current website
 				if ($paths = $this->getLocalInstallPaths())
 				{
@@ -858,6 +867,36 @@ class Get
 	}
 
 	/**
+	 * get all System Placeholders
+	 *
+	 * @return  array The global placeholders
+	 * 
+	 */
+	public function getGlobalPlaceholders()
+	{
+		// reset bucket
+		$bucket = array();
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+		$query->select($this->db->quoteName(array('a.target','a.value')));
+		// from these tables
+		$query->from('#__componentbuilder_placeholder AS a');
+		// Reset the query using our newly populated query object.
+		$this->db->setQuery($query);
+		// Load the items
+		$this->db->execute();
+		if ($this->db->getNumRows())
+		{
+			$bucket = $this->db->loadAssocList('target', 'value');
+			foreach ($bucket as $key => &$code)
+			{
+				$code = base64_decode($code);
+			}
+		}
+		return $bucket;
+	}
+
+	/**
 	 * get all Component Data
 	 * 
 	 * @param   int   $id  The component ID
@@ -888,7 +927,8 @@ class Get
 				'i.php_dashboard_methods',
 				'f.sql_tweak',
 				'e.version_update',
-				'e.id'
+				'e.id',
+				'k.addplaceholders'
 				), array(
 				'addadmin_views',
 				'addadmin_views_id',
@@ -904,7 +944,8 @@ class Get
 				'php_dashboard_methods',
 				'sql_tweak',
 				'version_update',
-				'version_update_id'
+				'version_update_id',
+				'_placeholders'
 				)
 			)
 		);
@@ -919,6 +960,7 @@ class Get
 		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_config', 'h') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('h.joomla_component') . ')');
 		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_dashboard', 'i') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('i.joomla_component') . ')');
 		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_files_folders', 'j') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('j.joomla_component') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_placeholders', 'k') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('k.joomla_component') . ')');
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $this->componentID);
 
 		// Reset the query using our newly populated query object.
@@ -970,6 +1012,26 @@ class Get
 		$this->placeholders[$this->bbb . 'component' . $this->ddd] = $this->placeholders[$this->hhh . 'component' . $this->hhh];
 		$this->placeholders[$this->bbb . 'Component' . $this->ddd] = $this->placeholders[$this->hhh . 'Component' . $this->hhh];
 		$this->placeholders[$this->bbb . 'COMPONENT' . $this->ddd] = $this->placeholders[$this->hhh . 'COMPONENT' . $this->hhh];
+
+		// set the addcustommenus data
+		$component->_placeholders = (isset($component->_placeholders) && ComponentbuilderHelper::checkJson($component->_placeholders)) ? json_decode($component->_placeholders, true) : null;
+		if (ComponentbuilderHelper::checkArray($component->_placeholders))
+		{
+			foreach($component->_placeholders as $row)
+			{
+				$this->globalPlaceholders[$row['target']] = $row['value'];
+			}
+		}
+		unset($component->_placeholders);
+
+		// load the global placeholders
+		if (ComponentbuilderHelper::checkArray($this->globalPlaceholders))
+		{
+			foreach ($this->globalPlaceholders as $globalPlaceholder => $gloabalValue)
+			{
+				$this->placeholders[$globalPlaceholder] = $gloabalValue;
+			}
+		}
 
 		// set component sales name
 		$component->sales_name = ComponentbuilderHelper::safeString($component->system_name);
@@ -2810,7 +2872,7 @@ class Get
 						if (strpos($requeSt_id, '_request_id') !== false || strpos($requeSt_id, '_request_catid') !== false)
 						{
 							// keep it then, don't change
-							$name = $requeSt_id;
+							$name = $this->setPlaceholders($requeSt_id, $this->placeholders);
 						}
 						else
 						{
@@ -2846,7 +2908,7 @@ class Get
 					else
 					{
 						// get value from xml
-						$xml = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'));
+						$xml = ComponentbuilderHelper::safeString($this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'), $this->placeholders));
 						// check if a value was found
 						if (ComponentbuilderHelper::checkString($xml))
 						{
@@ -5662,6 +5724,7 @@ class Get
 		$placeholders[ComponentbuilderHelper::safeString($this->componentCodeName, 'F') . 'Helper::'] = $this->bbb . 'Component' . $this->ddd . 'Helper::';
 		$placeholders['COM_' . ComponentbuilderHelper::safeString($this->componentCodeName, 'U')] = 'COM_' . $this->bbb . 'COMPONENT' . $this->ddd;
 		$placeholders['com_' . $this->componentCodeName] = 'com_' . $this->bbb . 'component' . $this->ddd;
+
 		foreach ($paths as $target => $path)
 		{
 			// we are changing the working directory to the componet path
