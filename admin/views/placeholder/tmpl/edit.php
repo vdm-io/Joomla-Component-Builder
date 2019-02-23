@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -57,6 +57,11 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 				<?php echo JLayoutHelper::render('placeholder.details_right', $this); ?>
 			</div>
 		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('placeholder.details_fullwidth', $this); ?>
+			</div>
+		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
@@ -105,3 +110,30 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 </div>
 </form>
 </div>
+
+<script type="text/javascript">
+
+
+
+jQuery('#adminForm').on('change', '#jform_target',function (e)
+{
+	e.preventDefault();
+	jQuery('#placedin').show();
+	var placeholderName = jQuery('#jform_target').val();
+	// check if this function name is taken
+	checkPlaceholderName(placeholderName);
+});
+
+// nice little dot trick :)
+jQuery(document).ready( function($) {
+  var x=0;
+  setInterval(function() {
+	var dots = "";
+	x++;
+	for (var y=0; y < x%8; y++) {
+		dots+=".";
+	}
+	$(".loading-dots").text(dots);
+  } , 500);
+});
+</script>

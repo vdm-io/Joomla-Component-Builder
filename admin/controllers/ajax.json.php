@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -46,6 +46,8 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('checkFunctionName', 'ajax');
 		$this->registerTask('usedin', 'ajax');
 		$this->registerTask('getEditCustomCodeButtons', 'ajax');
+		$this->registerTask('placedin', 'ajax');
+		$this->registerTask('checkPlaceholderName', 'ajax');
 		$this->registerTask('getExistingValidationRuleCode', 'ajax');
 		$this->registerTask('getValidationRulesTable', 'ajax');
 		$this->registerTask('checkRuleName', 'ajax');
@@ -847,6 +849,85 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($idValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getEditCustomCodeButtons($idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'placedin':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$placeholderValue = $jinput->get('placeholder', NULL, 'WORD');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						$targetValue = $jinput->get('target', NULL, 'WORD');
+						if($placeholderValue && $idValue && $targetValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->placedin($placeholderValue, $idValue, $targetValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'checkPlaceholderName':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						$placeholderNameValue = $jinput->get('placeholderName', NULL, 'STRING');
+						if($idValue && $placeholderNameValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->checkPlaceholderName($idValue, $placeholderNameValue);
 						}
 						else
 						{

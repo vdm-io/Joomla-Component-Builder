@@ -115,6 +115,8 @@
 			hint="COM_COMPONENTBUILDER_PLACEHOLDER_VALUE_HINT"
 			autocomplete="on"
 		/>
+		<!-- Note_placeholders_placedin Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_placeholders_placedin" description="COM_COMPONENTBUILDER_PLACEHOLDER_NOTE_PLACEHOLDERS_PLACEDIN_DESCRIPTION" class="note_placeholders_placedin" />
 	</fieldset>
 	
 	<!-- Access Control Fields. -->

@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -1182,15 +1182,90 @@ abstract class ComponentbuilderHelper
 	/**
 	* validate that a placeholder is unique
 	**/
-	public static function validateUniquePlaceholder($string)
+	public static function validateUniquePlaceholder($id, $name, $bool = false)
 	{
-		$string = self::safeString($string);
+		// make sure no padding is set
+		$name = preg_replace("/[^A-Za-z0-9_]/", '', $name);
 		// this list may grow as we find more cases that break the compiler (just open an issue on github)
-		if (in_array($string, array('component', 'view', 'views')))
+		if (in_array($name, array('component', 'view', 'views')))
 		{
+			// check if we must return boolean
+			if (!$bool)
+			{
+				return array (
+					'message' => JText::_('COM_COMPONENTBUILDER_SORRY_THIS_PLACEHOLDER_IS_ALREADY_IN_USE_IN_THE_COMPILER'),
+					'status' => 'danger');
+			}
 			return false;
 		}
+		// add the padding (needed)
+		$name = '[[[' . trim($name) . ']]]';
+		if (self::placeholderIsSet($id, $name))
+		{
+			// check if we must return boolean
+			if (!$bool)
+			{
+				return array (
+					'message' => JText::_('COM_COMPONENTBUILDER_SORRY_THIS_PLACEHOLDER_IS_ALREADY_IN_USE'),
+					'status' => 'danger');
+			}
+			return false;			
+		}
+		// check if we must return boolean
+		if (!$bool)
+		{
+			return array (
+				'name' => $name,
+				'message' => JText::_('COM_COMPONENTBUILDER_GREAT_THIS_PLACEHOLDER_WILL_WORK'),
+				'status' => 'success');
+		}
 		return true;
+	}
+
+	/**
+	* search for placeholder in table
+	**/
+	protected static function placeholderIsSet($id, $name)
+	{
+		// query the table for result array
+		if (($results = self::getPlaceholderTarget($id, $name)) !== false)
+		{
+			// check if we must continue the search
+			foreach ($results as $_id => $target)
+			{
+				if ($name === $target)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* get placeholder target
+	**/
+	protected static function getPlaceholderTarget($id, $name)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('id', 'target')));
+		$query->from($db->quoteName('#__componentbuilder_placeholder'));
+		$query->where($db->quoteName('target') . ' = '. $db->quote($name));
+		// check if we have id
+		if (is_numeric($id))
+		{
+			$query->where($db->quoteName('id') . ' <> ' . (int) $id);
+		}
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			return $db->loadAssocList('id', 'target');
+		}
+		return false;
 	}
 
 	/**

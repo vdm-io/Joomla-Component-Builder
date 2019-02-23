@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -38,50 +38,9 @@ class JFormRuleUniqueplaceholder extends FormRule
 	 */
 	public function test(\SimpleXMLElement $element, $value, $group = null, Registry $input = null, Form $form = null)
 	{
-		// Get the database object and a new query object.
-		$db = \JFactory::getDbo();
-		$query = $db->getQuery(true);
-
 		// Get the extra field check attribute.
 		$id = ($input instanceof Registry) ? $input->get('id', null) : null;
-
-		// get the component & table name
-		$table = ($form instanceof Form) ? $form->getName() : '';
-
-		// get the column name
-		$name = (array) $element->attributes()->{'name'};
-		$column = (string) trim($name[0]);
-		
-		// check that we have a value
-		if (strlen($table) > 3 && strpos($table, 'componentbuilder.') !== false)
-		{
-			// now get the table name
-			$tableArray = explode('.', $table);
-			// do we have two values
-			if (count( (array) $tableArray) == 2)
-			{
-				// Build the query.
-				$query->select('COUNT(*)')
-					->from('#__componentbuilder_' . (string) $tableArray[1])
-					->where($db->quoteName($column) . ' = ' . $db->quote($value));
-
-				// remove this item from the list
-				if ($id > 0)
-				{
-					$query->where($db->quoteName('id') . ' <> ' . (int) $id);
-				}
-
-				// Set and query the database.
-				$db->setQuery($query);
-				$duplicate = (bool) $db->loadResult();
-
-				if ($duplicate)
-				{
-					return false;
-				}
-			}
-		}
-		// now test against all the placeholders in the compiler
-		return ComponentbuilderHelper::validateUniquePlaceholder($value);
+		// now test against all the placeholders and the compiler
+		return ComponentbuilderHelper::validateUniquePlaceholder($id, $value, true);
 	}
 }

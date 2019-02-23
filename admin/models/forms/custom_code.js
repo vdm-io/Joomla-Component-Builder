@@ -4,7 +4,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -256,6 +256,7 @@ function setCustomCodePlaceholder() {
 		jQuery('.placeholder-key-id').text(ide);
 	}
 }
+
 function checkFunctionName(functioName) {
 	if (functioName.length > 2) {
 		var ide = jQuery('#jform_id').val();
@@ -270,7 +271,7 @@ function checkFunctionName(functioName) {
 				// now start search for where the function is used
 				usedin(result.name, ide);
 			} else if(result.message){
-				// show notice that functionName is not okay
+				// show notice that functioName is not okay
 				jQuery.UIkit.notify({message: result.message, timeout: 5000, status: result.status, pos: 'top-right'});
 				jQuery('#jform_function_name').val('');
 			} else {
@@ -289,20 +290,22 @@ function checkFunctionName(functioName) {
 		setCustomCodePlaceholder();
 	}
 }
-// check Function Name
+// check Function name
 function checkFunctionName_server(functioName, ide){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.checkFunctionName&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.checkFunctionName&raw=true&format=json";
 	if(token.length > 0){
 		var request = 'token='+token+'&functioName='+functioName+'&id='+ide;
 	}
 	return jQuery.ajax({
 		type: 'POST',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
+
+
 // check where this Function is used
 function usedin(functioName, ide) {
 	var found = false;
@@ -342,16 +345,17 @@ function usedin(functioName, ide) {
 function usedin_server(functioName, ide, target){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.usedin&format=json";
 	if(token.length > 0){
-		var request = 'token='+token+'&functioName='+functioName+'&id='+ide+'&target='+target+'&return_here='+return_here;
+		var request = 'token='+token+'&functioName='+functioName+'&id='+ide+'&target='+target+'&raw=true&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
+
 
 function getEditCustomCodeButtons_server(id){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;

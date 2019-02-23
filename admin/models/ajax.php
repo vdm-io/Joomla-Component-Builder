@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -2046,18 +2046,41 @@ class ComponentbuilderModelAjax extends JModelList
 								// search and open the base64 strings
 								$this->searchOpenBase64($value, $target['base64_search'][$key]);
 							}
-							// check if place holder set
-							if (strpos($value, '[CUSTOMC' . 'ODE=' . (string) $functioName . ']') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . ']') !== false ||
-							strpos($value, '[CUSTOMC' . 'ODE=' . (string) $functioName . '+') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . '+') !== false)
+							// when searching for custom code placeholders
+							if('functioName' === 'functioName')
 							{
-								// found it so add to bucket
-								if (!isset($bucket[$data['id']]))
+								// check if placeholder found
+								if (strpos($value, '[CUSTOMC' . 'ODE=' . (string) $functioName . ']') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . ']') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (string) $functioName . '+') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . '+') !== false)
 								{
-									$bucket[$data['id']] = array();
-									$bucket[$data['id']]['name'] = $data[$target['name']];
-									$bucket[$data['id']]['fields'] = array();
+									// found it so add to bucket
+									if (!isset($bucket[$data['id']]))
+									{
+										$bucket[$data['id']] = array();
+										$bucket[$data['id']]['name'] = $data[$target['name']];
+										$bucket[$data['id']]['fields'] = array();
+									}
+									$bucket[$data['id']]['fields'][] = $key;
 								}
-								$bucket[$data['id']]['fields'][] = $key;
+							}
+							// when searching for just placeholders
+							elseif ('functioName' === 'placeholder')
+							{
+								// make sure the placeholder is wrapped
+								$functioName = preg_replace("/[^A-Za-z0-9_]/", '', $functioName);
+								// add the padding (needed)
+								$functioName = '[[[' . trim($functioName) . ']]]';
+								// check if placeholder found
+								if (strpos($value, (string) $functioName) !== false)
+								{
+									// found it so add to bucket
+									if (!isset($bucket[$data['id']]))
+									{
+										$bucket[$data['id']] = array();
+										$bucket[$data['id']]['name'] = $data[$target['name']];
+										$bucket[$data['id']]['fields'] = array();
+									}
+									$bucket[$data['id']]['fields'][] = $key;
+								}
 							}
 						}
 					}
@@ -2093,6 +2116,7 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 		return false;
 	}
+
 
 	/**
 	* Search for base64 strings and decode them
@@ -2324,6 +2348,135 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			// return target array values to use in search
 			return $this->codeSearchKeys[$target];
+		}
+		return false;
+	}
+
+
+	// Used in placeholder
+	public function checkPlaceholderName($id, $name)
+	{
+		return ComponentbuilderHelper::validateUniquePlaceholder($id, $name);
+	}
+
+	public function placedin($placeholder, $id, $targeting)
+	{
+		// get the table being targeted
+		if ($target = $this->getCodeSearchKeys($targeting, 'query'))
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select($db->quoteName($target['select']))
+				->from($db->quoteName('#__componentbuilder_' . $target['table'], 'a'));
+			if (strpos($target['name'], '->') !== false && strpos($target['name'], ':') !== false && strpos($target['name'], '.') !== false)
+			{
+				// joomla_component->id:joomla_component.system_name (example)
+				$targetJoin = explode('->', $target['name']);
+				// get keys
+				$targetKeys = explode(':', $targetJoin[1]);
+				// get table.name
+				$table_name = explode('.', $targetKeys[1]);
+				// select the correct name
+				$query->select($db->quoteName(array('c.'.$table_name[1]), array($targetJoin[0])));
+				// add some special fetch
+				$query->join('LEFT', $db->quoteName('#__componentbuilder_' . $table_name[0], 'c') . ' ON (' . $db->quoteName('a.'.$targetJoin[0]) . ' = ' . $db->quoteName('c.'.$targetKeys[0]) . ')');
+				// set the correct name
+				$target['name'] = $targetJoin[0];
+			}
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->loadRowList())
+			{
+				$bucket = array();
+				$hugeDataSet = $db->loadAssocList();
+				foreach ($hugeDataSet as $data)
+				{
+					foreach ($data as $key => $value)
+					{
+						if ('id' !== $key && $target['name'] !== $key)
+						{
+							if (!isset($target['not_base64'][$key]))
+							{
+								$value = ComponentbuilderHelper::openValidBase64($value, null);
+							}
+							elseif ('json' === $target['not_base64'][$key] && 'xml' === $key) // just for field search
+							{
+								$value = json_decode($value);
+							}
+							// check if we should search for base64 string inside the text
+							if (isset($target['base64_search']) && isset($target['base64_search'][$key])
+								&& isset($target['base64_search'][$key]['start']) && strpos($value, $target['base64_search'][$key]['start']) !== false)
+							{
+								// search and open the base64 strings
+								$this->searchOpenBase64($value, $target['base64_search'][$key]);
+							}
+							// when searching for custom code placeholders
+							if('placeholder' === 'functioName')
+							{
+								// check if placeholder found
+								if (strpos($value, '[CUSTOMC' . 'ODE=' . (string) $placeholder . ']') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . ']') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (string) $placeholder . '+') !== false || strpos($value, '[CUSTOMC' . 'ODE=' . (int) $id . '+') !== false)
+								{
+									// found it so add to bucket
+									if (!isset($bucket[$data['id']]))
+									{
+										$bucket[$data['id']] = array();
+										$bucket[$data['id']]['name'] = $data[$target['name']];
+										$bucket[$data['id']]['fields'] = array();
+									}
+									$bucket[$data['id']]['fields'][] = $key;
+								}
+							}
+							// when searching for just placeholders
+							elseif ('placeholder' === 'placeholder')
+							{
+								// make sure the placeholder is wrapped
+								$placeholder = preg_replace("/[^A-Za-z0-9_]/", '', $placeholder);
+								// add the padding (needed)
+								$placeholder = '[[[' . trim($placeholder) . ']]]';
+								// check if placeholder found
+								if (strpos($value, (string) $placeholder) !== false)
+								{
+									// found it so add to bucket
+									if (!isset($bucket[$data['id']]))
+									{
+										$bucket[$data['id']] = array();
+										$bucket[$data['id']]['name'] = $data[$target['name']];
+										$bucket[$data['id']]['fields'] = array();
+									}
+									$bucket[$data['id']]['fields'][] = $key;
+								}
+							}
+						}
+					}
+				}
+				// check if any values found
+				if (ComponentbuilderHelper::checkArray($bucket))
+				{
+					// get input
+					$jinput = JFactory::getApplication()->input;
+					$return_here = $jinput->get('return_here', null, 'base64');
+					// set the return here value if not found
+					if (ComponentbuilderHelper::checkString($return_here))
+					{
+						$return_here =  '&return=' . $return_here;
+					}
+					else
+					{
+						$return_here = '&ref=placeholder&refid=' . (int) $id;
+					}
+					$placedin = array();
+					foreach ($bucket as $editId => $values)
+					{
+						if (($button = ComponentbuilderHelper::getEditTextButton($values['name'], $editId, $target['table'], $target['views'], $return_here, 'com_componentbuilder', false, ''))
+							&& ComponentbuilderHelper::checkString($button))
+						{
+							$placedin[] = $button. ' (' . implode(', ', $values['fields']) . ')';
+						}
+					}
+					$html = '<ul><li>' . implode('</li><li>', $placedin) . '</li></ul>';
+					return array('in' => $html, 'id' => $targeting);
+				}
+			}
 		}
 		return false;
 	}
