@@ -66,6 +66,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	protected $smartBox = array();
 	protected $smartIDs = array();
 	protected $customCodeM = array();
+	protected $placeholderM = array();
+	protected $placeholderS = array();
 	protected $fieldTypes = array();
 	protected $isMultiple = array();
 
@@ -254,7 +256,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// component image
 				$this->moveIt(array($item->image), 'image');
 				// set the custom code ID's
-				$this->setCustomCodeIds($item, 'joomla_component');
+				$this->setCodePlaceholdersIds($item, 'joomla_component');
+				// set the placeholder ID's
+				$this->setCodePlaceholdersIds($item, 'joomla_component', 'placeholder');
 				// set the language strings for this component
 				$this->setLanguageTranslation($item->id);
 				// load to global object
@@ -350,6 +354,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			if (isset($this->smartIDs['custom_code']) && ComponentbuilderHelper::checkArray($this->smartIDs['custom_code']))
 			{
 				$this->setData('custom_code', array_values($this->smartIDs['custom_code']), 'id');
+			}
+			// add placeholder
+			if (isset($this->smartIDs['placeholder']) && ComponentbuilderHelper::checkArray($this->smartIDs['placeholder']))
+			{
+				$this->setData('placeholder', array_values($this->smartIDs['placeholder']), 'id');
 			}
 			// set limiter
 			$limit = 0;
@@ -614,9 +623,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				{
 					$this->smartIDs['layout'] = array();
 				}
-				elseif ('custom_code' === $table && 'id' === $key)
+				elseif ('custom_code' === $table && 'id' === $key && !isset($this->smartIDs['custom_code']))
 				{
 					$this->smartIDs['custom_code'] = array();
+				}
+				elseif ('placeholder' === $table && 'id' === $key && !isset($this->smartIDs['placeholder']))
+				{
+					$this->smartIDs['placeholder'] = array();
 				}
 				// start loading the data
 				if (!isset($this->smartBox[$table]))
@@ -666,7 +679,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					// load to global object
 					$this->smartBox[$table][$item->id] = $item;
 					// set the custom code ID's
-					$this->setCustomCodeIds($item, $table);
+					$this->setCodePlaceholdersIds($item, $table);
+					// set the placeholder ID's
+					$this->setCodePlaceholdersIds($item, $table, 'placeholder');
 					// actions to take if table is component_files_folders
 					if ('component_files_folders' === $table && 'clone' !== $this->activeType)
 					{
@@ -866,7 +881,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			// the array of tables to store
 			$tables = array(
 				'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
-				'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
+				'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code', 'placeholder',
 				'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 				'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 				'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
@@ -1378,15 +1393,16 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	}
 
 	/**
-	* Set the ids of the found custom code
+	* Set the ids of the found code placeholders
 	*
 	*  @param   object    $item   The item being searched
 	*  @param   string    $target  The target table
+	*  @param   string    $type    The type of placeholder to search and set
 	* 
 	*  @return  void
 	* 
 	*/
-	protected function setCustomCodeIds($item, $target)
+	protected function setCodePlaceholdersIds($item, $target, $type = 'custom_code')
 	{
 		if ($keys = $this->getCodeSearchKeys($target))
 		{
@@ -1415,35 +1431,70 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					// search and open the base64 strings
 					$this->searchOpenBase64($value, $keys['base64_search'][$key]);
 				}
-				// search the value to see if it has custom code
-				$codeArray = ComponentbuilderHelper::getAllBetween($value, '[CUSTOMC' . 'ODE=',']');
-				if (ComponentbuilderHelper::checkArray($codeArray))
+				// based on the type of search
+				if ('custom_code' === $type)
 				{
-					foreach ($codeArray as $func)
+					// search the value to see if it has custom code
+					$codeArray = ComponentbuilderHelper::getAllBetween($value, '[CUSTOMC' . 'ODE=',']');
+					if (ComponentbuilderHelper::checkArray($codeArray))
 					{
-						// first make sure we have only the function key
-						if (strpos($func, '+') !== false)
+						foreach ($codeArray as $func)
 						{
-							$funcArray = explode('+', $func);
-							$func = $funcArray[0];
-						}
-						if (!isset($this->customCodeM[$func]))
-						{
-							$this->customCodeM[$func] = $func;
-							// if numeric add to ids
-							if (is_numeric($func))
+							// first make sure we have only the function key
+							if (strpos($func, '+') !== false)
 							{
-								$this->setSmartIDs($func, 'custom_code');
+								$funcArray = explode('+', $func);
+								$func = $funcArray[0];
 							}
-							elseif (ComponentbuilderHelper::checkString($func))
+							if (!isset($this->customCodeM[$func]))
 							{
-								if (($funcID = ComponentbuilderHelper::getVar('custom_code', $func, 'function_name', 'id')) !== false && is_numeric($funcID))
+								$this->customCodeM[$func] = $func;
+								// if numeric add to ids
+								if (is_numeric($func))
 								{
-									$this->setSmartIDs($funcID, 'custom_code');
+									$this->setSmartIDs($func, $type);
+								}
+								elseif (ComponentbuilderHelper::checkString($func))
+								{
+									if (($funcID = ComponentbuilderHelper::getVar($type, $func, 'function_name', 'id')) !== false && is_numeric($funcID))
+									{
+										$this->setSmartIDs($funcID, $type);
+									}
+									else
+									{
+										// set a notice that custom code was not found (weird)
+									}
+								}
+							}
+						}
+					}
+				}
+				elseif ('placeholder' === $type)
+				{
+					// check if we already have the placeholder search array
+					if (!componentbuilderHelper::checkArray($this->placeholderM) && !componentbuilderHelper::checkArray($this->placeholderS))
+					{
+						$this->placeholderS = ComponentbuilderHelper::getVars($type, 1, 'published', 'target');
+					}
+					// only continue search if placeholders found
+					if (componentbuilderHelper::checkArray($this->placeholderS))
+					{
+						foreach ($this->placeholderS as $remove => $placeholder)
+						{
+							// search the value to see if it has this placeholder and is not already set
+							if (!isset($this->placeholderM[$placeholder]) && strpos($value, $placeholder) !== false)
+							{
+								// add only once
+								$this->placeholderM[$placeholder] = $placeholder;
+								unset($this->placeholderS[$remove]);
+								// get the ID
+								if (($placeholderID = ComponentbuilderHelper::getVar($type, $placeholder, 'target', 'id')) !== false && is_numeric($placeholderID))
+								{
+									$this->setSmartIDs($placeholderID, $type);
 								}
 								else
 								{
-									// set a notice that custom code was not found
+									// set a notice that placeholder was not found (weird)
 								}
 							}
 						}

@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -8083,21 +8083,29 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . '{';
 			$headerscript .= PHP_EOL . $this->_t(1) . '$return .= "&return=" . $_return;';
 			$headerscript .= PHP_EOL . '}';
-			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set the referral values';
-			$headerscript .= PHP_EOL . '$ref = ($id) ? "&ref=' . $viewName_single . '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "";';
+			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' check if return value was set';
+			$headerscript .= PHP_EOL . 'if (' . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::checkString($return))';
+			$headerscript .= PHP_EOL . '{';
+			$headerscript .= PHP_EOL . $this->_t(1) . '//' . $this->setLine(__LINE__) . ' set the referral values';
+			$headerscript .= PHP_EOL . $this->_t(1) . '$ref = ($id) ? "&ref=' . $viewName_single . '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
+			$headerscript .= PHP_EOL . '}';
+			$headerscript .= PHP_EOL . 'else';
+			$headerscript .= PHP_EOL . '{';
+			$headerscript .= PHP_EOL . $this->_t(1) . '$ref = ($id) ? "&ref=' . $viewName_single . '&refid=" . $id : "";';
+			$headerscript .= PHP_EOL . '}';
 			if ($addNewButon > 0)
 			{
 				// add the link for new
 				if ($addNewButon == 1 || $addNewButon == 2)
 				{
 					$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set the create new URL';
-					$headerscript .= PHP_EOL . '$new = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $single . '&layout=edit".$ref;';
+					$headerscript .= PHP_EOL . '$new = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $list . '&task=' . $single . '.edit" . $ref;';
 				}
 				// and the link for close and new
 				if ($addNewButon == 2 || $addNewButon == 3)
 				{
 					$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set the create new and close URL';
-					$headerscript .= PHP_EOL . '$close_new = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $single . '&layout=edit";';
+					$headerscript .= PHP_EOL . '$close_new = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $list . '&task=' . $single . '.edit";';
 				}
 				$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' load the action object';
 				$headerscript .= PHP_EOL . '$can = ' . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::getActions(' . "'" . $single . "'" . ');';

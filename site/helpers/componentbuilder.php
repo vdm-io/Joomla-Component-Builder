@@ -1209,7 +1209,7 @@ abstract class ComponentbuilderHelper
 					'message' => JText::_('COM_COMPONENTBUILDER_SORRY_THIS_PLACEHOLDER_IS_ALREADY_IN_USE'),
 					'status' => 'danger');
 			}
-			return false;			
+			return false;
 		}
 		// check if we must return boolean
 		if (!$bool)
@@ -4080,6 +4080,10 @@ abstract class ComponentbuilderHelper
 				{
 					$checked_out = (int) $item->checked_out;
 				}
+				else
+				{
+					$checked_out = self::getVar($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				}
 			}
 			elseif (self::checkArray($item) && isset($item['id']))
 			{
@@ -4088,6 +4092,14 @@ abstract class ComponentbuilderHelper
 				{
 					$checked_out = (int) $item['checked_out'];
 				}
+				else
+				{
+					$checked_out = self::getVar($view, $item['id'], 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				}
+			}
+			elseif (is_numeric($item) && $item > 0)
+			{
+				$checked_out = self::getVar($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 			}
 			// set the link title
 			$title = self::safeString(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
@@ -4180,6 +4192,10 @@ abstract class ComponentbuilderHelper
 				{
 					$checked_out = (int) $item->checked_out;
 				}
+				else
+				{
+					$checked_out = self::getVar($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				}
 			}
 			elseif (self::checkArray($item) && isset($item['id']))
 			{
@@ -4188,6 +4204,14 @@ abstract class ComponentbuilderHelper
 				{
 					$checked_out = (int) $item['checked_out'];
 				}
+				else
+				{
+					$checked_out = self::getVar($view, $item['id'], 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				}
+			}
+			elseif (is_numeric($item) && $item > 0)
+			{
+				$checked_out = self::getVar($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 			}
 			// set the link title
 			$title = self::safeString(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');

@@ -26,12 +26,20 @@ if ($_return = $jinput->get('return', null, 'base64'))
 {
 	$return .= "&return=" . $_return;
 }
-// set the referral values
-$ref = ($id) ? "&ref=fieldtype&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "";
+// check if return value was set
+if (ComponentbuilderHelper::checkString($return))
+{
+	// set the referral values
+	$ref = ($id) ? "&ref=fieldtype&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));
+}
+else
+{
+	$ref = ($id) ? "&ref=fieldtype&refid=" . $id : "";
+}
 // set the create new URL
-$new = "index.php?option=com_componentbuilder&view=field&layout=edit".$ref;
+$new = "index.php?option=com_componentbuilder&view=fields&task=field.edit" . $ref;
 // set the create new and close URL
-$close_new = "index.php?option=com_componentbuilder&view=field&layout=edit";
+$close_new = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 // load the action object
 $can = ComponentbuilderHelper::getActions('field');
 

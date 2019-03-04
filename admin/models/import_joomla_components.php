@@ -699,7 +699,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// the array of tables to store
 		$tables = array(
 			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
-			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
+			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code', 'placeholder',
 			'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 			'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
@@ -2745,6 +2745,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						$getter = array('id', 'name', 'snippet', 'url', 'type', 'heading');
 						$retryAgain = 2;
 					}
+					break;
+				case 'placeholder':
+					// search for placeholder (since there should only be one)
+					$getter = 'target';
 					break;
 				case 'custom_code':
 					// search for custom code
