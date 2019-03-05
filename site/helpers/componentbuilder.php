@@ -2545,42 +2545,36 @@ abstract class ComponentbuilderHelper
 	 **/
 	protected static $fieldGroups = array(
 		'default' => array(
-			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox',
-			'checkboxes', 'color', 'combo', 'componentlayout', 'contentlanguage', 'editor',
-			'chromestyle', 'contenttype', 'databaseconnection', 'editors', 'email', 'file',
-			'filelist', 'folderlist', 'groupedlist', 'hidden', 'file', 'headertag', 'helpsite',
-			'imagelist', 'integer', 'language', 'list', 'media', 'menu', 'note', 'number', 'password',
-			'plugins', 'radio', 'repeatable', 'range', 'rules', 'subform', 'sessionhandler', 'spacer', 'sql', 'tag',
-			'tel', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition', 'moduletag',
-			'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
+			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox', 'checkboxes', 'chromestyle',
+			'color', 'combo', 'componentlayout', 'contentlanguage', 'contenttype', 'databaseconnection', //  'components', (TODO) must be added but still in use as a custom field in JCB
+			'editor', 'editors', 'email', 'file', 'file', 'filelist', 'folderlist', 'groupedlist', 'headertag', 'helpsite', 'hidden', 'imagelist',
+			'integer', 'language', 'list', 'media', 'menu', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition',
+			'moduletag', 'note', 'number', 'password', 'plugins', 'predefinedlist', 'radio', 'range', 'repeatable', 'rules',
+			'sessionhandler', 'spacer', 'sql', 'subform', 'tag', 'tel', 'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
 		),
 		'plain' => array(
-			'accesslevel', 'checkbox', 'cachehandler', 'calendar', 'category', 'chromestyle', 'color',
-			'contenttype', 'combo', 'componentlayout', 'databaseconnection', 'editor', 'editors',
-			'email', 'file', 'filelist', 'folderlist', 'headertag', 'helpsite',
-			'hidden', 'imagelist', 'integer', 'language', 'media', 'menu',
-			'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules',
-			'sessionhandler', 'tag', 'tel', 'text', 'textarea',
-			'timezone', 'url', 'user', 'usergroup'
-		), 
+			'cachehandler', 'calendar', 'checkbox', 'chromestyle', 'color', 'componentlayout', 'contenttype', 'editor', 'editors',
+			'email', 'file', 'headertag', 'helpsite', 'hidden', 'integer', 'language', 'media', 'menu', 'menuitem', 'meter', 'modulelayout',
+			'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules', 'tag', 'tel', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
+		),
+		'option' => array(
+			'accesslevel', 'category', 'checkboxes', 'combo', 'contentlanguage', 'databaseconnection', // 'components',  (TODO) must be added but still in use as a custom field in JCB
+			'filelist', 'folderlist', 'imagelist', 'list', 'plugins', 'predefinedlist', 'radio', 'sessionhandler', 'sql'
+		),
 		'text' => array(
-			'calendar','color','editor','email','password','tel','text','textarea','url','number','range'
-		), 
+			'calendar', 'color', 'editor', 'email', 'number', 'password', 'range', 'tel', 'text', 'textarea', 'url'
+		),
 		'list' => array(
-			'checkboxes','checkbox','list','radio'
-		), 
+			'checkbox', 'checkboxes', 'list', 'radio'
+		),
 		'dynamic' => array(
-			'category','headertag','tag','rules','user','file','filelist','folderlist','imagelist','integer','timezone','media','meter'
+			'category', 'file', 'filelist', 'folderlist', 'headertag', 'imagelist', 'integer', 'media', 'meter', 'rules', 'tag', 'timezone', 'user'
 		),
 		'spacer' => array(
 			'note', 'spacer'
 		),
-		'option' => array(
-			'plugins', 'checkboxes', 'contentlanguage', 'list', 'radio', 'sql'
-		),
 		'special' => array(
-			'contentlanguage', 'groupedlist', 'moduleposition', 'plugin',
-			'repeatable', 'templatestyle', 'subform'
+			'contentlanguage', 'groupedlist', 'moduleposition', 'plugin', 'repeatable', 'subform', 'templatestyle'
 		)
 	);
 

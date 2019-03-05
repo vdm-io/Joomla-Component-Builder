@@ -1992,17 +1992,24 @@ class Get
 			{
 				if (isset($view->{'add_' . $scripter}) && $view->{'add_' . $scripter} == 1 && ComponentbuilderHelper::checkString($view->$scripter))
 				{
-					$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
+					$view->{$scripter} = $this->setDynamicValues(base64_decode($view->{$scripter}));
 					$scripter_target = str_replace('javascript_', '', $scripter);
-					if (!isset($this->customScriptBuilder[$scripter_target][$name_single]))
+					if (!isset($this->customScriptBuilder[$scripter_target]) || !isset($this->customScriptBuilder[$scripter_target][$name_single]))
 					{
+						// check if the script is set
 						if (!isset($this->customScriptBuilder[$scripter_target]))
 						{
 							$this->customScriptBuilder[$scripter_target] = array();
 						}
-						$this->customScriptBuilder[$scripter_target][$name_single] = '';
+						// check if the script view is set
+						if (!isset($this->customScriptBuilder[$scripter_target][$name_single]))
+						{
+							$this->customScriptBuilder[$scripter_target][$name_single] = '';
+						}
 					}
-					$this->customScriptBuilder[$scripter_target][$name_single] .= PHP_EOL . $view->$scripter;
+					// load the script to class array
+					$this->customScriptBuilder[$scripter_target][$name_single] .= PHP_EOL . $view->{$scripter};
+					// check if a token must be set
 					if (strpos($view->$scripter, "token") !== false || strpos($view->$scripter, "task=ajax") !== false)
 					{
 						if (!$this->customScriptBuilder['token'][$name_single])
@@ -2010,21 +2017,32 @@ class Get
 							$this->customScriptBuilder['token'][$name_single] = true;
 						}
 					}
-					unset($view->$scripter);
+					unset($view->{$scripter});
 				}
 			}
 			// add_css
 			$addArrayC = array('css_view', 'css_views');
 			foreach ($addArrayC as $scripter)
 			{
-				if (isset($view->{'add_' . $scripter}) && $view->{'add_' . $scripter} == 1)
+				if (isset($view->{'add_' . $scripter}) && $view->{'add_' . $scripter} == 1 && ComponentbuilderHelper::checkString($view->{$scripter}))
 				{
-					if (!isset($this->customScriptBuilder[$scripter][$name_single]))
+					$view->{$scripter} = $this->setDynamicValues(base64_decode($view->{$scripter}));
+					if (!isset($this->customScriptBuilder[$scripter]) || !isset($this->customScriptBuilder[$scripter][$name_single]))
 					{
-						$this->customScriptBuilder[$scripter][$name_single] = '';
+						// check if the script is set
+						if (!isset($this->customScriptBuilder[$scripter]))
+						{
+							$this->customScriptBuilder[$scripter] = array();
+						}
+						// check if the script view is set
+						if (!isset($this->customScriptBuilder[$scripter][$name_single]))
+						{
+							$this->customScriptBuilder[$scripter][$name_single] = '';
+						}
 					}
-					$this->customScriptBuilder[$scripter][$name_single] .= PHP_EOL . base64_decode($view->$scripter);
-					unset($view->$scripter);
+					// load the script to class array
+					$this->customScriptBuilder[$scripter][$name_single] .= PHP_EOL . $view->{$scripter};
+					unset($view->{$scripter});
 				}
 			}
 			// add_php

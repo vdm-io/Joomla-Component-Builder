@@ -57,8 +57,6 @@
 			folder="editors"
 			filter="cmd"
 		/>
-		<!-- No Manual Options Were Added In Field Settings. -->
-
 		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
 		<!-- Manage_jcb_package_directories Field. Type: Radio. (joomla) -->

@@ -1274,6 +1274,7 @@ class Fields extends Structure
 					}
 				}
 			}
+			// if options were found
 			if (ComponentbuilderHelper::checkString($optionSet))
 			{
 				$field .= '>';
@@ -1281,16 +1282,17 @@ class Fields extends Structure
 				$field .= $optionSet;
 				$field .= PHP_EOL . $this->_t(2) . $taber . "</field>";
 			}
-			elseif ($typeName === 'sql')
+			// if no options found and must have a list of options
+			elseif (ComponentbuilderHelper::fieldCheck($typeName, 'list'))
 			{
 				$optionArray = false;
 				$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
+				$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->" . PHP_EOL;
 			}
 			else
 			{
 				$optionArray = false;
 				$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
-				$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings. -->" . PHP_EOL;
 			}
 		}
 		elseif ($setType === 'plain')
@@ -1663,7 +1665,8 @@ class Fields extends Structure
 					}
 				}
 			}
-			if (!$field->fieldXML->count())
+			// if no options found and must have a list of options
+			if (!$field->fieldXML->count() && ComponentbuilderHelper::fieldCheck($typeName, 'list'))
 			{
 				ComponentbuilderHelper::xmlComment($field->fieldXML, $this->setLine(__LINE__) . " No Manual Options Were Added In Field Settings.");
 			}
