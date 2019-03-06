@@ -96,11 +96,11 @@ class Interpretation extends Fields
 	public $validationFixBuilder = array();
 
 	/**
-	 * The edit body script builder
+	 * The view script builder
 	 *
 	 * @var    array
 	 */
-	public $editBodyViewScriptBuilder = array();
+	public $viewScriptBuilder = array();
 
 	/**
 	 * The target relation control
@@ -9646,15 +9646,12 @@ class Interpretation extends Fields
 			$fileScript = $initial . $func . $validation . $isSet;
 			$footerScript = $listener;
 		}
-		// add custom script to file
-		if (isset($this->customScriptBuilder['view_file'][$viewName]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['view_file'][$viewName]))
+		// add custom script to edit form JS file
+		if (!isset($fileScript))
 		{
-			if (!isset($fileScript))
-			{
-				$fileScript = '';
-			}
-			$fileScript .= PHP_EOL . PHP_EOL . $this->setPlaceholders($this->customScriptBuilder['view_file'][$viewName], $this->placeholders);
+			$fileScript = '';
 		}
+		$fileScript .= $this->getCustomScriptBuilder('view_file', $viewName, PHP_EOL . PHP_EOL, null, true, '');
 		// add custom script to footer
 		if (isset($this->customScriptBuilder['view_footer'][$viewName]) && ComponentbuilderHelper::checkString($this->customScriptBuilder['view_footer'][$viewName]))
 		{
@@ -9669,6 +9666,37 @@ class Interpretation extends Fields
 				$footerScript .= $customFooterScript;
 				unset($customFooterScript);
 			}
+		}
+		// set view listname
+		$viewName_list = ComponentbuilderHelper::safeString($viewArray['settings']->name_list);
+		// add custom script to list view JS file
+		if (($list_fileScript = $this->getCustomScriptBuilder('views_file', $viewName, PHP_EOL . PHP_EOL, null, true, false)) !== false &&
+			ComponentbuilderHelper::checkString($list_fileScript))
+		{
+			// get dates
+			$_created = $this->getCreatedDate($viewArray);
+			$_modified = $this->getLastModifiedDate($viewArray);
+			// add file to view
+			$_target = array($this->target => $viewName_list);
+			$_config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $_created, $this->hhh . 'BUILDDATE' . $this->hhh => $_modified, $this->hhh . 'VERSION' . $this->hhh => $viewArray['settings']->version);
+			$this->buildDynamique($_target, 'javascript_file', false, $_config);
+			// set path
+			$_path = '/administrator/components/com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '/assets/js/' . $viewName_list . '.js';
+			// load the file to the list view
+			$this->fileContentDynamic[$viewName_list][$this->hhh . 'ADMIN_ADD_JAVASCRIPT_FILE' . $this->hhh] = PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Add List View JavaScript File" . PHP_EOL . $this->_t(2) . $this->setIncludeLibScript($_path);
+		}
+		else
+		{
+			$list_fileScript = '';
+			$this->fileContentDynamic[$viewName_list][$this->hhh . 'ADMIN_ADD_JAVASCRIPT_FILE' . $this->hhh] = '';
+		}
+		// minfy the script
+		if ($this->minify && isset($list_fileScript) && ComponentbuilderHelper::checkString($list_fileScript))
+		{
+			// minify the fielScript javscript
+			$minifier = new JS;
+			$minifier->add($list_fileScript);
+			$list_fileScript = $minifier->minify();
 		}
 		// minfy the script
 		if ($this->minify && isset($fileScript) && ComponentbuilderHelper::checkString($fileScript))
@@ -9687,6 +9715,12 @@ class Interpretation extends Fields
 			$footerScript = $minifier->minify();
 		}
 		// make sure there is script to add
+		if (isset($list_fileScript) && ComponentbuilderHelper::checkString($list_fileScript))
+		{
+			// load the script
+			$this->viewScriptBuilder[$viewName]['list_fileScript'] = $list_fileScript;
+		}
+		// make sure there is script to add
 		if (isset($fileScript) && ComponentbuilderHelper::checkString($fileScript))
 		{
 			// add the head script if set
@@ -9695,7 +9729,7 @@ class Interpretation extends Fields
 				$fileScript = "// Some Global Values" . PHP_EOL . $head . PHP_EOL . $fileScript;
 			}
 			// load the script
-			$this->editBodyViewScriptBuilder[$viewName]['fileScript'] = $fileScript;
+			$this->viewScriptBuilder[$viewName]['fileScript'] = $fileScript;
 		}
 		// make sure to add custom footer script if php was found in it, since we canot minfy it with php
 		if (isset($customFooterScript) && ComponentbuilderHelper::checkString($customFooterScript))
@@ -9711,7 +9745,7 @@ class Interpretation extends Fields
 		{
 			// add the needed script tags
 			$footerScript = PHP_EOL . PHP_EOL . '<script type="text/javascript">' . PHP_EOL . $footerScript . PHP_EOL . "</script>";
-			$this->editBodyViewScriptBuilder[$viewName]['footerScript'] = $footerScript;
+			$this->viewScriptBuilder[$viewName]['footerScript'] = $footerScript;
 		}
 	}
 
@@ -10306,20 +10340,11 @@ class Interpretation extends Fields
 		return $clear;
 	}
 
-	public function setViewScript(&$view)
+	public function setViewScript(&$view, $type)
 	{
-		if (isset($this->editBodyViewScriptBuilder[$view]) && isset($this->editBodyViewScriptBuilder[$view]['fileScript']))
+		if (isset($this->viewScriptBuilder[$view]) && isset($this->viewScriptBuilder[$view][$type]))
 		{
-			return $this->editBodyViewScriptBuilder[$view]['fileScript'];
-		}
-		return '';
-	}
-
-	public function setEditBodyScript(&$view)
-	{
-		if (isset($this->editBodyViewScriptBuilder[$view]) && isset($this->editBodyViewScriptBuilder[$view]['footerScript']))
-		{
-			return $this->editBodyViewScriptBuilder[$view]['footerScript'];
+			return $this->viewScriptBuilder[$view][$type];
 		}
 		return '';
 	}

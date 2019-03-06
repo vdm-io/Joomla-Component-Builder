@@ -503,6 +503,11 @@
 					"path": "c0mp0n3nt/",
 					"rename": "update_server",
 					"type": "update_server"
+				},
+				"viewFile.js": {
+					"path": "c0mp0n3nt/admin/assets/js",
+					"rename": "viewFile",
+					"type": "javascript_file"
 				}
 			},
 			"site": {

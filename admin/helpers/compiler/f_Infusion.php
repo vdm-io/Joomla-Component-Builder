@@ -285,10 +285,10 @@ class Infusion extends Interpretation
 					$this->buildTheViewScript($view);
 
 					// VIEW_SCRIPT
-					$this->fileContentDynamic[$viewName_single][$this->hhh . 'VIEW_SCRIPT' . $this->hhh] = $this->setViewScript($viewName_single);
+					$this->fileContentDynamic[$viewName_single][$this->hhh . 'VIEW_SCRIPT' . $this->hhh] = $this->setViewScript($viewName_single, 'fileScript');
 
 					// EDITBODYSCRIPT
-					$this->fileContentDynamic[$viewName_single][$this->hhh . 'EDITBODYSCRIPT' . $this->hhh] = $this->setEditBodyScript($viewName_single);
+					$this->fileContentDynamic[$viewName_single][$this->hhh . 'EDITBODYSCRIPT' . $this->hhh] = $this->setViewScript($viewName_single, 'footerScript');
 
 					// AJAXTOKE <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single][$this->hhh . 'AJAXTOKE' . $this->hhh] = $this->setAjaxToke($viewName_single);
@@ -401,6 +401,8 @@ class Infusion extends Interpretation
 						// CHECKINCALL <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_list][$this->hhh . 'CHECKINCALL' . $this->hhh] = '';
 					}
+					// admin list file contnet
+					$this->fileContentDynamic[$viewName_list][$this->hhh . 'ADMIN_JAVASCRIPT_FILE' . $this->hhh] = $this->setViewScript($viewName_list, 'list_fileScript');
 					// ADMIN_CUSTOM_BUTTONS_LIST
 					$this->fileContentDynamic[$viewName_list][$this->hhh . 'ADMIN_CUSTOM_BUTTONS_LIST' . $this->hhh] = $this->setCustomButtons($view, 3, $this->_t(1));
 					$this->fileContentDynamic[$viewName_list][$this->hhh . 'ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST' . $this->hhh] = $this->setFunctionOnlyButtons($viewName_list);

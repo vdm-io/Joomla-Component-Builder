@@ -189,7 +189,7 @@ class ###Component###View###Views### extends JViewLegacy
 			$this->document = JFactory::getDocument();
 		}
 		$this->document->setTitle(JText::_('COM_###COMPONENT###_###VIEWS###'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/###views###.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/###views###.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###ADMIN_ADD_JAVASCRIPT_FILE###
 	}
 
 	/**
