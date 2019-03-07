@@ -10624,16 +10624,34 @@ class Interpretation extends Fields
 					$function[] = $this->_t(2) . "\$db = JFactory::getDbo();";
 					$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
 					$function[] = $this->_t(2) . "\$query = \$db->getQuery(true);";
-					$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Select the text.";
-					$function[] = $this->_t(2) . "\$query->select(\$db->quoteName('" . $filter['code'] . "'));";
-					$function[] = $this->_t(2) . "\$query->from(\$db->quoteName('#__" . $component . "_" . $filter['database'] . "'));";
-					$function[] = $this->_t(2) . "\$query->order(\$db->quoteName('" . $filter['code'] . "') . ' ASC');";
-					$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
-					$function[] = $this->_t(2) . "\$db->setQuery(\$query);";
-					$function[] = PHP_EOL . $this->_t(2) . "\$results = \$db->loadColumn();";
+
+					// check if usergroup as we change to an object query
+					if ($filter['type'] === 'usergroup') {
+						$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Select the text.";
+						$function[] = $this->_t(2) . "\$query->select(\$db->quoteName('g." . $filter['code'] . "', 'id'));";
+						$function[] = $this->_t(2) . "\$query->select(\$db->quoteName('ug.title', 'title'));";
+						$function[] = $this->_t(2) . "\$query->from(\$db->quoteName('#__" . $component . "_" . $filter['database'] . "', 'g'));";
+						$function[] = $this->_t(2) . "\$query->join('LEFT', \$db->quoteName('#__usergroups', 'ug') . ' ON (' . (\$db->quoteName('g." . $filter['code'] . "') . ' = ' . \$db->quoteName('ug.id') . ')'));";
+						$function[] = $this->_t(2) . "\$query->order(\$db->quoteName('title') . ' ASC');";
+						$function[] = $this->_t(2) . "\$query->group(\$db->quoteName('ug.id'));";
+						$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
+						$function[] = $this->_t(2) . "\$db->setQuery(\$query);";
+						$function[] = PHP_EOL . $this->_t(2) . "\$results = \$db->loadObjectList();";
+					} else {
+						$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Select the text.";
+						$function[] = $this->_t(2) . "\$query->select(\$db->quoteName('" . $filter['code'] . "'));";
+						$function[] = $this->_t(2) . "\$query->from(\$db->quoteName('#__" . $component . "_" . $filter['database'] . "'));";
+						$function[] = $this->_t(2) . "\$query->order(\$db->quoteName('" . $filter['code'] . "') . ' ASC');";
+						$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
+						$function[] = $this->_t(2) . "\$db->setQuery(\$query);";
+						$function[] = PHP_EOL . $this->_t(2) . "\$results = \$db->loadColumn();";
+					}
+
+
 					$function[] = PHP_EOL . $this->_t(2) . "if (\$results)";
 					$function[] = $this->_t(2) . "{";
-					// check if translated vlaue is used
+
+					// check if translated value is used
 					if ($translation)
 					{
 						$function[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get model";
@@ -10644,7 +10662,8 @@ class Interpretation extends Fields
 					$function[] = $this->_t(3) . "foreach (\$results as \$" . $filter['code'] . ")";
 					$function[] = $this->_t(3) . "{";
 
-					// check if translated vlaue is used
+
+					// check if translated value is used
 					if ($translation)
 					{
 						$function[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Translate the " . $filter['code'] . " selection";
@@ -10656,6 +10675,11 @@ class Interpretation extends Fields
 					{
 						$function[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Now add the " . $filter['code'] . " and its text to the options array";
 						$function[] = $this->_t(4) . "\$_filter[] = JHtml::_('select.option', \$" . $filter['code'] . ", JFactory::getUser(\$" . $filter['code'] . ")->name);";
+					}
+					else if ($filter['type'] === 'usergroup')
+					{
+						$function[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Now add the " . $filter['code'] . " and its text to the options array";
+						$function[] = $this->_t(4) . "\$_filter[] = JHtml::_('select.option', \$" . $filter['code'] . "->id, \$" . $filter['code'] . "->title);";
 					}
 					else
 					{
