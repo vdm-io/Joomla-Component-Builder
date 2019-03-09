@@ -10626,7 +10626,8 @@ class Interpretation extends Fields
 					$function[] = $this->_t(2) . "\$query = \$db->getQuery(true);";
 
 					// check if usergroup as we change to an object query
-					if ($filter['type'] === 'usergroup') {
+					if ($filter['type'] === 'usergroup')
+					{
 						$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Select the text.";
 						$function[] = $this->_t(2) . "\$query->select(\$db->quoteName('g." . $filter['code'] . "', 'id'));";
 						$function[] = $this->_t(2) . "\$query->select(\$db->quoteName('ug.title', 'title'));";
@@ -10637,7 +10638,9 @@ class Interpretation extends Fields
 						$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
 						$function[] = $this->_t(2) . "\$db->setQuery(\$query);";
 						$function[] = PHP_EOL . $this->_t(2) . "\$results = \$db->loadObjectList();";
-					} else {
+					}
+					else
+					{
 						$function[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Select the text.";
 						$function[] = $this->_t(2) . "\$query->select(\$db->quoteName('" . $filter['code'] . "'));";
 						$function[] = $this->_t(2) . "\$query->from(\$db->quoteName('#__" . $component . "_" . $filter['database'] . "'));";
@@ -10646,7 +10649,6 @@ class Interpretation extends Fields
 						$function[] = $this->_t(2) . "\$db->setQuery(\$query);";
 						$function[] = PHP_EOL . $this->_t(2) . "\$results = \$db->loadColumn();";
 					}
-
 
 					$function[] = PHP_EOL . $this->_t(2) . "if (\$results)";
 					$function[] = $this->_t(2) . "{";
