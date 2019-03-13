@@ -1300,12 +1300,12 @@ class Structure extends Get
 				// set full path if this is a full path folder
 				if (!isset($custom['folder']) && isset($custom['folderpath']))
 				{
+					// update the dynamic path
+					$custom['folderpath'] = $this->updateDynamicPath($custom['folderpath']);
 					// set the folder path with / if does not have a drive/windows full path
 					$custom['folder'] = (preg_match('/^[a-z]:/i', $custom['folderpath']))
 						? trim($custom['folderpath'], '/')
 						: '/' . trim($custom['folderpath'], '/');
-					// update the dynamic path
-					$custom['folder'] = $this->updateDynamicPath($custom['folder']);
 					// remove the file path
 					unset($custom['folderpath']);
 					// triget fullpath
@@ -1382,12 +1382,12 @@ class Structure extends Get
 				// set full path if this is a full path file
 				if (!isset($custom['file']) && isset($custom['filepath']))
 				{
+					// update the dynamic path
+					$custom['filepath'] = $this->updateDynamicPath($custom['filepath']);
 					// set the file path with / if does not have a drive/windows full path
 					$custom['file'] = (preg_match('/^[a-z]:/i', $custom['filepath']))
 						? trim($custom['filepath'], '/')
 						: '/' . trim($custom['filepath'], '/');
-					// update the dynamic path
-					$custom['file'] = $this->updateDynamicPath($custom['file']);
 					// remove the file path
 					unset($custom['filepath']);
 					// triget fullpath
