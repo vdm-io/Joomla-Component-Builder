@@ -407,7 +407,41 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Fix the path to work in the JCB script <-- (main issue here)
+	 *	Since we need / slash in all paths, for the JCB script even if it is Windows
+	 *	and since MS works with both forward and back slashes
+	 *	we just convert all slashes to forward slashes
+	 * 
+	 * THIS is just my hack (fix) if you know a better way! speak-up!
+	 * 
+	 * @param   mix    $values   the array of paths or the path as a string
+	 * @param   array  $targets  paths to target
+	 *
+	 * @return  string
+	 * 
+	 */
+	public static function fixPath(&$values, $targets = array())
+	{
+		// if multiple to gets searched and fixed
+		if (self::checkArray($values) && self::checkArray($targets))
+		{
+			foreach ($targets as $target)
+			{
+				if (isset($values[$target]) && strpos($values[$target], '\\') !== false)
+				{
+					$values[$target] = str_replace('\\', '/', $values[$target]);
+				}
+			}
+		}
+		// if just a string
+		elseif (self::checkString($values) && strpos($values, '\\') !== false)
+		{
+			$values = str_replace('\\', '/', $values);
+		}
+	}
+
 	/**
 	 * get all the file paths in folder and sub folders
 	 * 

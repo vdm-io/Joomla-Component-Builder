@@ -830,7 +830,8 @@ class Structure extends Get
 				// set the template folder path
 				$templatePath = (isset($details->custom) && $details->custom) ? (($details->custom !== 'full') ? $this->templatePathCustom . '/' : '') : $this->templatePath . '/';
 				// set the final paths
-				$currentFullPath = str_replace('//', '/', $templatePath . '/' . $item);
+				$currentFullPath = (preg_match('/^[a-z]:/i', $item)) ? $item : $templatePath . '/' . $item;
+				$currentFullPath = str_replace('//', '/', $currentFullPath);
 				$packageFullPath = str_replace('//', '/', $path . '/' . $new);
 				$zipFullPath = str_replace('//', '/', $zipPath . '/' . $new);
 				// now move the file
@@ -1287,17 +1288,22 @@ class Structure extends Get
 			$pointer_tracker = 'h';
 			foreach ($this->componentData->folders as $custom)
 			{
-				// by default custom path is true
-				$customPath = 'custom';
+				// for good practice
+				ComponentbuilderHelper::fixPath($custom, array('path', 'folder', 'folderpath'));
 				// fix custom path
 				if (isset($custom['path']) && ComponentbuilderHelper::checkString($custom['path']))
 				{
 					$custom['path'] = trim($custom['path'], '/');
 				}
+				// by default custom path is true
+				$customPath = 'custom';
 				// set full path if this is a full path folder
 				if (!isset($custom['folder']) && isset($custom['folderpath']))
 				{
-					$custom['folder'] = '/' . trim($custom['folderpath'], '/');
+					// set the folder path with / if does not have a drive/windows full path
+					$custom['folder'] = (preg_match('/^[a-z]:/i', $custom['folderpath']))
+						? trim($custom['folderpath'], '/')
+						: '/' . trim($custom['folderpath'], '/');
 					// update the dynamic path
 					$custom['folder'] = $this->updateDynamicPath($custom['folder']);
 					// remove the file path
@@ -1369,11 +1375,17 @@ class Structure extends Get
 			$pointer_tracker = 'h';
 			foreach ($this->componentData->files as $custom)
 			{
+				// for good practice
+				ComponentbuilderHelper::fixPath($custom, array('path', 'file', 'filepath'));
+				// by default custom path is true
 				$customPath = 'custom';
 				// set full path if this is a full path file
 				if (!isset($custom['file']) && isset($custom['filepath']))
 				{
-					$custom['file'] = '/' . trim($custom['filepath'], '/');
+					// set the file path with / if does not have a drive/windows full path
+					$custom['file'] = (preg_match('/^[a-z]:/i', $custom['filepath']))
+						? trim($custom['filepath'], '/')
+						: '/' . trim($custom['filepath'], '/');
 					// update the dynamic path
 					$custom['file'] = $this->updateDynamicPath($custom['file']);
 					// remove the file path

@@ -5807,7 +5807,7 @@ class Get
 		$commentType = 0;
 		// make sure we have the path correct (the script file is not in admin path for example)
 		// there may be more... will nead to keep our eye on this... since files could be moved during install
-		$file = str_replace('./', '', $file);
+		$file = str_replace(  './', '', $file); # TODO (windows path issues)
 		if ($file !== 'script.php')
 		{
 			$path = $target . '/' . $file;
@@ -5981,6 +5981,8 @@ class Get
 						$hasharray = array_slice($fingerPrint, -$inFinger, $getFinger, true);
 						$hasleng = count($hasharray);
 						$hashtarget = $hasleng . '__' . md5(implode('', $hasharray));
+						// for good practice
+						ComponentbuilderHelper::fixPath($path);
 						// all new records we can do a buldk insert
 						if ($i === 1 || !$id)
 						{
