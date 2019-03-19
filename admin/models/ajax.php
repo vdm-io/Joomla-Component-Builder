@@ -630,7 +630,7 @@ class ComponentbuilderModelAjax extends JModelList
 	protected $ref;
 	protected $fieldsArray = array(
 				'library_config' => 'addconfig',
-				'library_files_folders_urls' => array('addurls','addfiles','addfolders'),
+				'library_files_folders_urls' => array('addurls', 'addfiles', 'addfolders', 'addfoldersfullpath', 'addfilesfullpath'),
 				'admin_fields' => 'addfields',
 				'admin_fields_conditions' => 'addconditions',
 				'admin_fields_relations' => 'addrelations',

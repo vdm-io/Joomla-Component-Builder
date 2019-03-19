@@ -122,6 +122,7 @@ class ComponentbuilderControllerLanguages extends JControllerAdmin
 				// set redirect
 				$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=languages', false);
 				$this->setRedirect($redirect_url, $message);
+				return true;
 			}
 		}
 		// set redirect
