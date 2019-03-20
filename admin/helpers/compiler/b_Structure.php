@@ -1483,7 +1483,7 @@ class Structure extends Get
 	 */
 	protected function updateDynamicPath($path)
 	{
-		return $this->setPlaceholders($path, ComponentbuilderHelper::$constantPaths);
+		return $this->setPlaceholders($this->setPlaceholders($path, ComponentbuilderHelper::$constantPaths), $this->placeholders);
 	}
 
 	/**
