@@ -6198,7 +6198,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$default = $data['null_switch'] . " DEFAULT ''";
+						$default = $data['null_switch'];
 					}
 					// set the lenght
 					$lenght = '';
@@ -6240,7 +6240,7 @@ class Interpretation extends Fields
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['params']))
 				{
-					$db_ .= PHP_EOL . $this->_t(1) . "`params` text NOT NULL DEFAULT '',";
+					$db_ .= PHP_EOL . $this->_t(1) . "`params` text NOT NULL,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
@@ -6300,9 +6300,9 @@ class Interpretation extends Fields
 				// check if metadata is added to this view
 				if (isset($this->metadataBuilder[$view]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view]))
 				{
-					$db_ .= PHP_EOL . $this->_t(1) . "`metakey` TEXT NOT NULL DEFAULT '',";
-					$db_ .= PHP_EOL . $this->_t(1) . "`metadesc` TEXT NOT NULL DEFAULT '',";
-					$db_ .= PHP_EOL . $this->_t(1) . "`metadata` TEXT NOT NULL DEFAULT '',";
+					$db_ .= PHP_EOL . $this->_t(1) . "`metakey` TEXT NOT NULL,";
+					$db_ .= PHP_EOL . $this->_t(1) . "`metadesc` TEXT NOT NULL,";
+					$db_ .= PHP_EOL . $this->_t(1) . "`metadata` TEXT NOT NULL,";
 				}
 				$db_ .= PHP_EOL . $this->_t(1) . "PRIMARY KEY  (`id`)";
 				if (isset($this->dbUniqueKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbUniqueKeys[$view]))
