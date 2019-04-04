@@ -10659,7 +10659,11 @@ class Interpretation extends Fields
 						$function[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get model";
 						$function[] = $this->_t(3) . "\$model = \$this->getModel();";
 					}
-					$function[] = $this->_t(3) . "\$results = array_unique(\$results);";
+					// check if usergroup as we change to an object query
+					if ($filter['type'] !== 'usergroup')
+					{
+						$function[] = $this->_t(3) . "\$results = array_unique(\$results);";
+					}
 					$function[] = $this->_t(3) . "\$_filter = array();";
 					$function[] = $this->_t(3) . "foreach (\$results as \$" . $filter['code'] . ")";
 					$function[] = $this->_t(3) . "{";
