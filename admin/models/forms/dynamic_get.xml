@@ -143,6 +143,16 @@
 			<option value="4">
 				COM_COMPONENTBUILDER_DYNAMIC_GET_GETCUSTOMS</option>
 		</field>
+		<!-- View_table_main Field. Type: Adminviews. (custom) -->
+		<field
+			type="adminviews"
+			name="view_table_main"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_LABEL"
+			description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_DESCRIPTION"
+			multiple="false"
+			default=""
+			required="true"
+		/>
 		<!-- Addcalculation Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -189,20 +199,19 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_DYNAMIC_GET_NO</option>
 		</field>
-		<!-- Add_php_getlistquery Field. Type: Radio. (joomla) -->
+		<!-- View_selection Field. Type: Textarea. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_getlistquery"
-			label="COM_COMPONENTBUILDER_DYNAMIC_GET_ADD_PHP_GETLISTQUERY_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_DYNAMIC_GET_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_DYNAMIC_GET_NO</option>
-		</field>
+			type="textarea"
+			name="view_selection"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_SELECTION_LABEL"
+			rows="22"
+			cols="30"
+			description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_SELECTION_DESCRIPTION"
+			class="text_area span12"
+			filter="HTML"
+			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_SELECTION_HINT"
+			required="true"
+		/>
 		<!-- Add_php_before_getitems Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -231,19 +240,20 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_DYNAMIC_GET_NO</option>
 		</field>
-		<!-- View_selection Field. Type: Textarea. (joomla) -->
+		<!-- Add_php_after_getitem Field. Type: Radio. (joomla) -->
 		<field
-			type="textarea"
-			name="view_selection"
-			label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_SELECTION_LABEL"
-			rows="22"
-			cols="30"
-			description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_SELECTION_DESCRIPTION"
-			class="text_area span12"
-			filter="HTML"
-			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_SELECTION_HINT"
-			required="true"
-		/>
+			type="radio"
+			name="add_php_after_getitem"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_ADD_PHP_AFTER_GETITEM_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_DYNAMIC_GET_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_DYNAMIC_GET_NO</option>
+		</field>
 		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_DYNAMIC_GET_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_DYNAMIC_GET_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
 		<!-- Db_table_main Field. Type: Dbtables. (custom) -->
@@ -303,21 +313,267 @@
 			hint="COM_COMPONENTBUILDER_DYNAMIC_GET_DB_SELECTION_HINT"
 			required="true"
 		/>
-		<!-- View_table_main Field. Type: Adminviews. (custom) -->
+		<!-- Join_view_table Field. Type: Subform. (joomla) -->
 		<field
-			type="adminviews"
-			name="view_table_main"
-			label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_LABEL"
-			description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_DESCRIPTION"
-			multiple="false"
-			default=""
-			required="true"
-		/>
-		<!-- Add_php_after_getitem Field. Type: Radio. (joomla) -->
+			type="subform"
+			name="join_view_table"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_DESCRIPTION"
+			icon="list">
+			<form hidden="true" name="list_join_view_table_modal" repeat="true">
+				<!-- View_table Field. Type: Adminviews. (custom) -->
+				<field
+					type="adminviews"
+					name="view_table"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_LABEL"
+					description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_DESCRIPTION"
+					multiple="false"
+					default=""
+					required="false"
+					button="false"
+				/>
+				<!-- Row_type Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="row_type"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_ROW_TYPE_LABEL"
+					description="COM_COMPONENTBUILDER_DYNAMIC_GET_ROW_TYPE_DESCRIPTION"
+					class="list_class fieldMedium"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_SINGLE</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_MULTIPLE</option>
+				</field>
+				<!-- As Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="as"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_AS_LABEL"
+					class="list_class fieldSmall"
+					multiple="false"
+					filter="WORD"
+					required="false"
+					default="b">
+					<!-- Option Set. -->
+					<option value="b">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_B</option>
+					<option value="c">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_C</option>
+					<option value="d">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_D</option>
+					<option value="e">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_E</option>
+					<option value="f">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_F</option>
+					<option value="g">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_G</option>
+					<option value="h">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_H</option>
+					<option value="i">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_I</option>
+					<option value="j">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_J</option>
+					<option value="k">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_K</option>
+					<option value="l">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_L</option>
+					<option value="m">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_M</option>
+					<option value="n">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_N</option>
+					<option value="o">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_O</option>
+					<option value="p">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_P</option>
+					<option value="q">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_Q</option>
+					<option value="r">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_R</option>
+					<option value="s">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_S</option>
+					<option value="t">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_T</option>
+					<option value="u">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_U</option>
+					<option value="v">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_V</option>
+					<option value="w">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_W</option>
+					<option value="x">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_X</option>
+					<option value="y">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_Y</option>
+					<option value="z">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_Z</option>
+					<option value="aa">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_AA</option>
+					<option value="bb">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_BB</option>
+					<option value="cc">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_CC</option>
+					<option value="dd">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_DD</option>
+					<option value="ee">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EE</option>
+					<option value="ff">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_FF</option>
+					<option value="gg">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GG</option>
+					<option value="hh">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_HH</option>
+					<option value="ii">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_II</option>
+					<option value="jj">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_JJ</option>
+					<option value="kk">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_KK</option>
+					<option value="ll">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LL</option>
+					<option value="mm">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_MM</option>
+					<option value="nn">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NN</option>
+					<option value="oo">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_OO</option>
+					<option value="pp">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_PP</option>
+					<option value="qq">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_QQ</option>
+					<option value="rr">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_RR</option>
+					<option value="ss">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_SS</option>
+					<option value="tt">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_TT</option>
+					<option value="uu">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_UU</option>
+					<option value="vv">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_VV</option>
+					<option value="ww">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_WW</option>
+					<option value="xx">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_XX</option>
+					<option value="yy">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_YY</option>
+					<option value="zz">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_ZZ</option>
+				</field>
+				<!-- Type Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="type"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_TYPE_LABEL"
+					class="list_class fieldMedium"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_LEFT</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_LEFT_OUTER</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_INNER</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_RIGHT</option>
+					<option value="5">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_RIGHT_OUTER</option>
+				</field>
+				<!-- On_field Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="on_field"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_DESCRIPTION"
+					class="text_area fieldMedium"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="CMD"
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_MESSAGE"
+					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_HINT"
+				/>
+				<!-- Operator Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="operator"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_OPERATOR_LABEL"
+					description="COM_COMPONENTBUILDER_DYNAMIC_GET_OPERATOR_DESCRIPTION"
+					class="list_class fieldMedium"
+					multiple="false"
+					filter="INT"
+					required="false"
+					default="0">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_OR_NOT</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN</option>
+					<option value="5">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN</option>
+					<option value="6">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL</option>
+					<option value="7">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_TO</option>
+					<option value="8">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN</option>
+					<option value="9">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN</option>
+					<option value="10">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IN</option>
+					<option value="11">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_IN</option>
+				</field>
+				<!-- Join_field Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="join_field"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_DESCRIPTION"
+					class="text_area fieldMedium"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="CMD"
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_MESSAGE"
+					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_HINT"
+				/>
+				<!-- Selection Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="selection"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_SELECTION_LABEL"
+					rows="22"
+					cols="30"
+					description="COM_COMPONENTBUILDER_DYNAMIC_GET_SELECTION_DESCRIPTION"
+					class="text_area span12"
+					filter="HTML"
+					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_SELECTION_HINT"
+					required="false"
+				/>
+			</form>
+		</field>
+		<!-- Add_php_getlistquery Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_after_getitem"
-			label="COM_COMPONENTBUILDER_DYNAMIC_GET_ADD_PHP_AFTER_GETITEM_LABEL"
+			name="add_php_getlistquery"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_ADD_PHP_GETLISTQUERY_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -973,6 +1229,51 @@
 		</field>
 		<!-- Note_calculation_item Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_calculation_item" description="COM_COMPONENTBUILDER_DYNAMIC_GET_NOTE_CALCULATION_ITEM_DESCRIPTION" class="note_calculation_item" />
+		<!-- Group Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="group"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_GROUP_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_DYNAMIC_GET_GROUP_DESCRIPTION"
+			icon="list">
+			<form hidden="true" name="list_group_modal" repeat="true">
+				<!-- Table_key Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="table_key"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="false"
+					filter="CMD"
+					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
+					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
+				/>
+			</form>
+		</field>
+		<!-- Php_calculation Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="php_calculation"
+			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CALCULATION_LABEL"
+			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CALCULATION_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="true"
+			validate="code"
+		/>
 		<!-- Global Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -1144,279 +1445,6 @@
 					<option value="2">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_THIS</option>
 				</field>
-			</form>
-		</field>
-		<!-- Php_calculation Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_calculation"
-			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CALCULATION_LABEL"
-			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PHP_CALCULATION_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			required="true"
-			validate="code"
-		/>
-		<!-- Join_view_table Field. Type: Subform. (joomla) -->
-		<field
-			type="subform"
-			name="join_view_table"
-			label="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
-			multiple="true"
-			description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_DESCRIPTION"
-			icon="list">
-			<form hidden="true" name="list_join_view_table_modal" repeat="true">
-				<!-- View_table Field. Type: Adminviews. (custom) -->
-				<field
-					type="adminviews"
-					name="view_table"
-					label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_LABEL"
-					description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_DESCRIPTION"
-					multiple="false"
-					default=""
-					required="false"
-					button="false"
-				/>
-				<!-- Row_type Field. Type: List. (joomla) -->
-				<field
-					type="list"
-					name="row_type"
-					label="COM_COMPONENTBUILDER_DYNAMIC_GET_ROW_TYPE_LABEL"
-					description="COM_COMPONENTBUILDER_DYNAMIC_GET_ROW_TYPE_DESCRIPTION"
-					class="list_class fieldMedium"
-					multiple="false"
-					filter="INT"
-					required="false"
-					default="1">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_SINGLE</option>
-					<option value="2">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_MULTIPLE</option>
-				</field>
-				<!-- As Field. Type: List. (joomla) -->
-				<field
-					type="list"
-					name="as"
-					label="COM_COMPONENTBUILDER_DYNAMIC_GET_AS_LABEL"
-					class="list_class fieldSmall"
-					multiple="false"
-					filter="WORD"
-					required="false"
-					default="b">
-					<!-- Option Set. -->
-					<option value="b">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_B</option>
-					<option value="c">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_C</option>
-					<option value="d">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_D</option>
-					<option value="e">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_E</option>
-					<option value="f">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_F</option>
-					<option value="g">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_G</option>
-					<option value="h">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_H</option>
-					<option value="i">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_I</option>
-					<option value="j">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_J</option>
-					<option value="k">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_K</option>
-					<option value="l">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_L</option>
-					<option value="m">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_M</option>
-					<option value="n">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_N</option>
-					<option value="o">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_O</option>
-					<option value="p">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_P</option>
-					<option value="q">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_Q</option>
-					<option value="r">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_R</option>
-					<option value="s">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_S</option>
-					<option value="t">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_T</option>
-					<option value="u">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_U</option>
-					<option value="v">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_V</option>
-					<option value="w">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_W</option>
-					<option value="x">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_X</option>
-					<option value="y">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_Y</option>
-					<option value="z">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_Z</option>
-					<option value="aa">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_AA</option>
-					<option value="bb">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_BB</option>
-					<option value="cc">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_CC</option>
-					<option value="dd">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_DD</option>
-					<option value="ee">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EE</option>
-					<option value="ff">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_FF</option>
-					<option value="gg">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GG</option>
-					<option value="hh">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_HH</option>
-					<option value="ii">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_II</option>
-					<option value="jj">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_JJ</option>
-					<option value="kk">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_KK</option>
-					<option value="ll">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LL</option>
-					<option value="mm">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_MM</option>
-					<option value="nn">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NN</option>
-					<option value="oo">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_OO</option>
-					<option value="pp">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_PP</option>
-					<option value="qq">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_QQ</option>
-					<option value="rr">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_RR</option>
-					<option value="ss">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_SS</option>
-					<option value="tt">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_TT</option>
-					<option value="uu">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_UU</option>
-					<option value="vv">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_VV</option>
-					<option value="ww">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_WW</option>
-					<option value="xx">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_XX</option>
-					<option value="yy">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_YY</option>
-					<option value="zz">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_ZZ</option>
-				</field>
-				<!-- Type Field. Type: List. (joomla) -->
-				<field
-					type="list"
-					name="type"
-					label="COM_COMPONENTBUILDER_DYNAMIC_GET_TYPE_LABEL"
-					class="list_class fieldMedium"
-					multiple="false"
-					filter="INT"
-					required="false"
-					default="1">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_LEFT</option>
-					<option value="2">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_LEFT_OUTER</option>
-					<option value="3">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_INNER</option>
-					<option value="4">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_RIGHT</option>
-					<option value="5">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_RIGHT_OUTER</option>
-				</field>
-				<!-- On_field Field. Type: Text. (joomla) -->
-				<field
-					type="text"
-					name="on_field"
-					label="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_LABEL"
-					size="40"
-					maxlength="150"
-					description="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_DESCRIPTION"
-					class="text_area fieldMedium"
-					readonly="false"
-					disabled="false"
-					required="false"
-					filter="CMD"
-					message="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_MESSAGE"
-					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_HINT"
-				/>
-				<!-- Operator Field. Type: List. (joomla) -->
-				<field
-					type="list"
-					name="operator"
-					label="COM_COMPONENTBUILDER_DYNAMIC_GET_OPERATOR_LABEL"
-					description="COM_COMPONENTBUILDER_DYNAMIC_GET_OPERATOR_DESCRIPTION"
-					class="list_class fieldMedium"
-					multiple="false"
-					filter="INT"
-					required="false"
-					default="0">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL</option>
-					<option value="2">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL</option>
-					<option value="3">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_OR_NOT</option>
-					<option value="4">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN</option>
-					<option value="5">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN</option>
-					<option value="6">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL</option>
-					<option value="7">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_TO</option>
-					<option value="8">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN</option>
-					<option value="9">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN</option>
-					<option value="10">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_IN</option>
-					<option value="11">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_IN</option>
-				</field>
-				<!-- Join_field Field. Type: Text. (joomla) -->
-				<field
-					type="text"
-					name="join_field"
-					label="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_LABEL"
-					size="40"
-					maxlength="150"
-					description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_DESCRIPTION"
-					class="text_area fieldMedium"
-					readonly="false"
-					disabled="false"
-					required="false"
-					filter="CMD"
-					message="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_MESSAGE"
-					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_HINT"
-				/>
-				<!-- Selection Field. Type: Textarea. (joomla) -->
-				<field
-					type="textarea"
-					name="selection"
-					label="COM_COMPONENTBUILDER_DYNAMIC_GET_SELECTION_LABEL"
-					rows="22"
-					cols="30"
-					description="COM_COMPONENTBUILDER_DYNAMIC_GET_SELECTION_DESCRIPTION"
-					class="text_area span12"
-					filter="HTML"
-					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_SELECTION_HINT"
-					required="false"
-				/>
 			</form>
 		</field>
 	</fieldset>

@@ -2067,6 +2067,30 @@ class Interpretation extends Fields
 		return $filters;
 	}
 
+	public function setCustomViewGroup(&$group, &$code, $tab = '')
+	{
+		$grouping = '';
+		if (ComponentbuilderHelper::checkArray($group))
+		{
+			foreach ($group as $gr)
+			{
+				list($as, $field) = array_map('trim', explode('.', $gr['table_key']));
+				// set the string
+				$string = "\$query->group('" . $gr['table_key'] . "');";
+				// sort where
+				if ($as === 'a' || (isset($this->siteMainGet[$this->target][$code][$as]) && ComponentbuilderHelper::checkString($this->siteMainGet[$this->target][$code][$as])))
+				{
+					$grouping .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . $string;
+				}
+				else
+				{
+					$this->otherGroup[$this->target][$code][$as][$field] = PHP_EOL . $this->_t(2) . $string;
+				}
+			}
+		}
+		return $grouping;
+	}
+
 	public function setCustomViewOrder(&$order, &$code, $tab = '')
 	{
 		$ordering = '';
@@ -2313,11 +2337,25 @@ class Interpretation extends Fields
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get, $code, $tab);
 			// setup filters
-			$getItem .= $this->setCustomViewFilter($get->filter, $code, $tab);
+			if (isset($get->filter))
+			{
+				$getItem .= $this->setCustomViewFilter($get->filter, $code, $tab);
+			}
 			// setup Where
-			$getItem .= $this->setCustomViewWhere($get->where, $code, $tab);
+			if (isset($get->where))
+			{
+				$getItem .= $this->setCustomViewWhere($get->where, $code, $tab);
+			}
 			// setup ordering
-			$getItem .= $this->setCustomViewOrder($get->order, $code, $tab);
+			if (isset($get->order))
+			{
+				$getItem .= $this->setCustomViewOrder($get->order, $code, $tab);
+			}
+			// setup grouping
+			if (isset($get->group))
+			{
+				$getItem .= $this->setCustomViewGroup($get->group, $code, $tab);
+			}
 			// get ready to get query
 			$getItem .= PHP_EOL . PHP_EOL . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
 			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$db->setQuery(\$query);";
@@ -2798,6 +2836,14 @@ class Interpretation extends Fields
 								$methods .= $string;
 							}
 						}
+						// add any other grouping that was set
+						if (isset($this->otherGroup[$this->target][$default['code']][$default['as']]) && ComponentbuilderHelper::checkArray($this->otherGroup[$this->target][$default['code']][$default['as']]))
+						{
+							foreach ($this->otherGroup[$this->target][$default['code']][$default['as']] as $field => $string)
+							{
+								$methods .= $string;
+							}
+						}
 						$methods .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Reset the query using our newly populated query object.";
 						$methods .= PHP_EOL . $this->_t(2) . "\$db->setQuery(\$query);";
 						$methods .= PHP_EOL . $this->_t(2) . "\$db->execute();";
@@ -3031,11 +3077,25 @@ class Interpretation extends Fields
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get, $code);
 			// setup filters
-			$getItem .= $this->setCustomViewFilter($get->filter, $code);
+			if (isset($get->filter))
+			{
+				$getItem .= $this->setCustomViewFilter($get->filter, $code);
+			}
 			// setup where
-			$getItem .= $this->setCustomViewWhere($get->where, $code);
+			if (isset($get->where))
+			{
+				$getItem .= $this->setCustomViewWhere($get->where, $code);
+			}
 			// setup ordering
-			$getItem .= $this->setCustomViewOrder($get->order, $code);
+			if (isset($get->order))
+			{
+				$getItem .= $this->setCustomViewOrder($get->order, $code);
+			}
+			// setup grouping
+			if (isset($get->group))
+			{
+				$getItem .= $this->setCustomViewGroup($get->group, $code);
+			}
 			if ($return)
 			{
 				// return the query object

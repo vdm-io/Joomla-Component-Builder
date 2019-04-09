@@ -134,6 +134,14 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->php_calculation = base64_decode($item->php_calculation);
 			}
 
+			if (!empty($item->join_view_table))
+			{
+				// Convert the join_view_table field to an array.
+				$join_view_table = new Registry;
+				$join_view_table->loadString($item->join_view_table);
+				$item->join_view_table = $join_view_table->toArray();
+			}
+
 			if (!empty($item->join_db_table))
 			{
 				// Convert the join_db_table field to an array.
@@ -166,20 +174,20 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->order = $order->toArray();
 			}
 
+			if (!empty($item->group))
+			{
+				// Convert the group field to an array.
+				$group = new Registry;
+				$group->loadString($item->group);
+				$item->group = $group->toArray();
+			}
+
 			if (!empty($item->global))
 			{
 				// Convert the global field to an array.
 				$global = new Registry;
 				$global->loadString($item->global);
 				$item->global = $global->toArray();
-			}
-
-			if (!empty($item->join_view_table))
-			{
-				// Convert the join_view_table field to an array.
-				$join_view_table = new Registry;
-				$join_view_table->loadString($item->join_view_table);
-				$item->join_view_table = $join_view_table->toArray();
 			}
 
 			if (!empty($item->plugin_events))
@@ -986,6 +994,19 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		}
 
+		// Set the join_view_table items to data.
+		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
+		{
+			$join_view_table = new JRegistry;
+			$join_view_table->loadArray($data['join_view_table']);
+			$data['join_view_table'] = (string) $join_view_table;
+		}
+		elseif (!isset($data['join_view_table']))
+		{
+			// Set the empty join_view_table to data
+			$data['join_view_table'] = '';
+		}
+
 		// Set the join_db_table items to data.
 		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
 		{
@@ -1038,6 +1059,19 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['order'] = '';
 		}
 
+		// Set the group items to data.
+		if (isset($data['group']) && is_array($data['group']))
+		{
+			$group = new JRegistry;
+			$group->loadArray($data['group']);
+			$data['group'] = (string) $group;
+		}
+		elseif (!isset($data['group']))
+		{
+			// Set the empty group to data
+			$data['group'] = '';
+		}
+
 		// Set the global items to data.
 		if (isset($data['global']) && is_array($data['global']))
 		{
@@ -1049,19 +1083,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 		{
 			// Set the empty global to data
 			$data['global'] = '';
-		}
-
-		// Set the join_view_table items to data.
-		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
-		{
-			$join_view_table = new JRegistry;
-			$join_view_table->loadArray($data['join_view_table']);
-			$data['join_view_table'] = (string) $join_view_table;
-		}
-		elseif (!isset($data['join_view_table']))
-		{
-			// Set the empty join_view_table to data
-			$data['join_view_table'] = '';
 		}
 
 		// Set the plugin_events string to JSON string.

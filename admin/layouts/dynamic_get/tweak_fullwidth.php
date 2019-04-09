@@ -18,6 +18,7 @@ $fields = $displayData->get('fields') ?: array(
 	'filter',
 	'where',
 	'order',
+	'group',
 	'global'
 );
 

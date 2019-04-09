@@ -657,6 +657,7 @@ function vvvvvzp(main_source_vvvvvzp)
 	{
 		jQuery('#jform_filter-lbl').closest('.control-group').show();
 		jQuery('#jform_global-lbl').closest('.control-group').show();
+		jQuery('#jform_group-lbl').closest('.control-group').show();
 		jQuery('#jform_order-lbl').closest('.control-group').show();
 		jQuery('#jform_where-lbl').closest('.control-group').show();
 		jQuery('#jform_join_db_table-lbl').closest('.control-group').show();
@@ -666,6 +667,7 @@ function vvvvvzp(main_source_vvvvvzp)
 	{
 		jQuery('#jform_filter-lbl').closest('.control-group').hide();
 		jQuery('#jform_global-lbl').closest('.control-group').hide();
+		jQuery('#jform_group-lbl').closest('.control-group').hide();
 		jQuery('#jform_order-lbl').closest('.control-group').hide();
 		jQuery('#jform_where-lbl').closest('.control-group').hide();
 		jQuery('#jform_join_db_table-lbl').closest('.control-group').hide();

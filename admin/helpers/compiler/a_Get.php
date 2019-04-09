@@ -3283,6 +3283,12 @@ class Get
 							{
 								unset($result->order);
 							}
+							// set grouping
+							$result->group = json_decode($result->group, true);
+							if (!ComponentbuilderHelper::checkArray($result->group))
+							{
+								unset($result->group);
+							}
 							// set global details
 							$result->global = json_decode($result->global, true);
 							if (!ComponentbuilderHelper::checkArray($result->global))
@@ -3298,6 +3304,7 @@ class Get
 							unset($result->filter);
 							unset($result->where);
 							unset($result->order);
+							unset($result->group);
 							unset($result->global);
 						}
 						// load the events if any is set
