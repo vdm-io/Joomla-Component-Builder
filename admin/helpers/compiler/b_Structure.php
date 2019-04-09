@@ -963,7 +963,7 @@ class Structure extends Get
 						$config = array($this->hhh . 'CREATIONDATE' . $this->hhh => $created, $this->hhh . 'BUILDDATE' . $this->hhh => $modified, $this->hhh . 'VERSION' . $this->hhh => $view['settings']->version);
 						$this->buildDynamique($target, 'single', false, $config);
 					}
-					if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
+					if (isset($view['edit_create_site_view']) && is_numeric($view['edit_create_site_view']) && $view['edit_create_site_view'] > 0)
 					{
 						// setup the front site edit-view files
 						$target = array('site' => $view['settings']->name_single);

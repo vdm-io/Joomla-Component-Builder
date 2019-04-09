@@ -664,17 +664,23 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_PORT_DESCRIPTION"
 					class="inputbox"
 				/>
-				<!-- Edit_create_site_view Field. Type: Checkbox. (joomla) -->
+				<!-- Edit_create_site_view Field. Type: List. (joomla) -->
 				<field
-					type="checkbox"
+					type="list"
 					name="edit_create_site_view"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_EDIT_CREATE_SITE_VIEW_LABEL"
-					value="1"
-					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_EDIT_CREATE_SITE_VIEW_DESCRIPTION"
-					class="inputbox"
-				/>
+					class="list_class fieldMedium"
+					multiple="false"
+					required="false">
+					<!-- Option Set. -->
+					<option value="">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_NONE</option>
+					<option value="1">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADD</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADDMENU</option>
+				</field>
 				<!-- Order Field. Type: Integer. (joomla) -->
 				<field
 					type="integer"

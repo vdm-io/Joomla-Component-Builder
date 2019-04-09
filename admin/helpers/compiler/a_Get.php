@@ -1162,7 +1162,7 @@ class Get
 					return $value;
 				}, $array);
 				// check if we must add to site
-				if (isset($array['edit_create_site_view']) && $array['edit_create_site_view'])
+				if (isset($array['edit_create_site_view']) && is_numeric($array['edit_create_site_view']) && $array['edit_create_site_view'] > 0)
 				{
 					$this->siteEditView[$array['adminview']] = true;
 					$this->lang = 'both';

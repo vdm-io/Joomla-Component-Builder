@@ -1470,6 +1470,32 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	public function setAdminViewMenu(&$viewName_single, &$view)
+	{
+		$xml = '';
+		// build the file
+		$target = array('site' => $viewName_single);
+		$done = $this->buildDynamique($target, 'admin_menu');
+		if ($done)
+		{
+			// set the lang
+			$lang = ComponentbuilderHelper::safeString('com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_menu_' . $viewName_single, 'U');
+			$this->langContent['adminsys'][$lang . '_TITLE'] = 'Create ' . $view['settings']->name_single;
+			$this->langContent['adminsys'][$lang . '_OPTION'] = 'Create ' . $view['settings']->name_single;
+			$this->langContent['adminsys'][$lang . '_DESC'] = $view['settings']->short_description;
+			//start loading xml
+			$xml = '<?xml version="1.0" encoding="utf-8" ?>';
+			$xml .= PHP_EOL . '<metadata>';
+			$xml .= PHP_EOL . $this->_t(1) . '<layout title="' . $lang . '_TITLE" option="' . $lang . '_OPTION">';
+			$xml .= PHP_EOL . $this->_t(2) . '<message>';
+			$xml .= PHP_EOL . $this->_t(3) . '<![CDATA[' . $lang . '_DESC]]>';
+			$xml .= PHP_EOL . $this->_t(2) . '</message>';
+			$xml .= PHP_EOL . $this->_t(1) . '</layout>';
+			$xml .= PHP_EOL . '</metadata>';
+		}
+		return $xml;
+	}
+
 	public function setCustomViewMenu(&$view)
 	{
 		$xml = '';

@@ -248,7 +248,7 @@ class Infusion extends Interpretation
 				$this->setViewPlaceholders($view['settings']);
 
 				// set site edit view array
-				if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
+				if (isset($view['edit_create_site_view']) && is_numeric($view['edit_create_site_view']) && $view['edit_create_site_view'] > 0)
 				{
 					$site_edit_view_array[] = $this->_t(4) . "'" . $viewName_single . "'";
 					$this->lang = 'both';
@@ -357,9 +357,15 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$viewName_single][$this->hhh . 'VIEWCSS' . $this->hhh] = $this->getCustomScriptBuilder('css_view', $viewName_single, '', null, true);
 
 					// add css to front end
-					if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
+					if (isset($view['edit_create_site_view']) && is_numeric($view['edit_create_site_view']) && $view['edit_create_site_view'] > 0)
 					{
 						$this->fileContentDynamic[$viewName_single][$this->hhh . 'SITE_VIEWCSS' . $this->hhh] = $this->fileContentDynamic[$viewName_single][$this->hhh . 'VIEWCSS' . $this->hhh];
+						// check if we should add a create menu
+						if ($view['edit_create_site_view'] == 2)
+						{
+							// SITE_MENU_XML <<<DYNAMIC>>>
+							$this->fileContentDynamic[$viewName_single][$this->hhh . 'SITE_MENU_XML' . $this->hhh] = $this->setAdminViewMenu($viewName_single, $view);
+						}
 					}
 				}
 				// set the views names
@@ -552,7 +558,7 @@ class Infusion extends Interpretation
 				}
 				$this->fileContentStatic[$this->hhh . 'ROUTEHELPER' . $this->hhh] .= $this->setRouterHelp($viewName_single, $viewName_list);
 
-				if (isset($view['edit_create_site_view']) && $view['edit_create_site_view'])
+				if (isset($view['edit_create_site_view']) && is_numeric($view['edit_create_site_view']) && $view['edit_create_site_view'] > 0)
 				{
 					// add needed router stuff for front edit views
 					$this->fileContentStatic[$this->hhh . 'ROUTER_PARSE_SWITCH' . $this->hhh] .= $this->routerParseSwitch($viewName_single, null, false);

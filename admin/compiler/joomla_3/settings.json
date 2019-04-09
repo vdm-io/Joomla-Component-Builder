@@ -600,6 +600,12 @@
 					"rename": false,
 					"type": "menu"
 				},
+				"default.xml": {
+					"path": "c0mp0n3nt/site/views/VIEW/tmpl",
+					"rename": "new",
+					"newName": "edit.xml",
+					"type": "admin_menu"
+				},
 				"module_forms.xml": {
 					"path": "c0mp0n3nt/site/models/forms",
 					"rename": "module_forms",
