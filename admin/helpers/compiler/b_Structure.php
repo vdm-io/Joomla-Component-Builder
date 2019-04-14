@@ -1160,8 +1160,12 @@ class Structure extends Get
 	 */
 	public function buildDynamique($target, $type, $fileName = false, $config = false)
 	{
+		// did we build the files (any number)
+		$build_status = false;
+		// check that we have the target values
 		if (ComponentbuilderHelper::checkArray($target))
 		{
+			// search the target
 			foreach ($target as $main => $name)
 			{
 				// make sure it is lower case
@@ -1169,7 +1173,7 @@ class Structure extends Get
 				// setup the files
 				foreach ($this->joomlaVersionData->move->dynamic->{$main} as $item => $details)
 				{
-					if ($details->type == $type)
+					if ($details->type === $type)
 					{
 						// set destination path
 						$path = '';
@@ -1228,12 +1232,13 @@ class Structure extends Get
 						}
 						// store the new files
 						$this->newFiles['dynamic'][$name][] = $newFIle;
+						// we have build atleast one
+						$build_status = true;
 					}
 				}
 			}
-			return true;
 		}
-		return false;
+		return $build_status;
 	}
 
 	/**

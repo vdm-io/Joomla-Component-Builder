@@ -1473,10 +1473,10 @@ class Interpretation extends Fields
 	public function setAdminViewMenu(&$viewName_single, &$view)
 	{
 		$xml = '';
-		// build the file
+		// build the file target values
 		$target = array('site' => $viewName_single);
-		$done = $this->buildDynamique($target, 'admin_menu');
-		if ($done)
+		// build the edit.xml file
+		if ($this->buildDynamique($target, 'admin_menu'))
 		{
 			// set the lang
 			$lang = ComponentbuilderHelper::safeString('com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_menu_' . $viewName_single, 'U');
@@ -1493,16 +1493,20 @@ class Interpretation extends Fields
 			$xml .= PHP_EOL . $this->_t(1) . '</layout>';
 			$xml .= PHP_EOL . '</metadata>';
 		}
+		else
+		{
+			$this->app->enqueueMessage(JText::sprintf('<hr /><p>Site menu for <b>%s</b> was not build.</p>', $viewName_single), 'Warning');
+		}
 		return $xml;
 	}
 
 	public function setCustomViewMenu(&$view)
 	{
 		$xml = '';
-		// build the file
+		// build the file target values
 		$target = array('site' => $view['settings']->code);
-		$done = $this->buildDynamique($target, 'menu');
-		if ($done)
+		// build the default.xml file
+		if ($this->buildDynamique($target, 'menu'))
 		{
 			// set the lang
 			$lang = ComponentbuilderHelper::safeString('com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '_menu_' . $view['settings']->code, 'U');
@@ -1560,6 +1564,10 @@ class Interpretation extends Fields
 			}
 			$xml .= PHP_EOL . '</metadata>';
 		}
+		else
+		{
+			$this->app->enqueueMessage(JText::sprintf('<hr /><p>Site menu for <b>%s</b> was not build.</p>', $view['settings']->code), 'Warning');
+		}
 		return $xml;
 	}
 
@@ -1573,10 +1581,9 @@ class Interpretation extends Fields
 			$target = ComponentbuilderHelper::getBetween($field, 'display="', '"');
 			if (!ComponentbuilderHelper::checkString($target) || $target === 'menu')
 			{
-
 				$field = str_replace('display="menu"', '', $field);
-				// we load fields that have options
-				if (strpos($field, 'Option Set. -->') !== false && strpos($field, $menuSetter) === false && !ComponentbuilderHelper::checkString($target))
+				// we update fields that have options if not only added to menu
+				if ($target !== 'menu' && strpos($field, 'Option Set. -->') !== false && strpos($field, $menuSetter) === false && !ComponentbuilderHelper::checkString($target))
 				{
 					// we add the global option
 					$field = str_replace('Option Set. -->', $this->setLine(__LINE__) . ' Global & Option Set. -->' . PHP_EOL . $this->_t(3) . '<option value="">' . PHP_EOL . $this->_t(4) . 'JGLOBAL_USE_GLOBAL</option>', $field);
