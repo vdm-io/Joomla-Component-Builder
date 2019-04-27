@@ -3105,10 +3105,10 @@ class Interpretation extends Fields
 			$getItem .= PHP_EOL . $this->_t(2) . "\$db = JFactory::getDbo();";
 			$getItem .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
 			$getItem .= PHP_EOL . $this->_t(2) . "\$query = \$db->getQuery(true);";
-			// check if there is any custom script
-			$getItem .= $this->getCustomScriptBuilder($this->target . '_php_getlistquery', $code, '', PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Filtering.", true);
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get, $code);
+			// check if there is any custom script
+			$getItem .= $this->getCustomScriptBuilder($this->target . '_php_getlistquery', $code, '', PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Filtering.", true);
 			// setup filters
 			if (isset($get->filter))
 			{
