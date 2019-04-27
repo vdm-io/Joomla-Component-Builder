@@ -503,6 +503,16 @@
 					message="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_METHOD_NAME_HINT"
 				/>
+				<!-- Allow_zero Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="allow_zero"
+					label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALLOW_ZERO_LABEL"
+					value="1"
+					required="false"
+					description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ALLOW_ZERO_DESCRIPTION"
+					class="inputbox"
+				/>
 				<!-- User_check Field. Type: Checkbox. (joomla) -->
 				<field
 					type="checkbox"

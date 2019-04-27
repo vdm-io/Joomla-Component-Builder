@@ -10528,16 +10528,21 @@ class Interpretation extends Fields
 		{
 			$input = array();
 			$valueArray = array();
+			$ifArray = array();
 			$getModel = array();
 			$userCheck = array();
 			foreach ($this->customScriptBuilder[$target]['ajax_controller'] as $view)
 			{
 				foreach ($view as $task)
 				{
-					$input[$task['task_name']][] = PHP_EOL . $this->_t(6) . "\$" . $task['value_name'] . "Value = \$jinput->get('" . $task['value_name'] . "', " . $task['input_default'] . ", '" . $task['input_filter'] . "');";
+					$input[$task['task_name']][] = "\$" . $task['value_name'] . "Value = \$jinput->get('" . $task['value_name'] . "', " . $task['input_default'] . ", '" . $task['input_filter'] . "');";
 					$valueArray[$task['task_name']][] = "\$" . $task['value_name'] . "Value";
-					$getModel[$task['task_name']] = PHP_EOL . $this->_t(7) . "\$result = \$this->getModel('ajax')->" . $task['method_name'] . "(" . $this->bbb . "valueArray" . $this->ddd . ");";
-
+					$getModel[$task['task_name']] = "\$result = \$this->getModel('ajax')->" . $task['method_name'] . "(" . $this->bbb . "valueArray" . $this->ddd . ");";
+					// check if null or zero is allowed
+					if (!isset($task['allow_zero']) || 1 != $task['allow_zero'])
+					{
+						$ifArray[$task['task_name']][] = "\$" . $task['value_name'] . "Value";
+					}
 					// see user check is needed
 					if (isset($task['user_check']) && 1 == $task['user_check'])
 					{
@@ -10561,21 +10566,40 @@ class Interpretation extends Fields
 					$cases .= PHP_EOL . $this->_t(6) . "\$returnRaw = \$jinput->get('raw', false, 'BOOLEAN');";
 					foreach ($input[$task] as $string)
 					{
-						$cases .= $string;
+						$cases .= PHP_EOL . $this->_t(6) . $string;
 					}
 					// set the values
 					$values = implode(', ', $valueArray[$task]);
-					$ifvalues = implode(' && ', $valueArray[$task]);
 					// set the values to method
 					$getMethod = str_replace($this->bbb . 'valueArray' . $this->ddd, $values, $getMethod);
-					$cases .= PHP_EOL . $this->_t(6) . "if(" . $ifvalues . $userCheck[$task] . ")";
-					$cases .= PHP_EOL . $this->_t(6) . "{";
-					$cases .= $getMethod;
-					$cases .= PHP_EOL . $this->_t(6) . "}";
-					$cases .= PHP_EOL . $this->_t(6) . "else";
-					$cases .= PHP_EOL . $this->_t(6) . "{";
-					$cases .= PHP_EOL . $this->_t(7) . "\$result = false;";
-					$cases .= PHP_EOL . $this->_t(6) . "}";
+					// check if we have some values to check
+					if (isset($ifArray[$task]) && ComponentbuilderHelper::checkArray($ifArray[$task]))
+					{
+						$ifvalues = implode(' && ', $ifArray[$task]);
+					}
+					else
+					{
+						$ifvalues = '';
+					}
+					// build the if string
+					$ifvalues = $ifvalues . $userCheck[$task];
+					// check if we have a if string 
+					if (ComponentbuilderHelper::checkString($ifvalues))
+					{
+						$cases .= PHP_EOL . $this->_t(6) . "if(" . $ifvalues . ")";
+						$cases .= PHP_EOL . $this->_t(6) . "{";
+						$cases .= PHP_EOL . $this->_t(7) . $getMethod;
+						$cases .= PHP_EOL . $this->_t(6) . "}";
+						$cases .= PHP_EOL . $this->_t(6) . "else";
+						$cases .= PHP_EOL . $this->_t(6) . "{";
+						$cases .= PHP_EOL . $this->_t(7) . "\$result = false;";
+						$cases .= PHP_EOL . $this->_t(6) . "}";
+					}
+					else
+					{
+						$cases .= PHP_EOL . $this->_t(6) . $getMethod;
+					}
+					// continue the build
 					$cases .= PHP_EOL . $this->_t(6) . "if(\$callback = \$jinput->get('callback', null, 'CMD'))";
 					$cases .= PHP_EOL . $this->_t(6) . "{";
 					$cases .= PHP_EOL . $this->_t(7) . "echo \$callback . \"(\".json_encode(\$result).\");\";";
