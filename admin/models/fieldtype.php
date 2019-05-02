@@ -155,7 +155,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getWaffields()
+	public function getWamfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -237,13 +237,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationWaffields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationWamfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationWaffields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationWamfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationWaffields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationWamfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationWaffields($item->store, 'store');
+					$item->store = $this->selectionTranslationWamfields($item->store, 'store');
 				}
 			}
 
@@ -257,7 +257,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return translatable string
 	 */
-	public function selectionTranslationWaffields($value,$name)
+	public function selectionTranslationWamfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
@@ -409,74 +409,6 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$form->setFieldAttribute('created', 'disabled', 'true');
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
-		}
-		// Modify the form based on Edit Name access controls.
-		if ($id != 0 && (!$user->authorise('fieldtype.edit.name', 'com_componentbuilder.fieldtype.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('fieldtype.edit.name', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('name', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('name', 'readonly', 'true');
-			// If there is no value continue.
-			if (!$form->getValue('name'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('name', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('name', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Properties access controls.
-		if ($id != 0 && (!$user->authorise('fieldtype.edit.properties', 'com_componentbuilder.fieldtype.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('fieldtype.edit.properties', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('properties', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('properties', 'readonly', 'true');
-			// If there is no value continue.
-			if (!$form->getValue('properties'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('properties', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('properties', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Description access controls.
-		if ($id != 0 && (!$user->authorise('fieldtype.edit.description', 'com_componentbuilder.fieldtype.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('fieldtype.edit.description', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('description', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('description', 'readonly', 'true');
-			// If there is no value continue.
-			if (!$form->getValue('description'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('description', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('description', 'required', 'false');
-			}
-		}
-		// Modify the form based on Edit Short Description access controls.
-		if ($id != 0 && (!$user->authorise('fieldtype.edit.short_description', 'com_componentbuilder.fieldtype.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('fieldtype.edit.short_description', 'com_componentbuilder')))
-		{
-			// Disable fields for display.
-			$form->setFieldAttribute('short_description', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('short_description', 'readonly', 'true');
-			// If there is no value continue.
-			if (!$form->getValue('short_description'))
-			{
-				// Disable fields while saving.
-				$form->setFieldAttribute('short_description', 'filter', 'unset');
-				// Disable fields while saving.
-				$form->setFieldAttribute('short_description', 'required', 'false');
-			}
 		}
 		// Only load these values if no id is found
 		if (0 == $id)
@@ -653,6 +585,42 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Method to validate the form data.
+	 *
+	 * @param   JForm   $form   The form to validate against.
+	 * @param   array   $data   The data to validate.
+	 * @param   string  $group  The name of the field group to validate.
+	 *
+	 * @return  mixed  Array of filtered data if valid, false otherwise.
+	 *
+	 * @see     JFormRule
+	 * @see     JFilterInput
+	 * @since   12.2
+	 */
+	public function validate($form, $data, $group = null)
+	{
+		// check if the not_required field is set
+		if (ComponentbuilderHelper::checkString($data['not_required']))
+		{
+			$requiredFields = (array) explode(',',(string) $data['not_required']);
+			$requiredFields = array_unique($requiredFields);
+			// now change the required field attributes value
+			foreach ($requiredFields as $requiredField)
+			{
+				// make sure there is a string value
+				if (ComponentbuilderHelper::checkString($requiredField))
+				{
+					// change to false
+					$form->setFieldAttribute($requiredField, 'required', 'false');
+					// also clear the data set
+					$data[$requiredField] = '';
+				}
+			}
+		}
+		return parent::validate($form, $data, $group);
 	}
 
 	/**
@@ -1109,10 +1077,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 			$properties->loadArray($data['properties']);
 			$data['properties'] = (string) $properties;
 		}
-		// Also check permission since the value may be removed due to permissions
-		// Then we do not want to clear it out, but simple ignore the empty properties
-		elseif (!isset($data['properties'])
-			&& JFactory::getUser()->authorise('fieldtype.edit.properties', 'com_componentbuilder'))
+		elseif (!isset($data['properties']))
 		{
 			// Set the empty properties to data
 			$data['properties'] = '';

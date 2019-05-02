@@ -1405,7 +1405,13 @@ abstract class ComponentbuilderHelper
 	}
 
 
-	public static function getFieldOptions($value, $type, $settings = array(), $xml = null)
+	/**
+	 * get field options
+	 *
+	 * @return  array   on success
+	 * 
+	 */
+	public static function getFieldOptions($value, $type, $settings = array(), $xml = null, $db_defaults = false)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -1413,6 +1419,11 @@ abstract class ComponentbuilderHelper
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
+		// load database default values
+		if ($db_defaults)
+		{
+			$query->select($db->quoteName(array('datadefault', 'datadefault_other', 'datalenght', 'datalenght_other', 'datatype', 'has_defaults', 'indexes', 'null_switch', 'store')));
+		}
 		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
 		$query->where($db->quoteName('published') . ' = 1');
 		$query->where($db->quoteName($type) . ' = '. $value);
@@ -1525,6 +1536,20 @@ abstract class ComponentbuilderHelper
 			}
 			$field['values'] .= PHP_EOL . "/>";
 			$field['values_description'] .= '</tbody></table>';
+			// load the database defaults if set and wanted
+			if ($db_defaults && isset($result->has_defaults) && $result->has_defaults == 1)
+			{
+				$field['database'] = array(
+					'datatype' => $result->datatype,
+					'datadefault' => $result->datadefault,
+					'datadefault_other' => $result->datadefault_other,
+					'datalenght' => $result->datalenght,
+					'datalenght_other' => $result->datalenght_other,
+					'indexes' => $result->indexes,
+					'null_switch' => $result->null_switch,
+					'store' => $result->store
+				);
+			}
 			// return found field options
 			return $field;
 		}

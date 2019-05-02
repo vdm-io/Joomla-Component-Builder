@@ -156,7 +156,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getWaplinked_components()
+	public function getWawlinked_components()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();

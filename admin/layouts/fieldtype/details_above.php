@@ -15,15 +15,13 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'note_on_fields',
-	'properties',
-	'not_required'
+	'name'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();
 
 ?>
-<div class="form-vertical">
+<div class="form-inline form-inline-header">
 	<?php foreach($fields as $field): ?>
 		<?php if (in_array($field, $hiddenFields)) : ?>
 			<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>

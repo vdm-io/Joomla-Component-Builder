@@ -15,7 +15,6 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'name',
 	'catid',
 	'short_description'
 );

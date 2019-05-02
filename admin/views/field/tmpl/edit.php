@@ -59,18 +59,18 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'data_base', JText::_('COM_COMPONENTBUILDER_FIELD_DATA_BASE', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'fieldTab', 'database', JText::_('COM_COMPONENTBUILDER_FIELD_DATABASE', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('field.data_base_left', $this); ?>
+				<?php echo JLayoutHelper::render('field.database_left', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('field.data_base_right', $this); ?>
+				<?php echo JLayoutHelper::render('field.database_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('field.data_base_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('field.database_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -337,7 +337,7 @@ jQuery('#adminForm').on('change', '#jform_fieldtype',function (e) {
 	e.preventDefault();
 	// get type value
 	var fieldId = jQuery("#jform_fieldtype option:selected").val();
-	getFieldOptions(fieldId);
+	getFieldOptions(fieldId, true);
 	// get the field type text
 	var fieldText = jQuery("#jform_fieldtype option:selected").text().toLowerCase();
 	// now check if database input is needed

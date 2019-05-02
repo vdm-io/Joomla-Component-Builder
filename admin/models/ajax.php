@@ -2615,7 +2615,7 @@ class ComponentbuilderModelAjax extends JModelList
 		// get the xml
 		$xml = $this->getFieldXML($fieldtype);
 		// now get the field options
-		if ($field = ComponentbuilderHelper::getFieldOptions($fieldtype, 'id', null, $xml))
+		if ($field = ComponentbuilderHelper::getFieldOptions($fieldtype, 'id', null, $xml, true))
 		{
 			// get subform field properties object
 			$properties = $this->buildFieldOptionsSubform($field['subform'], $field['nameListOptions']);

@@ -636,7 +636,24 @@
 		<version>2.9.15</version>
 		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.15/JCB_v2.9.15.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.16/JCB_v2.9.16.zip</downloadurl>
+		</downloads>
+		<tags>
+			<tag>stable</tag>
+		</tags>
+		<maintainer>Llewellyn van der Merwe</maintainer>
+		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<targetplatform name="joomla" version="3.*"/>
+	</update>
+	<update>
+		<name>Component Builder</name>
+		<description>Builds Complex Joomla Components</description>
+		<element>com_componentbuilder</element>
+		<type>component</type>
+		<version>2.9.16</version>
+		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.16/JCB_v2.9.16.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>stable</tag>

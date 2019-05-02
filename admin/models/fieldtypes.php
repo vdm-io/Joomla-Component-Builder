@@ -178,7 +178,7 @@ class ComponentbuilderModelFieldtypes extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.description LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.catid LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.description LIKE '.$search.' OR a.catid LIKE '.$search.')');
 			}
 		}
 
