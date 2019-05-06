@@ -599,6 +599,9 @@ function getFieldOptions(fieldtype, db){
 				jQuery('#jform_store').val(result.database.store);
 				jQuery('#jform_store').trigger("liszt:updated");
 				jQuery('#jform_store').trigger("change");
+				// update null_switch (hmmm)
+				// jQuery('#jform_null_switch').val(result.database.null_switch);
+				// jQuery('#jform_null_switch').trigger("change");
 			}
 		}
 	})

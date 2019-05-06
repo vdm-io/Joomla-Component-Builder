@@ -2700,7 +2700,10 @@ class Fields extends Structure
 				$otherViews = $view_name_list;
 				$otherView = $view_name_single;
 			}
-			$this->categoryBuilder[$view_name_list] = array('code' => $name, 'name' => $listLangName);
+			// get the xml extension name
+			$_extension = $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'extension="', '"'), $this->placeholders);
+			// load the category builder
+			$this->categoryBuilder[$view_name_list] = array('code' => $name, 'name' => $listLangName, 'extension' => $_extension);
 			// also set code name for title alias fix
 			$this->catCodeBuilder[$view_name_single] = array('code' => $name, 'views' => $otherViews, 'view' => $otherView);
 		}
