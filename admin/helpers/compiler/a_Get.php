@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Get
 {
-
+	
 	/**
 	 * The hash placeholder
 	 * 

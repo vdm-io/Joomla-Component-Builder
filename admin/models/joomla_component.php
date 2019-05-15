@@ -86,40 +86,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_helper_admin))
-			{
-				// base64 Decode php_helper_admin.
-				$item->php_helper_admin = base64_decode($item->php_helper_admin);
-			}
-
-			if (!empty($item->sql))
-			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
-			}
-
-			if (!empty($item->php_preflight_update))
-			{
-				// base64 Decode php_preflight_update.
-				$item->php_preflight_update = base64_decode($item->php_preflight_update);
-			}
-
-			if (!empty($item->css_site))
-			{
-				// base64 Decode css_site.
-				$item->css_site = base64_decode($item->css_site);
-			}
-
 			if (!empty($item->php_helper_site))
 			{
 				// base64 Decode php_helper_site.
 				$item->php_helper_site = base64_decode($item->php_helper_site);
 			}
 
-			if (!empty($item->javascript))
+			if (!empty($item->readme))
 			{
-				// base64 Decode javascript.
-				$item->javascript = base64_decode($item->javascript);
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
 			}
 
 			if (!empty($item->php_postflight_update))
@@ -128,10 +104,34 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_postflight_update = base64_decode($item->php_postflight_update);
 			}
 
-			if (!empty($item->readme))
+			if (!empty($item->javascript))
 			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
+				// base64 Decode javascript.
+				$item->javascript = base64_decode($item->javascript);
+			}
+
+			if (!empty($item->css_site))
+			{
+				// base64 Decode css_site.
+				$item->css_site = base64_decode($item->css_site);
+			}
+
+			if (!empty($item->php_preflight_update))
+			{
+				// base64 Decode php_preflight_update.
+				$item->php_preflight_update = base64_decode($item->php_preflight_update);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
+			}
+
+			if (!empty($item->php_helper_admin))
+			{
+				// base64 Decode php_helper_admin.
+				$item->php_helper_admin = base64_decode($item->php_helper_admin);
 			}
 
 			if (!empty($item->php_helper_both))
@@ -193,16 +193,34 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			// Get the encryption object.
 			$basic = new FOFEncryptAes($basickey);
 
+			if (!empty($item->crowdin_account_api_key) && $basickey && !is_numeric($item->crowdin_account_api_key) && $item->crowdin_account_api_key === base64_encode(base64_decode($item->crowdin_account_api_key, true)))
+			{
+				// basic decrypt data crowdin_account_api_key.
+				$item->crowdin_account_api_key = rtrim($basic->decryptString($item->crowdin_account_api_key), "\0");
+			}
+
 			if (!empty($item->whmcs_key) && $basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 			{
 				// basic decrypt data whmcs_key.
 				$item->whmcs_key = rtrim($basic->decryptString($item->whmcs_key), "\0");
 			}
 
+			if (!empty($item->crowdin_project_api_key) && $basickey && !is_numeric($item->crowdin_project_api_key) && $item->crowdin_project_api_key === base64_encode(base64_decode($item->crowdin_project_api_key, true)))
+			{
+				// basic decrypt data crowdin_project_api_key.
+				$item->crowdin_project_api_key = rtrim($basic->decryptString($item->crowdin_project_api_key), "\0");
+			}
+
 			if (!empty($item->export_key) && $basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
 			{
 				// basic decrypt data export_key.
 				$item->export_key = rtrim($basic->decryptString($item->export_key), "\0");
+			}
+
+			if (!empty($item->crowdin_username) && $basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
+			{
+				// basic decrypt data crowdin_username.
+				$item->crowdin_username = rtrim($basic->decryptString($item->crowdin_username), "\0");
 			}
 
 			if (!empty($item->addcontributors))
@@ -627,6 +645,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'component_config' => 'joomla_component',
 				'component_dashboard' => 'joomla_component',
 				'component_files_folders' => 'joomla_component',
+				'component_placeholders' => 'joomla_component',
 				'custom_code' => 'component'
 			);
 			foreach($_tablesArray as $_updateTable => $_key)
@@ -675,6 +694,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'component_config' => 'joomla_component',
 				'component_dashboard' => 'joomla_component',
 				'component_files_folders' => 'joomla_component',
+				'component_placeholders' => 'joomla_component',
 				'custom_code' => 'component'
 			);
 			foreach($_tablesArray as $_updateTable => $_key)
@@ -1083,40 +1103,16 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['addcontributors'] = '';
 		}
 
-		// Set the php_helper_admin string to base64 string.
-		if (isset($data['php_helper_admin']))
-		{
-			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
-		}
-
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
-		{
-			$data['sql'] = base64_encode($data['sql']);
-		}
-
-		// Set the php_preflight_update string to base64 string.
-		if (isset($data['php_preflight_update']))
-		{
-			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
-		}
-
-		// Set the css_site string to base64 string.
-		if (isset($data['css_site']))
-		{
-			$data['css_site'] = base64_encode($data['css_site']);
-		}
-
 		// Set the php_helper_site string to base64 string.
 		if (isset($data['php_helper_site']))
 		{
 			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
 		}
 
-		// Set the javascript string to base64 string.
-		if (isset($data['javascript']))
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
 		{
-			$data['javascript'] = base64_encode($data['javascript']);
+			$data['readme'] = base64_encode($data['readme']);
 		}
 
 		// Set the php_postflight_update string to base64 string.
@@ -1125,10 +1121,34 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
+		// Set the javascript string to base64 string.
+		if (isset($data['javascript']))
 		{
-			$data['readme'] = base64_encode($data['readme']);
+			$data['javascript'] = base64_encode($data['javascript']);
+		}
+
+		// Set the css_site string to base64 string.
+		if (isset($data['css_site']))
+		{
+			$data['css_site'] = base64_encode($data['css_site']);
+		}
+
+		// Set the php_preflight_update string to base64 string.
+		if (isset($data['php_preflight_update']))
+		{
+			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
+		}
+
+		// Set the php_helper_admin string to base64 string.
+		if (isset($data['php_helper_admin']))
+		{
+			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
 		}
 
 		// Set the php_helper_both string to base64 string.
@@ -1190,16 +1210,34 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		// Get the encryption object
 		$basic = new FOFEncryptAes($basickey);
 
+		// Encrypt data crowdin_account_api_key.
+		if (isset($data['crowdin_account_api_key']) && $basickey)
+		{
+			$data['crowdin_account_api_key'] = $basic->encryptString($data['crowdin_account_api_key']);
+		}
+
 		// Encrypt data whmcs_key.
 		if (isset($data['whmcs_key']) && $basickey)
 		{
 			$data['whmcs_key'] = $basic->encryptString($data['whmcs_key']);
 		}
 
+		// Encrypt data crowdin_project_api_key.
+		if (isset($data['crowdin_project_api_key']) && $basickey)
+		{
+			$data['crowdin_project_api_key'] = $basic->encryptString($data['crowdin_project_api_key']);
+		}
+
 		// Encrypt data export_key.
 		if (isset($data['export_key']) && $basickey)
 		{
 			$data['export_key'] = $basic->encryptString($data['export_key']);
+		}
+
+		// Encrypt data crowdin_username.
+		if (isset($data['crowdin_username']) && $basickey)
+		{
+			$data['crowdin_username'] = $basic->encryptString($data['crowdin_username']);
 		}
 
 		// we check if component should be build from sql file

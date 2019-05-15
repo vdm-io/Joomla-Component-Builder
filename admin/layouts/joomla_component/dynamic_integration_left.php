@@ -29,11 +29,9 @@ $fields = $displayData->get('fields') ?: array(
 $hiddenFields = $displayData->get('hidden_fields') ?: array();
 
 ?>
-<div class="form-vertical">
-	<?php foreach($fields as $field): ?>
-		<?php if (in_array($field, $hiddenFields)) : ?>
-			<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>
-		<?php endif; ?>
-		<?php echo $form->renderField($field, null, null, array('class' => 'control-wrapper-' . $field)); ?>
-	<?php endforeach; ?>
-</div>
+<?php foreach($fields as $field): ?>
+	<?php if (in_array($field, $hiddenFields)) : ?>
+		<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>
+	<?php endif; ?>
+	<?php echo $form->renderField($field, null, null, array('class' => 'control-wrapper-' . $field)); ?>
+<?php endforeach; ?>

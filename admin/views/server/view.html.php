@@ -57,7 +57,7 @@ class ComponentbuilderViewServer extends JViewLegacy
 		}
 
 		// Get Linked view data
-		$this->wawlinked_components = $this->get('Wawlinked_components');
+		$this->wazlinked_components = $this->get('Wazlinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

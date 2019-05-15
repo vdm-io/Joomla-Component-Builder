@@ -77,6 +77,58 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 	/**
+	* 	get the crowdin project details (html)
+	**/
+	public function getCrowdinDetails($identifier, $key)
+	{
+		// set the url
+		$url = "https://api.crowdin.com/api/project/$identifier/info?key=$key&json";
+		// get the details
+		if (($details = ComponentbuilderHelper::getFileContents($url, false)) !== false && ComponentbuilderHelper::checkJson($details))
+		{
+			$details = json_decode($details, true);
+			// check if there is an error
+			if (isset($details['error']))
+			{
+				return array('error' => '<div class="alert alert-error">' . $details['error']['message'] . '<br /><br /><small>Identifier: ' . $identifier . '</small></div>');
+			}
+			// build the details html
+			if (isset($details['details']))
+			{
+				$html = '<div class="alert alert-success" id="crowdin_message">';
+				$html .= '<h1>' . JText::_('COM_COMPONENTBUILDER_COMPONENT_SUCCESSFULLY_LINKED') . '</h1>';
+				$html .= '<h3>' . $details['details']['name'] . '</h3>';
+				if (ComponentbuilderHelper::checkString($details['details']['description']))
+				{
+					$html .= '<p>';
+					$html .= $details['details']['description'];
+					$html .= '</p>';
+				}
+				$html .= '<ul>';
+				$html .= '<li>Number of participants: <b>';
+				$html .= $details['details']['participants_count'];
+				$html .= '</b></li>';
+				$html .= '<li>Total strings count: <b>';
+				$html .= $details['details']['total_strings_count'];
+				$html .= '</b></li>';
+				$html .= '<li>Total words count: <b>';
+				$html .= $details['details']['total_words_count'];
+				$html .= '</b></li>';
+				$html .= '<li>Created: <b>';
+				$html .= ComponentbuilderHelper::fancyDate($details['details']['created']);
+				$html .= '</b></li>';
+				$html .= '<li>Last activity: <b>';
+				$html .= ComponentbuilderHelper::fancyDate($details['details']['last_activity']);
+				$html .= '</b></li>';
+				$html .= '</ul>';
+				$html .= '</div>';
+				return array('html' => $html);
+			}
+		}
+		return false;
+	}
+
+	/**
 	* 	get the component details (html)
 	**/
 	public function getComponentDetails($id)

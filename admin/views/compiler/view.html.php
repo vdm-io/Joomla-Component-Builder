@@ -309,6 +309,11 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			// add Run Expansion button.
 			JToolBarHelper::custom('compiler.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
+		if ($this->canDo->get('compiler.translate'))
+		{
+			// add Translate button.
+			JToolBarHelper::custom('compiler.runTranslator', 'comments-2', '', 'COM_COMPONENTBUILDER_TRANSLATE', false);
+		}
 		if ($this->canDo->get('compiler.clear_tmp'))
 		{
 			// add Clear tmp button.

@@ -155,10 +155,11 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'dynamic_integration', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC_INTEGRATION', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-		</div>
-		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
-				<?php echo JLayoutHelper::render('joomla_component.dynamic_integration_fullwidth', $this); ?>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('joomla_component.dynamic_integration_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('joomla_component.dynamic_integration_right', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -733,6 +734,21 @@ jQuery('#adminForm').on('change', '#jform_dashboard_type',function (e)
 	e.preventDefault();
 	var dashboard_type_vvvvvwz = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
 	vvvvvwz(dashboard_type_vvvvvwz);
+
+});
+
+// #jform_translation_tool listeners for translation_tool_vvvvvxa function
+jQuery('#jform_translation_tool').on('keyup',function()
+{
+	var translation_tool_vvvvvxa = jQuery("#jform_translation_tool").val();
+	vvvvvxa(translation_tool_vvvvvxa);
+
+});
+jQuery('#adminForm').on('change', '#jform_translation_tool',function (e)
+{
+	e.preventDefault();
+	var translation_tool_vvvvvxa = jQuery("#jform_translation_tool").val();
+	vvvvvxa(translation_tool_vvvvvxa);
 
 });
 

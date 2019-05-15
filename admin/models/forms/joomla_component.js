@@ -28,6 +28,9 @@ jform_vvvvvwovwk_required = false;
 jform_vvvvvwpvwl_required = false;
 jform_vvvvvwwvwm_required = false;
 jform_vvvvvwxvwn_required = false;
+jform_vvvvvxavwo_required = false;
+jform_vvvvvxavwp_required = false;
+jform_vvvvvxavwq_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -122,6 +125,9 @@ jQuery(document).ready(function()
 
 	var dashboard_type_vvvvvwz = jQuery("#jform_dashboard_type input[type='radio']:checked").val();
 	vvvvvwz(dashboard_type_vvvvvwz);
+
+	var translation_tool_vvvvvxa = jQuery("#jform_translation_tool").val();
+	vvvvvxa(translation_tool_vvvvvxa);
 });
 
 // the vvvvvvv function
@@ -886,6 +892,106 @@ function vvvvvwz(dashboard_type_vvvvvwz)
 	}
 }
 
+// the vvvvvxa function
+function vvvvvxa(translation_tool_vvvvvxa)
+{
+	if (isSet(translation_tool_vvvvvxa) && translation_tool_vvvvvxa.constructor !== Array)
+	{
+		var temp_vvvvvxa = translation_tool_vvvvvxa;
+		var translation_tool_vvvvvxa = [];
+		translation_tool_vvvvvxa.push(temp_vvvvvxa);
+	}
+	else if (!isSet(translation_tool_vvvvvxa))
+	{
+		var translation_tool_vvvvvxa = [];
+	}
+	var translation_tool = translation_tool_vvvvvxa.some(translation_tool_vvvvvxa_SomeFunc);
+
+
+	// set this function logic
+	if (translation_tool)
+	{
+		jQuery('#jform_crowdin_account_api_key').closest('.control-group').show();
+		jQuery('.note_crowdin').closest('.control-group').show();
+		jQuery('#jform_crowdin_project_api_key').closest('.control-group').show();
+		// add required attribute to crowdin_project_api_key field
+		if (jform_vvvvvxavwo_required)
+		{
+			updateFieldRequired('crowdin_project_api_key',0);
+			jQuery('#jform_crowdin_project_api_key').prop('required','required');
+			jQuery('#jform_crowdin_project_api_key').attr('aria-required',true);
+			jQuery('#jform_crowdin_project_api_key').addClass('required');
+			jform_vvvvvxavwo_required = false;
+		}
+		jQuery('#jform_crowdin_project_identifier').closest('.control-group').show();
+		// add required attribute to crowdin_project_identifier field
+		if (jform_vvvvvxavwp_required)
+		{
+			updateFieldRequired('crowdin_project_identifier',0);
+			jQuery('#jform_crowdin_project_identifier').prop('required','required');
+			jQuery('#jform_crowdin_project_identifier').attr('aria-required',true);
+			jQuery('#jform_crowdin_project_identifier').addClass('required');
+			jform_vvvvvxavwp_required = false;
+		}
+		jQuery('#jform_crowdin_username').closest('.control-group').show();
+		// add required attribute to crowdin_username field
+		if (jform_vvvvvxavwq_required)
+		{
+			updateFieldRequired('crowdin_username',0);
+			jQuery('#jform_crowdin_username').prop('required','required');
+			jQuery('#jform_crowdin_username').attr('aria-required',true);
+			jQuery('#jform_crowdin_username').addClass('required');
+			jform_vvvvvxavwq_required = false;
+		}
+	}
+	else
+	{
+		jQuery('#jform_crowdin_account_api_key').closest('.control-group').hide();
+		jQuery('.note_crowdin').closest('.control-group').hide();
+		jQuery('#jform_crowdin_project_api_key').closest('.control-group').hide();
+		// remove required attribute from crowdin_project_api_key field
+		if (!jform_vvvvvxavwo_required)
+		{
+			updateFieldRequired('crowdin_project_api_key',1);
+			jQuery('#jform_crowdin_project_api_key').removeAttr('required');
+			jQuery('#jform_crowdin_project_api_key').removeAttr('aria-required');
+			jQuery('#jform_crowdin_project_api_key').removeClass('required');
+			jform_vvvvvxavwo_required = true;
+		}
+		jQuery('#jform_crowdin_project_identifier').closest('.control-group').hide();
+		// remove required attribute from crowdin_project_identifier field
+		if (!jform_vvvvvxavwp_required)
+		{
+			updateFieldRequired('crowdin_project_identifier',1);
+			jQuery('#jform_crowdin_project_identifier').removeAttr('required');
+			jQuery('#jform_crowdin_project_identifier').removeAttr('aria-required');
+			jQuery('#jform_crowdin_project_identifier').removeClass('required');
+			jform_vvvvvxavwp_required = true;
+		}
+		jQuery('#jform_crowdin_username').closest('.control-group').hide();
+		// remove required attribute from crowdin_username field
+		if (!jform_vvvvvxavwq_required)
+		{
+			updateFieldRequired('crowdin_username',1);
+			jQuery('#jform_crowdin_username').removeAttr('required');
+			jQuery('#jform_crowdin_username').removeAttr('aria-required');
+			jQuery('#jform_crowdin_username').removeClass('required');
+			jform_vvvvvxavwq_required = true;
+		}
+	}
+}
+
+// the vvvvvxa Some function
+function translation_tool_vvvvvxa_SomeFunc(translation_tool_vvvvvxa)
+{
+	// set the function logic
+	if (translation_tool_vvvvvxa == 1)
+	{
+		return true;
+	}
+	return false;
+}
+
 // update required fields
 function updateFieldRequired(name,status)
 {
@@ -967,7 +1073,53 @@ jQuery(document).ready(function()
 
 	// check and load all the customcode edit buttons
 	setTimeout(getEditCustomCodeButtons, 400);
+
+	// get crowdin detail if set
+	setTimeout(getTranslationToolDetails, 600);
 });
+
+function getTranslationToolDetails(){
+	// get the translation tool selection
+	var tool = jQuery("#jform_translation_tool").val();
+	// trigger Crowdin
+	if (tool == 1) {
+		// get the identifier
+		var identifier = jQuery("#jform_crowdin_project_identifier").val();
+		// get the key
+		var key = jQuery("#jform_crowdin_project_api_key").val();
+		// query server for details
+		getCrowdinDetails_server(identifier, key).done(function(result) {
+			if (result.error){
+				jQuery('#crowdin_information_box').show();
+				jQuery('#crowdin_error_box').show();
+				jQuery('#crowdin_error_box').html(result.error);
+				jQuery('#crowdin_success_box').hide();
+			} else if(result.html) {
+				jQuery('#crowdin_success_box').show();
+				jQuery('#crowdin_success_box').html(result.html);
+				jQuery('#crowdin_error_box').hide();
+				jQuery('#crowdin_information_box').hide();
+			} else {
+				jQuery('#crowdin_information_box').show();
+				jQuery('#crowdin_success_box').hide();
+			}
+		});
+	}
+}
+
+function getCrowdinDetails_server(identifier, key){
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getCrowdinDetails&format=json&raw=true&vdm="+vastDevMod;
+	if(token.length > 0 && identifier.length > 0 && key.length > 0){
+		var request = 'token='+token+'&identifier='+identifier+'&key='+key;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
 
 function getAjaxDisplay(type){
 	getAjaxDisplay_server(type).done(function(result) {

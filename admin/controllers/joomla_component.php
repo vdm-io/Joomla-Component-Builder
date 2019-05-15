@@ -360,6 +360,7 @@ class ComponentbuilderControllerJoomla_component extends JControllerForm
 				'component_config' => 'joomla_component',
 				'component_dashboard' => 'joomla_component',
 				'component_files_folders' => 'joomla_component',
+				'component_placeholders' => 'joomla_component',
 				'custom_code' => 'component'
 			);
 			foreach($_tablesArray as $_updateTable => $_key)

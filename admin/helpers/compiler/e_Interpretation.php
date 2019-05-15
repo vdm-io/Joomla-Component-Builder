@@ -13465,7 +13465,7 @@ class Interpretation extends Fields
 					if (isset($this->categoryBuilder[$nameList]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameList]) && !in_array($otherViews, $catArray))
 					{
 						// get the extention array
-						$_extetion_array = explode('.', $this->categoryBuilder[$nameList]['extension']);
+						$_extetion_array = (array) explode('.', $this->categoryBuilder[$nameList]['extension']);
 						// set the meny selection
 						if (isset($_extetion_array[1]))
 						{

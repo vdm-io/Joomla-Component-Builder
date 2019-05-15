@@ -161,6 +161,32 @@ class ComponentbuilderModelApi extends JModelItem
 
 	protected $compiler;
 
+	public function getTranslationLinkedComponents()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// for now we only have crowdin
+		$query->select($db->quoteName(array('id', 'translation_tool', 'crowdin_account_api_key', 'crowdin_project_api_key' ,'crowdin_project_identifier', 'crowdin_username')));
+		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
+		$query->where($db->quoteName('translation_tool') . ' > 0');
+		$query->where($db->quoteName('published') . ' >= 1');
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			return $db->loadObjectList();
+		}
+		return false;
+	}
+
+	public function translate($component)
+	{
+		$this->messages[] = JText::_('COM_COMPONENTBUILDER_TRANSLATOR_MODULE_NOT_READYBR_THIS_AREA_IS_STILL_UNDER_PRODUCTION_HOPEFULLY_WITH_NEXT_UPDATE');
+		return false;
+	}
+
 	public function compileInstall($component)
 	{
 		$values = array(
@@ -190,7 +216,7 @@ class ComponentbuilderModelApi extends JModelItem
 			if (1 == $published && $checked_out == 0)
 			{
 				// start up Compiler
-				$this->compiler	 = new Compiler($values);
+				$this->compiler = new Compiler($values);
 				if($this->compiler)
 				{
 					// component was compiled

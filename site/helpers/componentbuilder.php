@@ -2612,7 +2612,7 @@ abstract class ComponentbuilderHelper
 			'sessionhandler', 'spacer', 'sql', 'subform', 'tag', 'tel', 'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
 		),
 		'plain' => array(
-			'cachehandler', 'calendar', 'checkbox', 'chromestyle', 'color', 'componentlayout', 'contenttype', 'editor', 'editors',
+			'cachehandler', 'calendar', 'checkbox', 'chromestyle', 'color', 'componentlayout', 'contenttype', 'editor', 'editors', 'captcha',
 			'email', 'file', 'headertag', 'helpsite', 'hidden', 'integer', 'language', 'media', 'menu', 'menuitem', 'meter', 'modulelayout',
 			'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules', 'tag', 'tel', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
 		),
@@ -4457,6 +4457,115 @@ abstract class ComponentbuilderHelper
 		$table[] = "</div>";
 		// return the table
 		return implode("\n", $table);
+	}
+
+
+	/**
+	 *	Change to nice fancy date
+	 */
+	public static function fancyDate($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('jS \o\f F Y',$date);
+	}
+
+	/**
+	 *	get date based in period past
+	 */
+	public static function fancyDynamicDate($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		// older then year
+		$lastyear = date("Y", strtotime("-1 year"));
+		$tragetyear = date("Y", $date);
+		if ($tragetyear <= $lastyear)
+		{
+			return date('m/d/y', $date);
+		}
+		// same day
+		$yesterday = strtotime("-1 day");
+		if ($date > $yesterday)
+		{
+			return date('g:i A', $date);
+		}
+		// just month day
+		return date('M j', $date);
+	}
+
+	/**
+	 *	Change to nice fancy day time and date
+	 */
+	public static function fancyDayTimeDate($time)
+	{
+		if (!self::isValidTimeStamp($time))
+		{
+			$time = strtotime($time);
+		}
+		return date('D ga jS \o\f F Y',$time);
+	}
+
+	/**
+	 *	Change to nice fancy time and date
+	 */
+	public static function fancyDateTime($time)
+	{
+		if (!self::isValidTimeStamp($time))
+		{
+			$time = strtotime($time);
+		}
+		return date('(G:i) jS \o\f F Y',$time);
+	}
+
+	/**
+	 *	Change to nice hour:minutes time
+	 */
+	public static function fancyTime($time)
+	{
+		if (!self::isValidTimeStamp($time))
+		{
+			$time = strtotime($time);
+		}
+		return date('G:i',$time);
+	}
+
+	/**
+	 * set the date as 2004/05 (for charts)
+	 */
+	public static function setYearMonth($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('Y/m', $date);
+	}
+
+	/**
+	 * set the date as 2004/05/03 (for charts)
+	 */
+	public static function setYearMonthDay($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('Y/m/d', $date);
+	}
+
+	/**
+	 *	Check if string is a valid time stamp
+	 */
+	public static function isValidTimeStamp($timestamp)
+	{
+		return ((int) $timestamp === $timestamp)
+		&& ($timestamp <= PHP_INT_MAX)
+		&& ($timestamp >= ~PHP_INT_MAX);
 	}
 
 	
