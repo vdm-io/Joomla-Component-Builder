@@ -315,6 +315,7 @@ class ComponentbuilderModelAjax extends JModelList
 		'component_config' => 'components_config',
 		'component_dashboard' => 'components_dashboard',
 		'component_files_folders' => 'components_files_folders',
+		'custom_code' => 'custom_codes',
 		'language' => true);
 
 	public function getButton($type, $size)
@@ -341,11 +342,16 @@ class ComponentbuilderModelAjax extends JModelList
 					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
 				}
 				// build url (A tag)
-				$startAtag = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
-				// build the smaller button
-				if (2 == $size)
+				$startAtag = 'onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
+				// build the smallest button
+				if (3 == $size)
 				{
-					$button = $startAtag.'<span class="icon-new icon-white"></span> ' . JText::_('COM_COMPONENTBUILDER_CREATE') . '</a>';
+					$button = '<a class="btn btn-small btn-success" style="margin: 0 0 5px 0;" ' . $startAtag.'<span class="icon-new icon-white"></span></a>';
+				}
+				// build the smaller button
+				elseif (2 == $size)
+				{
+					$button = '<a class="btn btn-success vdm-button-new" ' . $startAtag . '<span class="icon-new icon-white"></span> ' . JText::_('COM_COMPONENTBUILDER_CREATE') . '</a>';
 				}
 				else
 				// build the big button
@@ -354,7 +360,7 @@ class ComponentbuilderModelAjax extends JModelList
 								<div class="control-label">
 									<label>' . ucwords($type) . '</label>
 								</div>
-								<div class="controls">	'.$startAtag.'
+								<div class="controls"><a class="btn btn-success vdm-button-new" ' . $startAtag . '
 									<span class="icon-new icon-white"></span> 
 										' . JText::_('COM_COMPONENTBUILDER_NEW') . '
 									</a>
@@ -1934,6 +1940,23 @@ class ComponentbuilderModelAjax extends JModelList
 		// only continue if this is a legitimate call
 		if (isset($view['a_id']) && $view['a_id'] == $id && isset($view['a_view']) && ($target = $this->getCodeSearchKeys($view['a_view'], 'query_')) !== false)
 		{
+			// reset the buttons bucket
+			$buttons = array();
+			// some helper for some fields
+			$helper = array('xml' => 'note_select_field_type');
+			// get input
+			$jinput = JFactory::getApplication()->input;
+			$return_here = $jinput->get('return_here', null, 'base64');
+			// set the return here value if not found
+			if (ComponentbuilderHelper::checkString($return_here))
+			{
+				$return_here =  '&return=' . $return_here;
+			}
+			else
+			{
+				$return_here =  '&ref=' . $view['a_view'] . '&refid=' . (int) $id;
+			}
+			// start db query
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true)
 				->select($db->quoteName($target['select']))
@@ -1944,8 +1967,6 @@ class ComponentbuilderModelAjax extends JModelList
 			if ($db->loadRowList())
 			{
 				$data = $db->loadAssoc();
-				// some helper for some fields
-				$helper = array('xml' => 'note_select_field_type');
 				// reset the bucket
 				$bucket = array();
 				foreach ($data as $key => $value)
@@ -1973,25 +1994,20 @@ class ComponentbuilderModelAjax extends JModelList
 							// get all custom codes in value
 							$bucket[$key] = ComponentbuilderHelper::getAllBetween($value, '[CUSTOMC' . 'ODE=', ']');
 						}
+						// check if field has string length
+						if (ComponentbuilderHelper::checkString($value))
+						{
+							$buttons[$key] = array();
+							if (($button = $this->getButton('custom_code', 3)) && ComponentbuilderHelper::checkString($button))
+							{
+								$buttons[$key]['_create'] = $button;
+							}
+						}
 					}
 				}
 				// check if any values found
 				if (ComponentbuilderHelper::checkArray($bucket))
 				{
-					// get input
-					$jinput = JFactory::getApplication()->input;
-					$return_here = $jinput->get('return_here', null, 'base64');
-					// set the return here value if not found
-					if (ComponentbuilderHelper::checkString($return_here))
-					{
-						$return_here =  '&return=' . $return_here;
-					}
-					else
-					{
-						$return_here =  '&ref=' . $view['a_view'] . '&refid=' . (int) $id;
-					}
-					// reset the buttons bucket
-					$buttons = array();
 					foreach ($bucket as $field => $customcodes)
 					{
 						$edit_icon = '<span class="icon-edit" aria-hidden="true"></span> ';
@@ -2000,7 +2016,6 @@ class ComponentbuilderModelAjax extends JModelList
 						{
 							$field = $helper[$field];
 						}
-						$buttons[$field] = array();
 						foreach ($customcodes as $customcode)
 						{
 							$key = (array) explode('+', $customcode);
@@ -2012,12 +2027,12 @@ class ComponentbuilderModelAjax extends JModelList
 							}
 						}
 					}
-					// only continue if we have buttons in array
-					if (ComponentbuilderHelper::checkArray($buttons, true))
-					{
-						return $buttons;
-					}
 				}
+			}
+			// only continue if we have buttons in array
+			if (ComponentbuilderHelper::checkArray($buttons, true))
+			{
+				return $buttons;
 			}
 		}
 		return false;

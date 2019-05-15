@@ -1744,7 +1744,7 @@ function getEditCustomCodeButtons(){
 	getEditCustomCodeButtons_server(id).done(function(result) {
 		if(isObject(result)){
 			jQuery.each(result, function( field, buttons ) {
-				jQuery('<div class="control-group"><div class="control-label"><label>Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
+				jQuery('<div class="control-group"><div class="control-label"><label>Add/Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
 				jQuery.each(buttons, function( name, button ) {
 					jQuery(".control-customcode-buttons-"+field).append(button);
 				});
