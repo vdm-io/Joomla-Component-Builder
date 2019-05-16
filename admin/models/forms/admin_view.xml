@@ -352,10 +352,8 @@
 			multiple="false"
 			filter="CMD"
 			required="true"
-			default="1">
+			default="utf8mb4_general_ci">
 			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_GLOBAL_DEFAULT_UTFEIGHT_GENERAL_CI</option>
 			<option value="big5_chinese_ci">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_BIGFIVE_CHINESE_CI_CHARSET_BIGFIVE</option>
 			<option value="big5_bin">
@@ -1168,10 +1166,8 @@
 			multiple="false"
 			filter="CMD"
 			required="true"
-			default="1">
+			default="InnoDB">
 			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_GLOBAL_DEFAULT_MYISAM</option>
 			<option value="MyISAM">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_MYISAM</option>
 			<option value="InnoDB">
@@ -2267,10 +2263,8 @@
 			multiple="false"
 			filter="CMD"
 			required="true"
-			default="1">
+			default="utf8mb4">
 			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_GLOBAL_DEFAULT_UTFEIGHT</option>
 			<option value="big5">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_BIGFIVE_BIGFIVE_TRADITIONAL_CHINESE_MOST_SUITABLE_COLLATION_BIGFIVE_CHINESE_CI</option>
 			<option value="dec8">
@@ -2380,10 +2374,10 @@
 			class="list_class"
 			multiple="false"
 			required="true"
-			default="0">
+			default="DYNAMIC">
 			<!-- Option Set. -->
 			<option value="0">
-				COM_COMPONENTBUILDER_ADMIN_VIEW_DEFAULT</option>
+				COM_COMPONENTBUILDER_ADMIN_VIEW_OMIT</option>
 			<option value="REDUNDANT">
 				COM_COMPONENTBUILDER_ADMIN_VIEW_REDUNDANT</option>
 			<option value="COMPACT">

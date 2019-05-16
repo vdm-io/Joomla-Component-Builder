@@ -419,6 +419,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_admin_view', $objectUpdate, 'id');
 			}
+
+			// update the mysql_table_engine defaults
+			if (isset($item->mysql_table_engine) && is_numeric($item->mysql_table_engine))
+			{
+				$item->mysql_table_engine = 'MyISAM';
+			}
+			// update the mysql_table_charset defaults
+			if (isset($item->mysql_table_charset) && is_numeric($item->mysql_table_charset))
+			{
+				$item->mysql_table_charset = 'utf8';
+			}
+			// update the mysql_table_collate defaults
+			if (isset($item->mysql_table_collate) && is_numeric($item->mysql_table_collate))
+			{
+				$item->mysql_table_collate = 'utf8_general_ci';
+			}
 			
 			if (!empty($item->id))
 			{

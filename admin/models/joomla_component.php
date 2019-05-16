@@ -411,15 +411,13 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		// Only load these values if no id is found
 		if (0 == $id)
 		{
-			// get components global params
-			$params = JComponentHelper::getParams('com_componentbuilder');
 			// set company defaults
-			$form->setValue('companyname', null, $params->get('export_company', ''));
-			$form->setValue('author', null, $params->get('export_owner', ''));
-			$form->setValue('email', null, $params->get('export_email', ''));
-			$form->setValue('website', null, $params->get('export_website', ''));
-			$form->setValue('copyright', null, $params->get('export_copyright', 'Copyright (C) 2015. All Rights Reserved'));
-			$form->setValue('license', null, $params->get('export_license', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html'));
+			$form->setValue('companyname', null, JComponentHelper::getParams('com_componentbuilder')->get('export_company', ''));
+			$form->setValue('author', null, JComponentHelper::getParams('com_componentbuilder')->get('export_owner', ''));
+			$form->setValue('email', null, JComponentHelper::getParams('com_componentbuilder')->get('export_email', ''));
+			$form->setValue('website', null, JComponentHelper::getParams('com_componentbuilder')->get('export_website', ''));
+			$form->setValue('copyright', null, JComponentHelper::getParams('com_componentbuilder')->get('export_copyright', 'Copyright (C) 2015. All Rights Reserved'));
+			$form->setValue('license', null, JComponentHelper::getParams('com_componentbuilder')->get('export_license', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html'));
 		}
 		return $form;
 	}
