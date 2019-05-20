@@ -527,6 +527,7 @@ class ComponentbuilderModelAjax extends JModelList
 				'dashboard_add' => 'setYesNo',
 				'checkin' => 'setYesNo',
 				'history' => 'setYesNo',
+				'joomla_fields' => 'setYesNo',
 				'port' => 'setYesNo',
 				'edit_create_site_view' => 'setYesNo',
 				'icomoon' => 'setIcoMoon',
@@ -580,6 +581,7 @@ class ComponentbuilderModelAjax extends JModelList
 			'submenu' => JText::_('COM_COMPONENTBUILDER_SUBMENU'),
 			'checkin' => JText::_('COM_COMPONENTBUILDER_AUTO_CHECKIN'),
 			'history' => JText::_('COM_COMPONENTBUILDER_KEEP_HISTORY'),
+			'joomla_fields' => JText::_('COM_COMPONENTBUILDER_JOOMLA_FIELDS'),
 			'port' => JText::_('COM_COMPONENTBUILDER_EXPORTIMPORT_DATA'),
 			'edit_create_site_view' => JText::_('COM_COMPONENTBUILDER_EDITCREATE_SITE_VIEW'),
 			'icomoon' => JText::_('COM_COMPONENTBUILDER_ICON'),
@@ -2272,7 +2274,14 @@ class ComponentbuilderModelAjax extends JModelList
 			'not_base64' => array('dashboard_tab' => 'json'),
 			'name' => 'joomla_component->id:joomla_component.system_name'
 		),
-		// #__componentbuilder_admin_view (c)
+		// #__componentbuilder_component_placeholders (c)
+		'component_placeholders' => array(
+			'search' => array('id', 'joomla_component', 'addplaceholders'),
+			'views' => 'components_placeholders',
+			'not_base64' => array('addplaceholders' => 'json'),
+			'name' => 'joomla_component->id:joomla_component.system_name'
+		),
+		// #__componentbuilder_admin_view (d)
 		'admin_view' => array(
 			'search' => array('id', 'system_name', 'javascript_view_file', 'javascript_view_footer',
 				'javascript_views_file', 'javascript_views_footer', 'html_import_view',
@@ -2285,14 +2294,21 @@ class ComponentbuilderModelAjax extends JModelList
 			'not_base64' => array(),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_admin_fields_relations (d)
+		// #__componentbuilder_admin_fields_relations (e)
 		'admin_fields_relations' => array(
 			'search' => array('id', 'admin_view', 'addrelations'),
 			'views' => 'admins_fields_relations',
 			'not_base64' => array('addrelations' => 'json'),
 			'name' => 'admin_view->id:admin_view.system_name'
 		),
-		// #__componentbuilder_custom_admin_view (e)
+		// #__componentbuilder_admin_custom_tabs (f)
+		'admin_custom_tabs' => array(
+			'search' => array('id', 'admin_view', 'tabs'),
+			'views' => 'admins_custom_tabs',
+			'not_base64' => array('tabs' => 'json'),
+			'name' => 'admin_view->id:admin_view.system_name'
+		),
+		// #__componentbuilder_custom_admin_view (g)
 		'custom_admin_view' => array(
 			'search' => array('id', 'system_name', 'default', 'php_view', 'php_jview', 'php_jview_display', 'php_document',
 				'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
@@ -2300,7 +2316,7 @@ class ComponentbuilderModelAjax extends JModelList
 			'not_base64' => array(),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_site_view (f)
+		// #__componentbuilder_site_view (h)
 		'site_view' => array(
 			'search' => array('id', 'system_name', 'default', 'php_view', 'php_jview', 'php_jview_display', 'php_document',
 				'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
@@ -2308,7 +2324,7 @@ class ComponentbuilderModelAjax extends JModelList
 			'not_base64' => array(),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_field (g)
+		// #__componentbuilder_field (i)
 		'field' => array(
 			'search' => array('id', 'name', 'xml', 'javascript_view_footer', 'javascript_views_footer'),
 			'views' => 'fields',
@@ -2316,14 +2332,14 @@ class ComponentbuilderModelAjax extends JModelList
 			'base64_search' => array('xml' => array('start' => 'type_php', '_start' => '="', 'end' => '"')),
 			'name' => 'name'
 		),
-		// #__componentbuilder_fieldtype (h)
+		// #__componentbuilder_fieldtype (j)
 		'fieldtype' => array(
 			'search' => array('id', 'name', 'properties'),
 			'views' => 'fieldtypes',
 			'not_base64' => array('properties' => 'json'),
 			'name' => 'name'
 		),
-		// #__componentbuilder_dynamic_get (i)
+		// #__componentbuilder_dynamic_get (k)
 		'dynamic_get' => array(
 			'search' => array('id', 'name', 'php_before_getitem', 'php_after_getitem', 'php_before_getitems', 'php_after_getitems',
 				'php_getlistquery'),
@@ -2331,35 +2347,35 @@ class ComponentbuilderModelAjax extends JModelList
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_template (j)
+		// #__componentbuilder_template (l)
 		'template' => array(
 			'search' => array('id', 'name', 'php_view', 'template'),
 			'views' => 'templates',
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_layout (k)
+		// #__componentbuilder_layout (m)
 		'layout' => array(
 			'search' => array('id', 'name', 'php_view', 'layout'),
 			'views' => 'layouts',
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_library (l)
+		// #__componentbuilder_library (n)
 		'library' => array(
 			'search' => array('id', 'name', 'php_setdocument'),
 			'views' => 'libraries',
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_custom_code (m)
+		// #__componentbuilder_custom_code (o)
 		'custom_code' => array(
 			'search' => array('id', 'system_name', 'code'),
 			'views' => 'custom_codes',
 			'not_base64' => array(),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_validation_rule (n)
+		// #__componentbuilder_validation_rule (p)
 		'validation_rule' => array(
 			'search' => array('id', 'name', 'php'),
 			'views' => 'validation_rules',
