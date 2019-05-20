@@ -5743,7 +5743,7 @@ class Get
 		$joomla = getcwd();
 		$counter = array(1 => 0, 2 => 0);
 		// file types to get
-		$fileTypes = array('\.php', '\.js');
+		$fileTypes = array('\.php', '\.js', '\.xml');
 		// set some local placeholders
 		$placeholders = array();
 		$placeholders[ComponentbuilderHelper::safeString($this->componentCodeName, 'F') . 'Helper::'] = $this->bbb . 'Component' . $this->ddd . 'Helper::';
@@ -5756,20 +5756,24 @@ class Get
 			chdir($path);
 			foreach ($fileTypes as $type)
 			{
-				// get a list of files in the current directory tree (only PHP and JS for now)
+				// get a list of files in the current directory tree (only PHP, JS and XML for now)
 				$files = JFolder::files('.', $type, true, true);
-				foreach ($files as $file)
+				// check if files found
+				if (ComponentbuilderHelper::checkArray($files))
 				{
-					$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $placeholders, $today);
-					// insert new code
-					if (ComponentbuilderHelper::checkArray($this->newCustomCode))
+					foreach ($files as $file)
 					{
-						$this->setNewCustomCode(100);
-					}
-					// update existing custom code
-					if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
-					{
-						$this->setExistingCustomCode(30);
+						$this->searchFileContent($counter, $file, $target, $this->customCodePlaceholders, $placeholders, $today);
+						// insert new code
+						if (ComponentbuilderHelper::checkArray($this->newCustomCode))
+						{
+							$this->setNewCustomCode(100);
+						}
+						// update existing custom code
+						if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
+						{
+							$this->setExistingCustomCode(30);
+						}
 					}
 				}
 			}
@@ -6189,7 +6193,7 @@ class Get
 	 * @param   string   $updateString   The string to update
 	 * @param   string   $string         The string to use lang update
 	 *
-	 * @return  array
+	 * @return  string
 	 * 
 	 */
 	protected function setReverseLangPlaceholders($updateString, $string)
@@ -6263,8 +6267,6 @@ class Get
 	 * 1 -> Just replace (default)
 	 * 2 -> Check if data string has placeholders
 	 * 3 -> Remove placeholders not in data string
-	 * 
-	 * @param   int      $langSwitch    The lang switch
 	 *
 	 * @return  string
 	 * 
