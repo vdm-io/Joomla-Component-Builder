@@ -133,7 +133,6 @@
 					class="text_area translation_text_area"
 					filter="STRING"
 					hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
-					required="false"
 				/>
 				<!-- Language Field. Type: Lang. (custom) -->
 				<field
@@ -143,7 +142,7 @@
 					class="list_class"
 					multiple="false"
 					default="0"
-					required="false"
+					required="true"
 					button="false"
 				/>
 			</form>

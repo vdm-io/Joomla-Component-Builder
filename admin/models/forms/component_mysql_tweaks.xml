@@ -118,7 +118,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Add_sql Field. Type: List. (joomla) -->
@@ -130,7 +130,6 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
 					default="0">
 					<!-- Option Set. -->
 					<option value="0">
@@ -147,7 +146,6 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
 					default="">
 					<!-- Option Set. -->
 					<option value="">
@@ -169,7 +167,6 @@
 					class="text_area ids_selection"
 					filter="raw"
 					hint="COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_IDS_HINT"
-					required="false"
 				/>
 			</form>
 		</field>

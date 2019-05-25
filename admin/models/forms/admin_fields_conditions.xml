@@ -118,7 +118,7 @@
 					class="fieldMedium"
 					multiple="true"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Target_behavior Field. Type: List. (joomla) -->
@@ -130,7 +130,7 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -151,7 +151,7 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="0">
 					<!-- Option Set. -->
 					<option value="0">
@@ -167,7 +167,7 @@
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_FIELD_DESCRIPTION"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Match_behavior Field. Type: List. (joomla) -->
@@ -179,7 +179,7 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -217,7 +217,7 @@
 					class="text_area"
 					filter="STRING"
 					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_MATCH_OPTIONS_HINT"
-					required="false"
+					required="true"
 				/>
 			</form>
 		</field>

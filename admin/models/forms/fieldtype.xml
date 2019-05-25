@@ -278,7 +278,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_FIELDTYPE_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
@@ -296,7 +296,6 @@
 					class="text_area span12"
 					filter="RAW"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_HINT"
-					required="false"
 				/>
 				<!-- Adjustable Field. Type: Checkbox. (joomla) -->
 				<field
@@ -304,7 +303,6 @@
 					name="adjustable"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -314,7 +312,6 @@
 					name="mandatory"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -324,7 +321,6 @@
 					name="translatable"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -339,7 +335,6 @@
 					class="text_area"
 					filter="HTML"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT"
-					required="false"
 				/>
 			</form>
 		</field>

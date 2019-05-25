@@ -120,7 +120,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NAME_HINT"
@@ -136,7 +136,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HEADER_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HEADER_HINT"
@@ -152,7 +152,7 @@
 					class="text_area tab_html"
 					filter="raw"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HTML_HINT"
-					required="false"
+					required="true"
 				/>
 			</form>
 		</field>

@@ -138,7 +138,6 @@
 					class="text_area mysql_update"
 					filter="raw"
 					hint="COM_COMPONENTBUILDER_COMPONENT_UPDATES_MYSQL_HINT"
-					required="false"
 				/>
 				<!-- Url Field. Type: Url. (joomla) -->
 				<field
@@ -150,7 +149,7 @@
 					default=""
 					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_URL_DESCRIPTION"
 					class="text_area version_url"
-					required="false"
+					required="true"
 					filter="raw"
 					validated="url"
 					message="COM_COMPONENTBUILDER_COMPONENT_UPDATES_URL_MESSAGE"

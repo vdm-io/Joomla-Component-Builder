@@ -211,7 +211,7 @@
 					class="list_class"
 					multiple="true"
 					default="0"
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Target_behavior Field. Type: List. (joomla) -->
@@ -223,7 +223,7 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -240,7 +240,7 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="0">
 					<!-- Option Set. -->
 					<option value="0">
@@ -255,7 +255,7 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_OPTION_FIELD_LABEL"
 					description="COM_COMPONENTBUILDER_LIBRARY_OPTION_FIELD_DESCRIPTION"
 					multiple="false"
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Option_behaviour Field. Type: List. (joomla) -->
@@ -267,7 +267,7 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -305,7 +305,7 @@
 					class="text_area"
 					filter="STRING"
 					hint="COM_COMPONENTBUILDER_LIBRARY_FIELD_OPTIONS_HINT"
-					required="false"
+					required="true"
 				/>
 			</form>
 		</field>

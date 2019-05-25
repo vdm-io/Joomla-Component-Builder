@@ -117,7 +117,7 @@
 					class="fieldMedium"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Icomoon Field. Type: List. (joomla) -->
@@ -128,7 +128,6 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ICOMOON_DESCRIPTION"
 					class="list_class fieldMedium icomoon342"
 					multiple="false"
-					required="false"
 					onchange="getIconImage(this);">
 					<!-- Option Set. -->
 					<option value="joomla">
@@ -559,7 +558,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_MAINMENU_LABEL"
 					value="1"
 					default="1"
-					required="false"
+					required="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_MAINMENU_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -570,7 +569,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_DASHBOARD_LIST_LABEL"
 					value="1"
 					default="1"
-					required="false"
+					required="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_DASHBOARD_LIST_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -581,7 +580,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_SUBMENU_LABEL"
 					value="1"
 					default="1"
-					required="false"
+					required="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_SUBMENU_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -592,7 +591,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_METADATA_LABEL"
 					value="1"
 					default="1"
-					required="false"
+					required="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_METADATA_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -603,7 +602,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ACCESS_LABEL"
 					value="1"
 					default="1"
-					required="false"
+					required="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ACCESS_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -616,7 +615,7 @@
 					class="fieldMedium"
 					multiple="true"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Before Field. Type: Componentadminmenus. (custom) -->
@@ -628,7 +627,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 			</form>

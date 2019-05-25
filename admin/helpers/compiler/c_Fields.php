@@ -2249,14 +2249,14 @@ class Fields extends Structure
 				}
 				elseif ($property['name'] === 'button' && $setCustom)
 				{
-					// dont load the button to repeatable
+					// load the button string value if found
 					$xmlValue = (string) ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'button="', '"'));
 					// add to custom values
 					$fieldAttributes['custom']['add_button'] = (ComponentbuilderHelper::checkString($xmlValue) || 1 == $xmlValue) ? $xmlValue : 'false';
 				}
-				elseif ($property['name'] === 'required' && $repeatable)
+				elseif ($property['name'] === 'required' && 'repeatable' === $typeName)
 				{
-					// dont load the required to repeatable
+					// dont load the required to repeatable field type
 					$xmlValue = 'false';
 				}
 				elseif ($viewType == 2 && ($property['name'] === 'readonly' || $property['name'] === 'disabled'))

@@ -1204,7 +1204,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_HINT"
@@ -1220,7 +1220,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TITLE_MESSAGE"
 					hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TITLE_HINT"
@@ -1234,7 +1234,7 @@
 					maxlength="50"
 					description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_DESCRIPTION"
 					class="text_area"
-					required="false"
+					required="true"
 					filter="STRING"
 					validate="email"
 					message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_MESSAGE"
@@ -1249,7 +1249,6 @@
 					maxlength="150"
 					description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_DESCRIPTION"
 					class="text_area"
-					required="false"
 					filter="url"
 					validated="url"
 					scheme="http,https"
@@ -1264,7 +1263,6 @@
 					description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_DESCRIPTION"
 					class="fieldMedium"
 					multiple="false"
-					required="false"
 					default="2">
 					<!-- Option Set. -->
 					<option value="0">
@@ -1282,7 +1280,6 @@
 					description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SHOW_DESCRIPTION"
 					class="fieldMedium"
 					multiple="false"
-					required="false"
 					default="3">
 					<!-- Option Set. -->
 					<option value="0">

@@ -118,7 +118,7 @@
 					class="list_class fieldFull"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Custom_value Field. Type: Textarea. (joomla) -->

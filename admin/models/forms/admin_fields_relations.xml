@@ -118,7 +118,7 @@
 					class="fieldMedium"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					onchange="getCodeGlueOptions(this)"
 					button="false"
 				/>
@@ -131,7 +131,6 @@
 					maxlength="50"
 					default="Default"
 					class="text_area"
-					required="false"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_HINT"
@@ -146,7 +145,6 @@
 					class="fieldMedium"
 					multiple="true"
 					default=""
-					required="false"
 					onchange="getCodeGlueOptions(this)"
 					button="false"
 				/>
@@ -157,7 +155,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_AREA_LABEL"
 					class="list_class"
 					multiple="false"
-					required="false"
 					validate="int"
 					default="1"
 					onchange="getCodeGlueOptions(this)">
@@ -176,7 +173,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_JOIN_TYPE_LABEL"
 					class="list_class"
 					multiple="false"
-					required="false"
 					validate="int"
 					default="1"
 					onchange="getCodeGlueOptions(this)">
@@ -197,7 +193,6 @@
 					class="text_area codefield"
 					filter="raw"
 					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_SET_HINT"
-					required="false"
 				/>
 			</form>
 		</field>

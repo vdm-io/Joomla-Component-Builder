@@ -331,7 +331,7 @@
 					description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_DESCRIPTION"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Row_type Field. Type: List. (joomla) -->
@@ -343,7 +343,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -359,7 +359,7 @@
 					class="list_class fieldSmall"
 					multiple="false"
 					filter="WORD"
-					required="false"
+					required="true"
 					default="b">
 					<!-- Option Set. -->
 					<option value="b">
@@ -473,7 +473,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -498,7 +498,7 @@
 					class="text_area fieldMedium"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_HINT"
@@ -512,7 +512,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="0">
 					<!-- Option Set. -->
 					<option value="1">
@@ -549,7 +549,7 @@
 					class="text_area fieldMedium"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_HINT"
@@ -565,7 +565,7 @@
 					class="text_area span12"
 					filter="HTML"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_SELECTION_HINT"
-					required="false"
+					required="true"
 				/>
 			</form>
 		</field>
@@ -601,7 +601,7 @@
 					description="COM_COMPONENTBUILDER_DYNAMIC_GET_DB_TABLE_DESCRIPTION"
 					class="list_class"
 					multiple="false"
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Row_type Field. Type: List. (joomla) -->
@@ -613,7 +613,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -629,7 +629,7 @@
 					class="list_class fieldSmall"
 					multiple="false"
 					filter="WORD"
-					required="false"
+					required="true"
 					default="b">
 					<!-- Option Set. -->
 					<option value="b">
@@ -743,7 +743,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -768,7 +768,7 @@
 					class="text_area fieldMedium"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_ON_FIELD_HINT"
@@ -782,7 +782,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="0">
 					<!-- Option Set. -->
 					<option value="1">
@@ -819,7 +819,7 @@
 					class="text_area fieldMedium"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_HINT"
@@ -835,7 +835,7 @@
 					class="text_area span12"
 					filter="HTML"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_SELECTION_HINT"
-					required="false"
+					required="true"
 				/>
 			</form>
 		</field>
@@ -977,7 +977,7 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -1014,7 +1014,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_STATE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_STATE_KEY_HINT"
@@ -1028,7 +1028,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="0">
 					<!-- Option Set. -->
 					<option value="1">
@@ -1065,7 +1065,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
@@ -1110,7 +1110,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
@@ -1124,7 +1124,7 @@
 					class="list_class fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="0">
 					<!-- Option Set. -->
 					<option value="1">
@@ -1161,7 +1161,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_VALUE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_VALUE_KEY_HINT"
@@ -1202,7 +1202,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
@@ -1215,7 +1215,7 @@
 					class="list_class"
 					multiple="false"
 					filter="WORD"
-					required="false"
+					required="true"
 					default="">
 					<!-- Option Set. -->
 					<option value="ASC">
@@ -1250,7 +1250,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
@@ -1295,7 +1295,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_NAME_HINT"
@@ -1311,7 +1311,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_KEY_HINT"
@@ -1324,7 +1324,7 @@
 					class="list_class fieldSmall"
 					multiple="false"
 					filter="WORD"
-					required="false"
+					required="true"
 					default="a">
 					<!-- Option Set. -->
 					<option value="a">
@@ -1438,7 +1438,7 @@
 					name="type"
 					label="COM_COMPONENTBUILDER_DYNAMIC_GET_TYPE_LABEL"
 					default="2"
-					required="false">
+					required="true">
 					<!-- Option Set. -->
 					<option value="1">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_STATE</option>

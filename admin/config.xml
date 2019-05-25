@@ -711,7 +711,7 @@
 					class="list_class"
 					multiple="false"
 					default="0"
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Backup Field. Type: Checkbox. (joomla) -->
@@ -720,7 +720,6 @@
 					name="backup"
 					label="COM_COMPONENTBUILDER_CONFIG_BACKUP_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_CONFIG_BACKUP_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -730,7 +729,6 @@
 					name="repository"
 					label="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -741,7 +739,6 @@
 					label="COM_COMPONENTBUILDER_CONFIG_PLACEHOLDERS_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_CONFIG_PLACEHOLDERS_DESCRIPTION"
 					class="inputbox"
 				/>

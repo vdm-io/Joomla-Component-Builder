@@ -431,7 +431,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_SITE_VIEW_VALUE_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_VALUE_NAME_HINT"
@@ -447,7 +447,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="WORD"
 					message="COM_COMPONENTBUILDER_SITE_VIEW_TASK_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_TASK_NAME_HINT"
@@ -464,7 +464,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_SITE_VIEW_INPUT_DEFAULT_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_INPUT_DEFAULT_HINT"
@@ -478,7 +478,7 @@
 					class="list_class"
 					multiple="false"
 					filter="WORD"
-					required="false"
+					required="true"
 					default="INT">
 					<!-- Option Set. -->
 					<option value="INT">
@@ -524,7 +524,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="WORD"
 					message="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_METHOD_NAME_HINT"
@@ -535,7 +535,6 @@
 					name="allow_zero"
 					label="COM_COMPONENTBUILDER_SITE_VIEW_ALLOW_ZERO_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_SITE_VIEW_ALLOW_ZERO_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -546,7 +545,6 @@
 					label="COM_COMPONENTBUILDER_SITE_VIEW_USER_CHECK_LABEL"
 					value="1"
 					default="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_SITE_VIEW_USER_CHECK_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -742,7 +740,6 @@
 					description="COM_COMPONENTBUILDER_SITE_VIEW_ICOMOON_DESCRIPTION"
 					class="list_class fieldMedium icomoon342"
 					multiple="false"
-					required="false"
 					onchange="getIconImage(this);">
 					<!-- Option Set. -->
 					<option value="joomla">
@@ -1177,7 +1174,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_SITE_VIEW_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_SITE_VIEW_NAME_HINT"
@@ -1205,7 +1202,6 @@
 					description="COM_COMPONENTBUILDER_SITE_VIEW_TARGET_DESCRIPTION"
 					class="list_class fieldMedium"
 					filter="INT"
-					required="false"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -1223,7 +1219,6 @@
 					description="COM_COMPONENTBUILDER_SITE_VIEW_TYPE_DESCRIPTION"
 					class="list_class"
 					multiple="false"
-					required="false"
 					default="0">
 					<!-- Option Set. -->
 					<option value="0">
