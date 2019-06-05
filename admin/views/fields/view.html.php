@@ -210,13 +210,16 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Fieldtype Name Selection
 		$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->options;
-		if ($this->fieldtypeNameOptions)
+		// We do some sanitation for  filter
+		if (ComponentbuilderHelper::checkArray($this->fieldtypeNameOptions) &&
+			isset($this->fieldtypeNameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->fieldtypeNameOptions[0]->value))
 		{
-			// We do some sanitation for  filter
-			if (isset($this->fieldtypeNameOptions[0]) && !ComponentbuilderHelper::checkString($this->fieldtypeNameOptions[0]->value))
-			{
-				unset($this->fieldtypeNameOptions[0]);
-			}
+			unset($this->fieldtypeNameOptions[0]);
+		}
+		// Only load  filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->fieldtypeNameOptions))
+		{
 			// Fieldtype Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
@@ -237,13 +240,16 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Datatype Selection
 		$this->datatypeOptions = $this->getTheDatatypeSelections();
-		if ($this->datatypeOptions)
+		// We do some sanitation for Datatype filter
+		if (ComponentbuilderHelper::checkArray($this->datatypeOptions) &&
+			isset($this->datatypeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->datatypeOptions[0]->value))
 		{
-			// We do some sanitation for Datatype filter
-			if (isset($this->datatypeOptions[0]) && !ComponentbuilderHelper::checkString($this->datatypeOptions[0]->value))
-			{
-				unset($this->datatypeOptions[0]);
-			}
+			unset($this->datatypeOptions[0]);
+		}
+		// Only load Datatype filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->datatypeOptions))
+		{
 			// Datatype Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL').' -',
@@ -264,13 +270,16 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Indexes Selection
 		$this->indexesOptions = $this->getTheIndexesSelections();
-		if ($this->indexesOptions)
+		// We do some sanitation for Indexes filter
+		if (ComponentbuilderHelper::checkArray($this->indexesOptions) &&
+			isset($this->indexesOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->indexesOptions[0]->value))
 		{
-			// We do some sanitation for Indexes filter
-			if (isset($this->indexesOptions[0]) && !ComponentbuilderHelper::checkString($this->indexesOptions[0]->value))
-			{
-				unset($this->indexesOptions[0]);
-			}
+			unset($this->indexesOptions[0]);
+		}
+		// Only load Indexes filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->indexesOptions))
+		{
 			// Indexes Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL').' -',
@@ -291,13 +300,16 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Null Switch Selection
 		$this->null_switchOptions = $this->getTheNull_switchSelections();
-		if ($this->null_switchOptions)
+		// We do some sanitation for Null Switch filter
+		if (ComponentbuilderHelper::checkArray($this->null_switchOptions) &&
+			isset($this->null_switchOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->null_switchOptions[0]->value))
 		{
-			// We do some sanitation for Null Switch filter
-			if (isset($this->null_switchOptions[0]) && !ComponentbuilderHelper::checkString($this->null_switchOptions[0]->value))
-			{
-				unset($this->null_switchOptions[0]);
-			}
+			unset($this->null_switchOptions[0]);
+		}
+		// Only load Null Switch filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->null_switchOptions))
+		{
 			// Null Switch Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL').' -',
@@ -318,13 +330,16 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Store Selection
 		$this->storeOptions = $this->getTheStoreSelections();
-		if ($this->storeOptions)
+		// We do some sanitation for Store filter
+		if (ComponentbuilderHelper::checkArray($this->storeOptions) &&
+			isset($this->storeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->storeOptions[0]->value))
 		{
-			// We do some sanitation for Store filter
-			if (isset($this->storeOptions[0]) && !ComponentbuilderHelper::checkString($this->storeOptions[0]->value))
-			{
-				unset($this->storeOptions[0]);
-			}
+			unset($this->storeOptions[0]);
+		}
+		// Only load Store filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->storeOptions))
+		{
 			// Store Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL').' -',

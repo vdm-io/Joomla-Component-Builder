@@ -193,13 +193,16 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 
 		// Set Main Source Selection
 		$this->main_sourceOptions = $this->getTheMain_sourceSelections();
-		if ($this->main_sourceOptions)
+		// We do some sanitation for Main Source filter
+		if (ComponentbuilderHelper::checkArray($this->main_sourceOptions) &&
+			isset($this->main_sourceOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->main_sourceOptions[0]->value))
 		{
-			// We do some sanitation for Main Source filter
-			if (isset($this->main_sourceOptions[0]) && !ComponentbuilderHelper::checkString($this->main_sourceOptions[0]->value))
-			{
-				unset($this->main_sourceOptions[0]);
-			}
+			unset($this->main_sourceOptions[0]);
+		}
+		// Only load Main Source filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->main_sourceOptions))
+		{
 			// Main Source Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN_SOURCE_LABEL').' -',
@@ -220,13 +223,16 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 
 		// Set Gettype Selection
 		$this->gettypeOptions = $this->getTheGettypeSelections();
-		if ($this->gettypeOptions)
+		// We do some sanitation for Gettype filter
+		if (ComponentbuilderHelper::checkArray($this->gettypeOptions) &&
+			isset($this->gettypeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->gettypeOptions[0]->value))
 		{
-			// We do some sanitation for Gettype filter
-			if (isset($this->gettypeOptions[0]) && !ComponentbuilderHelper::checkString($this->gettypeOptions[0]->value))
-			{
-				unset($this->gettypeOptions[0]);
-			}
+			unset($this->gettypeOptions[0]);
+		}
+		// Only load Gettype filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->gettypeOptions))
+		{
 			// Gettype Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_GETTYPE_LABEL').' -',

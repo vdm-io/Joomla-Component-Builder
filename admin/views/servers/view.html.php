@@ -188,13 +188,16 @@ class ComponentbuilderViewServers extends JViewLegacy
 
 		// Set Name Selection
 		$this->nameOptions = $this->getTheNameSelections();
-		if ($this->nameOptions)
+		// We do some sanitation for Name filter
+		if (ComponentbuilderHelper::checkArray($this->nameOptions) &&
+			isset($this->nameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->nameOptions[0]->value))
 		{
-			// We do some sanitation for Name filter
-			if (isset($this->nameOptions[0]) && !ComponentbuilderHelper::checkString($this->nameOptions[0]->value))
-			{
-				unset($this->nameOptions[0]);
-			}
+			unset($this->nameOptions[0]);
+		}
+		// Only load Name filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->nameOptions))
+		{
 			// Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SERVER_NAME_LABEL').' -',
@@ -215,13 +218,16 @@ class ComponentbuilderViewServers extends JViewLegacy
 
 		// Set Protocol Selection
 		$this->protocolOptions = $this->getTheProtocolSelections();
-		if ($this->protocolOptions)
+		// We do some sanitation for Protocol filter
+		if (ComponentbuilderHelper::checkArray($this->protocolOptions) &&
+			isset($this->protocolOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->protocolOptions[0]->value))
 		{
-			// We do some sanitation for Protocol filter
-			if (isset($this->protocolOptions[0]) && !ComponentbuilderHelper::checkString($this->protocolOptions[0]->value))
-			{
-				unset($this->protocolOptions[0]);
-			}
+			unset($this->protocolOptions[0]);
+		}
+		// Only load Protocol filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->protocolOptions))
+		{
 			// Protocol Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL').' -',

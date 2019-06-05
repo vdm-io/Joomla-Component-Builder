@@ -218,13 +218,16 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 
 		// Set Companyname Selection
 		$this->companynameOptions = $this->getTheCompanynameSelections();
-		if ($this->companynameOptions)
+		// We do some sanitation for Companyname filter
+		if (ComponentbuilderHelper::checkArray($this->companynameOptions) &&
+			isset($this->companynameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->companynameOptions[0]->value))
 		{
-			// We do some sanitation for Companyname filter
-			if (isset($this->companynameOptions[0]) && !ComponentbuilderHelper::checkString($this->companynameOptions[0]->value))
-			{
-				unset($this->companynameOptions[0]);
-			}
+			unset($this->companynameOptions[0]);
+		}
+		// Only load Companyname filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->companynameOptions))
+		{
 			// Companyname Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL').' -',
@@ -245,13 +248,16 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 
 		// Set Author Selection
 		$this->authorOptions = $this->getTheAuthorSelections();
-		if ($this->authorOptions)
+		// We do some sanitation for Author filter
+		if (ComponentbuilderHelper::checkArray($this->authorOptions) &&
+			isset($this->authorOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->authorOptions[0]->value))
 		{
-			// We do some sanitation for Author filter
-			if (isset($this->authorOptions[0]) && !ComponentbuilderHelper::checkString($this->authorOptions[0]->value))
-			{
-				unset($this->authorOptions[0]);
-			}
+			unset($this->authorOptions[0]);
+		}
+		// Only load Author filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->authorOptions))
+		{
 			// Author Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_LABEL').' -',

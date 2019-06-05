@@ -193,13 +193,16 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 
 		// Set Main Get Name Selection
 		$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->options;
-		if ($this->main_getNameOptions)
+		// We do some sanitation for  filter
+		if (ComponentbuilderHelper::checkArray($this->main_getNameOptions) &&
+			isset($this->main_getNameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->main_getNameOptions[0]->value))
 		{
-			// We do some sanitation for  filter
-			if (isset($this->main_getNameOptions[0]) && !ComponentbuilderHelper::checkString($this->main_getNameOptions[0]->value))
-			{
-				unset($this->main_getNameOptions[0]);
-			}
+			unset($this->main_getNameOptions[0]);
+		}
+		// Only load  filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->main_getNameOptions))
+		{
 			// Main Get Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_LABEL').' -',
@@ -220,13 +223,16 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 
 		// Set Add Php Ajax Selection
 		$this->add_php_ajaxOptions = $this->getTheAdd_php_ajaxSelections();
-		if ($this->add_php_ajaxOptions)
+		// We do some sanitation for Add Php Ajax filter
+		if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions) &&
+			isset($this->add_php_ajaxOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
 		{
-			// We do some sanitation for Add Php Ajax filter
-			if (isset($this->add_php_ajaxOptions[0]) && !ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
-			{
-				unset($this->add_php_ajaxOptions[0]);
-			}
+			unset($this->add_php_ajaxOptions[0]);
+		}
+		// Only load Add Php Ajax filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions))
+		{
 			// Add Php Ajax Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_AJAX_LABEL').' -',
@@ -247,13 +253,16 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 
 		// Set Add Custom Button Selection
 		$this->add_custom_buttonOptions = $this->getTheAdd_custom_buttonSelections();
-		if ($this->add_custom_buttonOptions)
+		// We do some sanitation for Add Custom Button filter
+		if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions) &&
+			isset($this->add_custom_buttonOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
 		{
-			// We do some sanitation for Add Custom Button filter
-			if (isset($this->add_custom_buttonOptions[0]) && !ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
-			{
-				unset($this->add_custom_buttonOptions[0]);
-			}
+			unset($this->add_custom_buttonOptions[0]);
+		}
+		// Only load Add Custom Button filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions))
+		{
 			// Add Custom Button Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SITE_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',

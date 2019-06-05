@@ -193,13 +193,16 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 
 		// Set Add Fadein Selection
 		$this->add_fadeinOptions = $this->getTheAdd_fadeinSelections();
-		if ($this->add_fadeinOptions)
+		// We do some sanitation for Add Fadein filter
+		if (ComponentbuilderHelper::checkArray($this->add_fadeinOptions) &&
+			isset($this->add_fadeinOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_fadeinOptions[0]->value))
 		{
-			// We do some sanitation for Add Fadein filter
-			if (isset($this->add_fadeinOptions[0]) && !ComponentbuilderHelper::checkString($this->add_fadeinOptions[0]->value))
-			{
-				unset($this->add_fadeinOptions[0]);
-			}
+			unset($this->add_fadeinOptions[0]);
+		}
+		// Only load Add Fadein filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_fadeinOptions))
+		{
 			// Add Fadein Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_FADEIN_LABEL').' -',
@@ -220,13 +223,16 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
-		if ($this->typeOptions)
+		// We do some sanitation for Type filter
+		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+			isset($this->typeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
 		{
-			// We do some sanitation for Type filter
-			if (isset($this->typeOptions[0]) && !ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
-			{
-				unset($this->typeOptions[0]);
-			}
+			unset($this->typeOptions[0]);
+		}
+		// Only load Type filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->typeOptions))
+		{
 			// Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_LABEL').' -',
@@ -247,13 +253,16 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 
 		// Set Add Custom Import Selection
 		$this->add_custom_importOptions = $this->getTheAdd_custom_importSelections();
-		if ($this->add_custom_importOptions)
+		// We do some sanitation for Add Custom Import filter
+		if (ComponentbuilderHelper::checkArray($this->add_custom_importOptions) &&
+			isset($this->add_custom_importOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_custom_importOptions[0]->value))
 		{
-			// We do some sanitation for Add Custom Import filter
-			if (isset($this->add_custom_importOptions[0]) && !ComponentbuilderHelper::checkString($this->add_custom_importOptions[0]->value))
-			{
-				unset($this->add_custom_importOptions[0]);
-			}
+			unset($this->add_custom_importOptions[0]);
+		}
+		// Only load Add Custom Import filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_custom_importOptions))
+		{
 			// Add Custom Import Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
@@ -274,13 +283,16 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 
 		// Set Add Custom Button Selection
 		$this->add_custom_buttonOptions = $this->getTheAdd_custom_buttonSelections();
-		if ($this->add_custom_buttonOptions)
+		// We do some sanitation for Add Custom Button filter
+		if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions) &&
+			isset($this->add_custom_buttonOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
 		{
-			// We do some sanitation for Add Custom Button filter
-			if (isset($this->add_custom_buttonOptions[0]) && !ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
-			{
-				unset($this->add_custom_buttonOptions[0]);
-			}
+			unset($this->add_custom_buttonOptions[0]);
+		}
+		// Only load Add Custom Button filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions))
+		{
 			// Add Custom Button Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
@@ -301,13 +313,16 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 
 		// Set Add Php Ajax Selection
 		$this->add_php_ajaxOptions = $this->getTheAdd_php_ajaxSelections();
-		if ($this->add_php_ajaxOptions)
+		// We do some sanitation for Add Php Ajax filter
+		if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions) &&
+			isset($this->add_php_ajaxOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
 		{
-			// We do some sanitation for Add Php Ajax filter
-			if (isset($this->add_php_ajaxOptions[0]) && !ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
-			{
-				unset($this->add_php_ajaxOptions[0]);
-			}
+			unset($this->add_php_ajaxOptions[0]);
+		}
+		// Only load Add Php Ajax filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions))
+		{
 			// Add Php Ajax Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',

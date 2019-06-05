@@ -183,13 +183,16 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 
 		// Set How Selection
 		$this->howOptions = JFormHelper::loadFieldType('Filebehaviour')->options;
-		if ($this->howOptions)
+		// We do some sanitation for  filter
+		if (ComponentbuilderHelper::checkArray($this->howOptions) &&
+			isset($this->howOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->howOptions[0]->value))
 		{
-			// We do some sanitation for  filter
-			if (isset($this->howOptions[0]) && !ComponentbuilderHelper::checkString($this->howOptions[0]->value))
-			{
-				unset($this->howOptions[0]);
-			}
+			unset($this->howOptions[0]);
+		}
+		// Only load  filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->howOptions))
+		{
 			// How Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL').' -',
@@ -210,13 +213,16 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
-		if ($this->typeOptions)
+		// We do some sanitation for Type filter
+		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+			isset($this->typeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
 		{
-			// We do some sanitation for Type filter
-			if (isset($this->typeOptions[0]) && !ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
-			{
-				unset($this->typeOptions[0]);
-			}
+			unset($this->typeOptions[0]);
+		}
+		// Only load Type filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->typeOptions))
+		{
 			// Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL').' -',

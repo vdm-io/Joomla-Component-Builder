@@ -193,13 +193,16 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 
 		// Set Dynamic Get Name Selection
 		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->options;
-		if ($this->dynamic_getNameOptions)
+		// We do some sanitation for  filter
+		if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions) &&
+			isset($this->dynamic_getNameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->dynamic_getNameOptions[0]->value))
 		{
-			// We do some sanitation for  filter
-			if (isset($this->dynamic_getNameOptions[0]) && !ComponentbuilderHelper::checkString($this->dynamic_getNameOptions[0]->value))
-			{
-				unset($this->dynamic_getNameOptions[0]);
-			}
+			unset($this->dynamic_getNameOptions[0]);
+		}
+		// Only load  filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions))
+		{
 			// Dynamic Get Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL').' -',
@@ -220,13 +223,16 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 
 		// Set Add Php View Selection
 		$this->add_php_viewOptions = $this->getTheAdd_php_viewSelections();
-		if ($this->add_php_viewOptions)
+		// We do some sanitation for Add Php View filter
+		if (ComponentbuilderHelper::checkArray($this->add_php_viewOptions) &&
+			isset($this->add_php_viewOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_php_viewOptions[0]->value))
 		{
-			// We do some sanitation for Add Php View filter
-			if (isset($this->add_php_viewOptions[0]) && !ComponentbuilderHelper::checkString($this->add_php_viewOptions[0]->value))
-			{
-				unset($this->add_php_viewOptions[0]);
-			}
+			unset($this->add_php_viewOptions[0]);
+		}
+		// Only load Add Php View filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_php_viewOptions))
+		{
 			// Add Php View Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_TEMPLATE_ADD_PHP_VIEW_LABEL').' -',

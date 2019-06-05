@@ -198,13 +198,16 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 
 		// Set Type Name Selection
 		$this->typeNameOptions = JFormHelper::loadFieldType('Snippettype')->options;
-		if ($this->typeNameOptions)
+		// We do some sanitation for  filter
+		if (ComponentbuilderHelper::checkArray($this->typeNameOptions) &&
+			isset($this->typeNameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->typeNameOptions[0]->value))
 		{
-			// We do some sanitation for  filter
-			if (isset($this->typeNameOptions[0]) && !ComponentbuilderHelper::checkString($this->typeNameOptions[0]->value))
-			{
-				unset($this->typeNameOptions[0]);
-			}
+			unset($this->typeNameOptions[0]);
+		}
+		// Only load  filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->typeNameOptions))
+		{
 			// Type Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL').' -',
@@ -225,13 +228,16 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 
 		// Set Library Name Selection
 		$this->libraryNameOptions = JFormHelper::loadFieldType('Library')->options;
-		if ($this->libraryNameOptions)
+		// We do some sanitation for  filter
+		if (ComponentbuilderHelper::checkArray($this->libraryNameOptions) &&
+			isset($this->libraryNameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->libraryNameOptions[0]->value))
 		{
-			// We do some sanitation for  filter
-			if (isset($this->libraryNameOptions[0]) && !ComponentbuilderHelper::checkString($this->libraryNameOptions[0]->value))
-			{
-				unset($this->libraryNameOptions[0]);
-			}
+			unset($this->libraryNameOptions[0]);
+		}
+		// Only load  filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->libraryNameOptions))
+		{
 			// Library Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL').' -',

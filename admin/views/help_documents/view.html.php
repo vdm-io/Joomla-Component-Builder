@@ -188,13 +188,16 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
-		if ($this->typeOptions)
+		// We do some sanitation for Type filter
+		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+			isset($this->typeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
 		{
-			// We do some sanitation for Type filter
-			if (isset($this->typeOptions[0]) && !ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
-			{
-				unset($this->typeOptions[0]);
-			}
+			unset($this->typeOptions[0]);
+		}
+		// Only load Type filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->typeOptions))
+		{
 			// Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_TYPE_LABEL').' -',
@@ -215,13 +218,16 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Location Selection
 		$this->locationOptions = $this->getTheLocationSelections();
-		if ($this->locationOptions)
+		// We do some sanitation for Location filter
+		if (ComponentbuilderHelper::checkArray($this->locationOptions) &&
+			isset($this->locationOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->locationOptions[0]->value))
 		{
-			// We do some sanitation for Location filter
-			if (isset($this->locationOptions[0]) && !ComponentbuilderHelper::checkString($this->locationOptions[0]->value))
-			{
-				unset($this->locationOptions[0]);
-			}
+			unset($this->locationOptions[0]);
+		}
+		// Only load Location filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->locationOptions))
+		{
 			// Location Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_LOCATION_LABEL').' -',
@@ -242,13 +248,16 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Admin View Selection
 		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->options;
-		if ($this->admin_viewOptions)
+		// We do some sanitation for Location filter
+		if (ComponentbuilderHelper::checkArray($this->admin_viewOptions) &&
+			isset($this->admin_viewOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->admin_viewOptions[0]->value))
 		{
-			// We do some sanitation for Location filter
-			if (isset($this->admin_viewOptions[0]) && !ComponentbuilderHelper::checkString($this->admin_viewOptions[0]->value))
-			{
-				unset($this->admin_viewOptions[0]);
-			}
+			unset($this->admin_viewOptions[0]);
+		}
+		// Only load Location filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->admin_viewOptions))
+		{
 			// Admin View Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL').' -',
@@ -269,13 +278,16 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Site View Selection
 		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->options;
-		if ($this->site_viewOptions)
+		// We do some sanitation for Location filter
+		if (ComponentbuilderHelper::checkArray($this->site_viewOptions) &&
+			isset($this->site_viewOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->site_viewOptions[0]->value))
 		{
-			// We do some sanitation for Location filter
-			if (isset($this->site_viewOptions[0]) && !ComponentbuilderHelper::checkString($this->site_viewOptions[0]->value))
-			{
-				unset($this->site_viewOptions[0]);
-			}
+			unset($this->site_viewOptions[0]);
+		}
+		// Only load Location filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->site_viewOptions))
+		{
 			// Site View Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL').' -',

@@ -193,13 +193,16 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 
 		// Set Component System Name Selection
 		$this->componentSystem_nameOptions = JFormHelper::loadFieldType('Component')->options;
-		if ($this->componentSystem_nameOptions)
+		// We do some sanitation for  filter
+		if (ComponentbuilderHelper::checkArray($this->componentSystem_nameOptions) &&
+			isset($this->componentSystem_nameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->componentSystem_nameOptions[0]->value))
 		{
-			// We do some sanitation for  filter
-			if (isset($this->componentSystem_nameOptions[0]) && !ComponentbuilderHelper::checkString($this->componentSystem_nameOptions[0]->value))
-			{
-				unset($this->componentSystem_nameOptions[0]);
-			}
+			unset($this->componentSystem_nameOptions[0]);
+		}
+		// Only load  filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->componentSystem_nameOptions))
+		{
 			// Component System Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL').' -',
@@ -220,13 +223,16 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 
 		// Set Target Selection
 		$this->targetOptions = $this->getTheTargetSelections();
-		if ($this->targetOptions)
+		// We do some sanitation for Target filter
+		if (ComponentbuilderHelper::checkArray($this->targetOptions) &&
+			isset($this->targetOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->targetOptions[0]->value))
 		{
-			// We do some sanitation for Target filter
-			if (isset($this->targetOptions[0]) && !ComponentbuilderHelper::checkString($this->targetOptions[0]->value))
-			{
-				unset($this->targetOptions[0]);
-			}
+			unset($this->targetOptions[0]);
+		}
+		// Only load Target filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->targetOptions))
+		{
 			// Target Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL').' -',
@@ -247,13 +253,16 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
-		if ($this->typeOptions)
+		// We do some sanitation for Type filter
+		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+			isset($this->typeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
 		{
-			// We do some sanitation for Type filter
-			if (isset($this->typeOptions[0]) && !ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
-			{
-				unset($this->typeOptions[0]);
-			}
+			unset($this->typeOptions[0]);
+		}
+		// Only load Type filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->typeOptions))
+		{
 			// Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL').' -',
@@ -274,13 +283,16 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 
 		// Set Comment Type Selection
 		$this->comment_typeOptions = $this->getTheComment_typeSelections();
-		if ($this->comment_typeOptions)
+		// We do some sanitation for Comment Type filter
+		if (ComponentbuilderHelper::checkArray($this->comment_typeOptions) &&
+			isset($this->comment_typeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->comment_typeOptions[0]->value))
 		{
-			// We do some sanitation for Comment Type filter
-			if (isset($this->comment_typeOptions[0]) && !ComponentbuilderHelper::checkString($this->comment_typeOptions[0]->value))
-			{
-				unset($this->comment_typeOptions[0]);
-			}
+			unset($this->comment_typeOptions[0]);
+		}
+		// Only load Comment Type filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->comment_typeOptions))
+		{
 			// Comment Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL').' -',
