@@ -121,7 +121,7 @@ class ComponentbuilderControllerAdmin_views extends JControllerAdmin
 		// set massage
 		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
 		// check if this user has the right to run expansion
-		if($user->authorise('compiler.run_expansion', 'com_componentbuilder'))
+		if($user->authorise('admin_views.run_expansion', 'com_componentbuilder'))
 		{
 			// set massage
 			$message = JText::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');

@@ -216,7 +216,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 		$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
-		if($user->authorise('core.admin', 'com_componentbuilder'))
+		if($user->authorise('compiler.clear_tmp', 'com_componentbuilder') && $user->authorise('core.options', 'com_componentbuilder'))
 		{
 			// get the model
 			$model = $this->getModel('compiler');

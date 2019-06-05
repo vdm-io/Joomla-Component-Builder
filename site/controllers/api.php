@@ -266,7 +266,7 @@ class ComponentbuilderControllerApi extends JControllerForm
 		// make sure to set active type (adding this script from custom code :)
 		$model->activeType = 'backup';
 		// check if export is allowed for this user. (we need this sorry)
-		if ($model->user->authorise('joomla_component.export', 'com_componentbuilder') && $model->user->authorise('core.export', 'com_componentbuilder'))
+		if ($model->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder') && $model->user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// get all component IDs to backup
 			$pks = componentbuilderHelper::getComponentIDs();
