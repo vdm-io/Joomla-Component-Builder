@@ -195,6 +195,11 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->options;
 		if ($this->dynamic_getNameOptions)
 		{
+			// We do some sanitation for  filter
+			if (isset($this->dynamic_getNameOptions[0]) && !ComponentbuilderHelper::checkString($this->dynamic_getNameOptions[0]->value))
+			{
+				unset($this->dynamic_getNameOptions[0]);
+			}
 			// Dynamic Get Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL').' -',
@@ -217,6 +222,11 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 		$this->add_php_viewOptions = $this->getTheAdd_php_viewSelections();
 		if ($this->add_php_viewOptions)
 		{
+			// We do some sanitation for Add Php View filter
+			if (isset($this->add_php_viewOptions[0]) && !ComponentbuilderHelper::checkString($this->add_php_viewOptions[0]->value))
+			{
+				unset($this->add_php_viewOptions[0]);
+			}
 			// Add Php View Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_TEMPLATE_ADD_PHP_VIEW_LABEL').' -',

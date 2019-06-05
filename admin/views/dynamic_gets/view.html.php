@@ -195,6 +195,11 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		$this->main_sourceOptions = $this->getTheMain_sourceSelections();
 		if ($this->main_sourceOptions)
 		{
+			// We do some sanitation for Main Source filter
+			if (isset($this->main_sourceOptions[0]) && !ComponentbuilderHelper::checkString($this->main_sourceOptions[0]->value))
+			{
+				unset($this->main_sourceOptions[0]);
+			}
 			// Main Source Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN_SOURCE_LABEL').' -',
@@ -217,6 +222,11 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		$this->gettypeOptions = $this->getTheGettypeSelections();
 		if ($this->gettypeOptions)
 		{
+			// We do some sanitation for Gettype filter
+			if (isset($this->gettypeOptions[0]) && !ComponentbuilderHelper::checkString($this->gettypeOptions[0]->value))
+			{
+				unset($this->gettypeOptions[0]);
+			}
 			// Gettype Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_GETTYPE_LABEL').' -',

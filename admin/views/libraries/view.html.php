@@ -185,6 +185,11 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 		$this->howOptions = JFormHelper::loadFieldType('Filebehaviour')->options;
 		if ($this->howOptions)
 		{
+			// We do some sanitation for  filter
+			if (isset($this->howOptions[0]) && !ComponentbuilderHelper::checkString($this->howOptions[0]->value))
+			{
+				unset($this->howOptions[0]);
+			}
 			// How Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL').' -',
@@ -207,6 +212,11 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 		$this->typeOptions = $this->getTheTypeSelections();
 		if ($this->typeOptions)
 		{
+			// We do some sanitation for Type filter
+			if (isset($this->typeOptions[0]) && !ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+			{
+				unset($this->typeOptions[0]);
+			}
 			// Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL').' -',

@@ -195,6 +195,11 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		$this->componentSystem_nameOptions = JFormHelper::loadFieldType('Component')->options;
 		if ($this->componentSystem_nameOptions)
 		{
+			// We do some sanitation for  filter
+			if (isset($this->componentSystem_nameOptions[0]) && !ComponentbuilderHelper::checkString($this->componentSystem_nameOptions[0]->value))
+			{
+				unset($this->componentSystem_nameOptions[0]);
+			}
 			// Component System Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL').' -',
@@ -217,6 +222,11 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		$this->targetOptions = $this->getTheTargetSelections();
 		if ($this->targetOptions)
 		{
+			// We do some sanitation for Target filter
+			if (isset($this->targetOptions[0]) && !ComponentbuilderHelper::checkString($this->targetOptions[0]->value))
+			{
+				unset($this->targetOptions[0]);
+			}
 			// Target Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL').' -',
@@ -239,6 +249,11 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		$this->typeOptions = $this->getTheTypeSelections();
 		if ($this->typeOptions)
 		{
+			// We do some sanitation for Type filter
+			if (isset($this->typeOptions[0]) && !ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+			{
+				unset($this->typeOptions[0]);
+			}
 			// Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL').' -',
@@ -261,6 +276,11 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		$this->comment_typeOptions = $this->getTheComment_typeSelections();
 		if ($this->comment_typeOptions)
 		{
+			// We do some sanitation for Comment Type filter
+			if (isset($this->comment_typeOptions[0]) && !ComponentbuilderHelper::checkString($this->comment_typeOptions[0]->value))
+			{
+				unset($this->comment_typeOptions[0]);
+			}
 			// Comment Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL').' -',

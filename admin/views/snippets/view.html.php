@@ -200,6 +200,11 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		$this->typeNameOptions = JFormHelper::loadFieldType('Snippettype')->options;
 		if ($this->typeNameOptions)
 		{
+			// We do some sanitation for  filter
+			if (isset($this->typeNameOptions[0]) && !ComponentbuilderHelper::checkString($this->typeNameOptions[0]->value))
+			{
+				unset($this->typeNameOptions[0]);
+			}
 			// Type Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL').' -',
@@ -222,6 +227,11 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		$this->libraryNameOptions = JFormHelper::loadFieldType('Library')->options;
 		if ($this->libraryNameOptions)
 		{
+			// We do some sanitation for  filter
+			if (isset($this->libraryNameOptions[0]) && !ComponentbuilderHelper::checkString($this->libraryNameOptions[0]->value))
+			{
+				unset($this->libraryNameOptions[0]);
+			}
 			// Library Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL').' -',

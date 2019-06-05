@@ -195,6 +195,11 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 		$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->options;
 		if ($this->main_getNameOptions)
 		{
+			// We do some sanitation for  filter
+			if (isset($this->main_getNameOptions[0]) && !ComponentbuilderHelper::checkString($this->main_getNameOptions[0]->value))
+			{
+				unset($this->main_getNameOptions[0]);
+			}
 			// Main Get Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL').' -',
@@ -217,6 +222,11 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 		$this->add_php_ajaxOptions = $this->getTheAdd_php_ajaxSelections();
 		if ($this->add_php_ajaxOptions)
 		{
+			// We do some sanitation for Add Php Ajax filter
+			if (isset($this->add_php_ajaxOptions[0]) && !ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
+			{
+				unset($this->add_php_ajaxOptions[0]);
+			}
 			// Add Php Ajax Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',
@@ -239,6 +249,11 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 		$this->add_custom_buttonOptions = $this->getTheAdd_custom_buttonSelections();
 		if ($this->add_custom_buttonOptions)
 		{
+			// We do some sanitation for Add Custom Button filter
+			if (isset($this->add_custom_buttonOptions[0]) && !ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
+			{
+				unset($this->add_custom_buttonOptions[0]);
+			}
 			// Add Custom Button Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',

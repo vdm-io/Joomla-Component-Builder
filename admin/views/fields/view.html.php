@@ -212,6 +212,11 @@ class ComponentbuilderViewFields extends JViewLegacy
 		$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->options;
 		if ($this->fieldtypeNameOptions)
 		{
+			// We do some sanitation for  filter
+			if (isset($this->fieldtypeNameOptions[0]) && !ComponentbuilderHelper::checkString($this->fieldtypeNameOptions[0]->value))
+			{
+				unset($this->fieldtypeNameOptions[0]);
+			}
 			// Fieldtype Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
@@ -234,6 +239,11 @@ class ComponentbuilderViewFields extends JViewLegacy
 		$this->datatypeOptions = $this->getTheDatatypeSelections();
 		if ($this->datatypeOptions)
 		{
+			// We do some sanitation for Datatype filter
+			if (isset($this->datatypeOptions[0]) && !ComponentbuilderHelper::checkString($this->datatypeOptions[0]->value))
+			{
+				unset($this->datatypeOptions[0]);
+			}
 			// Datatype Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL').' -',
@@ -256,6 +266,11 @@ class ComponentbuilderViewFields extends JViewLegacy
 		$this->indexesOptions = $this->getTheIndexesSelections();
 		if ($this->indexesOptions)
 		{
+			// We do some sanitation for Indexes filter
+			if (isset($this->indexesOptions[0]) && !ComponentbuilderHelper::checkString($this->indexesOptions[0]->value))
+			{
+				unset($this->indexesOptions[0]);
+			}
 			// Indexes Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL').' -',
@@ -278,6 +293,11 @@ class ComponentbuilderViewFields extends JViewLegacy
 		$this->null_switchOptions = $this->getTheNull_switchSelections();
 		if ($this->null_switchOptions)
 		{
+			// We do some sanitation for Null Switch filter
+			if (isset($this->null_switchOptions[0]) && !ComponentbuilderHelper::checkString($this->null_switchOptions[0]->value))
+			{
+				unset($this->null_switchOptions[0]);
+			}
 			// Null Switch Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL').' -',
@@ -300,6 +320,11 @@ class ComponentbuilderViewFields extends JViewLegacy
 		$this->storeOptions = $this->getTheStoreSelections();
 		if ($this->storeOptions)
 		{
+			// We do some sanitation for Store filter
+			if (isset($this->storeOptions[0]) && !ComponentbuilderHelper::checkString($this->storeOptions[0]->value))
+			{
+				unset($this->storeOptions[0]);
+			}
 			// Store Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL').' -',

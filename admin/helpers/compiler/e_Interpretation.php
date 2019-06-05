@@ -10854,6 +10854,8 @@ class Interpretation extends Fields
 	{
 		if (isset($this->filterBuilder[$view]) && ComponentbuilderHelper::checkArray($this->filterBuilder[$view]))
 		{
+			// get component name
+			$Component = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh];
 			$otherFilter = array();
 			foreach ($this->filterBuilder[$view] as $filter)
 			{
@@ -10866,6 +10868,11 @@ class Interpretation extends Fields
 					$otherFilter[] = $this->_t(2) . "\$this->" . $codeName . "Options = JFormHelper::loadFieldType('" . $type . "')->options;";
 					$otherFilter[] = $this->_t(2) . "if (\$this->" . $codeName . "Options)";
 					$otherFilter[] = $this->_t(2) . "{";
+					$otherFilter[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " We do some sanitation for " . $Codename . " filter";
+					$otherFilter[] = $this->_t(3) . "if (isset(\$this->" . $codeName . "Options[0]) && !" . $Component . "Helper::checkString(\$this->" . $codeName . "Options[0]->value))";
+					$otherFilter[] = $this->_t(3) . "{";
+					$otherFilter[] = $this->_t(4) . "unset(\$this->" . $codeName . "Options[0]);";
+					$otherFilter[] = $this->_t(3) . "}";
 					$otherFilter[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " " . $CodeName . " Filter";
 					$otherFilter[] = $this->_t(3) . "JHtmlSidebar::addFilter(";
 					$otherFilter[] = $this->_t(4) . "'- Select '.JText:" . ":_('" . $filter['lang'] . "').' -',";
@@ -10900,6 +10907,11 @@ class Interpretation extends Fields
 					$otherFilter[] = $this->_t(2) . "\$this->" . $filter['code'] . "Options = " . $functionName;
 					$otherFilter[] = $this->_t(2) . "if (\$this->" . $filter['code'] . "Options)";
 					$otherFilter[] = $this->_t(2) . "{";
+					$otherFilter[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " We do some sanitation for " . $Codename . " filter";
+					$otherFilter[] = $this->_t(3) . "if (isset(\$this->" . $filter['code'] . "Options[0]) && !" . $Component . "Helper::checkString(\$this->" . $filter['code'] . "Options[0]->value))";
+					$otherFilter[] = $this->_t(3) . "{";
+					$otherFilter[] = $this->_t(4) . "unset(\$this->" . $filter['code'] . "Options[0]);";
+					$otherFilter[] = $this->_t(3) . "}";
 					$otherFilter[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " " . $Codename . " Filter";
 					$otherFilter[] = $this->_t(3) . "JHtmlSidebar::addFilter(";
 					$otherFilter[] = $this->_t(4) . "'- Select '.JText:" . ":_('" . $filter['lang'] . "').' -',";

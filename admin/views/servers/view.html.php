@@ -190,6 +190,11 @@ class ComponentbuilderViewServers extends JViewLegacy
 		$this->nameOptions = $this->getTheNameSelections();
 		if ($this->nameOptions)
 		{
+			// We do some sanitation for Name filter
+			if (isset($this->nameOptions[0]) && !ComponentbuilderHelper::checkString($this->nameOptions[0]->value))
+			{
+				unset($this->nameOptions[0]);
+			}
 			// Name Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SERVER_NAME_LABEL').' -',
@@ -212,6 +217,11 @@ class ComponentbuilderViewServers extends JViewLegacy
 		$this->protocolOptions = $this->getTheProtocolSelections();
 		if ($this->protocolOptions)
 		{
+			// We do some sanitation for Protocol filter
+			if (isset($this->protocolOptions[0]) && !ComponentbuilderHelper::checkString($this->protocolOptions[0]->value))
+			{
+				unset($this->protocolOptions[0]);
+			}
 			// Protocol Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL').' -',

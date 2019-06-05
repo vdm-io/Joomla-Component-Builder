@@ -190,6 +190,11 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		$this->typeOptions = $this->getTheTypeSelections();
 		if ($this->typeOptions)
 		{
+			// We do some sanitation for Type filter
+			if (isset($this->typeOptions[0]) && !ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+			{
+				unset($this->typeOptions[0]);
+			}
 			// Type Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_TYPE_LABEL').' -',
@@ -212,6 +217,11 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		$this->locationOptions = $this->getTheLocationSelections();
 		if ($this->locationOptions)
 		{
+			// We do some sanitation for Location filter
+			if (isset($this->locationOptions[0]) && !ComponentbuilderHelper::checkString($this->locationOptions[0]->value))
+			{
+				unset($this->locationOptions[0]);
+			}
 			// Location Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_LOCATION_LABEL').' -',
@@ -234,6 +244,11 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->options;
 		if ($this->admin_viewOptions)
 		{
+			// We do some sanitation for Location filter
+			if (isset($this->admin_viewOptions[0]) && !ComponentbuilderHelper::checkString($this->admin_viewOptions[0]->value))
+			{
+				unset($this->admin_viewOptions[0]);
+			}
 			// Admin View Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL').' -',
@@ -256,6 +271,11 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->options;
 		if ($this->site_viewOptions)
 		{
+			// We do some sanitation for Location filter
+			if (isset($this->site_viewOptions[0]) && !ComponentbuilderHelper::checkString($this->site_viewOptions[0]->value))
+			{
+				unset($this->site_viewOptions[0]);
+			}
 			// Site View Filter
 			JHtmlSidebar::addFilter(
 				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL').' -',
