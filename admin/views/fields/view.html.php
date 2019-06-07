@@ -195,7 +195,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		JHtmlSidebar::addFilter(
 			JText::_('JOPTION_SELECT_CATEGORY'),
 			'filter_category_id',
-			JHtml::_('select.options', JHtml::_('category.options', 'com_componentbuilder.field'), 'value', 'text', $this->state->get('filter.category_id'))
+			JHtml::_('select.options', JHtml::_('category.options', 'com_componentbuilder.fields'), 'value', 'text', $this->state->get('filter.category_id'))
 		);
 
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
@@ -204,7 +204,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 			JHtmlBatch_::addListSelection(
 				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_CATEGORY'),
 				'batch[category]',
-				JHtml::_('select.options', JHtml::_('category.options', 'com_componentbuilder.field'), 'value', 'text')
+				JHtml::_('select.options', JHtml::_('category.options', 'com_componentbuilder.fields'), 'value', 'text')
 			);
 		}
 

@@ -2900,11 +2900,13 @@ class Get
 						if (ComponentbuilderHelper::checkString($listViewName))
 						{
 							// check if we should use another Text Name as this views name
-							$otherName = ComponentbuilderHelper::getBetween($field['settings']->xml, 'othername="', '"');
-							$otherViews = ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"');
-							$otherView = ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"');
+							$otherName = $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'othername="', '"'), $this->placeholders);
+							$otherViews = $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'views="', '"'), $this->placeholders);
+							$otherView = $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'view="', '"'), $this->placeholders);
+							// This is to link other view category
 							if (ComponentbuilderHelper::checkString($otherName) && ComponentbuilderHelper::checkString($otherViews) && ComponentbuilderHelper::checkString($otherView))
 							{
+								// set other category details
 								$this->catOtherName[$listViewName] = array(
 									'name' => ComponentbuilderHelper::safeString($otherName),
 									'views' => ComponentbuilderHelper::safeString($otherViews),

@@ -438,7 +438,7 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$viewName_list][$this->hhh . 'SORTFIELDS' . $this->hhh] = $this->setSortFields($viewName_list);
 
 					// CATEGORYFILTER <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_list][$this->hhh . 'CATEGORYFILTER' . $this->hhh] = $this->setCategoryFilter($viewName_single, $viewName_list);
+					$this->fileContentDynamic[$viewName_list][$this->hhh . 'CATEGORYFILTER' . $this->hhh] = $this->setCategoryFilter($viewName_list);
 
 					// CATEGORY_VIEWS
 					if (!isset($this->fileContentStatic[$this->hhh . 'ROUTER_CATEGORY_VIEWS' . $this->hhh]))

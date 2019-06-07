@@ -10947,21 +10947,13 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setCategoryFilter($viewName_single, $viewName_list)
+	public function setCategoryFilter($viewName_list)
 	{
-		if (isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list]))
+		if (isset($this->categoryBuilder[$viewName_list])
+			&& ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list])
+			&& isset($this->categoryBuilder[$viewName_list]['extension']))
 		{
-			// check if category has another name
-			if (isset($this->catOtherName[$viewName_list]) && ComponentbuilderHelper::checkArray($this->catOtherName[$viewName_list]))
-			{
-				$targetView = "." . $this->catOtherName[$viewName_list]['view'];
-			}
-			else
-			{
-				$targetView = "." . $viewName_single;
-			}
 			// set component name
-			$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
 			$COPMONENT = ComponentbuilderHelper::safeString($this->componentData->name_code, 'U');
 			// set filter
 			$filter = array();
@@ -10969,7 +10961,7 @@ class Interpretation extends Fields
 			$filter[] = $this->_t(2) . "JHtmlSidebar::addFilter(";
 			$filter[] = $this->_t(3) . "JText:" . ":_('JOPTION_SELECT_CATEGORY'),";
 			$filter[] = $this->_t(3) . "'filter_category_id',";
-			$filter[] = $this->_t(3) . "JHtml::_('select.options', JHtml::_('category.options', 'com_" . $component . $targetView . "'), 'value', 'text', \$this->state->get('filter.category_id'))";
+			$filter[] = $this->_t(3) . "JHtml::_('select.options', JHtml::_('category.options', '" . $this->categoryBuilder[$viewName_list]['extension'] . "'), 'value', 'text', \$this->state->get('filter.category_id'))";
 			$filter[] = $this->_t(2) . ");";
 
 
@@ -10979,7 +10971,7 @@ class Interpretation extends Fields
 			$filter[] = $this->_t(3) . "JHtmlBatch_::addListSelection(";
 			$filter[] = $this->_t(4) . "JText:" . ":_('COM_" . $COPMONENT . "_KEEP_ORIGINAL_CATEGORY'),";
 			$filter[] = $this->_t(4) . "'batch[category]',";
-			$filter[] = $this->_t(4) . "JHtml::_('select.options', JHtml::_('category.options', 'com_" . $component . $targetView . "'), 'value', 'text')";
+			$filter[] = $this->_t(4) . "JHtml::_('select.options', JHtml::_('category.options', '" . $this->categoryBuilder[$viewName_list]['extension'] . "'), 'value', 'text')";
 			$filter[] = $this->_t(3) . ");";
 			$filter[] = $this->_t(2) . "}";
 
