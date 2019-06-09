@@ -774,7 +774,7 @@ class Structure extends Get
 	{
 		if (ComponentbuilderHelper::checkObject($this->joomlaVersionData->move->static))
 		{
-			$codeName = ComponentbuilderHelper::safeString($this->componentData->name_code);
+			$codeName = $this->componentCodeName;
 			// TODO needs more looking at this must be dynamic actualy
 			$this->notNew[] = 'PHPExcel.php';
 			$this->notNew[] = 'LICENSE.txt';

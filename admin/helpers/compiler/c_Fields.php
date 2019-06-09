@@ -2702,6 +2702,11 @@ class Fields extends Structure
 			}
 			// get the xml extension name
 			$_extension = $this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'extension="', '"'), $this->placeholders);
+			// if they left out the extention for some reason
+			if (!ComponentbuilderHelper::checkString($_extension))
+			{
+				$_extension = 'com_' . $this->componentCodeName . '.' . $otherView;
+			}
 			// load the category builder
 			$this->categoryBuilder[$view_name_list] = array('code' => $name, 'name' => $listLangName, 'extension' => $_extension);
 			// also set code name for title alias fix

@@ -7501,11 +7501,11 @@ class Interpretation extends Fields
 			$header = '';
 			$mainwidth = 12;
 			$sidewidth = 0;
+			// sort the tabs based on key order
 			ksort($this->tabCounter[$viewName_single]);
+			// start tab builinging loop
 			foreach ($this->tabCounter[$viewName_single] as $tabNr => $tabName)
 			{
-				// check if we must load a custom tab
-				
 				$tabWidth = 12;
 				$lrCounter = 0;
 				// set tab lang
@@ -7530,6 +7530,7 @@ class Interpretation extends Fields
 						$buildLayout = false;
 					}
 				}
+				// build layout since just fields
 				if ($buildLayout)
 				{
 					// sort to make sure it loads left first
@@ -7542,7 +7543,9 @@ class Interpretation extends Fields
 						// reset each time
 						$items = '';
 						$itemCounter = 0;
+						// sort the names based on order of keys
 						ksort($names);
+						// build the items array for this alignment
 						foreach ($names as $nr => $name)
 						{
 							if ($itemCounter == 0)
@@ -7555,6 +7558,7 @@ class Interpretation extends Fields
 							}
 							$itemCounter++;
 						}
+						// based on alignment build the layout
 						switch ($alignment)
 						{
 							case 1: // left
@@ -10651,7 +10655,7 @@ class Interpretation extends Fields
 		{
 			$function = array();
 			// set component name
-			$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+			$component = $this->componentCodeName;
 			foreach ($this->filterBuilder[$viewName_list] as $filter)
 			{
 				if ($filter['type'] != 'category' && ComponentbuilderHelper::checkArray($filter['custom']) && $filter['custom']['extends'] === 'user')
@@ -10985,8 +10989,18 @@ class Interpretation extends Fields
 	{
 		if (isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list]))
 		{
+			// get the actual extention
+			$_extension = $this->categoryBuilder[$viewName_list]['extension'];
+			$_extension = explode('.', $_extension);
 			// set component name
-			$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+			if (ComponentbuilderHelper::checkArray($_extension))
+			{
+				$component = str_replace('com_', '', $_extension[0]);
+			}
+			else
+			{
+				$component = $this->componentCodeName;
+			}
 			// check if category has another name
 			if (isset($this->catOtherName[$viewName_list]) && ComponentbuilderHelper::checkArray($this->catOtherName[$viewName_list]))
 			{
@@ -11012,10 +11026,10 @@ class Interpretation extends Fields
 				// set script to global helper file
 				$includeHelper = array();
 				$includeHelper[] = "\n//" . $this->setLine(__LINE__) . "Insure this view category file is loaded.";
-				$includeHelper[] = "\$classname = '" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . ucfirst($viewName_list) . "Categories';";
+				$includeHelper[] = "\$classname = '" . ucfirst( $component ) . ucfirst($viewName_list) . "Categories';";
 				$includeHelper[] = "if (!class_exists(\$classname))";
 				$includeHelper[] = "{";
-				$includeHelper[] = $this->_t(1) . "\$path = JPATH_SITE . '/components/com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . "/helpers/category" . $viewName_list . ".php';";
+				$includeHelper[] = $this->_t(1) . "\$path = JPATH_SITE . '/components/com_" . $component . "/helpers/category" . $viewName_list . ".php';";
 				$includeHelper[] = $this->_t(1) . "if (is_file(\$path))";
 				$includeHelper[] = $this->_t(1) . "{";
 				$includeHelper[] = $this->_t(2) . "include_once \$path;";
@@ -11026,11 +11040,11 @@ class Interpretation extends Fields
 			// return category view string
 			if (isset($this->fileContentStatic[$this->hhh . 'ROUTER_CATEGORY_VIEWS' . $this->hhh]) && ComponentbuilderHelper::checkString($this->fileContentStatic[$this->hhh . 'ROUTER_CATEGORY_VIEWS' . $this->hhh]))
 			{
-				return "," . PHP_EOL . $this->_t(3) . '"com_' . $component . '.' . $otherViews . '" => "' . $otherView . '"';
+				return "," . PHP_EOL . $this->_t(3) . '"' . $this->categoryBuilder[$viewName_list]['extension'] . '" => "' . $otherView . '"';
 			}
 			else
 			{
-				return PHP_EOL . $this->_t(3) . '"com_' . $component . '.' . $otherViews . '" => "' . $otherView . '"';
+				return PHP_EOL . $this->_t(3) . '"' . $this->categoryBuilder[$viewName_list]['extension'] . '" => "' . $otherView . '"';
 			}
 		}
 		return '';
@@ -11040,7 +11054,7 @@ class Interpretation extends Fields
 	{
 		$allow = array();
 		// set component name
-		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		$component = $this->componentCodeName;
 		// prepare custom permission script
 		$customAllow = $this->getCustomScriptBuilder('php_allowadd', $viewName_single, '', null, true);
 		// setup correct core target
@@ -11142,7 +11156,7 @@ class Interpretation extends Fields
 	{
 		$allow = array();
 		// set component name
-		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		$component = $this->componentCodeName;
 		// prepare custom permission script
 		$customAllow = $this->getCustomScriptBuilder('php_allowedit', $viewName_single, '', null, true);
 		// setup correct core target
@@ -11352,7 +11366,7 @@ class Interpretation extends Fields
 	public function setJmodelAdminGetForm($viewName_single, $viewName_list)
 	{
 		// set component name
-		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		$component = $this->componentCodeName;
 		// allways load these
 		$allow = array();
 		$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the form.";
@@ -11655,7 +11669,7 @@ class Interpretation extends Fields
 	{
 		$allow = array();
 		// set component name
-		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		$component = $this->componentCodeName;
 		// prepare custom permission script
 		$customAllow = $this->getCustomScriptBuilder('php_allowedit', $viewName_single, $this->_t(2) . "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;" . PHP_EOL);
 		// setup correct core target
@@ -11693,7 +11707,7 @@ class Interpretation extends Fields
 	{
 		$allow = array();
 		// set component name
-		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		$component = $this->componentCodeName;
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -11777,7 +11791,7 @@ class Interpretation extends Fields
 	{
 		$allow = array();
 		// set component name
-		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		$component = $this->componentCodeName;
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -11878,7 +11892,7 @@ class Interpretation extends Fields
 	{
 		$allow = array();
 		// set component name
-		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		$component = $this->componentCodeName;
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$viewName_single]))
@@ -11941,7 +11955,7 @@ class Interpretation extends Fields
 		if ($view != 'component')
 		{
 			// set component name
-			$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+			$component = $this->componentCodeName;
 			// set label
 			$label = 'Permissions in relation to this ' . $view;
 			// set the access fieldset
@@ -13428,7 +13442,7 @@ class Interpretation extends Fields
 			// main lang prefix
 			$lang = $this->langPrefix . '_SUBMENU';
 			// set the code name
-			$codeName = ComponentbuilderHelper::safeString($this->componentData->name_code);
+			$codeName = $this->componentCodeName;
 			// set default dashboard
 			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
 			{
@@ -13672,7 +13686,7 @@ class Interpretation extends Fields
 			// main lang prefix
 			$lang = $this->langPrefix . '_MENU';
 			// set the code name
-			$codeName = ComponentbuilderHelper::safeString($this->componentData->name_code);
+			$codeName = $this->componentCodeName;
 			// default prefix is none
 			$prefix = '';
 			// check if local is set
@@ -13844,17 +13858,17 @@ class Interpretation extends Fields
 			// set the custom fields
 			if (isset($this->componentData->config) && ComponentbuilderHelper::checkArray($this->componentData->config))
 			{
-				$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+				$component = $this->componentCodeName;
 				$viewName = 'config';
 				$listViewName = 'configs';
 				// set place holders
 				$placeholders = array();
-				$placeholders[$this->hhh . 'component' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentData->name_code);
+				$placeholders[$this->hhh . 'component' . $this->hhh] = $this->componentCodeName;
 				$placeholders[$this->hhh . 'Component' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentData->name_code, 'F');
 				$placeholders[$this->hhh . 'COMPONENT' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentData->name_code, 'U');
 				$placeholders[$this->hhh . 'view' . $this->hhh] = $viewName;
 				$placeholders[$this->hhh . 'views' . $this->hhh] = $listViewName;
-				$placeholders[$this->bbb . 'component' . $this->ddd] = $placeholders[$this->hhh . 'component' . $this->hhh];
+				$placeholders[$this->bbb . 'component' . $this->ddd] = $this->componentCodeName;
 				$placeholders[$this->bbb . 'Component' . $this->ddd] = $placeholders[$this->hhh . 'Component' . $this->hhh];
 				$placeholders[$this->bbb . 'COMPONENT' . $this->ddd] = $placeholders[$this->hhh . 'COMPONENT' . $this->hhh];
 				$placeholders[$this->bbb . 'view' . $this->ddd] = $viewName;
@@ -14136,7 +14150,7 @@ class Interpretation extends Fields
 	public function setGlobalConfigFieldsets($lang, $autorName, $autorEmail)
 	{
 		// set component name
-		$component = ComponentbuilderHelper::safeString($this->componentData->name_code);
+		$component = $this->componentCodeName;
 
 		// start building field set for config
 		$this->configFieldSets[] = '<fieldset';
