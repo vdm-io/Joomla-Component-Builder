@@ -202,6 +202,13 @@ class Interpretation extends Fields
 	protected $libwarning = array();
 
 	/**
+	 * alignment names
+	 * 
+	 * @var    array
+	 */
+	protected $alignmentOptions = array(1 => 'left', 2 => 'right', 3 => 'fullwidth', 4 => 'above', 5 => 'under', 6 => 'leftside', 7 => 'rightside');
+
+	/**
 	 * Constructor
 	 */
 	public function __construct($config = array())
@@ -7445,219 +7452,39 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	/**
+	 * set Edit Body
+	 *
+	 * @param   array    $view  The view data
+	 *
+	 * @return  string   The edit body
+	 *
+	 */
 	public function setEditBody(&$view)
 	{
 		// set view name
-		$viewName_single = ComponentbuilderHelper::safeString($view['settings']->name_single);
-		// alignment
-		$alignmentNames = array(1 => 'left', 2 => 'right', 3 => 'fullwidth', 4 => 'above', 5 => 'under', 6 => 'leftside', 7 => 'rightside');
+		$view_name_single = ComponentbuilderHelper::safeString($view['settings']->name_single);
 		// main lang prefix
-		$langView = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($viewName_single, 'U');
-
-		if (isset($this->layoutBuilder[$viewName_single]) && ComponentbuilderHelper::checkArray($this->layoutBuilder[$viewName_single]))
+		$langView = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($view_name_single, 'U');
+		// check if the load build is set for this view
+		if (isset($this->layoutBuilder[$view_name_single]) && ComponentbuilderHelper::checkArray($this->layoutBuilder[$view_name_single]))
 		{
-			// set the linked view tabs
-			$linkedTab = array();
+			// reset the linked keys
 			$keys = array();
-			// setup correct core target
-			$coreLoad = false;
-			if (isset($this->permissionCore[$viewName_single]))
-			{
-				$core = $this->permissionCore[$viewName_single];
-				$coreLoad = true;
-			}
-			if (isset($this->linkedAdminViews[$viewName_single]) && ComponentbuilderHelper::checkArray($this->linkedAdminViews[$viewName_single]))
-			{
-				foreach ($this->linkedAdminViews[$viewName_single] as $linkedView)
-				{
-					$tabName = $view['settings']->tabs[(int) $linkedView['tab']];
-					$this->tabCounter[$viewName_single][$linkedView['tab']] = $tabName;
-					$linkedTab[$linkedView['adminview']] = $linkedView['tab'];
-					if (ComponentbuilderHelper::checkString($linkedView['key']) && ComponentbuilderHelper::checkString($linkedView['parentkey']))
-					{
-						$keys[$linkedView['adminview']] = array('key' => $linkedView['key'], 'parentKey' => $linkedView['parentkey']);
-					}
-					else
-					{
-						$keys[$linkedView['adminview']] = array('key' => null, 'parentKey' => null);
-					}
-					if (isset($linkedView['addnew']))
-					{
-						$keys[$linkedView['adminview']]['addNewButton'] = (int) $linkedView['addnew'];
-					}
-					else
-					{
-						$keys[$linkedView['adminview']]['addNewButton'] = 0;
-					}
-				}
-			}
+			$linkedViewIdentifier = array();
+			// set the linked view tabs
+			$linkedTab = $this->getEditBodyLinkedAdminViewsTabs($view, $view_name_single, $keys, $linkedViewIdentifier);
 			// custom tab searching array
 			$searchTabs = array();
-			// start tab set
-			$bucket = array();
+			// reset tab values
 			$leftside = '';
 			$rightside = '';
 			$footer = '';
 			$header = '';
 			$mainwidth = 12;
 			$sidewidth = 0;
-			// sort the tabs based on key order
-			ksort($this->tabCounter[$viewName_single]);
-			// start tab builinging loop
-			foreach ($this->tabCounter[$viewName_single] as $tabNr => $tabName)
-			{
-				$tabWidth = 12;
-				$lrCounter = 0;
-				// set tab lang
-				$tabLangName = $langView . '_' . ComponentbuilderHelper::safeString($tabName, 'U');
-				// set tab code name
-				$tabCodeName = ComponentbuilderHelper::safeString($tabName);
-				/// set the values to use in search latter
-				$searchTabs[$tabCodeName] = $tabNr;
-				// add to lang array
-				if (!isset($this->langContent[$this->lang][$tabLangName]))
-				{
-					$this->langContent[$this->lang][$tabLangName] = $tabName;
-				}
-				// check if linked view belongs to this tab
-				$buildLayout = true;
-				$linkedViewId = '';
-				if (ComponentbuilderHelper::checkArray($linkedTab))
-				{
-					if (($linkedViewId = array_search($tabNr, $linkedTab)) !== false)
-					{
-						// don't build
-						$buildLayout = false;
-					}
-				}
-				// build layout since just fields
-				if ($buildLayout)
-				{
-					// sort to make sure it loads left first
-					$alignments = $this->layoutBuilder[$viewName_single][$tabName];
-					ksort($alignments);
-					foreach ($alignments as $alignment => $names)
-					{
-						// set layout code name
-						$layoutCodeName = $tabCodeName . '_' . $alignmentNames[$alignment];
-						// reset each time
-						$items = '';
-						$itemCounter = 0;
-						// sort the names based on order of keys
-						ksort($names);
-						// build the items array for this alignment
-						foreach ($names as $nr => $name)
-						{
-							if ($itemCounter == 0)
-							{
-								$items .= "'" . $name . "'";
-							}
-							else
-							{
-								$items .= "," . PHP_EOL . $this->_t(1) . "'" . $name . "'";
-							}
-							$itemCounter++;
-						}
-						// based on alignment build the layout
-						switch ($alignment)
-						{
-							case 1: // left
-							case 2: // right
-								// count
-								$lrCounter++;
-								// set as items layout
-								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layoutitems');
-								// set the lang to tab
-								$bucket[$tabCodeName]['lang'] = $tabLangName;
-								// load the body
-								if (!isset($bucket[$tabCodeName][(int) $alignment]))
-								{
-									$bucket[$tabCodeName][(int) $alignment] = '';
-								}
-								$bucket[$tabCodeName][(int) $alignment] .= "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $layoutCodeName . "', \$this); ?>";
-								break;
-							case 3: // fullwidth
-								// set as items layout
-								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layoutfull');
-								// set the lang to tab
-								$bucket[$tabCodeName]['lang'] = $tabLangName;
-								// load the body
-								if (!isset($bucket[$tabCodeName][(int) $alignment]))
-								{
-									$bucket[$tabCodeName][(int) $alignment] = '';
-								}
-								$bucket[$tabCodeName][(int) $alignment] .= "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $layoutCodeName . "', \$this); ?>";
-								break;
-							case 4: // above
-								// set as title layout
-								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layouttitle');
-								// load to header
-								$header .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $layoutCodeName . "', \$this); ?>";
-								break;
-							case 5: // under
-								// set as title layout
-								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layouttitle');
-								// load to footer
-								$footer .= PHP_EOL . PHP_EOL . "<div class=\"clearfix\"></div>" . PHP_EOL . "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $layoutCodeName . "', \$this); ?>";
-								break;
-							case 6: // left side
-								$tabWidth = $tabWidth - 2;
-								// set as items layout
-								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layoutitems');
-								// load the body
-								$leftside .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $layoutCodeName . "', \$this); ?>";
-								break;
-							case 7: // right side
-								$tabWidth = $tabWidth - 2;
-								// set as items layout
-								$this->setLayout($viewName_single, $layoutCodeName, $items, 'layoutitems');
-								// load the body
-								$rightside .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $layoutCodeName . "', \$this); ?>";
-								break;
-						}
-					}
-				}
-				else
-				{
-					// set layout code name
-					$layoutCodeName = $tabCodeName . '_fullwidth';
-					// set identifiers
-					$linkedViewIdentifier[$linkedViewId] = $tabCodeName;
-					//set function name
-					$codeName = ComponentbuilderHelper::safeString($this->uniquekey(3) . $tabCodeName);
-					// set as items layout
-					$this->setLayout($viewName_single, $layoutCodeName, $codeName, 'layoutlinkedview');
-					// set the lang to tab
-					$bucket[$tabCodeName]['lang'] = $tabLangName;
-					// set all the linked view stuff
-					$this->secondRunAdmin['setLinkedView'][] = array(
-						'viewId' => $linkedViewId,
-						'viewName_single' => $viewName_single,
-						'codeName' => $codeName,
-						'layoutCodeName' => $layoutCodeName,
-						'key' => $keys[$linkedViewId]['key'],
-						'parentKey' => $keys[$linkedViewId]['parentKey'],
-						'addNewButon' => $keys[$linkedViewId]['addNewButton']);
-					// load the body
-					if (!isset($bucket[$tabCodeName][3]))
-					{
-						$bucket[$tabCodeName][3] = '';
-					}
-					$bucket[$tabCodeName][3] .= "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $layoutCodeName . "', \$this); ?>";
-				}
-				// width calculator :)
-				if ($tabWidth == 8)
-				{
-					$mainwidth = 8;
-					$sidewidth = 2;
-				}
-				elseif ($tabWidth == 10 && $mainwidth != 8)
-				{
-					$mainwidth = 9;
-					$sidewidth = 3;
-				}
-				$bucket[$tabCodeName]['lr'] = $lrCounter;
-			}
+			// get the tabs with positions
+			$tabBucket = $this->getEditBodyTabs($view_name_single, $langView, $linkedTab, $keys, $linkedViewIdentifier, $searchTabs, $leftside, $rightside, $footer, $header, $mainwidth, $sidewidth);
 			// tab counter
 			$tabCounter = 0;
 			// check if width is still 12
@@ -7672,64 +7499,28 @@ class Interpretation extends Fields
 			{
 				$body .= PHP_EOL . $this->_t(1) . '<div class="' . $span . '">';
 			}
-			// now build the template
-			foreach ($bucket as $tabCodeName => $posions)
+			// now build the dynamic tabs
+			foreach ($tabBucket as $tabCodeName => $positions)
 			{
-				// check main if both left and right is set
-				$lrCounter = $posions['lr'];
 				// get lang string
-				$tabLangName = $posions['lang'];
-				// build main center
+				$tabLangName = $positions['lang'];
+				// build main center position
 				$main = '';
 				$mainbottom = '';
-				foreach ($posions as $posion => $string)
-				{
-					if ($lrCounter == 2)
-					{
-						switch ($posion)
-						{
-							case 1: // left
-							case 2: // right
-								$main .= PHP_EOL . $this->_t(3) . '<div class="span6">';
-								$main .= PHP_EOL . $this->_t(4) . $string;
-								$main .= PHP_EOL . $this->_t(3) . '</div>';
-								break;
-						}
-					}
-					else
-					{
-						switch ($posion)
-						{
-							case 1: // left
-							case 2: // right
-								$main .= PHP_EOL . $this->_t(3) . '<div class="span12">';
-								$main .= PHP_EOL . $this->_t(4) . $string;
-								$main .= PHP_EOL . $this->_t(3) . '</div>';
-								break;
-						}
-					}
-					switch ($posion)
-					{
-						case 3: // fullwidth
-							$mainbottom .= PHP_EOL . $this->_t(3) . '<div class="span12">';
-							$mainbottom .= PHP_EOL . $this->_t(4) . $string;
-							$mainbottom .= PHP_EOL . $this->_t(3) . '</div>';
-							break;
-					}
-				}
-				// set acctive tab
+				$this->setEditBodyTabMainCenterPositionDiv($main, $mainbottom, $positions);
+				// set acctive tab (must be in side foreach loop to get active tab code name)
 				if ($tabCounter == 0)
 				{
-					$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.startTabSet', '" . $viewName_single . "Tab', array('active' => '" . $tabCodeName . "')); ?>";
+					$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.startTabSet', '" . $view_name_single . "Tab', array('active' => '" . $tabCodeName . "')); ?>";
 				}
 				// check if custom tab must be added
-				if (($_customTabHTML = $this->addCustomTabs($searchTabs[$tabCodeName], $viewName_single, 1)) !== false)
+				if (($_customTabHTML = $this->addCustomTabs($searchTabs[$tabCodeName], $view_name_single, 1)) !== false)
 				{
 					$body .= $_customTabHTML;
 				}
 				// if this is a linked view set permissions
 				$closeIT = false;
-				if (isset($linkedViewIdentifier) && ComponentbuilderHelper::checkArray($linkedViewIdentifier) && in_array($tabCodeName, $linkedViewIdentifier))
+				if (ComponentbuilderHelper::checkArray($linkedViewIdentifier) && in_array($tabCodeName, $linkedViewIdentifier))
 				{
 					// get view name
 					$linkedViewId = array_search($tabCodeName, $linkedViewIdentifier);
@@ -7759,12 +7550,13 @@ class Interpretation extends Fields
 				{
 					$body .= PHP_EOL;
 				}
-				// start tab
-				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeName . "', JText:" . ":_('" . $tabLangName . "', true)); ?>";
+				// start addtab body
+				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $view_name_single . "Tab', '" . $tabCodeName . "', JText:" . ":_('" . $tabLangName . "', true)); ?>";
 				// add the main
 				$body .= PHP_EOL . $this->_t(2) . '<div class="row-fluid form-horizontal-desktop">';
 				$body .= $main;
 				$body .= PHP_EOL . $this->_t(2) . "</div>";
+				// add main body bottom div if needed
 				if (strlen($mainbottom) > 0)
 				{
 					// add the main bottom
@@ -7772,255 +7564,38 @@ class Interpretation extends Fields
 					$body .= $mainbottom;
 					$body .= PHP_EOL . $this->_t(2) . "</div>";
 				}
+				// end addtab body
 				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				// if we had permissions added
 				if ($closeIT)
 				{
 					$body .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
 				}
 				// check if custom tab must be added
-				if (($_customTabHTML = $this->addCustomTabs($searchTabs[$tabCodeName], $viewName_single, 2)) !== false)
+				if (($_customTabHTML = $this->addCustomTabs($searchTabs[$tabCodeName], $view_name_single, 2)) !== false)
 				{
 					$body .= $_customTabHTML;
 				}
 				// set counter
 				$tabCounter++;
 			}
-			// add option to load forms loded in via plugins (TODO) we may want to move these tab locations
+			// add option to load forms loaded in via plugins (TODO) we may want to move these tab locations
 			$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php \$this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>";
-			$body .= PHP_EOL . $this->_t(1) . "<?php \$this->tab_name = '" . $viewName_single . "Tab'; ?>";
+			$body .= PHP_EOL . $this->_t(1) . "<?php \$this->tab_name = '" . $view_name_single . "Tab'; ?>";
 			$body .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('joomla.edit.params', \$this); ?>";
-			// set default publishing tab lang
-			$tabLangName = $langView . '_PUBLISHING';
-			// add to lang array
-			if (!isset($this->langContent[$this->lang][$tabLangName]))
-			{
-				$this->langContent[$this->lang][$tabLangName] = 'Publishing';
-			}
-			// the default publishing items
-			$items = array('left' => array(), 'right' => array());
-			// Setup the default (custom) fields
-			// only load (1 => 'left', 2 => 'right')
-			$fieldsAddedRight = false;
-			if (isset($this->newPublishingFields[$viewName_single]))
-			{
-				foreach ($this->newPublishingFields[$viewName_single] as $df_alignment => $df_items)
-				{
-					foreach ($df_items as $df_order => $df_name)
-					{
-						if ($df_alignment == 2 || $df_alignment == 1)
-						{
-							$items[$alignmentNames[$df_alignment]][$df_order] = $df_name;
-						}
-						else
-						{
-							$this->app->enqueueMessage(JText::_('<hr /><h3>Field Warning</h3>'), 'Warning');
-							$this->app->enqueueMessage(JText::sprintf('Your <b>%s</b> field could not be added, since the <b>%s</b> alignment position is not available in the %s (publishing) tab. Please only target <b>Left or right</b> in the publishing tab.', $df_name, $alignmentNames[$df_alignment], $viewName_single), 'Warning');
-						}
-					}
-				}
-				// set switch to trigger notice if custom fields added to right
-				if (ComponentbuilderHelper::checkArray($items['right']))
-				{
-					$fieldsAddedRight = true;
-				}
-			}
-			// load all defaults
-			$loadDefaultFields = array(
-				'left' => array('created', 'created_by', 'modified', 'modified_by'),
-				'right' => array('published', 'ordering', 'access', 'version', 'hits', 'id')
-			);
-			foreach ($loadDefaultFields as $d_alignment => $defaultFields)
-			{
-				foreach ($defaultFields as $defaultField)
-				{
-					if (!isset($this->movedPublishingFields[$viewName_single][$defaultField]))
-					{
-						if ($defaultField != 'access')
-						{
-							$items[$d_alignment][] = $defaultField;
-						}
-						elseif ($defaultField === 'access' && isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
-						{
-							$items[$d_alignment][] = $defaultField;
-						}
-					}
-				}
-			}
-			// check if metadata is added to this view
-			if (isset($this->metadataBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$viewName_single]))
-			{
-				// set default publishing tab code name
-				$tabCodeNameLeft = 'publishing';
-				$tabCodeNameRight = 'metadata';
-				// the default publishing tiems
-				if (ComponentbuilderHelper::checkArray($items['left']) || ComponentbuilderHelper::checkArray($items['right']))
-				{
-					$items_one = '';
-					// load the items into one side
-					if (ComponentbuilderHelper::checkArray($items['left']))
-					{
-						$items_one .= "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['left']) . "'";
-					}
-					if (ComponentbuilderHelper::checkArray($items['right']))
-					{
-						// there is already fields just add these
-						if (strlen($items_one) > 3)
-						{
-							$items_one .= "," . PHP_EOL . $this->_t(1) . "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['right']) . "'";
-						}
-						// no fields has been added yet
-						else
-						{
-							$items_one .= "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['right']) . "'";
-						}
-					}
-					// only triger the info notice if there were custom fields targeted to the right alignment position.
-					if ($fieldsAddedRight)
-					{
-						$this->app->enqueueMessage(JText::_('<hr /><h3>Field Notice</h3>'), 'Notice');
-						$this->app->enqueueMessage(JText::sprintf('Your field/s added to the <b>right</b> alignment position in the %s (publishing) tab was added to the <b>left</b>. Since we have metadata fields on the right. Fields can only be loaded to the right of the publishing tab if there is no metadata fields.', $viewName_single), 'Notice');
-					}
-					// set the publishing layout
-					$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
-					$items_one = true;
-				}
-				else
-				{
-					$items_one = false;
-				}
-				// set the metadata layout
-				$this->setLayout($viewName_single, $tabCodeNameRight, false, 'layoutmetadata');
-				$items_two = true;
-			}
-			else
-			{
-				// set default publishing tab code name
-				$tabCodeNameLeft = 'publishing';
-				$tabCodeNameRight = 'publlshing';
-				// the default publishing tiems
-				if (ComponentbuilderHelper::checkArray($items['left']) || ComponentbuilderHelper::checkArray($items['right']))
-				{
-					// load left items that remain
-					if (ComponentbuilderHelper::checkArray($items['left']))
-					{
-						// load all items
-						$items_one = "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['left']) . "'";
-						// set the publishing layout
-						$this->setLayout($viewName_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
-						$items_one = true;
-					}
-					// load right items that remain
-					if (ComponentbuilderHelper::checkArray($items['right']))
-					{
-						// load all items
-						$items_two = "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['right']) . "'";
-						// set the publishing layout
-						$this->setLayout($viewName_single, $tabCodeNameRight, $items_two, 'layoutpublished');
-						$items_two = true;
-					}
-				}
-				else
-				{
-					$items_one = false;
-					$items_two = false;
-				}
-			}
-			if ($items_one && $items_two)
-			{
-				$classs = "span6";
-			}
-			elseif ($items_one || $items_two)
-			{
-				$classs = "span12";
-			}
-			// only load this if needed
-			if ($items_one || $items_two)
-			{
-				// check if the item has permissions.
-				$publishingPer = array();
-				$allToBeChekced = array('core.delete', 'core.edit.created_by', 'core.edit.state', 'core.edit.created');
-				foreach ($allToBeChekced as $core_permission)
-				{
-					if ($coreLoad && isset($core[$core_permission]) && isset($this->permissionBuilder['global'][$core[$core_permission]]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core[$core_permission]]) && in_array($viewName_single, $this->permissionBuilder['global'][$core[$core_permission]]))
-					{
-						// set permissions.
-						$publishingPer[] = "\$this->canDo->get('" . $core[$core_permission] . "')";
-					}
-					else
-					{
-						// set permissions.
-						$publishingPer[] = "\$this->canDo->get('" . $core_permission . "')";
-					}
-				}
-				// check if custom tab must be added
-				if (($_customTabHTML = $this->addCustomTabs(15, $viewName_single, 1)) !== false)
-				{
-					$body .= $_customTabHTML;
-				}
-				$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php if (" . implode(' || ', $publishingPer) . ") : ?>";
-				// set the default publishing tab
-				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeNameLeft . "', JText:" . ":_('" . $tabLangName . "', true)); ?>";
-				$body .= PHP_EOL . $this->_t(2) . '<div class="row-fluid form-horizontal-desktop">';
-				if ($items_one)
-				{
-					$body .= PHP_EOL . $this->_t(3) . '<div class="' . $classs . '">';
-					$body .= PHP_EOL . $this->_t(4) . "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $tabCodeNameLeft . "', \$this); ?>";
-					$body .= PHP_EOL . $this->_t(3) . "</div>";
-				}
-				if ($items_two)
-				{
-					$body .= PHP_EOL . $this->_t(3) . '<div class="' . $classs . '">';
-					$body .= PHP_EOL . $this->_t(4) . "<?php echo JLayoutHelper::render('" . $viewName_single . "." . $tabCodeNameRight . "', \$this); ?>";
-					$body .= PHP_EOL . $this->_t(3) . "</div>";
-				}
-				$body .= PHP_EOL . $this->_t(2) . "</div>";
-				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
-				$body .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
-				// check if custom tab must be added
-				if (($_customTabHTML = $this->addCustomTabs(15, $viewName_single, 2)) !== false)
-				{
-					$body .= $_customTabHTML;
-				}
-			}
-			// make sure we dont load it to a view with the name component
-			if ($viewName_single != 'component')
-			{
-				// set permissions tab lang
-				$tabLangName = $langView . '_PERMISSION';
-				// set permissions tab code name
-				$tabCodeName = 'permissions';
-				// add to lang array
-				if (!isset($this->langContent[$this->lang][$tabLangName]))
-				{
-					$this->langContent[$this->lang][$tabLangName] = 'Permissions';
-				}
-				// set the permissions tab
-				$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php if (\$this->canDo->get('core.admin')) : ?>";
-				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $viewName_single . "Tab', '" . $tabCodeName . "', JText:" . ":_('" . $tabLangName . "', true)); ?>";
-				$body .= PHP_EOL . $this->_t(2) . '<div class="row-fluid form-horizontal-desktop">';
-				$body .= PHP_EOL . $this->_t(3) . '<div class="span12">';
-				$body .= PHP_EOL . $this->_t(4) . '<fieldset class="adminform">';
-				$body .= PHP_EOL . $this->_t(5) . '<div class="adminformlist">';
-				$body .= PHP_EOL . $this->_t(5) . "<?php foreach (\$this->form->getFieldset('accesscontrol') as \$field): ?>";
-				$body .= PHP_EOL . $this->_t(6) . "<div>";
-				$body .= PHP_EOL . $this->_t(7) . "<?php echo \$field->label; echo \$field->input;?>";
-				$body .= PHP_EOL . $this->_t(6) . "</div>";
-				$body .= PHP_EOL . $this->_t(6) . '<div class="clearfix"></div>';
-				$body .= PHP_EOL . $this->_t(5) . "<?php endforeach; ?>";
-				$body .= PHP_EOL . $this->_t(5) . "</div>";
-				$body .= PHP_EOL . $this->_t(4) . "</fieldset>";
-				$body .= PHP_EOL . $this->_t(3) . "</div>";
-				$body .= PHP_EOL . $this->_t(2) . "</div>";
-				$body .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
-				$body .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
-			}
+			// add the publish and meta data tabs
+			$body .= $this->getEditBodyPublishMetaTabs($view_name_single, $langView);
 			// end the tab set
 			$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
 			$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<div>";
-			$body .= PHP_EOL . $this->_t(2) . '<input type="hidden" name="task" value="' . $viewName_single . '.edit" />';
+			$body .= PHP_EOL . $this->_t(2) . '<input type="hidden" name="task" value="' . $view_name_single . '.edit" />';
 			$body .= PHP_EOL . $this->_t(2) . "<?php echo JHtml::_('form.token'); ?>";
 			$body .= PHP_EOL . $this->_t(1) . "</div>";
-			$body .= PHP_EOL . $this->_t(1) . "</div>";
+			// close divs
+			if (ComponentbuilderHelper::checkString($span))
+			{
+				$body .= PHP_EOL . $this->_t(1) . "</div>";
+			}
 			$body .= PHP_EOL . "</div>";
 			// check if left has been set
 			if (strlen($leftside) > 0)
@@ -8044,6 +7619,536 @@ class Interpretation extends Fields
 			return $header . $left . $body . $right . $footer;
 		}
 		return '';
+	}
+
+	/**
+	 * get Edit Body Linked Admin Views
+	 *
+	 * @param   array    $view                   The view data
+	 * @param   string   $view_name_single       The single view name
+	 * @param   array    $keys                   The tabs to add in layout
+	 * @param   array    $linkedViewIdentifier   The linked view identifier
+	 *
+	 * @return  array   The linked Admin Views tabs
+	 *
+	 */
+	protected function getEditBodyLinkedAdminViewsTabs(&$view, &$view_name_single, &$keys, &$linkedViewIdentifier)
+	{
+		// start linked tabs bucket
+		$linkedTab = array();
+		// check if the view has linked admin view 
+		if (isset($this->linkedAdminViews[$view_name_single]) && ComponentbuilderHelper::checkArray($this->linkedAdminViews[$view_name_single]))
+		{
+			foreach ($this->linkedAdminViews[$view_name_single] as $linkedView)
+			{
+				// get the tab name
+				$tabName = $view['settings']->tabs[(int) $linkedView['tab']];
+				// update the tab counter
+				$this->tabCounter[$view_name_single][$linkedView['tab']] = $tabName;
+				// add the linked view
+				$linkedTab[$linkedView['adminview']] = $linkedView['tab'];
+				// set the keys if values are set
+				if (ComponentbuilderHelper::checkString($linkedView['key']) && ComponentbuilderHelper::checkString($linkedView['parentkey']))
+				{
+					$keys[$linkedView['adminview']] = array('key' => $linkedView['key'], 'parentKey' => $linkedView['parentkey']);
+				}
+				else
+				{
+					$keys[$linkedView['adminview']] = array('key' => null, 'parentKey' => null);
+				}
+				// set the button switches
+				if (isset($linkedView['addnew']))
+				{
+					$keys[$linkedView['adminview']]['addNewButton'] = (int) $linkedView['addnew'];
+				}
+				else
+				{
+					$keys[$linkedView['adminview']]['addNewButton'] = 0;
+				}
+			}
+		}
+		return $linkedTab;
+	}
+
+	/**
+	 * get Edit Body Tabs
+	 *
+	 * @param   string    $view_name_single        The single view name
+	 * @param   string    $langView                The main lang prefix
+	 * @param   array     $linkedTab               The linked admin view tabs
+	 * @param   array     $keys                    The tabs to add in layout
+	 * @param   array     $linkedViewIdentifier    The linked view identifier
+	 * @param   array     $searchTabs              The tabs to add in layout
+	 * @param   string    $leftside                The left side html string
+	 * @param   string    $rightside               The right side html string
+	 * @param   string    $footer                  The footer html string
+	 * @param   string    $header                  The header html string
+	 * @param   int       $mainwidth               The main width value
+	 * @param   int       $sidewidth               The side width value
+	 *
+	 * @return  array   The linked tabs
+	 *
+	 */
+	protected function getEditBodyTabs(&$view_name_single, &$langView, &$linkedTab, &$keys, &$linkedViewIdentifier, &$searchTabs, &$leftside, &$rightside, &$footer, &$header, &$mainwidth, &$sidewidth)
+	{
+		// start tabs 
+		$tabs = array();
+		// sort the tabs based on key order
+		ksort($this->tabCounter[$view_name_single]);
+		// start tab builinging loop
+		foreach ($this->tabCounter[$view_name_single] as $tabNr => $tabName)
+		{
+			$tabWidth = 12;
+			$lrCounter = 0;
+			// set tab lang
+			$tabLangName = $langView . '_' . ComponentbuilderHelper::safeString($tabName, 'U');
+			// set tab code name
+			$tabCodeName = ComponentbuilderHelper::safeString($tabName);
+			/// set the values to use in search latter
+			$searchTabs[$tabCodeName] = $tabNr;
+			// add to lang array
+			if (!isset($this->langContent[$this->lang][$tabLangName]))
+			{
+				$this->langContent[$this->lang][$tabLangName] = $tabName;
+			}
+			// check if linked view belongs to this tab
+			$buildLayout = true;
+			$linkedViewId = '';
+			if (ComponentbuilderHelper::checkArray($linkedTab))
+			{
+				if (($linkedViewId = array_search($tabNr, $linkedTab)) !== false)
+				{
+					// don't build (since this is a linked view)
+					$buildLayout = false;
+				}
+			}
+			// build layout these are actual fields
+			if ($buildLayout)
+			{
+				// sort to make sure it loads left first
+				$alignments = $this->layoutBuilder[$view_name_single][$tabName];
+				ksort($alignments);
+				foreach ($alignments as $alignment => $names)
+				{
+					// set layout code name
+					$layoutCodeName = $tabCodeName . '_' . $this->alignmentOptions[$alignment];
+					// reset each time
+					$items = '';
+					$itemCounter = 0;
+					// sort the names based on order of keys
+					ksort($names);
+					// build the items array for this alignment
+					foreach ($names as $nr => $name)
+					{
+						if ($itemCounter == 0)
+						{
+							$items .= "'" . $name . "'";
+						}
+						else
+						{
+							$items .= "," . PHP_EOL . $this->_t(1) . "'" . $name . "'";
+						}
+						$itemCounter++;
+					}
+					// based on alignment build the layout
+					switch ($alignment)
+					{
+						case 1: // left
+						case 2: // right
+							// count
+							$lrCounter++;
+							// set as items layout
+							$this->setLayout($view_name_single, $layoutCodeName, $items, 'layoutitems');
+							// set the lang to tab
+							$tabs[$tabCodeName]['lang'] = $tabLangName;
+							// load the body
+							if (!isset($tabs[$tabCodeName][(int) $alignment]))
+							{
+								$tabs[$tabCodeName][(int) $alignment] = '';
+							}
+							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $layoutCodeName . "', \$this); ?>";
+							break;
+						case 3: // fullwidth
+							// set as items layout
+							$this->setLayout($view_name_single, $layoutCodeName, $items, 'layoutfull');
+							// set the lang to tab
+							$tabs[$tabCodeName]['lang'] = $tabLangName;
+							// load the body
+							if (!isset($tabs[$tabCodeName][(int) $alignment]))
+							{
+								$tabs[$tabCodeName][(int) $alignment] = '';
+							}
+							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $layoutCodeName . "', \$this); ?>";
+							break;
+						case 4: // above
+							// set as title layout
+							$this->setLayout($view_name_single, $layoutCodeName, $items, 'layouttitle');
+							// load to header
+							$header .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $layoutCodeName . "', \$this); ?>";
+							break;
+						case 5: // under
+							// set as title layout
+							$this->setLayout($view_name_single, $layoutCodeName, $items, 'layouttitle');
+							// load to footer
+							$footer .= PHP_EOL . PHP_EOL . "<div class=\"clearfix\"></div>" . PHP_EOL . "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $layoutCodeName . "', \$this); ?>";
+							break;
+						case 6: // left side
+							$tabWidth = $tabWidth - 2;
+							// set as items layout
+							$this->setLayout($view_name_single, $layoutCodeName, $items, 'layoutitems');
+							// load the body
+							$leftside .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $layoutCodeName . "', \$this); ?>";
+							break;
+						case 7: // right side
+							$tabWidth = $tabWidth - 2;
+							// set as items layout
+							$this->setLayout($view_name_single, $layoutCodeName, $items, 'layoutitems');
+							// load the body
+							$rightside .= PHP_EOL . $this->_t(1) . "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $layoutCodeName . "', \$this); ?>";
+							break;
+					}
+				}
+			}
+			else
+			{
+				// set layout code name
+				$layoutCodeName = $tabCodeName . '_fullwidth';
+				// set identifiers
+				$linkedViewIdentifier[$linkedViewId] = $tabCodeName;
+				//set function name
+				$codeName = ComponentbuilderHelper::safeString($this->uniquekey(3) . $tabCodeName);
+				// set as items layout
+				$this->setLayout($view_name_single, $layoutCodeName, $codeName, 'layoutlinkedview');
+				// set the lang to tab
+				$tabs[$tabCodeName]['lang'] = $tabLangName;
+				// set all the linked view stuff
+				$this->secondRunAdmin['setLinkedView'][] = array(
+					'viewId' => $linkedViewId,
+					'view_name_single' => $view_name_single,
+					'codeName' => $codeName,
+					'layoutCodeName' => $layoutCodeName,
+					'key' => $keys[$linkedViewId]['key'],
+					'parentKey' => $keys[$linkedViewId]['parentKey'],
+					'addNewButon' => $keys[$linkedViewId]['addNewButton']);
+				// load the body
+				if (!isset($tabs[$tabCodeName][3]))
+				{
+					$tabs[$tabCodeName][3] = '';
+				}
+				$tabs[$tabCodeName][3] .= "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $layoutCodeName . "', \$this); ?>";
+			}
+			// width calculator :)
+			if ($tabWidth == 8)
+			{
+				$mainwidth = 8;
+				$sidewidth = 2;
+			}
+			elseif ($tabWidth == 10 && $mainwidth != 8)
+			{
+				$mainwidth = 9;
+				$sidewidth = 3;
+			}
+			$tabs[$tabCodeName]['lr'] = $lrCounter;
+		}
+		return $tabs;
+	}
+
+	/**
+	 * set Edit Body Main Center Positions Div
+	 *
+	 * @param   string    $main         The main position of this tab
+	 * @param   string    $mainbottom   The main bottom position of this tab
+	 * @param   array     $positions    The build positions of this tab
+	 *
+	 * @return  array   The linked Admin Views tabs
+	 *
+	 */
+	protected function setEditBodyTabMainCenterPositionDiv(&$main, &$mainbottom, &$positions)
+	{
+		foreach ($positions as $position => $string)
+		{
+			if ($positions['lr'] == 2)
+			{
+				switch ($position)
+				{
+					case 1: // left
+					case 2: // right
+						$main .= PHP_EOL . $this->_t(3) . '<div class="span6">';
+						$main .= PHP_EOL . $this->_t(4) . $string;
+						$main .= PHP_EOL . $this->_t(3) . '</div>';
+						break;
+				}
+			}
+			else
+			{
+				switch ($position)
+				{
+					case 1: // left
+					case 2: // right
+						$main .= PHP_EOL . $this->_t(3) . '<div class="span12">';
+						$main .= PHP_EOL . $this->_t(4) . $string;
+						$main .= PHP_EOL . $this->_t(3) . '</div>';
+						break;
+				}
+			}
+			switch ($position)
+			{
+				case 3: // fullwidth
+					$mainbottom .= PHP_EOL . $this->_t(3) . '<div class="span12">';
+					$mainbottom .= PHP_EOL . $this->_t(4) . $string;
+					$mainbottom .= PHP_EOL . $this->_t(3) . '</div>';
+					break;
+			}
+		}
+	}
+
+	/**
+	 * get Edit Body Publish and Meta Tab
+	 *
+	 * @param   string    $view_name_single    The single view name
+	 * @param   string    $langView            The main lang prefix
+	 *
+	 * @return  string   The published and Meta Data Tabs
+	 *
+	 */
+	protected function getEditBodyPublishMetaTabs(&$view_name_single, &$langView)
+	{
+		// build the two tabs
+		$tabs = '';
+		// set default publishing tab lang
+		$tabLangName = $langView . '_PUBLISHING';
+		// add to lang array
+		if (!isset($this->langContent[$this->lang][$tabLangName]))
+		{
+			$this->langContent[$this->lang][$tabLangName] = 'Publishing';
+		}
+		// the default publishing items
+		$items = array('left' => array(), 'right' => array());
+		// Setup the default (custom) fields
+		// only load (1 => 'left', 2 => 'right')
+		$fieldsAddedRight = false;
+		if (isset($this->newPublishingFields[$view_name_single]))
+		{
+			foreach ($this->newPublishingFields[$view_name_single] as $df_alignment => $df_items)
+			{
+				foreach ($df_items as $df_order => $df_name)
+				{
+					if ($df_alignment == 2 || $df_alignment == 1)
+					{
+						$items[$this->alignmentOptions[$df_alignment]][$df_order] = $df_name;
+					}
+					else
+					{
+						$this->app->enqueueMessage(JText::_('<hr /><h3>Field Warning</h3>'), 'Warning');
+						$this->app->enqueueMessage(JText::sprintf('Your <b>%s</b> field could not be added, since the <b>%s</b> alignment position is not available in the %s (publishing) tab. Please only target <b>Left or right</b> in the publishing tab.', $df_name, $this->alignmentOptions[$df_alignment], $view_name_single), 'Warning');
+					}
+				}
+			}
+			// set switch to trigger notice if custom fields added to right
+			if (ComponentbuilderHelper::checkArray($items['right']))
+			{
+				$fieldsAddedRight = true;
+			}
+		}
+		// load all defaults
+		$loadDefaultFields = array(
+			'left' => array('created', 'created_by', 'modified', 'modified_by'),
+			'right' => array('published', 'ordering', 'access', 'version', 'hits', 'id')
+		);
+		foreach ($loadDefaultFields as $d_alignment => $defaultFields)
+		{
+			foreach ($defaultFields as $defaultField)
+			{
+				if (!isset($this->movedPublishingFields[$view_name_single][$defaultField]))
+				{
+					if ($defaultField != 'access')
+					{
+						$items[$d_alignment][] = $defaultField;
+					}
+					elseif ($defaultField === 'access' && isset($this->accessBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view_name_single]))
+					{
+						$items[$d_alignment][] = $defaultField;
+					}
+				}
+			}
+		}
+		// check if metadata is added to this view
+		if (isset($this->metadataBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view_name_single]))
+		{
+			// set default publishing tab code name
+			$tabCodeNameLeft = 'publishing';
+			$tabCodeNameRight = 'metadata';
+			// the default publishing tiems
+			if (ComponentbuilderHelper::checkArray($items['left']) || ComponentbuilderHelper::checkArray($items['right']))
+			{
+				$items_one = '';
+				// load the items into one side
+				if (ComponentbuilderHelper::checkArray($items['left']))
+				{
+					$items_one .= "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['left']) . "'";
+				}
+				if (ComponentbuilderHelper::checkArray($items['right']))
+				{
+					// there is already fields just add these
+					if (strlen($items_one) > 3)
+					{
+						$items_one .= "," . PHP_EOL . $this->_t(1) . "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['right']) . "'";
+					}
+					// no fields has been added yet
+					else
+					{
+						$items_one .= "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['right']) . "'";
+					}
+				}
+				// only triger the info notice if there were custom fields targeted to the right alignment position.
+				if ($fieldsAddedRight)
+				{
+					$this->app->enqueueMessage(JText::_('<hr /><h3>Field Notice</h3>'), 'Notice');
+					$this->app->enqueueMessage(JText::sprintf('Your field/s added to the <b>right</b> alignment position in the %s (publishing) tab was added to the <b>left</b>. Since we have metadata fields on the right. Fields can only be loaded to the right of the publishing tab if there is no metadata fields.', $view_name_single), 'Notice');
+				}
+				// set the publishing layout
+				$this->setLayout($view_name_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
+				$items_one = true;
+			}
+			else
+			{
+				$items_one = false;
+			}
+			// set the metadata layout
+			$this->setLayout($view_name_single, $tabCodeNameRight, false, 'layoutmetadata');
+			$items_two = true;
+		}
+		else
+		{
+			// set default publishing tab code name
+			$tabCodeNameLeft = 'publishing';
+			$tabCodeNameRight = 'publlshing';
+			// the default publishing tiems
+			if (ComponentbuilderHelper::checkArray($items['left']) || ComponentbuilderHelper::checkArray($items['right']))
+			{
+				// load left items that remain
+				if (ComponentbuilderHelper::checkArray($items['left']))
+				{
+					// load all items
+					$items_one = "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['left']) . "'";
+					// set the publishing layout
+					$this->setLayout($view_name_single, $tabCodeNameLeft, $items_one, 'layoutpublished');
+					$items_one = true;
+				}
+				// load right items that remain
+				if (ComponentbuilderHelper::checkArray($items['right']))
+				{
+					// load all items
+					$items_two = "'" . implode("'," . PHP_EOL . $this->_t(1) . "'", $items['right']) . "'";
+					// set the publishing layout
+					$this->setLayout($view_name_single, $tabCodeNameRight, $items_two, 'layoutpublished');
+					$items_two = true;
+				}
+			}
+			else
+			{
+				$items_one = false;
+				$items_two = false;
+			}
+		}
+		if ($items_one && $items_two)
+		{
+			$classs = "span6";
+		}
+		elseif ($items_one || $items_two)
+		{
+			$classs = "span12";
+		}
+		// setup correct core target
+		$coreLoad = false;
+		if (isset($this->permissionCore[$view_name_single]))
+		{
+			$core = $this->permissionCore[$view_name_single];
+			$coreLoad = true;
+		}
+		// only load this if needed
+		if ($items_one || $items_two)
+		{
+			// check if the item has permissions.
+			$publishingPer = array();
+			$allToBeChekced = array('core.delete', 'core.edit.created_by', 'core.edit.state', 'core.edit.created');
+			foreach ($allToBeChekced as $core_permission)
+			{
+				if ($coreLoad && isset($core[$core_permission]) && isset($this->permissionBuilder['global'][$core[$core_permission]]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core[$core_permission]]) && in_array($view_name_single, $this->permissionBuilder['global'][$core[$core_permission]]))
+				{
+					// set permissions.
+					$publishingPer[] = "\$this->canDo->get('" . $core[$core_permission] . "')";
+				}
+				else
+				{
+					// set permissions.
+					$publishingPer[] = "\$this->canDo->get('" . $core_permission . "')";
+				}
+			}
+			// check if custom tab must be added
+			if (($_customTabHTML = $this->addCustomTabs(15, $view_name_single, 1)) !== false)
+			{
+				$tabs .= $_customTabHTML;
+			}
+			$tabs .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php if (" . implode(' || ', $publishingPer) . ") : ?>";
+			// set the default publishing tab
+			$tabs .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $view_name_single . "Tab', '" . $tabCodeNameLeft . "', JText:" . ":_('" . $tabLangName . "', true)); ?>";
+			$tabs .= PHP_EOL . $this->_t(2) . '<div class="row-fluid form-horizontal-desktop">';
+			if ($items_one)
+			{
+				$tabs .= PHP_EOL . $this->_t(3) . '<div class="' . $classs . '">';
+				$tabs .= PHP_EOL . $this->_t(4) . "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $tabCodeNameLeft . "', \$this); ?>";
+				$tabs .= PHP_EOL . $this->_t(3) . "</div>";
+			}
+			if ($items_two)
+			{
+				$tabs .= PHP_EOL . $this->_t(3) . '<div class="' . $classs . '">';
+				$tabs .= PHP_EOL . $this->_t(4) . "<?php echo JLayoutHelper::render('" . $view_name_single . "." . $tabCodeNameRight . "', \$this); ?>";
+				$tabs .= PHP_EOL . $this->_t(3) . "</div>";
+			}
+			$tabs .= PHP_EOL . $this->_t(2) . "</div>";
+			$tabs .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+			$tabs .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
+			// check if custom tab must be added
+			if (($_customTabHTML = $this->addCustomTabs(15, $view_name_single, 2)) !== false)
+			{
+				$tabs .= $_customTabHTML;
+			}
+		}
+
+		// make sure we dont load it to a view with the name component (as this will cause conflict with Joomla conventions)
+		if ($view_name_single != 'component')
+		{
+			// set permissions tab lang
+			$tabLangName = $langView . '_PERMISSION';
+			// set permissions tab code name
+			$tabCodeName = 'permissions';
+			// add to lang array
+			if (!isset($this->langContent[$this->lang][$tabLangName]))
+			{
+				$this->langContent[$this->lang][$tabLangName] = 'Permissions';
+			}
+			// set the permissions tab
+			$tabs .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php if (\$this->canDo->get('core.admin')) : ?>";
+			$tabs .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $view_name_single . "Tab', '" . $tabCodeName . "', JText:" . ":_('" . $tabLangName . "', true)); ?>";
+			$tabs .= PHP_EOL . $this->_t(2) . '<div class="row-fluid form-horizontal-desktop">';
+			$tabs .= PHP_EOL . $this->_t(3) . '<div class="span12">';
+			$tabs .= PHP_EOL . $this->_t(4) . '<fieldset class="adminform">';
+			$tabs .= PHP_EOL . $this->_t(5) . '<div class="adminformlist">';
+			$tabs .= PHP_EOL . $this->_t(5) . "<?php foreach (\$this->form->getFieldset('accesscontrol') as \$field): ?>";
+			$tabs .= PHP_EOL . $this->_t(6) . "<div>";
+			$tabs .= PHP_EOL . $this->_t(7) . "<?php echo \$field->label; echo \$field->input;?>";
+			$tabs .= PHP_EOL . $this->_t(6) . "</div>";
+			$tabs .= PHP_EOL . $this->_t(6) . '<div class="clearfix"></div>';
+			$tabs .= PHP_EOL . $this->_t(5) . "<?php endforeach; ?>";
+			$tabs .= PHP_EOL . $this->_t(5) . "</div>";
+			$tabs .= PHP_EOL . $this->_t(4) . "</fieldset>";
+			$tabs .= PHP_EOL . $this->_t(3) . "</div>";
+			$tabs .= PHP_EOL . $this->_t(2) . "</div>";
+			$tabs .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+			$tabs .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
+		}
+		return $tabs;
 	}
 
 	protected function addCustomTabs($nr, $name_single, $target)
@@ -8143,7 +8248,7 @@ class Interpretation extends Fields
 	{
 		/**
 		 * @var $viewId
-		 * @var $viewName_single
+		 * @var $view_name_single
 		 * @var $codeName
 		 * @var $layoutCodeName
 		 * @var $key
@@ -8164,16 +8269,16 @@ class Interpretation extends Fields
 		}
 		if (ComponentbuilderHelper::checkString($single) && ComponentbuilderHelper::checkString($list))
 		{
-			$head = $this->setListHeadLinked($single, $list, $addNewButon, $viewName_single);
-			$body = $this->setListBodyLinked($single, $list, $viewName_single);
+			$head = $this->setListHeadLinked($single, $list, $addNewButon, $view_name_single);
+			$body = $this->setListBodyLinked($single, $list, $view_name_single);
 			$functionName = ComponentbuilderHelper::safeString($codeName, 'F');
 			// LAYOUTITEMSTABLE <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh] = $head . $body;
+			$this->fileContentDynamic[$view_name_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh] = $head . $body;
 			// LAYOUTITEMSHEADER <<<DYNAMIC>>>
 			$headerscript = '//' . $this->setLine(__LINE__) . ' set the edit URL';
 			$headerscript .= PHP_EOL . '$edit = "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $list . '&task=' . $single . '.edit";';
 			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' set a return value';
-			$headerscript .= PHP_EOL . '$return = ($id) ? "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $viewName_single . '&layout=edit&id=" . $id : "";';
+			$headerscript .= PHP_EOL . '$return = ($id) ? "index.php?option=com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '&view=' . $view_name_single . '&layout=edit&id=" . $id : "";';
 			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' check for a return value';
 			$headerscript .= PHP_EOL . '$jinput = JFactory::getApplication()->input;';
 			$headerscript .= PHP_EOL . "if (\$_return = \$jinput->get('return', null, 'base64'))";
@@ -8184,11 +8289,11 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . 'if (' . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::checkString($return))';
 			$headerscript .= PHP_EOL . '{';
 			$headerscript .= PHP_EOL . $this->_t(1) . '//' . $this->setLine(__LINE__) . ' set the referral values';
-			$headerscript .= PHP_EOL . $this->_t(1) . '$ref = ($id) ? "&ref=' . $viewName_single . '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
+			$headerscript .= PHP_EOL . $this->_t(1) . '$ref = ($id) ? "&ref=' . $view_name_single . '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
 			$headerscript .= PHP_EOL . '}';
 			$headerscript .= PHP_EOL . 'else';
 			$headerscript .= PHP_EOL . '{';
-			$headerscript .= PHP_EOL . $this->_t(1) . '$ref = ($id) ? "&ref=' . $viewName_single . '&refid=" . $id : "";';
+			$headerscript .= PHP_EOL . $this->_t(1) . '$ref = ($id) ? "&ref=' . $view_name_single . '&refid=" . $id : "";';
 			$headerscript .= PHP_EOL . '}';
 			if ($addNewButon > 0)
 			{
@@ -8207,11 +8312,11 @@ class Interpretation extends Fields
 				$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' load the action object';
 				$headerscript .= PHP_EOL . '$can = ' . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::getActions(' . "'" . $single . "'" . ');';
 			}
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh] = $headerscript;
+			$this->fileContentDynamic[$view_name_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh] = $headerscript;
 			// LINKEDVIEWITEMS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWITEMS' . $this->hhh] .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get Linked view data" . PHP_EOL . $this->_t(2) . "\$this->" . $codeName . " = \$this->get('" . $functionName . "');";
+			$this->fileContentDynamic[$view_name_single][$this->hhh . 'LINKEDVIEWITEMS' . $this->hhh] .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get Linked view data" . PHP_EOL . $this->_t(2) . "\$this->" . $codeName . " = \$this->get('" . $functionName . "');";
 			// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWTABLESCRIPTS' . $this->hhh] = $this->setFootableScripts();
+			$this->fileContentDynamic[$view_name_single][$this->hhh . 'LINKEDVIEWTABLESCRIPTS' . $this->hhh] = $this->setFootableScripts();
 			if (strpos($parentKey, '-R>') !== false || strpos($parentKey, '-A>') !== false)
 			{
 				list($parent_key) = explode('-', $parentKey);
@@ -8245,22 +8350,22 @@ class Interpretation extends Fields
 				foreach ($parent_keys as $parent_key)
 				{
 					$globalKey[$parent_key] = ComponentbuilderHelper::safeString($_key . $this->uniquekey(4));
-					$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWGLOBAL' . $this->hhh] .= PHP_EOL . $this->_t(2) . "\$this->" . $globalKey[$parent_key] . " = \$item->" . $parent_key . ";";
+					$this->fileContentDynamic[$view_name_single][$this->hhh . 'LINKEDVIEWGLOBAL' . $this->hhh] .= PHP_EOL . $this->_t(2) . "\$this->" . $globalKey[$parent_key] . " = \$item->" . $parent_key . ";";
 				}
 			}
 			else
 			{
 				// set the global key
 				$globalKey = ComponentbuilderHelper::safeString($_key . $this->uniquekey(4));
-				$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWGLOBAL' . $this->hhh] .= PHP_EOL . $this->_t(2) . "\$this->" . $globalKey . " = \$item->" . $parent_key . ";";
+				$this->fileContentDynamic[$view_name_single][$this->hhh . 'LINKEDVIEWGLOBAL' . $this->hhh] .= PHP_EOL . $this->_t(2) . "\$this->" . $globalKey . " = \$item->" . $parent_key . ";";
 			}
 			// LINKEDVIEWMETHODS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWMETHODS' . $this->hhh] .= $this->setListQueryLinked($single, $list, $functionName, $key, $_key, $parentKey, $parent_key, $globalKey);
+			$this->fileContentDynamic[$view_name_single][$this->hhh . 'LINKEDVIEWMETHODS' . $this->hhh] .= $this->setListQueryLinked($single, $list, $functionName, $key, $_key, $parentKey, $parent_key, $globalKey);
 		}
 		else
 		{
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh] = 'oops! error.....';
-			$this->fileContentDynamic[$viewName_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh] = '';
+			$this->fileContentDynamic[$view_name_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh] = 'oops! error.....';
+			$this->fileContentDynamic[$view_name_single . '_' . $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh] = '';
 		}
 	}
 
@@ -10870,14 +10975,14 @@ class Interpretation extends Fields
 					$type = ComponentbuilderHelper::safeString($filter['custom']['type'], 'F');
 					$otherFilter[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Set " . $CodeName . " Selection";
 					$otherFilter[] = $this->_t(2) . "\$this->" . $codeName . "Options = JFormHelper::loadFieldType('" . $type . "')->options;";
-					$otherFilter[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " We do some sanitation for " . $Codename . " filter";
+					$otherFilter[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " We do some sanitation for " . $CodeName . " filter";
 					$otherFilter[] = $this->_t(2) . "if (" . $Component . "Helper::checkArray(\$this->" . $codeName . "Options) &&";
 					$otherFilter[] = $this->_t(3) . "isset(\$this->" . $codeName . "Options[0]->value) &&";
 					$otherFilter[] = $this->_t(3) . "!" . $Component . "Helper::checkString(\$this->" . $codeName . "Options[0]->value))";
 					$otherFilter[] = $this->_t(2) . "{";
 					$otherFilter[] = $this->_t(3) . "unset(\$this->" . $codeName . "Options[0]);";
 					$otherFilter[] = $this->_t(2) . "}";
-					$otherFilter[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Only load " . $Codename . " filter if it has values";
+					$otherFilter[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Only load " . $CodeName . " filter if it has values";
 					$otherFilter[] = $this->_t(2) . "if (" . $Component . "Helper::checkArray(\$this->" . $codeName . "Options))";
 					$otherFilter[] = $this->_t(2) . "{";
 					$otherFilter[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " " . $CodeName . " Filter";

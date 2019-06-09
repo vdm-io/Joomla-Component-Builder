@@ -101,7 +101,6 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		<input type="hidden" name="task" value="snippet_type.edit" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
-	</div>
 </div>
 </form>
 </div>

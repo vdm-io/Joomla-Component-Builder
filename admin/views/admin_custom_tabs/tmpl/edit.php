@@ -101,7 +101,6 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		<input type="hidden" name="task" value="admin_custom_tabs.edit" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
-	</div>
 </div>
 </form>
 </div>

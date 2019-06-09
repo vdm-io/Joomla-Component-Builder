@@ -210,14 +210,14 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Fieldtype Name Selection
 		$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->options;
-		// We do some sanitation for  filter
+		// We do some sanitation for Fieldtype Name filter
 		if (ComponentbuilderHelper::checkArray($this->fieldtypeNameOptions) &&
 			isset($this->fieldtypeNameOptions[0]->value) &&
 			!ComponentbuilderHelper::checkString($this->fieldtypeNameOptions[0]->value))
 		{
 			unset($this->fieldtypeNameOptions[0]);
 		}
-		// Only load  filter if it has values
+		// Only load Fieldtype Name filter if it has values
 		if (ComponentbuilderHelper::checkArray($this->fieldtypeNameOptions))
 		{
 			// Fieldtype Name Filter

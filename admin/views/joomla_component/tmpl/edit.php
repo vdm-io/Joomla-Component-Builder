@@ -216,7 +216,6 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		<input type="hidden" name="task" value="joomla_component.edit" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
-	</div>
 </div>
 
 <div class="clearfix"></div>

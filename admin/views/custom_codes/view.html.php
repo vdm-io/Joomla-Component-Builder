@@ -193,14 +193,14 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 
 		// Set Component System Name Selection
 		$this->componentSystem_nameOptions = JFormHelper::loadFieldType('Component')->options;
-		// We do some sanitation for  filter
+		// We do some sanitation for Component System Name filter
 		if (ComponentbuilderHelper::checkArray($this->componentSystem_nameOptions) &&
 			isset($this->componentSystem_nameOptions[0]->value) &&
 			!ComponentbuilderHelper::checkString($this->componentSystem_nameOptions[0]->value))
 		{
 			unset($this->componentSystem_nameOptions[0]);
 		}
-		// Only load  filter if it has values
+		// Only load Component System Name filter if it has values
 		if (ComponentbuilderHelper::checkArray($this->componentSystem_nameOptions))
 		{
 			// Component System Name Filter

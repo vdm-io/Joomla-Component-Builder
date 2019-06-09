@@ -193,14 +193,14 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 
 		// Set Main Get Name Selection
 		$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->options;
-		// We do some sanitation for  filter
+		// We do some sanitation for Main Get Name filter
 		if (ComponentbuilderHelper::checkArray($this->main_getNameOptions) &&
 			isset($this->main_getNameOptions[0]->value) &&
 			!ComponentbuilderHelper::checkString($this->main_getNameOptions[0]->value))
 		{
 			unset($this->main_getNameOptions[0]);
 		}
-		// Only load  filter if it has values
+		// Only load Main Get Name filter if it has values
 		if (ComponentbuilderHelper::checkArray($this->main_getNameOptions))
 		{
 			// Main Get Name Filter

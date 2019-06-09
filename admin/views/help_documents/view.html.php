@@ -248,14 +248,14 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Admin View Selection
 		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->options;
-		// We do some sanitation for Location filter
+		// We do some sanitation for Admin View filter
 		if (ComponentbuilderHelper::checkArray($this->admin_viewOptions) &&
 			isset($this->admin_viewOptions[0]->value) &&
 			!ComponentbuilderHelper::checkString($this->admin_viewOptions[0]->value))
 		{
 			unset($this->admin_viewOptions[0]);
 		}
-		// Only load Location filter if it has values
+		// Only load Admin View filter if it has values
 		if (ComponentbuilderHelper::checkArray($this->admin_viewOptions))
 		{
 			// Admin View Filter
@@ -278,14 +278,14 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Site View Selection
 		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->options;
-		// We do some sanitation for Location filter
+		// We do some sanitation for Site View filter
 		if (ComponentbuilderHelper::checkArray($this->site_viewOptions) &&
 			isset($this->site_viewOptions[0]->value) &&
 			!ComponentbuilderHelper::checkString($this->site_viewOptions[0]->value))
 		{
 			unset($this->site_viewOptions[0]);
 		}
-		// Only load Location filter if it has values
+		// Only load Site View filter if it has values
 		if (ComponentbuilderHelper::checkArray($this->site_viewOptions))
 		{
 			// Site View Filter

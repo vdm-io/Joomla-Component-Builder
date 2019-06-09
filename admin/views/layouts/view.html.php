@@ -193,14 +193,14 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 
 		// Set Dynamic Get Name Selection
 		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->options;
-		// We do some sanitation for  filter
+		// We do some sanitation for Dynamic Get Name filter
 		if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions) &&
 			isset($this->dynamic_getNameOptions[0]->value) &&
 			!ComponentbuilderHelper::checkString($this->dynamic_getNameOptions[0]->value))
 		{
 			unset($this->dynamic_getNameOptions[0]);
 		}
-		// Only load  filter if it has values
+		// Only load Dynamic Get Name filter if it has values
 		if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions))
 		{
 			// Dynamic Get Name Filter
