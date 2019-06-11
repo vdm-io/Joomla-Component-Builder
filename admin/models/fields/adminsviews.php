@@ -51,6 +51,7 @@ class JFormFieldAdminsviews extends JFormFieldList
 				$options[] = JHtml::_('select.option', $item->id, $item->adminviews_system_name);
 			}
 		}
+
 		return $options;
 	}
 }

@@ -172,7 +172,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_MAINMENU_LABEL"
 					value="1"
 					default="1"
-					required="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_MAINMENU_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -183,7 +182,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_DASHBOARD_LIST_LABEL"
 					value="1"
 					default="1"
-					required="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_DASHBOARD_LIST_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -194,7 +192,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_SUBMENU_LABEL"
 					value="1"
 					default="1"
-					required="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_SUBMENU_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -206,8 +203,6 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_BEFORE_DESCRIPTION"
 					class="list_class fieldMedium"
 					multiple="false"
-					default=""
-					required="true"
 					button="false"
 				/>
 			</form>

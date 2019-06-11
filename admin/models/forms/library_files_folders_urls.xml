@@ -148,7 +148,6 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_RENAME_LABEL"
 					value="1"
 					default=""
-					required="true"
 					class="inputbox"
 				/>
 			</form>
@@ -204,7 +203,6 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_LABEL"
 					value="1"
 					default=""
-					required="true"
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -258,7 +256,6 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_RENAME_LABEL"
 					value="1"
 					default=""
-					required="true"
 					class="inputbox"
 				/>
 			</form>
@@ -311,7 +308,6 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_LABEL"
 					value="1"
 					default=""
-					required="true"
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
 					class="inputbox"
 				/>
