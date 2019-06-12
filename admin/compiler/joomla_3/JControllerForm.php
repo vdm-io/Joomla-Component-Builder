@@ -177,7 +177,7 @@ class ###Component###Controller###View### extends JControllerForm
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
-		}
+		}###JCONTROLLERFORM_AFTERCANCEL###
 		return $cancel;
 	}
 

@@ -146,21 +146,6 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <script type="text/javascript">
 
-// #jform_how listeners for how_vvvvwak function
-jQuery('#jform_how').on('keyup',function()
-{
-	var how_vvvvwak = jQuery("#jform_how").val();
-	vvvvwak(how_vvvvwak);
-
-});
-jQuery('#adminForm').on('change', '#jform_how',function (e)
-{
-	e.preventDefault();
-	var how_vvvvwak = jQuery("#jform_how").val();
-	vvvvwak(how_vvvvwak);
-
-});
-
 // #jform_how listeners for how_vvvvwal function
 jQuery('#jform_how').on('keyup',function()
 {
@@ -251,18 +236,33 @@ jQuery('#adminForm').on('change', '#jform_how',function (e)
 
 });
 
-// #jform_type listeners for type_vvvvwar function
+// #jform_how listeners for how_vvvvwar function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvwar = jQuery("#jform_how").val();
+	vvvvwar(how_vvvvwar);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvwar = jQuery("#jform_how").val();
+	vvvvwar(how_vvvvwar);
+
+});
+
+// #jform_type listeners for type_vvvvwas function
 jQuery('#jform_type').on('keyup',function()
 {
-	var type_vvvvwar = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwar(type_vvvvwar);
+	var type_vvvvwas = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwas(type_vvvvwas);
 
 });
 jQuery('#adminForm').on('change', '#jform_type',function (e)
 {
 	e.preventDefault();
-	var type_vvvvwar = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwar(type_vvvvwar);
+	var type_vvvvwas = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwas(type_vvvvwas);
 
 });
 

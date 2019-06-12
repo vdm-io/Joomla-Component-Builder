@@ -40,6 +40,8 @@ $fields = $displayData->get('fields') ?: array(
 	'php_allowedit',
 	'add_php_before_cancel',
 	'php_before_cancel',
+	'add_php_after_cancel',
+	'php_after_cancel',
 	'add_php_batchcopy',
 	'php_batchcopy',
 	'add_php_batchmove',

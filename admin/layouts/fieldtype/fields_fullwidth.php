@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items = $displayData->waqfields;
+$items = $displayData->warfields;
 $user = JFactory::getUser();
 $id = $displayData->item->id;
 // set the edit URL
