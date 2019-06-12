@@ -527,8 +527,12 @@ class Infusion extends Interpretation
 
 				// BATCH_ONCLICK_CANCEL_SCRIPT <<<DYNAMIC>>>
 				$this->fileContentDynamic[$viewName_list][$this->hhh . 'BATCH_ONCLICK_CANCEL_SCRIPT' . $this->hhh] = ''; // TODO <-- must still be build
+
 				// JCONTROLLERFORM_ALLOWADD <<<DYNAMIC>>>
 				$this->fileContentDynamic[$viewName_single][$this->hhh . 'JCONTROLLERFORM_ALLOWADD' . $this->hhh] = $this->setJcontrollerAllowAdd($viewName_single, $viewName_list);
+
+				// JCONTROLLERFORM_BEFORECANCEL <<<DYNAMIC>>>
+				$this->fileContentDynamic[$viewName_single][$this->hhh . 'JCONTROLLERFORM_BEFORECANCEL' . $this->hhh] = $this->getCustomScriptBuilder('php_before_cancel', $viewName_single, PHP_EOL, null, null, '');
 
 				// JCONTROLLERFORM_ALLOWEDIT <<<DYNAMIC>>>
 				$this->fileContentDynamic[$viewName_single][$this->hhh . 'JCONTROLLERFORM_ALLOWEDIT' . $this->hhh] = $this->setJcontrollerAllowEdit($viewName_single, $viewName_list);

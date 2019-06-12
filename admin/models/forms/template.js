@@ -9,43 +9,43 @@
  */
 
 // Some Global Values
-jform_vvvvvzcvyy_required = false;
+jform_vvvvvzdvyz_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvzc = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvzc(add_php_view_vvvvvzc);
+	var add_php_view_vvvvvzd = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvzd(add_php_view_vvvvvzd);
 });
 
-// the vvvvvzc function
-function vvvvvzc(add_php_view_vvvvvzc)
+// the vvvvvzd function
+function vvvvvzd(add_php_view_vvvvvzd)
 {
 	// set the function logic
-	if (add_php_view_vvvvvzc == 1)
+	if (add_php_view_vvvvvzd == 1)
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').show();
 		// add required attribute to php_view field
-		if (jform_vvvvvzcvyy_required)
+		if (jform_vvvvvzdvyz_required)
 		{
 			updateFieldRequired('php_view',0);
 			jQuery('#jform_php_view').prop('required','required');
 			jQuery('#jform_php_view').attr('aria-required',true);
 			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvzcvyy_required = false;
+			jform_vvvvvzdvyz_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').hide();
 		// remove required attribute from php_view field
-		if (!jform_vvvvvzcvyy_required)
+		if (!jform_vvvvvzdvyz_required)
 		{
 			updateFieldRequired('php_view',1);
 			jQuery('#jform_php_view').removeAttr('required');
 			jQuery('#jform_php_view').removeAttr('aria-required');
 			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvzcvyy_required = true;
+			jform_vvvvvzdvyz_required = true;
 		}
 	}
 }

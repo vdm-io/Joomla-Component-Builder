@@ -2046,7 +2046,7 @@ class Get
 				}
 			}
 			// add_php
-			$addArrayP = array('php_getitem', 'php_before_save', 'php_save', 'php_getform', 'php_postsavehook', 'php_getitems', 'php_getitems_after_all', 'php_getlistquery', 'php_allowadd', 'php_allowedit', 'php_before_delete', 'php_after_delete', 'php_before_publish', 'php_after_publish', 'php_batchcopy', 'php_batchmove', 'php_document');
+			$addArrayP = array('php_getitem', 'php_before_save', 'php_save', 'php_getform', 'php_postsavehook', 'php_getitems', 'php_getitems_after_all', 'php_getlistquery', 'php_allowadd', 'php_allowedit', 'php_before_cancel', 'php_before_delete', 'php_after_delete', 'php_before_publish', 'php_after_publish', 'php_batchcopy', 'php_batchmove', 'php_document');
 			foreach ($addArrayP as $scripter)
 			{
 				if (isset($view->{'add_' . $scripter}) && $view->{'add_' . $scripter} == 1)

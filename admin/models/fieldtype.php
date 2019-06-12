@@ -155,7 +155,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getWapfields()
+	public function getWaqfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -237,13 +237,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationWapfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationWaqfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationWapfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationWaqfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationWapfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationWaqfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationWapfields($item->store, 'store');
+					$item->store = $this->selectionTranslationWaqfields($item->store, 'store');
 				}
 			}
 
@@ -257,7 +257,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return translatable string
 	 */
-	public function selectionTranslationWapfields($value,$name)
+	public function selectionTranslationWaqfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
