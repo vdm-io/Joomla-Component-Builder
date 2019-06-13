@@ -270,7 +270,7 @@ class Infusion extends Interpretation
 					$this->setLockLicensePer($viewName_list, $this->target);
 
 					// FIELDSETS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_single][$this->hhh . 'FIELDSETS' . $this->hhh] = $this->setFieldSet($view, $this->fileContentStatic[$this->hhh . 'component' . $this->hhh], $viewName_single, $viewName_list);
+					$this->fileContentDynamic[$viewName_single][$this->hhh . 'FIELDSETS' . $this->hhh] = $this->setFieldSet($view, $this->componentCodeName, $viewName_single, $viewName_list);
 
 					// ACCESSCONTROL <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single][$this->hhh . 'ACCESSCONTROL' . $this->hhh] = $this->setFieldSetAccessControl($viewName_single);
@@ -396,7 +396,7 @@ class Infusion extends Interpretation
 					if (isset($view['checkin']) && $view['checkin'] == 1)
 					{
 						// AUTOCHECKIN <<<DYNAMIC>>>
-						$this->fileContentDynamic[$viewName_list][$this->hhh . 'AUTOCHECKIN' . $this->hhh] = $this->setAutoCheckin($viewName_single, $this->fileContentStatic[$this->hhh . 'component' . $this->hhh]);
+						$this->fileContentDynamic[$viewName_list][$this->hhh . 'AUTOCHECKIN' . $this->hhh] = $this->setAutoCheckin($viewName_single, $this->componentCodeName);
 						// CHECKINCALL <<<DYNAMIC>>>
 						$this->fileContentDynamic[$viewName_list][$this->hhh . 'CHECKINCALL' . $this->hhh] = $this->setCheckinCall();
 					}
@@ -720,22 +720,22 @@ class Infusion extends Interpretation
 			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
 			{
 				// DASHBOARDVIEW
-				$this->fileContentStatic[$this->hhh . 'DASHBOARDVIEW' . $this->hhh] = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
+				$this->fileContentStatic[$this->hhh . 'DASHBOARDVIEW' . $this->hhh] = $this->componentCodeName;
 
 				// DASHBOARDICONS
-				$this->fileContentDynamic[$this->fileContentStatic[$this->hhh . 'component' . $this->hhh]][$this->hhh . 'DASHBOARDICONS' . $this->hhh] = $this->setDashboardIcons();
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh . 'DASHBOARDICONS' . $this->hhh] = $this->setDashboardIcons();
 
 				// DASHBOARDICONACCESS
-				$this->fileContentDynamic[$this->fileContentStatic[$this->hhh . 'component' . $this->hhh]][$this->hhh . 'DASHBOARDICONACCESS' . $this->hhh] = $this->setDashboardIconAccess();
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh . 'DASHBOARDICONACCESS' . $this->hhh] = $this->setDashboardIconAccess();
 
 				// DASH_MODEL_METHODS
-				$this->fileContentDynamic[$this->fileContentStatic[$this->hhh . 'component' . $this->hhh]][$this->hhh . 'DASH_MODEL_METHODS' . $this->hhh] = $this->setDashboardModelMethods();
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh . 'DASH_MODEL_METHODS' . $this->hhh] = $this->setDashboardModelMethods();
 
 				// DASH_GET_CUSTOM_DATA
-				$this->fileContentDynamic[$this->fileContentStatic[$this->hhh . 'component' . $this->hhh]][$this->hhh . 'DASH_GET_CUSTOM_DATA' . $this->hhh] = $this->setDashboardGetCustomData();
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh . 'DASH_GET_CUSTOM_DATA' . $this->hhh] = $this->setDashboardGetCustomData();
 
 				// DASH_DISPLAY_DATA
-				$this->fileContentDynamic[$this->fileContentStatic[$this->hhh . 'component' . $this->hhh]][$this->hhh . 'DASH_DISPLAY_DATA' . $this->hhh] = $this->setDashboardDisplayData();
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh . 'DASH_DISPLAY_DATA' . $this->hhh] = $this->setDashboardDisplayData();
 			}
 			else
 			{
@@ -1223,7 +1223,7 @@ class Infusion extends Interpretation
 					$replace[$this->hhh . 'SITE_LANGUAGES' . $this->hhh] = implode(PHP_EOL . $this->_t(2), $langXML['site']);
 				}
 				// build xml path
-				$xmlPath = $this->componentPath . '/' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh] . '.xml';
+				$xmlPath = $this->componentPath . '/' . $this->componentCodeName . '.xml';
 				// get the content in xml
 				$componentXML = ComponentbuilderHelper::getFileContents($xmlPath);
 				// update the xml content

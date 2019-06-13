@@ -2868,9 +2868,9 @@ class Fields extends Structure
 				$this->bbb . 'CODE' . $this->ddd => $data['code'],
 				$this->bbb . 'view_type' . $this->ddd => $view_name_single . '_' . $data['type'],
 				$this->bbb . 'type' . $this->ddd => $data['type'],
-				$this->bbb . 'com_component' . $this->ddd => (isset($data['custom']['component']) && ComponentbuilderHelper::checkString($data['custom']['component'])) ? ComponentbuilderHelper::safeString($data['custom']['component']) : 'com_' . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh],
+				$this->bbb . 'com_component' . $this->ddd => (isset($data['custom']['component']) && ComponentbuilderHelper::checkString($data['custom']['component'])) ? ComponentbuilderHelper::safeString($data['custom']['component']) : 'com_' . $this->componentCodeName,
 				// set the generic values
-				$this->bbb . 'component' . $this->ddd => $this->fileContentStatic[$this->hhh . 'component' . $this->hhh],
+				$this->bbb . 'component' . $this->ddd => $this->componentCodeName,
 				$this->bbb . 'Component' . $this->ddd => $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh],
 				$this->bbb . 'view' . $this->ddd => (isset($data['custom']['view']) && ComponentbuilderHelper::checkString($data['custom']['view'])) ? ComponentbuilderHelper::safeString($data['custom']['view']) : $view_name_single,
 				$this->bbb . 'views' . $this->ddd => (isset($data['custom']['views']) && ComponentbuilderHelper::checkString($data['custom']['views'])) ? ComponentbuilderHelper::safeString($data['custom']['views']) : $view_name_list
@@ -3038,7 +3038,7 @@ class Fields extends Structure
 			ComponentbuilderHelper::checkString($fieldData['view']) && ComponentbuilderHelper::checkString($fieldData['views']))
 		{
 			// set local component
-			$local_component = "com_" . $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
+			$local_component = "com_" . $this->componentCodeName;
 			// check that the component value is set
 			if (!isset($fieldData['component']) || !ComponentbuilderHelper::checkString($fieldData['component']))
 			{
@@ -3054,6 +3054,10 @@ class Fields extends Structure
 			{
 				$fieldData['component'] = $this->setPlaceholders($fieldData['component'], $this->placeholders);
 			}
+			// get core permissions
+			$coreLoad = false;
+			// add ref tags
+			$refLoad = true;
 			// fall back on the field component
 			$component = $fieldData['component'];
 			// check if we should add ref tags (since it only works well on local views)
@@ -3062,10 +3066,7 @@ class Fields extends Structure
 				// do not add ref tags
 				$refLoad = false;
 			}
-			// get core permissions
-			$coreLoad = false;
-			// add ref tags
-			$refLoad = true;
+			// get core permisssions
 			if (isset($this->permissionCore[$fieldData['view']]))
 			{
 				// get the core permission naming array
@@ -3085,15 +3086,15 @@ class Fields extends Structure
 			$addButton[] = $this->_t(1) . "protected function getInput()";
 			$addButton[] = $this->_t(1) . "{";
 			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " see if we should add buttons";
-			$addButton[] = $this->_t(2) . "\$setButton = \$this->getAttribute('button');";
+			$addButton[] = $this->_t(2) . "\$set_button = \$this->getAttribute('button');";
 			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " get html";
 			$addButton[] = $this->_t(2) . "\$html = parent::getInput();";
 			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " if true set button";
-			$addButton[] = $this->_t(2) . "if (\$setButton === 'true')";
+			$addButton[] = $this->_t(2) . "if (\$set_button === 'true')";
 			$addButton[] = $this->_t(2) . "{";
 			$addButton[] = $this->_t(3) . "\$button = array();";
 			$addButton[] = $this->_t(3) . "\$script = array();";
-			$addButton[] = $this->_t(3) . "\$buttonName = \$this->getAttribute('name');";
+			$addButton[] = $this->_t(3) . "\$button_code_name = \$this->getAttribute('name');";
 			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get the input from url";
 			$addButton[] = $this->_t(3) . "\$app = JFactory::getApplication();";
 			$addButton[] = $this->_t(3) . "\$jinput = \$app->input;";
@@ -3135,6 +3136,13 @@ class Fields extends Structure
 				$addButton[] = $this->_t(4) . "\$refJ = '&return=' . \$_return;";
 				$addButton[] = $this->_t(3) . "}";
 			}
+			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get button label";
+			$addButton[] = $this->_t(3) . "\$button_label = trim(\$button_code_name);";
+			$addButton[] = $this->_t(3) . "\$button_label = preg_replace('/_+/', ' ', \$button_label);";
+			$addButton[] = $this->_t(3) . "\$button_label = preg_replace('/\s+/', ' ', \$button_label);";
+			$addButton[] = $this->_t(3) . "\$button_label = preg_replace(\"/[^A-Za-z ]/\", '', \$button_label);";
+			$addButton[] = $this->_t(3) . "\$button_label = ucfirst(strtolower(\$button_label));";
+			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " get user object";
 			$addButton[] = $this->_t(3) . "\$user = JFactory::getUser();";
 			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " only add if user allowed to create " . $fieldData['view'];
 			// check if the item has permissions.
@@ -3148,12 +3156,7 @@ class Fields extends Structure
 			}
 			$addButton[] = $this->_t(3) . "{";
 			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " build Create button";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = trim(\$buttonName);";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace('/_+/', ' ', \$buttonNamee);";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
-			$addButton[] = $this->_t(4) . "\$button[] = '<a id=\"'.\$buttonName.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText:" . ":sprintf('" . $this->langPrefix . "_CREATE_NEW_S', \$buttonNamee).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
+			$addButton[] = $this->_t(4) . "\$button[] = '<a id=\"'.\$button_code_name.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText:" . ":sprintf('" . $this->langPrefix . "_CREATE_NEW_S', \$button_label).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
 			$addButton[] = $this->_t(5) . "href=\"index.php?option=" . $fieldData['component'] . "&amp;view=" . $fieldData['view'] . "&amp;layout=edit'.\$ref.'\" >";
 			$addButton[] = $this->_t(5) . "<span class=\"icon-new icon-white\"></span></a>';";
 			$addButton[] = $this->_t(3) . "}";
@@ -3161,45 +3164,40 @@ class Fields extends Structure
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit']) && isset($this->permissionBuilder['global'][$core['core.edit']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder['global'][$core['core.edit']]) && in_array($fieldData['view'], $this->permissionBuilder['global'][$core['core.edit']]))
 			{
-				$addButton[] = $this->_t(3) . "if ((\$buttonName === '" . $fieldData['view'] . "' || \$buttonName === '" . $fieldData['views'] . "') && \$user->authorise('" . $core['core.edit'] . "', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
+				$addButton[] = $this->_t(3) . "if (\$user->authorise('" . $core['core.edit'] . "', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
 			else
 			{
-				$addButton[] = $this->_t(3) . "if ((\$buttonName === '" . $fieldData['view'] . "' || \$buttonName === '" . $fieldData['views'] . "')  && \$user->authorise('core.edit', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
+				$addButton[] = $this->_t(3) . "if (\$user->authorise('core.edit', '" . $component . "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
 			$addButton[] = $this->_t(3) . "{";
 			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " build edit button";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = trim(\$buttonName);";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace('/_+/', ' ', \$buttonNamee);";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace('/\s+/', ' ', \$buttonNamee);";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = preg_replace(\"/[^A-Za-z ]/\", '', \$buttonNamee);";
-			$addButton[] = $this->_t(4) . "\$buttonNamee = ucfirst(strtolower(\$buttonNamee));";
-			$addButton[] = $this->_t(4) . "\$button[] = '<a id=\"'.\$buttonName.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText:" . ":sprintf('" . $this->langPrefix . "_EDIT_S', \$buttonNamee).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
+			$addButton[] = $this->_t(4) . "\$button[] = '<a id=\"'.\$button_code_name.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText:" . ":sprintf('" . $this->langPrefix . "_EDIT_S', \$button_label).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
 			$addButton[] = $this->_t(5) . "<span class=\"icon-edit\"></span></a>';";
 			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " build script";
 			$addButton[] = $this->_t(4) . "\$script[] = \"";
 			$addButton[] = $this->_t(5) . "jQuery(document).ready(function() {";
-			$addButton[] = $this->_t(6) . "jQuery('#adminForm').on('change', '#jform_\".\$buttonName.\"',function (e) {";
+			$addButton[] = $this->_t(6) . "jQuery('#adminForm').on('change', '#jform_\".\$button_code_name.\"',function (e) {";
 			$addButton[] = $this->_t(7) . "e.preventDefault();";
-			$addButton[] = $this->_t(7) . "var \".\$buttonName.\"Value = jQuery('#jform_\".\$buttonName.\"').val();";
-			$addButton[] = $this->_t(7) . "\".\$buttonName.\"Button(\".\$buttonName.\"Value);";
+			$addButton[] = $this->_t(7) . "var \".\$button_code_name.\"Value = jQuery('#jform_\".\$button_code_name.\"').val();";
+			$addButton[] = $this->_t(7) . "\".\$button_code_name.\"Button(\".\$button_code_name.\"Value);";
 			$addButton[] = $this->_t(6) . "});";
-			$addButton[] = $this->_t(6) . "var \".\$buttonName.\"Value = jQuery('#jform_\".\$buttonName.\"').val();";
-			$addButton[] = $this->_t(6) . "\".\$buttonName.\"Button(\".\$buttonName.\"Value);";
+			$addButton[] = $this->_t(6) . "var \".\$button_code_name.\"Value = jQuery('#jform_\".\$button_code_name.\"').val();";
+			$addButton[] = $this->_t(6) . "\".\$button_code_name.\"Button(\".\$button_code_name.\"Value);";
 			$addButton[] = $this->_t(5) . "});";
-			$addButton[] = $this->_t(5) . "function \".\$buttonName.\"Button(value) {";
+			$addButton[] = $this->_t(5) . "function \".\$button_code_name.\"Button(value) {";
 			$addButton[] = $this->_t(6) . "if (value > 0) {"; // TODO not ideal since value may not be an (int)
 			$addButton[] = $this->_t(7) . "// hide the create button";
-			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Create').hide();";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$button_code_name.\"Create').hide();";
 			$addButton[] = $this->_t(7) . "// show edit button";
-			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Edit').show();";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$button_code_name.\"Edit').show();";
 			$addButton[] = $this->_t(7) . "var url = 'index.php?option=" . $fieldData['component'] . "&view=" . $fieldData['views'] . "&task=" . $fieldData['view'] . ".edit&id='+value+'\".\$refJ.\"';"; // TODO this value may not be the ID
-			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Edit').attr('href', url);";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$button_code_name.\"Edit').attr('href', url);";
 			$addButton[] = $this->_t(6) . "} else {";
 			$addButton[] = $this->_t(7) . "// show the create button";
-			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Create').show();";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$button_code_name.\"Create').show();";
 			$addButton[] = $this->_t(7) . "// hide edit button";
-			$addButton[] = $this->_t(7) . "jQuery('#\".\$buttonName.\"Edit').hide();";
+			$addButton[] = $this->_t(7) . "jQuery('#\".\$button_code_name.\"Edit').hide();";
 			$addButton[] = $this->_t(6) . "}";
 			$addButton[] = $this->_t(5) . "}\";";
 			$addButton[] = $this->_t(3) . "}";
