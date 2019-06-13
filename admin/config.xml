@@ -711,7 +711,6 @@
 					class="list_class"
 					multiple="false"
 					default="0"
-					required="true"
 					button="false"
 				/>
 				<!-- Backup Field. Type: Checkbox. (joomla) -->
@@ -840,7 +839,6 @@
 			class="text_area"
 			readonly="false"
 			disabled="false"
-			required="true"
 			filter="STRING"
 			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_HINT"
