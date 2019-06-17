@@ -42,7 +42,7 @@ class ###Component###Controller###View### extends JControllerForm
 	{
 		$this->view_list = '###SITE_DEFAULT_VIEW###'; // safeguard for setting the return view listing to the default site view.
 		parent::__construct($config);
-	}
+	}###ADMIN_CUSTOM_BUTTONS_CONTROLLER###
 
         /**
 	 * Method override to check if you can add a new record.
@@ -141,7 +141,7 @@ class ###Component###Controller###View### extends JControllerForm
 		$this->refid = $this->input->get('refid', 0, 'int');
 
 		// Check if there is a return value
-		$return = $this->input->get('return', null, 'base64');
+		$return = $this->input->get('return', null, 'base64');###JCONTROLLERFORM_BEFORECANCEL###
 
 		$cancel = parent::cancel($key);
 
@@ -177,7 +177,7 @@ class ###Component###Controller###View### extends JControllerForm
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
-		}
+		}###JCONTROLLERFORM_AFTERCANCEL###
 		return $cancel;
 	}
 

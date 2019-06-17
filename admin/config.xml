@@ -713,6 +713,21 @@
 					default="0"
 					button="false"
 				/>
+				<!-- Install Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="install"
+					label="COM_COMPONENTBUILDER_CONFIG_INSTALL_LABEL"
+					description="COM_COMPONENTBUILDER_CONFIG_INSTALL_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_CONFIG_TRUE</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_CONFIG_FALSE</option>
+				</field>
 				<!-- Backup Field. Type: Checkbox. (joomla) -->
 				<field
 					type="checkbox"

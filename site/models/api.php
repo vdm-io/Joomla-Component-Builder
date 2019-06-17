@@ -191,6 +191,7 @@ class ComponentbuilderModelApi extends JModelItem
 	{
 		$values = array(
 			'version' => 3,
+			'install' => 1,
 			'component' => 0,
 			'backup' => 0,
 			'repository' => 0,
@@ -224,10 +225,27 @@ class ComponentbuilderModelApi extends JModelItem
 					// get compiler model to run the installer
 					$model = ComponentbuilderHelper::getModel('compiler', JPATH_COMPONENT_ADMINISTRATOR);
 					// now install components
-					if ($model->install($this->compiler->componentFolderName.'.zip'))
+					if (1 == $values['install'] && $model->install($this->compiler->componentFolderName.'.zip'))
 					{
 						// component was installed
 						$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_INSTALLED_AND_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
+					}
+					elseif (1 != $values['install'])
+					{
+						jimport('joomla.filesystem.file');
+						$config = JFactory::getConfig();
+						$package = $config->get('tmp_path') . '/' . $this->compiler->componentFolderName.'.zip';
+						// just remove from temp
+						if (JFile::delete($package) && !is_file($package))
+						{
+							// component was installed
+							$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_ALSO_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
+						}
+						else
+						{
+							// component was not installed
+							$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_STILL_IN_THE_TEMP_FOLDER', $this->compiler->componentFolderName);
+						}
 					}
 					else
 					{
