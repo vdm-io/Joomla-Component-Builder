@@ -690,6 +690,13 @@ class Get
 	public $minify = 0;
 
 	/**
+	 * field name builder switch
+	 * 
+	 * @var    int
+	 */
+	public $fieldNameBuilder = 0;
+
+	/**
 	 * Is Tidy Enabled
 	 * 
 	 * @var    bool
@@ -750,6 +757,8 @@ class Get
 			$this->params = JComponentHelper::getParams('com_componentbuilder');
 			// set the minfy switch of the JavaScript
 			$this->minify = (isset($config['minify']) && $config['minify'] != 2) ? $config['minify'] : $this->params->get('minify', 0);
+			// field name builder switch between conventions
+			$this->fieldNameBuilder = $this->params->get('field_name_builder', 0); // change this to 1 for testing the new convention
 			// set the global language
 			$this->langTag = $this->params->get('language', $this->langTag);
 			// setup the main language array
@@ -2872,9 +2881,9 @@ class Get
 			return 'error';
 		}
 		// set the type name
-		$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
+		$type_name = $this->safeName($field['settings']->type_name);
 		// set the name of the field
-		$name = ComponentbuilderHelper::safeString($field['settings']->name);
+		$name = $this->safeName($field['settings']->name);
 		// check that we have the poperties
 		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
 		{
@@ -2908,7 +2917,7 @@ class Get
 							{
 								// set other category details
 								$this->catOtherName[$listViewName] = array(
-									'name' => ComponentbuilderHelper::safeString($otherName),
+									'name' => $this->safeName($otherName),
 									'views' => ComponentbuilderHelper::safeString($otherViews),
 									'view' => ComponentbuilderHelper::safeString($otherView)
 								);
@@ -2928,7 +2937,7 @@ class Get
 					else
 					{
 						// get value from xml
-						$xml = ComponentbuilderHelper::safeString($this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'), $this->placeholders));
+						$xml = $this->safeName($this->setPlaceholders(ComponentbuilderHelper::getBetween($field['settings']->xml, 'name="', '"'), $this->placeholders));
 						// check if a value was found
 						if (ComponentbuilderHelper::checkString($xml))
 						{
@@ -2949,6 +2958,44 @@ class Get
 		}
 		// fall back to global
 		return $name;
+	}
+
+	/**
+	* Making field names safe
+	*
+	* @input	string   The you would like to make safe
+	*
+	* @returns string on success
+	**/
+	protected function safeName($string, $spacer = '_')
+	{
+		// use the new convention
+		if (1 == $this->fieldNameBuilder)
+		{
+			// 0nly continue if we have a string
+			if (ComponentbuilderHelper::checkString($string))
+			{
+				// check that the first character is not a number
+				if (is_numeric(substr($string, 0, 1)))
+				{
+					$string = ComponentbuilderHelper::replaceNumbers($string);
+				}
+				// remove all other strange characters
+				$string = trim($string);
+				$string = preg_replace('/'.$spacer.'+/', ' ', $string);
+				$string = preg_replace('/\s+/', ' ', $string);
+				// remove all and keep only characters and numbers
+				$string = preg_replace("/[^A-Za-z0-9 ]/", '', $string);
+				// replace white space with underscore (SAFEST OPTION)
+				$string = preg_replace('/\s+/', $spacer, $string);
+				// default is to return lower
+				return strtolower($string);
+			}
+			// not a string
+			return '';
+		}
+		// use the default (original behaviour/convention)
+		return ComponentbuilderHelper::safeString($string);
 	}
 
 	/**
@@ -2994,13 +3041,13 @@ class Get
 		{
 			$counter = 1;
 			// set the unique name
-			$uniqueName = ComponentbuilderHelper::safeString($name . '_' . $counter);
+			$uniqueName = $this->safeName($name . '_' . $counter);
 			while (isset($this->uniqueNames[$view]['names'][$uniqueName]))
 			{
 				// increment the number
 				$counter++;
 				// try again
-				$uniqueName = ComponentbuilderHelper::safeString($name . '_' . $counter);
+				$uniqueName = $this->safeName($name . '_' . $counter);
 			}
 			// set the new name number
 			$this->uniqueNames[$view]['names'][$uniqueName] = $counter;
