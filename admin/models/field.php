@@ -923,8 +923,6 @@ class ComponentbuilderModelField extends JModelAdmin
 				// make sure we have the correct values
 				if (ComponentbuilderHelper::checkArray($property) && isset($property['name']) && ComponentbuilderHelper::checkString($property['name']) && (isset($property['value']) || 'default' === $property['name']))
 				{
-					// fix the name (TODO)
-					// $property['name'] = ComponentbuilderHelper::safeString($property['name']);
 					// some fixes, just in case (more can be added)
 					switch ($property['name'])
 					{
@@ -937,7 +935,7 @@ class ComponentbuilderModelField extends JModelAdmin
 							}
 							else
 							{
-								$property['value'] = ComponentbuilderHelper::safeString($property['value']);
+								$property['value'] = ComponentbuilderHelper::safeFieldName($property['value']);
 							}
 						break;
 						case 'type':

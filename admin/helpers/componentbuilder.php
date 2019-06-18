@@ -124,6 +124,54 @@ abstract class ComponentbuilderHelper
 		'JPATH_THEMES' => JPATH_THEMES
 	);
 
+	/**
+	* The field builder switch
+	**/
+	protected static $fieldNameBuilder = false;
+
+	/**
+	* Making field names safe
+	*
+	* @input	string   The you would like to make safe
+	*
+	* @returns string on success
+	**/
+	public static function safeFieldName($string, $spacer = '_')
+	{
+		// get global value
+		if (self::$fieldNameBuilder === false)
+		{
+			self::$fieldNameBuilder = JComponentHelper::getParams('com_componentbuilder')->get('field_name_builder', 0); // change this to 1 for testing the new convention
+		}
+		// use the new convention
+		if (1 == self::$fieldNameBuilder)
+		{
+			// 0nly continue if we have a string
+			if (self::checkString($string))
+			{
+				// check that the first character is not a number
+				if (is_numeric(substr($string, 0, 1)))
+				{
+					$string = self::replaceNumbers($string);
+				}
+				// remove all other strange characters
+				$string = trim($string);
+				$string = preg_replace('/'.$spacer.'+/', ' ', $string);
+				$string = preg_replace('/\s+/', ' ', $string);
+				// remove all and keep only characters and numbers
+				$string = preg_replace("/[^A-Za-z0-9 ]/", '', $string);
+				// replace white space with underscore (SAFEST OPTION)
+				$string = preg_replace('/\s+/', $spacer, $string);
+				// default is to return lower
+				return strtolower($string);
+			}
+			// not a string
+			return '';
+		}
+		// use the default (original behaviour/convention)
+		return self::safeString($string);
+	}
+
 	/*
 	 * Get the Array of Existing Validation Rule Names
 	 *
@@ -1200,13 +1248,13 @@ abstract class ComponentbuilderHelper
 			}
 			else
 			{
-				$name = self::safeString(self::getBetween($field->xml,'name="','"'));
+				$name = self::safeFieldName(self::getBetween($field->xml,'name="','"'));
 			}
 
 			// use field core name only if not found in xml
 			if (!self::checkString($name))
 			{
-				$name = self::safeString($field->name);;
+				$name = self::safeFieldName($field->name);
 			}
 			return array('name' => $name, 'type' => $field->type_name);
 		}
