@@ -737,6 +737,13 @@ class Get
 	public $mysqlTableSetting = array();
 
 	/**
+	 * event plugin trigger switch
+	 * 
+	 * @var    boolean
+	 */
+	protected $active_plugins = false;
+
+	/**
 	 * Constructor
 	 */
 
@@ -748,6 +755,21 @@ class Get
 			$this->app = JFactory::getApplication();
 			// Set the params
 			$this->params = JComponentHelper::getParams('com_componentbuilder');
+			// get active plugins
+			if (($plugins = $this->params->get('compiler_plugin', false)) !== false)
+			{
+				foreach ($plugins as $plugin)
+				{
+					// get posible plugins
+					if (\JPluginHelper::isEnabled('extension', $plugin))
+					{
+						// Import the appropriate plugin group.
+						\JPluginHelper::importPlugin('extension', $plugin);
+						// activate events
+						$this->active_plugins = true;
+					}
+				}
+			}
 			// set the minfy switch of the JavaScript
 			$this->minify = (isset($config['minify']) && $config['minify'] != 2) ? $config['minify'] : $this->params->get('minify', 0);
 			// set the global language
@@ -867,6 +889,40 @@ class Get
 	}
 
 	/**
+	 * Trigger events
+	 * 
+	 * @param   string   $event  The event to trigger
+	 * @param   mix      $data   The values to pass to the event/plugin
+	 * 
+	 * @return  string
+	 * 
+	 */
+	public function triggerEvent($event, $data)
+	{
+		// only exicute if plugins were loaded (active)
+		if ($this->active_plugins)
+		{
+			// Get the dispatcher.
+			$dispatcher = \JEventDispatcher::getInstance();
+
+			// Trigger the form preparation event.
+			$results = $dispatcher->trigger($event, $data);
+
+			// Check for errors encountered while trigger the event
+			if (count($results) && in_array(false, $results, true))
+			{
+				// Get the last error.
+				$error = $dispatcher->getError();
+
+				if (!($error instanceof \Exception))
+				{
+					throw new \Exception($error);
+				}
+			}
+		}
+	}
+
+	/**
 	 * get all System Placeholders
 	 *
 	 * @return  array The global placeholders
@@ -963,11 +1019,17 @@ class Get
 		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_placeholders', 'k') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('k.joomla_component') . ')');
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $this->componentID);
 
+		// Trigger Event: jcb_ce_onBeforeQueryComponentData
+		$this->triggerEvent('jcb_ce_onBeforeQueryComponentData', array(&$this->componentID, &$query, &$this->db));
+
 		// Reset the query using our newly populated query object.
 		$this->db->setQuery($query);
 
 		// Load the results as a list of stdClass objects
 		$component = $this->db->loadObject();
+
+		// Trigger Event: jcb_ce_onBeforeModelComponentData
+		$this->triggerEvent('jcb_ce_onBeforeModelComponentData', array(&$component));
 
 		// set upater
 		$updater = array(
@@ -1510,6 +1572,9 @@ class Get
 			$component->toignore = array('.git');
 		}
 
+		// Trigger Event: jcb_ce_onAfterModelComponentData
+		$this->triggerEvent('jcb_ce_onAfterModelComponentData', array(&$component));
+
 		// return the found component data
 		return $component;
 	}
@@ -1555,6 +1620,9 @@ class Get
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_fields_relations', 'r') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('r.admin_view') . ')');
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_admin_custom_tabs', 't') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('t.admin_view') . ')');
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+
+			// Trigger Event: jcb_ce_onBeforeQueryViewData
+			$this->triggerEvent('jcb_ce_onBeforeQueryViewData', array(&$id, &$query, &$this->db));
 
 			// Reset the query using our newly populated query object.
 			$this->db->setQuery($query);
@@ -1611,6 +1679,10 @@ class Get
 			$this->placeholders[$this->bbb . 'Views' . $this->ddd] = $this->placeholders[$this->hhh . 'Views' . $this->hhh];
 			$this->placeholders[$this->bbb . 'VIEW' . $this->ddd] = $this->placeholders[$this->hhh . 'VIEW' . $this->hhh];
 			$this->placeholders[$this->bbb . 'VIEWS' . $this->ddd] = $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
+
+			// Trigger Event: jcb_ce_onBeforeModelViewData
+			$this->triggerEvent('jcb_ce_onBeforeModelViewData', array(&$view, &$this->placeholders));
+
 			// add the tables
 			$view->addtables = (isset($view->addtables) && ComponentbuilderHelper::checkJson($view->addtables)) ? json_decode($view->addtables, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->addtables))
@@ -2205,6 +2277,10 @@ class Get
 				// remove the table values since we moved to another object
 				unset($view->{'mysql_table_' . $_mysqlTableKey});
 			}
+
+			// Trigger Event: jcb_ce_onAfterModelViewData
+			$this->triggerEvent('jcb_ce_onAfterModelViewData', array(&$view, &$this->placeholders));
+
 			// clear placeholders
 			unset($this->placeholders[$this->hhh . 'view' . $this->hhh]);
 			unset($this->placeholders[$this->hhh . 'views' . $this->hhh]);
@@ -2244,11 +2320,18 @@ class Get
 		$query->from('#__componentbuilder_' . $table . ' AS a');
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
+		// Trigger Event: jcb_ce_onBeforeQueryCustomViewData
+		$this->triggerEvent('jcb_ce_onBeforeQueryCustomViewData', array(&$id, &$table, &$query, &$this->db));
+
 		// Reset the query using our newly populated query object.
 		$this->db->setQuery($query);
 
 		// Load the results as a list of stdClass objects (see later for more options on retrieving data).
 		$view = $this->db->loadObject();
+
+		// Trigger Event: jcb_ce_onBeforeModelCustomViewData
+		$this->triggerEvent('jcb_ce_onBeforeModelCustomViewData', array(&$view, &$id, &$table));
+
 		if ($table === 'site_view')
 		{
 			$this->lang = 'site';
@@ -2485,6 +2568,10 @@ class Get
 			}
 			unset($view->custom_button);
 		}
+
+		// Trigger Event: jcb_ce_onAfterModelCustomViewData
+		$this->triggerEvent('jcb_ce_onAfterModelCustomViewData', array(&$view));
+
 		// return the found view data
 		return $view;
 	}
@@ -2513,6 +2600,9 @@ class Get
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $this->db->quoteName('a.fieldtype') . ' = ' . $this->db->quoteName('c.id') . ')');
 			$query->where($this->db->quoteName('a.id') . ' = ' . $this->db->quote($id));
 
+			// Trigger Event: jcb_ce_onBeforeQueryFieldData
+			$this->triggerEvent('jcb_ce_onBeforeQueryFieldData', array(&$id, &$query, &$this->db));
+
 			// Reset the query using our newly populated query object.
 			$this->db->setQuery($query);
 			$this->db->execute();
@@ -2520,6 +2610,9 @@ class Get
 			{
 				// Load the results as a list of stdClass objects (see later for more options on retrieving data).
 				$field = $this->db->loadObject();
+
+				// Trigger Event: jcb_ce_onBeforeModelFieldData
+				$this->triggerEvent('jcb_ce_onBeforeModelFieldData', array(&$field));
 
 				// adding a fix for the changed name of type to fieldtype
 				$field->type = $field->fieldtype;
@@ -2595,6 +2688,9 @@ class Get
 
 				// get the last used version
 				$field->history = $this->getHistoryWatch('field', $id);
+
+				// Trigger Event: jcb_ce_onAfterModelFieldData
+				$this->triggerEvent('jcb_ce_onAfterModelFieldData', array(&$field));
 
 				$this->_fieldData[$id] = $field;
 			}

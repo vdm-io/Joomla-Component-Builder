@@ -456,11 +456,15 @@ class Fields extends Structure
 		$dynamicFields = '';
 		// set the custom table key
 		$dbkey = 'g';
+		// Trigger Event: jcb_ce_onBeforeBuildFields
+		$this->triggerEvent('jcb_ce_onBeforeBuildFields', array(&$dynamicFields, &$readOnly, &$dbkey, &$view, &$component, &$view_name_single, &$view_name_list, &$this->placeholders, &$langView, &$langViews));
 		// TODO we should add the global and local view switch if field for front end
 		foreach ($view['settings']->fields as $field)
 		{
 			$dynamicFields .= $this->setDynamicField($field, $view, $view['settings']->type, $langView, $view_name_single, $view_name_list, $this->placeholders, $dbkey, true);
 		}
+		// Trigger Event: jcb_ce_onAfterBuildFields
+		$this->triggerEvent('jcb_ce_onAfterBuildFields', array(&$dynamicFields, &$readOnly, &$dbkey, &$view, &$component, &$view_name_single, &$view_name_list, &$this->placeholders, &$langView, &$langViews));
 		// set the default fields
 		$fieldSet = array();
 		$fieldSet[] = '<fieldset name="details">';
@@ -724,11 +728,15 @@ class Fields extends Structure
 		$dynamicFieldsXML = array();
 		// set the custom table key
 		$dbkey = 'g';
+		// Trigger Event: jcb_ce_onBeforeBuildFields
+		$this->triggerEvent('jcb_ce_onBeforeBuildFields', array(&$dynamicFieldsXML, &$readOnlyXML, &$dbkey, &$view, &$component, &$view_name_single, &$view_name_list, &$this->placeholders, &$langView, &$langViews));
 		// TODO we should add the global and local view switch if field for front end
 		foreach ($view['settings']->fields as $field)
 		{
 			$dynamicFieldsXML[] = $this->setDynamicField($field, $view, $view['settings']->type, $langView, $view_name_single, $view_name_list, $this->placeholders, $dbkey, true);
 		}
+		// Trigger Event: jcb_ce_onAfterBuildFields
+		$this->triggerEvent('jcb_ce_onAfterBuildFields', array(&$dynamicFieldsXML, &$readOnlyXML, &$dbkey, &$view, &$component, &$view_name_single, &$view_name_list, &$this->placeholders, &$langView, &$langViews));
 		// set the default fields
 		$XML = new simpleXMLElement('<a/>');
 		$fieldSetXML = $XML->addChild('fieldset');

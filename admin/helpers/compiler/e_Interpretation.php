@@ -3353,11 +3353,13 @@ class Interpretation extends Fields
 			if ($view['settings']->main_get->gettype == 1 && ComponentbuilderHelper::checkArray($view['settings']->main_get->plugin_events))
 			{
 				$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Process the content plugins.";
-				$method .= PHP_EOL . $this->_t(2) . "JPluginHelper::importPlugin('content');";
-				$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Setup Event Object.";
-				$method .= PHP_EOL . $this->_t(2) . "\$this->item->event = new stdClass;";
-				$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Check if item has params, or pass global params";
-				$method .= PHP_EOL . $this->_t(2) . "\$params = (isset(\$this->item->params) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkJson(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
+				$method .= PHP_EOL . $this->_t(2) . "if (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkObject(\$this->item))";
+				$method .= PHP_EOL . $this->_t(2) . "{";
+				$method .= PHP_EOL . $this->_t(3) . "JPluginHelper::importPlugin('content');";
+				$method .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Setup Event Object.";
+				$method .= PHP_EOL . $this->_t(3) . "\$this->item->event = new stdClass;";
+				$method .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Check if item has params, or pass global params";
+				$method .= PHP_EOL . $this->_t(3) . "\$params = (isset(\$this->item->params) && " . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkJson(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
 				// load the defaults
 				foreach ($view['settings']->main_get->plugin_events as $plugin_event)
 				{
@@ -3370,11 +3372,12 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " " . $plugin_event . " Event Trigger.";
-						$method .= PHP_EOL . $this->_t(2) . "\$results = \$dispatcher->trigger('" . $plugin_event . "', array('com_" . $this->componentCodeName . "." . $view['settings']->context . "', &\$this->item, &\$params, 0));";
-						$method .= PHP_EOL . $this->_t(2) . '$this->item->event->' . $plugin_event . ' = trim(implode("\n", $results));';
+						$method .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " " . $plugin_event . " Event Trigger.";
+						$method .= PHP_EOL . $this->_t(3) . "\$results = \$dispatcher->trigger('" . $plugin_event . "', array('com_" . $this->componentCodeName . "." . $view['settings']->context . "', &\$this->item, &\$params, 0));";
+						$method .= PHP_EOL . $this->_t(3) . '$this->item->event->' . $plugin_event . ' = trim(implode("\n", $results));';
 					}
 				}
+				$method .= PHP_EOL . $this->_t(2) . "}";
 			}
 			$method .= PHP_EOL . PHP_EOL . $this->_t(2) . "parent::display(\$tpl);";
 		}
@@ -6535,6 +6538,9 @@ class Interpretation extends Fields
 	{
 		// add final list of needed lang strings
 		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		// Trigger Event: jcb_ce_onBeforeBuildAdminLang
+		$this->triggerEvent('jcb_ce_onBeforeBuildAdminLang', array(&$this->langContent['admin'], &$this->langPrefix, &$componentName));
+		// start loding the defaults
 		$this->langContent['adminsys'][$this->langPrefix] = $componentName;
 		$this->langContent['adminsys'][$this->langPrefix . '_CONFIGURATION'] = $componentName . ' Configuration';
 		$this->langContent['admin'][$this->langPrefix] = $componentName;
@@ -6624,6 +6630,9 @@ class Interpretation extends Fields
 		}
 		if (isset($this->langContent['admin']) && ComponentbuilderHelper::checkArray($this->langContent['admin']))
 		{
+			// Trigger Event: jcb_ce_onAfterBuildAdminLang
+			$this->triggerEvent('jcb_ce_onAfterBuildAdminLang', array(&$this->langContent['admin'], &$this->langPrefix, &$componentName));
+			// sort the strings
 			ksort($this->langContent['admin']);
 			// load to global languages
 			$this->languages[$this->langTag]['admin'] = $this->langContent['admin'];
@@ -6638,7 +6647,11 @@ class Interpretation extends Fields
 	public function setLangSite()
 	{
 		// add final list of needed lang strings
-		$this->langContent['site'][$this->langPrefix] = ComponentbuilderHelper::safeString($this->componentData->name, 'W');
+		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		// Trigger Event: jcb_ce_onBeforeBuildSiteLang
+		$this->triggerEvent('jcb_ce_onBeforeBuildSiteLang', array(&$this->langContent['site'], &$this->langPrefix, &$componentName));
+		// add final list of needed lang strings
+		$this->langContent['site'][$this->langPrefix] = $componentName;
 		// some more defaults
 		$this->langContent['site']['JTOOLBAR_APPLY'] = "Save";
 		$this->langContent['site']['JTOOLBAR_SAVE_AS_COPY'] = "Save as Copy";
@@ -6677,6 +6690,9 @@ class Interpretation extends Fields
 		}
 		if (isset($this->langContent['site']) && ComponentbuilderHelper::checkArray($this->langContent['site']))
 		{
+			// Trigger Event: jcb_ce_onAfterBuildSiteLang
+			$this->triggerEvent('jcb_ce_onAfterBuildSiteLang', array(&$this->langContent['site'], &$this->langPrefix, &$componentName));
+			// sort the strings
 			ksort($this->langContent['site']);
 			// load to global languages
 			$this->languages[$this->langTag]['site'] = $this->langContent['site'];
@@ -6691,7 +6707,11 @@ class Interpretation extends Fields
 	public function setLangSiteSys()
 	{
 		// add final list of needed lang strings
-		$this->langContent['sitesys'][$this->langPrefix] = ComponentbuilderHelper::safeString($this->componentData->name, 'W');
+		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		// Trigger Event: jcb_ce_onBeforeBuildSiteSysLang
+		$this->triggerEvent('jcb_ce_onBeforeBuildSiteSysLang', array(&$this->langContent['sitesys'], &$this->langPrefix, &$componentName));
+		// add final list of needed lang strings
+		$this->langContent['sitesys'][$this->langPrefix] = $componentName;
 		$this->langContent['sitesys'][$this->langPrefix . '_NO_ACCESS_GRANTED'] = "No Access Granted!";
 		$this->langContent['sitesys'][$this->langPrefix . '_NOT_FOUND_OR_ACCESS_DENIED'] = "Not found or access denied!";
 
@@ -6705,6 +6725,9 @@ class Interpretation extends Fields
 		}
 		if (isset($this->langContent['sitesys']) && ComponentbuilderHelper::checkArray($this->langContent['sitesys']))
 		{
+			// Trigger Event: jcb_ce_onAfterBuildSiteSysLang
+			$this->triggerEvent('jcb_ce_onAfterBuildSiteSysLang', array(&$this->langContent['sitesys'], &$this->langPrefix, &$componentName));
+			// sort strings
 			ksort($this->langContent['sitesys']);
 			// load to global languages
 			$this->languages[$this->langTag]['sitesys'] = $this->langContent['sitesys'];
@@ -6718,6 +6741,10 @@ class Interpretation extends Fields
 
 	public function setLangAdminSys()
 	{
+		// add final list of needed lang strings
+		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		// Trigger Event: jcb_ce_onBeforeBuildAdminSysLang
+		$this->triggerEvent('jcb_ce_onBeforeBuildAdminSysLang', array(&$this->langContent['adminsys'], &$this->langPrefix, &$componentName));
 		// check if the both admin array is set
 		if (isset($this->langContent['bothadmin']) && ComponentbuilderHelper::checkArray($this->langContent['bothadmin']))
 		{
@@ -6728,6 +6755,9 @@ class Interpretation extends Fields
 		}
 		if (isset($this->langContent['adminsys']) && ComponentbuilderHelper::checkArray($this->langContent['adminsys']))
 		{
+			// Trigger Event: jcb_ce_onAfterBuildAdminSysLang
+			$this->triggerEvent('jcb_ce_onAfterBuildAdminSysLang', array(&$this->langContent['adminsys'], &$this->langPrefix, &$componentName));
+			// sort strings
 			ksort($this->langContent['adminsys']);
 			// load to global languages
 			$this->languages[$this->langTag]['adminsys'] = $this->langContent['adminsys'];
@@ -13963,6 +13993,7 @@ class Interpretation extends Fields
 			// set the custom fields
 			if (isset($this->componentData->config) && ComponentbuilderHelper::checkArray($this->componentData->config))
 			{
+				// set component code name
 				$component = $this->componentCodeName;
 				$viewName = 'config';
 				$listViewName = 'configs';
@@ -13990,6 +14021,9 @@ class Interpretation extends Fields
 				$viewType = 0;
 				// set the custom table key
 				$dbkey = 'g';
+				// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
+				$this->triggerEvent('jcb_ce_onBeforeSetConfigFieldsets', array(&$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->componentData->config, &$this->extensionsParams, &$placeholders));
+				// build the config fields
 				foreach ($this->componentData->config as $field)
 				{
 					// check the field builder type
@@ -14043,6 +14077,8 @@ class Interpretation extends Fields
 		}
 		elseif (2 == $timer) // this is after the admin views are build
 		{
+			// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
+			$this->triggerEvent('jcb_ce_onBeforeSetConfigFieldsets', array(&$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->componentData->config, &$this->extensionsParams, &$this->placeholders));
 			// these field sets can only be added after admin view is build
 			$this->setGroupControlConfigFieldsets($lang);
 			// these can be added anytime really (but looks best after groups
@@ -14053,7 +14089,8 @@ class Interpretation extends Fields
 			// these are the coustom settings
 			$this->setCustomControlConfigFieldsets($lang);
 		}
-		// we can add more event (timers as we need)
+		// Trigger Event: jcb_ce_onAfterSetConfigFieldsets
+		$this->triggerEvent('jcb_ce_onAfterSetConfigFieldsets', array(&$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->extensionsParams, &$this->frontEndParams, &$this->placeholders));
 	}
 
 	public function setSiteControlConfigFieldsets($lang)

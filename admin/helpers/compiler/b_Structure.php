@@ -367,6 +367,8 @@ class Structure extends Get
 			$this->setLibaries();
 			// set the Joomla Version Data
 			$this->joomlaVersionData = $this->setJoomlaVersionData();
+			// Trigger Event: jcb_ce_onAfterSetJoomlaVersionData
+			$this->triggerEvent('jcb_ce_onAfterSetJoomlaVersionData', array(&$this->joomlaVersionData));
 			// set the dashboard
 			$this->setDynamicDashboard();
 			// set the new folders
@@ -416,6 +418,8 @@ class Structure extends Get
 	{
 		if (ComponentbuilderHelper::checkArray($this->libraries))
 		{
+			// Trigger Event: jcb_ce_onBeforeSetLibaries
+			$this->triggerEvent('jcb_ce_onBeforeSetLibaries', array(&$this->libraries));
 			// creat the main component folder
 			if (!JFolder::exists($this->componentPath))
 			{

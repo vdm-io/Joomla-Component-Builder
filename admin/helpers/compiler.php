@@ -253,6 +253,8 @@ class Compiler extends Infusion
 	 */
 	protected function setFileContent(&$name, &$path, &$bom, $view = null)
 	{
+		// Trigger Event: jcb_ce_onBeforeSetFileContent
+		$this->triggerEvent('jcb_ce_onBeforeSetFileContent', array(&$name, &$path, &$bom, &$view));
 		// set the file name
 		$this->fileContentStatic[$this->hhh . 'FILENAME' . $this->hhh] = $name;
 		// check if the file should get PHP opening
@@ -263,6 +265,8 @@ class Compiler extends Infusion
 		}
 		// get content of the file
 		$string = ComponentbuilderHelper::getFileContents($path);
+		// Trigger Event: jcb_ce_onGetFileContents
+		$this->triggerEvent('jcb_ce_onGetFileContents', array(&$string, &$name, &$path, &$bom, &$view));
 		// see if we should add a BOM
 		if (strpos($string, $this->hhh . 'BOM' . $this->hhh) !== false)
 		{
@@ -281,6 +285,8 @@ class Compiler extends Infusion
 		{
 			$answer = $this->setDynamicValues($answer);
 		}
+		// Trigger Event: jcb_ce_onBeforeSetFileContent
+		$this->triggerEvent('jcb_ce_onBeforeWriteFileContent', array(&$answer, &$name, &$path, &$bom, &$view));
 		// add answer back to file
 		$this->writeFile($path, $answer);
 		// count the file lines

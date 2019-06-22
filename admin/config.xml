@@ -57,6 +57,16 @@
 			folder="editors"
 			filter="cmd"
 		/>
+		<!-- Compiler_plugin Field. Type: Plugins. (joomla) -->
+		<field
+			type="plugins"
+			name="compiler_plugin"
+			label="COM_COMPONENTBUILDER_CONFIG_COMPILER_PLUGIN_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_COMPILER_PLUGIN_DESCRIPTION"
+			multiple="true"
+			folder="extension"
+			filter="cmd"
+		/>
 		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
 		<!-- Manage_jcb_package_directories Field. Type: Radio. (joomla) -->
