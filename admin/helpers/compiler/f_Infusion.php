@@ -847,7 +847,6 @@ class Infusion extends Interpretation
 			if (isset($this->componentData->site_views) && ComponentbuilderHelper::checkArray($this->componentData->site_views))
 			{
 				$this->target = 'site';
-				// var_dump($this->componentData->site_views);exit;
 				// start dynamic build
 				foreach ($this->componentData->site_views as $view)
 				{

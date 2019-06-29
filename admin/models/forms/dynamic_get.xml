@@ -1162,7 +1162,7 @@
 					readonly="false"
 					disabled="false"
 					required="true"
-					filter="CMD"
+					filter="STRING"
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_VALUE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_VALUE_KEY_HINT"
 				/>

@@ -19,14 +19,14 @@ class Structure extends Get
 {
 
 	/**
-	 * The foulder counter
+	 * The folder counter
 	 * 
 	 * @var     int
 	 */
 	public $folderCount = 0;
 
 	/**
-	 * The foulder counter
+	 * The file counter
 	 * 
 	 * @var     int
 	 */

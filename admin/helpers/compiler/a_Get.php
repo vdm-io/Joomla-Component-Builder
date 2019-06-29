@@ -905,7 +905,7 @@ class Get
 			// Get the dispatcher.
 			$dispatcher = \JEventDispatcher::getInstance();
 
-			// Trigger the form preparation event.
+			// Trigger this compiler event.
 			$results = $dispatcher->trigger($event, $data);
 
 			// Check for errors encountered while trigger the event
