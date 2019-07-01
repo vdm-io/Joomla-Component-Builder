@@ -69,7 +69,7 @@ class Infusion extends Interpretation
 		if (isset($this->componentData->admin_views) && ComponentbuilderHelper::checkArray($this->componentData->admin_views))
 		{
 			// Trigger Event: jcb_ce_onBeforeBuildFilesContent
-			$this->triggerEvent('jcb_ce_onBeforeBuildFilesContent', array(&$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
+			$this->triggerEvent('jcb_ce_onBeforeBuildFilesContent', array(&$this->componentContext, &$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
 
 			// COMPONENT
 			$this->fileContentStatic[$this->hhh . 'COMPONENT' . $this->hhh] = $this->placeholders[$this->hhh . 'COMPONENT' . $this->hhh];
@@ -276,7 +276,7 @@ class Infusion extends Interpretation
 					$this->setLockLicensePer($viewName_list, $this->target);
 
 					// Trigger Event: jcb_ce_onBeforeBuildAdminEditViewContent
-					$this->triggerEvent('jcb_ce_onBeforeBuildAdminEditViewContent', array(&$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic[$viewName_single], &$this->placeholders, &$this->hhh));
+					$this->triggerEvent('jcb_ce_onBeforeBuildAdminEditViewContent', array(&$this->componentContext, &$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic[$viewName_single], &$this->placeholders, &$this->hhh));
 
 					// FIELDSETS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single][$this->hhh . 'FIELDSETS' . $this->hhh] = $this->setFieldSet($view, $this->componentCodeName, $viewName_single, $viewName_list);
@@ -377,8 +377,11 @@ class Infusion extends Interpretation
 						}
 					}
 
+					// TABLAYOUTFIELDSARRAY <<<DYNAMIC>>> add the tab layout fields array to the model
+					$this->fileContentDynamic[$viewName_single][$this->hhh . 'TABLAYOUTFIELDSARRAY' . $this->hhh] = $this->getTabLayoutFieldsArray($viewName_single);
+
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
-					$this->triggerEvent('jcb_ce_onAfterBuildAdminEditViewContent', array(&$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic[$viewName_single], &$this->placeholders, &$this->hhh));
+					$this->triggerEvent('jcb_ce_onAfterBuildAdminEditViewContent', array(&$this->componentContext, &$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic[$viewName_single], &$this->placeholders, &$this->hhh));
 				}
 				// set the views names
 				if (isset($view['settings']->name_list) && $view['settings']->name_list != 'null')
@@ -389,7 +392,7 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$viewName_list][$this->hhh . 'ICOMOON' . $this->hhh] = $view['icomoon'];
 
 					// Trigger Event: jcb_ce_onBeforeBuildAdminListViewContent
-					$this->triggerEvent('jcb_ce_onBeforeBuildAdminListViewContent', array(&$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic[$viewName_list], &$this->placeholders, &$this->hhh));
+					$this->triggerEvent('jcb_ce_onBeforeBuildAdminListViewContent', array(&$this->componentContext, &$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic[$viewName_list], &$this->placeholders, &$this->hhh));
 
 					// set the export/import option
 					if (isset($view['port']) && $view['port'] || 1 == $view['settings']->add_custom_import)
@@ -522,7 +525,7 @@ class Infusion extends Interpretation
 					}
 
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
-					$this->triggerEvent('jcb_ce_onAfterBuildAdminListViewContent', array(&$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic[$viewName_list], &$this->placeholders, &$this->hhh));
+					$this->triggerEvent('jcb_ce_onAfterBuildAdminListViewContent', array(&$this->componentContext, &$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic[$viewName_list], &$this->placeholders, &$this->hhh));
 				}
 
 				// set u fields used in batch
@@ -605,7 +608,7 @@ class Infusion extends Interpretation
 				$this->fileContentStatic[$this->hhh . 'HELPER_EXEL' . $this->hhh] = $this->setExelHelperMethods();
 
 				// Trigger Event: jcb_ce_onAfterBuildAdminViewContent
-				$this->triggerEvent('jcb_ce_onAfterBuildAdminViewContent', array(&$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
+				$this->triggerEvent('jcb_ce_onAfterBuildAdminViewContent', array(&$this->componentContext, &$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
 			}
 
 			// setup custom_admin_views and all needed stuff for the site
@@ -651,7 +654,7 @@ class Infusion extends Interpretation
 					$this->placeholders[$this->bbb . 'SVIEWS' . $this->ddd] = $view['settings']->CODE;
 
 					// Trigger Event: jcb_ce_onBeforeBuildCustomAdminViewContent
-					$this->triggerEvent('jcb_ce_onBeforeBuildCustomAdminViewContent', array(&$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
+					$this->triggerEvent('jcb_ce_onBeforeBuildCustomAdminViewContent', array(&$this->componentContext, &$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
 
 					// set license per view if needed
 					$this->setLockLicensePer($view['settings']->code, $this->target);
@@ -705,7 +708,7 @@ class Infusion extends Interpretation
 					$this->setCustomViewTemplateBody($view);
 
 					// Trigger Event: jcb_ce_onAfterBuildCustomAdminViewContent
-					$this->triggerEvent('jcb_ce_onAfterBuildCustomAdminViewContent', array(&$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
+					$this->triggerEvent('jcb_ce_onAfterBuildCustomAdminViewContent', array(&$this->componentContext, &$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
 				}
 
 				// setup the layouts
@@ -872,7 +875,7 @@ class Infusion extends Interpretation
 					$this->placeholders[$this->bbb . 'SVIEWS' . $this->ddd] = $view['settings']->CODE;
 
 					// Trigger Event: jcb_ce_onBeforeBuildSiteViewContent
-					$this->triggerEvent('jcb_ce_onBeforeBuildSiteViewContent', array(&$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
+					$this->triggerEvent('jcb_ce_onBeforeBuildSiteViewContent', array(&$this->componentContext, &$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
 
 					// set license per view if needed
 					$this->setLockLicensePer($view['settings']->code, $this->target);
@@ -956,7 +959,7 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_BOTTOM_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, 2);
 
 					// Trigger Event: jcb_ce_onAfterBuildSiteViewContent
-					$this->triggerEvent('jcb_ce_onAfterBuildSiteViewContent', array(&$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
+					$this->triggerEvent('jcb_ce_onAfterBuildSiteViewContent', array(&$this->componentContext, &$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
 				}
 				// setup the layouts
 				$this->setCustomViewLayouts();
@@ -1042,7 +1045,7 @@ class Infusion extends Interpretation
 			}
 
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
-			$this->triggerEvent('jcb_ce_onAfterBuildFilesContent', array(&$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
+			$this->triggerEvent('jcb_ce_onAfterBuildFilesContent', array(&$this->componentContext, &$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
 
 			return true;
 		}
@@ -1172,7 +1175,7 @@ class Infusion extends Interpretation
 		if (ComponentbuilderHelper::checkArray($this->languages))
 		{
 			// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
-			$this->triggerEvent('jcb_ce_onBeforeBuildAllLangFiles', array(&$this->languages, &$this->langTag));
+			$this->triggerEvent('jcb_ce_onBeforeBuildAllLangFiles', array(&$this->componentContext, &$this->languages, &$this->langTag));
 			// rest xml array
 			$langXML = array();
 			foreach ($this->languages as $tag => $areas)

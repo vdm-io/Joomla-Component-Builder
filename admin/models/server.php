@@ -18,13 +18,46 @@ use Joomla\Registry\Registry;
  * Componentbuilder Server Model
  */
 class ComponentbuilderModelServer extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'username',
+				'host',
+				'port',
+				'path'
+			),
+			'right' => array(
+				'authentication',
+				'password',
+				'private',
+				'private_key',
+				'secret'
+			),
+			'fullwidth' => array(
+				'note_ftp_signature',
+				'signature',
+				'note_ssh_security',
+				'not_required'
+			),
+			'above' => array(
+				'name',
+				'protocol'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

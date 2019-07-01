@@ -18,13 +18,65 @@ use Joomla\Registry\Registry;
  * Componentbuilder Library Model
  */
 class ComponentbuilderModelLibrary extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'behaviour' => array(
+			'left' => array(
+				'note_library_instruction',
+				'libraries'
+			),
+			'right' => array(
+				'description'
+			),
+			'fullwidth' => array(
+				'note_no_behaviour_one',
+				'note_yes_behaviour_one',
+				'note_build_in_behaviour_one',
+				'addconditions',
+				'php_setdocument'
+			),
+			'above' => array(
+				'name',
+				'how',
+				'type'
+			),
+			'under' => array(
+				'not_required'
+			)
+		),
+		'config' => array(
+			'fullwidth' => array(
+				'note_no_behaviour_two',
+				'note_yes_behaviour_two',
+				'note_build_in_behaviour_two',
+				'note_display_library_config'
+			)
+		),
+		'files_folders_urls' => array(
+			'fullwidth' => array(
+				'note_no_behaviour_three',
+				'note_build_in_behaviour_three',
+				'note_display_library_files_folders_urls'
+			)
+		),
+		'linked' => array(
+			'fullwidth' => array(
+				'note_linked_to_notice'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

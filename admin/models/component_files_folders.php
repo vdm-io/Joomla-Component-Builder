@@ -18,13 +18,41 @@ use Joomla\Registry\Registry;
  * Componentbuilder Component_files_folders Model
  */
 class ComponentbuilderModelComponent_files_folders extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'basic' => array(
+			'fullwidth' => array(
+				'note_add_files',
+				'addfiles',
+				'note_add_folders',
+				'addfolders'
+			),
+			'above' => array(
+				'joomla_component'
+			)
+		),
+		'advance' => array(
+			'fullwidth' => array(
+				'note_add_files_fullpath',
+				'addfilesfullpath',
+				'note_add_folders_fullpath',
+				'addfoldersfullpath',
+				'note_constant_paths'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

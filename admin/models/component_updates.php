@@ -18,13 +18,29 @@ use Joomla\Registry\Registry;
  * Componentbuilder Component_updates Model
  */
 class ComponentbuilderModelComponent_updates extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'updates' => array(
+			'fullwidth' => array(
+				'version_update'
+			),
+			'above' => array(
+				'joomla_component'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

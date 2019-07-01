@@ -18,13 +18,28 @@ use Joomla\Registry\Registry;
  * Componentbuilder Language_translation Model
  */
 class ComponentbuilderModelLanguage_translation extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'fullwidth' => array(
+				'source',
+				'translation',
+				'components'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

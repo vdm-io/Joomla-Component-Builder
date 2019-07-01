@@ -6539,7 +6539,7 @@ class Interpretation extends Fields
 		// add final list of needed lang strings
 		$componentName = JFilterOutput::cleanText($this->componentData->name);
 		// Trigger Event: jcb_ce_onBeforeBuildAdminLang
-		$this->triggerEvent('jcb_ce_onBeforeBuildAdminLang', array(&$this->langContent['admin'], &$this->langPrefix, &$componentName));
+		$this->triggerEvent('jcb_ce_onBeforeBuildAdminLang', array(&$this->componentContext, &$this->langContent['admin'], &$this->langPrefix, &$componentName));
 		// start loding the defaults
 		$this->langContent['adminsys'][$this->langPrefix] = $componentName;
 		$this->langContent['adminsys'][$this->langPrefix . '_CONFIGURATION'] = $componentName . ' Configuration';
@@ -6631,7 +6631,7 @@ class Interpretation extends Fields
 		if (isset($this->langContent['admin']) && ComponentbuilderHelper::checkArray($this->langContent['admin']))
 		{
 			// Trigger Event: jcb_ce_onAfterBuildAdminLang
-			$this->triggerEvent('jcb_ce_onAfterBuildAdminLang', array(&$this->langContent['admin'], &$this->langPrefix, &$componentName));
+			$this->triggerEvent('jcb_ce_onAfterBuildAdminLang', array(&$this->componentContext, &$this->langContent['admin'], &$this->langPrefix, &$componentName));
 			// sort the strings
 			ksort($this->langContent['admin']);
 			// load to global languages
@@ -6649,7 +6649,7 @@ class Interpretation extends Fields
 		// add final list of needed lang strings
 		$componentName = JFilterOutput::cleanText($this->componentData->name);
 		// Trigger Event: jcb_ce_onBeforeBuildSiteLang
-		$this->triggerEvent('jcb_ce_onBeforeBuildSiteLang', array(&$this->langContent['site'], &$this->langPrefix, &$componentName));
+		$this->triggerEvent('jcb_ce_onBeforeBuildSiteLang', array(&$this->componentContext, &$this->langContent['site'], &$this->langPrefix, &$componentName));
 		// add final list of needed lang strings
 		$this->langContent['site'][$this->langPrefix] = $componentName;
 		// some more defaults
@@ -6691,7 +6691,7 @@ class Interpretation extends Fields
 		if (isset($this->langContent['site']) && ComponentbuilderHelper::checkArray($this->langContent['site']))
 		{
 			// Trigger Event: jcb_ce_onAfterBuildSiteLang
-			$this->triggerEvent('jcb_ce_onAfterBuildSiteLang', array(&$this->langContent['site'], &$this->langPrefix, &$componentName));
+			$this->triggerEvent('jcb_ce_onAfterBuildSiteLang', array(&$this->componentContext, &$this->langContent['site'], &$this->langPrefix, &$componentName));
 			// sort the strings
 			ksort($this->langContent['site']);
 			// load to global languages
@@ -6709,7 +6709,7 @@ class Interpretation extends Fields
 		// add final list of needed lang strings
 		$componentName = JFilterOutput::cleanText($this->componentData->name);
 		// Trigger Event: jcb_ce_onBeforeBuildSiteSysLang
-		$this->triggerEvent('jcb_ce_onBeforeBuildSiteSysLang', array(&$this->langContent['sitesys'], &$this->langPrefix, &$componentName));
+		$this->triggerEvent('jcb_ce_onBeforeBuildSiteSysLang', array(&$this->componentContext, &$this->langContent['sitesys'], &$this->langPrefix, &$componentName));
 		// add final list of needed lang strings
 		$this->langContent['sitesys'][$this->langPrefix] = $componentName;
 		$this->langContent['sitesys'][$this->langPrefix . '_NO_ACCESS_GRANTED'] = "No Access Granted!";
@@ -6726,7 +6726,7 @@ class Interpretation extends Fields
 		if (isset($this->langContent['sitesys']) && ComponentbuilderHelper::checkArray($this->langContent['sitesys']))
 		{
 			// Trigger Event: jcb_ce_onAfterBuildSiteSysLang
-			$this->triggerEvent('jcb_ce_onAfterBuildSiteSysLang', array(&$this->langContent['sitesys'], &$this->langPrefix, &$componentName));
+			$this->triggerEvent('jcb_ce_onAfterBuildSiteSysLang', array(&$this->componentContext, &$this->langContent['sitesys'], &$this->langPrefix, &$componentName));
 			// sort strings
 			ksort($this->langContent['sitesys']);
 			// load to global languages
@@ -6744,7 +6744,7 @@ class Interpretation extends Fields
 		// add final list of needed lang strings
 		$componentName = JFilterOutput::cleanText($this->componentData->name);
 		// Trigger Event: jcb_ce_onBeforeBuildAdminSysLang
-		$this->triggerEvent('jcb_ce_onBeforeBuildAdminSysLang', array(&$this->langContent['adminsys'], &$this->langPrefix, &$componentName));
+		$this->triggerEvent('jcb_ce_onBeforeBuildAdminSysLang', array(&$this->componentContext, &$this->langContent['adminsys'], &$this->langPrefix, &$componentName));
 		// check if the both admin array is set
 		if (isset($this->langContent['bothadmin']) && ComponentbuilderHelper::checkArray($this->langContent['bothadmin']))
 		{
@@ -6756,7 +6756,7 @@ class Interpretation extends Fields
 		if (isset($this->langContent['adminsys']) && ComponentbuilderHelper::checkArray($this->langContent['adminsys']))
 		{
 			// Trigger Event: jcb_ce_onAfterBuildAdminSysLang
-			$this->triggerEvent('jcb_ce_onAfterBuildAdminSysLang', array(&$this->langContent['adminsys'], &$this->langPrefix, &$componentName));
+			$this->triggerEvent('jcb_ce_onAfterBuildAdminSysLang', array(&$this->componentContext, &$this->langContent['adminsys'], &$this->langPrefix, &$componentName));
 			// sort strings
 			ksort($this->langContent['adminsys']);
 			// load to global languages
@@ -7480,6 +7480,46 @@ class Interpretation extends Fields
 			return $this->listColnrBuilder[$viewName_list];
 		}
 		return '';
+	}
+
+	/**
+	 * set Tabs Layouts Fields Array
+	 *
+	 * @param   string   $view_name_single  The single view name
+	 *
+	 * @return  string   The array
+	 *
+	 */
+	public function getTabLayoutFieldsArray($view_name_single)
+	{
+		// check if the load build is set for this view
+		if (isset($this->layoutBuilder[$view_name_single]) && ComponentbuilderHelper::checkArray($this->layoutBuilder[$view_name_single]))
+		{
+			$layoutArray = array();
+			foreach ($this->layoutBuilder[$view_name_single] as $layout => $alignments)
+			{
+				// sort the alignments
+				ksort($alignments);
+				$alignmentArray= array();
+				foreach ($alignments as $alignment => $fields)
+				{
+					// sort the fields
+					ksort($fields);
+					$fieldArray= array();
+					foreach ($fields as $field)
+					{
+						// add each field
+						$fieldArray[] = PHP_EOL . $this->_t(4) . "'" . $field . "'";
+					}
+					// add the alignemnt key
+					$alignmentArray[] = PHP_EOL . $this->_t(3) . "'" . $this->alignmentOptions[$alignment] . "' => array(" . implode(',', $fieldArray) . PHP_EOL . $this->_t(3) . ")";
+				}
+				// add the layout key
+				$layoutArray[] = PHP_EOL . $this->_t(2) . "'" . ComponentbuilderHelper::safeString($layout) . "' => array(" . implode(',', $alignmentArray) . PHP_EOL . $this->_t(2) . ")";
+			}
+			return 'array(' . implode(',', $layoutArray) . PHP_EOL . $this->_t(1) . ")";
+		}
+		return 'array()';
 	}
 
 	/**
@@ -14022,7 +14062,7 @@ class Interpretation extends Fields
 				// set the custom table key
 				$dbkey = 'g';
 				// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
-				$this->triggerEvent('jcb_ce_onBeforeSetConfigFieldsets', array(&$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->componentData->config, &$this->extensionsParams, &$placeholders));
+				$this->triggerEvent('jcb_ce_onBeforeSetConfigFieldsets', array(&$this->componentContext, &$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->componentData->config, &$this->extensionsParams, &$placeholders));
 				// build the config fields
 				foreach ($this->componentData->config as $field)
 				{
@@ -14078,7 +14118,7 @@ class Interpretation extends Fields
 		elseif (2 == $timer) // this is after the admin views are build
 		{
 			// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
-			$this->triggerEvent('jcb_ce_onBeforeSetConfigFieldsets', array(&$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->componentData->config, &$this->extensionsParams, &$this->placeholders));
+			$this->triggerEvent('jcb_ce_onBeforeSetConfigFieldsets', array(&$this->componentContext, &$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->componentData->config, &$this->extensionsParams, &$this->placeholders));
 			// these field sets can only be added after admin view is build
 			$this->setGroupControlConfigFieldsets($lang);
 			// these can be added anytime really (but looks best after groups
@@ -14090,7 +14130,7 @@ class Interpretation extends Fields
 			$this->setCustomControlConfigFieldsets($lang);
 		}
 		// Trigger Event: jcb_ce_onAfterSetConfigFieldsets
-		$this->triggerEvent('jcb_ce_onAfterSetConfigFieldsets', array(&$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->extensionsParams, &$this->frontEndParams, &$this->placeholders));
+		$this->triggerEvent('jcb_ce_onAfterSetConfigFieldsets', array(&$this->componentContext, &$timer, &$this->configFieldSets, &$this->configFieldSetsCustomField, &$this->extensionsParams, &$this->frontEndParams, &$this->placeholders));
 	}
 
 	public function setSiteControlConfigFieldsets($lang)

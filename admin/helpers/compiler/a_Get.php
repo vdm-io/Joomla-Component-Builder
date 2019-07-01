@@ -800,6 +800,8 @@ class Get
 				$this->langPrefix = 'COM_' . ComponentbuilderHelper::safeString($name_code, 'U');
 				// set component code name
 				$this->componentCodeName = ComponentbuilderHelper::safeString($name_code);
+				// set component context
+				$this->componentContext = $this->componentCodeName . '.' . $this->componentID;
 				// set if placeholders should be added to customcode
 				$global = ((int) ComponentbuilderHelper::getVar('joomla_component', $this->componentID, 'id', 'add_placeholders') == 1) ? true : false;
 				$this->addPlaceholders = ((int) $config['placeholders'] == 0) ? false : (((int) $config['placeholders'] == 1) ? true : $global);
@@ -1020,7 +1022,7 @@ class Get
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $this->componentID);
 
 		// Trigger Event: jcb_ce_onBeforeQueryComponentData
-		$this->triggerEvent('jcb_ce_onBeforeQueryComponentData', array(&$this->componentID, &$query, &$this->db));
+		$this->triggerEvent('jcb_ce_onBeforeQueryComponentData', array(&$this->componentContext, &$this->componentID, &$query, &$this->db));
 
 		// Reset the query using our newly populated query object.
 		$this->db->setQuery($query);
@@ -1029,7 +1031,7 @@ class Get
 		$component = $this->db->loadObject();
 
 		// Trigger Event: jcb_ce_onBeforeModelComponentData
-		$this->triggerEvent('jcb_ce_onBeforeModelComponentData', array(&$component));
+		$this->triggerEvent('jcb_ce_onBeforeModelComponentData', array(&$this->componentContext, &$component));
 
 		// set upater
 		$updater = array(
@@ -1573,7 +1575,7 @@ class Get
 		}
 
 		// Trigger Event: jcb_ce_onAfterModelComponentData
-		$this->triggerEvent('jcb_ce_onAfterModelComponentData', array(&$component));
+		$this->triggerEvent('jcb_ce_onAfterModelComponentData', array(&$this->componentContext, &$component));
 
 		// return the found component data
 		return $component;
@@ -1622,7 +1624,7 @@ class Get
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
 			// Trigger Event: jcb_ce_onBeforeQueryViewData
-			$this->triggerEvent('jcb_ce_onBeforeQueryViewData', array(&$id, &$query, &$this->db));
+			$this->triggerEvent('jcb_ce_onBeforeQueryViewData', array(&$this->componentContext, &$id, &$query, &$this->db));
 
 			// Reset the query using our newly populated query object.
 			$this->db->setQuery($query);
@@ -1681,7 +1683,7 @@ class Get
 			$this->placeholders[$this->bbb . 'VIEWS' . $this->ddd] = $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
 
 			// Trigger Event: jcb_ce_onBeforeModelViewData
-			$this->triggerEvent('jcb_ce_onBeforeModelViewData', array(&$view, &$this->placeholders));
+			$this->triggerEvent('jcb_ce_onBeforeModelViewData', array(&$this->componentContext, &$view, &$this->placeholders));
 
 			// add the tables
 			$view->addtables = (isset($view->addtables) && ComponentbuilderHelper::checkJson($view->addtables)) ? json_decode($view->addtables, true) : null;
@@ -2279,7 +2281,7 @@ class Get
 			}
 
 			// Trigger Event: jcb_ce_onAfterModelViewData
-			$this->triggerEvent('jcb_ce_onAfterModelViewData', array(&$view, &$this->placeholders));
+			$this->triggerEvent('jcb_ce_onAfterModelViewData', array(&$this->componentContext, &$view, &$this->placeholders));
 
 			// clear placeholders
 			unset($this->placeholders[$this->hhh . 'view' . $this->hhh]);
@@ -2321,7 +2323,7 @@ class Get
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
 		// Trigger Event: jcb_ce_onBeforeQueryCustomViewData
-		$this->triggerEvent('jcb_ce_onBeforeQueryCustomViewData', array(&$id, &$table, &$query, &$this->db));
+		$this->triggerEvent('jcb_ce_onBeforeQueryCustomViewData', array(&$this->componentContext, &$id, &$table, &$query, &$this->db));
 
 		// Reset the query using our newly populated query object.
 		$this->db->setQuery($query);
@@ -2330,7 +2332,7 @@ class Get
 		$view = $this->db->loadObject();
 
 		// Trigger Event: jcb_ce_onBeforeModelCustomViewData
-		$this->triggerEvent('jcb_ce_onBeforeModelCustomViewData', array(&$view, &$id, &$table));
+		$this->triggerEvent('jcb_ce_onBeforeModelCustomViewData', array(&$this->componentContext, &$view, &$id, &$table));
 
 		if ($table === 'site_view')
 		{
@@ -2570,7 +2572,7 @@ class Get
 		}
 
 		// Trigger Event: jcb_ce_onAfterModelCustomViewData
-		$this->triggerEvent('jcb_ce_onAfterModelCustomViewData', array(&$view));
+		$this->triggerEvent('jcb_ce_onAfterModelCustomViewData', array(&$this->componentContext, &$view));
 
 		// return the found view data
 		return $view;
@@ -2601,7 +2603,7 @@ class Get
 			$query->where($this->db->quoteName('a.id') . ' = ' . $this->db->quote($id));
 
 			// Trigger Event: jcb_ce_onBeforeQueryFieldData
-			$this->triggerEvent('jcb_ce_onBeforeQueryFieldData', array(&$id, &$query, &$this->db));
+			$this->triggerEvent('jcb_ce_onBeforeQueryFieldData', array(&$this->componentContext, &$id, &$query, &$this->db));
 
 			// Reset the query using our newly populated query object.
 			$this->db->setQuery($query);
@@ -2612,7 +2614,7 @@ class Get
 				$field = $this->db->loadObject();
 
 				// Trigger Event: jcb_ce_onBeforeModelFieldData
-				$this->triggerEvent('jcb_ce_onBeforeModelFieldData', array(&$field));
+				$this->triggerEvent('jcb_ce_onBeforeModelFieldData', array(&$this->componentContext, &$field));
 
 				// adding a fix for the changed name of type to fieldtype
 				$field->type = $field->fieldtype;
@@ -2690,7 +2692,7 @@ class Get
 				$field->history = $this->getHistoryWatch('field', $id);
 
 				// Trigger Event: jcb_ce_onAfterModelFieldData
-				$this->triggerEvent('jcb_ce_onAfterModelFieldData', array(&$field));
+				$this->triggerEvent('jcb_ce_onAfterModelFieldData', array(&$this->componentContext, &$field));
 
 				$this->_fieldData[$id] = $field;
 			}

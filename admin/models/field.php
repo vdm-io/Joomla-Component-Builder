@@ -18,13 +18,74 @@ use Joomla\Registry\Registry;
  * Componentbuilder Field Model
  */
 class ComponentbuilderModelField extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'set_properties' => array(
+			'fullwidth' => array(
+				'note_select_field_type',
+				'note_filter_information'
+			),
+			'above' => array(
+				'fieldtype',
+				'name',
+				'catid'
+			),
+			'under' => array(
+				'not_required'
+			)
+		),
+		'database' => array(
+			'left' => array(
+				'datatype',
+				'datalenght',
+				'datalenght_other',
+				'datadefault',
+				'datadefault_other'
+			),
+			'right' => array(
+				'indexes',
+				'null_switch',
+				'store',
+				'note_whmcs_encryption'
+			),
+			'fullwidth' => array(
+				'note_no_database_settings_needed',
+				'note_database_settings_needed'
+			)
+		),
+		'scripts' => array(
+			'left' => array(
+				'add_css_view',
+				'css_view',
+				'add_css_views',
+				'css_views'
+			),
+			'right' => array(
+				'add_javascript_view_footer',
+				'javascript_view_footer',
+				'add_javascript_views_footer',
+				'javascript_views_footer'
+			)
+		),
+		'type_info' => array(
+			'fullwidth' => array(
+				'helpnote',
+				'xml'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

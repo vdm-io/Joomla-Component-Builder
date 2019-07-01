@@ -18,13 +18,88 @@ use Joomla\Registry\Registry;
  * Componentbuilder Dynamic_get Model
  */
 class ComponentbuilderModelDynamic_get extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'main' => array(
+			'left' => array(
+				'main_source',
+				'view_table_main',
+				'db_table_main',
+				'select_all',
+				'view_selection',
+				'db_selection'
+			),
+			'right' => array(
+				'plugin_events'
+			),
+			'fullwidth' => array(
+				'php_custom_get',
+				'note_linked_to_notice'
+			),
+			'above' => array(
+				'name',
+				'gettype',
+				'getcustom',
+				'pagination'
+			),
+			'under' => array(
+				'not_required'
+			)
+		),
+		'abacus' => array(
+			'left' => array(
+				'addcalculation'
+			),
+			'fullwidth' => array(
+				'note_calculation_item',
+				'note_calculation_items',
+				'php_calculation'
+			)
+		),
+		'custom_script' => array(
+			'fullwidth' => array(
+				'add_php_before_getitem',
+				'php_before_getitem',
+				'add_php_after_getitem',
+				'php_after_getitem',
+				'add_php_getlistquery',
+				'php_getlistquery',
+				'add_php_before_getitems',
+				'php_before_getitems',
+				'add_php_after_getitems',
+				'php_after_getitems',
+				'add_php_router_parse',
+				'php_router_parse'
+			)
+		),
+		'joint' => array(
+			'fullwidth' => array(
+				'join_view_table',
+				'join_db_table'
+			)
+		),
+		'tweak' => array(
+			'fullwidth' => array(
+				'filter',
+				'where',
+				'order',
+				'group',
+				'global'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

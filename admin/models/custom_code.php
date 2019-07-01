@@ -18,13 +18,48 @@ use Joomla\Registry\Registry;
  * Componentbuilder Custom_code Model
  */
 class ComponentbuilderModelCustom_code extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'comment_type',
+				'component',
+				'type',
+				'hashtarget'
+			),
+			'right' => array(
+				'from_line',
+				'to_line',
+				'hashendtarget'
+			),
+			'fullwidth' => array(
+				'path',
+				'note_jcb_placeholder',
+				'code',
+				'note_placeholders_explained'
+			),
+			'above' => array(
+				'target',
+				'system_name',
+				'function_name'
+			),
+			'under' => array(
+				'not_required'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

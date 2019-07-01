@@ -18,13 +18,32 @@ use Joomla\Registry\Registry;
  * Componentbuilder Placeholder Model
  */
 class ComponentbuilderModelPlaceholder extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'target'
+			),
+			'right' => array(
+				'value'
+			),
+			'fullwidth' => array(
+				'note_placeholders_placedin'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

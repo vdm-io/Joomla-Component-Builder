@@ -18,13 +18,98 @@ use Joomla\Registry\Registry;
  * Componentbuilder Site_view Model
  */
 class ComponentbuilderModelSite_view extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'name',
+				'codename',
+				'description',
+				'note_libraries_selection',
+				'libraries',
+				'note_add_language_string'
+			),
+			'right' => array(
+				'snippet',
+				'note_uikit_snippet',
+				'note_snippet_usage'
+			),
+			'fullwidth' => array(
+				'default'
+			),
+			'above' => array(
+				'system_name',
+				'context'
+			),
+			'under' => array(
+				'not_required'
+			),
+			'rightside' => array(
+				'custom_get',
+				'main_get',
+				'dynamic_get',
+				'dynamic_values'
+			)
+		),
+		'php' => array(
+			'fullwidth' => array(
+				'add_php_ajax',
+				'php_ajaxmethod',
+				'ajax_input',
+				'add_php_document',
+				'php_document',
+				'add_php_view',
+				'php_view',
+				'add_php_jview_display',
+				'php_jview_display',
+				'add_php_jview',
+				'php_jview'
+			)
+		),
+		'javascript_css' => array(
+			'fullwidth' => array(
+				'add_javascript_file',
+				'javascript_file',
+				'add_js_document',
+				'js_document',
+				'add_css_document',
+				'css_document',
+				'add_css',
+				'css'
+			)
+		),
+		'custom_buttons' => array(
+			'left' => array(
+				'add_custom_button'
+			),
+			'right' => array(
+				'button_position'
+			),
+			'fullwidth' => array(
+				'note_custom_toolbar_placeholder',
+				'custom_button',
+				'php_controller',
+				'php_model'
+			)
+		),
+		'linked_components' => array(
+			'fullwidth' => array(
+				'note_linked_to_notice'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

@@ -18,13 +18,30 @@ use Joomla\Registry\Registry;
  * Componentbuilder Admin_fields Model
  */
 class ComponentbuilderModelAdmin_fields extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'fields' => array(
+			'fullwidth' => array(
+				'note_on_views',
+				'addfields'
+			),
+			'above' => array(
+				'admin_view'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

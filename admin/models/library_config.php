@@ -18,13 +18,29 @@ use Joomla\Registry\Registry;
  * Componentbuilder Library_config Model
  */
 class ComponentbuilderModelLibrary_config extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'tweaks' => array(
+			'fullwidth' => array(
+				'addconfig'
+			),
+			'above' => array(
+				'library'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

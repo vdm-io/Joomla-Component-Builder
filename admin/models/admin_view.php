@@ -18,13 +18,176 @@ use Joomla\Registry\Registry;
  * Componentbuilder Admin_view Model
  */
 class ComponentbuilderModelAdmin_view extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'name_single',
+				'name_list',
+				'type',
+				'icon',
+				'icon_add',
+				'icon_category'
+			),
+			'right' => array(
+				'short_description',
+				'description',
+				'add_fadein'
+			),
+			'fullwidth' => array(
+				'note_linked_to_notice'
+			),
+			'above' => array(
+				'system_name'
+			),
+			'under' => array(
+				'not_required'
+			)
+		),
+		'php' => array(
+			'fullwidth' => array(
+				'add_php_ajax',
+				'php_ajaxmethod',
+				'ajax_input',
+				'add_php_getitem',
+				'php_getitem',
+				'add_php_getitems',
+				'php_getitems',
+				'add_php_getitems_after_all',
+				'php_getitems_after_all',
+				'add_php_getlistquery',
+				'php_getlistquery',
+				'add_php_getform',
+				'php_getform',
+				'add_php_before_save',
+				'php_before_save',
+				'add_php_save',
+				'php_save',
+				'add_php_postsavehook',
+				'php_postsavehook',
+				'add_php_allowadd',
+				'php_allowadd',
+				'add_php_allowedit',
+				'php_allowedit',
+				'add_php_before_cancel',
+				'php_before_cancel',
+				'add_php_after_cancel',
+				'php_after_cancel',
+				'add_php_batchcopy',
+				'php_batchcopy',
+				'add_php_batchmove',
+				'php_batchmove',
+				'add_php_before_publish',
+				'php_before_publish',
+				'add_php_after_publish',
+				'php_after_publish',
+				'add_php_before_delete',
+				'php_before_delete',
+				'add_php_after_delete',
+				'php_after_delete',
+				'add_php_document',
+				'php_document'
+			)
+		),
+		'mysql' => array(
+			'left' => array(
+				'mysql_table_engine',
+				'mysql_table_charset',
+				'mysql_table_collate',
+				'mysql_table_row_format',
+				'add_sql',
+				'source',
+				'addtables'
+			),
+			'fullwidth' => array(
+				'sql'
+			)
+		),
+		'custom_import' => array(
+			'fullwidth' => array(
+				'note_beginner_import',
+				'note_advanced_import',
+				'add_custom_import',
+				'php_import_display',
+				'html_import_view',
+				'php_import',
+				'php_import_headers',
+				'php_import_setdata',
+				'php_import_save',
+				'php_import_ext'
+			)
+		),
+		'settings' => array(
+			'fullwidth' => array(
+				'note_on_permissions',
+				'addpermissions',
+				'note_on_tabs',
+				'addtabs',
+				'note_custom_tabs_note',
+				'note_on_linked_views',
+				'addlinked_views'
+			)
+		),
+		'fields' => array(
+			'left' => array(
+				'note_create_edit_notice',
+				'alias_builder_type',
+				'note_alias_builder_custom',
+				'note_alias_builder_default',
+				'alias_builder'
+			),
+			'right' => array(
+				'note_create_edit_buttons'
+			),
+			'fullwidth' => array(
+				'note_create_edit_display'
+			)
+		),
+		'css' => array(
+			'fullwidth' => array(
+				'add_css_view',
+				'css_view',
+				'add_css_views',
+				'css_views'
+			)
+		),
+		'javascript' => array(
+			'fullwidth' => array(
+				'add_javascript_view_file',
+				'javascript_view_file',
+				'add_javascript_view_footer',
+				'javascript_view_footer',
+				'add_javascript_views_file',
+				'javascript_views_file',
+				'add_javascript_views_footer',
+				'javascript_views_footer'
+			)
+		),
+		'custom_buttons' => array(
+			'left' => array(
+				'add_custom_button',
+				'custom_button'
+			),
+			'fullwidth' => array(
+				'php_controller',
+				'php_model',
+				'php_controller_list',
+				'php_model_list'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

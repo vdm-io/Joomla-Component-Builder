@@ -18,13 +18,29 @@ use Joomla\Registry\Registry;
  * Componentbuilder Component_mysql_tweaks Model
  */
 class ComponentbuilderModelComponent_mysql_tweaks extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'tweaks' => array(
+			'fullwidth' => array(
+				'sql_tweak'
+			),
+			'above' => array(
+				'joomla_component'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

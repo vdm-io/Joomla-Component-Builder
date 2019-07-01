@@ -18,13 +18,35 @@ use Joomla\Registry\Registry;
  * Componentbuilder Validation_rule Model
  */
 class ComponentbuilderModelValidation_rule extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'extends_formrule' => array(
+			'left' => array(
+				'name'
+			),
+			'right' => array(
+				'short_description'
+			),
+			'fullwidth' => array(
+				'php'
+			),
+			'above' => array(
+				'inherit'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

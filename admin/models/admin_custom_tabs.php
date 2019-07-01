@@ -18,13 +18,29 @@ use Joomla\Registry\Registry;
  * Componentbuilder Admin_custom_tabs Model
  */
 class ComponentbuilderModelAdmin_custom_tabs extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'tabs' => array(
+			'fullwidth' => array(
+				'tabs'
+			),
+			'above' => array(
+				'admin_view'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

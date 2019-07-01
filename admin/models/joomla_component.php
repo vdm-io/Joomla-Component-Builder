@@ -18,13 +18,199 @@ use Joomla\Registry\Registry;
  * Componentbuilder Joomla_component Model
  */
 class ComponentbuilderModelJoomla_component extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'name',
+				'name_code',
+				'component_version',
+				'debug_linenr',
+				'add_placeholders',
+				'mvc_versiondate',
+				'note_version_options_one',
+				'note_version_options_two',
+				'note_version_options_three',
+				'short_description',
+				'description',
+				'copyright'
+			),
+			'right' => array(
+				'companyname',
+				'author',
+				'email',
+				'website',
+				'add_license',
+				'license_type',
+				'note_whmcs_lisencing_note',
+				'whmcs_key',
+				'whmcs_url',
+				'whmcs_buy_link',
+				'license',
+				'bom',
+				'image'
+			),
+			'above' => array(
+				'system_name'
+			),
+			'under' => array(
+				'not_required'
+			)
+		),
+		'libs_helpers' => array(
+			'fullwidth' => array(
+				'creatuserhelper',
+				'adduikit',
+				'addfootable',
+				'add_email_helper',
+				'add_php_helper_both',
+				'php_helper_both',
+				'add_php_helper_admin',
+				'php_helper_admin',
+				'add_admin_event',
+				'php_admin_event',
+				'add_php_helper_site',
+				'php_helper_site',
+				'add_site_event',
+				'php_site_event',
+				'add_javascript',
+				'javascript',
+				'add_css_admin',
+				'css_admin',
+				'add_css_site',
+				'css_site'
+			)
+		),
+		'dynamic_integration' => array(
+			'left' => array(
+				'add_update_server',
+				'update_server_url',
+				'update_server_target',
+				'note_update_server_note_ftp',
+				'note_update_server_note_zip',
+				'note_update_server_note_other',
+				'update_server',
+				'add_sales_server',
+				'sales_server'
+			),
+			'right' => array(
+				'translation_tool',
+				'note_crowdin',
+				'crowdin_project_identifier',
+				'crowdin_project_api_key',
+				'crowdin_username',
+				'crowdin_account_api_key'
+			)
+		),
+		'readme' => array(
+			'left' => array(
+				'addreadme',
+				'readme'
+			),
+			'right' => array(
+				'note_readme'
+			)
+		),
+		'dash_install' => array(
+			'left' => array(
+				'dashboard_type'
+			),
+			'right' => array(
+				'note_dynamic_dashboard',
+				'dashboard',
+				'note_botton_component_dashboard'
+			),
+			'fullwidth' => array(
+				'add_php_preflight_install',
+				'php_preflight_install',
+				'add_php_preflight_update',
+				'php_preflight_update',
+				'add_php_postflight_install',
+				'php_postflight_install',
+				'add_php_postflight_update',
+				'php_postflight_update',
+				'add_php_method_uninstall',
+				'php_method_uninstall'
+			)
+		),
+		'mysql' => array(
+			'fullwidth' => array(
+				'add_sql',
+				'sql',
+				'add_sql_uninstall',
+				'sql_uninstall'
+			)
+		),
+		'settings' => array(
+			'left' => array(
+				'note_moved_views',
+				'spacer_hr_one',
+				'note_mysql_tweak_options',
+				'spacer_hr_two',
+				'note_add_custom_menus',
+				'spacer_hr_three',
+				'note_add_config'
+			),
+			'right' => array(
+				'note_component_files_folders',
+				'spacer_hr_four',
+				'add_menu_prefix',
+				'menu_prefix',
+				'spacer_hr_five',
+				'to_ignore_note',
+				'toignore',
+				'spacer_hr_six',
+				'jcb_export_package_note',
+				'export_key',
+				'joomla_source_link',
+				'export_buy_link'
+			),
+			'fullwidth' => array(
+				'spacer_hr_seven',
+				'note_on_contributors',
+				'addcontributors',
+				'emptycontributors',
+				'number'
+			)
+		),
+		'dynamic_build_beta' => array(
+			'fullwidth' => array(
+				'note_buildcomp_dynamic_mysql',
+				'buildcomp',
+				'buildcompsql'
+			)
+		),
+		'admin_views' => array(
+			'fullwidth' => array(
+				'note_on_admin_views',
+				'note_display_component_admin_views'
+			)
+		),
+		'site_views' => array(
+			'fullwidth' => array(
+				'note_on_site_views',
+				'note_display_component_site_views'
+			)
+		),
+		'custom_admin_views' => array(
+			'fullwidth' => array(
+				'note_on_custom_admin_views',
+				'note_display_component_custom_admin_views'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *
