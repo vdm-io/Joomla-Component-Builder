@@ -628,14 +628,8 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'sviews' . $this->hhh] = $view['settings']->code;
 					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SVIEWS' . $this->hhh] = $view['settings']->CODE;
 					// add to lang array
-					if (!isset($this->langContent[$this->lang][$this->langPrefix . '_' . $view['settings']->CODE]))
-					{
-						$this->langContent[$this->lang][$this->langPrefix . '_' . $view['settings']->CODE] = $view['settings']->name;
-					}
-					if (!isset($this->langContent[$this->lang][$this->langPrefix . '_' . $view['settings']->CODE . '_DESC']))
-					{
-						$this->langContent[$this->lang][$this->langPrefix . '_' . $view['settings']->CODE . '_DESC'] = $view['settings']->description;
-					}
+					$this->setLangContent($this->lang, $this->langPrefix . '_' . $view['settings']->CODE, $view['settings']->name);
+					$this->setLangContent($this->lang, $this->langPrefix . '_' . $view['settings']->CODE . '_DESC', $view['settings']->description);
 					// ICOMOON <<<DYNAMIC>>>
 					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'ICOMOON' . $this->hhh] = $view['icomoon'];
 
@@ -929,14 +923,8 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_AFTER_GET_ITEMS' . $this->hhh] = $this->getCustomScriptBuilder($this->target . '_php_after_getitems', $view['settings']->code, PHP_EOL, null, true);
 					}
 					// add to lang array
-					if (!isset($this->langContent['site'][$this->langPrefix . '_' . $view['settings']->CODE]))
-					{
-						$this->langContent['site'][$this->langPrefix . '_' . $view['settings']->CODE] = $view['settings']->name;
-					}
-					if (!isset($this->langContent['site'][$this->langPrefix . '_' . $view['settings']->CODE . '_DESC']))
-					{
-						$this->langContent['site'][$this->langPrefix . '_' . $view['settings']->CODE . '_DESC'] = $view['settings']->description;
-					}
+					$this->setLangContent('site', $this->langPrefix . '_' . $view['settings']->CODE, $view['settings']->name);
+					$this->setLangContent('site', $this->langPrefix . '_' . $view['settings']->CODE . '_DESC', $view['settings']->description);
 					// SITE_CUSTOM_METHODS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_CUSTOM_METHODS' . $this->hhh] = $this->setCustomViewCustomItemMethods($view['settings']->main_get, $view['settings']->code);
 					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_CUSTOM_METHODS' . $this->hhh] .= $this->setCustomViewCustomMethods($view, $view['settings']->code);

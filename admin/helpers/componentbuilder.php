@@ -132,19 +132,21 @@ abstract class ComponentbuilderHelper
 	/**
 	* Making field names safe
 	*
-	* @input	string   The you would like to make safe
+	* @input	string       The you would like to make safe
+	* @input	boolean      The switch to return an ALL UPPER CASE string
+	* @input	string       The string to use in white space
 	*
 	* @returns string on success
 	**/
-	public static function safeFieldName($string, $spacer = '_')
+	public static function safeFieldName($string, $allcap = false, $spacer = '_')
 	{
 		// get global value
 		if (self::$fieldNameBuilder === false)
 		{
-			self::$fieldNameBuilder = JComponentHelper::getParams('com_componentbuilder')->get('field_name_builder', 0); // change this to 1 for testing the new convention
+			self::$fieldNameBuilder = JComponentHelper::getParams('com_componentbuilder')->get('field_name_builder', 1);
 		}
 		// use the new convention
-		if (1 == self::$fieldNameBuilder)
+		if (2 == self::$fieldNameBuilder)
 		{
 			// 0nly continue if we have a string
 			if (self::checkString($string))
@@ -162,11 +164,21 @@ abstract class ComponentbuilderHelper
 				$string = preg_replace("/[^A-Za-z0-9 ]/", '', $string);
 				// replace white space with underscore (SAFEST OPTION)
 				$string = preg_replace('/\s+/', $spacer, $string);
+				// return all caps
+				if ($allcap)
+				{
+					return strtoupper($string);
+				}
 				// default is to return lower
 				return strtolower($string);
 			}
 			// not a string
 			return '';
+		}
+		// return all caps
+		if ($allcap)
+		{
+			return self::safeString($string, 'U');
 		}
 		// use the default (original behaviour/convention)
 		return self::safeString($string);
@@ -5526,38 +5538,42 @@ abstract class ComponentbuilderHelper
 	/**
 	* Get any component's model
 	**/
-	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $component = 'Componentbuilder', $config = array())
+	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $Component = 'Componentbuilder', $config = array())
 	{
 		// fix the name
 		$name = self::safeString($name);
-		// full path
-		$fullPath = $path . '/models';
-		// set prefix
-		$prefix = $component.'Model';
+		// full path to models
+		$fullPathModels = $path . '/models';
 		// load the model file
-		JModelLegacy::addIncludePath($fullPath, $prefix);
+		JModelLegacy::addIncludePath($fullPathModels, $Component . 'Model');
+		// make sure the table path is loaded
+		if (!isset($config['table_path']) || !self::checkString($config['table_path']))
+		{
+			// This is the JCB default path to tables in Joomla 3.x
+			$config['table_path'] = JPATH_ADMINISTRATOR . '/components/com_' . strtolower($Component) . '/tables';
+		}
 		// get instance
-		$model = JModelLegacy::getInstance($name, $prefix, $config);
+		$model = JModelLegacy::getInstance($name, $Component . 'Model', $config);
 		// if model not found (strange)
 		if ($model == false)
 		{
 			jimport('joomla.filesystem.file');
 			// get file path
-			$filePath = $path.'/'.$name.'.php';
-			$fullPath = $fullPath.'/'.$name.'.php';
+			$filePath = $path . '/' . $name . '.php';
+			$fullPathModel = $fullPathModels . '/' . $name . '.php';
 			// check if it exists
 			if (JFile::exists($filePath))
 			{
 				// get the file
 				require_once $filePath;
 			}
-			elseif (JFile::exists($fullPath))
+			elseif (JFile::exists($fullPathModel))
 			{
 				// get the file
-				require_once $fullPath;
+				require_once $fullPathModel;
 			}
 			// build class names
-			$modelClass = $prefix.$name;
+			$modelClass = $Component . 'Model' . $name;
 			if (class_exists($modelClass))
 			{
 				// initialize the model

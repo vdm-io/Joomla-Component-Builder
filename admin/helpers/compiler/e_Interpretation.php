@@ -1487,9 +1487,9 @@ class Interpretation extends Fields
 		{
 			// set the lang
 			$lang = ComponentbuilderHelper::safeString('com_' . $this->componentCodeName . '_menu_' . $viewName_single, 'U');
-			$this->langContent['adminsys'][$lang . '_TITLE'] = 'Create ' . $view['settings']->name_single;
-			$this->langContent['adminsys'][$lang . '_OPTION'] = 'Create ' . $view['settings']->name_single;
-			$this->langContent['adminsys'][$lang . '_DESC'] = $view['settings']->short_description;
+			$this->setLangContent('adminsys', $lang . '_TITLE', 'Create ' . $view['settings']->name_single);
+			$this->setLangContent('adminsys', $lang . '_OPTION', 'Create ' . $view['settings']->name_single);
+			$this->setLangContent('adminsys', $lang . '_DESC', $view['settings']->short_description);
 			//start loading xml
 			$xml = '<?xml version="1.0" encoding="utf-8" ?>';
 			$xml .= PHP_EOL . '<metadata>';
@@ -1517,9 +1517,9 @@ class Interpretation extends Fields
 		{
 			// set the lang
 			$lang = ComponentbuilderHelper::safeString('com_' . $this->componentCodeName . '_menu_' . $view['settings']->code, 'U');
-			$this->langContent['adminsys'][$lang . '_TITLE'] = $view['settings']->name;
-			$this->langContent['adminsys'][$lang . '_OPTION'] = $view['settings']->name;
-			$this->langContent['adminsys'][$lang . '_DESC'] = $view['settings']->description;
+			$this->setLangContent('adminsys', $lang . '_TITLE', $view['settings']->name);
+			$this->setLangContent('adminsys', $lang . '_OPTION', $view['settings']->name);
+			$this->setLangContent('adminsys', $lang . '_DESC',  $view['settings']->description);
 			//start loading xml
 			$xml = '<?xml version="1.0" encoding="utf-8" ?>';
 			$xml .= PHP_EOL . '<metadata>';
@@ -2330,10 +2330,7 @@ class Interpretation extends Fields
 			$accessCheck[] = $this->_t(3) . "\$app = JFactory::getApplication();";
 			// set lang
 			$langKeyWord = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Not authorised to view ' . $view['settings']->code . '!', 'U');
-			if (!isset($this->langContent['site'][$langKeyWord]))
-			{
-				$this->langContent['site'][$langKeyWord] = 'Not authorised to view ' . $view['settings']->code . '!';
-			}
+			$this->setLangContent('site', $langKeyWord, 'Not authorised to view ' . $view['settings']->code . '!');
 			$accessCheck[] = $this->_t(3) . "\$app->enqueueMessage(JText:" . ":_('" . $langKeyWord . "'), 'error');";
 			$accessCheck[] = $redirectMessage;
 			$accessCheck[] = $this->_t(3) . "\$app->redirect(" . $redirectString . ");";
@@ -2412,10 +2409,7 @@ class Interpretation extends Fields
 			{
 				$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "\$app = JFactory::getApplication();";
 				$langKeyWoord = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Not found or access denied', 'U');
-				if (!isset($this->langContent[$this->lang][$langKeyWoord]))
-				{
-					$this->langContent[$this->lang][$langKeyWoord] = 'Not found, or access denied.';
-				}
+				$this->setLangContent($this->lang, $langKeyWoord, 'Not found, or access denied.');
 				$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " If no data is found redirect to default page and show warning.";
 				$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "\$app->enqueueMessage(JText:" . ":_('" . $langKeyWoord . "'), 'warning');";
 				if ('site' === $this->target)
@@ -3608,7 +3602,7 @@ class Interpretation extends Fields
 					// Load to lang
 					$keyLang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($custom_button['name'], 'U');
 					$keyCode = ComponentbuilderHelper::safeString($custom_button['name']);
-					$this->langContent[$this->lang][$keyLang] = trim($custom_button['name']);
+					$this->setLangContent($this->lang, $keyLang, $custom_button['name']);
 					// load the button
 					if (3 !== $type && ($custom_button['target'] != 2 || $this->target === 'site'))
 					{
@@ -6541,83 +6535,83 @@ class Interpretation extends Fields
 		// Trigger Event: jcb_ce_onBeforeBuildAdminLang
 		$this->triggerEvent('jcb_ce_onBeforeBuildAdminLang', array(&$this->componentContext, &$this->langContent['admin'], &$this->langPrefix, &$componentName));
 		// start loding the defaults
-		$this->langContent['adminsys'][$this->langPrefix] = $componentName;
-		$this->langContent['adminsys'][$this->langPrefix . '_CONFIGURATION'] = $componentName . ' Configuration';
-		$this->langContent['admin'][$this->langPrefix] = $componentName;
-		$this->langContent['admin'][$this->langPrefix . '_BACK'] = 'Back';
-		$this->langContent['admin'][$this->langPrefix . '_DASH'] = 'Dashboard';
-		$this->langContent['admin'][$this->langPrefix . '_VERSION'] = 'Version';
-		$this->langContent['admin'][$this->langPrefix . '_DATE'] = 'Date';
-		$this->langContent['admin'][$this->langPrefix . '_AUTHOR'] = 'Author';
-		$this->langContent['admin'][$this->langPrefix . '_WEBSITE'] = 'Website';
-		$this->langContent['admin'][$this->langPrefix . '_LICENSE'] = 'License';
-		$this->langContent['admin'][$this->langPrefix . '_CONTRIBUTORS'] = 'Contributors';
-		$this->langContent['admin'][$this->langPrefix . '_CONTRIBUTOR'] = 'Contributor';
-		$this->langContent['admin'][$this->langPrefix . '_DASHBOARD'] = $componentName . ' Dashboard';
-		$this->langContent['admin'][$this->langPrefix . '_SAVE_SUCCESS'] = "Great! Item successfully saved.";
-		$this->langContent['admin'][$this->langPrefix . '_SAVE_WARNING'] = "The value already existed so please select another.";
-		$this->langContent['admin'][$this->langPrefix . '_HELP_MANAGER'] = "Help";
-		$this->langContent['admin'][$this->langPrefix . '_NEW'] = "New";
-		$this->langContent['admin'][$this->langPrefix . '_CLOSE_NEW'] = "Close & New";
-		$this->langContent['admin'][$this->langPrefix . '_CREATE_NEW_S'] = "Create New %s";
-		$this->langContent['admin'][$this->langPrefix . '_EDIT_S'] = "Edit %s";
-		$this->langContent['admin'][$this->langPrefix . '_KEEP_ORIGINAL_STATE'] = "- Keep Original State -";
-		$this->langContent['admin'][$this->langPrefix . '_KEEP_ORIGINAL_ACCESS'] = "- Keep Original Access -";
-		$this->langContent['admin'][$this->langPrefix . '_KEEP_ORIGINAL_CATEGORY'] = "- Keep Original Category -";
-		$this->langContent['admin'][$this->langPrefix . '_PUBLISHED'] = 'Published';
-		$this->langContent['admin'][$this->langPrefix . '_INACTIVE'] = 'Inactive';
-		$this->langContent['admin'][$this->langPrefix . '_ARCHIVED'] = 'Archived';
-		$this->langContent['admin'][$this->langPrefix . '_TRASHED'] = 'Trashed';
-		$this->langContent['admin'][$this->langPrefix . '_NO_ACCESS_GRANTED'] = "No Access Granted!";
-		$this->langContent['admin'][$this->langPrefix . '_NOT_FOUND_OR_ACCESS_DENIED'] = "Not found or access denied!";
+		$this->setLangContent('adminsys', $this->langPrefix, $componentName);
+		$this->setLangContent('adminsys', $this->langPrefix . '_CONFIGURATION', $componentName . ' Configuration');
+		$this->setLangContent('admin', $this->langPrefix, $componentName);
+		$this->setLangContent('admin', $this->langPrefix . '_BACK', 'Back');
+		$this->setLangContent('admin', $this->langPrefix . '_DASH', 'Dashboard');
+		$this->setLangContent('admin', $this->langPrefix . '_VERSION', 'Version');
+		$this->setLangContent('admin', $this->langPrefix . '_DATE', 'Date');
+		$this->setLangContent('admin', $this->langPrefix . '_AUTHOR', 'Author');
+		$this->setLangContent('admin', $this->langPrefix . '_WEBSITE', 'Website');
+		$this->setLangContent('admin', $this->langPrefix . '_LICENSE', 'License');
+		$this->setLangContent('admin', $this->langPrefix . '_CONTRIBUTORS', 'Contributors');
+		$this->setLangContent('admin', $this->langPrefix . '_CONTRIBUTOR', 'Contributor');
+		$this->setLangContent('admin', $this->langPrefix . '_DASHBOARD', $componentName . ' Dashboard');
+		$this->setLangContent('admin', $this->langPrefix . '_SAVE_SUCCESS', "Great! Item successfully saved.");
+		$this->setLangContent('admin', $this->langPrefix . '_SAVE_WARNING', "The value already existed so please select another.");
+		$this->setLangContent('admin', $this->langPrefix . '_HELP_MANAGER', "Help");
+		$this->setLangContent('admin', $this->langPrefix . '_NEW', "New");
+		$this->setLangContent('admin', $this->langPrefix . '_CLOSE_NEW', "Close & New");
+		$this->setLangContent('admin', $this->langPrefix . '_CREATE_NEW_S', "Create New %s");
+		$this->setLangContent('admin', $this->langPrefix . '_EDIT_S', "Edit %s");
+		$this->setLangContent('admin', $this->langPrefix . '_KEEP_ORIGINAL_STATE', "- Keep Original State -");
+		$this->setLangContent('admin', $this->langPrefix . '_KEEP_ORIGINAL_ACCESS', "- Keep Original Access -");
+		$this->setLangContent('admin', $this->langPrefix . '_KEEP_ORIGINAL_CATEGORY', "- Keep Original Category -");
+		$this->setLangContent('admin', $this->langPrefix . '_PUBLISHED', 'Published');
+		$this->setLangContent('admin', $this->langPrefix . '_INACTIVE', 'Inactive');
+		$this->setLangContent('admin', $this->langPrefix . '_ARCHIVED', 'Archived');
+		$this->setLangContent('admin', $this->langPrefix . '_TRASHED', 'Trashed');
+		$this->setLangContent('admin', $this->langPrefix . '_NO_ACCESS_GRANTED', "No Access Granted!");
+		$this->setLangContent('admin', $this->langPrefix . '_NOT_FOUND_OR_ACCESS_DENIED', "Not found or access denied!");
 		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			$this->langContent['admin']['NIE_REG_NIE'] = "<br /><br /><center><h1>License not set for " . $componentName . ".</h1><p>Notify your administrator!<br />The license can be obtained from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.</p></center>";
+			$this->setLangContent('admin', 'NIE_REG_NIE', "<br /><br /><center><h1>License not set for " . $componentName . ".</h1><p>Notify your administrator!<br />The license can be obtained from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.</p></center>");
 		}
 		// add the langug files needed to import and export data
 		if ($this->addEximport)
 		{
-			$this->langContent['admin'][$this->langPrefix . '_EXPORT_FAILED'] = "Export Failed";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_FAILED'] = "Import Failed";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_TITLE'] = "Data Importer";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_NO_IMPORT_TYPE_FOUND'] = "Import type not found.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'] = "Package to import not found.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_ERROR'] = "Import error.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_SUCCESS'] = "Great! Import successful.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_WARNIMPORTFILE'] = "Warning, import file error.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_NO_FILE_SELECTED'] = "No import file selected.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_PLEASE_SELECT_A_FILE'] = "Please select a file to import.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_PLEASE_SELECT_ALL_COLUMNS'] = "Please link all columns.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_PLEASE_SELECT_A_DIRECTORY'] = "Please enter the file directory.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_WARNIMPORTUPLOADERROR'] = "Warning, import upload error.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'] = "Please enter the file directory.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'] = "Path does not have a valid file.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'] = "Does not have a valid file type.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_ENTER_A_URL'] = "Please enter a url.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_MSG_INVALID_URL'] = "Invalid url.";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_CONTINUE'] = "Continue";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_FROM_UPLOAD'] = "Upload";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_SELECT_FILE'] = "Select File";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_UPLOAD_BOTTON'] = "Upload File";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_FROM_DIRECTORY'] = "Directory";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_SELECT_FILE_DIRECTORY'] = "Set the path to file";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_GET_BOTTON'] = "Get File";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_FROM_URL'] = "URL";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_SELECT_FILE_URL'] = "Enter file URL";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_UPDATE_DATA'] = "Import Data";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_FORMATS_ACCEPTED'] = "formats accepted";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_LINK_FILE_TO_TABLE_COLUMNS'] = "Link File to Table Columns";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_TABLE_COLUMNS'] = "Table Columns";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_FILE_COLUMNS'] = "File Columns";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_PLEASE_SELECT_COLUMN'] = "-- Please Select Column --";
-			$this->langContent['admin'][$this->langPrefix . '_IMPORT_IGNORE_COLUMN'] = "-- Ignore This Column --";
+			$this->setLangContent('admin', $this->langPrefix . '_EXPORT_FAILED', "Export Failed");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_FAILED', "Import Failed");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_TITLE', "Data Importer");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_NO_IMPORT_TYPE_FOUND', "Import type not found.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE', "Package to import not found.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_ERROR', "Import error.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_SUCCESS', "Great! Import successful.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_WARNIMPORTFILE', "Warning, import file error.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_NO_FILE_SELECTED', "No import file selected.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_PLEASE_SELECT_A_FILE', "Please select a file to import.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_PLEASE_SELECT_ALL_COLUMNS', "Please link all columns.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_PLEASE_SELECT_A_DIRECTORY', "Please enter the file directory.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_WARNIMPORTUPLOADERROR', "Warning, import upload error.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY', "Please enter the file directory.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE', "Path does not have a valid file.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE', "Does not have a valid file type.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_ENTER_A_URL', "Please enter a url.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_MSG_INVALID_URL', "Invalid url.");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_CONTINUE', "Continue");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_FROM_UPLOAD', "Upload");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_SELECT_FILE', "Select File");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_UPLOAD_BOTTON', "Upload File");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_FROM_DIRECTORY', "Directory");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_SELECT_FILE_DIRECTORY', "Set the path to file");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_GET_BOTTON', "Get File");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_FROM_URL', "URL");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_SELECT_FILE_URL', "Enter file URL");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_UPDATE_DATA', "Import Data");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_FORMATS_ACCEPTED', "formats accepted");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_LINK_FILE_TO_TABLE_COLUMNS', "Link File to Table Columns");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_TABLE_COLUMNS', "Table Columns");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_FILE_COLUMNS', "File Columns");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_PLEASE_SELECT_COLUMN', "-- Please Select Column --");
+			$this->setLangContent('admin', $this->langPrefix . '_IMPORT_IGNORE_COLUMN', "-- Ignore This Column --");
 		}
 		// check if the both array is set
 		if (isset($this->langContent['both']) && ComponentbuilderHelper::checkArray($this->langContent['both']))
 		{
 			foreach ($this->langContent['both'] as $keylang => $langval)
 			{
-				$this->langContent['admin'][$keylang] = $langval;
+				$this->setLangContent('admin', $keylang, $langval);
 			}
 		}
 		// check if the both admin array is set
@@ -6625,7 +6619,7 @@ class Interpretation extends Fields
 		{
 			foreach ($this->langContent['bothadmin'] as $keylang => $langval)
 			{
-				$this->langContent['admin'][$keylang] = $langval;
+				$this->setLangContent('admin', $keylang, $langval);
 			}
 		}
 		if (isset($this->langContent['admin']) && ComponentbuilderHelper::checkArray($this->langContent['admin']))
@@ -6651,33 +6645,33 @@ class Interpretation extends Fields
 		// Trigger Event: jcb_ce_onBeforeBuildSiteLang
 		$this->triggerEvent('jcb_ce_onBeforeBuildSiteLang', array(&$this->componentContext, &$this->langContent['site'], &$this->langPrefix, &$componentName));
 		// add final list of needed lang strings
-		$this->langContent['site'][$this->langPrefix] = $componentName;
+		$this->setLangContent('site', $this->langPrefix, $componentName);
 		// some more defaults
-		$this->langContent['site']['JTOOLBAR_APPLY'] = "Save";
-		$this->langContent['site']['JTOOLBAR_SAVE_AS_COPY'] = "Save as Copy";
-		$this->langContent['site']['JTOOLBAR_SAVE'] = "Save & Close";
-		$this->langContent['site']['JTOOLBAR_SAVE_AND_NEW'] = "Save & New";
-		$this->langContent['site']['JTOOLBAR_CANCEL'] = "Cancel";
-		$this->langContent['site']['JTOOLBAR_CLOSE'] = "Close";
-		$this->langContent['site']['JTOOLBAR_HELP'] = "Help";
-		$this->langContent['site']['JGLOBAL_FIELD_ID_LABEL'] = "ID";
-		$this->langContent['site']['JGLOBAL_FIELD_ID_DESC'] = "Record number in the database.";
-		$this->langContent['site']['JGLOBAL_FIELD_MODIFIED_LABEL'] = "Modified Date";
-		$this->langContent['site']['COM_CONTENT_FIELD_MODIFIED_DESC'] = "The last date this item was modified.";
-		$this->langContent['site']['JGLOBAL_FIELD_MODIFIED_BY_LABEL'] = "Modified By";
-		$this->langContent['site']['JGLOBAL_FIELD_MODIFIED_BY_DESC'] = "The user who did the last modification.";
-		$this->langContent['site'][$this->langPrefix . '_NEW'] = "New";
-		$this->langContent['site'][$this->langPrefix . '_CREATE_NEW_S'] = "Create New %s";
-		$this->langContent['site'][$this->langPrefix . '_EDIT_S'] = "Edit %s";
-		$this->langContent['site'][$this->langPrefix . '_NO_ACCESS_GRANTED'] = "No Access Granted!";
-		$this->langContent['site'][$this->langPrefix . '_NOT_FOUND_OR_ACCESS_DENIED'] = "Not found or access denied!";
+		$this->setLangContent('site', 'JTOOLBAR_APPLY', "Save");
+		$this->setLangContent('site', 'JTOOLBAR_SAVE_AS_COPY', "Save as Copy");
+		$this->setLangContent('site', 'JTOOLBAR_SAVE', "Save & Close");
+		$this->setLangContent('site', 'JTOOLBAR_SAVE_AND_NEW', "Save & New");
+		$this->setLangContent('site', 'JTOOLBAR_CANCEL', "Cancel");
+		$this->setLangContent('site', 'JTOOLBAR_CLOSE', "Close");
+		$this->setLangContent('site', 'JTOOLBAR_HELP', "Help");
+		$this->setLangContent('site', 'JGLOBAL_FIELD_ID_LABEL', "ID");
+		$this->setLangContent('site', 'JGLOBAL_FIELD_ID_DESC', "Record number in the database.");
+		$this->setLangContent('site', 'JGLOBAL_FIELD_MODIFIED_LABEL', "Modified Date");
+		$this->setLangContent('site', 'COM_CONTENT_FIELD_MODIFIED_DESC', "The last date this item was modified.");
+		$this->setLangContent('site', 'JGLOBAL_FIELD_MODIFIED_BY_LABEL', "Modified By");
+		$this->setLangContent('site', 'JGLOBAL_FIELD_MODIFIED_BY_DESC', "The user who did the last modification.");
+		$this->setLangContent('site', $this->langPrefix . '_NEW', "New");
+		$this->setLangContent('site', $this->langPrefix . '_CREATE_NEW_S', "Create New %s");
+		$this->setLangContent('site', $this->langPrefix . '_EDIT_S', "Edit %s");
+		$this->setLangContent('site', $this->langPrefix . '_NO_ACCESS_GRANTED', "No Access Granted!");
+		$this->setLangContent('site', $this->langPrefix . '_NOT_FOUND_OR_ACCESS_DENIED', "Not found or access denied!");
 
 		// check if the both array is set
 		if (isset($this->langContent['both']) && ComponentbuilderHelper::checkArray($this->langContent['both']))
 		{
 			foreach ($this->langContent['both'] as $keylang => $langval)
 			{
-				$this->langContent['site'][$keylang] = $langval;
+				$this->setLangContent('site', $keylang, $langval);
 			}
 		}
 		// check if the both site array is set
@@ -6685,7 +6679,7 @@ class Interpretation extends Fields
 		{
 			foreach ($this->langContent['bothsite'] as $keylang => $langval)
 			{
-				$this->langContent['site'][$keylang] = $langval;
+				$this->setLangContent('site', $keylang, $langval);
 			}
 		}
 		if (isset($this->langContent['site']) && ComponentbuilderHelper::checkArray($this->langContent['site']))
@@ -6711,16 +6705,16 @@ class Interpretation extends Fields
 		// Trigger Event: jcb_ce_onBeforeBuildSiteSysLang
 		$this->triggerEvent('jcb_ce_onBeforeBuildSiteSysLang', array(&$this->componentContext, &$this->langContent['sitesys'], &$this->langPrefix, &$componentName));
 		// add final list of needed lang strings
-		$this->langContent['sitesys'][$this->langPrefix] = $componentName;
-		$this->langContent['sitesys'][$this->langPrefix . '_NO_ACCESS_GRANTED'] = "No Access Granted!";
-		$this->langContent['sitesys'][$this->langPrefix . '_NOT_FOUND_OR_ACCESS_DENIED'] = "Not found or access denied!";
+		$this->setLangContent('sitesys', $this->langPrefix, $componentName);
+		$this->setLangContent('sitesys', $this->langPrefix . '_NO_ACCESS_GRANTED', "No Access Granted!");
+		$this->setLangContent('sitesys', $this->langPrefix . '_NOT_FOUND_OR_ACCESS_DENIED', "Not found or access denied!");
 
 		// check if the both site array is set
 		if (isset($this->langContent['bothsite']) && ComponentbuilderHelper::checkArray($this->langContent['bothsite']))
 		{
 			foreach ($this->langContent['bothsite'] as $keylang => $langval)
 			{
-				$this->langContent['sitesys'][$keylang] = $langval;
+				$this->setLangContent('sitesys', $keylang, $langval);
 			}
 		}
 		if (isset($this->langContent['sitesys']) && ComponentbuilderHelper::checkArray($this->langContent['sitesys']))
@@ -6750,7 +6744,7 @@ class Interpretation extends Fields
 		{
 			foreach ($this->langContent['bothadmin'] as $keylang => $langval)
 			{
-				$this->langContent['adminsys'][$keylang] = $langval;
+				$this->setLangContent('adminsys', $keylang, $langval);
 			}
 		}
 		if (isset($this->langContent['adminsys']) && ComponentbuilderHelper::checkArray($this->langContent['adminsys']))
@@ -7384,15 +7378,9 @@ class Interpretation extends Fields
 			// set id lang
 			$idLangName = $langView . '_ID';
 			// add to lang array
-			if (!isset($this->langContent[$this->lang][$statusLangName]))
-			{
-				$this->langContent[$this->lang][$statusLangName] = 'Status';
-			}
+			$this->setLangContent($this->lang, $statusLangName, 'Status');
 			// add to lang array
-			if (!isset($this->langContent[$this->lang][$idLangName]))
-			{
-				$this->langContent[$this->lang][$idLangName] = 'Id';
-			}
+			$this->setLangContent($this->lang, $idLangName, 'Id');
 			// set default
 			$head = '<tr>';
 			$head .= PHP_EOL . $this->_t(1) . "<?php if (\$this->canEdit&& \$this->canState): ?>";
@@ -7777,10 +7765,7 @@ class Interpretation extends Fields
 			/// set the values to use in search latter
 			$searchTabs[$tabCodeName] = $tabNr;
 			// add to lang array
-			if (!isset($this->langContent[$this->lang][$tabLangName]))
-			{
-				$this->langContent[$this->lang][$tabLangName] = $tabName;
-			}
+			$this->setLangContent($this->lang, $tabLangName, $tabName);
 			// check if linked view belongs to this tab
 			$buildLayout = true;
 			$linkedViewId = '';
@@ -7988,10 +7973,7 @@ class Interpretation extends Fields
 		// set default publishing tab lang
 		$tabLangName = $langView . '_PUBLISHING';
 		// add to lang array
-		if (!isset($this->langContent[$this->lang][$tabLangName]))
-		{
-			$this->langContent[$this->lang][$tabLangName] = 'Publishing';
-		}
+		$this->setLangContent($this->lang, $tabLangName, 'Publishing');
 		// the default publishing items
 		$items = array('left' => array(), 'right' => array());
 		// Setup the default (custom) fields
@@ -8194,10 +8176,7 @@ class Interpretation extends Fields
 			// set permissions tab code name
 			$tabCodeName = 'permissions';
 			// add to lang array
-			if (!isset($this->langContent[$this->lang][$tabLangName]))
-			{
-				$this->langContent[$this->lang][$tabLangName] = 'Permissions';
-			}
+			$this->setLangContent($this->lang, $tabLangName, 'Permissions');
 			// set the permissions tab
 			$tabs .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php if (\$this->canDo->get('core.admin')) : ?>";
 			$tabs .= PHP_EOL . $this->_t(1) . "<?php echo JHtml::_('bootstrap.addTab', '" . $view_name_single . "Tab', '" . $tabCodeName . "', JText:" . ":_('" . $tabLangName . "', true)); ?>";
@@ -8705,15 +8684,9 @@ class Interpretation extends Fields
 			// make sure only first link is used as togeler
 			$firstLink = true;
 			// add to lang array
-			if (!isset($this->langContent[$this->lang][$statusLangName]))
-			{
-				$this->langContent[$this->lang][$statusLangName] = 'Status';
-			}
+			$this->setLangContent($this->lang, $statusLangName, 'Status');
 			// add to lang array
-			if (!isset($this->langContent[$this->lang][$idLangName]))
-			{
-				$this->langContent[$this->lang][$idLangName] = 'Id';
-			}
+			$this->setLangContent($this->lang, $idLangName, 'Id');
 			$head .= PHP_EOL . $this->_t(1) . "<tr>";
 			// set controller for data hiding options
 			$controller = 1;
@@ -9089,7 +9062,7 @@ class Interpretation extends Fields
 			{
 				// Load to lang
 				$keyLang = $this->langPrefix . '_' . $custom_button['NAME'];
-				$this->langContent[$this->lang][$keyLang] = ComponentbuilderHelper::safeString($custom_button['name'], 'Ww');
+				$this->setLangContent($this->lang, $keyLang, ComponentbuilderHelper::safeString($custom_button['name'], 'Ww'));
 				// add cpanel button
 				$buttons[] = $this->_t(2) . "if (\$this->canDo->get('" . $custom_button['link'] . ".access'))";
 				$buttons[] = $this->_t(2) . "{";
@@ -9143,10 +9116,7 @@ class Interpretation extends Fields
 				$method[] = $this->_t(1) . "}";
 				// add to lang array
 				$lankey = $this->langPrefix . "_ACCESS_TO_" . $custom_button['NAME'] . "_FAILED";
-				if (!isset($this->langContent[$this->lang][$lankey]))
-				{
-					$this->langContent[$this->lang][$lankey] = 'Access to ' . $custom_button['link'] . ' was denied.';
-				}
+				$this->setLangContent($this->lang, $lankey, 'Access to ' . $custom_button['link'] . ' was denied.');
 			}
 
 			return implode(PHP_EOL, $method);
@@ -9288,10 +9258,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Redirect to import view.";
 			// add to lang array
 			$selectImportFileNote = $this->langPrefix . "_IMPORT_SELECT_FILE_FOR_" . ComponentbuilderHelper::safeString($viewName_list, 'U');
-			if (!isset($this->langContent[$this->lang][$selectImportFileNote]))
-			{
-				$this->langContent[$this->lang][$selectImportFileNote] = 'Select the file to import data to ' . $viewName_list . '.';
-			}
+			$this->setLangContent($this->lang, $selectImportFileNote, 'Select the file to import data to ' . $viewName_list . '.');
 			$method[] = $this->_t(4) . "\$message = JText:" . ":_('" . $selectImportFileNote . "');";
 			// if this view has custom script it must have as custom import (model, veiw, controller)
 			if (isset($this->importCustomScripts[$viewName_list]) && $this->importCustomScripts[$viewName_list])
@@ -9323,10 +9290,7 @@ class Interpretation extends Fields
 			// main lang prefix
 			$langExport = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Export Data', 'U');
 			// add to lang array
-			if (!isset($this->langContent[$this->lang][$langExport]))
-			{
-				$this->langContent[$this->lang][$langExport] = 'Export Data';
-			}
+			$this->setLangContent($this->lang, $langExport, 'Export Data');
 			$button = array();
 			$button[] = PHP_EOL . PHP_EOL . $this->_t(3) . "if (\$this->canDo->get('core.export') && \$this->canDo->get('" . $viewName_single . ".export'))";
 			$button[] = $this->_t(3) . "{";
@@ -9345,10 +9309,7 @@ class Interpretation extends Fields
 			// main lang prefix
 			$langImport = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Import Data', 'U');
 			// add to lang array
-			if (!isset($this->langContent[$this->lang][$langImport]))
-			{
-				$this->langContent[$this->lang][$langImport] = 'Import Data';
-			}
+			$this->setLangContent($this->lang, $langImport, 'Import Data');
 			$button = array();
 			$button[] = PHP_EOL . PHP_EOL . $this->_t(2) . "if (\$this->canDo->get('core.import') && \$this->canDo->get('" . $viewName_single . ".import'))";
 			$button[] = $this->_t(2) . "{";
@@ -12330,7 +12291,7 @@ class Interpretation extends Fields
 			// set lang strings
 			$viewNameLang_readonly = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($view['settings']->name_single . ' readonly', 'U');
 			// load to lang
-			$this->langContent[$this->lang][$viewNameLang_readonly] = $view['settings']->name_single . ' :: Readonly';
+			$this->setLangContent($this->lang, $viewNameLang_readonly, $view['settings']->name_single . ' :: Readonly');
 
 			// build toolbar
 			$toolBar = "JFactory::getApplication()->input->set('hidemainmenu', true);";
@@ -12343,8 +12304,8 @@ class Interpretation extends Fields
 			$viewNameLang_new = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($view['settings']->name_single . ' New', 'U');
 			$viewNameLang_edit = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($view['settings']->name_single . ' Edit', 'U');
 			// load to lang
-			$this->langContent[$this->lang][$viewNameLang_new] = 'A New ' . $view['settings']->name_single;
-			$this->langContent[$this->lang][$viewNameLang_edit] = 'Editing the ' . $view['settings']->name_single;
+			$this->setLangContent($this->lang, $viewNameLang_new, 'A New ' . $view['settings']->name_single);
+			$this->setLangContent($this->lang, $viewNameLang_edit, 'Editing the ' . $view['settings']->name_single);
 			// build toolbar
 			$toolBar = "JFactory::getApplication()->input->set('hidemainmenu', true);";
 			$toolBar .= PHP_EOL . $this->_t(2) . "\$user = JFactory::getUser();";
@@ -13212,7 +13173,7 @@ class Interpretation extends Fields
 					$langName = 'Add&nbsp;' . ComponentbuilderHelper::safeString($view['settings']->name_single, 'W') . '<br /><br />';
 					$langKey = $this->langPrefix . '_DASHBOARD_' . ComponentbuilderHelper::safeString($view['settings']->name_single, 'U') . '_ADD';
 					// add to lang
-					$this->langContent[$this->lang][$langKey] = $langName;
+					$this->setLangContent($this->lang, $langKey, $langName);
 					$counter++;
 				}
 				if (isset($view['dashboard_list']) && $view['dashboard_list'] == 1)
@@ -13240,7 +13201,7 @@ class Interpretation extends Fields
 					$langName = ComponentbuilderHelper::safeString($view['settings']->name_list, 'W') . '<br /><br />';
 					$langKey = $this->langPrefix . '_DASHBOARD_' . ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
 					// add to lang
-					$this->langContent[$this->lang][$langKey] = $langName;
+					$this->setLangContent($this->lang, $langKey, $langName);
 					$counter++;
 				}
 				if (isset($this->categoryBuilder[$name_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$name_list]))
@@ -13265,7 +13226,7 @@ class Interpretation extends Fields
 					{
 						// add to lang
 						$langKey = $this->langPrefix . '_DASHBOARD_' . ComponentbuilderHelper::safeString($otherViews, 'U') . '_' . ComponentbuilderHelper::safeString($catCode, 'U');
-						$this->langContent[$this->lang][$langKey] = $langName;
+						$this->setLangContent($this->lang, $langKey, $langName);
 						// get image type
 						$type = ComponentbuilderHelper::imageInfo($view['settings']->icon_category);
 						if ($type)
@@ -13482,7 +13443,7 @@ class Interpretation extends Fields
 					$langName = $menu['settings']->name . '<br /><br />';
 					$langKey = $this->langPrefix . '_DASHBOARD_' . $menu['settings']->CODE;
 					// add to lang
-					$this->langContent[$this->lang][$langKey] = $langName;
+					$this->setLangContent($this->lang, $langKey, $langName);
 					// set icon
 					if ($counter == 0)
 					{
@@ -13512,7 +13473,7 @@ class Interpretation extends Fields
 					$langName = $menu['settings']->name . '<br /><br />';
 					$langKey = $this->langPrefix . '_DASHBOARD_' . $menu['settings']->CODE;
 					// add to lang
-					$this->langContent[$this->lang][$langKey] = $langName;
+					$this->setLangContent($this->lang, $langKey, $langName);
 					// set icon
 					$this->lastCustomDashboardIcon[$nr] = ", '" . $type . $menu['settings']->code . "'";
 				}
@@ -13542,7 +13503,7 @@ class Interpretation extends Fields
 					$langName = $menu['name'] . '<br /><br />';
 					$langKey = $this->langPrefix . '_DASHBOARD_' . $nameUpper;
 					// add to lang
-					$this->langContent[$this->lang][$langKey] = $langName;
+					$this->setLangContent($this->lang, $langKey, $langName);
 
 					// if this is a link build the icon values with pipe
 					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
@@ -13590,7 +13551,7 @@ class Interpretation extends Fields
 					$langName = $menu['name'] . '<br /><br />';
 					$langKey = $this->langPrefix . '_DASHBOARD_' . $nameUpper;
 					// add to lang
-					$this->langContent[$this->lang][$langKey] = $langName;
+					$this->setLangContent($this->lang, $langKey, $langName);
 
 					// if this is a link build the icon values with pipe
 					if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
@@ -13622,7 +13583,7 @@ class Interpretation extends Fields
 			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
 			{
 				$menus .= "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_DASHBOARD'), 'index.php?option=com_" . $codeName . "&view=" . $codeName . "', \$submenu === '" . $codeName . "');";
-				$this->langContent[$this->lang][$lang . '_DASHBOARD'] = 'Dashboard';
+				$this->setLangContent($this->lang, $lang . '_DASHBOARD', 'Dashboard');
 			}
 			$catArray = array();
 			foreach ($this->componentData->admin_views as $view)
@@ -13651,7 +13612,7 @@ class Interpretation extends Fields
 						$tab = $this->_t(1);
 					}
 					$menus .= PHP_EOL . $this->_t(2) . $tab . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
-					$this->langContent[$this->lang][$lang . "_" . $nameUpper] = $view['settings']->name_list;
+					$this->setLangContent($this->lang, $lang . "_" . $nameUpper, $view['settings']->name_list);
 					// check if category has another name
 					if (isset($this->catOtherName[$nameList]) && ComponentbuilderHelper::checkArray($this->catOtherName[$nameList]))
 					{
@@ -13693,8 +13654,8 @@ class Interpretation extends Fields
 					$menus .= PHP_EOL . $this->_t(3) . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "_FIELDS'), 'index.php?option=com_fields&context=com_" . $codeName . "." . $nameSingle . "', \$submenu === 'fields.fields');";
 					$menus .= PHP_EOL . $this->_t(3) . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "_FIELDS_GROUPS'), 'index.php?option=com_fields&view=groups&context=com_" . $codeName . "." . $nameSingle . "', \$submenu === 'fields.groups');";
 					$menus .= PHP_EOL . $this->_t(2) . "}";
-					$this->langContent[$this->lang][$lang . "_" . $nameUpper . "_FIELDS"] = $view['settings']->name_list . ' Fields';
-					$this->langContent[$this->lang][$lang . "_" . $nameUpper . "_FIELDS_GROUPS"] = $view['settings']->name_list . ' Field Groups';
+					$this->setLangContent($this->lang, $lang . "_" . $nameUpper . "_FIELDS", $view['settings']->name_list . ' Fields');
+					$this->setLangContent($this->lang, $lang . "_" . $nameUpper . "_FIELDS_GROUPS", $view['settings']->name_list . ' Field Groups');
 					// build uninstall script for fields
 					$this->uninstallScriptBuilder[$nameSingle] = 'com_' . $codeName . '.' . $nameSingle;
 					$this->uninstallScriptFields[$nameSingle] = $nameSingle;
@@ -13793,13 +13754,13 @@ class Interpretation extends Fields
 			if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
 			{
 
-				$this->langContent[$this->lang][$lang . '_' . $nameUpper] = $name;
+				$this->setLangContent($this->lang, $lang . '_' . $nameUpper, $name);
 				// add custom menu
 				$custom .= PHP_EOL . $this->_t(2) . $tab . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "'), '" . $menu['link'] . "', \$submenu === '" . $nameList . "');";
 			}
 			else
 			{
-				$this->langContent[$this->lang][$lang . '_' . $nameUpper] = $name;
+				$this->setLangContent($this->lang, $lang . '_' . $nameUpper, $name);
 				// add custom menu
 				$custom .= PHP_EOL . $this->_t(2) . $tab . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
 			}
@@ -13837,13 +13798,13 @@ class Interpretation extends Fields
 			}
 			if (isset($menu['link']) && ComponentbuilderHelper::checkString($menu['link']))
 			{
-				$this->langContent[$this->lang][$lang . '_' . $nameUpper] = $name;
+				$this->setLangContent($this->lang, $lang . '_' . $nameUpper, $name);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . $this->_t(2) . $tab . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "'), '" . $menu['link'] . "', \$submenu === '" . $nameList . "');";
 			}
 			else
 			{
-				$this->langContent[$this->lang][$lang . '_' . $nameUpper] = $name;
+				$this->setLangContent($this->lang, $lang . '_' . $nameUpper, $name);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . $this->_t(2) . $tab . "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_" . $nameUpper . "'), 'index.php?option=com_" . $codeName . "&view=" . $nameList . "', \$submenu === '" . $nameList . "');";
 			}
@@ -13886,11 +13847,11 @@ class Interpretation extends Fields
 			// add the prefix
 			if ($addPrefix == 1)
 			{
-				$this->langContent['adminsys'][$lang] = $prefix . $this->componentData->name;
+				$this->setLangContent('adminsys', $lang, $prefix . $this->componentData->name);
 			}
 			else
 			{
-				$this->langContent['adminsys'][$lang] = $this->componentData->name;
+				$this->setLangContent('adminsys', $lang, $this->componentData->name);
 			}
 			// loop over the admin views
 			foreach ($this->componentData->admin_views as $view)
@@ -13902,7 +13863,7 @@ class Interpretation extends Fields
 					$nameList = ComponentbuilderHelper::safeString($view['settings']->name_list);
 					$nameUpper = ComponentbuilderHelper::safeString($view['settings']->name_list, 'U');
 					$menus .= PHP_EOL . $this->_t(3) . '<menu option="com_' . $codeName . '" view="' . $nameList . '">' . $lang . '_' . $nameUpper . '</menu>';
-					$this->langContent['adminsys'][$lang . '_' . $nameUpper] = $view['settings']->name_list;
+					$this->setLangContent('adminsys', $lang . '_' . $nameUpper, $view['settings']->name_list);
 				}
 			}
 			if (isset($this->lastCustomMainMenu) && ComponentbuilderHelper::checkArray($this->lastCustomMainMenu))
@@ -13930,13 +13891,13 @@ class Interpretation extends Fields
 				{
 					if (isset($menu['mainmenu']) && $menu['mainmenu'] == 1 && $view['adminview'] == $menu['before'])
 					{
-						$this->langContent['adminsys'][$lang . '_' . $menu['settings']->CODE] = $menu['settings']->name;
+						$this->setLangContent('adminsys', $lang . '_' . $menu['settings']->CODE, $menu['settings']->name);
 						// add custom menu
 						$customMenu .= PHP_EOL . $this->_t(3) . '<menu option="com_' . $codeName . '" view="' . $menu['settings']->code . '">' . $lang . '_' . $menu['settings']->CODE . '</menu>';
 					}
 					elseif (isset($menu['mainmenu']) && $menu['mainmenu'] == 1 && empty($menu['before']))
 					{
-						$this->langContent['adminsys'][$lang . '_' . $menu['settings']->CODE] = $menu['settings']->name;
+						$this->setLangContent('adminsys', $lang . '_' . $menu['settings']->CODE, $menu['settings']->name);
 						// add custom menu
 						$this->lastCustomMainMenu[$nr] = PHP_EOL . $this->_t(3) . '<menu option="com_' . $codeName . '" view="' . $menu['settings']->code . '">' . $lang . '_' . $menu['settings']->CODE . '</menu>';
 					}
@@ -13955,7 +13916,7 @@ class Interpretation extends Fields
 					{
 						$nameList = ComponentbuilderHelper::safeString($menu['name']);
 						$nameUpper = ComponentbuilderHelper::safeString($menu['name'], 'U');
-						$this->langContent['adminsys'][$lang . '_' . $nameUpper] = $menu['name'];
+						$this->setLangContent('adminsys', $lang . '_' . $nameUpper, $menu['name']);
 						// sanitize url
 						if (strpos($menu['link'], 'http') === false)
 						{
@@ -13977,7 +13938,7 @@ class Interpretation extends Fields
 					{
 						$nameList = ComponentbuilderHelper::safeString($menu['name_code']);
 						$nameUpper = ComponentbuilderHelper::safeString($menu['name_code'], 'U');
-						$this->langContent['adminsys'][$lang . '_' . $nameUpper] = $menu['name'];
+						$this->setLangContent('adminsys', $lang . '_' . $nameUpper, $menu['name']);
 						// add custom menu
 						$customMenu .= PHP_EOL . $this->_t(3) . '<menu option="com_' . $codeName . '" view="' . $nameList . '">' . $lang . '_' . $nameUpper . '</menu>';
 					}
@@ -13988,7 +13949,7 @@ class Interpretation extends Fields
 					{
 						$nameList = ComponentbuilderHelper::safeString($menu['name']);
 						$nameUpper = ComponentbuilderHelper::safeString($menu['name'], 'U');
-						$this->langContent['adminsys'][$lang . '_' . $nameUpper] = $menu['name'];
+						$this->setLangContent('adminsys', $lang . '_' . $nameUpper, $menu['name']);
 						// sanitize url
 						if (strpos($menu['link'], 'http') === false)
 						{
@@ -14010,7 +13971,7 @@ class Interpretation extends Fields
 					{
 						$nameList = ComponentbuilderHelper::safeString($menu['name_code']);
 						$nameUpper = ComponentbuilderHelper::safeString($menu['name_code'], 'U');
-						$this->langContent['adminsys'][$lang . '_' . $nameUpper] = $menu['name'];
+						$this->setLangContent('adminsys', $lang . '_' . $nameUpper, $menu['name']);
 						// add custom menu
 						$this->lastCustomMainMenu[$nr] = PHP_EOL . $this->_t(3) . '<menu option="com_' . $codeName . '" view="' . $nameList . '">' . $lang . '_' . $nameUpper . '</menu>';
 					}
@@ -14271,7 +14232,7 @@ class Interpretation extends Fields
 				if (ComponentbuilderHelper::checkArray($bucket))
 				{
 					// setup lang
-					$this->langContent[$this->lang][$lang . '_' . $tabUpper] = $tab;
+					$this->setLangContent($this->lang, $lang . '_' . $tabUpper, $tab);
 					// start field set
 					$this->configFieldSets[] = $this->_t(1) . "<fieldset";
 					$this->configFieldSets[] = $this->_t(2) . 'name="' . $tabCode . '"';
@@ -14298,9 +14259,9 @@ class Interpretation extends Fields
 			$this->configFieldSets[] = $this->_t(2) . 'label="' . $lang . '_GROUPS_LABEL"';
 			$this->configFieldSets[] = $this->_t(2) . 'description="' . $lang . '_GROUPS_DESC">';
 			// setup lang
-			$this->langContent[$this->lang][$lang . '_GROUPS_LABEL'] = "Target Groups";
-			$this->langContent[$this->lang][$lang . '_GROUPS_DESC'] = "The Parameters for the targeted groups are set here.";
-			$this->langContent[$this->lang][$lang . '_TARGET_GROUP_DESC'] = "Set the group/s being targeted by this user type.";
+			$this->setLangContent($this->lang, $lang . '_GROUPS_LABEL', "Target Groups");
+			$this->setLangContent($this->lang, $lang . '_GROUPS_DESC', "The Parameters for the targeted groups are set here.");
+			$this->setLangContent($this->lang, $lang . '_TARGET_GROUP_DESC', "Set the group/s being targeted by this user type.");
 
 			foreach ($this->setGroupControl as $selector => $label)
 			{
@@ -14342,8 +14303,8 @@ class Interpretation extends Fields
 		$this->configFieldSets[] = $this->_t(2) . 'label="' . $lang . '_GLOBAL_LABEL"';
 		$this->configFieldSets[] = $this->_t(2) . 'description="' . $lang . '_GLOBAL_DESC">';
 		// setup lang
-		$this->langContent[$this->lang][$lang . '_GLOBAL_LABEL'] = "Global";
-		$this->langContent[$this->lang][$lang . '_GLOBAL_DESC'] = "The Global Parameters";
+		$this->setLangContent($this->lang, $lang . '_GLOBAL_LABEL', "Global");
+		$this->setLangContent($this->lang, $lang . '_GLOBAL_DESC', "The Global Parameters");
 		// add auto checin if required
 		if ($this->addCheckin)
 		{
@@ -14368,14 +14329,14 @@ class Interpretation extends Fields
 			$this->configFieldSets[] = $this->_t(2) . "</field>";
 			$this->configFieldSets[] = $this->_t(2) . '<field type="spacer" name="spacerAuthor" hr="true" />';
 			// setup lang
-			$this->langContent[$this->lang][$lang . '_CHECK_TIMER_LABEL'] = "Check in timer";
-			$this->langContent[$this->lang][$lang . '_CHECK_TIMER_DESC'] = "Set the intervals for the auto checkin fuction of tables that checks out the items to an user.";
-			$this->langContent[$this->lang][$lang . '_CHECK_TIMER_OPTION_ONE'] = "Every five hours";
-			$this->langContent[$this->lang][$lang . '_CHECK_TIMER_OPTION_TWO'] = "Every twelve hours";
-			$this->langContent[$this->lang][$lang . '_CHECK_TIMER_OPTION_THREE'] = "Once a day";
-			$this->langContent[$this->lang][$lang . '_CHECK_TIMER_OPTION_FOUR'] = "Every second day";
-			$this->langContent[$this->lang][$lang . '_CHECK_TIMER_OPTION_FIVE'] = "Once a week";
-			$this->langContent[$this->lang][$lang . '_CHECK_TIMER_OPTION_SIX'] = "Never";
+			$this->setLangContent($this->lang, $lang . '_CHECK_TIMER_LABEL', "Check in timer");
+			$this->setLangContent($this->lang, $lang . '_CHECK_TIMER_DESC', "Set the intervals for the auto checkin fuction of tables that checks out the items to an user.");
+			$this->setLangContent($this->lang, $lang . '_CHECK_TIMER_OPTION_ONE', "Every five hours");
+			$this->setLangContent($this->lang, $lang . '_CHECK_TIMER_OPTION_TWO', "Every twelve hours");
+			$this->setLangContent($this->lang, $lang . '_CHECK_TIMER_OPTION_THREE', "Once a day");
+			$this->setLangContent($this->lang, $lang . '_CHECK_TIMER_OPTION_FOUR', "Every second day");
+			$this->setLangContent($this->lang, $lang . '_CHECK_TIMER_OPTION_FIVE', "Once a week");
+			$this->setLangContent($this->lang, $lang . '_CHECK_TIMER_OPTION_SIX', "Never");
 			// load the Global checkin defautls
 			$this->extensionsParams[] = '"check_in":"-1 day"';
 		}
@@ -14435,11 +14396,11 @@ class Interpretation extends Fields
 		$this->configFieldSets[] = $this->_t(3) . 'class="readonly"';
 		$this->configFieldSets[] = $this->_t(2) . "/>";
 		// setup lang
-		$this->langContent[$this->lang][$lang . '_AUTHOR'] = "Author Info";
-		$this->langContent[$this->lang][$lang . '_AUTHOR_NAME_LABEL'] = "Author Name";
-		$this->langContent[$this->lang][$lang . '_AUTHOR_NAME_DESC'] = "The name of the author of this component.";
-		$this->langContent[$this->lang][$lang . '_AUTHOR_EMAIL_LABEL'] = "Author Email";
-		$this->langContent[$this->lang][$lang . '_AUTHOR_EMAIL_DESC'] = "The email address of the author of this component.";
+		$this->setLangContent($this->lang, $lang . '_AUTHOR', "Author Info");
+		$this->setLangContent($this->lang, $lang . '_AUTHOR_NAME_LABEL', "Author Name");
+		$this->setLangContent($this->lang, $lang . '_AUTHOR_NAME_DESC', "The name of the author of this component.");
+		$this->setLangContent($this->lang, $lang . '_AUTHOR_EMAIL_LABEL', "Author Email");
+		$this->setLangContent($this->lang, $lang . '_AUTHOR_EMAIL_DESC', "The email address of the author of this component.");
 		// set if contributors were added
 		$langCont = $lang . '_CONTRIBUTOR';
 		if (isset($this->addContributors) && $this->addContributors && isset($this->componentData->contributors) && ComponentbuilderHelper::checkArray($this->componentData->contributors))
@@ -14513,7 +14474,7 @@ class Interpretation extends Fields
 				$this->theContributors .= PHP_EOL . $this->_t(1) . "@" . strtolower($contributor['title']) . $this->_t(2) . $contributor['name'] . ' <' . $contributor['website'] . '>';
 				// setup lang
 				$Counter = ComponentbuilderHelper::safeString($counter, 'Ww');
-				$this->langContent[$this->lang][$langCont . '_' . $COUNTER] = "Contributor " . $Counter;
+				$this->setLangContent($this->lang, $langCont . '_' . $COUNTER, "Contributor " . $Counter);
 				// load the Global checkin defautls
 				$this->extensionsParams[] = '"titleContributor' . $counter . '":"' . $cbTitle . '"';
 				$this->extensionsParams[] = '"nameContributor' . $counter . '":"' . $cbName . '"';
@@ -14596,31 +14557,31 @@ class Interpretation extends Fields
 				$this->configFieldSets[] = $this->_t(2) . "</field>";
 				// setup lang
 				$Counter = ComponentbuilderHelper::safeString($counter, 'Ww');
-				$this->langContent[$this->lang][$langCont . '_' . $COUNTER] = "Contributor " . $Counter;
+				$this->setLangContent($this->lang, $langCont . '_' . $COUNTER, "Contributor " . $Counter);
 			}
 		}
 		if ($this->addContributors || $this->componentData->emptycontributors == 1)
 		{
 			// setup lang
-			$this->langContent[$this->lang][$langCont . '_TITLE_LABEL'] = "Contributor Job Title";
-			$this->langContent[$this->lang][$langCont . '_TITLE_DESC'] = "The job title that best describes the contributor's relationship to this component.";
-			$this->langContent[$this->lang][$langCont . '_NAME_LABEL'] = "Contributor Name";
-			$this->langContent[$this->lang][$langCont . '_NAME_DESC'] = "The name of this contributor.";
-			$this->langContent[$this->lang][$langCont . '_EMAIL_LABEL'] = "Contributor Email";
-			$this->langContent[$this->lang][$langCont . '_EMAIL_DESC'] = "The email of this contributor.";
-			$this->langContent[$this->lang][$langCont . '_LINK_LABEL'] = "Contributor Website";
-			$this->langContent[$this->lang][$langCont . '_LINK_DESC'] = "The link to this contributor's website.";
-			$this->langContent[$this->lang][$langCont . '_USE_LABEL'] = "Use";
-			$this->langContent[$this->lang][$langCont . '_USE_DESC'] = "How should we link to this contributor.";
-			$this->langContent[$this->lang][$langCont . '_USE_NONE'] = "None";
-			$this->langContent[$this->lang][$langCont . '_USE_EMAIL'] = "Email";
-			$this->langContent[$this->lang][$langCont . '_USE_WWW'] = "Website";
-			$this->langContent[$this->lang][$langCont . '_SHOW_LABEL'] = "Show";
-			$this->langContent[$this->lang][$langCont . '_SHOW_DESC'] = "Select where you want this contributor's details to show in the component.";
-			$this->langContent[$this->lang][$langCont . '_SHOW_NONE'] = "Hide";
-			$this->langContent[$this->lang][$langCont . '_SHOW_BACK'] = "Back-end";
-			$this->langContent[$this->lang][$langCont . '_SHOW_FRONT'] = "Front-end";
-			$this->langContent[$this->lang][$langCont . '_SHOW_ALL'] = "Both Front & Back-end";
+			$this->setLangContent($this->lang, $langCont . '_TITLE_LABEL', "Contributor Job Title");
+			$this->setLangContent($this->lang, $langCont . '_TITLE_DESC', "The job title that best describes the contributor's relationship to this component.");
+			$this->setLangContent($this->lang, $langCont . '_NAME_LABEL', "Contributor Name");
+			$this->setLangContent($this->lang, $langCont . '_NAME_DESC', "The name of this contributor.");
+			$this->setLangContent($this->lang, $langCont . '_EMAIL_LABEL', "Contributor Email");
+			$this->setLangContent($this->lang, $langCont . '_EMAIL_DESC', "The email of this contributor.");
+			$this->setLangContent($this->lang, $langCont . '_LINK_LABEL', "Contributor Website");
+			$this->setLangContent($this->lang, $langCont . '_LINK_DESC', "The link to this contributor's website.");
+			$this->setLangContent($this->lang, $langCont . '_USE_LABEL', "Use");
+			$this->setLangContent($this->lang, $langCont . '_USE_DESC', "How should we link to this contributor.");
+			$this->setLangContent($this->lang, $langCont . '_USE_NONE', "None");
+			$this->setLangContent($this->lang, $langCont . '_USE_EMAIL', "Email");
+			$this->setLangContent($this->lang, $langCont . '_USE_WWW', "Website");
+			$this->setLangContent($this->lang, $langCont . '_SHOW_LABEL', "Show");
+			$this->setLangContent($this->lang, $langCont . '_SHOW_DESC', "Select where you want this contributor's details to show in the component.");
+			$this->setLangContent($this->lang, $langCont . '_SHOW_NONE', "Hide");
+			$this->setLangContent($this->lang, $langCont . '_SHOW_BACK', "Back-end");
+			$this->setLangContent($this->lang, $langCont . '_SHOW_FRONT', "Front-end");
+			$this->setLangContent($this->lang, $langCont . '_SHOW_ALL', "Both Front & Back-end");
 		}
 		// close that fieldset
 		$this->configFieldSets[] = $this->_t(1) . "</fieldset>";
@@ -14640,31 +14601,31 @@ class Interpretation extends Fields
 			// set tab lang
 			if (1 == $this->uikit)
 			{
-				$this->langContent[$this->lang][$lang . '_UIKIT_LABEL'] = "Uikit2 Settings";
-				$this->langContent[$this->lang][$lang . '_UIKIT_DESC'] = "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/v2/\" target=\"_blank\">https://getuikit.com/v2/</a>";
+				$this->setLangContent($this->lang, $lang . '_UIKIT_LABEL', "Uikit2 Settings");
+				$this->setLangContent($this->lang, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
+for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/v2/\" target=\"_blank\">https://getuikit.com/v2/</a>");
 			}
 			elseif (2 == $this->uikit)
 			{
-				$this->langContent[$this->lang][$lang . '_UIKIT_LABEL'] = "Uikit2 and Uikit3 Settings";
-				$this->langContent[$this->lang][$lang . '_UIKIT_DESC'] = "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/v2/\" target=\"_blank\">version 2</a> or <a href=\"https://getuikit.com/\" target=\"_blank\">version 3</a>";
+				$this->setLangContent($this->lang, $lang . '_UIKIT_LABEL', "Uikit2 and Uikit3 Settings");
+				$this->setLangContent($this->lang, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
+for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/v2/\" target=\"_blank\">version 2</a> or <a href=\"https://getuikit.com/\" target=\"_blank\">version 3</a>");
 			}
 			elseif (3 == $this->uikit)
 			{
-				$this->langContent[$this->lang][$lang . '_UIKIT_LABEL'] = "Uikit3 Settings";
-				$this->langContent[$this->lang][$lang . '_UIKIT_DESC'] = "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/\" target=\"_blank\">https://getuikit.com/</a>";
+				$this->setLangContent($this->lang, $lang . '_UIKIT_LABEL', "Uikit3 Settings");
+				$this->setLangContent($this->lang, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
+for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/\" target=\"_blank\">https://getuikit.com/</a>");
 			}
 
 			// add version selection
 			if (2 == $this->uikit)
 			{
 				// set field lang
-				$this->langContent[$this->lang][$lang . '_UIKIT_VERSION_LABEL'] = "Uikit Versions";
-				$this->langContent[$this->lang][$lang . '_UIKIT_VERSION_DESC'] = "Select what version you would like to use";
-				$this->langContent[$this->lang][$lang . '_UIKIT_V2'] = "Version 2";
-				$this->langContent[$this->lang][$lang . '_UIKIT_V3'] = "Version 3";
+				$this->setLangContent($this->lang, $lang . '_UIKIT_VERSION_LABEL', "Uikit Versions");
+				$this->setLangContent($this->lang, $lang . '_UIKIT_VERSION_DESC', "Select what version you would like to use");
+				$this->setLangContent($this->lang, $lang . '_UIKIT_V2', "Version 2");
+				$this->setLangContent($this->lang, $lang . '_UIKIT_V3', "Version 3");
 				// set the field
 				$this->configFieldSets[] = $this->_t(2) . '<field name="uikit_version"';
 				$this->configFieldSets[] = $this->_t(3) . 'type="radio"';
@@ -14683,12 +14644,12 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			}
 
 			// set field lang
-			$this->langContent[$this->lang][$lang . '_UIKIT_LOAD_LABEL'] = "Loading Options";
-			$this->langContent[$this->lang][$lang . '_UIKIT_LOAD_DESC'] = "Set the uikit loading option.";
-			$this->langContent[$this->lang][$lang . '_AUTO_LOAD'] = "Auto";
-			$this->langContent[$this->lang][$lang . '_FORCE_LOAD'] = "Force";
-			$this->langContent[$this->lang][$lang . '_DONT_LOAD'] = "Not";
-			$this->langContent[$this->lang][$lang . '_ONLY_EXTRA'] = "Only Extra";
+			$this->setLangContent($this->lang, $lang . '_UIKIT_LOAD_LABEL', "Loading Options");
+			$this->setLangContent($this->lang, $lang . '_UIKIT_LOAD_DESC', "Set the uikit loading option.");
+			$this->setLangContent($this->lang, $lang . '_AUTO_LOAD', "Auto");
+			$this->setLangContent($this->lang, $lang . '_FORCE_LOAD', "Force");
+			$this->setLangContent($this->lang, $lang . '_DONT_LOAD', "Not");
+			$this->setLangContent($this->lang, $lang . '_ONLY_EXTRA', "Only Extra");
 			// set the field
 			$this->configFieldSets[] = $this->_t(2) . '<field name="uikit_load"';
 			$this->configFieldSets[] = $this->_t(3) . 'type="radio"';
@@ -14713,10 +14674,10 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			$this->extensionsParams[] = '"uikit_load":"1"';
 
 			// set field lang
-			$this->langContent[$this->lang][$lang . '_UIKIT_MIN_LABEL'] = "Load Minified";
-			$this->langContent[$this->lang][$lang . '_UIKIT_MIN_DESC'] = "Should the minified version of uikit files be loaded?";
-			$this->langContent[$this->lang][$lang . '_YES'] = "Yes";
-			$this->langContent[$this->lang][$lang . '_NO'] = "No";
+			$this->setLangContent($this->lang, $lang . '_UIKIT_MIN_LABEL', "Load Minified");
+			$this->setLangContent($this->lang, $lang . '_UIKIT_MIN_DESC', "Should the minified version of uikit files be loaded?");
+			$this->setLangContent($this->lang, $lang . '_YES', "Yes");
+			$this->setLangContent($this->lang, $lang . '_NO', "No");
 			// set the field
 			$this->configFieldSets[] = $this->_t(2) . '<field name="uikit_min"';
 			$this->configFieldSets[] = $this->_t(3) . 'type="radio"';
@@ -14736,11 +14697,11 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			if (2 == $this->uikit || 1 == $this->uikit)
 			{
 				// set field lang
-				$this->langContent[$this->lang][$lang . '_UIKIT_STYLE_LABEL'] = "css Style";
-				$this->langContent[$this->lang][$lang . '_UIKIT_STYLE_DESC'] = "Set the css style that should be used.";
-				$this->langContent[$this->lang][$lang . '_FLAT_LOAD'] = "Flat";
-				$this->langContent[$this->lang][$lang . '_ALMOST_FLAT_LOAD'] = "Almost Flat";
-				$this->langContent[$this->lang][$lang . '_GRADIANT_LOAD'] = "Gradient";
+				$this->setLangContent($this->lang, $lang . '_UIKIT_STYLE_LABEL', "css Style");
+				$this->setLangContent($this->lang, $lang . '_UIKIT_STYLE_DESC', "Set the css style that should be used.");
+				$this->setLangContent($this->lang, $lang . '_FLAT_LOAD', "Flat");
+				$this->setLangContent($this->lang, $lang . '_ALMOST_FLAT_LOAD', "Almost Flat");
+				$this->setLangContent($this->lang, $lang . '_GRADIANT_LOAD', "Gradient");
 				// set the field
 				$this->configFieldSets[] = $this->_t(2) . '<field name="uikit_style"';
 				$this->configFieldSets[] = $this->_t(3) . 'type="radio"';
@@ -14781,8 +14742,8 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			// main lang prefix
 			$lang = $lang . '';
 			// set main lang string
-			$this->langContent[$this->lang][$lang . '_MAIL_CONFIGURATION'] = "Mail Configuration";
-			$this->langContent[$this->lang][$lang . '_DKIM'] = "DKIM";
+			$this->setLangContent($this->lang, $lang . '_MAIL_CONFIGURATION', "Mail Configuration");
+			$this->setLangContent($this->lang, $lang . '_DKIM', "DKIM");
 			// start building field set for email helper functions
 			$this->configFieldSets[] = PHP_EOL . $this->_t(1) . "<fieldset";
 			$this->configFieldSets[] = $this->_t(2) . "name=\"mail_configuration_custom_config\"";
@@ -14796,51 +14757,51 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			else
 			{
 				// set all the laguage strings
-				$this->langContent[$this->lang][$lang . '_MAILONLINE_LABEL'] = "Mailer Status";
-				$this->langContent[$this->lang][$lang . '_MAILONLINE_DESCRIPTION'] = "Warning this will stop all emails from going out.";
-				$this->langContent[$this->lang][$lang . '_ON'] = "On";
-				$this->langContent[$this->lang][$lang . '_OFF'] = "Off";
-				$this->langContent[$this->lang][$lang . '_MAILER_LABEL'] = "Mailer";
-				$this->langContent[$this->lang][$lang . '_MAILER_DESCRIPTION'] = "Select what mailer you would like to use to send emails.";
-				$this->langContent[$this->lang][$lang . '_GLOBAL'] = "Global";
-				$this->langContent[$this->lang][$lang . '_PHP_MAIL'] = "PHP Mail";
-				$this->langContent[$this->lang][$lang . '_SENDMAIL'] = "Sendmail";
-				$this->langContent[$this->lang][$lang . '_SMTP'] = "SMTP";
-				$this->langContent[$this->lang][$lang . '_EMAILFROM_LABEL'] = " From Email";
-				$this->langContent[$this->lang][$lang . '_EMAILFROM_DESCRIPTION'] = "The global email address that will be used to send system email.";
-				$this->langContent[$this->lang][$lang . '_EMAILFROM_HINT'] = "Email Address Here";
-				$this->langContent[$this->lang][$lang . '_FROMNAME_LABEL'] = "From Name";
-				$this->langContent[$this->lang][$lang . '_FROMNAME_DESCRIPTION'] = "Text displayed in the header &quot;From:&quot; field when sending a site email. Usually the site name.";
-				$this->langContent[$this->lang][$lang . '_FROMNAME_HINT'] = "From Name Here";
-				$this->langContent[$this->lang][$lang . '_EMAILREPLY_LABEL'] = " Reply to Email";
-				$this->langContent[$this->lang][$lang . '_EMAILREPLY_DESCRIPTION'] = "The global email address that will be used to set as the reply email. (leave blank for none)";
-				$this->langContent[$this->lang][$lang . '_EMAILREPLY_HINT'] = "Email Address Here";
-				$this->langContent[$this->lang][$lang . '_REPLYNAME_LABEL'] = "Reply to Name";
-				$this->langContent[$this->lang][$lang . '_REPLYNAME_DESCRIPTION'] = "Text displayed in the header &quot;Reply To:&quot; field when replying to the site email. Usually the the person that receives the response. (leave blank for none)";
-				$this->langContent[$this->lang][$lang . '_REPLYNAME_HINT'] = "Reply Name Here";
-				$this->langContent[$this->lang][$lang . '_SENDMAIL_LABEL'] = "Sendmail Path";
-				$this->langContent[$this->lang][$lang . '_SENDMAIL_DESCRIPTION'] = "Enter the path to the sendmail program directory on your host server.";
-				$this->langContent[$this->lang][$lang . '_SENDMAIL_HINT'] = "/usr/sbin/sendmail";
-				$this->langContent[$this->lang][$lang . '_SMTPAUTH_LABEL'] = "SMTP Authentication";
-				$this->langContent[$this->lang][$lang . '_SMTPAUTH_DESCRIPTION'] = "Select yes if your SMTP host requires SMTP Authentication.";
-				$this->langContent[$this->lang][$lang . '_YES'] = "Yes";
-				$this->langContent[$this->lang][$lang . '_NO'] = "No";
-				$this->langContent[$this->lang][$lang . '_SMTPSECURE_LABEL'] = "SMTP Security";
-				$this->langContent[$this->lang][$lang . '_SMTPSECURE_DESCRIPTION'] = "Select the security model that your SMTP server uses.";
-				$this->langContent[$this->lang][$lang . '_NONE'] = "None";
-				$this->langContent[$this->lang][$lang . '_SSL'] = "SSL";
-				$this->langContent[$this->lang][$lang . '_TLS'] = "TLS";
-				$this->langContent[$this->lang][$lang . '_SMTPPORT_LABEL'] = "SMTP Port";
-				$this->langContent[$this->lang][$lang . '_SMTPPORT_DESCRIPTION'] = "Enter the port number of your SMTP server. Use 25 for most unsecured servers and 465 for most secure servers.";
-				$this->langContent[$this->lang][$lang . '_SMTPPORT_HINT'] = "25";
-				$this->langContent[$this->lang][$lang . '_SMTPUSER_LABEL'] = "SMTP Username";
-				$this->langContent[$this->lang][$lang . '_SMTPUSER_DESCRIPTION'] = "Enter the username for access to the SMTP host.";
-				$this->langContent[$this->lang][$lang . '_SMTPUSER_HINT'] = "email@demo.com";
-				$this->langContent[$this->lang][$lang . '_SMTPPASS_LABEL'] = "SMTP Password";
-				$this->langContent[$this->lang][$lang . '_SMTPPASS_DESCRIPTION'] = "Enter the password for access to the SMTP host.";
-				$this->langContent[$this->lang][$lang . '_SMTPHOST_LABEL'] = "SMTP Host";
-				$this->langContent[$this->lang][$lang . '_SMTPHOST_DESCRIPTION'] = "Enter the name of the SMTP host.";
-				$this->langContent[$this->lang][$lang . '_SMTPHOST_HINT'] = "localhost";
+				$this->setLangContent($this->lang, $lang . '_MAILONLINE_LABEL', "Mailer Status");
+				$this->setLangContent($this->lang, $lang . '_MAILONLINE_DESCRIPTION', "Warning this will stop all emails from going out.");
+				$this->setLangContent($this->lang, $lang . '_ON', "On");
+				$this->setLangContent($this->lang, $lang . '_OFF', "Off");
+				$this->setLangContent($this->lang, $lang . '_MAILER_LABEL', "Mailer");
+				$this->setLangContent($this->lang, $lang . '_MAILER_DESCRIPTION', "Select what mailer you would like to use to send emails.");
+				$this->setLangContent($this->lang, $lang . '_GLOBAL', "Global");
+				$this->setLangContent($this->lang, $lang . '_PHP_MAIL', "PHP Mail");
+				$this->setLangContent($this->lang, $lang . '_SENDMAIL', "Sendmail");
+				$this->setLangContent($this->lang, $lang . '_SMTP', "SMTP");
+				$this->setLangContent($this->lang, $lang . '_EMAILFROM_LABEL', " From Email");
+				$this->setLangContent($this->lang, $lang . '_EMAILFROM_DESCRIPTION', "The global email address that will be used to send system email.");
+				$this->setLangContent($this->lang, $lang . '_EMAILFROM_HINT', "Email Address Here");
+				$this->setLangContent($this->lang, $lang . '_FROMNAME_LABEL', "From Name");
+				$this->setLangContent($this->lang, $lang . '_FROMNAME_DESCRIPTION', "Text displayed in the header &quot;From:&quot; field when sending a site email. Usually the site name."); 
+				$this->setLangContent($this->lang, $lang . '_FROMNAME_HINT', "From Name Here"); 
+				$this->setLangContent($this->lang, $lang . '_EMAILREPLY_LABEL', " Reply to Email"); 
+				$this->setLangContent($this->lang, $lang . '_EMAILREPLY_DESCRIPTION', "The global email address that will be used to set as the reply email. (leave blank for none)"); 
+				$this->setLangContent($this->lang, $lang . '_EMAILREPLY_HINT', "Email Address Here"); 
+				$this->setLangContent($this->lang, $lang . '_REPLYNAME_LABEL', "Reply to Name"); 
+				$this->setLangContent($this->lang, $lang . '_REPLYNAME_DESCRIPTION', "Text displayed in the header &quot;Reply To:&quot; field when replying to the site email. Usually the the person that receives the response. (leave blank for none)"); 
+				$this->setLangContent($this->lang, $lang . '_REPLYNAME_HINT', "Reply Name Here"); 
+				$this->setLangContent($this->lang, $lang . '_SENDMAIL_LABEL', "Sendmail Path"); 
+				$this->setLangContent($this->lang, $lang . '_SENDMAIL_DESCRIPTION', "Enter the path to the sendmail program directory on your host server."); 
+				$this->setLangContent($this->lang, $lang . '_SENDMAIL_HINT', "/usr/sbin/sendmail"); 
+				$this->setLangContent($this->lang, $lang . '_SMTPAUTH_LABEL', "SMTP Authentication");
+				$this->setLangContent($this->lang, $lang . '_SMTPAUTH_DESCRIPTION', "Select yes if your SMTP host requires SMTP Authentication.");
+				$this->setLangContent($this->lang, $lang . '_YES', "Yes");
+				$this->setLangContent($this->lang, $lang . '_NO', "No");
+				$this->setLangContent($this->lang, $lang . '_SMTPSECURE_LABEL', "SMTP Security");
+				$this->setLangContent($this->lang, $lang . '_SMTPSECURE_DESCRIPTION', "Select the security model that your SMTP server uses.");
+				$this->setLangContent($this->lang, $lang . '_NONE', "None");
+				$this->setLangContent($this->lang, $lang . '_SSL', "SSL");
+				$this->setLangContent($this->lang, $lang . '_TLS', "TLS");
+				$this->setLangContent($this->lang, $lang . '_SMTPPORT_LABEL', "SMTP Port");
+				$this->setLangContent($this->lang, $lang . '_SMTPPORT_DESCRIPTION', "Enter the port number of your SMTP server. Use 25 for most unsecured servers and 465 for most secure servers.");
+				$this->setLangContent($this->lang, $lang . '_SMTPPORT_HINT', "25");
+				$this->setLangContent($this->lang, $lang . '_SMTPUSER_LABEL', "SMTP Username");
+				$this->setLangContent($this->lang, $lang . '_SMTPUSER_DESCRIPTION', "Enter the username for access to the SMTP host.");
+				$this->setLangContent($this->lang, $lang . '_SMTPUSER_HINT', "email@demo.com");
+				$this->setLangContent($this->lang, $lang . '_SMTPPASS_LABEL', "SMTP Password");
+				$this->setLangContent($this->lang, $lang . '_SMTPPASS_DESCRIPTION', "Enter the password for access to the SMTP host.");
+				$this->setLangContent($this->lang, $lang . '_SMTPHOST_LABEL', "SMTP Host");
+				$this->setLangContent($this->lang, $lang . '_SMTPHOST_DESCRIPTION', "Enter the name of the SMTP host.");
+				$this->setLangContent($this->lang, $lang . '_SMTPHOST_HINT', "localhost");
 
 				// set the mailer fields
 				$this->configFieldSets[] = PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Mailonline Field. Type: Radio. (joomla) -->";
@@ -15057,27 +15018,27 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			}
 			else
 			{
-				$this->langContent[$this->lang][$lang . '_DKIM_LABEL'] = "Enable DKIM";
-				$this->langContent[$this->lang][$lang . '_DKIM_DESCRIPTION'] = "Set this option to Yes if you want to sign your emails using DKIM.";
-				$this->langContent[$this->lang][$lang . '_YES'] = "Yes";
-				$this->langContent[$this->lang][$lang . '_NO'] = "No";
-				$this->langContent[$this->lang][$lang . '_DKIM_DOMAIN_LABEL'] = "Domain";
-				$this->langContent[$this->lang][$lang . '_DKIM_DOMAIN_DESCRIPTION'] = "Set the domain. Eg. domain.com";
-				$this->langContent[$this->lang][$lang . '_DKIM_DOMAIN_HINT'] = "domain.com";
-				$this->langContent[$this->lang][$lang . '_DKIM_SELECTOR_LABEL'] = "Selector";
-				$this->langContent[$this->lang][$lang . '_DKIM_SELECTOR_DESCRIPTION'] = "Set your DKIM/DNS selector.";
-				$this->langContent[$this->lang][$lang . '_DKIM_SELECTOR_HINT'] = "vdm";
-				$this->langContent[$this->lang][$lang . '_DKIM_PASSPHRASE_LABEL'] = "Passphrase";
-				$this->langContent[$this->lang][$lang . '_DKIM_PASSPHRASE_DESCRIPTION'] = "Enter your passphrase here.";
-				$this->langContent[$this->lang][$lang . '_DKIM_IDENTITY_LABEL'] = "Identity";
-				$this->langContent[$this->lang][$lang . '_DKIM_IDENTITY_DESCRIPTION'] = "Set DKIM identity. This can be in the format of an email address 'you@yourdomain.com' typically used as the source of the email.";
-				$this->langContent[$this->lang][$lang . '_DKIM_IDENTITY_HINT'] = "you@yourdomain.com";
-				$this->langContent[$this->lang][$lang . '_DKIM_PRIVATE_KEY_LABEL'] = "Private key";
-				$this->langContent[$this->lang][$lang . '_DKIM_PRIVATE_KEY_DESCRIPTION'] = "set private key";
-				$this->langContent[$this->lang][$lang . '_DKIM_PUBLIC_KEY_LABEL'] = "Public key";
-				$this->langContent[$this->lang][$lang . '_DKIM_PUBLIC_KEY_DESCRIPTION'] = "set public key";
-				$this->langContent[$this->lang][$lang . '_NOTE_DKIM_USE_LABEL'] = "Server Configuration";
-				$this->langContent[$this->lang][$lang . '_NOTE_DKIM_USE_DESCRIPTION'] = "<p>Using the below details, you need to configure your DNS by adding a TXT record on your domain: <b><span id='a_dkim_domain'></span></b></p>
+				$this->setLangContent($this->lang, $lang . '_DKIM_LABEL', "Enable DKIM");
+				$this->setLangContent($this->lang, $lang . '_DKIM_DESCRIPTION', "Set this option to Yes if you want to sign your emails using DKIM.");
+				$this->setLangContent($this->lang, $lang . '_YES', "Yes");
+				$this->setLangContent($this->lang, $lang . '_NO', "No");
+				$this->setLangContent($this->lang, $lang . '_DKIM_DOMAIN_LABEL', "Domain");
+				$this->setLangContent($this->lang, $lang . '_DKIM_DOMAIN_DESCRIPTION', "Set the domain. Eg. domain.com");
+				$this->setLangContent($this->lang, $lang . '_DKIM_DOMAIN_HINT', "domain.com");
+				$this->setLangContent($this->lang, $lang . '_DKIM_SELECTOR_LABEL', "Selector");
+				$this->setLangContent($this->lang, $lang . '_DKIM_SELECTOR_DESCRIPTION', "Set your DKIM/DNS selector.");
+				$this->setLangContent($this->lang, $lang . '_DKIM_SELECTOR_HINT', "vdm");
+				$this->setLangContent($this->lang, $lang . '_DKIM_PASSPHRASE_LABEL', "Passphrase");
+				$this->setLangContent($this->lang, $lang . '_DKIM_PASSPHRASE_DESCRIPTION', "Enter your passphrase here.");
+				$this->setLangContent($this->lang, $lang . '_DKIM_IDENTITY_LABEL', "Identity");
+				$this->setLangContent($this->lang, $lang . '_DKIM_IDENTITY_DESCRIPTION', "Set DKIM identity. This can be in the format of an email address 'you@yourdomain.com' typically used as the source of the email.");
+				$this->setLangContent($this->lang, $lang . '_DKIM_IDENTITY_HINT', "you@yourdomain.com");
+				$this->setLangContent($this->lang, $lang . '_DKIM_PRIVATE_KEY_LABEL', "Private key");
+				$this->setLangContent($this->lang, $lang . '_DKIM_PRIVATE_KEY_DESCRIPTION', "set private key");
+				$this->setLangContent($this->lang, $lang . '_DKIM_PUBLIC_KEY_LABEL', "Public key");
+				$this->setLangContent($this->lang, $lang . '_DKIM_PUBLIC_KEY_DESCRIPTION', "set public key");
+				$this->setLangContent($this->lang, $lang . '_NOTE_DKIM_USE_LABEL', "Server Configuration");
+				$this->setLangContent($this->lang, $lang . '_NOTE_DKIM_USE_DESCRIPTION', "<p>Using the below details, you need to configure your DNS by adding a TXT record on your domain: <b><span id='a_dkim_domain'></span></b></p>
 <script>
 jQuery(document).ready(function()
 {
@@ -15103,13 +15064,13 @@ function vdm_dkim() {
 	        jQuery('#jform_dkim_value').val('v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=' + jQuery('#jform_dkim_public_key').val());
         }
 }
-</script>";
-				$this->langContent[$this->lang][$lang . '_DKIM_KEY_LABEL'] = "Key";
-				$this->langContent[$this->lang][$lang . '_DKIM_KEY_DESCRIPTION'] = "This is the KEY to use in the DNS record.";
-				$this->langContent[$this->lang][$lang . '_DKIM_KEY_HINT'] = "vdm._domainkey";
-				$this->langContent[$this->lang][$lang . '_DKIM_VALUE_LABEL'] = "Value";
-				$this->langContent[$this->lang][$lang . '_DKIM_VALUE_DESCRIPTION'] = "This is the TXT value to use in the DNS. Replace the PUBLICKEY with your public key.";
-				$this->langContent[$this->lang][$lang . '_DKIM_VALUE_HINT'] = "v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=PUBLICKEY";
+</script>");
+				$this->setLangContent($this->lang, $lang . '_DKIM_KEY_LABEL', "Key");
+				$this->setLangContent($this->lang, $lang . '_DKIM_KEY_DESCRIPTION', "This is the KEY to use in the DNS record.");
+				$this->setLangContent($this->lang, $lang . '_DKIM_KEY_HINT', "vdm._domainkey");
+				$this->setLangContent($this->lang, $lang . '_DKIM_VALUE_LABEL', "Value");
+				$this->setLangContent($this->lang, $lang . '_DKIM_VALUE_DESCRIPTION', "This is the TXT value to use in the DNS. Replace the PUBLICKEY with your public key.");
+				$this->setLangContent($this->lang, $lang . '_DKIM_VALUE_HINT', "v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=PUBLICKEY");
 
 
 				$this->configFieldSets[] = PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Dkim Field. Type: Radio. (joomla) -->";
@@ -15496,38 +15457,38 @@ function vdm_dkim() {
 			$this->extensionsParams[] = '"admin_chartbackground":"#F7F7FA","admin_mainwidth":"1000","admin_chartareatop":"20","admin_chartarealeft":"20","admin_chartareawidth":"170","admin_legendtextstylefontcolor":"10","admin_legendtextstylefontsize":"20","admin_vaxistextstylefontcolor":"#63B1F2","admin_haxistextstylefontcolor":"#63B1F2","admin_haxistitletextstylefontcolor":"#63B1F2","site_chartbackground":"#F7F7FA","site_mainwidth":"1000","site_chartareatop":"20","site_chartarealeft":"20","site_chartareawidth":"170","site_legendtextstylefontcolor":"10","site_legendtextstylefontsize":"20","site_vaxistextstylefontcolor":"#63B1F2","site_haxistextstylefontcolor":"#63B1F2","site_haxistitletextstylefontcolor":"#63B1F2"';
 
 			// set field lang
-			$this->langContent[$this->lang][$lang . '_CHART_SETTINGS_LABEL'] = "Chart Settings";
-			$this->langContent[$this->lang][$lang . '_CHART_SETTINGS_DESC'] = "The Google Chart Display Settings Are Made Here.";
-			$this->langContent[$this->lang][$lang . '_ADMIN_CHART_NOTE_LABEL'] = "Admin Settings";
-			$this->langContent[$this->lang][$lang . '_ADMIN_CHART_NOTE_DESC'] = "The following settings are used on the back-end of the site called (admin).";
-			$this->langContent[$this->lang][$lang . '_SITE_CHART_NOTE_LABEL'] = "Site Settings";
-			$this->langContent[$this->lang][$lang . '_SITE_CHART_NOTE_DESC'] = "The following settings are used on the front-end of the site called (site).";
+			$this->setLangContent($this->lang, $lang . '_CHART_SETTINGS_LABEL', "Chart Settings");
+			$this->setLangContent($this->lang, $lang . '_CHART_SETTINGS_DESC', "The Google Chart Display Settings Are Made Here.");
+			$this->setLangContent($this->lang, $lang . '_ADMIN_CHART_NOTE_LABEL', "Admin Settings");
+			$this->setLangContent($this->lang, $lang . '_ADMIN_CHART_NOTE_DESC', "The following settings are used on the back-end of the site called (admin).");
+			$this->setLangContent($this->lang, $lang . '_SITE_CHART_NOTE_LABEL', "Site Settings");
+			$this->setLangContent($this->lang, $lang . '_SITE_CHART_NOTE_DESC', "The following settings are used on the front-end of the site called (site).");
 
-			$this->langContent[$this->lang][$lang . '_CHARTAREALEFT_DESC'] = "Set in pixels the spacing from the left of the chart area to the beginning of the chart it self. Please don't add the px sign";
-			$this->langContent[$this->lang][$lang . '_CHARTAREALEFT_HINT'] = "170";
-			$this->langContent[$this->lang][$lang . '_CHARTAREALEFT_LABEL'] = "Left Spacing";
-			$this->langContent[$this->lang][$lang . '_CHARTAREATOP_DESC'] = "Set in pixels the spacing from the top of the chart area to the beginning of the chart it self. Please don't add the px sign";
-			$this->langContent[$this->lang][$lang . '_CHARTAREATOP_HINT'] = "20";
-			$this->langContent[$this->lang][$lang . '_CHARTAREATOP_LABEL'] = "Top Spacing";
-			$this->langContent[$this->lang][$lang . '_CHARTAREAWIDTH_DESC'] = "Set in % the width of the chart it self inside the chart area. Please don't add the % sign";
-			$this->langContent[$this->lang][$lang . '_CHARTAREAWIDTH_HINT'] = "60";
-			$this->langContent[$this->lang][$lang . '_CHARTAREAWIDTH_LABEL'] = "Chart Width";
-			$this->langContent[$this->lang][$lang . '_CHARTBACKGROUND_DESC'] = "Select the chart background color here.";
-			$this->langContent[$this->lang][$lang . '_CHARTBACKGROUND_LABEL'] = "Chart Background";
-			$this->langContent[$this->lang][$lang . '_HAXISTEXTSTYLEFONTCOLOR_DESC'] = "Select the horizontal axis font color.";
-			$this->langContent[$this->lang][$lang . '_HAXISTEXTSTYLEFONTCOLOR_LABEL'] = "hAxis Font Color";
-			$this->langContent[$this->lang][$lang . '_HAXISTITLETEXTSTYLEFONTCOLOR_DESC'] = "Select the horizontal axis title's font color.";
-			$this->langContent[$this->lang][$lang . '_HAXISTITLETEXTSTYLEFONTCOLOR_LABEL'] = "hAxis Title Font Color";
-			$this->langContent[$this->lang][$lang . '_LEGENDTEXTSTYLEFONTCOLOR_DESC'] = "Select the legend font color.";
-			$this->langContent[$this->lang][$lang . '_LEGENDTEXTSTYLEFONTCOLOR_LABEL'] = "Legend Font Color";
-			$this->langContent[$this->lang][$lang . '_LEGENDTEXTSTYLEFONTSIZE_DESC'] = "Set in pixels the font size of the legend";
-			$this->langContent[$this->lang][$lang . '_LEGENDTEXTSTYLEFONTSIZE_HINT'] = "10";
-			$this->langContent[$this->lang][$lang . '_LEGENDTEXTSTYLEFONTSIZE_LABEL'] = "Legend Font Size";
-			$this->langContent[$this->lang][$lang . '_MAINWIDTH_DESC'] = "Set the width of the entire chart area";
-			$this->langContent[$this->lang][$lang . '_MAINWIDTH_HINT'] = "1000";
-			$this->langContent[$this->lang][$lang . '_MAINWIDTH_LABEL'] = "Chart Area Width";
-			$this->langContent[$this->lang][$lang . '_VAXISTEXTSTYLEFONTCOLOR_DESC'] = "Select the vertical axis font color.";
-			$this->langContent[$this->lang][$lang . '_VAXISTEXTSTYLEFONTCOLOR_LABEL'] = "vAxis Font Color";
+			$this->setLangContent($this->lang, $lang . '_CHARTAREALEFT_DESC', "Set in pixels the spacing from the left of the chart area to the beginning of the chart it self. Please don't add the px sign");
+			$this->setLangContent($this->lang, $lang . '_CHARTAREALEFT_HINT', "170");
+			$this->setLangContent($this->lang, $lang . '_CHARTAREALEFT_LABEL', "Left Spacing");
+			$this->setLangContent($this->lang, $lang . '_CHARTAREATOP_DESC', "Set in pixels the spacing from the top of the chart area to the beginning of the chart it self. Please don't add the px sign");
+			$this->setLangContent($this->lang, $lang . '_CHARTAREATOP_HINT', "20");
+			$this->setLangContent($this->lang, $lang . '_CHARTAREATOP_LABEL', "Top Spacing");
+			$this->setLangContent($this->lang, $lang . '_CHARTAREAWIDTH_DESC', "Set in % the width of the chart it self inside the chart area. Please don't add the % sign");
+			$this->setLangContent($this->lang, $lang . '_CHARTAREAWIDTH_HINT', "60");
+			$this->setLangContent($this->lang, $lang . '_CHARTAREAWIDTH_LABEL', "Chart Width");
+			$this->setLangContent($this->lang, $lang . '_CHARTBACKGROUND_DESC', "Select the chart background color here.");
+			$this->setLangContent($this->lang, $lang . '_CHARTBACKGROUND_LABEL', "Chart Background");
+			$this->setLangContent($this->lang, $lang . '_HAXISTEXTSTYLEFONTCOLOR_DESC', "Select the horizontal axis font color.");
+			$this->setLangContent($this->lang, $lang . '_HAXISTEXTSTYLEFONTCOLOR_LABEL', "hAxis Font Color");
+			$this->setLangContent($this->lang, $lang . '_HAXISTITLETEXTSTYLEFONTCOLOR_DESC', "Select the horizontal axis title's font color.");
+			$this->setLangContent($this->lang, $lang . '_HAXISTITLETEXTSTYLEFONTCOLOR_LABEL', "hAxis Title Font Color");
+			$this->setLangContent($this->lang, $lang . '_LEGENDTEXTSTYLEFONTCOLOR_DESC', "Select the legend font color.");
+			$this->setLangContent($this->lang, $lang . '_LEGENDTEXTSTYLEFONTCOLOR_LABEL', "Legend Font Color");
+			$this->setLangContent($this->lang, $lang . '_LEGENDTEXTSTYLEFONTSIZE_DESC', "Set in pixels the font size of the legend");
+			$this->setLangContent($this->lang, $lang . '_LEGENDTEXTSTYLEFONTSIZE_HINT', "10");
+			$this->setLangContent($this->lang, $lang . '_LEGENDTEXTSTYLEFONTSIZE_LABEL', "Legend Font Size");
+			$this->setLangContent($this->lang, $lang . '_MAINWIDTH_DESC', "Set the width of the entire chart area");
+			$this->setLangContent($this->lang, $lang . '_MAINWIDTH_HINT', "1000");
+			$this->setLangContent($this->lang, $lang . '_MAINWIDTH_LABEL', "Chart Area Width");
+			$this->setLangContent($this->lang, $lang . '_VAXISTEXTSTYLEFONTCOLOR_DESC', "Select the vertical axis font color.");
+			$this->setLangContent($this->lang, $lang . '_VAXISTEXTSTYLEFONTCOLOR_LABEL', "vAxis Font Color");
 		}
 	}
 
@@ -15558,8 +15519,8 @@ function vdm_dkim() {
 				(isset($this->whmcsEncryption) && $this->whmcsEncryption)) &&
 				$this->componentData->add_license && $this->componentData->license_type == 3)
 			{
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "License & Encryption Settings";
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The license & encryption keys are set here.";
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_LABEL', "License & Encryption Settings");
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_DESC', "The license & encryption keys are set here.");
 				// add the next dynamic option
 				$dynamicAddFields[] = "License & Encryption Settings";
 			}
@@ -15568,38 +15529,38 @@ function vdm_dkim() {
 				(isset($this->whmcsEncryption) && $this->whmcsEncryption)) &&
 				$this->componentData->add_license && $this->componentData->license_type == 2)
 			{
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "Update & Encryption Settings";
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The update & encryption keys are set here.";
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_LABEL', "Update & Encryption Settings");
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_DESC', "The update & encryption keys are set here.");
 				// add the next dynamic option
 				$dynamicAddFields[] = "Update & Encryption Settings";
 			}
 			elseif ($this->componentData->add_license && $this->componentData->license_type == 3)
 			{
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "License Settings";
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The license key is set here.";
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_LABEL',  "License Settings");
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_DESC',  "The license key is set here.");
 				// add the next dynamic option
 				$dynamicAddFields[] = "License Settings";
 			}
 			elseif ($this->componentData->add_license && $this->componentData->license_type == 2)
 			{
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "Update Settings";
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The update key is set here.";
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_LABEL', "Update Settings");
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_DESC', "The update key is set here.");
 				// add the next dynamic option
 				$dynamicAddFields[] = "Update Settings";
 			}
 			else
 			{
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_LABEL'] = "Encryption Settings";
-				$this->langContent[$this->lang][$lang . '_ENCRYPTION_DESC'] = "The encryption key for the field encryption is set here.";
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_LABEL', "Encryption Settings");
+				$this->setLangContent($this->lang, $lang . '_ENCRYPTION_DESC', "The encryption key for the field encryption is set here.");
 			}
 
 			if (isset($this->basicEncryption) && $this->basicEncryption)
 			{
 				// set field lang
-				$this->langContent[$this->lang][$lang . '_BASIC_KEY_LABEL'] = "Basic Key";
-				$this->langContent[$this->lang][$lang . '_BASIC_KEY_DESC'] = "Set the basic local key here.";
-				$this->langContent[$this->lang][$lang . '_BASIC_KEY_NOTE_LABEL'] = "Basic Encryption";
-				$this->langContent[$this->lang][$lang . '_BASIC_KEY_NOTE_DESC'] = "When using the basic encryption please use set a 32 character passphrase.<br />Never change this passphrase once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+				$this->setLangContent($this->lang, $lang . '_BASIC_KEY_LABEL', "Basic Key");
+				$this->setLangContent($this->lang, $lang . '_BASIC_KEY_DESC', "Set the basic local key here.");
+				$this->setLangContent($this->lang, $lang . '_BASIC_KEY_NOTE_LABEL', "Basic Encryption");
+				$this->setLangContent($this->lang, $lang . '_BASIC_KEY_NOTE_DESC', "When using the basic encryption please use set a 32 character passphrase.<br />Never change this passphrase once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>");
 				// set the field
 				$this->configFieldSets[] = $this->_t(2) . '<field type="note" name="basic_key_note" class="alert alert-info" label="' . $lang . '_BASIC_KEY_NOTE_LABEL" description="' . $lang . '_BASIC_KEY_NOTE_DESC"  />';
 				$this->configFieldSets[] = $this->_t(2) . '<field name="basic_key"';
@@ -15613,10 +15574,10 @@ function vdm_dkim() {
 			if (isset($this->mediumEncryption) && $this->mediumEncryption)
 			{
 				// set field lang
-				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_LABEL'] = "Medium Key (Path)";
-				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_DESC'] = "Set the full path to where the key file must be stored. Make sure it is behind the root folder of your website, so that it is not public accessible.";
-				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_NOTE_LABEL'] = "Medium Encryption";
-				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_NOTE_DESC'] = "When using the medium encryption option, the system generates its own key and stores it in a file at the folder/path you set here.<br />Never change this key once it is set, or remove the key file! <b>DATA WILL GET CORRUPTED IF YOU DO!</b> Also make sure the full path to where the the key file should be stored, is behind the root folder of your website/system, so that it is not public accessible. Making a backup of this key file over a <b>secure connection</b> is recommended!";
+				$this->setLangContent($this->lang, $lang . '_MEDIUM_KEY_LABEL', "Medium Key (Path)");
+				$this->setLangContent($this->lang, $lang . '_MEDIUM_KEY_DESC', "Set the full path to where the key file must be stored. Make sure it is behind the root folder of your website, so that it is not public accessible.");
+				$this->setLangContent($this->lang, $lang . '_MEDIUM_KEY_NOTE_LABEL', "Medium Encryption");
+				$this->setLangContent($this->lang, $lang . '_MEDIUM_KEY_NOTE_DESC', "When using the medium encryption option, the system generates its own key and stores it in a file at the folder/path you set here.<br />Never change this key once it is set, or remove the key file! <b>DATA WILL GET CORRUPTED IF YOU DO!</b> Also make sure the full path to where the the key file should be stored, is behind the root folder of your website/system, so that it is not public accessible. Making a backup of this key file over a <b>secure connection</b> is recommended!");
 				// set the field
 				$this->configFieldSets[] = $this->_t(2) . '<field type="note" name="medium_key_note" class="alert alert-info" label="' . $lang . '_MEDIUM_KEY_NOTE_LABEL" description="' . $lang . '_MEDIUM_KEY_NOTE_DESC" />';
 				$this->configFieldSets[] = $this->_t(2) . '<field name="medium_key_path"';
@@ -15629,54 +15590,54 @@ function vdm_dkim() {
 				$this->configFieldSets[] = $this->_t(3) . 'default=""';
 				$this->configFieldSets[] = $this->_t(2) . "/>";
 				// set some error message if the path does not exist
-				$this->langContent[$this->lang][$lang . '_MEDIUM_KEY_PATH_ERROR'] = "Medium key path (for encryption of various fields) does not exist, or is not writable. Please check the path and update it in the global option of this component.";
+				$this->setLangContent($this->lang, $lang . '_MEDIUM_KEY_PATH_ERROR', "Medium key path (for encryption of various fields) does not exist, or is not writable. Please check the path and update it in the global option of this component.");
 			}
 			if (isset($this->whmcsEncryption) && $this->whmcsEncryption || $this->componentData->add_license)
 			{
 				// set field lang label and description
 				if ($this->componentData->add_license && $this->componentData->license_type == 3)
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = $this->componentData->companyname . " License Key";
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the license key you recieved from " . $this->componentData->companyname . " here.";
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_LABEL', $this->componentData->companyname . " License Key");
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_DESC', "Add the license key you recieved from " . $this->componentData->companyname . " here.");
 				}
 				elseif ($this->componentData->add_license && $this->componentData->license_type == 2)
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = $this->componentData->companyname . " Update Key";
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the update key you recieved from " . $this->componentData->companyname . " here.";
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_LABEL', $this->componentData->companyname . " Update Key");
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_DESC', "Add the update key you recieved from " . $this->componentData->companyname . " here.");
 				}
 				else
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_LABEL'] = $this->componentData->companyname . " Key";
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_DESC'] = "Add the key you recieved from " . $this->componentData->companyname . " here.";
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_LABEL', $this->componentData->companyname . " Key");
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_DESC', "Add the key you recieved from " . $this->componentData->companyname . " here.");
 				}
 				// ajust the notice based on license
 				if ($this->componentData->license_type == 3)
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your " . $this->componentData->companyname . " License Key";
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_NOTE_LABEL', "Your " . $this->componentData->companyname . " License Key");
 				}
 				elseif ($this->componentData->license_type == 2)
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your " . $this->componentData->companyname . " Update Key";
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_NOTE_LABEL', "Your " . $this->componentData->companyname . " Update Key");
 				}
 				else
 				{
 					if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
 					{
-						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your " . $this->componentData->companyname . " Field Encryption Key";
+						$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_NOTE_LABEL', "Your " . $this->componentData->companyname . " Field Encryption Key");
 					}
 					else
 					{
-						$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_LABEL'] = "Your " . $this->componentData->companyname . " Key";
+						$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_NOTE_LABEL', "Your " . $this->componentData->companyname . " Key");
 					}
 				}
 				// add the description based on global settings
 				if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "You need to get this key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.<br />When using the " . $this->componentData->companyname . " field encryption you can never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>";
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_NOTE_DESC', "You need to get this key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.<br />When using the " . $this->componentData->companyname . " field encryption you can never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>");
 				}
 				else
 				{
-					$this->langContent[$this->lang][$lang . '_WHMCS_KEY_NOTE_DESC'] = "You need to get this key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.";
+					$this->setLangContent($this->lang, $lang . '_WHMCS_KEY_NOTE_DESC', "You need to get this key from <a href='".$this->componentData->whmcs_buy_link."' target='_blank'>" . $this->componentData->companyname . "</a>.");
 				}
 				// set the fields
 				$this->configFieldSets[] = $this->_t(2) . '<field type="note" name="whmcs_key_note" class="alert alert-info" label="' . $lang . '_WHMCS_KEY_NOTE_LABEL" description="' . $lang . '_WHMCS_KEY_NOTE_DESC"  />';
@@ -15760,27 +15721,27 @@ function vdm_dkim() {
 		{
 			$exportTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Export Data', 'U');
 			$exportDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Export Data', 'U') . '_DESC';
-			$this->langContent['bothadmin'][$exportTitle] = 'Export Data';
-			$this->langContent['bothadmin'][$exportDesc] = ' Allows users in this group to export data.';
+			$this->setLangContent('bothadmin', $exportTitle, 'Export Data');
+			$this->setLangContent('bothadmin', $exportDesc, ' Allows users in this group to export data.');
 			$this->componentHead[] = $this->_t(2) . '<action name="core.export" title="' . $exportTitle . '" description="' . $exportDesc . '" />';
 
 			$importTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Import Data', 'U');
 			$importDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Import Data', 'U') . '_DESC';
-			$this->langContent['bothadmin'][$importTitle] = 'Import Data';
-			$this->langContent['bothadmin'][$importDesc] = ' Allows users in this group to import data.';
+			$this->setLangContent('bothadmin', $importTitle, 'Import Data');
+			$this->setLangContent('bothadmin', $importDesc, ' Allows users in this group to import data.');
 			$this->componentHead[] = $this->_t(2) . '<action name="core.import" title="' . $importTitle . '" description="' . $importDesc . '" />';
 		}
 		// version permission
 		$batchTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Use Batch', 'U');
 		$batchDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Use Batch', 'U') . '_DESC';
-		$this->langContent['bothadmin'][$batchTitle] = 'Use Batch';
-		$this->langContent['bothadmin'][$batchDesc] = ' Allows users in this group to use batch copy/update method.';
+		$this->setLangContent('bothadmin', $batchTitle, 'Use Batch');
+		$this->setLangContent('bothadmin', $batchDesc, ' Allows users in this group to use batch copy/update method.');
 		$this->componentHead[] = $this->_t(2) . '<action name="core.batch" title="' . $batchTitle . '" description="' . $batchDesc . '" />';
 		// version permission
 		$importTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Edit Versions', 'U');
 		$importDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Edit Versions', 'U') . '_DESC';
-		$this->langContent['bothadmin'][$importTitle] = 'Edit Version';
-		$this->langContent['bothadmin'][$importDesc] = ' Allows users in this group to edit versions.';
+		$this->setLangContent('bothadmin', $importTitle, 'Edit Version');
+		$this->setLangContent('bothadmin', $importDesc, ' Allows users in this group to edit versions.');
 		$this->componentHead[] = $this->_t(2) . '<action name="core.version" title="' . $importTitle . '" description="' . $importDesc . '" />';
 		// set the defaults
 		$this->componentHead[] = $this->_t(2) . '<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
@@ -15796,14 +15757,14 @@ function vdm_dkim() {
 		// new custom created by permissions
 		$created_byTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Edit Created By', 'U');
 		$created_byDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Edit Created By', 'U') . '_DESC';
-		$this->langContent['bothadmin'][$created_byTitle] = 'Edit Created By';
-		$this->langContent['bothadmin'][$created_byDesc] = ' Allows users in this group to edit created by.';
+		$this->setLangContent('bothadmin', $created_byTitle, 'Edit Created By');
+		$this->setLangContent('bothadmin', $created_byDesc, ' Allows users in this group to edit created by.');
 		$this->componentHead[] = $this->_t(2) . '<action name="core.edit.created_by" title="' . $created_byTitle . '" description="' . $created_byDesc . '" />';
 		// new custom created date permissions
 		$createdTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Edit Created Date', 'U');
 		$createdDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString('Edit Created Date', 'U') . '_DESC';
-		$this->langContent['bothadmin'][$createdTitle] = 'Edit Created Date';
-		$this->langContent['bothadmin'][$createdDesc] = ' Allows users in this group to edit created date.';
+		$this->setLangContent('bothadmin', $createdTitle, 'Edit Created Date');
+		$this->setLangContent('bothadmin', $createdDesc, ' Allows users in this group to edit created date.');
 		$this->componentHead[] = $this->_t(2) . '<action name="core.edit.created" title="' . $createdTitle . '" description="' . $createdDesc . '" />';
 
 		// set the menu controller lookup
@@ -15819,8 +15780,8 @@ function vdm_dkim() {
 				$customAdminTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($customAdminName . ' Access', 'U');
 				$customAdminDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($customAdminName . ' Access', 'U') . '_DESC';
 				$sortKey = ComponentbuilderHelper::safeString($customAdminName . ' Access');
-				$this->langContent['bothadmin'][$customAdminTitle] = $customAdminName . ' Access';
-				$this->langContent['bothadmin'][$customAdminDesc] = ' Allows the users in this group to access ' . ComponentbuilderHelper::safeString($customAdminName, 'w') . '.';
+				$this->setLangContent('bothadmin', $customAdminTitle, $customAdminName . ' Access');
+				$this->setLangContent('bothadmin', $customAdminDesc,  ' Allows the users in this group to access ' . ComponentbuilderHelper::safeString($customAdminName, 'w') . '.');
 				$this->componentGlobal[$sortKey] = $this->_t(2) . '<action name="' . $customAdminCode . '.access" title="' . $customAdminTitle . '" description="' . $customAdminDesc . '" />';
 				// add the custom permissions to use the buttons of this view
 				$this->addCustomButtonPermissions($custom_admin_view['settings'], $customAdminName, $customAdminCode);
@@ -15866,8 +15827,8 @@ function vdm_dkim() {
 				$sortKey = ComponentbuilderHelper::safeString($siteName . ' Access Site');
 				if (isset($site_view['access']) && $site_view['access'] == 1)
 				{
-					$this->langContent['bothadmin'][$siteTitle] = $siteName . ' (Site) Access';
-					$this->langContent['bothadmin'][$siteDesc] = ' Allows the users in this group to access site ' . ComponentbuilderHelper::safeString($siteName, 'w') . '.';
+					$this->setLangContent('bothadmin', $siteTitle, $siteName . ' (Site) Access');
+					$this->setLangContent('bothadmin', $siteDesc, ' Allows the users in this group to access site ' . ComponentbuilderHelper::safeString($siteName, 'w') . '.');
 					$this->componentGlobal[$sortKey] = $this->_t(2) . '<action name="site.' . $siteCode . '.access" title="' . $siteTitle . '" description="' . $siteDesc . '" />';
 
 					// check if this site view requires access rule to default to public
@@ -16030,8 +15991,8 @@ function vdm_dkim() {
 				$customButtonTitle = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($nameView . ' ' . $customButtonName . ' Button Access', 'U');
 				$customButtonDesc = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($nameView . ' ' . $customButtonName . ' Button Access', 'U') . '_DESC';
 				$sortButtonKey = ComponentbuilderHelper::safeString($nameView . ' ' . $customButtonName . ' Button Access');
-				$this->langContent['bothadmin'][$customButtonTitle] = $nameView . ' ' . $customButtonName . ' Button Access';
-				$this->langContent['bothadmin'][$customButtonDesc] = ' Allows the users in this group to access the ' . ComponentbuilderHelper::safeString($customButtonName, 'w') . ' button.';
+				$this->setLangContent('bothadmin', $customButtonTitle, $nameView . ' ' . $customButtonName . ' Button Access');
+				$this->setLangContent('bothadmin', $customButtonDesc, ' Allows the users in this group to access the ' . ComponentbuilderHelper::safeString($customButtonName, 'w') . ' button.');
 				$this->componentGlobal[$sortButtonKey] = $this->_t(2) . '<action name="' . $code . '.' . $customButtonCode . '" title="' . $customButtonTitle . '" description="' . $customButtonDesc . '" />';
 			}
 		}
@@ -16318,8 +16279,8 @@ function vdm_dkim() {
 					}
 				}
 				// set to language file
-				$this->langContent['bothadmin'][$title] = trim($permission['title']);
-				$this->langContent['bothadmin'][$title . '_DESC'] = trim($permission['description']);
+				$this->setLangContent('bothadmin', $title, $permission['title']);
+				$this->setLangContent('bothadmin', $title . '_DESC', $permission['description']);
 			}
 		}
 	}

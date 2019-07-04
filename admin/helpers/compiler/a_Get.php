@@ -1582,6 +1582,29 @@ class Get
 	}
 
 	/**
+	 * set the language content values to language content array
+	 * 
+	 * @param   string   $target    The target area for the language string
+	 * @param   string   $language  The language key string
+	 * @param   string   $string    The language string
+	 * @param   boolean  $addPrefix The switch to add langPrefix
+	 *
+	 * @return  void
+	 * 
+	 */
+	public function setLangContent($target, $language, $string, $addPrefix = false)
+	{
+		if ($addPrefix &&  !isset($this->langContent[$target][$this->langPrefix . '_' . $language]))
+		{
+			$this->langContent[$target][$this->langPrefix . '_' . $language] = trim($string);
+		}
+		elseif (!isset($this->langContent[$target][$language]))
+		{
+			$this->langContent[$target][$language] = trim($string);
+		}
+	}
+
+	/**
 	 * Get all Admin View Data
 	 * 
 	 * @param   int   $id  The view ID
@@ -1708,7 +1731,7 @@ class Get
 					$tab['name'] = (isset($tab['name']) && ComponentbuilderHelper::checkString($tab['name'])) ? $tab['name'] : 'Tab';
 					// set lang
 					$tab['lang'] = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($tab['view'], 'U') . '_' . ComponentbuilderHelper::safeString($tab['name'], 'U');
-					$this->langContent['both'][$tab['lang']] = trim($tab['name']);
+					$this->setLangContent('both', $tab['lang'], $tab['name']);
 					// set code name
 					$tab['code'] = ComponentbuilderHelper::safeString($tab['name']);
 					// check if the permissions for the tab should be added
@@ -1747,8 +1770,8 @@ class Get
 						$tab['lang_permission'] = $tab['lang'] . '_TAB_PERMISSION';
 						$tab['lang_permission_desc'] = $tab['lang'] . '_TAB_PERMISSION_DESC';
 						$tab['lang_permission_title'] = $this->placeholders[$this->hhh . 'Views' . $this->hhh] . ' View ' . $tab['name'] . ' Tab';
-						$this->langContent['both'][$tab['lang_permission']] = $tab['lang_permission_title'];
-						$this->langContent['both'][$tab['lang_permission_desc']] = 'Allow the users in this group to view ' . $tab['name'] . ' Tab of ' . $this->placeholders[$this->hhh . 'views' . $this->hhh];
+						$this->setLangContent('both', $tab['lang_permission'], $tab['lang_permission_title']);
+						$this->setLangContent('both', $tab['lang_permission_desc'], 'Allow the users in this group to view ' . $tab['name'] . ' Tab of ' . $this->placeholders[$this->hhh . 'views' . $this->hhh]);
 						// set the sort key
 						$tab['sortKey'] = ComponentbuilderHelper::safeString($tab['lang_permission_title']);
 					}
@@ -2036,7 +2059,7 @@ class Get
 							if ('default' !== $check_column_name)
 							{
 								$column_name_lang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($name_list, 'U') . '_' . ComponentbuilderHelper::safeString($relationsValue['column_name'], 'U');
-								$this->langContent['admin'][$column_name_lang] = trim($relationsValue['column_name']);
+								$this->setLangContent('admin', $column_name_lang, $relationsValue['column_name']);
 								$this->listHeadOverRide[$name_list][(int) $relationsValue['listfield']] = $column_name_lang;
 							}
 						}
@@ -4369,12 +4392,11 @@ class Get
 		{
 			return false;
 		}
-		// only load if string is not already set
+		// build lang key
 		$keyLang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString($string, 'U');
-		if (!isset($this->langContent[$this->lang][$keyLang]))
-		{
-			$this->langContent[$this->lang][$keyLang] = trim($string);
-		}
+		// set the language string
+		$this->setLangContent($this->lang, $keyLang, $string);
+
 		return $keyLang;
 	}
 
@@ -6334,12 +6356,10 @@ class Get
 					{
 						continue;
 					}
-					// only load if string is not already set
+					// build lang key
 					$keyLang = $this->langPrefix . '_' . $_keyLang;
-					if (!isset($this->langContent[$this->lang][$keyLang]))
-					{
-						$this->langContent[$this->lang][$keyLang] = trim($lang);
-					}
+					// set lang content string
+					$this->setLangContent($this->lang, $keyLang, $lang);
 					// reverse the placeholders
 					foreach ($langStringTargets as $langStringTarget)
 					{

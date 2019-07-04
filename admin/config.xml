@@ -249,6 +249,20 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_CONFIG_SIMPLEXMLELEMENT_CLASS</option>
 		</field>
+		<!-- Field_name_builder Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="field_name_builder"
+			label="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERIC</option>
+		</field>
 		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
 		<!-- Api Field. Type: User. (joomla) -->

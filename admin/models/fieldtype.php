@@ -93,10 +93,17 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		return JTable::getInstance($type, $prefix, $config);
 	}
 
+	/**
+	 * get VDM session key
+	 *
+	 * @return  string  the session key
+	 *
+	 */
 	public function getVDM()
 	{
 		return $this->vastDevMod;
 	}
+
     
 	/**
 	 * Method to get a single record.
