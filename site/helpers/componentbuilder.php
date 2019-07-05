@@ -1371,12 +1371,14 @@ abstract class ComponentbuilderHelper
 		// The banners by size
 		'banner' => array(
 			'728-90' => array(
-				'<a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>',
-				'<a href="https://magazine.joomla.org" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img alt="Joomla! Community Magazine | Because community matters..." src="https://magazine.joomla.org/images/banners/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>'
+				'<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>',
+				'<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img alt="Joomla! Community Magazine | Because community matters..." src="https://magazine.joomla.org/images/banners/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>',
+				'<a href="https://vdm.bz/jcb-sponsor-tlwebdesign" target="_blank" title="tlwebdesign a JCB sponsor | Because community matters..."><img alt="tlwebdesign a JCB sponsor | Because community matters..." src="https://www.joomlacomponentbuilder.com/images/banners/tlwebdesign_jcb_sponsor_728_90.png" width="728" height="90" border="0" /></a>',
+				'<a href="https://vdm.bz/jcb-sponsor-vdm" target="_blank" title="VDM a JCB sponsor | Because community matters..."><img alt="VDM a JCB sponsor | Because community matters..." src="https://www.joomlacomponentbuilder.com/images/banners/vdm_jcb_sponsor_728_90.gif" width="728" height="90" border="0" /></a>'
 			),
 			'160-600' => array(
-				'<a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>',
-				'<a href="https://magazine.joomla.org" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img src="https://magazine.joomla.org/images/banners/JCM_2010_120x600.png" alt="Joomla! Community Magazine | Because community matters..." width="120" height="600" border="0"/></a>'
+				'<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>',
+				'<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img src="https://magazine.joomla.org/images/banners/JCM_2010_120x600.png" alt="Joomla! Community Magazine | Because community matters..." width="120" height="600" border="0"/></a>'
 			)
 		),
 		// The build-gif by size
