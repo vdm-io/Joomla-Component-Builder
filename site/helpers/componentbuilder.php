@@ -125,6 +125,24 @@ abstract class ComponentbuilderHelper
 	);
 
 	/**
+	* Making class or function name safe
+	*
+	* @input	string       The name you would like to make safe
+	*
+	* @returns string on success
+	**/
+	public static function safeClassFunctionName($name)
+	{
+		// remove numbers if the first character is a number
+		if (is_numeric(substr($name, 0, 1)))
+		{
+			$name = self::replaceNumbers($name);
+		}
+		// remove all spaces and strange characters
+		return trim(reg_replace("/[^A-Za-z0-9]/", '', $name));
+	}
+
+	/**
 	* The field builder switch
 	**/
 	protected static $fieldNameBuilder = false;

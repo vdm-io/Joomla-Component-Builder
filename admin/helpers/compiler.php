@@ -459,20 +459,28 @@ class Compiler extends Infusion
 		{
 			// set the repo path
 			$repoFullPath = $this->repoPath . '/com_' . $this->componentData->sales_name . '__joomla_' . $this->joomlaVersion;
+			// Trigger Event: jcb_ce_onBeforeUpdateRepo
+			$this->triggerEvent('jcb_ce_onBeforeUpdateRepo', array(&$this->componentContext, &$this->componentPath, &$repoFullPath, &$this->componentData));
 			// remove old data
 			$this->removeFolder($repoFullPath, $this->componentData->toignore);
 			// set the new data
 			JFolder::copy($this->componentPath, $repoFullPath, '', true);
+			// Trigger Event: jcb_ce_onAfterUpdateRepo
+			$this->triggerEvent('jcb_ce_onAfterUpdateRepo', array(&$this->componentContext, &$this->componentPath, &$repoFullPath, &$this->componentData));
 		}
 		// the name of the zip file to create
 		$this->filepath = $this->tempPath . '/' . $this->componentFolderName . '.zip';
-
+		// Trigger Event: jcb_ce_onBeforeZipComponent
+		$this->triggerEvent('jcb_ce_onBeforeZipComponent', array(&$this->componentContext, &$this->componentPath, &$this->filepath, &$this->tempPath, &$this->componentFolderName, &$this->componentData));
 		//create the zip file
 		if (ComponentbuilderHelper::zip($this->componentPath, $this->filepath))
 		{
-			// now move to backup if zip was made and backup is requered
+			// now move to backup if zip was made and backup is required
 			if ($this->backupPath && $this->dynamicIntegration)
 			{
+				// Trigger Event: jcb_ce_onBeforeBackupZip
+				$this->triggerEvent('jcb_ce_onBeforeBackupZip', array(&$this->componentContext, &$this->filepath, &$this->tempPath, &$this->backupPath, &$this->componentData));
+				// copy the zip to backup path
 				JFile::copy($this->filepath, $this->backupPath);
 			}
 
@@ -482,10 +490,14 @@ class Compiler extends Infusion
 				// make sure we have the correct file
 				if (isset($this->componentData->sales_server))
 				{
+					// Trigger Event: jcb_ce_onBeforeMoveToServer
+					$this->triggerEvent('jcb_ce_onBeforeMoveToServer', array(&$this->componentContext, &$this->filepath, &$this->tempPath, &$this->componentSalesName, &$this->componentData));
 					// move to server
 					ComponentbuilderHelper::moveToServer($this->filepath, $this->componentSalesName . '.zip', (int) $this->componentData->sales_server, $this->componentData->sales_server_protocol);
 				}
 			}
+			// Trigger Event: jcb_ce_onAfterZipComponent
+			$this->triggerEvent('jcb_ce_onAfterZipComponent', array(&$this->componentContext, &$this->filepath, &$this->tempPath, &$this->componentFolderName, &$this->componentData));
 			// remove the component folder since we are done
 			if ($this->removeFolder($this->componentPath))
 			{
