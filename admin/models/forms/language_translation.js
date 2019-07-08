@@ -23,7 +23,7 @@ function addData(result,where){
 function addButton_server(type, size){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
-		var request = 'token='+token+'&type='+type+'&size='+size;
+		var request = token+'=1&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',

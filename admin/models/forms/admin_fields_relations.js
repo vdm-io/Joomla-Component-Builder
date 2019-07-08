@@ -47,13 +47,13 @@ function getCodeGlueOptions(field) {
 }
 
 function getCodeGlueOptions_server(listfield, joinfields, type, area){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getCodeGlueOptions&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getCodeGlueOptions&format=json");
 	// make sure the joinfields are set
 	if (!_isSet(joinfields)) {
 		joinfields = 'none';
 	}
 	if(token.length > 0 && listfield > 0 && type > 0 && area > 0) {
-		var request = 'token='+token+'&listfield='+listfield+'&type='+type+'&area='+area+'&joinfields='+joinfields;
+		var request = token+'=1&listfield='+listfield+'&type='+type+'&area='+area+'&joinfields='+joinfields;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -74,9 +74,9 @@ function _isSet(val)
 }
 
 function getEditCustomCodeButtons_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+		var request = token+'=1&id='+id+'&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',

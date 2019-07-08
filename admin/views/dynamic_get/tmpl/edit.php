@@ -663,20 +663,17 @@ jQuery(document).ready(function(){
 	});
 
 });
-
 <?php foreach($fieldNames as $fieldName => $funcName): ?>jQuery('#adminForm').on('change', '#jform_<?php echo $fieldName ?>_table_main',function (e) {
 	// get options
 	var value_<?php echo $fieldName ?> = jQuery("#jform_<?php echo $fieldName ?>_table_main option:selected").val();
 	get<?php echo $funcName; ?>TableColumns(value_<?php echo $fieldName ?>, 'a', '<?php echo $fieldName ?>', 3, true, '', '');
 });
 <?php endforeach; ?>
-
 // #jform_add_php_router_parse listeners
 jQuery('#jform_add_php_router_parse').on('change',function() {
 	var valueSwitch = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
 	getDynamicScripts(valueSwitch);
 });
-
 jQuery('#adminForm').on('change', '#jform_select_all',function (e)
 {
 	e.preventDefault();
@@ -686,6 +683,22 @@ jQuery('#adminForm').on('change', '#jform_select_all',function (e)
 
 });
 
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
 
 // nice little dot trick :)
 jQuery(document).ready( function($) {

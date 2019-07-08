@@ -125,6 +125,65 @@ abstract class ComponentbuilderHelper
 	);
 
 	/**
+	* get the method code
+	*
+	* @input	int       The method ID
+	*
+	* @returns string on success
+	**/
+	public static function getMethodCode($id)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.comment','a.name','a.visibility','a.params','a.code')));
+		$query->from($db->quoteName('#__componentbuilder_method','a'));
+		$query->where($db->quoteName('a.id') . ' = ' . (int) $id);
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$columns = $db->getTableColumns('#__componentbuilder_method');
+			if(isset($columns['access']))
+			{
+				$groups = implode(',', $user->getAuthorisedViewLevels());
+				$query->where('a.access IN (' . $groups . ')');
+			}
+		}
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			// get the method
+			$method = $db->loadObject;
+			// combine method values
+			$combinded = array();
+			// add comment if set
+			if (self::checkString($method->comment))
+			{
+				$combinded[] = $method->comment;
+			}
+			// set the method sginature
+			$combinded[] = "\t" . $method->visibility . ' function ' . $method->name . '(' . $method->params . ')';
+			// set the method code
+			$combinded[] = "\t" . "{";
+			// add comment if set
+			if (self::checkString($method->code))
+			{
+				$combinded[] = $method->code;
+			}
+			else
+			{
+				$combinded[] = "\t\t// add your code here";
+			}
+			$combinded[] = "\t" . "}";
+			// return the method
+			return implode(PHP_EOL, $combinded);
+		}
+		return false;
+	}
+
+	/**
 	* Making class or function name safe
 	*
 	* @input	string       The name you would like to make safe

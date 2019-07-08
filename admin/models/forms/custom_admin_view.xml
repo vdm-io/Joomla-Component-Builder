@@ -156,7 +156,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
@@ -175,7 +174,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_css_document Field. Type: Radio. (joomla) -->
@@ -266,7 +264,6 @@
 			syntax="html"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
@@ -304,7 +301,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
@@ -350,7 +346,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_php_ajax Field. Type: Radio. (joomla) -->
@@ -381,7 +376,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Ajax_input Field. Type: Subform. (joomla) -->
@@ -538,7 +532,6 @@
 			syntax="css"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_document Field. Type: Editor. (joomla) -->
@@ -555,7 +548,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Css Field. Type: Editor. (joomla) -->
@@ -572,7 +564,6 @@
 			syntax="css"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Libraries Field. Type: Libraries. (custom) -->
@@ -601,7 +592,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Dynamic_get Field. Type: Dynamicgets. (custom) -->
@@ -1208,7 +1198,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="false"
 			validate="code"
 		/>
 		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
@@ -1227,7 +1216,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="false"
 			validate="code"
 		/>
 	</fieldset>

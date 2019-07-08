@@ -160,6 +160,36 @@ jQuery('#adminForm').on('change', '#jform_libraries',function (e) {
 	e.preventDefault();
 	getSnippets();
 });
+jQuery('#adminForm').on('change', '#jform_snippet',function (e) {
+	e.preventDefault();
+	// get type value
+	var snippetId = jQuery("#jform_snippet option:selected").val();
+	getSnippetDetails(snippetId);
+});
+
+jQuery(document).ready(function() {
+	// get type value
+	var snippetId = jQuery("#jform_snippet option:selected").val();
+	getSnippetDetails(snippetId);
+});
+jQuery('#adminForm').on('change', '#jform_dynamic_get',function (e) {
+	e.preventDefault();
+	// get type value
+	var dynamicId = jQuery("#jform_dynamic_get option:selected").val();
+	getDynamicValues(dynamicId);
+});
+jQuery(document).ready(function() {
+	// get type value
+	var dynamicId = jQuery("#jform_dynamic_get option:selected").val();
+	getDynamicValues(dynamicId);
+});
+jQuery(document).ready(function() {
+	// get type value
+	getLayoutDetails(<?php echo ($this->item->id) ? $this->item->id:9999; ?>);
+});
+// some lang strings
+var select_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
+var create_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
 
 jQuery.fn.selText = function() {
     var obj = this[0];
@@ -180,37 +210,20 @@ jQuery.fn.selText = function() {
     return this;
 }
 
-jQuery('#adminForm').on('change', '#jform_snippet',function (e) {
-	e.preventDefault();
-	// get type value
-	var snippetId = jQuery("#jform_snippet option:selected").val();
-	getSnippetDetails(snippetId);
-});
-
-jQuery(document).ready(function() {
-	// get type value
-	var snippetId = jQuery("#jform_snippet option:selected").val();
-	getSnippetDetails(snippetId);
-});
-
-jQuery('#adminForm').on('change', '#jform_dynamic_get',function (e) {
-	e.preventDefault();
-	// get type value
-	var dynamicId = jQuery("#jform_dynamic_get option:selected").val();
-	getDynamicValues(dynamicId);
-});
-
-jQuery(document).ready(function() {
-	// get type value
-	var dynamicId = jQuery("#jform_dynamic_get option:selected").val();
-	getDynamicValues(dynamicId);
-});
-
-jQuery(document).ready(function() {
-	// get type value
-	getLayoutDetails(<?php echo ($this->item->id) ? $this->item->id:9999; ?>);
-});
-// some lang strings
-var select_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
-var create_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
 </script>

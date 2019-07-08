@@ -67,20 +67,21 @@ Joomla.submitbutton = function(task)
 }
 // Add spindle-wheel for importations:
 jQuery(document).ready(function($) {
-	var outerDiv = $('body');
 
-	$('<div id="loading"></div>')
-		.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
-		.css("top", outerDiv.position().top - $(window).scrollTop())
-		.css("left", outerDiv.position().left - $(window).scrollLeft())
-		.css("width", outerDiv.width())
-		.css("height", outerDiv.height())
-		.css("position", "fixed")
-		.css("opacity", "0.80")
-		.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
-		.css("filter", "alpha(opacity = 80)")
-		.css("display", "none")
-		.appendTo(outerDiv);
+// waiting spinner
+var outerDiv = jQuery('body');
+jQuery('<div id="loading"></div>')
+	.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
+	.css("top", outerDiv.position().top - jQuery(window).scrollTop())
+	.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
+	.css("width", outerDiv.width())
+	.css("height", outerDiv.height())
+	.css("position", "fixed")
+	.css("opacity", "0.80")
+	.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
+	.css("filter", "alpha(opacity = 80)")
+	.css("display", "none")
+	.appendTo(outerDiv);
 });
 </script>
 <?php if(!empty( $this->sidebar)): ?>

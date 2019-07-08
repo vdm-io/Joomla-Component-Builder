@@ -12,9 +12,9 @@
 
 
 function getFieldSelectOptions_server(fieldId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json");
 	if(token.length > 0 && fieldId > 0){
-		var request = 'token='+token+'&id='+fieldId;
+		var request = token+'=1&id='+fieldId;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -24,7 +24,6 @@ function getFieldSelectOptions_server(fieldId){
 		jsonp: 'callback'
 	});
 }
-
 function getFieldSelectOptions(fieldKey){
 	// first check if the field is set
 	if(jQuery("#jform_addconditions__addconditions"+fieldKey+"__match_field").length) {

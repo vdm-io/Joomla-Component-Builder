@@ -1277,7 +1277,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_css_view Field. Type: Radio. (joomla) -->
@@ -1308,7 +1307,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Css_view Field. Type: Editor. (joomla) -->
@@ -1325,7 +1323,6 @@
 			syntax="css"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_getform Field. Type: Editor. (joomla) -->
@@ -1342,7 +1339,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_css_views Field. Type: Radio. (joomla) -->
@@ -1373,7 +1369,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Css_views Field. Type: Editor. (joomla) -->
@@ -1390,7 +1385,6 @@
 			syntax="css"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_save Field. Type: Editor. (joomla) -->
@@ -1407,7 +1401,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_javascript_view_file Field. Type: Radio. (joomla) -->
@@ -1438,7 +1431,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Javascript_view_file Field. Type: Editor. (joomla) -->
@@ -1455,7 +1447,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_allowadd Field. Type: Editor. (joomla) -->
@@ -1472,7 +1463,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_javascript_view_footer Field. Type: Radio. (joomla) -->
@@ -1503,7 +1493,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Javascript_view_footer Field. Type: Editor. (joomla) -->
@@ -1520,7 +1509,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_before_cancel Field. Type: Editor. (joomla) -->
@@ -1537,7 +1525,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_javascript_views_file Field. Type: Radio. (joomla) -->
@@ -1568,7 +1555,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Javascript_views_file Field. Type: Editor. (joomla) -->
@@ -1585,7 +1571,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_batchcopy Field. Type: Editor. (joomla) -->
@@ -1602,7 +1587,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_javascript_views_footer Field. Type: Radio. (joomla) -->
@@ -1633,7 +1617,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Javascript_views_footer Field. Type: Editor. (joomla) -->
@@ -1650,7 +1633,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_before_publish Field. Type: Editor. (joomla) -->
@@ -1667,7 +1649,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_custom_button Field. Type: Radio. (joomla) -->
@@ -1698,7 +1679,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Custom_button Field. Type: Subform. (joomla) -->
@@ -2223,7 +2203,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_controller Field. Type: Editor. (joomla) -->
@@ -2240,7 +2219,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="false"
 			validate="code"
 		/>
 		<!-- Php_after_delete Field. Type: Editor. (joomla) -->
@@ -2257,7 +2235,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_model Field. Type: Editor. (joomla) -->
@@ -2274,7 +2251,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="false"
 			validate="code"
 		/>
 		<!-- Php_document Field. Type: Editor. (joomla) -->
@@ -2291,7 +2267,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_controller_list Field. Type: Editor. (joomla) -->
@@ -2308,7 +2283,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="false"
 			validate="code"
 		/>
 		<!-- Mysql_table_charset Field. Type: List. (joomla) -->
@@ -2420,7 +2394,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="false"
 			validate="code"
 		/>
 		<!-- Mysql_table_row_format Field. Type: List. (joomla) -->
@@ -2487,7 +2460,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Sql Field. Type: Textarea. (joomla) -->
@@ -2686,7 +2658,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_import Field. Type: Textarea. (joomla) -->
@@ -2743,7 +2714,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Php_import_ext Field. Type: Textarea. (joomla) -->

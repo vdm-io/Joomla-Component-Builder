@@ -9,8 +9,8 @@
  */
 
 // Some Global Values
-jform_vvvvwamwaa_required = false;
-jform_vvvvwaswab_required = false;
+jform_vvvvwamvxd_required = false;
+jform_vvvvwasvxe_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -99,26 +99,26 @@ function vvvvwam(how_vvvvwam)
 	{
 		jQuery('#jform_php_setdocument').closest('.control-group').show();
 		// add required attribute to php_setdocument field
-		if (jform_vvvvwamwaa_required)
+		if (jform_vvvvwamvxd_required)
 		{
 			updateFieldRequired('php_setdocument',0);
 			jQuery('#jform_php_setdocument').prop('required','required');
 			jQuery('#jform_php_setdocument').attr('aria-required',true);
 			jQuery('#jform_php_setdocument').addClass('required');
-			jform_vvvvwamwaa_required = false;
+			jform_vvvvwamvxd_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_php_setdocument').closest('.control-group').hide();
 		// remove required attribute from php_setdocument field
-		if (!jform_vvvvwamwaa_required)
+		if (!jform_vvvvwamvxd_required)
 		{
 			updateFieldRequired('php_setdocument',1);
 			jQuery('#jform_php_setdocument').removeAttr('required');
 			jQuery('#jform_php_setdocument').removeAttr('aria-required');
 			jQuery('#jform_php_setdocument').removeClass('required');
-			jform_vvvvwamwaa_required = true;
+			jform_vvvvwamvxd_required = true;
 		}
 	}
 }
@@ -342,26 +342,26 @@ function vvvvwas(type_vvvvwas)
 	{
 		jQuery('#jform_libraries').closest('.control-group').show();
 		// add required attribute to libraries field
-		if (jform_vvvvwaswab_required)
+		if (jform_vvvvwasvxe_required)
 		{
 			updateFieldRequired('libraries',0);
 			jQuery('#jform_libraries').prop('required','required');
 			jQuery('#jform_libraries').attr('aria-required',true);
 			jQuery('#jform_libraries').addClass('required');
-			jform_vvvvwaswab_required = false;
+			jform_vvvvwasvxe_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_libraries').closest('.control-group').hide();
 		// remove required attribute from libraries field
-		if (!jform_vvvvwaswab_required)
+		if (!jform_vvvvwasvxe_required)
 		{
 			updateFieldRequired('libraries',1);
 			jQuery('#jform_libraries').removeAttr('required');
 			jQuery('#jform_libraries').removeAttr('aria-required');
 			jQuery('#jform_libraries').removeClass('required');
-			jform_vvvvwaswab_required = true;
+			jform_vvvvwasvxe_required = true;
 		}
 	}
 }
@@ -430,9 +430,9 @@ function getAjaxDisplay(type){
 }
 
 function getAjaxDisplay_server(type){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getAjaxDisplay&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getAjaxDisplay&format=json&raw=true&vdm="+vastDevMod);
 	if (token.length > 0 && type.length > 0) {
-		var request = 'token='+token+'&type=' + type;
+		var request = token+'=1&type=' + type;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -444,9 +444,9 @@ function getAjaxDisplay_server(type){
 }
 
 function getFieldSelectOptions_server(fieldId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json&raw=true";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.fieldSelectOptions&format=json&raw=true");
 	if (token.length > 0 && fieldId > 0) {
-		var request = 'token='+token+'&id='+fieldId;
+		var request = token+'=1&id='+fieldId;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -472,9 +472,9 @@ function getFieldSelectOptions(fieldKey){
 }
 
 function getEditCustomCodeButtons_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+		var request = token+'=1&id='+id+'&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -513,7 +513,7 @@ function isObject(obj) {
 function addButtonID_server(type, size){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButtonID&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0 && size > 0){
-		var request = 'token='+token+'&type='+type+'&size='+size;
+		var request = token+'=1&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -538,7 +538,7 @@ function addButtonID(type, where, size){
 function addButton_server(type, size){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getButton&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && type.length > 0){
-		var request = 'token='+token+'&type='+type+'&size='+size;
+		var request = token+'=1&type='+type+'&size='+size;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -563,9 +563,9 @@ function addButton(type, where, size){
 }
 
 function getLinked_server(type){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && type > 0){
-		var request = 'token='+token+'&type='+type;
+		var request = token+'=1&type='+type;
 	}
 	return jQuery.ajax({
 		type: 'GET',

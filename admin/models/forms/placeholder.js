@@ -18,7 +18,6 @@ jQuery(document).ready(function()
 	// check if this function name is taken
 	checkPlaceholderName(placeholderName);
 });
-
 function setPlaceholderName(){
 	// noting for now (we may add more functionality later)
 }

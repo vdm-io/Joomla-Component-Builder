@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items = $displayData->wbblinked_components;
+$items = $displayData->vyalinked_components;
 $user = JFactory::getUser();
 $id = $displayData->item->id;
 // set the edit URL

@@ -396,7 +396,24 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-}); 
+});
+
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
 jQuery(document).ready(function(){
 	jQuery(document).on('subform-row-add', function(event, row){
 		getIconImage(jQuery(row).find('.icomoon342'));

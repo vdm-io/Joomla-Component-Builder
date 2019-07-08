@@ -267,4 +267,21 @@ jQuery(document).ready( function($) {
 	$(".loading-dots").text(dots);
   } , 500);
 });
+
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
 </script>

@@ -281,7 +281,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Plugin_events Field. Type: List. (joomla) -->
@@ -867,7 +866,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Getcustom Field. Type: Text. (joomla) -->
@@ -900,7 +898,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Pagination Field. Type: Radio. (joomla) -->
@@ -932,7 +929,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
@@ -955,7 +951,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Filter Field. Type: Subform. (joomla) -->
@@ -1086,7 +1081,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Where Field. Type: Subform. (joomla) -->
@@ -1271,7 +1265,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Global Field. Type: Subform. (joomla) -->

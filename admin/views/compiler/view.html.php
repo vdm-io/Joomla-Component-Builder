@@ -233,7 +233,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			function getComponentDetails_server(id){
 				var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.getComponentDetails&format=json\");
 				if(token.length > 0 && id > 0){
-					var request = 'token='+token+'&id='+id;
+					var request = token+'=1&id='+id;
 				}
 				return jQuery.ajax({
 					type: 'GET',
@@ -278,7 +278,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isRead&format=json\");
 				}	
 				if(token.length > 0 && notice.length){
-					var request = \"token=\"+token+\"&notice=\"+notice;
+					var request = token+\"=1&notice=\"+notice;
 				}
 				return jQuery.ajax({
 					type: \"POST\",

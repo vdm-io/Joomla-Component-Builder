@@ -85,6 +85,7 @@ if ($this->saveOrder)
 </form>
 <script type="text/javascript">
 // languages footer script
+
 // waiting spinner
 var outerDiv = jQuery('body');
 jQuery('<div id="loading"></div>')
@@ -99,7 +100,6 @@ jQuery('<div id="loading"></div>')
 	.css("filter", "alpha(opacity = 80)")
 	.css("display", "none")
 	.appendTo(outerDiv);
-
 // when the build button is clicked
 jQuery('#toolbar').on('click',"button.button-joomla", function(e){
 	jQuery('#loading').show();

@@ -200,7 +200,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Note_jcb_placeholder Field. Type: Note. A None Database Field. (joomla) -->

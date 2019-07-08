@@ -386,16 +386,16 @@ function bulkSnippetGithub(status) {
 function doBulkUpdate_server(path, status) {
 	// set the ajax scope
 	ajaxcall = null;
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json&raw=true");
 	if (token.length > 0 && path.length > 0 && status.length > 0) {
-		var request = 'token='+token+'&path='+path+'&status='+status;
+		var request = token+'=1&path='+path+'&status='+status;
 	}
 	return jQuery.ajax({
 		type: 'POST',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -423,16 +423,16 @@ function setSnippetGithub(key, status) {
 function setSnippetGithub_server(path, status) {
 	// set the ajax scope
 	ajaxcall = null;
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.setSnippetGithub&format=json&raw=true");
 	if (token.length > 0 && path.length > 0 && status.length > 0) {
-		var request = 'token='+token+'&path='+path+'&status='+status;
+		var request = token+'=1&path='+path+'&status='+status;
 	}
 	return jQuery.ajax({
 		type: 'POST',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 

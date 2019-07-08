@@ -121,14 +121,12 @@ jQuery('#componentbuilder_loader').on('change', '#jform_inherit',function (e) {
 	var rulefilename = jQuery("#jform_inherit option:selected").val();
 	getExistingValidationRuleCode(rulefilename);
 });
-
 jQuery('#componentbuilder_loader').on('change', '#jform_name',function (e)
 {
 	var ruleName = jQuery('#jform_name').val();
 	// check if this rule name is taken
 	checkRuleName(ruleName);
 });
-
 
 // nice little dot trick :)
 jQuery(document).ready( function($) {
@@ -141,5 +139,22 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-}); 
+});
+
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
 </script>

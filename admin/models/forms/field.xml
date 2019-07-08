@@ -244,7 +244,6 @@
 			syntax="css"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_css_views Field. Type: Radio. (joomla) -->
@@ -275,7 +274,6 @@
 			syntax="css"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_css_view Field. Type: Radio. (joomla) -->
@@ -432,7 +430,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Note_no_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
@@ -451,7 +448,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->

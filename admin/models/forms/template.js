@@ -8,9 +8,6 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// Some Global Values
-jform_vvvvvzevza_required = false;
-
 // Initial Script
 jQuery(document).ready(function()
 {
@@ -25,56 +22,11 @@ function vvvvvze(add_php_view_vvvvvze)
 	if (add_php_view_vvvvvze == 1)
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').show();
-		// add required attribute to php_view field
-		if (jform_vvvvvzevza_required)
-		{
-			updateFieldRequired('php_view',0);
-			jQuery('#jform_php_view').prop('required','required');
-			jQuery('#jform_php_view').attr('aria-required',true);
-			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvzevza_required = false;
-		}
 	}
 	else
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').hide();
-		// remove required attribute from php_view field
-		if (!jform_vvvvvzevza_required)
-		{
-			updateFieldRequired('php_view',1);
-			jQuery('#jform_php_view').removeAttr('required');
-			jQuery('#jform_php_view').removeAttr('aria-required');
-			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvzevza_required = true;
-		}
 	}
-}
-
-// update required fields
-function updateFieldRequired(name,status)
-{
-	var not_required = jQuery('#jform_not_required').val();
-
-	if(status == 1)
-	{
-		if (isSet(not_required) && not_required != 0)
-		{
-			not_required = not_required+','+name;
-		}
-		else
-		{
-			not_required = ','+name;
-		}
-	}
-	else
-	{
-		if (isSet(not_required) && not_required != 0)
-		{
-			not_required = not_required.replace(','+name,'');
-		}
-	}
-
-	jQuery('#jform_not_required').val(not_required);
 }
 
 // the isSet function
@@ -94,9 +46,9 @@ jQuery(document).ready(function($)
 });
 
 function getEditCustomCodeButtons_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+		var request = token+'=1&id='+id+'&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -133,9 +85,9 @@ function isObject(obj) {
 }
 
 function getSnippetDetails_server(snippetId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.snippetDetails&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.snippetDetails&format=json");
 	if(token.length > 0 && snippetId > 0){
-		var request = 'token='+token+'&id='+snippetId;
+		var request = token+'=1&id='+snippetId;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -182,9 +134,9 @@ function getSnippetDetails(id){
 }
 
 function getDynamicValues_server(dynamicId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getDynamicValues&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getDynamicValues&format=json");
 	if(token.length > 0 && dynamicId > 0){
-		var request = 'token='+token+'&view=template&id='+dynamicId;
+		var request = token+'=1&view=template&id='+dynamicId;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -209,9 +161,9 @@ function getDynamicValues(id){
 }
 
 function getLayoutDetails_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id;
+		var request = token+'=1&id='+id;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -235,9 +187,9 @@ function getLayoutDetails(id){
 }
 
 function getTemplateDetails_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.templateDetails&format=json&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.templateDetails&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id;
+		var request = token+'=1&id='+id;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -280,7 +232,7 @@ jQuery(document).ready(function($)
 function getSnippets_server(libraries){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getSnippets&raw=true&format=json";
 	if(token.length > 0 && libraries.length > 0){
-		var request = 'token='+token+'&libraries='+JSON.stringify(libraries);
+		var request = token+'=1&libraries='+JSON.stringify(libraries);
 	}
 	return jQuery.ajax({
 		type: 'GET',

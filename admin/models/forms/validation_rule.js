@@ -32,9 +32,9 @@ jQuery(document).ready(function()
 });
 
 function getExistingValidationRuleCode_server(rulefilename){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getExistingValidationRuleCode&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getExistingValidationRuleCode&format=json");
 	if(token.length > 0 && rulefilename.length > 0){
-		var request = 'token='+token+'&name='+rulefilename;
+		var request = token+'=1&name='+rulefilename;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -84,9 +84,9 @@ function checkRuleName(ruleName) {
 }
 // check Function Name
 function checkRuleName_server(ruleName, ide){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.checkRuleName&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.checkRuleName&format=json");
 	if(token.length > 0){
-		var request = 'token='+token+'&name='+ruleName+'&id='+ide;
+		var request = token+'=1&name='+ruleName+'&id='+ide;
 	}
 	return jQuery.ajax({
 		type: 'POST',
@@ -98,9 +98,9 @@ function checkRuleName_server(ruleName, ide){
 }
 
 function getEditCustomCodeButtons_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+		var request = token+'=1&id='+id+'&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',

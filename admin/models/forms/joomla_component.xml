@@ -176,7 +176,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Debug_linenr Field. Type: Radio. (joomla) -->
@@ -229,7 +228,6 @@
 			buttons="false"
 			editor="none"
 			filter="raw"
-			required="true"
 		/>
 		<!-- Php_postflight_update Field. Type: Editor. (joomla) -->
 		<field
@@ -245,7 +243,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Note_botton_component_dashboard Field. Type: Note. A None Database Field. (joomla) -->
@@ -318,7 +315,6 @@
 			syntax="javascript"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Css_site Field. Type: Editor. (joomla) -->
@@ -335,7 +331,6 @@
 			syntax="css"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Copyright Field. Type: Textarea. (joomla) -->
@@ -366,7 +361,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Author Field. Type: Text. (joomla) -->
@@ -461,7 +455,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Website Field. Type: Url. (joomla) -->
@@ -509,7 +502,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_license Field. Type: Radio. (joomla) -->
@@ -541,7 +533,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- License_type Field. Type: List. (joomla) -->
@@ -579,7 +570,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Note_whmcs_lisencing_note Field. Type: Note. A None Database Field. (joomla) -->
@@ -598,7 +588,6 @@
 			syntax="css"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Whmcs_key Field. Type: Text. (joomla) -->
@@ -645,7 +634,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Whmcs_buy_link Field. Type: Url. (joomla) -->
@@ -677,7 +665,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- License Field. Type: Textarea. (joomla) -->
@@ -708,7 +695,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Bom Field. Type: Filelist. (joomla) -->

@@ -142,7 +142,6 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Add_php_view Field. Type: Radio. (joomla) -->
@@ -181,7 +180,6 @@
 			syntax="html"
 			editor="codemirror|none"
 			filter="raw"
-			required="true"
 			validate="code"
 		/>
 		<!-- Note_snippet_usage Field. Type: Note. A None Database Field. (joomla) -->
