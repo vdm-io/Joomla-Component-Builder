@@ -32,16 +32,16 @@ jQuery(document).ready(function()
 });
 
 function getExistingValidationRuleCode_server(rulefilename){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getExistingValidationRuleCode&format=json");
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getExistingValidationRuleCode&format=json&raw=true");
 	if(token.length > 0 && rulefilename.length > 0){
 		var request = token+'=1&name='+rulefilename;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -84,16 +84,16 @@ function checkRuleName(ruleName) {
 }
 // check Function Name
 function checkRuleName_server(ruleName, ide){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.checkRuleName&format=json");
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.checkRuleName&format=json&raw=true");
 	if(token.length > 0){
 		var request = token+'=1&name='+ruleName+'&id='+ide;
 	}
 	return jQuery.ajax({
-		type: 'POST',
+		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 

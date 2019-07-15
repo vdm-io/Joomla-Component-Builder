@@ -141,6 +141,39 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_adduikit` (`adduikit`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
+	`class_extends` INT(11) NOT NULL DEFAULT 0,
+	`fields` TEXT NOT NULL,
+	`joomla_plugin_group` INT(11) NOT NULL DEFAULT 0,
+	`main_class_code` MEDIUMTEXT NOT NULL,
+	`method_selection` TEXT NOT NULL,
+	`name` VARCHAR(255) NOT NULL DEFAULT '',
+	`property_selection` TEXT NOT NULL,
+	`params` text NOT NULL,
+	`published` TINYINT(3) NOT NULL DEFAULT 1,
+	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`version` INT(10) unsigned NOT NULL DEFAULT 1,
+	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
+	`access` INT(10) unsigned NOT NULL DEFAULT 0,
+	`ordering` INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY  (`id`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`),
+	KEY `idx_name` (`name`),
+	KEY `idx_class_extends` (`class_extends`),
+	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
@@ -623,6 +656,71 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	KEY `idx_to_line` (`to_line`),
 	KEY `idx_from_line` (`from_line`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_property` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
+	`comment` TEXT NOT NULL,
+	`default` VARCHAR(255) NOT NULL DEFAULT '',
+	`extension_type` VARCHAR(64) NOT NULL DEFAULT '',
+	`joomla_plugin_group` INT(11) NOT NULL DEFAULT 0,
+	`name` VARCHAR(255) NOT NULL DEFAULT '',
+	`visibility` VARCHAR(255) NOT NULL DEFAULT '',
+	`params` text NOT NULL,
+	`published` TINYINT(3) NOT NULL DEFAULT 1,
+	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`version` INT(10) unsigned NOT NULL DEFAULT 1,
+	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
+	`access` INT(10) unsigned NOT NULL DEFAULT 0,
+	`ordering` INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY  (`id`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`),
+	KEY `idx_name` (`name`),
+	KEY `idx_visibility` (`visibility`),
+	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_method` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
+	`arguments` TEXT NOT NULL,
+	`code` MEDIUMTEXT NOT NULL,
+	`comment` TEXT NOT NULL,
+	`extension_type` VARCHAR(64) NOT NULL DEFAULT '',
+	`joomla_plugin_group` INT(11) NOT NULL DEFAULT 0,
+	`name` VARCHAR(255) NOT NULL DEFAULT '',
+	`visibility` VARCHAR(255) NOT NULL DEFAULT '',
+	`params` text NOT NULL,
+	`published` TINYINT(3) NOT NULL DEFAULT 1,
+	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`version` INT(10) unsigned NOT NULL DEFAULT 1,
+	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
+	`access` INT(10) unsigned NOT NULL DEFAULT 0,
+	`ordering` INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY  (`id`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`),
+	KEY `idx_name` (`name`),
+	KEY `idx_visibility` (`visibility`),
+	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_placeholder` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1431,6 +1529,61 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
 	KEY `idx_state` (`published`),
 	KEY `idx_library` (`library`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_extends` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
+	`comment` TEXT NOT NULL,
+	`extension_type` VARCHAR(64) NOT NULL DEFAULT '',
+	`head` TEXT NOT NULL,
+	`name` VARCHAR(255) NOT NULL DEFAULT '',
+	`params` text NOT NULL,
+	`published` TINYINT(3) NOT NULL DEFAULT 1,
+	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`version` INT(10) unsigned NOT NULL DEFAULT 1,
+	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
+	`access` INT(10) unsigned NOT NULL DEFAULT 0,
+	`ordering` INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY  (`id`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`),
+	KEY `idx_name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_group` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
+	`class_extends` INT(11) NOT NULL DEFAULT 0,
+	`name` VARCHAR(255) NOT NULL DEFAULT '',
+	`params` text NOT NULL,
+	`published` TINYINT(3) NOT NULL DEFAULT 1,
+	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`version` INT(10) unsigned NOT NULL DEFAULT 1,
+	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
+	`access` INT(10) unsigned NOT NULL DEFAULT 0,
+	`ordering` INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY  (`id`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`),
+	KEY `idx_name` (`name`),
+	KEY `idx_class_extends` (`class_extends`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `#__componentbuilder_joomla_component`

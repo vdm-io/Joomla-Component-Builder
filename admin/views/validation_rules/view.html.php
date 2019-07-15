@@ -134,6 +134,11 @@ class ComponentbuilderViewValidation_rules extends JViewLegacy
 				JToolBarHelper::custom('validation_rules.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
 		}
+		if ($this->user->authorise('validation_rule.run_expansion', 'com_componentbuilder'))
+		{
+			// add Run Expansion button.
+			JToolBarHelper::custom('validation_rules.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('validation_rule.import'))
 		{

@@ -27,6 +27,7 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 	protected $tabLayoutFields = array(
 		'dashboard' => array(
 			'fullwidth' => array(
+				'note_php_dashboard_note',
 				'php_dashboard_methods',
 				'dashboard_tab'
 			),

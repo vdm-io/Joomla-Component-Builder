@@ -91,6 +91,7 @@ class ComponentbuilderController extends JControllerLegacy
 			// the view relationships
 			$views = array(
 				'joomla_component' => 'joomla_components',
+				'joomla_plugin' => 'joomla_plugins',
 				'admin_view' => 'admin_views',
 				'custom_admin_view' => 'custom_admin_views',
 				'site_view' => 'site_views',
@@ -98,6 +99,8 @@ class ComponentbuilderController extends JControllerLegacy
 				'layout' => 'layouts',
 				'dynamic_get' => 'dynamic_gets',
 				'custom_code' => 'custom_codes',
+				'class_property' => 'class_properties',
+				'class_method' => 'class_methods',
 				'placeholder' => 'placeholders',
 				'library' => 'libraries',
 				'snippet' => 'snippets',
@@ -124,7 +127,9 @@ class ComponentbuilderController extends JControllerLegacy
 				'component_placeholders' => 'components_placeholders',
 				'snippet_type' => 'snippet_types',
 				'library_config' => 'libraries_config',
-				'library_files_folders_urls' => 'libraries_files_folders_urls'
+				'library_files_folders_urls' => 'libraries_files_folders_urls',
+				'class_extends' => 'class_extendings',
+				'joomla_plugin_group' => 'joomla_plugin_groups'
 					);
 			// check if this is a list view
 			if (in_array($view, $views))

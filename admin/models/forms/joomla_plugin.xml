@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_componentbuilder/models/rules"
+	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
+>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CREATED_DATE_DESC"
+			size="22"
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CREATED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_VERSION_DESC"
+			size="6"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="name"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_HINT"
+		/>
+		<!-- Class_extends Field. Type: Classextends. (custom) -->
+		<field
+			type="classextends"
+			name="class_extends"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CLASS_EXTENDS_LABEL"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="true"
+			button="true"
+		/>
+		<!-- Joomla_plugin_group Field. Type: Joomlaplugingroups. (custom) -->
+		<field
+			type="joomlaplugingroups"
+			name="joomla_plugin_group"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_JOOMLA_PLUGIN_GROUP_LABEL"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="true"
+			button="true"
+		/>
+		<!-- Fields Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="fields"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FIELDS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			icon="list"
+			max="50">
+			<form hidden="true" name="list_fields_modal" repeat="true">
+				<!-- Field Field. Type: Fields. (custom) -->
+				<field
+					type="fields"
+					name="field"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FIELD_LABEL"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FIELD_DESCRIPTION"
+					class="list_class fieldFull"
+					multiple="false"
+					default=""
+					required="true"
+					button="false"
+				/>
+				<!-- Custom_value Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="custom_value"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CUSTOM_VALUE_LABEL"
+					rows="2"
+					cols="4"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CUSTOM_VALUE_DESCRIPTION"
+					class="text_area"
+					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CUSTOM_VALUE_HINT"
+					required="false"
+					readonly="false"
+					disabled="false"
+				/>
+			</form>
+		</field>
+		<!-- Main_class_code Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="main_class_code"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_MAIN_CLASS_CODE_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_MAIN_CLASS_CODE_DESCRIPTION"
+			width="100%"
+			height="800px"
+			cols="40"
+			rows="300"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
+		<!-- Method_selection Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="method_selection"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_METHOD_SELECTION_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_METHOD_SELECTION_DESCRIPTION"
+			icon="list"
+			max="150"
+			min="1">
+			<form hidden="true" name="list_method_selection_modal" repeat="true">
+				<!-- Method Field. Type: Pluginsclassmethods. (custom) -->
+				<field
+					type="pluginsclassmethods"
+					name="method"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_METHOD_LABEL"
+					class="list_class span12 method_selection_list"
+					multiple="false"
+					default="0"
+					onchange="getClassCode(this, 'method');"
+					button="false"
+				/>
+			</form>
+		</field>
+		<!-- Property_selection Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="property_selection"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PROPERTY_SELECTION_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PROPERTY_SELECTION_DESCRIPTION"
+			icon="list"
+			max="150"
+			min="1">
+			<form hidden="true" name="list_property_selection_modal" repeat="true">
+				<!-- Property Field. Type: Pluginsclassproperties. (custom) -->
+				<field
+					type="pluginsclassproperties"
+					name="property"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PROPERTY_LABEL"
+					class="list_class span12 property_selection_list"
+					multiple="false"
+					default="0"
+					onchange="getClassCode(this, 'property');"
+					button="false"
+				/>
+			</form>
+		</field>
+		<!-- Note_plugin Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_plugin" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_PLUGIN_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_PLUGIN_DESCRIPTION" heading="h4" class="alert alert-info note_plugin" />
+		<!-- Note_beta_stage Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_beta_stage" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_BETA_STAGE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_BETA_STAGE_DESCRIPTION" heading="h4" class="alert alert-warning  note_beta_stage" />
+	</fieldset>
+	
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this joomla_plugin"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="joomla_plugin"
+		/>
+	</fieldset>
+</form>

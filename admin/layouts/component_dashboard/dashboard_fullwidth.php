@@ -26,6 +26,7 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
+	'note_php_dashboard_note',
 	'php_dashboard_methods',
 	'dashboard_tab'
 );

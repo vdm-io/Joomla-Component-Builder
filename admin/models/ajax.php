@@ -249,6 +249,27 @@ class ComponentbuilderModelAjax extends JModelList
 		return function_exists('curl_version');
 	}
 
+	// Used in joomla_plugin
+	public function getClassCode($id, $type)
+	{
+		return ComponentbuilderHelper::getClassCode($id, $type);
+	}
+
+
+	public function getClassCodeIds($id, $type)
+	{
+		if ('property' === $type || 'method' === $type)
+		{
+			return ComponentbuilderHelper::getVars('class_' . $type, $id, 'joomla_plugin_group', 'id');
+		}
+		elseif ('joomla_plugin_group' === $type)
+		{
+			return ComponentbuilderHelper::getVars($type, $id, 'class_extends', 'id');
+		}
+		return false;
+	}
+
+
 	// Used in admin_view
 
 	protected $viewid = array();
@@ -2721,7 +2742,7 @@ class ComponentbuilderModelAjax extends JModelList
 				foreach($field['php'] as $name => $values)
 				{
 					$value = implode(PHP_EOL, $values['value']);
-					$textarea = $this->buildFieldTexteara($name, $values['desc'], $value, substr_count( $value, PHP_EOL ));
+					$textarea = $this->buildFieldTextarea($name, $values['desc'], $value, substr_count( $value, PHP_EOL ));
 					// load the html 
 					$field['textarea'][] = '<div class="control-label prop_removal">'. $textarea->label . '</div><div class="controls prop_removal">' . $textarea->input . '</div><br />';
 				}
@@ -2761,7 +2782,7 @@ class ComponentbuilderModelAjax extends JModelList
 		return null;
 	}
 
-	protected function buildFieldTexteara($name, $desc, $default, $rows)
+	protected function buildFieldTextarea($name, $desc, $default, $rows)
 	{
 		// get the textarea
 		$textarea = JFormHelper::loadFieldType('textarea', true);

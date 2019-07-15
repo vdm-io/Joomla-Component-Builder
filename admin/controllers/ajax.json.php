@@ -31,6 +31,8 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getCronPath', 'ajax');
 		$this->registerTask('getJCBpackageInfo', 'ajax');
 		$this->registerTask('getCrowdinDetails', 'ajax');
+		$this->registerTask('getClassCode', 'ajax');
+		$this->registerTask('getClassCodeIds', 'ajax');
 		$this->registerTask('tableColumns', 'ajax');
 		$this->registerTask('fieldSelectOptions', 'ajax');
 		$this->registerTask('getDynamicScripts', 'ajax');
@@ -271,6 +273,84 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($identifierValue && $keyValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getCrowdinDetails($identifierValue, $keyValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getClassCode':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						$typeValue = $jinput->get('type', NULL, 'WORD');
+						if($idValue && $typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getClassCode($idValue, $typeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getClassCodeIds':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$idValue = $jinput->get('id', NULL, 'INT');
+						$typeValue = $jinput->get('type', NULL, 'WORD');
+						if($idValue && $typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getClassCodeIds($idValue, $typeValue);
 						}
 						else
 						{

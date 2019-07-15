@@ -25,7 +25,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
 		// view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_component.add', 'png.joomla_components', 'png.admin_view.add', 'png.admin_views', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_plugins', 'png.admin_view.add', 'png.admin_views', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
@@ -38,7 +38,11 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'joomla_component.access' => 'joomla_component.access',
 			'joomla_components.submenu' => 'joomla_component.submenu',
 			'joomla_components.dashboard_list' => 'joomla_component.dashboard_list',
-			'joomla_component.dashboard_add' => 'joomla_component.dashboard_add',
+			'joomla_plugin.create' => 'joomla_plugin.create',
+			'joomla_plugins.access' => 'joomla_plugin.access',
+			'joomla_plugin.access' => 'joomla_plugin.access',
+			'joomla_plugins.submenu' => 'joomla_plugin.submenu',
+			'joomla_plugins.dashboard_list' => 'joomla_plugin.dashboard_list',
 			'admin_view.create' => 'admin_view.create',
 			'admin_views.access' => 'admin_view.access',
 			'admin_view.access' => 'admin_view.access',
@@ -76,6 +80,12 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'custom_code.access' => 'custom_code.access',
 			'custom_codes.submenu' => 'custom_code.submenu',
 			'custom_codes.dashboard_list' => 'custom_code.dashboard_list',
+			'class_property.create' => 'class_property.create',
+			'class_properties.access' => 'class_property.access',
+			'class_property.access' => 'class_property.access',
+			'class_method.create' => 'class_method.create',
+			'class_methods.access' => 'class_method.access',
+			'class_method.access' => 'class_method.access',
 			'placeholder.create' => 'placeholder.create',
 			'placeholders.access' => 'placeholder.access',
 			'placeholder.access' => 'placeholder.access',
@@ -175,7 +185,12 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'library_config.access' => 'library_config.access',
 			'library_files_folders_urls.create' => 'library_files_folders_urls.create',
 			'libraries_files_folders_urls.access' => 'library_files_folders_urls.access',
-			'library_files_folders_urls.access' => 'library_files_folders_urls.access');
+			'library_files_folders_urls.access' => 'library_files_folders_urls.access',
+			'class_extends.create' => 'class_extends.create',
+			'class_extendings.access' => 'class_extends.access',
+			'class_extends.access' => 'class_extends.access',
+			'joomla_plugin_groups.access' => 'joomla_plugin_group.access',
+			'joomla_plugin_group.access' => 'joomla_plugin_group.access');
 		// loop over the $views
 		foreach($viewGroups as $group => $views)
 		{

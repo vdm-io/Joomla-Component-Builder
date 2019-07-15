@@ -70,6 +70,12 @@ abstract class ComponentbuilderHelper
 	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Community-Packages/git/trees/master";
 	public static $jcbGithubPackageUrl = "https://github.com/vdm-io/JCB-Community-Packages/raw/master/";
 
+	/**
+	* The bolerplate paths
+	**/
+	public static $bolerplatePath = 'https://raw.githubusercontent.com/vdm-io/boilerplate/jcb/';
+	public static $bolerplateAPI = 'https://api.github.com/repos/vdm-io/boilerplate/git/trees/jcb';
+
 	// not needed at this time (maybe latter)
 	public static $accessToken = "";
 
@@ -125,62 +131,507 @@ abstract class ComponentbuilderHelper
 	);
 
 	/**
-	* get the method code
+	* get the class method or property
 	*
-	* @input	int       The method ID
+	* @input	int           The method/property ID
+	* @input	string      The target type
 	*
 	* @returns string on success
 	**/
-	public static function getMethodCode($id)
+	public static function getClassCode($id, $type)
 	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.comment','a.name','a.visibility','a.params','a.code')));
-		$query->from($db->quoteName('#__componentbuilder_method','a'));
-		$query->where($db->quoteName('a.id') . ' = ' . (int) $id);
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		if ('property' === $type || 'method' === $type)
 		{
-			$columns = $db->getTableColumns('#__componentbuilder_method');
-			if(isset($columns['access']))
+			// Get a db connection.
+			$db = JFactory::getDbo();
+			// Get user object
+			$user = JFactory::getUser();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			// get method
+			if ('method' === $type)
 			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
+				$query->select($db->quoteName(array('a.comment','a.name','a.visibility','a.arguments','a.code')));
 			}
-		}
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			// get the method
-			$method = $db->loadObject;
-			// combine method values
-			$combinded = array();
-			// add comment if set
-			if (self::checkString($method->comment))
+			// get property
+			elseif ('property' === $type)
 			{
-				$combinded[] = $method->comment;
+				$query->select($db->quoteName(array('a.comment','a.name','a.visibility','a.default')));
 			}
-			// set the method sginature
-			$combinded[] = "\t" . $method->visibility . ' function ' . $method->name . '(' . $method->params . ')';
-			// set the method code
-			$combinded[] = "\t" . "{";
-			// add comment if set
-			if (self::checkString($method->code))
+			$query->from($db->quoteName('#__componentbuilder_class_' . $type,'a'));
+			$query->where($db->quoteName('a.id') . ' = ' . (int) $id);
+			// Implement View Level Access
+			if (!$user->authorise('core.options', 'com_componentbuilder'))
 			{
-				$combinded[] = $method->code;
+				$columns = $db->getTableColumns('#__componentbuilder_class_' . $type);
+				if(isset($columns['access']))
+				{
+					$groups = implode(',', $user->getAuthorisedViewLevels());
+					$query->where('a.access IN (' . $groups . ')');
+				}
 			}
-			else
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
 			{
-				$combinded[] = "\t\t// add your code here";
+				// get the code
+				$code = $db->loadObject();
+				// combine method values
+				$combinded = array();
+				// add comment if set
+				if (self::checkString($code->comment))
+				{
+					$comment = array_map('trim', (array) explode(PHP_EOL, base64_decode($code->comment)));
+					$combinded[] = "\t" . implode(PHP_EOL . "\t ", $comment);
+				}
+				// build method
+				if ('method' === $type)
+				{
+					// set the method signature
+					if (self::checkString($code->arguments))
+					{
+						$combinded[] = "\t" . $code->visibility . ' function ' . $code->name . '(' . base64_decode($code->arguments) . ')';
+					}
+					else
+					{
+						$combinded[] = "\t" . $code->visibility . ' function ' . $code->name . '()';
+					}
+					// set the method code
+					$combinded[] = "\t" . "{";
+					// add code if set
+					if (self::checkString(trim($code->code)))
+					{
+						$combinded[] = base64_decode($code->code);
+					}
+					else
+					{
+						$combinded[] = "\t\t// add your code here";
+					}
+					$combinded[] = "\t" . "}";
+				}
+				else
+				{
+					if (self::checkString($code->default))
+					{
+						$code->default = base64_decode($code->default);
+						if (is_int($code->default))
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . (int) $code->default . ';';
+						}
+						elseif (is_float($code->default))
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . (float) $code->default . ';';
+						}
+						elseif (('false' === $code->default || 'true' === $code->default)
+							|| (self::checkString($code->default) && (strpos($code->default, 'array(') !== false || strpos($code->default, '"') !== false)))
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . $code->default . ';';
+						}
+						elseif (self::checkString($code->default) && strpos($code->default, '"') === false)
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = "' . $code->default . '";';
+						}
+						else
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ';';
+						}
+					}
+					else
+					{
+						// set the class property
+						$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ';';
+					}
+				}
+				// return the code
+				return implode(PHP_EOL, $combinded);
 			}
-			$combinded[] = "\t" . "}";
-			// return the method
-			return implode(PHP_EOL, $combinded);
 		}
 		return false;
+	}
+
+	/**
+	* extract Boilerplate Class Extends
+	*
+	* @input	string       The class as a string
+	* @input	string       The type of class/extension
+	*
+	* @returns string on success
+	**/
+	public static function extractBoilerplateClassExtends(&$class, $type)
+	{
+		if (($strings = self::getAllBetween($class, 'class ', '}')) !== false && self::checkArray($strings))
+		{
+			foreach ($strings as $string)
+			{
+				if (($extends = self::getBetween($string, 'extends ', '{')) !== false && self::checkString($extends))
+				{
+					return trim($extends);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* extract Boilerplate Class Header
+	*
+	* @input	string       The class as a string
+	* @input	string       The class being extended
+	* @input	string       The type of class/extension
+	*
+	* @returns string on success
+	**/
+	public static function extractBoilerplateClassHeader(&$class, $extends, $type)
+	{
+		if (($string = self::getBetween($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && self::checkString($string))
+		{
+			$headArray = explode(PHP_EOL, $string);
+			if (self::checkArray($headArray) && count($headArray) > 3)
+			{
+				// remove first since it still has the [or die;] string in it
+				array_shift($headArray);
+				// remove the last since it has the class declaration
+				array_pop($headArray);
+				// at this point we have the class comment still in as part of the header, lets remove that
+				$last = count($headArray);
+				while ($last > 0)
+				{
+					$last--;
+					if (isset($headArray[$last]) && strpos($headArray[$last], '*') !== false)
+					{
+						unset($headArray[$last]);
+					}
+					else
+					{
+						// moment the comment stops, we break out
+						$last = 0;
+					}
+				}
+				// make sure we only return if we have values
+				if (self::checkArray($headArray))
+				{
+					return implode(PHP_EOL, $headArray);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* extract Boilerplate Class Comment
+	*
+	* @input	string       The class as a string
+	* @input	string       The class being extended
+	* @input	string       The type of class/extension
+	*
+	* @returns string on success
+	**/
+	public static function extractBoilerplateClassComment(&$class, $extends, $type)
+	{
+		if (($string = self::getBetween($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && self::checkString($string))
+		{
+			$headArray = explode(PHP_EOL, $string);
+			if (self::checkArray($headArray) && count($headArray) > 3)
+			{
+				$comment = array();
+				// remove the last since it has the class declaration
+				array_pop($headArray);
+				// at this point we have the class comment still in as part of the header, lets remove that
+				$last = count($headArray);
+				while ($last > 0)
+				{
+					$last--;
+					if (isset($headArray[$last]) && strpos($headArray[$last], '*') !== false)
+					{
+						$comment[$last] = $headArray[$last];
+					}
+					else
+					{
+						// moment the comment stops, we break out
+						$last = 0;
+					}
+				}
+				// make sure we only return if we have values
+				if (self::checkArray($comment))
+				{
+					// set the correct order
+					ksort($comment);
+					return implode(PHP_EOL, $comment);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* extract Boilerplate Class Properties & Methods
+	*
+	* @input	string       The class as a string
+	* @input	string       The class being extended
+	* @input	string       The type of class/extension
+	* @input	int            The plugin groups
+	*
+	* @returns string on success
+	**/
+	public static function extractBoilerplateClassPropertiesMethods(&$class, $extends, $type, $plugin_group = null)
+	{
+		$bucket = array('property' => array(), 'method' => array());
+		// get the class code, and remove the head
+		$codeArrayTmp = explode('extends ' . $extends, $class);
+		// make sure we have the correct result
+		if (self::checkArray($codeArrayTmp) && count($codeArrayTmp) == 2)
+		{
+			// the triggers
+			$triggers = array('public' => 1, 'protected' => 2, 'private' => 3);
+			$codeArray = explode(PHP_EOL, $codeArrayTmp[1]);
+			unset($codeArrayTmp);
+			// clean the code
+			self::cleanBoilerplateCode($codeArray);
+			// temp bucket
+			$name = null;
+			$arg = null;
+			$target = null;
+			$visibility = null;
+			$tmp = array();
+			$comment = array();
+			// load method
+			$loadCode = function (&$bucket, &$target, &$name, &$arg, &$visibility, &$tmp, &$comment) use($type, $plugin_group){
+				$_tmp = array(
+					'name' => $name,
+					'visibility' => $visibility,
+					'extension_type' => $type
+					);
+				// build filter
+				$filters = array('extension_type' => $type);
+				// add more data based on target
+				if ('method' === $target && self::checkArray($tmp))
+				{
+					// clean the code
+					self::cleanBoilerplateCode($tmp);
+					// only load if there are values
+					if (self::checkArray($tmp, true))
+					{
+						$_tmp['code'] = implode(PHP_EOL, $tmp);
+					}
+					else
+					{
+						$_tmp['code'] = '';
+					}
+					// load arguments only if set
+					if (self::checkString($arg))
+					{
+						$_tmp['arguments'] = $arg;
+					}
+				}
+				elseif ('property' === $target)
+				{
+					// load default only if set
+					if (self::checkString($arg))
+					{
+						$_tmp['default'] = $arg;
+					}
+				}
+				// load comment only if set
+				if (self::checkArray($comment, true))
+				{
+					$_tmp['comment'] = implode(PHP_EOL, $comment);
+				}
+				// load the group target
+				if ($plugin_group)
+				{
+					$_tmp['joomla_plugin_group'] = $plugin_group;
+					$filters['joomla_plugin_group'] = $plugin_group;
+				}
+				// load the local values
+				if (($locals = self::getLocalBoilerplate($name, $target, $type, $filters)) !== false)
+				{
+					foreach ($locals as $key => $value)
+					{
+						$_tmp[$key] = $value;
+					}
+				}
+				else
+				{
+					$_tmp['id'] = 0;
+					$_tmp['published'] = 1;
+					$_tmp['version'] = 1;
+				}
+				// store the data based on target
+				$bucket[$target][] = $_tmp;
+			};
+			// now we start loading
+			foreach($codeArray as $line)
+			{
+				if ($visibility && $target && $name && strpos($line, '/**') !== false)
+				{
+					$loadCode($bucket, $target, $name, $arg, $visibility, $tmp, $comment);
+					// reset loop buckets
+					$name = null;
+					$arg = null;
+					$target = null;
+					$visibility = null;
+					$tmp = array();
+					$comment = array();
+				}
+				// load the comment before method/property
+				if (!$visibility && !$target && !$name && strpos($line, '*') !== false)
+				{
+					$comment[] = rtrim($line);
+				}
+				else
+				{
+					if (!$visibility && !$target && !$name)
+					{
+						// get the line values
+						$lineArray = array_values(array_map('trim', preg_split('/\s+/', trim($line))));
+						// check if we are at the main line
+						if (isset($lineArray[0]) && isset($triggers[$lineArray[0]]))
+						{
+							$visibility = $lineArray[0];
+							if (strpos($line, 'function') !== false)
+							{
+								$target = 'method';
+								// get the name
+								$name = trim(self::getBetween($line, 'function ', '('));
+								// get the arguments
+								$arg = trim(self::getBetween($line, ' ' . $name . '(', ')'));
+							}
+							else
+							{
+								$target = 'property';
+								if (strpos($line, '=') !== false)
+								{
+									// get the name
+									$name = trim(self::getBetween($line, '$', '='));
+									// get the default
+									$arg = trim(self::getBetween($line, '=', ';'));
+								}
+								else
+								{
+									// get the name
+									$name = trim(self::getBetween($line, '$', ';'));
+								}
+							}
+						}
+					}
+					else
+					{
+						$tmp[] = rtrim($line);
+					}
+				}
+			}
+			// check if a last method is still around
+			if ($visibility && $target && $name)
+			{
+				$loadCode($bucket, $target, $name, $arg, $visibility, $tmp, $comment);
+				// reset loop buckets
+				$name = null;
+				$arg = null;
+				$target = null;
+				$visibility = null;
+				$tmp = array();
+				$comment = array();
+			}
+			return $bucket;
+		}
+		return false;
+	}
+
+	protected static function getLocalBoilerplate($name, $table, $extension_type, $filters = array())
+	{
+		if ('property' === $table || 'method' === $table)
+		{
+			// Get a db connection.
+			$db = JFactory::getDbo();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			// get method
+			$query->select($db->quoteName(array('a.id','a.published','a.version')));
+			$query->from($db->quoteName('#__componentbuilder_class_' . $table,'a'));
+			$query->where($db->quoteName('a.name') . ' = ' . $db->quote($name));
+			$query->where($db->quoteName('a.extension_type') . ' = ' . $db->quote($extension_type));
+			// add more filters
+			if (self::checkArray($filters))
+			{
+				foreach($filters as $where => $value)
+				{
+					if (is_numeric($value))
+					{
+						$query->where($db->quoteName('a.' . $where) . ' = ' . $value);
+					}
+					else
+					{
+						$query->where($db->quoteName('a.' . $where) . ' = ' . $db->quote($value));
+					}
+				}
+			}
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				// get the code
+				return $db->loadAssoc();
+			}
+		}
+		return false;
+	}
+
+	protected static function cleanBoilerplateCode(&$code)
+	{
+		// remove the first lines until a { is found
+		$key = 0;
+		$found = false;
+		while (!$found)
+		{
+			if (isset($code[$key]))
+			{
+				if (strpos($code[$key], '{') !== false)
+				{
+					unset($code[$key]);
+					// only remove the first } found
+					$found = true;
+				}
+				// remove empty lines
+				elseif (!self::checkString(trim($code[$key])))
+				{
+					unset($code[$key]);
+				}
+			}
+			// check next line
+			$key++;
+			// stop loop at line 30 (really this should never happen)
+			if ($key > 30)
+			{
+				$found = true;
+			}
+		}
+		// reset all keys
+		$code = array_values($code);
+		// remove last lines until }
+		$last = count($code);
+		while ($last > 0)
+		{
+			$last--;
+			if (isset($code[$last]))
+			{
+				if (strpos($code[$last], '}') !== false)
+				{
+					unset($code[$last]);
+					// only remove the first } found
+					$last = 0;
+				}
+				// remove empty lines
+				elseif (!self::checkString(trim($code[$last])))
+				{
+					unset($code[$last]);
+				}
+			}
+		}
 	}
 
 	/**
@@ -198,7 +649,7 @@ abstract class ComponentbuilderHelper
 			$name = self::replaceNumbers($name);
 		}
 		// remove all spaces and strange characters
-		return trim(reg_replace("/[^A-Za-z0-9]/", '', $name));
+		return trim(preg_replace("/[^A-Za-z0-9_-]/", '', $name));
 	}
 
 	/**
