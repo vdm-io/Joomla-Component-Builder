@@ -1089,16 +1089,6 @@ class Fields extends Structure
 						$this->setBuilders($langLabel, $langView, $view_name_single, $view_name_list, $name, $view, $field, $typeName, $multiple, false, $optionArray);
 					}
 				}
-				elseif (ComponentbuilderHelper::fieldCheck($typeName, 'plain'))
-				{
-					if ($build)
-					{
-						// set builders
-						$this->setBuilders($langLabel, $langView, $view_name_single, $view_name_list, $name, $view, $field, $typeName, $multiple);
-					}
-					// now add to the field set
-					$dynamicField = $this->setField('plain', $fieldAttributes, $name, $typeName, $langView, $view_name_single, $view_name_list, $placeholders, $optionArray);
-				}
 				elseif (ComponentbuilderHelper::fieldCheck($typeName, 'spacer'))
 				{
 					if ($build)
@@ -1149,6 +1139,16 @@ class Fields extends Structure
 					}
 					// now add to the field set
 					$dynamicField = $this->setField('custom', $fieldAttributes, $name, $typeName, $langView, $view_name_single, $view_name_list, $placeholders, $optionArray, $custom);
+				}
+				else
+				{
+					if ($build)
+					{
+						// set builders
+						$this->setBuilders($langLabel, $langView, $view_name_single, $view_name_list, $name, $view, $field, $typeName, $multiple);
+					}
+					// now add to the field set
+					$dynamicField = $this->setField('plain', $fieldAttributes, $name, $typeName, $langView, $view_name_single, $view_name_list, $placeholders, $optionArray);
 				}
 			}
 		}
