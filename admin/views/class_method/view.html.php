@@ -188,8 +188,23 @@ class ComponentbuilderViewClass_method extends JViewLegacy
 		}
 		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_CLASS_METHOD_NEW' : 'COM_COMPONENTBUILDER_CLASS_METHOD_EDIT'));
 		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/class_method.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		// Add Ajax Token
+		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';");
 		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/class_method/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
+
+		// add the Uikit v2 style sheets
+		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+
+		// add Uikit v2 JavaScripts
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
+		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
+		// add var key
+		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		// add return_here
+		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) JUri::getInstance())) . "';");
 		JText::script('view not acceptable. Error');
 	}
 }

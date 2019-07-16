@@ -785,7 +785,7 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-}); 
+});
 jQuery(document).ready(function(){
 	jQuery(document).on('subform-row-add', function(event, row){
 		getIconImage(jQuery(row).find('.icomoon342'));

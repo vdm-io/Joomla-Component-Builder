@@ -162,6 +162,8 @@ function isSet(val)
 
 jQuery(document).ready(function()
 {
+	// get the linked details
+	getLinked();
 	// load the active array values
 	buildSelectionArray('property');
 	buildSelectionArray('method');
@@ -176,11 +178,9 @@ jQuery(document).ready(function()
 	getClassCodeIds('joomla_plugin_group', 'jform_class_extends', false);
 	getClassCodeIds('property', 'jform_joomla_plugin_group', false);
 	getClassCodeIds('method', 'jform_joomla_plugin_group', false);
-	// load the used in div
-	// jQuery('#usedin').show();
 	// check and load all the customcode edit buttons
-	// setTimeout(getEditCustomCodeButtons, 300);
-
+	setTimeout(getEditCustomCodeButtons, 300);
+	// trigger the row watcher
 	rowWatcher();
 });
 
@@ -291,7 +291,7 @@ function getClassCode(field, type){
 		jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
 	} else {
 		// set the active removed value
-		selectedIdRemoved[type] = value;
+		selectedIdRemoved[type] = id;
 		// do a dynamic update (to remove what was already used)
 		selectionDynamicUpdate(type);
 		// now get the code
@@ -414,6 +414,31 @@ function rowWatcher() {
 		if (isSet(valid_call)){
 			selectedIdRemoved[type_call] = valid_call;
 			selectionDynamicUpdate(type_call);
+			// also remove from code
+			var valid_value = jQuery(row.innerHTML).find('#' + valid_call + ' option:selected').val();
+			getClassStuff_server(valid_value, type_call, 'getClassCode').done(function(result) {
+				if(result){
+					if (Joomla.editors.instances.hasOwnProperty("jform_main_class_code")) {
+						var old_result = Joomla.editors.instances['jform_main_class_code'].getValue();
+						if (old_result.length > 0) {
+							// make sure not to load the same string twice
+							if (old_result.indexOf(result) !== -1) {
+								// remove the code
+								Joomla.editors.instances['jform_main_class_code'].setValue(old_result.replace(result+"\n\n",'').replace("\n\n"+result,'').replace(result,''));
+							}
+						}
+					} else {
+						var old_result = jQuery('textarea#jform_main_class_code').val();
+						if (old_result.length > 0) {
+							// make sure not to load the same string twice
+							if (old_result.indexOf(result) !== -1) {
+								// remove the code
+								jQuery('textarea#jform_main_class_code').val(old_result.replace(result+"\n\n",'').replace("\n\n"+result,'').replace(result,''));
+							}
+						}
+					}
+				}
+			});
 		}
 	});
 	jQuery(document).on('subform-row-add', function(event, row){
@@ -449,6 +474,28 @@ function propertyIsSet(prop, id, type) {
 		}
 	}
 	return false;
+}
+
+function getLinked_server(type){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && type > 0){
+		var request = token+'=1&type='+type;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+function getLinked(){
+	getLinked_server(1).done(function(result) {
+		if(result){
+			jQuery('#display_linked_to').html(result);
+		}
+	});
 }
 
 function getEditCustomCodeButtons_server(id){

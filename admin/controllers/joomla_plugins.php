@@ -179,4 +179,21 @@ class ComponentbuilderControllerJoomla_plugins extends JControllerAdmin
 		return false;
 	}
 
+	public function openClassMethods()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the libraries
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=class_methods', false));
+		return;
+	}
+
+	public function openClassProperties()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// redirect to the libraries
+		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=class_properties', false));
+		return;
+	}
 }

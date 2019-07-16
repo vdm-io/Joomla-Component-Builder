@@ -144,6 +144,16 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 			// add Get Boilerplate button.
 			JToolBarHelper::custom('joomla_plugins.getBoilerplate', 'joomla', '', 'COM_COMPONENTBUILDER_GET_BOILERPLATE', false);
 		}
+		if ($this->user->authorise('joomla_plugin.methods', 'com_componentbuilder'))
+		{
+			// add Methods button.
+			JToolBarHelper::custom('joomla_plugins.openClassMethods', 'joomla', '', 'COM_COMPONENTBUILDER_METHODS', false);
+		}
+		if ($this->user->authorise('joomla_plugin.properties', 'com_componentbuilder'))
+		{
+			// add Properties button.
+			JToolBarHelper::custom('joomla_plugins.openClassProperties', 'joomla', '', 'COM_COMPONENTBUILDER_PROPERTIES', false);
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_plugin.import'))
 		{

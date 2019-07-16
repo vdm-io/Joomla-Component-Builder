@@ -109,3 +109,26 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 </div>
 </form>
 </div>
+
+<script type="text/javascript">
+
+
+
+
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isSite())
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
+</script>

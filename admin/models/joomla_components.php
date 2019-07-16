@@ -1821,6 +1821,34 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'views' => 'validation_rules',
 			'not_base64' => array(),
 			'name' => 'name'
+		),
+		// #__componentbuilder_joomla_plugin (q)
+		'joomla_plugin' => array(
+			'search' => array('id', 'name', 'main_class_code'),
+			'views' => 'joomla_plugins',
+			'not_base64' => array(),
+			'name' => 'name'
+		),
+		// #__componentbuilder_class_extends (r)
+		'class_extends' => array(
+			'search' => array('id', 'name', 'head', 'comment'),
+			'views' => 'class_extendings',
+			'not_base64' => array(),
+			'name' => 'name'
+		),
+		// #__componentbuilder_class_property (s)
+		'class_property' => array(
+			'search' => array('id', 'name', 'default', 'comment'),
+			'views' => 'class_properties',
+			'not_base64' => array(),
+			'name' => 'name'
+		),
+		// #__componentbuilder_class_method (t)
+		'class_method' => array(
+			'search' => array('id', 'name', 'code', 'comment'),
+			'views' => 'class_methods',
+			'not_base64' => array(),
+			'name' => 'name'
 		)
 	);
 

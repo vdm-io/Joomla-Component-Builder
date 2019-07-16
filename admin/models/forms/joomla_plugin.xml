@@ -162,6 +162,8 @@
 				/>
 			</form>
 		</field>
+		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
 		<!-- Main_class_code Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -189,7 +191,7 @@
 			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_METHOD_SELECTION_DESCRIPTION"
 			icon="list"
 			max="150"
-			min="1">
+			min="0">
 			<form hidden="true" name="list_method_selection_modal" repeat="true">
 				<!-- Method Field. Type: Pluginsclassmethods. (custom) -->
 				<field
@@ -215,7 +217,7 @@
 			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PROPERTY_SELECTION_DESCRIPTION"
 			icon="list"
 			max="150"
-			min="1">
+			min="0">
 			<form hidden="true" name="list_property_selection_modal" repeat="true">
 				<!-- Property Field. Type: Pluginsclassproperties. (custom) -->
 				<field

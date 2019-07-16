@@ -35,7 +35,8 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 				'method_selection'
 			),
 			'fullwidth' => array(
-				'main_class_code'
+				'main_class_code',
+				'note_linked_to_notice'
 			),
 			'above' => array(
 				'name',
@@ -882,8 +883,12 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		}
 
-		// make sure the name is safe to be used as a function name
-		$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
+		// check if the name has placeholder
+		if (strpos($data['name'], '[[[') === false && strpos($data['name'], '###') === false)
+		{
+			// make sure the name is safe to be used as a function name
+			$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
+		}
 
 		// Set the fields items to data.
 		if (isset($data['fields']) && is_array($data['fields']))
