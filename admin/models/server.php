@@ -179,7 +179,7 @@ class ComponentbuilderModelServer extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_componentbuilder.server');
 			}
 		}
-		$this->sales_serverorupdate_servervvvw = $item->id;
+		$this->sales_serverupdate_servervvvw = $item->id;
 
 		return $item;
 	}
@@ -203,19 +203,19 @@ class ComponentbuilderModelServer extends JModelAdmin
 		// From the componentbuilder_joomla_component table
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
 
-		// Filter by sales_serverorupdate_servervvvw global.
-		$sales_serverorupdate_servervvvw = $this->sales_serverorupdate_servervvvw;
-		if (is_numeric($sales_serverorupdate_servervvvw ))
+		// Filter by sales_serverupdate_servervvvw global.
+		$sales_serverupdate_servervvvw = $this->sales_serverupdate_servervvvw;
+		if (is_numeric($sales_serverupdate_servervvvw ))
 		{
-			$query->where('a.sales_serverORupdate_server = ' . (int) $sales_serverorupdate_servervvvw );
+			$query->where('a.sales_server = ' . (int) $sales_serverupdate_servervvvw . ' OR a.update_server = ' . (int) $sales_serverupdate_servervvvw, ' OR');
 		}
-		elseif (is_string($sales_serverorupdate_servervvvw))
+		elseif (is_string($sales_serverupdate_servervvvw))
 		{
-			$query->where('a.sales_serverORupdate_server = ' . $db->quote($sales_serverorupdate_servervvvw));
+			$query->where('a.sales_server = ' . $db->quote($sales_serverupdate_servervvvw) . ' OR a.update_server = ' . $db->quote($sales_serverupdate_servervvvw), ' OR');
 		}
 		else
 		{
-			$query->where('a.sales_serverORupdate_server = -5');
+			$query->where('a.update_server = -5');
 		}
 
 		// Join over the asset groups.

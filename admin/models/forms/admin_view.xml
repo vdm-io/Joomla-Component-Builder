@@ -1094,7 +1094,7 @@
 					readonly="false"
 					disabled="false"
 					required="true"
-					filter="WORD"
+					filter="STRING"
 					message="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_KEY_HINT"
 				/>
