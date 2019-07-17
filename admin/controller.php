@@ -125,6 +125,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'component_dashboard' => 'components_dashboard',
 				'component_files_folders' => 'components_files_folders',
 				'component_placeholders' => 'components_placeholders',
+				'component_plugins' => 'components_plugins',
 				'snippet_type' => 'snippet_types',
 				'library_config' => 'libraries_config',
 				'library_files_folders_urls' => 'libraries_files_folders_urls',

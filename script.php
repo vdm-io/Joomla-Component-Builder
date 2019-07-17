@@ -3229,6 +3229,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Component_plugins alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_plugins') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$component_plugins_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($component_plugins_found)
+		{
+			// Since there are load the needed  component_plugins type ids
+			$component_plugins_ids = $db->loadColumn();
+			// Remove Component_plugins from the content type table
+			$component_plugins_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_plugins') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($component_plugins_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_plugins items
+			$component_plugins_done = $db->execute();
+			if ($component_plugins_done)
+			{
+				// If succesfully remove Component_plugins add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Component_plugins items from the contentitem tag map table
+			$component_plugins_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_plugins') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($component_plugins_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_plugins items
+			$component_plugins_done = $db->execute();
+			if ($component_plugins_done)
+			{
+				// If succesfully remove Component_plugins add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Component_plugins items from the ucm content table
+			$component_plugins_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.component_plugins') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($component_plugins_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_plugins items
+			$component_plugins_done = $db->execute();
+			if ($component_plugins_done)
+			{
+				// If succesfully remove Component_plugins add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Component_plugins items are cleared from DB
+			foreach ($component_plugins_ids as $component_plugins_id)
+			{
+				// Remove Component_plugins items from the ucm base table
+				$component_plugins_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $component_plugins_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($component_plugins_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Component_plugins items
+				$db->execute();
+
+				// Remove Component_plugins items from the ucm history table
+				$component_plugins_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $component_plugins_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($component_plugins_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Component_plugins items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Snippet_type alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet_type') );
 		$db->setQuery($query);
@@ -4549,6 +4635,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$component_placeholders_Inserted = $db->insertObject('#__content_types', $component_placeholders);
 
+			// Create the component_plugins content type object.
+			$component_plugins = new stdClass();
+			$component_plugins->type_title = 'Componentbuilder Component_plugins';
+			$component_plugins->type_alias = 'com_componentbuilder.component_plugins';
+			$component_plugins->table = '{"special": {"dbtable": "#__componentbuilder_component_plugins","key": "id","type": "Component_plugins","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$component_plugins->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
+			$component_plugins->router = 'ComponentbuilderHelperRoute::getComponent_pluginsRoute';
+			$component_plugins->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_plugins.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$component_plugins_Inserted = $db->insertObject('#__content_types', $component_plugins);
+
 			// Create the snippet_type content type object.
 			$snippet_type = new stdClass();
 			$snippet_type->type_title = 'Componentbuilder Snippet_type';
@@ -5708,6 +5806,35 @@ class com_componentbuilderInstallerScript
 				$component_placeholders_Inserted = $db->insertObject('#__content_types', $component_placeholders);
 			}
 
+			// Create the component_plugins content type object.
+			$component_plugins = new stdClass();
+			$component_plugins->type_title = 'Componentbuilder Component_plugins';
+			$component_plugins->type_alias = 'com_componentbuilder.component_plugins';
+			$component_plugins->table = '{"special": {"dbtable": "#__componentbuilder_component_plugins","key": "id","type": "Component_plugins","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$component_plugins->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
+			$component_plugins->router = 'ComponentbuilderHelperRoute::getComponent_pluginsRoute';
+			$component_plugins->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_plugins.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if component_plugins type is already in content_type DB.
+			$component_plugins_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_plugins->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_plugins->type_id = $db->loadResult();
+				$component_plugins_Updated = $db->updateObject('#__content_types', $component_plugins, 'type_id');
+			}
+			else
+			{
+				$component_plugins_Inserted = $db->insertObject('#__content_types', $component_plugins);
+			}
+
 			// Create the snippet_type content type object.
 			$snippet_type = new stdClass();
 			$snippet_type->type_title = 'Componentbuilder Snippet_type';
@@ -6061,7 +6188,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.9.32 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.9.33 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 

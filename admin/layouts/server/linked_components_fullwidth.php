@@ -146,7 +146,12 @@ else
 							'view' => 'component_dashboard',
 							'views' => 'components_dashboard',
 							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_DASHBOARD'),
-							'icon' => 'dashboard')
+							'icon' => 'dashboard'),
+						array(
+							'view' => 'component_plugins',
+							'views' => 'components_plugins',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_PLUGINS'),
+							'icon' => 'power-cord')
 						);
 				}
 			?>
