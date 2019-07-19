@@ -63,12 +63,12 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		<td class="nowrap">
 			<div class="name">
 				<?php if ($canDo->get('joomla_plugin.edit')): ?>
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_plugins.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo $this->escape($item->name); ?>
+					<?php echo $this->escape($item->system_name); ?>
 				<?php endif; ?>
 			</div>
 		</td>

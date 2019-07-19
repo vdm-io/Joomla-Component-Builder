@@ -8,6 +8,9 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// Some Global Values
+jform_vvvvvxevwd_required = false;
+
 // Initial Script
 jQuery(document).ready(function()
 {
@@ -18,6 +21,13 @@ jQuery(document).ready(function()
 	var joomla_plugin_group_vvvvvxc = jQuery("#jform_joomla_plugin_group").val();
 	var class_extends_vvvvvxc = jQuery("#jform_class_extends").val();
 	vvvvvxc(joomla_plugin_group_vvvvvxc,class_extends_vvvvvxc);
+
+	var class_extends_vvvvvxd = jQuery("#jform_class_extends").val();
+	vvvvvxd(class_extends_vvvvvxd);
+
+	var add_head_vvvvvxe = jQuery("#jform_add_head input[type='radio']:checked").val();
+	var class_extends_vvvvvxe = jQuery("#jform_class_extends").val();
+	vvvvvxe(add_head_vvvvvxe,class_extends_vvvvvxe);
 });
 
 // the vvvvvxb function
@@ -150,6 +160,150 @@ function class_extends_vvvvvxc_SomeFunc(class_extends_vvvvvxc)
 	return false;
 }
 
+// the vvvvvxd function
+function vvvvvxd(class_extends_vvvvvxd)
+{
+	if (isSet(class_extends_vvvvvxd) && class_extends_vvvvvxd.constructor !== Array)
+	{
+		var temp_vvvvvxd = class_extends_vvvvvxd;
+		var class_extends_vvvvvxd = [];
+		class_extends_vvvvvxd.push(temp_vvvvvxd);
+	}
+	else if (!isSet(class_extends_vvvvvxd))
+	{
+		var class_extends_vvvvvxd = [];
+	}
+	var class_extends = class_extends_vvvvvxd.some(class_extends_vvvvvxd_SomeFunc);
+
+
+	// set this function logic
+	if (class_extends)
+	{
+		jQuery('#jform_add_head').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('#jform_add_head').closest('.control-group').hide();
+	}
+}
+
+// the vvvvvxd Some function
+function class_extends_vvvvvxd_SomeFunc(class_extends_vvvvvxd)
+{
+	// set the function logic
+	if (isSet(class_extends_vvvvvxd))
+	{
+		return true;
+	}
+	return false;
+}
+
+// the vvvvvxe function
+function vvvvvxe(add_head_vvvvvxe,class_extends_vvvvvxe)
+{
+	if (isSet(add_head_vvvvvxe) && add_head_vvvvvxe.constructor !== Array)
+	{
+		var temp_vvvvvxe = add_head_vvvvvxe;
+		var add_head_vvvvvxe = [];
+		add_head_vvvvvxe.push(temp_vvvvvxe);
+	}
+	else if (!isSet(add_head_vvvvvxe))
+	{
+		var add_head_vvvvvxe = [];
+	}
+	var add_head = add_head_vvvvvxe.some(add_head_vvvvvxe_SomeFunc);
+
+	if (isSet(class_extends_vvvvvxe) && class_extends_vvvvvxe.constructor !== Array)
+	{
+		var temp_vvvvvxe = class_extends_vvvvvxe;
+		var class_extends_vvvvvxe = [];
+		class_extends_vvvvvxe.push(temp_vvvvvxe);
+	}
+	else if (!isSet(class_extends_vvvvvxe))
+	{
+		var class_extends_vvvvvxe = [];
+	}
+	var class_extends = class_extends_vvvvvxe.some(class_extends_vvvvvxe_SomeFunc);
+
+
+	// set this function logic
+	if (add_head && class_extends)
+	{
+		jQuery('#jform_head-lbl').closest('.control-group').show();
+		// add required attribute to head field
+		if (jform_vvvvvxevwd_required)
+		{
+			updateFieldRequired('head',0);
+			jQuery('#jform_head').prop('required','required');
+			jQuery('#jform_head').attr('aria-required',true);
+			jQuery('#jform_head').addClass('required');
+			jform_vvvvvxevwd_required = false;
+		}
+	}
+	else
+	{
+		jQuery('#jform_head-lbl').closest('.control-group').hide();
+		// remove required attribute from head field
+		if (!jform_vvvvvxevwd_required)
+		{
+			updateFieldRequired('head',1);
+			jQuery('#jform_head').removeAttr('required');
+			jQuery('#jform_head').removeAttr('aria-required');
+			jQuery('#jform_head').removeClass('required');
+			jform_vvvvvxevwd_required = true;
+		}
+	}
+}
+
+// the vvvvvxe Some function
+function add_head_vvvvvxe_SomeFunc(add_head_vvvvvxe)
+{
+	// set the function logic
+	if (add_head_vvvvvxe == 1)
+	{
+		return true;
+	}
+	return false;
+}
+
+// the vvvvvxe Some function
+function class_extends_vvvvvxe_SomeFunc(class_extends_vvvvvxe)
+{
+	// set the function logic
+	if (isSet(class_extends_vvvvvxe))
+	{
+		return true;
+	}
+	return false;
+}
+
+// update required fields
+function updateFieldRequired(name,status)
+{
+	var not_required = jQuery('#jform_not_required').val();
+
+	if(status == 1)
+	{
+		if (isSet(not_required) && not_required != 0)
+		{
+			not_required = not_required+','+name;
+		}
+		else
+		{
+			not_required = ','+name;
+		}
+	}
+	else
+	{
+		if (isSet(not_required) && not_required != 0)
+		{
+			not_required = not_required.replace(','+name,'');
+		}
+	}
+
+	jQuery('#jform_not_required').val(not_required);
+}
+
 // the isSet function
 function isSet(val)
 {
@@ -165,15 +319,8 @@ jQuery(document).ready(function()
 	// get the linked details
 	getLinked();
 	// load the active array values
-	buildSelectionArray('property');
-	buildSelectionArray('method');
-	// set joomla_plugin_group Array
-	selectionArray['joomla_plugin_group'] = {};
-	jQuery("#jform_joomla_plugin_group option").each(function() {
-		var key =  jQuery(this).val();
-		var text =  jQuery(this).text();
-		selectionArray['joomla_plugin_group'][key] = text;
-	});
+	buildSelectionMemory('property');
+	buildSelectionMemory('method');
 	// load the active selection array values
 	getClassCodeIds('joomla_plugin_group', 'jform_class_extends', false);
 	getClassCodeIds('property', 'jform_joomla_plugin_group', false);
@@ -183,6 +330,23 @@ jQuery(document).ready(function()
 	// trigger the row watcher
 	rowWatcher();
 });
+
+// set selection the options
+selectionMemory = {'property':{},'method':{}};
+selectionActiveArray = {'property':{},'method':{}};
+selectedIdRemoved = {'property':'not','method':'not'};
+
+function buildSelectionMemory(type) {
+	var i;
+	for (i = 0; i < 70; i++) {
+		// build ID
+		var id_check = 'jform_'+type+'_selection'+'__'+type+'_selection'+i+'__'+type;
+		// set memory
+		if (jQuery("#"+id_check).length) {
+			selectionMemory[type][id_check] = jQuery("#"+id_check+" option:selected").val();
+		}
+	}
+}
 
 function getClassStuff_server(id, type, callingName){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax."+callingName+"&format=json&raw=true");
@@ -198,6 +362,30 @@ function getClassStuff_server(id, type, callingName){
 	});
 }
 
+function getClassHeaderCode(){
+	// now get the values
+	var value = jQuery("#jform_class_extends  option:selected").val();
+	var add_value = jQuery("#jform_add_head input[type='radio']:checked").val();
+	if (add_value == 1 && value > 0){
+		// we first check local memory
+		var _result = jQuery.jStorage.get('extends_header_'+value, null);
+		if (_result) {
+				// now set the code
+				addCodeToEditor(_result, "jform_head", false);
+		} else {
+			// now get the code
+			getClassStuff_server(value, 'extends', 'getClassHeaderCode').done(function(result) {
+				if(result){
+					// now set the code
+					addCodeToEditor(result, "jform_head", false);
+					// add result to local memory
+					jQuery.jStorage.set('extends_header_'+value, result, {TTL: expire});
+				}
+			});
+		}
+	}
+}
+
 function getClassCodeIds(type, target_field, reset_all){
 	// now get the value
 	var value = jQuery('#'+target_field).val();
@@ -207,7 +395,7 @@ function getClassCodeIds(type, target_field, reset_all){
 			// reset the selection
 			selectionActiveArray[type] = {};
 			// update the active array
-			jQuery.each( result, function(i, prop) {
+			jQuery.each(result, function(i, prop) {
 				selectionActiveArray[type][prop] = selectionArray[type][prop];
 			});
 			// update the active field selection
@@ -276,6 +464,7 @@ function resetAll(type) {
 		}
 	}
 	Joomla.editors.instances['jform_main_class_code'].setValue('');
+	selectionMemory = {'property':{},'method':{}};
 }
 
 function getClassCode(field, type){
@@ -283,6 +472,31 @@ function getClassCode(field, type){
 	var id = jQuery(field).attr('id');
 	// now get the value
 	var value = jQuery('#' + id).val();
+	// check if we have a memory for this field, if true remove code of old selection and clear memory
+	if (selectionMemory[type].hasOwnProperty(id) && selectionMemory[type][id] > 0) {
+		// the old id to remove
+		var old_value = selectionMemory[type][id];
+		// remove the code // we first check local memory
+		var _result = jQuery.jStorage.get('code_4_'+type+'_'+old_value, null);
+		if (_result) {
+			// now remove the code
+			if (removeCodeFromEditor(_result)) {
+				selectionMemory[type][id] = 0;
+			}
+		} else {
+			// now get the code
+			getClassStuff_server(old_value, type, 'getClassCode').done(function(result) {
+				if(result){
+					// now remove the code
+					if (removeCodeFromEditor(result)) {
+						selectionMemory[type][id] = 0;
+					}
+					// add result to local memory
+					jQuery.jStorage.set('code_4_'+type+'_'+old_value, result, {TTL: expire});
+				}
+			});
+		}
+	}
 	if (propertyIsSet(value, id, type)) {
 		// reset the selection
 		jQuery('#'+id).val('');
@@ -294,69 +508,81 @@ function getClassCode(field, type){
 		selectedIdRemoved[type] = id;
 		// do a dynamic update (to remove what was already used)
 		selectionDynamicUpdate(type);
-		// now get the code
-		getClassStuff_server(value, type, 'getClassCode').done(function(result) {
-			if(result){
-				if (Joomla.editors.instances.hasOwnProperty("jform_main_class_code")) {
-					var old_result = Joomla.editors.instances['jform_main_class_code'].getValue();
-					if (old_result.length > 0) {
-						// make sure not to load the same string twice
-						if (old_result.indexOf(result) !== -1) {
-							// reset the selection
-							jQuery('#'+id).val('');
-							jQuery('#'+id).trigger("liszt:updated");
-							// give out a notice
-							jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
-						} else {
-							Joomla.editors.instances['jform_main_class_code'].setValue(old_result + "\n\n" + result);
-						}
-					} else {
-						Joomla.editors.instances['jform_main_class_code'].setValue(result);
-					}
-				} else {
-					var old_result = jQuery('textarea#jform_main_class_code').val();
-					if (old_result.length > 0) {
-						// make sure not to load the same string twice
-						if (old_result.indexOf(result) !== -1) {
-							// reset the selection
-							jQuery('#'+id).val('');
-							jQuery('#'+id).trigger("liszt:updated");
-							// give out a notice
-							jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
-						} else {
-							jQuery('textarea#jform_main_class_code').val(old_result + "\n\n" + result);
-						}
-					} else {
-						jQuery('textarea#jform_main_class_code').val(result);
-					}
-				}
+		// we first check local memory
+		var _result = jQuery.jStorage.get('code_4_'+type+'_'+value, null);
+		if (_result) {
+			// now set the code
+			if (addCodeToEditor(_result, "jform_main_class_code", true)) {
+				selectionMemory[type][id] = value;
 			}
-		});
+		} else {
+			// now get the code
+			getClassStuff_server(value, type, 'getClassCode').done(function(result) {
+				if(result){
+					// now set the code
+					if (addCodeToEditor(result, "jform_main_class_code", true)) {
+						selectionMemory[type][id] = value;
+					}
+					// add result to local memory
+					jQuery.jStorage.set('code_4_'+type+'_'+value, result, {TTL: expire});
+				}
+			});
+		}
 	}
 }
 
-// set selection the options
-selectionArray = {'property':{},'method':{}};
-selectionActiveArray = {'property':{},'method':{}};
-selectedIdRemoved = {'property':'not','method':'not'};
-justonce = {'property':1,'method':1};
-
-function buildSelectionArray(type) {
-	var i;
-	for (i = 0; i < 10; i++) {
-		// build ID
-		var id_check = 'jform_'+type+'_selection'+'__'+type+'_selection'+i+'__'+type;
-		// first check if Id is on page as that not the same as the one currently calling
-		if (justonce[type] == 1 && jQuery("#"+id_check).length) {
-			// set buckets
-			jQuery("#"+id_check+" option").each(function() {
-				var key =  jQuery(this).val();
-				var text =  jQuery(this).text();
-				selectionArray[type][key] = text;
-			});
-			justonce[type]++;
+function addCodeToEditor(code_string, editor_id, merge){
+	if (Joomla.editors.instances.hasOwnProperty(editor_id)) {
+		var old_code_string = Joomla.editors.instances[editor_id].getValue();
+		if (merge && old_code_string.length > 0) {
+			// make sure not to load the same string twice
+			if (old_code_string.indexOf(code_string) == -1)  {
+				Joomla.editors.instances[editor_id].setValue(old_code_string + "\n\n" + code_string);
+				return true;
+			}
+		} else {
+			Joomla.editors.instances[editor_id].setValue(code_string);
+			return true;
+		}
+	} else {
+		var old_code_string = jQuery('textarea#'+editor_id).val();
+		if (merge && old_code_string.length > 0) {
+			// make sure not to load the same string twice
+			if (old_code_string.indexOf(code_string) == -1) {
+				jQuery('textarea#'+editor_id).val(old_code_string + "\n\n" + code_string);
+				return true;
+			}
+		} else {
+			jQuery('textarea#'+editor_id).val(code_string);
+			return true;
 		}
 	}
+	return false;
+}
+
+function removeCodeFromEditor(code_string){
+	if (Joomla.editors.instances.hasOwnProperty("jform_main_class_code")) {
+		var old_code_string = Joomla.editors.instances['jform_main_class_code'].getValue();
+		if (old_code_string.length > 0) {
+			// make sure not to load the same string twice
+			if (old_code_string.indexOf(code_string) !== -1) {
+				// remove the code
+				Joomla.editors.instances['jform_main_class_code'].setValue(old_code_string.replace(code_string+"\n\n",'').replace("\n\n"+code_string,'').replace(code_string,''));
+				return true;
+			}
+		}
+	} else {
+		var old_code_string = jQuery('textarea#jform_main_class_code').val();
+		if (old_code_string.length > 0) {
+			// make sure not to load the same string twice
+			if (old_code_string.indexOf(code_string) !== -1) {
+				// remove the code
+				jQuery('textarea#jform_main_class_code').val(old_code_string.replace(code_string+"\n\n",'').replace("\n\n"+code_string,'').replace(code_string,''));
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 function selectionDynamicUpdate(type) {
@@ -379,8 +605,6 @@ function selectionDynamicUpdate(type) {
 			jQuery("#"+id_check).find('option').remove().end();
 		}
 	}
-	// trigger chosen on the list fields
-	// jQuery('.'+type+'_selection_list').chosen({"disable_search_threshold":10,"search_contains":true,"allow_single_deselect":true,"placeholder_text_multiple":Joomla.JText._("COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS"),"placeholder_text_single":Joomla.JText._("COM_COMPONENTBUILDER_SELECT_A_PROPERTY"),"no_results_text":Joomla.JText._("COM_COMPONENTBUILDER_NO_RESULTS_MATCH")});
 	// now build the list to keep
 	jQuery.each( selectionActiveArray[type], function( prop, name ) {
 		if (!selectionSelectedArray.hasOwnProperty(prop)) {
@@ -416,29 +640,28 @@ function rowWatcher() {
 			selectionDynamicUpdate(type_call);
 			// also remove from code
 			var valid_value = jQuery(row.innerHTML).find('#' + valid_call + ' option:selected').val();
-			getClassStuff_server(valid_value, type_call, 'getClassCode').done(function(result) {
-				if(result){
-					if (Joomla.editors.instances.hasOwnProperty("jform_main_class_code")) {
-						var old_result = Joomla.editors.instances['jform_main_class_code'].getValue();
-						if (old_result.length > 0) {
-							// make sure not to load the same string twice
-							if (old_result.indexOf(result) !== -1) {
-								// remove the code
-								Joomla.editors.instances['jform_main_class_code'].setValue(old_result.replace(result+"\n\n",'').replace("\n\n"+result,'').replace(result,''));
-							}
-						}
-					} else {
-						var old_result = jQuery('textarea#jform_main_class_code').val();
-						if (old_result.length > 0) {
-							// make sure not to load the same string twice
-							if (old_result.indexOf(result) !== -1) {
-								// remove the code
-								jQuery('textarea#jform_main_class_code').val(old_result.replace(result+"\n\n",'').replace("\n\n"+result,'').replace(result,''));
-							}
-						}
-					}
+			if (valid_value === '') {
+				valid_value = selectionMemory[type_call][valid_call];
+			}
+			// remove the code // we first check local memory
+			var _result = jQuery.jStorage.get('code_4_'+type_call+'_'+valid_value, null);
+			if (_result) {
+				// now remove the code
+				if (removeCodeFromEditor(_result)) {
+					selectionMemory[type_call][valid_call] = 0;
 				}
-			});
+			} else {
+				// now get the code
+				getClassStuff_server(valid_value, type_call, 'getClassCode').done(function(result) {
+					if(result){
+						if (removeCodeFromEditor(result)) {
+							selectionMemory[type_call][valid_call] = 0;;
+						}
+						// add result to local memory
+						jQuery.jStorage.set('code_4_'+type_call+'_'+valid_value, result, {TTL: expire});
+					}
+				});
+			}
 		}
 	});
 	jQuery(document).on('subform-row-add', function(event, row){

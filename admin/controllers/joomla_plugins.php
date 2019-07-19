@@ -41,69 +41,6 @@ class ComponentbuilderControllerJoomla_plugins extends JControllerAdmin
 		return parent::getModel($name, $prefix, $config);
 	}
 
-	public function exportData()
-	{
-		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		// check if export is allowed for this user.
-		$user = JFactory::getUser();
-		if ($user->authorise('joomla_plugin.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
-		{
-			// Get the input
-			$input = JFactory::getApplication()->input;
-			$pks = $input->post->get('cid', array(), 'array');
-			// Sanitize the input
-			JArrayHelper::toInteger($pks);
-			// Get the model
-			$model = $this->getModel('Joomla_plugins');
-			// get the data to export
-			$data = $model->getExportData($pks);
-			if (ComponentbuilderHelper::checkArray($data))
-			{
-				// now set the data to the spreadsheet
-				$date = JFactory::getDate();
-				ComponentbuilderHelper::xls($data,'Joomla_plugins_'.$date->format('jS_F_Y'),'Joomla plugins exported ('.$date->format('jS F, Y').')','joomla plugins');
-			}
-		}
-		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_plugins', false), $message, 'error');
-		return;
-	}
-
-
-	public function importData()
-	{
-		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		// check if import is allowed for this user.
-		$user = JFactory::getUser();
-		if ($user->authorise('joomla_plugin.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
-		{
-			// Get the import model
-			$model = $this->getModel('Joomla_plugins');
-			// get the headers to import
-			$headers = $model->getExImPortHeaders();
-			if (ComponentbuilderHelper::checkObject($headers))
-			{
-				// Load headers to session.
-				$session = JFactory::getSession();
-				$headers = json_encode($headers);
-				$session->set('joomla_plugin_VDM_IMPORTHEADERS', $headers);
-				$session->set('backto_VDM_IMPORT', 'joomla_plugins');
-				$session->set('dataType_VDM_IMPORTINTO', 'joomla_plugin');
-				// Redirect to import view.
-				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_JOOMLA_PLUGINS');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import', false), $message);
-				return;
-			}
-		}
-		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_plugins', false), $message, 'error');
-		return;
-	}
-
 
 	/**
 	 * Run the Expansion

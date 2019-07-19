@@ -9,29 +9,29 @@
  */
 
 // Some Global Values
-jform_vvvvwanvxd_required = false;
+jform_vvvvwaqvxe_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var extension_type_vvvvwan = jQuery("#jform_extension_type").val();
-	vvvvwan(extension_type_vvvvwan);
+	var extension_type_vvvvwaq = jQuery("#jform_extension_type").val();
+	vvvvwaq(extension_type_vvvvwaq);
 });
 
-// the vvvvwan function
-function vvvvwan(extension_type_vvvvwan)
+// the vvvvwaq function
+function vvvvwaq(extension_type_vvvvwaq)
 {
-	if (isSet(extension_type_vvvvwan) && extension_type_vvvvwan.constructor !== Array)
+	if (isSet(extension_type_vvvvwaq) && extension_type_vvvvwaq.constructor !== Array)
 	{
-		var temp_vvvvwan = extension_type_vvvvwan;
-		var extension_type_vvvvwan = [];
-		extension_type_vvvvwan.push(temp_vvvvwan);
+		var temp_vvvvwaq = extension_type_vvvvwaq;
+		var extension_type_vvvvwaq = [];
+		extension_type_vvvvwaq.push(temp_vvvvwaq);
 	}
-	else if (!isSet(extension_type_vvvvwan))
+	else if (!isSet(extension_type_vvvvwaq))
 	{
-		var extension_type_vvvvwan = [];
+		var extension_type_vvvvwaq = [];
 	}
-	var extension_type = extension_type_vvvvwan.some(extension_type_vvvvwan_SomeFunc);
+	var extension_type = extension_type_vvvvwaq.some(extension_type_vvvvwaq_SomeFunc);
 
 
 	// set this function logic
@@ -39,35 +39,35 @@ function vvvvwan(extension_type_vvvvwan)
 	{
 		jQuery('#jform_joomla_plugin_group').closest('.control-group').show();
 		// add required attribute to joomla_plugin_group field
-		if (jform_vvvvwanvxd_required)
+		if (jform_vvvvwaqvxe_required)
 		{
 			updateFieldRequired('joomla_plugin_group',0);
 			jQuery('#jform_joomla_plugin_group').prop('required','required');
 			jQuery('#jform_joomla_plugin_group').attr('aria-required',true);
 			jQuery('#jform_joomla_plugin_group').addClass('required');
-			jform_vvvvwanvxd_required = false;
+			jform_vvvvwaqvxe_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_joomla_plugin_group').closest('.control-group').hide();
 		// remove required attribute from joomla_plugin_group field
-		if (!jform_vvvvwanvxd_required)
+		if (!jform_vvvvwaqvxe_required)
 		{
 			updateFieldRequired('joomla_plugin_group',1);
 			jQuery('#jform_joomla_plugin_group').removeAttr('required');
 			jQuery('#jform_joomla_plugin_group').removeAttr('aria-required');
 			jQuery('#jform_joomla_plugin_group').removeClass('required');
-			jform_vvvvwanvxd_required = true;
+			jform_vvvvwaqvxe_required = true;
 		}
 	}
 }
 
-// the vvvvwan Some function
-function extension_type_vvvvwan_SomeFunc(extension_type_vvvvwan)
+// the vvvvwaq Some function
+function extension_type_vvvvwaq_SomeFunc(extension_type_vvvvwaq)
 {
 	// set the function logic
-	if (extension_type_vvvvwan == 'plugins' || extension_type_vvvvwan == 'plugin')
+	if (extension_type_vvvvwaq == 'plugins' || extension_type_vvvvwaq == 'plugin')
 	{
 		return true;
 	}

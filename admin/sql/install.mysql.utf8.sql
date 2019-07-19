@@ -144,13 +144,16 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
+	`add_head` TINYINT(1) NOT NULL DEFAULT 0,
 	`class_extends` INT(11) NOT NULL DEFAULT 0,
 	`fields` TEXT NOT NULL,
+	`head` TEXT NOT NULL,
 	`joomla_plugin_group` INT(11) NOT NULL DEFAULT 0,
 	`main_class_code` MEDIUMTEXT NOT NULL,
 	`method_selection` TEXT NOT NULL,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
 	`property_selection` TEXT NOT NULL,
+	`system_name` VARCHAR(255) NOT NULL DEFAULT '',
 	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -169,9 +172,10 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
+	KEY `idx_system_name` (`system_name`),
 	KEY `idx_class_extends` (`class_extends`),
-	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`)
+	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`),
+	KEY `idx_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (

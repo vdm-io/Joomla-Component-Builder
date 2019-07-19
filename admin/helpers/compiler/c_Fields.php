@@ -1399,11 +1399,6 @@ class Fields extends Structure
 									// now add to the field set
 									$field .= $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
 								}
-								elseif (ComponentbuilderHelper::fieldCheck($r_typeName, 'plain'))
-								{
-									// now add to the field set
-									$field .= $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
-								}
 								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 								{
 									// add to custom
@@ -1424,6 +1419,11 @@ class Fields extends Structure
 									$data = array('type' => $r_typeName, 'code' => $r_name, 'lang' => $r_listLangName, 'custom' => $custom);
 									// set the custom field file
 									$this->setCustomFieldTypeFile($data, $view_name_list, $view_name_single);
+								}
+								else
+								{
+									// now add to the field set
+									$field .= $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
 								}
 							}
 						}
@@ -1498,11 +1498,6 @@ class Fields extends Structure
 									// now add to the field set
 									$field .= $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
 								}
-								elseif (ComponentbuilderHelper::fieldCheck($r_typeName, 'plain'))
-								{
-									// now add to the field set
-									$field .= $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
-								}
 								elseif ($r_typeName === 'subform')
 								{
 									// set nested depth
@@ -1541,6 +1536,11 @@ class Fields extends Structure
 									$data = array('type' => $r_typeName, 'code' => $r_name, 'lang' => $r_listLangName, 'custom' => $custom);
 									// set the custom field file
 									$this->setCustomFieldTypeFile($data, $view_name_list, $view_name_single);
+								}
+								else
+								{
+									// now add to the field set
+									$field .= $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
 								}
 							}
 						}
@@ -2862,6 +2862,22 @@ class Fields extends Structure
 		// make sure it is not already been build or if it is prime
 		if (isset($data['custom']) && isset($data['custom']['extends']) && ((isset($data['custom']['prime_php']) && $data['custom']['prime_php'] == 1) || !isset($this->fileContentDynamic['customfield_' . $data['type']]) || !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_' . $data['type']])))
 		{
+			// set J prefix
+			$jprefix = 'J';
+			// check if this field has a dot in field type name
+			if (strpos($data['type'], '.') !== false)
+			{
+				// so we have name spacing in custom field type name
+				$dotTypeArray = explode('.', $data['type']);
+				// set the J prefix
+				if (count($dotTypeArray) > 1)
+				{
+					$jprefix = strtoupper(array_shift($dotTypeArray));
+				}
+				// update the type name now
+				$data['type'] = implode('', $dotTypeArray);
+				$data['custom']['type'] = $data['type'];
+			}
 			// set tab and break replacements
 			$tabBreak = array(
 				'\t' => $this->_t(1),
@@ -2869,6 +2885,7 @@ class Fields extends Structure
 			);
 			// set the [[[PLACEHOLDER]]] options
 			$replace = array(
+				$this->bbb . 'JPREFIX' . $this->ddd => $jprefix,
 				$this->bbb . 'TABLE' . $this->ddd => $data['custom']['table'],
 				$this->bbb . 'ID' . $this->ddd => $data['custom']['id'],
 				$this->bbb . 'TEXT' . $this->ddd => $data['custom']['text'],
@@ -2901,6 +2918,8 @@ class Fields extends Structure
 			}
 			// start loading the field type
 			$this->fileContentDynamic['customfield_' . $data['type']] = array();
+			// JPREFIX <<DYNAMIC>>>
+			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'JPREFIX' . $this->hhh] = $jprefix;
 			// Type <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh . 'Type' . $this->hhh] = ComponentbuilderHelper::safeString($data['custom']['type'], 'F');
 			// type <<<DYNAMIC>>>

@@ -24,7 +24,7 @@ JFormHelper::loadFieldClass('radio');
 /**
  * ###Type### Form Field class for the ###Component### component
  */
-class JFormField###Type### extends JFormFieldRadio
+class ###JPREFIX###FormField###Type### extends JFormFieldRadio
 {
 	/**
 	 * The ###type### field type.

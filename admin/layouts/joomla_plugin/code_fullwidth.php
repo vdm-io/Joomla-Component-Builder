@@ -26,18 +26,21 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
-	'note_beta_stage',
-	'note_plugin'
+	'head',
+	'main_class_code',
+	'note_linked_to_notice'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>
-<?php foreach($fields as $field): ?>
-	<?php if (in_array($field, $hiddenFields)) : ?>
-		<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>
-	<?php endif; ?>
-	<?php echo $form->renderField($field, null, null, array('class' => 'control-wrapper-' . $field)); ?>
-<?php endforeach; ?>
+<div class="form-vertical">
+	<?php foreach($fields as $field): ?>
+		<?php if (in_array($field, $hiddenFields)) : ?>
+			<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>
+		<?php endif; ?>
+		<?php echo $form->renderField($field, null, null, array('class' => 'control-wrapper-' . $field)); ?>
+	<?php endforeach; ?>
+</div>
 <?php endif; ?>

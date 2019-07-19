@@ -2926,11 +2926,11 @@ class Get
 				$field['settings']->type_name = 'Custom';
 			}
 			// set the type name
-			$type_name = ComponentbuilderHelper::safeString($field['settings']->type_name);
+			$type_name = ComponentbuilderHelper::safeTypeName($field['settings']->type_name);
 			// if custom (we must use the xml value)
-			if ($type_name === 'custom' || $type_name === 'customuser')
+			if (strtolower($type_name) === 'custom' || strtolower($type_name) === 'customuser')
 			{
-				$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
+				$type = ComponentbuilderHelper::safeTypeName(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
 			}
 			else
 			{
@@ -2942,17 +2942,12 @@ class Get
 						// force the default value
 						if (isset($property['example']) && ComponentbuilderHelper::checkString($property['example']))
 						{
-							$type = ComponentbuilderHelper::safeString($property['example']);
-						}
-						// fallback on type name set in name field
-						elseif (ComponentbuilderHelper::checkString($type_name))
-						{
-							$type = $type_name;
+							$type = ComponentbuilderHelper::safeTypeName($property['example']);
 						}
 						// fall back on the xml settings (not ideal)
 						else
 						{
-							$type = ComponentbuilderHelper::safeString(ComponentbuilderHelper::getBetween($xml, 'type="', '"'));
+							$type = ComponentbuilderHelper::safeTypeName(ComponentbuilderHelper::getBetween($field['settings']->xml, 'type="', '"'));
 						}
 						// exit foreach loop
 						break;
@@ -2960,10 +2955,14 @@ class Get
 				}
 			}
 			// check if the value is set
-			if (ComponentbuilderHelper::checkString($type))
+			if (isset($type) && ComponentbuilderHelper::checkString($type))
 			{
-				// add the value
 				return $type;
+			}
+			// fallback on type name set in name field (not ideal)
+			else
+			{
+				return $type_name;
 			}
 		}
 		// fall back to text

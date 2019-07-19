@@ -57,7 +57,7 @@ class ComponentbuilderViewServer extends JViewLegacy
 		}
 
 		// Get Linked view data
-		$this->vyclinked_components = $this->get('Vyclinked_components');
+		$this->vydlinked_components = $this->get('Vydlinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

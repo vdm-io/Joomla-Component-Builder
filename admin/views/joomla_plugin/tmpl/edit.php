@@ -44,23 +44,23 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('joomla_plugin.details_above', $this); ?>
+	<?php echo JLayoutHelper::render('joomla_plugin.code_above', $this); ?>
 <div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'joomla_pluginTab', array('active' => 'details')); ?>
+	<?php echo JHtml::_('bootstrap.startTabSet', 'joomla_pluginTab', array('active' => 'code')); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'joomla_pluginTab', 'details', JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_DETAILS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'joomla_pluginTab', 'code', JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CODE', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('joomla_plugin.details_left', $this); ?>
+				<?php echo JLayoutHelper::render('joomla_plugin.code_left', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('joomla_plugin.details_right', $this); ?>
+				<?php echo JLayoutHelper::render('joomla_plugin.code_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('joomla_plugin.details_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('joomla_plugin.code_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -191,6 +191,55 @@ jQuery('#adminForm').on('change', '#jform_class_extends',function (e)
 
 });
 
+// #jform_class_extends listeners for class_extends_vvvvvxd function
+jQuery('#jform_class_extends').on('keyup',function()
+{
+	var class_extends_vvvvvxd = jQuery("#jform_class_extends").val();
+	vvvvvxd(class_extends_vvvvvxd);
+
+});
+jQuery('#adminForm').on('change', '#jform_class_extends',function (e)
+{
+	e.preventDefault();
+	var class_extends_vvvvvxd = jQuery("#jform_class_extends").val();
+	vvvvvxd(class_extends_vvvvvxd);
+
+});
+
+// #jform_add_head listeners for add_head_vvvvvxe function
+jQuery('#jform_add_head').on('keyup',function()
+{
+	var add_head_vvvvvxe = jQuery("#jform_add_head input[type='radio']:checked").val();
+	var class_extends_vvvvvxe = jQuery("#jform_class_extends").val();
+	vvvvvxe(add_head_vvvvvxe,class_extends_vvvvvxe);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_head',function (e)
+{
+	e.preventDefault();
+	var add_head_vvvvvxe = jQuery("#jform_add_head input[type='radio']:checked").val();
+	var class_extends_vvvvvxe = jQuery("#jform_class_extends").val();
+	vvvvvxe(add_head_vvvvvxe,class_extends_vvvvvxe);
+
+});
+
+// #jform_class_extends listeners for class_extends_vvvvvxe function
+jQuery('#jform_class_extends').on('keyup',function()
+{
+	var add_head_vvvvvxe = jQuery("#jform_add_head input[type='radio']:checked").val();
+	var class_extends_vvvvvxe = jQuery("#jform_class_extends").val();
+	vvvvvxe(add_head_vvvvvxe,class_extends_vvvvvxe);
+
+});
+jQuery('#adminForm').on('change', '#jform_class_extends',function (e)
+{
+	e.preventDefault();
+	var add_head_vvvvvxe = jQuery("#jform_add_head input[type='radio']:checked").val();
+	var class_extends_vvvvvxe = jQuery("#jform_class_extends").val();
+	vvvvvxe(add_head_vvvvvxe,class_extends_vvvvvxe);
+
+});
+
 
 
 jQuery('#adminForm').on('change', '#jform_joomla_plugin_group',function (e)
@@ -203,6 +252,11 @@ jQuery('#adminForm').on('change', '#jform_class_extends',function (e)
 {
 	// load the active array values
 	getClassCodeIds('joomla_plugin_group', 'jform_class_extends', true);
+	getClassHeaderCode();
+});
+jQuery('#adminForm').on('change', '#jform_add_head',function (e)
+{
+	getClassHeaderCode();
 });
 
 <?php

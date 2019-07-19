@@ -25,9 +25,13 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 	 * @var      array
 	 */
 	protected $tabLayoutFields = array(
-		'details' => array(
+		'code' => array(
 			'left' => array(
 				'note_beta_stage',
+				'name',
+				'class_extends',
+				'joomla_plugin_group',
+				'add_head',
 				'note_plugin'
 			),
 			'right' => array(
@@ -35,13 +39,12 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 				'method_selection'
 			),
 			'fullwidth' => array(
+				'head',
 				'main_class_code',
 				'note_linked_to_notice'
 			),
 			'above' => array(
-				'name',
-				'class_extends',
-				'joomla_plugin_group'
+				'system_name'
 			)
 		),
 		'configparams' => array(
@@ -129,6 +132,12 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 			{
 				// base64 Decode main_class_code.
 				$item->main_class_code = base64_decode($item->main_class_code);
+			}
+
+			if (!empty($item->head))
+			{
+				// base64 Decode head.
+				$item->head = base64_decode($item->head);
 			}
 
 			if (!empty($item->fields))
@@ -462,6 +471,42 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 	}
 
 	/**
+	 * Method to validate the form data.
+	 *
+	 * @param   JForm   $form   The form to validate against.
+	 * @param   array   $data   The data to validate.
+	 * @param   string  $group  The name of the field group to validate.
+	 *
+	 * @return  mixed  Array of filtered data if valid, false otherwise.
+	 *
+	 * @see     JFormRule
+	 * @see     JFilterInput
+	 * @since   12.2
+	 */
+	public function validate($form, $data, $group = null)
+	{
+		// check if the not_required field is set
+		if (ComponentbuilderHelper::checkString($data['not_required']))
+		{
+			$requiredFields = (array) explode(',',(string) $data['not_required']);
+			$requiredFields = array_unique($requiredFields);
+			// now change the required field attributes value
+			foreach ($requiredFields as $requiredField)
+			{
+				// make sure there is a string value
+				if (ComponentbuilderHelper::checkString($requiredField))
+				{
+					// change to false
+					$form->setFieldAttribute($requiredField, 'required', 'false');
+					// also clear the data set
+					$data[$requiredField] = '';
+				}
+			}
+		}
+		return parent::validate($form, $data, $group);
+	}
+
+	/**
 	 * Method to get the unique fields of this table.
 	 *
 	 * @return  mixed  An array of field names, boolean false if none is set.
@@ -685,9 +730,9 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 			}
 
 			// Only for strings
-			if (ComponentbuilderHelper::checkString($this->table->name) && !is_numeric($this->table->name))
+			if (ComponentbuilderHelper::checkString($this->table->system_name) && !is_numeric($this->table->system_name))
 			{
-				$this->table->name = $this->generateUniqe('name',$this->table->name);
+				$this->table->system_name = $this->generateUniqe('system_name',$this->table->system_name);
 			}
 
 			// insert all set values
@@ -933,6 +978,12 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 		if (isset($data['main_class_code']))
 		{
 			$data['main_class_code'] = base64_encode($data['main_class_code']);
+		}
+
+		// Set the head string to base64 string.
+		if (isset($data['head']))
+		{
+			$data['head'] = base64_encode($data['head']);
 		}
         
 		// Set the Params Items to data

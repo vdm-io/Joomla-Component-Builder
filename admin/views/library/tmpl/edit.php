@@ -146,51 +146,6 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <script type="text/javascript">
 
-// #jform_how listeners for how_vvvvwap function
-jQuery('#jform_how').on('keyup',function()
-{
-	var how_vvvvwap = jQuery("#jform_how").val();
-	vvvvwap(how_vvvvwap);
-
-});
-jQuery('#adminForm').on('change', '#jform_how',function (e)
-{
-	e.preventDefault();
-	var how_vvvvwap = jQuery("#jform_how").val();
-	vvvvwap(how_vvvvwap);
-
-});
-
-// #jform_how listeners for how_vvvvwaq function
-jQuery('#jform_how').on('keyup',function()
-{
-	var how_vvvvwaq = jQuery("#jform_how").val();
-	vvvvwaq(how_vvvvwaq);
-
-});
-jQuery('#adminForm').on('change', '#jform_how',function (e)
-{
-	e.preventDefault();
-	var how_vvvvwaq = jQuery("#jform_how").val();
-	vvvvwaq(how_vvvvwaq);
-
-});
-
-// #jform_how listeners for how_vvvvwar function
-jQuery('#jform_how').on('keyup',function()
-{
-	var how_vvvvwar = jQuery("#jform_how").val();
-	vvvvwar(how_vvvvwar);
-
-});
-jQuery('#adminForm').on('change', '#jform_how',function (e)
-{
-	e.preventDefault();
-	var how_vvvvwar = jQuery("#jform_how").val();
-	vvvvwar(how_vvvvwar);
-
-});
-
 // #jform_how listeners for how_vvvvwas function
 jQuery('#jform_how').on('keyup',function()
 {
@@ -251,18 +206,63 @@ jQuery('#adminForm').on('change', '#jform_how',function (e)
 
 });
 
-// #jform_type listeners for type_vvvvwaw function
+// #jform_how listeners for how_vvvvwaw function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvwaw = jQuery("#jform_how").val();
+	vvvvwaw(how_vvvvwaw);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvwaw = jQuery("#jform_how").val();
+	vvvvwaw(how_vvvvwaw);
+
+});
+
+// #jform_how listeners for how_vvvvwax function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvwax = jQuery("#jform_how").val();
+	vvvvwax(how_vvvvwax);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvwax = jQuery("#jform_how").val();
+	vvvvwax(how_vvvvwax);
+
+});
+
+// #jform_how listeners for how_vvvvway function
+jQuery('#jform_how').on('keyup',function()
+{
+	var how_vvvvway = jQuery("#jform_how").val();
+	vvvvway(how_vvvvway);
+
+});
+jQuery('#adminForm').on('change', '#jform_how',function (e)
+{
+	e.preventDefault();
+	var how_vvvvway = jQuery("#jform_how").val();
+	vvvvway(how_vvvvway);
+
+});
+
+// #jform_type listeners for type_vvvvwaz function
 jQuery('#jform_type').on('keyup',function()
 {
-	var type_vvvvwaw = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwaw(type_vvvvwaw);
+	var type_vvvvwaz = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwaz(type_vvvvwaz);
 
 });
 jQuery('#adminForm').on('change', '#jform_type',function (e)
 {
 	e.preventDefault();
-	var type_vvvvwaw = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwaw(type_vvvvwaw);
+	var type_vvvvwaz = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwaz(type_vvvvwaz);
 
 });
 

@@ -85,21 +85,19 @@
 			filter="unset"
 		/>
 		<!-- Dynamic Fields. -->
-		<!-- Name Field. Type: Text. (joomla) -->
+		<!-- System_name Field. Type: Text. (joomla) -->
 		<field
 			type="text"
-			name="name"
-			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_LABEL"
-			size="40"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_DESCRIPTION"
+			name="system_name"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_SYSTEM_NAME_LABEL"
+			size="10"
+			maxlength="50"
+			default=""
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_SYSTEM_NAME_DESCRIPTION"
 			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="true"
 			filter="STRING"
-			message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_MESSAGE"
-			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_HINT"
+			message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_SYSTEM_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_SYSTEM_NAME_HINT"
 		/>
 		<!-- Class_extends Field. Type: Classextends. (custom) -->
 		<field
@@ -180,6 +178,23 @@
 			filter="raw"
 			validate="code"
 		/>
+		<!-- Head Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="head"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_HEAD_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_HEAD_DESCRIPTION"
+			width="100%"
+			height="100px"
+			cols="15"
+			rows="10"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			required="false"
+			validate="code"
+		/>
 		<!-- Method_selection Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -234,6 +249,36 @@
 		</field>
 		<!-- Note_plugin Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_plugin" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_PLUGIN_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_PLUGIN_DESCRIPTION" heading="h4" class="alert alert-info note_plugin" />
+		<!-- Add_head Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_head"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADD_HEAD_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADD_HEAD_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_PLUGIN_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NO</option>
+		</field>
+		<!-- Name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="name"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_HINT"
+		/>
 		<!-- Note_beta_stage Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_beta_stage" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_BETA_STAGE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_BETA_STAGE_DESCRIPTION" heading="h4" class="alert alert-warning  note_beta_stage" />
 	</fieldset>

@@ -698,12 +698,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		}
 		// the array of tables to store
 		$tables = array(
-			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
-			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code', 'placeholder',
+			'validation_rule','class_extends', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view','joomla_plugin_group',
+			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code', 'placeholder','class_property','class_method','joomla_plugin',
 			'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 			'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
-			'component_placeholders'
+			'component_placeholders','component_plugins'
 		);
 		// get prefix
 		$prefix = $this->_db->getPrefix();
@@ -2065,6 +2065,21 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
 				}
 			break;
+			case 'component_plugins':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
+				// subform fields to target
+				$updaterT = array(
+					// subformfield => array( field => type_value )
+					'addjoomla_plugins' => array('plugin' => 'joomla_plugin')
+				);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_plugins', $updaterT);
+			break;
 			case 'component_files_folders':
 				// diverged id already updated
 				if (!$diverged)
@@ -2859,6 +2874,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'component_config':
 				case 'component_dashboard':
 				case 'component_placeholders':
+				case 'component_plugins':
 				case 'component_files_folders':
 						// get by joomla_component (since there should only be one of each component)
 						$getter = array('joomla_component');

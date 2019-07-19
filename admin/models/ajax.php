@@ -255,7 +255,6 @@ class ComponentbuilderModelAjax extends JModelList
 		return ComponentbuilderHelper::getClassCode($id, $type);
 	}
 
-
 	public function getClassCodeIds($id, $type)
 	{
 		if ('property' === $type || 'method' === $type)
@@ -265,6 +264,15 @@ class ComponentbuilderModelAjax extends JModelList
 		elseif ('joomla_plugin_group' === $type)
 		{
 			return ComponentbuilderHelper::getVars($type, $id, 'class_extends', 'id');
+		}
+		return false;
+	}
+
+	public function getClassHeaderCode($id, $type)
+	{
+		if ('extends' === $type && ($head = ComponentbuilderHelper::getVar('class_' . $type, $id, 'id', 'head')) !== false && ComponentbuilderHelper::checkString($head))
+		{
+			return base64_decode($head);
 		}
 		return false;
 	}

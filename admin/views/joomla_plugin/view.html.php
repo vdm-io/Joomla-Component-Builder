@@ -201,6 +201,10 @@ class ComponentbuilderViewJoomla_plugin extends JViewLegacy
 		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
 		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
+		// Add the JavaScript for JStore
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jquery.json.min.js');
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jstorage.min.js');
+		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/strtotime.js');
 		// add var key
 		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
@@ -211,6 +215,73 @@ class ComponentbuilderViewJoomla_plugin extends JViewLegacy
 		JText::script('COM_COMPONENTBUILDER_NO_RESULTS_MATCH');
 		JText::script('COM_COMPONENTBUILDER_SELECT_A_PROPERTY');
 		JText::script('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND');
+		// check if we should use browser storage
+		$setBrowserStorage = $this->params->get('set_browser_storage', null);
+		if ($setBrowserStorage)
+		{
+			// check what (Time To Live) show we use
+			$storageTimeToLive = $this->params->get('storage_time_to_live', 'global');
+			if ('global' == $storageTimeToLive)
+			{
+				// use the global session time
+				$session = JFactory::getSession();
+				// must have itin milliseconds
+				$expire = ($session->getExpire()*60)* 1000;
+			}
+			else
+			{
+				// use the Componentbuilder Global setting
+				if (0 !=  $storageTimeToLive)
+				{
+					// this will convert the time into milliseconds
+					$storageTimeToLive =  $storageTimeToLive * 1000;
+				}
+				$expire = $storageTimeToLive;
+			}
+		}
+		else
+		{
+			// set to use no storage
+			$expire = 30000; // only 30 seconds
+		}
+		// Set the Time To Live To JavaScript
+		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
+		$this->document->addScriptDeclaration("selectionArray = {'property':{},'method':{}};");
+		// add a few field options via PHP
+		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		$tmp_ = JFormHelper::loadFieldType('joomlaplugingroups')->options;
+		if (ComponentbuilderHelper::checkArray($tmp_))
+		{
+			$_tmp = array();
+			foreach ($tmp_ as $item)
+			{
+				$_tmp[$item->value] = $item->text;
+			}
+			// Set the values to JavaScript
+			$this->document->addScriptDeclaration("selectionArray['joomla_plugin_group'] = ". json_encode($_tmp) . ";");
+		}
+		$tmp_ = JFormHelper::loadFieldType('pluginsclassproperties')->options;
+		if (ComponentbuilderHelper::checkArray($tmp_))
+		{
+			$_tmp = array();
+			foreach ($tmp_ as $item)
+			{
+				$_tmp[$item->value] = $item->text;
+			}
+			// Set the values to JavaScript
+			$this->document->addScriptDeclaration("selectionArray['property'] = ". json_encode($_tmp) . ";");
+		}
+		$tmp_ = JFormHelper::loadFieldType('pluginsclassmethods')->options;
+		if (ComponentbuilderHelper::checkArray($tmp_))
+		{
+			$_tmp = array();
+			foreach ($tmp_ as $item)
+			{
+				$_tmp[$item->value] = $item->text;
+			}
+			// Set the values to JavaScript
+			$this->document->addScriptDeclaration("selectionArray['method'] = ". json_encode($_tmp) . ";");
+		}
 		JText::script('view not acceptable. Error');
 	}
 }

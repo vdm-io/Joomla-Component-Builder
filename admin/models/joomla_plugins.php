@@ -27,7 +27,7 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.name','name',
+				'a.system_name','system_name',
 				'a.class_extends','class_extends',
 				'a.joomla_plugin_group','joomla_plugin_group'
 			);
@@ -237,8 +237,8 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 		{
 			$this->context .= '.' . $layout;
 		}
-		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
+		$this->setState('filter.system_name', $system_name);
 
 		$class_extends = $this->getUserStateFromRequest($this->context . '.filter.class_extends', 'filter_class_extends');
 		$this->setState('filter.class_extends', $class_extends);
@@ -363,15 +363,10 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.class_extends LIKE '.$search.' OR g.name LIKE '.$search.' OR a.joomla_plugin_group LIKE '.$search.' OR h.name LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.class_extends LIKE '.$search.' OR g.name LIKE '.$search.' OR a.joomla_plugin_group LIKE '.$search.' OR h.name LIKE '.$search.' OR a.name LIKE '.$search.')');
 			}
 		}
 
-		// Filter by Name.
-		if ($name = $this->getState('filter.name'))
-		{
-			$query->where('a.name = ' . $db->quote($db->escape($name)));
-		}
 		// Filter by class_extends.
 		if ($class_extends = $this->getState('filter.class_extends'))
 		{
@@ -393,106 +388,6 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 
 		return $query;
 	}
-
-	/**
-	 * Method to get list export data.
-	 *
-	 * @return mixed  An array of data items on success, false on failure.
-	 */
-	public function getExportData($pks)
-	{
-		// setup the query
-		if (ComponentbuilderHelper::checkArray($pks))
-		{
-			// Set a value to know this is exporting method.
-			$_export = true;
-			// Get the user object.
-			$user = JFactory::getUser();
-			// Create a new query object.
-			$db = JFactory::getDBO();
-			$query = $db->getQuery(true);
-
-			// Select some fields
-			$query->select('a.*');
-
-			// From the componentbuilder_joomla_plugin table
-			$query->from($db->quoteName('#__componentbuilder_joomla_plugin', 'a'));
-			$query->where('a.id IN (' . implode(',',$pks) . ')');
-			// Implement View Level Access
-			if (!$user->authorise('core.options', 'com_componentbuilder'))
-			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
-			}
-
-			// Order the results by ordering
-			$query->order('a.ordering  ASC');
-
-			// Load the items
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
-			{
-				$items = $db->loadObjectList();
-
-				// set values to display correctly.
-				if (ComponentbuilderHelper::checkArray($items))
-				{
-					foreach ($items as $nr => &$item)
-					{
-						$access = (JFactory::getUser()->authorise('joomla_plugin.access', 'com_componentbuilder.joomla_plugin.' . (int) $item->id) && JFactory::getUser()->authorise('joomla_plugin.access', 'com_componentbuilder'));
-						if (!$access)
-						{
-							unset($items[$nr]);
-							continue;
-						}
-
-						// decode main_class_code
-						$item->main_class_code = base64_decode($item->main_class_code);
-						// unset the values we don't want exported.
-						unset($item->asset_id);
-						unset($item->checked_out);
-						unset($item->checked_out_time);
-					}
-				}
-				// Add headers to items array.
-				$headers = $this->getExImPortHeaders();
-				if (ComponentbuilderHelper::checkObject($headers))
-				{
-					array_unshift($items,$headers);
-				}
-				return $items;
-			}
-		}
-		return false;
-	}
-
-	/**
-	* Method to get header.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getExImPortHeaders()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		// get the columns
-		$columns = $db->getTableColumns("#__componentbuilder_joomla_plugin");
-		if (ComponentbuilderHelper::checkArray($columns))
-		{
-			// remove the headers you don't import/export.
-			unset($columns['asset_id']);
-			unset($columns['checked_out']);
-			unset($columns['checked_out_time']);
-			$headers = new stdClass();
-			foreach ($columns as $column => $type)
-			{
-				$headers->{$column} = $column;
-			}
-			return $headers;
-		}
-		return false;
-	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.
@@ -509,7 +404,7 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.name');
+		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.class_extends');
 		$id .= ':' . $this->getState('filter.joomla_plugin_group');
 

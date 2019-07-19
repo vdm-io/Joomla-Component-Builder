@@ -712,6 +712,48 @@ abstract class ComponentbuilderHelper
 		return self::safeString($string);
 	}
 
+	/**
+	* The type builder switch
+	**/
+	protected static $typeNameBuilder = false;
+
+	/**
+	* Making field type name safe
+	*
+	* @input	string       The you would like to make safe
+	*
+	* @returns string on success
+	**/
+	public static function safeTypeName($string)
+	{
+		// get global value
+		if (self::$typeNameBuilder === false)
+		{
+			self::$typeNameBuilder = JComponentHelper::getParams('com_componentbuilder')->get('type_name_builder', 1);
+		}
+		// use the new convention
+		if (2 == self::$typeNameBuilder)
+		{
+			// 0nly continue if we have a string
+			if (self::checkString($string))
+			{
+				// check that the first character is not a number
+				if (is_numeric(substr($string, 0, 1)))
+				{
+					$string = self::replaceNumbers($string);
+				}
+				// remove all and keep only characters and numbers and point (TODO just one point)
+				$string = trim(preg_replace("/[^A-Za-z0-9\.]/", '', $string));
+				// best is to return lower (for all string equality in compiler)
+				return strtolower($string);
+			}
+			// not a string
+			return '';
+		}
+		// use the default (original behaviour/convention)
+		return self::safeString($string);
+	}
+
 	/*
 	 * Get the Array of Existing Validation Rule Names
 	 *

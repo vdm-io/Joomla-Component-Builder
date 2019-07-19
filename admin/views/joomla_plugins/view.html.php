@@ -128,11 +128,6 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 			{
 				JToolbarHelper::trash('joomla_plugins.trash');
 			}
-
-			if ($this->canDo->get('core.export') && $this->canDo->get('joomla_plugin.export'))
-			{
-				JToolBarHelper::custom('joomla_plugins.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
-			}
 		}
 		if ($this->user->authorise('joomla_plugin.run_expansion', 'com_componentbuilder'))
 		{
@@ -153,11 +148,6 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 		{
 			// add Properties button.
 			JToolBarHelper::custom('joomla_plugins.openClassProperties', 'joomla', '', 'COM_COMPONENTBUILDER_PROPERTIES', false);
-		}
-
-		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_plugin.import'))
-		{
-			JToolBarHelper::custom('joomla_plugins.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
 		}
 
 		// set help url for this view if found
@@ -204,36 +194,6 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		}
-
-		// Set Name Selection
-		$this->nameOptions = $this->getTheNameSelections();
-		// We do some sanitation for Name filter
-		if (ComponentbuilderHelper::checkArray($this->nameOptions) &&
-			isset($this->nameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->nameOptions[0]->value))
-		{
-			unset($this->nameOptions[0]);
-		}
-		// Only load Name filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->nameOptions))
-		{
-			// Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_LABEL').' -',
-				'filter_name',
-				JHtml::_('select.options', $this->nameOptions, 'value', 'text', $this->state->get('filter.name'))
-			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_LABEL').' -',
-					'batch[name]',
-					JHtml::_('select.options', $this->nameOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Class Extends Name Selection
@@ -340,42 +300,10 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 		return array(
 			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
-			'a.name' => JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_LABEL'),
+			'a.system_name' => JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_SYSTEM_NAME_LABEL'),
 			'g.name' => JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CLASS_EXTENDS_LABEL'),
 			'h.name' => JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_JOOMLA_PLUGIN_GROUP_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheNameSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('name'));
-		$query->from($db->quoteName('#__componentbuilder_joomla_plugin'));
-		$query->order($db->quoteName('name') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $name)
-			{
-				// Now add the name and its text to the options array
-				$_filter[] = JHtml::_('select.option', $name, $name);
-			}
-			return $_filter;
-		}
-		return false;
 	}
 }

@@ -24,7 +24,7 @@ JFormHelper::loadFieldClass('checkboxes');
 /**
  * ###Type### Form Field class for the ###Component### component
  */
-class JFormField###Type### extends JFormFieldCheckboxes
+class ###JPREFIX###FormField###Type### extends JFormFieldCheckboxes
 {
 	/**
 	 * The ###type### field type.

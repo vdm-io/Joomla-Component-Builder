@@ -1007,7 +1007,7 @@ class ComponentbuilderModelField extends JModelAdmin
 							}
 						break;
 						case 'type':
-							$property['value'] = ComponentbuilderHelper::safeString($property['value']);
+							$property['value'] = ComponentbuilderHelper::safeTypeName($property['value']);
 						break;
 					}
 					// load the property

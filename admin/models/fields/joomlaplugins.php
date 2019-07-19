@@ -40,12 +40,12 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 		// Get the databse object.
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','b.name','c.name'),array('id','plugin_name','class_extends_name','joomla_plugin_group_name')));
+		$query->select($db->quoteName(array('a.id','a.system_name','a.name','b.name','c.name'),array('id','plugin_system_name','name','class_extends_name','joomla_plugin_group_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_plugin', 'a'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_class_extends', 'b') . ' ON (' . $db->quoteName('a.class_extends') . ' = ' . $db->quoteName('b.id') . ')');
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin_group', 'c') . ' ON (' . $db->quoteName('a.joomla_plugin_group') . ' = ' . $db->quoteName('c.id') . ')');
 		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->order('a.name ASC');
+		$query->order('a.system_name ASC');
 		// Implement View Level Access (if set in table)
 		if (!$user->authorise('core.options', 'com_componentbuilder'))
 		{
@@ -65,8 +65,7 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 			foreach($items as $item)
 			{
 				// set a full class name
-				$select = 'class Plg' . ucfirst($item->joomla_plugin_group_name) . $item->plugin_name . ' extends ' . $item->class_extends_name;
-				$options[] = JHtml::_('select.option', $item->id, $select);
+				$options[] = JHtml::_('select.option', $item->id, '( ' . $item->plugin_system_name . ' ) class Plg' . ucfirst($item->joomla_plugin_group_name) . $item->name . ' extends ' . $item->class_extends_name);
 			}
 		}
 		return $options;
