@@ -231,16 +231,16 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		// Set the Custom JS script to view
 		$this->document->addScriptDeclaration("
 			function getComponentDetails_server(id){
-				var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.getComponentDetails&format=json\");
+				var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.getComponentDetails&format=json&raw=true\");
 				if(token.length > 0 && id > 0){
 					var request = token+'=1&id='+id;
 				}
 				return jQuery.ajax({
 					type: 'GET',
 					url: getUrl,
-					dataType: 'jsonp',
+					dataType: 'json',
 					data: request,
-					jsonp: 'callback'
+					jsonp: false
 				});
 			}
 			function getComponentDetails(id) {
@@ -273,9 +273,9 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			// to check is READ/NEW
 			function getIS(type,notice){
 				if (type == 1) {
-					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isNew&format=json\");
+					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isNew&format=json&raw=true\");
 				} else if (type == 2) {
-					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isRead&format=json\");
+					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true\");
 				}	
 				if(token.length > 0 && notice.length){
 					var request = token+\"=1&notice=\"+notice;
@@ -283,9 +283,9 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 				return jQuery.ajax({
 					type: \"POST\",
 					url: getUrl,
-					dataType: \"jsonp\",
+					dataType: 'json',
 					data: request,
-					jsonp: \"callback\"
+					jsonp: false
 				});
 			}
 		");

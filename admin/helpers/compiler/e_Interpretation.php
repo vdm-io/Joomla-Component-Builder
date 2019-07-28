@@ -5419,7 +5419,7 @@ class Interpretation extends Fields
 			{
 				// load the custom script for the switch based on dynamic get
 				$routerSwitch[] = PHP_EOL . $this->_t(3) . "case '" . $view . "':";
-				$routerSwitch[] = $this->setPlaceholders($this->setDynamicValues(base64_decode($viewArray['settings']->main_get->php_router_parse)), $this->placeholders);
+				$routerSwitch[] = $this->setPlaceholders($viewArray['settings']->main_get->php_router_parse, $this->placeholders);
 				$routerSwitch[] = $this->_t(4) . "break;";
 
 				return implode(PHP_EOL, $routerSwitch);

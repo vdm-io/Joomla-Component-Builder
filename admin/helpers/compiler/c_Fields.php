@@ -1123,7 +1123,7 @@ class Fields extends Structure
 						$dynamicField = $this->setField('special', $fieldAttributes, $name, $typeName, $langView, $view_name_single, $view_name_list, $placeholders, $optionArray);
 					}
 				}
-				elseif (ComponentbuilderHelper::checkArray($fieldAttributes['custom']))
+				elseif (isset($fieldAttributes['custom']) && ComponentbuilderHelper::checkArray($fieldAttributes['custom']))
 				{
 					// set the custom array
 					$custom = $fieldAttributes['custom'];
@@ -1399,7 +1399,7 @@ class Fields extends Structure
 									// now add to the field set
 									$field .= $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
 								}
-								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
+								elseif (isset($r_fieldValues['custom']) && ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 								{
 									// add to custom
 									$custom = $r_fieldValues['custom'];
@@ -1516,7 +1516,7 @@ class Fields extends Structure
 										$field .= $this->setField('special', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray, null, $r_taber);
 									}
 								}
-								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
+								elseif (isset($r_fieldValues['custom']) && ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 								{
 									// add to custom
 									$custom = $r_fieldValues['custom'];
@@ -1778,12 +1778,7 @@ class Fields extends Structure
 									// now add to the field set
 									ComponentbuilderHelper::xmlAppend($fieldSetXML, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 								}
-								elseif (ComponentbuilderHelper::fieldCheck($r_typeName, 'plain'))
-								{
-									// now add to the field set
-									ComponentbuilderHelper::xmlAppend($fieldSetXML, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
-								}
-								elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
+								elseif (isset($r_fieldValues['custom']) && ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 								{
 									// add to custom
 									$custom = $r_fieldValues['custom'];
@@ -1803,6 +1798,11 @@ class Fields extends Structure
 									$data = array('type' => $r_typeName, 'code' => $r_name, 'lang' => $r_listLangName, 'custom' => $custom);
 									// set the custom field file
 									$this->setCustomFieldTypeFile($data, $view_name_list, $view_name_single);
+								}
+								else
+								{
+									// now add to the field set
+									ComponentbuilderHelper::xmlAppend($fieldSetXML, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 								}
 							}
 						}
@@ -1886,11 +1886,6 @@ class Fields extends Structure
 										// now add to the field set
 										ComponentbuilderHelper::xmlAppend($form, $this->setField('option', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 									}
-									elseif (ComponentbuilderHelper::fieldCheck($r_typeName, 'plain'))
-									{
-										// now add to the field set
-										ComponentbuilderHelper::xmlAppend($form, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
-									}
 									elseif ($r_typeName === 'subform')
 									{
 										// set nested depth
@@ -1910,7 +1905,7 @@ class Fields extends Structure
 										}
 										
 									}
-									elseif (ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
+									elseif (isset($r_fieldValues['custom']) && ComponentbuilderHelper::checkArray($r_fieldValues['custom']))
 									{
 										// add to custom
 										$custom = $r_fieldValues['custom'];
@@ -1930,6 +1925,11 @@ class Fields extends Structure
 										$data = array('type' => $r_typeName, 'code' => $r_name, 'lang' => $r_listLangName, 'custom' => $custom);
 										// set the custom field file
 										$this->setCustomFieldTypeFile($data, $view_name_list, $view_name_single);
+									}
+									else
+									{
+										// now add to the field set
+										ComponentbuilderHelper::xmlAppend($form, $this->setField('plain', $r_fieldValues, $r_name, $r_typeName, $langView, $view_name_single, $view_name_list, $placeholders, $r_optionArray));
 									}
 								}
 							}

@@ -73,11 +73,7 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 			 - 
 			<?php echo JText::_($item->type); ?>
 			</div>
-			<?php	// setup the return path
-				if (!isset($returnpath))
-				{
-					$returnpath = urlencode(base64_encode((string) JUri::getInstance()));
-				}
+			<?php
 				// setup the buttons
 				if (!isset($_buttons) || !ComponentbuilderHelper::checkArray($_buttons))
 				{
@@ -108,9 +104,9 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 			<?php foreach ($_buttons as $_button): ?>
 				<?php if ($canDo->get($_button['view'].'.edit') && ($id = ComponentbuilderHelper::getVar($_button['view'], $item->id, 'admin_view', 'id')) !== false): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $returnpath; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=admin_view&refid=<?php echo $item->id; ?>&return=<?php echo $returnpath; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=admin_view&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php endif; ?>
 			<?php endforeach; ?>
 			</div>

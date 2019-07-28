@@ -41,10 +41,54 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 			'fullwidth' => array(
 				'head',
 				'main_class_code',
-				'note_linked_to_notice'
+				'note_linked_to_notice',
+				'not_required'
 			),
 			'above' => array(
 				'system_name'
+			)
+		),
+		'mysql' => array(
+			'fullwidth' => array(
+				'add_sql',
+				'sql',
+				'add_sql_uninstall',
+				'sql_uninstall'
+			)
+		),
+		'script_file' => array(
+			'fullwidth' => array(
+				'add_php_preflight_install',
+				'php_preflight_install',
+				'add_php_preflight_update',
+				'php_preflight_update',
+				'add_php_preflight_uninstall',
+				'php_preflight_uninstall',
+				'add_php_postflight_install',
+				'php_postflight_install',
+				'add_php_postflight_update',
+				'php_postflight_update',
+				'add_php_method_uninstall',
+				'php_method_uninstall'
+			)
+		),
+		'dynamic_integration' => array(
+			'left' => array(
+				'add_update_server',
+				'update_server_url',
+				'update_server_target',
+				'note_update_server_note_ftp',
+				'note_update_server_note_zip',
+				'note_update_server_note_other',
+				'update_server',
+				'add_sales_server',
+				'sales_server'
+			)
+		),
+		'readme' => array(
+			'left' => array(
+				'addreadme',
+				'readme'
 			)
 		),
 		'configparams' => array(
@@ -128,10 +172,40 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->main_class_code))
+			if (!empty($item->sql_uninstall))
 			{
-				// base64 Decode main_class_code.
-				$item->main_class_code = base64_decode($item->main_class_code);
+				// base64 Decode sql_uninstall.
+				$item->sql_uninstall = base64_decode($item->sql_uninstall);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
+			}
+
+			if (!empty($item->php_method_uninstall))
+			{
+				// base64 Decode php_method_uninstall.
+				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+			}
+
+			if (!empty($item->php_postflight_update))
+			{
+				// base64 Decode php_postflight_update.
+				$item->php_postflight_update = base64_decode($item->php_postflight_update);
+			}
+
+			if (!empty($item->php_postflight_install))
+			{
+				// base64 Decode php_postflight_install.
+				$item->php_postflight_install = base64_decode($item->php_postflight_install);
+			}
+
+			if (!empty($item->readme))
+			{
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
 			}
 
 			if (!empty($item->head))
@@ -140,12 +214,28 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 				$item->head = base64_decode($item->head);
 			}
 
-			if (!empty($item->fields))
+			if (!empty($item->main_class_code))
 			{
-				// Convert the fields field to an array.
-				$fields = new Registry;
-				$fields->loadString($item->fields);
-				$item->fields = $fields->toArray();
+				// base64 Decode main_class_code.
+				$item->main_class_code = base64_decode($item->main_class_code);
+			}
+
+			if (!empty($item->php_preflight_install))
+			{
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
+			if (!empty($item->php_preflight_update))
+			{
+				// base64 Decode php_preflight_update.
+				$item->php_preflight_update = base64_decode($item->php_preflight_update);
+			}
+
+			if (!empty($item->php_preflight_uninstall))
+			{
+				// base64 Decode php_preflight_uninstall.
+				$item->php_preflight_uninstall = base64_decode($item->php_preflight_uninstall);
 			}
 
 			if (!empty($item->method_selection))
@@ -162,6 +252,14 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 				$property_selection = new Registry;
 				$property_selection->loadString($item->property_selection);
 				$item->property_selection = $property_selection->toArray();
+			}
+
+			if (!empty($item->fields))
+			{
+				// Convert the fields field to an array.
+				$fields = new Registry;
+				$fields->loadString($item->fields);
+				$item->fields = $fields->toArray();
 			}
 
 
@@ -935,19 +1033,6 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 			$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
 		}
 
-		// Set the fields items to data.
-		if (isset($data['fields']) && is_array($data['fields']))
-		{
-			$fields = new JRegistry;
-			$fields->loadArray($data['fields']);
-			$data['fields'] = (string) $fields;
-		}
-		elseif (!isset($data['fields']))
-		{
-			// Set the empty fields to data
-			$data['fields'] = '';
-		}
-
 		// Set the method_selection items to data.
 		if (isset($data['method_selection']) && is_array($data['method_selection']))
 		{
@@ -974,16 +1059,83 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 			$data['property_selection'] = '';
 		}
 
-		// Set the main_class_code string to base64 string.
-		if (isset($data['main_class_code']))
+		// Set the fields items to data.
+		if (isset($data['fields']) && is_array($data['fields']))
 		{
-			$data['main_class_code'] = base64_encode($data['main_class_code']);
+			$fields = new JRegistry;
+			$fields->loadArray($data['fields']);
+			$data['fields'] = (string) $fields;
+		}
+		elseif (!isset($data['fields']))
+		{
+			// Set the empty fields to data
+			$data['fields'] = '';
+		}
+
+		// Set the sql_uninstall string to base64 string.
+		if (isset($data['sql_uninstall']))
+		{
+			$data['sql_uninstall'] = base64_encode($data['sql_uninstall']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
+		}
+
+		// Set the php_method_uninstall string to base64 string.
+		if (isset($data['php_method_uninstall']))
+		{
+			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
+		}
+
+		// Set the php_postflight_update string to base64 string.
+		if (isset($data['php_postflight_update']))
+		{
+			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
+		}
+
+		// Set the php_postflight_install string to base64 string.
+		if (isset($data['php_postflight_install']))
+		{
+			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
+		}
+
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
+		{
+			$data['readme'] = base64_encode($data['readme']);
 		}
 
 		// Set the head string to base64 string.
 		if (isset($data['head']))
 		{
 			$data['head'] = base64_encode($data['head']);
+		}
+
+		// Set the main_class_code string to base64 string.
+		if (isset($data['main_class_code']))
+		{
+			$data['main_class_code'] = base64_encode($data['main_class_code']);
+		}
+
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
+		{
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
+		// Set the php_preflight_update string to base64 string.
+		if (isset($data['php_preflight_update']))
+		{
+			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
+		}
+
+		// Set the php_preflight_uninstall string to base64 string.
+		if (isset($data['php_preflight_uninstall']))
+		{
+			$data['php_preflight_uninstall'] = base64_encode($data['php_preflight_uninstall']);
 		}
         
 		// Set the Params Items to data

@@ -11,15 +11,15 @@
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvzk = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvzk(add_php_view_vvvvvzk);
+	var add_php_view_vvvvwac = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvwac(add_php_view_vvvvwac);
 });
 
-// the vvvvvzk function
-function vvvvvzk(add_php_view_vvvvvzk)
+// the vvvvwac function
+function vvvvwac(add_php_view_vvvvwac)
 {
 	// set the function logic
-	if (add_php_view_vvvvvzk == 1)
+	if (add_php_view_vvvvwac == 1)
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').show();
 	}

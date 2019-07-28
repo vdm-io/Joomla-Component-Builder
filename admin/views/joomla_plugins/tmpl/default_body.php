@@ -61,15 +61,38 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<div class="name">
-				<?php if ($canDo->get('joomla_plugin.edit')): ?>
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
-					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_plugins.', $canCheckin); ?>
-					<?php endif; ?>
-				<?php else: ?>
-					<?php echo $this->escape($item->system_name); ?>
+			<div>
+			<?php if ($canDo->get('joomla_plugin.edit')): ?>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
+				<?php if ($item->checked_out): ?>
+					<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_plugins.', $canCheckin); ?>
 				<?php endif; ?>
+			<?php else: ?>
+				<?php echo $this->escape($item->system_name); ?>
+			<?php endif; ?>
+			</div>
+			<?php
+				// setup the buttons
+				if (!isset($_buttons) || !ComponentbuilderHelper::checkArray($_buttons))
+				{
+					$_buttons = array();
+					$_buttons[0] = array(
+						array(
+							'view' => 'joomla_plugin_files_folders_urls',
+							'views' => 'joomla_plugins_files_folders_urls',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_PLUGIN_FILES_FOLDERS'),
+							'icon' => 'briefcase')
+						);
+				}
+			?>
+			<div class="btn-group" style="margin: 5px 0 0 0;">
+			<?php foreach ($_buttons[0] as $_button): ?>
+				<?php if ($canDo->get($_button['view'].'.edit') && ($id = ComponentbuilderHelper::getVar($_button['view'], $item->id, 'joomla_plugin', 'id')) !== false): ?>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_plugin&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+				<?php endif; ?>
+			<?php endforeach; ?>
 			</div>
 		</td>
 		<td class="nowrap">

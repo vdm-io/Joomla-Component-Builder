@@ -28,7 +28,8 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 $fields = $displayData->get($fields_tab_layout) ?: array(
 	'head',
 	'main_class_code',
-	'note_linked_to_notice'
+	'note_linked_to_notice',
+	'not_required'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

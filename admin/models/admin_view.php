@@ -540,7 +540,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->ajax_input = $ajax_input->toArray();
 			}
 
-
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -617,6 +616,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				$item->mysql_table_collate = 'utf8_general_ci';
 			}
+
 			
 			if (!empty($item->id))
 			{
@@ -1414,11 +1414,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		}
 
-		// if system name is empty create from name_single
+		// if system name is empty create a system name from the name_single
 		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
 		{
 			$data['system_name'] = $data['name_single'];
 		}
+
 
 		// Set the addtables items to data.
 		if (isset($data['addtables']) && is_array($data['addtables']))

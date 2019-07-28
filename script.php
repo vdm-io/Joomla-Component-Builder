@@ -3740,6 +3740,92 @@ class com_componentbuilderInstallerScript
 			}
 		}
 
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Joomla_plugin_files_folders_urls alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_files_folders_urls') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$joomla_plugin_files_folders_urls_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($joomla_plugin_files_folders_urls_found)
+		{
+			// Since there are load the needed  joomla_plugin_files_folders_urls type ids
+			$joomla_plugin_files_folders_urls_ids = $db->loadColumn();
+			// Remove Joomla_plugin_files_folders_urls from the content type table
+			$joomla_plugin_files_folders_urls_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_files_folders_urls') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($joomla_plugin_files_folders_urls_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_plugin_files_folders_urls items
+			$joomla_plugin_files_folders_urls_done = $db->execute();
+			if ($joomla_plugin_files_folders_urls_done)
+			{
+				// If succesfully remove Joomla_plugin_files_folders_urls add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Joomla_plugin_files_folders_urls items from the contentitem tag map table
+			$joomla_plugin_files_folders_urls_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_files_folders_urls') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($joomla_plugin_files_folders_urls_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_plugin_files_folders_urls items
+			$joomla_plugin_files_folders_urls_done = $db->execute();
+			if ($joomla_plugin_files_folders_urls_done)
+			{
+				// If succesfully remove Joomla_plugin_files_folders_urls add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Joomla_plugin_files_folders_urls items from the ucm content table
+			$joomla_plugin_files_folders_urls_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.joomla_plugin_files_folders_urls') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($joomla_plugin_files_folders_urls_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_plugin_files_folders_urls items
+			$joomla_plugin_files_folders_urls_done = $db->execute();
+			if ($joomla_plugin_files_folders_urls_done)
+			{
+				// If succesfully remove Joomla_plugin_files_folders_urls add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Joomla_plugin_files_folders_urls items are cleared from DB
+			foreach ($joomla_plugin_files_folders_urls_ids as $joomla_plugin_files_folders_urls_id)
+			{
+				// Remove Joomla_plugin_files_folders_urls items from the ucm base table
+				$joomla_plugin_files_folders_urls_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_plugin_files_folders_urls_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($joomla_plugin_files_folders_urls_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_plugin_files_folders_urls items
+				$db->execute();
+
+				// Remove Joomla_plugin_files_folders_urls items from the ucm history table
+				$joomla_plugin_files_folders_urls_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_plugin_files_folders_urls_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($joomla_plugin_files_folders_urls_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_plugin_files_folders_urls items
+				$db->execute();
+			}
+		}
+
 		// If All related items was removed queued success message.
 		$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_base</b> table'));
 		$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_history</b> table'));
@@ -3752,8 +3838,8 @@ class com_componentbuilderInstallerScript
 		$query->delete($db->quoteName('#__assets'));
 		$query->where($componentbuilder_condition);
 		$db->setQuery($query);
-		$joomla_plugin_group_done = $db->execute();
-		if ($joomla_plugin_group_done)
+		$joomla_plugin_files_folders_urls_done = $db->execute();
+		if ($joomla_plugin_files_folders_urls_done)
 		{
 			// If succesfully remove componentbuilder add queued success message.
 			$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));
@@ -4208,9 +4294,9 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin->type_title = 'Componentbuilder Joomla_plugin';
 			$joomla_plugin->type_alias = 'com_componentbuilder.joomla_plugin';
 			$joomla_plugin->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin","key": "id","type": "Joomla_plugin","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$joomla_plugin->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "main_class_code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","class_extends":"class_extends","joomla_plugin_group":"joomla_plugin_group","main_class_code":"main_class_code","head":"head","add_head":"add_head","name":"name"}}';
+			$joomla_plugin->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_method_uninstall","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","class_extends":"class_extends","joomla_plugin_group":"joomla_plugin_group","sql_uninstall":"sql_uninstall","sql":"sql","php_method_uninstall":"php_method_uninstall","php_postflight_update":"php_postflight_update","php_postflight_install":"php_postflight_install","add_sales_server":"add_sales_server","add_head":"add_head","readme":"readme","update_server_url":"update_server_url","head":"head","main_class_code":"main_class_code","name":"name","add_php_postflight_update":"add_php_postflight_update","not_required":"not_required","add_php_method_uninstall":"add_php_method_uninstall","add_sql":"add_sql","add_php_preflight_install":"add_php_preflight_install","add_sql_uninstall":"add_sql_uninstall","php_preflight_install":"php_preflight_install","addreadme":"addreadme","add_php_preflight_update":"add_php_preflight_update","add_update_server":"add_update_server","php_preflight_update":"php_preflight_update","update_server_target":"update_server_target","add_php_preflight_uninstall":"add_php_preflight_uninstall","php_preflight_uninstall":"php_preflight_uninstall","update_server":"update_server","add_php_postflight_install":"add_php_postflight_install","sales_server":"sales_server"}}';
 			$joomla_plugin->router = 'ComponentbuilderHelperRoute::getJoomla_pluginRoute';
-			$joomla_plugin->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","class_extends","joomla_plugin_group","add_head"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_plugin->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","class_extends","joomla_plugin_group","add_sales_server","add_head","add_php_postflight_update","add_php_method_uninstall","add_sql","add_php_preflight_install","add_sql_uninstall","addreadme","add_php_preflight_update","add_update_server","update_server_target","add_php_preflight_uninstall","update_server","add_php_postflight_install","sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_plugin_Inserted = $db->insertObject('#__content_types', $joomla_plugin);
@@ -4707,6 +4793,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$joomla_plugin_group_Inserted = $db->insertObject('#__content_types', $joomla_plugin_group);
 
+			// Create the joomla_plugin_files_folders_urls content type object.
+			$joomla_plugin_files_folders_urls = new stdClass();
+			$joomla_plugin_files_folders_urls->type_title = 'Componentbuilder Joomla_plugin_files_folders_urls';
+			$joomla_plugin_files_folders_urls->type_alias = 'com_componentbuilder.joomla_plugin_files_folders_urls';
+			$joomla_plugin_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin_files_folders_urls","key": "id","type": "Joomla_plugin_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_plugin_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_plugin","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_plugin":"joomla_plugin"}}';
+			$joomla_plugin_files_folders_urls->router = 'ComponentbuilderHelperRoute::getJoomla_plugin_files_folders_urlsRoute';
+			$joomla_plugin_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$joomla_plugin_files_folders_urls_Inserted = $db->insertObject('#__content_types', $joomla_plugin_files_folders_urls);
+
 
 			// Install the global extenstion params.
 			$query = $db->getQuery(true);
@@ -4767,9 +4865,9 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin->type_title = 'Componentbuilder Joomla_plugin';
 			$joomla_plugin->type_alias = 'com_componentbuilder.joomla_plugin';
 			$joomla_plugin->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin","key": "id","type": "Joomla_plugin","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$joomla_plugin->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "main_class_code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","class_extends":"class_extends","joomla_plugin_group":"joomla_plugin_group","main_class_code":"main_class_code","head":"head","add_head":"add_head","name":"name"}}';
+			$joomla_plugin->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_method_uninstall","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","class_extends":"class_extends","joomla_plugin_group":"joomla_plugin_group","sql_uninstall":"sql_uninstall","sql":"sql","php_method_uninstall":"php_method_uninstall","php_postflight_update":"php_postflight_update","php_postflight_install":"php_postflight_install","add_sales_server":"add_sales_server","add_head":"add_head","readme":"readme","update_server_url":"update_server_url","head":"head","main_class_code":"main_class_code","name":"name","add_php_postflight_update":"add_php_postflight_update","not_required":"not_required","add_php_method_uninstall":"add_php_method_uninstall","add_sql":"add_sql","add_php_preflight_install":"add_php_preflight_install","add_sql_uninstall":"add_sql_uninstall","php_preflight_install":"php_preflight_install","addreadme":"addreadme","add_php_preflight_update":"add_php_preflight_update","add_update_server":"add_update_server","php_preflight_update":"php_preflight_update","update_server_target":"update_server_target","add_php_preflight_uninstall":"add_php_preflight_uninstall","php_preflight_uninstall":"php_preflight_uninstall","update_server":"update_server","add_php_postflight_install":"add_php_postflight_install","sales_server":"sales_server"}}';
 			$joomla_plugin->router = 'ComponentbuilderHelperRoute::getJoomla_pluginRoute';
-			$joomla_plugin->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","class_extends","joomla_plugin_group","add_head"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_plugin->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","class_extends","joomla_plugin_group","add_sales_server","add_head","add_php_postflight_update","add_php_method_uninstall","add_sql","add_php_preflight_install","add_sql_uninstall","addreadme","add_php_preflight_update","add_update_server","update_server_target","add_php_preflight_uninstall","update_server","add_php_postflight_install","sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if joomla_plugin type is already in content_type DB.
 			$joomla_plugin_id = null;
@@ -5980,6 +6078,35 @@ class com_componentbuilderInstallerScript
 				$joomla_plugin_group_Inserted = $db->insertObject('#__content_types', $joomla_plugin_group);
 			}
 
+			// Create the joomla_plugin_files_folders_urls content type object.
+			$joomla_plugin_files_folders_urls = new stdClass();
+			$joomla_plugin_files_folders_urls->type_title = 'Componentbuilder Joomla_plugin_files_folders_urls';
+			$joomla_plugin_files_folders_urls->type_alias = 'com_componentbuilder.joomla_plugin_files_folders_urls';
+			$joomla_plugin_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin_files_folders_urls","key": "id","type": "Joomla_plugin_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_plugin_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_plugin","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_plugin":"joomla_plugin"}}';
+			$joomla_plugin_files_folders_urls->router = 'ComponentbuilderHelperRoute::getJoomla_plugin_files_folders_urlsRoute';
+			$joomla_plugin_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if joomla_plugin_files_folders_urls type is already in content_type DB.
+			$joomla_plugin_files_folders_urls_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_plugin_files_folders_urls->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_plugin_files_folders_urls->type_id = $db->loadResult();
+				$joomla_plugin_files_folders_urls_Updated = $db->updateObject('#__content_types', $joomla_plugin_files_folders_urls, 'type_id');
+			}
+			else
+			{
+				$joomla_plugin_files_folders_urls_Inserted = $db->insertObject('#__content_types', $joomla_plugin_files_folders_urls);
+			}
+
 
 
 			// target version less then 2.6.5
@@ -6188,7 +6315,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.9.34 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.9.35 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 

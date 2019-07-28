@@ -203,7 +203,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getVxtfields()
+	public function getVxwfields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -285,13 +285,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxtfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxwfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxtfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxwfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxtfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxwfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxtfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxwfields($item->store, 'store');
 				}
 			}
 
@@ -305,7 +305,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return translatable string
 	 */
-	public function selectionTranslationVxtfields($value,$name)
+	public function selectionTranslationVxwfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')

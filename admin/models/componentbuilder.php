@@ -193,7 +193,10 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'class_extendings.access' => 'class_extends.access',
 			'class_extends.access' => 'class_extends.access',
 			'joomla_plugin_groups.access' => 'joomla_plugin_group.access',
-			'joomla_plugin_group.access' => 'joomla_plugin_group.access');
+			'joomla_plugin_group.access' => 'joomla_plugin_group.access',
+			'joomla_plugin_files_folders_urls.create' => 'joomla_plugin_files_folders_urls.create',
+			'joomla_plugins_files_folders_urls.access' => 'joomla_plugin_files_folders_urls.access',
+			'joomla_plugin_files_folders_urls.access' => 'joomla_plugin_files_folders_urls.access');
 		// loop over the $views
 		foreach($viewGroups as $group => $views)
 		{

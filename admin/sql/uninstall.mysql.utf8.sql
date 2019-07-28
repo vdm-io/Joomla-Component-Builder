@@ -39,4 +39,5 @@ DROP TABLE IF EXISTS `#__componentbuilder_library_config`;
 DROP TABLE IF EXISTS `#__componentbuilder_library_files_folders_urls`;
 DROP TABLE IF EXISTS `#__componentbuilder_class_extends`;
 DROP TABLE IF EXISTS `#__componentbuilder_joomla_plugin_group`;
+DROP TABLE IF EXISTS `#__componentbuilder_joomla_plugin_files_folders_urls`;
 DROP TABLE IF EXISTS `#__componentbuilder_external_code`;

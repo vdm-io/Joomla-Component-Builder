@@ -746,7 +746,6 @@ class Get
 	/**
 	 * Constructor
 	 */
-
 	public function __construct($config = array())
 	{
 		if (isset($config) && count($config))
@@ -946,9 +945,30 @@ class Get
 		if ($this->db->getNumRows())
 		{
 			$bucket = $this->db->loadAssocList('target', 'value');
+			// open all the code
 			foreach ($bucket as $key => &$code)
 			{
 				$code = base64_decode($code);
+			}
+			// set component place holders
+			$bucket[$this->hhh . 'component' . $this->hhh] = $this->componentCodeName;
+			$bucket[$this->hhh . 'Component' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentCodeName, 'F');
+			$bucket[$this->hhh . 'COMPONENT' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentCodeName, 'U');
+			$bucket[$this->bbb . 'component' . $this->ddd] = $bucket[$this->hhh . 'component' . $this->hhh];
+			$bucket[$this->bbb . 'Component' . $this->ddd] = $bucket[$this->hhh . 'Component' . $this->hhh];
+			$bucket[$this->bbb . 'COMPONENT' . $this->ddd] = $bucket[$this->hhh . 'COMPONENT' . $this->hhh];
+			// get the current components overides
+			if (($_placeholders = ComponentbuilderHelper::getVar('component_placeholders', $this->componentID, 'joomla_component', 'addplaceholders')) !== false
+				&&  ComponentbuilderHelper::checkJson($_placeholders))
+			{
+				$_placeholders = json_decode($_placeholders, true);
+				if (ComponentbuilderHelper::checkArray($_placeholders))
+				{
+					foreach($_placeholders as $row)
+					{
+						$bucket[$row['target']] = $row['value'];
+					}
+				}
 			}
 		}
 		return $bucket;
@@ -966,59 +986,52 @@ class Get
 	{
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
-
+		// selection
+		$selection = array(
+			'b.addadmin_views' => 'addadmin_views',
+			'b.id' => 'addadmin_views_id',
+			'h.addconfig' => 'addconfig',
+			'd.addcustom_admin_views' => 'addcustom_admin_views',
+			'g.addcustommenus' => 'addcustommenus',
+			'j.addfiles' => 'addfiles',
+			'j.addfolders' => 'addfolders',
+			'j.addfilesfullpath' => 'addfilesfullpath',
+			'j.addfoldersfullpath' => 'addfoldersfullpath',
+			'c.addsite_views' => 'addsite_views',
+			'l.addjoomla_plugins' => 'addjoomla_plugins',
+			'i.dashboard_tab' => 'dashboard_tab',
+			'i.php_dashboard_methods' => 'php_dashboard_methods',
+			'i.id' => 'component_dashboard_id',
+			'f.sql_tweak' => 'sql_tweak',
+			'e.version_update' => 'version_update',
+			'e.id' => 'version_update_id'
+			);
 		$query->select('a.*');
 		$query->select(
 			$this->db->quoteName(
-				array(
-				'b.addadmin_views',
-				'b.id',
-				'h.addconfig',
-				'd.addcustom_admin_views',
-				'g.addcustommenus',
-				'j.addfiles',
-				'j.addfolders',
-				'j.addfilesfullpath',
-				'j.addfoldersfullpath',
-				'c.addsite_views',
-				'i.dashboard_tab',
-				'i.php_dashboard_methods',
-				'f.sql_tweak',
-				'e.version_update',
-				'e.id',
-				'k.addplaceholders'
-				), array(
-				'addadmin_views',
-				'addadmin_views_id',
-				'addconfig',
-				'addcustom_admin_views',
-				'addcustommenus',
-				'addfiles',
-				'addfolders',
-				'addfilesfullpath',
-				'addfoldersfullpath',
-				'addsite_views',
-				'dashboard_tab',
-				'php_dashboard_methods',
-				'sql_tweak',
-				'version_update',
-				'version_update_id',
-				'_placeholders'
-				)
+				array_keys($selection), array_values($selection)
 			)
 		);
-		// from these tables
+		// from this table
 		$query->from('#__componentbuilder_joomla_component AS a');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_admin_views', 'b') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('b.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_site_views', 'c') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('c.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_custom_admin_views', 'd') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('d.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_updates', 'e') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('e.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_mysql_tweaks', 'f') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('f.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_custom_admin_menus', 'g') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('g.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_config', 'h') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('h.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_dashboard', 'i') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('i.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_files_folders', 'j') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('j.joomla_component') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_component_placeholders', 'k') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('k.joomla_component') . ')');
+		// jointer-map
+		$joiners = array(
+			'b' => 'component_admin_views',
+			'c' => 'component_site_views',
+			'd' => 'component_custom_admin_views',
+			'e' => 'component_updates',
+			'f' => 'component_mysql_tweaks',
+			'g' => 'component_custom_admin_menus',
+			'h' => 'component_config',
+			'i' => 'component_dashboard',
+			'j' => 'component_files_folders',
+			'l' => 'component_plugins'
+		);
+		// load the joins
+		foreach($joiners as $as => $join)
+		{
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_' . $join, $as) . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName($as . '.joomla_component') . ')');
+		}
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $this->componentID);
 
 		// Trigger Event: jcb_ce_onBeforeQueryComponentData
@@ -1069,32 +1082,10 @@ class Get
 		// update the repeatable fields
 		$component = ComponentbuilderHelper::convertRepeatableFields($component, $searchRepeatables, $updater);
 
-		// set component place holders
-		$this->placeholders[$this->hhh . 'component' . $this->hhh] = ComponentbuilderHelper::safeString($component->name_code);
-		$this->placeholders[$this->hhh . 'Component' . $this->hhh] = ComponentbuilderHelper::safeString($component->name_code, 'F');
-		$this->placeholders[$this->hhh . 'COMPONENT' . $this->hhh] = ComponentbuilderHelper::safeString($component->name_code, 'U');
-		$this->placeholders[$this->bbb . 'component' . $this->ddd] = $this->placeholders[$this->hhh . 'component' . $this->hhh];
-		$this->placeholders[$this->bbb . 'Component' . $this->ddd] = $this->placeholders[$this->hhh . 'Component' . $this->hhh];
-		$this->placeholders[$this->bbb . 'COMPONENT' . $this->ddd] = $this->placeholders[$this->hhh . 'COMPONENT' . $this->hhh];
-
-		// set the addcustommenus data
-		$component->_placeholders = (isset($component->_placeholders) && ComponentbuilderHelper::checkJson($component->_placeholders)) ? json_decode($component->_placeholders, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->_placeholders))
-		{
-			foreach($component->_placeholders as $row)
-			{
-				$this->globalPlaceholders[$row['target']] = $row['value'];
-			}
-		}
-		unset($component->_placeholders);
-
 		// load the global placeholders
 		if (ComponentbuilderHelper::checkArray($this->globalPlaceholders))
 		{
-			foreach ($this->globalPlaceholders as $globalPlaceholder => $gloabalValue)
-			{
-				$this->placeholders[$globalPlaceholder] = $gloabalValue;
-			}
+			$this->placeholders = $this->globalPlaceholders;
 		}
 
 		// set component sales name
@@ -1374,10 +1365,19 @@ class Get
 		// unset original value
 		unset($component->addadmin_views);
 
+		// set GUI mapper
+		$guiMapper = array( 'table' => 'joomla_component', 'id' => (int) $this->componentID, 'field' => 'javascript', 'type' => 'js');
+
 		// add_javascript
 		if ($component->add_javascript == 1)
 		{
-			$this->customScriptBuilder['component_js'] = base64_decode($component->javascript);
+			$this->setCustomScriptBuilder(
+				$component->javascript,
+				'component_js',
+				false,
+				false,
+				$guiMapper
+			);
 		}
 		else
 		{
@@ -1392,7 +1392,10 @@ class Get
 			// add_css if found
 			if (isset($component->{'add_css_' . $area}) && $component->{'add_css_' . $area} == 1 && isset($component->{'css_' . $area}) && ComponentbuilderHelper::checkString($component->{'css_' . $area}))
 			{
-				$this->customScriptBuilder['component_css_' . $area] = base64_decode($component->{'css_' . $area});
+				$this->setCustomScriptBuilder(
+					$component->{'css_' . $area},
+					'component_css_' . $area
+				);
 			}
 			else
 			{
@@ -1405,13 +1408,23 @@ class Get
 		// add PHP in ADMIN
 		$addScriptMethods = array('php_preflight', 'php_postflight', 'php_method');
 		$addScriptTypes = array('install', 'update', 'uninstall');
+		// update GUI mapper
+		$guiMapper['type'] = 'php';
 		foreach ($addScriptMethods as $scriptMethod)
 		{
 			foreach ($addScriptTypes as $scriptType)
 			{
 				if (isset($component->{'add_' . $scriptMethod . '_' . $scriptType}) && $component->{'add_' . $scriptMethod . '_' . $scriptType} == 1 && ComponentbuilderHelper::checkString($component->{$scriptMethod . '_' . $scriptType}))
 				{
-					$this->customScriptBuilder[$scriptMethod][$scriptType] = $this->setDynamicValues(base64_decode($component->{$scriptMethod . '_' . $scriptType}));
+					// set GUI mapper field
+					$guiMapper['field'] = $scriptMethod . '_' . $scriptType;
+					$this->setCustomScriptBuilder(
+						$component->{$scriptMethod . '_' . $scriptType},
+						$scriptMethod,
+						$scriptType,
+						false,
+						$guiMapper
+					);
 				}
 				else
 				{
@@ -1424,7 +1437,17 @@ class Get
 		if ($component->add_php_helper_admin == 1 && ComponentbuilderHelper::checkString($component->php_helper_admin))
 		{
 			$this->lang = 'admin';
-			$this->customScriptBuilder['component_php_helper_admin'] = PHP_EOL . PHP_EOL . $this->setDynamicValues(base64_decode($component->php_helper_admin));
+			// update GUI mapper
+			$guiMapper['field'] = 'php_helper_admin';
+			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
+			$this->setCustomScriptBuilder(
+				$component->php_helper_admin,
+				'component_php_helper_admin',
+				false,
+				false,
+				$guiMapper
+			);
+			unset($guiMapper['prefix']);
 		}
 		else
 		{
@@ -1435,7 +1458,15 @@ class Get
 		if ($component->add_admin_event == 1 && ComponentbuilderHelper::checkString($component->php_admin_event))
 		{
 			$this->lang = 'admin';
-			$this->customScriptBuilder['component_php_admin_event'] = $this->setDynamicValues(base64_decode($component->php_admin_event));
+			// update GUI mapper field
+			$guiMapper['field'] = 'php_admin_event';
+			$this->setCustomScriptBuilder(
+				$component->php_admin_event,
+				'component_php_admin_event',
+				false,
+				false,
+				$guiMapper
+			);
 		}
 		else
 		{
@@ -1446,7 +1477,17 @@ class Get
 		if ($component->add_php_helper_both == 1 && ComponentbuilderHelper::checkString($component->php_helper_both))
 		{
 			$this->lang = 'both';
-			$this->customScriptBuilder['component_php_helper_both'] = PHP_EOL . PHP_EOL . $this->setDynamicValues(base64_decode($component->php_helper_both));
+			// update GUI mapper field
+			$guiMapper['field'] = 'php_helper_both';
+			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
+			$this->setCustomScriptBuilder(
+				$component->php_helper_both,
+				'component_php_helper_both',
+				false,
+				false,
+				$guiMapper
+			);
+			unset($guiMapper['prefix']);
 		}
 		else
 		{
@@ -1456,7 +1497,17 @@ class Get
 		if ($component->add_php_helper_site == 1 && ComponentbuilderHelper::checkString($component->php_helper_site))
 		{
 			$this->lang = 'site';
-			$this->customScriptBuilder['component_php_helper_site'] = PHP_EOL . PHP_EOL . $this->setDynamicValues(base64_decode($component->php_helper_site));
+			// update GUI mapper field
+			$guiMapper['field'] = 'php_helper_site';
+			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
+			$this->setCustomScriptBuilder(
+				$component->php_helper_site,
+				'component_php_helper_site',
+				false,
+				false,
+				$guiMapper
+			);
+			unset($guiMapper['prefix']);
 		}
 		else
 		{
@@ -1467,7 +1518,15 @@ class Get
 		if ($component->add_site_event == 1 && ComponentbuilderHelper::checkString($component->php_site_event))
 		{
 			$this->lang = 'site';
-			$this->customScriptBuilder['component_php_site_event'] = $this->setDynamicValues(base64_decode($component->php_site_event));
+			// update GUI mapper field
+			$guiMapper['field'] = 'php_site_event';
+			$this->setCustomScriptBuilder(
+				$component->php_site_event,
+				'component_php_site_event',
+				false,
+				false,
+				$guiMapper
+			);
 		}
 		else
 		{
@@ -1477,13 +1536,20 @@ class Get
 		// add_sql
 		if ($component->add_sql == 1)
 		{
-			$this->customScriptBuilder['sql']['component_sql'] = base64_decode($component->sql);
+			$this->setCustomScriptBuilder(
+				$component->sql,
+				'sql',
+				'component_sql'
+			);
 		}
 		unset($component->sql);
 		// add_sql_uninstall
 		if ($component->add_sql_uninstall == 1)
 		{
-			$this->customScriptBuilder['sql_uninstall'] = base64_decode($component->sql_uninstall);
+			$this->setCustomScriptBuilder(
+				$component->sql_uninstall,
+				'sql_uninstall'
+			);
 		}
 		unset($component->sql_uninstall);
 		// bom
@@ -1527,7 +1593,14 @@ class Get
 		if (isset($component->php_dashboard_methods) && ComponentbuilderHelper::checkString($component->php_dashboard_methods))
 		{
 			// load the php for the dashboard model
-			$component->php_dashboard_methods = $this->setDynamicValues(base64_decode($component->php_dashboard_methods));
+			$component->php_dashboard_methods = $this->setGuiCodePlaceholder(
+				$this->setDynamicValues(base64_decode($component->php_dashboard_methods)),
+				array(
+					'table' => 'component_dashboard',
+					'field' => 'php_dashboard_methods',
+					'id' => (int) $this->component_dashboard_id,
+					'type' => 'php')
+				);
 		}
 		else
 		{
@@ -1573,6 +1646,20 @@ class Get
 			// the default is to ignore the repo folder
 			$component->toignore = array('.git');
 		}
+		// get all plugins
+		$component->addjoomla_plugins = (isset($component->addjoomla_plugins) && ComponentbuilderHelper::checkJson($component->addjoomla_plugins)) ? json_decode($component->addjoomla_plugins, true) : null;
+		if (ComponentbuilderHelper::checkArray($component->addjoomla_plugins))
+		{
+			$component->joomla_plugins = array_map(function($array)
+			{
+				return $this->getPlugins($array['plugin']);
+			}, array_values($component->addjoomla_plugins));
+		}
+		else
+		{
+			$component->joomla_plugins = '';
+		}
+		unset($component->addjoomla_plugins);
 
 		// Trigger Event: jcb_ce_onAfterModelComponentData
 		$this->triggerEvent('jcb_ce_onAfterModelComponentData', array(&$this->componentContext, &$component));
@@ -2083,29 +2170,29 @@ class Get
 			{
 				$this->lang = 'both';
 			}
+			// set GUI mapper
+			$guiMapper = array( 'table' => 'admin_view', 'id' => (int) $id, 'type' => 'js');
 			// add_javascript
 			$addArrayJ = array('javascript_view_file', 'javascript_view_footer', 'javascript_views_file', 'javascript_views_footer');
+			// update GUI mapper
+			$guiMapper['prefix'] = PHP_EOL;
 			foreach ($addArrayJ as $scripter)
 			{
 				if (isset($view->{'add_' . $scripter}) && $view->{'add_' . $scripter} == 1 && ComponentbuilderHelper::checkString($view->$scripter))
 				{
-					$view->{$scripter} = $this->setDynamicValues(base64_decode($view->{$scripter}));
 					$scripter_target = str_replace('javascript_', '', $scripter);
-					if (!isset($this->customScriptBuilder[$scripter_target]) || !isset($this->customScriptBuilder[$scripter_target][$name_single]))
-					{
-						// check if the script is set
-						if (!isset($this->customScriptBuilder[$scripter_target]))
-						{
-							$this->customScriptBuilder[$scripter_target] = array();
-						}
-						// check if the script view is set
-						if (!isset($this->customScriptBuilder[$scripter_target][$name_single]))
-						{
-							$this->customScriptBuilder[$scripter_target][$name_single] = '';
-						}
-					}
-					// load the script to class array
-					$this->customScriptBuilder[$scripter_target][$name_single] .= PHP_EOL . $view->{$scripter};
+					// update GUI mapper field
+					$guiMapper['field'] = $scripter;
+					$this->setCustomScriptBuilder(
+						$view->{$scripter},
+						$scripter_target,
+						$name_single,
+						false,
+						$guiMapper,
+						true,
+						true,
+						true
+					);
 					// check if a token must be set
 					if (strpos($view->$scripter, "token") !== false || strpos($view->$scripter, "task=ajax") !== false)
 					{
@@ -2117,61 +2204,67 @@ class Get
 					unset($view->{$scripter});
 				}
 			}
+			unset($guiMapper['prefix']);
 			// add_css
 			$addArrayC = array('css_view', 'css_views');
 			foreach ($addArrayC as $scripter)
 			{
 				if (isset($view->{'add_' . $scripter}) && $view->{'add_' . $scripter} == 1 && ComponentbuilderHelper::checkString($view->{$scripter}))
 				{
-					$view->{$scripter} = $this->setDynamicValues(base64_decode($view->{$scripter}));
-					if (!isset($this->customScriptBuilder[$scripter]) || !isset($this->customScriptBuilder[$scripter][$name_single]))
-					{
-						// check if the script is set
-						if (!isset($this->customScriptBuilder[$scripter]))
-						{
-							$this->customScriptBuilder[$scripter] = array();
-						}
-						// check if the script view is set
-						if (!isset($this->customScriptBuilder[$scripter][$name_single]))
-						{
-							$this->customScriptBuilder[$scripter][$name_single] = '';
-						}
-					}
-					// load the script to class array
-					$this->customScriptBuilder[$scripter][$name_single] .= PHP_EOL . $view->{$scripter};
+					$this->setCustomScriptBuilder(
+						$view->{$scripter},
+						$scripter,
+						$name_single,
+						false,
+						array('prefix' => PHP_EOL),
+						true,
+						true,
+						true
+					);
 					unset($view->{$scripter});
 				}
 			}
+			// update GUI mapper
+			$guiMapper['type'] = 'php';
 			// add_php
 			$addArrayP = array('php_getitem', 'php_before_save', 'php_save', 'php_getform', 'php_postsavehook', 'php_getitems', 'php_getitems_after_all', 'php_getlistquery', 'php_allowadd', 'php_allowedit', 'php_before_cancel', 'php_after_cancel', 'php_before_delete', 'php_after_delete', 'php_before_publish', 'php_after_publish', 'php_batchcopy', 'php_batchmove', 'php_document');
 			foreach ($addArrayP as $scripter)
 			{
 				if (isset($view->{'add_' . $scripter}) && $view->{'add_' . $scripter} == 1)
 				{
-					$this->customScriptBuilder[$scripter][$name_single] = $this->setDynamicValues(base64_decode($view->$scripter));
-					unset($view->$scripter);
+					// update GUI mapper field
+					$guiMapper['field'] = $scripter;
+					$this->setCustomScriptBuilder(
+						$view->{$scripter},
+						$scripter,
+						$name_single,
+						false,
+						$guiMapper
+					);
+					unset($view->{$scripter});
 				}
 			}
 			// add the custom buttons
 			if (isset($view->add_custom_button) && $view->add_custom_button == 1)
 			{
-				// set for the edit views
-				if (ComponentbuilderHelper::checkString($view->php_model))
+				$button_code_array = array(
+					'php_model',
+					'php_controller',
+					'php_model_list',
+					'php_controller_list'
+				);
+				// set for the code
+				foreach ($button_code_array as $button_code_field)
 				{
-					$view->php_model = $this->setDynamicValues(base64_decode($view->php_model));
-				}
-				if (ComponentbuilderHelper::checkString($view->php_controller))
-				{
-					$view->php_controller = $this->setDynamicValues(base64_decode($view->php_controller));
-				}
-				// set for the list views
-				if (isset($view->php_model_list) && ComponentbuilderHelper::checkString($view->php_model_list))
-				{
-					$view->php_model_list = $this->setDynamicValues(base64_decode($view->php_model_list));
-				}
-				if (isset($view->php_controller_list) && ComponentbuilderHelper::checkString($view->php_controller_list))
-				{
-					$view->php_controller_list = $this->setDynamicValues(base64_decode($view->php_controller_list));
+					if (isset($view->{$button_code_field}) && ComponentbuilderHelper::checkString($view->{$button_code_field}))
+					{
+						// set field
+						$guiMapper['field'] = $button_code_field;
+						$view->{$button_code_field} = $this->setGuiCodePlaceholder(
+							$this->setDynamicValues(base64_decode($view->{$button_code_field})),
+							$guiMapper
+							);
+					}
 				}
 				// set the button array
 				$view->custom_button = (isset($view->custom_button) && ComponentbuilderHelper::checkJson($view->custom_button)) ? json_decode($view->custom_button, true) : null;
@@ -2189,7 +2282,15 @@ class Get
 				{
 					if (isset($view->$importScripter) && strlen($view->$importScripter) > 0)
 					{
-						$this->customScriptBuilder[$importScripter]['import_' . $name_list] = $this->setDynamicValues(base64_decode($view->$importScripter));
+						// update GUI mapper field
+						$guiMapper['field'] = $importScripter;
+						$this->setCustomScriptBuilder(
+							$view->$importScripter,
+							$importScripter,
+							'import_' . $name_list,
+							false,
+							$guiMapper
+						);
 						unset($view->$importScripter);
 					}
 					else
@@ -2229,10 +2330,26 @@ class Get
 				}
 				if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
 				{
-					$this->customScriptBuilder['admin']['ajax_model'][$name_single] = $this->setDynamicValues(base64_decode($view->php_ajaxmethod));
+					// update GUI mapper field
+					$guiMapper['field'] = 'php_ajaxmethod';
+					$this->setCustomScriptBuilder(
+						$view->php_ajaxmethod,
+						'admin',
+						'ajax_model',
+						$name_single,
+						$guiMapper
+					);
 					if ($addAjaxSite)
 					{
-						$this->customScriptBuilder['site']['ajax_model'][$name_single] = $this->customScriptBuilder['admin']['ajax_model'][$name_single];
+						$this->setCustomScriptBuilder(
+							$view->php_ajaxmethod,
+							'site',
+							'ajax_model',
+							$name_single,
+							$guiMapper,
+							false,
+							false
+						);
 					}
 					// unset anyway
 					unset($view->php_ajaxmethod);
@@ -2279,7 +2396,11 @@ class Get
 				elseif ($view->source == 2 && isset($view->sql))
 				{
 					// add the SQL dump string
-					$this->customScriptBuilder['sql'][$name_single] = base64_decode($view->sql);
+					$this->setCustomScriptBuilder(
+						$view->sql,
+						'sql',
+						$name_single
+					);
 					unset($view->sql);
 				}
 			}
@@ -2385,8 +2506,14 @@ class Get
 		// update the repeatable fields
 		$view = ComponentbuilderHelper::convertRepeatableFields($view, $searchRepeatables, $updater);
 
+		// set GUI mapper
+		$guiMapper = array( 'table' => $table, 'id' => (int) $id, 'field' => 'default', 'type' => 'html');
+
 		// set the default data
-		$view->default = $this->setDynamicValues(base64_decode($view->default));
+		$view->default = $this->setGuiCodePlaceholder(
+					$this->setDynamicValues(base64_decode($view->default)),
+					$guiMapper
+					);
 		// fix alias to use in code
 		$view->code = $this->uniqueCode(ComponentbuilderHelper::safeString($view->codename));
 		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
@@ -2478,11 +2605,26 @@ class Get
 		$view->custom_get = $this->setGetData(json_decode($view->custom_get, true), $view->code, $view->context);
 		// set array adding array of scripts
 		$addArray = array('php_view', 'php_jview', 'php_jview_display', 'php_document', 'javascript_file', 'js_document', 'css_document', 'css');
+		// set GUI mapper
+		$guiMapper['type'] = 'php';
 		foreach ($addArray as $scripter)
 		{
 			if (isset($view->{'add_' . $scripter}) && $view->{'add_' . $scripter} == 1 && ComponentbuilderHelper::checkString($view->$scripter))
 			{
-				$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
+				// css does not get placholders yet
+				if (strpos($scripter, 'css') === false)
+				{
+					// set field
+					$guiMapper['field'] = $scripter;
+					$view->$scripter = $this->setGuiCodePlaceholder(
+							$this->setDynamicValues(base64_decode($view->$scripter)),
+							$guiMapper
+							);
+				}
+				else
+				{
+					$view->$scripter = $this->setDynamicValues(base64_decode($view->$scripter));
+				}
 				if (2 == $this->uikit || 1 == $this->uikit)
 				{
 					if (!isset($this->uikitComp[$view->code]))
@@ -2556,7 +2698,15 @@ class Get
 			// load the ajax class mathods (if set)
 			if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
 			{
-				$this->customScriptBuilder[$target]['ajax_model'][$view->code] = $this->setDynamicValues(base64_decode($view->php_ajaxmethod));
+				// set field
+				$guiMapper['field'] = 'php_ajaxmethod';
+				$this->setCustomScriptBuilder(
+					$view->php_ajaxmethod,
+					$target,
+					'ajax_model',
+					$view->code,
+					$guiMapper
+				);
 				$setAjax = true;
 			}
 			// unset anyway
@@ -2578,13 +2728,23 @@ class Get
 		// add the custom buttons
 		if (isset($view->add_custom_button) && $view->add_custom_button == 1)
 		{
-			if (ComponentbuilderHelper::checkString($view->php_model))
+			$button_code_array = array(
+				'php_model',
+				'php_controller'
+			);
+			// set for the code
+			foreach ($button_code_array as $button_code_field)
 			{
-				$view->php_model = base64_decode($view->php_model);
-				$view->php_model = $this->setDynamicValues($view->php_model);
+				if (isset($view->{$button_code_field}) && ComponentbuilderHelper::checkString($view->{$button_code_field}))
+				{
+					// set field
+					$guiMapper['field'] = $button_code_field;
+					$view->{$button_code_field} = $this->setGuiCodePlaceholder(
+						$this->setDynamicValues(base64_decode($view->{$button_code_field})),
+						$guiMapper
+						);
+				}
 			}
-			$view->php_controller = base64_decode($view->php_controller);
-			$view->php_controller = $this->setDynamicValues($view->php_controller);
 			// set the button array
 			$view->custom_button = (isset($view->custom_button) && ComponentbuilderHelper::checkJson($view->custom_button)) ? json_decode($view->custom_button, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->custom_button))
@@ -2678,7 +2838,14 @@ class Get
 								if ($this->validationRules[$validationRule] = ComponentbuilderHelper::getVar('validation_rule', $validationRule, 'name', 'php'))
 								{
 									// open and set the validation rule
-									$this->validationRules[$validationRule] = $this->setPlaceholders($this->setDynamicValues(base64_decode($this->validationRules[$validationRule])), $this->placeholders);
+									$this->validationRules[$validationRule] = $this->setGuiCodePlaceholder(
+										$this->setPlaceholders($this->setDynamicValues(base64_decode($this->validationRules[$validationRule])), $this->placeholders),
+										array(
+											'table' => 'validation_rule',
+											'field' => 'php',
+											'id' => ComponentbuilderHelper::getVar('validation_rule', $validationRule, 'name', 'id'),
+											'type' => 'php')
+										);
 								}
 								else
 								{
@@ -2733,20 +2900,31 @@ class Get
 				// add_javascript_view_footer
 				if ($this->_fieldData[$id]->add_javascript_view_footer == 1 && ComponentbuilderHelper::checkString($this->_fieldData[$id]->javascript_view_footer))
 				{
-					if (!isset($this->customScriptBuilder['view_footer']))
+					$convert__ = true;
+					if (isset($this->_fieldData[$id]->javascript_view_footer_decoded)
+						&& $this->_fieldData[$id]->javascript_view_footer_decoded)
 					{
-						$this->customScriptBuilder['view_footer'] = array();
+						$convert__ = false;
 					}
-					if (!isset($this->customScriptBuilder['view_footer'][$name_single]))
-					{
-						$this->customScriptBuilder['view_footer'][$name_single] = '';
-					}
+					$this->setCustomScriptBuilder(
+						$this->_fieldData[$id]->javascript_view_footer,
+						'view_footer',
+						$name_single,
+						false,
+						array(
+							'table' => 'field',
+							'id' => (int) $id,
+							'field' => 'javascript_view_footer',
+							'type' => 'js',
+							'prefix' => PHP_EOL),
+						$convert__,
+						$convert__,
+						true
+					);
 					if (!isset($this->_fieldData[$id]->javascript_view_footer_decoded))
 					{
-						$this->_fieldData[$id]->javascript_view_footer = $this->setDynamicValues(base64_decode($this->_fieldData[$id]->javascript_view_footer));
 						$this->_fieldData[$id]->javascript_view_footer_decoded = true;
 					}
-					$this->customScriptBuilder['view_footer'][$name_single] .= PHP_EOL . $this->_fieldData[$id]->javascript_view_footer;
 					if (strpos($this->_fieldData[$id]->javascript_view_footer, "token") !== false ||
 						strpos($this->_fieldData[$id]->javascript_view_footer, "task=ajax") !== false)
 					{
@@ -2764,24 +2942,27 @@ class Get
 				// add_css_view
 				if ($this->_fieldData[$id]->add_css_view == 1)
 				{
-					if (!isset($this->customScriptBuilder['css_view']))
+					$convert__ = true;
+					if (isset($this->_fieldData[$id]->css_view_decoded)
+						&& $this->_fieldData[$id]->css_view_decoded)
 					{
-						$this->customScriptBuilder['css_view'] = array();
+						$convert__ = false;
 					}
-					if (!isset($this->customScriptBuilder['css_view'][$name_single]))
-					{
-						$this->customScriptBuilder['css_view'][$name_single] = '';
-					}
+					$this->setCustomScriptBuilder(
+						$this->_fieldData[$id]->css_view,
+						'css_view',
+						$name_single,
+						false,
+						array('prefix' => PHP_EOL),
+						$convert__,
+						$convert__,
+						true
+					);
 					if (!isset($this->_fieldData[$id]->css_view_decoded))
 					{
-						$this->_fieldData[$id]->css_view = base64_decode($this->_fieldData[$id]->css_view);
-						// check for custom code
-						$this->setCustomCodeData($this->_fieldData[$id]->css_view);
 						$this->_fieldData[$id]->css_view_decoded = true;
 					}
-					$this->customScriptBuilder['css_view'][$name_single] .= PHP_EOL . $this->_fieldData[$id]->css_view;
 				}
-
 				// add this only once to view.
 				$this->customFieldScript[$name_single][$id] = true;
 			}
@@ -2791,20 +2972,31 @@ class Get
 				// add_javascript_views_footer
 				if ($this->_fieldData[$id]->add_javascript_views_footer == 1 && ComponentbuilderHelper::checkString($this->_fieldData[$id]->javascript_views_footer))
 				{
-					if (!isset($this->customScriptBuilder['views_footer']))
+					$convert__ = true;
+					if (isset($this->_fieldData[$id]->javascript_views_footer_decoded)
+						&& $this->_fieldData[$id]->javascript_views_footer_decoded)
 					{
-						$this->customScriptBuilder['views_footer'] = array();
+						$convert__ = false;
 					}
-					if (!isset($this->customScriptBuilder['views_footer'][$name_single]))
-					{
-						$this->customScriptBuilder['views_footer'][$name_single] = '';
-					}
+					$this->setCustomScriptBuilder(
+						$this->_fieldData[$id]->javascript_views_footer,
+						'views_footer',
+						$name_single,
+						false,
+						array(
+							'table' => 'field',
+							'id' => (int) $id,
+							'field' => 'javascript_views_footer',
+							'type' => 'js',
+							'prefix' => PHP_EOL),
+						$convert__,
+						$convert__,
+						true
+					);
 					if (!isset($this->_fieldData[$id]->javascript_views_footer_decoded))
 					{
-						$this->_fieldData[$id]->javascript_views_footer = $this->setDynamicValues(base64_decode($this->_fieldData[$id]->javascript_views_footer));
 						$this->_fieldData[$id]->javascript_views_footer_decoded = true;
 					}
-					$this->customScriptBuilder['views_footer'][$name_single] .= PHP_EOL . $this->_fieldData[$id]->javascript_views_footer;
 					if (strpos($this->_fieldData[$id]->javascript_views_footer, "token") !== false ||
 						strpos($this->_fieldData[$id]->javascript_views_footer, "task=ajax") !== false)
 					{
@@ -2821,22 +3013,26 @@ class Get
 				// add_css_views
 				if ($this->_fieldData[$id]->add_css_views == 1)
 				{
-					if (!isset($this->customScriptBuilder['css_views']))
+					$convert__ = true;
+					if (isset($this->_fieldData[$id]->css_views_decoded)
+						&& $this->_fieldData[$id]->css_views_decoded)
 					{
-						$this->customScriptBuilder['css_views'] = array();
+						$convert__ = false;
 					}
-					if (!isset($this->customScriptBuilder['css_views'][$name_list]))
-					{
-						$this->customScriptBuilder['css_views'][$name_list] = '';
-					}
+					$this->setCustomScriptBuilder(
+						$this->_fieldData[$id]->css_views,
+						'css_views',
+						$name_list,
+						false,
+						array('prefix' => PHP_EOL),
+						$convert__,
+						$convert__,
+						true
+					);
 					if (!isset($this->_fieldData[$id]->css_views_decoded))
 					{
-						$this->_fieldData[$id]->css_views = base64_decode($this->_fieldData[$id]->css_views);
-						// check for custom code
-						$this->setCustomCodeData($this->_fieldData[$id]->css_views);
 						$this->_fieldData[$id]->css_views_decoded = true;
 					}
-					$this->customScriptBuilder['css_views'][$name_list] .= PHP_EOL . $this->_fieldData[$id]->css_views;
 				}
 
 				// add this only once to view.
@@ -2992,7 +3188,7 @@ class Get
 			return 'error';
 		}
 		// set the type name
-		$type_name = ComponentbuilderHelper::safeFieldName($field['settings']->type_name);
+		$type_name = ComponentbuilderHelper::safeTypeName($field['settings']->type_name);
 		// set the name of the field
 		$name = ComponentbuilderHelper::safeFieldName($field['settings']->name);
 		// check that we have the poperties
@@ -3159,12 +3355,35 @@ class Get
 					$results = $this->db->loadObjectList();
 					$typeArray = array(1 => 'LEFT', 2 => 'LEFT OUTER', 3 => 'INNER', 4 => 'RIGHT', 5 => 'RIGHT OUTER');
 					$operatorArray = array(1 => '=', 2 => '!=', 3 => '<>', 4 => '>', 5 => '<', 6 => '>=', 7 => '<=', 8 => '!<', 9 => '!>', 10 => 'IN', 11 => 'NOT IN');
+					$guiMapper = array( 'table' => 'dynamic_get', 'id' => (int) $result->id, 'type' => 'php');
 					foreach ($results as $_nr => &$result)
 					{
 						// add calculations if set
 						if ($result->addcalculation == 1 && ComponentbuilderHelper::checkString($result->php_calculation))
+						{ 
+							// set GUI mapper field
+							$guiMapper['field'] = 'php_calculation';
+							$result->php_calculation = $this->setGuiCodePlaceholder(
+								$this->setDynamicValues(base64_decode($result->php_calculation)),
+								$guiMapper
+								);
+						}
+						// setup the router parse
+						if (isset($result->add_php_router_parse)
+							&& $result->add_php_router_parse == 1
+							&& isset($result->php_router_parse)
+							&& ComponentbuilderHelper::checkString($result->php_router_parse))
 						{
-							$result->php_calculation = $this->setDynamicValues(base64_decode($result->php_calculation));
+							// set GUI mapper field
+							$guiMapper['field'] = 'php_router_parse';
+							$result->php_router_parse = $this->setGuiCodePlaceholder(
+								$this->setDynamicValues(base64_decode($result->php_router_parse)),
+								$guiMapper
+								);
+						}
+						else
+						{
+							$result->add_php_router_parse = 0;
 						}
 						// The array of the php scripts that should be added to the script builder
 						$phpSripts = array('php_before_getitem', 'php_after_getitem', 'php_before_getitems', 'php_after_getitems', 'php_getlistquery');
@@ -3177,19 +3396,35 @@ class Get
 								// move all main gets out to the customscript builder
 								if ($result->gettype <= 2)
 								{
-									if (!isset($this->customScriptBuilder[$this->target . '_' . $script][$view_code]))
-									{
-										$this->customScriptBuilder[$this->target . '_' . $script][$view_code] = '';
-									}
-									$this->customScriptBuilder[$this->target . '_' . $script][$view_code] .= $this->setDynamicValues(PHP_EOL . PHP_EOL . base64_decode($result->{$script}));
+									// set GUI mapper field
+									$guiMapper['field'] = $script;
+									$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
+									$this->setCustomScriptBuilder(
+										$result->{$script},
+										$this->target . '_' . $script,
+										$view_code,
+										false,
+										$guiMapper,
+										true,
+										true,
+										true
+									);
+									unset($guiMapper['prefix']);
 									// remove from local item
 									unset($result->{$script});
 									unset($result->{'add_' . $script});
 								}
 								else
 								{
+									// set GUI mapper field
+									$guiMapper['field'] = $script;
+									$guiMapper['prefix'] = PHP_EOL;
 									// only for custom gets
-									$result->{$script} = $this->setDynamicValues(PHP_EOL . base64_decode($result->{$script}));
+									$result->{$script} = $this->setGuiCodePlaceholder(
+										$this->setDynamicValues(base64_decode($result->{$script})),
+										$guiMapper
+									);
+									unset($guiMapper['prefix']);
 								}
 							}
 							else
@@ -3236,8 +3471,13 @@ class Get
 								unset($result->db_selection);
 								break;
 							case 3:
+								// set GUI mapper field
+								$guiMapper['field'] = 'php_custom_get';
 								// get the custom query
-								$customQueryString = $this->setDynamicValues(base64_decode($result->php_custom_get));
+								$customQueryString = $this->setGuiCodePlaceholder(
+									$this->setDynamicValues(base64_decode($result->php_custom_get)),
+									$guiMapper
+									);
 								// get the table name
 								$_searchQuery = ComponentbuilderHelper::getBetween($customQueryString, '$query->from(', ')');
 								if (ComponentbuilderHelper::checkString($_searchQuery) && strpos($_searchQuery, '#__') !== false)
@@ -3442,6 +3682,121 @@ class Get
 					return $results;
 				}
 			}
+		}
+		return false;
+	}
+
+	/**
+	 * set the script for the custom script builder
+	 *
+	 * @param   string       $script       The script
+	 * @param   string       $first        The first key
+	 * @param   string       $second       The second key (if not set we use only first key)
+	 * @param   string       $third        The third key (if not set we use only first and second key)
+	 * @param   array        $config       The config options
+	 * @param   bool         $base64       The switch to decode base64 the script
+	 *						default: true
+	 * @param   bool         $dynamic      The switch to dynamic update the script
+	 *						default: true
+	 * @param   bool         $add          The switch to add to exiting instead of replace
+	 *						default: false
+	 *
+	 * @return  boolean     true on success
+	 *
+	 */
+	public function setCustomScriptBuilder(&$script, $first, $second = false, $third = false, $config = array(), $base64 = true, $dynamic = true, $add = false)
+	{
+		// only load if we have a string
+		if (!ComponentbuilderHelper::checkString($script))
+		{
+			return false;
+		}
+		// this needs refactoring (TODO)
+		if (!isset($this->customScriptBuilder[$first]) || ($second && !isset($this->customScriptBuilder[$first][$second])))
+		{
+			// check if the script first key is set
+			if ($second && !isset($this->customScriptBuilder[$first]))
+			{
+				$this->customScriptBuilder[$first] = array();
+			}
+			elseif ($add && !$second && !isset($this->customScriptBuilder[$first]))
+			{
+				$this->customScriptBuilder[$first] = '';
+			}
+			// check if the script second key is set
+			if ($second && $third && !isset($this->customScriptBuilder[$first][$second]))
+			{
+				$this->customScriptBuilder[$first][$second] = array();
+			}
+			elseif ($add && $second && !$third && !isset($this->customScriptBuilder[$first][$second]))
+			{
+				$this->customScriptBuilder[$first][$second] = '';
+			}
+			// check if the script third key is set
+			if ($add && $second && $third && !isset($this->customScriptBuilder[$first][$second][$third]))
+			{
+				$this->customScriptBuilder[$first][$second][$third] = '';
+			}
+		}
+		// prep the script string
+		if ($base64 && $dynamic)
+		{
+			$script = $this->setDynamicValues(base64_decode($script));
+		}
+		elseif ($base64)
+		{
+			$script = base64_decode($script);
+		}
+		elseif ($dynamic) // this does not happen (just incase)
+		{
+			$script = $this->setDynamicValues($script);
+		}
+		// check if we still hava a string
+		if (ComponentbuilderHelper::checkString($script))
+		{
+			// now load the placeholder snippet if needed
+			if ($base64 || $dynamic)
+			{
+				$script = $this->setGuiCodePlaceholder($script, $config);
+			}
+			// load the script
+			if ($first && $second && $third)
+			{
+				// now act on loading option
+				if ($add)
+				{
+					$this->customScriptBuilder[$first][$second][$third] .= $script;
+				}
+				else
+				{
+					$this->customScriptBuilder[$first][$second][$third] = $script;
+				}
+			}
+			elseif ($first && $second)
+			{
+				// now act on loading option
+				if ($add)
+				{
+					$this->customScriptBuilder[$first][$second] .= $script;
+				}
+				else
+				{
+					$this->customScriptBuilder[$first][$second] = $script;
+				}
+			}
+			else
+			{
+				// now act on loading option
+				if ($add)
+				{
+					$this->customScriptBuilder[$first] .= $script;
+				}
+				else
+				{
+					$this->customScriptBuilder[$first] = $script;
+				}
+			}
+			return true;
 		}
 		return false;
 	}
@@ -3960,9 +4315,23 @@ class Get
 				$php_view = '';
 				if ($row->add_php_view == 1 && ComponentbuilderHelper::checkString($row->php_view))
 				{
-					$php_view = $this->setDynamicValues(base64_decode($row->php_view));
+					$php_view = $this->setGuiCodePlaceholder(
+						$this->setDynamicValues(base64_decode($row->php_view)),
+						array(
+							'table' => $table,
+							'field' => 'php_view',
+							'id' => (int) $row->id,
+							'type' => 'php')
+						);
 				}
-				$contnent = $this->setDynamicValues(base64_decode($row->{$table}));
+				$contnent = $this->setGuiCodePlaceholder(
+						$this->setDynamicValues(base64_decode($row->{$table})),
+						array(
+							'table' => $table,
+							'field' => $table,
+							'id' => (int) $row->id,
+							'type' => 'html')
+						);
 				// load the library
 				if (!isset($this->libManager[$this->target]))
 				{
@@ -4045,7 +4414,27 @@ class Get
 						$this->getModule[$this->target][$view] = true;
 					}
 				}
-				return array('id' => $row->id, 'html' => $contnent, 'php_view' => $php_view);
+				return array(
+					'id' => $row->id,
+					'html' => $this->setGuiCodePlaceholder(
+						$contnent,
+						array(
+							'table' => $table,
+							'field' => $table,
+							'id' => $row->id,
+							'type' => 'html'
+							)
+						),
+					'php_view' => $this->setGuiCodePlaceholder(
+						$php_view,
+						array(
+							'table' => $table,
+							'field' => 'php_view',
+							'id' => $row->id,
+							'type' => 'php'
+							)
+						)
+					);
 			}
 		}
 		return false;
@@ -4218,7 +4607,14 @@ class Get
 					// set Needed PHP
 					if (isset($library->php_setdocument) && ComponentbuilderHelper::checkString($library->php_setdocument))
 					{
-						$library->document = $this->setDynamicValues(base64_decode($library->php_setdocument));
+						$library->document = $this->setGuiCodePlaceholder(
+							$this->setDynamicValues(base64_decode($library->php_setdocument)),
+							array(
+								'table' => 'library',
+								'field' => 'php_setdocument',
+								'id' => (int) $id,
+								'type' => 'php')
+							);
 					}
 				}
 				// if this lib is controlled by conditions
@@ -5753,6 +6149,173 @@ class Get
 	}
 
 	/**
+	 * get the plugins linked to a component
+	 * 
+	 * @return  void
+	 * 
+	 */
+	public function getPlugins($id)
+	{
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+
+		$query->select('a.*');
+		$query->select(
+			$this->db->quoteName(
+				array(
+				'g.name',
+				'e.name',
+				'e.head',
+				'e.comment',
+				'e.id',
+				'j.addfiles',
+				'j.addfolders',
+				'j.addfilesfullpath',
+				'j.addfoldersfullpath'
+				), array(
+				'group',
+				'extends',
+				'class_head',
+				'comment',
+				'class_id',
+				'addfiles',
+				'addfolders',
+				'addfilesfullpath',
+				'addfoldersfullpath'
+				)
+			)
+		);
+		// from these tables
+		$query->from('#__componentbuilder_joomla_plugin AS a');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_plugin_group', 'g') . ' ON (' . $this->db->quoteName('a.joomla_plugin_group') . ' = ' . $this->db->quoteName('g.id') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_class_extends', 'e') . ' ON (' . $this->db->quoteName('a.class_extends') . ' = ' . $this->db->quoteName('e.id') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_plugin_files_folders_urls', 'j') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('j.joomla_plugin') . ')');
+		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+		$query->where($this->db->quoteName('a.published') . ' >= 1');
+		$this->db->setQuery($query);
+		$this->db->execute();
+		if ($this->db->getNumRows())
+		{
+			// get the plugin data
+			$plugin = $this->db->loadObject();
+			// tweak system to set stuff to the plugin domain
+			$_backup_target = $this->target;
+			$_backup_lang = $this->lang;
+			$_backup_langPrefix = $this->langPrefix;
+			$this->target = 'plugin'.$id;
+			$this->lang = 'plugin'.$id;
+			$this->langPrefix = 'PLUGIN_PREFIX___';
+			// set GUI mapper
+			$guiMapper = array( 'table' => 'joomla_plugin', 'id' => (int) $id, 'type' => 'php');
+			// update the name if it has dynamic values
+			$plugin->name = $this->setPlaceholders($this->setDynamicValues($plugin->name), $this->placeholders);
+			// prepare plugin placeholders (TODO)
+
+			// open some base64 strings
+			if (!empty($plugin->main_class_code))
+			{
+				// set GUI mapper field
+				$guiMapper['field'] = 'main_class_code';
+				// base64 Decode main_class_code.
+				$plugin->main_class_code = $this->setGuiCodePlaceholder(
+					$this->setPlaceholders($this->setDynamicValues(base64_decode($plugin->main_class_code)), $this->placeholders),
+					$guiMapper
+					);
+			}
+			// set the head :)
+			if ($plugin->add_head == 1 && !empty($plugin->head))
+			{
+				// set GUI mapper field
+				$guiMapper['field'] = 'head';
+				// base64 Decode head.
+				$plugin->head = $this->setGuiCodePlaceholder(
+					$this->setPlaceholders($this->setDynamicValues(base64_decode($plugin->head)), $this->placeholders),
+					$guiMapper
+					);
+			}
+			elseif (!empty($plugin->class_head))
+			{
+				// base64 Decode head.
+				$plugin->head = $this->setGuiCodePlaceholder(
+					$this->setPlaceholders($this->setDynamicValues(base64_decode($plugin->class_head)), $this->placeholders),
+					array(
+						'table' => 'class_extends',
+						'field' => 'head',
+						'id' => (int) $plugin->class_id,
+						'type' => 'php')
+					);
+			}
+			unset($plugin->class_head);
+			// set the comment
+			if (!empty($plugin->comment))
+			{
+				// base64 Decode comment.
+				$plugin->comment = $this->setGuiCodePlaceholder(
+					$this->setPlaceholders($this->setDynamicValues(base64_decode($plugin->comment)), $this->placeholders),
+					array(
+						'table' => 'class_extends',
+						'field' => 'comment',
+						'id' => (int) $plugin->class_id,
+						'type' => 'php')
+					);
+			}
+			// set the fields data
+			$plugin->fields = (isset($plugin->fields) && ComponentbuilderHelper::checkJson($plugin->fields)) ? json_decode($plugin->fields, true) : null;
+			if (ComponentbuilderHelper::checkArray($plugin->fields))
+			{
+				$plugin->config_fields = array_map(function($field) use ($id){
+					// make sure the alias and title is 0
+					$field['alias'] = 0;
+					$field['title'] = 0;
+					// set the field details
+					$this->setFieldDetails($field, '_plugin_' . $id);
+					// set unique name counter
+					$this->setUniqueNameCounter($field['base_name'], '_plugins_' . $id);
+					// return field
+					return $field;
+				}, array_values($plugin->fields));
+
+				// do some house cleaning (for fields)
+				foreach ($plugin->config_fields as $field)
+				{
+					// so first we lock the field name in
+					$this->getFieldName($field, '_plugins_' . $id);
+				}
+				// unset original value
+				unset($plugin->fields);
+			}
+			// set the add targets
+			$addArray = array('files' => 'files', 'folders' => 'folders', 'urls' => 'urls', 'filesfullpath' => 'files', 'foldersfullpath' => 'folders');
+			foreach ($addArray as $addTarget => $targetHere)
+			{
+				// set the add target data
+				$plugin->{'add' . $addTarget} = (isset($plugin->{'add' . $addTarget}) && ComponentbuilderHelper::checkJson($plugin->{'add' . $addTarget})) ? json_decode($plugin->{'add' . $addTarget}, true) : null;
+				if (ComponentbuilderHelper::checkArray($plugin->{'add' . $addTarget}))
+				{
+					if (isset($plugin->{$targetHere}) && ComponentbuilderHelper::checkArray($plugin->{$targetHere}))
+					{
+						foreach ($plugin->{'add' . $addTarget} as $taget)
+						{
+							$plugin->{$targetHere}[] = $taget;
+						}
+					}
+					else
+					{
+						$plugin->{$targetHere} = array_values($plugin->{'add' . $addTarget});
+					}
+				}
+				unset($plugin->{'add' . $addTarget});
+			}
+			// rest globals
+			$this->target = $_backup_target;
+			$this->lang = $_backup_lang;
+			$this->langPrefix = $_backup_langPrefix;
+			return $plugin;
+		}
+		return false;
+	}
+
+	/**
 	 * check if we already have these ids in local memory
 	 * 
 	 * @return  void
@@ -5865,11 +6428,14 @@ class Get
 		$counter = array(1 => 0, 2 => 0);
 		// file types to get
 		$fileTypes = array('\.php', '\.js', '\.xml');
+
 		// set some local placeholders
-		$placeholders = array();
+		$placeholders = array_flip($this->globalPlaceholders);
 		$placeholders[ComponentbuilderHelper::safeString($this->componentCodeName, 'F') . 'Helper::'] = $this->bbb . 'Component' . $this->ddd . 'Helper::';
 		$placeholders['COM_' . ComponentbuilderHelper::safeString($this->componentCodeName, 'U')] = 'COM_' . $this->bbb . 'COMPONENT' . $this->ddd;
 		$placeholders['com_' . $this->componentCodeName] = 'com_' . $this->bbb . 'component' . $this->ddd;
+		// putt the last first
+		$placeholders = array_reverse($placeholders, true);
 
 		foreach ($paths as $target => $path)
 		{
@@ -5927,6 +6493,8 @@ class Get
 	 */
 	protected function searchFileContent(&$counter, &$file, &$target, &$searchArray, &$placeholders, &$today)
 	{
+		// we add a new search for the GUI CODE Blocks
+		$this->guiCodeSearch($file, $placeholders, $today);
 		// reset each time per file
 		$loadEndFingerPrint = false;
 		$endFingerPrint = array();
@@ -6197,6 +6765,140 @@ class Get
 	}
 
 	/**
+	 * Set the JCB GUI code placeholder
+	 * 
+	 * @param   string   $string  The code string
+	 * @param   array    $config  The placeholder config values
+	 *
+	 * @return  void
+	 * 
+	 */
+	public function setGuiCodePlaceholder($string, $config)
+	{
+		if (ComponentbuilderHelper::checkString($string))
+		{
+			if ($this->addPlaceholders && $this->canAddGuiCodePlaceholder($string)
+				&& ComponentbuilderHelper::checkArray($config)
+				&& isset($config['table']) && ComponentbuilderHelper::checkString($config['table'])
+				&& isset($config['field']) && ComponentbuilderHelper::checkString($config['field'])
+				&& isset($config['type']) && ComponentbuilderHelper::checkString($config['type'])
+				&& isset($config['id']) && is_numeric($config['id']))
+			{
+				// if we have a key we must get the ID
+				if (isset($config['key']) && ComponentbuilderHelper::checkString($config['key']) && $config['key'] !== 'id')
+				{
+					if (($id = ComponentbuilderHelper::getVar($config['table'], $config['id'], $config['key'], 'id')) !== false && is_numeric($id))
+					{
+						$config['id'] = $id;
+					}
+					else
+					{
+						// we must give a error message to inform the user of this issue. (should never happen)
+						$this->app->enqueueMessage(JText::sprintf('ID mismatch was detected with the %s.%s.%s.%s GUI code field. So the placeholder was not set.', $config['table'], $config['field'], $config['key'], $config['id']), 'Error');
+						// check some config
+						if (!isset($config['prefix']))
+						{
+							$config['prefix'] = '';
+						}
+						return $config['prefix'] . $string;
+					}
+				}
+				// check some config
+				if (!isset($config['prefix']))
+				{
+					$config['prefix'] = PHP_EOL;
+				}
+				// add placheolder based on type of code
+				switch (strtolower($config['type']))
+				{
+					// adding with html commenting
+					case 'html':
+						$front = $config['prefix'] . '<!--' . '[JCBGUI.';
+						$sufix = '$$$$]-->' . PHP_EOL;
+						$back = '<!--[/JCBGUI' . $sufix;
+					break;
+					// adding with php commenting
+					default:
+						$front = $config['prefix'] . '/***' . '[JCBGUI.';
+						$sufix = '$$$$]***/' . PHP_EOL;
+						$back = '/***[/JCBGUI' . $sufix;
+					break;
+				}
+				return $front . $config['table'] . '.' . $config['field'] . '.' . $config['id'] . '.' . $sufix . $string . $back;
+			}
+			// check some config
+			if (!isset($config['prefix']))
+			{
+				$config['prefix'] = '';
+			}
+			return $config['prefix'] . $string;
+		}
+		return $string;
+	}
+
+	/**
+	 * search a code to see if there is already any custom 
+	 * code or other reasons not to add the GUI code placeholders
+	 * 
+	 * @param   string  $code         The code to check
+	 *
+	 * @return  boolean  true if GUI code placeholders can be added
+	 * 
+	 */
+	protected function canAddGuiCodePlaceholder(&$code)
+	{
+		// check for customcode placeholders
+		if (strpos($code, '$$$$') !== false)
+		{
+			// we do not add GUI wrapper placeholder to code
+			// that already has any customcode placeholders
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * search a file for gui code blocks that were updated in the IDE
+	 * 
+	 * @param   string  $file         The file path to search
+	 * @param   array   $placeholders The values to replace in the code being stored
+	 * @param   string  $today        The date for today
+	 *
+	 * @return  void
+	 * 
+	 */
+	protected function guiCodeSearch(&$file, &$placeholders, &$today)
+	{
+		// get file content
+		$file_conent = ComponentbuilderHelper::getFileContents($file);
+
+		$guiCode = array();
+		// we add a new search for the GUI CODE Blocks
+		$guiCode[] = ComponentbuilderHelper::getAllBetween($file_conent, '/***[JCB' . 'GUI<>', '/***[/JCBGUI' . '$$$$]***/');
+		$guiCode[] = ComponentbuilderHelper::getAllBetween($file_conent, '<!--[JCB' . 'GUI<>', '<!--[/JCBGUI' . '$$$$]-->');
+
+		if (($guiCode = ComponentbuilderHelper::mergeArrays($guiCode)) !== false && ComponentbuilderHelper::checkArray($guiCode, true))
+		{
+			foreach ($guiCode as $code)
+			{
+				$first_line = strtok($code, PHP_EOL);
+				// get the GUI target details
+				$target = explode('.', trim($first_line, '.'));
+				// cleanup the newlines around the code
+				$code = trim(str_replace($first_line, '', $code), PHP_EOL) . PHP_EOL;
+				// reverse placeholder as much as we can
+				$code = $this->reversePlaceholders($code, $placeholders, $target[2], $target[1], $target[0]);
+				// update the GUI/Tables/Database
+				$object = new stdClass();
+				$object->id = (int) $target[2];
+				$object->{$target[1]} = base64_encode($code); // (TODO) this may not always work... 
+				// update the value in GUI
+				$this->db->updateObject('#__componentbuilder_' . (string) $target[0], $object, 'id');
+			}
+		}
+	}
+
+	/**
 	 * Check if this line should be added
 	 * 
 	 * @param   strin    $replaceKey   The key to remove from line
@@ -6292,16 +6994,18 @@ class Get
 	 * Reverse Engineer the dynamic placeholders (TODO hmmmm this is not ideal)
 	 * 
 	 * @param   string   $string       The string to revers
-	 * @param   int      $id           The custom code id
 	 * @param   array    $placeholders The values to search for
+	 * @param   int      $id           The custom code id
+	 * @param   string   $field        The field name
+	 * @param   string   $table        The table name
 	 *
 	 * @return  string
 	 * 
 	 */
-	protected function reversePlaceholders($string, &$placeholders, $id = null)
+	protected function reversePlaceholders($string, &$placeholders, $id = null, $field = 'code', $table = 'custom_code')
 	{
 		// get local code if set
-		if ($id > 0 && $code = base64_decode(ComponentbuilderHelper::getVar('custom_code', $id, 'id', 'code')))
+		if ($id > 0 && $code = base64_decode(ComponentbuilderHelper::getVar($table, $id, 'id', $field)))
 		{
 			$string = $this->setReverseLangPlaceholders($string, $code);
 		}

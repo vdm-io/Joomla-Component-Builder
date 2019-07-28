@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_componentbuilder/models/rules"
+	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
+>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_CREATED_DATE_DESC"
+			size="22"
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_CREATED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_VERSION_DESC"
+			size="6"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Joomla_plugin Field. Type: Joomlaplugins. (custom) -->
+		<field
+			type="joomlaplugins"
+			name="joomla_plugin"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_JOOMLA_PLUGIN_LABEL"
+			description="JFIELD_TITLE_DESC"
+			class="list_class span12"
+			multiple="false"
+			default="0"
+			readonly="true"
+		/>
+		<!-- Note_constant_paths Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_constant_paths" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_CONSTANT_PATHS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_CONSTANT_PATHS_DESCRIPTION" heading="h4" class="alert alert-info note_constant_paths" />
+		<!-- Addfoldersfullpath Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addfoldersfullpath"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDFOLDERSFULLPATH_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDFOLDERSFULLPATH_DESCRIPTION"
+			default=""
+			icon="list">
+			<form hidden="true" name="list_addfoldersfullpath_modal" repeat="true">
+				<!-- Folderpath Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="folderpath"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FOLDERPATH_LABEL"
+					size="70"
+					maxlength="300"
+					default=""
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FOLDERPATH_DESCRIPTION"
+					class="text_area"
+					required="false"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FOLDERPATH_MESSAGE"
+					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FOLDERPATH_HINT"
+				/>
+				<!-- Path Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="path"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="true"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_MESSAGE"
+					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_HINT"
+				/>
+				<!-- Rename Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="rename"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_RENAME_LABEL"
+					value="1"
+					default=""
+					class="inputbox"
+				/>
+			</form>
+		</field>
+		<!-- Note_add_folders_fullpath Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_folders_fullpath" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_FOLDERS_FULLPATH_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_FOLDERS_FULLPATH_DESCRIPTION" heading="h4" class="alert alert-info note_add_folders_fullpath" />
+		<!-- Addfilesfullpath Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addfilesfullpath"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDFILESFULLPATH_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDFILESFULLPATH_DESCRIPTION"
+			default=""
+			icon="list">
+			<form hidden="true" name="list_addfilesfullpath_modal" repeat="true">
+				<!-- Filepath Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="filepath"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FILEPATH_LABEL"
+					size="70"
+					maxlength="300"
+					default=""
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FILEPATH_DESCRIPTION"
+					class="text_area"
+					required="false"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FILEPATH_MESSAGE"
+					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FILEPATH_HINT"
+				/>
+				<!-- Path Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="path"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="true"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_MESSAGE"
+					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_HINT"
+				/>
+				<!-- Notnew Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="notnew"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTNEW_LABEL"
+					value="1"
+					default=""
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
+					class="inputbox"
+				/>
+			</form>
+		</field>
+		<!-- Note_add_files_fullpath Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_files_fullpath" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_FILES_FULLPATH_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_FILES_FULLPATH_DESCRIPTION" heading="h4" class="alert alert-info note_add_files_fullpath" />
+		<!-- Addfolders Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addfolders"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDFOLDERS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDFOLDERS_DESCRIPTION"
+			default=""
+			icon="list">
+			<form hidden="true" name="list_addfolders_modal" repeat="true">
+				<!-- Folder Field. Type: Customfolderlist. (custom) -->
+				<field
+					type="customfolderlist"
+					name="folder"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FOLDER_LABEL"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FOLDER_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					default="0"
+					required="true"
+					button="false"
+				/>
+				<!-- Path Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="path"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="true"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_MESSAGE"
+					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_HINT"
+				/>
+				<!-- Rename Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="rename"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_RENAME_LABEL"
+					value="1"
+					default=""
+					class="inputbox"
+				/>
+			</form>
+		</field>
+		<!-- Note_add_folders Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_folders" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_FOLDERS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_FOLDERS_DESCRIPTION" heading="h4" class="alert alert-info note_add_folders" />
+		<!-- Addfiles Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addfiles"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDFILES_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDFILES_DESCRIPTION"
+			default=""
+			icon="list">
+			<form hidden="true" name="list_addfiles_modal" repeat="true">
+				<!-- File Field. Type: Customfilelist. (custom) -->
+				<field
+					type="customfilelist"
+					name="file"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FILE_LABEL"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_FILE_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					default="0"
+					required="true"
+					button="false"
+				/>
+				<!-- Path Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="path"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_LABEL"
+					size="40"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_DESCRIPTION"
+					class="text_area"
+					readonly="false"
+					disabled="false"
+					required="true"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_MESSAGE"
+					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_PATH_HINT"
+				/>
+				<!-- Notnew Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="notnew"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTNEW_LABEL"
+					value="1"
+					default=""
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
+					class="inputbox"
+				/>
+			</form>
+		</field>
+		<!-- Note_add_files Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_files" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_FILES_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_FILES_DESCRIPTION" heading="h4" class="alert alert-info note_add_files" />
+		<!-- Addurls Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addurls"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDURLS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_ADDURLS_DESCRIPTION"
+			default=""
+			icon="list">
+			<form hidden="true" name="list_addurls_modal" repeat="true">
+				<!-- Url Field. Type: Url. (joomla) -->
+				<field
+					type="url"
+					name="url"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_URL_LABEL"
+					size="150"
+					maxlength="250"
+					default=""
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_URL_DESCRIPTION"
+					class="text_area"
+					required="true"
+					filter="url"
+					validated="url"
+					message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_URL_MESSAGE"
+					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_URL_HINT"
+				/>
+				<!-- Type Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="type"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_TYPE_LABEL"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_TYPE_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					filter="INT"
+					required="true"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_DEFAULT_LINK</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_LOCAL_GET</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_LINK_LOCAL_DYNAMIC</option>
+				</field>
+			</form>
+		</field>
+		<!-- Note_add_urls Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_urls" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_URLS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_URLS_DESCRIPTION" heading="h4" class="alert alert-info note_add_urls" />
+	</fieldset>
+	
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this joomla_plugin_files_folders_urls"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="joomla_plugin_files_folders_urls"
+		/>
+	</fieldset>
+</form>
