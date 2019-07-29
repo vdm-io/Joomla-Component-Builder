@@ -1226,7 +1226,102 @@ class Fields extends Structure
 				elseif ($property === 'option')
 				{
 					$optionSet = '';
-					if (strpos($value, ',') !== false)
+					if (strtolower($typeName) === 'groupedlist' && strpos($value, ',') !== false && strpos($value, '@@') !== false)
+					{
+						// reset the group temp arrays
+						$groups_ = array();
+						$grouped_ = array('group' => array(), 'option' => array());
+						$order_ = array();
+						// mulitpal options
+						$options = explode(',', $value);
+						foreach ($options as $option)
+						{
+							if (strpos($option, '@@') !== false)
+							{
+								// set the group label
+								$valueKeyArray = explode('@@', $option);
+								if (count((array) $valueKeyArray) == 2)
+								{
+									$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($valueKeyArray[0], true);
+									// add to lang array
+									$this->setLangContent($this->lang, $langValue, $valueKeyArray[0]);
+									// now add group label
+									$groups_[$valueKeyArray[1]] = PHP_EOL . $this->_t(1) . $taber . $this->_t(2) . '<group label="' .  $langValue . '">';
+									// set order
+									$order_['group' . $valueKeyArray[1]] = $valueKeyArray[1];
+								}
+							}
+							elseif (strpos($option, '|') !== false)
+							{
+								// has other value then text
+								$valueKeyArray = explode('|', $option);
+								if (count((array) $valueKeyArray) == 3)
+								{
+									$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($valueKeyArray[1], true);
+									// add to lang array
+									$this->setLangContent($this->lang, $langValue, $valueKeyArray[1]);
+									// now add to option set
+									$grouped_['group'][$valueKeyArray[2]][] = PHP_EOL . $this->_t(1) . $taber . $this->_t(3) . '<option value="' . $valueKeyArray[0] . '">' . PHP_EOL . $this->_t(1) . $taber . $this->_t(4) . $langValue . '</option>';
+									$optionArray[$valueKeyArray[0]] = $langValue;
+									// set order
+									$order_['group' . $valueKeyArray[2]] = $valueKeyArray[2];
+								}
+								else
+								{
+									$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($valueKeyArray[1], true);
+									// add to lang array
+									$this->setLangContent($this->lang, $langValue, $valueKeyArray[1]);
+									// now add to option set
+									$grouped_['option'][$valueKeyArray[0]] = PHP_EOL . $this->_t(1) . $taber . $this->_t(2) . '<option value="' . $valueKeyArray[0] . '">' . PHP_EOL . $this->_t(1) . $taber . $this->_t(3) . $langValue . '</option>';
+									$optionArray[$valueKeyArray[0]] = $langValue;
+									// set order
+									$order_['option' . $valueKeyArray[0]] = $valueKeyArray[0];
+								}
+							}
+							else
+							{
+								// text is also the value
+								$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($option, true);
+								// add to lang array
+								$this->setLangContent($this->lang, $langValue, $option);
+								// now add to option set
+								$grouped_['option'][$option] = PHP_EOL . $this->_t(1) . $taber . $this->_t(2) . '<option value="' . $option . '">' . PHP_EOL . $this->_t(1) . $taber . $this->_t(3) . $langValue . '</option>';
+								$optionArray[$option] = $langValue;
+								// set order
+								$order_['option' . $option] = $option;
+							}
+						}
+						// now build the groups
+						foreach ($order_ as $pointer_ => $_id)
+						{
+							// load the default key
+							$key_ = 'group';
+							if (strpos($pointer_, 'option') !== false)
+							{
+								// load the option field
+								$key_ = 'option';
+							}
+							// check if this is a group loader
+							if ('group' === $key_ && isset($groups_[$_id]) && isset($grouped_[$key_][$_id]) && ComponentbuilderHelper::checkArray($grouped_[$key_][$_id]))
+							{
+								// set group label
+								$optionSet .= $groups_[$_id];
+								foreach ($grouped_[$key_][$_id] as $option_)
+								{
+									$optionSet .= $option_;
+								}
+								unset($groups_[$_id]);
+								unset($grouped_[$key_][$_id]);
+								// close the group
+								$optionSet .= PHP_EOL . $this->_t(1) . $taber . $this->_t(2) . '</group>';
+							}
+							elseif (isset($grouped_[$key_][$_id]) && ComponentbuilderHelper::checkString($grouped_[$key_][$_id]))
+							{
+								$optionSet .= $grouped_[$key_][$_id];
+							}
+						}
+					}
+					elseif (strpos($value, ',') !== false)
 					{
 						// mulitpal options
 						$options = explode(',', $value);
@@ -1239,7 +1334,7 @@ class Fields extends Structure
 								$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($t, true);
 								// add to lang array
 								$this->setLangContent($this->lang, $langValue, $t);
-								// no add to option set
+								// now add to option set
 								$optionSet .= PHP_EOL . $this->_t(1) . $taber . $this->_t(2) . '<option value="' . $v . '">' . PHP_EOL . $this->_t(1) . $taber . $this->_t(3) . $langValue . '</option>';
 								$optionArray[$v] = $langValue;
 							}
@@ -1249,7 +1344,7 @@ class Fields extends Structure
 								$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($option, true);
 								// add to lang array
 								$this->setLangContent($this->lang, $langValue, $option);
-								// no add to option set
+								// now add to option set
 								$optionSet .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . '<option value="' . $option . '">' . PHP_EOL . $this->_t(2) . $taber . $this->_t(2) . $langValue . '</option>';
 								$optionArray[$option] = $langValue;
 							}
@@ -1265,7 +1360,7 @@ class Fields extends Structure
 							$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($t, true);
 							// add to lang array
 							$this->setLangContent($this->lang, $langValue, $t);
-							// no add to option set
+							// now add to option set
 							$optionSet .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . '<option value="' . $v . '">' . PHP_EOL . $this->_t(2) . $taber . $this->_t(2) . $langValue . '</option>';
 							$optionArray[$v] = $langValue;
 						}
@@ -1275,7 +1370,7 @@ class Fields extends Structure
 							$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($value, true);
 							// add to lang array
 							$this->setLangContent($this->lang, $langValue, $value);
-							// no add to option set
+							// now add to option set
 							$optionSet .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1) . '<option value="' . $value . '">' . PHP_EOL . $this->_t(2) . $taber . $this->_t(2) . $langValue . '</option>';
 							$optionArray[$value] = $langValue;
 						}
@@ -1613,7 +1708,106 @@ class Fields extends Structure
 				elseif ($property === 'option')
 				{
 					ComponentbuilderHelper::xmlComment($field->fieldXML, $this->setLine(__LINE__) . " Option Set.");
-					if (strpos($value, ',') !== false)
+					if (strtolower($typeName) === 'groupedlist' && strpos($value, ',') !== false && strpos($value, '@@') !== false)
+					{
+						// reset the group temp arrays
+						$groups_ = array();
+						$grouped_ = array('group' => array(), 'option' => array());
+						$order_ = array();
+						// mulitpal options
+						$options = explode(',', $value);
+						foreach ($options as $option)
+						{
+							if (strpos($option, '@@') !== false)
+							{
+								// set the group label
+								$valueKeyArray = explode('@@', $option);
+								if (count((array) $valueKeyArray) == 2)
+								{
+									$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($valueKeyArray[0], true);
+									// add to lang array
+									$this->setLangContent($this->lang, $langValue, $valueKeyArray[0]);
+									// now add group label
+									$groups_[$valueKeyArray[1]] = $langValue;
+									// set order
+									$order_['group' . $valueKeyArray[1]] = $valueKeyArray[1];
+								}
+							}
+							elseif (strpos($option, '|') !== false)
+							{
+								// has other value then text
+								$valueKeyArray = explode('|', $option);
+								if (count((array) $valueKeyArray) == 3)
+								{
+									$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($valueKeyArray[1], true);
+									// add to lang array
+									$this->setLangContent($this->lang, $langValue, $valueKeyArray[1]);
+									// now add to option set
+									$grouped_['group'][$valueKeyArray[2]][] = array('value' => $valueKeyArray[0], 'text' => $langValue);
+									$optionArray[$valueKeyArray[0]] = $langValue;
+									// set order
+									$order_['group' . $valueKeyArray[2]] = $valueKeyArray[2];
+								}
+								else
+								{
+									$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($valueKeyArray[1], true);
+									// add to lang array
+									$this->setLangContent($this->lang, $langValue, $valueKeyArray[1]);
+									// now add to option set
+									$grouped_['option'][$valueKeyArray[0]] = array('value' => $valueKeyArray[0], 'text' => $langValue);
+									$optionArray[$valueKeyArray[0]] = $langValue;
+									// set order
+									$order_['option' . $valueKeyArray[0]] = $valueKeyArray[0];
+								}
+							}
+							else
+							{
+								// text is also the value
+								$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($option, true);
+								// add to lang array
+								$this->setLangContent($this->lang, $langValue, $option);
+								// now add to option set
+								$grouped_['option'][$option] = array('value' => $valueKeyArray[0], 'text' => $langValue);
+								$optionArray[$option] = $langValue;
+								// set order
+								$order_['option' . $option] = $option;
+							}
+						}
+						// now build the groups
+						foreach ($order_ as $pointer_ => $_id)
+						{
+							// load the default key
+							$key_ = 'group';
+							if (strpos($pointer_, 'option') !== false)
+							{
+								// load the option field
+								$key_ = 'option';
+							}
+							// check if this is a group loader
+							if ('group' === $key_ && isset($groups_[$_id]) && isset($grouped_[$key_][$_id]) && ComponentbuilderHelper::checkArray($grouped_[$key_][$_id]))
+							{
+								// set group label
+								$groupXML = $field->fieldXML->addChild('group');
+								$groupXML->addAttribute('label', $groups_[$_id]);
+
+								foreach ($grouped_[$key_][$_id] as $option_)
+								{
+									$groupOptionXML = $groupXML->fieldXML->addChild('option');
+									$groupOptionXML->addAttribute('value', $option_['value']);
+									$groupOptionXML[] = $option_['text'];
+								}
+								unset($groups_[$_id]);
+								unset($grouped_[$key_][$_id]);
+							}
+							elseif (isset($grouped_[$key_][$_id]) && ComponentbuilderHelper::checkString($grouped_[$key_][$_id]))
+							{
+								$optionXML = $field->fieldXML->addChild('option');
+								$optionXML->addAttribute('value', $grouped_[$key_][$_id]['value']);
+								$optionXML[] = $grouped_[$key_][$_id]['text'];
+							}
+						}
+					}
+					elseif (strpos($value, ',') !== false)
 					{
 						// mulitpal options
 						$options = explode(',', $value);
@@ -1627,7 +1821,7 @@ class Fields extends Structure
 								$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($t, true);
 								// add to lang array
 								$this->setLangContent($this->lang, $langValue, $t);
-								// no add to option set
+								// now add to option set
 								$optionXML->addAttribute('value', $v);
 								$optionArray[$v] = $langValue;
 							}
@@ -1637,7 +1831,7 @@ class Fields extends Structure
 								$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($option, true);
 								// add to lang array
 								$this->setLangContent($this->lang, $langValue, $option);
-								// no add to option set
+								// now add to option set
 								$optionXML->addAttribute('value', $option);
 								$optionArray[$option] = $langValue;
 							}
@@ -1655,7 +1849,7 @@ class Fields extends Structure
 							$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($t, true);
 							// add to lang array
 							$this->setLangContent($this->lang, $langValue, $t);
-							// no add to option set
+							// now add to option set
 							$optionXML->addAttribute('value', $v);
 							$optionArray[$v] = $langValue;
 						}
@@ -1665,7 +1859,7 @@ class Fields extends Structure
 							$langValue = $langView . '_' . ComponentbuilderHelper::safeFieldName($value, true);
 							// add to lang array
 							$this->setLangContent($this->lang, $langValue, $value);
-							// no add to option set
+							// now add to option set
 							$optionXML->addAttribute('value', $value);
 							$optionArray[$value] = $langValue;
 						}

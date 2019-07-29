@@ -3250,13 +3250,13 @@ abstract class ComponentbuilderHelper
 		),
 		'option' => array(
 			'accesslevel', 'category', 'checkboxes', 'combo', 'contentlanguage', 'databaseconnection', // 'components',  (TODO) must be added but still in use as a custom field in JCB
-			'filelist', 'folderlist', 'imagelist', 'list', 'plugins', 'predefinedlist', 'radio', 'sessionhandler', 'sql'
+			'filelist', 'folderlist', 'imagelist', 'list', 'plugins', 'predefinedlist', 'radio', 'sessionhandler', 'sql', 'groupedlist'
 		),
 		'text' => array(
 			'calendar', 'color', 'editor', 'email', 'number', 'password', 'range', 'tel', 'text', 'textarea', 'url'
 		),
 		'list' => array(
-			'checkbox', 'checkboxes', 'list', 'radio'
+			'checkbox', 'checkboxes', 'list', 'radio', 'groupedlist'
 		),
 		'dynamic' => array(
 			'category', 'file', 'filelist', 'folderlist', 'headertag', 'imagelist', 'integer', 'media', 'meter', 'rules', 'tag', 'timezone', 'user'
@@ -3265,7 +3265,7 @@ abstract class ComponentbuilderHelper
 			'note', 'spacer'
 		),
 		'special' => array(
-			'contentlanguage', 'groupedlist', 'moduleposition', 'plugin', 'repeatable', 'subform', 'templatestyle'
+			'contentlanguage', 'moduleposition', 'plugin', 'repeatable', 'subform', 'templatestyle'
 		)
 	);
 
