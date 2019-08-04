@@ -14040,7 +14040,7 @@ class Interpretation extends Fields
 						if (isset($newxmlField->fieldXML))
 						{
 							$xmlField = dom_import_simplexml($newxmlField->fieldXML);
-							$xmlField = PHP_EOL . $this->_t(1) . "<!-- " . $newxmlField->comment . ' -->' . PHP_EOL . $this->_t(1) . $this->xmlPrettyPrint($xmlField, 'field');
+							$xmlField = PHP_EOL . $this->_t(1) . "<!--" . $this->setLine(__LINE__) . " " . $newxmlField->comment . ' -->' . PHP_EOL . $this->_t(1) . $this->xmlPrettyPrint($xmlField, 'field');
 						}
 					}
 					// make sure the xml is set and a string
@@ -16291,6 +16291,211 @@ function vdm_dkim() {
 		$regex = "/$start([a-zA-Z0-9_]*)$end/";
 		preg_match_all($regex, $str, $matches);
 		return $matches[1];
+	}
+
+	public function getPluginMainClass(&$plugin)
+	{
+		return
+			PHP_EOL . $plugin->head . PHP_EOL .
+			$plugin->comment . PHP_EOL . 'class ' .
+			$plugin->class_name . ' extends ' .
+			$plugin->extends . PHP_EOL . '{' . PHP_EOL .
+			$plugin->main_class_code . PHP_EOL .
+			"}" . PHP_EOL;
+	}
+
+	public function getPluginMainXML(&$plugin)
+	{
+		// tweak system to set stuff to the plugin domain
+		$_backup_target = $this->target;
+		$_backup_lang = $this->lang;
+		$_backup_langPrefix = $this->langPrefix;
+		$this->target = $plugin->key;
+		$this->lang = $plugin->key;
+		$this->langPrefix = $plugin->lang_prefix;
+		$view = '';
+		$viewType = 0;
+		// set the custom table key
+		$dbkey = 'yy';
+		// build the xml
+		$xml = '';
+		// build the config fields
+		$config_field = '';
+		foreach ($plugin->config_fields as $field)
+		{
+			// check the field builder type
+			if ($this->fieldBuilderType == 1)
+			{
+				// string manipulation
+				$xmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
+			}
+			else
+			{
+				// simpleXMLElement class
+				$newxmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
+				if (isset($newxmlField->fieldXML))
+				{
+					$xmlField = dom_import_simplexml($newxmlField->fieldXML);
+					$xmlField = PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . $newxmlField->comment . ' -->' . PHP_EOL . $this->_t(1) . $this->xmlPrettyPrint($xmlField, 'field');
+				}
+			}
+			// make sure the xml is set and a string
+			if (isset($xmlField) && ComponentbuilderHelper::checkString($xmlField))
+			{
+				$config_field .= $xmlField;
+			}
+		}
+		// switch to add the xml
+		$addLang = false;
+		// now build the language files
+		if (isset($this->langContent[$plugin->key]))
+		{
+			$lang = array_map(function ($langstring, $placeholder)
+			{
+				return $placeholder . '="' . $langstring . '"';
+			}, $this->langContent[$plugin->key], array_keys($this->langContent[$plugin->key]));
+			// add to language file
+			$this->writeFile($plugin->folder_path . '/language/' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name) . '.ini', implode(PHP_EOL, $lang));
+			$this->writeFile($plugin->folder_path . '/language/' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name) . '.sys.ini', implode(PHP_EOL, $lang));
+			// set the line counter
+			$this->lineCount = $this->lineCount + count((array) $lang);
+			unset($lang);
+			// trigger the xml
+			$addLang = true;
+		}
+		// get all files and folders in plugin folder
+		$files = JFolder::files($plugin->folder_path);
+		$folders = JFolder::folders($plugin->folder_path);
+		// the files/folders to ignore
+		$ignore = array('sql', 'language', 'script.php', $plugin->file_name . '.xml', $plugin->file_name . '.php');
+		// should the scriptfile be added
+		if ($plugin->add_install_script)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Scripts to run on installation -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<scriptfile>script.php</scriptfile>';
+		}
+		// should the sql install be added
+		if ($plugin->add_sql)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Runs on install; New in Joomla 1.5 -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<install>';
+			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(3) . '<file driver="mysql" charset="utf8">sql/mysql/install.sql</file>';
+			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(1) . '</install>';
+		}
+		// should the sql uninstall be added
+		if ($plugin->add_sql_uninstall)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Runs on uninstall; New in Joomla 1.5 -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<uninstall>';
+			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(3) . '<file driver="mysql" charset="utf8">sql/mysql/uninstall.sql</file>';
+			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(1) . '</uninstall>';
+		}
+		// should the language xml be added
+		if ($addLang)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Language files -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<languages folder="language">';
+			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name) . '.ini</language>';
+			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name) . '.sys.ini</language>';
+			$xml .= PHP_EOL . $this->_t(1) . '</languages>';
+		}
+		// add the plugin files
+		$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Plugin files -->';
+		$xml .= PHP_EOL . $this->_t(1) . '<files>';
+		$xml .= PHP_EOL . $this->_t(2) . '<filename plugin="' . $plugin->file_name . '">'  . $plugin->file_name . '.php</filename>';
+		// add other files found
+		if (ComponentbuilderHelper::checkArray($files))
+		{
+			foreach ($files as $file)
+			{
+				// only add what is not ignored
+				if (!in_array($file, $ignore))
+				{
+					$xml .= PHP_EOL . $this->_t(2) . '<filename>'  . $file . '</filename>';
+				}
+			}
+		}
+		// add language folder
+		if ($addLang)
+		{
+			$xml .= PHP_EOL . $this->_t(2) . '<folder>language</folder>';
+		}
+		// add sql folder
+		if ($plugin->add_sql || $plugin->add_sql_uninstall)
+		{
+			$xml .= PHP_EOL . $this->_t(2) . '<folder>sql</folder>';
+		}
+		// add other files found
+		if (ComponentbuilderHelper::checkArray($folders))
+		{
+			foreach ($folders as $folder)
+			{
+				// only add what is not ignored
+				if (!in_array($folder, $ignore))
+				{
+					$xml .= PHP_EOL . $this->_t(2) . '<folder>'  . $folder . '</folder>';
+				}
+			}
+		}
+		$xml .= PHP_EOL . $this->_t(1) . '</files>';
+		// now add the Config Params if needed
+		if (ComponentbuilderHelper::checkString($config_field))
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Config parameter -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<config>';
+			$xml .= PHP_EOL . $this->_t(1) . '<fields name="params">';
+			$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="basic">';
+			$xml .= $config_field;
+			$xml .= PHP_EOL . $this->_t(1) . '</fieldset>';
+			$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+			$xml .= PHP_EOL . $this->_t(1) . '</config>';
+		}
+		// set update server if found
+		if ($plugin->add_update_server)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Update servers -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<updateservers>';
+			$xml .= PHP_EOL . $this->_t(2) . '<server type="extension" priority="1" name="' . $plugin->official_name . '">' . $plugin->update_server_url . '</server>';
+			$xml .= PHP_EOL . $this->_t(1) . '</updateservers>';
+		}
+		// rest globals
+		$this->target = $_backup_target;
+		$this->lang = $_backup_lang;
+		$this->langPrefix = $_backup_langPrefix;
+
+		return $xml;
+	}
+
+	public function getPluginInstallClass(&$plugin)
+	{
+		// yes we are adding it
+		$script = PHP_EOL . '/**';
+		$script .= PHP_EOL . ' * ' . $plugin->name . ' script file.';
+		$script .= PHP_EOL . ' *';
+		$script .= PHP_EOL . ' * @package ' . $plugin->class_name;
+		$script .= PHP_EOL . ' */';
+		$script .= PHP_EOL . 'class ' . $plugin->installer_class_name;
+		$script .= PHP_EOL . '{';
+		// add PHP in plugin install
+		$addScriptMethods = array('php_preflight', 'php_postflight', 'php_method');
+		$addScriptTypes = array('install', 'update', 'uninstall');
+		foreach ($addScriptMethods as $scriptMethod)
+		{
+			foreach ($addScriptTypes as $scriptType)
+			{
+				if (isset($plugin->{'add_' . $scriptMethod . '_' . $scriptType}) && $plugin->{'add_' . $scriptMethod . '_' . $scriptType} == 1 && ComponentbuilderHelper::checkString($plugin->{$scriptMethod . '_' . $scriptType}))
+				{
+					// (TODO) must still finish
+					$script .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' This part of the new plugin area is not ready yet, soon!';
+				}
+			}
+		}
+		$script .= PHP_EOL . '}' . PHP_EOL;
+		return $script;
 	}
 
 }

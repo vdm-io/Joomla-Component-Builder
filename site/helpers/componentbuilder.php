@@ -1081,7 +1081,7 @@ abstract class ComponentbuilderHelper
 	 * @return  void
 	 * 
 	 */
-	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'))
+	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'), $recurse = true, $full = true)
 	{
 		if (JFolder::exists($folder))
 		{
@@ -1089,11 +1089,25 @@ abstract class ComponentbuilderHelper
 			$joomla = getcwd();
 			// we are changing the working directory to the componet path
 			chdir($folder);
-			// get the files
-			foreach ($fileTypes as $type)
+			// make sure we have file type filter
+			if (self::checkArray($fileTypes))
+			{
+				// get the files
+				foreach ($fileTypes as $type)
+				{
+					// get a list of files in the current directory tree
+					$files[] = JFolder::files('.', $type, $recurse, $full);
+				}
+			}
+			elseif (self::checkString($fileTypes))
 			{
 				// get a list of files in the current directory tree
-				$files[] = JFolder::files('.', $type, true, true);
+				$files[] = JFolder::files('.', $fileTypes, $recurse, $full);
+			}
+			else
+			{
+				// get a list of files in the current directory tree
+				$files[] = JFolder::files('.', '.', $recurse, $full);
 			}
 			// change back to Joomla working directory
 			chdir($joomla);

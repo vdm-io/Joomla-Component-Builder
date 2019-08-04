@@ -1033,7 +1033,28 @@ class Infusion extends Interpretation
 			}
 
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
-			$this->triggerEvent('jcb_ce_onAfterBuildFilesContent', array(&$this->componentContext, &$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
+			$this->triggerEvent('jcb_ce_onAfterBuildFilesContent', array(&$this->componentContext, &$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));// Trigger Event: jcb_ce_onBeforeSetPlugins
+
+			// infuze plugin data if set
+			if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+			{
+				foreach ($this->componentData->joomla_plugins as $plugin)
+				{
+					if (ComponentbuilderHelper::checkObject($plugin))
+					{
+						// MAINCLASS
+						$this->fileContentDynamic[$plugin->key][$this->hhh . 'MAINCLASS' . $this->hhh] = $this->getPluginMainClass($plugin);
+						// only add install script if needed
+						if ($plugin->add_install_script)
+						{
+							// INSTALLCLASS
+							$this->fileContentDynamic[$plugin->key][$this->hhh . 'INSTALLCLASS' . $this->hhh] = $this->getPluginInstallClass($plugin);
+						}
+						// MAINXML
+						$this->fileContentDynamic[$plugin->key][$this->hhh . 'MAINXML' . $this->hhh] = $this->getPluginMainXML($plugin);
+					}
+				}
+			}
 
 			return true;
 		}

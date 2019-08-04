@@ -278,6 +278,13 @@ class Structure extends Get
 	public $componentPath;
 
 	/**
+	 * The Dynamic paths
+	 * 
+	 * @var      array
+	 */
+	public $dynamicPaths = array();
+
+	/**
 	 * The not new static items
 	 * 
 	 * @var      array
@@ -356,7 +363,6 @@ class Structure extends Get
 			$this->componentSalesName = 'com_' . $this->componentData->sales_name . '__J' . $this->joomlaVersion;
 			$this->componentBackupName = 'com_' . $this->componentData->sales_name . '_v' . str_replace('.', '_', $this->componentData->component_version) . '__J' . $this->joomlaVersion;
 			$this->componentFolderName = 'com_' . $this->componentData->name_code . '_v' . str_replace('.', '_', $this->componentData->component_version) . '__J' . $this->joomlaVersion;
-
 			// set component folder path
 			$this->componentPath = $this->compilerPath . '/' . $this->componentFolderName;
 			// set the template path for custom
@@ -364,7 +370,9 @@ class Structure extends Get
 			// make sure there is no old build
 			$this->removeFolder($this->componentPath);
 			// load the libraries files/folders and url's
-			$this->setLibaries();
+			$this->setLibraries();
+			// load the plugin files/folders and url's
+			$this->setPlugins();
 			// set the Joomla Version Data
 			$this->joomlaVersionData = $this->setJoomlaVersionData();
 			// Trigger Event: jcb_ce_onAfterSetJoomlaVersionData
@@ -409,17 +417,197 @@ class Structure extends Get
 	}
 
 	/**
+	 * Build the Plugins files, folders, url's and config
+	 * 
+	 * @return  void
+	 * 
+	 */
+	private function setPlugins()
+	{
+		if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+		{
+			// Trigger Event: jcb_ce_onBeforeSetPlugins
+			$this->triggerEvent('jcb_ce_onBeforeSetPlugins', array(&$this->componentContext, &$this->componentData->joomla_plugins));
+			foreach ($this->componentData->joomla_plugins as $plugin)
+			{
+				if (ComponentbuilderHelper::checkObject($plugin) && isset($plugin->folder_name) && ComponentbuilderHelper::checkString($plugin->folder_name))
+				{
+					// plugin path
+					$plugin->folder_path = $this->compilerPath . '/' . $plugin->folder_name;
+					// set the plugin paths
+					$this->dynamicPaths[$plugin->key] = $plugin->folder_path;
+					// make sure there is no old build
+					$this->removeFolder($plugin->folder_path);
+					// creat the main component folder
+					if (!JFolder::exists($plugin->folder_path))
+					{
+						JFolder::create($plugin->folder_path);
+						// count the folder created
+						$this->folderCount++;
+						$this->indexHTML($plugin->folder_name, $this->compilerPath);
+					}
+					// set main class file
+					$fileDetails = array('path' => $plugin->folder_path . '/' . $plugin->file_name . '.php', 'name' => $plugin->file_name . '.php', 'zip' => $plugin->file_name . '.php');
+					$this->writeFile($fileDetails['path'], '<?php' . PHP_EOL . '// Plugin main class template' . PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL . $this->hhh . 'MAINCLASS' . $this->hhh);
+					$this->newFiles[$plugin->key][] = $fileDetails;
+					// count the file created
+					$this->fileCount++;
+					// set main xml file
+					$fileDetails = array('path' => $plugin->folder_path . '/' . $plugin->file_name . '.xml', 'name' => $plugin->file_name . '.xml', 'zip' => $plugin->file_name . '.xml');
+					$this->writeFile($fileDetails['path'], $this->getPluginXMLTemplate($plugin));
+					$this->newFiles[$plugin->key][] = $fileDetails;
+					// count the file created
+					$this->fileCount++;
+					// set install script if needed
+					if ($plugin->add_install_script)
+					{
+						$fileDetails = array('path' => $plugin->folder_path . '/script.php', 'name' => 'script.php', 'zip' => 'script.php');
+						$this->writeFile($fileDetails['path'], '<?php' . PHP_EOL . '// Script template' . PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL . $this->hhh . 'INSTALLCLASS' . $this->hhh);
+						$this->newFiles[$plugin->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+					}
+					// set readme if found
+					if ($plugin->addreadme)
+					{
+						$fileDetails = array('path' => $plugin->folder_path . '/README.md', 'name' => 'README.md', 'zip' => 'README.md');
+						$this->writeFile($fileDetails['path'], $plugin->readme);
+						$this->newFiles[$plugin->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+					}
+					// set SQL stuff if needed
+					if ($plugin->add_sql || $plugin->add_sql_uninstall)
+					{
+						// create SQL folder
+						if (!JFolder::exists($plugin->folder_path . '/sql'))
+						{
+							JFolder::create($plugin->folder_path . '/sql');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($plugin->folder_name . '/sql', $this->compilerPath);
+						}
+						// create mysql folder
+						if (!JFolder::exists($plugin->folder_path . '/sql/mysql'))
+						{
+							JFolder::create($plugin->folder_path . '/sql/mysql');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($plugin->folder_name . '/sql/mysql', $this->compilerPath);
+						}
+						// now set the install file
+						if ($plugin->add_sql)
+						{
+							$this->writeFile($plugin->folder_path . '/sql/mysql/install.sql', $plugin->sql);
+							// count the file created
+							$this->fileCount++;
+						}
+						// now set the uninstall file
+						if ($plugin->add_sql_uninstall)
+						{
+							$this->writeFile($plugin->folder_path . '/sql/mysql/uninstall.sql', $plugin->sql_uninstall);
+							// count the file created
+							$this->fileCount++;
+						}
+					}
+					// creat the language folder
+					if (!JFolder::exists($plugin->folder_path . '/language'))
+					{
+						JFolder::create($plugin->folder_path . '/language');
+						// count the folder created
+						$this->folderCount++;
+						// also the lang tag
+						if (!JFolder::exists($plugin->folder_path . '/language/' . $this->langTag))
+						{
+							JFolder::create($plugin->folder_path . '/language/' . $this->langTag);
+							// count the folder created
+							$this->folderCount++;
+						}
+					}
+					// check if this lib has files
+					if (isset($plugin->files) && ComponentbuilderHelper::checkArray($plugin->files))
+					{
+						// add to component files
+						foreach ($plugin->files as $file)
+						{
+							// set the path finder
+							$file['target_type'] = $plugin->target_type;
+							$file['target_id'] = $plugin->id;
+							$this->componentData->files[] = $file;
+						}
+					}
+					// check if this lib has folders
+					if (isset($plugin->folders) && ComponentbuilderHelper::checkArray($plugin->folders))
+					{
+						// add to component folders
+						foreach ($plugin->folders as $folder)
+						{
+							// set the path finder
+							$folder['target_type'] = $plugin->target_type;
+							$folder['target_id'] = $plugin->id;
+							$this->componentData->folders[] = $folder;
+						}
+					}
+					// check if this plugin has urls
+					if (isset($plugin->urls) && ComponentbuilderHelper::checkArray($plugin->urls))
+					{
+						// add to component urls
+						foreach ($plugin->urls as $n => &$url)
+						{
+							// should we add the local folder
+							if (isset($url['type']) && $url['type'] > 1 && isset($url['url']) && ComponentbuilderHelper::checkString($url['url']))
+							{
+								// set file name
+								$fileName = basename($url['url']);
+								// get the file contents
+								$data = ComponentbuilderHelper::getFileContents($url['url']);
+								// build sub path
+								if (strpos($fileName, '.js') !== false)
+								{
+									$path = '/js';
+								}
+								elseif (strpos($fileName, '.css') !== false)
+								{
+									$path = '/css';
+								}
+								else
+								{
+									$path = '';
+								}
+								// create sub media path if not set
+								if (!JFolder::exists($plugin->folder_path .$path))
+								{
+									JFolder::create($plugin->folder_path . $path);
+									// count the folder created
+									$this->folderCount++;
+									$this->indexHTML($plugin->folder_name . $path, $this->compilerPath);
+								}
+								// set the path to plugin file
+								$url['path'] = $plugin->folder_path . $path . '/' . $fileName; // we need this for later
+								// write data to path
+								$this->writeFile($url['path'], $data);
+								// count the file created
+								$this->fileCount++;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Build the Libraries files, folders, url's and config
 	 * 
 	 * @return  void
 	 * 
 	 */
-	private function setLibaries()
+	private function setLibraries()
 	{
 		if (ComponentbuilderHelper::checkArray($this->libraries))
 		{
-			// Trigger Event: jcb_ce_onBeforeSetLibaries
-			$this->triggerEvent('jcb_ce_onBeforeSetLibaries', array(&$this->componentContext, &$this->libraries));
+			// Trigger Event: jcb_ce_onBeforeSetLibraries
+			$this->triggerEvent('jcb_ce_onBeforeSetLibraries', array(&$this->componentContext, &$this->libraries));
 			// creat the main component folder
 			if (!JFolder::exists($this->componentPath))
 			{
@@ -519,7 +707,7 @@ class Structure extends Get
 						// only add if local
 						if ($addLocalFolder)
 						{
-							// add folder to ml of media folders
+							// add folder to xml of media folders
 							$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS' . $this->hhh] .= PHP_EOL . $this->_t(2) . "<folder>" . $libFolder . "</folder>";
 						}
 					}
@@ -828,9 +1016,19 @@ class Structure extends Get
 				{
 					continue;
 				}
-				// set destination path
-				$zipPath = str_replace('c0mp0n3nt/', '', $details->path);
-				$path = str_replace('c0mp0n3nt/', $this->componentPath . '/', $details->path);
+				// check if we have a target value set
+				if (isset($details->_target))
+				{
+					// set destination path
+					$zipPath = str_replace($details->_target['type'] . '/', '', $details->path);
+					$path = str_replace($details->_target['type'] . '/', $this->dynamicPaths[$details->_target['key']] . '/', $details->path);
+				}
+				else
+				{
+					// set destination path
+					$zipPath = str_replace('c0mp0n3nt/', '', $details->path);
+					$path = str_replace('c0mp0n3nt/', $this->componentPath . '/', $details->path);
+				}
 				// set the template folder path
 				$templatePath = (isset($details->custom) && $details->custom) ? (($details->custom !== 'full') ? $this->templatePathCustom . '/' : '') : $this->templatePath . '/';
 				// set the final paths
@@ -862,7 +1060,14 @@ class Structure extends Get
 						// store the new files
 						if (!in_array($ftem, $this->notNew))
 						{
-							$this->newFiles['static'][] = array('path' => $packageFullPath, 'name' => $new, 'zip' => $zipFullPath);
+							if (isset($details->_target))
+							{
+								$this->newFiles[$details->_target['key']][] = array('path' => $packageFullPath, 'name' => $new, 'zip' => $zipFullPath);
+							}
+							else
+							{
+								$this->newFiles['static'][] = array('path' => $packageFullPath, 'name' => $new, 'zip' => $zipFullPath);
+							}
 						}
 						// ensure we update this file if needed
 						if (isset($this->updateFileContent[$ftem]) && $this->updateFileContent[$ftem])
@@ -889,40 +1094,44 @@ class Structure extends Get
 						$this->folderCount++;
 					}
 				}
-				// check if we should add the dynamic folder moving script to the installer script
-				$checker = array_values((array) explode('/', $zipFullPath));
-				// TODO <-- this may not be the best way, will keep an eye on this.
-				// We basicly only want to check if a folder is added that is not in the stdFolders array
-				if (isset($checker[0]) && ComponentbuilderHelper::checkString($checker[0]) && !in_array($checker[0], $this->stdFolders))
+				// only add if no target found
+				if (!isset($details->_target))
 				{
 					// check if we should add the dynamic folder moving script to the installer script
-					if (!$this->setMoveFolders)
+					$checker = array_values((array) explode('/', $zipFullPath));
+					// TODO <-- this may not be the best way, will keep an eye on this.
+					// We basicly only want to check if a folder is added that is not in the stdFolders array
+					if (isset($checker[0]) && ComponentbuilderHelper::checkString($checker[0]) && !in_array($checker[0], $this->stdFolders))
 					{
-						// add the setDynamicF0ld3rs() method to the install scipt.php file
-						$this->setMoveFolders = true;
-						// set message that this was done (will still add a tutorial link later)
-						$this->app->enqueueMessage(JText::_('<hr /><h3>Dynamic folder/s were detected.</h3>'), 'Notice');
-						$this->app->enqueueMessage(JText::sprintf('A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder/s are copied into the correct place when this componet is installed!'), 'Notice');
+						// check if we should add the dynamic folder moving script to the installer script
+						if (!$this->setMoveFolders)
+						{
+							// add the setDynamicF0ld3rs() method to the install scipt.php file
+							$this->setMoveFolders = true;
+							// set message that this was done (will still add a tutorial link later)
+							$this->app->enqueueMessage(JText::_('<hr /><h3>Dynamic folder/s were detected.</h3>'), 'Notice');
+							$this->app->enqueueMessage(JText::sprintf('A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder/s are copied into the correct place when this componet is installed!'), 'Notice');
+						}
 					}
-				}
-				elseif (count($checker) == 2 && ComponentbuilderHelper::checkString($checker[0]) && in_array($checker[0], $this->stdFolders))
-				{
-					// set the target
-					$eNAME = 'FILES';
-					$ename = 'filename';
-					if ($details->type === 'folder')
+					elseif (count($checker) == 2 && ComponentbuilderHelper::checkString($checker[0]) && in_array($checker[0], $this->stdFolders))
 					{
-						$eNAME = 'FOLDERS';
-						$ename = 'folder';
+						// set the target
+						$eNAME = 'FILES';
+						$ename = 'filename';
+						if ($details->type === 'folder')
+						{
+							$eNAME = 'FOLDERS';
+							$ename = 'folder';
+						}
+						// set the tab
+						$eTab = $this->_t(2);
+						if ('admin' === $checker[0])
+						{
+							$eTab = $this->_t(3);
+						}
+						// set the xml file
+						$this->fileContentStatic[$this->hhh . 'EXSTRA_' . ComponentbuilderHelper::safeString($checker[0], 'U') . '_' . $eNAME . $this->hhh] .= PHP_EOL . $eTab . "<" . $ename . ">" . $checker[1] . "</" . $ename . ">";
 					}
-					// set the tab
-					$eTab = $this->_t(2);
-					if ('admin' === $checker[0])
-					{
-						$eTab = $this->_t(3);
-					}
-					// set the xml file
-					$this->fileContentStatic[$this->hhh . 'EXSTRA_' . ComponentbuilderHelper::safeString($checker[0], 'U') . '_' . $eNAME . $this->hhh] .= PHP_EOL . $eTab . "<" . $ename . ">" . $checker[1] . "</" . $ename . ">";
 				}
 			}
 			return true;
@@ -1297,6 +1506,12 @@ class Structure extends Get
 			$pointer_tracker = 'h';
 			foreach ($this->componentData->folders as $custom)
 			{
+				// check type of target type
+				$_target_type = 'c0mp0n3nt';
+				if (isset($custom['target_type']))
+				{
+					$_target_type = $custom['target_type'];
+				}
 				// for good practice
 				ComponentbuilderHelper::fixPath($custom, array('path', 'folder', 'folderpath'));
 				// fix custom path
@@ -1353,11 +1568,16 @@ class Structure extends Get
 				// set new folder to object
 				$versionData->move->static->{$key_pointer} = new stdClass();
 				$versionData->move->static->{$key_pointer}->naam = str_replace('//','/', $custom['folder']);
-				$versionData->move->static->{$key_pointer}->path = 'c0mp0n3nt/' . $custom['path'];
+				$versionData->move->static->{$key_pointer}->path = $_target_type. '/' . $custom['path'];
 				$versionData->move->static->{$key_pointer}->rename = $rename;
 				$versionData->move->static->{$key_pointer}->newName = $newname;
 				$versionData->move->static->{$key_pointer}->type = 'folder';
 				$versionData->move->static->{$key_pointer}->custom = $customPath;
+				// set the target if type and id is found
+				if (isset($custom['target_id']) && isset($custom['target_type']))
+				{
+					$versionData->move->static->{$key_pointer}->_target = array('key' => $custom['target_id'] . '_' . $custom['target_type'], 'type' => $custom['target_type']);
+				}
 			}
 			unset($this->componentData->folders);
 			unset($custom);
@@ -1384,6 +1604,12 @@ class Structure extends Get
 			$pointer_tracker = 'h';
 			foreach ($this->componentData->files as $custom)
 			{
+				// check type of target type
+				$_target_type = 'c0mp0n3nt';
+				if (isset($custom['target_type']))
+				{
+					$_target_type = $custom['target_type'];
+				}
 				// for good practice
 				ComponentbuilderHelper::fixPath($custom, array('path', 'file', 'filepath'));
 				// by default custom path is true
@@ -1402,7 +1628,7 @@ class Structure extends Get
 					// triget fullpath
 					$customPath = 'full';
 				}
-				// make we have not duplicates
+				// make sure we have not duplicates
 				$key_pointer = ComponentbuilderHelper::safeString($custom['file']) . '_g' . $pointer_tracker;
 				$pointer_tracker++;
 				// set new file to object
@@ -1416,7 +1642,7 @@ class Structure extends Get
 				{
 					$pathInfo['dirname'] = trim($pathInfo['dirname'], '/');
 					// set the info
-					$versionData->move->static->{$key_pointer}->path = 'c0mp0n3nt/' . $pathInfo['dirname'];
+					$versionData->move->static->{$key_pointer}->path = $_target_type . '/' . $pathInfo['dirname'];
 					$versionData->move->static->{$key_pointer}->rename = 'new';
 					$versionData->move->static->{$key_pointer}->newName = $pathInfo['basename'];
 				}
@@ -1427,7 +1653,7 @@ class Structure extends Get
 					// get file array
 					$fileArray = (array) explode('/', $custom['file']);
 					// set the info
-					$versionData->move->static->{$key_pointer}->path = 'c0mp0n3nt/' . $custom['path'];
+					$versionData->move->static->{$key_pointer}->path = $_target_type . '/' . $custom['path'];
 					$versionData->move->static->{$key_pointer}->rename = 'new';
 					$versionData->move->static->{$key_pointer}->newName = end($fileArray);
 				}
@@ -1436,11 +1662,16 @@ class Structure extends Get
 					// fix custom path
 					$custom['path'] = ltrim($custom['path'], '/');
 					// set the info
-					$versionData->move->static->{$key_pointer}->path = 'c0mp0n3nt/' . $custom['path'];
+					$versionData->move->static->{$key_pointer}->path = $_target_type . '/' . $custom['path'];
 					$versionData->move->static->{$key_pointer}->rename = false;
 				}
 				$versionData->move->static->{$key_pointer}->type = 'file';
 				$versionData->move->static->{$key_pointer}->custom = $customPath;
+				// set the target if type and id is found
+				if (isset($custom['target_id']) && isset($custom['target_type']))
+				{
+					$versionData->move->static->{$key_pointer}->_target = array('key' => $custom['target_id'] . '_' . $custom['target_type'], 'type' => $custom['target_type']);
+				}
 				// check if file should be updated
 				if (!isset($custom['notnew']) || $custom['notnew'] == 0 || $custom['notnew'] != 1)
 				{
@@ -1466,17 +1697,22 @@ class Structure extends Get
 	 * @return  void
 	 * 
 	 */
-	private function indexHTML($path)
+	private function indexHTML($path, $root = 'component')
 	{
+		if ('component' === $root)
+		{
+			$root = $this->componentPath;
+		}
+		// use path if exist
 		if (strlen($path) > 0)
 		{
-			JFile::copy($this->templatePath . '/index.html', $this->componentPath . '/' . $path . '/index.html');
+			JFile::copy($this->templatePath . '/index.html', $root . '/' . $path . '/index.html');
 			// count the file created
 			$this->fileCount++;
 		}
 		else
 		{
-			JFile::copy($this->templatePath . '/index.html', $this->componentPath . '/index.html');
+			JFile::copy($this->templatePath . '/index.html', $root . '/index.html');
 			// count the file created
 			$this->fileCount++;
 		}

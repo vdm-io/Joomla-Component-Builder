@@ -1598,7 +1598,7 @@ class Get
 				array(
 					'table' => 'component_dashboard',
 					'field' => 'php_dashboard_methods',
-					'id' => (int) $this->component_dashboard_id,
+					'id' => (int) $component->component_dashboard_id,
 					'type' => 'php')
 				);
 		}
@@ -1650,9 +1650,9 @@ class Get
 		$component->addjoomla_plugins = (isset($component->addjoomla_plugins) && ComponentbuilderHelper::checkJson($component->addjoomla_plugins)) ? json_decode($component->addjoomla_plugins, true) : null;
 		if (ComponentbuilderHelper::checkArray($component->addjoomla_plugins))
 		{
-			$component->joomla_plugins = array_map(function($array)
+			$component->joomla_plugins = array_map(function($array) use(&$component) 
 			{
-				return $this->getPlugins($array['plugin']);
+				return $this->getPlugins($array['plugin'], $component);
 			}, array_values($component->addjoomla_plugins));
 		}
 		else
@@ -3355,12 +3355,14 @@ class Get
 					$results = $this->db->loadObjectList();
 					$typeArray = array(1 => 'LEFT', 2 => 'LEFT OUTER', 3 => 'INNER', 4 => 'RIGHT', 5 => 'RIGHT OUTER');
 					$operatorArray = array(1 => '=', 2 => '!=', 3 => '<>', 4 => '>', 5 => '<', 6 => '>=', 7 => '<=', 8 => '!<', 9 => '!>', 10 => 'IN', 11 => 'NOT IN');
-					$guiMapper = array( 'table' => 'dynamic_get', 'id' => (int) $result->id, 'type' => 'php');
+					$guiMapper = array( 'table' => 'dynamic_get', 'type' => 'php');
 					foreach ($results as $_nr => &$result)
 					{
+						// set GUI mapper id
+						$guiMapper['id'] = (int) $result->id;
 						// add calculations if set
 						if ($result->addcalculation == 1 && ComponentbuilderHelper::checkString($result->php_calculation))
-						{ 
+						{
 							// set GUI mapper field
 							$guiMapper['field'] = 'php_calculation';
 							$result->php_calculation = $this->setGuiCodePlaceholder(
@@ -6154,7 +6156,7 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	public function getPlugins($id)
+	protected function getPlugins($id, &$component)
 	{
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
@@ -6202,15 +6204,57 @@ class Get
 			$_backup_target = $this->target;
 			$_backup_lang = $this->lang;
 			$_backup_langPrefix = $this->langPrefix;
-			$this->target = 'plugin'.$id;
-			$this->lang = 'plugin'.$id;
-			$this->langPrefix = 'PLUGIN_PREFIX___';
+			// set some keys
+			$plugin->target_type = 'P|uG!n';
+			$plugin->key = $plugin->id . '_' . $plugin->target_type;
+			// update to point to plugin
+			$this->target = $plugin->key;
+			$this->lang = $plugin->key;
+			// set version
+			$plugin->version = '1.0.' . (int) $plugin->version; // (TODO) add versioning to plugin
 			// set GUI mapper
 			$guiMapper = array( 'table' => 'joomla_plugin', 'id' => (int) $id, 'type' => 'php');
 			// update the name if it has dynamic values
 			$plugin->name = $this->setPlaceholders($this->setDynamicValues($plugin->name), $this->placeholders);
-			// prepare plugin placeholders (TODO)
-
+			// set official name
+			$plugin->official_name = $plugin->name . ' ' . $plugin->group;
+			// set langPrefix
+			$this->langPrefix = 'PLG_' . strtoupper($plugin->group) . '_' . strtoupper($plugin->name);
+			// set lang prefix
+			$plugin->lang_prefix = $this->langPrefix;
+			// set plugin class name
+			$plugin->class_name = 'Plg' . ucfirst($plugin->group) . ucfirst($plugin->name);
+			// set plugin install class name
+			$plugin->installer_class_name = 'plg' . ucfirst($plugin->group) . ucfirst($plugin->name) . 'InstallerScript';
+			// set plugin folder name
+			$plugin->folder_name = 'plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name);
+			// set plugin file name
+			$plugin->file_name = strtolower($plugin->name);
+			// set official_name lang strings
+			$this->setLangContent($plugin->key, $this->langPrefix, $plugin->official_name);
+			// set description (TODO) add description field to plugin
+			if (!isset($plugin->description) || !ComponentbuilderHelper::checkString($plugin->description))
+			{
+				$plugin->description = '';
+			}
+			else
+			{
+				$this->setLangContent($plugin->key, $plugin->lang_prefix . '_DESCRIPTION', $plugin->description);
+				$plugin->description = '<p>' . $plugin->description . '</p>';
+			}
+			$plugin->xml_description = "<h1>" . $plugin->official_name . " (v." . $plugin->version . ")</h1> <div style='clear: both;'></div>" . $plugin->description . "<p>Created by <a href='" . trim($component->website) . "' target='_blank'>" . trim(JFilterOutput::cleanText($component->author)) . "</a><br /><small>Development started " . JFactory::getDate($plugin->created)->format("jS F, Y") . "</small></p>";
+			// set xml discription
+			$this->setLangContent($plugin->key, $plugin->lang_prefix . '_XML_DESCRIPTION', $plugin->xml_description);
+			// update the readme if set
+			if ($plugin->addreadme == 1 && !empty($plugin->readme))
+			{
+				$plugin->readme = $this->setPlaceholders($this->setDynamicValues(base64_decode($plugin->readme)), $this->placeholders);
+			}
+			else
+			{
+				$plugin->addreadme = 0;
+				unset($plugin->readme);
+			}
 			// open some base64 strings
 			if (!empty($plugin->main_class_code))
 			{
@@ -6306,13 +6350,109 @@ class Get
 				}
 				unset($plugin->{'add' . $addTarget});
 			}
+			// add PHP in plugin install
+			$plugin->add_install_script = false;
+			$addScriptMethods = array('php_preflight', 'php_postflight', 'php_method');
+			$addScriptTypes = array('install', 'update', 'uninstall');
+			foreach ($addScriptMethods as $scriptMethod)
+			{
+				foreach ($addScriptTypes as $scriptType)
+				{
+					if (isset($plugin->{'add_' . $scriptMethod . '_' . $scriptType}) && $plugin->{'add_' . $scriptMethod . '_' . $scriptType} == 1 && ComponentbuilderHelper::checkString($plugin->{$scriptMethod . '_' . $scriptType}))
+					{
+						// set GUI mapper field
+						$guiMapper['field'] = $scriptMethod . '_' . $scriptType;
+						$plugin->{$scriptMethod . '_' . $scriptType} = $this->setGuiCodePlaceholder(
+							$this->setPlaceholders($this->setDynamicValues(base64_decode($plugin->{$scriptMethod . '_' . $scriptType})), $this->placeholders),
+							$guiMapper
+						);
+						$plugin->add_install_script = true;
+					}
+					else
+					{
+						unset($plugin->{$scriptMethod . '_' . $scriptType});
+						$plugin->{'add_' . $scriptMethod . '_' . $scriptType} = 0;
+					}
+				}
+			}
+			// add_sql
+			if ($plugin->add_sql == 1 && ComponentbuilderHelper::checkString($plugin->sql))
+			{
+				$plugin->sql = $this->setPlaceholders($this->setDynamicValues(base64_decode($plugin->sql)), $this->placeholders);
+			}
+			else
+			{
+				unset($plugin->sql);
+				$plugin->add_sql = 0;
+			}
+			// add_sql_uninstall
+			if ($plugin->add_sql_uninstall == 1 && ComponentbuilderHelper::checkString($plugin->sql_uninstall))
+			{ 
+				$plugin->sql_uninstall = $this->setPlaceholders($this->setDynamicValues(base64_decode($plugin->sql_uninstall)), $this->placeholders);
+			}
+			else
+			{
+				unset($plugin->sql_uninstall);
+				$plugin->add_sql_uninstall = 0;
+			}
+			// update the URL of the update_server if set
+			if ($plugin->add_update_server == 1 && ComponentbuilderHelper::checkString($plugin->update_server_url))
+			{
+				$plugin->update_server_url = $this->setPlaceholders($this->setDynamicValues($plugin->update_server_url), $this->placeholders);
+			}
+			// add the update/sales server FTP details if that is the expected protocol
+			$serverArray = array('update_server', 'sales_server');
+			foreach ($serverArray as $server)
+			{
+				if ($plugin->{'add_' . $server} == 1 && is_numeric($plugin->{$server}) && $plugin->{$server} > 0)
+				{
+					// get the server protocol
+					$plugin->{$server . '_protocol'} = ComponentbuilderHelper::getVar('server', (int) $plugin->{$server}, 'id', 'protocol');
+				}
+				else
+				{
+					$plugin->{$server} = 0;
+					// only change this for sales server (update server can be added loacaly to the zip file)
+					if ('sales_server' === $server)
+					{
+						$plugin->{'add_' . $server} = 0;
+					}
+					$plugin->{$server . '_protocol'} = 0;
+				}
+			}
 			// rest globals
 			$this->target = $_backup_target;
 			$this->lang = $_backup_lang;
 			$this->langPrefix = $_backup_langPrefix;
+
 			return $plugin;
 		}
 		return false;
+	}
+
+	/**
+	 * get the plugin xml template
+	 * 
+	 * @return  string
+	 * 
+	 */
+	public function getPluginXMLTemplate(&$plugin)
+	{
+		$xml = '<?xml version="1.0" encoding="utf-8"?>';
+		$xml .= PHP_EOL . '<extension type="plugin" version="3.8" group="' . strtolower($plugin->group) . '" method="upgrade">';
+		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $plugin->lang_prefix . '</name>';
+		$xml .= PHP_EOL . $this->_t(1) . '<creationDate>' . $this->hhh . 'BUILDDATE' . $this->hhh . '</creationDate>';
+		$xml .= PHP_EOL . $this->_t(1) . '<author>' . $this->hhh . 'AUTHOR' . $this->hhh . '</author>';
+		$xml .= PHP_EOL . $this->_t(1) . '<authorEmail>' . $this->hhh . 'AUTHOREMAIL' . $this->hhh . '</authorEmail>';
+		$xml .= PHP_EOL . $this->_t(1) . '<authorUrl>' . $this->hhh . 'AUTHORWEBSITE' . $this->hhh . '</authorUrl>';
+		$xml .= PHP_EOL . $this->_t(1) . '<copyright>' . $this->hhh . 'COPYRIGHT' . $this->hhh . '</copyright>';
+		$xml .= PHP_EOL . $this->_t(1) . '<license>' . $this->hhh . 'LICENSE' . $this->hhh . '</license>';
+		$xml .= PHP_EOL . $this->_t(1) . '<version>' . $plugin->version . '</version>';
+		$xml .= PHP_EOL . $this->_t(1) . '<description>' . $plugin->lang_prefix . '_XML_DESCRIPTION</description>';
+		$xml .= $this->hhh . 'MAINXML' . $this->hhh;
+		$xml .= PHP_EOL . '</extension>';
+
+		return $xml;
 	}
 
 	/**

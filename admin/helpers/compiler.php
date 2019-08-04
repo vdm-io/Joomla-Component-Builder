@@ -240,6 +240,26 @@ class Compiler extends Infusion
 			}
 			// free up some memory
 			unset($this->newFiles['dynamic']);
+			// do plugins if found
+			if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+			{
+				foreach ($this->componentData->joomla_plugins as $plugin)
+				{
+					if (ComponentbuilderHelper::checkObject($plugin) && isset($this->newFiles[$plugin->key]) && ComponentbuilderHelper::checkArray($this->newFiles[$plugin->key]))
+					{
+						foreach ($this->newFiles[$plugin->key] as $plugin_file)
+						{
+							if (JFile::exists($plugin_file['path']))
+							{
+								$this->setFileContent($plugin_file['name'], $plugin_file['path'], $bom, $plugin->key);
+							}
+						}
+						// free up some memory
+						unset($this->newFiles[$plugin->key]);
+						unset($this->fileContentDynamic[$plugin->key]);
+					}
+				}
+			}
 			return true;
 		}
 		return false;
