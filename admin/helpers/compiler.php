@@ -35,7 +35,7 @@ class Compiler extends Infusion
 	private $time_start;
 	private $time_end;
 	public $secondsCompiled;
-	public $filepath = '';
+	public $filepath = array('component' => '', 'package' => '', 'plugins' => array(), 'modules' => array());
 	// fixed pathes
 	protected $dynamicIntegration = false;
 	protected $backupPath = false;
@@ -61,6 +61,7 @@ class Compiler extends Infusion
 				$this->backupPath = $this->params->get('backup_folder_path', $this->tempPath) . '/' . $this->componentBackupName . '.zip';
 				$this->dynamicIntegration = true;
 			}
+			// set local repos switch
 			if ($config['repository'])
 			{
 				$this->repoPath = $this->params->get('git_folder_path', null);
@@ -125,12 +126,16 @@ class Compiler extends Infusion
 			$this->setCountingStuff();
 			// build read me
 			$this->buildReadMe();
+			// set local repos
+			$this->setLocalRepos();
 			// zip the component
 			if (!$this->zipComponent())
 			{
 				// done with error
 				return false;
 			}
+			// if there are plugins zip them
+			$this->zipPlugins();
 			// do lang mismatch check
 			if (ComponentbuilderHelper::checkArray($this->langMismatch))
 			{
@@ -321,17 +326,37 @@ class Compiler extends Infusion
 	 */
 	protected function setUpdateServer()
 	{
-		// move the update server to host
-		if ($this->componentData->add_update_server == 1 && $this->componentData->update_server_target == 1 && isset($this->updateServerFileName) && $this->dynamicIntegration)
+		// move the component update server to host
+		if ($this->componentData->add_update_server == 1 && $this->componentData->update_server_target == 1
+			&& isset($this->updateServerFileName) && $this->dynamicIntegration)
 		{
-			$xml_update_server_path = $this->componentPath . '/' . $this->updateServerFileName . '.xml';
+			$update_server_xml_path = $this->componentPath . '/' . $this->updateServerFileName . '.xml';
 			// make sure we have the correct file
-			if (JFile::exists($xml_update_server_path) && isset($this->componentData->update_server))
+			if (JFile::exists($update_server_xml_path) && isset($this->componentData->update_server))
 			{
 				// move to server
-				ComponentbuilderHelper::moveToServer($xml_update_server_path, $this->updateServerFileName . '.xml', (int) $this->componentData->update_server, $this->componentData->update_server_protocol);
+				ComponentbuilderHelper::moveToServer($update_server_xml_path, $this->updateServerFileName . '.xml', (int) $this->componentData->update_server, $this->componentData->update_server_protocol);
 				// remove the local file
-				JFile::delete($xml_update_server_path);
+				JFile::delete($update_server_xml_path);
+			}
+		}
+		// move the plugins update server to host
+		if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+		{
+			foreach ($this->componentData->joomla_plugins as $plugin)
+			{
+				if (ComponentbuilderHelper::checkObject($plugin)
+					&& isset($plugin->add_update_server) && $plugin->add_update_server == 1
+					&& isset($plugin->update_server_target) && $plugin->update_server_target == 1
+					&& isset($plugin->update_server) && is_numeric($plugin->update_server) && $plugin->update_server > 0
+					&& isset($plugin->update_server_xml_path) && JFile::exists($plugin->update_server_xml_path)
+					&& isset($plugin->update_server_xml_file_name) && ComponentbuilderHelper::checkString($plugin->update_server_xml_file_name))
+				{
+					// move to server
+					ComponentbuilderHelper::moveToServer($plugin->update_server_xml_path, $plugin->update_server_xml_file_name, (int) $plugin->update_server, $plugin->update_server_protocol);
+					// remove the local file
+					JFile::delete($plugin->update_server_xml_path);
+				}
 			}
 		}
 	}
@@ -472,10 +497,10 @@ class Compiler extends Infusion
 		$this->fileContentStatic[$this->hhh . 'projectMonthTime' . $this->hhh] = $this->projectMonthTime;
 	}
 
-	private function zipComponent()
+	private function setLocalRepos()
 	{
-		// before we zip the component we first need to move it to the repo folder if set
-		if (ComponentbuilderHelper::checkString($this->repoPath))
+		// move it to the repo folder if set
+		if (isset($this->repoPath) && ComponentbuilderHelper::checkString($this->repoPath))
 		{
 			// set the repo path
 			$repoFullPath = $this->repoPath . '/com_' . $this->componentData->sales_name . '__joomla_' . $this->joomlaVersion;
@@ -487,21 +512,47 @@ class Compiler extends Infusion
 			JFolder::copy($this->componentPath, $repoFullPath, '', true);
 			// Trigger Event: jcb_ce_onAfterUpdateRepo
 			$this->triggerEvent('jcb_ce_onAfterUpdateRepo', array(&$this->componentContext, &$this->componentPath, &$repoFullPath, &$this->componentData));
+
+			// move the plugins to local folder repos
+			if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+			{
+				foreach ($this->componentData->joomla_plugins as $plugin)
+				{
+					if (ComponentbuilderHelper::checkObject($plugin) && isset($plugin->file_name))
+					{
+						$plugin_context = 'plugin.' . $plugin->file_name . '.' . $plugin->id;
+						// set the repo path
+						$repoFullPath = $this->repoPath . '/' . $plugin->folder_name . '__joomla_' . $this->joomlaVersion;
+						// Trigger Event: jcb_ce_onBeforeUpdateRepo
+						$this->triggerEvent('jcb_ce_onBeforeUpdateRepo', array(&$plugin_context, &$plugin->folder_path, &$repoFullPath, &$plugin));
+						// remove old data
+						$this->removeFolder($repoFullPath, $this->componentData->toignore);
+						// set the new data
+						JFolder::copy($plugin->folder_path, $repoFullPath, '', true);
+						// Trigger Event: jcb_ce_onAfterUpdateRepo
+						$this->triggerEvent('jcb_ce_onAfterUpdateRepo', array(&$plugin_context, &$plugin->folder_path, &$repoFullPath, &$plugin));
+					}
+				}
+			}
 		}
+	}
+
+	private function zipComponent()
+	{
 		// the name of the zip file to create
-		$this->filepath = $this->tempPath . '/' . $this->componentFolderName . '.zip';
+		$this->filepath['component'] = $this->tempPath . '/' . $this->componentFolderName . '.zip';
 		// Trigger Event: jcb_ce_onBeforeZipComponent
-		$this->triggerEvent('jcb_ce_onBeforeZipComponent', array(&$this->componentContext, &$this->componentPath, &$this->filepath, &$this->tempPath, &$this->componentFolderName, &$this->componentData));
+		$this->triggerEvent('jcb_ce_onBeforeZipComponent', array(&$this->componentContext, &$this->componentPath, &$this->filepath['component'], &$this->tempPath, &$this->componentFolderName, &$this->componentData));
 		//create the zip file
-		if (ComponentbuilderHelper::zip($this->componentPath, $this->filepath))
+		if (ComponentbuilderHelper::zip($this->componentPath, $this->filepath['component']))
 		{
 			// now move to backup if zip was made and backup is required
 			if ($this->backupPath && $this->dynamicIntegration)
 			{
 				// Trigger Event: jcb_ce_onBeforeBackupZip
-				$this->triggerEvent('jcb_ce_onBeforeBackupZip', array(&$this->componentContext, &$this->filepath, &$this->tempPath, &$this->backupPath, &$this->componentData));
+				$this->triggerEvent('jcb_ce_onBeforeBackupZip', array(&$this->componentContext, &$this->filepath['component'], &$this->tempPath, &$this->backupPath, &$this->componentData));
 				// copy the zip to backup path
-				JFile::copy($this->filepath, $this->backupPath);
+				JFile::copy($this->filepath['component'], $this->backupPath);
 			}
 
 			// move to sales server host
@@ -511,13 +562,13 @@ class Compiler extends Infusion
 				if (isset($this->componentData->sales_server))
 				{
 					// Trigger Event: jcb_ce_onBeforeMoveToServer
-					$this->triggerEvent('jcb_ce_onBeforeMoveToServer', array(&$this->componentContext, &$this->filepath, &$this->tempPath, &$this->componentSalesName, &$this->componentData));
+					$this->triggerEvent('jcb_ce_onBeforeMoveToServer', array(&$this->componentContext, &$this->filepath['component'], &$this->tempPath, &$this->componentSalesName, &$this->componentData));
 					// move to server
-					ComponentbuilderHelper::moveToServer($this->filepath, $this->componentSalesName . '.zip', (int) $this->componentData->sales_server, $this->componentData->sales_server_protocol);
+					ComponentbuilderHelper::moveToServer($this->filepath['component'], $this->componentSalesName . '.zip', (int) $this->componentData->sales_server, $this->componentData->sales_server_protocol);
 				}
 			}
 			// Trigger Event: jcb_ce_onAfterZipComponent
-			$this->triggerEvent('jcb_ce_onAfterZipComponent', array(&$this->componentContext, &$this->filepath, &$this->tempPath, &$this->componentFolderName, &$this->componentData));
+			$this->triggerEvent('jcb_ce_onAfterZipComponent', array(&$this->componentContext, &$this->filepath['component'], &$this->tempPath, &$this->componentFolderName, &$this->componentData));
 			// remove the component folder since we are done
 			if ($this->removeFolder($this->componentPath))
 			{
@@ -525,6 +576,58 @@ class Compiler extends Infusion
 			}
 		}
 		return false;
+	}
+
+	private function zipPlugins()
+	{
+		if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+		{
+			foreach ($this->componentData->joomla_plugins as $plugin)
+			{
+				if (ComponentbuilderHelper::checkObject($plugin) && isset($plugin->zip_name)
+					&& ComponentbuilderHelper::checkString($plugin->zip_name)
+					&& isset($plugin->folder_path)
+					&& ComponentbuilderHelper::checkString($plugin->folder_path))
+				{
+					// set plugin context
+					$plugin_context = $plugin->file_name . '.' . $plugin->id;
+					// the name of the zip file to create
+					$this->filepath['plugins'][$plugin->id] = $this->tempPath . '/' . $plugin->zip_name . '.zip';
+					// Trigger Event: jcb_ce_onBeforeZipPlugin
+					$this->triggerEvent('jcb_ce_onBeforeZipPlugin', array(&$plugin_context, &$plugin->folder_path, &$this->filepath['plugins'][$plugin->id], &$this->tempPath, &$plugin->zip_name, &$plugin));
+					//create the zip file
+					if (ComponentbuilderHelper::zip($plugin->folder_path, $this->filepath['plugins'][$plugin->id]))
+					{
+						// now move to backup if zip was made and backup is required
+						if ($this->backupPath)
+						{
+							$__plugin_context = 'plugin.' . $plugin_context;
+							// Trigger Event: jcb_ce_onBeforeBackupZip
+							$this->triggerEvent('jcb_ce_onBeforeBackupZip', array(&$__plugin_context, &$this->filepath['plugins'][$plugin->id], &$this->tempPath, &$this->backupPath, &$plugin));
+							// copy the zip to backup path
+							JFile::copy($this->filepath['plugins'][$plugin->id], $this->backupPath);
+						}
+
+						// move to sales server host
+						if ($plugin->add_sales_server == 1)
+						{
+							// make sure we have the correct file
+							if (isset($plugin->sales_server))
+							{
+								// Trigger Event: jcb_ce_onBeforeMoveToServer
+								$this->triggerEvent('jcb_ce_onBeforeMoveToServer', array(&$__plugin_context, &$this->filepath['plugins'][$plugin->id], &$this->tempPath, &$plugin->zip_name, &$plugin));
+								// move to server
+								ComponentbuilderHelper::moveToServer($this->filepath['plugins'][$plugin->id], $plugin->zip_name . '.zip', (int) $plugin->sales_server, $plugin->sales_server_protocol);
+							}
+						}
+						// Trigger Event: jcb_ce_onAfterZipPlugin
+						$this->triggerEvent('jcb_ce_onAfterZipPlugin', array(&$plugin_context, &$this->filepath['plugins'][$plugin->id], &$this->tempPath, &$plugin->zip_name, &$plugin));
+						// remove the plugin folder since we are done
+						$this->removeFolder($plugin->folder_path);
+					}
+				}
+			}
+		}
 	}
 
 	protected function addCustomCode()

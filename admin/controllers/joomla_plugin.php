@@ -315,6 +315,32 @@ class ComponentbuilderControllerJoomla_plugin extends JControllerForm
 	 */
 	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{
+		// get the state object (Joomla\CMS\Object\CMSObject)
+		$state = $model->get('state');
+		// if we save2copy we need to also copy linked tables found!
+		if ($state->task === 'save2copy' && $state->{'joomla_plugin.new'})
+		{
+			// get new ID
+			$newID = $state->{'joomla_plugin.id'};
+			// get old ID
+			$oldID = $this->input->get('id', 0, 'INT');
+			// linked tables to update
+			$_tablesArray = array(
+				'joomla_plugin_updates' => 'joomla_plugin',
+				'joomla_plugin_files_folders_urls' => 'joomla_plugin'
+			);
+			foreach($_tablesArray as $_updateTable => $_key)
+			{
+				// get the linked ID
+				if ($_value = ComponentbuilderHelper::getVar($_updateTable, $oldID, $_key, 'id'))
+				{
+					// copy fields to new linked table
+					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array($_key => $newID));
+				}
+			}
+		}
+
+
 		return;
 	}
 

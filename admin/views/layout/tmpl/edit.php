@@ -129,18 +129,18 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_vvvvwac function
+// #jform_add_php_view listeners for add_php_view_vvvvwad function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_vvvvwac = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvwac(add_php_view_vvvvwac);
+	var add_php_view_vvvvwad = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvwad(add_php_view_vvvvwad);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_vvvvwac = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvwac(add_php_view_vvvvwac);
+	var add_php_view_vvvvwad = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvwad(add_php_view_vvvvwad);
 
 });
 

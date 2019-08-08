@@ -69,7 +69,8 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 				<?php endif; ?>
 			<?php else: ?>
 				<?php echo $this->escape($item->system_name); ?>
-			<?php endif; ?>
+			<?php endif; ?> - <b>
+			<?php echo $this->escape($item->plugin_version); ?></b>
 			</div>
 			<?php
 				// setup the buttons
@@ -77,6 +78,11 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 				{
 					$_buttons = array();
 					$_buttons[0] = array(
+						array(
+							'view' => 'joomla_plugin_updates',
+							'views' => 'joomla_plugins_updates',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_PLUGIN_UPDATES'),
+							'icon' => 'database'),
 						array(
 							'view' => 'joomla_plugin_files_folders_urls',
 							'views' => 'joomla_plugins_files_folders_urls',

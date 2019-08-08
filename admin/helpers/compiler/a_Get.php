@@ -19,6 +19,13 @@ class Get
 {
 
 	/**
+	 * The Joomla Version
+	 * 
+	 * @var     string
+	 */
+	public $joomlaVersion;
+
+	/**
 	 * The hash placeholder
 	 * 
 	 * @var     string
@@ -769,6 +776,8 @@ class Get
 					}
 				}
 			}
+			// set the Joomla version
+			$this->joomlaVersion = $config['version'];
 			// set the minfy switch of the JavaScript
 			$this->minify = (isset($config['minify']) && $config['minify'] != 2) ? $config['minify'] : $this->params->get('minify', 0);
 			// set the global language
@@ -950,24 +959,24 @@ class Get
 			{
 				$code = base64_decode($code);
 			}
-			// set component place holders
-			$bucket[$this->hhh . 'component' . $this->hhh] = $this->componentCodeName;
-			$bucket[$this->hhh . 'Component' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentCodeName, 'F');
-			$bucket[$this->hhh . 'COMPONENT' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentCodeName, 'U');
-			$bucket[$this->bbb . 'component' . $this->ddd] = $bucket[$this->hhh . 'component' . $this->hhh];
-			$bucket[$this->bbb . 'Component' . $this->ddd] = $bucket[$this->hhh . 'Component' . $this->hhh];
-			$bucket[$this->bbb . 'COMPONENT' . $this->ddd] = $bucket[$this->hhh . 'COMPONENT' . $this->hhh];
-			// get the current components overides
-			if (($_placeholders = ComponentbuilderHelper::getVar('component_placeholders', $this->componentID, 'joomla_component', 'addplaceholders')) !== false
-				&&  ComponentbuilderHelper::checkJson($_placeholders))
+		}
+		// set component place holders
+		$bucket[$this->hhh . 'component' . $this->hhh] = $this->componentCodeName;
+		$bucket[$this->hhh . 'Component' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentCodeName, 'F');
+		$bucket[$this->hhh . 'COMPONENT' . $this->hhh] = ComponentbuilderHelper::safeString($this->componentCodeName, 'U');
+		$bucket[$this->bbb . 'component' . $this->ddd] = $bucket[$this->hhh . 'component' . $this->hhh];
+		$bucket[$this->bbb . 'Component' . $this->ddd] = $bucket[$this->hhh . 'Component' . $this->hhh];
+		$bucket[$this->bbb . 'COMPONENT' . $this->ddd] = $bucket[$this->hhh . 'COMPONENT' . $this->hhh];
+		// get the current components overides
+		if (($_placeholders = ComponentbuilderHelper::getVar('component_placeholders', $this->componentID, 'joomla_component', 'addplaceholders')) !== false
+			&&  ComponentbuilderHelper::checkJson($_placeholders))
+		{
+			$_placeholders = json_decode($_placeholders, true);
+			if (ComponentbuilderHelper::checkArray($_placeholders))
 			{
-				$_placeholders = json_decode($_placeholders, true);
-				if (ComponentbuilderHelper::checkArray($_placeholders))
+				foreach($_placeholders as $row)
 				{
-					foreach($_placeholders as $row)
-					{
-						$bucket[$row['target']] = $row['value'];
-					}
+					$bucket[$row['target']] = $row['value'];
 				}
 			}
 		}
@@ -6165,25 +6174,32 @@ class Get
 		$query->select(
 			$this->db->quoteName(
 				array(
-				'g.name',
-				'e.name',
-				'e.head',
-				'e.comment',
-				'e.id',
-				'j.addfiles',
-				'j.addfolders',
-				'j.addfilesfullpath',
-				'j.addfoldersfullpath'
+					'g.name',
+					'e.name',
+					'e.head',
+					'e.comment',
+					'e.id',
+					'f.addfiles',
+					'f.addfolders',
+					'f.addfilesfullpath',
+					'f.addfoldersfullpath',
+					'f.addurls',
+					'u.version_update',
+					'u.id'
 				), array(
-				'group',
-				'extends',
-				'class_head',
-				'comment',
-				'class_id',
-				'addfiles',
-				'addfolders',
-				'addfilesfullpath',
-				'addfoldersfullpath'
+					'group',
+					'extends',
+					'class_head',
+					'comment',
+					'class_id',
+					'addfiles',
+					'addfolders',
+					'addfilesfullpath',
+					'addfoldersfullpath',
+					'addurls',
+					'version_update',
+					'version_update_id'
+					
 				)
 			)
 		);
@@ -6191,7 +6207,8 @@ class Get
 		$query->from('#__componentbuilder_joomla_plugin AS a');
 		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_plugin_group', 'g') . ' ON (' . $this->db->quoteName('a.joomla_plugin_group') . ' = ' . $this->db->quoteName('g.id') . ')');
 		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_class_extends', 'e') . ' ON (' . $this->db->quoteName('a.class_extends') . ' = ' . $this->db->quoteName('e.id') . ')');
-		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_plugin_files_folders_urls', 'j') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('j.joomla_plugin') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_plugin_updates', 'u') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('u.joomla_plugin') . ')');
+		$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_plugin_files_folders_urls', 'f') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('f.joomla_plugin') . ')');
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 		$query->where($this->db->quoteName('a.published') . ' >= 1');
 		$this->db->setQuery($query);
@@ -6210,8 +6227,11 @@ class Get
 			// update to point to plugin
 			$this->target = $plugin->key;
 			$this->lang = $plugin->key;
-			// set version
-			$plugin->version = '1.0.' . (int) $plugin->version; // (TODO) add versioning to plugin
+			// set version if not set
+			if (empty($plugin->plugin_version))
+			{
+				$plugin->plugin_version = '1.0.0';
+			}
 			// set GUI mapper
 			$guiMapper = array( 'table' => 'joomla_plugin', 'id' => (int) $id, 'type' => 'php');
 			// update the name if it has dynamic values
@@ -6228,6 +6248,8 @@ class Get
 			$plugin->installer_class_name = 'plg' . ucfirst($plugin->group) . ucfirst($plugin->name) . 'InstallerScript';
 			// set plugin folder name
 			$plugin->folder_name = 'plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name);
+			// set the zip name
+			$plugin->zip_name = $plugin->folder_name . '_v' . str_replace('.', '_', $plugin->plugin_version). '__J' . $this->joomlaVersion;
 			// set plugin file name
 			$plugin->file_name = strtolower($plugin->name);
 			// set official_name lang strings
@@ -6242,7 +6264,7 @@ class Get
 				$this->setLangContent($plugin->key, $plugin->lang_prefix . '_DESCRIPTION', $plugin->description);
 				$plugin->description = '<p>' . $plugin->description . '</p>';
 			}
-			$plugin->xml_description = "<h1>" . $plugin->official_name . " (v." . $plugin->version . ")</h1> <div style='clear: both;'></div>" . $plugin->description . "<p>Created by <a href='" . trim($component->website) . "' target='_blank'>" . trim(JFilterOutput::cleanText($component->author)) . "</a><br /><small>Development started " . JFactory::getDate($plugin->created)->format("jS F, Y") . "</small></p>";
+			$plugin->xml_description = "<h1>" . $plugin->official_name . " (v." . $plugin->plugin_version . ")</h1> <div style='clear: both;'></div>" . $plugin->description . "<p>Created by <a href='" . trim($component->website) . "' target='_blank'>" . trim(JFilterOutput::cleanText($component->author)) . "</a><br /><small>Development started " . JFactory::getDate($plugin->created)->format("jS F, Y") . "</small></p>";
 			// set xml discription
 			$this->setLangContent($plugin->key, $plugin->lang_prefix . '_XML_DESCRIPTION', $plugin->xml_description);
 			// update the readme if set
@@ -6307,14 +6329,15 @@ class Get
 			$plugin->fields = (isset($plugin->fields) && ComponentbuilderHelper::checkJson($plugin->fields)) ? json_decode($plugin->fields, true) : null;
 			if (ComponentbuilderHelper::checkArray($plugin->fields))
 			{
-				$plugin->config_fields = array_map(function($field) use ($id){
+				$key = $plugin->key;
+				$plugin->config_fields = array_map(function($field) use ($key){
 					// make sure the alias and title is 0
 					$field['alias'] = 0;
 					$field['title'] = 0;
 					// set the field details
-					$this->setFieldDetails($field, '_plugin_' . $id);
+					$this->setFieldDetails($field, $key);
 					// set unique name counter
-					$this->setUniqueNameCounter($field['base_name'], '_plugins_' . $id);
+					$this->setUniqueNameCounter($field['base_name'], $key);
 					// return field
 					return $field;
 				}, array_values($plugin->fields));
@@ -6323,7 +6346,7 @@ class Get
 				foreach ($plugin->config_fields as $field)
 				{
 					// so first we lock the field name in
-					$this->getFieldName($field, '_plugins_' . $id);
+					$this->getFieldName($field, $plugin->key);
 				}
 				// unset original value
 				unset($plugin->fields);
@@ -6420,6 +6443,10 @@ class Get
 					$plugin->{$server . '_protocol'} = 0;
 				}
 			}
+			// set the update server stuff (TODO)
+			// update_server_xml_path
+			// update_server_xml_file_name
+
 			// rest globals
 			$this->target = $_backup_target;
 			$this->lang = $_backup_lang;
@@ -6447,10 +6474,11 @@ class Get
 		$xml .= PHP_EOL . $this->_t(1) . '<authorUrl>' . $this->hhh . 'AUTHORWEBSITE' . $this->hhh . '</authorUrl>';
 		$xml .= PHP_EOL . $this->_t(1) . '<copyright>' . $this->hhh . 'COPYRIGHT' . $this->hhh . '</copyright>';
 		$xml .= PHP_EOL . $this->_t(1) . '<license>' . $this->hhh . 'LICENSE' . $this->hhh . '</license>';
-		$xml .= PHP_EOL . $this->_t(1) . '<version>' . $plugin->version . '</version>';
+		$xml .= PHP_EOL . $this->_t(1) . '<version>' . $plugin->plugin_version . '</version>';
 		$xml .= PHP_EOL . $this->_t(1) . '<description>' . $plugin->lang_prefix . '_XML_DESCRIPTION</description>';
 		$xml .= $this->hhh . 'MAINXML' . $this->hhh;
 		$xml .= PHP_EOL . '</extension>';
+		$dates = array();
 
 		return $xml;
 	}

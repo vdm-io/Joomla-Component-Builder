@@ -194,6 +194,9 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'class_extends.access' => 'class_extends.access',
 			'joomla_plugin_groups.access' => 'joomla_plugin_group.access',
 			'joomla_plugin_group.access' => 'joomla_plugin_group.access',
+			'joomla_plugin_updates.create' => 'joomla_plugin_updates.create',
+			'joomla_plugins_updates.access' => 'joomla_plugin_updates.access',
+			'joomla_plugin_updates.access' => 'joomla_plugin_updates.access',
 			'joomla_plugin_files_folders_urls.create' => 'joomla_plugin_files_folders_urls.create',
 			'joomla_plugins_files_folders_urls.access' => 'joomla_plugin_files_folders_urls.access',
 			'joomla_plugin_files_folders_urls.access' => 'joomla_plugin_files_folders_urls.access');

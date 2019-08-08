@@ -131,6 +131,7 @@ class ComponentbuilderController extends JControllerLegacy
 				'library_files_folders_urls' => 'libraries_files_folders_urls',
 				'class_extends' => 'class_extendings',
 				'joomla_plugin_group' => 'joomla_plugin_groups',
+				'joomla_plugin_updates' => 'joomla_plugins_updates',
 				'joomla_plugin_files_folders_urls' => 'joomla_plugins_files_folders_urls'
 					);
 			// check if this is a list view

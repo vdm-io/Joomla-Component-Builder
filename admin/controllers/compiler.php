@@ -77,9 +77,9 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			if (empty($redirect_url) && $componentId > 0)
 			{
 				$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
-				if (($pos = strpos($model->compiler->filepath, "/tmp/")) !== FALSE)
+				if (($pos = strpos($model->compiler->filepath['component'], "/tmp/")) !== FALSE)
 				{
-				    $url = JURI::root() . substr($model->compiler->filepath, $pos + 1);
+				    $url = JURI::root() . substr($model->compiler->filepath['component'], $pos + 1);
 				}
 				// Message of successful build
 				$message = '<h1>The ('.$model->compiler->componentFolderName.') Was Successfully Compiled!</h1>';
@@ -101,7 +101,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$message .= '<small>(if creating a folder and file took <b>5 seconds</b> and writing one line of code took <b>10 seconds</b>, with the normal everyday realities at the office, that includes the component planning, mapping & debugging.)</small></p>';
 				$message .= '<p>Project duration: <b>'.$model->compiler->projectWeekTime. ' weeks</b> or <b>'.$model->compiler->projectMonthTime.' months</b></p>';
 				$message .= '<h2>Path to Zip File</h2>';
-				$message .= '<p><b>Path:</b> <code>'.$model->compiler->filepath.'</code><br />';
+				$message .= '<p><b>Path:</b> <code>'.$model->compiler->filepath['component'].'</code><br />';
 				$message .= '<b>URL:</b> <code>'.$url.'</code><br /><br />';
 				$message .= '<small>Hey! you can also download the file right now!</small><br /><a class="btn btn-success" href="'.$url.'" ><span class="icon-download icon-white"></span>Download</a></p>';
 				$message .= '<p><small><b>Remember!</b> This file is in your tmp folder and therefore publicly accessible untill you click [Clear tmp]!</small> </p>';

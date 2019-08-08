@@ -1032,9 +1032,6 @@ class Infusion extends Interpretation
 				$this->fileContentStatic[$this->hhh . 'README' . $this->hhh] = $this->componentData->readme;
 			}
 
-			// Trigger Event: jcb_ce_onAfterBuildFilesContent
-			$this->triggerEvent('jcb_ce_onAfterBuildFilesContent', array(&$this->componentContext, &$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));// Trigger Event: jcb_ce_onBeforeSetPlugins
-
 			// infuze plugin data if set
 			if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
 			{
@@ -1055,6 +1052,9 @@ class Infusion extends Interpretation
 					}
 				}
 			}
+
+			// Trigger Event: jcb_ce_onAfterBuildFilesContent
+			$this->triggerEvent('jcb_ce_onAfterBuildFilesContent', array(&$this->componentContext, &$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
 
 			return true;
 		}

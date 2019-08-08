@@ -363,7 +363,7 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.class_extends LIKE '.$search.' OR g.name LIKE '.$search.' OR a.joomla_plugin_group LIKE '.$search.' OR h.name LIKE '.$search.' OR a.name LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.class_extends LIKE '.$search.' OR g.name LIKE '.$search.' OR a.joomla_plugin_group LIKE '.$search.' OR h.name LIKE '.$search.' OR a.description LIKE '.$search.' OR a.name LIKE '.$search.')');
 			}
 		}
 

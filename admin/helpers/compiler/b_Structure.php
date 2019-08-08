@@ -201,13 +201,6 @@ class Structure extends Get
 	public $projectMonthTime = 0;
 
 	/**
-	 * The Joomla Version
-	 * 
-	 * @var     string
-	 */
-	public $joomlaVersion;
-
-	/**
 	 * The template path
 	 * 
 	 * @var     string
@@ -241,6 +234,13 @@ class Structure extends Get
 	 * @var      array
 	 */
 	public $stdFolders = array('site', 'admin', 'media');
+
+	/**
+	 * The standard root files
+	 * 
+	 * @var      array
+	 */
+	public $stdRootFiles = array('access.xml', 'config.xml', 'controller.php', 'index.html', 'README.txt');
 
 	/**
 	 * Dynamic File Content
@@ -341,6 +341,8 @@ class Structure extends Get
 		// first we run the perent constructor
 		if (parent::__construct($config))
 		{
+			// set the standard admin file
+			$this->stdRootFiles[] = $this->componentData->name_code . '.php';
 			// set incase no extra admin folder are loaded
 			$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS' . $this->hhh] = '';
 			// set incase no extra site folder are loaded
@@ -355,8 +357,6 @@ class Structure extends Get
 			$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FILES' . $this->hhh] = '';
 			// run global updater
 			ComponentbuilderHelper::runGlobalUpdater();
-			// set the Joomla version
-			$this->joomlaVersion = $config['version'];
 			// set the template path
 			$this->templatePath = $this->compilerPath . '/joomla_' . $config['version'];
 			// set some default names
@@ -430,7 +430,8 @@ class Structure extends Get
 			$this->triggerEvent('jcb_ce_onBeforeSetPlugins', array(&$this->componentContext, &$this->componentData->joomla_plugins));
 			foreach ($this->componentData->joomla_plugins as $plugin)
 			{
-				if (ComponentbuilderHelper::checkObject($plugin) && isset($plugin->folder_name) && ComponentbuilderHelper::checkString($plugin->folder_name))
+				if (ComponentbuilderHelper::checkObject($plugin) && isset($plugin->folder_name)
+					&& ComponentbuilderHelper::checkString($plugin->folder_name))
 				{
 					// plugin path
 					$plugin->folder_path = $this->compilerPath . '/' . $plugin->folder_name;
@@ -447,13 +448,20 @@ class Structure extends Get
 						$this->indexHTML($plugin->folder_name, $this->compilerPath);
 					}
 					// set main class file
-					$fileDetails = array('path' => $plugin->folder_path . '/' . $plugin->file_name . '.php', 'name' => $plugin->file_name . '.php', 'zip' => $plugin->file_name . '.php');
-					$this->writeFile($fileDetails['path'], '<?php' . PHP_EOL . '// Plugin main class template' . PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL . $this->hhh . 'MAINCLASS' . $this->hhh);
+					$fileDetails = array('path' => $plugin->folder_path . '/' . $plugin->file_name . '.php',
+						'name' => $plugin->file_name . '.php', 'zip' => $plugin->file_name . '.php');
+					$this->writeFile($fileDetails['path'],
+						'<?php' . PHP_EOL . '// Plugin main class template' .
+						PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+						PHP_EOL . '// No direct access to this file' . PHP_EOL .
+						"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
+						$this->hhh . 'MAINCLASS' . $this->hhh);
 					$this->newFiles[$plugin->key][] = $fileDetails;
 					// count the file created
 					$this->fileCount++;
 					// set main xml file
-					$fileDetails = array('path' => $plugin->folder_path . '/' . $plugin->file_name . '.xml', 'name' => $plugin->file_name . '.xml', 'zip' => $plugin->file_name . '.xml');
+					$fileDetails = array('path' => $plugin->folder_path . '/' . $plugin->file_name . '.xml',
+						'name' => $plugin->file_name . '.xml', 'zip' => $plugin->file_name . '.xml');
 					$this->writeFile($fileDetails['path'], $this->getPluginXMLTemplate($plugin));
 					$this->newFiles[$plugin->key][] = $fileDetails;
 					// count the file created
@@ -461,8 +469,14 @@ class Structure extends Get
 					// set install script if needed
 					if ($plugin->add_install_script)
 					{
-						$fileDetails = array('path' => $plugin->folder_path . '/script.php', 'name' => 'script.php', 'zip' => 'script.php');
-						$this->writeFile($fileDetails['path'], '<?php' . PHP_EOL . '// Script template' . PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL . $this->hhh . 'INSTALLCLASS' . $this->hhh);
+						$fileDetails = array('path' => $plugin->folder_path . '/script.php',
+							'name' => 'script.php', 'zip' => 'script.php');
+						$this->writeFile($fileDetails['path'],
+							'<?php' . PHP_EOL . '// Script template' .
+							PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+							PHP_EOL . '// No direct access to this file' . PHP_EOL .
+							"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
+							$this->hhh . 'INSTALLCLASS' . $this->hhh);
 						$this->newFiles[$plugin->key][] = $fileDetails;
 						// count the file created
 						$this->fileCount++;
@@ -470,7 +484,8 @@ class Structure extends Get
 					// set readme if found
 					if ($plugin->addreadme)
 					{
-						$fileDetails = array('path' => $plugin->folder_path . '/README.md', 'name' => 'README.md', 'zip' => 'README.md');
+						$fileDetails = array('path' => $plugin->folder_path . '/README.md',
+							'name' => 'README.md', 'zip' => 'README.md');
 						$this->writeFile($fileDetails['path'], $plugin->readme);
 						$this->newFiles[$plugin->key][] = $fileDetails;
 						// count the file created
@@ -555,7 +570,8 @@ class Structure extends Get
 						foreach ($plugin->urls as $n => &$url)
 						{
 							// should we add the local folder
-							if (isset($url['type']) && $url['type'] > 1 && isset($url['url']) && ComponentbuilderHelper::checkString($url['url']))
+							if (isset($url['type']) && $url['type'] > 1 && isset($url['url'])
+								&& ComponentbuilderHelper::checkString($url['url']))
 							{
 								// set file name
 								$fileName = basename($url['url']);
@@ -1016,7 +1032,7 @@ class Structure extends Get
 				{
 					continue;
 				}
-				// check if we have a target value set
+				// check if we have a target value
 				if (isset($details->_target))
 				{
 					// set destination path
@@ -1094,14 +1110,15 @@ class Structure extends Get
 						$this->folderCount++;
 					}
 				}
-				// only add if no target found
+				// only add if no target found since those belong to plugins and modules
 				if (!isset($details->_target))
 				{
 					// check if we should add the dynamic folder moving script to the installer script
 					$checker = array_values((array) explode('/', $zipFullPath));
 					// TODO <-- this may not be the best way, will keep an eye on this.
 					// We basicly only want to check if a folder is added that is not in the stdFolders array
-					if (isset($checker[0]) && ComponentbuilderHelper::checkString($checker[0]) && !in_array($checker[0], $this->stdFolders))
+					if (isset($checker[0]) && ComponentbuilderHelper::checkString($checker[0])
+						&& !in_array($checker[0], $this->stdFolders))
 					{
 						// check if we should add the dynamic folder moving script to the installer script
 						if (!$this->setMoveFolders)
@@ -1113,24 +1130,41 @@ class Structure extends Get
 							$this->app->enqueueMessage(JText::sprintf('A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder/s are copied into the correct place when this componet is installed!'), 'Notice');
 						}
 					}
-					elseif (count($checker) == 2 && ComponentbuilderHelper::checkString($checker[0]) && in_array($checker[0], $this->stdFolders))
+					elseif (count($checker) == 2 && ComponentbuilderHelper::checkString($checker[0]))
 					{
+						$add_to_extra = false;
 						// set the target
 						$eNAME = 'FILES';
 						$ename = 'filename';
+						// this should not happen and must have been caught by the above if statment
 						if ($details->type === 'folder')
 						{
-							$eNAME = 'FOLDERS';
-							$ename = 'folder';
+							// only folders outside the standard folder are added
+							if (!in_array($checker[0], $this->stdFolders))
+							{
+								$eNAME = 'FOLDERS';
+								$ename = 'folder';
+								$add_to_extra = true;
+							}
 						}
-						// set the tab
-						$eTab = $this->_t(2);
-						if ('admin' === $checker[0])
+						// if this is a file, it can only be added to the admin/site/media folders 
+						// all other folders are moved as a whole so their files do not need to be declared
+						elseif (in_array($checker[0], $this->stdFolders) && !in_array($checker[1], $this->stdRootFiles))
 						{
-							$eTab = $this->_t(3);
+							$add_to_extra = true;
 						}
-						// set the xml file
-						$this->fileContentStatic[$this->hhh . 'EXSTRA_' . ComponentbuilderHelper::safeString($checker[0], 'U') . '_' . $eNAME . $this->hhh] .= PHP_EOL . $eTab . "<" . $ename . ">" . $checker[1] . "</" . $ename . ">";
+						// add if valid folder/file
+						if ($add_to_extra)
+						{
+							// set the tab
+							$eTab = $this->_t(2);
+							if ('admin' === $checker[0])
+							{
+								$eTab = $this->_t(3);
+							}
+							// set the xml file
+							$this->fileContentStatic[$this->hhh . 'EXSTRA_' . ComponentbuilderHelper::safeString($checker[0], 'U') . '_' . $eNAME . $this->hhh] .= PHP_EOL . $eTab . "<" . $ename . ">" . $checker[1] . "</" . $ename . ">";
+						}
 					}
 				}
 			}

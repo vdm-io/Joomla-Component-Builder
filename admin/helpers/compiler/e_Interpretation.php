@@ -5218,7 +5218,7 @@ class Interpretation extends Fields
 			$script[] = $this->_t(2) . "\$folders = JFolder::folders(\$installPath);";
 			$script[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " check if we have folders we may want to copy";
 			$script[] = $this->_t(2) . "\$doNotCopy = array('media','admin','site'); // Joomla already deals with these";
-			$script[] = $this->_t(2) . "if (count(\$folders) > 1)";
+			$script[] = $this->_t(2) . "if (count((array) \$folders) > 1)";
 			$script[] = $this->_t(2) . "{";
 			$script[] = $this->_t(3) . "foreach (\$folders as \$folder)";
 			$script[] = $this->_t(3) . "{";
@@ -10807,7 +10807,7 @@ class Interpretation extends Fields
 					$function[] = $this->_t(2) . "\$query->from(\$db->quoteName('" . $filter['custom']['table'] . "', 'a'));";
 					$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " get the targeted groups";
 					$function[] = $this->_t(2) . "\$groups= JComponentHelper::getParams('com_" . $component . "')->get('" . $filter['type'] . "');";
-					$function[] = $this->_t(2) . "if (count(\$groups) > 0)";
+					$function[] = $this->_t(2) . "if (!empty(\$groups) && count((array) \$groups) > 0)";
 					$function[] = $this->_t(2) . "{";
 					$function[] = $this->_t(3) . "\$query->join('LEFT', \$db->quoteName('#__user_usergroup_map', 'group') . ' ON (' . \$db->quoteName('group.user_id') . ' = ' . \$db->quoteName('a.id') . ')');";
 					$function[] = $this->_t(3) . "\$query->where('group.group_id IN (' . implode(',', \$groups) . ')');";
@@ -16321,28 +16321,31 @@ function vdm_dkim() {
 		$xml = '';
 		// build the config fields
 		$config_field = '';
-		foreach ($plugin->config_fields as $field)
+		if (isset($plugin->config_fields) && ComponentbuilderHelper::checkArray($plugin->config_fields))
 		{
-			// check the field builder type
-			if ($this->fieldBuilderType == 1)
+			foreach ($plugin->config_fields as $field)
 			{
-				// string manipulation
-				$xmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
-			}
-			else
-			{
-				// simpleXMLElement class
-				$newxmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
-				if (isset($newxmlField->fieldXML))
+				// check the field builder type
+				if ($this->fieldBuilderType == 1)
 				{
-					$xmlField = dom_import_simplexml($newxmlField->fieldXML);
-					$xmlField = PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . $newxmlField->comment . ' -->' . PHP_EOL . $this->_t(1) . $this->xmlPrettyPrint($xmlField, 'field');
+					// string manipulation
+					$xmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
 				}
-			}
-			// make sure the xml is set and a string
-			if (isset($xmlField) && ComponentbuilderHelper::checkString($xmlField))
-			{
-				$config_field .= $xmlField;
+				else
+				{
+					// simpleXMLElement class
+					$newxmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
+					if (isset($newxmlField->fieldXML))
+					{
+						$xmlField = dom_import_simplexml($newxmlField->fieldXML);
+						$xmlField = PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . $newxmlField->comment . ' -->' . PHP_EOL . $this->_t(1) . $this->xmlPrettyPrint($xmlField, 'field');
+					}
+				}
+				// make sure the xml is set and a string
+				if (isset($xmlField) && ComponentbuilderHelper::checkString($xmlField))
+				{
+					$config_field .= $xmlField;
+				}
 			}
 		}
 		// switch to add the xml
@@ -16474,27 +16477,167 @@ function vdm_dkim() {
 	{
 		// yes we are adding it
 		$script = PHP_EOL . '/**';
-		$script .= PHP_EOL . ' * ' . $plugin->name . ' script file.';
+		$script .= PHP_EOL . ' * ' . $plugin->official_name . ' script file.';
 		$script .= PHP_EOL . ' *';
 		$script .= PHP_EOL . ' * @package ' . $plugin->class_name;
 		$script .= PHP_EOL . ' */';
 		$script .= PHP_EOL . 'class ' . $plugin->installer_class_name;
 		$script .= PHP_EOL . '{';
+		// set constructor
+		if (isset($plugin->add_php_script_construct)
+			&& $plugin->add_php_script_construct == 1
+			&& ComponentbuilderHelper::checkString($plugin->php_script_construct))
+		{
+			$script .= $this->setInstallMethodScript('construct', $plugin->php_script_construct);
+		}
 		// add PHP in plugin install
 		$addScriptMethods = array('php_preflight', 'php_postflight', 'php_method');
-		$addScriptTypes = array('install', 'update', 'uninstall');
+		$addScriptTypes = array('install', 'update', 'uninstall', 'discover_install');
+		// set some buckets for sorting
+		$function_install = array();
+		$function_update = array();
+		$function_uninstall = array();
+		$has_php_preflight = false;
+		$function_php_preflight = array('install' => array(), 'uninstall' => array(), 'discover_install' => array(), 'update' => array());
+		$has_php_postflight = false;
+		$function_php_postflight = array('install' => array(), 'uninstall' => array(), 'discover_install' => array(), 'update' => array());
+		// the function sorter
 		foreach ($addScriptMethods as $scriptMethod)
 		{
 			foreach ($addScriptTypes as $scriptType)
 			{
-				if (isset($plugin->{'add_' . $scriptMethod . '_' . $scriptType}) && $plugin->{'add_' . $scriptMethod . '_' . $scriptType} == 1 && ComponentbuilderHelper::checkString($plugin->{$scriptMethod . '_' . $scriptType}))
+				if (isset($plugin->{'add_' . $scriptMethod . '_' . $scriptType})
+					&& $plugin->{'add_' . $scriptMethod . '_' . $scriptType} == 1
+					&& ComponentbuilderHelper::checkString($plugin->{$scriptMethod . '_' . $scriptType}))
 				{
-					// (TODO) must still finish
-					$script .= PHP_EOL . '//' . $this->setLine(__LINE__) . ' This part of the new plugin area is not ready yet, soon!';
+					// add to the main methods
+					if ('php_method' === $scriptMethod)
+					{
+						${'function_' . $scriptType}[] = $plugin->{$scriptMethod . '_' . $scriptType};
+					}
+					else
+					{
+						${'function_' . $scriptMethod}[$scriptType][] = $plugin->{$scriptMethod . '_' . $scriptType};
+						${'has_' . $scriptMethod} = true;
+					}
 				}
 			}
 		}
+		// now add the install script.
+		if (ComponentbuilderHelper::checkArray($function_install))
+		{
+			$script .= $this->setInstallMethodScript('install', $function_install);
+		}
+		// now add the update script.
+		if (ComponentbuilderHelper::checkArray($function_update))
+		{
+			$script .= $this->setInstallMethodScript('update', $function_update);
+		}
+		// now add the uninstall script.
+		if (ComponentbuilderHelper::checkArray($function_uninstall))
+		{
+			$script .= $this->setInstallMethodScript('uninstall', $function_uninstall);
+		}
+		// now add the preflight script.
+		if ($has_php_preflight)
+		{
+			$script .= $this->setInstallMethodScript('preflight', $function_php_preflight);
+		}
+		// now add the postflight script.
+		if ($has_php_postflight)
+		{
+			$script .= $this->setInstallMethodScript('postflight', $function_php_postflight);
+		}
 		$script .= PHP_EOL . '}' . PHP_EOL;
+
+		return $script;
+	}
+
+	protected function setInstallMethodScript($function_name, &$scripts)
+	{
+		$script = '';
+		// build function
+		switch($function_name)
+		{
+			case 'install':
+			case 'update':
+			case 'uninstall':
+				// the main function types
+				$script = PHP_EOL . PHP_EOL . $this->_t(1) .'/**';
+				$script .= PHP_EOL . $this->_t(1) .' * Called on ' . $function_name;
+				$script .= PHP_EOL . $this->_t(1) .' *';
+				$script .= PHP_EOL . $this->_t(1) .' * @param   JAdapterInstance  $adapter  The object responsible for running this script';
+				$script .= PHP_EOL . $this->_t(1) .' *';
+				$script .= PHP_EOL . $this->_t(1) .' * @return  boolean  True on success';
+				$script .= PHP_EOL . $this->_t(1) .' */';
+				$script .= PHP_EOL . $this->_t(1) .'public function ' . $function_name . '(JAdapterInstance $adapter)';
+				$script .= PHP_EOL . $this->_t(1) .'{';
+				$script .= PHP_EOL . implode(PHP_EOL . PHP_EOL, $scripts);
+				// return true
+				if ('uninstall' !== $function_name)
+				{
+					$script .= PHP_EOL . $this->_t(2) . 'return true;';
+				}
+				break;
+			case 'preflight':
+			case 'postflight':
+				// the pre/post function types
+				$script = PHP_EOL . PHP_EOL . $this->_t(1) .'/**';
+				$script .= PHP_EOL . $this->_t(1) .' * Called before any type of action';
+				$script .= PHP_EOL . $this->_t(1) .' *';
+				$script .= PHP_EOL . $this->_t(1) .' * @param   string  $route  Which action is happening (install|uninstall|discover_install|update)';
+				$script .= PHP_EOL . $this->_t(1) .' * @param   JAdapterInstance  $adapter  The object responsible for running this script';
+				$script .= PHP_EOL . $this->_t(1) .' *';
+				$script .= PHP_EOL . $this->_t(1) .' * @return  boolean  True on success';
+				$script .= PHP_EOL . $this->_t(1) .' */';
+				$script .= PHP_EOL . $this->_t(1) .'public function ' . $function_name . '($route, JAdapterInstance $adapter)';
+				$script .= PHP_EOL . $this->_t(1) .'{';
+				$script .= PHP_EOL . $this->_t(2) . '//' . $this->setLine(__LINE__) . ' get application';
+				$script .= PHP_EOL . $this->_t(2) . '$app = JFactory::getApplication();' . PHP_EOL;
+				// add the default version check (TODO) must make this dynamic
+				if ('preflight' === $function_name)
+				{
+					$script .= PHP_EOL . $this->_t(2) . '//' . $this->setLine(__LINE__) . ' the default for both install and update';
+					$script .= PHP_EOL . $this->_t(2) . '$jversion = new JVersion();';
+					$script .= PHP_EOL . $this->_t(2) . "if (!\$jversion->isCompatible('3.8.0'))";
+					$script .= PHP_EOL . $this->_t(2) . '{';
+					$script .= PHP_EOL . $this->_t(3) . "\$app->enqueueMessage('Please upgrade to at least Joomla! 3.8.0 before continuing!', 'error');";
+					$script .= PHP_EOL . $this->_t(3) . 'return false;';
+					$script .= PHP_EOL . $this->_t(2) . '}' . PHP_EOL;
+				}
+				// now add the scripts
+				foreach ($scripts as $route => $_script)
+				{
+					if (ComponentbuilderHelper::checkArray($_script))
+					{
+						// set the if and script
+						$script .= PHP_EOL . $this->_t(2) . "if ('" . $route . "' === \$route)";
+						$script .= PHP_EOL . $this->_t(2) . '{';
+						$script .= PHP_EOL . implode(PHP_EOL . PHP_EOL, $_script);
+						$script .= PHP_EOL . $this->_t(2) . '}' . PHP_EOL;
+					}
+				}
+				// return true
+				$script .= PHP_EOL . $this->_t(2) . 'return true;';
+				break;
+			case 'construct':
+				// the __construct script
+				$script = PHP_EOL . PHP_EOL . $this->_t(1) .'/**';
+				$script .= PHP_EOL . $this->_t(1) .' * Constructor';
+				$script .= PHP_EOL . $this->_t(1) .' *';
+				$script .= PHP_EOL . $this->_t(1) .' * @param   JAdapterInstance  $adapter  The object responsible for running this script';
+				$script .= PHP_EOL . $this->_t(1) .' */';
+				$script .= PHP_EOL . $this->_t(1) .'public function __construct(JAdapterInstance $adapter)';
+				$script .= PHP_EOL . $this->_t(1) .'{';
+				$script .= PHP_EOL . $scripts;
+				break;
+			default:
+				// oops error
+				return '';
+		}
+		// close the function
+		$script .= PHP_EOL . $this->_t(1) . '}';
+
 		return $script;
 	}
 

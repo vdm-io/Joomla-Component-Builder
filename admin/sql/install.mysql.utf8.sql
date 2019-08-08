@@ -151,12 +151,14 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	`add_php_preflight_install` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_php_preflight_uninstall` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_php_preflight_update` TINYINT(1) NOT NULL DEFAULT 0,
+	`add_php_script_construct` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_sales_server` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_sql` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_sql_uninstall` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_update_server` TINYINT(1) NOT NULL DEFAULT 0,
 	`addreadme` TINYINT(1) NOT NULL DEFAULT 0,
 	`class_extends` INT(11) NOT NULL DEFAULT 0,
+	`description` TEXT NOT NULL,
 	`fields` TEXT NOT NULL,
 	`head` TEXT NOT NULL,
 	`joomla_plugin_group` INT(11) NOT NULL DEFAULT 0,
@@ -169,6 +171,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	`php_preflight_install` MEDIUMTEXT NOT NULL,
 	`php_preflight_uninstall` MEDIUMTEXT NOT NULL,
 	`php_preflight_update` MEDIUMTEXT NOT NULL,
+	`php_script_construct` MEDIUMTEXT NOT NULL,
+	`plugin_version` CHAR(64) NOT NULL DEFAULT '',
 	`property_selection` TEXT NOT NULL,
 	`readme` TEXT NOT NULL,
 	`sales_server` INT(11) NOT NULL DEFAULT 0,
@@ -200,18 +204,19 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	KEY `idx_class_extends` (`class_extends`),
 	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`),
 	KEY `idx_add_sales_server` (`add_sales_server`),
-	KEY `idx_name` (`name`),
+	KEY `idx_add_php_postflight_install` (`add_php_postflight_install`),
 	KEY `idx_add_php_postflight_update` (`add_php_postflight_update`),
 	KEY `idx_add_php_method_uninstall` (`add_php_method_uninstall`),
+	KEY `idx_add_php_script_construct` (`add_php_script_construct`),
 	KEY `idx_add_sql` (`add_sql`),
-	KEY `idx_add_php_preflight_install` (`add_php_preflight_install`),
 	KEY `idx_add_sql_uninstall` (`add_sql_uninstall`),
+	KEY `idx_add_php_preflight_install` (`add_php_preflight_install`),
 	KEY `idx_addreadme` (`addreadme`),
-	KEY `idx_add_php_preflight_update` (`add_php_preflight_update`),
 	KEY `idx_add_update_server` (`add_update_server`),
+	KEY `idx_add_php_preflight_update` (`add_php_preflight_update`),
 	KEY `idx_update_server_target` (`update_server_target`),
 	KEY `idx_add_php_preflight_uninstall` (`add_php_preflight_uninstall`),
-	KEY `idx_add_php_postflight_install` (`add_php_postflight_install`)
+	KEY `idx_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
@@ -1650,6 +1655,32 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_group` (
 	KEY `idx_name` (`name`),
 	KEY `idx_class_extends` (`class_extends`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_updates` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
+	`joomla_plugin` INT(11) NOT NULL DEFAULT 0,
+	`version_update` TEXT NOT NULL,
+	`params` text NOT NULL,
+	`published` TINYINT(3) NOT NULL DEFAULT 1,
+	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
+	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+	`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`version` INT(10) unsigned NOT NULL DEFAULT 1,
+	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
+	`access` INT(10) unsigned NOT NULL DEFAULT 0,
+	`ordering` INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY  (`id`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`),
+	KEY `idx_joomla_plugin` (`joomla_plugin`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_files_folders_urls` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,

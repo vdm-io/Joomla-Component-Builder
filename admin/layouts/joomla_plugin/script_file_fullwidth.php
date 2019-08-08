@@ -26,6 +26,8 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
+	'add_php_script_construct',
+	'php_script_construct',
 	'add_php_preflight_install',
 	'php_preflight_install',
 	'add_php_preflight_update',
