@@ -2413,10 +2413,11 @@ class ComponentbuilderModelAjax extends JModelList
 		),
 		// #__componentbuilder_joomla_plugin (q)
 		'joomla_plugin' => array(
-			'search' => array('id', 'name', 'main_class_code'),
+			'search' => array('id', 'system_name', 'name', 'main_class_code', 'description', 'php_script_construct', 'php_preflight_install', 'php_preflight_update',
+				'php_preflight_uninstall', 'php_postflight_install', 'php_postflight_update', 'php_method_uninstall'),
 			'views' => 'joomla_plugins',
-			'not_base64' => array(),
-			'name' => 'name'
+			'not_base64' => array('description' => 'string'),
+			'name' => 'system_name'
 		),
 		// #__componentbuilder_class_extends (r)
 		'class_extends' => array(

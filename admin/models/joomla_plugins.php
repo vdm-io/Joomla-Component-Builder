@@ -136,17 +136,13 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 							// extract the boilerplate class property and methods
 							if (($classProperiesMethods = ComponentbuilderHelper::extractBoilerplateClassPropertiesMethods($fooClass, $classExtends, 'plugins', $pluginGroupID)) !== false)
 							{
-								// create the properties found (TODO just create for now but we could later add a force update)
+								// create the properties found
 								if (isset($classProperiesMethods['property']) && ComponentbuilderHelper::checkArray($classProperiesMethods['property']))
 								{
 									foreach ($classProperiesMethods['property'] as $_property)
 									{
-										// does not exist, so create
-										if ($_property['id'] == 0)
-										{
-											// store the property
-											$this->storePluginBoilerplate($tables['p'], $models['p'], $_property, $app);
-										}
+										// force update by default
+										$this->storePluginBoilerplate($tables['p'], $models['p'], $_property, $app);
 									}
 								}
 								// create the method found (TODO just create for now but we could later add a force update)
@@ -154,12 +150,8 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 								{
 									foreach ($classProperiesMethods['method'] as $_method)
 									{
-										// does not exist, so create
-										if ($_method['id'] == 0)
-										{
-											// store the method
-											$this->storePluginBoilerplate($tables['m'], $models['m'], $_method, $app);
-										}
+										// force update by default
+										$this->storePluginBoilerplate($tables['m'], $models['m'], $_method, $app);
 									}
 								}
 							}

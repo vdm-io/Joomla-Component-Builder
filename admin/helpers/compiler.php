@@ -35,7 +35,21 @@ class Compiler extends Infusion
 	private $time_start;
 	private $time_end;
 	public $secondsCompiled;
-	public $filepath = array('component' => '', 'package' => '', 'plugins' => array(), 'modules' => array());
+
+	/*
+	 * The file path array
+	 * 
+	 * @var      string
+	 */
+	public $filepath = array(
+		'component' => '',
+		'component-folder' => '',
+		'package' => '',
+		'plugins' => array(),
+		'plugins-folders' => array(),
+		'modules' => array()
+		);
+
 	// fixed pathes
 	protected $dynamicIntegration = false;
 	protected $backupPath = false;
@@ -58,7 +72,7 @@ class Compiler extends Infusion
 			// set some folder paths in relation to distribution
 			if ($config['backup'])
 			{
-				$this->backupPath = $this->params->get('backup_folder_path', $this->tempPath) . '/' . $this->componentBackupName . '.zip';
+				$this->backupPath = $this->params->get('backup_folder_path', $this->tempPath);
 				$this->dynamicIntegration = true;
 			}
 			// set local repos switch
@@ -539,8 +553,10 @@ class Compiler extends Infusion
 
 	private function zipComponent()
 	{
+		// Component Folder Name
+		$this->filepath['component-folder'] = $this->componentFolderName;
 		// the name of the zip file to create
-		$this->filepath['component'] = $this->tempPath . '/' . $this->componentFolderName . '.zip';
+		$this->filepath['component'] = $this->tempPath . '/' . $this->filepath['component-folder'] . '.zip';
 		// Trigger Event: jcb_ce_onBeforeZipComponent
 		$this->triggerEvent('jcb_ce_onBeforeZipComponent', array(&$this->componentContext, &$this->componentPath, &$this->filepath['component'], &$this->tempPath, &$this->componentFolderName, &$this->componentData));
 		//create the zip file
@@ -552,7 +568,7 @@ class Compiler extends Infusion
 				// Trigger Event: jcb_ce_onBeforeBackupZip
 				$this->triggerEvent('jcb_ce_onBeforeBackupZip', array(&$this->componentContext, &$this->filepath['component'], &$this->tempPath, &$this->backupPath, &$this->componentData));
 				// copy the zip to backup path
-				JFile::copy($this->filepath['component'], $this->backupPath);
+				JFile::copy($this->filepath['component'], $this->backupPath . '/' . $this->componentBackupName . '.zip');
 			}
 
 			// move to sales server host
@@ -591,6 +607,8 @@ class Compiler extends Infusion
 				{
 					// set plugin context
 					$plugin_context = $plugin->file_name . '.' . $plugin->id;
+					// Component Folder Name
+					$this->filepath['plugins-folder'][$plugin->id] = $plugin->zip_name;
 					// the name of the zip file to create
 					$this->filepath['plugins'][$plugin->id] = $this->tempPath . '/' . $plugin->zip_name . '.zip';
 					// Trigger Event: jcb_ce_onBeforeZipPlugin
@@ -605,7 +623,7 @@ class Compiler extends Infusion
 							// Trigger Event: jcb_ce_onBeforeBackupZip
 							$this->triggerEvent('jcb_ce_onBeforeBackupZip', array(&$__plugin_context, &$this->filepath['plugins'][$plugin->id], &$this->tempPath, &$this->backupPath, &$plugin));
 							// copy the zip to backup path
-							JFile::copy($this->filepath['plugins'][$plugin->id], $this->backupPath);
+							JFile::copy($this->filepath['plugins'][$plugin->id], $this->backupPath . '/' . $plugin->zip_name . '.zip');
 						}
 
 						// move to sales server host

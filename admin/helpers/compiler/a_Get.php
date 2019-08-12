@@ -6199,7 +6199,6 @@ class Get
 					'addurls',
 					'version_update',
 					'version_update_id'
-					
 				)
 			)
 		);
@@ -6237,7 +6236,7 @@ class Get
 			// update the name if it has dynamic values
 			$plugin->name = $this->setPlaceholders($this->setDynamicValues($plugin->name), $this->placeholders);
 			// set official name
-			$plugin->official_name = $plugin->name . ' ' . $plugin->group;
+			$plugin->official_name = ucwords($plugin->group . ' - ' . $plugin->name);
 			// set langPrefix
 			$this->langPrefix = 'PLG_' . strtoupper($plugin->group) . '_' . strtoupper($plugin->name);
 			// set lang prefix
@@ -6261,6 +6260,7 @@ class Get
 			}
 			else
 			{
+				$plugin->description = $this->setPlaceholders($this->setDynamicValues($plugin->description), $this->placeholders);
 				$this->setLangContent($plugin->key, $plugin->lang_prefix . '_DESCRIPTION', $plugin->description);
 				$plugin->description = '<p>' . $plugin->description . '</p>';
 			}
@@ -7410,6 +7410,8 @@ class Get
 		$localPaths['site'] = JPATH_ROOT . '/components/com_' . $this->componentCodeName;
 		// TODO later to include the JS and CSS
 		$localPaths['media'] = JPATH_ROOT . '/media/com_' . $this->componentCodeName;
+		// TODO plugin paths (just those linked to this component)
+		// $localPaths['plugin'] = JPATH_ROOT . '/plugins';
 		// check if the local install is found
 		foreach ($localPaths as $key => $localPath)
 		{

@@ -23,12 +23,24 @@ JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 ?>
 <?php if ($this->canDo->get('compiler.access')): ?>
+<script type="text/javascript">
+	Joomla.submitbutton = function(task) {
+		if (task === 'compiler.back') {
+			parent.history.back();
+			return false;
+		} else {
+			var form = document.getElementById('adminForm');
+			form.task.value = task;
+			form.submit();
+		}
+	}
+</script>
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=compiler'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
         <input type="hidden" name="task" value="" />
         <?php echo JHtml::_('form.token'); ?>
 </form>
 <script type="text/javascript">
-Joomla.submitbutton = function(task)
+Joomla.submitbutton = function(task, key)
 {
 	if (task == ''){
 		return false;
@@ -42,11 +54,16 @@ Joomla.submitbutton = function(task)
 		if (isValid){
 			jQuery('#form').hide();
 			// get correct form based on task
-			if (task == 'compiler.compiler') {
+			if (task == 'compiler.compiler' || task == 'compiler.installCompiledPlugin') {
 				var form = document.getElementById('compilerForm');
 			} else {
 				var form = document.getElementById('adminForm');
 			}
+			// set the plugin id
+			if (task == 'compiler.installCompiledPlugin') {
+				form.install_item_id.value = key;
+			}
+			// set the task value
 			form.task.value = task;
 			form.submit();
 			// some ui movements
@@ -112,6 +129,7 @@ jQuery('<div id="loading"></div>')
 				<button class="btn btn-small btn-success" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
 					<?php echo JText::_('COM_COMPONENTBUILDER_COMPILE_COMPONENT'); ?>
 				</button>
+				<input type="hidden" name="install_item_id" value="0"> 
 				<input type="hidden" name="version" value="3" />
 				<input type="hidden" name="task" value="compiler.compiler" />
 				<?php echo JHtml::_('form.token'); ?>

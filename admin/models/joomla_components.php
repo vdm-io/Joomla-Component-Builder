@@ -303,7 +303,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'component_mysql_tweaks' => 'joomla_component',
 			'component_custom_admin_menus' => 'joomla_component',
 			'component_dashboard' => 'joomla_component',
-			'component_placeholders' => 'joomla_component' );
+			'component_placeholders' => 'joomla_component',
+			'component_plugins' => 'joomla_component');
 		// load all tables linked to joomla_component
 		foreach($linkedTables as $table => $field)
 		{
@@ -316,6 +317,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$this->setData('admin_fields_conditions', array_values($this->smartIDs['admin_view']), 'admin_view');
 			$this->setData('admin_fields_relations', array_values($this->smartIDs['admin_view']), 'admin_view');
 			$this->setData('admin_custom_tabs', array_values($this->smartIDs['admin_view']), 'admin_view');
+		}
+		// add joomla plugin
+		if (isset($this->smartIDs['joomla_plugin']) && ComponentbuilderHelper::checkArray($this->smartIDs['joomla_plugin']))
+		{
+			$this->setData('joomla_plugin', array_values($this->smartIDs['joomla_plugin']), 'id');
+			$this->setData('joomla_plugin_updates', array_values($this->smartIDs['joomla_plugin']), 'joomla_plugin');
+			$this->setData('joomla_plugin_files_folders_urls', array_values($this->smartIDs['joomla_plugin']), 'joomla_plugin');
 		}
 		// add validation rules
 		if (isset($this->smartIDs['validation_rule']) && ComponentbuilderHelper::checkArray($this->smartIDs['validation_rule']))
@@ -345,6 +353,26 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		// only if exporting
 		if ('clone' !== $this->activeType)
 		{
+			// add class_property
+			if (isset($this->smartIDs['class_property']) && ComponentbuilderHelper::checkArray($this->smartIDs['class_property']))
+			{
+				$this->setData('class_property', array_values($this->smartIDs['class_property']), 'id');
+			}
+			// add class_method
+			if (isset($this->smartIDs['class_method']) && ComponentbuilderHelper::checkArray($this->smartIDs['class_method']))
+			{
+				$this->setData('class_method', array_values($this->smartIDs['class_method']), 'id');
+			}
+			// add joomla_plugin_group
+			if (isset($this->smartIDs['joomla_plugin_group']) && ComponentbuilderHelper::checkArray($this->smartIDs['joomla_plugin_group']))
+			{
+				$this->setData('joomla_plugin_group', array_values($this->smartIDs['joomla_plugin_group']), 'id');
+			}
+			// add class_extends
+			if (isset($this->smartIDs['class_extends']) && ComponentbuilderHelper::checkArray($this->smartIDs['class_extends']))
+			{
+				$this->setData('class_extends', array_values($this->smartIDs['class_extends']), 'id');
+			}
 			// add snippets
 			if (isset($this->smartIDs['snippet']) && ComponentbuilderHelper::checkArray($this->smartIDs['snippet']))
 			{
@@ -612,7 +640,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// set search array
 				if ('site_view' === $table || 'custom_admin_view' === $table)
 				{
-					$searchArray = array('php_view','php_jview','php_jview_display','php_document','js_document','css_document','css');
+					$searchArray = array('php_view', 'php_jview', 'php_jview_display', 'php_document', 'js_document', 'css_document', 'css');
 				}
 				// reset the global array
 				if ('template' === $table)
@@ -683,7 +711,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					// set the placeholder ID's
 					$this->setCodePlaceholdersIds($item, $table, 'placeholder');
 					// actions to take if table is component_files_folders
-					if ('component_files_folders' === $table && 'clone' !== $this->activeType)
+					if (('component_files_folders' === $table || 'joomla_plugin_files_folders_urls' === $table) && 'clone' !== $this->activeType)
 					{
 						// build files
 						$this->moveIt($this->getValues($item->addfiles, 'subform', 'file', null), 'file');
@@ -717,6 +745,12 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						// add custom admin views
 						$this->setData('custom_admin_view', $this->getValues($item->addcustom_admin_views, 'subform', 'customadminview'), 'id');
+					}
+					// actions to take if table is component_plugins
+					if ('component_plugins' === $table)
+					{
+						// add custom admin views
+						$this->setData('joomla_plugin', $this->getValues($item->addjoomla_plugins, 'subform', 'plugin'), 'id');
 					}
 					// actions to take if table is admin_view
 					if ('admin_view' === $table)
@@ -845,6 +879,34 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add dynamic gets
 						$this->setSmartIDs((int) $item->dynamic_get, 'dynamic_get');
 					}
+					// actions to take if table is joomla_plugin
+					if ('joomla_plugin' === $table)
+					{
+						// add the updates and folder stuff
+						$this->setSmartIDs($item->id, 'joomla_plugin');
+						// add class_extends
+						$this->setSmartIDs((int) $item->class_extends, 'class_extends');
+						// add joomla_plugin_group
+						$this->setSmartIDs((int) $item->joomla_plugin_group, 'joomla_plugin_group');
+						// add fields
+						$this->setData('field', $this->getValues($item->fields, 'subform', 'field'), 'id');
+						// add property_selection
+						$this->setData('class_property', $this->getValues($item->property_selection, 'subform', 'property'), 'id');
+						// add class_method
+						$this->setData('class_method', $this->getValues($item->method_selection, 'subform', 'method'), 'id');
+					}
+					// actions to take if table is joomla_plugin_group
+					if ('joomla_plugin_group' === $table)
+					{
+						// add class_extends
+						$this->setSmartIDs((int) $item->class_extends, 'class_extends');
+					}
+					// actions to take if table is class_method or 
+					if ('class_method' === $table || 'class_property' === $table )
+					{
+						// add joomla_plugin_group
+						$this->setSmartIDs((int) $item->joomla_plugin_group, 'joomla_plugin_group');
+					}
 				}
 			}
 		}
@@ -882,10 +944,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$tables = array(
 				'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
 				'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code', 'placeholder',
+				'joomla_plugin', 'joomla_plugin_files_folders_urls', 'joomla_plugin_updates',
 				'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 				'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 				'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
-				'component_placeholders'
+				'component_placeholders', 'component_plugins'
 			);
 			// smart table loop
 			foreach ($tables as $table)
@@ -1824,10 +1887,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		),
 		// #__componentbuilder_joomla_plugin (q)
 		'joomla_plugin' => array(
-			'search' => array('id', 'name', 'main_class_code'),
+			'search' => array('id', 'system_name', 'name', 'main_class_code', 'description', 'php_script_construct', 'php_preflight_install', 'php_preflight_update',
+				'php_preflight_uninstall', 'php_postflight_install', 'php_postflight_update', 'php_method_uninstall'),
 			'views' => 'joomla_plugins',
-			'not_base64' => array(),
-			'name' => 'name'
+			'not_base64' => array('description' => 'string'),
+			'name' => 'system_name'
 		),
 		// #__componentbuilder_class_extends (r)
 		'class_extends' => array(

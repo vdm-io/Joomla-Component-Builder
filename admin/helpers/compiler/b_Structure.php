@@ -1140,12 +1140,9 @@ class Structure extends Get
 						if ($details->type === 'folder')
 						{
 							// only folders outside the standard folder are added
-							if (!in_array($checker[0], $this->stdFolders))
-							{
-								$eNAME = 'FOLDERS';
-								$ename = 'folder';
-								$add_to_extra = true;
-							}
+							$eNAME = 'FOLDERS';
+							$ename = 'folder';
+							$add_to_extra = true;
 						}
 						// if this is a file, it can only be added to the admin/site/media folders 
 						// all other folders are moved as a whole so their files do not need to be declared

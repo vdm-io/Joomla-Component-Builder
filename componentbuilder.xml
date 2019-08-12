@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>8th August, 2019</creationDate>
+	<creationDate>13th August, 2019</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>llewellyn@joomlacomponentbuilder.com</authorEmail>
 	<authorUrl>http://www.joomlacomponentbuilder.com</authorUrl>
@@ -39,6 +39,8 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<folder>js</folder>
 		<folder>css</folder>
 		<folder>images</folder>
+		<folder>uikit-v2</folder>
+		<folder>footable-v3</folder>
 	</media>
 
 	<!-- Update Schema; New in Joomla 2.5 -->
@@ -105,6 +107,8 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 			<folder>tables</folder>
 			<folder>views</folder>
 			<folder>layouts</folder>
+			<folder>custom</folder>
+			<folder>compiler</folder>
 		</files>
 
 		<languages folder="admin">
