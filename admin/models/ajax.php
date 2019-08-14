@@ -1051,10 +1051,16 @@ class ComponentbuilderModelAjax extends JModelList
 		switch ($value)
 		{
 			case 1:
-				return JText::_('COM_COMPONENTBUILDER_SHOW_IN_LIST_VIEW');
+				return JText::_('COM_COMPONENTBUILDER_SHOW_IN_ALL_LIST_VIEWS');
 			break;
 			case 2:
 				return JText::_('COM_COMPONENTBUILDER_NONE_DB');
+			break;
+			case 3:
+				return JText::_('COM_COMPONENTBUILDER_ONLY_IN_ADMIN_LIST_VIEW');
+			break;
+			case 4:
+				return JText::_('COM_COMPONENTBUILDER_ONLY_IN_LINKED_LIST_VIEWS');
 			break;
 			default:
 				return JText::_('COM_COMPONENTBUILDER_DEFAULT');
