@@ -108,7 +108,7 @@ class Get
 	 */
 	public $componentData;
 
-	/*	 * *********************************************************************************************
+	/**
 	 * 	The custom script placeholders - we use the (xxx) to avoid detection it should be (***)
 	 * 	##################################--->  PHP/JS  <---####################################
 	 * 
@@ -140,7 +140,7 @@ class Get
 	 * 	////////23 is the ID of the code in the system don't change it!!!!!!!!!!!!!!!!!!!!!!!!!!
 	 * 
 	 * 	@var      array
-	 * ********************************************************************************************* */
+	 */
 	protected $customCodePlaceholders = array(
 		1 => 'REPLACE<>$$$$]',
 		2 => 'INSERT<>$$$$]',

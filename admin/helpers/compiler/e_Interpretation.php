@@ -10684,15 +10684,13 @@ class Interpretation extends Fields
 						$ifArray[$task['task_name']][] = "\$" . $task['value_name'] . "Value";
 					}
 					// see user check is needed
-					if (isset($task['user_check']) && 1 == $task['user_check'])
+					if (!isset($userCheck[$task['task_name']]) && isset($task['user_check']) && 1 == $task['user_check'])
 					{
 						// add it since this means it was not set, and in the old method we assumed it was inplace
 						// or it is set and 1 means we still want it inplace
-						$userCheck[$task['task_name']] = ' && $user->id != 0';
-					}
-					else
-					{
-						$userCheck[$task['task_name']] = '';
+						$ifArray[$task['task_name']][] = '$user->id != 0';
+						// add it only once
+						$userCheck[$task['task_name']] = true;
 					}
 				}
 			}
@@ -10715,17 +10713,9 @@ class Interpretation extends Fields
 					// check if we have some values to check
 					if (isset($ifArray[$task]) && ComponentbuilderHelper::checkArray($ifArray[$task]))
 					{
+						// set if string
 						$ifvalues = implode(' && ', $ifArray[$task]);
-					}
-					else
-					{
-						$ifvalues = '';
-					}
-					// build the if string
-					$ifvalues = $ifvalues . $userCheck[$task];
-					// check if we have a if string 
-					if (ComponentbuilderHelper::checkString($ifvalues))
-					{
+						// add to case
 						$cases .= PHP_EOL . $this->_t(6) . "if(" . $ifvalues . ")";
 						$cases .= PHP_EOL . $this->_t(6) . "{";
 						$cases .= PHP_EOL . $this->_t(7) . $getMethod;
