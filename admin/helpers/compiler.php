@@ -761,7 +761,7 @@ class Compiler extends Infusion
 							// Load escaped code since the target endhash has changed
 							$this->loadEscapedCode($file, $target, $lineBites);
 							$this->app->enqueueMessage(JText::_('<hr /><h3>Custom Code Warning</h3>'), 'Warning');
-							$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines below the custom code.', $target['path'], $target['from_line']), 'Warning');
+							$this->app->enqueueMessage(JText::sprintf('Custom code %s could not be added to <b>%s</b> please review the file after install at <b>line %s</b> and reposition the code, remove the comments and recompile to fix the issue. The issue could be due to a change to <b>lines below</b> the custom code.', '<a href="index.php?option=com_componentbuilder&view=custom_codes&task=custom_code.edit&id=' . $target['id'] . '" target="_blank">#' . $target['id'] . '</a>', $target['path'], $target['from_line']), 'Warning');
 						}
 					}
 					else
@@ -769,7 +769,7 @@ class Compiler extends Infusion
 						// Load escaped code since the target hash has changed
 						$this->loadEscapedCode($file, $target, $lineBites);
 						$this->app->enqueueMessage(JText::_('<hr /><h3>Custom Code Warning</h3>'), 'Warning');
-						$this->app->enqueueMessage(JText::sprintf('Custom code could not be added to <b>%s</b> please review the file at <b>line %s</b>. This could be due to a change to lines above the custom code.', $target['path'], $target['from_line']), 'Warning');
+						$this->app->enqueueMessage(JText::sprintf('Custom code %s could not be added to <b>%s</b> please review the file after install at <b>line %s</b> and reposition the code, remove the comments and recompile to fix the issue. The issue could be due to a change to <b>lines above</b> the custom code.', '<a href="index.php?option=com_componentbuilder&view=custom_codes&task=custom_code.edit&id=' . $target['id'] . '" target="_blank">#' . $target['id'] . '</a>', $target['path'], $target['from_line']), 'Warning');
 					}
 				}
 				else
